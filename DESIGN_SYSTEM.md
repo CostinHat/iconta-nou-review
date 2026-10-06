@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.74 · 6 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.75 · 6 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -425,6 +425,15 @@ rețetă, linii de jurnal). NU rescrie cap.6 — îl referă.
   dovedit: `valoare_fara_tva` verificat în backend, nu în frontendul e-Transport). Frontendul CONSUMĂ răspunsul de
   eroare al backendului și plasează erorile conform cap.6 (mecanism A pe `camp`, fallback B). O gardă de prezență
   client-side rămâne permisă DOAR ca UX preventiv nemirror, nu ca a doua listă de câmpuri-lipsă per rând.
+- **Un preț sau un articol pe care nu l-a ales omul nu stă pe rând (v2.75, comanda Costin 06.10.2026 pct.1b/1c).**
+  „Un preț pe care nu l-a ales nimeni nu se propune: câmp gol și obligatoriu, sau prețul de vânzare din nomenclator,
+  dacă articolul îl are.” Rândul nou pornește cu prețul GOL și cu articolul NEALES (lista de articole are o opțiune goală
+  și pornește pe ea — nu pe primul articol). Ce vine din PROPUNERE (prețul de vânzare din nomenclator, UM-ul articolului)
+  e al denumirii pentru care s-a propus: când denumirea se schimbă, se golește. O denumire scrisă de mână, diferită de
+  articolul ales, DEZLEAGĂ rândul de articol (instanța: „Carte – Ghid contabil 2026” pleca la emitere legată de „Marfa A”
+  și s-ar fi descărcat din stocul ei). Un articol ales și un nume de articol nou scris în același timp se exclud. Un câmp
+  de preț golit pleacă drept LIPSĂ (`null`), niciodată ca 0 (`parseFloat(…) || 0` pe un preț e INTERZIS); serverul
+  refuză lipsa lângă câmp, iar 0 scris de om rămâne permis. Gard: verificator `PRET_SAU_ARTICOL_NEALES`.
 
 **Gardă mecanică** (verificator): din cele patru reguli, doar a patra e curat verificabilă mecanic FĂRĂ a aprinde
 ecrane în afara restructurării în curs.
@@ -691,6 +700,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.75 (06.10.2026)** — **cap.24: prețul și articolul pe care nu le-a ales omul (comanda Costin 06.10.2026, pct.1b/1c).** Rândul nou fără preț și fără articol; propunerea (preț din nomenclator, UM din articol) se golește când denumirea se schimbă; denumirea scrisă de mână dezleagă articolul; prețul golit = lipsă (`null`), refuzată de server lângă câmp. Aplicat: emiterea, factura recurentă, intrarea în stoc, rețeta (ingredientul nou și prețul), transferul și reclasificarea (opțiunea goală), nomenclatorul de produse. Gard: `PRET_SAU_ARTICOL_NEALES`.
 **v2.74 (06.10.2026)** — **Lotul 07.10 (retestul F5/F1): cap.2 ascuns = invizibil; cap.6 mesajul de după un buton în vedere și refuzul cu buton spre ecran.** `[hidden]{display:none!important}` global (înlocuiește excepțiile `.acces-overlay[hidden]`, `.pa-lista[hidden]`); `aduInVedere` + `SELECTOR_MESAJ` în `api.js`; `ecran_destinatie.js` (`ECRANE`, `butonSpreEcran`) + `_butonSpreEcran` în `api.js`. Clase noi: `.val-evidentiat` (elementul deschis dintr-o notificare), `.df-jurnal` / `.df-jurnal-cadru` (istoricul Date firmă încape în fereastră), `.em-ciorna` (anunțul facturii păstrate), `.ecran-destinatie`. Gărzi: `HIDDEN_CU_DISPLAY`, `MESAJ_FARA_ADUCERE_IN_VEDERE`, `REFUZ_ECRAN_FARA_BUTON`.
 
 **v2.73 (06.10.2026)** — **Coada de validare poartă și NOTE; contrast pe „De validat” și Activitate cabinet.** Comanda Costin (răspunsul la §6 din LOT_06_10, pct.1): ecranul „De validat” are secțiunea „Note de validat” (`.val-card`, `.cf-grup-titlu`, butoanele `.val-aproba` / `.val-respinge` — ZERO clase noi), „Vezi nota” deschide liniile (`.fd-tabel`); Registrul-jurnal arată nota respinsă cu `.caseta-atentie` (motivul) și butonul „Trimite din nou la validare”; statul de plată spune unde e nota. Activitate cabinet: coloana „DECLARAȚIE / NOTĂ”, eticheta vine de la server. **Contrast (axe):** `.val-aproba` #1d9e75 sub alb = 3,39:1 -> `var(--verde)`; `.ac-cap` #8a8f98 = 3,3:1 -> `var(--gri)`. Gard: `core/test_a11y_contrast_tokens.py::test_validare_si_activitate_contrast`.

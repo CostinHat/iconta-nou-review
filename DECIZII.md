@@ -17361,3 +17361,66 @@ Poți trece la următorul pas din listă.”*
    ghid publicat de alt rând) trece pe „asemănător”. Gard: `core/test_ghid_registru_sincron.py` (un rând nepublicat al cărui titlu
    e H1-ul sau titlul unei pagini proprii; un „candidat” al cărui titlu e deja live) — limita: vede potrivirea EXACTĂ de titlu; un
    ghid publicat sub un titlu reformulat față de registru și de H1 se vede numai prin GH-id, din pachetele din afara repo-ului.
+
+## 06.10.2026 — Ciorna facturii, a patra pierdere (retestul F1 ca Ana) + parcurgerea g11/g08/g09 (comanda Costin)
+
+**Comanda, verbatim (prima parte):** *„1. PRIORITAR — retest 06.10, Costin, F1 ca Ana: factura începută se pierde a PATRA oară.
+a. Drumul exact: Facturi → completat (Dante 14399840; Marfa A 3×120 21%; „Carte – Ghid contabil 2026” 2×45 11%; scadența 05.11.2026)
+→ ← din fereastra firmei → Date firmă → ← → Facturi = formular gol, fără anunț. Proba ta din lot a acoperit doar X. Decizie: ciorna
+se salvează la fiecare modificare și se restaurează la orice deschidere a formularului, pentru același utilizator și aceeași firmă,
+indiferent de drumul de ieșire. Ciorna unui utilizator sau a unei firme nu apare la alta. Proba de browser reface drumul de mai sus
+pas cu pas, plus toate celelalte ieșiri posibile din formular.
+b. Prețul unitar apare precompletat cu 100 la fiecare rând nou, inclusiv la denumire scrisă de mână. Un preț pe care nu l-a ales
+nimeni nu se propune: câmp gol și obligatoriu, sau prețul de vânzare din nomenclator, dacă articolul îl are.
+c. Rândul 2: lista de articole a rămas pe „Marfa A · stoc 106 buc”, deși denumirea scrisă e „Carte – Ghid contabil 2026”. Verifică
+dacă la emitere rândul s-ar descărca din stocul Marfa A. Dacă da, e defect.
+d. Scadența: la formularul gol apare „zz.ll.aaaa”. Verifică dacă propunerea se face și la deschiderea unui formular nou, nu doar
+după alegerea clientului.
+e. Poarta completă o singură dată, la publicare. ZIP la ~/ghid_incoming/iconta_ciorna_factura.zip (cod schimbat, probe înainte/după
+cu capturi, jurnale), cu calea exactă în raport.”* Partea a doua (parcurgerea) — mai jos, la P2.
+
+**(a) CAUZA, măsurată — nu era în ciornă.** Jurnalul nginx al filei lui Costin (IP-ul retestului) + jurnalul systemd: pagina
+încărcată la **19:12:40** cu `facturi_ecran.js?v=e5212140cc` → `emitere_ecran.js?v=e1df22f30d` = codul de DINAINTEA ciornei
+(commitul `1749dde8`; ciorna a intrat în `b8a5d0ce`); publicarea lotului 07.10 la **19:15:26** (repornire); autentificarea la
+**19:46:51**, fără reîncărcare; formularul completat între 19:47 și 19:57 (cererile `verifica-cui/14399840`, `produse/potriveste`
+×5, `firma-profil/date`), pe codul vechi. Anunțul „Versiune nouă” n-a apărut fiindcă `versiune.js` își lua referința la PRIMA
+verificare, iar prima verificare pornește la autentificare (`porneste`, din navigator): referința a fost amprenta NOUĂ (prima
+cerere `.publicat.json` a filei: 19:46:51, 200; toate următoarele 304). Pe codul curent, drumul exact și celelalte ieșiri păstrează
+ciorna (proba de browser, înainte și după). **Reparația:** amprenta de referință se citește la EVALUAREA modulului `versiune.js`
+(imediat după încărcarea grafului de module), nu la prima verificare. **Alternativa respinsă:** reîncărcarea automată la
+autentificare (când nu există formular început) — ar închide clasa mai tare, dar schimbă decizia R129 („nu forța reîncărcarea”);
+e decizie de produs, ridicată la §6 în raport. **Limita:** dacă citirea de la încărcare eșuează (rețea), referința rămâne prima
+citire reușită — declarată în cod și în GARZI.
+
+**(b) Prețul.** Rândul nou din codul curent pornește gol (proba: `""`); 100 venea din propunerea nomenclatorului pentru „Marfa A”
+(produsul F1: `pret_unitar 100`), iar pe un rând unde s-a ales întâi articolul și apoi s-a rescris denumirea, prețul propus
+RĂMÂNEA (proba „înainte”: `pret "100"` pe „Carte – Ghid contabil 2026”). Acum: ce vine din propunere (prețul de vânzare din
+nomenclator, UM-ul articolului) se golește când denumirea se schimbă; prețul golit rămâne gol (era `parseFloat(…) || 0`); serverul
+refuză linia fără preț lângă câmp. **Temei** pentru „obligatoriu” pe factură: CF art.319 alin.(20) lit.i — factura cuprinde în mod
+obligatoriu „…prețul unitar, exclusiv taxa…”. **Interpretare:** 0 SCRIS de om rămâne permis (o linie gratuită există); se refuză
+numai LIPSA. **Clasa** („o valoare pe care n-a ales-o nimeni ajunge în evidență”): emiterea (ecran + `LinieEmitereIn.pret_unitar = 0`),
+factura recurentă (rândul nou cu 0, golul → 0), intrarea în stoc (golul → 0; `stocuri_cv_api.intrare` creat articolul ÎNAINTE de
+refuz și ieșea `500` pe preț lipsă), nomenclatorul de produse și prețul rețetei (golul → null; acolo 0 = „fără preț”, citit ca atare
+de singurii consumatori — propunerea îl sare, food cost „–”; lista rețetelor afișa „0,00 lei”, acum „fără preț”). **Consecință
+vizibilă pentru integratori (API v1):** o linie fără `pret_unitar` se refuză acum cu câmpul numit, în loc să se emită la 0.
+
+**(c) Articolul.** Confirmat defect: pe codul curent, rândul cu „Marfa A” ales din listă și denumirea rescrisă „Carte – Ghid
+contabil 2026” pleca la emitere cu `articol_id` = Marfa A (cererea interceptată), iar `stocuri_cv_api.descarca_factura` descarcă
+după `factura_linii.articol_id` → s-ar fi descărcat Marfa A. Acum denumirea scrisă de mână, diferită de articolul ales, dezleagă
+rândul (lista revine la „fără articol”). **Clasa** („rândul legat de un articol pe care nu l-a ales omul”): ingredientul nou al
+rețetei (preselectat pe primul articol), transferul și reclasificarea (listă fără opțiune goală → primul articol), fișa de magazie
+(articol ales + nume de articol nou scris → numele ignorat tacit; acum se exclud).
+
+**(d) Scadența.** Pe codul curent, propunerea se face la DESCHIDEREA formularului nou (proba: `2026-11-05` = 06.10 + 30, cu
+temeiul Legea 72/2013 art.3 alin.(3) lit.a afișat). Costin vedea „zz.ll.aaaa” pentru că fila rula codul vechi (cauza de la (a)).
+
+**P2 — parcurgerea, comanda verbatim:** *„2. APOI parcurgerea. Planul e la arhitect (artifactul „Plan testare iConta”), nu pe server.
+Iată-l. Corespondența ta e aprobată, cu F3 adăugat la g08. Doar constatări, fără reparații. Un punct fără firmă potrivită pe server
+se trece „fără firmă de test”, nu se inventează firmă.”* (urmează cele trei grupuri, cu întrebările și punctele — copiate integral în
+raportul parcurgerii din ZIP). **Unde se parcurge:** pe baza de TEST (`iconta_test`, 8011, codul din ramura de lucru), cu rolurile
+din plan: asistentul de test (`asistent@prisma-cont.test`) = „Ana pregătește”, patronul cabinetului de test
+(`patron@prisma-cont.test`) = „cabinetul validează și depune”. **Firmele:** F1–F5 există numai în baza de PRODUCȚIE (cabinetul de
+test al lui Costin, `tenant_049`–`tenant_053`); pe producție nu se fac probe care scriu. Deci firmele se aleg DUPĂ TIP din baza de
+test (corespondența F → firmă de test e în raport); un tip fără firmă pe baza de test (TVA la încasare, aur de investiții) =
+„fără firmă de test”. **Alternativa respinsă:** parcurgerea pe F1–F5 din producție — ar scrie în baza de producție (coadă, note,
+depuneri cu index fals, notificări către conturile reale ale cabinetului de test).

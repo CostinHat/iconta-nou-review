@@ -45,6 +45,15 @@ async function citeste() {
   return a.commit || a.la || null;
 }
 
+// [comanda Costin 06.10.2026 pct.1a — „factura începută se pierde a PATRA oară”] AMPRENTA DE REFERINȚĂ = A CODULUI ÎNCĂRCAT.
+// Măsurat (nginx + jurnalul systemd): fila lui Costin a încărcat aplicația la 19:12:40, pe codul de dinainte de ciornă; publicarea
+// a venit la 19:15:26; autentificarea la 19:46:51. Referința se lua la PRIMA verificare, iar prima verificare pornește abia la
+// autentificare (`porneste`, din navigator) — deci referința era amprenta NOUĂ, codul din filă era VECHI, iar anunțul nu apărea
+// niciodată: retestul s-a făcut pe un cod care nu mai exista pe server. Acum amprenta se citește când se EVALUEAZĂ modulul,
+// adică imediat după ce s-a încărcat graful de module — ea descrie codul care rulează, oricât ar sta fila pe ecranul de intrare.
+// Gard: `core/test_versiune_referinta.py` + proba de browser `frontend_test/proba_versiune_la_incarcare.py`.
+const laIncarcare = citeste().catch(() => null);
+
 function nodAnunt() {
   const b = document.createElement("button");
   b.type = "button";
@@ -92,7 +101,12 @@ async function verifica() {
     return;
   }
   if (!acum) return;
-  if (incarcata === null) { incarcata = acum; return; }   // prima citire = ce ruleaza acum
+  if (incarcata === null) {
+    incarcata = await laIncarcare;           // amprenta citită la încărcarea codului (pct.1a), NU prima citire de după
+    // LIMITA, declarată în GARZI: dacă citirea de la încărcare a eșuat (rețea căzută în aceeași secundă în care s-au încărcat
+    // modulele), nu există altă referință decât prima citire reușită — și se folosește aceea.
+    if (incarcata === null) { incarcata = acum; return; }
+  }
   if (acum !== incarcata && acum !== gasita) {
     gasita = acum;
     aseaza();

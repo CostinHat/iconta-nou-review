@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=eff78f4bb3";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaFacturi } from "./facturi_ecran.js?v=e5212140cc";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=47b6988b99";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 

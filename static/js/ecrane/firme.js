@@ -5,14 +5,14 @@ import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULOR
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=4275ef442f";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=e5212140cc";
+import { randeazaFacturi } from "./facturi_ecran.js?v=47b6988b99";
 import { ecranRip } from "./rip_ecran.js?v=68e0430034";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=83853552ea";
 import { ecranEtransport } from "./etransport_ecran.js?v=49b829a378";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=3e15180a64";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=40206e2ad2";  // [ecran_mf_v1]
@@ -1834,10 +1834,16 @@ export async function sectiuneaCV(corp, t, zonaM) {
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la salvarea nivelului minim.", "eroare"); }
   });
+  // [comanda Costin 06.10.2026 pct.1c, clasa] fișa de magazie: un articol ALES și un nume de articol NOU scris în același timp — numele
+  // era ignorat tacit (mișcarea mergea pe articolul ales). Acum se exclud: scrierea numelui trece lista pe „articol nou”, alegerea
+  // unui articol golește numele.
+  zona.querySelector("#cv-den").addEventListener("input", () => { if (val("#cv-den").trim()) zona.querySelector("#cv-art").value = ""; });
+  zona.querySelector("#cv-art").addEventListener("change", () => { if (val("#cv-art")) zona.querySelector("#cv-den").value = ""; });
   zona.querySelector("#cv-intrare").addEventListener("click", async () => {
     try {
       const corpReq = { data: val("#cv-data"), cantitate: parseFloat(val("#cv-cant")) || 0,
-        pret_unitar: parseFloat(val("#cv-pret")) || 0, document: val("#cv-doc") || null,
+        // [comanda Costin 06.10.2026 pct.1b, clasa] golul pleacă drept lipsă (serverul îl refuză), nu ca preț 0 pe care nu l-a ales nimeni
+        pret_unitar: val("#cv-pret") === "" ? null : parseFloat(val("#cv-pret")), document: val("#cv-doc") || null,
         locatie: val("#cv-loc") || null };
       if (val("#cv-art")) corpReq.articol_id = parseInt(val("#cv-art"));
       else corpReq.denumire = val("#cv-den").trim();
@@ -1872,12 +1878,12 @@ export async function sectiuneaCV(corp, t, zonaM) {
     // model (regula 1); buton de stergere pe fiecare rand (regula 3).
     rtIng.innerHTML = rtLinii.map((l, i) => `
       <div class="em-linie" data-idx="${i}">
-        <select class="camp-input rt-art" id="rt-l${i}-articol" data-i="${i}" aria-label="Articol ingredient">${arts.map((a) =>
+        <select class="camp-input rt-art" id="rt-l${i}-articol" data-i="${i}" aria-label="Articol ingredient"><option value=""${l.articol_id ? "" : " selected"}>— alege articolul —</option>${arts.map((a) =>
           `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)}${a.cmp ? " · CMP " + pretUnitar(a.cmp) + " lei" : ""}</option>`).join("")}</select>
         <input class="camp-input rt-cant" id="rt-l${i}-cantitate" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./porție" aria-label="Cantitate pe porție" style="width:120px">
         <button type="button" class="buton-sters rt-scoate" data-i="${i}" title="Șterge">−</button>
       </div>`).join("");
-    rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
+    rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = e.target.value ? parseInt(e.target.value) : null; }));
     rtIng.querySelectorAll(".rt-cant").forEach((s) => s.addEventListener("input", (e) => { rtLinii[e.target.dataset.i].cantitate = parseFloat(e.target.value); }));
     rtIng.querySelectorAll(".rt-scoate").forEach((b) => b.addEventListener("click", (e) => { rtLinii.splice(e.target.dataset.i, 1); rtDeseneazaIng(); }));
   };
@@ -1890,7 +1896,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           const procent = fc.food_cost_pct == null ? "\u2013" : pct(fc.food_cost_pct);
           return `<div class="pf-frand">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
+              <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${Number(r.pret_fara_tva) > 0 ? bani(r.pret_fara_tva) + " lei" : "fără preț"}</div>
               <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${procent} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${esc(cantitate(l.cantitate, l.um))}`).join(", ")}</div>
             </div>
             <input class="camp-input rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
@@ -1912,7 +1918,8 @@ export async function sectiuneaCV(corp, t, zonaM) {
       try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { arataMesaj(zonaM, er.mesaj || "Nu am putut \u0219terge re\u021beta.", "eroare"); }
     }));
   };
-  zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
+  // [comanda Costin 06.10.2026 pct.1c, clasa] ingredientul nou NU vine legat de primul articol din listă (unul pe care nu l-a ales nimeni)
+  zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: null, cantitate: "" }); rtDeseneazaIng(); });
   zona.querySelector("#rt-salveaza").addEventListener("click", async () => {
     curataEroriCamp(zona);
     const den = zona.querySelector("#rt-den").value.trim();
@@ -1920,7 +1927,8 @@ export async function sectiuneaCV(corp, t, zonaM) {
     // raporteaza langa campul lipsa (rt-l{i}-..), nu se arunca tacit un ingredient inceput.
     const linii = rtLinii.map((l) => ({ articol_id: l.articol_id, cantitate: l.cantitate }));
     try {
-      await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
+      const pretRt = zona.querySelector("#rt-pret").value;   // [pct.1b, clasa] gol = „fără preț” (food cost „–”), nu 0 ales
+      await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: pretRt === "" ? null : parseFloat(pretRt), linii });
       zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
     } catch (er) {
       curataEroriCamp(zona);
@@ -1965,7 +1973,9 @@ export async function sectiuneaCV(corp, t, zonaM) {
     });
   });
   // [F138 Tier 1] Locatii descriptive + transfer (CMP global) + reclasificare tip produs
-  const optArts = (arts || []).map((a) => `<option value="${a.id}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("");
+  // [comanda Costin 06.10.2026 pct.1c, clasa] transferul și reclasificarea porneau pe PRIMUL articol (fără opțiune goală): un articol pe
+  // care nu l-a ales nimeni. Acum lista începe gol, iar butonul refuză până se alege.
+  const optArts = `<option value="">— alege articolul —</option>` + (arts || []).map((a) => `<option value="${a.id}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("");
   const locZona = zona.querySelector("#cv-loc-zona");
   zona.querySelector("#cv-loc-vezi").addEventListener("click", async () => {
     try {
@@ -1995,6 +2005,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       </div>`;
     locZona.querySelector("#tr-ok").addEventListener("click", async () => {
       const g = (id) => locZona.querySelector(id).value;
+      if (!g("#tr-art")) { arataMesaj(zonaM, "Alege articolul transferat.", "avert"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/transfer`, {
           articol_id: parseInt(g("#tr-art")), din_locatie: g("#tr-din") || null,
@@ -2019,6 +2030,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       </div>`;
     locZona.querySelector("#rc-ok").addEventListener("click", async () => {
       const g = (id) => locZona.querySelector(id).value;
+      if (!g("#rc-art")) { arataMesaj(zonaM, "Alege articolul reclasificat.", "avert"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/reclasificare`, {
           articol_id: parseInt(g("#rc-art")), cont_stoc_nou: g("#rc-cont").trim(),

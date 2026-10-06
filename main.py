@@ -1196,7 +1196,7 @@ class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
 class ProdusCreeazaIn(BaseModel):
     denumire: str
     um: str = "buc"
-    pret_unitar: float = 0
+    pret_unitar: Optional[float] = None  # [06.10.2026 pct.1b] lipsa = „fără preț” (nomenclatorul îl ține 0, iar propunerea îl sare)
     cota_tva: Optional[float] = None  # daca lipseste -> AI potriveste
     categorie: Optional[str] = None
     confirmat: bool = False
@@ -1213,7 +1213,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     descriere: str
     um: str = "buc"
     cantitate: float = 1
-    pret_unitar: float = 0
+    pret_unitar: Optional[float] = None  # [comanda Costin 06.10.2026 pct.1b] fără preț implicit: lipsa se refuză lângă câmp (linii_campuri_lipsa)
     cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
     cota_propusa: Optional[float] = None  # [05.10.2026 pct.3] cota propusă automat; diferită de cota_tva -> jurnal „propus → ales”
     articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu

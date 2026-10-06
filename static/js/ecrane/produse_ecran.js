@@ -149,7 +149,8 @@ function formularAdauga(corp, tenantId, reincarca) {
     const payload = {
       denumire,
       um: zona.querySelector("#pr-um").value.trim() || "buc",
-      pret_unitar: parseFloat(zona.querySelector("#pr-pret").value) || 0,
+      // [comanda Costin 06.10.2026 pct.1b, clasa] golul pleacă drept lipsă (nomenclatorul îl ține ca „fără preț”), nu ca 0 ales
+      pret_unitar: zona.querySelector("#pr-pret").value === "" ? null : parseFloat(zona.querySelector("#pr-pret").value),
     };
     const cotaMan = selCota.value;
     if (cotaMan !== "") payload.cota_tva = parseFloat(cotaMan);

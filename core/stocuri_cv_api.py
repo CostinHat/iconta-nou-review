@@ -67,6 +67,15 @@ def fisa(conn, schema, articol_id):
 def intrare(conn, schema, corp, factura_id=None):
     """corp: {articol_id | denumire+um+cont_stoc+cont_cheltuiala, data, cantitate,
     pret_unitar, document?}. Nota de intrare vine din NIR/factură — aici doar mișcarea."""
+    # [comanda Costin 06.10.2026 pct.1b, clasa] „Un preț pe care nu l-a ales nimeni” nu intră în fișa de magazie: ecranul trimitea
+    # golul ca 0 (`parseFloat(...) || 0`), iar intrarea la preț 0 strică CMP-ul tăcut. Lipsa se refuză, ÎNAINTE de a crea
+    # articolul nou (înainte, refuzul venea după INSERT); `Decimal(str(None))` ieșea `500` (InvalidOperation nu e ValueError).
+    if corp.get("pret_unitar") is None or str(corp.get("pret_unitar")).strip() == "":
+        return {"eroare": "Prețul unitar al intrării lipsește. Scrie prețul de achiziție; nu se presupune niciunul."}
+    cant = Decimal(str(corp["cantitate"]))
+    pret = Decimal(str(corp["pret_unitar"]))
+    if cant <= 0 or pret < 0:
+        return {"eroare": "cantitate/preț invalide"}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         aid = corp.get("articol_id")
         if not aid:
@@ -75,10 +84,6 @@ def intrare(conn, schema, corp, factura_id=None):
                         (corp["denumire"], corp.get("um", "buc"),
                          (str(corp.get("cont_stoc") or "").strip() or "371"), (str(corp.get("cont_cheltuiala") or "").strip() or "607")))
             aid = cur.fetchone()["id"]
-        cant = Decimal(str(corp["cantitate"]))
-        pret = Decimal(str(corp["pret_unitar"]))
-        if cant <= 0 or pret < 0:
-            return {"eroare": "cantitate/preț invalide"}
         val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie, factura_id)

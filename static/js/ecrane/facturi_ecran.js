@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate } from "../api.js?v=eff78f4bb3";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=05dcbf9a2a";
+import { randeazaEmitere } from "./emitere_ecran.js?v=5588924d9a";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -717,7 +717,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=ebd44ddafe");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=2889d754ad");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -1057,7 +1057,8 @@ export function formSablon(corp, nav, tenantId, opt) {
   const zonaLinii = corp.querySelector("#fr-linii");
   const linii = [];
   const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
-  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null });
+  // [comanda Costin 06.10.2026 pct.1b, clasa] rândul nou NU poartă un preț (era 0): „un preț pe care nu l-a ales nimeni nu se propune”
+  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: "", cota_tva: null });
 
   // randeaza O linie DIN MODEL, id-uri pozitionale fr-l{i}-* (cap.24: id derivat din pozitie, ca backendul sa
   // lege eroarea de camp). Buton de stergere pe fiecare rand (cap.24 regula 3).
@@ -1105,7 +1106,7 @@ export function formSablon(corp, nav, tenantId, opt) {
       }, 400);
     });
     cant.addEventListener("input", () => { l.cantitate = Number(cant.value) || 0; });
-    pret.addEventListener("input", () => { l.pret_unitar = Number(pret.value) || 0; });
+    pret.addEventListener("input", () => { const v = parseFloat(pret.value); l.pret_unitar = Number.isFinite(v) ? v : ""; });   // [pct.1b] golul rămâne gol
     del.addEventListener("click", () => { const p = linii.indexOf(l); if (p >= 0) linii.splice(p, 1); deseneazaLinii(); });
   }
 
@@ -1142,7 +1143,8 @@ export function formSablon(corp, nav, tenantId, opt) {
       tert_nume: corp.querySelector("#fr-nume").value.trim(),
       zi_emitere: Number(corp.querySelector("#fr-zi").value) || 1,
       moneda: corp.querySelector("#fr-moneda").value,
-      linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate, pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })),
+      linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate,
+        pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva })),   // [pct.1b] gol = lipsă, refuzat lângă câmp
     };
     try {
       await api.post(`/tenants/${tenantId}/facturi-recurente`, corpCerere);

@@ -140,12 +140,29 @@ def test_noop_lista_nefiltrata_si_hash(rt_env):
     pg = rt_env["make_page"]()
     pg.fill("#rt-den", "Meniul zilei")
     pg.click("#rt-plus"); pg.click("#rt-plus")
+    # [comanda Costin 06.10.2026 pct.1c] ingredientul nou nu mai vine legat de primul articol — omul îl ALEGE (DS cap.24 v2.75)
+    pg.select_option("#rt-l0-articol", "1"); pg.select_option("#rt-l1-articol", "1")
     pg.fill("#rt-l0-cantitate", "2"); pg.fill("#rt-l1-cantitate", "3")
     pg.click("#rt-salveaza"); pg.wait_for_timeout(300)
     payload = rt_env["posted"][-1]
     assert len(payload["linii"]) == 2, "lista trimisa nu are 2 ingrediente (filtrare?): %r" % payload["linii"]
     assert payload["linii"] == CANONICAL_LINII, "liniile POST difera de canonical: %r" % payload["linii"]
     assert _linii_hash(payload["linii"]) == _linii_hash(CANONICAL_LINII), "hash reteta difera (no-op spart)"
+    pg.close()
+
+
+def test_ingredient_nou_porneste_fara_articol_si_se_refuza_neales(rt_env):
+    """[comanda Costin 06.10.2026 pct.1c, clasa] Ingredientul nou NU e legat de primul articol din listă (unul pe care nu l-a
+    ales nimeni): lista pornește pe „— alege articolul —”, iar salvarea fără alegere se refuză lângă câmpul articolului.
+    MUTAȚIE: `articol_id: arts[0] && arts[0].id` repus în `#rt-plus` -> pică."""
+    pg = rt_env["make_page"]()
+    pg.fill("#rt-den", "Meniul zilei")
+    pg.click("#rt-plus")
+    assert pg.input_value("#rt-l0-articol") == "", "ingredientul nou vine cu un articol ales de aplicație"
+    pg.fill("#rt-l0-cantitate", "2")
+    pg.click("#rt-salveaza"); pg.wait_for_timeout(300)
+    assert rt_env["posted"][-1]["linii"] == [{"articol_id": None, "cantitate": 2}]
+    assert pg.locator('.msg-eroare[data-camp="rt-l0-articol"]').count() == 1, "lipsa articolului nu e refuzată lângă câmp"
     pg.close()
 
 

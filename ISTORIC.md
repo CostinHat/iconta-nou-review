@@ -1648,3 +1648,20 @@ singură poartă completă. Decizia, verbatim, și consecințele: DECIZII 06.10.
   peste stoc) și o gardă nouă oarbă (prinsă de mutație), reparate.
 - **P3 — titlurile (`f6807786`).** 62 de titluri aprobate fără pagină publicată (exact); registrul de titluri adus la zi (81 de
   rânduri publicate, rămase „candidat”/„asemănător”, plus un titlu dublat) și păzit.
+
+## 06.10.2026 (seara) — Ciorna facturii, a patra pierdere: fila veche; prețul și articolul pe care nu le-a ales omul (comanda Costin)
+
+Decizia și temeiul: DECIZII 06.10.2026 („Ciorna facturii, a patra pierdere”). Gărzile: GARZI 06.10.2026 (aceeași intrare).
+
+- **Cauza pierderii a patra** n-a fost ciorna: fila lui Costin rula codul de dinainte de ea (încărcată 19:12:40, publicarea 19:15:26,
+  autentificarea 19:46:51 fără reîncărcare), iar anunțul „Versiune nouă” nu apărea, fiindcă își lua referința la autentificare.
+  Acum referința e amprenta codului încărcat; proba pe fila veche: înainte fără anunț, după „Versiune nouă · reîncarcă”.
+- **Ciorna, pe drumul exact** (Facturi → completat → ← → ← → Date firmă → ← → Facturi → Emite) și pe toate celelalte ieșiri (X,
+  reîncărcare, firul de sus, tab nou, „Schimbă seria”, emitere refuzată): păstrată, cu anunț; altă firmă / alt utilizator: formular
+  gol; „Renunță”: ștearsă. Pe codul vechi: pierdută pe drumul exact.
+- **Prețul** pe care nu l-a ales nimeni nu mai stă pe rând: propunerea nomenclatorului se golește când denumirea se schimbă, golul
+  rămâne gol, serverul refuză linia fără preț lângă câmp (CF art.319 alin.(20) lit.i). La fel: factura recurentă, intrarea în stoc
+  (care, în plus, crea articolul înainte de refuz și ieșea 500), nomenclatorul și rețeta.
+- **Articolul**: rândul „Carte – Ghid contabil 2026” pleca legat de „Marfa A” și s-ar fi descărcat din stocul ei — acum denumirea
+  scrisă de mână dezleagă articolul. La fel: ingredientul nou al rețetei, transferul, reclasificarea, fișa de magazie.
+- **Scadența** se propune la deschiderea formularului nou (06.10 → 05.11.2026); „zz.ll.aaaa” era tot codul vechi din filă.

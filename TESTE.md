@@ -45,6 +45,38 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **CIORNA FACTURII (a patra pierdere) + PARCURGEREA g11/g08/g09 (comanda Costin 06.10.2026, seara)** — partea 1 = reparație
+  (retestul F1 ca Ana), partea 2 = doar constatări. Commit pe partea 1; poarta completă o singură dată, la publicare; ZIP-uri
+  `~/ghid_incoming/iconta_ciorna_factura.zip` și `~/ghid_incoming/iconta_parcurgere_g08_g09_g11.zip`.
+  - ultim: cauza pierderii a patra MĂSURATĂ (nginx + jurnal systemd): fila lui Costin a încărcat aplicația la 19:12:40 pe codul VECHI
+    (`emitere_ecran.js?v=e1df22f30d`, fără ciornă), publicarea a venit la 19:15:26, autentificarea la 19:46:51; urmărirea versiunii
+    (`versiune.js`) își ia referința la PRIMA citire, care pornește abia la autentificare -> referința = amprenta nouă -> anunțul
+    „Versiune nouă” nu apare niciodată. Pe HEAD, în probă, ciorna trece drumul exact și toate ieșirile (`frontend_test/proba_ciorna_factura.py`).
+  - urmator: pas 6 (commit P1 pe ramura `lucru/ciorna-parcurgere`), apoi pas 7 (P2). STARE = IN LUCRU
+  - livrat P1 (pașii 1–5, pe disc): `versiune.js` referința la încărcare; emiterea (dezlegarea articolului, propunerea golită,
+    prețul gol = lipsă, `LinieEmitereIn` fără 0, `linii_campuri_lipsa` refuză prețul lipsă); clasa în recurentă / stoc / rețetă /
+    produse / transfer / reclasificare / fișa de magazie; gărzi `core/test_pret_ales.py` (5), `core/test_versiune_referinta.py` (2),
+    `core/test_retete_randuri_dinamice.py` (+1, și testul vechi care fixa articolul neales, corectat), verificator
+    `PRET_SAU_ARTICOL_NEALES` (DS cap.24 v2.75); 10 mutații roșii; probele de browser înainte/după; cele trei unelte vizuale.
+  - pasi:
+    1. `static/js/versiune.js` — amprenta de referință se citește LA ÎNCĂRCAREA modulului (codul care rulează), nu la prima
+       verificare de după autentificare; probă de browser: pagina încărcată, publicare, autentificare fără reîncărcare -> anunțul apare.
+    2. `static/js/ecrane/emitere_ecran.js` — (c) denumirea rescrisă de mână, diferită de articolul ales, dezleagă linia de articol
+       (lista revine la „fără articol”); (b) prețul și UM-ul venite din propunere (articol / nomenclator) se golesc când propunerea
+       nu mai e a liniei; prețul golit rămâne gol (nu 0). `main.py LinieEmitereIn.pret_unitar` fără 0 implicit +
+       `core/facturi_api.linii_campuri_lipsa` refuză prețul lipsă lângă câmp (0 scris de om rămâne permis).
+    3. clasa (b) în restul aplicației: factura recurentă (`facturi_ecran.js` rândul nou cu 0, golul -> 0), intrarea în stoc
+       (`firme.js #cv-pret` golul -> 0; `core/stocuri_cv_api.intrare` refuză prețul lipsă), rețeta (`#rt-pret` golul -> 0;
+       `core/retete_api.salveaza` refuză prețul lipsă), produsul (`produse_ecran.js #pr-pret` golul -> null; nomenclatorul îl
+       citește ca „fără preț”).
+    4. clasa (c) în restul aplicației: rețeta (ingredientul nou preselectat pe primul articol), transferul și reclasificarea
+       (`#tr-art`, `#rc-art` fără opțiune goală), fișa de magazie (`#cv-art` ales + `#cv-den` scris -> numele ignorat tacit).
+    5. gărzi: test Python (model + validare), regulă DS nouă + verificator (preț/articol pe care nu l-a ales omul), test pe
+       `versiune.js`; mutații; proba de browser înainte/după (drumul exact + toate ieșirile + b/c/d + fila veche); cele trei unelte vizuale.
+    6. commit P1; poarta completă la publicare; ZIP `iconta_ciorna_factura.zip`.
+    7. P2 — parcurgerea g11 (39 de puncte), g08 (21), g09 (7) ca un contabil, pe baza de test, roluri din plan (Ana pregătește,
+       cabinetul validează/depune); firmele după tip, din baza de test (F1–F5 există doar pe producție — se spune în raport);
+       un punct fără firmă potrivită = „fără firmă de test”. Doar constatări. ZIP `iconta_parcurgere_g08_g09_g11.zip`.
 - fir: **LOTUL 07.10 — D112 ziua de diminuare (D1) + retestul Costin 06.10 (F5 salarii nov. 2026, F1 factură) + titlurile aprobate
   nepublicate (comanda Costin 06.10.2026)** — verbatim în DECIZII 06.10.2026 („Lotul 07.10”). Commit propriu pe fiecare parte, fără
   poartă completă între ele (gărzile țintite + cele care numără/derivă din cod); o singură poartă completă la publicare;

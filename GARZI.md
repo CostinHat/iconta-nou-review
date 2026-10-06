@@ -10375,3 +10375,21 @@ scadența propusă). Deciziile: DECIZII 06.10.2026 („Lotul 07.10”, P2).
 | ascuns = invizibil | verificator `HIDDEN_CU_DISPLAY` (DS cap.2 v2.74) | un formular `hidden` care se vede | `display:block` repus pe `#sn-zona` / regula globală scoasă -> TOTAL > 0 | vede `style` inline și regula globală; un `display` pus din JS pe un element `hidden` nu se vede de aici |
 | mesajul în vedere | verificator `MESAJ_FARA_ADUCERE_IN_VEDERE` (DS cap.6 v2.74) | un refuz / o întrebare sub zona vizibilă | `aduInVedere` scos din `arataMesaj` / `.caseta-poarta` scos din selector -> TOTAL > 0 | o casetă cu o clasă NOUĂ de după-buton trebuie adăugată în `SELECTOR_MESAJ` (garda vede clasele cunoscute) |
 | refuzul cu buton spre ecran | verificator `REFUZ_ECRAN_FARA_BUTON` (DS cap.6 v2.74) | o țintă `ecran` fără ecran-destinație; un drum de refuz fără buton | `date_firma` scos din `ECRANE` / un apel `_butonSpreEcran` scos -> TOTAL > 0 (prima formă număra și definiția și rămânea verde — reparată după mutație) | vede țintele scrise literal (`ecran="…"`); o țintă calculată nu se vede |
+
+## 06.10.2026 — Ciorna facturii, a patra pierdere: fila veche fără anunț; prețul și articolul pe care nu le-a ales omul
+
+Categoriile **11. Interfață** (ce rulează în fila contabilului; ce stă pe un rând de factură) și **3. Calcul fiscal** (o valoare
+pe care n-a scris-o nimeni ajunge pe factură / în fișa de magazie). Decizia: DECIZII 06.10.2026 („Ciorna facturii, a patra
+pierdere”). Cauza pierderii a patra, MĂSURATĂ (nginx + systemd): fila a încărcat aplicația la 19:12:40 pe codul fără ciornă,
+publicarea la 19:15:26, autentificarea la 19:46:51 — iar `versiune.js` își lua referința la prima verificare, care pornește la
+autentificare, deci anunțul „Versiune nouă” nu apărea niciodată.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| referința = codul încărcat | `core/test_versiune_referinta.py` (2) | o filă încărcată înainte de o publicare care nu află de ea | `laIncarcare` mutat în `porneste` / `incarcata = acum` -> roșu | dacă citirea de la încărcare eșuează (rețea), referința rămâne prima citire reușită |
+| linia fără preț refuzată | `core/test_pret_ales.py::test_linia_fara_pret_se_refuza_langa_camp` (+ recurentă) | factura cu un preț pe care nu l-a scris nimeni (lipsa -> 0) | verificarea scoasă din `linii_campuri_lipsa` -> roșu | 0 scris rămâne permis; un 0 pus implicit de un integrator API nu se deosebește de unul scris |
+| modelele fără preț implicit | `::test_modelele_nu_pun_un_pret_implicit` | `pret_unitar: float = 0` în `LinieEmitereIn` / `ProdusCreeazaIn` | `= 0` repus -> roșu | AST pe două clase numite |
+| intrarea în stoc fără preț | `::test_intrarea_in_stoc_fara_pret_se_refuza_inainte_de_a_crea_articolul` | intrare la preț 0 nescris (CMP stricat); articol nou creat înaintea refuzului; `500` pe `Decimal(None)` | verificarea scoasă -> roșu | — |
+| ingredientul nou neales | `core/test_retete_randuri_dinamice.py::test_ingredient_nou_porneste_fara_articol_si_se_refuza_neales` | rețetă salvată cu primul articol din listă, neales | `articol_id: arts[0]` repus -> roșu | — |
+| preț / articol neales în ecrane | verificator `PRET_SAU_ARTICOL_NEALES` (DS cap.24 v2.75) | `parseFloat(…value) \|\| 0` pe un preț; rând nou cu preț 0; rând legat de `arts[0]`; listă de articole fără opțiunea goală; emiterea fără dezlegarea articolului la denumirea rescrisă | `pret_unitar: 0` în rândul recurent / opțiunea goală scoasă din `optArts` / dezlegarea scoasă / `\|\| 0` pe `#cv-pret` -> TOTAL > 0 | vede citirea prețului pe O linie; un preț citit într-o variabilă și apărat cu `\|\| 0` pe altă linie nu se vede |
+| proba de browser | `frontend_test/proba_ciorna_factura.py`, `frontend_test/proba_versiune_la_incarcare.py` (8011, înainte/după) | — (probă, nu poartă) | — | rulează pe baza de test, cu server pornit; nu e în pytest |

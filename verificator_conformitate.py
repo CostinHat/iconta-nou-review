@@ -1433,6 +1433,34 @@ try:
 except Exception as _e_re:
     rap["refuz_ecran_fara_buton"].append(("verificator", 0, "EROARE", "gard refuz ecran: " + str(_e_re)))
 
+# --- PRET_SAU_ARTICOL_NEALES (DS cap.24 v2.75, comanda Costin 06.10.2026 pct.1b/1c): „un preț pe care nu l-a ales nimeni nu
+#     se propune”. (1) un preț citit dintr-un câmp nu se transformă în 0 când câmpul e gol (`parseFloat(…value) || 0` pe o linie
+#     cu `pret`); (2) rândul nou nu poartă preț (`linieNoua = () => ({ … pret_unitar: 0 …})`); (3) rândul nou nu se leagă de
+#     primul articol (`articol_id: arts[0]`); (4) orice listă de articole (`<option value="${a.id}"`) are opțiunea goală
+#     înaintea ei; (5) emiterea: denumirea scrisă de mână dezleagă articolul și golește propunerea. Mutația care o probează:
+#     `pret_unitar: 0` repus în rândul nou al facturii recurente SAU opțiunea goală scoasă din `optArts` SAU dezlegarea scoasă
+#     din `emitere_ecran.js` -> TOTAL > 0. LIMITA: (1) vede citirea pe O linie (`.value` / `val(` + `|| 0` + `pret`); un preț
+#     citit într-o variabilă pe o linie și apărat cu `|| 0` pe alta nu se vede.
+rap["pret_sau_articol_neales"] = []
+try:
+    for _nume, _t in fisiere.items():
+        for _i, _ln in enumerate(_t.split("\n"), 1):
+            if (re.search(r"pret", _ln, re.I) and re.search(r"(?:parseFloat|Number)\(", _ln) and re.search(r"\|\|\s*0\b", _ln)
+                    and re.search(r"\.value\b|\bval\(", _ln)):
+                rap["pret_sau_articol_neales"].append((_nume, _i, "|| 0", "prețul gol devine 0 (DS cap.24 v2.75)"))
+        for _m in re.finditer(r"linieNoua\s*=\s*\(\)\s*=>\s*\(\{[^}]*\bpret_unitar:\s*0\b", _t):
+            rap["pret_sau_articol_neales"].append((_nume, _t[:_m.start()].count("\n") + 1, "pret_unitar: 0", "rândul nou poartă un preț (DS cap.24 v2.75)"))
+        for _m in re.finditer(r"articol_id:\s*arts\[0\]", _t):
+            rap["pret_sau_articol_neales"].append((_nume, _t[:_m.start()].count("\n") + 1, "arts[0]", "rândul nou legat de primul articol (DS cap.24 v2.75)"))
+        for _m in re.finditer(r'<option value="\$\{a\.id\}"', _t):
+            if '<option value=""' not in _t[max(0, _m.start() - 300):_m.start()]:
+                rap["pret_sau_articol_neales"].append((_nume, _t[:_m.start()].count("\n") + 1, "option", "lista de articole fără opțiunea goală (DS cap.24 v2.75)"))
+    _em = fisiere.get("emitere_ecran.js", "")
+    if "golestePropunerea(l, pret, um);" not in _em or not re.search(r"dataset\.den[^\n]*l\.articol_id = null", _em):
+        rap["pret_sau_articol_neales"].append(("emitere_ecran.js", 0, "denumire", "denumirea scrisă de mână nu dezleagă articolul / nu golește propunerea (DS cap.24 v2.75)"))
+except Exception as _e_pa:
+    rap["pret_sau_articol_neales"].append(("verificator", 0, "EROARE", "gard pret/articol neales: " + str(_e_pa)))
+
 # --- ACTIUNE_REFUZATA_NEMARCATA (DS cap.9 v2.64, decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se
 #     afișează”). Un apel JS la o rută restrânsă cere elementul marcat `data-actiune` (poarta din `drepturi.js` îl ascunde
 #     celui refuzat), iar unde handlerul se poate lega de element, marcajul stă pe ACEL element. Același instrument ca

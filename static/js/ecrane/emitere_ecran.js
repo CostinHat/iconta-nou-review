@@ -366,6 +366,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     el.className = "em-l-cota" + cls;
   }
 
+  // [pct.1b] ce a venit din PROPUNERE (prețul de vânzare din nomenclator, UM-ul articolului) nu e ales de om: când denumirea se
+  // schimbă, propunerea nu mai e a liniei și se golește. Ce a scris omul (`pretPropus` / `umPropus` false) rămâne neatins.
+  function golestePropunerea(l, pret, um) {
+    if (l.pretPropus) { l.pret_unitar = ""; l.pretPropus = false; if (pret) pret.value = ""; }
+    if (l.umPropus) { l.um = "buc"; l.umScris = false; l.umPropus = false; if (um) um.value = "buc"; }
+  }
+
   // inputurile scriu in MODEL (nu re-randeaza -> fara pierdere de focus la tastare). Fetch-ul cotei capteaza
   // OBIECTUL l (nu indexul), deci scrie corect chiar daca intre timp un splice a reindexat lista.
   function legaLinie(i) {
@@ -381,6 +388,16 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     let timer = null;
     den.addEventListener("input", () => {
       l.descriere = den.value.trim();
+      // [comanda Costin 06.10.2026 pct.1c] denumirea scrisă de mână, diferită de articolul ales, DEZLEAGĂ linia de articol: altfel
+      // „Carte – Ghid contabil 2026” pleca la emitere cu articolul „Marfa A” și se descărca din stocul lui (măsurat: articol_id
+      // păstrat în cererea de emitere). Alegerea din listă scrie ea însăși denumirea articolului — aceea nu dezleagă.
+      if (l.articol_id && selArt) {
+        const o = selArt.selectedOptions[0];
+        if (!o || (o.dataset.den || "").trim() !== l.descriere) { l.articol_id = null; selArt.value = ""; }
+      }
+      // [pct.1b] „Un preț pe care nu l-a ales nimeni nu se propune.” Prețul și UM-ul venite din propunere (articolul ales /
+      // nomenclatorul) erau ale denumirii vechi: se golesc; propunerea denumirii noi (dacă are una) le pune la loc.
+      golestePropunerea(l, pret, um);
       aratăFaraArticol();
       l.cota_tva = null;  // reset -> se repotriveste
       clearTimeout(timer);
@@ -396,8 +413,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
             l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota);
             // [05.10.2026, comanda Costin pct.9] din nomenclator: prețul și UM, numai unde omul n-a scris deja altceva
             const p = linii.indexOf(l);
-            if (r.um && !l.umScris) { l.um = r.um; const e = zonaLinii.querySelector("#em-l" + p + "-um"); if (e) e.value = r.um; }
-            if (r.pret_unitar && !l.pret_unitar) { l.pret_unitar = r.pret_unitar; const e = zonaLinii.querySelector("#em-l" + p + "-pret_unitar"); if (e) e.value = r.pret_unitar; }
+            if (r.um && !l.umScris) { l.um = r.um; l.umPropus = true; const e = zonaLinii.querySelector("#em-l" + p + "-um"); if (e) e.value = r.um; }
+            if (r.pret_unitar && (l.pret_unitar === "" || l.pret_unitar == null)) {   // prețul de vânzare din nomenclator: propunere
+              l.pret_unitar = r.pret_unitar; l.pretPropus = true;
+              const e = zonaLinii.querySelector("#em-l" + p + "-pret_unitar"); if (e) e.value = r.pret_unitar;
+            }
           }
         } catch {}
         recalc();
@@ -410,12 +430,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       recalc();
     });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
-    um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; });
-    pret.addEventListener("input", () => { l.pret_unitar = parseFloat(pret.value) || 0; recalc(); });
+    um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; l.umPropus = false; });
+    // [pct.1b] prețul golit rămâne GOL (era `|| 0`: un câmp șters pleca drept preț 0, pe care nu-l scrisese nimeni)
+    pret.addEventListener("input", () => { const v = parseFloat(pret.value); l.pret_unitar = Number.isFinite(v) ? v : ""; l.pretPropus = false; recalc(); });
     if (selArt) selArt.addEventListener("change", () => {  // [punte_stoc_v1] F172
       l.articol_id = selArt.value ? parseInt(selArt.value, 10) : null;
       const o = selArt.selectedOptions[0];
-      if (l.articol_id && o && o.dataset.um) { l.um = o.dataset.um; l.umScris = true; um.value = o.dataset.um; }   // UM-ul articolului din stoc
+      if (l.articol_id && o && o.dataset.um) { l.um = o.dataset.um; l.umScris = true; l.umPropus = true; um.value = o.dataset.um; }   // UM-ul articolului din stoc
       aratăFaraArticol();
       if (l.articol_id && o && o.dataset.den) {
         l.descriere = o.dataset.den;
@@ -615,7 +636,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const payload = {
       linii: linii.map((l) => ({
         descriere: l.descriere, cantitate: l.cantitate, um: l.um || "buc",
-        pret_unitar: l.pret_unitar, cota_tva: l.cota_tva,
+        pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva,   // [pct.1b] gol = lipsă
         cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172
       })),

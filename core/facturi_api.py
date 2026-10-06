@@ -85,7 +85,7 @@ def _numar_ro(v):
 
 
 def linii_campuri_lipsa(linii, prefix="em-l"):
-    """Campuri obligatorii per linie -> [{camp, eticheta, mesaj}]. Obligatorii: denumire (nevida) +
+    """Campuri obligatorii per linie -> [{camp, eticheta, mesaj}]. Obligatorii: denumire (nevida) + pret unitar (06.10.2026) +
     cantitate > 0. id camp = {prefix}{i}-{camp}, i = pozitia in lista. prefix parametrizat ca acelasi
     contract sa serveasca emitere (em-l) + facturi-recurente (fr-l) FARA a duplica criteriile (o
     singura sursa de adevar, cap.24 regula 4).
@@ -128,6 +128,13 @@ def linii_campuri_lipsa(linii, prefix="em-l"):
         if m:
             lipsa.append({"camp": "%s%d-cantitate" % (prefix, i),
                           "eticheta": "Linia %d: cantitate" % n, "mesaj": m})
+        # [comanda Costin 06.10.2026 pct.1b] „Un preț pe care nu l-a ales nimeni nu se propune: câmp gol și obligatoriu.”
+        # Până azi linia fără preț intra cu 0 (implicitul `LinieEmitereIn.pret_unitar = 0` și `|| 0` din ecran) — o factură
+        # cu o valoare pe care n-a scris-o nimeni. 0 SCRIS de om rămâne permis; lipsa (None / gol) se refuză lângă câmp.
+        p = l.get("pret_unitar")
+        if p is None or str(p).strip() == "":
+            lipsa.append({"camp": "%s%d-pret_unitar" % (prefix, i), "eticheta": "Linia %d: preț unitar" % n,
+                          "mesaj": "Prețul unitar lipsește. Scrie prețul liniei; nu se presupune niciunul."})
     return lipsa
 
 
