@@ -17346,3 +17346,18 @@ Poți trece la următorul pas din listă.”*
 20. **(pct.20) Ascuns = invizibil:** regula globală `[hidden]{display:none!important}` (înlocuiește două excepții locale); patru
    formulare stăteau deschise (Stocuri „NIR nou”, Casa ×2, Încasări/plăți). DS cap.2 + verificator `HIDDEN_CU_DISPLAY`.
 21. **(pct.21) Fraza despre semnal** apare numai când există diferențe, reformulată („Diferențele de mai sus se recalculează…”).
+
+**Consecințe (executor) — P3 (pct.22):**
+22. **Numărul exact: 62 de titluri aprobate nu au pagină publicată** (48 „candidat” + 14 „asemănător” în registru). Sursa de
+   adevăr pentru „publicat” e pagina din `ghid/` (ce servește iconta.eu/ghid/<slug>), nu statutul din registru; un titlu aprobat =
+   un draft livrat spre publicare în pachetele de lot (batch4–17, lotul 18, lotul 19). Partiția celor **5.726** de titluri aprobate
+   distincte: **5.511** publicate ca ghid propriu · **11** publicate, dar fără rând în registru · **142** cu titlul identic deja
+   publicat ca ALT ghid (141 „asemănător” + 1 „candidat”, nepublicate separat ca dubluri — decizia din 29.09) · **62 fără pagină**.
+   Instrument: `scripts/masura_titluri_aprobate.py` (citește pachetele din `~/ghid_incoming`); lista nominală în ZIP.
+   **De ce 287 pe 06.10 era greșit:** număra STATUTUL din registru, iar registrul rămăsese în urmă — **81** de rânduri „candidat” /
+   „asemănător” aveau ghidul lor publicat (sub titlul aprobat, care diferă de întrebarea din registru, sau cu întrebarea ca H1), iar
+   **4** potriviri „pe titlu apropiat” legau drafturi publicate de alte rânduri. Consecința nu era doar cifra: `de_propus()` ar fi
+   repropus titluri publicate. **Reparat:** cele 81 de rânduri trec pe „publicat” cu slugul paginii; GH-08453 (titlu identic cu un
+   ghid publicat de alt rând) trece pe „asemănător”. Gard: `core/test_ghid_registru_sincron.py` (un rând nepublicat al cărui titlu
+   e H1-ul sau titlul unei pagini proprii; un „candidat” al cărui titlu e deja live) — limita: vede potrivirea EXACTĂ de titlu; un
+   ghid publicat sub un titlu reformulat față de registru și de H1 se vede numai prin GH-id, din pachetele din afara repo-ului.
