@@ -1561,3 +1561,12 @@ e semnalat în editor.
 **Proba (browser, asistent, baza de test):** înainte — emailul previzualizat cu „**Veniturile**”, „# Titlu”, „*pozitiv*” și
 „Rezultat 0,00 lei (neutru)”; după — „Veniturile lunii au fost bune. / Titlu / Rezultatul e pozitiv.” și „Rezultat înainte de
 impozit 0,00 lei (neutru)”.
+
+## 06.10.2026 — Lotul 06.10, închiderea
+
+**Producție:** backup complet `iconta_v2` (`/home/costin/backups/iconta_v2_pre_lot0610_20261006_0408.dump`, 2,4 MB, 353 de tabele cu
+date, verificat cu `pg_restore -l`), apoi migrările `documente_interne_contor` și `firma_profil.metoda_stoc` pe tenant_049–053 (5/5),
+verificate în catalog. **Lanțul vizual** (server de probă din worktree separat — static-ul publicat lângă el, nu în directorul servit
+de producție): axe 0 încălcări pe ecranele scanate (inclusiv stat de plată), probele P3/P4 axe 0, arborele asistentului 0 perechi
+greșite, Declarații 50 de celule fără revărsare; mobil fără overflow-x. Rezidiu de probă șters din baza de test: produsul
+„Consultanță contabilă lunară” creat de proba părții 1 (umfla antetul T21).

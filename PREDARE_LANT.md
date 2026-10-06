@@ -1,12 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **comanda „fluxul de factură pe F1” (13 puncte) LIVRATĂ (A–D + ZIP); patru decizii cerute lui Costin** (05.10.2026)
+# PREDARE LANȚ — **lotul 06.10 (patru părți) LIVRAT, cu pct.12 OPRIT pentru decizie; două decizii cerute lui Costin** (06.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-05**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `eafc7b8c` (D); commitul care poartă această linie e doar de registre (firul închis, ZIP livrat). Secțiunile atinse acum: ANTET,
-  STAREA, FRONTURI, ATENȚIONĂRI, CE CERE POARTA.
+- **ultima rescriere**: **2026-10-06**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
+- **pe commit**: `c961d8a0` (partea 4; părțile: P1 `14fc0cb6`, P2 `2f698e19`, P3 `27335044`); commitul care poartă această linie e cel
+  de închidere de pe `main` (registre, stampile de asset-uri, blocuri regenerate). Secțiunile atinse acum: ANTET, STAREA, FRONTURI,
+  DECIZII ÎN VIGOARE, ATENȚIONĂRI.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -31,6 +32,7 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **fluxul de factură F1 — B** (pct.2–5): lipsurile din Date firmă la deschidere (forma propusă din ANAF/denumire), cota aleasă dintr-o listă și consemnată (`factura_cota_jurnal`, migrat pe producție după backup), data emiterii/scadența/seria pe formular, PDF cu „Cod TVA: RO…”, „Seria”, „Data emiterii”, titlu; poarta R46 la schimbare | `dadd5f86` | la final |
 | **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | `d582e083` | la final |
 | **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | `eafc7b8c` | `iconta_testare_factura_F1.zip` |
+| **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -53,11 +55,11 @@ aplicației**, nu „în așteptarea unei teme”:
   acces programatic — **[EXTERN]**.
 - **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
   nu se ating din cod).
-- **Decizii cerute lui Costin din comanda „fluxul de factură pe F1”** (raportul comenzii, §6): (1) seria obligatorie la emitere
-  (toate cele 5 firme din producție au seria goală); (2) documentul justificativ al notelor fără document extern (amortizare,
-  descărcare lunară, consum rețetă, inventar, operațiuni speciale); (3) metoda de stoc pe firmă (global-valoric vs
-  cantitativ-valoric) — factura de marfă fără articol nu se descarcă deloc la o firmă GV, iar la HoReCa rețetele + Z pot dubla;
-  (4) Date firmă la „Poate pregăti” (încadrarea din 04.10, „de reconfirmat”) și jurnalizarea formei/capitalului.
+- **Decizii cerute lui Costin din lotul 06.10** (raportul lotului, §6): (1) **pct.12 — ciorna de salarii vizibilă cabinetului**:
+  premisa („facturile au deja un mecanism de validare”) nu se regăsește; singurul mecanism (contor, Activitate cabinet, notificare,
+  Validează/Respinge) e coada declarațiilor (`public.declaratii_coada`). De ales: coada extinsă la note SAU un mecanism pe note
+  (`inregistrari` n-are autor/respingere). (2) **Concediul medical în nota de salarii**: indemnizația (423) nu se contabilizează, iar
+  421 rămâne nesoldat în lunile cu CM (11 din 52 de luni pe baza de test; 0 în producție) — controlul nou o arată, n-o repară.
 - **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
@@ -72,6 +74,10 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Confirmările (04.10, PIVOT)**: fluturașul, PDF-ul chitanței, poza bonului = „Poate pregăti” (R52 răsturnat); regimul de TVA =
   „Poate pregăti”, fiecare schimbare în `firma_profil_jurnal` (utilizator, dată, vechi → nou); REGES: cheile = administrator, trimiterea
   și răspunsurile = „Poate depune”; planul de conturi = „Poate pregăti”; aprobarea bonului din portal și Z manual = „Poate valida”.
+- **Lotul 06.10**: seria facturii obligatorie (refuzul o cere în mesaj, emiterea continuă); notele automate fără document extern
+  primesc document intern numerotat; metoda de stoc e setare explicită (NULL = refuz la orice ieșire de marfă); Date firmă
+  jurnalizate; salariile = sumele din D112 (rotunjite aritmetic pe salariat, CAM împărțit pe cartele = cod 480); povestea = text
+  simplu, „Rezultat înainte de impozit”, fără restanțe (decizia A).
 - **Povestea lunii (05.10)**: generarea, editarea, ciorna = „Poate pregăti”; aprobarea (rută proprie) și trimiterea = „Poate valida”.
   Textul generat folosește exact „venituri” / „cheltuieli” / „rezultat” și sumele pachetului (verificat după generare).
 - **Ferestrele**: cele informative se închid din X și cu Esc (`inchidereDialog`); cele cu câmpuri doar din X (DS cap.9 v2.64).
@@ -90,6 +96,16 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(06.10) Producția are `metoda_stoc` NULL pe toate cele 5 firme și seria facturii goală**: după deploy, prima factură de marfă
+  sau prima ieșire de stoc e refuzată cu trimitere la Date firmă, iar prima emitere cere seria în mesaj. Fixturile de test pun
+  `serie_factura='ZT'` și metoda explicit.
+- **(06.10) Niciun `quantize` fără `rounding=`** (`core/test_rotunjire_explicita.py`); un test care fixa o sumă de salariu cu bani
+  pe CAS/CASS/impozit/suprataxă se aduce la suma declarată (leu, aritmetic).
+- **(06.10) `core/d112.py` NU s-a atins în lot**: orice modificare a lui declanșează pasul D1 („Contract uniform A1”). Regula de
+  rotunjire e dublată intenționat în `numere.leu_aritmetic`, gardată prin echivalență în `core/test_lot0610_p3.py`.
+- **(06.10) Probele de browser NU mai publică în `/home/costin/iconta_publicat`** (îl servește și producția): lanțul lotului rulează
+  serverul 8011 dintr-un worktree separat (`/home/costin/proba_0610/iconta_nou`), care își publică static-ul lângă el.
 
 - **Registrul jurnal cere confirmare la validarea unei ciorne fără document justificativ** — o probă care validează o notă manuală
   fără document apasă și „Validează fără document” (`#caseta-atentie-activa #ca-ok`), sau scrie documentul în notă.

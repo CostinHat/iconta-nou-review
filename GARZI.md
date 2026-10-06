@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**695 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**699 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 660
+### `core/` — 664
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9256,6 +9256,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_live_accesibil.py` — [#6 plimbare 14.08.2026 / regula 9] Garda: o declaratie e LIVE DOAR daca e accesibila in selectorul UI
 - `core/test_login_proba_metoda.py` — GARD "gaura de metoda" (09.08.2026, cerut de Costin): a PROBA un cont = prin calea de autentificare
 - `core/test_lot0610_p1.py` — GARDA părții 1 din comanda Costin 06.10.2026 (răspunsul la §6 din raportul „Fluxul de factură pe F1”), pe schemă efemeră.
+- `core/test_lot0610_p2.py` — GARDA părții 2 din comanda Costin 06.10.2026 — ghidurile /ghid, structură pentru indexare.
+- `core/test_lot0610_p3.py` — GARDA părții 3 din comanda Costin 06.10.2026 — salarii F5 SRL Salariati, octombrie 2026.
+- `core/test_lot0610_p4.py` — GARDA părții 4 din comanda Costin 06.10.2026 — povestea lunii.
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -9376,6 +9379,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
 - `core/test_ritm_partajat.py` — E1 — ritmul se numără O SINGURĂ DATĂ, pe amândouă procesele, și nu se golește la repornire.
 - `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
+- `core/test_rotunjire_explicita.py` — GARDA (lot 06.10, 06.10.2026): niciun `.quantize(...)` fără mod de rotunjire explicit în codul de producție.
 - `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
 - `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).
 - `core/test_ruptura_seed_control.py` — Garda anti-ruptura seed<->control (plimbare vizuala 14.08.2026).

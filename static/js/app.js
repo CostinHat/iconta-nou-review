@@ -50,7 +50,7 @@ import { ecranLogin } from "./ecrane/login.js?v=1dc4c0feb5";
 import { creeazaNavigator } from "./navigator.js?v=9cfd1814a7";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=77f1a3c647";
 import { desktopAsistent } from "./ecrane/asistent.js?v=b92236496f";
-import { desktopPortal } from "./ecrane/portal.js?v=d11b618d0b";
+import { desktopPortal } from "./ecrane/portal.js?v=c960a5963f";
 import { desktopAdmin } from "./ecrane/admin.js?v=c05e59e032"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
