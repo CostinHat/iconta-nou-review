@@ -348,3 +348,53 @@ def test_datorie_d212_cass22_retinuta_peste_datorata():
                                                          "venituri": [{"categ_venit": 1015, "venit_brut": 40000}],
                                                          "alte_cass": {"cass_retinuta": 3000}})
     assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"
+
+
+# ── [06.10.2026] Parcurgerea g11/g08/g09 (comanda Costin: „doar constatări, fără reparații”). Defectele verificabile
+# mecanic intră aici, ca afirmație a comportamentului CORECT, nereparate; dovezile (capturi, cereri, jurnale) stau în
+# ZIP-ul parcurgerii, iar restul constatărilor în GARZI 06.10.2026 („Parcurgerea g11/g08/g09”).
+
+@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE 06.10.2026 (parcurgerea g11, D390): `coada_api.randuri_din_res` face `dataclasses.asdict(res)`, care copiază în adâncime un câmp `Unde` (subclasă de str) reconstruindu-l din textul lui -> `Unde.__new__` refuză «fel de referent necunoscut 'factura …'» -> POST /coada = 500 pe D390 cu operațiuni IC (Distributie Profit IC SRL, 08/2026); ecranul spune doar «Poate există deja o declarație pentru această perioadă»")
+def test_datorie_coada_rezultat_cu_referinta_unde():
+    import dataclasses
+    from core import coada_api
+    from core.unde import Unde
+
+    @dataclasses.dataclass
+    class _Rez:
+        unde: str
+    assert coada_api.randuri_din_res(_Rez(Unde("factura", 7, "Comert Micro TVA SRL"))) is not None
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g11, D307 pe ecran): pasul 3 din `declaratii.js` trimite în coadă {tenant_id, tip, an, luna} FĂRĂ datele formularului (`manual` / `obligatii`), deși pasul 2 le trimite la generare -> D307 validat DUK «fără erori» e refuzat la «Trimite în coadă» («D307 nu are ce genera») — toate declarațiile cu formular manual (D311, D307, D107, D177, D207, D200, D212, D201, D230, D204, D223, D216, D208, D221, D603, D600, D104, D114, D110, D398, D318, D710)")
+def test_datorie_coada_din_ecran_poarta_formularul():
+    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/declaratii.js").read_text(encoding="utf-8")
+    pas3 = src[src.index("async function pas3("):]
+    pas3 = pas3[:pas3.index('await api.post("/coada", body)')]
+    assert "manual" in pas3 and "obligatii" in pas3
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Chirii/comodat): `nota-chirie` întoarce {inregistrari: [id…]}, iar ecranul Operațiuni speciale caută `r.inregistrare_id` -> după ce nota ciornă #20 (8038=891, 1.000) s-a scris, contabilul citește «Calcul (nu s-a generat nicio notă): inregistrari: 20»")
+def test_datorie_operatiuni_ecran_recunoaste_mai_multe_note():
+    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
+    bloc = src[src.index("const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`"):]
+    bloc = bloc[:bloc.index("} catch (e) {")]
+    assert "inregistrari" in bloc
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g09, Agricultori): în registrul ecranului Operațiuni speciale două operațiuni au aceeași cheie `agricultor` («Vânzare către agricultor» și «Achiziție de la agricultor (compensare 8%)»); ecranul alege cu `REGISTRU.find(cheie)` -> butonul «Achiziție de la agricultor» deschide formularul de VÂNZARE (probat pe ecran: nota 4111=704)")
+def test_datorie_operatiuni_chei_unice():
+    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
+    chei = re.findall(r'\{ cat: "[^"]+", cheie: "([^"]+)"', src)
+    assert len(chei) == len(set(chei)), sorted(c for c in set(chei) if chei.count(c) > 1)
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Export/IC): serverul citește «Dovada export (DVE)» și «Dovada transport» prin `bifa` (DA/NU, altfel refuz), iar ecranul le dă drept câmp TEXT liber, cu eticheta unui document -> contabilul scrie numărul DVE și primește «acceptă doar da sau nu»")
+def test_datorie_bifele_serverului_sunt_selecturi_in_ecran():
+    rad = pathlib.Path(__file__).resolve().parent.parent
+    src = (rad / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
+    bife = set()
+    for f in rad.glob("core/uc_*.py"):
+        bife |= set(re.findall(r'bifa\(corp, "([a-z_]+)"', f.read_text(encoding="utf-8")))
+    text = [n for n in bife if re.search(r'C\("%s", "[^"]*", "text"' % n, src)]
+    assert not text, text

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**704 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**706 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 669
+### `core/` — 671
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9348,6 +9348,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_predare_cifre.py` — GARD [Y, 28.08.2026]: cifrele despre DATE din predare se recalculează, nu se citează.
 - `core/test_predare_proaspata.py` — PREDARE_LANT.md isi arata vechimea, iar avertismentul din poarta nu poate disparea tacit.
 - `core/test_premisa_restanta.py` — [Regula 4 + Regula 6] TEST-GARDA: NICIO restanta fara premisa demonstrabila.
+- `core/test_pret_ales.py` — GARD — „un preț pe care nu l-a ales nimeni nu se propune: câmp gol și obligatoriu” (comanda Costin 06.10.2026, pct.1b).
 - `core/test_preview_salvare_poarta.py` — GARD Q5 — preview = salvare, O SINGURA POARTA (tura import CUBUS, 16.08.2026).
 - `core/test_profil_blocaje.py` — GARD profil_blocaje: ecranul Date firma NU pretinde 'toate declaratiile se pot genera' cand un
 - `core/test_proprietate_coaja.py` — GARD DE PROPRIETATE (P2, 21.08.2026): un ECRAN nu scrie în COAJĂ. DESIGN_SYSTEM cap.25.
@@ -9462,6 +9463,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_versionare_assets.py` — core/test_versionare_assets.py -- GARD pentru disciplina ?v= (versionare asseturi front-end).
 - `core/test_versionare_formule.py` — Versionarea formulelor pe la_data (PAS 1 tipar). Cotele sunt period-aware (cota); formulele devin
 - `core/test_versiune_publicata.py` — GARD [R118 + R129, 03.09.2026]: poarta de sintaxa a publicarii, si anuntul care NU intrerupe.
+- `core/test_versiune_referinta.py` — GARD — anunțul „Versiune nouă” compară cu amprenta CODULUI ÎNCĂRCAT, nu cu prima citire de după autentificare (comanda
 - `core/test_vigoare_articole_registru.py` — GARDĂ pentru interdicția 50 — confirmarea unei valori e ULTERIOARĂ ultimei modificări a articolului.
 - `core/test_vigoare_punct.py` — Garda instrumentului de vigoare PE PUNCT (`scripts/vigoare_punct.py`, R2).
 - `core/test_wave1_stare_partajata.py` — P6 valul 1 — probele de acceptare: starea business e comuna intre procese, si nu mai pierde.
@@ -10393,3 +10395,26 @@ autentificare, deci anunțul „Versiune nouă” nu apărea niciodată.
 | ingredientul nou neales | `core/test_retete_randuri_dinamice.py::test_ingredient_nou_porneste_fara_articol_si_se_refuza_neales` | rețetă salvată cu primul articol din listă, neales | `articol_id: arts[0]` repus -> roșu | — |
 | preț / articol neales în ecrane | verificator `PRET_SAU_ARTICOL_NEALES` (DS cap.24 v2.75) | `parseFloat(…value) \|\| 0` pe un preț; rând nou cu preț 0; rând legat de `arts[0]`; listă de articole fără opțiunea goală; emiterea fără dezlegarea articolului la denumirea rescrisă | `pret_unitar: 0` în rândul recurent / opțiunea goală scoasă din `optArts` / dezlegarea scoasă / `\|\| 0` pe `#cv-pret` -> TOTAL > 0 | vede citirea prețului pe O linie; un preț citit într-o variabilă și apărat cu `\|\| 0` pe altă linie nu se vede |
 | proba de browser | `frontend_test/proba_ciorna_factura.py`, `frontend_test/proba_versiune_la_incarcare.py` (8011, înainte/după) | — (probă, nu poartă) | — | rulează pe baza de test, cu server pornit; nu e în pytest |
+
+## 06.10.2026 — Parcurgerea g11/g08/g09 ca un contabil (doar constatări): ce a ieșit și unde stă
+
+Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu capturi și jurnale:
+`~/ghid_incoming/iconta_parcurgere_g08_g09_g11.zip`. Nimic reparat. Defectele verificabile mecanic sunt datorie în
+`core/test_datorie.py` (xfail strict, 06.10.2026); restul stau AICI, cu dovada, ca să nu se piardă:
+
+| constatare | categorie | starea | dovada | ce lipsește ca să devină test |
+|---|---|---|---|---|
+| C1 D390 nu intră în coadă (500: `Unde` copiat de `asdict`) | 7. Integritate | DATORIE — `test_datorie_coada_rezultat_cu_referinta_unde` | Distributie Profit IC 08/2026; ecranul spune „poate există deja o declarație” | — |
+| C2 declarațiile cu formular manual nu ajung în coadă din ecran (pas3 fără `manual`/`obligatii`) | 11. Interfață | DATORIE — `test_datorie_coada_din_ecran_poarta_formularul` | D307 pe ecran: DUK „fără erori” → „D307 nu are ce genera” | — |
+| C3 D112 part-time S2 2026: aplicația 4.125 (4.325 − 200), validatorul instalat 3.750 (4.050 − 300) → SP1B4_1; ecranul „nu blochează”, coada blochează | 3. Calcul fiscal | DECIZIE (raport §6) | Panificatie 09/2026, asigurat 4 | care prag e în vigoare pe S2 2026 (temei) și dacă o atenționare DUK oprește coada |
+| C4 „ID mijloc fix” fără listă (reevaluare/casare) | 11. Interfață | DECIZIE de produs | refuzul cere „alege-l din listă”, lista nu există | forma câmpului (select din registru) |
+| C5 nota scrisă, ecranul spune „nicio notă” (comodat/chirii) | 11. Interfață | DATORIE — `test_datorie_operatiuni_ecran_recunoaste_mai_multe_note` | nota #20 8038=891 | — |
+| C6 „Dovadă” text liber vs `bifa` da/nu | 11. Interfață | DATORIE — `test_datorie_bifele_serverului_sunt_selecturi_in_ecran` | refuz „acceptă doar da sau nu” | — |
+| C7 cheia `agricultor` dublată: „Achiziție de la agricultor” deschide vânzarea | 11. Interfață / 3. Calcul | DATORIE — `test_datorie_operatiuni_chei_unice` | nota 4111=704 în loc de achiziție | — |
+| C8 marjă turism negativă: 4111 = costuri (2.000) ≠ încasat (1.000) | 3. Calcul fiscal | DESCHIS — verificat pe bază | Agentie Turism Marja, nota #5 | o probă pe schemă efemeră (calculul stă în use-case, cu baza) |
+| C9 recipisa declarațiilor nu se întoarce | 10. Ieșiri externe | [EXTERN] — blocantul SPVWS2 (`ARHITECTURA_SPV.md`) | depunere = index SPV tastat | certificatul calificat server-side |
+| C10 „nimic de amortizat” fără motiv (reziduala = valoarea) | 11. Interfață | DESCHIS | excavator F2: motorul dă 2.000/lună cu reziduala 0 | mesajul care numește activul și cauza |
+| C11 bilanțul nu trece prin coadă și nu se persistă ca depus | 7. Integritate | DECIZIE de produs | ecranul Bilanț: validare + XML | — |
+| C12 declarația față de balanță nu e păzită (D100 59 fără 698/4418; D112 fără notă de salarii; D300 egal doar cu ciornele) | 3. Calcul fiscal | DESCHIS — limita afișată de aplicație („pentru asta e controlul încrucișat”) | cifrele în raport | o pereche de control încrucișat declarație ↔ balanță validată pentru D100/D112 |
+| C14 reevaluare pe MF fără cont de imobilizare → notă cu contul creditor GOL | 3. Calcul / 7. Integritate | DESCHIS | 655 = „” 119.000 | o probă pe schemă efemeră |
+| C15 F248 / ruta `jurnal-marja`: „fără ecran”, dar cardul există | registru | DESCHIS | captura `ecran_Marja_SH.png` | corectarea registrului (nu s-a făcut: comanda cere doar constatări) |

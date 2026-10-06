@@ -1665,3 +1665,20 @@ Decizia și temeiul: DECIZII 06.10.2026 („Ciorna facturii, a patra pierdere”
 - **Articolul**: rândul „Carte – Ghid contabil 2026” pleca legat de „Marfa A” și s-ar fi descărcat din stocul ei — acum denumirea
   scrisă de mână dezleagă articolul. La fel: ingredientul nou al rețetei, transferul, reclasificarea, fișa de magazie.
 - **Scadența** se propune la deschiderea formularului nou (06.10 → 05.11.2026); „zz.ll.aaaa” era tot codul vechi din filă.
+
+## 06.10.2026 (seara) — Parcurgerea g11 · g08 · g09 ca un contabil, pe baza de test (doar constatări)
+
+67 de puncte, pe codul `de36b2a1` (8011, `iconta_test`), cu rolurile din plan (asistentul = Ana, fără validare/depunere;
+patronul = cabinetul) și firmele după tip (F1–F5 sunt numai pe producție). Raportul punct cu punct, capturile și jurnalele:
+`~/ghid_incoming/iconta_parcurgere_g08_g09_g11.zip`. Nimic reparat; constatările: GARZI 06.10.2026 („Parcurgerea g11/g08/g09”),
+cele mecanice ca datorie în `core/test_datorie.py`.
+
+- **g11:** DUK valid pe tot ce s-a generat, cu excepția D112 part-time (atenționare SP1B4_1 — prag 4.125 față de 3.750);
+  drepturile țin (Ana 403 la aprobare și depunere); depunerea cu o constatare certă cere confirmare scrisă; declarațiile depuse se
+  persistă cu xml + rânduri. Două drumuri nu ajung în coadă: **D390 (500 la server)** și **orice declarație cu formular manual**
+  (ecranul nu trimite formularul). Recipisa nu se întoarce (SPV, extern).
+- **g08:** amortizarea cere „Poate valida”; notele ciornă se văd în jurnal înainte de validare; refuzurile au mesaje clare. Constatări:
+  „nicio notă” afișat când nota există (comodat), „ID mijloc fix” fără listă, „Dovadă” text liber față de da/nu, reevaluare cu
+  cont lipsă, „nimic de amortizat” fără motiv.
+- **g09:** schimbarea regimului TVA e jurnalizată și avertizează la diferența față de ANAF; „Achiziție de la agricultor” deschide
+  vânzarea (cheie dublată); marja turism negativă dă o creanță mai mare decât încasatul; TVA la încasare și aur — fără firmă de test.
