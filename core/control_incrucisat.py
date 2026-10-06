@@ -45,6 +45,7 @@ intra in rulaj, verdele ar fi IMPRUMUTAT: sistemul ar confirma coerenta pe baza 
 ce inca nu s-a intamplat. O factura cu nota ciorna ramane "necontabilizata" -> rosu, cu
 remediu SUGERAT (asteapta validare), nu executabil (nota exista deja, nu se dubleaza).
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 from decimal import Decimal
 from core.pdf_util import bani
 from core import afirmatii as _af  # [P8] o constatare E o afirmatie, imbracata pentru ecran
@@ -543,7 +544,7 @@ def verifica_d112(conn, schema, an, luna):
     try:
         # Generarea ramane PRIMA, ca semantica erorilor sa nu se schimbe: "gri daca declaratia nu se
         # poate genera" e contractul functiei, si el se decide inainte de orice preferinta de sursa.
-        xml, _av = _d112.genereaza(conn, schema, an, luna)
+        xml, _av = _d112.genereaza(conn, schema, Perioada(an=an, luna=luna))
         depus = _d112_depus_xml(conn, schema, an, luna)
         if depus:
             xml, sursa_declarat = depus, "depus"
@@ -1293,8 +1294,8 @@ def _thunk_d406(conn, schema, an, luna):
 
 def _thunk_d112(conn, schema, an, luna):
     from core import d112 as _g, d112_reconciliere as _r
-    prof, salariati = _g.pull(conn, schema, an, luna)
-    _g._d112_genereaza(prof, salariati, an, luna)   # scrie contributiile EMISE inapoi in salariati
+    prof, salariati = _g.pull(conn, schema, Perioada(an=an, luna=luna))
+    _g.calcul_d112(prof, salariati, an, luna)   # scrie contributiile EMISE inapoi in salariati (fara XML)
     return lambda: _r.reconciliaza(conn, schema, an, luna, salariati)
 
 

@@ -1,4 +1,5 @@
 # stat_plata_api.py - Stat de plata lunar + fluturas PDF.
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 from datetime import date
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
@@ -230,8 +231,8 @@ def stat_final(conn, schema, an, luna):
         r["cm_retineri_sursa"] = "certificat"
     try:
         from core import d112 as _d112
-        _prof, sal = _d112.pull(conn, schema, an, luna)
-        _xml, res = _d112.genereaza(conn, schema, an, luna)
+        _prof, sal = _d112.pull(conn, schema, Perioada(an=an, luna=luna))
+        _xml, res = _d112.genereaza(conn, schema, Perioada(an=an, luna=luna))
     except Exception:   # noqa: BLE001 — D112 negenerabil: rămân valorile certificatului, marcate
         return stat
     if len(sal) != len(res.asigurati):

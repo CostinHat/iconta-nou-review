@@ -83,8 +83,8 @@ def test_d112_nu_mai_respinge_codul_legal():
     # căi paralele, deci mutația care întorcea `d112` la enumerarea XSD TRECEA verde.
     _arb = ast.parse(inspect.getsource(d112))
     _gen = next((f for f in ast.walk(_arb) if isinstance(f, ast.FunctionDef)
-                 and f.name == "_d112_genereaza"), None)
-    assert _gen is not None, "`_d112_genereaza` nu mai există — garda și-a pierdut subiectul"
+                 and f.name == "calcul_d112"), None)   # [D1] generatorul extras din _d112_genereaza
+    assert _gen is not None, "`calcul_d112` nu mai există — garda și-a pierdut subiectul"
     _chemate = {n.func.id for n in ast.walk(_gen)
                 if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
     assert "_cod_boala_acceptat" in _chemate, (

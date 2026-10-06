@@ -32,13 +32,13 @@ def _pull_gol(orig):
 def test_mutant_zero_d112_nu_inghite_salariatii(conn_smoke):
     """Pe date reale D112 contine <asigurat (nu inghite salariatii). MUTATIE: pull fortat sa intoarca 0 salariati ->
     <asigurat DISPARE -> un test care asertă <asigurat ar prinde inghitirea."""
-    xml, _ = d112.genereaza(conn_smoke, _SCHEMA, 2026, 6)
+    xml, _ = d112.genereaza(conn_smoke, _SCHEMA, Perioada(an=2026, luna=6))
     assert "<asigurat " in xml, "D112 pe date reale trebuie sa aiba salariati - altfel a inghitit datele"
     # MUTATIE: generatorul nu mai vede salariatii (pull -> lista goala)
     orig = d112.pull
     d112.pull = _pull_gol(orig)
     try:
-        xml_gol, _ = d112.genereaza(conn_smoke, _SCHEMA, 2026, 6)
+        xml_gol, _ = d112.genereaza(conn_smoke, _SCHEMA, Perioada(an=2026, luna=6))
     finally:
         d112.pull = orig
     assert "<asigurat " not in xml_gol, "mutant-zero: cu salariatii inghititi, <asigurat trebuie sa DISPARA (dovada)"

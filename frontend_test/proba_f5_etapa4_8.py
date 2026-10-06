@@ -4,6 +4,7 @@
 REGES-ONLINE = API EXTERN (api.inspectiamuncii.ro, credentiale per CUI) -> confirmare STRUCTURALA.
 Idempotent: sare salariatul cu CNP existent. Env: db.env + api_keys.env.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import os
 import sys
 
@@ -74,7 +75,7 @@ def main():
         with conn.cursor() as cur:
             cur.execute('SET search_path TO "%s", public' % SCH)
         try:
-            r = d112.genereaza(conn, SCH, AN, LUNA)
+            r = d112.genereaza(conn, SCH, Perioada(an=AN, luna=LUNA))
             xml = r[0] if isinstance(r, tuple) else r
             v = duk.valideaza(xml, "d112", an=AN, luna=LUNA, timeout=120)
             print("  D112:", (v.get("stare"), (v.get("erori") or "")[:160]) if isinstance(v, dict) else v)

@@ -20,6 +20,7 @@ individual de muncă”; 29b B1_sal2 „Venitul brut din salarii … realizat”
 Iunie 2026: 21 de zile lucrătoare (1 iunie = Rusalii + Ziua Copilului). Salarii de 6000 (peste minim: fără facilitate,
 ca proratarea să se vadă curat).
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import xml.etree.ElementTree as ET
 from decimal import Decimal
 
@@ -130,7 +131,7 @@ def test_statul_de_plata_declara_brutul_proratat(conn):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_d112_sal1_contractual_sal2_realizat_zile_si_ore_suspendate(conn):
-    xml, _av = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    xml, _av = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     a = _asigurati(xml)
     c = {k: a[_S[k][0]] for k in _S}
     # 29a B1_sal1 = salariul din contract (la 30 iunie: 7000 pentru cel mărit); 29b B1_sal2 = brutul realizat
@@ -152,7 +153,7 @@ def test_d112_proratat_e_valid_la_duk(conn):
     from core import duk
     if not duk.poate_valida("d112"):
         pytest.skip("DUK d112 indisponibil")
-    xml, _av = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    xml, _av = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     r = duk.valideaza(xml, "d112", an=2026, luna=6)
     assert r["stare"] == "valid", r.get("erori")
 

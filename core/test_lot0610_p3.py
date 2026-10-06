@@ -9,6 +9,7 @@
 
 CNP-urile de test sunt verificate cu cifra de control (CLAUDE.md, algoritmul oficial).
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import datetime
 from decimal import Decimal
 
@@ -138,7 +139,7 @@ def test_fluturasul_nota_si_d112_dau_aceleasi_sume(conn):
     from core import d112, salarii_contare as sc, stat_plata_api as sp
     st = sp.stat_plata(conn, SCH, 2026, 10)
     p = sc.propunere(conn, SCH, 2026, 10)
-    obl = d112.obligatii(conn, SCH, 2026, 10)
+    obl = d112.obligatii(conn, SCH, Perioada(an=2026, luna=10))
     note = [(n["debit"], n["credit"], Decimal(str(n["suma"]))) for n in p["note"]]
     assert sc.sold_421(note) == Decimal(str(p["net_fluturasi"])) == sum(Decimal(str(r["net"])) for r in st)
     assert sum(r["cam"] for r in st) == obl["480"]

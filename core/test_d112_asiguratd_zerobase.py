@@ -9,6 +9,7 @@ hard-block-ul D_8 si ca D205 cifR.
 MUTATIE (probata pe HEAD 6cd0054): inainte de fix campurile goale se OMITEAU (vid nepermis) -
 genereaza intorcea XML fara ValueError -> pytest.raises pica. Dupa fix -> ValueError ridicat.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import pytest
 
 from core import db, tenant_provisioning as tp
@@ -82,7 +83,7 @@ def test_d112_asiguratd_camp_obligatoriu_gol_refuzat(schema, lipsa, eticheta):
         _seed_salariat(cur)
         _cm(cur, **plin)
     with pytest.raises(ValueError) as ei:
-        d112.genereaza(schema, SCHEMA_T, 2026, 6)
+        d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     msg = str(ei.value)
     assert eticheta in msg, "ValueError trebuie sa numeasca campul obligatoriu %s: %s" % (eticheta, msg)
     assert "1900101410011" in msg, "ValueError trebuie sa numeasca salariatul (CNP): %s" % msg
@@ -97,7 +98,7 @@ def test_d112_asiguratd_complet_emite_toate_atributele(schema):
         _seed_salariat(cur)
         _cm(cur, serie="AB", numar="1", data_acordare="2026-06-01",
             data_inceput="2026-06-01", data_sfarsit="2026-06-05")
-    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _ = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r"<asiguratD[^>]*/>", xml)
     assert m, "asiguratD trebuie emis pe un certificat complet"
     d = m.group(0)

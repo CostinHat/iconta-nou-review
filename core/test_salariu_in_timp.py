@@ -13,6 +13,7 @@ Ce face imposibil:
   * pierderea proratării: mărirea pe 15 ale lunii -> două fracțiuni în statul de plată și în D112.
 Codul muncii art.159 alin.(1) + art.49 alin.(2) (brutul pe zilele din contract) — citate la lotul 19 pct.4c.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import contextlib
 import xml.etree.ElementTree as ET
 from decimal import Decimal as D
@@ -130,7 +131,7 @@ def test_marirea_pe_15_doua_fractiuni_in_stat_si_d112_duk_valid(lume):
     _schimba(salariu_brut=5000, valabil_din="2026-09-15")
     (g,) = stat_plata_api.stat_plata(lume, _SCHEMA, 2026, 9)
     assert D(str(g["brut"])) == D("4727.27")      # 4400 x 10/22 + 5000 x 12/22
-    xml, _res = d112.genereaza(lume, _SCHEMA, 2026, 9)
+    xml, _res = d112.genereaza(lume, _SCHEMA, Perioada(an=2026, luna=9))
     b1 = [dict(el.attrib) for el in ET.fromstring(xml.split("?>", 1)[1] if xml.startswith("<?xml") else xml).iter()
           if el.tag.split("}")[-1] == "asiguratB1"]
     assert [(x.get("B1_sal1"), x.get("B1_sal2")) for x in b1] == [("5000", "4727")]   # contractual nou / realizat

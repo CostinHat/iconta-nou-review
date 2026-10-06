@@ -54,7 +54,7 @@ def _d101(conn, schema, b):
     return d101.genereaza(conn, schema, Perioada(b["an"]), manual or None)
 
 def _d112(conn, schema, b):
-    return d112.genereaza(conn, schema, b["an"], b["luna"])
+    return d112.genereaza(conn, schema, Perioada(an=b["an"], luna=b["luna"]))
 
 def _d205(conn, schema, b):
     return d205.genereaza(conn, schema, Perioada(b["an"]))

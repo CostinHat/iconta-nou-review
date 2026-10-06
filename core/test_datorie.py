@@ -18,6 +18,7 @@ Un item intra aici DOAR daca e verificabil mecanic. Deciziile de produs, verific
 vizuale si sarcinile juridice raman in DE_FACUT/LANSARE - dar atunci stii ca acolo e doar
 ce NU se poate automatiza, nu un depozit.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import datetime
 import pathlib
 import re
@@ -348,46 +349,3 @@ def test_datorie_d212_cass22_retinuta_peste_datorata():
                                                          "venituri": [{"categ_venit": 1015, "venit_brut": 40000}],
                                                          "alte_cass": {"cass_retinuta": 3000}})
     assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE [DECIZIE] 06.10.2026 (validarea notelor, pct.2 — concediul medical): `d112.pull` "
-                   "proratează salariul REALIZAT pe zilele PLĂTITE ale certificatului (`zile_ang + zile_fnuass`), nu pe zilele "
-                   "certificatului (`zile`). La un certificat INIȚIAL, ziua de diminuare (Ordinul 506/1030/2026, o zi pe "
-                   "episod) e zi de concediu fără indemnizație și fără salariu, dar D112 o declară lucrată: salariul și "
-                   "contribuțiile declarate au o zi în plus față de statul de plată, iar 421 rămâne nesoldat cu netul ei. "
-                   "Repararea e în `core/d112.py`, iar orice modificare a lui declanșează pasul D1 („Contract uniform A1”, "
-                   "decizia Costin 04.10.2026) — decizie cerută în raport. Se închide când D112 și statul numără aceleași zile.")
-def test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare():
-    import io as _io
-    from core import d112, salariati_api, stat_plata_api, tenant_provisioning as _tp
-    sch = "efemer_datorie_cm_dim"
-    with db.get_conn() as c:
-        with c.cursor() as cur:
-            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % sch)
-            cur.execute(_tp.parametrizeaza_template(_io.open("tenant_template.sql", encoding="utf-8").read(), sch))
-            cur.execute('SET search_path TO "%s", public' % sch)
-            cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,declarant_nume,"
-                        "declarant_prenume,declarant_functie,patron_nume) VALUES (1,'ZT CM SRL','14399840','Str 1','Buc',"
-                        "'B','6202',true,'L','Pop','Ion','administrator','Pop Ion')")
-            cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa,cor,data_nastere,"
-                        "tip_asigurat,functie_baza) VALUES ('1800101410013','IONESCU','X','2024-01-01',8,'B','251401',"
-                        "'1980-01-01','1',true) RETURNING id, data_angajare) INSERT INTO salariu_istoric (salariat_id, "
-                        "valabil_din, salariu_brut) SELECT id, data_angajare, 6000 FROM s RETURNING salariat_id")
-            sid = cur.fetchone()[0]
-        c.commit()
-    try:
-        with db.get_conn(sch) as c:
-            salariati_api.salveaza_concediu(c, sid, {
-                "cod": "01", "zile_cm": 5, "venituri_6_luni": 36000, "zile_6_luni": 126, "serie": "CMZT", "numar": "1",
-                "data_acordare": "2026-10-06", "data_inceput": "2026-10-06", "data_sfarsit": "2026-10-10",
-                "an": 2026, "luna": 10})
-            rand = next(r for r in stat_plata_api.stat_plata(c, sch, 2026, 10) if r["id"] == sid)
-            _p, sal = d112.pull(c, sch, 2026, 10)
-            s = next(x for x in sal if x["id"] == sid)
-            c.rollback()
-        assert round(float(s["brut_lucrat"]), 2) == round(rand["brut"], 2), (s["brut_lucrat"], rand["brut"])
-    finally:
-        with db.get_conn() as c:
-            with c.cursor() as cur:
-                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % sch)
-            c.commit()

@@ -13,6 +13,7 @@ F1 (tenant_049) din baza de producție, calea aplicației (`uc_tenants.salariat_
   · cod VECHI: acceptă ziua inexistentă (cade în driver), data dinaintea angajării, rescrie tăcut 01.01 și luna închisă;
   · cod NOU: patru refuzuri numite pe câmpul `valabil_din`, apoi aceeași proratare.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import contextlib
 import os
 import sys
@@ -93,7 +94,7 @@ with real() as conn:
         g = st[SID]
         print("  stat de plată septembrie, Georgescu: brut %s · CAS %s · CASS %s · impozit %s · net %s"
               % (g["brut"], g["cas"], g["cass"], g["impozit"], g["net"]))
-        xml, res = d112.genereaza(conn, S, AN, LUNA)
+        xml, res = d112.genereaza(conn, S, Perioada(an=AN, luna=LUNA))
         rad = ET.fromstring(xml.split("?>", 1)[1] if xml.startswith("<?xml") else xml)
         for el in rad.iter():
             if el.tag.split("}")[-1] == "asigurat" and el.get("prenAsig", "").upper().startswith("ILIE"):

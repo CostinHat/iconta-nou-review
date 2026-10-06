@@ -173,8 +173,8 @@ def _fara_functii(nod):
     """Nodurile din corpul lui `nod`, FARA a cobori in functiile si clasele imbricate.
 
     [calibrare, directia a doua] `ast.walk` coboara oriunde, si asta a produs un fals pozitiv
-    exact de forma pe care P6 o cauta: `core/d112.py::obligatii` e si nume de modul (o functie,
-    l.913) si local al lui `_d112_genereaza` (l.606). Nepotul `add_oblig` scrie `obligatii.append`,
+    exact de forma pe care P6 o cauta: `core/d112.py::obligatii` e si nume de modul (o functie)
+    si local al lui `calcul_d112` (pana la pasul D1: `_d112_genereaza`). Nepotul `add_oblig` scrie `obligatii.append`,
     adica LOCALUL bunicului — nu numele de modul. Un instrument care nu cunoaste domeniile
     intermediare raporteaza stare de proces acolo unde nu e.
     """

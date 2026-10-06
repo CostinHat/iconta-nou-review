@@ -17,7 +17,7 @@ def gen(tip, conn, sch):
     if tip == "d101": return d101.genereaza(conn, sch, Perioada(AN))
     if tip == "d301": return d301.genereaza(conn, sch, Perioada(AN, luna=LUNA))
     if tip == "d390": return d390.genereaza(conn, sch, AN, LUNA)
-    if tip == "d112": return d112.genereaza(conn, sch, AN, LUNA)
+    if tip == "d112": return d112.genereaza(conn, sch, Perioada(an=AN, luna=LUNA))
     if tip == "d406": return d406.genereaza(conn, sch, AN, LUNA)
 
 

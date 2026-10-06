@@ -17241,3 +17241,50 @@ La commitul de închidere: ZIP cu tot ce s-a schimbat (cod, documente noi, artef
    175** (nepublicate fiindcă există un ghid apropiat). Lista nominală: `aprobate_nepublicate.csv` (ZIP).
 4. **(pct.4)** Între pași s-au rulat numai seturile derivate (modulele atinse + gărzile structurale); o primă încercare a
    prins aproape toată suita prin filtru și a fost oprită. Poarta completă rulează o singură dată, la commitul de închidere.
+
+## 06.10.2026 — Lotul 07.10: D112 ziua de diminuare (pasul D1), retestul F5/F1 din 06.10, titlurile aprobate nepublicate (comanda Costin)
+
+**Comanda, verbatim:** *„Citește PREDARE_LANT.md (tura 06.10, commit 3ae8d5b0) înainte de orice.
+PARTEA 1 – D112, ziua de diminuare (decizia Costin: DA)
+1. Pornește pasul D1 al contractului A1 pentru d112.pull. Defectul: salariul realizat se proratează pe zilele plătite, nu pe zilele din certificat, deci pe un certificat inițial cu zi de diminuare D112 declară salariu pentru ziua neplătită. Datoria e consemnată ca xfail strict: test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare.
+PARTEA 2 – Retest Costin 06.10 (F5 salarii nov. 2026 și F1 factură). Fluxul notă asistent → cabinet merge cap-coadă; factura F1A3 iese corectă (serie din mesaj, PDF complet, stoc 108 → 106, notele în coada cabinetului). Rămân, în ordinea gravității:
+2. GRAV – factura pierdută a treia oară. Refuzul pentru metoda de stoc promite „factura rămâne așa cum ai scris-o”, dar nu are buton spre Date firmă; ieșirea firească (← fereastra firmei → Date firmă → înapoi la Facturi) găsește formularul gol. Reparația din 365ea19c a acoperit doar drumul prin link. Cerința: o factură începută rămâne păstrată oricum ar naviga contabilul în aplicație, până o emite sau o abandonează explicit; orice mesaj care trimite în alt ecran are buton direct spre el și readuce la formular.
+3. Mesajele apărute după apăsarea unui buton (refuzuri, întrebări) cad sub zona vizibilă și trec neobservate. Ecranul aduce mesajul în vedere – în toată aplicația, nu doar la factură.
+4. „Acceptate din prima”: o notă respinsă o dată și apoi validată apare „2 pregătite · 50% acceptate din prima”; corect: 1 pregătită, 0% din prima. Retrimiterea nu e o pregătire nouă.
+5. Formularul de editare a notei nu are dată; asistentul nu poate corecta data, deși e motivul tipic de respingere.
+6. Cât timp nota e la validare, asistentul o poate edita sau șterge; cabinetul ar valida altceva decât a văzut.
+7. Nota de salarii e datată în ziua 28 a lunii (28.10, 28.11). Spune de unde vine data și ce temei are; dacă nu are, data e ultima zi a lunii.
+8. Click pe notificarea „Notă pregătită, de validat” doar închide lista; trebuie să ducă la nota de validat.
+9. O factură produce două note de validat separat (contare + ieșire stoc). Cabinetul validează sau respinge documentul o dată.
+10. Cardul „De depus” arată „3 nevalidate”, fereastra lui „Note de validat (2)”. Numerele se potrivesc.
+11. Notele de validat stau pe cardul „De depus”, sub textul „Patru-ochi e dezactivat: pregătești și depui singur”. Contabilul vede o etichetă pentru ce are de validat și un text fără termeni interni.
+12. Notificările despre note individuale nu numesc firma (cele grupate și celelalte notificări o numesc).
+13. Titlul notei de salarii se repetă: „Stat de plata 11/2026 · Stat de plată 11/2026” (primul fără diacritice).
+14. Registrul jurnal arată „1 de validat” pentru o notă respinsă.
+15. Respingerea apare pe statul de plată abia după „Contabilizează statul”; se vede la deschiderea statului.
+16. Ciornele de dinainte de mecanism (ex. F5 ciorna #1, 10/2026) apar „de validat” în registru, dar nu sunt în coadă și n-au cum ajunge acolo.
+17. După „Stabilește seria și emite”, întrebarea „Pleacă marfa acum?” se repune, deși fusese deja răspunsă.
+18. Scadența facturii e goală implicit; aplicația propune o scadență editabilă.
+19. Istoricul modificărilor din Date firmă arată valoarea tehnică („cantitativ_valoric”) și emailul în loc de numele persoanei; tabelul cere derulare orizontală.
+20. Pe Stocuri, formularul „NIR nou” e deschis fără să fie cerut.
+21. Sub nota propusă de salarii: „Semnalul de mai sus … rămâne vizibil cât timp cifrele diferă”, deși cifrele nu diferă – text de reformulat.
+PARTEA 3
+22. Numărul exact de titluri aprobate din registrul de titluri /ghid încă nepublicate – cerut de trei ori, fără răspuns. Îl raportezi în acest raport.
+Fiecare parte are commit propriu, fără poartă completă între ele. Poarta completă rulează o singură dată, la publicare, după ce trec toate gărzile care numără sau derivă din cod (patru respingeri ale porții în ultimele trei loturi au venit din ele).
+Înainte de execuție: listează operațiile pe care le vei rula, fără estimări de durată. În raportul final: durata măsurată a fiecărei operații executate și commitul fiecărei părți.
+La commitul de închidere: ZIP cu tot ce s-a schimbat (cod, documente noi, artefacte de măsurare) în ~/ghid_incoming/iconta_lot_07_10.zip; raportează calea exactă.
+Poți trece la următorul pas din listă.”*
+
+**Consecințe (executor) — P1:**
+1. **Pasul D1 al contractului uniform A1, executat (condiția din 04.10: „la prima modificare reală a `core/d112.py`, în același
+   commit”).** `_d112_genereaza` amesteca, în aceeași buclă per salariat, calculul și scrierea XML-ului. Extras: `calcul_d112(prof,
+   salariati, an, luna) -> CalculD112` (refuzurile, toate cifrele, efectul pe salariați) și `build_xml(calc)` (numai formatare);
+   `_d112_genereaza` rămâne compunerea lor pentru apelanții care au deja profilul și salariații. `pull` / `genereaza` / `obligatii`
+   primesc `Perioada` ca celelalte generatoare; cei 76 de apelanți s-au rescris mecanic (AST), iar o coliziune de alias (`_g` era
+   `d406` într-o funcție și `d112` în alta, `control_incrucisat`) s-a prins și s-a corectat. **Dovada că extragerea nu schimbă
+   nimic:** captură (plugin pytest) a fiecărui XML D112 și a fiecărui refuz pe cele 75 de fișiere de test care generează D112,
+   înainte și după: 92 de teste, **169 de XML-uri identice byte cu byte, 29 de refuzuri identice**. Singura diferență, explicată:
+   `_thunk_d112` (reconcilierea) construia un XML pe care nu-l folosea; acum cheamă doar `calcul_d112`. Detaliul XML stă ÎN AFARA
+   obiectului persistat (`CalculD112.asigurati_xml` poartă CNP-uri, pe care `AsiguratD112` le exclude deliberat).
+   `CONTRACT_BASELINE` 3 -> 2. Alternativa respinsă: un `genereaza` cu două semnături (an, luna | perioada) — două forme vii ale
+   aceluiași contract.

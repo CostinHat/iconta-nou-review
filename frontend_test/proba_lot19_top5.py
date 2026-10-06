@@ -80,7 +80,7 @@ with db.get_conn() as conn:
         if cur.fetchone()[0]:
             cur.execute("INSERT INTO suspendari_contract (salariat_id, data_inceput, data_sfarsit, tip) VALUES (3,'2026-09-08','2026-09-12','cfp')")
         from core import d112
-        x, _av = d112.genereaza(conn, S, 2026, 9)
+        x, _av = d112.genereaza(conn, S, Perioada(an=2026, luna=9))
         for a in ET.fromstring(x).iter():
             if a.tag.split("}")[-1] == "asigurat":
                 b1 = next(s for s in a if s.tag.split("}")[-1] == "asiguratB1")

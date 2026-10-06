@@ -10,6 +10,7 @@ D112 e cel mai expus la tautologie. Apara:
   - CAZUL NESIMPLU (angajat la salariul minim = facilitate) e SARIT, nu comparat -> nicio
     alarma falsa chiar daca valoarea lui difera.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import io
 import os
 import ast
@@ -113,8 +114,8 @@ def conn_recon():
 def test_reconciliere_curata_si_genereaza_trece(conn_recon):
     """PROBA FUNCTIONALA: genereaza() (cu POARTA wired) trece; reconciliaza NU raporteaza divergente;
     cei 2 simpli sunt reconciliati, cel la minim e sarit."""
-    xml, _av = _d112.genereaza(conn_recon, _SCHEMA, 2026, 6)   # daca gardul da fals-pozitiv -> AICI crapa
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    xml, _av = _d112.genereaza(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))   # daca gardul da fals-pozitiv -> AICI crapa
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     # calea 1 (generator): CAS 25% / CASS 10% pe brut (caz simplu)
     g = {s["id"]: s for s in sal}
     assert (int(g[1]["cas"]), int(g[1]["cass"])) == (1500, 600)   # 6000 x 25% / 10%
@@ -133,7 +134,7 @@ def test_reconciliere_curata_si_genereaza_trece(conn_recon):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_mutatie_cas_gresit_pica(conn_recon):
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     for s in sal:
         if s["id"] == 1:
             s["cas"] = 9999   # <- mutatie: CAS gresit pe un salariat simplu
@@ -145,7 +146,7 @@ def test_mutatie_cas_gresit_pica(conn_recon):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_mutatie_cass_gresit_pica(conn_recon):
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     for s in sal:
         if s["id"] == 2:
             s["cass"] = 1   # <- mutatie: CASS gresit
@@ -162,7 +163,7 @@ def test_mutatie_cass_gresit_pica(conn_recon):
 def test_facilitate_la_minim_reconciliata_si_mutatie_pica(conn_recon):
     """SUB-CAZ 1a: salariatul 3 (la minim 4050, toata luna, full-time) e RECONCILIAT cu facilitate
     (baza = sm - fac). Un cas gresit pe el PICA acum (inainte era sarit)."""
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     g = {s["id"]: s for s in sal}
     assert (float(g[3]["cas"]), float(g[3]["cass"])) == (938.0, 375.0)   # suma declarata, rotunjita ca in D112 (lot 06.10 pct.11)
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
@@ -183,7 +184,7 @@ def test_facilitate_proratata_ramane_sarita(conn_recon):
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (6,'PRORATA','F','1900101410016','2025-01-01',8,false)")
         # schimbare de salariu IN luna 6 (valabil_din 2026-06-16) -> facilitate proratata
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (6,'2025-01-01',4050),(6,'2026-06-16',4050)")
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert 6 in rap["sarite"] and 6 not in rap["reconciliati"], rap
 
@@ -235,7 +236,7 @@ def test_tichete_masa_cas_reconciliat_cass_ramane_afara(conn_recon):
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (7,'2025-01-01',6000)")
     # tichetele de masa cer pontaj CONFIRMAT (d112.py:472, HG 1045/2018 art.10(3)) - altfel pull ridica PerioadaNeconfirmata
     _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     g = {s["id"]: s for s in sal}
     assert int(g[7]["cas"]) == 1500, g[7]["cas"]                         # 6000 x 25% - neatins de tichete (EMIS = reconciliabil)
     # s["cass"] pastreaza DOAR CASS salarial (600); cass_tichete e camp SEPARAT. CASS-ul EMIS la ANAF = cass + cass_tichete
@@ -256,7 +257,7 @@ def test_tichete_masa_cas_reconciliat_cass_ramane_afara(conn_recon):
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
     assert "salariat 7 cas" in str(ei.value) and "generator=9999" in str(ei.value) and "cale2=1500" in str(ei.value), str(ei.value)
     # (c) MUTATIE pe cass -> NU pica (CASS numit-afara pentru tichete): limita declarata, nu omisiune tacuta
-    _prof, sal2 = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal2 = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     for s in sal2:
         if s["id"] == 7:
             s["cass"] = 1   # valoare absurda pe CASS
@@ -274,7 +275,7 @@ def test_tichete_masa_la_minim_ramane_sarit(conn_recon):
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time,tichet_masa_valoare) OVERRIDING SYSTEM VALUE VALUES (8,'MINTICH','H','1900101410018','2025-01-01',8,false,40)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (8,'2025-01-01',4050)")
     _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert 8 in rap["sarite"], rap
     assert 8 not in rap["reconciliati"] and 8 not in rap["reconciliati_cas_doar"], rap
@@ -293,7 +294,7 @@ def test_part_time_sub_prag_reconciliat_pe_baza_ridicata(conn_recon):
     with conn_recon.cursor() as cur:
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (10,'PTSUB','I','1900101410020','2025-01-01',4,true)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (10,'2025-01-01',2025)")
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     g = {s["id"]: s for s in sal}
     assert g[10]["pt_aplica"] is True, g[10]
     assert (int(g[10]["cas_min_pt"]), int(g[10]["cass_min_pt"])) == (938, 375), g[10]  # 3750 = 4050-300, x 25% / 10% (half-up): nivelul de referinta DIMINUAT (art.LXVI alin.(5))
@@ -315,7 +316,7 @@ def test_part_time_peste_prag_reconciliat_pe_brut(conn_recon):
     with conn_recon.cursor() as cur:
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (11,'PTPESTE','J','1900101410021','2025-01-01',4,true)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (11,'2025-01-01',8000)")
-    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     g = {s["id"]: s for s in sal}
     assert g[11]["pt_aplica"] is False, g[11]
     assert (int(g[11]["cas"]), int(g[11]["cass"])) == (2000, 800), g[11]   # 8000 x 25% / 10%

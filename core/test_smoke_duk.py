@@ -86,7 +86,7 @@ def test_smoke_d100(conn_smoke):
 
 @pytest.mark.skipif(not _DBOK or not _duk.poate_valida("d112"), reason="DB/DUK d112")
 def test_smoke_d112(conn_smoke):
-    xml, _ = d112.genereaza(conn_smoke, _SCHEMA, 2026, 6)
+    xml, _ = d112.genereaza(conn_smoke, _SCHEMA, Perioada(an=2026, luna=6))
     _valid(xml, "d112", an=2026, luna=6)
 
 
@@ -155,7 +155,7 @@ def test_poarta_artefact_blocheaza_total_corupt(conn_smoke):
         (d205, "build_xml", lambda: d205.genereaza(conn_smoke, _SCHEMA, Perioada(2026))),
         (d300, "build_xml", lambda: d300.genereaza(conn_smoke, _SCHEMA, Perioada(2026, luna=6))),
         (d394, "build_xml", lambda: d394.genereaza(conn_smoke, _SCHEMA, Perioada(2026, luna=6))),
-        (d112, "_d112_genereaza", lambda: d112.genereaza(conn_smoke, _SCHEMA, 2026, 6)),
+        (d112, "build_xml", lambda: d112.genereaza(conn_smoke, _SCHEMA, Perioada(an=2026, luna=6))),
     ]
     for mod, attr, gen in cases:
         orig = getattr(mod, attr)

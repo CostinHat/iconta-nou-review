@@ -9,6 +9,7 @@ declaratie_copii) + d112.pull + stat_plata_api paseaza deducerea (sub_26 derivat
 
 Aserturi ASCII.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import pytest
 from core import d112, db as _db, tenant_provisioning as _tp
 _SCHEMA = "test_d112_ded_supl"
@@ -57,7 +58,7 @@ def test_deducere_suplimentara_cablata_pull(conn):
             {"cnp": "1800303410016", "nume": "PARINTE_NU", "dn": "1980-06-01", "copii": 2, "decl": False},
         ])
     conn.commit()
-    _prof, sal = d112.pull(conn, _SCHEMA, 2026, 6)
+    _prof, sal = d112.pull(conn, _SCHEMA, Perioada(an=2026, luna=6))
     d = {s["nume"]: s for s in sal}
     # tineri <26: deducere mai mare, impozit mai mic
     assert d["TANAR"]["deducere"] > d["MATUR"]["deducere"], "tanar <26 trebuie sa aiba deducere suplimentara"
@@ -82,7 +83,7 @@ def test_tanar_sub26_diferenta_e_15pct_salariu_minim(conn):
             {"cnp": "1800101410013", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
         ])
     conn.commit()
-    _prof, sal = d112.pull(conn, _SCHEMA, 2026, 6)
+    _prof, sal = d112.pull(conn, _SCHEMA, Perioada(an=2026, luna=6))
     d = {s["nume"]: s for s in sal}
     sm = float(cota("salariu_minim", date(2026, 6, 1))[0])
     dif = d["TANAR"]["deducere"] - d["MATUR"]["deducere"]
@@ -98,6 +99,6 @@ def test_d112_cu_deducere_suplimentara_duk_valid(conn):
     with conn.cursor() as cur:
         _setup(cur, [{"cnp": "1900101410011", "nume": "TANAR", "dn": "2002-06-01", "copii": 0, "decl": False}])
     conn.commit()
-    xml = d112.genereaza(conn, _SCHEMA, 2026, 6)[0]
+    xml = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))[0]
     rez = duk.valideaza(xml, "d112", an=2026, luna=6)
     assert rez["stare"] == "valid", "D112 cu deducere suplimentara trebuie DUK-valid; rez=%r" % rez

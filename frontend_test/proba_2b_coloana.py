@@ -9,6 +9,7 @@ F1 (tenant_049, 3 salariați) din baza de producție, septembrie 2026, într-o t
   · cod VECHI: după DROP, statul de plată crapă (`SELECT … salariu_brut` din stat_plata_api) — coloana era încă citită;
   · cod NOU: aceleași cifre înainte și după (salariul vine numai din salariu_istoric), D112 DUK valid.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import os
 import sys
 
@@ -34,7 +35,7 @@ def _cifre(conn, et):
         conn.rollback()
         return None
     try:
-        xml, res = d112.genereaza(conn, S, AN, LUNA)
+        xml, res = d112.genereaza(conn, S, Perioada(an=AN, luna=LUNA))
         v = duk.valideaza(xml, "d112", an=AN, luna=LUNA, timeout=240)
         print("  %s — D112: %d caractere, DUK %s%s" % (et, len(xml), v["stare"],
                                                      (" — " + (v.get("erori") or "")[:160]) if v.get("erori") else ""))

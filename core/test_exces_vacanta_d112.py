@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """D3 (02.08.2026): excesul de tichete de vacanta peste plafonul anual (6 sm) = venit salarial in BRUTUL
 DECLARAT (S731) - regula DUK S74 recalc B4 din brut. Proba obligatorie: D112 cu exces trece DUKIntegrator."""
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import pytest
 from core import db as _db, tenant_provisioning as _tp, duk as _duk, beneficii_api as _ben, d112, perioada as _per
 
@@ -43,11 +44,11 @@ def conn():
 def test_d112_cu_exces_vacanta_valid_duk(conn):
     """D112 cu exces de vacanta (in brutul declarat) trece DUK; regresie: fara exces tot valid."""
     c, sid = conn
-    x0, _ = d112.genereaza(c, SCHEMA, 2026, 6)
+    x0, _ = d112.genereaza(c, SCHEMA, Perioada(an=2026, luna=6))
     r0 = _duk.valideaza(x0, "d112", an=2026, luna=6)
     assert r0["stare"] == "valid", "regresie fara exces: %s" % (r0.get("erori") or "")[:200]
     _ben.seteaza(c, SCHEMA, sid, 2026, 6, "vacanta", 30000)  # 30000 > 6*4050=24300 -> exces 5700
-    x1, _ = d112.genereaza(c, SCHEMA, 2026, 6)
+    x1, _ = d112.genereaza(c, SCHEMA, Perioada(an=2026, luna=6))
     r1 = _duk.valideaza(x1, "d112", an=2026, luna=6)
     assert r1["stare"] == "valid", "exces vacanta in brut respins de DUK: %s" % (r1.get("erori") or "")[:300]
 
@@ -65,7 +66,7 @@ def test_d112_cod06_urgenta_valid_duk(conn):
                     "data_acordare, data_inceput, data_sfarsit) "
                     "VALUES (%s,2026,6,'06',5,2000,6000,400,100,false,5,5,0,2000,0,0,150,500,1350,123,"
                     "'AB','1234567',1,'2026-06-01','2026-06-01','2026-06-05')", (sid,))
-    x, _ = d112.genereaza(c, SCHEMA, 2026, 6)
+    x, _ = d112.genereaza(c, SCHEMA, Perioada(an=2026, luna=6))
     assert 'D_9="06"' in x and 'D_11="123"' in x, "D_11 nu e emis la cod 06"
     r = _duk.valideaza(x, "d112", an=2026, luna=6)
     assert r["stare"] == "valid", "D112 cod 06 respins de DUK: %s" % (r.get("erori") or "")[:400]

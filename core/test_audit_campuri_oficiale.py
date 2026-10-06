@@ -43,7 +43,7 @@ def _db_ok():
 _GEN = {
     "d101": lambda c: d101.genereaza(c, _SCHEMA, Perioada(2026)),
     "d100": lambda c: d100.genereaza(c, _SCHEMA, Perioada(2026, trim=2), {"cota": "16"}),
-    "d112": lambda c: d112.genereaza(c, _SCHEMA, 2026, 6),
+    "d112": lambda c: d112.genereaza(c, _SCHEMA, Perioada(an=2026, luna=6)),
     "d205": lambda c: d205.genereaza(c, _SCHEMA, Perioada(2026)),
     "d300": lambda c: d300.genereaza(c, _SCHEMA, Perioada(2026, luna=6)),
     "d301": lambda c: d301.genereaza(c, _SCHEMA, Perioada(2026, luna=6)),

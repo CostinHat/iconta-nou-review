@@ -152,12 +152,12 @@ def test_cotele_contributii_din_cote_cu_temei():
 
 
 def test_d112_ruteaza_cotele_prin_cote_nu_literale():
-    # GARD anti-hardcode: _d112_genereaza si pull NU mai contin literalele 0.25/0.10/0.0225
+    # GARD anti-hardcode: calcul_d112 si pull NU mai contin literalele 0.25/0.10/0.0225  [D1: era _d112_genereaza, azi compunere calcul+build]
     # pentru cotele de contributii - trebuie sa citeasca din cota(). Daca cineva rescrie
     # literalul, testul pica si trimite inapoi la COTE (sursa unica period-aware).
     import inspect, re
     from core import d112
-    src = inspect.getsource(d112._d112_genereaza)
+    src = inspect.getsource(d112.calcul_d112)
     assert "bazac * 0.25" not in src   # CAS: routat prin _cota_cas
     assert "bazac * 0.10" not in src   # CASS: routat prin _cota_cass
     assert "bimp * 0.10" not in src    # impozit: routat prin _cota_imp

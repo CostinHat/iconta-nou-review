@@ -1114,7 +1114,7 @@ except Exception as _eiz:
 # genereaza(conn, schema, perioada, ...). Pasul 4 din CICLUL DE NECONFORMITATE: fara gard, al zecelea
 # generator nu respecta contractul. Ratchet: NECONFORM poate doar SCADEA (baseline 9 la start; coboara
 # pe masura ce se converteste fiecare modul; la 0, orice modul neconform BLOCHEAZA).
-CONTRACT_BASELINE = 3
+CONTRACT_BASELINE = 2   # [06.10.2026, lotul 07.10] d112 convertit (pasul D1): 3 -> 2
 try:
     _dgen = []
     for _f in sorted(os.listdir(os.path.join(BAZA_PY, "core"))):

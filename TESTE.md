@@ -45,6 +45,51 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **LOTUL 07.10 — D112 ziua de diminuare (D1) + retestul Costin 06.10 (F5 salarii nov. 2026, F1 factură) + titlurile aprobate
+  nepublicate (comanda Costin 06.10.2026)** — verbatim în DECIZII 06.10.2026 („Lotul 07.10”). Commit propriu pe fiecare parte, fără
+  poartă completă între ele (gărzile țintite + cele care numără/derivă din cod); o singură poartă completă la publicare;
+  ZIP `~/ghid_incoming/iconta_lot_07_10.zip`.
+  - ultim: — (început 06.10.2026)
+  - urmator: P1. STARE = IN LUCRU
+  - pasi:
+    P1. `core/d112.py` — pasul D1 al contractului uniform A1 (decizia Costin 04.10, declanșat acum): `calcul_d112(prof, salariati,
+        an, luna) -> CalculD112` + `build_xml(calc)` extrase din `_d112_genereaza` (rămâne compunerea lor), `pull` / `genereaza` /
+        `obligatii` pe `Perioada`, cei 76 de apelanți rescriși mecanic (AST); dovada = XML identic byte cu byte pe cele 75 de fișiere
+        de test care generează D112 (captură înainte/după); `CONTRACT_BASELINE` 3 -> 2. APOI reparația: `pull` proratează salariul
+        realizat, tichetele și pragul part-time pe zilele CERTIFICATULUI (`concedii_medicale.zile`, ca statul de plată), iar
+        generatorul declară zilele lucrate (B1_15/B2_2/B4_1) fără zilele certificatului; secțiunile B3/D rămân pe zilele plătite.
+        Datoria `test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare` -> test permanent [citare-istorica: datoria închisă în P1, testul
+        permanent e `core/test_d112_ziua_diminuare.py`]; mutație; probă DUK; commit P1.
+    P2. retestul 06.10, pct.2–21 (comanda Costin, în ordinea gravității):
+        2. factura începută păstrată oricum ar naviga contabilul (ciornă pe utilizator+firmă, restaurată la deschidere, ștearsă la
+           emitere / „Renunță la factură”); orice refuz care trimite în alt ecran are buton spre el (`detaliu.ecran`) și readuce
+           la formular — metoda de stoc inclusă.
+        3. mesajele apărute după un buton se aduc în vedere — în helperii comuni (`arataMesaj`, `eroareCamp`, `motivInZona`,
+           refuzurile emiterii), deci în toată aplicația; gard.
+        4. „acceptate din prima” pe NOTĂ (perioada `nota-<id>`), nu pe rând de coadă — `asistenti_api.calitate`,
+           `capacitate_api`, `centralizator`, `sinteza_zilnica`.
+        5. editorul notei are câmpul dată; schimbarea datei verifică și luna NOUĂ (închisă -> refuz).
+        6. nota la validare (`la_senior`) nu se editează / șterge (server + ecran).
+        7. data notelor lunare (salarii, amortizare) = ultima zi a lunii (fără temei pentru 28); `d406_active` idem.
+        8. clic pe notificarea de notă -> deschide „De validat” la notă (pentru autor: Registrul jurnal al firmei).
+        9. o factură = UN element de validat (contare + ieșire de stoc împreună), validat / respins o dată.
+        10. cardul și fereastra numără din aceeași sursă.
+        11. eticheta pentru notele de validat + text fără termeni interni.
+        12. notificările despre note numesc firma.
+        13. titlul notei de salarii nu se repetă (descriere ≠ document, documentul din `eticheta_document`).
+        14. registrul jurnal: „de validat” = în coadă, nu orice ciornă; respinsele numărate separat.
+        15. respingerea notei de salarii vizibilă la deschiderea statului.
+        16. ciornele de dinainte de mecanism: nu apar „de validat”; numite distinct.
+        17. „Stabilește seria și emite” nu repune „Pleacă marfa acum?”.
+        18. scadența propusă = data emiterii + 30 de zile (Legea 72/2013 art.3 alin.(3) lit.a), editabilă.
+        19. istoricul Date firmă: etichete pentru valori, numele persoanei, fără derulare orizontală.
+        20. Stocuri: „NIR nou” închis până e cerut (clasa `hidden` + `display:block`: Stocuri, Casa ×2, Încasări/plăți).
+        21. fraza „Semnalul de mai sus …” doar când cifrele diferă.
+        Gărzi + mutații; probă de browser + cele trei unelte vizuale pe ecranele atinse; commit P2.
+    P3. pct.22 — numărul exact al titlurilor aprobate nepublicate (sursa de adevăr = paginile din `ghid/`), registrul
+        `index_titluri_ghid.csv` adus la zi cu paginile publicate + gard; commit P3.
+    Închidere: registre (GARZI, DECIZII, TESTE, ISTORIC, CONFORMITATE, PREDARE), blocuri generate, verificator, poarta completă,
+    four-way, ZIP, raportul cu duratele măsurate.
 - fir: **VALIDAREA NOTELOR PRIN COADĂ + CONCEDIUL MEDICAL ÎN NOTA DE SALARII (comanda Costin 06.10.2026, răspunsul la §6 din
   LOT_06_10)** — verbatim în DECIZII 06.10.2026. Ramura `lucru/validare-note`, commit pe pas fără poartă completă (pct.4 al
   comenzii), o singură poartă completă la commitul de închidere de pe `main`; ZIP `~/ghid_incoming/iconta_validare_note.zip`.

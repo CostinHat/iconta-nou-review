@@ -10328,5 +10328,18 @@ Categoriile **6. Acces** (cine pregătește / cine validează), **3. Calcul fisc
 | autorul nu trece la altă cerere | `::test_autorul_cererii_ajunge_pe_conexiune_si_se_sterge_la_intoarcere` | note scrise pe numele altcuiva prin conexiunea reutilizată | `RESET iconta.utilizator` scos -> roșu | depinde de reutilizarea conexiunii (pool LIFO) |
 | concediul medical: 421 și 423 la ban | `::test_concediul_medical_in_nota_cu_421_si_423_soldate` (2 cazuri) | reținerile indemnizației pe 421; netul CM de pe fluturaș diferit de cel declarat; zile angajator 0 pe continuare | împărțirea scoasă / `stat_final` neutralizat / regula veche a zilelor -> roșu | certificatul INIȚIAL nu e acoperit (datoria D112 de mai jos) |
 | plata închide 421 și 423 | `::test_fisierul_de_plata_inchide_si_421_si_423` | fișier SEPA fără indemnizația CM | `cm_net` scos din sumă -> roșu | — |
-| datoria D112 (zilele certificatului) | `core/test_datorie.py::test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare` (xfail strict) | uitarea defectului | — (pică singur când D112 se repară) | reparația cere `core/d112.py` -> pasul D1 (decizie) |
+| datoria D112 (zilele certificatului) | `core/test_datorie.py::test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare` (xfail strict) [citare-istorica: datoria închisă în lotul 07.10 (06.10.2026), înlocuită de `core/test_d112_ziua_diminuare.py`] | uitarea defectului | — (pică singur când D112 se repară) | reparația cere `core/d112.py` -> pasul D1 (decizie) |
 
+
+## 06.10.2026 — Lotul 07.10, partea 1: D112 pe zilele certificatului (ziua de diminuare) + pasul D1 al contractului uniform
+
+Categoriile **3. Calcul fiscal** (salariul realizat într-o lună cu concediu medical) și **8. Arhitectură** (contractul uniform al
+generatoarelor). Deciziile: DECIZII 06.10.2026 („Lotul 07.10”, P1).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| D112 = statul pe certificatul cu diminuare | `core/test_d112_ziua_diminuare.py::test_salariul_realizat_d112_egal_statul_pe_certificatul_initial_cu_diminuare` | un salariu realizat declarat în D112 diferit de cel din statul de plată, într-o lună cu certificat inițial | `zile_cm` din `d112.pull` pus înapoi pe zilele plătite -> roșu (4909,09 ≠ 4636,36) | un singur salariat, cod 01; alte coduri trec pe aceeași cale (`zile_cm`), nu au caz propriu |
+| zilele lucrate fără ziua de diminuare, DUK valid | `::test_d112_zile_lucrate_fara_ziua_de_diminuare_si_duk_valid` | B1_15/B2_2/B4_1 care numără ziua de concediu ca lucrată | aceeași mutație -> roșu (18 ≠ 17) | DUK-ul instalat e judecătorul; D_14a/D_15a („zile prestații”) rămân egale cu cele plătite — datoria 07/2026 deja consemnată mai sus |
+| fără diminuare: nimic de scăzut | `::test_fara_diminuare_zilele_platite_egale_cu_ale_certificatului` | o zi scăzută pe un certificat exceptat (program național) | — (verifică ramura care NU se schimbă) | — |
+| contractul uniform A1 (d112) | `verificator_conformitate.py` (`CONTRACT_BASELINE` 3 -> 2) | un generator convertit care revine la forma veche | — (clichet: crește -> blochează) | verifică NUMELE funcțiilor, nu comportamentul; comportamentul l-a dovedit captura XML (DECIZII) |
+| generatorul folosit chiar de `genereaza` | `core/test_cod_boala_nomenclator.py` (AST pe `calcul_d112`), `core/test_smoke_duk.py` (mutația pe `build_xml`) | o poartă probată pe o funcție pe care `genereaza` n-o mai cheamă | `build_xml` neînfășurat / `_cod_boala_acceptat` scos din `calcul_d112` -> roșu | — |

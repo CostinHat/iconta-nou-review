@@ -32,6 +32,7 @@ Un total pe amandoua la un loc ar amesteca „cifrele nu se potrivesc" cu „cod
 
 NU SCRIE NIMIC: `pg_stat_user_tables` se citeste inainte si dupa, iar diferenta se tipareste.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import os
 import sys
 from decimal import Decimal
@@ -71,7 +72,7 @@ def nota_forma_veche(conn, schema, an, luna):
     Copie deliberata a codului scos din `note_lunare` — vezi antetul pentru de ce."""
     from core import d112 as _d112, salarizare as _sz, beneficii_api as _ben
     from datetime import date as _dt
-    _prof, salariati = _d112.pull(conn, schema, an, luna)
+    _prof, salariati = _d112.pull(conn, schema, Perioada(an=an, luna=luna))
     ref = _dt(an, luna, 1)
     agg = {}
     cadou_total = sum(_ben.lista_luna(conn, schema, an, luna, "cadou").values())

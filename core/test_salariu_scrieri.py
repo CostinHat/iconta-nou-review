@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Teste PASUL 2b: scrierile salariului trec pe salariu_istoric (SURSA UNICA); citirile pe curent."""
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import pytest
 
 from core import db as _db, tenant_provisioning as _tp
@@ -66,7 +67,7 @@ def test_facilitate_prorata_la_marire_prin_API(conn):
     # Cap-coada: marire la mijloc de luna prin API -> D112 prorateaza facilitatea pe zilele la minim (lit.a).
     sid = _creeaza(conn, 4050)
     sa.actualizeaza_salariat(conn, sid, salariu_brut=5000, valabil_din="2026-06-16")
-    _, sal = d112.pull(conn, SCHEMA_T, 2026, 6)
+    _, sal = d112.pull(conn, SCHEMA_T, Perioada(an=2026, luna=6))
     assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2)   # 142.86 (zile la minim 1-15 iun)
 
 

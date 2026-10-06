@@ -28,7 +28,7 @@ def main():
             cur.execute('SET search_path TO %s, public' % SCH)
         x, _ = d300.genereaza(conn, SCH, Perioada(2026, luna=9)); print("D300:", _val(x, "d300"))
         r = d394.genereaza(conn, SCH, Perioada(2026, luna=9)); print("D394:", _val(r[0] if isinstance(r, tuple) else r, "d394"))
-        r = d112.genereaza(conn, SCH, 2026, 9); print("D112:", _val(r[0] if isinstance(r, tuple) else r, "d112"))
+        r = d112.genereaza(conn, SCH, Perioada(an=2026, luna=9)); print("D112:", _val(r[0] if isinstance(r, tuple) else r, "d112"))
         r = d100.genereaza(conn, SCH, Perioada(2026, trim=3)); print("D100:", _val(r[0] if isinstance(r, tuple) else r, "d100", luna=None))
         # D406 (SAF-T): deblocat dupa reparatia reconcilierii SPV<->stoc (finding inchis) + curatarea F1 (cont 371, cantitate D2).
         r = d406.genereaza(conn, SCH, 2026, 9); print("D406:", _val(r[0] if isinstance(r, tuple) else r, "d406"))

@@ -35,6 +35,7 @@ DOAR daca totalul coincide ... refuzam sa scriem"*. Nimic nu se scria si nimic n
 niciodata nota contabila. Proza descria o garantie inexistenta, iar testele treceau, fiindca
 testele cheama functiile direct.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 from decimal import Decimal, ROUND_HALF_UP
 
 MODUL = "salarii_contare"
@@ -150,7 +151,7 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
     """
     from core import d112 as _d112, salarizare as _sz, beneficii_api as _ben
     from datetime import date as _dt
-    _prof, salariati = _d112.pull(conn, schema, an, luna)
+    _prof, salariati = _d112.pull(conn, schema, Perioada(an=an, luna=luna))
     ref = _dt(an, luna, 1)
     agg = {}
     # [F133 Faza 2b1] cadou NEIMPOZABIL: nu trece prin calcul_salariu/D112, dar e cheltuiala reala
@@ -210,7 +211,7 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             k = (n["debit"], n["credit"])
             agg[k] = agg.get(k, Decimal("0")) + _d(n["suma"])
     # [R34] cele patru pozitii, CITITE din obligatiile declarate ale perioadei
-    obl = _d112.obligatii(conn, schema, an, luna, xml_d112)
+    obl = _d112.obligatii(conn, schema, Perioada(an=an, luna=luna), xml_d112)
     cu_cm = (cm_ang + cm_fnuass) > 0
     for cod, debit, credit in CONT_D112:
         v = _d(obl.get(cod, 0))
@@ -330,7 +331,7 @@ def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
     NU ridica si nu refuza nimic: semnalul e informatie pentru om, nu o poarta."""
     from core import d112 as _d112
     from core import control_incrucisat as _ci
-    xml = xml_d112 if xml_d112 is not None else _d112.genereaza(conn, schema, an, luna)[0]
+    xml = xml_d112 if xml_d112 is not None else _d112.genereaza(conn, schema, Perioada(an=an, luna=luna))[0]
     totaluri = _ci.totaluri_d112_din_xml(xml)
     rulaj = {}
     for d, c, s in note:
@@ -365,7 +366,7 @@ def propunere(conn, schema, an, luna):
     din interior nu persista (verificat: `d112.py`, `d112_reconciliere.py` si `reconciliere_emis.py`
     n-au niciun INSERT/UPDATE/DELETE)."""
     from core import d112 as _d112
-    xml, _av = _d112.genereaza(conn, schema, an, luna)   # [R34] o singura generare pe raspuns
+    xml, _av = _d112.genereaza(conn, schema, Perioada(an=an, luna=luna))   # [R34] o singura generare pe raspuns
     from core import stat_plata_api as _sp
     note, nr = note_lunare(conn, schema, an, luna, xml_d112=xml)
     div = control_coerenta(note, conn, schema, an, luna, xml_d112=xml)

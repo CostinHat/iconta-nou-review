@@ -119,7 +119,7 @@ def test_d112_pull_vede_salariatul(schema):
     with schema.cursor() as cur:
         cur.execute(
             "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,ore_zi,part_time) VALUES ('POPESCU','ION','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
-    prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    prof, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert prof.get("cui") == "14399840"
     assert len(sal) == 1, "salariatul activ nu ajunge in pull"
     assert sal[0]["nume"] == "POPESCU"
@@ -132,7 +132,7 @@ def test_d112_pull_ignora_salariatul_plecat(schema):
     with schema.cursor() as cur:
         cur.execute(
             "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,data_incetare,ore_zi,part_time) VALUES ('DEMISIONAT','X','1900101410011','2026-01-01','2026-05-31',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
-    _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    _, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert sal == [], "salariatii cu contract incetat inainte de luna nu intra in D112"
 
 
@@ -226,7 +226,7 @@ def test_d112_pull_prorateaza_facilitatea_la_incetare(schema):
     with schema.cursor() as cur:
         cur.execute(
             "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,data_incetare,ore_zi,part_time) VALUES ('MIN','A','1900101410011','2026-01-01','2026-06-20',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 4050 FROM s) SELECT id FROM s")
-    _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    _, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert len(sal) == 1
     assert float(sal[0]["facilitate"]) == 200.0, sal[0].get("facilitate")   # 300 x 14/21 (incetare 20 iun 2026), nu 300 intreg
 
@@ -240,7 +240,7 @@ def test_d112_facilitate_prorata_la_mentinere_partiala(schema):
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MARIRE','A','1900101410011','2026-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) "
                     "VALUES (1,'2026-01-01',4050),(1,'2026-06-16',5000)")
-    _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    _, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert len(sal) == 1
     assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2), sal[0].get("facilitate")  # 142.86 = 300 x 10/21 (zile la minim 1-15 iun)
 
@@ -265,7 +265,7 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
                     "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
                     "(1,2026,6,'08',10,%s,0,0,85,false,10,5,5,%s,%s,0,0,0,0,'AB','1','2026-06-01','2026-06-01','2026-06-10')",
                     (cm_base, CM_ANG, CM_FNUASS))
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<asiguratB4[^>]*B4_5="(\d+)"[^>]*B4_7="(\d+)"', xml)
     assert m, "randul B4 nu s-a gasit in XML"
     b4_5 = int(m.group(1))   # baza CASS
@@ -300,7 +300,7 @@ def test_d112_cod09_fara_cnp_copil_blocheaza_emisia(schema):
     from core import d112
     _seed_cod09(schema, None)
     with pytest.raises(ValueError) as ei:
-        d112.genereaza(schema, SCHEMA_T, 2026, 6)
+        d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert "D_8" in str(ei.value) and "cod 09" in str(ei.value), str(ei.value)
 
 
@@ -312,7 +312,7 @@ def test_d112_cod09_cu_cnp_copil_emite_d8_si_e_duk_valid(schema):
     from core import d112, duk as _duk
     import re
     _seed_cod09(schema, "5200515400016")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     d = re.search(r'<asiguratD[^>]*D_9="09"[^>]*/>', xml)
     assert d, "randul asiguratD cod 09 lipseste"
     assert 'D_8="5200515400016"' in d.group(0), "D_8 (CNP copil) neemis: " + d.group(0)
@@ -348,7 +348,7 @@ def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
     with schema.cursor() as cur:
         _seed(cur)
     def _imp():
-        xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+        xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
         return int(re.search(r'E1_6="(\d+)"', re.search(r"<asiguratE1[^>]*/>", xml).group(0)).group(1))
     assert _imp() == 676, "impozit multi-cert (cod01 impozabil + cod09 neimpozabil) trebuie 676"
     # RED built-in: golirea setului neimpozabil -> cod 09 devine impozabil -> 789 (dovada partitie PER-CERT, nu pe total)
@@ -394,7 +394,7 @@ def test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta(schema):
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
                     "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'08',6,0,6,0,4000,12600,600,'AB','1','2026-06-01',"
                     "'2026-06-01','2026-06-06',1)")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
     e1 = re.search(r"<asiguratE1[^>]*/>", xml).group(0)
     def g(seg, a): return int(re.search(a + r'="(\d+)"', seg).group(1))
@@ -426,7 +426,7 @@ def test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia(schema):
     with schema.cursor() as cur:
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
-    prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    prof, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     rez = d112._d112_genereaza(prof, sal, 2026, 6)   # scrie contributiile EMISE inapoi in sal
     xml = rez[0] if isinstance(rez, tuple) else rez
     b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
@@ -456,10 +456,12 @@ def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
     with schema.cursor() as cur:
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CM','R','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',8400)")
-        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile_ang,zile_fnuass,brut_ang,brut_fnuass,"
+        # [lotul 07.10] `zile` = zilele certificatului (01-05.06.2026: 5 zile lucrătoare). Fixtura le omitea (0 zile, 5 plătite —
+        # date imposibile, pe care statul de plată le ignora deja); D112 numără acum, ca statul, zilele certificatului.
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,brut_fnuass,"
                     "serie,numar,data_acordare,data_inceput,data_sfarsit) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,0,4000,0,'AB','1','2026-06-01','2026-06-01','2026-06-05')")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,5,0,4000,0,'AB','1','2026-06-01','2026-06-01','2026-06-05')")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     b1 = re.search(r"<asiguratB1[^>]*/>", xml).group(0)
     b2 = re.search(r"<asiguratB2[^>]*/>", xml).group(0)
     b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
@@ -488,7 +490,7 @@ def test_d112_maternitate_cod08_c2_rd3(schema):
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
                     "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
                     "(1,2026,6,'08',10,4000,6000,400,85,false,10,0,10,0,4000,0,300,1000,2700,'AB','1','2026-06-01','2026-06-01','2026-06-10')")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     import re
     m = re.search(r'<angajatorC2[^>]*/>', xml)
     assert m, "angajatorC2 negasit"
@@ -507,7 +509,7 @@ def test_d112_urgenta_cod06_emite_d11(schema):
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
                     "brut_fnuass, cass, impozit, cas, net, cod_urgenta, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
                     "(1,2026,6,'06',10,4000,6000,400,100,false,10,5,5,2000,2000,0,300,1000,2700,123,'AB','1','2026-06-01','2026-06-01','2026-06-10')")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     import re
     m = re.search(r'<asiguratD[^>]*D_9="06"[^>]*/>', xml)
     assert m, "asiguratD cod 06 negasit in XML"
@@ -578,7 +580,7 @@ def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MAJ','A','1900101410011','2026-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) "
                     "VALUES (1,'2026-01-01',4050),(1,'2026-07-01',5000)")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 2)   # FEBRUARIE, inainte de majorarea de la 01.07
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=2))   # FEBRUARIE, inainte de majorarea de la 01.07
     m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
     assert m, "randul asiguratB4 nu s-a gasit in XML"
     at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
@@ -613,7 +615,7 @@ def test_d112_part_time_baza_minima_salariul_minim_integral(schema):
     from core import d112
     with schema.cursor() as cur:
         cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'PT','A','1900101410011','2026-01-01',4,true) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 2000 FROM s) SELECT id FROM s")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
     at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
     b5p = int(at.get("B4_5P", 0))
@@ -631,9 +633,9 @@ def test_d112_exclude_salariat_neangajat_inca_in_luna(schema):
     from core import d112
     with schema.cursor() as cur:
         cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'NOU','A','1900101410011','2026-03-15',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
-    _p, sal_ian = d112.pull(schema, SCHEMA_T, 2026, 1)   # inainte de angajare (15.03)
+    _p, sal_ian = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=1))   # inainte de angajare (15.03)
     assert len(sal_ian) == 0, "salariat angajat 15.03 NU trebuie inclus in D112 pe ianuarie (era %d)" % len(sal_ian)
-    _p, sal_mar = d112.pull(schema, SCHEMA_T, 2026, 3)   # luna angajarii
+    _p, sal_mar = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=3))   # luna angajarii
     assert len(sal_mar) == 1, "salariat angajat 15.03 trebuie inclus in D112 pe martie (era %d)" % len(sal_mar)
 
 
@@ -649,7 +651,7 @@ def test_d112_cod15_D23_RM(schema):
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
                     "VALUES (1,2026,6,'15',10,0,10,0,3000,6000,300,'AB','1','2026-06-01','2026-06-01','2026-06-10',1)")
-    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _ = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<asiguratD[^>]*D_9="15"[^>]*/>', xml)
     assert m and 'D_23="RM"' in m.group(0), "cod 15 trebuie D_23=RM: %s" % (m.group(0) if m else "randul lipseste")
 
@@ -667,7 +669,7 @@ def test_d112_cod07_carantina_in_C2_prevenire(schema):
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
                     "VALUES (1,2026,6,'07',8,0,8,0,1600,5000,200,'AB','1','2026-06-01','2026-06-01','2026-06-08',1)")
-    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _ = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<angajatorC2[^>]*/>', xml)
     assert m, "angajatorC2 lipseste"
     c2 = dict(re.findall(r'(\w+)="([^"]*)"', m.group(0)))
@@ -687,7 +689,7 @@ def test_d112_cod10_D13_aviz(schema):
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,cod_urgenta) "
                     "VALUES (1,2026,6,'10',20,0,20,0,3600,5500,262,'AB','1','2026-06-01','2026-06-01','2026-06-20',1,55501)")
-    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _ = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<asiguratD[^>]*D_9="10"[^>]*/>', xml)
     assert m and 'D_13="55501"' in m.group(0), "cod 10 trebuie D_13 (nr aviz): %s" % (m.group(0) if m else "randul lipseste")
 
@@ -709,7 +711,7 @@ def test_d112_cm_suma_lipsa_din_stocare_recalc_din_media(schema):
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
                     "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,3,2,0,0,6000,0,'AB','1',"
                     "'2026-06-01','2026-06-01','2026-06-05',1)")
-    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     m = re.search(r'<asiguratB3[^>]*/>', xml)
     assert m, "asiguratB3 lipseste din XML"
     b3 = m.group(0)

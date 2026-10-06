@@ -15,6 +15,7 @@ intrari beneficii_lunare via ben_ids).
 
 Aserturi/markere ASCII.
 """
+from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import pytest
 from core import beneficii_api as _ben
 from core import d112
@@ -104,7 +105,7 @@ def test_cadou_taxabil_ajunge_in_d112_E3_73(conn):
     with conn.cursor() as cur:
         _setup(cur, [("altul", 400)])
     conn.commit()
-    xml, _res = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    xml, _res = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     assert 'E3_73="400"' in xml, "cadou taxabil 400 trebuie emis in E3_73; XML nu-l contine"
 
 
@@ -114,7 +115,7 @@ def test_fara_cadou_niciun_E3_73(conn):
     with conn.cursor() as cur:
         _setup(cur, [])
     conn.commit()
-    xml, _res = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    xml, _res = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     assert "E3_73=" not in xml, "fara cadou nu se emite E3_73"
 
 
@@ -127,11 +128,11 @@ def test_cadou_creste_brutul_declarat(conn):
     with conn.cursor() as cur:
         _setup(cur, [])
     conn.commit()
-    x0, _ = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    x0, _ = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     with conn.cursor() as cur:
         _setup(cur, [("altul", 400)])
     conn.commit()
-    x1, _ = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    x1, _ = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     b0 = int(re.search(r'B1_sal2="(\d+)"', x0).group(1))
     b1 = int(re.search(r'B1_sal2="(\d+)"', x1).group(1))
     # structura D112 (anaf_surse/d112_struct_anaf.txt) câmp 29b B1_sal2: „Venitul brut din salarii și asimilate salariului
@@ -152,6 +153,6 @@ def test_cadou_d112_ramane_duk_valid(conn):
     with conn.cursor() as cur:
         _setup(cur, [("altul", 400)])
     conn.commit()
-    xml, _res = d112.genereaza(conn, _SCHEMA, 2026, 6)
+    xml, _res = d112.genereaza(conn, _SCHEMA, Perioada(an=2026, luna=6))
     rez = duk.valideaza(xml, "d112", an=2026, luna=6)
     assert rez["stare"] == "valid", "D112 cu cadou trebuie DUK-valid; rez=%r" % rez
