@@ -54,6 +54,10 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("coada_adauga", '_refuz_duk("ERORI_DUK", _rez, _sev)'): (
+        "Comanda Costin 07.10.2026, C3: „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.” Eroarea DUK refuză intrarea (422) FĂRĂ portiță — înainte `motiv_trecere` trecea și peste erori." ),
+    ("coada_adauga", '_refuz_duk("ATENTIONARI_NECONFIRMATE", _rez, _sev)'): (
+        "Comanda Costin 07.10.2026, C3: „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.” Atenționarea neconfirmată se refuză (422) cerând confirmarea scrisă; cu ea, intră." ),
     ("stocuri_descarcare", 'refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], rez.get("regula"))'): (
         "Lotul 07.10 pct.2 (comanda Costin 06.10.2026): „orice mesaj care trimite în alt ecran are buton direct spre el”. Refuzul "
         "metodei de stoc nedeclarate (Date firmă) rămâne același refuz (400, același mesaj), dar STRUCTURAT cu ținta `ecran`, ca "
@@ -142,6 +146,18 @@ BIFA_INLOCUIRI = {
     "achizitie_taxare_inversa": ({"get": 1, "strip": 1, "lower": 1}, {"get": 1},
                                  "furnizor_platitor_tva; al doilea `corp.get` (sirul trimis la se_aplica) inlocuit "
                                  "de verdictul ANAF/bifa `_tert_pl`"),
+}
+
+
+#: [07.10.2026] Același refuz (același mesaj), cu UN cod HTTP ÎN PLUS — `(funcție, mesaj): (codul adăugat, motivul)`. Mai strâns
+#: decât ABATERI (care acceptă alt mesaj sub același cod) și decât PERECHI_ADAUGATE (care acceptă o pereche nouă oricare ar fi
+#: codul): se scutește EXACT perechea veche `(coduri, m)` față de cea nouă `(coduri | {cod}, m)`, nimic altceva.
+#: Anti-vacuu: `test_CODURILE_adaugate_chiar_sunt_in_cod`.
+CODURI_ADAUGATE = {
+    ("coada_aproba", 'r.get("mesaj", cod)'): (422, "Comanda Costin 07.10.2026, C3: „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.” Aprobarea refuză acum cu 422 (nu 404) un element cu ERORI_DUK sau cu "
+                                                   "ATENTIONARI_NECONFIRMATE — e o stare a datelor, nu o lipsă."),
+    ("coada_depune", 'r.get("mesaj", cod)'): (422, "Comanda Costin 07.10.2026, C3: „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.” Depunerea refuză acum cu 422 (nu 404) un element cu ERORI_DUK sau cu "
+                                                   "ATENTIONARI_NECONFIRMATE — e o stare a datelor, nu o lipsă."),
 }
 
 
@@ -256,6 +272,20 @@ def test_ADAUGARILE_declarate_chiar_exista():
         assert forme & mesaje, (
             "%s: adaugarea declarata (%s) NU e in cod — tabelul ar scuza o schimbare de contract reala"
             % (fn_nume, msg_repr))
+
+
+def test_CODURILE_adaugate_chiar_sunt_in_cod():
+    """ANTI-VACUU pe CODURI_ADAUGATE: codul declarat trebuie să fie chiar printre codurile perechii cu acel mesaj, în funcția
+    numită. MUTAȚIE: 422 scos din maparea lui `coada_depune` -> pică (scutirea ar acoperi o schimbare care nu există)."""
+    harta = _harta_cod()
+    uc_dupa_nume = {nume: nod for (_mod, nume), nod in _module_uc().items()}
+    for (fn_nume, msg_repr), (cod, motiv) in CODURI_ADAUGATE.items():
+        assert len(motiv) > 80, "%s: motivul e prea scurt ca să fie util" % fn_nume
+        corp = uc_dupa_nume.get(fn_nume)
+        assert corp is not None, "%s: funcția declarată nu există în stratul use-case" % fn_nume
+        forme = _forme_mesaj(msg_repr)
+        coduri = [p[0] for p in perechi_noi(corp, harta) if p[1] in forme]
+        assert coduri and all(cod in c for c in coduri), "%s: codul %s declarat adăugat NU e în cod: %s" % (fn_nume, cod, coduri)
 
 
 def _sursa_veche():
@@ -518,6 +548,17 @@ def _fara_abateri(nume, ramase_v, ramase_n):
             continue
         forme = _forme_mesaj(mesaj)
         ramase_v = [p for p in ramase_v if p[1] not in forme]
+    # [07.10.2026] Același mesaj, un cod HTTP în plus, DECLARAT: perechea veche și cea nouă se scot împreună, numai dacă
+    # diferă exact prin codul declarat.
+    for (rut, mesaj), (cod, _motiv) in CODURI_ADAUGATE.items():
+        if rut != nume:
+            continue
+        forme = _forme_mesaj(mesaj)
+        for p in [p for p in ramase_v if p[1] in forme]:
+            q = (p[0] | {cod}, p[1])
+            if cod not in p[0] and q in ramase_n:
+                ramase_v.remove(p)
+                ramase_n.remove(q)
     # [B, 17.09.2026] Adaugarile DECLARATE (auth care nu exista in BAZA) se scot din „acum, fara
     # pereche": nu sunt drift al mutarii P7, ci functionalitate noua, fiecare cu motiv (v. sus).
     for (rut, msg_repr), _motiv in PERECHI_ADAUGATE.items():

@@ -1461,6 +1461,29 @@ try:
 except Exception as _e_pa:
     rap["pret_sau_articol_neales"].append(("verificator", 0, "EROARE", "gard pret/articol neales: " + str(_e_pa)))
 
+# --- ID_INTERN_TASTABIL (DS cap.24 v2.76, decizia Costin 07.10.2026, C4): o entitate a firmei se alege din LISTĂ, nu tastându-i
+#     ID-ul intern. Vede registrul `C("…_id", "…", "numar"|"text")` din ecrane și orice `<input>` cu id `…-…_id` de tip number/text.
+#     Mutația care o probează: `C("mijloc_fix_id", "ID mijloc fix", "numar", …)` pus la loc -> TOTAL > 0. LIMITA: un câmp de ID cu
+#     alt nume (fără sufixul `_id`) nu se vede.
+rap["id_intern_tastabil"] = []
+for _nume, _t in fisiere.items():
+    for _m in re.finditer(r'C\("([a-z_]*_id)", "[^"]*", "(?:numar|text)"', _t):
+        rap["id_intern_tastabil"].append((_nume, _t[:_m.start()].count("\n") + 1, _m.group(1), "ID intern tastat — alegerea din listă (DS cap.24 v2.76)"))
+    for _m in re.finditer(r'<input[^>]*type="(?:number|text)"[^>]*id="[a-z]+-[a-z_]*_id"', _t):
+        rap["id_intern_tastabil"].append((_nume, _t[:_m.start()].count("\n") + 1, "input", "ID intern tastat — alegerea din listă (DS cap.24 v2.76)"))
+
+# --- COADA_UN_SINGUR_DRUM (DS cap.24 v2.76, comanda Costin 07.10.2026, C1/C2/C3/C11): trimiterea în coadă trece numai prin
+#     `coada_trimite.js` (corpul generării, refuzul real, confirmarea atenționărilor DUK). Mutația care o probează: un
+#     `api.post("/coada", …)` scris de mână în declaratii.js -> TOTAL > 0.
+rap["coada_un_singur_drum"] = []
+for _nume, _t in fisiere.items():
+    if _nume == "coada_trimite.js":
+        continue
+    for _m in re.finditer(r'api\.post\(\s*["\'`]/coada["\'`]', _t):
+        rap["coada_un_singur_drum"].append((_nume, _t[:_m.start()].count("\n") + 1, "/coada", "trimitere în coadă în afara lui trimiteInCoada (DS cap.24 v2.76)"))
+if "export async function trimiteInCoada(" not in fisiere.get("coada_trimite.js", ""):
+    rap["coada_un_singur_drum"].append(("coada_trimite.js", 0, "trimiteInCoada", "drumul comun al cozii lipsește (DS cap.24 v2.76)"))
+
 # --- ACTIUNE_REFUZATA_NEMARCATA (DS cap.9 v2.64, decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se
 #     afișează”). Un apel JS la o rută restrânsă cere elementul marcat `data-actiune` (poarta din `drepturi.js` îl ascunde
 #     celui refuzat), iar unde handlerul se poate lega de element, marcajul stă pe ACEL element. Același instrument ca

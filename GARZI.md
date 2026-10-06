@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**706 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**713 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 671
+### `core/` — 678
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8882,6 +8882,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_banca_parser_mt940.py` — Test gardian parser MT940 (SWIFT Statement Message).
 - `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
 - `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
+- `core/test_bilant_prin_coada.py` — GARD — bilanțul trece prin coadă: pregătit → validat → depus, cu drepturile declarațiilor (decizia Costin 07.10.2026, C11).
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
 - `core/test_brevo_pe_fir_propriu.py` — core/test_brevo_pe_fir_propriu.py — familia `_trimite_brevo` nu mai tine o conexiune din pool.
@@ -8907,6 +8908,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_categorie_marime.py` — GARD — categoria de mărime nu se rotunjește la „micro", și pragurile citează actul.
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
+- `core/test_chei_unice.py` — GARD — o cheie de registru nu se repetă (comanda Costin 07.10.2026, C7).
 - `core/test_citari_plan.py` — GARDĂ: o trimitere la un număr de linie din `PLAN_HARDENING.md` arată spre ce spune că citează.
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
 - `core/test_cititor_js.py` — GARD [04.09.2026]: cititorul comun de JS nu poate orbi tacut peste cod real.
@@ -8914,6 +8916,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_clichete_generate.py` — GARD [31.08.2026]: tabelul clichetelor vii din predare se RECALCULEAZĂ, nu se citează.
 - `core/test_cm_episod.py` — GARD CM-episod: indemnizatia CM se calculeaza pe EPISOD, nu pe certificat izolat (OUG 158/2005
 - `core/test_cnp_control.py` — GARD DEFECT-2 (07.08.2026): CNP la orice cale de intrare DIRECTA valideaza cifra de control,
+- `core/test_coada_atentionari.py` — GARD — „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.”
+- `core/test_coada_corp_unic.py` — GARD — ce se trimite în coadă e exact ce s-a generat și validat (comanda Costin 07.10.2026, C2).
 - `core/test_coada_firma_exista.py` — GARD [R44]: o declarație nu poate intra în coadă legată de o firmă care nu există.
 - `core/test_coada_gata_de_depus.py` — GARD [R41 partea II]: «gata de depus» are O SINGURĂ definiție, iar lista o poartă.
 - `core/test_coada_vizualizare.py` — GARD (audit patru-ochi): coada de validare are TRASEU de VIZUALIZARE a conținutului. Fără el,
@@ -9150,6 +9154,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_drepturi_ui.py` — GARD — interfața urmează serverul (decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se afișează
 - `core/test_ds_verificator.py` — GARDĂ [R103, 30.08.2026]: legătura `DESIGN_SYSTEM.md` → `verificator_conformitate.py` nu mai
 - `core/test_duk.py` — Teste gardian pentru duk (partea pura, fara java).
+- `core/test_duk_instalat.py` — GARD — validatoarele DUK instalate sunt cele PUBLICATE de ANAF (comanda Costin 07.10.2026, C3).
 - `core/test_duk_severitate.py` — GARD A2: DUK distinge atentionare (A:, NU blocheaza depunerea) de eroare (E:, blocheaza). Fixturi REALE
 - `core/test_e1_contare_primita_mixt.py` — [E1, 18.09.2026] Contarea unei facturi PRIMITE mixte (21/11) se face PE COTE, nu cu `MAX(cota_tva)`
 - `core/test_e2a_univers.py` — E2a — universul se declară, amestecul se OBSERVĂ.
@@ -9296,6 +9301,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_numere.py` — Teste gardian pentru core/numere.py — sursa UNICA de parsare a numerelor.
 - `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
 - `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
+- `core/test_operatiuni_mijloc_fix_lista.py` — GARD — un formular nu cere de la om un ID intern (decizia Costin 07.10.2026, C4).
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
 - `core/test_ordinea_cursorului.py` — GARDĂ (15.09.2026): `cur.description` nu se citește ÎNAINTE de interogarea care îl umple.
 - `core/test_p2_contract.py` — GARD P2 — CONTRACTUL ARHITECTURAL, în șapte propoziții și sub zece secunde.
@@ -9436,6 +9442,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_termene.py` — core/test_termene.py — plasa de regresie pentru scadentele viitoare (termene_api).
 - `core/test_testare_asistent.py` — GARD — constatările din testarea ca asistent (comanda Costin 04.10.2026), punctele 3 și 6 + invitația.
 - `core/test_teste_decuplate.py` — Garda PERMANENTA (29.07.2026): niciun test nu depinde de o firma PERSISTENTA din baza.
+- `core/test_text_structurat.py` — GARD — o subclasă de `str` care poartă structură se COPIAZĂ cu tot cu structura (comanda Costin 07.10.2026, C1).
 - `core/test_tichet_2025.py` — GARD B1/tichet 2025: valorile nominale ale tichetului de masa in 2025, verificate VERBATIM la sursa.
 - `core/test_tichet_cresa.py` — Tichete de cresa (Legea 165/2018 art.19). Tratament fiscal IDENTIC cu tichetul cultural: impozit 10% pe
 - `core/test_tichet_cultural.py` — Tichete culturale (Legea 165/2018 cap.V). Temeiuri VERDE: anaf_surse/RAPORT_verificare_temeiuri.md.
@@ -10404,13 +10411,13 @@ Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu c
 
 | constatare | categorie | starea | dovada | ce lipsește ca să devină test |
 |---|---|---|---|---|
-| C1 D390 nu intră în coadă (500: `Unde` copiat de `asdict`) | 7. Integritate | DATORIE — `test_datorie_coada_rezultat_cu_referinta_unde` | Distributie Profit IC 08/2026; ecranul spune „poate există deja o declarație” | — |
-| C2 declarațiile cu formular manual nu ajung în coadă din ecran (pas3 fără `manual`/`obligatii`) | 11. Interfață | DATORIE — `test_datorie_coada_din_ecran_poarta_formularul` | D307 pe ecran: DUK „fără erori” → „D307 nu are ce genera” | — |
+| C1 D390 nu intră în coadă (500: `Unde` copiat de `asdict`) | 7. Integritate | DATORIE — `test_datorie_coada_rezultat_cu_referinta_unde` | Distributie Profit IC 08/2026; ecranul spune „poate există deja o declarație” | — | [citare-istorica: reparat 07.10.2026, datoria înlocuită de testul permanent — GARZI 07.10.2026]
+| C2 declarațiile cu formular manual nu ajung în coadă din ecran (pas3 fără `manual`/`obligatii`) | 11. Interfață | DATORIE — `test_datorie_coada_din_ecran_poarta_formularul` | D307 pe ecran: DUK „fără erori” → „D307 nu are ce genera” | — | [citare-istorica: reparat 07.10.2026, datoria înlocuită de testul permanent — GARZI 07.10.2026]
 | C3 D112 part-time S2 2026: aplicația 4.125 (4.325 − 200), validatorul instalat 3.750 (4.050 − 300) → SP1B4_1; ecranul „nu blochează”, coada blochează | 3. Calcul fiscal | DECIZIE (raport §6) | Panificatie 09/2026, asigurat 4 | care prag e în vigoare pe S2 2026 (temei) și dacă o atenționare DUK oprește coada |
 | C4 „ID mijloc fix” fără listă (reevaluare/casare) | 11. Interfață | DECIZIE de produs | refuzul cere „alege-l din listă”, lista nu există | forma câmpului (select din registru) |
 | C5 nota scrisă, ecranul spune „nicio notă” (comodat/chirii) | 11. Interfață | DATORIE — `test_datorie_operatiuni_ecran_recunoaste_mai_multe_note` | nota #20 8038=891 | — |
 | C6 „Dovadă” text liber vs `bifa` da/nu | 11. Interfață | DATORIE — `test_datorie_bifele_serverului_sunt_selecturi_in_ecran` | refuz „acceptă doar da sau nu” | — |
-| C7 cheia `agricultor` dublată: „Achiziție de la agricultor” deschide vânzarea | 11. Interfață / 3. Calcul | DATORIE — `test_datorie_operatiuni_chei_unice` | nota 4111=704 în loc de achiziție | — |
+| C7 cheia `agricultor` dublată: „Achiziție de la agricultor” deschide vânzarea | 11. Interfață / 3. Calcul | DATORIE — `test_datorie_operatiuni_chei_unice` | nota 4111=704 în loc de achiziție | — | [citare-istorica: reparat 07.10.2026, datoria înlocuită de testul permanent — GARZI 07.10.2026]
 | C8 marjă turism negativă: 4111 = costuri (2.000) ≠ încasat (1.000) | 3. Calcul fiscal | DESCHIS — verificat pe bază | Agentie Turism Marja, nota #5 | o probă pe schemă efemeră (calculul stă în use-case, cu baza) |
 | C9 recipisa declarațiilor nu se întoarce | 10. Ieșiri externe | [EXTERN] — blocantul SPVWS2 (`ARHITECTURA_SPV.md`) | depunere = index SPV tastat | certificatul calificat server-side |
 | C10 „nimic de amortizat” fără motiv (reziduala = valoarea) | 11. Interfață | DESCHIS | excavator F2: motorul dă 2.000/lună cu reziduala 0 | mesajul care numește activul și cauza |
@@ -10423,3 +10430,32 @@ Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu c
 Curățenia parcurgerii a scăpat inițial 4 rânduri scrise de operațiuni (2 facturi + 1 operațiune D301 pe `tenant_004`, 1 reevaluare pe
 `tenant_005`): le-a găsit garda `test_trasee` (antetul T31: 3 → 4 firme), apoi s-au șters după identificare (factura, D301, reevaluarea).
 Lecție: reperele unei probe care trece prin operațiuni speciale cuprind și `facturi`, `d301_operatiuni`, `reevaluari`, nu doar notele.
+
+## 07.10.2026 — C1/C2/C7 reparate; C3 (validatorul + atenționarea), C4, C11, reîncărcarea la autentificare (comanda Costin)
+
+Decizia: DECIZII 07.10.2026 („Răspunsul la §6 … și reparația C1/C2/C7”). Categoriile **3. Calcul fiscal** (validatorul, termenele),
+**7. Integritate** (ce intră în coadă = ce s-a validat; copierea structurii), **11. Interfață** (un singur drum spre coadă, lista în
+locul ID-ului, cheile unice, fila veche).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| validatoarele DUK = cele publicate | `core/test_duk_instalat.py` (4) + `scripts/verifica_duk_publicat.py` + `anaf_surse/duk_instalat.json` | un jar schimbat fără manifest; manifest ≠ `anaf_surse/versiuni.xml`; comparație cu ANAF mai veche de 30 de zile | jarul D112 J27.0.1 pus la loc -> roșu | fără rețea în poartă: un validator publicat azi poate întârzia cel mult 30 de zile |
+| atenționare = confirmare scrisă, eroare = oprire | `core/test_coada_atentionari.py` (7) | eroare DUK în coadă / aprobată / depusă, cu sau fără motiv; atenționare trecută neconfirmată; confirmare valabilă după regenerare; „Depune totuși” la erori | ramura ERORI_DUK scoasă / atenționarea scoasă din `gata_de_depus` / amprenta scoasă / `!vi.faraTrecere` scos -> roșu | severitatea = `duk.severitate` (A:/E:, fail-safe spre eroare) |
+| copierea păstrează structura (`TextStructurat`) | `core/test_text_structurat.py` (3) | o subclasă de `str` cu `__new__` propriu care nu se copiază (C1: D390 -> 500) | `class Unde(str)` / `__reduce__` scos -> roșu | vede clasele din `core/` |
+| coada primește corpul generării | `core/test_coada_corp_unic.py` (3) | pasul 3 cu corp propriu; un câmp al `DeclaratieIn` aruncat de `CoadaIn` (C2) | corp pe loc în pasul 3 / `obligatii` scos din `CoadaIn` -> roșu | — |
+| chei de registru unice | `core/test_chei_unice.py` (3) | `cheie:` repetat într-un registru de ecran; cheie repetată într-un obiect literal JS sau într-un dict Python (C7) | `agricultor_achizitie` -> `agricultor` -> roșu | obiectele JS citite lexical; o cheie calculată nu se vede |
+| entitatea din listă, nu prin ID | `core/test_operatiuni_mijloc_fix_lista.py` (2) + verificator `ID_INTERN_TASTABIL` (DS cap.24 v2.76) | un câmp `*_id` tastabil (C4) | „ID mijloc fix” numeric pus la loc -> roșu / TOTAL 1 | un câmp de ID fără sufixul `_id` nu se vede |
+| un singur drum spre coadă | verificator `COADA_UN_SINGUR_DRUM` (DS cap.24 v2.76) | `api.post("/coada")` scris de mână într-un ecran | un post de mână în declaratii.js -> TOTAL 1 | — |
+| bilanțul prin coadă + termenul lui | `core/test_bilant_prin_coada.py` (3) | S1005/S1003 scoase din dispecer; termenul altul decât Legea 82/1991 art.36 alin.(1) lit.a) | `s1003` scos din `SITUATII_FINANCIARE` -> roșu | exercițiul diferit de anul calendaristic (alin.(1^2)) nu e modelat |
+| reîncărcarea doar la clic și la autentificare fără formular | `core/test_versiune_publicata.py` (rescris: PIVOT R129) | o reîncărcare peste un formular început | `!formularInceput()` scos -> roșu | — |
+| contractul HTTP: un cod ÎN PLUS se declară | `core/test_p7_uc.py::CODURI_ADAUGATE` + `test_CODURILE_adaugate_chiar_sunt_in_cod` | un refuz care își schimbă codul HTTP (aprobare/depunere: 404 -> 422 pe ERORI_DUK / ATENTIONARI_NECONFIRMATE) fără declarație; o declarație fără codul în cod | 422 scos din maparea `coada_depune` -> roșu; declarația ATENTIONARI_NECONFIRMATE ștearsă -> roșu | scutește doar perechea veche față de cea cu EXACT codul declarat în plus |
+| termene de depunere: ratchet + datorie | `core/test_datorie.py::test_niciun_tip_nou_fara_termen_de_depunere` + xfail `test_datorie_toate_tipurile_au_termen_sursat` | un tip nou fără termen sursat | termenul S1003 scos -> roșu | 29 de tipuri fără termen sursat (coada le pune perioada de raportare) — DATORIE |
+
+**Datorii închise:** C1, C2, C7 (testele permanente de mai sus le înlocuiesc pe cele xfail din `core/test_datorie.py`). **Deschisă nou:**
+termenele de depunere nesursate (29 de tipuri; găsită la C11 — fără ea coada dădea 500 pe orice declarație anuală cu formular).
+Rămân deschise din parcurgere: C5, C6 (xfail), C8, C10, C12, C14, C15, C16 (GARZI 06.10.2026).
+
+**Limita găsită la o gardă existentă (cat.9, `core/test_agenda.py`):** un test REDENUMIT nu se poate cita în coloana de teste a
+Inventarului A în commitul care îl redenumește — `test_fisiere_coloana_completa` citește discul (numele vechi = inexistent), iar
+`test_verificarile_A_nu_sunt_in_urma_codului` citește HEAD (numele nou = încă absent). R17 (D101) e ancorat pe proba DUK pe 2026
+(`test_imca_d101_duk_valid`), cu testul de termen redenumit numit în bump; poate fi adăugat în coloană din commitul următor.

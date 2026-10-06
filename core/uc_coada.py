@@ -23,6 +23,29 @@ from core.mesaje import (FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_DREPT_PR
 from core import tranzactie
 
 
+#: [comanda Costin 07.10.2026, C3] Refuzurile DUK la intrarea în coadă: `cod -> (mesaj, acțiune, câmpul de trecere)`. Eroarea n-are
+#: câmp de trecere (oprește); atenționarea îl are — confirmarea scrisă a contabilului.
+_REFUZ_DUK = {
+    "ERORI_DUK": (
+        "Declarația nu intră în coadă: validatorul oficial ANAF a găsit erori — ar fi respinsă la depunere.",
+        "Corectează ce semnalează validatorul și generează din nou.", None),
+    "ATENTIONARI_NECONFIRMATE": (
+        "Validatorul oficial ANAF a semnalat atenționări (nu erori). Declarația intră în coadă după ce le confirmi în scris: "
+        "de ce e corectă așa.",
+        "Citește atenționările și scrie confirmarea — se păstrează cu numele tău.", "motiv_trecere"),
+}
+
+
+def _refuz_duk(cod, rez, sev):
+    """Refuzul structurat (422) cu ce a spus validatorul — ecranul arată erorile/atenționările și, la atenționare, cere confirmarea."""
+    mesaj, actiune, camp = _REFUZ_DUK[cod]
+    out = {"cod": cod, "mesaj": mesaj, "stare": rez.get("stare"), "erori": rez.get("erori") or "", "severitate": sev,
+           "temei": rez.get("temei"), "limita": rez.get("limita"), "actiune": actiune}
+    if camp:
+        out["camp_trecere"] = camp
+    return out
+
+
 def coada_adauga(date, ctx):
     """[P7 · use-case] Corpul rutei `/coada`; docstringul ei a ramas in stratul HTTP."""
     # [B4, 17.09.2026] A pune o declarație în coadă e actul de PREGĂTIRE — cere `poate_pregati`.
@@ -69,7 +92,21 @@ def coada_adauga(date, ctx):
         "stare": "gri", "erori": "", "severitate": None,
         "temei": "Generarea n-a produs XML.", "limita": ""}
     _motiv = (date.motiv_trecere or "").strip()
-    if _rez.get("stare") != "valid" and not _motiv:
+    # [comanda Costin 07.10.2026, C3] „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului.
+    # O eroare DUK oprește.” Până azi orice ieșire DUK (și atenționările) refuza intrarea, iar `motiv_trecere` trecea peste
+    # ORICE, inclusiv peste erori. Acum: eroarea nu are portiță; atenționarea intră cu confirmarea scrisă, păstrată cu autorul și
+    # cu amprenta XML-ului confirmat (aprobarea și depunerea o recunosc cât timp XML-ul e același).
+    _sev = _rez.get("severitate") if _rez.get("stare") == "erori" else None
+    if _rez.get("stare") == "erori" and _sev != "atentionare":
+        raise _erori.DateInvalide(_refuz_duk("ERORI_DUK", _rez, _sev))
+    if _sev == "atentionare" and not _motiv:
+        raise _erori.DateInvalide(_refuz_duk("ATENTIONARI_NECONFIRMATE", _rez, _sev))
+    if _sev == "atentionare":
+        import datetime as _dtc
+        payload["confirmare_atentionari"] = {"text": _motiv[:500], "de_id": int(ctx["uid"]),   # act al omului, nu afirmație
+                                             "la": _dtc.datetime.now().isoformat(timespec="seconds"),
+                                             "amprenta": coada_api.amprenta_xml(xml)}
+    elif _rez.get("stare") != "valid" and not _motiv:
         # Refuzul poartă CE lipsește, nu doar că lipsește — altfel contabilul află ce are de
         # făcut abia deschizând altceva.
         raise _erori.DateInvalide({
@@ -193,7 +230,9 @@ def coada_aproba(coada_id, date, ctx):
     if not r["ok"]:
         cod = r.get("cod")
         # [B1] ALT_CABINET -> 404 (Inexistent): elementul altui cabinet nu-si dezvaluie existenta.
-        http = ((_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod in ("PATRU_OCHI", "FARA_VERDICT") else _erori.Inexistent))
+        # [C3, 07.10.2026] eroarea DUK / atenționările neconfirmate sunt refuzuri de conținut (422), nu „inexistent” (404)
+        http = ((_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod in ("PATRU_OCHI", "FARA_VERDICT")
+                 else _erori.DateInvalide if cod in ("ERORI_DUK", "ATENTIONARI_NECONFIRMATE") else _erori.Inexistent))
         raise http(r.get("mesaj", cod))
     # [p57_notif] notifica pregatitorul
     try:
@@ -320,7 +359,9 @@ def coada_depune(coada_id, date, ctx):
         # scrieri era corecta; ce lipsea era ca refuzul sa fie inauntrul limitei lor.
         if not r["ok"]:
             cod = r.get("cod")
-            raise (_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod == "FARA_VERDICT" else _erori.Inexistent)(r.get("mesaj", cod))
+            raise (_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod == "FARA_VERDICT"
+                   else _erori.DateInvalide if cod in ("ERORI_DUK", "ATENTIONARI_NECONFIRMATE")   # [C3] 422, nu 404
+                   else _erori.Inexistent)(r.get("mesaj", cod))
     return r
 
 

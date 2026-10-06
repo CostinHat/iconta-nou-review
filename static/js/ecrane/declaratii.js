@@ -7,6 +7,7 @@
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=eff78f4bb3";
+import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -229,11 +230,10 @@ function legPerioada(zona) {
   if (trim) trim.addEventListener("change", () => S.trim = parseInt(trim.value));
 }
 
-// ---------- PAS 2: genereaza + verifica ----------
-async function pas2(corp, nav) {
-  if (nav && nav.setInapoi) nav.setInapoi(() => pas1(corp, nav));
-  S.pas = 2;
-  corp.innerHTML = `<p class="ecran-nota">Se generează declarația…</p>`;
+// [comanda Costin 07.10.2026, C2] UN SINGUR constructor al corpului: generarea (pasul 2) și coada (pasul 3) trimit ACELAȘI corp.
+// Până azi pasul 3 își construia corpul separat, fără formularul manual și fără obligațiile D710 -> orice declarație cu formular
+// (D311, D307, … D710) era refuzată la „Trimite în coadă” („nu are ce genera”), deși trecuse de validator la pasul 2.
+function corpGenerare() {
   const per = S.periodicitate[S.tip];
   const body = { tenant_id: S.tenant_id, an: S.an };
   if (per === "lunar") body.luna = S.luna;
@@ -260,6 +260,15 @@ async function pas2(corp, nav) {
   if (S.tip === "d110") body.manual = _d110Manual();              // [formular_manual_d110] d_temei + IBAN/banca + obligatii
   if (S.tip === "d398") body.manual = _d398Manual();              // [formular_manual_d398] OSS: regim + linii pe stat de consum
   if (S.tip === "d318") body.manual = _d318Manual();              // [formular_manual_d318] rambursare TVA alt stat UE: perioada + solicitant + facturi
+  return body;
+}
+
+// ---------- PAS 2: genereaza + verifica ----------
+async function pas2(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => pas1(corp, nav));
+  S.pas = 2;
+  corp.innerHTML = `<p class="ecran-nota">Se generează declarația…</p>`;
+  const body = corpGenerare();
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -401,6 +410,7 @@ async function pas2(corp, nav) {
       </div>` : `<div class="dec-bara">
       <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada">Trimite în coadă →</button>
     </div>`}
+    <div id="dec-coada-mesaj"></div>
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   const _bt = corp.querySelector("#dec-trimite");
@@ -3607,22 +3617,13 @@ async function pas3(corp, nav) {
   if (nav && nav.setInapoi) nav.setInapoi(() => pas2(corp, nav));
   const btn = corp.querySelector("#dec-trimite");
   if (btn) { btn.disabled = true; btn.textContent = "Se trimite…"; }
-  const per = S.periodicitate[S.tip];
-  const body = { tenant_id: S.tenant_id, tip: S.tip, an: S.an, inceput_la: S.inceput_la };
-  if (per === "lunar") body.luna = S.luna;
-  if (per === "trimestrial") body.trim = S.trim;
+  const body = Object.assign(corpGenerare(), { tip: S.tip, inceput_la: S.inceput_la });   // [C2] același corp ca la pasul 2
+  // [C1/C3] drumul comun al cozii; succesul (și după o confirmare a atenționărilor) desenează ecranul „Trimisă”
+  const r = await trimiteInCoada(corp.querySelector("#dec-coada-mesaj"), body, () => pas3Gata(corp, nav));
+  if (!r && btn) { btn.disabled = false; btn.textContent = "Trimite în coadă →"; }
+}
 
-  try {
-    await api.post("/coada", body);
-  } catch (e) {
-    if (btn) { btn.disabled = false; btn.textContent = "Trimite în coadă →"; }
-    if (btn) {
-      btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-      btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut trimite în coadă. Poate există deja o declarație pentru această perioadă.</span>');
-    }
-    return;
-  }
-
+function pas3Gata(corp, nav) {
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
     <div class="dec-gata">

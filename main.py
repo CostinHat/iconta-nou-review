@@ -1320,6 +1320,7 @@ class CoadaIn(BaseModel):
     luna: Optional[int] = None
     trim: Optional[int] = None
     manual: Optional[dict] = None
+    obligatii: Optional[list] = None   # [C2, 07.10.2026] corecțiile D710 — ca la generare (DeclaratieIn), altfel coada primea D710 gol
     cota: Optional[float] = None
     date_extra: Optional[dict] = None
     ca_an_precedent_eur: Optional[float] = None

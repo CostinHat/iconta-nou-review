@@ -7,10 +7,11 @@ import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.20
 import { fluxConcediu } from "./flux_concediu.js?v=4275ef442f";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=47b6988b99";
 import { ecranRip } from "./rip_ecran.js?v=68e0430034";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=83853552ea";
+import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";  /* [C11, 07.10.2026] bilanțul prin coadă */
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=be64ac4f0f";
 import { ecranEtransport } from "./etransport_ecran.js?v=49b829a378";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=4400876d01";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
@@ -2758,9 +2759,11 @@ async function ecranBilant(corp, nav, t) {
         </select></label>
         <button class="buton-primar" id="bl-val" data-actiune="POST /tenants/{tenant_id}/s1003-valideaza|POST /tenants/{tenant_id}/s1005-valideaza">Valideaz\u0103 (ANAF)</button>
         <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
+        <button class="buton-primar" id="bl-coada" data-actiune="POST /coada">Trimite \u00een coad\u0103 \u2192</button>
       </div>
       <div id="bl-categorie"></div>
-      <div id="bl-rez" style="margin-top:10px"></div>`;
+      <div id="bl-rez" style="margin-top:10px"></div>
+      <div id="bl-coada-mesaj"></div>`;
     const rez = corp.querySelector("#bl-rez");
     const zonaCat = corp.querySelector("#bl-categorie");
     const cereCategoria = async () => {
@@ -2789,6 +2792,13 @@ async function ecranBilant(corp, nav, t) {
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
       } catch (e) { arataMesaj(rez, e.mesaj || "eroare", "eroare"); }
+    });
+    // [decizia Costin 07.10.2026, C11] bilanțul trece prin coadă (pregătit → validat → depus), cu drepturile declarațiilor:
+    // același drum ca la orice declarație (`trimiteInCoada`: poarta validatorului, atenționările cu confirmare, refuzul real).
+    corp.querySelector("#bl-coada").addEventListener("click", async () => {
+      const zona = corp.querySelector("#bl-coada-mesaj");
+      await trimiteInCoada(zona, { tenant_id: t.id, tip: tip(), an: parseInt(corp.querySelector("#bl-an").value, 10) },
+        () => arataMesaj(zona, `${tip().toUpperCase()} ${corp.querySelector("#bl-an").value} a intrat în coada de validare — cabinetul o validează și o depune.`, "ok"));
     });
     corp.querySelector("#bl-xml").addEventListener("click", async () => {
       try {

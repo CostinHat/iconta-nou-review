@@ -85,13 +85,13 @@ def test_cod_obligatie_si_denumire():
     assert 'denumire=' in xml and ' den=' not in xml
 
 
-def test_scadenta_LL_plus_3_pentru_an_peste_2025():
-    """Scadenta D101 (regula datata, temeiuri confirmate 03.08.2026): an Data_S 2022-2025 -> 25 iunie/LL+6
-    (OUG 153/2020 art.I alin.(13) lit.a), derogare art.41-42 CF, aplicabil 2021-2025 - LEGAL CORECT si DUK-valid);
-    an Data_S 2026+ -> 25 martie/LL+3 (art.42(1) CF baza dupa incheierea schemei = ce cere jar-ul DUK). OUG
-    8/2026 muta 2026 la iunie cand validatorul se actualizeaza (proba DUK pe an=2026 va semnala). Vezi DECIZII."""
-    assert _scadenta(2026) == (3, 2027) and _scadenta(2025) == (6, 2026)
-    assert 'scadenta="250327"' in build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
+def test_scadenta_25_iunie_si_pentru_2026():
+    """Scadenta D101: an Data_S 2022-2025 -> 25 iunie/LL+6 (OUG 153/2020 art.I alin.(13) lit.a)); an Data_S 2026+ -> TOT 25
+    iunie/LL+6: OUG 8/2026 art.6 pct.12 -> CF art.42 alin.(1) „…până la data de 25 iunie inclusiv a anului următor”. Până la
+    07.10.2026 2026 era martie (LL+3), pe validatorul vechi; validatorul D101 publicat cere iunie (martie = Err R17).
+    MUTAȚIE: `_scadenta_2026` înapoi la LL+3 -> pică (și proba DUK `test_imca_d101_duk_valid`)."""
+    assert _scadenta(2026) == (6, 2027) and _scadenta(2025) == (6, 2026)
+    assert 'scadenta="250627"' in build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
     assert 'scadenta="250626"' in build_xml(calcul_d101(_prof(), 2025, {"P1": 1000, "P2": 500}))
 
 

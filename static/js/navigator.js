@@ -12,7 +12,7 @@ import { sesiune } from "./sesiune.js?v=416ae1edca";
 import { esc, inchidereDialog } from "./api.js?v=eff78f4bb3";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=899abda4ce";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import * as _versiune from "./versiune.js?v=701bf35ccb";      // [R129] anunta o publicare noua, fara sa intrerupa
+import * as _versiune from "./versiune.js?v=89f5446dc9";      // [R129] anunta o publicare noua, fara sa intrerupa
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -401,7 +401,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=b53c564c0a");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=76df11fb3c");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu am putut deschide De validat:", e); }
@@ -411,7 +411,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=eff78f4bb3");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=2889d754ad");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=e263279f8d");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

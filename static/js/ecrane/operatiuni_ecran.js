@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, arataMesaj, semnAjutor, dataIso } from "../api.js?v=eff78f4bb3";
+import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=eff78f4bb3";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -83,7 +83,7 @@ const REGISTRU = [
   { cat: "Imobilizări și capital", cheie: "reevaluare", titlu: "Reevaluare imobilizări (105)", ruta: "reevaluare-imobilizare", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),
-    C("mijloc_fix_id", "ID mijloc fix", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
+    C("mijloc_fix_id", "Mijlocul fix", "mijloc_fix", { cond: { camp: "operatie", val: "reevaluare" } }),   // [C4, 07.10.2026] din registru
     C("valoare_justa", "Valoare justă", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
     C("suma", "Suma surplus", "numar", { cond: { camp: "operatie", val: "surplus" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
@@ -124,7 +124,7 @@ const REGISTRU = [
     C("data_pif", "Dat\u0103 punere \u00een func\u021biune", "data", { cond: { camp: "operatie", val: "plus_mf" }, optional: true }),
     C("metoda", "Metod\u0103 amortizare", "select", { cond: { camp: "operatie", val: "plus_mf" }, optiuni: [["liniara","Liniar\u0103"],["degresiva","Degresiv\u0103"],["accelerata","Accelerat\u0103"],["superaccelerata","Superaccelerat\u0103"]] }),
     C("destinatie_cd", "Destinat cercetării-dezvoltării", "select", { cond: { camp: "operatie", val: "plus_mf" }, optional: true, optiuni: [["0","Nu"],["1","Da — accelerata permisă pe orice cont (CF art. 20 alin. (1) lit. b))"]] }),
-    C("mijloc_fix_id", "ID mijloc fix", "numar", { cond: { camp: "operatie", val: "casare" } }),
+    C("mijloc_fix_id", "Mijlocul fix", "mijloc_fix", { cond: { camp: "operatie", val: "casare" } }),   // [C4, 07.10.2026] din registru
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "minus" }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
@@ -183,7 +183,7 @@ const REGISTRU = [
     C("numar", "Nr. document (borderou)", "text", { optional: true }),
     C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optional: true, optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "agricultor", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "agricultor_achizitie", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (fără taxă)"),
     C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
     C("agricultor_in_registru", "Agricultor în registru", "select", { optiuni: [["true","Da"],["false","Nu"]] }),
@@ -391,6 +391,10 @@ export async function ecranOperatiuni(corp, nav, t) {
         const gol = c.optional ? '<option value="">-</option>'
           : (c.neales ? `<option value="" selected>${esc(c.neales)}</option>` : "");
         input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+      } else if (c.tip === "mijloc_fix") {
+        // [decizia Costin 07.10.2026, C4] „«ID mijloc fix» la reevaluare și casare: devine listă din registrul activelor firmei.”
+        // Până azi era un câmp numeric: contabilul trebuia să știe ID-ul intern, iar refuzul îi cerea „alege-l din listă” fără listă.
+        input = `<select id="op-${c.nume}" class="camp-input op-mijloc-fix" aria-label="${esc(c.eticheta)}"><option value="">— se încarcă registrul activelor… —</option></select>`;
       } else if (c.tip === "data") {
         input = `<input type="date" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">`;
       } else if (c.tip === "numar") {
@@ -440,6 +444,18 @@ export async function ecranOperatiuni(corp, nav, t) {
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
       corp.querySelector(`#op-${c.nume}`).addEventListener("change", actualizeazaCond));
     actualizeazaCond();
+    // [C4] lista mijloacelor fixe ACTIVE ale firmei (registrul activelor, aceeași rută ca ecranul Mijloace fixe)
+    const selMf = [...corp.querySelectorAll(".op-mijloc-fix")];
+    if (selMf.length) {
+      api.get(`/tenants/${t.id}/mijloace-fixe`).then((r) => {
+        const active = ((r && r.mijloace) || []).filter((m) => m.activ);
+        const opt = active.length
+          ? `<option value="">— alege mijlocul fix —</option>` + active.map((m) =>
+              `<option value="${m.id}">${esc(m.cod || "")} · ${esc(m.denumire || "")}${m.ramas != null ? " · rămas " + bani(m.ramas) + " lei" : ""}</option>`).join("")
+          : `<option value="">Niciun mijloc fix activ în registrul firmei</option>`;
+        selMf.forEach((s) => { s.innerHTML = opt; });
+      }).catch(() => selMf.forEach((s) => { s.innerHTML = `<option value="">Registrul activelor nu s-a putut încărca — reîncearcă</option>`; }));
+    }
 
     corp.querySelector("#op-trimite").addEventListener("click", async () => {
       const zona = corp.querySelector("#op-mesaj");
@@ -451,7 +467,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         if (ascuns) continue;
         const v = el.value;
         if (!v && !c.optional) { lipsa = c.eticheta; break; }
-        if (v) corpReq[c.nume] = c.tip === "numar" ? parseFloat(v) : v;
+        if (v) corpReq[c.nume] = c.tip === "numar" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
       }
       if (lipsa) { arataMesaj(zona, "Câmp obligatoriu: " + lipsa, "avert"); return; }
       if (opCurenta.multi) {

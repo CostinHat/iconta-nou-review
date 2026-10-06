@@ -48,9 +48,16 @@ function verdictInfo(c) {
     return { gata: true, clasa: "val-coer-ok", text: "validat cu DUKIntegrator",
              lipsa: "", iesire: "" };
   }
+  if (v.stare === "proaspat" && v.verdict === "erori" && v.severitate === "atentionare") {
+    // [C3, 07.10.2026] atenționările DUK nu opresc: se confirmă în scris (pe ACEST conținut), apoi se depune
+    return { gata: false, atentionari: true, clasa: "val-coer-atentie", text: "atenționări DUK neconfirmate",
+             lipsa: "DUKIntegrator a semnalat atenționări (nu erori) pe conținutul curent.",
+             iesire: "Citește-le și confirmă-le în scris; confirmarea se păstrează cu numele tău." };
+  }
   if (v.stare === "proaspat") {
-    // verdict proaspăt, dar nefavorabil: validatorul a rulat pe conținutul ăsta și a respins
-    return { gata: false, clasa: "val-coer-rau",
+    // verdict proaspăt, dar nefavorabil: validatorul a rulat pe conținutul ăsta și a respins.
+    // [C3, 07.10.2026] „O eroare DUK oprește.” — fără „Depune totuși”.
+    return { gata: false, faraTrecere: v.verdict === "erori", clasa: "val-coer-rau",
              text: v.verdict === "erori" ? "validatorul a găsit erori" : `validator: ${v.verdict || "necunoscut"}`,
              lipsa: "DUKIntegrator a rulat pe conținutul curent și nu l-a acceptat.",
              iesire: "Deschide declarația ca să vezi ce a raportat, apoi regenerează." };
@@ -367,7 +374,11 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
       // explicită și consemnată — nu ascunsă, fiindcă un blocaj fără cale de trecere pentru om
       // e interdicția 47.
       actiuni += `<button class="val-btn val-valideaza" data-act="vezi">Deschide ca să fie validat</button>`;
-      actiuni += `<button class="val-btn val-trece" data-act="trece" data-actiune="POST /coada/{coada_id}/depune">Depune totuși…</button>`;
+      if (vi.atentionari) {
+        actiuni += `<button class="val-btn val-trece" data-act="trece" data-actiune="POST /coada/{coada_id}/depune">Confirmă atenționările și depune…</button>`;
+      } else if (!vi.faraTrecere) {
+        actiuni += `<button class="val-btn val-trece" data-act="trece" data-actiune="POST /coada/{coada_id}/depune">Depune totuși…</button>`;
+      }
     }
     // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior)
     if (!patruOchi && needsAproba && perm.poate_valida) {
@@ -421,9 +432,12 @@ async function actioneaza(c, act, firme, corp, nav) {
   }
   if (act === "trece") {
     // [R41 partea II] Trecerea peste refuz: motiv OBLIGATORIU, consemnat cu cine și când.
+    const atent = verdictInfo(c).atentionari;   // [C3] atenționări: confirmarea lor, nu o trecere peste verdict
     dialogInput(nav, {
-      titlu: "Depune fără verdict de validare",
-      eticheta: `${(c.tip||"").toUpperCase()} (${perDecl}) nu are verdict valid de la DUKIntegrator. De ce o depui totuși?`,
+      titlu: atent ? "Confirmă atenționările DUK" : "Depune fără verdict de validare",
+      eticheta: atent
+        ? `${(c.tip||"").toUpperCase()} (${perDecl}): DUKIntegrator a semnalat atenționări (nu erori). De ce e corectă declarația așa?`
+        : `${(c.tip||"").toUpperCase()} (${perDecl}) nu are verdict valid de la DUKIntegrator. De ce o depui totuși?`,
       placeholder: "ex: validatorul nu pornește, iar termenul e azi",
       obligatoriu: true,
       buton: "Depune, cu motivul de mai sus",

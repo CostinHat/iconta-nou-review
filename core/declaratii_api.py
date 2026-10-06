@@ -80,6 +80,19 @@ def _d710(conn, schema, b):
     return d710.genereaza(conn, schema, Perioada(b["an"], trim=b["trim"]), {"obligatii": b["obligatii"]})
 
 
+def _s1005(conn, schema, b):
+    # [decizia Costin 07.10.2026, C11] „Bilanțul trece prin coadă: pregătit → validat → depus, cu aceleași drepturi ca la
+    # celelalte declarații.” Generatorul e cel al ecranului Bilanț (`bilant_api`), neschimbat; aici doar intră în dispecer, deci în
+    # coadă (poarta validatorului, patru ochi, depunerea, persistarea). Avertismentele lui merg ca la orice declarație.
+    from core import bilant_api
+    return bilant_api.genereaza(conn, schema, b["an"])
+
+
+def _s1003(conn, schema, b):
+    from core import bilant_api
+    return bilant_api.genereaza_s1003(conn, schema, b["an"])
+
+
 # tip -> (periodicitate, adaptor). Adăugarea unei declarații = o linie aici.
 def _d177(conn, schema, b):
     # D177 e MANUALA (redirectionare impozit profit -> ONG) - beneficiari + sume din corp cerere.
@@ -328,6 +341,20 @@ _DOAR_API = frozenset(("d220",
                        "d101g", "d169", "d399", "d403", "d407"))
 
 
+# [C11, 07.10.2026] Situațiile financiare anuale (bilanțul) trec prin aceeași coadă ca declarațiile — generare, poarta
+# validatorului, patru ochi, depunere, persistare —, dar NU sunt declarații fiscale: nu intră în `DECLARATII` (lista celor 50 din
+# pagina publică și din selector), iar intrarea lor e ecranul Bilanț (categoria de mărime se alege acolo).
+SITUATII_FINANCIARE = {
+    "s1005": ("anual", _s1005),   # bilanțul microentităților
+    "s1003": ("anual", _s1003),   # bilanțul entităților mici
+}
+
+
+def _inregistrare(tip):
+    """(periodicitate, adaptor) — din declarații sau din situațiile financiare; None dacă tipul e necunoscut."""
+    return DECLARATII.get(tip) or SITUATII_FINANCIARE.get(tip)
+
+
 def tipuri():
     """Lista tipurilor pentru selectorul generic din UI (periodice, an/luna/trim)."""
     return sorted(k for k in DECLARATII if k not in _DOAR_API)
@@ -335,7 +362,7 @@ def tipuri():
 
 def periodicitate(tip):
     """'lunar'|'trimestrial'|'anual' sau None dacă tip necunoscut."""
-    rec = DECLARATII.get(tip)
+    rec = _inregistrare(tip)
     return rec[0] if rec else None
 
 
@@ -682,7 +709,7 @@ def genereaza(conn, schema, tip, body):
     # T1->luna 3, T2->6, T3->9, T4->12 (DUK regula R18: trimestrial cere luna în 03/06/09/12).
     if per_ef == "trimestrial" and body.get("trim") and body.get("luna") is None:
         body = {**body, "luna": int(body["trim"]) * 3}
-    _per, adaptor = DECLARATII[tip]
+    _per, adaptor = _inregistrare(tip)
     return adaptor(conn, schema, body)
 
 

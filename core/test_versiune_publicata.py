@@ -69,24 +69,22 @@ def test_amprenta_poarta_CHEILE_pe_care_le_citeste_ecranul():
         "sursa publicarii nu e una dintre cele doua declarate: %r" % s.get("sursa"))
 
 
-def test_anuntul_NU_reincarca_singur():
-    """Decizia lui Costin, verbatim: *„nu forta reincarcarea — un formular pe jumatate completat
-    pierdut e mai rau decat defectul."*
+def test_reincarcarea_e_doar_la_clic_si_la_autentificare_fara_formular():
+    """[PIVOT față de R129, decizia Costin 07.10.2026] Varianta (a) din 03.09.2026 — *„nu forta reincarcarea — un formular pe
+    jumatate completat pierdut e mai rau decat defectul”* — ramane INTREAGA pentru formularul inceput. Nou: la autentificare,
+    fara formular inceput, aplicatia se reincarca singura (nu exista ce pierde; codul vechi din fila, da).
 
-    Ancorat pe TEXT, si spun de ce: nu exista parser de JS in repo. Proprietatea pazita e o
-    NUMARATOARE — cate reincarcari exista in modul —, iar o a doua, oriunde, o face rosie. Un `in`
-    n-ar fi facut asta."""
+    NUMARATOARE: exact DOUA reincarcari in modul. Una in ascultatorul de apasare (omul alege), una in ramura de autentificare —
+    si AMANDOUA pazite de `formularInceput()`. O a treia, oriunde, face gardul rosu.
+    MUTATIE: `!formularInceput()` scos din ramura de autentificare -> pica."""
+    import re
     sursa = io.open(_MODUL, encoding="utf-8").read()
-    n = sursa.count("location.reload()")
-    assert n == 1, (
-        "`versiune.js` are %d reincarcari; trebuie sa ramana UNA, si aia legata de apasarea "
-        "omului. Aplicatia nu reincarca singura." % n)
-    # NUMARATOARE, nu cautare — de-aia `count`, nu `in`: o a doua reincarcare oriunde face gardul
-    # rosu, iar o cautare cu `in` ar fi trecut la fel de bine pe zece.
-    linii = [x for x in sursa.splitlines() if x.count("location.reload()")]
-    assert len(linii) == 1 and linii[0].count('addEventListener("click"') == 1, (
-        "singura reincarcare NU e in ascultatorul de apasare, deci se poate declansa singura: %r"
-        % [x.strip() for x in linii])
+    linii = [x.strip() for x in sursa.splitlines() if re.search(r"location\.reload\(\)", x)]
+    assert len(linii) == 2, "versiune.js are %d reincarcari, nu 2: %r" % (len(linii), linii)
+    clic = [x for x in linii if re.search(r'addEventListener\("click", \(\) => \(formularInceput\(\) \? spuneDeCe\(\) : window\.location\.reload\(\)\)\)', x)]
+    autent = [x for x in linii if re.match(r"if \(laAutentificare && !formularInceput\(\)\) \{ window\.location\.reload\(\); return; \}$", x)]
+    assert (len(clic), len(autent)) == (1, 1), linii
+    assert re.search(r"export function porneste\(\) \{[^}]*?verifica\(true\);", sursa)
 
 
 def test_anuntul_nu_re_randeaza_coaja():

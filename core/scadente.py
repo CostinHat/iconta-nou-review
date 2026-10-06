@@ -182,6 +182,14 @@ def _data_nominala(tip, an, luna=None, trim=None):
         # (Era 25.03 hardcodat "PROVIZORIU" -> marca fals restanțieri firmele care depuneau apr-iun.)
         return date(an + 1, 6, 25)
 
+    if tip in ("s1005", "s1003"):
+        # [C11, 07.10.2026] Bilanțul (situațiile financiare anuale ale societăților). Legea 82/1991 art.36 alin.(1) lit.a), forma
+        # OUG 138/2024 (anaf_surse/legea_82_1991_consolidat.txt): „societățile reglementate de Legea nr. 31/1990 … până la data de
+        # 31 mai inclusiv a exercițiului financiar următor celui de raportare”; alin.(1^1): zi nelucrătoare -> „prima zi
+        # lucrătoare următoare” (= `termen_legal`). Exercițiul diferit de anul calendaristic (alin.(1^2), 150 de zile) nu e
+        # modelat: firmele aplicației au exercițiul = anul calendaristic.
+        return date(an + 1, 5, 31)
+
     if trim is not None:
         # luna următoare trimestrului: T1->4, T2->7, T3->10, T4->1(an+1)
         if trim == 4:
@@ -230,6 +238,16 @@ def urmatorul_termen_lunar(azi):
     an, luna = (azi.year, azi.month - 1) if azi.month > 1 else (azi.year - 1, 12)
     t = scadenta_data("d300", an, luna=luna)
     return t if azi <= t else scadenta_data("d300", azi.year, luna=azi.month)
+
+
+def are_termen(tip, an, luna=None, trim=None):
+    """[C2/C11, 07.10.2026] Are tipul un termen de depunere SURSAT în modulul ăsta? Un tip anual fără termen (D212, D230,
+    D207 …) nu primește unul ghicit: coada îl etichetează cu perioada de raportare. Datoria: `core/test_datorie.py`."""
+    try:
+        _data_nominala(tip, an, luna=luna, trim=trim)
+        return True
+    except ValueError:
+        return False
 
 
 def scadenta(tip, an, luna=None, trim=None):

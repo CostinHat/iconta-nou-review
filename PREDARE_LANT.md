@@ -1,12 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **ziua 06.10.2026 închisă: ciorna facturii (a patra pierdere = fila veche) + parcurgerea g11/g08/g09 publicate; trei decizii cerute**
+# PREDARE LANȚ — **07.10.2026: C1/C2/C7 reparate, deciziile C3/C4/C11 + reîncărcarea la autentificare executate; nicio decizie cerută**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-06** (ciorna facturii + parcurgerea g11/g08/g09), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `d116ec9f` (ultimul commit de lucru; P1 `de36b2a1` · P2 `d116ec9f`, ramura `lucru/ciorna-parcurgere`); `main` avansat
-  fast-forward la ea, iar commitul de închidere (această predare) e cel care rulează poarta completă. Ziua de dinainte: `2e69e77c`.
+- **ultima rescriere**: **2026-10-07** (C1/C2/C7 + C3/C4/C11 + reîncărcarea la autentificare), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `20d5c0cb` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -36,6 +35,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 | **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
 | **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate [cifră corectată în lotul 07.10: 62] | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
 | **ciorna facturii, a patra pierdere + parcurgerea g11/g08/g09** (comanda Costin 06.10 seara): cauza = fila încărcată pe codul vechi, iar „Versiune nouă” își lua referința la autentificare (acum: la încărcare); prețul și articolul pe care nu le-a ales omul (emitere, recurentă, stoc, rețetă, transfer, reclasificare, fișa de magazie; prețul lipsă refuzat de server); 67 de puncte parcurse, 15 constatări (5 datorii xfail strict) | `de36b2a1` · `d116ec9f` | `iconta_ciorna_factura.zip` · `iconta_parcurgere_g08_g09_g11.zip` |
+| **C1/C2/C7 + C3/C4/C11 + reîncărcarea** (comanda Costin 07.10, răspunsul la §6): validatoarele DUK la zi (D112 J27.0.6 + D100/D101/D710/B230; manifest + gardă de 30 de zile); atenționarea DUK intră în coadă cu confirmarea scrisă, eroarea oprește; D390 și formularele manuale în coadă; „Achiziție de la agricultor” = achiziția; mijlocul fix din listă; bilanțul prin coadă; fila veche se reîncarcă la autentificare fără formular început | commitul de închidere | `iconta_c1_c2_c7.zip` |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
@@ -50,13 +50,15 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **Constatările parcurgerii g11/g08/g09 (06.10)** — raportul în `iconta_parcurgere_g08_g09_g11.zip`, registrul în GARZI 06.10.2026.
-  **Decizii cerute lui Costin** (raportul turei, §6): (1) pragul part-time D112 pe S2 2026 — aplicația 4.125 (4.325 − 200) față de
-  validatorul instalat 3.750 (4.050 − 300) — și dacă o atenționare DUK oprește coada (ecranul spune că nu, coada o oprește);
-  (2) „ID mijloc fix” → listă din registru; (3) bilanțul prin coadă (pregătit → validat → depus) sau nu. **Datorii xfail strict**
-  (se închid doar prin comandă): D390 nu intră în coadă (500), declarațiile cu formular manual nu ajung în coadă din ecran, „nicio
-  notă” când nota există, „Dovadă” text vs da/nu, cheia `agricultor` dublată. Deschise în GARZI: marja turism negativă, reevaluarea
-  cu cont lipsă, „nimic de amortizat” fără motiv, declarația față de balanța validată, F248 „fără ecran” (cardul există).
+- **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI 07.10.2026).
+  **Rămân deschise** (fără comandă nu se iau la rând): C5 „nicio notă” când nota există și C6 „Dovadă” text vs da/nu (xfail strict);
+  C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
+  motiv, declarația față de balanța validată, F248 „fără ecran”).
+- **Termenele de depunere nesursate (07.10, datorie nouă)**: 29 de tipuri n-au termen în `core/scadente.py`; coada le pune perioada
+  de raportare („anul 2025”), nu un termen ghicit. Ratchet `test_niciun_tip_nou_fara_termen_de_depunere` + xfail strict
+  `test_datorie_toate_tipurile_au_termen_sursat` (lista `_FARA_TERMEN_07_10`). Se închide tip cu tip, cu temeiul citat.
+- **Validatoarele DUK**: comparația cu ANAF expiră la 30 de zile (`core/test_duk_instalat.py` pică singur din 07.11.2026) —
+  atunci `scripts/verifica_duk_publicat.py`, instalarea celor în urmă, `--scrie`, probele DUK.
 
 - **Contract uniform A1**: pasul D1 (d112) EXECUTAT în lotul 07.10 (`CONTRACT_BASELINE` 3 -> 2). Rămân d406 (D2) și d390 — „nu acum”,
   fără declanșator scris (nu e o restanță care se ia la rând; vezi „Fără o comandă a lui Costin nu se pornește nimic”).
@@ -104,6 +106,23 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(07.10) O eroare DUK nu intră în coadă, nici cu `motiv_trecere`** (422 `ERORI_DUK`); o atenționare cere `motiv_trecere` =
+  confirmarea scrisă (422 `ATENTIONARI_NECONFIRMATE` fără ea), păstrată în `payload.confirmare_atentionari` {text, de_id, la,
+  amprenta}; aprobarea/depunerea o recunosc cât timp XML-ul e același. `duk.severitate` decide (A: = atenționare; altfel eroare).
+- **(07.10) Validatoarele DUK noi**: D112 J27.0.6, D100, D101, D710, B230 (copiile vechi: `~/duk/dist/lib/*.bak_pre_20261007`).
+  **D101 pe 2026 are termenul 25 iunie** (OUG 8/2026 art.6 pct.12; validatorul publicat respinge martie cu R17).
+- **(07.10) S1005/S1003 sunt în `declaratii_api.SITUATII_FINANCIARE`**, nu în `DECLARATII`: trec prin dispecer și coadă (`_inregistrare`),
+  dar nu intră în cele 50 de declarații. Termenul: Legea 82/1991 art.36 alin.(1) lit.a) + alin.(1^1).
+- **(07.10) Un singur drum spre coadă în ecrane**: `ecrane/coada_trimite.js` (`trimiteInCoada`); verificatorul `COADA_UN_SINGUR_DRUM`
+  respinge un `api.post("/coada")` scris de mână. Corpul cozii = `corpGenerare()` (`CoadaIn` primește și `obligatii`).
+- **(07.10) Un câmp de ID intern tastabil e respins** (verificator `ID_INTERN_TASTABIL`); mijlocul fix se alege din
+  `GET /tenants/{id}/mijloace-fixe` (`op-mijloc_fix_id`, doar cele active).
+- **(07.10) La autentificare, fila veche se reîncarcă singură dacă nu există formular început** (`versiune.js`, `verifica(true)`);
+  o probă care vrea să vadă anunțul „Versiune nouă” la autentificare începe întâi un formular.
+- **(07.10) `Unde` / `Temei` moștenesc `core/text_structurat.TextStructurat`** — o subclasă nouă de `str` cu constructor propriu
+  o moștenește și pe ea (`core/test_text_structurat.py`).
+- **(07.10) Un cod HTTP adăugat unui refuz existent se declară în `core/test_p7_uc.py::CODURI_ADAUGATE`.**
 
 - **(06.10 seara) Linia de factură fără preț se REFUZĂ** (`linii_campuri_lipsa`: `em-l{i}-pret_unitar` / `fr-l{i}-pret_unitar`;
   `LinieEmitereIn.pret_unitar` fără 0 implicit) — o fixtură sau un integrator care trimite linii fără `pret_unitar` primește 422 cu
@@ -241,7 +260,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **886** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **888** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

@@ -133,11 +133,11 @@
 
 
 		<D112>
-			<versiuneJ>J26.0.3</versiuneJ>
+			<versiuneJ>J27.0.6</versiuneJ>
 			<versiuneP>P3.0.1</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D112_209/D112Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D112_209/D112Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D112_209/D112IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D112_216/D112Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D112_216/D112Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D112_216/D112IstoriaVersiunilor.txt</DURL>
 		</D112>
 
 <D114>
@@ -716,18 +716,18 @@
 
 
                  <D100>
-			<versiuneJ>J21.0.6</versiuneJ>
+			<versiuneJ>J21.0.8</versiuneJ>
 			<versiuneP>P6.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D100_75/D100Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D100_75/D100Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D100_75/D100IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D100_77/D100Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D100_77/D100Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D100_77/D100IstoriaVersiunilor.txt</DURL>
 		</D100>
 		<D101>
-			<versiuneJ>J11.0.3</versiuneJ>
+			<versiuneJ>J11.0.4</versiuneJ>
 			<versiuneP>P10.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D101_56/D101Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D101_56/D101Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D101_56/D101IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D101_57/D101Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D101_57/D101Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D101_57/D101IstoriaVersiunilor.txt</DURL>
 		</D101>
 
 <D101G>
@@ -893,11 +893,11 @@
 		</D214>
 
 		<D216>
-			<versiuneJ>J1.0.3</versiuneJ>
+			<versiuneJ>J1.0.4</versiuneJ>
 			<versiuneP>P1.0.2</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D216_5/D216Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D216_5/D216Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D216_5/D216IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D216_6/D216Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D216_6/D216Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D216_6/D216IstoriaVersiunilor.txt</DURL>
 		</D216>
 
 
@@ -1043,11 +1043,11 @@
 		</D119>
 
 		<D710>
-			<versiuneJ>J20.0.6</versiuneJ>
+			<versiuneJ>J20.0.7</versiuneJ>
 			<versiuneP>P4.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D710_56/D710Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D710_56/D710Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D710_56/D710IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/D710_57/D710Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/D710_57/D710Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/D710_57/D710IstoriaVersiunilor.txt</DURL>
 		</D710>
 		<T100>
 			<versiuneJ>J1.0.0</versiuneJ>
@@ -1249,34 +1249,34 @@
 			<DURL>http://static.anaf.ro/static/10/Anaf/update5/L153_6/L153IstoriaVersiunilor.txt</DURL>
 		</L153>
 		<A4200>
-			<versiuneJ>J1.0.4</versiuneJ>
+			<versiuneJ>J1.0.5</versiuneJ>
 			<versiuneP>P1.0.4</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_7/A4200Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_7/A4200Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_7/A4200IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_8/A4200Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_8/A4200Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4200_8/A4200IstoriaVersiunilor.txt</DURL>
 		</A4200>
 <A4201>
-			<versiuneJ>J1.0.1</versiuneJ>
+			<versiuneJ>J1.0.2</versiuneJ>
 			<versiuneP>X1.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_1/A4201Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_1/A4201Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_1/A4201IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_2/A4201Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_2/A4201Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4201_2/A4201IstoriaVersiunilor.txt</DURL>
 		</A4201>
 <A4202>
-			<versiuneJ>J1.0.0</versiuneJ>
+			<versiuneJ>J1.0.1</versiuneJ>
 			<versiuneP>X1.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4202/A4202Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4202/A4202Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4202/A4202IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4202_1/A4202Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4202_1/A4202Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4202_1/A4202IstoriaVersiunilor.txt</DURL>
 		</A4202>
 
 
 		<A4203>
-			<versiuneJ>J1.0.7</versiuneJ>
+			<versiuneJ>J1.0.9</versiuneJ>
 			<versiuneP>X1.0.0</versiuneP>
-			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_7/A4203Validator.jar</JURL>
-			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_7/A4203Pdf.jar</PURL>
-			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_7/A4203IstoriaVersiunilor.txt</DURL>
+			<JURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_8/A4203Validator.jar</JURL>
+			<PURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_8/A4203Pdf.jar</PURL>
+			<DURL>http://static.anaf.ro/static/10/Anaf/update5/A4203_8/A4203IstoriaVersiunilor.txt</DURL>
 		</A4203>
 <S1110>
 			<versiuneJ>J3.0.0</versiuneJ>

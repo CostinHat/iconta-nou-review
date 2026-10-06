@@ -1682,3 +1682,18 @@ cele mecanice ca datorie în `core/test_datorie.py`.
   cont lipsă, „nimic de amortizat” fără motiv.
 - **g09:** schimbarea regimului TVA e jurnalizată și avertizează la diferența față de ANAF; „Achiziție de la agricultor” deschide
   vânzarea (cheie dublată); marja turism negativă dă o creanță mai mare decât încasatul; TVA la încasare și aur — fără firmă de test.
+
+## 07.10.2026 — C1/C2/C7 reparate; validatorul D112 la zi; atenționarea DUK cu confirmare; bilanțul prin coadă (comanda Costin)
+
+Decizia și temeiurile: DECIZII 07.10.2026. Gărzile: GARZI 07.10.2026.
+
+- **Validatorul D112** era J27.0.1; ANAF publicase J27.0.6 (corecția regulii salariului minim în J27.0.2). Instalat: D112 part-time
+  09/2026 (4.125 = 4.325 − 200, OUG 89/2025 art.III alin.(5) lit.b) iese valid. Încă 4 validatoare în urmă (D100, D101, D710, B230),
+  instalate; toate 62 = publicat, cu manifest și gardă.
+- **Atenționarea DUK** nu mai oprește coada: se arată și cere confirmarea scrisă a contabilului (păstrată cu numele lui, legată de
+  XML); **eroarea DUK oprește** la intrare, aprobare și depunere, fără portiță.
+- **C1** D390 intră în coadă (era 500); **C2** declarațiile cu formular manual intră în coadă (D307 probat; D230 anual: era 500);
+  **C7** „Achiziție de la agricultor” deschide formularul de achiziție.
+- **C4** mijlocul fix se alege din registrul activelor; **C11** bilanțul S1005/S1003 trece prin coadă (pregătit → validat → depus),
+  cu termenul din Legea 82/1991; **fila veche** se reîncarcă singură la autentificare când nu e niciun formular început.
+- Datorie nouă: 29 de tipuri fără termen de depunere sursat (coada le pune perioada de raportare).

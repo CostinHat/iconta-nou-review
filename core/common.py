@@ -19,6 +19,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
+from core.text_structurat import TextStructurat  # [C1, 07.10.2026] copierea păstrează structura
 
 VERSIUNE_COMMON = "2026.1"
 
@@ -521,7 +522,7 @@ def cota_ceruta(corp):
     return c
 
 
-class Temei(str):
+class Temei(TextStructurat):
     """Temei fiscal STRUCTURAT si citabil mecanic (CLAUDE.md 3.1).
 
     Subclasa de str: se comporta ca string-ul de citare canonic (afisare, JSON, `in`, concatenare),

@@ -54,6 +54,11 @@ async function citeste() {
 // Gard: `core/test_versiune_referinta.py` + proba de browser `frontend_test/proba_versiune_la_incarcare.py`.
 const laIncarcare = citeste().catch(() => null);
 
+/** Există un formular început (navigatorul ține minte ce s-a tastat)? Atunci NIMIC nu reîncarcă pagina. */
+function formularInceput() {
+  return typeof window._navAreModificari === "function" && window._navAreModificari();
+}
+
 function nodAnunt() {
   const b = document.createElement("button");
   b.type = "button";
@@ -65,7 +70,6 @@ function nodAnunt() {
     + '<span class="versiune-noua-text">Versiune nouă · reîncarcă</span>';
   // [comanda Costin 05.10.2026 pct.1] „nici la publicare”: reîncărcarea ar arunca un formular început. Cât timp există unul
   // (`window._navAreModificari`, din navigator), butonul nu reîncarcă — spune de ce, iar omul reîncarcă după ce termină.
-  const formularInceput = () => typeof window._navAreModificari === "function" && window._navAreModificari();
   const spuneDeCe = () => {
     b.querySelector(".versiune-noua-text").textContent = "Termină formularul deschis, apoi reîncarcă";
     b.title = "Ai un formular început. Reîncărcarea l-ar goli — termină-l (sau închide-l), apoi apasă din nou.";
@@ -88,7 +92,7 @@ export function aseaza() {
   return coaja.pune(coaja.LOCURI.BARA_DE_STARE, ID_ANUNT, nodAnunt());
 }
 
-async function verifica() {
+async function verifica(laAutentificare = false) {
   let acum;
   try {
     acum = await citeste();
@@ -109,6 +113,10 @@ async function verifica() {
   }
   if (acum !== incarcata && acum !== gasita) {
     gasita = acum;
+    // [PIVOT față de R129, decizia Costin 07.10.2026] „Reîncărcare automată la autentificare: DA, numai când nu există formular
+    // început. Cu formular început rămâne anunțul.” La autentificare nu există încă nimic de pierdut; codul vechi din filă, da
+    // (a patra pierdere a facturii, 06.10: retestul a rulat pe un cod care nu mai era pe server). DECIZII 07.10.2026.
+    if (laAutentificare && !formularInceput()) { window.location.reload(); return; }
     aseaza();
   }
 }
@@ -117,7 +125,7 @@ async function verifica() {
 export function porneste() {
   if (pornit) return;
   pornit = true;
-  verifica();
+  verifica(true);   // `porneste` rulează la autentificare (navigatorul se construiește atunci)
   setInterval(verifica, INTERVAL_MS);
   // La revenirea in fila: momentul in care omul se uita oricum la ecran, deci cel mai ieftin
   // moment in care poate afla. Nu inlocuieste ceasul — o fila lasata vizibila nu revine niciodata.

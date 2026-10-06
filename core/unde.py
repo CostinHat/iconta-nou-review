@@ -15,6 +15,7 @@ CE NU FACE, declarat: NU verifica ca referentul EXISTA in baza. Aia cere o conex
 separata (si o decizie: ce faci cu o afirmatie despre un salariat sters). Aici se inchide FELUL si se
 face id-ul accesibil - atat, si atat se promite.
 """
+from core.text_structurat import TextStructurat  # [C1, 07.10.2026] copierea păstrează structura
 
 # Nomenclator INCHIS al felurilor de referent. Enumerat din cele sapte forme MASURATE pe 21.08, nu
 # propus din imaginatie. `id_optional` = felul nu are identitate prin natura lui (vectorul fiscal al
@@ -56,7 +57,7 @@ FELURI_REFERENT = {
 }
 
 
-class Unde(str):
+class Unde(TextStructurat):
     """Referinta STRUCTURATA la lucrul despre care se afirma ceva. Subclasa de str, ca `Temei`.
 
     `detaliu` e textul de recunoastere pentru contabil (numele omului, denumirea articolului) - el nu

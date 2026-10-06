@@ -353,25 +353,8 @@ def test_datorie_d212_cass22_retinuta_peste_datorata():
 # ── [06.10.2026] Parcurgerea g11/g08/g09 (comanda Costin: „doar constatări, fără reparații”). Defectele verificabile
 # mecanic intră aici, ca afirmație a comportamentului CORECT, nereparate; dovezile (capturi, cereri, jurnale) stau în
 # ZIP-ul parcurgerii, iar restul constatărilor în GARZI 06.10.2026 („Parcurgerea g11/g08/g09”).
-
-@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE 06.10.2026 (parcurgerea g11, D390): `coada_api.randuri_din_res` face `dataclasses.asdict(res)`, care copiază în adâncime un câmp `Unde` (subclasă de str) reconstruindu-l din textul lui -> `Unde.__new__` refuză «fel de referent necunoscut 'factura …'» -> POST /coada = 500 pe D390 cu operațiuni IC (Distributie Profit IC SRL, 08/2026); ecranul spune doar «Poate există deja o declarație pentru această perioadă»")
-def test_datorie_coada_rezultat_cu_referinta_unde():
-    import dataclasses
-    from core import coada_api
-    from core.unde import Unde
-
-    @dataclasses.dataclass
-    class _Rez:
-        unde: str
-    assert coada_api.randuri_din_res(_Rez(Unde("factura", 7, "Comert Micro TVA SRL"))) is not None
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g11, D307 pe ecran): pasul 3 din `declaratii.js` trimite în coadă {tenant_id, tip, an, luna} FĂRĂ datele formularului (`manual` / `obligatii`), deși pasul 2 le trimite la generare -> D307 validat DUK «fără erori» e refuzat la «Trimite în coadă» («D307 nu are ce genera») — toate declarațiile cu formular manual (D311, D307, D107, D177, D207, D200, D212, D201, D230, D204, D223, D216, D208, D221, D603, D600, D104, D114, D110, D398, D318, D710)")
-def test_datorie_coada_din_ecran_poarta_formularul():
-    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/declaratii.js").read_text(encoding="utf-8")
-    pas3 = src[src.index("async function pas3("):]
-    pas3 = pas3[:pas3.index('await api.post("/coada", body)')]
-    assert re.search(r"body\.manual\s*=", pas3) and re.search(r"body\.obligatii\s*=", pas3)
+# [07.10.2026] C1, C2, C7 REPARATE (comanda Costin) — datoriile lor au devenit teste permanente: `core/test_text_structurat.py`,
+# `core/test_coada_corp_unic.py`, `core/test_chei_unice.py`. Rămân aici C5 și C6.
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Chirii/comodat): `nota-chirie` întoarce {inregistrari: [id…]}, iar ecranul Operațiuni speciale caută `r.inregistrare_id` -> după ce nota ciornă #20 (8038=891, 1.000) s-a scris, contabilul citește «Calcul (nu s-a generat nicio notă): inregistrari: 20»")
@@ -380,13 +363,6 @@ def test_datorie_operatiuni_ecran_recunoaste_mai_multe_note():
     bloc = src[src.index("const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`"):]
     bloc = bloc[:bloc.index("} catch (e) {")]
     assert re.search(r"\br\.inregistrari\b", bloc)
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g09, Agricultori): în registrul ecranului Operațiuni speciale două operațiuni au aceeași cheie `agricultor` («Vânzare către agricultor» și «Achiziție de la agricultor (compensare 8%)»); ecranul alege cu `REGISTRU.find(cheie)` -> butonul «Achiziție de la agricultor» deschide formularul de VÂNZARE (probat pe ecran: nota 4111=704)")
-def test_datorie_operatiuni_chei_unice():
-    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
-    chei = re.findall(r'\{ cat: "[^"]+", cheie: "([^"]+)"', src)
-    assert len(chei) == len(set(chei)), sorted(c for c in set(chei) if chei.count(c) > 1)
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Export/IC): serverul citește «Dovada export (DVE)» și «Dovada transport» prin `bifa` (DA/NU, altfel refuz), iar ecranul le dă drept câmp TEXT liber, cu eticheta unui document -> contabilul scrie numărul DVE și primește «acceptă doar da sau nu»")
@@ -398,3 +374,27 @@ def test_datorie_bifele_serverului_sunt_selecturi_in_ecran():
         bife |= set(re.findall(r'bifa\(corp, "([a-z_]+)"', f.read_text(encoding="utf-8")))
     text = [n for n in bife if re.search(r'C\("%s", "[^"]*", "text"' % n, src)]
     assert not text, text
+
+
+# ── [07.10.2026] Termenele de depunere nesursate (găsite la C11: bilanțul în coadă dădea 500 „scadenta: lipsește luna sau trim”).
+# Coada nu mai cade — pune perioada de raportare („anul 2025”) în locul unui termen ghicit —, dar termenul lipsește. Ratchetul de
+# mai jos oprește CREȘTEREA listei; datoria cere golirea ei, tip cu tip, cu textul legii.
+_FARA_TERMEN_07_10 = {"d101g", "d106", "d107", "d108", "d120", "d130", "d169", "d169n", "d177", "d200", "d201", "d204", "d207",
+                      "d212", "d213", "d214", "d216", "d220", "d221", "d223", "d230", "d318", "d393", "d401", "d402", "d403",
+                      "d407", "d600", "d603"}
+
+
+def _fara_termen():
+    from core import declaratii_api, scadente
+    kw = {"lunar": {"luna": 8}, "trimestrial": {"trim": 3}}
+    return {t for t, (p, _f) in declaratii_api.DECLARATII.items() if not scadente.are_termen(t, 2025, **kw.get(p, {}))}
+
+
+def test_niciun_tip_nou_fara_termen_de_depunere():
+    """RATCHET: un tip nou în dispecer vine cu termenul lui sursat (scadente._data_nominala). MUTAȚIE: termenul S1003 scos -> pică."""
+    assert sorted(_fara_termen() - _FARA_TERMEN_07_10) == []
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 07.10.2026 (temei neverificat: termenul de depunere): 29 de tipuri din dispecer — între ele toate declarațiile anuale cu formular din selector (D107, D177, D200, D201, D204, D207, D212, D216, D221, D223, D230, D318, D600, D603) — n-au termen sursat în `core/scadente.py`; coada le etichetează cu perioada de raportare („anul 2025”), iar termenele, alertele și restanțele nu le cunosc scadența")
+def test_datorie_toate_tipurile_au_termen_sursat():
+    assert sorted(_fara_termen()) == []

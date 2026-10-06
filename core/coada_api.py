@@ -13,6 +13,7 @@ aceeași (tenant, tip, perioadă) — prindem eroarea și întoarcem mesaj clar.
 from __future__ import annotations
 import hashlib
 import json
+import datetime as _dt
 
 from core import scadente
 
@@ -134,7 +135,13 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
             return {"ok": False, "cod": "FIRMA_INEXISTENTA",
                     "mesaj": "firma #%s nu există — o declarație nu poate intra în coadă "
                              "legată de o firmă ștearsă sau necreată" % tenant_id}
-    perioada = scadente.scadenta(tip, an, luna=luna, trim=trim)
+    # [C2/C11, 07.10.2026] `perioada` = scadența, când modulul de scadențe o are SURSATĂ. Un tip fără termen sursat (31 din 52 la
+    # 07.10: bilanțul și declarațiile anuale cu formular) intra în coadă cu 500 („scadenta: lipsește luna sau trim”) — deci
+    # nicio declarație anuală cu formular nu putea fi depusă prin aplicație. Nu se GHICEȘTE un termen: se pune perioada de
+    # raportare („anul 2025”); termenul lipsă e datorie (`core/test_datorie.py`), nu o valoare inventată.
+    perioada = (scadente.scadenta(tip, an, luna=luna, trim=trim) if scadente.are_termen(tip, an, luna=luna, trim=trim)
+                else "anul %d" % an if (luna is None and trim is None)
+                else "%s %d" % ("luna %02d" % luna if luna else "T%d" % trim, an))
     # asigurăm an/luna în payload pentru declaratii_depuse la depunere
     payload = {**(payload or {}), "_an": an, "_luna": luna, "_trim": trim}
     h = calcul_hash(payload)
@@ -397,7 +404,7 @@ def lista_coada(conn, cabinet_id, stare=None):
             "c.verdict, c.verdict_erori, c.verdict_amprenta, c.verdict_la, c.verdict_versiune, "
             "c.trecere_motiv, c.trecut_la, c.fel, "
             "CASE WHEN c.fel = 'nota' THEN c.payload END AS nota, "
-            "c.payload->>'xml' AS _xml "
+            "c.payload->>'xml' AS _xml, c.payload->'confirmare_atentionari' AS _conf "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
             "WHERE " + " AND ".join("c." + x for x in cond) +
@@ -409,7 +416,7 @@ def lista_coada(conn, cabinet_id, stare=None):
             d["verdict_stare"] = verdict_din_rand(
                 d.pop("verdict", None), d.pop("verdict_erori", None),
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
-                d.pop("verdict_versiune", None), xml)
+                d.pop("verdict_versiune", None), xml, d.pop("_conf", None))
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"])
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
@@ -528,7 +535,7 @@ def scrie_verdict(conn, coada_id, rez, versiune, xml):
     return {"ok": True}
 
 
-def verdict_din_rand(verdict, erori, amp, la, versiune, xml):
+def verdict_din_rand(verdict, erori, amp, la, versiune, xml, confirmare=None):
     """PURA. Starea verdictului pentru un rand deja citit: `proaspat` | `statut` | `lipsa`.
 
     `statut` = exista un verdict, dar pe ALT continut decat cel din coada acum. Se trateaza ca
@@ -548,8 +555,15 @@ def verdict_din_rand(verdict, erori, amp, la, versiune, xml):
                 "verdictul e pe alt conținut decât cel din coadă (XML-ul s-a regenerat între timp)",
                 "actiune": "redeschide elementul ca să fie validat conținutul CURENT",
                 "amprenta_verdict": amp[:16], "amprenta_acum": acum[:16]}
+    # [comanda Costin 07.10.2026, C3] „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului.
+    # O eroare DUK oprește.” DUK pune ORICE ieșire în `erori`; severitatea o dă `duk.severitate` (A: / E:, fail-safe spre
+    # eroare). Confirmarea ține numai cât XML-ul e același: e legată de amprenta conținutului confirmat.
+    from core import duk as _duk
+    sev = _duk.severitate(erori) if verdict == "erori" else None
+    conf = bool(confirmare and confirmare.get("amprenta") == acum)
     return {"stare": "proaspat", "verdict": verdict, "erori": erori, "la": la,
-            "versiune": versiune}
+            "versiune": versiune, "severitate": sev, "atentionari_confirmate": conf,
+            "confirmare": ({k: confirmare.get(k) for k in ("text", "de_id", "la")} if conf else None)}
 
 
 def gata_de_depus(v):
@@ -558,19 +572,38 @@ def gata_de_depus(v):
     [R41 partea II] Pana azi ecranul isi alegea singur populatia listei „De depus"; poarta din
     server avea alta regula. Doua definitii ale aceleiasi propozitii = ecranul putea numi „de
     depus" ceva ce serverul refuza. Acum e una."""
-    return bool(v) and v.get("stare") == "proaspat" and v.get("verdict") == "valid"
+    if not v or v.get("stare") != "proaspat":
+        return False
+    if v.get("verdict") == "valid":
+        return True
+    # [C3, 07.10.2026] atenționările (fără nicio linie de eroare), confirmate în scris pe ACEST conținut
+    return v.get("verdict") == "erori" and v.get("severitate") == "atentionare" and bool(v.get("atentionari_confirmate"))
 
 
 def verdict_stare(conn, coada_id):
     """Starea verdictului pentru un element din coada. Citeste randul si deleaga calculul."""
     with conn.cursor() as cur:
         cur.execute("SELECT verdict, verdict_erori, verdict_amprenta, verdict_la, verdict_versiune, "
-                    "payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+                    "payload->>'xml', payload->'confirmare_atentionari' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
         r = cur.fetchone()
     if r is None:
         return {"stare": "lipsa", "motiv": "element inexistent",
                 "actiune": "verifică id-ul elementului din coadă"}
     return verdict_din_rand(*r)
+
+
+def confirma_atentionari(conn, coada_id, motiv, cine_id):
+    """[C3, 07.10.2026] Confirmarea scrisă a atenționărilor DUK, legată de amprenta XML-ului din coadă: textul, cine, când.
+    Un XML regenerat (altă amprentă) nu mai e confirmat — se citește din nou."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+        r = cur.fetchone()
+        # textul confirmării = act al omului (cine, când), nu o afirmație despre datele firmei
+        conf = {"text": str(motiv).strip()[:500], "de_id": cine_id, "la": _dt.datetime.now().isoformat(timespec="seconds"),
+                "amprenta": amprenta_xml((r or [""])[0] or "")}
+        cur.execute("UPDATE public.declaratii_coada SET payload = jsonb_set(payload, '{confirmare_atentionari}', %s::jsonb, true) "
+                    "WHERE id=%s", (json.dumps(conf, ensure_ascii=False), coada_id))
+    return conf
 
 
 def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
@@ -583,6 +616,18 @@ def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
     # [R41 partea II] Aceeasi functie pe care o foloseste lista pe care o vede omul.
     # Poarta si ecranul nu pot diverge fiindca nu exista doua conditii, ci una.
     if gata_de_depus(st):
+        return None
+    if st.get("stare") == "proaspat" and st.get("verdict") == "erori":
+        if st.get("severitate") != "atentionare":
+            # [C3, 07.10.2026] „O eroare DUK oprește.” Fără portiță: motivul scris nu mai trece peste un verdict cu erori.
+            return {"ok": False, "cod": "ERORI_DUK",
+                    "mesaj": "nu pot %s: validatorul oficial ANAF a găsit erori — declarația ar fi respinsă la depunere" % actiune,
+                    "actiune": "corectează ce semnalează validatorul și generează din nou", "verdict": st}
+        if not motiv or not str(motiv).strip():
+            return {"ok": False, "cod": "ATENTIONARI_NECONFIRMATE",
+                    "mesaj": "nu pot %s: validatorul oficial a semnalat atenționări, pe care nu le-a confirmat nimeni în scris" % actiune,
+                    "actiune": "citește atenționările și confirmă-le în scris (de ce declarația e corectă așa)", "verdict": st}
+        confirma_atentionari(conn, coada_id, motiv, cine_id)
         return None
     if not motiv or not str(motiv).strip():
         return {"ok": False, "cod": "FARA_VERDICT",

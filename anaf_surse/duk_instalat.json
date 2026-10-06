@@ -1,0 +1,316 @@
+{
+ "sursa": "https://static.anaf.ro/static/10/Anaf/update5/versiuni.xml",
+ "validatoare": {
+  "B230": {
+   "jar": "B230Validator.jar",
+   "sha256": "a4bd7b4df968cf75f4b713d006e24f3c326fd6e332928a5536719bff9f5f14f6",
+   "versiuneJ": "J3.0.0"
+  },
+  "B900": {
+   "jar": "B900Validator.jar",
+   "sha256": "9836935739b6da9e5cb62845e701b6f11bbca5cc097546986d14b9b56b4fc5e5",
+   "versiuneJ": "J1.0.0"
+  },
+  "D017": {
+   "jar": "D017Validator.jar",
+   "sha256": "2b0bddca5acd1cda5950af51724d1fc530f0d9dcaf084c70a67cac4ec60b42fd",
+   "versiuneJ": "J1.0.6"
+  },
+  "D085": {
+   "jar": "D085Validator.jar",
+   "sha256": "c23e4aefb3c9c2c7a49218072b4874eb01fc70c9dc204f0cfc7d54fe775d238c",
+   "versiuneJ": "J1.1.0"
+  },
+  "D092": {
+   "jar": "D092Validator.jar",
+   "sha256": "cfbffa64b4cdc0ce80cb9046056a028dced3460f3254682bfe11fc8417517089",
+   "versiuneJ": "J1.0.0"
+  },
+  "D100": {
+   "jar": "D100Validator.jar",
+   "sha256": "1aa3b20601ad5bab3ecc9c94a282922d6571bded3468ba885326c6164c7d899b",
+   "versiuneJ": "J21.0.8"
+  },
+  "D101": {
+   "jar": "D101Validator.jar",
+   "sha256": "d7d0b298f1a683d168155cbc0d67164b907e51420d39259c2175d8c1c9198fc4",
+   "versiuneJ": "J11.0.4"
+  },
+  "D101G": {
+   "jar": "D101GValidator.jar",
+   "sha256": "4340aa15f94b54cc557b247f07febd0bd93567a9c0eaa39873ed5065ad466825",
+   "versiuneJ": "J2.0.0"
+  },
+  "D104": {
+   "jar": "D104Validator.jar",
+   "sha256": "6016ea6316be43dad45fa808b699e749c4644389f086d7991e5418ac50df36bc",
+   "versiuneJ": "J1.2.0"
+  },
+  "D106": {
+   "jar": "D106Validator.jar",
+   "sha256": "868fcbfda3dbbee18c973fa9cb08b0bbe4d324e4d5d8013f1f98f3f7b254c1b5",
+   "versiuneJ": "J1.0.1"
+  },
+  "D107": {
+   "jar": "D107Validator.jar",
+   "sha256": "a6f5b1984c5bec396dadc254ec59db37757d48c01deeeb666e018a3e325f1dfc",
+   "versiuneJ": "J2.0.0"
+  },
+  "D108": {
+   "jar": "D108Validator.jar",
+   "sha256": "2165c5e92d8abd89376c02d45a07a52f5f92a4d169f66402316605bf69e4d8d2",
+   "versiuneJ": "J1.0.0"
+  },
+  "D110": {
+   "jar": "D110Validator.jar",
+   "sha256": "b5dbe66a6a7691793b7770c1773b743829c056970a57ae6e1e0f303c6f7b9925",
+   "versiuneJ": "J1.0.3"
+  },
+  "D112": {
+   "jar": "D112Validator.jar",
+   "sha256": "47f89d110d5a1c2d557fe73219c614541a18947329d09b9f65d5728e86a83759",
+   "versiuneJ": "J27.0.6"
+  },
+  "D114": {
+   "jar": "D114Validator.jar",
+   "sha256": "f2bf7d4dbef5a2641c0a1142ab11c669446476186422c1d42b8dbf4b9f35aa69",
+   "versiuneJ": "J1.0.1"
+  },
+  "D119": {
+   "jar": "D119Validator.jar",
+   "sha256": "f7d32bda5dbabc75a5c2afc4919ecd2b4d214a5cc45dc8f50da59fabab419d47",
+   "versiuneJ": "J1.0.0"
+  },
+  "D120": {
+   "jar": "D120Validator.jar",
+   "sha256": "fc0b7ff172cc03676928fdc226ceffde5cfd1eaa8b9f2d18898a4ff582732038",
+   "versiuneJ": "J6.0.0"
+  },
+  "D130": {
+   "jar": "D130Validator.jar",
+   "sha256": "663564dcb8ca2f37f986680e61412887499e01e0392cac5d3ed30c04a7531953",
+   "versiuneJ": "J1.0.0"
+  },
+  "D163": {
+   "jar": "D163Validator.jar",
+   "sha256": "4544e45706bd1ee73f0aefafe34af296a46774795eef4cb2f8ae1b4884d6939d",
+   "versiuneJ": "J1.0.2"
+  },
+  "D169": {
+   "jar": "D169Validator.jar",
+   "sha256": "7e1766d3efa378dffce4fa156e659d543f1eb8a6b40b4aff599214c23d622408",
+   "versiuneJ": "J1.0.0"
+  },
+  "D169n": {
+   "jar": "D169nValidator.jar",
+   "sha256": "078bf1079afc969da41c0eec3bd8ead5b5917d275b8093617e00ea847468a491",
+   "versiuneJ": "J1.0.0"
+  },
+  "D177": {
+   "jar": "D177Validator.jar",
+   "sha256": "da83be0d8e53fac320de97655461535d0c880590b03a69c28ffaf2c3d77f81dc",
+   "versiuneJ": "J2.0.3"
+  },
+  "D179": {
+   "jar": "D179Validator.jar",
+   "sha256": "df79120ef9ea2283ebcf17062ffdb1c12226feba54c539e4d2f5892f124af768",
+   "versiuneJ": "J1.1.1"
+  },
+  "D180": {
+   "jar": "D180Validator.jar",
+   "sha256": "e2bf76c394b797466a7306ce545683b30c1e4eaf1681c54ed93f4afabaf7ed39",
+   "versiuneJ": "J1.0.2"
+  },
+  "D200": {
+   "jar": "D200Validator.jar",
+   "sha256": "59d073592124ad8d01f2a193915b0af96561da50baad719dd839f4ea88223f46",
+   "versiuneJ": "J4.1.2"
+  },
+  "D201": {
+   "jar": "D201Validator.jar",
+   "sha256": "e77c5a2ceb04f10668bd1689219ed15af672cbd9f5866a12a988da9ae893d958",
+   "versiuneJ": "J2.1.0"
+  },
+  "D204": {
+   "jar": "D204Validator.jar",
+   "sha256": "30acca90fc4dd1924ecf59f5bd8e1684ef762e53eff5b51d1550264934c17ce5",
+   "versiuneJ": "J3.0.14"
+  },
+  "D205": {
+   "jar": "D205Validator.jar",
+   "sha256": "e8b33294d6fe846315f14bfb0b6b46250e79ad78fe935680aaf02f0e64c7d208",
+   "versiuneJ": "J9.0.5"
+  },
+  "D207": {
+   "jar": "D207Validator.jar",
+   "sha256": "a355fd28fc646e6a259f3a203696dbcb5799fef889276be8f4f4cc519dc2a01b",
+   "versiuneJ": "J2.0.2"
+  },
+  "D208": {
+   "jar": "D208Validator.jar",
+   "sha256": "1d8e3b6ae406120514d699ff642600994a62167547a1c09cf81e940fdb9c8995",
+   "versiuneJ": "J7.0.1"
+  },
+  "D212": {
+   "jar": "D212Validator.jar",
+   "sha256": "02dbe2c382da065046b637d3823d9bf021e81d63ea2c0752026ee01a349e4c3c",
+   "versiuneJ": "J13.0.1"
+  },
+  "D213": {
+   "jar": "D213Validator.jar",
+   "sha256": "2f8431fce8f9015fb04e49cd665793eeb171d275c6d41900e59125bd6b4210c4",
+   "versiuneJ": "J1.0.0"
+  },
+  "D214": {
+   "jar": "D214Validator.jar",
+   "sha256": "240d3ef436e9c5ef4bb9d010546fed644b70a73f6cbd21252eaed52011550483",
+   "versiuneJ": "J1.0.0"
+  },
+  "D216": {
+   "jar": "D216Validator.jar",
+   "sha256": "d7923eb6d7a3662931a33737e9551b6fc586f231268a9c32f0d7dcee9b389c57",
+   "versiuneJ": "J1.0.4"
+  },
+  "D220": {
+   "jar": "D220Validator.jar",
+   "sha256": "b39172772021bd7e17a00dbf697557deb6488d07e3bd8b169d7435665bfac4ed",
+   "versiuneJ": "J2.1.0"
+  },
+  "D221": {
+   "jar": "D221Validator.jar",
+   "sha256": "4a7cd2d0185e0b292a49083647f03cd3817a1c2d847e5deb9a37007b38515a2b",
+   "versiuneJ": "J1.0.1"
+  },
+  "D223": {
+   "jar": "D223Validator.jar",
+   "sha256": "f9bd7ec45ca12377b948314a99774d13ea6130b7d2dc9b310d5abb6d64eee81b",
+   "versiuneJ": "J1.1.0"
+  },
+  "D230": {
+   "jar": "D230Validator.jar",
+   "sha256": "f1d40c9df28ec5c35f8db74c3169e319d4189322ab04b772b2f8d6ff8f732d75",
+   "versiuneJ": "J8.0.0"
+  },
+  "D300": {
+   "jar": "D300Validator.jar",
+   "sha256": "91a252f5669c5a6de680af3953cd1e62e162ed236563fc0e249161432c750ee8",
+   "versiuneJ": "J12.0.1"
+  },
+  "D301": {
+   "jar": "D301Validator.jar",
+   "sha256": "a86bf0cef4c9ff710fb64366bb708b6da7a823e3c4ce6fa15ef6f09f5466c229",
+   "versiuneJ": "J1.2.5"
+  },
+  "D307": {
+   "jar": "D307Validator.jar",
+   "sha256": "61a7eb44acf3aec7c374b58089f0e15073bd90a47b7219a24354b1a279dc7d40",
+   "versiuneJ": "J1.1.0"
+  },
+  "D311": {
+   "jar": "D311Validator.jar",
+   "sha256": "6688c47b63c7e2be638666e5ae64bb71abb19c2cd4dab322f643f2b19b5d75b7",
+   "versiuneJ": "J2.0.0"
+  },
+  "D318": {
+   "jar": "D318Validator.jar",
+   "sha256": "03ac079d6d0606138629a48e4895f8b42fc5f44e5825f08b09da3a6ad2db20da",
+   "versiuneJ": "J1.3.0"
+  },
+  "D390": {
+   "jar": "D390Validator.jar",
+   "sha256": "bb0c4eb713642bec82e20382ddcd44b89fff577adf1a551d28510a20f0b348a3",
+   "versiuneJ": "J4.1.2"
+  },
+  "D392": {
+   "jar": "D392Validator.jar",
+   "sha256": "4084c5c6dd4e5394abab7a87311af53dae3e341373f1029796ac8b063661a9c4",
+   "versiuneJ": "J2.0.0"
+  },
+  "D393": {
+   "jar": "D393Validator.jar",
+   "sha256": "a3e38158a81cee297e132dc211bddac6514fd291fe2dda4fb8f740a7c1d65cf9",
+   "versiuneJ": "J1.0.0"
+  },
+  "D394": {
+   "jar": "D394Validator.jar",
+   "sha256": "586e8a4a62c84cd9076b0ab43387dc0518d3bf322476f29ae942354889523e54",
+   "versiuneJ": "J8.0.2"
+  },
+  "D395": {
+   "jar": "D395Validator.jar",
+   "sha256": "6d254cde1b0db8073af4ff9da0dfea03e94c169d6f946e160dd50df6c02c3ca7",
+   "versiuneJ": "J2.0.2"
+  },
+  "D397": {
+   "jar": "D397Validator.jar",
+   "sha256": "3cabecd7d4ee885486cd83f6a62346e2e81f5f8c3277485fed32bbd3657b1b5f",
+   "versiuneJ": "J1.0.2"
+  },
+  "D398": {
+   "jar": "D398Validator.jar",
+   "sha256": "9c5578fc0e1c3f7528199ff23ecdf116d662deb22081ac98c54044574caeec32",
+   "versiuneJ": "J1.0.11"
+  },
+  "D399": {
+   "jar": "D399Validator.jar",
+   "sha256": "7e6956db344dd707b6c0f3841bf7eeffe50c6beb54efef5b6f4d5dba297c3624",
+   "versiuneJ": "J1.0.5"
+  },
+  "D401": {
+   "jar": "D401Validator.jar",
+   "sha256": "18ebea9fd15cf55166cc84a51169f85724833fff8734701244223b2bd8b53181",
+   "versiuneJ": "J1.5.0"
+  },
+  "D402": {
+   "jar": "D402Validator.jar",
+   "sha256": "065d36b413a3fb882fdf2133e6ebbad236c710ef833257180df09456576a1c7c",
+   "versiuneJ": "J1.0.1"
+  },
+  "D403": {
+   "jar": "D403Validator.jar",
+   "sha256": "b4de6894e5b1253702abe3fe991d84bc24fe987d9270114768b67cb8f128d37c",
+   "versiuneJ": "J2.2.0"
+  },
+  "D406": {
+   "jar": "D406Validator.jar",
+   "sha256": "197fd169721022c43f8a3ae5ba66950a7dc2354cf1355b0dd012ceada9a32373",
+   "versiuneJ": "J2.2.18"
+  },
+  "D407": {
+   "jar": "D407Validator.jar",
+   "sha256": "d5922ba00bad15ed1d82ce255f9c645a0d8a42ff23f16b125caaf767ef868b4d",
+   "versiuneJ": "J1.0.2"
+  },
+  "D600": {
+   "jar": "D600Validator.jar",
+   "sha256": "84663508ff028eeaf10e26e4478a057c1aa7ec65e7d5a69459fc0dec4930762c",
+   "versiuneJ": "J3.0.0"
+  },
+  "D603": {
+   "jar": "D603Validator.jar",
+   "sha256": "42411a37ef7f345170cd4bf3b69cdcca6cf51b4ebf2a123053f816b72689eca4",
+   "versiuneJ": "J1.0.0"
+  },
+  "D700": {
+   "jar": "D700Validator.jar",
+   "sha256": "33ef590178c0f0845dedd136465c32627b8e2c6918e6c5f0ac84f863eaffc134",
+   "versiuneJ": "J5.0.3"
+  },
+  "D710": {
+   "jar": "D710Validator.jar",
+   "sha256": "89ac076e5556af843441e25882e8e87d0d158f2d1745881595f09e1d52c340a6",
+   "versiuneJ": "J20.0.7"
+  },
+  "S1003": {
+   "jar": "S1003Validator.jar",
+   "sha256": "60681218f42b81f557557e6a11f379c9bcf75b8d042ba1a89e3471b3dd844e0a",
+   "versiuneJ": "J14.0.0"
+  },
+  "S1005": {
+   "jar": "S1005Validator.jar",
+   "sha256": "5096fb3e6e0c8ea8b7d89e7cd95751839f29a656eba5c1868d7944870727803e",
+   "versiuneJ": "J14.0.3"
+  }
+ },
+ "verificat_la": "2026-10-07"
+}

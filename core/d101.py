@@ -232,10 +232,12 @@ def _scadenta_2022(an):
 
 
 def _scadenta_2026(an):
-    """an Data_S >= 2026 -> 25 MARTIE (LL+3): art.42(1) CF baza (Legea 227/2015), schema OUG 153/2020 incheiata =
-    ce cere validatorul DUK instalat. OUG 8/2026 art.6 pct.12 muta baza la 25 iunie de la fiscal 2026 cand jar-ul
-    se actualizeaza (D101 fiscal 2026 depusa in 2027) - vezi nota de deasupra + DECIZII.md 03.08.2026."""
-    ll, scad_an = 12 + 3, an + 1
+    """an Data_S >= 2026 -> 25 IUNIE (LL+6). [07.10.2026] Semnalul anunțat mai sus a venit: validatorul D101 PUBLICAT (instalat
+    07.10.2026, `anaf_surse/duk_instalat.json`) cere iunie pe 2026 (martie = „Err R17 Scadenta platii”), iar temeiul e în MO:
+    OUG 8/2026 art.6 pct.12 (MO 147/25.02.2026) modifică CF art.42 alin.(1): „Contribuabilii au obligația să depună o
+    declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor” (anaf_surse/oug_8_2026.txt).
+    Același termen ca `core/scadente.py` (d101). Era LL+3 (martie), pe validatorul vechi — DECIZII.md 03.08.2026 / 07.10.2026."""
+    ll, scad_an = 12 + 6, an + 1
     if ll > 12:
         ll -= 12
     return ll, scad_an
@@ -243,7 +245,7 @@ def _scadenta_2026(an):
 
 _VARIANTE_SCADENTA = [
     ("2022-01-01", _scadenta_2022, _Tm("OUG", 153, 2020, art="I", alin="13", lit="a", nivel_sursa="MO", de_cine="Costin", verificat_la="2026-08-03")),
-    ("2026-01-01", _scadenta_2026, _Tm("Legea", 227, 2015, art="42", alin="1", nivel_sursa="MO", de_cine="Costin", verificat_la="2026-08-03")),
+    ("2026-01-01", _scadenta_2026, _Tm("OUG", 8, 2026, art="6", nivel_sursa="MO", de_cine="Code", verificat_la="2026-10-07")),
 ]
 
 

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.75 · 6 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.76 · 7 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -435,6 +435,15 @@ rețetă, linii de jurnal). NU rescrie cap.6 — îl referă.
   de preț golit pleacă drept LIPSĂ (`null`), niciodată ca 0 (`parseFloat(…) || 0` pe un preț e INTERZIS); serverul
   refuză lipsa lângă câmp, iar 0 scris de om rămâne permis. Gard: verificator `PRET_SAU_ARTICOL_NEALES`.
 
+- **Nicio entitate nu se alege tastându-i ID-ul intern (`op-mijloc_fix_id`, gard `ID_INTERN_TASTABIL`; v2.76, C4).** Un câmp care leagă operațiunea
+  de o entitate a firmei (mijloc fix, articol, partener) e o LISTĂ din registrul ei, cu denumirea și ce ajută la recunoaștere
+  (cod, valoare rămasă), nu un câmp numeric „ID …”. Instanța: „ID mijloc fix” la reevaluare și casare — contabilul trebuia să
+  știe ID-ul din baza de date, iar refuzul îi cerea „alege-l din listă” fără listă. Gard: verificator `ID_INTERN_TASTABIL`.
+- **Trimiterea în coadă are UN drum (v2.76, comanda Costin 07.10.2026, C1/C2/C3/C11).** Orice ecran trimite o declarație în coadă
+  prin `ecrane/coada_trimite.js` (`trimiteInCoada`): același corp ca la generare, refuzul cu motivul REAL venit de la server,
+  atenționările DUK afișate cu o casetă de confirmare scrisă, eroarea DUK fără portiță. INTERZIS `api.post("/coada", …)` scris de
+  mână într-un ecran. Gard: verificator `COADA_UN_SINGUR_DRUM`.
+
 **Gardă mecanică** (verificator): din cele patru reguli, doar a patra e curat verificabilă mecanic FĂRĂ a aprinde
 ecrane în afara restructurării în curs.
 - **MIRROR_CAMPURI_LIPSA** (regula 4): interzice în `static/js/ecrane` o funcție/variabilă de câmpuri-lipsă care
@@ -700,6 +709,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.76 (07.10.2026)** — **cap.24: entitatea se alege din listă, nu prin ID; trimiterea în coadă are un singur drum.** „Mijlocul fix” (reevaluare, casare) = listă din registrul activelor; `coada_trimite.js` (`trimiteInCoada`) folosit de Declarații și Bilanț — corpul generării, refuzul real, confirmarea atenționărilor DUK (C3). Gărzi: `ID_INTERN_TASTABIL`, `COADA_UN_SINGUR_DRUM`.
 **v2.75 (06.10.2026)** — **cap.24: prețul și articolul pe care nu le-a ales omul (comanda Costin 06.10.2026, pct.1b/1c).** Rândul nou fără preț și fără articol; propunerea (preț din nomenclator, UM din articol) se golește când denumirea se schimbă; denumirea scrisă de mână dezleagă articolul; prețul golit = lipsă (`null`), refuzată de server lângă câmp. Aplicat: emiterea, factura recurentă, intrarea în stoc, rețeta (ingredientul nou și prețul), transferul și reclasificarea (opțiunea goală), nomenclatorul de produse. Gard: `PRET_SAU_ARTICOL_NEALES`.
 **v2.74 (06.10.2026)** — **Lotul 07.10 (retestul F5/F1): cap.2 ascuns = invizibil; cap.6 mesajul de după un buton în vedere și refuzul cu buton spre ecran.** `[hidden]{display:none!important}` global (înlocuiește excepțiile `.acces-overlay[hidden]`, `.pa-lista[hidden]`); `aduInVedere` + `SELECTOR_MESAJ` în `api.js`; `ecran_destinatie.js` (`ECRANE`, `butonSpreEcran`) + `_butonSpreEcran` în `api.js`. Clase noi: `.val-evidentiat` (elementul deschis dintr-o notificare), `.df-jurnal` / `.df-jurnal-cadru` (istoricul Date firmă încape în fereastră), `.em-ciorna` (anunțul facturii păstrate), `.ecran-destinatie`. Gărzi: `HIDDEN_CU_DISPLAY`, `MESAJ_FARA_ADUCERE_IN_VEDERE`, `REFUZ_ECRAN_FARA_BUTON`.
 

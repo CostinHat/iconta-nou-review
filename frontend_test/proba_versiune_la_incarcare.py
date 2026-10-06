@@ -70,9 +70,13 @@ def _o_fila(pw, baza, cale, schimba_inainte_de_intrare, token, user):
         a = json.load(io.open(cale, encoding="utf-8"))
         a["commit"] = "proba-publicare-dupa-incarcarea-filei"
         io.open(cale, "w", encoding="utf-8").write(json.dumps(a, ensure_ascii=False, indent=2) + "\n")
+    pg.evaluate("() => { window.__marcaj_fila = 1; }")     # o reîncărcare reală îl șterge
     r["modul_sesiune"] = _intra_in_fila(pg, token, user).split("/static/")[-1]
-    pg.wait_for_selector(".asi-arbore, .cab-grila", timeout=20000)
     pg.wait_for_timeout(3000)                                # prima verificare (`porneste`) a avut loc
+    pg.wait_for_selector(".asi-arbore, .cab-grila", timeout=20000)
+    pg.wait_for_timeout(1500)
+    # [PIVOT față de R129, 07.10.2026] la autentificare, fără formular început, fila se reîncarcă singură pe codul publicat
+    r["reincarcata_la_autentificare"] = pg.evaluate("() => window.__marcaj_fila === undefined")
     r["anunt_vizibil"] = pg.eval_on_selector_all(".versiune-noua", "els => els.filter(e => e.offsetParent !== null).length") > 0
     r["anunt_text"] = pg.eval_on_selector_all(".versiune-noua", "els => els.map(e => e.innerText.trim())")
     r["stare_versiune"] = _stare_versiune(pg)

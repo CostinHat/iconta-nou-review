@@ -8792,7 +8792,7 @@ pica automat -> semnal clar sa treci _scadenta_2026 de la LL+3 la LL+6. Nu neces
 
 Tabel final termen depunere D101 per an fiscal: 2021-2025 -> 25 iunie (OUG 153/2020 art.I alin.13 lit.a); 2026 ->
 25 martie (baza art.42 azi), 25 iunie cand validatorul adopta OUG 8/2026. Cod: _scadenta_2022 (LL+6 iunie) +
-_scadenta_2026 (LL+3 martie), gard de comportament test_scadenta_LL_plus_3_pentru_an_peste_2025 (valori DUK-valide
+_scadenta_2026 (LL+3 martie), gard de comportament test_scadenta_LL_plus_3_pentru_an_peste_2025 (valori DUK-valide [citare-istorica: redenumit 07.10.2026 în test_scadenta_25_iunie_si_pentru_2026 — validatorul D101 publicat cere iunie pe 2026, OUG 8/2026 art.6 pct.12]
 SI legal corecte pe 2022-2025). Cluster INCHIS.
 
 
@@ -17424,3 +17424,70 @@ test al lui Costin, `tenant_049`–`tenant_053`); pe producție nu se fac probe 
 test (corespondența F → firmă de test e în raport); un tip fără firmă pe baza de test (TVA la încasare, aur de investiții) =
 „fără firmă de test”. **Alternativa respinsă:** parcurgerea pe F1–F5 din producție — ar scrie în baza de producție (coadă, note,
 depuneri cu index fals, notificări către conturile reale ale cabinetului de test).
+
+## 07.10.2026 — Răspunsul la §6 (C3, reîncărcarea, C4, C11) și reparația C1/C2/C7 (comanda Costin)
+
+**Comanda, verbatim:** *„1. C3, D112 part-time: verifică întâi dacă validatorul D112 instalat e ultima versiune publicată de ANAF;
+dacă există una mai nouă, o instalezi și refaci proba. Pragul aplicat e cel din actul normativ publicat în MO, în vigoare pe luna
+declarației. O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.
+2. Reîncărcare automată la autentificare: DA, numai când nu există formular început. Cu formular început rămâne anunțul „Versiune
+nouă · reîncarcă”. Consemnează schimbarea față de R129.
+3. „ID mijloc fix” la reevaluare și casare: devine listă din registrul activelor firmei.
+4. Bilanțul trece prin coadă: pregătit → validat → depus, cu aceleași drepturi ca la celelalte declarații.
+5. Repară C1 (D390 → 500), C2 (formularele manuale nu se trimit în coadă) și C7 (agricultor → formularul de vânzare), cu
+generalizarea pe clasă pentru fiecare. Proba de browser reface drumul din parcurgere.
+6. Listează operațiile, execută-le, raportează durata măsurată a fiecăreia. Poarta completă o singură dată, la publicare.
+7. La închidere: ZIP la ~/ghid_incoming/iconta_c1_c2_c7.zip (cod schimbat, probe înainte/după cu capturi, jurnale), cu calea exactă
+în raport.”*
+
+**C3 — validatorul, măsurat.** `versiuni.xml` descărcat de la ANAF pe 07.10.2026: D112 = **J27.0.6** (`D112_216`, publicat
+14-Sep-2026). Instalat: jarul din 08.08.2026 (J27.0.1; sha256 diferit). Istoricul oficial: „11-Aug-2026 publicat versiune J27.0.2 —
+corectie regula salmin”. Cu J27.0.6 instalat, D112 Panificatie 09/2026 (B4_5P = 4.125) = `stare: valid`, fără atenționare; cu
+vechiul J27.0.1: SP1B4_1 „B4_5P(4125) diferit de suma calculata 3750”. **Pragul, din MO:** HG 146/2026: „Începând cu data de 1
+iulie 2026, salariul de bază minim brut pe țară garantat în plată … se stabilește … la suma de 4.325 lei lunar”; OUG 89/2025 art.III
+alin.(5): „Prin derogare de la prevederile art. 146 alin. (5^6) și ale art. 168 alin. (6^1) … nivelul salariului de bază minim brut
+pe țară garantat în plată în vigoare în luna pentru care se aplică … se diminuează astfel: … b) pentru veniturile aferente perioadei
+1 iulie-31 decembrie 2026, cu suma de 200 lei lunar.” -> 4.125 pe 09/2026 = ce aplica aplicația. **Clasa:** toate validatoarele
+instalate comparate cu cele publicate (sha256, 62 de jaruri): 4 mai vechi (D100 J21.0.8 și D710 J20.0.7 publicate 14-Sep-2026;
+D101 J11.0.4; B230 J3.0.0) -> instalate (copiile vechi `*.bak_pre_20261007`). **Atenționarea în coadă:** o atenționare DUK intră cu
+confirmarea scrisă a contabilului (păstrată cu autorul, momentul și amprenta XML-ului confirmat); aprobarea și depunerea o recunosc
+fără o a doua confirmare cât timp XML-ul e același. **Eroarea DUK oprește** la intrare, aprobare și depunere — fără portița
+`motiv_trecere` pe care o avea până azi (R41: trecere cu motiv peste un verdict cu erori). Portița rămâne pentru ce NU e un verdict
+de eroare: verdict lipsă, stătut sau „gri” (validatorul n-a putut rula).
+
+**PIVOT față de R129 (03.09.2026, varianta (a): „anunță, nu forța reîncărcarea”).** Intermediar: anunțul, cu referința la
+autentificare (prinsă pe 06.10, a patra pierdere a facturii), apoi cu referința la încărcare (06.10 seara). **Final (07.10):** la
+autentificare, dacă amprenta publicată diferă de cea a codului încărcat și NU există formular început, aplicația se reîncarcă
+singură; cu formular început rămâne anunțul „Versiune nouă · reîncarcă”, care nu reîncarcă peste formular. Temeiul lui R129 rămâne
+întreg — un formular pe jumătate completat nu se pierde —, iar la autentificare, fără formular, nu există ce pierde.
+
+**C4:** „ID mijloc fix” la reevaluare și casare = listă din registrul activelor firmei. **C11:** bilanțul (S1005/S1003) trece prin
+coadă, cu drepturile declarațiilor (pregătește / validează / depune) și cu aceeași poartă de validator.
+
+**Consecințe (executor) — reparația C1/C2/C7 și ce s-a găsit pe drum (07.10.2026):**
+1. **C1.** `Unde` și `Temei` moștenesc `core/text_structurat.TextStructurat`: copierea (copy / deepcopy / pickle / `dataclasses.asdict`)
+   reface obiectul din textul exact și din atribute, fără constructorul care validează. `Temei` avea același mecanism; copia ieșea
+   corectă numai fiindcă textul refăcut coincidea. Ecranul spune acum motivul REAL al unui refuz (era „Poate există deja o declarație
+   pentru această perioadă” și la un 500).
+2. **C2.** Un singur constructor de corp (`corpGenerare`), folosit la generare și la coadă; `CoadaIn` primește și `obligatii` (D710).
+   Un singur drum spre coadă (`ecrane/coada_trimite.js`), folosit de Declarații și de Bilanț. **Găsit pe drum, aceeași clasă la
+   server:** 31 din 52 de tipuri n-aveau termen calculabil, iar coada își pune `perioada` = termenul -> 500 la intrare pentru orice
+   declarație anuală cu formular (D230 probat: 500 -> 200). **INTERPRETARE (nu termen ghicit):** fără termen sursat, coada pune
+   perioada de raportare („anul 2025”); termenele lipsă = datorie xfail strict + ratchet. Bilanțul are termenul sursat: Legea
+   82/1991 art.36 alin.(1) lit.a) — „până la data de 31 mai inclusiv a exercițiului financiar următor”; alin.(1^1) — zi nelucrătoare
+   -> prima zi lucrătoare următoare (2025 -> 02.06.2026).
+3. **C7.** Cheia „Achiziție de la agricultor (compensare 8%)” = `agricultor_achizitie`. Clasa (cheie repetată într-un registru căutat
+   după cheie) măsurată în toate registrele `cheie:` din ecrane, în 132 de obiecte literale JS și în 6.188 de dicționare Python:
+   o singură apariție, cea de mai sus.
+4. **C3 pe ecranul cabinetului:** un element cu atenționări neconfirmate primește „Confirmă atenționările și depune…” (confirmarea
+   scrisă); un element cu erori DUK nu mai are „Depune totuși…”. Refuzurile noi (`ERORI_DUK`, `ATENTIONARI_NECONFIRMATE`) = 422, nu 404.
+   Schimbarea de contract HTTP e DECLARATĂ în garda P7 (`core/test_p7_uc.py`): la intrare, cele două refuzuri noi în
+   `PERECHI_ADAUGATE`; la aprobare/depunere, același mesaj cu 422 în plus, într-un mecanism nou și mai strâns, `CODURI_ADAUGATE`
+   (scutește doar perechea veche față de cea cu EXACT codul declarat în plus). Respins: o intrare în `ABATERI` — aceea scutește
+   un mesaj schimbat sub același cod, deci ar fi descris greșit schimbarea.
+
+**PIVOT față de DECIZII 03.08.2026 (scadența D101 pe 2026) — 07.10.2026.** Intrarea din 03.08 lăsa D101 pe 2026 la 25 martie
+(LL+3), fiindcă validatorul instalat atunci cerea martie, și consemna explicit semnalul de schimbare: „Când jar-ul trece la iunie,
+probele DUK pe an=2026 (test_imca_d101_duk_valid) vor pica”. Semnalul a venit la instalarea validatorului D101 publicat (C3, clasa
+validatoarelor în urmă): martie = „Err R17 Scadenta platii”, iunie = valid. **Final:** 25 iunie anul următor, temei OUG 8/2026 art.6
+pct.12 -> CF art.42 alin.(1) („până la data de 25 iunie inclusiv a anului următor”), același termen ca `core/scadente.py`.
