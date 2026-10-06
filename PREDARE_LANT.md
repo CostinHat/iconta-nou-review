@@ -1,20 +1,21 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **validarea notelor prin coadă + concediul medical în nota de salarii LIVRATE; o decizie cerută (D112 / D1)** (06.10.2026)
+# PREDARE LANȚ — **ziua 06.10.2026 închisă: lotul 06.10 + validarea notelor + CM publicate; o singură decizie cerută (D112 / D1)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-06**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `11cd3150` (validarea notelor + CM; lotul 06.10: P1 `14fc0cb6`, P2 `2f698e19`, P3 `27335044`, P4 `c961d8a0`); commitul care poartă această linie e cel
-  de închidere de pe `main` (registre, stampile de asset-uri, blocuri regenerate). Secțiunile atinse acum: ANTET, STAREA, FRONTURI,
-  DECIZII ÎN VIGOARE, ATENȚIONĂRI.
+- **ultima rescriere**: **2026-10-06**, COMPLETĂ (toate secțiunile de stare; secțiunile de lecții și CIFRE INVALIDATE se poartă).
+- **pe commit**: `a7dcb741` (închiderea validării notelor; lucrul în `11cd3150`; lotul 06.10: `14fc0cb6` `2f698e19` `27335044` `c961d8a0`
+  `b70a010c`). Commitul care poartă această linie e cel de registre de la finalul zilei (predare + ISTORIC pe zi).
+- **four-way la ultima execuție de cod** (06.10.2026, 11:44): HEAD = origin/main = backup/lant-2026-10-06 = RUNNING = `a7dcb741`
+  (`toate_poarta_head.py`: 2 din 2 procese; serviciul pornit 11:43:54, după commit; fără sentinele `PUSH_*_ESUAT`).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
-completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
+**Nicio comandă deschisă.** Tot ce s-a cerut până la 06.10.2026 e livrat, fiecare cu poartă completă, four-way și ZIP în
+`/home/costin/ghid_incoming/`. Singura decizie care așteaptă e D112 / D1; celelalte fronturi sunt [EXTERN] (FRONTURI, mai jos):
 
 | ce | commit | ZIP |
 |---|---|---|
@@ -33,7 +34,7 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | `d582e083` | la final |
 | **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | `eafc7b8c` | `iconta_testare_factura_F1.zip` |
 | **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
-| **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate | `11cd3150` + închiderea | `iconta_validare_note.zip` |
+| **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -54,9 +55,10 @@ aplicației**, nu „în așteptarea unei teme”:
   **[EXTERN]**, datorii stricte în `core/test_datorie.py`.
 - **R40**: nicio declarație depusă efectiv la ANAF prin aplicație — se închide prin folosire, nu prin cod. **R121**: P300/RO e-TVA fără
   acces programatic — **[EXTERN]**.
-- **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
-  nu se ating din cod).
-- **Decizie cerută lui Costin (validarea notelor, §6):** **D112 numără zilele PLĂTITE ale certificatului CM, nu zilele lui** —
+- **Contul Ana din producție**: „Poate pregăti” e acum bifat (de Costin, din Asistenți; citit 06.10: pregăti = da, valida = nu,
+  depune = nu). Consecință: orice notă ciornă pe care o scrie intră în coada de validare a cabinetului (coada de producție: goală la
+  06.10). Datele ei nu se ating din cod (decizia 04.10, pct.6).
+- **SINGURA decizie cerută lui Costin (validarea notelor, §6 din raportul din 06.10):** **D112 numără zilele PLĂTITE ale certificatului CM, nu zilele lui** —
   la certificatul inițial (diminuarea unei zile) declară salariu pentru ziua de concediu; statul are dreptate, iar 421 rămâne
   nesoldat cu netul acelei zile. Reparația e în `core/d112.py` -> declanșează pasul D1 („Contract uniform A1”, decizia 04.10).
   Datoria strictă: `core/test_datorie.py::test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare`.
@@ -103,6 +105,10 @@ aplicației**, nu „în așteptarea unei teme”:
   din `iconta.utilizator` (pus de `db.get_conn` din `core/autor_cerere.py`).
 - **(06.10) Fluturașul / statul / SEPA citesc indemnizația CM prin `stat_plata_api.stat_final`** (reținerile declarate în D112);
   `stat_plata` rămâne neajustat fiindcă îl citește `d112.pull`.
+- **(06.10) Use-case-ul unei rute noi poartă NUMELE funcției rutei** (`main.jurnal_retrimite` -> `uc_coada.jurnal_retrimite`): scanerul
+  de atribuire (`scan_functionalitati.scrie_functia`) caută după nume; altfel cade pe modul și „scrie” 20 de tabele (plafon 14).
+- **(06.10) Autorul pe conexiune se scrie cu `SET iconta.utilizator TO …`**, nu cu `SELECT set_config` — un `SELECT` în `core/db.py`
+  îl face „modul cu SQL fără strat” (E2a) și urcă amestecul observat.
 
 - **(06.10) Producția are `metoda_stoc` NULL pe toate cele 5 firme și seria facturii goală**: după deploy, prima factură de marfă
   sau prima ieșire de stoc e refuzată cu trimitere la Date firmă, iar prima emitere cere seria în mesaj. Fixturile de test pun
@@ -112,7 +118,8 @@ aplicației**, nu „în așteptarea unei teme”:
 - **(06.10) `core/d112.py` NU s-a atins în lot**: orice modificare a lui declanșează pasul D1 („Contract uniform A1”). Regula de
   rotunjire e dublată intenționat în `numere.leu_aritmetic`, gardată prin echivalență în `core/test_lot0610_p3.py`.
 - **(06.10) Probele de browser NU mai publică în `/home/costin/iconta_publicat`** (îl servește și producția): lanțul lotului rulează
-  serverul 8011 dintr-un worktree separat (`/home/costin/proba_0610/iconta_nou`), care își publică static-ul lângă el.
+  serverul 8011 dintr-un worktree separat (`/home/costin/proba_vn/iconta_nou` la validarea notelor; scos la final), care își publică
+  static-ul lângă el.
 
 - **Registrul jurnal cere confirmare la validarea unei ciorne fără document justificativ** — o probă care validează o notă manuală
   fără document apasă și „Validează fără document” (`#caseta-atentie-activa #ca-ok`), sau scrie documentul în notă.
@@ -163,17 +170,23 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `8c3cfe95` (05.10.2026):
+**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `a7dcb741` (06.10.2026):
 
 ```
-7215 passed, 9 skipped, 13 xfailed in 2984.87s (0:49:44)      -> COLLECTED 7237
+7397 passed, 9 skipped, 14 xfailed in 3158.22s (0:52:38)      -> COLLECTED 7420 (confirmat cu --collect-only)
 verificator: TOTAL: 0 candidate
 ```
 
-**Poarta durează ~48 de minute** (pytest complet ~7120 de teste; măsurat pe ultimele 8 rulări din 03–04.10: 2877–2922 s). O tură cu o
-respingere costă deci ~1,5 ore numai în porți — de-aia gărzile care pică repetat se rulează ÎNAINTE de commit (lista de la „CE CERE
-POARTA”). `commit-msg` rulează DUPĂ pytest: `# diff-citit:` (fișiere normative) și `# multe-fisiere-ok:` (peste 8 fișiere noi) se pun
-în mesaj ÎNAINTE de primul `git commit`.
+**Poarta durează ~52 de minute** (pytest complet ~7400 de teste; 06.10: 3151 s și 3158 s). O tură cu o respingere costă deci ~1,75 ore
+numai în porți. **Pe 06.10 închiderea validării notelor a avut nevoie de TREI porți** (15 picate, apoi 3, apoi verde) — toate pe gărzi
+structurale care derivă din cod (atribuire, clasificarea tranzacțiilor, E2a, refuz tăcut, TRASEE, P7, clichete); a doua respingere a
+venit din reparațiile primei, nerulate țintit. **Regula practică:** după ORICE schimbare de cod de după ultima rulare țintită, se rulează
+din nou setul de vecinătate (lista de la „CE CERE POARTA”, plus `test_trasee`, `test_p7_v2_scrieri`, `test_tranzactii_clasificate`,
+`test_atribuire_scrieri`, `test_e2a_univers`, `test_refuz_tacut`, `test_clichete_generate`) — ~8 minute, față de 52.
+`commit-msg` rulează DUPĂ pytest: `# diff-citit:` (fișiere normative), `# multe-fisiere-ok:` (peste 8 fișiere noi) și locul unui
+defect pomenit ca nereparat (`#n` / `Rn` / `CONFORMITATE.md`, altfel `# fara-consemnare-ok: <motiv>`) se pun în mesaj ÎNAINTE de
+primul `git commit`. **Mesajul se trece întâi manual: `bash scripts/githooks/commit-msg <fișierul mesajului>`** — pe 06.10 un commit
+de registre a fost respins de `commit-msg` după 56 de minute de pytest verde.
 
 **Four-way-ul se închide la `post-commit`**: publică pe `origin/main`, `public/main`, `backup/lant-<zi>`, publică statica din HEAD,
 restartează necondiționat și verifică brațele. Confirmarea independentă: `scripts/toate_poarta_head.py <SHA COMPLET>` (cu SHA scurt
@@ -280,7 +293,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 ## RESTANȚELE — unde se citesc
 
 **Numărul se derivă** (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici. Registre: `CONFORMITATE.md` (restanțele cu
-stare), `core/test_datorie.py` (datoria verificabilă, `xfail(strict=True)` — 13 la 04.10), `GARZI.md` (limitele declarate ale gărzilor).
+stare), `core/test_datorie.py` (datoria verificabilă, `xfail(strict=True)` — 14 la 06.10, ultima: D112 ziua de diminuare), `GARZI.md` (limitele declarate ale gărzilor).
 O restanță se închide **doar când o atinge altă lucrare**.
 
 ## CIFRE INVALIDATE — se păstrează, nu se șterg
@@ -436,6 +449,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **o tabelă nouă în `tenant_template.sql`** | clasificarea ei în perimetrul firmelor de probă (`ISTORIC_TENANTI.md`, ca tabelele surori) + `scripts/trasee_tabele.json` regenerat (`scan_trasee.py --tabele`) | `test_perimetru_firma_declarat` · `test_trasee` |
 | **un refuz HTTP nou într-un use-case** | perechea în `PERECHI_ADAUGATE` (`core/test_p7_uc.py`), cu motivul | `test_p7_uc::test_perechile_cod_mesaj_sunt_NESCHIMBATE` |
 | **un apel nou către repository din `uc_tenants`** | cifra din `test_p7_v2_scrieri` urcată, cu apelurile numite | `test_p7_v2_scrieri` |
+| **o rută nouă cu use-case** | use-case-ul cu ACELAȘI nume ca funcția rutei; dacă are mai multe tranzacții care scriu, rând individual în `core/p4_clasificare.CLASIFICARE` | `test_atribuire_scrieri` · `test_tranzactii_clasificate` (06.10) |
+| **o rută care pune o notă în coadă / o creează** | `_cere_luna_deschisa` sau `_cere_perioada_deschisa` în use-case | `test_r42_criteriu` (06.10) |
 | **un câmp de formular** | nume accesibil: `for` pe etichetă sau `aria-label` | `test_etichete_campuri` (04.10) |
 | **o rută de scriere pe o firmă** | `cere_drept(_drepturi.NIVEL)` după decizia „varianta 2” (lista administratorului e exhaustivă) | `test_drepturi_rol` (04.10) |
 | **un buton care cheamă o rută restrânsă** | `data-actiune="METODĂ /cale"` pe ELEMENTUL legat de handler; o cale dinamică nouă se pinează cu motiv | `test_drepturi_ui` (04.10) |

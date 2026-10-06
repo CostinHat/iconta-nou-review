@@ -1598,3 +1598,35 @@ declarată a scanerului de refuz tăcut); cheile `stari_note` → `stare_coada`/
 rulasem țintit (blocul și adnotarea TRASEE ale retrimiterii, numărătoarea P7 286 → 287 pentru `nota_cu_linii` din
 `jurnal_retrimite`). Regenerate / ridicată cu motivul numit; setul țintit de 16 fișiere de gărzi: 438 trecute.
 
+**A treia rundă: VERDE (06.10.2026)** — 7397 trecute / 9 sărite / 14 xfail (COLLECTED 7420), verificator TOTAL 0; commitul `a7dcb741`,
+publicat four-way (HEAD = origin/main = backup/lant-2026-10-06 = RUNNING), ZIP `iconta_validare_note.zip`.
+
+## 06.10.2026 — Ziua, pe scurt: ce s-a schimbat pentru contabil
+
+Intrările de mai sus, ale aceleiași zile, au detaliul. Pe scurt:
+
+- **Facturi — seria e obligatorie:** o factură fără serie e refuzată, iar mesajul cere seria chiar acolo; după ce o scrii, emiterea
+  continuă cu formularul păstrat. **În producție, toate cele 5 firme au seria goală**: prima emitere a fiecăreia va cere seria.
+- **Stocuri — metoda de stoc se alege explicit** în Date firmă (cantitativ-valoric sau global-valoric). Până e aleasă, orice ieșire de
+  marfă e refuzată cu trimitere la Date firmă. **În producție, toate cele 5 firme o au necompletată.** Fiecare ieșire se descarcă o
+  singură dată (fără dublare între factură și descărcarea lunii).
+- **Date firmă — istoricul modificărilor:** orice schimbare rămâne scrisă (cine, când, valoarea veche și cea nouă).
+- **Notele generate de aplicație** care nu au document extern primesc un document intern numerotat (tablou de amortizare, situație
+  de descărcare, bon de consum, listă de inventariere, notă de calcul).
+- **Salarii — statul și fluturașul folosesc exact sumele din D112** (CAS, CASS, impozit, rotunjite pe salariat), deci netul iese din
+  aceleași sume ca nota. Exemplu F5 10/2026: net 6.809,45 (era 6.810,24); CAM 260 (era 259,77), egal cu codul 480 din D112. Propunerea
+  notei de salarii verifică 421 la ban.
+- **Salarii — concediul medical intră în nota de salarii:** partea angajatorului pe 6458 = 423, partea din FNUASS pe 4382 = 423,
+  reținerile pe indemnizație pe 423; fluturașul și fișierul de plată (SEPA) plătesc și indemnizația netă. 421 și 423 se închid la ban
+  și în lunile cu concediu medical. Excesul de tichete de vacanță trece pe 642 (cheltuiala cu tichetele), nu pe 641. La un certificat de continuare, zilele plătite de angajator se
+  socotesc pe tot concediul (episodul), nu de la zero pe fiecare certificat.
+- **Validarea notelor de către cabinet:** o notă scrisă de un asistent care are doar „Poate pregăti” ajunge la cabinet, în aceeași coadă
+  ca declarațiile: contorul „de validat”, notificare, „Note de validat” cu Validează / Respinge cu motiv, Activitate cabinet. Jurnalul și
+  statul de plată arată unde e nota; o notă respinsă se vede cu motivul și se trimite din nou cu „Trimite din nou la validare”.
+- **Povestea lunii pentru client:** fără marcaje de formatare, „Rezultat înainte de impozit” (fără 691/698), fără restanțe în text.
+- **Ghiduri publice:** /ghid e împărțit pe 19 teme; sursele apar cu numele actului și link oficial; adresele vechi redirecționează.
+- **Declarații:** niciun formular schimbat. Un defect cunoscut, nereparat: la un certificat medical INIȚIAL cu zi de diminuare, D112
+  declară salariu și pentru ziua neplătită — reparația cere modificarea modulului D112 (pasul D1), decizie cerută lui Costin.
+- **Baza de producție:** două migrări de structură (după backup verificat): metoda de stoc + contorul documentelor interne, apoi coada
+  de validare a notelor (autorul notei + sincronizarea cu jurnalul). Nicio cifră existentă schimbată.
+
