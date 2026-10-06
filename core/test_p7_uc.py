@@ -54,6 +54,9 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("coada_continut", "Nota nu mai există în jurnal (a fost ștearsă)."): (
+        "Comanda Costin 06.10.2026 (răspunsul la §6, pct.1): coada poartă și NOTE; conținutul unui element-notă se citește din "
+        "jurnalul firmei, iar nota ștearsă între timp se refuză cu motivul numit (404), nu cu un conținut gol."),
     ("pachet_poveste_set", "MESAJ_APROBARE_PE_RUTA_EI"): (
         "Comanda Costin 05.10.2026 pct.2: aprobarea poveștii lunii cere «Poate valida» și are ruta ei "
         "(`/pachete/{tenant_id}/poveste/aproba`); ruta de ciornă («Poate pregăti») refuză `status=aprobat` cu motivul numit "
@@ -165,6 +168,10 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("tenant_stat_plata", "stat_plata"): (
+        "stat_final",
+        "Comanda Costin 06.10.2026 (răspunsul la §6, pct.2): ecranul statului arată indemnizația CM cu reținerile DECLARATE "
+        "în D112 — `stat_final` cheamă `stat_plata` și aplică peste ea reținerile declarate; apelul vechi e în interiorul celui nou."),
     ("produse_potriveste", "potriveste"): (
         "propunere_pentru_linie",
         "Fluxul de factură pe F1, comanda Costin 05.10.2026 pct.9: potrivirea pe linie caută întâi produsul în nomenclatorul "

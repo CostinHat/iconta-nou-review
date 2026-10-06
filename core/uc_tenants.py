@@ -936,6 +936,11 @@ def salarii_contare_propunere(tenant_id, an, luna, ctx):
         r = repo_contabilitate.id_nota_dupa_numar(cur, p["document_ref"])
     p["deja_contata"] = bool(r)
     p["nota_id"] = r[0] if r else None
+    # [validare_note, comanda Costin 06.10.2026 pct.1] statul de plată arată unde e nota în coada de validare
+    if r:
+        from core import coada_api as _coada
+        with db.get_conn() as conn:
+            p["validare"] = _coada.stari_note(conn, tenant_id, [r[0]]).get(r[0])
     return p
 
 
@@ -1096,6 +1101,13 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
     # amandoua, cum cere formularul, nu unul singur.
     lista = list(note.values())
     fara_document = sum(1 for n in lista if not n["document"])
+    # [validare_note, comanda Costin 06.10.2026 pct.1] starea fiecărei note în coada de validare (la validare / respinsă,
+    # cu motiv / validată) — din aceeași coadă pe care o vede cabinetul, ca jurnalul să nu spună altceva decât ea
+    from core import coada_api as _coada
+    with db.get_conn() as conn:
+        _st = _coada.stari_note(conn, tenant_id, [n["id"] for n in lista])
+    for n in lista:
+        n["validare"] = _st.get(n["id"])
     return {"note": lista, "total_debit": round(total, 2), "total_credit": round(total, 2),
             "note_fara_document": fara_document}
 
@@ -1114,7 +1126,7 @@ def tenant_stat_plata(tenant_id, an, luna, ctx):
         # (orice monitorizare/prefetch/al doilea tab faceau acelasi lucru), iar poarta de stergere din
         # salariati_api.sterge_salariat se inchidea din vizitare. Consumatorul (POST /calcul-cm)
         # calculeaza acum media din sursa, nu din cache-ul de navigare.
-        stat = _sp.stat_plata(conn, schema, an, luna)
+        stat = _sp.stat_final(conn, schema, an, luna)   # [validare_note] indemnizația CM cu reținerile declarate (D112)
         # [lista 5, 30.08.2026] Compozitia netului, din ACEEASI sursa ca fluturasul. Pana azi
         # componentele se vedeau numai in PDF-ul descarcat: ruta trimitea cele 12 campuri, ecranul
         # nu randa niciunul (R97). Se trimite gata compusa ca ecranul sa n-o compuna a doua oara -

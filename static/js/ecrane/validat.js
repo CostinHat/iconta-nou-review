@@ -28,7 +28,7 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp, arataMesaj } from "../api.js?v=4c8f1ff171";
+import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4c8f1ff171";
 import { randA as randConstatare } from "./control_verdict.js?v=45d828dd41";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
@@ -108,8 +108,13 @@ export async function randeazaValidat(corp, nav) {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca coada.</p>`;
     return;
   }
-  const laSenior = coada.filter((c) => c.stare === "la_senior");
-  const aprobate = coada.filter((c) => c.stare === "aprobata");
+  // [validare_note 06.10.2026, comanda Costin pct.1] coada poartă și NOTELE pregătite de asistenți (`fel: "nota"`). Ele se
+  // validează (nota devine validată în jurnal) sau se resping cu motiv — nu se depun; au secțiunea lor, oricare ar fi
+  // regimul patru-ochi, fiindcă le-a pregătit altcineva decât cel care le validează.
+  const noteDeValidat = coada.filter((c) => c.fel === "nota" && c.stare === "la_senior");
+  const declaratii = coada.filter((c) => c.fel !== "nota");
+  const laSenior = declaratii.filter((c) => c.stare === "la_senior");
+  const aprobate = declaratii.filter((c) => c.stare === "aprobata");
 
   // [po_efectiv_v1] TREI texte, nu doua: „oprit" si „suspendat" nu sunt acelasi lucru. Pe un cabinet
   // solo cu politica PORNITA, „Patru-ochi e dezactivat" contrazicea indicatorul din subbara
@@ -122,6 +127,7 @@ export async function randeazaValidat(corp, nav) {
       : "Patru-ochi e dezactivat: pregătești și depui singur. Declarațiile din coadă așteaptă depunerea.");
   corp.innerHTML = `
     <p class="mig-intro">${intro}</p>
+    <div id="val-note"></div>
     <div id="val-deValidat"></div>
     <div id="val-deDepus"></div>
     <div id="val-nevalidate"></div>
@@ -131,8 +137,15 @@ export async function randeazaValidat(corp, nav) {
   const z2 = corp.querySelector("#val-deDepus");
   const z3 = corp.querySelector("#val-nevalidate");
 
+  const zN = corp.querySelector("#val-note");
+  if (noteDeValidat.length) {
+    zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>`;
+    noteDeValidat.forEach((c) => zN.appendChild(randNota(c, firme, corp, nav, perm)));
+  }
   if (laSenior.length === 0 && aprobate.length === 0) {
-    z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
+    if (!noteDeValidat.length) {
+      z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
+    }
     return;
   }
 
@@ -168,6 +181,75 @@ export async function randeazaValidat(corp, nav) {
     }
     if (dNu.length) z2.appendChild(zonaNevalidate(dNu, firme, corp, nav, perm, patruOchi, "Generate, nevalidate"));
   }
+}
+
+// [validare_note] Rândul unei note din coadă: ce e, cine a pregătit-o, documentul și totalul; „Vezi nota” arată liniile.
+function randNota(c, firme, corp, nav, perm) {
+  const n = c.nota || {};
+  const div = document.createElement("div");
+  div.className = "val-card";
+  const uid = uidCurent();
+  const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
+  let actiuni = "";
+  if (!perm.poate_valida) {
+    actiuni = `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
+  } else if (euAmPregatit) {
+    actiuni = `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
+  } else {
+    actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
+      <button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
+  }
+  div.innerHTML = `
+    <div class="val-info">
+      <div class="val-titlu"><b>${esc(c.eticheta || "Notă")}</b></div>
+      <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
+      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</div>
+      <button type="button" class="btn-link val-vezi-nota">Vezi nota →</button>
+    </div>
+    <div class="val-actiuni">${actiuni}</div>`;
+  div.querySelector(".val-vezi-nota").addEventListener("click", () => deschideNota(c, nav));
+  const bResp = div.querySelector(".val-respinge");
+  if (bResp) bResp.addEventListener("click", () => {
+    dialogInput(nav, {
+      titlu: "Respinge nota",
+      eticheta: `Motiv respingere pentru ${esc(c.eticheta || "notă")}:`,
+      placeholder: "ex: lipsește factura; contul de cheltuială e greșit",
+      obligatoriu: true, buton: "Respinge", butonClasa: "val-respinge",
+      onConfirm: async (motiv) => { await api.post(`/coada/${c.id}/respinge`, { motiv }); nav.inapoi(); randeazaValidat(corp, nav); },
+    });
+  });
+  const bVal = div.querySelector(".val-aproba");
+  if (bVal) bVal.addEventListener("click", () => {
+    const btn = bVal;
+    const eroare = corp.querySelector("#val-eroare");
+    const valideaza = async () => {
+      try { await api.post(`/coada/${c.id}/aproba`, {}); randeazaValidat(corp, nav); }
+      catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
+    };
+    // aceeași confirmare ca în Registrul-jurnal: nota fără document justificativ se validează numai explicit
+    if (!n.document_ref) {
+      confirmaCaseta(btn.parentElement || btn, "Nota nu are document justificativ. Validezi totuși?", valideaza,
+        { textOk: "Validează fără document" });
+      return;
+    }
+    valideaza();
+  });
+  return div;
+}
+
+async function deschideNota(c, nav) {
+  nav.deschide(c.eticheta || "Notă", async (corp) => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă nota…</p>`;
+    let d;
+    try { d = await api.get(`/coada/${c.id}/continut`); }
+    catch (e) { corp.innerHTML = `<div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut încărca nota.")}</div>`; return; }
+    const n = d.nota || {};
+    corp.innerHTML = `
+      <p class="mig-intro">${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</p>
+      <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
+        <tbody>${(d.linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
+      </table>`;
+  }, { nivel: "cabinet" });
 }
 
 // [R41 partea II] Lista separată. Titlul nu spune „de depus" — fiindcă nu sunt.

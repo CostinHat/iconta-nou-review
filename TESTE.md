@@ -45,6 +45,26 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **VALIDAREA NOTELOR PRIN COADĂ + CONCEDIUL MEDICAL ÎN NOTA DE SALARII (comanda Costin 06.10.2026, răspunsul la §6 din
+  LOT_06_10)** — verbatim în DECIZII 06.10.2026. Ramura `lucru/validare-note`, commit pe pas fără poartă completă (pct.4 al
+  comenzii), o singură poartă completă la commitul de închidere de pe `main`; ZIP `~/ghid_incoming/iconta_validare_note.zip`.
+  - ultim: V1–V5 (cod + gărzi `core/test_validare_note.py`, 10 teste; datoria D112 în `core/test_datorie.py`)
+    V6: proba de browser cap-coadă (`frontend_test/proba_validare_note.py`, înainte/după), uneltele vizuale (axe 0 pe ecranele
+    atinse după reparația de contrast `.val-aproba` / `.ac-cap`), commitul pe ramură.
+  - urmator: închiderea (migrarea de producție după backup, poarta completă pe main, publicare, ZIP). STARE = IN LUCRU;
+    sub-pas BLOCAT: reparația D112 a zilei de diminuare (cere `core/d112.py` -> pasul D1, decizia Costin 04.10)
+  - pasi:
+    V1 citirea integrală a cozii (coada_api, asistenti_api.centralizator/jurnal, notificari_api, uc_coada, validat.js) și harta
+       a ce e specific declarațiilor (scadență, XML, depunere).
+    V2 coada extinsă la note: nota de salarii pregătită de asistent intră în `public.declaratii_coada` (tip de element „notă”),
+       cabinetul o vede în aceeași listă, o validează (nota devine `validata`) sau o respinge cu motiv (nota rămâne ciornă,
+       marcată respinsă); contorul „pregătite”, notificarea „de validat”, Activitate cabinet și marcajul pe statul de plată
+       din același mecanism; patru ochi ca la declarații.
+    V3 temeiul concediului medical citit la sursă: OUG 158/2005 (partea angajatorului / FNUASS), OMFP 1802/2014 (conturile).
+    V4 indemnizația CM în nota de salarii (angajator + FNUASS) și reținerile ei pe contul corect; 421 soldat la ban și în
+       lunile cu CM (măsurat pe toate perechile firmă×lună).
+    V5 pct.10: numărul exact de titluri aprobate din registru încă nepublicate (sursa aprobărilor găsită și citată).
+    V6 teste + mutații + probă efemeră + probă de browser + unelte vizuale; registre; închidere pe main; ZIP.
 - fir: **LOT 19 GHIDURI — publicare (punctul 1 din decizia Costin 03.10)** (`/home/costin/ghid_incoming/iconta_lot19_ghiduri.zip`, RAPORT_LOT19.md; DECIZII 03.10). ÎNCHIS
   - ultim: livrat în commitul „Lot 19: publicare …” (hash în ISTORIC 03.10.2026): defectele 6–13 toate CONFIRMATE și reparate (11 și 12 după decizia lui Costin), clasa lui 13 lărgită pe tot ecranul Operațiuni, 20 de ghiduri live corectate, 18 secțiuni „Ce face iConta.eu” actualizate, verificatorul lotului `TOTAL 433 pica 0`, 433 de ghiduri publicate, 441 de rânduri în index.
   - urmator: — (fir închis; următorul: punctul 2, D394 Î2). STARE = ÎNCHIS

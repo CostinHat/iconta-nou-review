@@ -128,6 +128,18 @@ def coada_continut(coada_id, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/continut`; docstringul ei a ramas in stratul HTTP."""
     import base64 as _b64
     from core import duk as _duk
+    _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)
+    if _fel == "nota":
+        # [validare_note] nota: data, descrierea, documentul justificativ și liniile — ce aprobă validatorul
+        _nid = int((_el[4] or {}).get("inregistrare_id") or 0)
+        with db.get_conn(_schema_nota) as conn:
+            with conn.cursor() as cur:
+                n, linii = repo_declaratii.nota_cu_linii(cur, _schema_nota, _nid)
+        if not n:
+            raise _erori.Inexistent("Nota nu mai există în jurnal (a fost ștearsă).")
+        return {"fel": "nota", "nota": {"id": n[0], "data": n[1].isoformat(), "descriere": n[2], "document_ref": n[3],
+                                        "status": n[4], "sursa": n[5]},
+                "linii": [{"debit": a, "credit": b, "suma": float(c)} for a, b, c in linii]}
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             row = repo_declaratii.continutul_din_coada(cur, coada_id, ctx["firm"])
@@ -161,14 +173,16 @@ def coada_continut(coada_id, ctx):
 
 def coada_aproba(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/aproba`; docstringul ei a ramas in stratul HTTP."""
-    with db.get_conn() as conn:
+    _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)   # [validare_note] nota se validează pe schema firmei ei
+    with db.get_conn(_schema_nota) as conn:
         if not _uc_comun._are_permisiune(ctx, "poate_valida"):
             raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
         # [R41] `motiv_trecere` = trecerea EXPLICITĂ peste un verdict lipsă, stătut sau cu erori.
         # Fără el, acțiunea e refuzată; cu el, se consemnează cine și de ce.
         r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]),
                              motiv_trecere=(date or {}).get("motiv_trecere"),
-                             cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
+                             cabinet_id_apelant=ctx["firm"],  # [B1] apartenenta pe obiect
+                             schema_nota=_schema_nota)
     if not r["ok"]:
         cod = r.get("cod")
         # [B1] ALT_CABINET -> 404 (Inexistent): elementul altui cabinet nu-si dezvaluie existenta.
@@ -302,3 +316,46 @@ def coada_depune(coada_id, date, ctx):
             raise (_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod == "FARA_VERDICT" else _erori.Inexistent)(r.get("mesaj", cod))
     return r
 
+
+# ============================================================
+#  [validare_note] NOTELE PREGĂTITE DE ASISTENT — comanda Costin 06.10.2026, pct.1, varianta (a)
+# ============================================================
+def note_in_coada(tenant_id, uid, cabinet_id):
+    """Chemată de middleware DUPĂ orice cerere de modificare reușită pe `/tenants/{id}/…`: notele ciornă scrise de un
+    utilizator FĂRĂ drept de validare intră în coadă, iar validatorii primesc o notificare. Un singur punct de intrare
+    pentru toate drumurile pe care se naște o notă (autorul vine din cerere, `core/autor_cerere.py`)."""
+    with db.get_conn() as conn:
+        if coada_api.e_validator(conn, uid):
+            return []
+        with conn.cursor() as cur:
+            schema = repo_declaratii.schema_firmei_cabinetului(cur, tenant_id, cabinet_id)
+    if not schema:
+        return []
+    with db.get_conn(schema) as conn:
+        adaugate = coada_api.pune_notele_in_coada(conn, cabinet_id, tenant_id, uid)
+    if adaugate:
+        with db.get_conn() as conn:
+            _uc_comun._notif_note_de_validat(conn, cabinet_id, [a["eticheta"] for a in adaugate], uid)
+    return adaugate
+
+
+def _schema_notei(coada_id, ctx):
+    """(fel, schema) al elementului, numai pe cabinetul apelantului; pentru o declarație schema e None."""
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            el = repo_declaratii.element_coada(cur, coada_id)
+    if not el or el[3] != ctx["firm"]:
+        raise _erori.Inexistent("Element de coadă negăsit (sau alt cabinet).")
+    return el[0], (el[2] if el[0] == "nota" else None), el
+
+
+def nota_retrimite(tenant_id, nota_id, ctx):
+    """Nota respinsă, corectată, se trimite din nou la validare (act explicit al celui care a pregătit-o)."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = coada_api.retrimite_nota(conn, ctx["firm"], tenant_id, nota_id, int(ctx["uid"]))
+    if not r["ok"]:
+        raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r.get("mesaj"))
+    with db.get_conn() as conn:
+        _uc_comun._notif_note_de_validat(conn, ctx["firm"], [r["eticheta"]], int(ctx["uid"]))
+    return r

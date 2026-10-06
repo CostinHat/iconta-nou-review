@@ -208,6 +208,56 @@ def _imparte_cam(stat, ref):
         r["cam"] = float(cam)
         del r["_bazac"]
 
+def stat_final(conn, schema, an, luna):
+    """Statul de plată AȘA CUM SE PLĂTEȘTE ȘI SE TIPĂREȘTE: `stat_plata` + indemnizația de concediu medical cu reținerile
+    DECLARATE (comanda Costin 06.10.2026, pct.2: „421 se soldează la ban și în lunile cu concediu medical”).
+
+    D112 reține O DATĂ pe salariat, din salariu și din indemnizație împreună: impozitul se calculează pe baza lunară combinată.
+    Certificatul (`concedii_medicale`) ține reținerile indemnizației calculate SEPARAT, iar diferența de rotunjire ajungea pe
+    fluturaș (măsurat: 275 lei net pe certificat, 274 lei din sumele declarate). Aici reținerile indemnizației = totalul
+    DECLARAT al salariatului (`d112.genereaza` -> `RezultatD112.asigurati`) − reținerile din salariu (rândul statului), iar
+    netul indemnizației = brutul ei declarat (pe certificat, la leu ca în D112) − ele. `stat_plata` rămâne neajustat fiindcă
+    îl citește chiar `d112.pull` (altfel ar fi circular); `core/d112.py` nu se atinge (condiția D1, decizia Costin 04.10).
+
+    Dacă D112 nu se poate genera (profil incomplet), rândul păstrează valorile certificatului și o spune: `cm_retineri_sursa`."""
+    from decimal import Decimal as _D
+    from core.numere import leu_aritmetic
+    stat = stat_plata(conn, schema, an, luna)
+    cu_cm = [r for r in stat if r.get("cm_zile")]
+    if not cu_cm:
+        return stat
+    for r in cu_cm:
+        r["cm_retineri_sursa"] = "certificat"
+    try:
+        from core import d112 as _d112
+        _prof, sal = _d112.pull(conn, schema, an, luna)
+        _xml, res = _d112.genereaza(conn, schema, an, luna)
+    except Exception:   # noqa: BLE001 — D112 negenerabil: rămân valorile certificatului, marcate
+        return stat
+    if len(sal) != len(res.asigurati):
+        return stat
+    decl = {}
+    for s_, a in zip(sal, res.asigurati):
+        if ("%s %s" % (s_.get("nume") or "", s_.get("prenume") or "")).strip() == a.nume:
+            decl[s_["id"]] = a
+    with conn.cursor() as cur:
+        cur.execute("SELECT salariat_id, brut_ang, brut_fnuass FROM concedii_medicale WHERE an=%s AND luna=%s", (an, luna))
+        brut_cm = {}
+        for sid, ba, bf in cur.fetchall():
+            brut_cm[sid] = brut_cm.get(sid, _D(0)) + leu_aritmetic(_D(str(ba or 0))) + leu_aritmetic(_D(str(bf or 0)))
+    for r in cu_cm:
+        a = decl.get(r["id"])
+        if a is None:
+            continue
+        ret_sal = _D(str(r["cas"])) + _D(str(r["cass"])) + _D(str(r.get("cass_tichete") or 0)) + _D(str(r["impozit"]))
+        ret_cm = _D(a.cas + a.cass + a.impozit) - ret_sal
+        r["cm_retineri"] = float(ret_cm)
+        r["cm_brut_declarat"] = float(brut_cm.get(r["id"], 0))
+        r["cm_net"] = float(brut_cm.get(r["id"], _D(0)) - ret_cm)
+        r["cm_retineri_sursa"] = "D112"
+    return stat
+
+
 def net_de_plata(conn, schema, an, luna):
     """Σ netul care se plateste pe luna: al fluturasului fiecarui salariat (exemplarul emis, daca luna e emisa pentru el;
     altfel randul statului de acum - aceeasi regula ca `rand_fluturas`). Contrapartida contului 421 dupa nota statului."""
@@ -215,9 +265,22 @@ def net_de_plata(conn, schema, an, luna):
     from decimal import Decimal as _D
     emise = _spe.citeste(conn, schema, an, luna)
     total = _D(0)
-    for r in stat_plata(conn, schema, an, luna):
+    for r in stat_final(conn, schema, an, luna):
         ex = _spe.ultimul(emise, int(r["id"]))
         total += _D(str((ex["date"] if ex else r).get("net") or 0))
+    return total
+
+
+def net_cm_de_plata(conn, schema, an, luna):
+    """Σ netul indemnizatiilor de concediu medical de pe fluturasi (exemplarul emis, altfel statul de acum) — contrapartida
+    contului 423 dupa nota statului (comanda Costin 06.10.2026, pct.2)."""
+    from core import stat_plata_emis as _spe
+    from decimal import Decimal as _D
+    emise = _spe.citeste(conn, schema, an, luna)
+    total = _D(0)
+    for r in stat_final(conn, schema, an, luna):
+        ex = _spe.ultimul(emise, int(r["id"]))
+        total += _D(str((ex["date"] if ex else r).get("cm_net") or 0))
     return total
 
 
@@ -244,7 +307,7 @@ def rand_fluturas(conn, schema, salariat_id, an, luna):
     _ex = exemplar_curent(conn, schema, salariat_id, an, luna)
     if _ex:
         return _ex["date"]
-    return next((r for r in stat_plata(conn, schema, an, luna)
+    return next((r for r in stat_final(conn, schema, an, luna)
                  if int(r.get("id") or 0) == salariat_id), None)
 
 

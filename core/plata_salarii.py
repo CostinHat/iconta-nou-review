@@ -80,12 +80,15 @@ def genereaza_pain001(conn, schema, an, luna, data_executie=None, acum=None, num
         raise ValueError("IBAN-ul firmei e invalid — corectează-l la Date firmă înainte de a "
                          "genera fișierul de plată.")
 
-    stat = _sp.stat_plata(conn, schema, an, luna)
+    stat = _sp.stat_final(conn, schema, an, luna)
     plati, fara_iban = [], []
     for s in stat:
-        net = Decimal(str(s.get("net") or 0))
+        # [validare_note 06.10.2026] salariul net + indemnizația de concediu medical netă: OUG 158/2005 art.36 alin.(3) lit.a)
+        # „Plata indemnizațiilor se face lunar de către: a) angajator, cel mai târziu odată cu lichidarea drepturilor salariale
+        # pe luna respectivă”. Fără indemnizație, 423 rămânea neplătit după fișierul de plată.
+        net = Decimal(str(s.get("net") or 0)) + Decimal(str(s.get("cm_net") or 0))
         if net <= 0:
-            continue  # fara net cash de platit (ex. luna integral in CM)
+            continue  # nimic de plătit pe card
         iban = (s.get("iban") or "").strip()
         if not iban or not _sa.iban_valid(iban):
             fara_iban.append(s.get("nume") or ("salariat %s" % s.get("id")))

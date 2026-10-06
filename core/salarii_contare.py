@@ -159,6 +159,14 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
     cadou_total = sum(_ben.lista_luna(conn, schema, an, luna, "cadou").values())
     if cadou_total > 0:
         agg[("642", "5328")] = agg.get(("642", "5328"), Decimal("0")) + _d(cadou_total)
+    # [validare_note / CM, comanda Costin 06.10.2026 pct.2] retinerile din SALARIU (exact cele de pe fluturas) si
+    # indemnizatia de concediu medical, din aceleasi date ca D112 (`pull` -> `cm`, brut rotunjit la leu ca `_d112int`)
+    ret_salariu = {"4315": Decimal("0"), "4316": Decimal("0"), "444": Decimal("0")}
+    cm_ang = cm_fnuass = Decimal("0")
+    for s in salariati:
+        for _x in (s.get("cm") or []):
+            cm_ang += _leu(_x.get("brut_ang"))
+            cm_fnuass += _leu(_x.get("brut_fnuass"))
     for s in salariati:
         # pull() a calculat DEJA salariatul, cu toti parametrii (persoane, norma,
         # venit contractual, brut lucrat). NU recalculam: al doilea calcul ar fi a
@@ -190,6 +198,9 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             tichet_cultural=float(s.get("tichet_cultural") or 0),
             tichet_cresa=float(s.get("tichet_cresa") or 0),
             cadou_taxabil=float(s.get("cadou_taxabil") or 0))
+        ret_salariu["4315"] += _d(calc["cas"])
+        ret_salariu["4316"] += _d(calc["cass"]) + _d(calc.get("cass_tichete", 0))
+        ret_salariu["444"] += _d(calc["impozit"])
         for n in _sz.monografie_salariu(calc):
             # [R34] pozitiile fiscale se sar aici: vin din declaratie, mai jos. Filtrul e pe
             # CREDIT fiindca acolo stau cele patru conturi, indiferent din ce debit vin (421
@@ -200,11 +211,37 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             agg[k] = agg.get(k, Decimal("0")) + _d(n["suma"])
     # [R34] cele patru pozitii, CITITE din obligatiile declarate ale perioadei
     obl = _d112.obligatii(conn, schema, an, luna, xml_d112)
+    cu_cm = (cm_ang + cm_fnuass) > 0
     for cod, debit, credit in CONT_D112:
         v = _d(obl.get(cod, 0))
-        if v > 0:
-            agg[(debit, credit)] = agg.get((debit, credit), Decimal("0")) + v
+        if v <= 0:
+            continue
+        if cu_cm and debit == "421" and credit in ret_salariu and v > ret_salariu[credit]:
+            # [CM] Declaratia retine o data, pe salariat, si din salariu si din indemnizatie. Pe 421 se debiteaza ce s-a
+            # retinut din SALARIU (suma de pe fluturas); restul declarat e retinut din INDEMNIZATIE -> 423.
+            # OMFP 1802/2014, contul 423: „În debitul contului 423 … se înregistrează: … contribuția pentru asigurări
+            # sociale, contribuția pentru asigurări de sănătate … și impozitul datorat (… 431, … 444)”.
+            agg[("421", credit)] = agg.get(("421", credit), Decimal("0")) + ret_salariu[credit]
+            agg[("423", credit)] = agg.get(("423", credit), Decimal("0")) + (v - ret_salariu[credit])
+            continue
+        agg[(debit, credit)] = agg.get((debit, credit), Decimal("0")) + v
+    if cm_ang > 0:
+        # OUG 158/2005 art.12 lit.A (zilele 1-5, angajatorul) + OMFP 1802/2014 contul 645 „sumele acordate personalului,
+        # potrivit legii, pentru protecția socială (423)” -> 6458 = 423
+        agg[("6458", "423")] = agg.get(("6458", "423"), Decimal("0")) + cm_ang
+    if cm_fnuass > 0:
+        # OUG 158/2005 art.12 lit.B (din ziua 6, FNUASS) si art.38 alin.(1) (se recupereaza din bugetul FNUASS, NU din CASS)
+        # + OMFP 1802/2014 contul 438 „creanțelor de încasat în contul asigurărilor sociale”, 4382 „Alte creanțe sociale (A)”
+        # -> 4382 = 423. INTERPRETARE CU TEMEI (DECIZII 06.10.2026): textul contului 431 („sumele datorate personalului, ce
+        # se suportă din asigurări sociale (423)”) nu numeste analiticul, iar analiticele lui 431 sunt datorii din
+        # contributii (4315/4316…), din care art.38 interzice recuperarea. De reconfirmat daca apare o norma care transeaza.
+        agg[("4382", "423")] = agg.get(("4382", "423"), Decimal("0")) + cm_fnuass
     return [(d, c, s) for (d, c), s in sorted(agg.items()) if s > 0], len(salariati)
+
+
+def _leu(x):
+    from core.numere import leu_aritmetic
+    return leu_aritmetic(_d(x or 0))
 
 
 def _bani(x):
@@ -234,6 +271,31 @@ def control_421(note, net_stat):
         return None
     return {"eticheta": "Salarii nete de plată", "cont": "421", "fel": "verificare", "fata_de": "netul fluturașilor",
             "nota": _bani(sold), "declaratie": _bani(net), "diferenta": _bani(net - sold), "toleranta": 0.0}
+
+
+def sold_423(note):
+    """Ce ramane de plata salariatilor pentru indemnizatiile de concediu medical, dupa nota."""
+    sold = Decimal("0")
+    for d, c, s in note:
+        if c == "423":
+            sold += s
+        if d == "423":
+            sold -= s
+    return sold
+
+
+def control_423(note, net_cm):
+    """[CM, comanda Costin 06.10.2026 pct.2] Soldul 423 dupa nota = netul indemnizatiilor de pe fluturasi, la ban (plata lor
+    il inchide). Numai cand nota are indemnizatie (altfel None)."""
+    if not any(c == "423" for _d1, c, _s in note):
+        return None
+    sold = sold_423(note)
+    net = _d(net_cm)
+    if sold == net:
+        return None
+    return {"eticheta": "Indemnizații de concediu medical de plată", "cont": "423", "fel": "verificare",
+            "fata_de": "netul indemnizațiilor de pe fluturași", "nota": _bani(sold), "declaratie": _bani(net),
+            "diferenta": _bani(net - sold), "toleranta": 0.0}
 
 
 def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
@@ -311,8 +373,13 @@ def propunere(conn, schema, an, luna):
     d421 = control_421(note, net)
     if d421:
         div.append(d421)
+    net_cm = _sp.net_cm_de_plata(conn, schema, an, luna)
+    d423 = control_423(note, net_cm)
+    if d423:
+        div.append(d423)
     return {
         "net_fluturasi": _bani(net),
+        "net_cm_fluturasi": _bani(net_cm) if any(c == "423" for _d1, c, _s in note) else None,
         "an": an, "luna": luna,
         "document_ref": document_ref(an, luna),
         "nr_salariati": nr,

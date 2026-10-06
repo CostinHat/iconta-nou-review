@@ -86,8 +86,11 @@ def test_fluturasul_nu_isi_recalculeaza_cifrele():
             assert "fluturas_pdf" not in apelanti, (
                 "fluturas_pdf cheamă DIRECT calcul_salariu pe %s — al doilea calcul al aceluiași "
                 "lucru. Apelanți văzuți: %s" % (schema, sorted(set(apelanti))))
-            assert set(apelanti) == {"stat_plata"}, (
-                "cifrele fluturașului vin și din altă parte decât statul: %s" % sorted(set(apelanti)))
+            # [06.10.2026, decizia Costin — „netul de pe fluturaș iese din aceleași sume care merg în D112”] în luna cu
+            # concediu medical, reținerile indemnizației se citesc din D112 GENERAT (`stat_plata_api.stat_final` ->
+            # `d112.pull`/`genereaza`): sursa declarată, nu un al doilea calcul al fluturașului. Orice ALT apelant rămâne interzis.
+            assert set(apelanti) - {"pull"} == {"stat_plata"}, (
+                "cifrele fluturașului vin și din altă parte decât statul / D112: %s" % sorted(set(apelanti)))
             return
     pytest.skip("niciun tenant cu salariați în 2026-06")
 

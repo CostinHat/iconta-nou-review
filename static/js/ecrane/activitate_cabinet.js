@@ -3,7 +3,7 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api, dataIso } from "../api.js?v=4c8f1ff171";
+import { api, dataIso, esc } from "../api.js?v=4c8f1ff171";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {
@@ -77,14 +77,16 @@ export async function randeazaActivitateCabinet(corp, nav) {
 
     const randuriJurnal = ev.map((e) => {
       const a = ACTIUNI[e.actiune] || { txt: e.actiune, cls: "" };
-      const motiv = e.motiv ? `<div class="ac-motiv">motiv: ${e.motiv}</div>` : "";
+      // [validare_note 06.10.2026] eticheta vine de la server (declarație SAU notă — sursa unică `coada_api.eticheta_element`);
+      // textele scrise de om (motivul, descrierea notei, numele) se scapă — înainte intrau în HTML ca atare
+      const motiv = e.motiv ? `<div class="ac-motiv">motiv: ${esc(e.motiv)}</div>` : "";
       return `
         <div class="mig-sold-rand ac-rand">
           <span class="ac-cand">${dataOraRo(e.cand)}</span>
-          <span class="ac-cine">${e.cine}</span>
+          <span class="ac-cine">${esc(e.cine)}</span>
           <span class="ac-act"><span class="cab-pct ${a.cls}"></span>${a.txt}</span>
-          <span class="ac-decl">${(e.tip||"").toUpperCase()} · ${e.perioada}</span>
-          <span class="ac-firma">${e.firma}</span>
+          <span class="ac-decl">${esc(e.eticheta || `${(e.tip || "").toUpperCase()} · ${e.perioada}`)}</span>
+          <span class="ac-firma">${esc(e.firma)}</span>
         </div>${motiv}`;
     }).join("");
 
@@ -105,7 +107,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
           <span class="ac-cand">CÂND</span>
           <span class="ac-cine">CINE</span>
           <span class="ac-act">ACȚIUNE</span>
-          <span class="ac-decl">DECLARAȚIE</span>
+          <span class="ac-decl">DECLARAȚIE / NOTĂ</span>
           <span class="ac-firma">FIRMĂ</span>
         </div>
         ${ev.length ? randuriJurnal : `<div class="stare-goala">Nicio activitate în perioada aleasă.</div>`}

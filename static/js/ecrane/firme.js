@@ -1238,11 +1238,12 @@ async function ecranSalariati(corp, nav, t) {
     const randDivergente = (p) => !p.divergente.length
       // [lot 06.10 pct.11] verdele spune CE s-a verificat: soldul 421 egal la ban cu netul fluturașilor (fără toleranță);
       // reținerile și CAM vin din D112. Forma veche („coincide … în limita de toleranță”) acoperea un 421 nesoldat.
-      ? `<div class="caseta-info"><span class="ci-mesaj">Contul 421 se soldează exact cu netul fluturașilor (${bani(p.net_fluturasi)} lei). CAS, CASS, impozitul și CAM sunt cele declarate în D112.</span></div>`
+      ? `<div class="caseta-info"><span class="ci-mesaj">Contul 421 se soldează exact cu netul fluturașilor (${bani(p.net_fluturasi)} lei).${p.net_cm_fluturasi != null ? ` Contul 423 se soldează exact cu netul indemnizațiilor de concediu medical (${bani(p.net_cm_fluturasi)} lei).` : ""} CAS, CASS, impozitul și CAM sunt cele declarate în D112.</span></div>`
       : `<div class="caseta-atentie">
           <b>Nota propusă nu se potrivește pe ${p.divergente.length} ${p.divergente.length === 1 ? "cont" : "conturi"}.</b>
           ${p.divergente.some((d) => d.fata_de === "D112") ? `<div class="tip-micut">Nu se blochează nimic: nu se poate ști din afară care dintre cele două greșește — poate declarația e veche, poate nota e corectă.</div>` : ""}
           ${p.divergente.some((d) => d.cont === "421") ? `<div class="tip-micut">Pe 421: după plata netului de pe fluturași, contul ar rămâne cu diferența de mai sus — nota debitează rețineri pentru care nu are brutul corespunzător.</div>` : ""}
+          ${p.divergente.some((d) => d.cont === "423") ? `<div class="tip-micut">Pe 423: după plata indemnizațiilor nete de pe fluturași, contul ar rămâne cu diferența de mai sus — reținerile declarate pe indemnizație nu sunt cele din certificatele salvate.</div>` : ""}
           <table class="fd-tabel" style="margin-top:8px">
             <thead><tr><th>Ce</th><th>Cont</th><th>Nota ar scrie</th><th>Față de</th><th>Diferență</th></tr></thead>
             <tbody>${p.divergente.map((d) => `<tr>
@@ -1264,16 +1265,20 @@ async function ecranSalariati(corp, nav, t) {
           <tbody>${p.note.map((n) => `<tr><td>${esc(n.debit)}</td><td>${esc(n.credit)}</td><td>${bani(n.suma)}</td></tr>`).join("")}</tbody>
         </table>
         <p style="margin-top:10px">${p.deja_contata
-          ? `<span class="tip-micut">Nota există deja în jurnal (ciornă #${p.nota_id}). Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`
-          : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare">Scrie nota ciornă</button>
+          ? (p.validare && p.validare.stare === "respinsa"
+            ? `<span class="caseta-atentie" style="display:block"><span class="ca-mesaj">Nota #${p.nota_id} a fost respinsă la validare: ${esc(p.validare.motiv || "fără motiv")}. Corecteaz-o în Registrul-jurnal și trimite-o din nou.</span></span>`
+            : `<span class="tip-micut">${p.validare && p.validare.stare === "la_senior" ? `Nota #${p.nota_id} e la validare în cabinet.`
+              : (p.validare && p.validare.stare === "aprobata" ? `Nota #${p.nota_id} e validată.` : `Nota există deja în jurnal (ciornă #${p.nota_id}).`)} Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`)
+          : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
              <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`}</p>
       </div>`;
       const b = corp.querySelector("#sp-contare-scrie");
       if (b) b.addEventListener("click", async () => {
         b.disabled = true; b.textContent = "Se scrie…";
         try {
-          const r = await api.post(`/tenants/${t.id}/salarii-contare?an=${an}&luna=${luna}`, {});
-          arataPropunerea(r);
+          await api.post(`/tenants/${t.id}/salarii-contare?an=${an}&luna=${luna}`, {});
+          // [validare_note] propunerea se recitește: arată nota scrisă ȘI unde a ajuns în coada de validare
+          arataPropunerea(await api.post(`/tenants/${t.id}/salarii-contare/propunere?an=${an}&luna=${luna}`, {}));
         } catch (e) {
           b.disabled = false; b.textContent = "Scrie nota ciornă";
           arataMesaj(zonaContare, (e && e.mesaj) || "Nu am putut scrie nota.", "eroare");
@@ -3655,16 +3660,24 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       centre.map((c) => `<option value="${c.id}"${sel === c.id ? " selected" : ""}>${esc(c.nume)}</option>`).join("");
     const rand = (n) => {
       if (inEditare === n.id) return editor(n);
+      // [validare_note 06.10.2026, comanda Costin pct.1] starea notei în coada de validare a cabinetului (din aceeași coadă)
+      const v = n.validare;
+      const respinsa = n.status === "ciorna" && v && v.stare === "respinsa";
+      const stareValidare = respinsa
+        ? `<div class="caseta-atentie jn-respinsa"><div class="ca-mesaj">Respinsă la validare: ${esc(v.motiv || "fără motiv")}. Corecteaz-o, apoi trimite-o din nou.</div></div>`
+        : (n.status === "ciorna" && v && v.stare === "la_senior" ? `<div class="pf-frand-sub">La validare în cabinet.</div>` : "");
       const butoane = n.status === "ciorna" ? `
         <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>
         <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>
-        <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>` : "";
+        <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>${respinsa ? `
+        <button class="buton-secundar" data-retrimite="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">Trimite din nou la validare</button>` : ""}` : "";
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${n.nr_curent != null ? `Nr. crt. ${n.nr_curent} \u00b7 ` : ""}${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}<br>${docJustificativ(n)}</div>
             ${n.status === "ciorna" && !n.document ? `<div class="caseta-atentie jn-fara-doc"><div class="ca-mesaj">${MESAJ_FARA_DOCUMENT}</div></div>` : ""}
+            ${stareValidare}
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -3761,6 +3774,10 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         return;
       }
       valideaza();
+    }));
+    corp.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.retrimite}/retrimite`, {}); deseneaza(); }
+      catch (e) { eroare(e, "Nu am putut trimite nota din nou la validare"); }
     }));
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi această ciornă?", async () => {  // audit_cab_lot2_v1

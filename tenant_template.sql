@@ -2222,6 +2222,34 @@ CREATE TRIGGER trg_verifica_perioada_blocata_rip
 BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.rip_operatiuni
 FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_rip();
 
+-- [validare_note 06.10.2026] autorul notei din cerere + sincronizarea cu coada de validare — sursa unica: core/migrare_validare_note.py
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari ADD COLUMN IF NOT EXISTS creat_de_id integer
+  DEFAULT NULLIF(current_setting('iconta.utilizator', true), '')::integer;
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.coada_nota_sincron() RETURNS trigger AS $$
+DECLARE t_id integer;
+BEGIN
+  SELECT id INTO t_id FROM public.tenants WHERE schema_name = TG_TABLE_SCHEMA;
+  IF t_id IS NULL THEN
+    RETURN NULL;
+  END IF;
+  IF TG_OP = 'DELETE' THEN
+    DELETE FROM public.declaratii_coada
+     WHERE tenant_id = t_id AND fel = 'nota' AND perioada = 'nota-' || OLD.id AND stare = 'la_senior';
+    RETURN OLD;
+  END IF;
+  IF NEW.status = 'validata' AND OLD.status IS DISTINCT FROM 'validata' THEN
+    UPDATE public.declaratii_coada
+       SET stare = 'aprobata', aprobat_la = now(),
+           aprobat_de_id = NULLIF(current_setting('iconta.utilizator', true), '')::integer,
+           aprobat_de = NULLIF(current_setting('iconta.utilizator', true), '')
+     WHERE tenant_id = t_id AND fel = 'nota' AND perioada = 'nota-' || NEW.id AND stare = 'la_senior';
+  END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_coada_nota_sincron ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_coada_nota_sincron AFTER UPDATE OF status OR DELETE ON TENANT_PLACEHOLDER.inregistrari
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.coada_nota_sincron();
+
 --
 -- F131 comp.5 (notificari scadenta) — mirror al core/migrare_notificari_scadenta.py (DDL idempotent)
 --

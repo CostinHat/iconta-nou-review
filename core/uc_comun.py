@@ -214,6 +214,16 @@ def _moneda_facturii(schema, factura_id):
     return (_r[0] if _r else None)
 
 
+def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id):
+    """[validare_note] Validatorii (mai puțin cine a pregătit) află că au note de validat — o notificare pe cerere."""
+    if not etichete:
+        return
+    ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
+    txt = (("Notă pregătită, de validat: %s." % etichete[0]) if len(etichete) == 1
+           else "%d note pregătite, de validat (prima: %s)." % (len(etichete), etichete[0]))
+    _notif.adauga_multi(conn, ids, "de_validat", txt, link="validat")
+
+
 def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id):
     # notifica validatorii (mai putin pregatitorul)
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
@@ -676,7 +686,7 @@ def _coada_info(conn, coada_id):
         r = _repo.select_public_5(cur, coada_id)
     if not r:
         return None
-    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3]}
+    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3], "fel": r[4], "payload": r[5]}
 
 
 def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
@@ -685,6 +695,14 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
         return
     tip = (info["tip"] or "").upper()
     per = info["perioada"] or ""
+    if info.get("fel") == "nota":
+        # [validare_note] nota se numește prin eticheta ei, nu prin „declarația NOTA (nota-123)”
+        from core import coada_api as _coada
+        et = _coada.eticheta_element("nota", info["tip"], per, info.get("payload"))
+        txt = {"respinsa": "%s a fost respinsă.%s" % (et, (" Motiv: " + motiv) if motiv else ""),
+               "aprobata": "%s a fost validată." % et}.get(tip_eveniment, "Actualizare: %s." % et)
+        _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link="validat")
+        return
     if tip_eveniment == "respinsa":
         txt = "Declaratia %s (%s) a fost respinsa." % (tip, per)
         if motiv:

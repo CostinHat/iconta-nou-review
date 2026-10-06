@@ -134,7 +134,7 @@ def _luna(an, luna):
 
 def _randuri(conn, schema, an, luna):
     from core import stat_plata_api as _sp
-    return _sp.stat_plata(conn, schema, an, luna)
+    return _sp.stat_final(conn, schema, an, luna)   # [validare_note] cu reținerile CM declarate (D112)
 
 
 def citeste(conn, schema, an, luna, salariat_id=None):

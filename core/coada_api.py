@@ -155,6 +155,121 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
 
 
 # ============================================================
+#  NOTELE — coada extinsă (comanda Costin 06.10.2026, pct.1, varianta (a))
+# ============================================================
+#: cheia elementului unei note: o notă are cel mult UN element activ (indexul `ux_coada_activa` pe tenant, tip, perioadă)
+TIP_NOTA = "nota"
+
+
+def perioada_nota(nota_id):
+    return "nota-%d" % int(nota_id)
+
+
+def eticheta_element(fel, tip, perioada, payload):
+    """PURĂ. Cum se numește un element din coadă oriunde apare (listă, notificare, Activitate cabinet) — o singură formă.
+    Declarația: „D300 · <scadența>”. Nota: „Notă · <descriere> · <document>”."""
+    if fel == "nota":
+        p = payload or {}
+        parti = ["Notă", (p.get("descriere") or "fără descriere").strip()]
+        if p.get("document_ref"):
+            parti.append(p["document_ref"])
+        return " · ".join(parti)
+    return "%s · %s" % ((tip or "").upper(), perioada or "")
+
+
+def e_validator(conn, user_id):
+    """Are utilizatorul dreptul de validare? Cine îl are nu „pregătește pentru altcineva”: notele lui nu intră în coadă."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT poate_valida FROM public.users WHERE id = %s", (user_id,))
+        r = cur.fetchone()
+    return bool(r and r[0])
+
+
+def _payload_nota(n):
+    """Documentul justificativ se DERIVĂ cu aceeași funcție ca în Registrul-jurnal (`jurnal_api.document_justificativ`:
+    `document_ref`, altfel factura legată) — coada nu poate spune „fără document” despre o notă pe care jurnalul o arată cu
+    document."""
+    from core import jurnal_api as _j
+    d = n["data"]
+    doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
+    return {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
+            "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month}
+
+
+def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
+    import psycopg2.extras as _E
+    payload = _payload_nota(n)
+    cur.execute(
+        "INSERT INTO public.declaratii_coada (cabinet_id, tenant_id, tip, fel, perioada, stare, payload, hash, creat_de, "
+        "creat_de_id) VALUES (%s,%s,%s,'nota',%s,'la_senior',%s,%s,%s,%s) ON CONFLICT DO NOTHING RETURNING id",
+        (cabinet_id, tenant_id, TIP_NOTA, perioada_nota(n["id"]), _E.Json(payload), calcul_hash(payload), str(uid), uid))
+    r = cur.fetchone()
+    if not r:
+        return None
+    return r["id"] if isinstance(r, dict) else r[0]
+
+
+_SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
+                "f.numar AS f_nr, f.data_emitere AS f_data, "
+                "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total "
+                "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
+
+
+def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):
+    """Notele CIORNĂ scrise de `uid` pe firmă care n-au încă niciun element în coadă intră acum, una câte una, `la_senior`.
+    `conn` e pe schema firmei (`db.get_conn(schema)`, care are și `public` în cale). O notă respinsă NU se repune singură:
+    revine numai prin `retrimite_nota` — altfel o respingere s-ar anula la următoarea apăsare a asistentului.
+    Întoarce lista elementelor adăugate: [{coada_id, eticheta}]."""
+    import psycopg2.extras as _E
+    out = []
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.creat_de_id = %s AND NOT EXISTS ("
+                    "SELECT 1 FROM public.declaratii_coada c WHERE c.tenant_id = %s AND c.fel = 'nota' "
+                    "AND c.perioada = 'nota-' || i.id) ORDER BY i.id", (uid, tenant_id))
+        note = cur.fetchall()
+        for n in note:
+            cid = _insereaza_nota(cur, cabinet_id, tenant_id, n, uid)
+            if cid:
+                out.append({"coada_id": cid, "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_nota(n))})
+    return out
+
+
+def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
+    """O notă RESPINSĂ, corectată, se trimite din nou la validare — act explicit al celui care a pregătit-o."""
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(_SELECT_NOTE + "WHERE i.id = %s", (nota_id,))
+        n = cur.fetchone()
+        if not n:
+            return {"ok": False, "cod": "INEXISTENT", "mesaj": "nota #%s nu există" % nota_id}
+        cur.execute("SELECT status FROM inregistrari WHERE id = %s", (nota_id,))
+        if cur.fetchone()["status"] != "ciorna":
+            return {"ok": False, "cod": "STARE_GRESITA", "mesaj": "numai o notă ciornă se trimite la validare"}
+        cur.execute("SELECT stare FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s "
+                    "ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(nota_id)))
+        ultim = cur.fetchone()
+        if ultim and ultim["stare"] != "respinsa":
+            return {"ok": False, "cod": "DEJA_IN_COADA", "mesaj": "nota e deja la validare sau validată"}
+        cid = _insereaza_nota(cur, cabinet_id, tenant_id, n, uid)
+    return {"ok": bool(cid), "coada_id": cid,
+            "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_nota(n))}
+
+
+def stari_note(conn, tenant_id, nota_ids):
+    """{nota_id: {stare, motiv, la}} — ultimul element din coadă al fiecărei note (jurnalul și statul de plată îl arată)."""
+    ids = [int(i) for i in nota_ids or []]
+    if not ids:
+        return {}
+    with conn.cursor() as cur:
+        cur.execute("SELECT DISTINCT ON (perioada) perioada, stare, motiv_respingere, "
+                    "COALESCE(respins_la, aprobat_la, creat_la) FROM public.declaratii_coada "
+                    "WHERE tenant_id = %s AND fel = 'nota' AND perioada = ANY(%s) ORDER BY perioada, id DESC",
+                    (tenant_id, [perioada_nota(i) for i in ids]))
+        return {int(p.split("-", 1)[1]): {"stare": st, "motiv": m, "la": la.isoformat() if la else None}
+                for p, st, m, la in cur.fetchall()}
+
+
+# ============================================================
 #  LISTĂ coadă — DB
 # ============================================================
 def lista_coada(conn, cabinet_id, stare=None):
@@ -176,7 +291,8 @@ def lista_coada(conn, cabinet_id, stare=None):
             # [R41 partea II] verdictul oficial ajunge in lista, ca ecranul sa nu-si mai
             # inventeze o eticheta. XML-ul NU se intoarce - doar amprenta lui, calculata aici.
             "c.verdict, c.verdict_erori, c.verdict_amprenta, c.verdict_la, c.verdict_versiune, "
-            "c.trecere_motiv, c.trecut_la, "
+            "c.trecere_motiv, c.trecut_la, c.fel, "
+            "CASE WHEN c.fel = 'nota' THEN c.payload END AS nota, "
             "c.payload->>'xml' AS _xml "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
@@ -191,6 +307,7 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
                 d.pop("verdict_versiune", None), xml)
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"])
+            d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
             out.append(d)
         return out
 
@@ -356,7 +473,7 @@ def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
     return None
 
 
-def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, cabinet_id_apelant=None):
+def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, cabinet_id_apelant=None, schema_nota=None):
     """la_senior -> aprobata. Refuză dacă starea nu permite SAU dacă
     aprobatorul e chiar pregătitorul (control „patru ochi").
 
@@ -367,7 +484,7 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
     era singura rută scoped; aproba/respinge/depune lucrau pe orice `coada_id`."""
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT stare, creat_de, creat_de_id, cabinet_id FROM public.declaratii_coada WHERE id = %s",  # [p54_4ochi]
+            "SELECT stare, creat_de, creat_de_id, cabinet_id, fel, payload FROM public.declaratii_coada WHERE id = %s",  # [p54_4ochi]
             (coada_id,))
         r = cur.fetchone()
         if r is None:
@@ -392,11 +509,23 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
             return {"ok": False, "cod": "PATRU_OCHI",
                     "mesaj": "nu poți aproba o declarație pe care ai pregătit-o tu însuți "
                              "(control intern: pregătirea și validarea se fac de persoane diferite)"}
-        # [R41] Poarta pe verdict vine DUPA patru-ochi: ordinea conteaza, ca mesajul primit sa
-        # numeasca primul obstacol real, nu pe al doilea.
-        refuz = _poarta_verdict(conn, coada_id, "aproba", motiv_trecere, aprobat_de_id)
-        if refuz:
-            return refuz
+        if r[4] == "nota":
+            # [validare_note] Aprobarea unei note = VALIDAREA ei în jurnal, în ACEEAȘI tranzacție (conn e pe schema firmei).
+            # Poarta de verdict DUK e a declarațiilor (XML); nota n-are XML. Triggerul de sincronizare vede elementul deja
+            # trecut mai jos și nu-l mai atinge.
+            if not schema_nota:
+                return {"ok": False, "cod": "INEXISTENT", "mesaj": "firma notei nu e accesibilă"}
+            from core import jurnal_api as _jurnal
+            rv = _jurnal.valideaza(conn, schema_nota, int((r[5] or {}).get("inregistrare_id") or 0))
+            if not rv or rv.get("eroare"):
+                return {"ok": False, "cod": "STARE_GRESITA",
+                        "mesaj": "nota nu se poate valida: %s" % ((rv or {}).get("eroare") or "nu mai există în jurnal")}
+        else:
+            # [R41] Poarta pe verdict vine DUPA patru-ochi: ordinea conteaza, ca mesajul primit sa
+            # numeasca primul obstacol real, nu pe al doilea.
+            refuz = _poarta_verdict(conn, coada_id, "aproba", motiv_trecere, aprobat_de_id)
+            if refuz:
+                return refuz
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='aprobata', "
             "aprobat_de=%s, aprobat_de_id=%s, aprobat_la=now() WHERE id=%s",
@@ -527,6 +656,8 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         if cabinet_id_apelant is not None and r["cabinet_id"] != cabinet_id_apelant:
             return {"ok": False, "cod": "ALT_CABINET",  # [B1] apartenenta pe OBIECT
                     "mesaj": "element de coadă negăsit (sau alt cabinet)"}
+        if (r["payload"] or {}).get("inregistrare_id") is not None or r["tip"] == TIP_NOTA:
+            return {"ok": False, "cod": "STARE_GRESITA", "mesaj": "o notă contabilă nu se depune; se validează"}
         if not poate_tranzitiona(r["stare"], "depune"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot depune din starea '%s'" % r["stare"]}

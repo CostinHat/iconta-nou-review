@@ -847,8 +847,8 @@ html, body {
   padding: 7px 14px; border-radius: 8px; border: none; font-family: inherit; font-size: var(--text-mic);
   font-weight: 600; cursor: pointer; white-space: nowrap;
 }
-.val-aproba  { background: #1d9e75; color: #fff; }
-.val-aproba:hover  { background: #178a64; }
+.val-aproba  { background: var(--verde); color: #fff; }   /* a11y: #1d9e75 sub alb = 3,3:1 (axe, validarea notelor 06.10) */
+.val-aproba:hover  { background: var(--verde-inchis); }
 .val-respinge { background: #fbe9e9; color: #c0392b; }
 .val-respinge:hover { background: #f6d8d8; }
 .val-depune  { background: #1d4ed8; color: #fff; }
@@ -1033,7 +1033,7 @@ html, body {
 .ac-tabel .ac-rand, .ac-tabel .ac-cap {
   display:grid; grid-template-columns:130px 1fr 120px 1fr 1fr; gap:8px; align-items:center;
 }
-.ac-cap { font-size: var(--text-mic); letter-spacing:.04em; color:#8a8f98; font-weight:600;
+.ac-cap { font-size: var(--text-mic); letter-spacing:.04em; color:var(--gri); font-weight:600;   /* a11y: #8a8f98 = 3,3:1 (axe 06.10) */
           position:sticky; top:0; background:#fff; z-index:1; }
 .ac-cand { color:#5f5e5a; font-size:12.5px; }
 .ac-cine { font-weight:600; color:#22324f; }

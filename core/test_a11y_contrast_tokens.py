@@ -210,3 +210,23 @@ def test_toate_clasele_cf_cu_culoare_literala_trec_pe_panou():
                         % (clasa, c.group(1), _PANOU_CF, r))
     assert gasite >= 5, "doar %d clase .cf-* cu culoare literala - regexul s-a rupt, gardul ar trece pe gol" % gasite
     assert not rele, "\n".join(rele)
+
+
+def _token(css, nume):
+    m = re.search(r"--%s:\s*(#[0-9a-fA-F]{6})" % re.escape(nume), css)
+    return m.group(1) if m else None
+
+
+def test_validare_si_activitate_contrast():
+    """[validarea notelor, 06.10.2026] axe pe „De validat” și pe Activitate cabinet: butonul Validează/Aprobă (#1d9e75 sub
+    alb = 3,3:1) și antetul tabelului de activitate (#8a8f98 = 3,3:1). Acum din tokenuri (`--verde`, `--gri`) care trec.
+    MUTAȚIE: culoarea literală veche repusă pe `.val-aproba` -> pică."""
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    fond = re.search(r"\.val-aproba\s*\{[^}]*background:\s*([^;]+);", css).group(1).strip()
+    fond = _token(css, fond[6:-1]) if fond.startswith("var(--") else fond
+    assert _ratio("#ffffff", fond) >= 4.5, ".val-aproba: alb pe %s = %.2f" % (fond, _ratio("#ffffff", fond))
+    cap = re.search(r"\.ac-cap\s*\{[^}]*color:\s*([^;]+);", css).group(1).strip()
+    cap = _token(css, cap[6:-1]) if cap.startswith("var(--") else cap
+    assert _ratio(cap, "#ffffff") >= 4.5, ".ac-cap: %s pe alb = %.2f" % (cap, _ratio(cap, "#ffffff"))

@@ -1570,3 +1570,14 @@ verificate în catalog. **Lanțul vizual** (server de probă din worktree separa
 de producție): axe 0 încălcări pe ecranele scanate (inclusiv stat de plată), probele P3/P4 axe 0, arborele asistentului 0 perechi
 greșite, Declarații 50 de celule fără revărsare; mobil fără overflow-x. Rezidiu de probă șters din baza de test: produsul
 „Consultanță contabilă lunară” creat de proba părții 1 (umfla antetul T21).
+
+## 06.10.2026 — Validarea notelor prin coadă și concediul medical în nota de salarii (comanda Costin, răspunsul la §6)
+
+**Ce s-a făcut:** ce pregătește asistentul (orice notă ciornă) intră în coada de validare a cabinetului — aceeași coadă ca
+declarațiile: contorul „pregătite” / „de validat”, notificarea, Activitate cabinet, „Note de validat” cu Validează / Respinge
+cu motiv; jurnalul și statul de plată arată unde e nota; nota respinsă se retrimite explicit. Nota de salarii cuprinde
+indemnizația de concediu medical (6458 / 4382 = 423, reținerile ei pe 423); fluturașul și fișierul de plată folosesc
+reținerile declarate; 421 și 423 se soldează la ban (probat pe certificat de continuare). Pe drum: tichetele peste plafon
+pe 642, zilele angajatorului pe episod. Defectul D112 al zilei de diminuare: consemnat ca datorie, decizie cerută (D1).
+Titlurile aprobate nepublicate: 287 (112 candidat + 175 asemănător) + 3 fără corespondent în registru.
+

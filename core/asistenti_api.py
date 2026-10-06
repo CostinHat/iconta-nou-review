@@ -146,7 +146,8 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
     args = [cabinet_id] + par
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT c.id, c.tip, c.perioada, c.tenant_id, "
+            "SELECT c.id, c.tip, c.perioada, c.tenant_id, c.fel, c.payload->>'descriere' AS n_desc, "
+            "       c.payload->>'document_ref' AS n_doc, "
             "       t.nume AS firma, "
             "       c.creat_de, c.creat_la, c.creat_de_id, "
             "       c.aprobat_de, c.aprobat_la, c.aprobat_de_id, "
@@ -174,8 +175,12 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
     ev = []
     for r in randuri:
         firma = r.get("firma") or ("firma #%s" % r["tenant_id"])
-        baza = {"coada_id": r["id"], "tip": r["tip"],
-                "perioada": r["perioada"], "firma": firma}
+        # [validare_note] eticheta din sursa unica (`coada_api.eticheta_element`): o nota nu e „NOTA · nota-123”
+        from core import coada_api as _coada
+        baza = {"coada_id": r["id"], "tip": r["tip"], "fel": r.get("fel") or "declaratie",
+                "perioada": r["perioada"], "firma": firma,
+                "eticheta": _coada.eticheta_element(r.get("fel"), r["tip"], r["perioada"],
+                                                     {"descriere": r.get("n_desc"), "document_ref": r.get("n_doc")})}
         if r.get("creat_la"):
             ev.append({**baza, "actiune": "pregatit", "culoare": "verde",
                        "cine": _nume(r.get("cre_pre"), r.get("cre_num"), r.get("creat_de")),

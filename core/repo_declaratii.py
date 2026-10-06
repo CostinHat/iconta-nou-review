@@ -19,6 +19,31 @@ def continutul_din_coada(cur, coada_id, tenant_id):
     return cur.fetchone()
 
 
+def element_coada(cur, coada_id):
+    """[validare_note] (fel, tenant_id, schema firmei, cabinet_id, payload) al unui element, sau None."""
+    cur.execute("SELECT c.fel, c.tenant_id, t.schema_name, c.cabinet_id, c.payload FROM public.declaratii_coada c "
+                "LEFT JOIN public.tenants t ON t.id = c.tenant_id WHERE c.id=%s", (coada_id,))
+    return cur.fetchone()
+
+
+def schema_firmei_cabinetului(cur, tenant_id, cabinet_id):
+    """[validare_note] Schema firmei, numai dacă firma e a cabinetului (altfel None)."""
+    cur.execute("SELECT schema_name FROM public.tenants WHERE id=%s AND accounting_firm_id=%s", (tenant_id, cabinet_id))
+    r = cur.fetchone()
+    return r[0] if r else None
+
+
+def nota_cu_linii(cur, schema, nota_id):
+    """[validare_note] Nota și liniile ei, pentru ecranul de validare (citire)."""
+    cur.execute(f"SELECT id, data, descriere, document_ref, status, sursa FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
+    n = cur.fetchone()
+    if not n:
+        return None, []
+    cur.execute(f"SELECT cont_debit, cont_credit, suma FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s ORDER BY id",
+                (nota_id,))
+    return n, cur.fetchall()
+
+
 def cabinet_din_coada(cur, coada_id):
     """[B1, 17.09.2026] Cabinetul care DEȚINE elementul de coadă (sau None). Poarta de apartenență
     a lui `coada_depune` interoghează prin AICI — SQL-ul stă în repository, nu în use-case (P7)."""

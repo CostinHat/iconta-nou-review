@@ -424,9 +424,10 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
 // [p64_sumar_toast] toast de bun-venit la login (o singura data per sesiune browser)
 function _sumarTextTip(tip, n) {
   const map = {
-    de_validat: n === 1 ? "1 declaratie de validat" : n + " declaratii de validat",
-    aprobata: n === 1 ? "1 declaratie aprobata" : n + " declaratii aprobate",
-    respinsa: n === 1 ? "1 declaratie respinsa" : n + " declaratii respinse",
+    // [validare_note 06.10.2026] coada poartă declarații ȘI note: „lucrare” le numește pe amândouă
+    de_validat: n === 1 ? "1 lucrare de validat" : n + " lucrări de validat",
+    aprobata: n === 1 ? "1 lucrare validată" : n + " lucrări validate",
+    respinsa: n === 1 ? "1 lucrare respinsă" : n + " lucrări respinse",
     depusa: n === 1 ? "1 declaratie depusa" : n + " declaratii depuse",
   };
   return map[tip] || (n + " notificari");

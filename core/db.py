@@ -142,11 +142,21 @@ def get_conn(schema=None):
     from core import cronometru as _crono
     conn = p.getconn()
     _crono.marca("pool_asteptare")
+    _cu_autor = False
     try:
         if schema is not None:
             with conn.cursor() as cur:
                 cur.execute('SET search_path TO "%s", public' % schema)
             _crono.marca("pool_search_path")
+        # [validare_note 06.10.2026] autorul cererii, pe SESIUNE cât ține împrumutul conexiunii (nu pe tranzacție: un
+        # `conn.commit()` din mijlocul unui use-case l-ar pierde pentru notele scrise după el); se ȘTERGE în `finally`, înainte
+        # ca conexiunea să se întoarcă în pool. Coloana `inregistrari.creat_de_id` îl preia ca valoare implicită, iar
+        # triggerul de sincronizare cu coada îl scrie ca aprobator. În afara unei cereri e None și nu se scrie nimic.
+        from core import autor_cerere as _autor
+        _cu_autor = _autor.uid() is not None
+        if _cu_autor:
+            with conn.cursor() as cur:
+                cur.execute("SELECT set_config('iconta.utilizator', %s, false)", (str(_autor.uid()),))
         yield conn
         conn.commit()
     except Exception:
@@ -165,10 +175,13 @@ def get_conn(schema=None):
         # evenimente: `PoolError('connection pool exhausted')` pe TOATE rutele, pana la restart manual
         # (procesul web n-are deadman, R75). Masurat de audit (C3) cu `pg_terminate_backend` in bloc.
         _moarta = bool(getattr(conn, "closed", 0))
-        if schema is not None and not _moarta:
+        if (schema is not None or _cu_autor) and not _moarta:
             try:
                 with conn.cursor() as cur:
-                    cur.execute("RESET search_path")
+                    if schema is not None:
+                        cur.execute("RESET search_path")
+                    if _cu_autor:
+                        cur.execute("RESET iconta.utilizator")
                 conn.commit()
             except Exception:
                 _moarta = True

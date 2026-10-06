@@ -17,8 +17,8 @@ import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=151165bd7b";
-import { randeazaListaFirme } from "./firme.js?v=0a1c9fd6dd";
+import { randeazaValidat } from "./validat.js?v=9d2a9a0878";
+import { randeazaListaFirme } from "./firme.js?v=7e5090611a";
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
@@ -45,7 +45,7 @@ const NODURI = {
     sinteza: "Pregătește și trimite la validare", cere: "poate_pregati",
     deschide: (nav) => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav)) },
   validat: { titlu: "De validat", icon: "clipboard", ...CULORI_CARD.piersica,
-    sinteza: "Declarații de validat de la colegi", cere: "poate_valida",
+    sinteza: "Declarații și note de validat de la colegi", cere: "poate_valida",
     deschide: (nav) => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)) },
   pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
     sinteza: "Trimite pachetul lunar către clienți",

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.72 · 6 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.73 · 6 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -688,6 +688,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.73 (06.10.2026)** — **Coada de validare poartă și NOTE; contrast pe „De validat” și Activitate cabinet.** Comanda Costin (răspunsul la §6 din LOT_06_10, pct.1): ecranul „De validat” are secțiunea „Note de validat” (`.val-card`, `.cf-grup-titlu`, butoanele `.val-aproba` / `.val-respinge` — ZERO clase noi), „Vezi nota” deschide liniile (`.fd-tabel`); Registrul-jurnal arată nota respinsă cu `.caseta-atentie` (motivul) și butonul „Trimite din nou la validare”; statul de plată spune unde e nota. Activitate cabinet: coloana „DECLARAȚIE / NOTĂ”, eticheta vine de la server. **Contrast (axe):** `.val-aproba` #1d9e75 sub alb = 3,39:1 -> `var(--verde)`; `.ac-cap` #8a8f98 = 3,3:1 -> `var(--gri)`. Gard: `core/test_a11y_contrast_tokens.py::test_validare_si_activitate_contrast`.
+
 **v2.72 (06.10.2026)** — **cap.22: navigarea ghidurilor pe teme** (`.ghid-teme`, `.ghid-lista`, `.ghid-legaturi`, `.ghid-tema`, `.ghid-numar`). Comanda Costin, lotul 06.10 partea 2: `/ghid` avea 2,3 MB și 6.559 de linkuri; acum e cuprinsul celor 16 teme, fiecare temă cu pagina ei, iar fiecare ghid duce la tema lui și la ghidurile înrudite. Gard: `core/test_lot0610_p2.py`.
 
 **v2.71 (05.10.2026)** — **cap.18: grupuri în fereastra firmei, dintr-o singură sursă.** Comanda Costin (pct.11): cele 32 de carduri sub cinci titluri (Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma), fără arbore, titlul fără card vizibil nu apare. Pe drum: cardul Produse fără culoare (cap.12), cardul Solicitări deschis inline (cap.2a). Gard: `GRUP_FIRMA`.

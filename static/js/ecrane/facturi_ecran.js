@@ -717,7 +717,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=0a1c9fd6dd");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=7e5090611a");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });

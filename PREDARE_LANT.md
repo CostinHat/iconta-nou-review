@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **lotul 06.10 (patru părți) LIVRAT, cu pct.12 OPRIT pentru decizie; două decizii cerute lui Costin** (06.10.2026)
+# PREDARE LANȚ — **validarea notelor prin coadă + concediul medical în nota de salarii LIVRATE; o decizie cerută (D112 / D1)** (06.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -33,6 +33,7 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | `d582e083` | la final |
 | **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | `eafc7b8c` | `iconta_testare_factura_F1.zip` |
 | **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
+| **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate | commitul de închidere din 06.10 | `iconta_validare_note.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -55,11 +56,10 @@ aplicației**, nu „în așteptarea unei teme”:
   acces programatic — **[EXTERN]**.
 - **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
   nu se ating din cod).
-- **Decizii cerute lui Costin din lotul 06.10** (raportul lotului, §6): (1) **pct.12 — ciorna de salarii vizibilă cabinetului**:
-  premisa („facturile au deja un mecanism de validare”) nu se regăsește; singurul mecanism (contor, Activitate cabinet, notificare,
-  Validează/Respinge) e coada declarațiilor (`public.declaratii_coada`). De ales: coada extinsă la note SAU un mecanism pe note
-  (`inregistrari` n-are autor/respingere). (2) **Concediul medical în nota de salarii**: indemnizația (423) nu se contabilizează, iar
-  421 rămâne nesoldat în lunile cu CM (11 din 52 de luni pe baza de test; 0 în producție) — controlul nou o arată, n-o repară.
+- **Decizie cerută lui Costin (validarea notelor, §6):** **D112 numără zilele PLĂTITE ale certificatului CM, nu zilele lui** —
+  la certificatul inițial (diminuarea unei zile) declară salariu pentru ziua de concediu; statul are dreptate, iar 421 rămâne
+  nesoldat cu netul acelei zile. Reparația e în `core/d112.py` -> declanșează pasul D1 („Contract uniform A1”, decizia 04.10).
+  Datoria strictă: `core/test_datorie.py::test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare`.
 - **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
@@ -96,6 +96,13 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(06.10, validarea notelor) Orice notă ciornă scrisă de un utilizator FĂRĂ „Poate valida” intră în coada de validare** după
+  cererea care a scris-o (middleware `_autor_si_note_in_coada`). O probă care scrie note ca asistent lasă rânduri în
+  `public.declaratii_coada` (fel='nota') și în `public.notificari`; le șterge. Autorul notei = `inregistrari.creat_de_id`,
+  din `iconta.utilizator` (pus de `db.get_conn` din `core/autor_cerere.py`).
+- **(06.10) Fluturașul / statul / SEPA citesc indemnizația CM prin `stat_plata_api.stat_final`** (reținerile declarate în D112);
+  `stat_plata` rămâne neajustat fiindcă îl citește `d112.pull`.
 
 - **(06.10) Producția are `metoda_stoc` NULL pe toate cele 5 firme și seria facturii goală**: după deploy, prima factură de marfă
   sau prima ieșire de stoc e refuzată cu trimitere la Date firmă, iar prima emitere cere seria în mesaj. Fixturile de test pun
@@ -181,8 +188,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **883** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **884** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1223** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

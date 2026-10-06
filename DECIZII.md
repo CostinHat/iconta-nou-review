@@ -17187,3 +17187,57 @@ pe toate și publică four-way. Alternativa respinsă: patru commituri pe `main`
 16. **(pct.16) Decizia A:** promptul nu mai primește restanțele (nici instrucțiunea de a le pomeni); un text care le pomenește
    (restanț-, nedepus-, termen depășit, întârziere) e abatere afișată în editor înainte de aprobare. Restanțele rămân vizibile
    contabilului (răspunsul generării), nu clientului.
+
+## 06.10.2026 — Răspunsul la §6 din raportul LOT_06_10: validarea notelor prin coadă, concediul medical în nota de salarii (comanda Costin)
+
+**Comanda, verbatim:** *„Răspuns la §6 din raportul LOT_06_10:
+1. Pct.12: varianta (a) — coada declarațiilor extinsă la note, un singur mecanism prin care cabinetul vede, validează sau respinge tot
+ce pregătește asistentul (inclusiv contorul „pregătite”, notificarea și Activitate cabinet).
+2. Concediul medical: indemnizația se contabilizează în nota de salarii (partea angajatorului și partea suportată din FNUASS), cu
+conturile și temeiul verificate la sursă (OUG 158/2005, OMFP 1802/2014), astfel încât 421 se soldează la ban și în lunile cu concediu
+medical.
+3. Pct.10 din comanda precedentă nu are răspuns: numărul exact de titluri aprobate din registru încă nepublicate.
+4. Poarta completă rulează o singură dată, la publicare. Nu se rulează suita completă între pași.
+La commitul de închidere: ZIP cu tot ce s-a schimbat (cod, documente noi, artefacte de măsurare) în
+~/ghid_incoming/iconta_validare_note.zip; raportează calea exactă. Poți trece la următorul pas din listă.”*
+
+
+**Consecințe (executor):**
+1. **(pct.1) Coada declarațiilor, extinsă la note — un singur mecanism.** `public.declaratii_coada.fel` = 'declaratie' | 'nota'
+   (`core/migrare_validare_note.py`). Nota se naște pe ~21 de drumuri de INSERT; ca toate să ajungă în coadă fără să fie
+   cârpite unul câte unul, **autorul se ia din cerere**: middleware-ul HTTP pune utilizatorul în `core/autor_cerere.py`,
+   `db.get_conn` îl scrie pe conexiune (`iconta.utilizator`, șters la întoarcerea în pool), iar `inregistrari.creat_de_id` îl
+   preia ca valoare implicită. După o cerere de modificare reușită pe `/tenants/{id}/…`, notele ciornă ale unui utilizator
+   FĂRĂ „Poate valida” intră în coadă (`uc_coada.note_in_coada`), iar validatorii primesc notificarea „de validat”.
+   Cabinetul le vede în „De validat” (secțiunea „Note de validat”, cu „Vezi nota”), le validează (nota devine validată în
+   jurnal, în aceeași tranzacție; nota fără document cere confirmarea de la jurnal) sau le respinge cu motiv (nota rămâne
+   ciornă, marcată în jurnal și pe statul de plată; revine numai prin „Trimite din nou la validare”). Contorul „pregătite”,
+   „de validat”, Activitate cabinet și sinteza zilnică le numără din aceeași coadă; tiparele respingerilor rămân ale
+   declarațiilor (`fel='declaratie'`). Un trigger pe tenant ține coada și jurnalul în acord (nota validată direct din jurnal
+   închide elementul; nota ștearsă la validare îl scoate). Alternativa respinsă: un apel explicit în fiecare drum de INSERT
+   — 21 de locuri, iar un drum nou ar fi scăpat.
+2. **(pct.2) Concediul medical în nota de salarii.** Temei citit la sursă: OUG 158/2005 art.12 (lit.A angajatorul ziua 1–5,
+   lit.B FNUASS de a doua zi de după), art.38 alin.(1) („se recuperează din bugetul FNUASS … nu pot fi recuperate din
+   sumele constituite reprezentând contribuție de asigurări sociale de sănătate”), art.36 alin.(3) lit.a) (plata „odată cu
+   lichidarea drepturilor salariale”); OMFP 1802/2014 conturile 423 (credit „ajutoarele materiale suportate potrivit legii …
+   (431, 645)”, debit reținerile „… 431, … 444”), 645 („sumele acordate personalului, potrivit legii, pentru protecția
+   socială (423)”), 438/4382 („creanțelor de încasat în contul asigurărilor sociale”); Norme OUG 158/2005 (Ordinul
+   15/1311/2006) art.35 alin.(1) și art.36. Nota: 6458 = 423 (angajator), 4382 = 423 (FNUASS — INTERPRETARE CU TEMEI:
+   analiticul nu e numit, iar 431x sunt datorii din contribuții, din care art.38 interzice recuperarea), reținerile din
+   salariu pe 421 (exact cele de pe fluturaș), restul declarat în D112 pe 423. Fluturașul ia reținerile indemnizației din
+   D112 (impozitul e calculat pe baza lunară combinată), iar fișierul SEPA plătește și netul indemnizației.
+   **Găsite pe drum (ciclul de neconformitate):** (a) tichetele de vacanță peste plafon și cadoul taxabil intrau pe 641 =
+   421, deși se dau în tichete — OMFP 1802/2014 contul 642 („valoarea tichetelor acordate salariaților (532)”) -> 642 =
+   5328; (b) pe certificatul de CONTINUARE angajatorul primea 0 zile chiar când certificatul inițial nu-i acoperise cota —
+   Norme art.35 alin.(1) („socotite din prima zi de incapacitate”) și art.36 -> cota rămasă pe episod; (c) **D112 proratează
+   salariul realizat pe zilele PLĂTITE ale certificatului, nu pe zilele lui**: la certificatul inițial (diminuarea unei zile,
+   Ordinul 506/1030/2026) declară salariu pentru ziua de concediu. Repararea e în `core/d112.py` și declanșează pasul D1
+   (decizia 04.10) — NU s-a făcut; datorie strictă `test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare`, decizie cerută.
+3. **(pct.3) Titlurile aprobate nepublicate: 287** (din registru), plus 3 fără corespondent sigur în registru. Aprobarea nu e
+   în registru (`status` are publicat / candidat / asemănător); e în pachetele de lot livrate spre publicare („Costin aprobă
+   titlurile, tu publici”): batch4–17 (`~/ghid_incoming/batch*_ghiduri*.zip`), lotul 18 (`ghiduri_lot18.zip`), lotul 19
+   (`iconta_lot19_ghiduri.zip`, `verificare/lot19_titluri.csv`). 5.722 de titluri aprobate potrivite cu registrul (id, titlu
+   exact, slug, titlu apropiat ≥ 0,85): publicate 5.435, **„candidat” 112** (aprobate, redactate, nepublicate), **„asemănător”
+   175** (nepublicate fiindcă există un ghid apropiat). Lista nominală: `aprobate_nepublicate.csv` (ZIP).
+4. **(pct.4)** Între pași s-au rulat numai seturile derivate (modulele atinse + gărzile structurale); o primă încercare a
+   prins aproape toată suita prin filtru și a fost oprită. Poarta completă rulează o singură dată, la commitul de închidere.

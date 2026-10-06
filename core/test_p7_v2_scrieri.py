@@ -230,7 +230,11 @@ def test_numarul_de_instructiuni_se_conserva():
     #   (firma_profil_regim_tva) — poarta de perioadă închisă se pune numai la o SCHIMBARE reală a statutului. Pași NOI.
     # [lotul 06.10.2026, comanda Costin §6.4] 282 -> 283, cu apelul numit:
     #   repo_firma_profil.jurnal_firma (firma_profil_date) — jurnalul Date firmă, vizibil cabinetului. Pas NOU, citire.
-    assert _apeluri_catre_repository() == 283
+    # [validarea notelor, comanda Costin 06.10.2026 pct.1] 283 -> 286, cu apelurile numite (toate în `uc_coada`, citiri):
+    #   repo_declaratii.element_coada (fel + firma elementului, pentru aprobare / conținut), repo_declaratii.
+    #   schema_firmei_cabinetului (intrarea notelor în coadă, numai pe firmele cabinetului), repo_declaratii.nota_cu_linii
+    #   (conținutul notei pentru validator). Pași NOI.
+    assert _apeluri_catre_repository() == 286
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

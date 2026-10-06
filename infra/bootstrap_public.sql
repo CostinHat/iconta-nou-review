@@ -692,6 +692,13 @@ CREATE INDEX IF NOT EXISTS ix_rap_mesaje_rap ON public.raportari_mesaje USING bt
 CREATE INDEX IF NOT EXISTS ix_raportari_autor ON public.raportari USING btree (autor_id);
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_coada_activa ON public.declaratii_coada USING btree (tenant_id, tip, perioada) WHERE (stare <> ALL (ARRAY['respinsa'::text, 'depusa'::text]));
+-- [validare_note 06.10.2026] fel = declaratie | nota — sursa unica: core/migrare_validare_note.py
+ALTER TABLE public.declaratii_coada ADD COLUMN IF NOT EXISTS fel text NOT NULL DEFAULT 'declaratie';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='declaratii_coada_fel' AND connamespace='public'::regnamespace) THEN
+    ALTER TABLE public.declaratii_coada ADD CONSTRAINT declaratii_coada_fel CHECK (fel IN ('declaratie', 'nota'));
+  END IF;
+END $$;
 
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='anunturi_cabinet_cabinet_id_fkey' AND connamespace='public'::regnamespace) THEN

@@ -37,6 +37,7 @@ from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_impo
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core import drepturi as _drepturi  # [drepturi_rol 04.10.2026] cine poate face ce (decizia Costin, varianta 2)
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
+from core import autor_cerere as _autor_cerere   # [validare_note] cine face cererea, pana in `db.get_conn`
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (ROL_INSUFICIENT, DOAR_ADMIN_ICONTA)
 from core.common import nomenclator_cerut
@@ -597,6 +598,38 @@ def _inregistreaza_activitate(method, path, status, auth_header):
         _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
 
 _METODE_MUTATIE = ("POST", "PUT", "DELETE", "PATCH")
+
+
+@app.middleware("http")
+async def _autor_si_note_in_coada(request: Request, call_next):
+    """[validare_note, comanda Costin 06.10.2026 pct.1] CEL MAI DIN INTERIOR middleware: pune AUTORUL cererii de modificare
+    în `core/autor_cerere` (de acolo `db.get_conn` îl scrie pe conexiune, iar notele îl primesc ca `creat_de_id`), apoi —
+    după un răspuns reușit pe `/tenants/{id}/…` — trimite în coada de validare notele ciornă pe care le-a scris un utilizator
+    fără drept de validare. Un singur punct, pentru toate drumurile pe care se naște o notă. Eșecul intrării în coadă nu
+    strică răspunsul cererii (nota există), dar nu e tăcut (`observare.esec_secundar`)."""
+    if request.method not in _METODE_MUTATIE:
+        return await call_next(request)
+    auth = request.headers.get("authorization")
+    ctx = None
+    if auth and auth.startswith("Bearer "):
+        try:
+            ctx = auth_api.context_din_token(auth[7:])
+        except Exception:
+            ctx = None
+    if not (ctx and ctx.get("ok") and ctx.get("uid")):
+        return await call_next(request)
+    _tok = _autor_cerere.seteaza(ctx["uid"])
+    try:
+        response = await call_next(request)
+    finally:
+        _autor_cerere.reseteaza(_tok)
+    _m = _re_audit.match(r"^/tenants/(\d+)/", request.url.path)
+    if _m and response.status_code < 400 and ctx.get("firm"):
+        try:
+            await _run_in_threadpool_audit(_uc_coada.note_in_coada, int(_m.group(1)), int(ctx["uid"]), ctx["firm"])
+        except Exception as _e:
+            _obs.esec_secundar("note pregatite in coada de validare", _e)
+    return response
 
 
 @app.middleware("http")
@@ -5052,6 +5085,16 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drept
     # orice nota care nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
     try:
         return _uc_tenants.jurnal_valideaza(tenant_id, nota_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/retrimite")
+# [validare_note, comanda Costin 06.10.2026 pct.1] Nota RESPINSĂ din coada de validare, corectată, se trimite din nou —
+# act explicit al celui care a pregătit-o („Poate pregăti”), ca o respingere să nu se anuleze singură.
+def jurnal_retrimite(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_coada.nota_retrimite(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

@@ -288,7 +288,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · nu scrie nimic*
 
-*ce face: Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `repo_contabilitate`*
+*ce face: Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `repo_contabilitate`*
 
 - [x] propunerea arată **ambele cifre** la fiecare divergență față de D112 — nu doar că există una
 - nu scrie nimic; verificat structural
@@ -380,7 +380,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 34 rute · 26 schimba date · 20 firme il pot exercita azi*
+*clasa MECANIC · 35 rute · 27 schimba date · 20 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
@@ -447,6 +447,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - cine a validat se consemnează
 - **fără rol, iar aceasta e ruta care transformă o ciornă în evidență.** E instanța cea mai gravă din cele patru — R55
 - **REZOLVAT 26.08.2026, în aceeași tură: ruta cere acum `admin_firma`.** Motivul, al lui Costin: *„validarea unei note e ce transformă o ciornă în evidență”*. Rândul „fără rol” de mai sus descrie starea de dinainte.
+
+### `POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite`
+
+*garda `cere_drept(PREGATI)`*
+
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+
+- [x] se retrimite numai o notă CIORNĂ al cărei ultim element din coada de validare e RESPINS (altfel 409: e deja la validare sau validată) — `core/test_validare_note.py::test_respingerea_tine_pana_la_retrimitere`
+- elementul nou intră `la_senior`, iar validatorii primesc notificarea „de validat” (comanda Costin 06.10.2026, răspunsul la §6, pct.1)
+- respingerea veche rămâne în istoric (Activitate cabinet), cu motivul ei
 
 ### `POST /tenants/{tenant_id}/nota-asociati`
 

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**699 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**700 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 664
+### `core/` — 665
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9443,6 +9443,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_unde.py` — GARDĂ: `unde` e o REFERINȚĂ citabilă mecanic, nu proză. (P8, 22.08.2026)
 - `core/test_upsert_motivat.py` — [Regula 4 — fara mutatie tacuta] GARD: orice INSERT ... ON CONFLICT DO UPDATE din codul de PRODUCTIE
 - `core/test_val3_contracte.py` — core/test_val3_contracte.py — valul 3: I/O extern in afara tranzactiei, cu REVALIDARE.
+- `core/test_validare_note.py` — GARDA comenzii Costin 06.10.2026 (răspunsul la §6 din LOT_06_10):
 - `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.
 - `core/test_valori_fiscale_js.py` — Valorile fiscale scrise in ECRANE se confrunta cu REGISTRUL, nu cu memoria mea.
 - `core/test_vector_camp_marcat.py` — [Regula 14.4 pct.4] GARD: eroarea de camp obligatoriu la vectorul fiscal NUMESTE campul vinovat ('camp'),
@@ -10312,3 +10313,20 @@ Categoriile **4. Ieșire către client** (emailul, portalul) și **11. Interfaț
 | eticheta | `::test_eticheta_spune_inainte_de_impozit_in_email_si_in_prompt` | „Rezultat” simplu în email (rândul tabelului) sau în prompt (linia rezultatului) | eticheta veche în email / în prompt -> roșu | pachetul și portalul (JS) le dovedește proba de browser, nu o gardă permanentă — o aserțiune pe sursa JS ar fi pe text (test_garzi_pe_text) |
 | restanțe în prompt | `::test_restantele_nu_intra_in_povestea_pentru_client` | restanțele trimise modelului pentru povestea clientului | linia restanțelor repusă -> roșu | — |
 | restanțe în text | `::test_un_text_care_pomeneste_restante_e_abatere` | un text care pomenește restanțe aprobat fără avertisment | verificarea scoasă din `abateri_termeni` -> roșu | avertizează, nu blochează (textul aprobat e al contabilului) |
+
+## 06.10.2026 — Validarea notelor prin coadă; concediul medical în nota de salarii (răspunsul la §6 din LOT_06_10)
+
+Categoriile **6. Acces** (cine pregătește / cine validează), **3. Calcul fiscal** (indemnizația CM, zilele angajatorului),
+**7. Integritate în timp** (coada și jurnalul nu pot diverge). Deciziile: DECIZII 06.10.2026 („Răspunsul la §6 …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| nota asistentului intră o dată, aprobarea o validează | `core/test_validare_note.py::test_nota_asistentului_intra_o_data_si_aprobarea_o_valideaza` | o notă pregătită care nu ajunge la cabinet; o „aprobare” care lasă nota ciornă | ramura notei din `aproba` scoasă -> roșu | probat pe funcții, nu pe middleware (middleware-ul îl arată proba de browser) |
+| respingerea ține | `::test_respingerea_tine_pana_la_retrimitere` | o respingere anulată tăcut de următoarea cerere a asistentului | filtrul „niciun element” slăbit -> roșu | — |
+| coada = jurnalul | `::test_jurnalul_si_coada_nu_pot_spune_lucruri_diferite` | notă validată în jurnal rămasă „la validare” în coadă; element orfan după ștergere | triggerul `coada_nota_sincron` scos din șablon -> roșu | — |
+| tiparele declarațiilor fără note | `::test_nota_nu_se_depune_iar_tiparele_declaratiilor_n_o_vad` | motive de respingere ale notelor în analiza declarațiilor; o notă „depusă” | filtrul `fel` scos -> roșu | — |
+| autorul nu trece la altă cerere | `::test_autorul_cererii_ajunge_pe_conexiune_si_se_sterge_la_intoarcere` | note scrise pe numele altcuiva prin conexiunea reutilizată | `RESET iconta.utilizator` scos -> roșu | depinde de reutilizarea conexiunii (pool LIFO) |
+| concediul medical: 421 și 423 la ban | `::test_concediul_medical_in_nota_cu_421_si_423_soldate` (2 cazuri) | reținerile indemnizației pe 421; netul CM de pe fluturaș diferit de cel declarat; zile angajator 0 pe continuare | împărțirea scoasă / `stat_final` neutralizat / regula veche a zilelor -> roșu | certificatul INIȚIAL nu e acoperit (datoria D112 de mai jos) |
+| plata închide 421 și 423 | `::test_fisierul_de_plata_inchide_si_421_si_423` | fișier SEPA fără indemnizația CM | `cm_net` scos din sumă -> roșu | — |
+| datoria D112 (zilele certificatului) | `core/test_datorie.py::test_datorie_d112_salariul_realizat_cu_ziua_de_diminuare` (xfail strict) | uitarea defectului | — (pică singur când D112 se repară) | reparația cere `core/d112.py` -> pasul D1 (decizie) |
+

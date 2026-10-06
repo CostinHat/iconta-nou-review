@@ -7,6 +7,8 @@ strat AI. Trei perspective, toate pe cabinet (doar patron):
   3. Firme cu cele mai multe respingeri
 
 La teste se umple singur. AI-ul (stratul 5) va citi exact aceste agregate.
+
+[validare_note, 06.10.2026] Coada poartă și note (`fel='nota'`); tiparele de aici sunt ale DECLARAȚIILOR — filtrate explicit.
 """
 import psycopg2.extras as _E
 
@@ -20,7 +22,7 @@ def tipare(conn, cabinet_id):
             "SELECT COALESCE(NULLIF(TRIM(motiv_respingere), ''), '(fara motiv)') AS motiv, "
             "       COUNT(*) AS n "
             "  FROM public.declaratii_coada "
-            " WHERE cabinet_id = %s AND respins_la IS NOT NULL "
+            " WHERE cabinet_id = %s AND respins_la IS NOT NULL AND fel = 'declaratie' "
             " GROUP BY motiv ORDER BY n DESC, motiv LIMIT 15",
             (cabinet_id,))
         out["motive"] = [{"motiv": r["motiv"], "n": int(r["n"])} for r in cur.fetchall()]
@@ -32,7 +34,7 @@ def tipare(conn, cabinet_id):
             "  COUNT(*) AS total, "
             "  COUNT(*) FILTER (WHERE respins_la IS NOT NULL) AS respinse "
             "  FROM public.declaratii_coada "
-            " WHERE cabinet_id = %s "
+            " WHERE cabinet_id = %s AND fel = 'declaratie' "
             " GROUP BY tip ORDER BY respinse DESC, tip",
             (cabinet_id,))
         tipuri = []
@@ -52,7 +54,7 @@ def tipare(conn, cabinet_id):
             "  COUNT(*) AS total "
             "  FROM public.declaratii_coada c "
             "  LEFT JOIN public.tenants t ON t.id = c.tenant_id "
-            " WHERE c.cabinet_id = %s "
+            " WHERE c.cabinet_id = %s AND c.fel = 'declaratie' "
             " GROUP BY c.tenant_id, t.nume, t.cui "
             "HAVING COUNT(*) FILTER (WHERE c.respins_la IS NOT NULL) > 0 "
             " ORDER BY respinse DESC LIMIT 15",

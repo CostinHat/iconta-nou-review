@@ -425,8 +425,15 @@ def monografie_salariu(calc):
     # [F133] CASS retinut = salariu + tichete (tichetele intra in baza CASS); impozitul
     # returnat e deja TOTAL (salariu+tichete). Reteneri suportate din salariul cash (421).
     cass_total = _dec(calc["cass"]) + _dec(calc.get("cass_tichete", 0))
+    # [comanda Costin 06.10.2026 pct.2 — 421 la ban] Pe 641 = 421 intră salariul in BANI. `calc["brut"]` e brutul IMPOZABIL:
+    # cuprinde și excesul de tichete de vacanță peste plafon și partea taxabilă a cadoului — venit salarial pentru impozit,
+    # contribuții și D112, dar dat în TICHETE, nu prin 421. OMFP 1802/2014, contul 642: „În debitul contului 642 … se
+    # înregistrează: … valoarea tichetelor acordate salariaților (532)”. Cu forma veche, 421 rămânea cu excesul nesoldat
+    # (tenant_001 06/2026: 5.700 lei). Cadoul (integral) îl pune pe 642 = 5328 `salarii_contare.note_lunare`.
+    exces_vac = _dec(calc.get("tichete_vacanta_exces", 0))
+    brut_bani = _dec(calc["brut"]) - exces_vac - _dec(calc.get("tichete_cadou", 0))
     note = [
-        _nota("641", "421", calc["brut"]),       # cheltuială salarii brute
+        _nota("641", "421", brut_bani),          # cheltuială salarii brute (în bani)
         _nota("421", "4315", calc["cas"]),        # CAS reținut (angajat)
         _nota("421", "4316", cass_total),         # CASS reținut (salariu + tichete)
         _nota("421", "444", calc["impozit"]),     # impozit pe venit (salariu + tichete)
@@ -434,9 +441,9 @@ def monografie_salariu(calc):
     ]
     # [F133] acordarea biletelor de valoare (masa + vacanta): cheltuiala (642) din biletele
     # de valoare (5328). Achizitia biletelor (5328=5121/401) e tranzactie separata.
-    tichete_nom = _dec(calc.get("tichete_nominal", 0)) + _dec(calc.get("tichete_vacanta", 0))
+    tichete_nom = _dec(calc.get("tichete_nominal", 0)) + _dec(calc.get("tichete_vacanta", 0)) + exces_vac
     if tichete_nom > 0:
-        note.append(_nota("642", "5328", tichete_nom))  # cheltuiala tichete (masa + vacanta) acordate
+        note.append(_nota("642", "5328", tichete_nom))  # cheltuiala tichete (masa + vacanta, inclusiv excesul) acordate
     # suprataxare part-time (art.146 Cod fiscal): diferența CAS/CASS suportată
     # de angajator peste venitul real, până la baza-podea (minim - facilitate)
     cas_supra = calc.get("cas_suprataxa", 0)
@@ -579,7 +586,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
                     spitalizare=False, la_data=None, exceptat_prima_zi=False,
                     procent_accident=100, venituri_lunare=None, data_episod_initial=None,
-                    *, diminuare_activa, exceptii_active=True, program_national=False):
+                    *, diminuare_activa, exceptii_active=True, program_national=False, zile_ang_deja=None):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -630,7 +637,17 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # [D112 D-field] codurile 100% FNUASS nu au portie de angajator (D_20=0); restul: primele 5 zile angajator
     # [CM-episod] Norme OUG 158/2005: angajatorul suporta zilele 2-6 ale EPISODULUI (nu ale fiecarui
     # certificat) -> pe certificatele de CONTINUARE (not prima_zi_din_episod) portia angajator = 0.
-    zile_ang = 0 if (str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL or not prima_zi_din_episod) else min(zile_platite, 5)
+    # [validare_note 06.10.2026, verificat la sursă] Norme OUG 158/2005 (Ordinul 15/1311/2006) art.35 alin.(1): indemnizația se
+    # suportă „pentru zilele lucrătoare din duratele … de incapacitate temporară de muncă, socotite din prima zi de
+    # incapacitate”; art.36: numai concediile „acordate cu întrerupere între ele … se iau în considerare separat, durata lor nu
+    # se cumulează”. Deci pe CONTINUARE cota angajatorului e cea RĂMASĂ din episod (`zile_ang_deja` = zilele pe care le-a
+    # suportat deja în certificatele anterioare ale episodului), nu 0: forma veche muta pe FNUASS zile ale angajatorului
+    # ori de câte ori certificatul inițial nu acoperise cota (ex. inițial 1 zi, continuare 3 zile -> 0 angajator).
+    # `zile_ang_deja=None` = episod NECUNOSCUT apelantului (calcul izolat): continuarea păstrează forma de dinainte (cota
+    # considerată consumată pe inițial); `salariati_api.salveaza_concediu` cunoaște episodul și trimite cifra exactă.
+    if zile_ang_deja is None:
+        zile_ang_deja = 0 if prima_zi_din_episod else 5
+    zile_ang = 0 if str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL else min(zile_platite, max(5 - int(zile_ang_deja), 0))
     zile_fnuass = zile_platite - zile_ang
     brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
     brut_fnuass = brut - brut_ang
@@ -677,7 +694,7 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
               spitalizare=False, la_data=None, exceptat_prima_zi=False,
               procent_accident=100, venituri_lunare=None, data_episod_initial=None, data_eliberare=None,
-              program_national=False):
+              program_national=False, zile_ang_deja=None):
     """Indemnizatia de concediu medical, DISPECER pe DATA ELIBERARII certificatului (data_eliberare;
     OUG 91/2025 art.II(1) "certificatele ... eliberate in perioada"). Fallback pe la_data daca lipseste.
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
@@ -688,7 +705,7 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
               prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident,
               venituri_lunare=venituri_lunare, data_episod_initial=data_episod_initial,
-              program_national=program_national)
+              program_national=program_national, zile_ang_deja=zile_ang_deja)
 
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,
