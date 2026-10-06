@@ -126,6 +126,7 @@ async function _cere(metoda, cale, corp) {
     const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
                      detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
     _refuzNevazut(eroare, metoda);   // [refuz_vazut_v1]
+    _butonSpreEcran(eroare, cale);   // [lotul 07.10 pct.2]
     throw eroare;
   }
   return date;
@@ -175,6 +176,35 @@ function _bannerRefuz(mesaj) {
   d.appendChild(b);
   document.body.appendChild(d);
   setTimeout(() => { if (d.isConnected) d.remove(); }, 12000);
+}
+
+// ── [lotul 07.10 pct.2, comanda Costin 06.10.2026] REFUZUL CARE TRIMITE ÎN ALT ECRAN ARE BUTON SPRE EL, ORIUNDE E ARĂTAT ──
+// „Orice mesaj care trimite în alt ecran are buton direct spre el și readuce la formular.” Serverul pune ținta în refuz
+// (`detail.ecran`, ex. metoda de stoc -> „date_firma”); aici, o singură dată pentru toată aplicația, butonul se adaugă lângă
+// mesajul afișat — oricare ar fi ecranul care l-a afișat (prin `arataMesaj`, în rezultatul emiterii, în bannerul de refuz
+// nevăzut). Ecranul se deschide PESTE cel curent, deci „←” readuce formularul. Un ecran care pune singur butonul (emiterea)
+// nu primește al doilea: butoanele poartă `data-ecran-destinatie`. Gard: `core/test_refuz_spre_ecran.py`.
+const _SELECTOR_ZONA_REFUZ = ".msg-eroare, .msg-avert, .em-rezultat, .em-curs-box, .rn-mesaj, .pf-intro";
+function _butonSpreEcran(eroare, cale) {
+  const det = eroare && eroare.detaliu;
+  const m = String((eroare && eroare.mesaj) || "").trim();
+  const tid = (String(cale || "").match(/^\/tenants\/(\d+)\//) || [])[1];
+  if (!det || !det.ecran || !m || !tid) return;
+  const pune = async () => {
+    const zone = [...document.querySelectorAll(_SELECTOR_ZONA_REFUZ)].filter((el) => (el.textContent || "").indexOf(m) >= 0);
+    if (!zone.length) return false;
+    const el = zone[zone.length - 1];
+    const cadru = el.closest(".em-curs-box, #refuz-nevazut") || el;
+    if (cadru.querySelector("[data-ecran-destinatie]")) return true;
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=ab288d196e");
+    const z = document.createElement("span");
+    z.className = "ecran-destinatie";
+    el.appendChild(z);
+    butonSpreEcran(z, det.ecran, window._navGlobal, Number(tid), { clasa: "buton-secundar" });
+    return true;
+  };
+  // după ce ecranul a afișat refuzul; iar dacă nu l-a afișat, după bannerul de refuz nevăzut
+  setTimeout(async () => { if (!(await pune())) setTimeout(pune, _REFUZ_ASTEPTARE_MS + 50); }, 30);
 }
 
 function _refuzNevazut(eroare, metoda) {
@@ -264,6 +294,7 @@ async function _cereForm(cale, formData) {
     const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
                      detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
     _refuzNevazut(eroare, "POST");   // [refuz_vazut_v1] cereForm e mereu POST
+    _butonSpreEcran(eroare, cale);   // [lotul 07.10 pct.2]
     throw eroare;
   }
   return date;
@@ -276,12 +307,56 @@ export const api = {
   del: (cale) => cere("DELETE", cale),
   postForm: (cale, formData) => cereForm(cale, formData),
 };
+// ── [lotul 07.10 pct.3, comanda Costin 06.10.2026] MESAJUL DE DUPĂ UN BUTON SE ADUCE ÎN VEDERE ─────────────────────────
+// „Mesajele apărute după apăsarea unui buton (refuzuri, întrebări) cad sub zona vizibilă și trec neobservate. Ecranul aduce
+// mesajul în vedere – în toată aplicația, nu doar la factură.” UN mecanism, aici, nu câte unul pe ecran:
+//   - `aduInVedere(el)`: în FEREASTRA_ACTIUNE_MS de la o apăsare a omului, mesajul se derulează în zona vizibilă; dacă apar
+//     mai multe deodată (erori pe trei câmpuri), se aduce cel mai de sus — primul câmp vinovat;
+//   - îl cheamă helperii comuni (`arataMesaj`, `eroareCamp`, `confirmaCaseta`) — iar orice refuz din `catch` trece prin ei
+//     (garda refuzului din catch) —, deci refuzurile din toată aplicația sunt acoperite fără să fie atinse;
+//   - casetele scrise DIRECT de un ecran după un buton (întrebarea „Pleacă marfa acum?”, refuzurile structurate ale emiterii)
+//     le prinde observatorul de mai jos după clasa lor (`SELECTOR_MESAJ`), când elementul ADĂUGAT e chiar caseta — nu când
+//     se redesenează un ecran întreg care conține casete statice (acelea nu sunt „după un buton”).
+// Fără apăsare recentă (un ecran care se deschide singur, un contor care se reîncarcă) nu se derulează nimic.
+// Gard: `core/test_mesaj_in_vedere.py`.
+export const FEREASTRA_ACTIUNE_MS = 3000;
+export const SELECTOR_MESAJ = ".msg-eroare, .msg-avert, .msg-info, .msg-ok, #caseta-atentie-activa, .caseta-poarta, .em-curs-box, .em-rau, .em-bun, [role=alert]";
+let _ultimaActiuneOm = 0;
+document.addEventListener("pointerdown", () => { _ultimaActiuneOm = Date.now(); }, true);
+document.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") _ultimaActiuneOm = Date.now(); }, true);
+let _deAdus = [];
+export function aduInVedere(el) {
+  if (!el || !el.isConnected) return;
+  if (Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
+  _deAdus.push(el);
+  if (_deAdus.length > 1) return;   // același cadru: se alege cel mai de sus, o singură derulare
+  requestAnimationFrame(() => {
+    const vii = _deAdus.filter((e) => e.isConnected && e.getClientRects().length);
+    _deAdus = [];
+    if (!vii.length) return;
+    vii.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+    const t = vii[0], r = t.getBoundingClientRect();
+    const c = t.closest(".fereastra-corp");
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const sus = Math.max(0, c ? c.getBoundingClientRect().top : 0), jos = Math.min(vh, c ? c.getBoundingClientRect().bottom : vh);
+    if (r.top >= sus && r.bottom <= jos) return;   // deja în vedere: nu se mișcă nimic
+    t.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+}
+if (typeof MutationObserver !== "undefined") {
+  new MutationObserver((lista) => {
+    if (Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
+    for (const m of lista) for (const n of m.addedNodes) if (n.nodeType === 1 && n.matches(SELECTOR_MESAJ)) aduInVedere(n);
+  }).observe(document.documentElement, { childList: true, subtree: true });
+}
+
 // [msg_conventie_v1] helper global mesaje: tip = "eroare" | "avert" | "info"
 export function arataMesaj(el, txt, tip = "info") {
   if (!el) return;
   el.textContent = txt || "";
   el.className = el.className.replace(/\bmsg-(eroare|avert|info|ok)\b/g, "").trim();
   el.classList.add("msg-" + tip);
+  if (txt) aduInVedere(el);   // [lotul 07.10 pct.3]
 }
 
 // [G10 cap.6 v2.30] eroare de camp: <span class="msg-eroare" data-camp> imediat dupa inputul #idCamp.
@@ -301,6 +376,7 @@ export function eroareCamp(root, idCamp, txt) {
     inp.insertAdjacentElement("afterend", sp);
   }
   sp.textContent = txt;
+  aduInVedere(inp);   // [lotul 07.10 pct.3] câmpul vinovat (cel mai de sus, dacă sunt mai multe) intră în vedere
   return true;
 }
 
@@ -367,7 +443,7 @@ export function confirmaCaseta(zona, mesaj, laConfirm, optiuni = {}) {
   zona.parentNode.insertBefore(div, zona.nextSibling);
   div.querySelector("#ca-nu").addEventListener("click", () => div.remove());
   div.querySelector("#ca-ok").addEventListener("click", () => { div.remove(); laConfirm(); });
-  div.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  aduInVedere(div);   // [lotul 07.10 pct.3] același mecanism ca restul mesajelor de după un buton
 }
 
 

@@ -316,11 +316,20 @@ def test_o_RETETA_peste_stocul_existent_se_REFUZA(lume):
     aici ar pazi formularea de langa lucru, nu lucrul. *Poarta a respins exact forma asta in lotul
     dinainte; lectia se aplica din prima, nu dupa a doua respingere.*
     """
+    # [lotul 07.10, 06.10.2026] PROBA ERA OARBĂ: fără metoda de stoc declarată, cererea se oprea la refuzul „metoda de stoc
+    # nedeclarată” (lotul 06.10 §6.3), nu la stocul insuficient pe care îl numește testul. Firma declară acum metoda
+    # cantitativ-valorică (rețetele sunt ieșire pe articol), deci refuzul e cel căutat; motivul se citește și din refuzul
+    # STRUCTURAT (`detail.mesaj`), forma refuzurilor care trimit în alt ecran.
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, metoda_stoc) VALUES (1, \'TENANT\', \'14399840\', \'cantitativ_valoric\') '
+                    "ON CONFLICT (id) DO UPDATE SET metoda_stoc = EXCLUDED.metoda_stoc" % SCH)
     cl = _client()
     r = cl.post("/tenants/%d/retete/descarca" % lume["tid"],
                 json={"reteta_id": lume["rid"], "portii": 100, "data": ZI}, headers=_H(lume))
     assert r.status_code == 422, (r.status_code, r.text[:200])
-    assert (r.json().get("detail") or "").strip(), "refuz fara niciun motiv scris"
+    det = r.json().get("detail")
+    assert ((det.get("mesaj") if isinstance(det, dict) else det) or "").strip(), "refuz fara niciun motiv scris"
+    assert not (isinstance(det, dict) and det.get("ecran")), "refuzul e tot cel al metodei de stoc, nu al stocului: %r" % (det,)
     with lume["conn"].cursor() as cur:
         cur.execute("SELECT count(*) FROM \"%s\".inregistrari" % SCH)
         assert cur.fetchone()[0] == 0, "un refuz a lasat totusi o nota"

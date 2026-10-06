@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=4c8f1ff171";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=eff78f4bb3";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -53,7 +53,7 @@ export async function ecranRip(corp, nav, t) {
       </p>
       <div id="r-mesaj"></div>
       <p><button class="buton-secundar" id="r-toggle" data-actiune="POST /tenants/{tenant_id}/rip/operatiuni">+ Opera\u021biune nou\u0103</button></p>
-      <div id="r-zona" hidden style="display:block;margin-bottom:14px">
+      <div id="r-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
           <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input"></label>

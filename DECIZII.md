@@ -17288,3 +17288,61 @@ Poți trece la următorul pas din listă.”*
    obiectului persistat (`CalculD112.asigurati_xml` poartă CNP-uri, pe care `AsiguratD112` le exclude deliberat).
    `CONTRACT_BASELINE` 3 -> 2. Alternativa respinsă: un `genereaza` cu două semnături (an, luna | perioada) — două forme vii ale
    aceluiași contract.
+
+**Consecințe (executor) — P2 (retestul 06.10, pct.2–21):**
+2. **(pct.2, GRAV) Factura începută nu se mai pierde, pe niciun drum.** Navigatorul o păstra numai pe drumul „deschide peste /
+   înapoi”; ← de pe pas, firma din bara de sus, X și reîncărcarea paginii o construiau goală. Acum ce s-a scris e o CIORNĂ a
+   utilizatorului pe firmă, în browser (`localStorage`, cheia pe utilizator + firmă; nu pleacă pe server), scrisă la fiecare
+   modificare, citită la deschiderea formularului (cu anunțul „Factura începută … a fost păstrată”), ștearsă NUMAI la emitere
+   sau la „Renunță la factură” (cu confirmare). Refuzul care trimite în alt ecran are buton spre el: serverul pune ținta în
+   refuz (`detail.ecran`), iar `api.js` adaugă butonul lângă mesaj oriunde e afișat (ecranele-destinație: `ecran_destinatie.js`);
+   ecranul se deschide PESTE formular, iar după salvare oferă „Înapoi la factură”. Clasa: metoda de stoc purta deja `ecran`,
+   dar trei drumuri (ieșirea pe articol, descărcarea lunară, rețetele) îl turteau într-o frază, iar ecranul facturii nu-l citea
+   — acum toate trec prin `_mesaj_intrare` / dicționarul descărcării. Alternativa respinsă: ciorna pe server (o tabelă nouă,
+   o migrare pe producție, iar o factură neterminată ar deveni o înregistrare a firmei); limita: ciorna e pe browser, nu urmează
+   omul pe alt calculator.
+3. **(pct.3) Mesajul de după un buton se aduce în vedere — un mecanism, în `api.js`.** `aduInVedere` (numai în 3 s de la o
+   apăsare a omului; cel mai de sus, dacă apar mai multe), chemat de `arataMesaj` / `eroareCamp` / `confirmaCaseta` — deci orice
+   refuz din `catch`, în toată aplicația — plus un observator pe clasele casetelor scrise direct de ecrane (`SELECTOR_MESAJ`).
+   Regula intră în DS cap.6 (v2.74) și în verificator (`MESAJ_FARA_ADUCERE_IN_VEDERE`).
+4. **(pct.4) Se numără PREGĂTIRI, nu rânduri de coadă.** Cheia unei pregătiri (`coada_api.sql_cheie_pregatire`): declarația pe
+   firmă/tip/perioadă, nota pe documentul ei. Calitatea asistentului, Capacitate, Activitate cabinet și sinteza zilnică o
+   folosesc pe aceeași; „din prima” = acceptată fără nicio respingere; fără nicio decizie încă procentul e „—”, nu „100%”; bara
+   asistentului cere luna curentă (eticheta spunea „luna aceasta”, cererea lua tot istoricul).
+5. **(pct.5) Editorul notei are data; luna NOUĂ trebuie să fie deschisă** (aceeași poartă R42 ca la creare).
+6. **(pct.6) Nota la validare nu se modifică și nu se șterge, pe niciun drum:** editare, ștergere, ștergerea operațiunii de casă
+   cu nota ei, dezlegarea de factură — refuz `NOTA_LA_VALIDARE` în funcțiile de domeniu, nu în rute; ecranul nu mai arată
+   „Editează” / „Șterge” pe ea. Corectarea: cabinetul o respinge cu motiv.
+7. **(pct.7) Data notelor lunare = ultima zi a lunii.** Ziua 28 (nota de salarii, nota de amortizare) n-avea temei — a venit cu
+   afb592ac (R33), sub un comentariu care spunea chiar „ultima zi a lunii”; nicio normă nu cere altă zi. Decizia Costin:
+   „dacă nu are, data e ultima zi a lunii”. Pe drum, aceeași clasă în `d406_active.amortizare_luna` (starea activului la ziua
+   28: o reevaluare din 29–31 rămânea pe luna veche, contrar docstringului).
+8. **(pct.8) Notificarea duce la element:** `validat:<id>` deschide „De validat” la element (marcat); cine a pregătit nota
+   (n-are „De validat”) primește `jurnal:<firmă>:<notă>:<an>:<lună>` — Registrul jurnal al firmei, în luna notei, la notă.
+9. **(pct.9) O factură = un element de validat.** Fiecare notă își păstrează rândul în coadă (triggerul de sincronizare cu
+   jurnalul rămâne pe notă, fără migrare); `payload.grup` leagă notele aceleiași facturi (contarea prin `factura_id`, ieșirea din
+   stoc prin `miscari_stoc.factura_id`); lista le arată ca un document, aprobarea le validează pe toate, respingerea le respinge pe
+   toate, retrimiterea retrimite documentul. Alternativa respinsă: un singur rând pentru mai multe note (cere schimbarea
+   triggerului pe toți tenanții și a stării pe notă din jurnal).
+10–11. **(pct.10–11) Cardul numără ca fereastra și are eticheta notelor.** Notele de validat (aceeași expresie ca în fereastră)
+   au partea lor („N note de validat”), titlul devine „De validat” când există; declarațiile rămân declarații („neverificate”, nu
+   „nevalidate” — nu mai amestecă verificarea DUK cu validarea notelor). Textul de deasupra listei, fără „Patru-ochi”.
+12. **(pct.12) Notificările din coadă numesc firma** (și cele despre declarații, aceeași clasă).
+13. **(pct.13) Titlul notei de salarii:** descrierea spune ce e nota („Salariile lunii LL/AAAA”), documentul e statul de plată din
+   sursa unică `jurnal_api.eticheta_document` („Stat de plată nr SAL LL/AAAA din <ultima zi>”); eticheta din coadă nu mai repetă
+   documentul când descrierea îl spune deja; fereastra nu-l mai scrie de două ori.
+14, 16. **(pct.14, 16) Registrul jurnal numără după starea din coadă:** la validare / respinse, de corectat / ciorne în afara cozii
+   („de validat” pentru cine validează, „netrimise la validare” pentru cine nu validează — cu butonul „Trimite la validare”: ciornele
+   de dinainte de mecanism au acum drum spre coadă).
+15. **(pct.15) Respingerea notei de salarii se vede la deschiderea statului** (starea notei vine odată cu statul, fără D112).
+17. **(pct.17) „Pleacă marfa acum?” nu se repune** cât timp articolele sunt aceleași (seria stabilită din refuz, revenirea din Date
+   firmă, a doua apăsare).
+18. **(pct.18) Scadența propusă = data emiterii + 30 de zile**, editabilă, urmărind data până o schimbă omul. Temei: Legea 72/2013
+   art.3 alin.(3) lit.a) — „Dacă termenul de plată nu a fost prevăzut în contract, dobânda penalizatoare curge … după 30 de zile
+   calendaristice de la data primirii de către debitor a facturii”. INTERPRETARE CU TEMEI: data primirii nu se știe la emitere; se
+   ia data emiterii. Alternativa respinsă: 60 de zile (art.5 alin.(1) — plafonul termenului CONTRACTUAL). Zilele și temeiul vin de
+   la server (`facturi_api.SCADENTA_PROPUSA`, `Temei`), nu din ecran.
+19. **(pct.19) Istoricul Date firmă:** valorile cu eticheta de pe ecran, „cine” = numele persoanei, tabelul încape în fereastră.
+20. **(pct.20) Ascuns = invizibil:** regula globală `[hidden]{display:none!important}` (înlocuiește două excepții locale); patru
+   formulare stăteau deschise (Stocuri „NIR nou”, Casa ×2, Încasări/plăți). DS cap.2 + verificator `HIDDEN_CU_DISPLAY`.
+21. **(pct.21) Fraza despre semnal** apare numai când există diferențe, reformulată („Diferențele de mai sus se recalculează…”).

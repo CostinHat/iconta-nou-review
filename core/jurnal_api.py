@@ -171,6 +171,9 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
             return None
         if n["status"] != "ciorna":
             return {"eroare": "doar ciornele se pot edita"}
+        from core import coada_api as _coada   # [lotul 07.10 pct.6] nota la validare nu se schimbă sub ochii cabinetului
+        if _coada.nota_la_validare(cur, schema, nota_id):
+            return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
         if data is not None:
             data, rd = _data_valida(data)
             if rd:
@@ -225,6 +228,9 @@ def sterge(conn, schema, nota_id):
             return None
         if n["status"] != "ciorna":
             return {"eroare": "doar ciornele se pot șterge"}
+        from core import coada_api as _coada   # [lotul 07.10 pct.6]
+        if _coada.nota_la_validare(cur, schema, nota_id):
+            return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
         cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'
                         WHERE status='contat'

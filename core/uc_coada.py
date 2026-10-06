@@ -109,7 +109,7 @@ def coada_adauga(date, ctx):
             with db.get_conn() as conn:
                 _uc_comun._notif_de_validat(conn, ctx["firm"], date.tip,
                                   r.get("perioada") or ("%s/%s" % (date.luna or date.trim or "", date.an)),
-                                  int(ctx["uid"]))
+                                  int(ctx["uid"]), tenant_id=date.tenant_id, coada_id=r.get("coada_id"))
         except Exception:
             pass
     return r
@@ -130,16 +130,23 @@ def coada_continut(coada_id, ctx):
     from core import duk as _duk
     _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)
     if _fel == "nota":
-        # [validare_note] nota: data, descrierea, documentul justificativ și liniile — ce aprobă validatorul
-        _nid = int((_el[4] or {}).get("inregistrare_id") or 0)
+        # [validare_note] nota: data, descrierea, documentul justificativ și liniile — ce aprobă validatorul.
+        # [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi) le arată pe toate.
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                membri = coada_api.membri_grup(cur, coada_id, stare=None) or [(coada_id, _el[4])]
+        note = []
         with db.get_conn(_schema_nota) as conn:
             with conn.cursor() as cur:
-                n, linii = repo_declaratii.nota_cu_linii(cur, _schema_nota, _nid)
-        if not n:
+                for _mid, _pl in membri:
+                    n, linii = repo_declaratii.nota_cu_linii(cur, _schema_nota, int((_pl or {}).get("inregistrare_id") or 0))
+                    if n:
+                        note.append({"nota": {"id": n[0], "data": n[1].isoformat(), "descriere": n[2], "document_ref": n[3],
+                                              "status": n[4], "sursa": n[5]},
+                                     "linii": [{"debit": a, "credit": b, "suma": float(c)} for a, b, c in linii]})
+        if not note:
             raise _erori.Inexistent("Nota nu mai există în jurnal (a fost ștearsă).")
-        return {"fel": "nota", "nota": {"id": n[0], "data": n[1].isoformat(), "descriere": n[2], "document_ref": n[3],
-                                        "status": n[4], "sursa": n[5]},
-                "linii": [{"debit": a, "credit": b, "suma": float(c)} for a, b, c in linii]}
+        return {"fel": "nota", "nota": note[0]["nota"], "linii": note[0]["linii"], "note": note}
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             row = repo_declaratii.continutul_din_coada(cur, coada_id, ctx["firm"])
@@ -335,7 +342,8 @@ def note_in_coada(tenant_id, uid, cabinet_id):
         adaugate = coada_api.pune_notele_in_coada(conn, cabinet_id, tenant_id, uid)
     if adaugate:
         with db.get_conn() as conn:
-            _uc_comun._notif_note_de_validat(conn, cabinet_id, [a["eticheta"] for a in adaugate], uid)
+            _uc_comun._notif_note_de_validat(conn, cabinet_id, [a["eticheta"] for a in adaugate], uid, tenant_id=tenant_id,
+                                             coada_id=adaugate[0]["coada_id"])
     return adaugate
 
 
@@ -363,5 +371,6 @@ def jurnal_retrimite(tenant_id, nota_id, ctx):
     if not r["ok"]:
         raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r.get("mesaj"))
     with db.get_conn() as conn:
-        _uc_comun._notif_note_de_validat(conn, ctx["firm"], [r["eticheta"]], int(ctx["uid"]))
+        _uc_comun._notif_note_de_validat(conn, ctx["firm"], [r["eticheta"]], int(ctx["uid"]), tenant_id=tenant_id,
+                                         coada_id=r.get("coada_id"))
     return r

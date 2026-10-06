@@ -952,8 +952,8 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        # [R42 (a)] Nota de amortizare se datează în ziua 28 a lunii cerute (mai jos).
-        _uc_comun._cere_luna_deschisa(conn, schema, _date(an, luna, 1).replace(day=28))
+        # [R42 (a)] Nota de amortizare se datează în ULTIMA zi a lunii cerute (lotul 07.10 pct.7: ziua 28 n-avea temei).
+        _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(an, luna))
         ref = _date(an, luna, 1)
         with conn.cursor() as cur:
             if repo_contabilitate.nota_de_amortizare(cur, schema, f"AMORT-{an}-{luna:02d}"):
@@ -977,7 +977,7 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
         if not linii:
             return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0}
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_amortizare_validata(cur, schema, _date(an, luna, 1).replace(day=28), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}")[0]
+            iid = repo_contabilitate.nota_amortizare_validata(cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}")[0]
             for cont_am, rata, den in linii:
                 repo_contabilitate.adauga_linie_cheltuiala_amortizare(cur, schema, iid, cont_am, rata)
     return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
@@ -1135,7 +1135,17 @@ def tenant_stat_plata(tenant_id, an, luna, ctx):
             _r["compozitie"] = _sp.compozitie_fluturas(_r)
         with conn.cursor() as _rc:
             _reges_ok = repo_salariati.firma_are_chei_reges(_rc, tenant_id) is not None
-        return {"stat": stat, "reges_configurat": _reges_ok}
+            # [lotul 07.10 pct.15, comanda Costin 06.10.2026] „Respingerea apare pe statul de plată abia după «Contabilizează
+            # statul»; se vede la deschiderea statului.” Nota lunii se găsește după numărul ei (ca în propunere), fără să
+            # genereze D112: starea ei în coada de validare vine odată cu statul.
+            from core import salarii_contare as _sc
+            _rn = repo_contabilitate.id_nota_dupa_numar(_rc, _sc.document_ref(an, luna))
+    nota = None
+    if _rn:
+        from core import coada_api as _coada
+        with db.get_conn() as conn:
+            nota = {"nota_id": _rn[0], "validare": _coada.stari_note(conn, tenant_id, [_rn[0]]).get(_rn[0])}
+    return {"stat": stat, "reges_configurat": _reges_ok, "nota_salarii": nota}
 
 
 def tenant_stat_emis(tenant_id, an, luna, ctx):
@@ -2214,6 +2224,8 @@ def stocuri_descarcare(tenant_id, an, luna, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         rez = _s.descarca_luna(conn, schema, an, luna)
     if rez.get("eroare"):
+        if rez.get("ecran"):   # [lotul 07.10 pct.2] refuzul care trimite în alt ecran rămâne structurat (butonul spre el)
+            raise _erori.CerereGresita({"cod": rez.get("cod"), "mesaj": rez["eroare"], "ecran": rez["ecran"]})
         raise _erori.CerereGresita(rez["eroare"])
     return rez
 
@@ -4811,7 +4823,9 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
     schema = _uc_comun._schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         # [R42 (a)] Nota poarta ultima zi a lunii declarate; intr-o luna inchisa nu se scrie.
-        ultima = _date(an, luna, 28)
+        # [lotul 07.10 pct.7, decizia Costin 06.10.2026] Forma veche scria ziua 28 sub comentariul de mai sus: nicio normă nu
+        # cere 28 (a venit cu afb592ac, R33, fără temei), deci data e ultima zi a lunii — cea pe care comentariul o promitea.
+        ultima = _uc_comun.ultima_zi_a_lunii(an, luna)
         _uc_comun._cere_luna_deschisa(conn, schema, ultima)
         try:
             p = _sc.propunere(conn, schema, an, luna)
@@ -4824,8 +4838,13 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
                          "cod": "DEJA_CONTATA"}
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
             # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
-            nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, ultima, p["document_ref"], "Stat de plata %02d/%d" % (luna, an), "salarii", _uc_comun.STARE_CIORNA,
-                                                                 "Stat de plată %02d/%d" % (luna, an))[0]   # [05.10.2026 pct.6] documentul notei
+            # [lotul 07.10 pct.13] descrierea = ce înregistrează nota; documentul = statul de plată, din sursa unică a notelor
+            # automate (`jurnal_api.eticheta_document`: fel, număr, dată). Forma veche le scria pe amândouă „Stat de plat(a|ă)
+            # LL/AAAA”, iar eticheta din coadă le lipea: „Stat de plata 11/2026 · Stat de plată 11/2026”.
+            from core import jurnal_api as _jdoc
+            nota_id = repo_contabilitate.nota_cu_sursa_si_status(
+                cur, ultima, p["document_ref"], "Salariile lunii %02d/%d" % (luna, an), "salarii", _uc_comun.STARE_CIORNA,
+                _jdoc.eticheta_document("Stat de plată", p["document_ref"], ultima))[0]
             for n in p["note"]:
                 repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
         conn.commit()
@@ -5228,6 +5247,10 @@ def jurnal_editeaza(tenant_id, nota_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
+        # [lotul 07.10 pct.5] data se poate corecta din editor: luna NOUĂ trebuie și ea să fie deschisă (o notă nu se mută
+        # într-o lună închisă — R42 (a), aceeași poartă ca la creare)
+        if corp.get("data"):
+            _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         return _uc_comun._jurnal_rez(_j.editeaza(conn, schema, nota_id,
                                        corp.get("descriere"), corp.get("data"), corp.get("linii"),
                                        corp.get("document_ref")))

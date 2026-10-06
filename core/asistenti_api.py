@@ -83,22 +83,26 @@ def centralizator(conn, cabinet_id, de=None, pana=None):
     cond, par = _interval_sql(de, pana)
     w = "cabinet_id = %s" + (" AND " + " AND ".join(cond) if cond else "")
     args = [cabinet_id] + par
+    # [lotul 07.10 pct.4] PREGĂTIRI (documente), nu rânduri de coadă: retrimiterea nu e o pregătire nouă, iar notele aceleiași
+    # facturi sunt un singur document (`coada_api.sql_cheie_pregatire`)
+    from core.coada_api import sql_cheie_pregatire as _cheie
+    K, KC = _cheie(), _cheie("c")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         # totaluri pe actiuni (in interval, dupa creat_la pentru toate)
         cur.execute(
             "SELECT "
-            "COUNT(*) AS create_, "
-            "COUNT(aprobat_la) AS aprobate, "
-            "COUNT(respins_la) AS respinse, "
-            "COUNT(depus_la) AS depuse, "
-            "COUNT(*) FILTER (WHERE stare = 'la_senior') AS in_asteptare "
+            "COUNT(DISTINCT " + K + ") AS create_, "
+            "COUNT(DISTINCT " + K + ") FILTER (WHERE aprobat_la IS NOT NULL) AS aprobate, "
+            "COUNT(DISTINCT " + K + ") FILTER (WHERE respins_la IS NOT NULL) AS respinse, "
+            "COUNT(DISTINCT " + K + ") FILTER (WHERE depus_la IS NOT NULL) AS depuse, "
+            "COUNT(DISTINCT " + K + ") FILTER (WHERE stare = 'la_senior') AS in_asteptare "
             "FROM public.declaratii_coada WHERE " + w,
             tuple(args),
         )
         tot = dict(cur.fetchone() or {})
         # defalcare pe tip
         cur.execute(
-            "SELECT tip, COUNT(*) AS nr FROM public.declaratii_coada WHERE " + w +
+            "SELECT tip, COUNT(DISTINCT " + K + ") AS nr FROM public.declaratii_coada WHERE " + w +
             " GROUP BY tip ORDER BY nr DESC",
             tuple(args),
         )
@@ -109,8 +113,8 @@ def centralizator(conn, cabinet_id, de=None, pana=None):
         cur.execute(
             "SELECT COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), "
             "       c.creat_de, '(necunoscut)') AS nume, "
-            "       COUNT(*) AS create_, "
-            "       COUNT(c.respins_la) AS respinse "
+            "       COUNT(DISTINCT " + KC + ") AS create_, "
+            "       COUNT(DISTINCT " + KC + ") FILTER (WHERE c.respins_la IS NOT NULL) AS respinse "
             "  FROM public.declaratii_coada c "
             "  LEFT JOIN public.users u ON u.id = c.creat_de_id "
             " WHERE " + w_c +
@@ -650,18 +654,30 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
     if pana:
         cond.append("creat_la::date <= %s"); val.append(pana)
     w = " AND ".join(cond)
+    # [lotul 07.10 pct.4] filtrul de interval se aplică pe PREGĂTIRE (când a început), nu pe rândul retrimis
+    wp = " AND ".join(c.replace("creat_la", "p.creat_la") for c in cond[2:]) or "TRUE"
 
+    from core.coada_api import sql_cheie_pregatire as _cheie
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        # [lotul 07.10 pct.4, comanda Costin 06.10.2026] „o notă respinsă o dată și apoi validată apare «2 pregătite · 50%
+        # acceptate din prima»; corect: 1 pregătită, 0% din prima. Retrimiterea nu e o pregătire nouă.” Se numără PREGĂTIRI
+        # (`coada_api.sql_cheie_pregatire`), nu rânduri: „din prima” = acceptată fără nicio respingere.
         cur.execute(
+            "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, MIN(tip) AS tip, "
+            "  bool_or(stare = 'respinsa') AS respinsa, bool_or(stare IN ('aprobata','depusa')) AS acceptata, "
+            "  MAX(aprobat_la) FILTER (WHERE stare IN ('aprobata','depusa')) AS aprobat_la "
+            "  FROM public.declaratii_coada WHERE cabinet_id = %s AND creat_de_id = %s GROUP BY 1) "
             "SELECT "
             "  COUNT(*) AS pregatite, "
-            "  COUNT(*) FILTER (WHERE stare IN ('aprobata','depusa')) AS aprobate, "
-            "  COUNT(*) FILTER (WHERE stare = 'respinsa') AS respinse, "
+            "  COUNT(*) FILTER (WHERE acceptata) AS aprobate, "
+            "  COUNT(*) FILTER (WHERE respinsa) AS respinse, "
+            "  COUNT(*) FILTER (WHERE acceptata AND NOT respinsa) AS din_prima, "
+            "  COUNT(*) FILTER (WHERE acceptata OR respinsa) AS evaluate, "
             "  EXTRACT(EPOCH FROM AVG(aprobat_la - creat_la) "
-            "    FILTER (WHERE stare IN ('aprobata','depusa') AND aprobat_la IS NOT NULL)) "
+            "    FILTER (WHERE acceptata AND aprobat_la IS NOT NULL)) "
             "    / 86400.0 AS zile_mediu, "
             "  array_agg(DISTINCT tip) AS tipuri "
-            "FROM public.declaratii_coada WHERE " + w,
+            "FROM p WHERE " + wp,
             val)
         a = cur.fetchone() or {}
 
@@ -681,7 +697,8 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
     pregatite = int(a.get("pregatite") or 0)
     aprobate = int(a.get("aprobate") or 0)
     respinse = int(a.get("respinse") or 0)
-    evaluate = aprobate + respinse
+    din_prima = int(a.get("din_prima") or 0)
+    evaluate = int(a.get("evaluate") or 0)   # pregătiri cu o decizie (acceptate sau respinse măcar o dată)
     rata = round(respinse * 100 / evaluate) if evaluate else 0
     zile = a.get("zile_mediu")
     zile_mediu = round(float(zile), 1) if zile is not None else None
@@ -706,6 +723,7 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
                   "prenume": actor.get("prenume"), "rol": actor["rol"]},
         "perioada": {"de": de, "pana": pana},
         "pregatite": pregatite,
+        "din_prima": din_prima,
         "aprobate": aprobate,
         "respinse": respinse,
         "evaluate": evaluate,
@@ -720,7 +738,9 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
         "motivationale": [
             {"cheie": "pregatite", "eticheta": "pregătite luna aceasta",
              "valoare": pregatite},
+            # [lotul 07.10 pct.4] din prima = acceptate fără nicio respingere, din cele care au primit o decizie;
+            # fără nicio decizie încă, procentul n-are numitor: „—”, nu „100%”
             {"cheie": "acceptate", "eticheta": "acceptate din prima",
-             "valoare": (str(round(aprobate * 100 / evaluate)) + "%") if evaluate else "100%"},
+             "valoare": (str(round(din_prima * 100 / evaluate)) + "%") if evaluate else "\u2014"},
         ],
     }

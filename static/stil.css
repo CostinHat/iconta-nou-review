@@ -1,3 +1,10 @@
+/* [lotul 07.10 pct.20, comanda Costin 06.10.2026 — DS cap.2] UN ELEMENT `hidden` NU SE VEDE, ORICE ALT STIL AR AVEA.
+   Regula implicită a browserului (`[hidden]{display:none}`) pierde în fața oricărui `display` scris pe element sau în clasă:
+   „NIR nou” (Stocuri), cele două formulare de la Casa și „Operațiune nouă” (Încasări/plăți) stăteau deschise fără să fie
+   cerute (`hidden style="display:block"`), iar `.acces-overlay` și `.pa-lista` își aveau fiecare excepția lor. O regulă,
+   aici, pentru toată aplicația. Gard: verificator `HIDDEN_CU_DISPLAY` + `core/test_hidden_global.py`. */
+[hidden] { display: none !important; }
+
 /* stil.css — fundația vizuală iConta.
    Sobru, precis, încredere — instrument de lucru pentru contabili, nu marketing.
    Tokens într-un singur loc; ecranele consumă variabilele. */
@@ -1914,6 +1921,12 @@ html, body {
 .fd-tabel thead th { text-align: left; font-weight: 600; color: var(--ardezie);
   border-bottom: 1px solid var(--linie); padding: 8px 10px; background: #fff; }
 .fd-tabel tbody td { padding: 8px 10px; border-bottom: 1px solid var(--linie); color: var(--ardezie); background: #fff; }
+/* [lotul 07.10 pct.19] istoricul Date firmă încape în lățimea ferestrei: celulele se rup, nu cer derulare orizontală */
+.df-jurnal { table-layout: fixed; }
+/* [lotul 07.10 pct.8] elementul deschis dintr-o notificare */
+.val-evidentiat { outline: 2px solid var(--galben); outline-offset: 2px; }
+.df-jurnal td, .df-jurnal th { overflow-wrap: anywhere; word-break: break-word; }
+.df-jurnal th:nth-child(1) { width: 18%; } .df-jurnal th:nth-child(2) { width: 18%; } .df-jurnal th:nth-child(3) { width: 20%; }
 .fd-td-num, .fd-tabel thead th.fd-td-num, .fd-tabel thead th.fd-td-num { text-align: right; white-space: nowrap; }
 .fd-td-um { color: var(--gri); }
 .fd-td-den { font-weight: 500; }
@@ -2072,7 +2085,7 @@ html, body {
 .acces-card-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
 .acces-card-sageata { flex-shrink: 0; color: #c4c9d1; }
 .acces-modal { max-width: 420px; padding: 40px 32px 36px; }
-.acces-overlay[hidden] { display: none !important; }
+/* [lotul 07.10 pct.20] .acces-overlay[hidden]: acoperit de regula globală [hidden] (sus) */
 .login-subtagline { font-size: var(--text-mic); color: var(--gri); margin-top: 4px; text-align: center; }
 
 .pagina-hero { text-align: center; max-width: 560px; margin: 20px auto 16px; padding: 0 24px; }
@@ -2128,7 +2141,7 @@ html.pagina-publica, body.pagina-publica { overflow-y: auto; }
 .pagina-incredere-icon { color: #0f6cbd; display: flex; }
 .pagina-incredere-titlu { font-size: var(--text-mic); font-weight: 700; color: var(--ardezie); }
 .pagina-incredere-sub { font-size: var(--text-mic); color: var(--gri); }
-.pa-lista[hidden] { display: none !important; }
+/* [lotul 07.10 pct.20] .pa-lista[hidden]: acoperit de regula globală [hidden] (sus) */
 /* [portal_fix] spatiere doar pe portal client, nu afecteaza cabinetul */
 .portal-sus { margin-top: 14vh; }
 /* [font_unic] REGULA GLOBALA - nu se modifica. Forteaza font + stil normal peste tot,

@@ -12,7 +12,7 @@ Convenție (confirmată din d300._segmente: baza = total - tva):
 from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
 
-from core.common import (NUMEROTARE_SECVENTIALA,
+from core.common import (NUMEROTARE_SECVENTIALA, Temei,
                          cote_tva_in_vigoare as _cote_tva_in_vigoare)
 
 REGULI = "2026.1"
@@ -701,8 +701,21 @@ def pregatire_emitere(conn, tenant_id, la_data):
     permise, _t = _cote_tva_in_vigoare(la_data)
     return {"lipsuri_firma": lipsuri, "forma_propusa": forma, "forma_propusa_sursa": sursa,
             "serie_lipsa": not serie_facturi(conn),   # [06.10.2026 §6.1] nu blochează: refuzul o cere și o setează pe loc
+            # [lotul 07.10 pct.18] scadența PROPUSĂ pe formular (editabilă): zilele și temeiul vin de aici, nu din ecran
+            "scadenta_zile": SCADENTA_PROPUSA[0], "scadenta_temei": str(SCADENTA_PROPUSA[1]),
             "mesaj_lipsuri": _cs.mesaj_la_deschidere(lipsuri, forma, sursa),
             "cote_permise": sorted({int(c) if int(c) == c else float(c) for c in permise}, reverse=True) if permise else None}
+
+
+#: [lotul 07.10 pct.18, comanda Costin 06.10.2026] „Scadența facturii e goală implicit; aplicația propune o scadență editabilă.”
+#: Legea 72/2013 art.3 alin.(3): „Dacă termenul de plată nu a fost prevăzut în contract, dobânda penalizatoare curge de la
+#: următoarele termene: a) după 30 de zile calendaristice de la data primirii de către debitor a facturii …” (anaf_surse/
+#: legea_72_2013.html). INTERPRETARE CU TEMEI: data primirii nu se cunoaște la emitere; se propune de la data EMITERII (factura
+#: pleacă în aceeași zi prin e-Factura). E o propunere pe formular — contractul părților primează, iar omul o schimbă.
+#: Alternativa respinsă: 60 de zile (art.5 alin.(1) — plafonul termenului CONTRACTUAL, nu termenul fără contract).
+SCADENTA_PROPUSA = (30, Temei("Legea", 72, 2013, art="3", alin="3", lit="a", nivel_sursa="MO", de_cine="Code",
+                              verificat_la="2026-10-06", url="anaf_surse/legea_72_2013.html",
+                              text_citat="după 30 de zile calendaristice de la data primirii de către debitor a facturii"))
 
 
 #: [06.10.2026, comanda Costin §6.1] CF art.319 alin.(20) lit.a): factura poartă „numărul de ordine, în baza uneia sau a mai

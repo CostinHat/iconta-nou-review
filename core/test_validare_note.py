@@ -160,7 +160,10 @@ def test_jurnalul_si_coada_nu_pot_spune_lucruri_diferite(tx):
                 (tid, c.perioada_nota(n1)))
     assert cur.fetchone() == ("aprobata", valid)
     _ca(cur, asist)
-    assert j.sterge(conn, SCH, n2)["ok"]
+    # [lotul 07.10 pct.6] cât e la validare, nota nu se șterge din aplicație (cabinetul validează ce a văzut) …
+    assert j.sterge(conn, SCH, n2).get("cod") == c.COD_NOTA_LA_VALIDARE
+    # … iar dacă dispare totuși direct din bază, triggerul îi scoate elementul: coada și jurnalul tot nu pot diverge
+    cur.execute("DELETE FROM inregistrari WHERE id=%s", (n2,))
     assert c.stari_note(conn, tid, [n2]) == {}
 
 

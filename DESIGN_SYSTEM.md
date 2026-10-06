@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.73 · 6 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.74 · 6 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -41,6 +41,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Formularele de adăugare/editare/configurare NU apar la deschidere — apar la apăsarea unui buton dedicat.
 - Excepție: ecranele-formular, unde formularul ESTE scopul (Raport Z, Bilanț, Emitere factură).
 - Formularele deschise la selecție au întotdeauna buton "Renunță" (`.btn-link` sau `.buton-secundar`) care revine la ecranul anterior.
+- **Ascuns = invizibil (v2.74, lotul 07.10 pct.20):** un element cu atributul `hidden` nu se vede, orice `display` ar avea în stil sau în clasă — regula globală `[hidden] { display: none !important; }` din `stil.css`. INTERZIS `hidden` împreună cu `style="…display:…"` pe același element (instanța: „NIR nou” deschis fără să fie cerut, plus Casa ×2 și Încasări/plăți). Gard: verificator `HIDDEN_CU_DISPLAY`.
 
 **IMPORTANT (v2.0)**: Formularele NU se învelesc într-o casetă albă (`background:#fff`). Stau direct pe fundalul ferestrei (gri); doar câmpurile de input sunt albe cu bordură #b9c2cf. Un wrapper alb pe fundal gri-deschis face caseta invizibilă.
 
@@ -100,6 +101,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
+- **Mesajul de după un buton se aduce în vedere (v2.74, lotul 07.10 pct.3):** un refuz, o întrebare sau o confirmare apărute după apăsarea unui buton se derulează în zona vizibilă — prin `aduInVedere` din `api.js`, chemat de `arataMesaj`, `eroareCamp`, `confirmaCaseta`, iar casetele scrise direct de un ecran (`.caseta-poarta`, `.em-curs-box`, `.msg-*`, `[role=alert]`) le prinde observatorul după clasă (`SELECTOR_MESAJ`). Fără apăsare recentă nu se derulează nimic. O casetă nouă de după-buton cu altă clasă intră în `SELECTOR_MESAJ`. Gard: verificator `MESAJ_FARA_ADUCERE_IN_VEDERE`.
+- **Refuzul care trimite în alt ecran are buton spre el (v2.74, lotul 07.10 pct.2):** serverul pune ținta în refuz (`detail.ecran`); butonul „Deschide <ecran>” se adaugă lângă mesaj de `api.js`, oriunde e afișat, iar ecranul se deschide PESTE formular (← îl readuce; după salvare, „Înapoi la <formular>”). Ecranele-destinație stau în `ecrane/ecran_destinatie.js` (`ECRANE`). INTERZIS un refuz cu ținta numai în frază („Declar-o în Date firmă”) fără `ecran`. Gard: verificator `REFUZ_ECRAN_FARA_BUTON`.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
 - **Plasarea erorii per-câmp (v2.30, G10)**: eroarea unei acțiuni eșuate se afișează **lângă câmpul care a cauzat-o** (mecanismul A), nu doar într-o zonă generică sus (mecanismul B). G10 e o schimbare de PLASARE, predominant frontend; conținutul mesajelor e deja explicit (G1-G5). Reguli:
   1. **Maparea câmp→eroare.** Validările CLIENT-side cunosc câmpul pe care-l verifică → scriu direct un `<span class="msg-eroare">` imediat după inputul respectiv, printr-un helper unic `eroareCamp(idCamp, txt)`. NU se deduce câmpul din textul mesajului (ar lega plasarea de un șir afișabil — interzis structural, vezi `test_garzi_mesaje_afisabile`).
@@ -688,6 +691,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.74 (06.10.2026)** — **Lotul 07.10 (retestul F5/F1): cap.2 ascuns = invizibil; cap.6 mesajul de după un buton în vedere și refuzul cu buton spre ecran.** `[hidden]{display:none!important}` global (înlocuiește excepțiile `.acces-overlay[hidden]`, `.pa-lista[hidden]`); `aduInVedere` + `SELECTOR_MESAJ` în `api.js`; `ecran_destinatie.js` (`ECRANE`, `butonSpreEcran`) + `_butonSpreEcran` în `api.js`. Clase noi: `.val-evidentiat` (elementul deschis dintr-o notificare), `.df-jurnal` / `.df-jurnal-cadru` (istoricul Date firmă încape în fereastră), `.em-ciorna` (anunțul facturii păstrate), `.ecran-destinatie`. Gărzi: `HIDDEN_CU_DISPLAY`, `MESAJ_FARA_ADUCERE_IN_VEDERE`, `REFUZ_ECRAN_FARA_BUTON`.
+
 **v2.73 (06.10.2026)** — **Coada de validare poartă și NOTE; contrast pe „De validat” și Activitate cabinet.** Comanda Costin (răspunsul la §6 din LOT_06_10, pct.1): ecranul „De validat” are secțiunea „Note de validat” (`.val-card`, `.cf-grup-titlu`, butoanele `.val-aproba` / `.val-respinge` — ZERO clase noi), „Vezi nota” deschide liniile (`.fd-tabel`); Registrul-jurnal arată nota respinsă cu `.caseta-atentie` (motivul) și butonul „Trimite din nou la validare”; statul de plată spune unde e nota. Activitate cabinet: coloana „DECLARAȚIE / NOTĂ”, eticheta vine de la server. **Contrast (axe):** `.val-aproba` #1d9e75 sub alb = 3,39:1 -> `var(--verde)`; `.ac-cap` #8a8f98 = 3,3:1 -> `var(--gri)`. Gard: `core/test_a11y_contrast_tokens.py::test_validare_si_activitate_contrast`.
 
 **v2.72 (06.10.2026)** — **cap.22: navigarea ghidurilor pe teme** (`.ghid-teme`, `.ghid-lista`, `.ghid-legaturi`, `.ghid-tema`, `.ghid-numar`). Comanda Costin, lotul 06.10 partea 2: `/ghid` avea 2,3 MB și 6.559 de linkuri; acum e cuprinsul celor 16 teme, fiecare temă cu pagina ei, iar fiecare ghid duce la tema lui și la ghidurile înrudite. Gard: `core/test_lot0610_p2.py`.

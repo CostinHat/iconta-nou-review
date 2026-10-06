@@ -54,6 +54,10 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("stocuri_descarcare", '{"cod": rez.get("cod"), "mesaj": rez["eroare"], "ecran": rez["ecran"]}'): (
+        "Lotul 07.10 pct.2 (comanda Costin 06.10.2026): „orice mesaj care trimite în alt ecran are buton direct spre el”. Refuzul "
+        "metodei de stoc nedeclarate (Date firmă) rămâne același refuz (400, același mesaj), dar STRUCTURAT cu ținta `ecran`, ca "
+        "ecranul să pună butonul spre Date firmă; un refuz fără țintă rămâne frază, ca înainte."),
     ("coada_continut", "Nota nu mai există în jurnal (a fost ștearsă)."): (
         "Comanda Costin 06.10.2026 (răspunsul la §6, pct.1): coada poartă și NOTE; conținutul unui element-notă se citește din "
         "jurnalul firmei, iar nota ștearsă între timp se refuză cu motivul numit (404), nu cu un conținut gol."),
@@ -168,6 +172,17 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("salarii_contare_scrie", "_date"): (
+        "ultima_zi_a_lunii",
+        "Lotul 07.10 pct.7 (comanda Costin 06.10.2026: „dacă nu are [temei], data e ultima zi a lunii”): data notei de salarii "
+        "nu mai e `_date(an, luna, 28)`, ci `_uc_comun.ultima_zi_a_lunii(an, luna)` — aceeași dată a lunii, ziua ei ultimă."),
+    ("tenant_amortizare", "_date"): (
+        "ultima_zi_a_lunii",
+        "Lotul 07.10 pct.7: nota de amortizare și poarta lunii închise nu mai iau ziua 28 (`_date(an, luna, 1).replace(day=28)`), "
+        "ci ultima zi a lunii (`_uc_comun.ultima_zi_a_lunii`)."),
+    ("tenant_amortizare", "replace"): (
+        "ultima_zi_a_lunii",
+        "Lotul 07.10 pct.7: `.replace(day=28)` (de două ori) înlocuit de `ultima_zi_a_lunii` — aceeași dată, ultima zi."),
     ("tenant_stat_plata", "stat_plata"): (
         "stat_final",
         "Comanda Costin 06.10.2026 (răspunsul la §6, pct.2): ecranul statului arată indemnizația CM cu reținerile DECLARATE "

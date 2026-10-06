@@ -397,7 +397,10 @@ def amortizare_luna(mf, an, luna):
     [R59] Luna se calculeaza pe ETAPA in care cade: dupa o reevaluare aplicata, rata e valoarea
     JUSTA impartita la durata RAMASA. Luna reevaluarii apartine etapei NOI — reevaluarea se
     inregistreaza cu data ei, iar amortizarea incepe luna urmatoare (alin.12), ca la PIF."""
-    mf, _pif_real = _mf_la(mf, date(an, luna, 28))
+    # [lotul 07.10 pct.7] starea activului la ULTIMA zi a lunii: cu ziua 28, o reevaluare din 29-31 rămânea pe luna veche,
+    # deși docstringul spune că luna reevaluării aparține etapei noi.
+    import calendar as _cal
+    mf, _pif_real = _mf_la(mf, date(an, luna, _cal.monthrange(an, luna)[1]))
     val = _d(mf["valoare"])
     rez = _d(mf.get("rezidual"))
     dnf = int(mf.get("dnf_luni") or 0)

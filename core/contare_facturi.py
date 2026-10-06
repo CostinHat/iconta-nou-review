@@ -325,6 +325,9 @@ def dezleaga_nota(cur, schema, nota_id):
     if cap.get("factura_id") is None:
         raise RefuzContare("NOTA_NELEGATA", "nota nu e legată de nicio factură",
                            detalii={"nota_id": nota_id})
+    from core import coada_api as _coada   # [lotul 07.10 pct.6] nota la validare nu se modifică
+    if _coada.nota_la_validare(cur, schema, nota_id):
+        raise RefuzContare(_coada.COD_NOTA_LA_VALIDARE, _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, detalii={"nota_id": nota_id})
     if e_nota_de_contare(linii):
         raise RefuzContare(
             "E_NOTA_DE_CONTARE",

@@ -3,11 +3,11 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4c8f1ff171";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=eff78f4bb3";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=3aca56dc16";
+import { randeazaListaFirme } from "./firme.js?v=ebd44ddafe";
 import { randeazaMigrare } from "./migrare.js?v=27d84cdf37";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=18368f80b7"; // [p17_activitate]
@@ -16,7 +16,7 @@ import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recoman
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=43ce79a7f0";
+import { randeazaValidat } from "./validat.js?v=b53c564c0a";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
 import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
@@ -408,33 +408,39 @@ async function actualizeazaValidat(grila) {
     // enforcement-ul la aprobare). Pe `activ` brut, cardul zicea "De validat" pe un cabinet cu un
     // singur validator, unde nimeni nu are pe cine astepta.
     const patruOchi = !!(rpo && rpo.efectiv);
-    const laSenior = coada.filter((c) => c.stare === "la_senior").length;
+    // [lotul 07.10 pct.10-11, comanda Costin 06.10.2026] „Cardul arată «3 nevalidate», fereastra «Note de validat (2)». Numerele
+    // se potrivesc.” Notele de validat se numără ca în fereastră (validat.js: `fel === "nota"`, `la_senior`; serverul le dă deja
+    // pe DOCUMENT), cu eticheta lor; declarațiile rămân declarații. Înainte, notele (inclusiv cele deja validate, `aprobata`)
+    // intrau în „nevalidate”, iar titlul „De depus” acoperea notele de validat.
+    const noteDeValidat = coada.filter((c) => c.fel === "nota" && c.stare === "la_senior").length;
+    const declaratii = coada.filter((c) => c.fel !== "nota");
+    const laSenior = declaratii.filter((c) => c.stare === "la_senior").length;
     // [R41 partea II] „de depus" numara DOAR ce e gata de depus — `gata_de_depus` vine de la
     // server (coada_api.gata_de_depus), aceeasi definitie pe care o foloseste poarta care refuza
     // depunerea. Pana azi cardul numara tot ce e in coada, deci spunea „3 declaratii de depus"
     // despre trei declaratii pe care serverul le refuza. Cifra si eticheta ei sunt o afirmatie
     // despre starea lucrurilor, nu un contor de randuri.
-    const aprobate = coada.filter((c) => c.stare === "aprobata");
+    const aprobate = declaratii.filter((c) => c.stare === "aprobata");
     const apGata = aprobate.filter((c) => c.gata_de_depus).length;
     // NUMAI ce e inca in lucru. Un element `depusa` a iesit din coada: a-l numara ca
     // „nevalidat, de deschis" ar trimite omul dupa o lucrare terminata. Aceeasi populatie
     // ca pe ecran (validat.js), altfel cele doua cifre sunt despre lucruri diferite.
-    const inLucruLista = coada.filter((c) => c.stare === "la_senior" || c.stare === "aprobata");
+    const inLucruLista = declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata");
     const nevalidate = inLucruLista.filter((c) => !c.gata_de_depus).length;
-    _coadaTitlu = patruOchi ? "De validat" : "De depus";
+    _coadaTitlu = (patruOchi || noteDeValidat) ? "De validat" : "De depus";
+    if (titluEl) titluEl.textContent = _coadaTitlu;
+    const partNote = noteDeValidat ? `<b class="tip-figura">${noteDeValidat}</b> not${noteDeValidat === 1 ? "ă" : "e"} de validat` : "";
+    let s;
     if (patruOchi) {
-      if (titluEl) titluEl.textContent = "De validat";
-      let s = `<b class="tip-figura">${laSenior}</b> declaraț${laSenior === 1 ? "ie de validat" : "ii de validat"}`;
+      s = `<b class="tip-figura">${laSenior}</b> declaraț${laSenior === 1 ? "ie de validat" : "ii de validat"}`;
       if (apGata) s += ` · <b class="tip-figura">${apGata}</b> de depus`;
-      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> nevalidat${nevalidate === 1 ? "ă" : "e"}`;
-      zona.innerHTML = s;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> declaraț${nevalidate === 1 ? "ie neverificată" : "ii neverificate"}`;
     } else {
-      if (titluEl) titluEl.textContent = "De depus";
       const gata = inLucruLista.filter((c) => c.gata_de_depus).length;
-      let s = `<b class="tip-figura">${gata}</b> declaraț${gata === 1 ? "ie de depus" : "ii de depus"}`;
-      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> nevalidat${nevalidate === 1 ? "ă, de deschis" : "e, de deschis"}`;
-      zona.innerHTML = s;
+      s = `<b class="tip-figura">${gata}</b> declaraț${gata === 1 ? "ie de depus" : "ii de depus"}`;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> declaraț${nevalidate === 1 ? "ie neverificată, de deschis" : "ii neverificate, de deschis"}`;
     }
+    zona.innerHTML = partNote ? `${partNote} · ${s}` : s;
   } catch {}
 }
 

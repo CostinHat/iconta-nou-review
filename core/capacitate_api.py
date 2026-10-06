@@ -101,14 +101,20 @@ def capacitate(conn, cabinet_id):
         asistenti = []
         for p in procesatori:
             uid = p["id"]
+            # [lotul 07.10 pct.4] PREGĂTIRI, nu rânduri: o retrimitere după respingere nu e o pregătire nouă
+            # (`coada_api.sql_cheie_pregatire`); „pregătite luna asta” = pregătiri ÎNCEPUTE în lună.
+            from core.coada_api import sql_cheie_pregatire as _cheie
             cur.execute(
+                "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, "
+                "  bool_or(respins_la IS NOT NULL) AS respinsa, bool_or(stare = ANY(%(active)s)) AS activa, "
+                "  MAX(depus_la) AS depus_la FROM public.declaratii_coada "
+                "  WHERE cabinet_id = %(c)s AND creat_de_id = %(u)s GROUP BY 1) "
                 "SELECT "
-                "  COUNT(*) FILTER (WHERE stare = ANY(%(active)s)) AS in_lucru, "
+                "  COUNT(*) FILTER (WHERE activa) AS in_lucru, "
                 "  COUNT(*) FILTER (WHERE creat_la >= %(p)s) AS pregatite_luna, "
                 "  COUNT(*) FILTER (WHERE depus_la >= %(p)s) AS depuse_luna, "
-                "  COUNT(*) FILTER (WHERE creat_la >= %(p)s AND respins_la IS NOT NULL) AS respinse_luna "
-                "  FROM public.declaratii_coada "
-                " WHERE cabinet_id = %(c)s AND creat_de_id = %(u)s",
+                "  COUNT(*) FILTER (WHERE creat_la >= %(p)s AND respinsa) AS respinse_luna "
+                "  FROM p",
                 {"active": list(_STARI_ACTIVE), "p": prima_zi,
                  "c": cabinet_id, "u": uid})
             s = cur.fetchone()

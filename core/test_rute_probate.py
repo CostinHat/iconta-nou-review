@@ -73,7 +73,11 @@ PLAFON_NICAIERI = 21
 #: (jurnal_sterge/jurnal_editeaza erau „numite" de un comentariu; nota_avans e subșir al lui
 #: `nota_avans_platit` — exact cele scoase la iveală de D3.) Cele zece scriu în tabele de declarație și
 #: NU au probă de comportament în suită — restanță NUMITĂ (nu o zero falsă). O a unsprezecea se vede.
-PLAFON_SUBSET_FISCAL = 10
+#: [lotul 07.10, 06.10.2026] 10 -> 7. Au probă acum: `jurnal_editeaza` și `jurnal_sterge` — PROBĂ DE COMPORTAMENT pe use-case-ul
+#: rutei (`core/test_lot0710_p2.py::test_rutele_jurnalului_refuza_luna_inchisa_si_nota_la_validare`: luna nouă închisă ->
+#: refuz; nota la validare -> refuz); `stocuri_descarcare` — `descarca_luna` e chemată de `test_refuzul_metodei_de_stoc_…`, dar
+#: numai pe drumul REFUZULUI (metoda nedeclarată), nu pe cel care scrie: LIMITĂ DECLARATĂ, scanerul o socotește probată.
+PLAFON_SUBSET_FISCAL = 7
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():

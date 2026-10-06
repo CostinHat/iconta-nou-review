@@ -120,8 +120,10 @@ def jurnalizeaza_campuri(cur, vechi, nou, user_id):
 
 
 def jurnal_firma(cur, limita=200):
-    """[06.10.2026 §6.4] Jurnalul Date firmă, cel mai nou primul, cu emailul celui care a schimbat (vizibil cabinetului)."""
-    cur.execute("SELECT j.camp, j.valoare_veche, j.valoare_noua, u.email, j.la FROM firma_profil_jurnal j "
+    """[06.10.2026 §6.4] Jurnalul Date firmă, cel mai nou primul, cu cine a schimbat (vizibil cabinetului).
+    [lotul 07.10 pct.19] „cine” = numele persoanei (prenume nume), ca în Activitate cabinet; emailul numai dacă numele lipsește."""
+    cur.execute("SELECT j.camp, j.valoare_veche, j.valoare_noua, "
+                "COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), u.email), j.la FROM firma_profil_jurnal j "
                 "LEFT JOIN public.users u ON u.id = j.user_id ORDER BY j.la DESC, j.id DESC LIMIT %s", (limita,))
     return [{"camp": r[0], "vechi": r[1], "nou": r[2], "cine": r[3], "la": r[4].isoformat() if r[4] else None}
             for r in cur.fetchall()]

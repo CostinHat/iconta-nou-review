@@ -91,6 +91,10 @@ def _mesaj_intrare(e):
     if isinstance(e, KeyError):
         return ("Lipsește câmpul `%s` din cererea trimisă. Operațiunea nu se poate consemna fără "
                 "el." % (e.args[0] if e.args else "?"))
+    # [lotul 07.10 pct.2] un refuz care trimite în ALT ecran (metoda de stoc -> Date firmă) își păstrează ținta: ecranul pune
+    # butonul spre ea (`static/js/ecrane/ecran_destinatie.js`). Fără asta, `str(e)` turtea refuzul la o frază.
+    if getattr(e, "ecran", None):
+        return {"cod": getattr(e, "cod", None), "mesaj": str(e), "ecran": e.ecran}
     return str(e)
 
 
@@ -214,21 +218,38 @@ def _moneda_facturii(schema, factura_id):
     return (_r[0] if _r else None)
 
 
-def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id):
-    """[validare_note] Validatorii (mai puțin cine a pregătit) află că au note de validat — o notificare pe cerere."""
+def _nume_firmei(conn, tenant_id):
+    """Numele firmei, pentru textele care pleacă din ecranul ei (notificări): cine le citește are mai multe firme."""
+    if tenant_id is None:
+        return None
+    with conn.cursor() as cur:
+        r = _repo.select_public_7(cur, tenant_id)
+    return (r[0] if r else None) or None
+
+
+def _cu_firma(conn, tenant_id, txt):
+    nume = _nume_firmei(conn, tenant_id)
+    return ("%s: %s" % (nume, txt)) if nume else txt
+
+
+def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id, tenant_id=None, coada_id=None):
+    """[validare_note] Validatorii (mai puțin cine a pregătit) află că au note de validat — o notificare pe cerere.
+    [lotul 07.10 pct.8 + 12] Textul numește FIRMA, iar legătura duce la elementul de validat (`validat:<coada_id>`)."""
     if not etichete:
         return
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
     txt = (("Notă pregătită, de validat: %s." % etichete[0]) if len(etichete) == 1
            else "%d note pregătite, de validat (prima: %s)." % (len(etichete), etichete[0]))
-    _notif.adauga_multi(conn, ids, "de_validat", txt, link="validat")
+    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt),
+                        link=("validat:%d" % int(coada_id)) if coada_id else "validat")
 
 
-def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id):
-    # notifica validatorii (mai putin pregatitorul)
+def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id, tenant_id=None, coada_id=None):
+    # notifica validatorii (mai putin pregatitorul); [lotul 07.10 pct.12] cu numele firmei și legătura spre element
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
-    txt = "Declaratie %s (%s) trimisa spre validare." % ((tip or "").upper(), perioada or "")
-    _notif.adauga_multi(conn, ids, "de_validat", txt, link="validat")
+    txt = "Declarația %s (%s) trimisă spre validare." % ((tip or "").upper(), perioada or "")
+    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt),
+                        link=("validat:%d" % int(coada_id)) if coada_id else "validat")
 
 
 def _pachet_schema(ctx, tenant_id):
@@ -366,6 +387,15 @@ def _perioada_blocata(conn, schema, data_nota):
     from core import contare_facturi as _cf
     with conn.cursor() as cur:
         return _cf.luna_blocata(cur, schema, data_nota)
+
+
+def ultima_zi_a_lunii(an, luna):
+    """Data notelor lunare scrise de aplicație (salarii, amortizare): ULTIMA zi a lunii.
+    [lotul 07.10 pct.7, comanda Costin 06.10.2026] „Spune de unde vine data și ce temei are; dacă nu are, data e ultima zi a
+    lunii.” Ziua 28 (salarii, amortizare) n-avea temei; nicio normă nu cere altă zi a lunii pentru aceste note."""
+    import calendar as _cal
+    from datetime import date as _d
+    return _d(int(an), int(luna), _cal.monthrange(int(an), int(luna))[1])
 
 
 def _cere_luna_deschisa(conn, schema, data):
@@ -686,7 +716,8 @@ def _coada_info(conn, coada_id):
         r = _repo.select_public_5(cur, coada_id)
     if not r:
         return None
-    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3], "fel": r[4], "payload": r[5]}
+    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3], "fel": r[4], "payload": r[5],
+            "tenant_id": r[6]}
 
 
 def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
@@ -701,7 +732,15 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
         et = _coada.eticheta_element("nota", info["tip"], per, info.get("payload"))
         txt = {"respinsa": "%s a fost respinsă.%s" % (et, (" Motiv: " + motiv) if motiv else ""),
                "aprobata": "%s a fost validată." % et}.get(tip_eveniment, "Actualizare: %s." % et)
-        _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link="validat")
+        # [lotul 07.10 pct.8 + 12] cine a pregătit nota n-are „De validat”: legătura duce la Registrul jurnal al firmei, la notă
+        _pl = info.get("payload") or {}
+        _nid = int(_pl.get("inregistrare_id") or 0)
+        _link = "validat"
+        if info.get("tenant_id") and _nid:
+            _link = "jurnal:%d:%d" % (int(info["tenant_id"]), _nid)
+            if _pl.get("_an") and _pl.get("_luna"):
+                _link += ":%d:%d" % (int(_pl["_an"]), int(_pl["_luna"]))   # luna notei: Registrul jurnal se deschide acolo
+        _notif.adauga(conn, info["creat_de_id"], tip_eveniment, _cu_firma(conn, info.get("tenant_id"), txt), link=_link)
         return
     if tip_eveniment == "respinsa":
         txt = "Declaratia %s (%s) a fost respinsa." % (tip, per)

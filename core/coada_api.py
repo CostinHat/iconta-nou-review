@@ -165,16 +165,46 @@ def perioada_nota(nota_id):
     return "nota-%d" % int(nota_id)
 
 
+#: [lotul 07.10 pct.4, comanda Costin 06.10.2026] „Retrimiterea nu e o pregătire nouă.” O PREGĂTIRE = un document pregătit:
+#: declarația pe firma, tipul și perioada ei; nota pe documentul ei (`payload.grup`, vezi `grup_nota`) — oricâte rânduri a lăsat în
+#: coadă (respinsă, retrimisă, validată). Expresia SQL e una, aici; o folosesc toate numărătorile de „pregătite” (calitatea
+#: asistentului, Capacitate, Activitate cabinet, sinteza zilnică). Gard: `core/test_pregatiri.py`.
+def sql_cheie_pregatire(alias=""):
+    a = (alias + ".") if alias else ""
+    return ("(%stenant_id::text || '|' || %sfel || '|' || %stip || '|' || CASE WHEN %sfel = 'nota' "
+            "THEN COALESCE(%spayload->>'grup', %sperioada) ELSE %sperioada END)") % ((a,) * 7)
+
+
+def grup_nota(nota_id, factura_id=None):
+    """[lotul 07.10 pct.9, comanda Costin 06.10.2026] Cheia DOCUMENTULUI pe care cabinetul îl validează: „O factură produce două
+    note de validat separat (contare + ieșire stoc). Cabinetul validează sau respinge documentul o dată.” Notele aceleiași
+    facturi (contarea, legată prin `inregistrari.factura_id`, și ieșirile din stoc, legate prin `miscari_stoc.factura_id`) au
+    aceeași cheie; orice altă notă e propriul ei document. Fiecare notă își păstrează rândul în coadă (triggerul de
+    sincronizare cu jurnalul rămâne pe notă); cheia leagă rândurile în listă, la validare, la respingere și la numărare."""
+    return ("factura-%d" % int(factura_id)) if factura_id else perioada_nota(nota_id)
+
+
 def eticheta_element(fel, tip, perioada, payload):
     """PURĂ. Cum se numește un element din coadă oriunde apare (listă, notificare, Activitate cabinet) — o singură formă.
     Declarația: „D300 · <scadența>”. Nota: „Notă · <descriere> · <document>”."""
     if fel == "nota":
         p = payload or {}
-        parti = ["Notă", (p.get("descriere") or "fără descriere").strip()]
-        if p.get("document_ref"):
-            parti.append(p["document_ref"])
+        descr = [str(d or "").strip() or "fără descriere" for d in (p.get("descrieri") or [p.get("descriere")])]
+        doc = (p.get("document_ref") or "").strip()
+        if len(descr) > 1:
+            # [lotul 07.10 pct.9] un document cu mai multe note: documentul întâi, apoi ce conține
+            return " · ".join(x for x in ["Document", doc, "%d note: %s" % (len(descr), "; ".join(descr))] if x)
+        parti = ["Notă", descr[0]]
+        # [lotul 07.10 pct.13] documentul nu se repetă când descrierea îl spune deja (fără diacritice, fără majuscule)
+        if doc and _fara_diacritice(doc) not in _fara_diacritice(descr[0]) and _fara_diacritice(descr[0]) not in _fara_diacritice(doc):
+            parti.append(doc)
         return " · ".join(parti)
     return "%s · %s" % ((tip or "").upper(), perioada or "")
+
+
+def _fara_diacritice(t):
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFKD", str(t or "")) if not unicodedata.combining(c)).lower().strip()
 
 
 def e_validator(conn, user_id):
@@ -193,7 +223,8 @@ def _payload_nota(n):
     d = n["data"]
     doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
     return {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
-            "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month}
+            "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
+            "grup": grup_nota(n["id"], n.get("factura_grup"))}
 
 
 def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
@@ -211,6 +242,9 @@ def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
 
 _SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
                 "f.numar AS f_nr, f.data_emitere AS f_data, "
+                # [lotul 07.10 pct.9] factura documentului: a notei de contare, sau a ieșirii din stoc făcute de pe ea
+                "COALESCE(i.factura_id, (SELECT ms.factura_id FROM miscari_stoc ms WHERE ms.inregistrare_id = i.id "
+                "AND ms.factura_id IS NOT NULL ORDER BY ms.id LIMIT 1)) AS factura_grup, "
                 "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total "
                 "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
 
@@ -227,11 +261,45 @@ def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):
                     "SELECT 1 FROM public.declaratii_coada c WHERE c.tenant_id = %s AND c.fel = 'nota' "
                     "AND c.perioada = 'nota-' || i.id) ORDER BY i.id", (uid, tenant_id))
         note = cur.fetchall()
+        grupuri = {}
         for n in note:
             cid = _insereaza_nota(cur, cabinet_id, tenant_id, n, uid)
             if cid:
-                out.append({"coada_id": cid, "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_nota(n))})
+                pl = _payload_nota(n)
+                grupuri.setdefault(pl["grup"], []).append((cid, pl))
+        # [lotul 07.10 pct.9] un document = un element de anunțat (contarea + ieșirea din stoc a aceleiași facturi = unul)
+        for membri in grupuri.values():
+            out.append({"coada_id": membri[0][0], "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_grup(membri))})
     return out
+
+
+def _payload_grup(membri):
+    """Payload-ul unui document cu una sau mai multe note: [(coada_id, payload)] -> payload-ul primului + descrieri + total."""
+    from decimal import Decimal as _D
+    p = dict(membri[0][1])
+    if len(membri) > 1:
+        p["descrieri"] = [m[1].get("descriere") for m in membri]
+        p["total"] = str(sum(_D(str(m[1].get("total") or 0)) for m in membri))
+        p["note"] = [m[1] for m in membri]
+    return p
+
+
+def membri_grup(cur, coada_id, stare="la_senior"):
+    """[lotul 07.10 pct.9] Rândurile documentului din care face parte elementul `coada_id` (inclusiv el), în `stare`, în
+    ordinea id-ului: [(id, payload)]. Un element fără grup (declarație, notă singură) e singurul membru al documentului lui.
+    `stare=None` = starea elementului însuși (conținutul unui document, oricare i-ar fi starea)."""
+    cur.execute("SELECT tenant_id, fel, payload->>'grup' AS grup, stare FROM public.declaratii_coada WHERE id = %s", (coada_id,))
+    r = cur.fetchone()
+    if not r:
+        return []
+    tenant_id, fel, grup, st = (r["tenant_id"], r["fel"], r["grup"], r["stare"]) if isinstance(r, dict) else r
+    stare = st if stare is None else stare
+    if fel != "nota" or not grup:
+        cur.execute("SELECT id, payload FROM public.declaratii_coada WHERE id = %s", (coada_id,))
+    else:
+        cur.execute("SELECT id, payload FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' "
+                    "AND payload->>'grup' = %s AND stare = %s ORDER BY id", (tenant_id, grup, stare))
+    return [((x["id"], x["payload"]) if isinstance(x, dict) else (x[0], x[1])) for x in cur.fetchall()]
 
 
 def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
@@ -250,9 +318,45 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
         ultim = cur.fetchone()
         if ultim and ultim["stare"] != "respinsa":
             return {"ok": False, "cod": "DEJA_IN_COADA", "mesaj": "nota e deja la validare sau validată"}
-        cid = _insereaza_nota(cur, cabinet_id, tenant_id, n, uid)
-    return {"ok": bool(cid), "coada_id": cid,
-            "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_nota(n))}
+        # [lotul 07.10 pct.9] documentul se retrimite ÎNTREG: celelalte ciorne ale aceleiași facturi, respinse odată cu ea
+        grup = grup_nota(n["id"], n.get("factura_grup"))
+        frati = [n]
+        if grup != perioada_nota(n["id"]):
+            cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.id <> %s ORDER BY i.id", (nota_id,))
+            for x in cur.fetchall():
+                if grup_nota(x["id"], x.get("factura_grup")) != grup:
+                    continue
+                cur.execute("SELECT stare FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s "
+                            "ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(x["id"])))
+                u = cur.fetchone()
+                if not u or u["stare"] == "respinsa":
+                    frati.append(x)
+        membri = []
+        for x in frati:
+            cid = _insereaza_nota(cur, cabinet_id, tenant_id, x, uid)
+            if cid:
+                membri.append((cid, _payload_nota(x)))
+    return {"ok": bool(membri), "coada_id": membri[0][0] if membri else None,
+            "eticheta": eticheta_element("nota", TIP_NOTA, None, _payload_grup(membri) if membri else _payload_nota(n))}
+
+
+#: [lotul 07.10 pct.6, comanda Costin 06.10.2026] „Cât timp nota e la validare, asistentul o poate edita sau șterge; cabinetul ar
+#: valida altceva decât a văzut.” Nota la validare NU se modifică și NU se șterge, pe niciun drum (jurnal: editare, ștergere;
+#: casa: ștergerea operațiunii cu nota ei; dezlegarea de factură). Calea de corectare: cabinetul o respinge cu motiv.
+MESAJ_NOTA_LA_VALIDARE = ("Nota #%s e la validare în cabinet: cât timp așteaptă, nu se modifică și nu se șterge — cabinetul "
+                          "validează exact ce a văzut. Dacă trebuie corectată, cabinetul o respinge cu motiv, iar după "
+                          "corectare o trimiți din nou.")
+COD_NOTA_LA_VALIDARE = "NOTA_LA_VALIDARE"
+
+
+def nota_la_validare(cur, schema, nota_id):
+    """Ultimul element din coadă al notei e `la_senior`? Pe schema firmei (orice cursor; `public` e calificat)."""
+    cur.execute("SELECT c.stare FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
+                "WHERE t.schema_name = %s AND c.fel = 'nota' AND c.perioada = %s ORDER BY c.id DESC LIMIT 1",
+                (str(schema).strip('"'), perioada_nota(nota_id)))
+    r = cur.fetchone()
+    st = (r["stare"] if isinstance(r, dict) else r[0]) if r else None
+    return st == "la_senior"
 
 
 def stari_note(conn, tenant_id, nota_ids):
@@ -307,9 +411,28 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
                 d.pop("verdict_versiune", None), xml)
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"])
-            d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
             out.append(d)
-        return out
+        # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
+        grupate, vazute = [], {}
+        for d in out:
+            g = (d.get("nota") or {}).get("grup") if d["fel"] == "nota" else None
+            cheie = (d["tenant_id"], g, d["stare"]) if g else None
+            if cheie and cheie in vazute:
+                vazute[cheie]["membri"].append(d)
+                continue
+            if cheie:
+                d["membri"] = [d]
+                vazute[cheie] = d
+            grupate.append(d)
+        for d in grupate:
+            membri = d.pop("membri", None)
+            if membri and len(membri) > 1:
+                membri.sort(key=lambda m: m["id"])
+                d["nota"] = _payload_grup([(m["id"], m["nota"]) for m in membri])
+                d["id"] = membri[0]["id"]
+                d["membri_ids"] = [m["id"] for m in membri]
+            d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
+        return grupate
 
 
 def _stare_curenta(cur, coada_id):
@@ -516,10 +639,17 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
             if not schema_nota:
                 return {"ok": False, "cod": "INEXISTENT", "mesaj": "firma notei nu e accesibilă"}
             from core import jurnal_api as _jurnal
-            rv = _jurnal.valideaza(conn, schema_nota, int((r[5] or {}).get("inregistrare_id") or 0))
-            if not rv or rv.get("eroare"):
-                return {"ok": False, "cod": "STARE_GRESITA",
-                        "mesaj": "nota nu se poate valida: %s" % ((rv or {}).get("eroare") or "nu mai există în jurnal")}
+            membri = membri_grup(cur, coada_id)   # [lotul 07.10 pct.9] documentul se validează o dată, cu toate notele lui
+            for _mid, _pl in membri:
+                rv = _jurnal.valideaza(conn, schema_nota, int((_pl or {}).get("inregistrare_id") or 0))
+                if not rv or rv.get("eroare"):
+                    return {"ok": False, "cod": "STARE_GRESITA",
+                            "mesaj": "nota nu se poate valida: %s" % ((rv or {}).get("eroare") or "nu mai există în jurnal")}
+            cur.execute(
+                "UPDATE public.declaratii_coada SET stare='aprobata', "
+                "aprobat_de=%s, aprobat_de_id=%s, aprobat_la=now() WHERE id = ANY(%s)",
+                (aprobat_de, aprobat_de_id, [m[0] for m in membri]))
+            return {"ok": True, "stare": "aprobata", "membri": [m[0] for m in membri]}
         else:
             # [R41] Poarta pe verdict vine DUPA patru-ochi: ordinea conteaza, ca mesajul primit sa
             # numeasca primul obstacol real, nu pe al doilea.
@@ -596,11 +726,12 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_a
         if not poate_tranzitiona(st, "respinge"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot respinge din starea '%s'" % st}
+        ids = [m[0] for m in membri_grup(cur, coada_id)] or [coada_id]   # [lotul 07.10 pct.9] tot documentul
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='respinsa', "
-            "respins_de=%s, respins_de_id=%s, respins_la=now(), motiv_respingere=%s WHERE id=%s",
-            (respins_de, respins_de_id, motiv, coada_id))
-    return {"ok": True, "stare": "respinsa"}
+            "respins_de=%s, respins_de_id=%s, respins_la=now(), motiv_respingere=%s WHERE id = ANY(%s)",
+            (respins_de, respins_de_id, motiv, ids))
+    return {"ok": True, "stare": "respinsa", "membri": ids}
 
 
 # ============================================================

@@ -10343,3 +10343,31 @@ generatoarelor). Deciziile: DECIZII 06.10.2026 („Lotul 07.10”, P1).
 | fără diminuare: nimic de scăzut | `::test_fara_diminuare_zilele_platite_egale_cu_ale_certificatului` | o zi scăzută pe un certificat exceptat (program național) | — (verifică ramura care NU se schimbă) | — |
 | contractul uniform A1 (d112) | `verificator_conformitate.py` (`CONTRACT_BASELINE` 3 -> 2) | un generator convertit care revine la forma veche | — (clichet: crește -> blochează) | verifică NUMELE funcțiilor, nu comportamentul; comportamentul l-a dovedit captura XML (DECIZII) |
 | generatorul folosit chiar de `genereaza` | `core/test_cod_boala_nomenclator.py` (AST pe `calcul_d112`), `core/test_smoke_duk.py` (mutația pe `build_xml`) | o poartă probată pe o funcție pe care `genereaza` n-o mai cheamă | `build_xml` neînfășurat / `_cod_boala_acceptat` scos din `calcul_d112` -> roșu | — |
+
+## 06.10.2026 — Lotul 07.10, partea 2: retestul F5/F1 — factura păstrată, mesajele în vedere, coada pe document și pe pregătire
+
+Categoriile **11. Interfață** (ce vede contabilul după un buton, formularele ascunse, istoricul), **6. Acces** (nota la validare nu se
+schimbă), **7. Integritate în timp** (coada pe document, numărătorile pe pregătire), **3. Calcul fiscal** (data notelor lunare,
+scadența propusă). Deciziile: DECIZII 06.10.2026 („Lotul 07.10”, P2).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| o factură = un element | `core/test_lot0710_p2.py::test_o_factura_e_un_singur_element_de_validat_si_se_valideaza_o_data` | contarea și ieșirea din stoc ale aceleiași facturi validate separat | `grup_nota` întoarce cheia notei -> roșu (2 ≠ 1) | grupul = factura (contare + ieșiri de stoc); alte documente cu mai multe note nu se grupează |
+| documentul respins / retrimis întreg | `::test_documentul_se_respinge_si_se_retrimite_intreg` | o notă a documentului respinsă, cealaltă rămasă la validare | `respinge` pe un singur rând -> roșu | — |
+| pregătiri, nu rânduri | `::test_respinsa_apoi_validata_e_o_pregatire_si_zero_la_suta_din_prima` | o retrimitere numărată ca pregătire nouă; „din prima” pe o notă respinsă | cheia pe `id` -> roșu (2 ≠ 1) | cele patru numărători (calitate, Capacitate, Activitate, sinteza) trec prin `sql_cheie_pregatire`; o numărătoare nouă care n-o folosește nu se vede de aici |
+| nota la validare nu se schimbă | `::test_nota_la_validare_nu_se_editeaza_nu_se_sterge_iar_dupa_respingere_da` + `::test_casa_nu_sterge_nota_de_la_validare` | cabinetul validează altceva decât a văzut | verificarea scoasă din `editeaza` / `casa_api.sterge` -> roșu | drumurile acoperite: editare, ștergere, casa, dezlegarea de factură; un drum NOU de scriere pe o notă existentă trebuie să cheme `nota_la_validare` (nu e gard structural pe SQL) |
+| data: luna nouă + ultima zi | `::test_editarea_datei_verifica_luna_noua_si_notele_lunare_au_ultima_zi` | o notă mutată într-o lună închisă; nota lunară pe ziua 28 | `ultima_zi_a_lunii` -> 28 -> roșu | AST pe numele use-case-urilor |
+| notificarea: firma + ținta | `::test_notificarile_notei_numesc_firma_si_duc_la_element` | notificare fără firmă; clic care doar închide lista | `_cu_firma` neutralizat -> roșu | — |
+| eticheta fără repetiție | `::test_eticheta_notei_nu_repeta_documentul` | „Stat de plata 11/2026 · Stat de plată 11/2026” | verificarea de repetiție scoasă -> roșu | compară fără diacritice și majuscule; o reformulare (sinonim) nu se prinde |
+| refuzul își păstrează ecranul | `::test_refuzul_metodei_de_stoc_ajunge_cu_ecranul_tinta` | ținta „Date firmă” turtită într-o frază | ramura `ecran` scoasă din `_mesaj_intrare` -> roșu | — |
+| scadența propusă cu temei | `::test_scadenta_propusa_vine_de_la_server_cu_temeiul` | un termen inventat în ecran | 30 -> 60 -> roșu | INTERPRETARE: de la emitere, nu de la primire |
+| cine = numele | `::test_jurnalul_date_firma_arata_numele_nu_emailul` | emailul în locul persoanei | `u.email` pus la loc -> roșu | — |
+| ciorna facturii | `core/test_lot0710_ui.py::test_ciorna_facturii_se_sterge_numai_la_emitere_sau_la_renuntare` | factura pierdută pe un drum de navigare; ciorna ștearsă pe alt drum decât emiterea / renunțarea | `stergeCiorna` scos de la emitere -> roșu | ciorna stă în browser (nu urmează omul pe alt calculator); verificare pe structura sursei |
+| „Pleacă marfa” o dată | `::test_raspunsul_la_pleaca_marfa_ramane_pentru_aceleasi_articole` | întrebarea repusă după serie | verificarea scoasă -> roșu | — |
+| scadența urmează data | `::test_scadenta_propusa_urmeaza_data_pana_la_editare` | propunerea suprascrie ce a scris omul | `scadentaScrisa` scos de pe `input` -> roșu | — |
+| notificarea duce la element | `::test_notificarile_duc_la_element` | clic pe notificare fără destinație | ramura `jurnal:` scoasă -> roșu | — |
+| card = fereastră | `::test_cardul_si_fereastra_numara_notele_la_fel` | „3 nevalidate” față de „Note de validat (2)” | cardul numără și `aprobata` -> roșu | — |
+| fraza despre semnal | `::test_fraza_despre_semnal_numai_cand_cifrele_difera` | „semnalul de mai sus” fără semnal | condiția scoasă -> roșu | — |
+| ascuns = invizibil | verificator `HIDDEN_CU_DISPLAY` (DS cap.2 v2.74) | un formular `hidden` care se vede | `display:block` repus pe `#sn-zona` / regula globală scoasă -> TOTAL > 0 | vede `style` inline și regula globală; un `display` pus din JS pe un element `hidden` nu se vede de aici |
+| mesajul în vedere | verificator `MESAJ_FARA_ADUCERE_IN_VEDERE` (DS cap.6 v2.74) | un refuz / o întrebare sub zona vizibilă | `aduInVedere` scos din `arataMesaj` / `.caseta-poarta` scos din selector -> TOTAL > 0 | o casetă cu o clasă NOUĂ de după-buton trebuie adăugată în `SELECTOR_MESAJ` (garda vede clasele cunoscute) |
+| refuzul cu buton spre ecran | verificator `REFUZ_ECRAN_FARA_BUTON` (DS cap.6 v2.74) | o țintă `ecran` fără ecran-destinație; un drum de refuz fără buton | `date_firma` scos din `ECRANE` / un apel `_butonSpreEcran` scos -> TOTAL > 0 (prima formă număra și definiția și rămânea verde — reparată după mutație) | vede țintele scrise literal (`ecran="…"`); o țintă calculată nu se vede |

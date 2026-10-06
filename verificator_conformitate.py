@@ -1371,6 +1371,68 @@ for _nume, _t in fisiere.items():
         rap["dialog_fara_inchidere"].append((_nume, _ln, _m.group(1)[:14],
             "fereastra suprapusa fara inchidereDialog (X + Esc) si fara marcaj fereastra-de-lucru (DS cap.9)"))
 
+# --- HIDDEN_CU_DISPLAY (DS cap.2 v2.74, lotul 07.10 pct.20, comanda Costin 06.10.2026): un element `hidden` nu se vede.
+#     (1) regula globală `[hidden] { display: none !important; }` stă în stil.css; (2) niciun șablon JS nu pune pe același
+#     element `hidden` și `style="…display:…"` („NIR nou”, Casa ×2, Încasări/plăți stăteau deschise). Mutația care o
+#     probează: `style="display:block;…"` pus la loc pe `#sn-zona` (firme.js) SAU regula globală scoasă -> TOTAL > 0.
+rap["hidden_cu_display"] = []
+_re_hid = re.compile(r"""<[a-z][^<>]*\shidden(?:\s|>|=)[^<>]*style\s*=\s*["'][^"']*\bdisplay\s*:|<[a-z][^<>]*style\s*=\s*["'][^"']*\bdisplay\s*:[^"']*["'][^<>]*\shidden(?:\s|>|=)""")
+for _nume, _t in fisiere.items():
+    for _m in _re_hid.finditer(_t):
+        rap["hidden_cu_display"].append((_nume, _t[:_m.start()].count("\n") + 1, "hidden",
+            "element `hidden` cu `display` inline: ascunderea nu se aplică (DS cap.2 v2.74)"))
+try:
+    _css_h = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    if not re.search(r"^\[hidden\]\s*\{\s*display:\s*none\s*!important;\s*\}", _css_h, re.M):
+        rap["hidden_cu_display"].append(("stil.css", 0, "[hidden]", "lipsește regula globală [hidden]{display:none!important} (DS cap.2 v2.74)"))
+except Exception as _e_hid:
+    rap["hidden_cu_display"].append(("stil.css", 0, "EROARE", "gard hidden: " + str(_e_hid)))
+
+# --- MESAJ_FARA_ADUCERE_IN_VEDERE (DS cap.6 v2.74, lotul 07.10 pct.3): mesajul de după un buton se aduce în vedere — UN
+#     mecanism, în api.js: `aduInVedere`, chemat de `arataMesaj` / `eroareCamp` / `confirmaCaseta`, plus observatorul pe
+#     `SELECTOR_MESAJ`. Orice clasă de casetă de după-buton folosită în ecrane (`caseta-poarta`, `em-curs-box`) e în selector.
+#     Mutația care o probează: `aduInVedere(el)` scos din `arataMesaj` SAU `.caseta-poarta` scos din SELECTOR_MESAJ -> TOTAL > 0.
+rap["mesaj_fara_aducere_in_vedere"] = []
+try:
+    _api = fisiere.get("api.js", "")
+    _fn = lambda nume: (re.search(r"export function %s\([^)]*\)\s*\{(.*?)\n\}" % nume, _api, re.S) or [None, ""])[1]
+    if "export function aduInVedere(" not in _api:
+        rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, "aduInVedere", "lipsește aduInVedere (DS cap.6 v2.74)"))
+    for _h in ("arataMesaj", "eroareCamp", "confirmaCaseta"):
+        if "aduInVedere(" not in _fn(_h):
+            rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, _h, "%s nu aduce mesajul în vedere (DS cap.6 v2.74)" % _h))
+    _sel = (re.search(r'SELECTOR_MESAJ\s*=\s*"([^"]+)"', _api) or [None, ""])[1]
+    if "MutationObserver" not in _api or "SELECTOR_MESAJ" not in _api.split("MutationObserver", 1)[-1][:600]:
+        rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, "observator", "observatorul pe SELECTOR_MESAJ lipsește (DS cap.6 v2.74)"))
+    for _cls in ("caseta-poarta", "em-curs-box", "msg-eroare", "msg-avert"):
+        if any(re.search(r'class="[^"]*\b%s\b' % _cls, _t) for _n, _t in fisiere.items() if _n != "api.js") and "." + _cls not in _sel:
+            rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, _cls, "clasa de casetă .%s lipsește din SELECTOR_MESAJ (DS cap.6 v2.74)" % _cls))
+except Exception as _e_mv:
+    rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, "EROARE", "gard mesaj in vedere: " + str(_e_mv)))
+
+# --- REFUZ_ECRAN_FARA_BUTON (DS cap.6 v2.74, lotul 07.10 pct.2): orice ținta `ecran` pusă de server într-un refuz are
+#     ecran-destinație în `ecran_destinatie.js` (ECRANE), iar api.js pune butonul (`_butonSpreEcran`) pe drumurile de refuz.
+#     Mutația care o probează: `date_firma` scos din ECRANE SAU apelul `_butonSpreEcran(eroare, cale)` scos din `_cere` -> TOTAL > 0.
+rap["refuz_ecran_fara_buton"] = []
+try:
+    _ed = fisiere.get("ecran_destinatie.js", "")
+    _chei_ecr = set(re.findall(r"^\s{2}([a-z_]+):\s*\{", _ed, re.M))
+    _emise = set()
+    for _r, _ds, _fs in os.walk(os.path.join(BAZA_PY, "core")):
+        for _f in _fs:
+            if _f.endswith(".py") and not _f.startswith("test_"):
+                _src = open(os.path.join(_r, _f), encoding="utf-8").read()
+                _emise |= set(re.findall(r"""\becran\s*=\s*["']([a-z_]+)["']""", _src))
+                _emise |= set(re.findall(r"""\.ecran\s*=\s*(?:[^\n]*,\s*)?["']([a-z_]+)["']""", _src))
+    for _e in sorted(_emise - {"numerotare"} - _chei_ecr):   # „numerotare”: refuzul seriei se rezolvă PE LOC, în emitere
+        rap["refuz_ecran_fara_buton"].append(("ecran_destinatie.js", 0, _e, "ținta de refuz `%s` n-are ecran-destinație (DS cap.6 v2.74)" % _e))
+    # numai APELURILE (`_butonSpreEcran(eroare, cale);`), nu și definiția — prima formă le număra pe amândouă și rămânea
+    # verde cu un drum lipsă (prins de mutație, 06.10.2026)
+    if len(re.findall(r"(?<!function )_butonSpreEcran\(eroare, cale\);", fisiere.get("api.js", ""))) < 2:
+        rap["refuz_ecran_fara_buton"].append(("api.js", 0, "_butonSpreEcran", "refuzul cu `ecran` nu primește butonul pe ambele drumuri (DS cap.6 v2.74)"))
+except Exception as _e_re:
+    rap["refuz_ecran_fara_buton"].append(("verificator", 0, "EROARE", "gard refuz ecran: " + str(_e_re)))
+
 # --- ACTIUNE_REFUZATA_NEMARCATA (DS cap.9 v2.64, decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se
 #     afișează”). Un apel JS la o rută restrânsă cere elementul marcat `data-actiune` (poarta din `drepturi.js` îl ascunde
 #     celui refuzat), iar unde handlerul se poate lega de element, marcajul stă pe ACEL element. Același instrument ca

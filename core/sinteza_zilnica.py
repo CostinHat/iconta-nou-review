@@ -46,14 +46,20 @@ def sinteza_cabinet(conn, cabinet_id, zi):
     Intoarce un dict cu cifre. Daca tot ce conteaza e 0 -> 'gol': True."""
     d = {}
     with conn.cursor() as cur:
-        # declaratii pe evenimentele zilei
+        # declaratii pe evenimentele zilei — [lotul 07.10 pct.4] pe PREGĂTIRE (documentul): „pregătite azi” = începute azi
+        # (o retrimitere nu e o pregătire nouă), iar notele aceleiași facturi se validează / resping o dată
+        from core.coada_api import sql_cheie_pregatire as _cheie
         cur.execute(
+            "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, "
+            "  bool_or(aprobat_la::date = %(z)s) AS validata_azi, bool_or(respins_la::date = %(z)s) AS respinsa_azi, "
+            "  bool_or(depus_la::date = %(z)s) AS depusa_azi "
+            "  FROM public.declaratii_coada WHERE cabinet_id = %(c)s GROUP BY 1) "
             "SELECT "
-            "  COUNT(*) FILTER (WHERE creat_la::date  = %(z)s) AS pregatite, "
-            "  COUNT(*) FILTER (WHERE aprobat_la::date = %(z)s) AS validate, "
-            "  COUNT(*) FILTER (WHERE respins_la::date = %(z)s) AS respinse, "
-            "  COUNT(*) FILTER (WHERE depus_la::date   = %(z)s) AS depuse "
-            "  FROM public.declaratii_coada WHERE cabinet_id = %(c)s",
+            "  COUNT(*) FILTER (WHERE creat_la::date = %(z)s) AS pregatite, "
+            "  COUNT(*) FILTER (WHERE validata_azi) AS validate, "
+            "  COUNT(*) FILTER (WHERE respinsa_azi) AS respinse, "
+            "  COUNT(*) FILTER (WHERE depusa_azi) AS depuse "
+            "  FROM p",
             {"z": zi, "c": cabinet_id})
         r = cur.fetchone()
         d["pregatite"], d["validate"], d["respinse"], d["depuse"] = (
@@ -61,7 +67,7 @@ def sinteza_cabinet(conn, cabinet_id, zi):
 
         # in asteptare ACUM: declaratii la senior (de validat)
         cur.execute(
-            "SELECT COUNT(*) FROM public.declaratii_coada "
+            "SELECT COUNT(DISTINCT " + _cheie() + ") FROM public.declaratii_coada "
             " WHERE cabinet_id = %s AND stare = 'la_senior'", (cabinet_id,))
         d["de_validat"] = int(cur.fetchone()[0])
 

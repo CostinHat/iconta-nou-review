@@ -237,7 +237,9 @@ def test_numarul_de_instructiuni_se_conserva():
     # [validarea notelor, poarta de închidere 06.10.2026] 286 -> 287, cu apelul numit: repo_declaratii.nota_cu_linii
     #   (jurnal_retrimite) — retrimiterea citește nota ca să-i verifice existența și luna (R42) înainte de a o pune în coadă.
     #   Pas NOU, citire.
-    assert _apeluri_catre_repository() == 287
+    # [lotul 07.10 pct.15, 06.10.2026] 287 -> 288, cu apelul numit: repo_contabilitate.id_nota_dupa_numar (tenant_stat_plata) —
+    #   statul de plată arată la deschidere starea notei lunii în coada de validare (respingerea fără clic). Pas NOU, citire.
+    assert _apeluri_catre_repository() == 288
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -360,4 +360,5 @@ def test_nota_bonului_si_a_statului_de_plata_poarta_documentul(conn, uc, monkeyp
     uc.salarii_contare_scrie(1, 2026, 9, {"uid": 1})
     with conn.cursor() as cur:
         cur.execute("SELECT sursa, document_ref FROM inregistrari WHERE sursa IN ('bon', 'salarii') ORDER BY sursa")
-        assert cur.fetchall() == [("bon", "Bon fiscal din 05.10.2026 (Mega Image)"), ("salarii", "Stat de plată 09/2026")]
+        # [lotul 07.10 pct.13] documentul statului din sursa unică `jurnal_api.eticheta_document` (fel, număr, data = ultima zi)
+        assert cur.fetchall() == [("bon", "Bon fiscal din 05.10.2026 (Mega Image)"), ("salarii", "Stat de plată nr SAL-2026-09 din 30.09.2026")]

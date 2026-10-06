@@ -28,7 +28,7 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4c8f1ff171";
+import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=eff78f4bb3";
 import { randA as randConstatare } from "./control_verdict.js?v=45d828dd41";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
@@ -82,7 +82,7 @@ function fmtPerioadaDecl(c) {
   return c.perioada || "—";
 }
 
-export async function randeazaValidat(corp, nav) {
+export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 pct.8] opt.evidentiaza = id-ul din notificare
   corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
   let firme = [];
@@ -120,14 +120,17 @@ export async function randeazaValidat(corp, nav) {
   // solo cu politica PORNITA, „Patru-ochi e dezactivat" contrazicea indicatorul din subbara
   // („suspendata") si il lasa pe patron sa creada ca i s-a stins setarea. Politica persista; ce
   // lipseste e al doilea validator - si se spune, cu iesirea (DS cap.6, stare goala: gol + cauza + iesire).
+  // [lotul 07.10 pct.11, comanda Costin 06.10.2026] „Contabilul vede o etichetă pentru ce are de validat și un text fără termeni
+  // interni.” Notele au eticheta lor și propoziția lor (le-a pregătit un asistent; le validezi sau le respingi); textul despre
+  // declarații vorbește despre declarații, fără „patru-ochi” — „validarea în doi” e numele pe care îl vede omul în Asistenți.
   const intro = patruOchi
     ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat."
     : (patruOchiPolitica
       ? "Validarea în doi e pornită, dar suspendată: ești singurul validator din cabinet, așa că pregătești și depui singur. Reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)."
-      : "Patru-ochi e dezactivat: pregătești și depui singur. Declarațiile din coadă așteaptă depunerea.");
+      : "Declarațiile le pregătești și le depui tu (validarea în doi nu e pornită). Cele din listă așteaptă depunerea.");
   corp.innerHTML = `
-    <p class="mig-intro">${intro}</p>
     <div id="val-note"></div>
+    <p class="mig-intro">${intro}</p>
     <div id="val-deValidat"></div>
     <div id="val-deDepus"></div>
     <div id="val-nevalidate"></div>
@@ -139,9 +142,24 @@ export async function randeazaValidat(corp, nav) {
 
   const zN = corp.querySelector("#val-note");
   if (noteDeValidat.length) {
-    zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>`;
+    zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>
+      <p class="mig-intro">Notele pregătite de asistenți: le validezi (intră în evidență) sau le respingi cu motivul, pe care asistentul îl vede lângă notă. Notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună.</p>`;
     noteDeValidat.forEach((c) => zN.appendChild(randNota(c, firme, corp, nav, perm)));
   }
+  // [lotul 07.10 pct.8] din notificare: elementul ei, adus în vedere și marcat (și când e un membru al unui document)
+  const evid = Number(opt.evidentiaza);
+  const _arataEvidentiat = () => {
+    if (!Number.isFinite(evid)) return;
+    const el = [...corp.querySelectorAll("[data-coada-ids]")].find((x) => x.dataset.coadaIds.split(",").map(Number).includes(evid));
+    if (el) { el.classList.add("val-evidentiat"); el.scrollIntoView({ block: "center" }); }
+    else {
+      const p = document.createElement("p");
+      p.className = "ecran-nota";
+      p.textContent = "Elementul din notificare nu mai așteaptă validarea: a fost deja validat sau respins.";
+      corp.prepend(p);
+    }
+  };
+  setTimeout(_arataEvidentiat, 0);
   if (laSenior.length === 0 && aprobate.length === 0) {
     if (!noteDeValidat.length) {
       z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
@@ -193,6 +211,7 @@ function randNota(c, firme, corp, nav, perm) {
   const n = c.nota || {};
   const div = document.createElement("div");
   div.className = "val-card";
+  div.dataset.coadaIds = (c.membri_ids || [c.id]).join(",");   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
   const uid = uidCurent();
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
   let actiuni = "";
@@ -208,8 +227,8 @@ function randNota(c, firme, corp, nav, perm) {
     <div class="val-info">
       <div class="val-titlu"><b>${esc(c.eticheta || "Notă")}</b></div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
-      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</div>
-      <button type="button" class="btn-link val-vezi-nota">Vezi nota →</button>
+      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}</div>
+      <button type="button" class="btn-link val-vezi-nota">${(c.membri_ids || []).length > 1 ? "Vezi notele →" : "Vezi nota →"}</button>
     </div>
     <div class="val-actiuni">${actiuni}</div>`;
   div.querySelector(".val-vezi-nota").addEventListener("click", () => deschideNota(c, nav));
@@ -248,12 +267,13 @@ async function deschideNota(c, nav) {
     let d;
     try { d = await api.get(`/coada/${c.id}/continut`); }
     catch (e) { corp.innerHTML = `<div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut încărca nota.")}</div>`; return; }
-    const n = d.nota || {};
-    corp.innerHTML = `
-      <p class="mig-intro">${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</p>
+    // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
+    const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
+    corp.innerHTML = note.map(({ nota: n, linii }) => `
+      <p class="mig-intro">Nota #${esc(String(n.id || ""))} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</p>
       <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
-        <tbody>${(d.linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
-      </table>`;
+        <tbody>${(linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
+      </table>`).join("");
   }, { nivel: "cabinet" });
 }
 
@@ -312,6 +332,7 @@ async function deschideContinut(c, nav, corpLista) {
 function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const div = document.createElement("div");
   div.className = "val-card";
+  div.dataset.coadaIds = String(c.id);   // [lotul 07.10 pct.8] ținta notificării
   const vi = verdictInfo(c);
   const coer = `<span class="val-coer ${vi.clasa}">${vi.gata ? "✓ " : ""}${esc(vi.text)}</span>`;
 

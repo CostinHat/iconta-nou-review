@@ -99,7 +99,7 @@ def select_facturi(cur, factura_id):
 
 
 def select_public_5(cur, coada_id):
-    cur.execute("SELECT tip, perioada, creat_de_id, cabinet_id, fel, payload FROM public.declaratii_coada WHERE id=%s",
+    cur.execute("SELECT tip, perioada, creat_de_id, cabinet_id, fel, payload, tenant_id FROM public.declaratii_coada WHERE id=%s",
                 (coada_id,))
     return cur.fetchone()
 

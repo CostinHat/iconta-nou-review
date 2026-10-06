@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo } from "../api.js?v=4c8f1ff171";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo } from "../api.js?v=eff78f4bb3";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -129,15 +129,27 @@ const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "
   metoda_stoc: "Metoda de stoc", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
   cont_venit_implicit: "Cont venit implicit" };
+// [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
+// aceleași liste pe care le randează formularul (`metode_stoc`, `forme_juridice`, `activitati_amef`, opțiunile periodicității),
+// iar „true” / „false” devin „da” / „nu”. O valoare fără etichetă cunoscută se arată așa cum e — nu se ghicește.
+function _valoareJurnal(d, camp, x) {
+  if (x == null || x === "") return "\u2014";
+  const liste = { metoda_stoc: d.metode_stoc, forma_juridica: d.forme_juridice, activitate_amef: d.activitati_amef,
+    tip_decont: [["lunar", "Lunar"], ["trimestrial", "Trimestrial"], ["L", "Lunar"], ["T", "Trimestrial"]] };
+  const gasit = (liste[camp] || []).find(([k]) => String(k) === String(x));
+  if (gasit) return esc(gasit[1]);
+  if (x === "true" || x === true) return "da";
+  if (x === "false" || x === false) return "nu";
+  return esc(x);
+}
 function _blocJurnal(d) {
   const j = d.jurnal || [];
-  const val = (x) => (x == null || x === "" ? "\u2014" : esc(x));
   return `
     <h2 class="pf-titlu" style="margin-top:26px">Istoricul modificărilor</h2>
-    ${!j.length ? `<div class="stare-goala">Nicio modificare înregistrată încă.</div>` : `<table class="fd-tabel" id="df-jurnal">
+    ${!j.length ? `<div class="stare-goala">Nicio modificare înregistrată încă.</div>` : `<div class="df-jurnal-cadru"><table class="fd-tabel df-jurnal" id="df-jurnal">
       <thead><tr><th>Când</th><th>Cine</th><th>Câmp</th><th>Valoare veche</th><th>Valoare nouă</th></tr></thead>
       <tbody>${j.map((r) => `<tr><td>${dataRo(r.la, "cu_ora")}</td><td>${esc(r.cine || "")}</td><td>${esc(ETICHETE_JURNAL[r.camp] || eticheta(r.camp))}</td>
-        <td>${val(r.vechi)}</td><td>${val(r.nou)}</td></tr>`).join("")}</tbody></table>`}`;
+        <td>${_valoareJurnal(d, r.camp, r.vechi)}</td><td>${_valoareJurnal(d, r.camp, r.nou)}</td></tr>`).join("")}</tbody></table></div>`}`;
 }
 
 function camp(c, val) {
@@ -425,6 +437,14 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       }
       await randeazaDateFirma(corp, nav, tenantId, opt);
       arataMesaj(corp.querySelector("#df-msg"), "Datele firmei au fost salvate.", "ok");
+      // [lotul 07.10 pct.2] deschis dintr-un refuz al altui formular (factura): drumul înapoi, la formularul păstrat
+      if (opt.inapoiLa && nav && nav.inapoi) {
+        const bi = document.createElement("button");
+        bi.type = "button"; bi.className = "buton-primar"; bi.id = "df-inapoi-la"; bi.style.marginLeft = "10px";
+        bi.textContent = "\u2190 \u00cenapoi la " + opt.inapoiLa;
+        bi.addEventListener("click", () => nav.inapoi());
+        corp.querySelector("#df-msg").appendChild(bi);
+      }
     } catch (e) {
       // [LOTUL 11] Mesajul spune CE a apucat să intre. `pas === 2` = profilul și vectorul sunt
       // înregistrate și a căzut DOAR redenumirea — acolo „Nu am putut salva" ar fi o afirmație
