@@ -14,7 +14,7 @@ La operațiunile interne, un avans încasat de la client generează, de regulă,
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 282, în cazul unei livrări intracomunitare de bunuri, scutite de taxă conform art. 294 alin. (2), exigibilitatea taxei intervine la data emiterii facturii prevăzute la art. 319 alin. (15) sau, după caz, la emiterea autofacturii prevăzute la art. 319 alin. (9) ori în cea de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură până la data respectivă."
-— Legea nr. 227/2015 (Codul fiscal), art. 283 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 283 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Art. 283 este explicit „prin excepție de la prevederile art. 282" — articolul care, la operațiunile interne, leagă exigibilitatea de plata avansului. Pentru livrarea intracomunitară scutită, legea nu recunoaște avansul ca moment de exigibilitate: taxa (respectiv, aici, operațiunea scutită cu drept de deducere) devine exigibilă abia la data facturii sau, cel târziu, în a 15-a zi a lunii următoare faptului generator (livrarea efectivă a bunurilor). Consecința practică pentru D390: **avansul încasat pentru o livrare intracomunitară nu se declară separat** în luna încasării lui; operațiunea se raportează în D390 abia în luna în care intervine exigibilitatea, potrivit regulii de mai sus, la valoarea totală a livrării.

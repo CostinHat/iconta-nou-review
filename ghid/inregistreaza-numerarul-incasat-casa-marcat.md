@@ -14,7 +14,7 @@ Vânzarea cu amănuntul, plătită direct cu numerar la casa de marcat, nu trece
 
 ::: ghid-temei
 „Contul 531 «Casa» [...] este un cont de activ. În debitul contului 531 «Casa» se înregistrează: [...] – sumele încasate din servicii prestate, vânzarea mărfurilor și alte activități (704, 707, 708, 4427)."
-— OMFP 1802/2014, funcțiunea contului 531 „Casa" (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, funcțiunea contului 531 „Casa" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Nota contabilă tipică pentru încasările zilei, preluate din raportul fiscal de închidere zilnică:
@@ -32,6 +32,6 @@ Nota contabilă tipică pentru încasările zilei, preluate din raportul fiscal 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/casa.py` conține `regula_cont_casa()`, care generează nota contabilă pentru operațiunile de casă introduse manual — dar doar pentru scopurile pe care le recunoaște azi: încasare de la client (5311 = 4111), plată către furnizor (401 = 5311), ridicare și depunere la bancă; pentru orice altă situație, funcția ridică explicit o eroare (`scop/tip nesuportat`). Vânzarea cu amănuntul prin AMEF are însă un flux dedicat, separat: `core/amef_import.py` (`parseaza_raport_z()`) preia raportul fiscal de închidere zilnică, iar `core/uc_tenants.py` (`horeca_import_amef()`) generează automat nota-ciornă exact pe structura descrisă mai sus — **5311 = 707 pentru numerar** (respectiv **5125 = 707** pentru încasările prin card/altele), cu linie separată **707 = 4427** pentru TVA colectată pe fiecare cotă din raportul Z. Preluarea sumei din raportul Z, cu separarea pe conturi de venituri și TVA colectată, e deci automată; rămâne manuală doar verificarea notei-ciornă rezultate față de Z-ul tipărit.
+La data acestui ghid, aplicația conține `regula_cont_casa()`, care generează nota contabilă pentru operațiunile de casă introduse manual — dar doar pentru scopurile pe care le recunoaște azi: încasare de la client (5311 = 4111), plată către furnizor (401 = 5311), ridicare și depunere la bancă; pentru orice altă situație, funcția ridică explicit o eroare (`scop/tip nesuportat`). Vânzarea cu amănuntul prin AMEF are însă un flux dedicat, separat: Aplicația (`parseaza_raport_z()`) preia raportul fiscal de închidere zilnică, iar aplicația (`horeca_import_amef()`) generează automat nota-ciornă exact pe structura descrisă mai sus — **5311 = 707 pentru numerar** (respectiv **5125 = 707** pentru încasările prin card/altele), cu linie separată **707 = 4427** pentru TVA colectată pe fiecare cotă din raportul Z. Preluarea sumei din raportul Z, cu separarea pe conturi de venituri și TVA colectată, e deci automată; rămâne manuală doar verificarea notei-ciornă rezultate față de Z-ul tipărit.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Un SRL proaspăt înființat nu poate amâna la nesfârșit conectarea la Spați
 
 ::: ghid-temei
 „Prin excepție de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri și alte entități fără personalitate juridică, precum și persoane fizice care desfășoară o profesie liberală sau exercită o activitate economică în mod independent în una dintre formele prevăzute de Ordonanța de urgență a Guvernului nr. 44/2008 [...] sunt obligați să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanță în condițiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanțelor/A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune obligația pentru un SRL nou:

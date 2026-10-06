@@ -16,17 +16,17 @@ Obligația are un rost practic. Jurnalul pentru vânzări arată în orice momen
 
 ::: ghid-temei
 „Persoanele care aplică regimul special de scutire, conform art. 310 din Codul fiscal, au obligația să țină evidența livrărilor de bunuri și a prestărilor de servicii care ar fi taxabile dacă nu ar fi realizate de o mică întreprindere, cu ajutorul jurnalului pentru vânzări, precum și evidența bunurilor și a serviciilor taxabile achiziționate, cu ajutorul jurnalului pentru cumpărări.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoanele impozabile stabilite în România trebuie să țină evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice.”
-— Codul fiscal (Legea 227/2015), art. 321 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Persoana impozabilă care aplică regimul special de scutire și a cărei cifră de afaceri, prevăzută la alin. (2) , depășește plafonul de scutire prevăzut la alin. (1) trebuie să solicite înregistrarea în scopuri de TVA, conform art. 316 , cel târziu la data depășirii plafonului.”
-— Codul fiscal (Legea 227/2015), art. 310 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce intră în fiecare jurnal:

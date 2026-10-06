@@ -14,7 +14,7 @@ Nu este nevoie să „forțezi" o factură într-o lună fiscală deja închisă
 
 ::: ghid-temei
 „(2) În situaţia în care nu sunt îndeplinite condiţiile şi formalităţile de exercitare a dreptului de deducere în perioada fiscală de declarare sau în cazul în care nu s-au primit documentele de justificare a taxei prevăzute la art. 299, persoana impozabilă îşi poate exercita dreptul de deducere prin decontul perioadei fiscale în care sunt îndeplinite aceste condiţii şi formalităţi sau printr-un decont ulterior, dar în cadrul termenului de prescripţie prevăzut în Codul de procedură fiscală [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la o factură emisă în luna trecută, dar primită/descărcată abia în luna curentă:

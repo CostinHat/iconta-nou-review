@@ -14,7 +14,7 @@ O firmă intrată în lichidare nu dispare din circuitul fiscal din prima zi —
 
 ::: ghid-temei
 „Societatea își păstrează personalitatea juridică pentru operațiunile lichidării, până la terminarea acesteia."
-— Legea 31/1990 (a societăților), art. 233 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (a societăților), art. 233 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Lichidatorii pot, în cursul lichidării, „să vândă, prin licitație publică, imobilele și orice avere mobiliară a societății" și „să lichideze și să încaseze creanțele societății" (Legea 31/1990, art. 255) — deci firma poate continua să emită facturi (de exemplu la vânzarea activelor) pe toată durata lichidării.

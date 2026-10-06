@@ -16,9 +16,9 @@ Pragul se calculează pe situația financiară aprobată pentru anul precedent o
 
 ::: ghid-temei
 „Dacă prin actul constitutiv nu se dispune altfel și sub rezerva dispozițiilor art. 44^1 [...] sub sancțiunea nulității, administratorul va putea, în nume propriu, să înstrăineze, respectiv să dobândească, bunuri către sau de la societate, având o valoare de peste 10% din valoarea activelor nete ale societății, numai după obținerea aprobării adunării generale extraordinare, în condițiile prevăzute la art. 115"
-— Legea societăților nr. 31/1990, art. 150 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 150 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Valoarea prevăzută la alin. (1) se va calcula prin raportare la situația financiară aprobată pentru anul financiar precedent celui în care are loc operațiunea ori, după caz, la valoarea capitalului social subscris, dacă o asemenea situație financiară nu a fost încă prezentată și aprobată."
-— Legea societăților nr. 31/1990, art. 150 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 150 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

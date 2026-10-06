@@ -14,7 +14,7 @@ Nu există în sursele verificate o reglementare specifică profesiei de psiholo
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Legea nr. 227/2015 (Codul fiscal), art. 67 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 67 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Limitare onestă: sursele disponibile nu conțin o reglementare explicită a exercitării profesiei de psiholog (cadru dat, în practică, de legislație profesională separată, neinclusă în acest corpus) — ce se poate confirma din Codul fiscal e doar cadrul general de impozitare:

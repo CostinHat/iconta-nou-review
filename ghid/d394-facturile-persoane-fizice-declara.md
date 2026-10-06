@@ -15,11 +15,11 @@ Persoanele fizice nu au, de regulă, cod de înregistrare în scopuri de TVA, a�
 ::: ghid-temei
 „bazaL_PF — Valoare bază impozabilă facturi emise tip L către persoane fizice, cu valoare individuala/persoana mai mică sau egală cu 10000 lei [...] Obligatoriu 0 începând cu 01.01.2017."
 „nrFacturiL_PF — Numar facturi emise tip L către persoane fizice, cu valoare individuala/persoana mai mică sau egală cu 10000 lei [...] Obligatoriu 0 începând cu 01.01.2017."
-— Structura oficială D394, poziții 109 și 132 (sursă: anaf_surse/d394_struct_anaf.txt)
+— Structura oficială D394, poziții 109 și 132 (sursă: [Structura fișierului XML pentru declarația D394 (versiunea 2020), publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf))
 
 „<op11> [...] Aparitie numai pentru tip in (L,A,V,C,AI) pt tip_partener=1 și tip=N pt (tip_partener=2 și cota=0)."
 „codPR — Cod produs [...] Verificare cu nomenclator produse."
-— Structura oficială D394, poziția 233/235 (sursă: anaf_surse/d394_struct_anaf.txt)
+— Structura oficială D394, poziția 233/235 (sursă: [Structura fișierului XML pentru declarația D394 (versiunea 2020), publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf))
 :::
 
 Din structura oficială rezultă două mecanisme, dintre care primul e depășit:
@@ -35,6 +35,6 @@ Din structura oficială rezultă două mecanisme, dintre care primul e depășit
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează **D394** din facturile introduse în aplicație (`core/d394.py`), clasificând automat partenerii fără CUI valid ca neînregistrați în scopuri de TVA (persoane fizice) și raportând facturile emise către aceștia individual, cu tip `L` sau, dacă cota e 0, reclasificate automat la `LS` — nu în câmpurile agregate `bazaL_PF`/`nrFacturiL_PF`, pe care aplicația le completează mereu cu 0, conform regulii validatorului oficial pentru perioadele de raportare de după 01.01.2017. Pentru achizițiile de la persoane fizice care necesită defalcare pe cod de produs (`op11`/`codPR`, tip N, categoriile art. 331), aplicația respinge cu motiv explicit generarea declarației dacă lipsește categoria de bun cerută de validator, în loc să depună tacit o declarație incompletă.
+La data acestui ghid, iConta.eu generează **D394** din facturile introduse în aplicație, clasificând automat partenerii fără CUI valid ca neînregistrați în scopuri de TVA (persoane fizice) și raportând facturile emise către aceștia individual, cu tip `L` sau, dacă cota e 0, reclasificate automat la `LS` — nu în câmpurile agregate `bazaL_PF`/`nrFacturiL_PF`, pe care aplicația le completează mereu cu 0, conform regulii validatorului oficial pentru perioadele de raportare de după 01.01.2017. Pentru achizițiile de la persoane fizice care necesită defalcare pe cod de produs (`op11`/`codPR`, tip N, categoriile art. 331), aplicația respinge cu motiv explicit generarea declarației dacă lipsește categoria de bun cerută de validator, în loc să depună tacit o declarație incompletă.
 
 [iConta.eu](/)

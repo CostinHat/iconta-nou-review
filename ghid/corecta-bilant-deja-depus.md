@@ -28,6 +28,6 @@ Situația e diferită doar dacă eroarea privește exercițiul financiar curent,
 
 ## Ce face iConta.eu
 
-Motorul de bilanț (`core/bilant.py`, `core/bilant_api.py`) nu conține nicio funcție de rectificare a unui S1005/S1003 deja generat — aplicația respectă, prin absența acestei funcții, exact regula legală de mai sus: nu se „redeschide" un exercițiu deja raportat. Corecția se înregistrează ca notă contabilă obișnuită în exercițiul curent (pe 117, dacă privește un an anterior), iar bilanțul viitor al firmei o va reflecta automat, la următoarea generare din balanța actualizată.
+Motorul de bilanț nu conține nicio funcție de rectificare a unui S1005/S1003 deja generat — aplicația respectă, prin absența acestei funcții, exact regula legală de mai sus: nu se „redeschide" un exercițiu deja raportat. Corecția se înregistrează ca notă contabilă obișnuită în exercițiul curent (pe 117, dacă privește un an anterior), iar bilanțul viitor al firmei o va reflecta automat, la următoarea generare din balanța actualizată.
 
 [iConta.eu](/)

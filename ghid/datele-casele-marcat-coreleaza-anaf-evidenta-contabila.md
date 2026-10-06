@@ -16,15 +16,15 @@ Practic, vânzările din rapoartele Z, înregistrate în contabilitate și decla
 
 ::: ghid-temei
 „Sistemele informatice prevăzute la alin. (3) , precum și datele și informațiile furnizate de către modulele de valorificare prevăzute la art. 1 sunt de interes strategic național [...] în scopul: a) de a obține informații referitoare la profile de risc specifice contribuabililor persoane fizice și juridice; ... b) de a identifica neconcordanțe și/sau inconsistențe între datele și informațiile furnizate de sistemul informatic de interes strategic național, denumit în continuare S.I.I.S.N., prin corelare cu datele și informațiile din sistemul de declarare/evidență contabilă și fiscală."
-— OUG 116/2023, art. 2 alin. (1) (sursă: anaf_surse/oug_116_2023.html)
+— OUG 116/2023, art. 2 alin. (1) (sursă: [OUG nr. 116/2023 privind gestionarea și evidențierea veniturilor curente ale bugetului public prin proiecte de digitalizare](https://legislatie.just.ro/Public/DetaliiDocument/277398))
 
 „e) Sistemul informatic național RO e-Case de marcat electronice, reprezentând Registrul național de evidență a aparatelor de marcat electronice fiscale instalate în județe și în sectoarele municipiului București, prevăzut la art. 3^1 din Ordonanța de urgență a Guvernului nr. 28/1999"
-— OUG 116/2023, art. 2 alin. (3) lit. e) (sursă: anaf_surse/oug_116_2023.html)
+— OUG 116/2023, art. 2 alin. (3) lit. e) (sursă: [OUG nr. 116/2023 privind gestionarea și evidențierea veniturilor curente ale bugetului public prin proiecte de digitalizare](https://legislatie.just.ro/Public/DetaliiDocument/277398))
 :::
 
 ::: ghid-temei
 „Informațiile obținute din profilul de risc al contribuabililor persoane fizice și juridice, precum și neconcordanțele și/sau necorelările din sistemul de declarare și/sau evidență contabilă și fiscală sunt utilizate în activitatea de administrare fiscală, inclusiv prin structurile de control fiscal, cu scopul de a valorifica de îndată, potrivit legii, informațiile obținute."
-— OUG 116/2023, art. 4 alin. (3) (sursă: anaf_surse/oug_116_2023.html)
+— OUG 116/2023, art. 4 alin. (3) (sursă: [OUG nr. 116/2023 privind gestionarea și evidențierea veniturilor curente ale bugetului public prin proiecte de digitalizare](https://legislatie.just.ro/Public/DetaliiDocument/277398))
 :::
 
 Ce prevede actul, punct cu punct:

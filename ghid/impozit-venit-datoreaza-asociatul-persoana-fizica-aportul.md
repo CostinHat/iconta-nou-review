@@ -16,15 +16,15 @@ Baza de calcul e valoarea din actul prin care imobilul se aduce ca aport. Dacă 
 
 ::: ghid-temei
 „La transferul dreptului de proprietate și al dezmembrămintelor acestuia, prin acte juridice între vii asupra construcțiilor de orice fel și a terenurilor aferente acestora, precum și asupra terenurilor de orice fel fără construcții, contribuabilii datorează un impozit care se calculează la valoarea tranzacției prin aplicarea următoarelor cote"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuabil este și persoana fizică din patrimoniul căreia se transferă dreptul de proprietate sau dezmembrăminte ale acestuia cu titlu de aport la capitalul social."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul unei/unor proprietăți imobiliare transferate cu titlu de aport la capitalul social, valoarea la care se stabilește impozitul este valoarea prevăzută în actul prin care s-a realizat aducerea bunului imobil ca aport în natură la capitalul social, raportul de evaluare sau studiul de piață, după caz, astfel: a) în situația în care legislația în materie impune întocmirea unui raport de evaluare, valoarea din actul de transfer, dar nu mai puțin de valoarea rezultată din raportul de evaluare; [...] b) în situația în care legislația în materie nu impune întocmirea unui raport de evaluare, valoarea din actul de transfer sau valoarea stabilită prin studiul de piață, în cazul în care valoarea declarată este inferioară valorii minime stabilite prin studiul de piață realizat de către camerele notarilor publici cu experți evaluatori autorizați în condițiile legii."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

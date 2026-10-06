@@ -46,7 +46,7 @@ Luna următoare, firma plătește o rată de 1.000 EUR la cursul zilei, 5,03 lei
 
 ## Ce face iConta.eu
 
-Motorul dedicat diferențelor de curs, `core/diferente_curs.py`, implementează exact această regulă de semn: funcția `diferenta(valoare_valuta, curs_initial, curs_final, tip)` calculează câștigul/pierderea în funcție de `tip` (`"creanta"`, `"disponibil"` sau `"datorie"`) — pentru `"datorie"`, un curs final mai mare produce cont `"665"`, iar unul mai mic produce cont `"765"`, exact invers față de creanțe și disponibilități.
+Motorul dedicat diferențelor de curs, aplicația, implementează exact această regulă de semn: funcția `diferenta(valoare_valuta, curs_initial, curs_final, tip)` calculează câștigul/pierderea în funcție de `tip` (`"creanta"`, `"disponibil"` sau `"datorie"`) — pentru `"datorie"`, un curs final mai mare produce cont `"665"`, iar unul mai mic produce cont `"765"`, exact invers față de creanțe și disponibilități.
 
 Pentru reevaluarea lunară a soldului unui credit, se folosește funcția `reevaluare_sold(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip, cont_sold)`, apelată din use-case-ul `reevaluare_valuta()` pe ruta `/tenants/{tenant_id}/reevaluare-valuta`; nota generată e datată în ziua reevaluării, cu descrierea „Reevaluare solduri valuta la [data] (curs BNR)”. Pentru diferența apărută la o plată efectivă (rată sau dobândă), funcția `nota_decontare(valoare_valuta, curs_factura, curs_decontare, tip, cont_tert, cont_banca)` generează atât nota de plată, cât și linia de diferență de curs, într-o singură operațiune.
 

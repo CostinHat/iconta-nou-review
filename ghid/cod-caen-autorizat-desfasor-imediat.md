@@ -15,7 +15,7 @@ Da — o firmă poate avea la ONRC un cod CAEN principal sau secundar autorizat 
 ::: ghid-temei
 „Organul fiscal central organizează evidența contribuabililor/plătitorilor în cadrul registrului contribuabililor/plătitorilor, care conține: a) datele de identificare a contribuabilului/plătitorului; b) date privind vectorul fiscal; c) alte informații necesare administrării creanțelor fiscale.
 (2) Datele prevăzute la alin. (1) se completează pe baza informațiilor comunicate de contribuabil/plătitor, de oficiul registrului comerțului, de serviciul de evidență a populației, de la alte autorități și instituții, precum și a constatărilor proprii ale organului fiscal central."
-— Legea 207/2015 (Codul de procedură fiscală), art. 91 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 91 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva concluzii practice din text:

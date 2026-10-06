@@ -19,15 +19,15 @@ Regula e practică: declară întotdeauna partea stabilită în România, deoare
 
 ::: ghid-temei
 „Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: [...] g) clientului din România, în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru către care au fost expediate sau transportate bunurile atât pentru bunurile descărcate pe teritoriul României, cât și pentru bunurile livrate într-un stadiu ulterior după sosire, către altă persoană impozabilă din România sau în cazul în care bunurile respective sunt returnate în statul membru din care au fost expediate sau transportate inițial;"
-— OUG 41/2022, art. 8^1 lit. g) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. g) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „h) furnizorului din România, în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru din care au fost expediate sau transportate bunurile atât pentru bunurile expediate din România, cât și în cazul în care bunurile respective sunt returnate în România."
-— OUG 41/2022, art. 8^1 lit. h) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. h) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ::: ghid-temei
 „(1) Transferul de către o persoană impozabilă de bunuri care fac parte din activele activității sale economice către un alt stat membru în cadrul regimului de stocuri la dispoziția clientului nu este tratat ca o livrare de bunuri efectuată cu titlu oneros."
-— Codul fiscal (Legea 227/2015), art. 270^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reține contabilul:

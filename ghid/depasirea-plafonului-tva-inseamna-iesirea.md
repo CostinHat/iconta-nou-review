@@ -15,7 +15,7 @@ Nu. Deși sunt frecvent confundate pentru că ambele se verifică pe cifra de af
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...]
 c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), astfel cum a fost modificat prin OUG 8/2026, art. 6 pct. 15 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), astfel cum a fost modificat prin OUG 8/2026, art. 6 pct. 15 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru comparație, plafonul de TVA e complet altul, reglementat separat, la art. 310 Cod fiscal — plafonul de scutire pentru întreprinderile mici, de 300.000 lei (cu regimul tranzitoriu la 395.000 lei aplicat în 2025 pentru cei care s-au înregistrat anterior). Diferențele practice:

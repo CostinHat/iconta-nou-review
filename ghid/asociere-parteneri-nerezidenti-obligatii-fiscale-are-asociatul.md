@@ -16,12 +16,12 @@ Pentru firma română care acceptă rolul, obligațiile sunt concrete și sancț
 
 ::: ghid-temei
 „Orice asociere/entitate transparentă fiscal fără personalitate juridică ce își desfășoară activitatea în România trebuie să desemneze unul dintre asociați/participanți, după caz, care să îndeplinească obligațiile ce îi revin fiecărui asociat/participant potrivit prezentului titlu."
-— Codul fiscal (Legea 227/2015), art. 233 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 233 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „calculul, reținerea, plata la bugetul statului și declararea impozitul pentru veniturile cu regim de reținere la sursă datorat de fiecare asociat/participant nerezident potrivit convenției de evitare a dublei impuneri, respectiv a prezentului cod, după caz;"
-— Codul fiscal (Legea 227/2015), art. 233 alin. (2) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 233 alin. (2) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele șase responsabilități ale persoanei desemnate (art. 233 alin. (2)):

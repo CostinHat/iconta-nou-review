@@ -16,7 +16,7 @@ Perioada fiscală de TVA nu e o alegere liberă a firmei — regula de bază e l
 „(1) Perioada fiscală este luna calendaristică.
 (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri [...] care nu a depășit plafonul de 100.000 euro [...], cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri.
 (5) Dacă cifra de afaceri efectiv obținută în anul înregistrării [...] depășește plafonul prevăzut la alin. (2), în anul următor perioada fiscală va fi luna calendaristică [...]"
-— Legea 227/2015 (Codul fiscal), art. 322 alin. (1), (2) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 322 alin. (1), (2) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Situațiile care declanșează, concret, trecerea la perioada lunară:

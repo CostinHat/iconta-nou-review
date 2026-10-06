@@ -14,7 +14,7 @@ Plafoanele de încasări și plăți în numerar din Legea nr. 70/2015 se aplic�
 
 ::: ghid-temei
 „Prevederile prezentului capitol se aplică și operațiunilor de încasări și plăți în valută efectuate pe teritoriul României. Încadrarea în plafoanele prevăzute de prezentul capitol se efectuează în funcție de cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunilor de încasări sau plăți."
-— Legea nr. 70/2015, art. 1 alin. (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 1 alin. (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Regula de aplicat:
@@ -31,6 +31,6 @@ Regula de aplicat:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu (`core/casa.py`) verifică plafoanele de numerar pe baza sumelor înregistrate în lei în registrul de casă. Pentru operațiunile introduse direct în valută, conversia la cursul BNR al zilei se face prin modulul de curs valutar al aplicației (`core/curs_bnr.py`), folosit consecvent și pentru alte calcule fiscale care depind de cursul zilei — nu există un curs separat, „de plafon", diferit de cursul BNR aplicat restului operațiunilor contabile.
+Modulul de casierie din iConta.eu verifică plafoanele de numerar pe baza sumelor înregistrate în lei în registrul de casă. Pentru operațiunile introduse direct în valută, conversia la cursul BNR al zilei se face prin modulul de curs valutar al aplicației, folosit consecvent și pentru alte calcule fiscale care depind de cursul zilei — nu există un curs separat, „de plafon", diferit de cursul BNR aplicat restului operațiunilor contabile.
 
 [iConta.eu](/)

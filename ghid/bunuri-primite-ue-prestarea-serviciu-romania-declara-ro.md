@@ -16,10 +16,10 @@ Clientul străin nu are obligații în sistemul românesc. Nici transportatorul 
 
 ::: ghid-temei
 „Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: [...] e) prestatorului de servicii din România, în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile descărcate pe teritoriul României pentru prestarea de servicii, cât și pentru bunurile rezultate reexpediate în statul partenerului comercial;"
-— OUG 41/2022, art. 8^1 lit. e) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. e) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „j) transportul pe teritoriul național al bunurilor în cadrul unor operațiuni comerciale reprezentând un nontransfer și transportul bunurilor reprezentând stocuri la dispoziția clientului conform art. 270 alin. (12) lit. f) și art. 270^1 din Legea nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare;"
-— OUG 41/2022, art. 2 pct. 9 lit. j) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 9 lit. j) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce reține contabilul prestatorului:

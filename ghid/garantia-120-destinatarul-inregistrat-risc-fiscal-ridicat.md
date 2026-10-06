@@ -16,18 +16,18 @@ Pentru firmă, cifra contează pentru lichiditate. O garanție de 120% blocheaz�
 
 ::: ghid-temei
 „(1^1) Destinatarul înregistrat care prezintă risc fiscal ridicat are obligația constituirii unei garanții de 120% din contravaloarea accizelor aferente cantității de produse accizabile pe care intenționează să o primească, sub forma prevăzută la alin. (1) . În situația în care organele competente constată indiciile săvârșirii unei infracțiuni și evaluează prejudiciul, operatorul economic are obligația de a reîntregi garanția la nivelul prejudiciului, cu excepția situației în care garanția este îndestulătoare."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1^2) Regulile referitoare la constituirea, actualizarea și eliberarea garanției prevăzute la alin. (1^1) se stabilesc prin ordin comun al președintelui Agenției Naționale de Administrare Fiscală și al președintelui Autorității Vamale Române. Garanția poate fi eliberată numai după verificarea de către organele fiscale competente a îndeplinirii de către operatorul economic a tuturor obligațiilor legale privind evidențierea, declararea și plata obligațiilor fiscale administrate de A.N.A.F."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (1^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (1^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1^3) Prin excepție de la prevederile alin. (2) , în situația în care destinatarul înregistrat care prezintă risc fiscal ridicat înregistrează obligații fiscale restante administrate de A.N.A.F. cu mai mult de 5 zile față de termenul legal de plată, garanția se extinde și asupra acestor obligații de drept și fără nicio altă formalitate."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (1^3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (1^3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Garanția poate fi constituită sub formă de: a) consemnare de mijloace bănești la o unitate a Trezoreriei Statului; [...] b) scrisoare de garanție/poliță de asigurare de garanție emisă în condițiile legii de o instituție de credit/societate de asigurare înregistrată în Uniunea Europeană și Spațiul Economic European, autorizată să își desfășoare activitatea pe teritoriul României"
-— Codul fiscal (Legea 227/2015), art. 348 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Calculul, pas cu pas:

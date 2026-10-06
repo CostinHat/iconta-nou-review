@@ -14,7 +14,7 @@ Când o firmă deschide un cont bancar, banca cere identificarea beneficiarului 
 
 ::: ghid-temei
 „Termenul «persoane care exercită controlul» este echivalent cu termenul «beneficiar real», așa cum este definit la art. 4 din Legea nr. 129/2019 pentru prevenirea și combaterea spălării banilor și finanțării terorismului, precum și pentru modificarea și completarea unor acte normative, cu modificările și completările ulterioare."
-— Legea 207/2015 (Codul de procedură fiscală), Anexa privind schimbul automat de informații (CRS), pct. 6 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), Anexa privind schimbul automat de informații (CRS), pct. 6 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva repere care rezultă din context, aplicabile și instituțiilor financiare la identificarea clientelei:

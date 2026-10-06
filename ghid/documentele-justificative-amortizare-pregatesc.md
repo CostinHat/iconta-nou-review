@@ -14,10 +14,10 @@ Amortizarea unui mijloc fix nu pornește de la o presupunere sau de la o cotă �
 
 ::: ghid-temei
 „În conformitate cu prevederile art. 6 alin. (1) din Legea contabilității nr. 82/1991, republicată, cu modificările și completările ulterioare, orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— OMFP 1802/2014, pct. 314 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 314 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „Pentru stabilirea duratei normale de funcționare a unui mijloc fix se caută succesiv în clasificare: grupa, subgrupa, clasa, subclasa și familia, după caz. [...] La punerea în funcțiune a acestui mijloc fix, se va stabili durata normală de funcționare în limitele intervalului [...]."
-— HG 2139/2004, Catalog, Cap. II pct. 2 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004, Catalog, Cap. II pct. 2 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Pentru un mijloc fix nou, pachetul minim de documente arată așa:

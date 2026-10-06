@@ -14,7 +14,7 @@ Contribuabilul aflat sub inspecție fiscală descoperă uneori o eroare în decl
 
 ::: ghid-temei
 „(8) în situația în care în timpul inspecției fiscale contribuabilul/plătitorul depune sau corectează declarația de impunere aferentă perioadelor și creanțelor fiscale ce fac obiectul inspecției fiscale, aceasta nu va fi luată în considerare de organul fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret această regulă:

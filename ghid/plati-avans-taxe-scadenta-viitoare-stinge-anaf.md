@@ -16,12 +16,12 @@ Ordinea contează când vrei să eviți accesoriile la o obligație viitoare sau
 
 ::: ghid-temei
 „Dacă un debitor datorează mai multe tipuri de obligații fiscale, iar suma plătită nu este suficientă pentru a stinge toate obligațiile, atunci se stinge obligația fiscală pe care o indică debitorul, potrivit legii, sau care este distribuită potrivit prevederilor art. 163 , după caz, stingerea efectuându-se, de drept, în următoarea ordine: a) toate obligațiile fiscale principale, în ordinea vechimii, și apoi obligațiile fiscale accesorii, în ordinea vechimii; b) obligațiile cu scadențe viitoare, la solicitarea debitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Nu se datorează obligații fiscale accesorii pentru suma plătită în contul obligației fiscale principale dacă, anterior stabilirii obligațiilor fiscale, debitorul a efectuat o plată, iar suma plătită nu a stins alte obligații, stabilite prin: a) declarații de impunere depuse ulterior efectuării plății;"
-— Codul de procedură fiscală (Legea 207/2015), art. 173 alin. (3) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 173 alin. (3) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează în practică:

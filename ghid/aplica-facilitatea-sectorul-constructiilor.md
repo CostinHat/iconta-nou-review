@@ -18,7 +18,7 @@ Funcționalitatea de calcul salarial (cod F080) declară, printre temeiurile ei,
 
 ## Ce arată, concret, verificarea
 
-- Registrul de cote și facilități (`core/common.py`, dict `COTE`) e „period-aware" — fiecare cotă sau facilitate are o fereastră de valabilitate explicită și un temei legal atașat, exact ca pentru salariul minim sau pentru facilitatea generică „salariul minim neimpozabil".
+- Registrul de cote și facilități (dict `COTE`) e „period-aware" — fiecare cotă sau facilitate are o fereastră de valabilitate explicită și un temei legal atașat, exact ca pentru salariul minim sau pentru facilitatea generică „salariul minim neimpozabil".
 - Pentru 2026, registrul conține: cotele standard (CAS 25%, CASS 10%, impozit 10%, CAM 2,25%), cele două valori ale salariului minim (4.050 și 4.325 lei), facilitatea generică „salariul minim neimpozabil" (300 lei, apoi 200 lei, cu plafoane 4.300/4.600 lei) și plafonul tichetelor de masă.
 - **Nu conține nicio intrare separată pentru o facilitate sectorială construcții.**
 

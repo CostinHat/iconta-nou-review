@@ -32,6 +32,6 @@ O notă de perisabilitate greșită are, de regulă, una din trei cauze: procent
 
 ## Ce face iConta.eu
 
-Nota de perisabilitate e scrisă inițial cu statusul `'ciorna'` (`core/uc_tenants.py:4085`, funcția `nota_perisabilitati`), ceea ce permite corectarea ei înainte de închiderea lunii; contul de stoc e validat prin `cont_valid.cere_cont`, care respinge un cont inexistent în planul firmei. Motorul de calcul (`core/perisabilitati.py`) nu are o funcție de „recalculare" a unei note existente — corectarea unei perisabilități greșite înseamnă ștergerea/stornarea notei din ciornă și reintroducerea ei cu parametrii corecți prin ecranul Operațiuni speciale > „Perisabilități și scăzăminte".
+Nota de perisabilitate e scrisă inițial cu statusul `'ciorna'` (funcția `nota_perisabilitati`), ceea ce permite corectarea ei înainte de închiderea lunii; contul de stoc e validat prin `cont_valid.cere_cont`, care respinge un cont inexistent în planul firmei. Motorul de calcul nu are o funcție de „recalculare" a unei note existente — corectarea unei perisabilități greșite înseamnă ștergerea/stornarea notei din ciornă și reintroducerea ei cu parametrii corecți prin ecranul Operațiuni speciale > „Perisabilități și scăzăminte".
 
 [iConta.eu](/)

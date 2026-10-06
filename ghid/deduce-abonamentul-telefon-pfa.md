@@ -15,7 +15,7 @@ Da, dar nu automat și nu integral în orice situație — abonamentul de telefo
 ::: ghid-temei
 „Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: a) să fie efectuate în cadrul activităților independente, justificate prin documente; [...]
 i) cheltuielile efectuate pentru activitatea independentă, cât și în scopul personal al contribuabilului sau asociaților sunt deductibile numai pentru partea de cheltuială care este aferentă activității independente."
-— Codul fiscal, art. 68 alin. (4) lit. a) și alin. (5) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (4) lit. a) și alin. (5) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la un abonament de telefon:

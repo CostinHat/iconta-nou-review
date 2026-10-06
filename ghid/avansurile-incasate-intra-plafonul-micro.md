@@ -14,7 +14,7 @@ O firmă la limita plafonului de venituri pentru regimul micro încasează un av
 
 ::: ghid-temei
 „(1) Dacă un client plătește o sumă înainte ca entitatea să transfere acestuia un bun sau un serviciu, în momentul încasării entitatea înregistrează o datorie față de client. În acest caz, datoria față de client reprezintă obligația entității de a transfera clientului bunurile sau serviciile pentru care a încasat suma respectivă. (2) Sumele încasate în condițiile alin. (1) se înregistrează ca o datorie față de client (contul 419 «Clienți - creditori»). Entitatea scoate din evidență acea datorie și recunoaște venituri atunci când transferă bunurile sau serviciile respective și, prin urmare, își îndeplinește obligația contractuală."
-— OMFP 1802/2014, pct. 311^1 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 311^1 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Legătura cu plafonul micro:

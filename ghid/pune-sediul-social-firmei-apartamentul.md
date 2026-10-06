@@ -14,7 +14,7 @@ Da, o firmă își poate stabili sediul social într-un apartament aflat în pro
 
 ::: ghid-temei
 „50% din valoarea cheltuielilor de funcționare, întreținere și reparații aferente unui sediu social achiziționat de către contribuabil în clădiri de locuințe sau în clădiri individuale de locuit, din ansambluri rezidențiale definite potrivit prevederilor legale, care nu este utilizat exclusiv în scopul activității economice. În cazul în care sediul social, aflat în patrimoniul contribuabilului, este utilizat în scop personal de către acționari sau asociați, cheltuielile respective sunt considerate ca fiind efectuate în favoarea acestora [...], fiind nedeductibile la calculul rezultatului fiscal."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. k^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. k^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie știut înainte de a stabili sediul social într-un apartament:

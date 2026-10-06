@@ -16,12 +16,12 @@ Trebuie deosebită corecția de un alt caz: plata acum a unor diferențe de sala
 
 ::: ghid-temei
 „(7) În situația în care se constată elemente care generează modificarea veniturilor din salarii și asimilate salariilor și/sau a bazei de impunere aferente veniturilor unei persoane fizice, pentru care angajatorul/plătitorul a efectuat calculul impozitului lunar, recalcularea drepturilor respective și stabilirea diferențelor de impozit constatate se efectuează pentru luna la care se referă, iar diferențele de impozit rezultate vor majora/diminua impozitul datorat începând cu luna constatării."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IV, pct. 17 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IV, pct. 17 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul veniturilor din salarii și/sau al diferențelor de venituri din salarii stabilite pentru perioade anterioare, conform legii, impozitul se calculează și se reține la data efectuării plății, în conformitate cu reglementările legale în vigoare privind veniturile realizate în afara funcției de bază la data plății, și se plătește până la data de 25 a lunii următoare celei în care s-au plătit."
-— Legea 227/2015 (Codul fiscal), art. 78 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 78 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum alegi regula:

@@ -49,7 +49,7 @@ O firmă cu cifra de afaceri 5.000.000 lei și impozit pe profit datorat 40.000 
 
 ## Ce face iConta.eu
 
-În `core/sponsorizari.py`, `plafon_credit()` calculează `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, iar `credit_sponsorizare()` calculează `credit = min(sponsorizari_efectuate, plafon)` și `redirectionabil_d177 = plafon - credit`. Așadar, când sponsorizarea depășește plafonul, `credit` este limitat la valoarea plafonului, iar `redirectionabil_d177` iese 0 — nu mai există spațiu suplimentar de redirecționare, iar diferența dintre sponsorizarea efectivă și plafon rămâne, corect, în afara calculului.
+În aplicația, `plafon_credit()` calculează `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, iar `credit_sponsorizare()` calculează `credit = min(sponsorizari_efectuate, plafon)` și `redirectionabil_d177 = plafon - credit`. Așadar, când sponsorizarea depășește plafonul, `credit` este limitat la valoarea plafonului, iar `redirectionabil_d177` iese 0 — nu mai există spațiu suplimentar de redirecționare, iar diferența dintre sponsorizarea efectivă și plafon rămâne, corect, în afara calculului.
 
 Rețineți însă: motorul aplică această regulă (0,75%/D177) **indiferent de `la_data` transmisă**, chiar și pentru ani anteriori lui 2022, când legea prevedea altceva (0,5% cu reportare pe 7 ani). Pentru sponsorizări din 2019–2021, nu vă bazați pe rezultatul automat.
 

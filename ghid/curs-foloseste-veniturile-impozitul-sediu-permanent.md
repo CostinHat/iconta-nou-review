@@ -16,15 +16,15 @@ Regula contează direct pentru creditul fiscal extern: impozitul plătit afară 
 
 ::: ghid-temei
 „Din punct de vedere fiscal, la sfârșitul anului fiscal, operațiunile efectuate prin intermediul unor sedii permanente din străinătate ale persoanelor juridice române, înregistrate în cursul perioadei în monedă străină, respectiv veniturile, cheltuielile, alte sume impozabile sau deductibile, cât și impozitul plătit se convertesc în lei prin utilizarea cursului valutar mediu anual, comunicat de Banca Națională a României.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „O persoană juridică română care desfășoară activități printr-un sediu permanent într-un alt stat calculează rezultatul fiscal la nivelul întregii societăți, potrivit dispozițiilor titlului II din Codul fiscal. În scopul acordării creditului fiscal aferent unui sediu permanent contribuabilul calculează profitul impozabil și impozitul pe profit aferente acelui sediu permanent, în conformitate cu reglementările fiscale din România.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dacă o persoană juridică română obține venituri dintr-un stat străin prin intermediul unui sediu permanent sau venituri supuse unui impozit cu reținere la sursă care, potrivit prevederilor convenției de evitare a dublei impuneri încheiate de România cu un alt stat, pot fi impuse în celălalt stat, iar respectiva convenție prevede ca metodă de evitare a dublei impuneri metoda creditului, impozitul plătit către statul străin, fie direct, fie indirect, prin reținerea și virarea de o altă persoană, se scade din impozitul pe profit determinat potrivit prevederilor prezentului titlu.”
-— Codul fiscal (Legea 227/2015), art. 39 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 39 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

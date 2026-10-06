@@ -14,14 +14,14 @@ Nu, atâta timp cât avansul rămâne avans — adică nu a fost urmat de livrar
 
 ::: ghid-temei
 „Contul 419 «Clienți - creditori» Cu ajutorul acestui cont se ține evidența clienților - creditori, reprezentând avansurile încasate de la clienți. Contul 419 «Clienți - creditori» este un cont de pasiv."
-— OMFP 1802/2014, funcțiunea conturilor, grupa 41 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, funcțiunea conturilor, grupa 41 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Coroborat cu regula de calcul a plafonului micro, aceasta arată de ce avansurile nu se cumulează în plafon:
 
 ::: ghid-temei
 „c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...]"
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, pentru plafonul micro:
@@ -38,6 +38,6 @@ Ce înseamnă, concret, pentru plafonul micro:
 
 ## Ce face iConta.eu
 
-Modulul de facturare al iConta.eu distinge tipul facturii (avans vs. factură de livrare/prestare), iar modulul de avansuri (`core/avansuri.py`) generează notele contabile corecte pentru avansul încasat/plătit și pentru regularizarea lui ulterioară (cont 419 la încasare, apoi stornare la livrare). Calculul obligațiilor pentru regimul micro (`core/d100.py`) se face pe baza veniturilor introduse de utilizator pentru trimestrul respectiv; aplicația nu recalculează însă automat, din facturile emise, care sume reprezintă venit recunoscut și care rămân avansuri nedecontate — această distincție rămâne, la acest moment, în responsabilitatea contabilului la introducerea datelor.
+Modulul de facturare al iConta.eu distinge tipul facturii (avans vs. factură de livrare/prestare), iar modulul de avansuri generează notele contabile corecte pentru avansul încasat/plătit și pentru regularizarea lui ulterioară (cont 419 la încasare, apoi stornare la livrare). Calculul obligațiilor pentru regimul micro se face pe baza veniturilor introduse de utilizator pentru trimestrul respectiv; aplicația nu recalculează însă automat, din facturile emise, care sume reprezintă venit recunoscut și care rămân avansuri nedecontate — această distincție rămâne, la acest moment, în responsabilitatea contabilului la introducerea datelor.
 
 [iConta.eu](/)

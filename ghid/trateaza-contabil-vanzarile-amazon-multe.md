@@ -14,10 +14,10 @@ O firmă care vinde prin Amazon către clienți persoane fizice din mai multe st
 
 ::: ghid-temei
 „(2) Prin excepție de la prevederile alin. (1) lit. a), locul livrării în cazul vânzărilor intracomunitare de bunuri la distanță este considerat a fi locul în care se află bunurile în momentul în care se încheie expedierea sau transportul bunurilor către client."
-— Legea 227/2015 (Codul fiscal), art. 275 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 275 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „c) valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent."
-— Legea 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din cele două texte rezultă mecanismul aplicabil vânzărilor prin Amazon către consumatori din alte state UE:

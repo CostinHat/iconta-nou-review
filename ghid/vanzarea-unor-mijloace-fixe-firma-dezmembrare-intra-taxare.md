@@ -16,12 +16,12 @@ Contează pentru că tratamentul greșit costă. Dacă furnizorul facturează cu
 
 ::: ghid-temei
 „Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316"
-— Codul fiscal (Legea 227/2015), art. 331 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 331 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „bunuri de natura activelor corporale fixe, care au în conținut bunuri de natura celor prevăzute la art. 331 alin. (2) lit. a) pct. 1-3 din Codul fiscal, care nu sunt casate de către deținătorii acestora, ci sunt livrate ca atare către alți operatori economici, care dețin o autorizație valabilă de mediu pentru activitatea de dezmembrare și rezultă din prevederile contractuale că activele corporale fixe sunt achiziționate în vederea dezmembrării. O copie de pe autorizația de mediu valabilă se pune la dispoziția furnizorului pentru a justifica aplicarea taxării inverse."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 109 alin. (5) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 109 alin. (5) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Condițiile, toate cumulative:

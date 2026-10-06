@@ -14,7 +14,7 @@ O cheltuială făcută înainte ca PFA să fie autorizată nu îndeplinește, î
 
 ::: ghid-temei
 „Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: a) să fie efectuate în cadrul activităților independente, justificate prin documente; [...] b) să fie cuprinse în cheltuielile exercițiului financiar al anului în cursul căruia au fost plătite [...]"
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (4) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (4) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, această condiție:

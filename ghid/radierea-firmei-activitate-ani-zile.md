@@ -14,7 +14,7 @@ O firmă rămasă fără activitate ani de zile, fără să fi fost radiată for
 
 ::: ghid-temei
 „Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății în următoarele cazuri, la cererea oricărei persoane interesate sau din oficiu, în cazurile în care: [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului [...]."
-— Legea nr. 31/1990 privind societățile, art. 237^2 alin. (1) lit. b) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Mecanismul concret al constatării dizolvării pentru inactivitate:

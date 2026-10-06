@@ -14,10 +14,10 @@ Cele două se confundă des, mai ales în firmele mici, pentru că amândouă au
 
 ::: ghid-temei
 „(1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale. (2) Operatorii economici prevăzuți la alin. (1) [...] au obligația să emită bonuri fiscale cu aparate de marcat electronice fiscale și să le înmâneze clienților."
-— OUG 28/1999, art. 1 alin. (1)-(2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (1)-(2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „REGISTRUL DE CASĂ (Cod 14-4-7A [...]) [...] servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, Anexa 2, Cod 14-4-7A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-4-7A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Diferența, punct cu punct:
@@ -35,6 +35,6 @@ Diferența, punct cu punct:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează cele două fluxuri prin module separate, coerent cu distincția legală: `core/amef_import.py` (`parseaza_raport_z()`) pentru citirea raportului fiscal al aparatului de marcat — din care `core/uc_tenants.py` (`horeca_import_amef()`) generează automat o notă contabilă zilnică (5311/5125 = 707 + TVA pe 4427) — și `core/casa.py` (`registru_casa()`, `sold_final()`) pentru registrul de casă propriu-zis, care ține soldul rulant al operațiunilor de numerar introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Cele două fluxuri rămân, la acest moment, separate: nota generată din raportul Z nu intră și în `registru_casa()` ca o linie de operațiune, deci soldul de casă din registru și suma din raportul Z se urmăresc azi ca fluxuri distincte, nu unul integrat automat în celălalt.
+La data acestui ghid, iConta.eu tratează cele două fluxuri prin module separate, coerent cu distincția legală: Aplicația (`parseaza_raport_z()`) pentru citirea raportului fiscal al aparatului de marcat — din care aplicația (`horeca_import_amef()`) generează automat o notă contabilă zilnică (5311/5125 = 707 + TVA pe 4427) — și aplicația (`registru_casa()`, `sold_final()`) pentru registrul de casă propriu-zis, care ține soldul rulant al operațiunilor de numerar introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Cele două fluxuri rămân, la acest moment, separate: nota generată din raportul Z nu intră și în `registru_casa()` ca o linie de operațiune, deci soldul de casă din registru și suma din raportul Z se urmăresc azi ca fluxuri distincte, nu unul integrat automat în celălalt.
 
 [iConta.eu](/)

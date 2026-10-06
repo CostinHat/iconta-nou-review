@@ -14,7 +14,7 @@ O notificare de conformare de la ANAF nu e o decizie de impunere și nu e, prin 
 
 ::: ghid-temei
 „ART. 121^1 Notificarea de conformare emisă de organul fiscal central în cazul inspecției fiscale (1) Pentru contribuabilii/plătitorii prezumtivi a fi selectați pentru efectuarea inspecției fiscale, organul de inspecție fiscală transmite acestora, în scris, o notificare de conformare cu privire la riscurile fiscale identificate în scopul reanalizării de către aceștia a situației fiscale și, după caz, de a depune sau de a corecta declarațiile fiscale. (2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, la primirea unei notificări de conformare:

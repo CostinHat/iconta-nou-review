@@ -15,7 +15,7 @@ Regula de bază pentru bunurile date în concesiune e simplă, dar deseori aplic
 ::: ghid-temei
 „Amortizarea mijloacelor fixe concesionate, închiriate sau date în locație de gestiune se calculează de către agentul economic care le are în proprietate.
 Amortizarea investițiilor efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune se recuperează de agentul economic care a efectuat investiția, pe perioada contractului."
-— Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale, art. 11 alin. (2)-(3) (sursă: anaf_surse/legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.txt)
+— Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale, art. 11 alin. (2)-(3) (sursă: [Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale](https://legislatie.just.ro/Public/DetaliiDocument/3915))
 :::
 
 - **Bunul concesionat în sine** se amortizează de către cel care îl are în proprietate (concedent), nu de concesionar, chiar dacă acesta din urmă îl folosește efectiv în activitate.

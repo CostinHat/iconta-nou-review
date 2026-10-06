@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „44. Bugetul statului, fonduri speciale și conturi asimilate
 441. Impozitul pe profit și alte impozite"
-— OMFP nr. 1.802/2014 (Reglementări contabile privind situațiile financiare anuale individuale și consolidate — Planul de conturi general), clasa 4, grupa 44 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementări contabile privind situațiile financiare anuale individuale și consolidate — Planul de conturi general), clasa 4, grupa 44 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă pentru înregistrarea contabilă:
@@ -32,6 +32,6 @@ Ce rezultă pentru înregistrarea contabilă:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/d101.py` generează Declarația 101 (impozitul pe profit) din datele contabile ale firmei, iar `core/d101_reconciliere.py` recalculează independent baza contabilă a impozitului (veniturile și cheltuielile din clasele 6/7) pentru a o confrunta cu ce a generat calculul declarației, semnalând orice divergență; plata efectivă a impozitului pe profit prin bancă se înregistrează ca notă contabilă obișnuită (441=5121) în modulele de bancă ale aplicației, folosind planul de conturi OMFP 1802/2014.
+Verificat în cod: Aplicația generează Declarația 101 (impozitul pe profit) din datele contabile ale firmei, iar aplicația recalculează independent baza contabilă a impozitului (veniturile și cheltuielile din clasele 6/7) pentru a o confrunta cu ce a generat calculul declarației, semnalând orice divergență; plata efectivă a impozitului pe profit prin bancă se înregistrează ca notă contabilă obișnuită (441=5121) în modulele de bancă ale aplicației, folosind planul de conturi OMFP 1802/2014.
 
 [iConta.eu](/)

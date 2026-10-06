@@ -16,10 +16,10 @@ Raportul este instrumentul care face decontul precompletat verificabil. O cifră
 
 ::: ghid-temei
 „Decontul precompletat RO e-TVA conține informații privind sursele de date utilizate pentru precompletare. Persoanele impozabile pot solicita electronic rapoarte privind datele și informațiile din sursele de date utilizate."
-— OPANAF 3775/2024, art. 4 (sursă: anaf_surse/ordin_3775_2024.html)
+— OPANAF 3775/2024, art. 4 (sursă: [OPANAF nr. 3775/2024 pentru aprobarea formularului Decont precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/285907))
 
 „(4) În situația în care nu sunt identificate date și informații pentru precompletarea tuturor rubricilor din decontul precompletat RO e-TVA sau acestea rezultă din operațiuni pentru care nu există obligativitatea transmiterii de informații către Agenția Națională de Administrare Fiscală, aceste rubrici rămân necompletate. (5) Decontul precompletat RO e-TVA conține informații privind sursele de date utilizate pentru precompletare. Persoanele impozabile pot solicita electronic rapoarte privind datele și informațiile din sursele de date utilizate."
-— OUG 70/2024, art. 2 alin. (4) și (5) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 2 alin. (4) și (5) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Ce rezultă practic:

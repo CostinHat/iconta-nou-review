@@ -17,7 +17,7 @@ O firmă cu mai multe puncte de lucru care încasează cash — magazine, showro
 În cazul persoanelor prevăzute la art. 1 alin. (1) care au organizate mai multe casierii, plafoanele prevăzute la art. 3 alin. (1) lit. a) și b) și la art. 4 alin. (1) sunt aplicabile pe fiecare casierie în parte.
 Articolul 8
 Sucursalele și alte sedii secundare ale persoanelor juridice care au casierie proprie și/sau cont deschis la o instituție de credit aplică în mod corespunzător prevederile prezentului capitol."
-— Legea 70/2015, art. 7 și art. 8 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 7 și art. 8 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din text rezultă regimul aplicabil firmelor cu mai multe puncte de încasare:
@@ -36,6 +36,6 @@ Din text rezultă regimul aplicabil firmelor cu mai multe puncte de încasare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu verifică plafoanele de încasări și plăți în numerar prin `core/casa.py` (`verifica_plafon()`), cu constantele legale — 5.000 lei încasare de la persoană juridică, 10.000 lei pentru cash and carry, 10.000 lei încasare/plată de la persoană fizică — și cu soldul zilnic de casă preluat dinamic din registrul de cote (`c.cota("plafon_sold_casa", la_data)`). Calculul funcționează însă la nivelul unei singure casierii, pe tenant (schema firmei) — codul nu are conceptul de casierii multiple sau puncte de lucru separate (nu există câmp de tip „casierie_id" sau „punct_lucru" în modulul de casă). O firmă cu mai multe puncte de încasare distincte, fiecare cu casierie proprie conform art. 7-8, trebuie să urmărească separat, în afara aplicației, încadrarea în plafon pentru fiecare punct de lucru.
+La data acestui ghid, iConta.eu verifică plafoanele de încasări și plăți în numerar prin aplicație (`verifica_plafon()`), cu constantele legale — 5.000 lei încasare de la persoană juridică, 10.000 lei pentru cash and carry, 10.000 lei încasare/plată de la persoană fizică — și cu soldul zilnic de casă preluat dinamic din registrul de cote (`c.cota("plafon_sold_casa", la_data)`). Calculul funcționează însă la nivelul unei singure casierii, pe tenant (schema firmei) — codul nu are conceptul de casierii multiple sau puncte de lucru separate (nu există câmp de tip „casierie_id" sau „punct_lucru" în modulul de casă). O firmă cu mai multe puncte de încasare distincte, fiecare cu casierie proprie conform art. 7-8, trebuie să urmărească separat, în afara aplicației, încadrarea în plafon pentru fiecare punct de lucru.
 
 [iConta.eu](/)

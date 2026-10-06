@@ -14,7 +14,7 @@ Firmele care gestionează sume importante de numerar în casierie — retail, un
 
 ::: ghid-temei
 „g) cheltuielile cu primele de asigurare care **nu privesc activele și riscurile asociate activității contribuabilului**, cu excepția celor care privesc bunurile reprezentând garanție bancară pentru creditele utilizate în desfășurarea activității pentru care este autorizat contribuabilul sau utilizate în cadrul unor contracte de închiriere sau de leasing, potrivit clauzelor contractuale;"
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. g) — cheltuieli cu deductibilitate limitată (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. g) — cheltuieli cu deductibilitate limitată (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma este formulată „pe dos" — enumeră ce **nu** e deductibil — dar tocmai de aceea confirmă, per a contrario, regula generală: o primă de asigurare care privește un activ sau un risc asociat activității economice a firmei este deductibilă. Pentru asigurarea împotriva furtului de numerar:
@@ -31,6 +31,6 @@ Norma este formulată „pe dos" — enumeră ce **nu** e deductibil — dar toc
 
 ## Ce face iConta.eu
 
-Pentru acest subiect nu am identificat în cod un modul dedicat evidenței sau deductibilității primelor de asigurare (nu există în modulele verificate — de exemplu `core/d407.py`, care raportează polițele de asigurare de viață în cadrul schimbului automat de informații, o funcționalitate diferită, de raportare informativă, nu de calcul al deductibilității cheltuielilor cu asigurările). Încadrarea corectă a unei asigurări împotriva furtului de numerar rămâne, la acest moment, o verificare manuală a contabilului.
+Pentru acest subiect nu am identificat în cod un modul dedicat evidenței sau deductibilității primelor de asigurare (nu există în modulele verificate — de exemplu aplicația, care raportează polițele de asigurare de viață în cadrul schimbului automat de informații, o funcționalitate diferită, de raportare informativă, nu de calcul al deductibilității cheltuielilor cu asigurările). Încadrarea corectă a unei asigurări împotriva furtului de numerar rămâne, la acest moment, o verificare manuală a contabilului.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Statul de plată arată cât se datorează fiecărui salariat. Ce a ieșit efect
 ::: ghid-temei
 „(1) Plata salariului se dovedeşte prin semnarea statelor de plată, precum şi prin orice alte documente justificative care demonstreaza efectuarea plăţii către salariatul îndreptăţit.
 (2) Statele de plată, precum şi celelalte documente justificative se păstrează şi se arhiveaza de către angajator în aceleaşi condiţii şi termene ca în cazul actelor contabile, conform legii."
-— Legea 53/2003 (Codul muncii), art. 163 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 163 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Legea cere DOUĂ lucruri distincte pentru a dovedi plata: statul de plată (ce se datorează) și „orice alte documente justificative" (ordinul de plată, extrasul de cont, chitanța) care arată ce s-a plătit efectiv — o neconcordanță se investighează comparând cele două, nu presupunând că unul dintre ele e automat corect.

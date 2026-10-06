@@ -14,10 +14,10 @@ Contabilitatea unei firme nu începe „când apar primele facturi" — obligaț
 
 ::: ghid-temei
 „Persoanele prevăzute la art. 1 alin. (1)-(4) au obligația să conducă contabilitatea în partidă dublă și să întocmească situații financiare anuale, potrivit reglementărilor contabile aplicabile."
-— Legea nr. 82/1991 a contabilității, art. 5 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 a contabilității, art. 5 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea nr. 82/1991 a contabilității, art. 6 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 a contabilității, art. 6 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Din aceste articole rezultă structura de bază pe care orice firmă nou-înființată trebuie s-o pună la punct din prima zi:
@@ -34,6 +34,6 @@ Din aceste articole rezultă structura de bază pe care orice firmă nou-înfiin
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă generală de la înființarea profilului firmei în aplicație: configurarea datelor de identificare și a vectorului fiscal (`core/firma_profil_api.py`, `core/vector_fiscal_api.py`), plan de conturi conform reglementărilor aplicabile, și înregistrarea notelor contabile pe bază de documente justificative introduse de utilizator. Aplicația nu automatizează și nu poate înlocui decizia inițială de organizare (alegerea regimului de impozitare, structura de conturi analitice specifică activității, politicile contabile proprii) — acestea rămân decizii ale contabilului sau ale asociatului, pe care aplicația le reflectă ulterior în evidență.
+iConta.eu oferă evidența contabilă generală de la înființarea profilului firmei în aplicație: configurarea datelor de identificare și a vectorului fiscal, plan de conturi conform reglementărilor aplicabile, și înregistrarea notelor contabile pe bază de documente justificative introduse de utilizator. Aplicația nu automatizează și nu poate înlocui decizia inițială de organizare (alegerea regimului de impozitare, structura de conturi analitice specifică activității, politicile contabile proprii) — acestea rămân decizii ale contabilului sau ale asociatului, pe care aplicația le reflectă ulterior în evidență.
 
 [iConta.eu](/)

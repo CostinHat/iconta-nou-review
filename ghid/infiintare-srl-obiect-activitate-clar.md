@@ -16,7 +16,7 @@ Obiectul de activitate nu e un detaliu formal al actului constitutiv — Legea s
 „[...] a) datele de identificare a asociaților; la societatea în comandită simplă se vor arăta și asociații comanditați;
 b) forma, denumirea și sediul social;
 c) obiectul de activitate al societății, cu precizarea domeniului și a activității principale;"
-— Legea 31/1990 (Legea societăților), art. 7 lit. a)-c) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 7 lit. a)-c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce riscuri concrete apar dintr-un obiect de activitate vag sau incomplet:

@@ -16,10 +16,10 @@ Fără document, diferența găsită la control devine **sumă nejustificată**.
 
 ::: ghid-temei
 „h) să întocmească documente justificative pentru sumele introduse în unitatea de vânzare a bunurilor sau de prestare a serviciilor, altele decât cele pentru care au emis bonuri fiscale sau cele înscrise în registrul special, după caz, precum și pentru sumele extrase din unitatea de vânzare a bunurilor sau de prestare a serviciilor, altele decât cele utilizate pentru a acorda rest clientului."
-— OUG 28/1999, art. 4 alin. (12) lit. h) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (12) lit. h) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „d) nerespectarea de către utilizatori a obligației prevăzute la art. 4 alin. (12) lit. h) , care determină existența unei sume nejustificate. În sensul acestei prevederi, prin sumă nejustificată se înțelege suma pentru care nu s-au întocmit documente justificative conform art. 4 alin. (12) lit. h) ;"
-— OUG 28/1999, art. 10 lit. d) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 10 lit. d) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce înseamnă în practică:

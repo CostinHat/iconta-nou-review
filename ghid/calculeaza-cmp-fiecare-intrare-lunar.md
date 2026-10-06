@@ -14,7 +14,7 @@ Contabilii care lucrează cu evidența cantitativ-valorică a stocurilor se love
 
 ::: ghid-temei
 „(2) Metoda «costului mediu ponderat» (CMP) presupune calcularea costului fiecărui element pe baza mediei ponderate a costurilor elementelor similare aflate în stoc la începutul perioadei și a costului elementelor similare produse sau cumpărate în timpul perioadei. Media poate fi calculată periodic sau după fiecare recepție. Perioada de calcul nu trebuie să depășească durata medie de stocare."
-— OMFP 1802/2014, pct. 96 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - „Periodic" înseamnă, în practică, recalcul lunar sau la un alt interval fix ales de firmă — o singură medie ponderată valabilă pentru toate ieșirile din acea perioadă.
@@ -30,7 +30,7 @@ Contabilii care lucrează cu evidența cantitativ-valorică a stocurilor se love
 
 ## Ce face iConta.eu
 
-iConta.eu implementează exclusiv varianta „**recalcul după fiecare intrare**" (recepție), niciodată varianta periodică/lunară, pentru modulul de stocuri cantitativ-valorice. Motorul de calcul (`core/stocuri_cv.py`) actualizează cantitatea și valoarea totală din stoc la fiecare mișcare de intrare, iar costul mediu ponderat curent se obține prin împărțirea valorii totale la cantitatea totală, imediat, fără să aștepte finalul lunii. Comportamentul e verificat printr-un test dedicat exact acestui scenariu (recalculul CMP-ului după o intrare intermediară).
+iConta.eu implementează exclusiv varianta „**recalcul după fiecare intrare**" (recepție), niciodată varianta periodică/lunară, pentru modulul de stocuri cantitativ-valorice. Motorul de calcul actualizează cantitatea și valoarea totală din stoc la fiecare mișcare de intrare, iar costul mediu ponderat curent se obține prin împărțirea valorii totale la cantitatea totală, imediat, fără să aștepte finalul lunii. Comportamentul e verificat printr-un test dedicat exact acestui scenariu (recalculul CMP-ului după o intrare intermediară).
 
 Este important de spus onest: aceasta e **alegerea tehnică a iConta**, una dintre cele două variante permise expres de lege — nu singura variantă legală. Dacă firma preferă varianta cu recalcul periodic (lunar), aplicația nu oferă acest mod de lucru în cadrul modulului de stocuri cantitativ-valorice la CMP.
 

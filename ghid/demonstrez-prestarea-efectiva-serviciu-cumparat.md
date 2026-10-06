@@ -14,7 +14,7 @@ Serviciile cumpărate de la un prestator din afara României (consultanță, man
 
 ::: ghid-temei
 „La stabilirea sumei unui impozit, a unei taxe sau a unei contribuții sociale obligatorii, autoritățile fiscale pot să nu ia în considerare o tranzacție care nu are un scop economic, ajustând efectele fiscale ale acesteia, sau pot reîncadra forma unei tranzacții/activități pentru a reflecta conținutul economic al tranzacției/activității. Organul fiscal este obligat să motiveze în fapt decizia de impunere emisă ca urmare a neluării în considerare a unei tranzacții [...], prin indicarea elementelor relevante în legătură cu scopul și conținutul tranzacției [...], precum și a tuturor mijloacelor de probă avute în vedere pentru aceasta."
-— Legea nr. 227/2015 privind Codul fiscal, art. 11 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 11 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Organul fiscal poate „să nu ia în considerare" o tranzacție fără scop economic, ajustându-i efectele fiscale — inclusiv respingerea deductibilității cheltuielii cu serviciul respectiv.

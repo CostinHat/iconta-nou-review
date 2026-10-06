@@ -16,12 +16,12 @@ Fără acel document, noul angajator nu are cum ști cât din plafon a fost cons
 
 ::: ghid-temei
 „calificate astfel în conformitate cu legislația privind pensiile facultative de către Autoritatea de Supraveghere Financiară, administrate de către entități autorizate stabilite în state membre ale Uniunii Europene sau aparținând Spațiului Economic European, ori de către entități autorizate într-un stat aderent la codurile de liberalizare ale Organizației pentru Cooperare și Dezvoltare Economică, suportate de angajați, astfel încât la nivelul anului să nu se depășească echivalentul în lei al sumei de 400 euro;”
-— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. a) pct. (iii), finalul textului (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. a) pct. (iii), finalul textului (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pe parcursul anului plătitorul de venituri din salarii cumulează sumele în euro, prevăzute la art. 78 alin. (2) lit. a) pct. (iii) și (iv) din Codul fiscal, și verifică încadrarea în plafonul deductibil prevăzut de lege. Pentru verificarea încadrării în plafonul anual, cursul de schimb utilizat pentru determinarea echivalentului în euro este cursul leu/euro comunicat de Banca Națională a României, în vigoare în ultima zi a lunii pentru care se plătesc drepturile salariale. În cazul unui angajat care se mută în cursul anului la un alt angajator unde obține venituri din salarii la funcția de bază, verificarea încadrării în plafonul anual a sumelor reprezentând contribuțiile la fondurile de pensii facultative, primele de asigurare voluntară de sănătate, precum și serviciile medicale furnizate sub formă de abonament, potrivit legii, pentru care se acordă deducerea, se efectuează în baza documentelor justificative eliberate de către angajatorul anterior prin care se atestă nivelul deducerilor acordate până la momentul mutării.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (6) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (6) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se face verificarea:

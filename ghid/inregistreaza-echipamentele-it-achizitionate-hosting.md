@@ -14,7 +14,7 @@ Un server, un router sau alt echipament IT cumpărat pentru infrastructura de ho
 
 ::: ghid-temei
 „mijloc fix - orice imobilizare corporală, care este deținută pentru a fi utilizată în producția sau livrarea de bunuri ori în prestarea de servicii, pentru a fi închiriată terților sau în scopuri administrative, dacă are o durată normală de utilizare mai mare de un an și o valoare egală sau mai mare decât limita stabilită prin hotărâre a Guvernului."
-— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru un echipament IT cumpărat de o firmă de hosting:

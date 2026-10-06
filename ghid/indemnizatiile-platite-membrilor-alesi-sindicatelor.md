@@ -16,17 +16,17 @@ Pentru contabilul organizației, asta înseamnă că indemnizația președintelu
 
 ::: ghid-temei
 „Regulile de impunere proprii veniturilor din salarii se aplică și următoarelor tipuri de venituri, considerate asimilate salariilor: [...] indemnizațiile din activități desfășurate ca urmare a unei funcții alese în cadrul persoanelor juridice fără scop patrimonial;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „indemnizațiile, primele și alte asemenea sume acordate membrilor aleși ai unor entități, cum ar fi: organizații sindicale, organizații patronale, alte organizații neguvernamentale;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (1) lit. e) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (1) lit. e) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „indemnizațiile din activități desfășurate ca urmare a unei funcții alese în cadrul persoanelor juridice fără scop patrimonial;"
-— Codul fiscal (Legea 227/2015), art. 139 alin. (1) lit. c) (CAS), art. 157 alin. (1) lit. c) (CASS) și art. 220^4 alin. (1) lit. c) (CAM) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 139 alin. (1) lit. c) (CAS), art. 157 alin. (1) lit. c) (CASS) și art. 220^4 alin. (1) lit. c) (CAM) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Registrul de casă nu este un document care se completează retroactiv, „la fi
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile, Grupa a IV-a, „Registrul de casă" (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile, Grupa a IV-a, „Registrul de casă" (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din definiția normei rezultă direct răspunsul: registrul de casă folosește **data efectivă a fiecărei zile de casierie**, nu o dată agregată sau întârziată:

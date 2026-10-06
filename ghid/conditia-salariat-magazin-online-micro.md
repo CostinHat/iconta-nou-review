@@ -14,10 +14,10 @@ Un magazin online organizat ca SRL pe regimul micro nu poate rămâne fără nic
 
 ::: ghid-temei
 „g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(4) În sensul prezentului titlu, prin salariat se înțelege persoana angajată cu contract individual de muncă cu normă întreagă, potrivit Legii nr. 53/2003 - Codul muncii [...]. Condiția se consideră îndeplinită și în cazul microîntreprinderilor care: a) au persoane angajate cu contract individual de muncă cu timp parțial dacă fracțiunile de normă prevăzute în acestea, însumate, reprezintă echivalentul unei norme întregi; b) au încheiate contracte de administrare sau mandat, potrivit legii, în cazul în care remunerația acestora este cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă condiția, concret, pentru un magazin online:

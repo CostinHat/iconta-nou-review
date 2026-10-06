@@ -15,7 +15,7 @@ Un certificat de concediu medical raportat cu alt cod de indemnizație decât ce
 ::: ghid-temei
 „(2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (2) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (2) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 D112 are, pentru scopul angajatorului, natură de declarație cu obligații fiscale declarate prin autoimpunere, dar componenta nominală (inclusiv codul certificatului de concediu medical) e corectabilă oricând, fără limitarea de prescripție care se aplică declarațiilor de impunere:

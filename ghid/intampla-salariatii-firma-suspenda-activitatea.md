@@ -15,7 +15,7 @@ Suspendarea activității unei firme (nu radierea, ci o oprire temporară, de re
 ::: ghid-temei
 „Contractul individual de muncă poate fi suspendat din iniţiativa angajatorului în următoarele situaţii: [...] d) în cazul întreruperii temporare a activităţii, fără încetarea raportului de muncă, în special pentru motive economice, tehnologice, structurale sau similare.
 Articolul 53 (1) Pe durata întreruperii temporare a activităţii angajatorului salariaţii beneficiază de o indemnizaţie, plătită din fondul de salarii, ce nu poate fi mai mica de 75% din salariul de baza corespunzător locului de muncă ocupat."
-— Legea nr. 53/2003 (Codul muncii), art. 52 alin. (1) lit. d) și art. 53 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 52 alin. (1) lit. d) și art. 53 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Câteva consecințe practice ale acestui temei:

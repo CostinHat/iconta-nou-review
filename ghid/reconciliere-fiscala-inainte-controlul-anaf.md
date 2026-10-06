@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(1) Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă.
 (2) Stabilirea prin estimare a bazei de impozitare se efectuează în situații cum ar fi: [...] b) în situația în care organul fiscal nu poate determina situația fiscală corectă și constată că evidențele contabile sau fiscale ori declarațiile fiscale sau documentele și informațiile prezentate în cursul controlului fiscal sunt incorecte, incomplete, precum și în situația în care acestea nu există ori nu sunt puse la dispoziția organelor fiscale."
-— Legea nr. 207/2015, art. 106 alin. (1)-(2) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 106 alin. (1)-(2) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, riscul nu e doar „am greșit o cifră", ci ce se întâmplă dacă evidența nu se poate reconcilia cu declarațiile: organul fiscal are dreptul legal să stabilească el însuși baza de impozitare, prin estimare, iar sarcina de a demonstra contrariul cade pe contribuabil.

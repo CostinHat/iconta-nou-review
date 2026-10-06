@@ -14,7 +14,7 @@ Un mijloc fix achiziționat printr-o factură în euro sau dolari nu se amortize
 
 ::: ghid-temei
 „(1) Contabilitatea se ține în limba română și în moneda națională. (2) Contabilitatea operațiunilor efectuate în valută se ține atât în moneda națională, cât și în valută, potrivit reglementărilor elaborate în acest sens."
-— Legea nr. 82/1991 (legea contabilității), art. 3 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (legea contabilității), art. 3 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Contabilitatea entității se ține **în lei**, indiferent de moneda în care e emisă factura furnizorului.
@@ -30,6 +30,6 @@ Un mijloc fix achiziționat printr-o factură în euro sau dolari nu se amortize
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de mijloace fixe din iConta.eu **nu are o funcție dedicată de conversie valutară** la înregistrarea unui mijloc fix — nu am găsit în cod (`core/repo_mijloace_fixe.py`, `core/mijloace_fixe_import_api.py`) nicio referință la curs, monedă sau valută. Valoarea de intrare, contul de imobilizare și amortizarea se introduc și se calculează direct în lei; conversia facturii din valută în lei, la cursul BNR corect, rămâne în sarcina contabilului, înainte de introducerea valorii în evidența mijloacelor fixe.
+La data acestui ghid, modulul de mijloace fixe din iConta.eu **nu are o funcție dedicată de conversie valutară** la înregistrarea unui mijloc fix — nu am găsit în cod nicio referință la curs, monedă sau valută. Valoarea de intrare, contul de imobilizare și amortizarea se introduc și se calculează direct în lei; conversia facturii din valută în lei, la cursul BNR corect, rămâne în sarcina contabilului, înainte de introducerea valorii în evidența mijloacelor fixe.
 
 [iConta.eu](/)

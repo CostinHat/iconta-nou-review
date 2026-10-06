@@ -16,15 +16,15 @@ O autoutilitară mixtă, construită pentru transportul de persoane și de bunur
 
 ::: ghid-temei
 „În cazul autovehiculelor de până la 12 tone inclusiv, destinate prin construcție atât transportului de persoane, cât și de bunuri, pentru stabilirea impozitului pe mijloacele de transport, acestea sunt asimilate vehiculelor prevăzute la pct. 8 din tabelul de la art. 470 alin. (2) din Codul fiscal, iar în cazul celor de peste 12 tone, acestea sunt asimilate autovehiculelor prevăzute la art. 470 alin. (5) din Codul fiscal. Intră sub incidența acestui alineat automobilele mixte și automobilele specializate/autospecializate, astfel cum sunt definite de prevederile legale în vigoare."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 116 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 116 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul oricăruia dintre următoarele autovehicule, impozitul pe mijloacele de transport se calculează în funcție de capacitatea cilindrică a acestuia și norma de poluare, prin înmulțirea fiecărei grupe de 200 cmc sau fracțiune din aceasta cu suma corespunzătoare din tabelul următor:"
-— Codul fiscal (Legea 227/2015), art. 470 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 470 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Alte vehicule cu tracțiune mecanică cu masa totală maximă autorizată de până la 12 tone inclusiv"
-— Codul fiscal (Legea 227/2015), art. 470 alin. (2), tabel, nr. crt. 8 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 470 alin. (2), tabel, nr. crt. 8 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Sumele din tabel pentru pct. 8, în forma în vigoare din 1 ianuarie 2026 (lei pentru fiecare 200 cmc sau fracțiune):

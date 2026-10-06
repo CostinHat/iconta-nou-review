@@ -14,7 +14,7 @@ Da. Legea nu obligă o firmă nouă să aștepte până depășește plafonul de
 
 ::: ghid-temei
 „(1) Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: a) înainte de realizarea unor astfel de operațiuni, în următoarele cazuri: 1. dacă declară că urmează să realizeze o cifră de afaceri care depășește plafonul de scutire prevăzut la art. 310 alin. (1) [...]; 2. dacă declară că urmează să realizeze o cifră de afaceri inferioară plafonului de scutire prevăzut la art. 310 alin. (1), dar optează pentru aplicarea regimului normal de taxă;"
-— Codul fiscal (Legea 227/2015), art. 316 alin. (1) lit. a) pct. 1-2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (1) lit. a) pct. 1-2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - O firmă nou-înființată are, practic, **două căi** spre TVA de la început: fie declară că estimează să depășească plafonul de scutire (caz în care înregistrarea devine obligatorie), fie — chiar dacă estimează o cifră de afaceri sub plafon — **optează** voluntar pentru regimul normal de taxă, ceea ce e permis explicit de lege (art. 316 alin. (1) lit. a) pct. 2).

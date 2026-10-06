@@ -17,12 +17,12 @@ Activitatea poate continua, dar schimbându-și forma de exercitare, de exemplu 
 
 ::: ghid-temei
 „nu se include în venitul brut al activității care urmează să se transforme/schimbe și nu este supusă impozitării contravaloarea bunurilor și drepturilor, inclusiv creanțele neîncasate care se transferă în patrimoniul afacerii în care s-a transformat/schimbat;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul bunurilor și al drepturilor amortizabile care trec în patrimoniul altei afaceri prin schimbarea modalității de exercitare a unei activități și/sau transformarea formei de exercitare a acesteia într-o altă formă, potrivit legislației în materie, se aplică următoarele reguli: a) cele cu valoare rămasă de amortizat se înscriu în Registrul-inventar la această valoare, care constituie și bază de calcul al amortizării; […] b) cele complet amortizate se înscriu în Registrul-inventar la valoarea stabilită prin expertiză tehnică sau la prețul practicat pe piață; pentru acestea nu se calculează amortizare și valoarea acestora nu constituie cheltuială deductibilă din veniturile noii activități."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 **Normele contrazic Codul fiscal curent.** Aceeași normă, pct. 7 alin. (2), spune mai sus că în venitul brut al afacerii care se transformă „se include" și contravaloarea bunurilor care trec în noua afacere. Codul fiscal spune contrariul, în art. 68 alin. (7^1) lit. a), introdus ulterior normelor: contravaloarea nu se include în venitul brut și nu se impozitează. Codul fiscal primează. Din normă se aplică în continuare doar regulile de înscriere în Registrul-inventar de la lit. a) și b), care nu contrazic legea.

@@ -14,7 +14,7 @@ Marfa primită în custodie nu aparține firmei care o păstrează — proprieta
 
 ::: ghid-temei
 „(Cod 14-3-1A) Nota de recepție și constatare de diferențe (NIR) servește ca: - document pentru recepția bunurilor aprovizionate; - document justificativ pentru încărcare în gestiune; - document justificativ de înregistrare în contabilitate. Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: [...] - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; [...]"
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa nr. 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa nr. 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - NIR-ul este obligatoriu pentru bunurile primite în custodie sau spre păstrare, chiar dacă acestea nu se încarcă în gestiunea proprie de marfă (fiind proprietatea altcuiva).

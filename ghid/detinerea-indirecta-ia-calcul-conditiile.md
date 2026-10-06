@@ -14,7 +14,7 @@ Un asociat deține 30% dintr-o firmă A, care la rândul ei deține 80% dintr-o 
 
 ::: ghid-temei
 „are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu."
-— Codul fiscal, art. 47 alin. (1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 47 alin. (1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Răspunsul e explicit: da, legea vorbește despre deținere „**în mod direct sau indirect**" — cele două se cumulează la verificarea pragului de 25%.

@@ -17,7 +17,7 @@ Depunerea cu întârziere sau nedepunerea situațiilor financiare anuale nu este
 [...]
 ART. 42 (1) Contravențiile prevăzute la art. 41 se sancționează cu amendă după cum urmează: [...]
 o) cea prevăzută la pct. 8, cu amendă de la 2.000 lei la 5.000 lei."
-— Legea nr. 82/1991 (Legea contabilității), art. 41 pct. 8 și art. 42 alin. (1) lit. o) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (Legea contabilității), art. 41 pct. 8 și art. 42 alin. (1) lit. o) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă din text pentru bilanțul aferent anului 2026:
@@ -34,6 +34,6 @@ Ce rezultă din text pentru bilanțul aferent anului 2026:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/bilant.py` generează situațiile financiare anuale ale microentităților (F10 bilanț prescurtat, F20 cont prescurtat, conform OMF 107/2025) din soldurile și rulajele balanței; aplicația nu are, la acest moment, o alertă automată de apropiere a termenului legal de depunere a situațiilor financiare care să prevină întârzierea — generarea la timp a bilanțului rămâne o responsabilitate a contabilului, cu sprijinul modulului de generare din aplicație.
+Verificat în cod: Aplicația generează situațiile financiare anuale ale microentităților (F10 bilanț prescurtat, F20 cont prescurtat, conform OMF 107/2025) din soldurile și rulajele balanței; aplicația nu are, la acest moment, o alertă automată de apropiere a termenului legal de depunere a situațiilor financiare care să prevină întârzierea — generarea la timp a bilanțului rămâne o responsabilitate a contabilului, cu sprijinul modulului de generare din aplicație.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ O terasă de litoral deschisă doar între mai și septembrie sau o pensiune mon
 
 ::: ghid-temei
 „Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."
-— Legea nr. 227/2015 privind Codul fiscal, art. 323 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Notă onestă: nu există în Codul fiscal o prevedere specifică pentru „firme sezoniere" sau pentru sectorul HoReCa în particular — regulile de mai jos sunt cele generale, aplicabile oricărei persoane înregistrate în scopuri de TVA, indiferent dacă activitatea e continuă sau sezonieră.

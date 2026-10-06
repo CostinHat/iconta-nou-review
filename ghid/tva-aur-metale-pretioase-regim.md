@@ -15,7 +15,7 @@ Regimul special de TVA pentru aurul de investiții, prevăzut de art. 313 din Co
 ::: ghid-temei
 „a) aurul, sub formă de lingouri sau plachete acceptate/cotate pe piețele de metale prețioase, având puritatea minimă de 995 la mie, reprezentate sau nu prin hârtii de valoare, cu excepția lingourilor sau plachetelor cu greutatea de cel mult 1 g;
 b) monedele de aur care îndeplinesc cumulativ următoarele condiții: 1. au titlul mai mare sau egal cu 900 la mie; 2. sunt reconfecționate după anul 1800; 3. sunt sau au constituit monedă legală de schimb în statul de origine; și 4. sunt vândute în mod normal la un preț care nu depășește valoarea de piață liberă a aurului conținut de monede cu mai mult de 80%."
-— Codul fiscal (Legea 227/2015), art. 313 alin. (1) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 313 alin. (1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă cu claritate perimetrul regimului:

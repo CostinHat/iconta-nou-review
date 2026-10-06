@@ -14,7 +14,7 @@ Când o firmă donează bunuri din propriul stoc — mărfuri, produse finite �
 
 ::: ghid-temei
 „(4) Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: a) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi utilizate în scopuri care nu au legătură cu activitatea economică desfășurată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial; b) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi puse la dispoziția altor persoane în mod gratuit, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (4) lit. a), b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (4) lit. a), b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta în practică:
@@ -32,6 +32,6 @@ Ce înseamnă asta în practică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un flux dedicat pentru donația de produse din stoc**. Aplicația are module pentru descărcarea de gestiune la vânzare (`core/stocuri.py`, cu funcția `descarcare_gv`), pentru sponsorizări deductibile prin credit fiscal (`core/sponsorizari.py`, cu funcțiile `credit_sponsorizare` și `nota_sponsorizare`, aplicabile însă sponsorizărilor în bani sau prin contracte de sponsorizare, nu donațiilor directe de marfă), dar niciunul dintre ele nu calculează automat TVA colectată la o livrare către sine conform art. 270 alin. (4). Înregistrarea corectă — descărcare de gestiune la cost plus autofactură cu TVA colectată — rămâne o operațiune manuală, pe baza documentației întocmite de contabil.
+La data acestui ghid, iConta.eu **nu are un flux dedicat pentru donația de produse din stoc**. Aplicația are module pentru descărcarea de gestiune la vânzare (cu funcția `descarcare_gv`), pentru sponsorizări deductibile prin credit fiscal (cu funcțiile `credit_sponsorizare` și `nota_sponsorizare`, aplicabile însă sponsorizărilor în bani sau prin contracte de sponsorizare, nu donațiilor directe de marfă), dar niciunul dintre ele nu calculează automat TVA colectată la o livrare către sine conform art. 270 alin. (4). Înregistrarea corectă — descărcare de gestiune la cost plus autofactură cu TVA colectată — rămâne o operațiune manuală, pe baza documentației întocmite de contabil.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Precizare de la început: „calendarul obligațiilor din primul an" nu există 
 ::: ghid-temei
 „Articolul 36
 (1) În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori sau, dacă este cazul, primii membri ai directoratului și ai consiliului de supraveghere ori un împuternicit al acestora vor cere înmatricularea societății în registrul comerțului în a cărui rază teritorială își va avea sediul societatea. Ei răspund în mod solidar pentru orice prejudiciu pe care îl cauzează prin neîndeplinirea acestei obligații."
-— Legea 31/1990 (Legea societăților), art. 36 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 36 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Primele termene verificabile pentru un SRL nou-înființat:
@@ -34,6 +34,6 @@ Dincolo de acestea, calendarul concret depinde de regimul fiscal ales (micro sau
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat calendarului de termene ale firmei (`core/termene_api.py`, funcția `termene_firma`), care calculează obligațiile următoare pe baza vectorului fiscal al firmei (regim de TVA, dacă are salariați, ce declarații a depus deja) — util pentru urmărirea obligațiilor curente odată ce firma e configurată în aplicație. Pașii dinaintea acestui punct — înmatricularea la registrul comerțului și prima înregistrare fiscală — au loc în afara aplicației, prin ONRC/ANAF, așa că nu sunt urmăriți automat de iConta.eu; calendarul din aplicație pornește din momentul în care contabilul configurează firma și vectorul ei fiscal.
+iConta.eu are un modul dedicat calendarului de termene ale firmei (funcția `termene_firma`), care calculează obligațiile următoare pe baza vectorului fiscal al firmei (regim de TVA, dacă are salariați, ce declarații a depus deja) — util pentru urmărirea obligațiilor curente odată ce firma e configurată în aplicație. Pașii dinaintea acestui punct — înmatricularea la registrul comerțului și prima înregistrare fiscală — au loc în afara aplicației, prin ONRC/ANAF, așa că nu sunt urmăriți automat de iConta.eu; calendarul din aplicație pornește din momentul în care contabilul configurează firma și vectorul ei fiscal.
 
 [iConta.eu](/)

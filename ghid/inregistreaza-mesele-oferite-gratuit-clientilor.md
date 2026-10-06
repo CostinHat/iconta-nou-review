@@ -14,7 +14,7 @@ O masă sau un produs oferit gratuit unui client (degustare, eveniment de protoc
 
 ::: ghid-temei
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: [...] b) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi puse la dispoziția altor persoane în mod gratuit, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea 227/2015, art. 270 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 270 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula, cu excepțiile ei:
@@ -32,6 +32,6 @@ Regula, cu excepțiile ei:
 
 ## Ce face iConta.eu
 
-iConta.eu contabilizează operațiunile de acordare gratuită a bunurilor ca notă contabilă obișnuită (descărcare de gestiune +, dacă e cazul, TVA colectată pe cont separat), pe baza informațiilor introduse de utilizator despre natura operațiunii. Aplicația **nu decide singură** dacă o masă oferită gratuit se încadrează la excepția de reclamă/protocol de la art. 270 alin. (8) sau intră sub regula generală de colectare a TVA — încadrarea juridică a fiecărei operațiuni (scop de reclamă, plafon de mică valoare, documentație justificativă) rămâne o evaluare a contabilului, pe care apoi o introduce ca atare în notă.
+iConta.eu contabilizează operațiunile de acordare gratuită a bunurilor ca notă contabilă obișnuită (descărcare de gestiune, dacă e cazul, TVA colectată pe cont separat), pe baza informațiilor introduse de utilizator despre natura operațiunii. Aplicația **nu decide singură** dacă o masă oferită gratuit se încadrează la excepția de reclamă/protocol de la art. 270 alin. (8) sau intră sub regula generală de colectare a TVA — încadrarea juridică a fiecărei operațiuni (scop de reclamă, plafon de mică valoare, documentație justificativă) rămâne o evaluare a contabilului, pe care apoi o introduce ca atare în notă.
 
 [iConta.eu](/)

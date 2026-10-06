@@ -14,7 +14,7 @@ Declarația 394 nu se depune de toți plătitorii de TVA pentru toate operațiun
 
 ::: ghid-temei
 „Declarația se completează şi se depune de către: a) persoanele impozabile înregistrate în scopuri de TVA în România conform art. 316 din Legea nr. 227/2015 privind Codul fiscal [...] şi care sunt obligate la plata taxei conform art. 307 alin. (1), (2), (6) şi (7) din Codul fiscal, pentru operaţiuni impozabile în România conform art. 268 alin. (1) şi taxabile cu cota prevăzută de Codul fiscal. [...] b) persoanele impozabile înregistrate în scopuri de TVA în România conform art. 316 din Codul fiscal, care realizează în România achiziţii de bunuri sau servicii."
-— OPANAF nr. 3.769/2015, Anexa nr. 2, pct. 1 lit. a) și b) (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF nr. 3.769/2015, Anexa nr. 2, pct. 1 lit. a) și b) (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 În practică, obligația de depunere revine:
@@ -31,6 +31,6 @@ Declarația 394 nu se depune de toți plătitorii de TVA pentru toate operațiun
 
 ## Ce face iConta.eu
 
-iConta.eu emite facturi și evidențiază achizițiile firmei, iar din modulul dedicat generează și structura D394 pe baza documentelor introduse în aplicație (fișierul `core/d394.py` din motorul aplicației). Corectitudinea încadrării fiecărei operațiuni (cotă, tip document, partener) rămâne responsabilitatea contabilului care validează declarația înainte de depunere.
+iConta.eu emite facturi și evidențiază achizițiile firmei, iar din modulul dedicat generează și structura D394 pe baza documentelor introduse în aplicație (aplicația din motorul aplicației). Corectitudinea încadrării fiecărei operațiuni (cotă, tip document, partener) rămâne responsabilitatea contabilului care validează declarația înainte de depunere.
 
 [iConta.eu](/)

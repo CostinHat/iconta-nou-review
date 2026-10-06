@@ -14,7 +14,7 @@ Cheltuielile sociale — ajutoare de înmormântare, ajutoare pentru boli grave,
 
 ::: ghid-temei
 „cheltuielile sociale, în limita unei cote de până la 5%, aplicată asupra valorii cheltuielilor cu salariile personalului, potrivit Codului muncii. Intră sub incidența acestei limite următoarele: 1. ajutoarele de înmormântare, ajutoarele pentru bolile grave și incurabile, ajutoarele pentru naștere, ajutoarele pentru proteze, ajutoarele pentru pierderi produse în gospodăriile proprii, ajutorarea copiilor din școli și centre de plasament; [...] 2. cheltuielile pentru funcționarea corespunzătoare a unor unități aflate în administrarea contribuabililor, precum: creșe, grădinițe, școli, muzee, biblioteci, cantine, baze sportive, cluburi, cămine de nefamiliști și altele asemenea."
-— Codul fiscal (Legea nr. 227/2015), art. 25 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 25 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Baza de calcul a plafonului este **valoarea cheltuielilor cu salariile personalului**, stabilită potrivit Codului muncii — nu cifra de afaceri sau profitul contabil.

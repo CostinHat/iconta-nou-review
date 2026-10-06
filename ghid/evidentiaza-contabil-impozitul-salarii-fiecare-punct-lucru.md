@@ -16,10 +16,10 @@ Regula contează pentru că o parte din impozitul pe venit se repartizează buge
 
 ::: ghid-temei
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația să organizeze și să conducă contabilitatea astfel încât aceasta să reflecte impozitul aferent veniturilor fiecărei luni, calculat, reținut și virat, pe fiecare entitate care intră sub incidența prezentului alineat."
-— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (7) teza finală (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (7) teza finală (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „Orice persoană subiect al unui raport juridic fiscal, inclusiv operatorul economic, instituția publică și instituția publică locală, care are organizată o entitate, cu sau fără personalitate juridică, la altă adresă decât sediul social al subiectului respectiv, cu cel puțin o persoană care realizează venituri din salarii, are obligația să solicite înregistrarea fiscală a entității respective, ca plătitoare de salarii și de venituri asimilate salariilor [...]"
-— Legea 273/2006, art. 32 alin. (7) teza întâi (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 32 alin. (7) teza întâi (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

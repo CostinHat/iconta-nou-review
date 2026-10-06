@@ -14,12 +14,12 @@ Declarația recapitulativă 390 VIES are un mecanism explicit de „retur bunuri
 
 ::: ghid-temei
 „*) Se va completa, după caz, cu una dintre cifrele corespunzătoare situaţiei: 1 - retur bunuri; 2 - înlocuire client."
-— OPANAF 705/2020 pentru aprobarea formularului 390 VIES, Anexa nr. 2 (Instrucțiuni de completare), secțiunea III litera B „Modificări ale informațiilor furnizate" (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020 pentru aprobarea formularului 390 VIES, Anexa nr. 2 (Instrucțiuni de completare), secțiunea III litera B „Modificări ale informațiilor furnizate" (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 ::: ghid-temei
 „Spre exemplificare, modificări ale informaţiilor furnizate pot apărea atunci când persoana impozabilă care ar fi trebuit să achiziţioneze bunurile este înlocuită cu o altă persoană impozabilă sau când bunurile sunt returnate în România în termenul menţionat la art. 270^1 alin. (4) din Codul fiscal, fără ca furnizorul să fi transferat dreptul de a dispune de bunuri către altă persoană impozabilă. Corectarea datelor declarate eronat sau nedeclararea datelor în perioade anterioare nu reprezintă modificări ale informaţiilor furnizate la litera A."
-— OPANAF 705/2020, Anexa nr. 2, instrucțiuni la secțiunea III litera B (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa nr. 2, instrucțiuni la secțiunea III litera B (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Din aceste texte rezultă două situații distincte, tratate diferit în D390:

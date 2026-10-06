@@ -14,7 +14,7 @@ Spre deosebire de agențiile de turism (care au un regim de TVA pe marjă, dedic
 
 ::: ghid-temei
 „e) societățile cooperative și celelalte persoane juridice care, în baza legilor speciale de organizare, funcționează pe principiile societăților [...]"
-— OMFP 1802/2014, secțiunea privind entitățile cărora li se aplică reglementările contabile, care le include pe cele cooperative alături de societăți comerciale, regii autonome și institute naționale (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, secțiunea privind entitățile cărora li se aplică reglementările contabile, care le include pe cele cooperative alături de societăți comerciale, regii autonome și institute naționale (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Căutarea directă în Codul fiscal (Legea 227/2015) nu a identificat niciun articol care să instituie o cotă, un plafon sau o bază de impozitare distinctă pentru societățile cooperative românești. Singurele mențiuni ale cuvântului „cooperativă" din Codul fiscal privesc:
@@ -34,7 +34,7 @@ Organizarea juridică a cooperativelor (constituire, funcționare, tipuri) e reg
 
 ## Ce face iConta.eu
 
-Acest ghid nu corespunde niciunei funcționalități specifice din iConta.eu. Titlul a fost, inițial, asociat funcționalității **F099 — Regim special de TVA pentru agențiile de turism** (`core/tva_marja_turism.py`, art. 311 Cod fiscal, regimul marjei de profit), dar cele două subiecte nu au nicio legătură: F099 tratează exclusiv baza de TVA a agențiilor de turism (marja dintre încasare și costurile directe), nu impozitarea profitului sau a veniturilor unei cooperative. Nu am forțat această legătură.
+Acest ghid nu corespunde niciunei funcționalități specifice din iConta.eu. Titlul a fost, inițial, asociat funcționalității **F099 — Regim special de TVA pentru agențiile de turism** (art. 311 Cod fiscal, regimul marjei de profit), dar cele două subiecte nu au nicio legătură: F099 tratează exclusiv baza de TVA a agențiilor de turism (marja dintre încasare și costurile directe), nu impozitarea profitului sau a veniturilor unei cooperative. Nu am forțat această legătură.
 
 O societate cooperativă care folosește iConta.eu se înregistrează și e tratată de aplicație exact ca orice altă firmă, în funcție de regimul ei fiscal real (impozit pe profit sau microîntreprindere) — nu există în cod niciun modul, calcul sau declarație dedicate specific formei juridice de cooperativă.
 

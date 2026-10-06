@@ -14,7 +14,7 @@ Un contract de construcții-montaj derulat pe luni sau ani nu generează un sing
 
 ::: ghid-temei
 „Prestările de servicii care determină decontări sau plăți succesive, cum sunt serviciile de construcții-montaj, consultanță, cercetare, expertiză și alte servicii similare, sunt considerate efectuate la data la care sunt emise situații de lucrări, rapoarte de lucru, alte documente similare pe baza cărora se stabilesc serviciile efectuate sau, după caz, în funcție de prevederile contractuale, la data acceptării acestora de către beneficiari."
-— Legea nr. 227/2015 (Codul fiscal), art. 281 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 281 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Faptul generator apare la fiecare situație de lucrări** emisă (sau la acceptarea ei de beneficiar, dacă așa prevede contractul), nu la finalizarea integrală a construcției — deci fiecare etapă facturabilă are propriul moment de exigibilitate.

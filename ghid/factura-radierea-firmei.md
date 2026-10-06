@@ -14,7 +14,7 @@ Legea RO e-Factura (OUG 120/2021) nu conține, în textul consultat, o prevedere
 
 ::: ghid-temei
 „(4) Societatea își păstrează personalitatea juridică pentru operațiunile lichidării, până la terminarea acesteia."
-— Legea 31/1990, art. 233 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 233 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 **Notă de onestitate:** nu am găsit, în sursele consultate (inclusiv OUG 120/2021, textul de bază al sistemului RO e-Factura), o prevedere care să reglementeze explicit emiterea sau primirea de facturi electronice după radierea unei firme din registrul comerțului. Redirecționez, așadar, către principiul general din Legea 31/1990, care e cel mai apropiat temei real disponibil pentru acest caz:

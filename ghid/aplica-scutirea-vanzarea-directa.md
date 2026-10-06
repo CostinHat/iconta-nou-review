@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România conform art. 266 alin. (2) lit. a), a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— Codul fiscal, art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Condiția scutirii este cifra de afaceri anuală, sub plafonul de 395.000 lei — legea nu distinge după cui i se vinde (persoană fizică sau persoană impozabilă) sau prin ce canal (direct, en-gros, online).

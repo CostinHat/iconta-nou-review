@@ -60,6 +60,6 @@ Niciunul din cele două regimuri nu folosește pragul de 270 de zile pentru TVA 
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează procentul de deducere a ajustării de creanță **la impozitul pe profit**, folosind pragul de 270 de zile din CF art. 26 alin. (1) lit. c) — exact regimul cu care se confundă frecvent ajustarea de TVA. Aplicația nu calculează ajustarea bazei de impozitare a TVA (CF art. 287): aceasta se analizează separat, pe baza evenimentului juridic (faliment/reorganizare) sau, pentru persoane fizice, pe baza termenului de 12 luni și a dovezilor de recuperare, conform tabelului de mai sus.
+Aplicația calculează procentul de deducere a ajustării de creanță **la impozitul pe profit**, folosind pragul de 270 de zile din CF art. 26 alin. (1) lit. c) — exact regimul cu care se confundă frecvent ajustarea de TVA. Aplicația nu calculează ajustarea bazei de impozitare a TVA (CF art. 287): aceasta se analizează separat, pe baza evenimentului juridic (faliment/reorganizare) sau, pentru persoane fizice, pe baza termenului de 12 luni și a dovezilor de recuperare, conform tabelului de mai sus.
 
 [iConta.eu](/)

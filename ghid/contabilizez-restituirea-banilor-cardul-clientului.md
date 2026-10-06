@@ -14,7 +14,7 @@ Când un client returnează un produs sau renunță la un serviciu neprestat, î
 
 ::: ghid-temei
 „(2) În cazul returnării de bunuri de către persoanele fizice și, respectiv, neprestării de servicii către persoanele fizice, restituirea sumelor aferente poate fi efectuată în numerar în limita a 10.000 lei, sumele care depășesc acest plafon putând fi restituite numai prin instrumente de plată fără numerar. Prin excepție, în cazul în care, la data restituirii, persoanele fizice declară pe propria răspundere că nu mai dețin cont bancar, restituirea se poate face integral în numerar, indiferent de nivelul sumei care trebuie restituită."
-— Legea 70/2015, art. 9 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 9 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Practic, regula e:
@@ -33,6 +33,6 @@ Contabil, restituirea pe card se înregistrează ca o diminuare a creanței/înc
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă evidența generală a facturilor și a încasărilor/plăților asociate (casierie și bancă). Modulul de casierie (`core/casa.py`, funcția `verifica_plafon`) semnalează, ca avertisment, orice plată în numerar de peste 10.000 lei către aceeași persoană fizică într-o zi — inclusiv o restituire introdusă ca atare — dar nu distinge specific „restituire de bunuri/servicii neprestate" de o altă plată către persoana fizică, și nu verifică declarația pe propria răspundere privind lipsa contului bancar (excepția de la art. 9 alin. (2)). Încadrarea corectă a modalității de restituire rămâne o decizie a contabilului la momentul înregistrării.
+La data acestui ghid, iConta.eu oferă evidența generală a facturilor și a încasărilor/plăților asociate (casierie și bancă). Modulul de casierie (funcția `verifica_plafon`) semnalează, ca avertisment, orice plată în numerar de peste 10.000 lei către aceeași persoană fizică într-o zi — inclusiv o restituire introdusă ca atare — dar nu distinge specific „restituire de bunuri/servicii neprestate" de o altă plată către persoana fizică, și nu verifică declarația pe propria răspundere privind lipsa contului bancar (excepția de la art. 9 alin. (2)). Încadrarea corectă a modalității de restituire rămâne o decizie a contabilului la momentul înregistrării.
 
 [iConta.eu](/)

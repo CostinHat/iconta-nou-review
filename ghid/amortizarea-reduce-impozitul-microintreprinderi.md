@@ -14,7 +14,7 @@ Nu. Pentru o microîntreprindere, impozitul se calculează la venituri, nu la pr
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; [...] b) veniturile aferente costurilor serviciilor în curs de execuție; [...] c) veniturile din producția de imobilizări corporale și necorporale; [...] d) veniturile din subvenții; [...]"
-— Legea 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

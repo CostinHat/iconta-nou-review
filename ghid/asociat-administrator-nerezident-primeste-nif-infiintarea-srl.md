@@ -16,15 +16,15 @@ Asociatul nerezident nu trebuie deci să depună separat o cerere la ANAF înain
 
 ::: ghid-temei
 „(1) Odată cu solicitarea înregistrării unei societăți la registrul comerțului, potrivit legii, sau, după caz, la cesiunea părților sociale ori a acțiunilor, respectiv la numirea de noi reprezentanți legali sau la cooptarea de noi asociați ori acționari, cu prilejul efectuării majorării de capital social, oficiile registrului comerțului de pe lângă tribunale transmit direct sau prin intermediul Oficiului Național al Registrului Comerțului, pe cale electronică, Ministerului Finanțelor Publice, solicitarea de atribuire a numărului de identificare fiscală pentru persoanele fizice nerezidente care, potrivit actului constitutiv, au calitatea de fondator, asociat, acționar ori administrator în cadrul societății respective."
-— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) Pe baza datelor transmise potrivit prevederilor alin. (1), Ministerul Finanțelor atribuie numărul de identificare fiscală, înregistrează fiscal persoanele fizice nerezidente prevăzute la alin. (1), cu excepția cazului în care aceste persoane sunt înregistrate fiscal, și comunică Oficiului Național al Registrului Comerțului informația referitoare la înregistrarea fiscală în aceeași zi sau cel mai târziu a doua zi. Totodată se emite certificatul de înregistrare fiscală, care se păstrează de către organul fiscal până la data ridicării de către contribuabil sau împuternicitul acestuia."
-— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(4) Persoanele fizice și juridice străine care nu sunt înregistrate fiscal în România și se află în una dintre situațiile prevăzute la alin. (1) nu au obligația să prezinte certificatul de cazier fiscal, fiind suficientă declarația autentică pe propria răspundere a persoanei fizice sau a reprezentantului persoanei juridice, după caz, din care să rezulte că nu au săvârșit fapte și nu s-au aflat în situații de natura celor care se înscriu în evidența cazierului fiscal, precum și că nu sunt înregistrați fiscal în România."
-— OG 39/2015, art. 8 alin. (4) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 8 alin. (4) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Cum funcționează:

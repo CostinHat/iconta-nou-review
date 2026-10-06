@@ -14,7 +14,7 @@ O firmă care nu e plătitoare de TVA (neînregistrată conform art. 316) și ca
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: a) persoana impozabilă care are sediul activității economice în România, [...] neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...], care efectuează o achiziție intracomunitară taxabilă în România, înainte de efectuarea achiziției intracomunitare, dacă valoarea achiziției intracomunitare respective depășește plafonul pentru achiziții intracomunitare în anul calendaristic în care are loc achiziția intracomunitară."
-— Legea nr. 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Obligația de înregistrare **precede** achiziția — cererea (D010) trebuie depusă **înainte de efectuarea achiziției intracomunitare** care depășește plafonul, nu după.
@@ -30,6 +30,6 @@ O firmă care nu e plătitoare de TVA (neînregistrată conform art. 316) și ca
 
 ## Ce face iConta.eu
 
-La data verificării codului, generarea automată a declarațiilor de înregistrare/mențiuni fiscale D010, D020 și D070 este **blocată la nivel de infrastructură**: potrivit notelor interne din `anaf_surse/d010_d020_d070_d700_status.md`, aceste formulare nu au validator XML public în canalul oficial ANAF (spre deosebire de D100…D710), fiind formulare vechi, în curs de înlocuire cu D700. Fără acest validator, iConta.eu nu construiește și nu publică XML pentru D010. Depunerea cererii de înregistrare pentru achiziții intracomunitare rămâne, la acest moment, un pas manual, direct pe portalul ANAF.
+La data verificării codului, generarea automată a declarațiilor de înregistrare/mențiuni fiscale D010, D020 și D070 este **blocată la nivel de infrastructură**: potrivit notelor interne din , aceste formulare nu au validator XML public în canalul oficial ANAF (spre deosebire de D100…D710), fiind formulare vechi, în curs de înlocuire cu D700. Fără acest validator, iConta.eu nu construiește și nu publică XML pentru D010. Depunerea cererii de înregistrare pentru achiziții intracomunitare rămâne, la acest moment, un pas manual, direct pe portalul ANAF.
 
 [iConta.eu](/)

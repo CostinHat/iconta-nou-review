@@ -14,7 +14,7 @@ De la introducerea obligației de evidențiere distinctă a bacșișului pe bonu
 
 ::: ghid-temei
 „Prin bacșiș se înțelege orice sumă de bani oferită în mod voluntar de client, în plus față de contravaloarea bunurilor livrate sau a serviciilor prestate de către operatorii economici care desfășoară activități corespunzătoare codurilor CAEN: 5610 - «Restaurante», 5630 - «Baruri și alte activități de servire a băuturilor». Bacșișul nu poate fi asimilat, din punctul de vedere al TVA, unei livrări de bunuri sau unei prestări de servicii. [...] Din punct de vedere fiscal, sumele provenite din încasarea bacșișului de la client de către operatorul economic nu pot fi asimilate unui element de natura veniturilor pentru acesta din urmă, iar distribuirea acestora către salariați nu poate fi asimilată unui element de natura cheltuielilor. Sumele provenite din încasarea bacșișului de către salariați ca urmare a distribuirii [...] sunt calificate ca venituri din alte surse [...], nefiindu-le aplicabile prevederile titlului V - Contribuții sociale obligatorii [...]. Impozitul pe venit datorat de salariat se reține la sursă la momentul distribuirii bacșișului [...], potrivit art. 115 din Codul fiscal. Aceste sume nu pot fi reîncadrate fiscal ca venituri salariale sau asimilate salariilor."
-— Legea 376/2022 (modificarea OUG 28/1999) (sursă: anaf_surse/legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt)
+— Legea 376/2022 (modificarea OUG 28/1999) (sursă: [Legea nr. 376/2022 pentru modificarea și completarea OUG nr. 28/1999](https://legislatie.just.ro/Public/DetaliiDocument/263133))
 :::
 
 Ce înseamnă practic pentru o unitate din HoReCa (restaurant CAEN 5610, bar CAEN 5630):

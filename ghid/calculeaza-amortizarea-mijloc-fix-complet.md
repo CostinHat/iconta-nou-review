@@ -38,6 +38,6 @@ Registrul de mijloace fixe nu are niciun mecanism care să „continue" starea d
 
 Continuarea automată a amortizării pe baza unui istoric preluat există în aplicație doar pentru **migrarea registrului propriu al firmei** dintr-un alt sistem (import), nu pentru achiziția unui bun folosit de la un terț — cele două situații nu trebuie confundate.
 
-Vezi și: [Când începe amortizarea: la punerea în funcțiune sau la achiziție](/ghid/cand-incepe-amortizarea-pif-sau-achizitie)
+Vezi și: [Când începe amortizarea: la punerea în funcțiune sau la achiziție](/ghid/incepe-amortizarea-mijloc-fix)
 
 [iConta.eu](/)

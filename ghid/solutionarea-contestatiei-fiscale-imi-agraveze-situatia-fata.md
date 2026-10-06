@@ -16,10 +16,10 @@ Regula aceasta elimină un risc de care multe firme se tem: că, dacă atacă de
 
 ::: ghid-temei
 „(1) în soluționarea contestației organul competent verifică motivele de fapt și de drept care au stat la baza emiterii actului administrativ fiscal. Analiza contestației se face în raport cu susținerile părților, cu dispozițiile legale invocate de acestea și cu documentele existente la dosarul cauzei. Soluționarea contestației se face în limitele sesizării. [...] (3) Prin soluționarea contestației nu se poate crea o situație mai grea contestatorului în propria cale de atac."
-— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(3) Prin decizie se poate desființa, total sau parțial, actul administrativ atacat în situația în care, din documentele existente la dosar și în urma demersurilor întreprinse la organul fiscal emitent, nu se poate stabili situația de fapt în cauza supusă soluționării prin raportare la temeiurile de drept invocate de organul competent și de contestator. În acest caz, organul fiscal competent urmează să încheie un nou act administrativ fiscal care trebuie să aibă în vedere strict considerentele deciziei de soluționare a contestației."
-— Codul de procedură fiscală (Legea 207/2015), art. 279 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 279 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

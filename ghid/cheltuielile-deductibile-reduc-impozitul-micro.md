@@ -14,7 +14,7 @@ La impozitul pe profit, logica e simplă: mai multe cheltuieli deductibile înse
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; [...] b) veniturile aferente costurilor serviciilor în curs de execuție; [...] c) veniturile din producția de imobilizări corporale și necorporale; [...] d) veniturile din subvenții; [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Toate corecțiile permise la art. 53 alin. (1) sunt scăderi de **venituri** (stocuri, servicii în curs, subvenții, diferențe de curs valutar, despăgubiri de asigurare etc.) — niciuna nu e o „cheltuială deductibilă" în sensul folosit la impozitul pe profit.

@@ -17,7 +17,7 @@ Art.53 alin.(2) lit.b) CF tratează elementele de curs valutar la trecerea de la
 — sursă: dosar de cercetare F027, secțiunea „Ieșirea din regimul micro în cursul anului".
 
 „cifra de afaceri anul precedent = VT−Vs, la cursul de închidere a exercițiului"
-— sursă: `core/d101.py`, funcția `datoreaza_imca` (liniile 48–73), dosar de cercetare F027.
+— sursă: Aplicația, funcția `datoreaza_imca`, dosar de cercetare F027.
 :::
 
 Pentru firmele care trec de la impozit micro la impozit pe profit în cursul anului, diferențele de curs valutar generate până la momentul trecerii se recunosc fiscal ca elemente similare veniturilor, în primul trimestru pentru care se datorează deja impozit pe profit — nu se reportează și nu se ignoră, dar nici nu se tratează retroactiv pe perioada de micro.

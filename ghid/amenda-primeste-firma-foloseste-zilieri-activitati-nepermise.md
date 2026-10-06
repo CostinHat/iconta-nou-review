@@ -16,13 +16,13 @@ Contravenția apare des la firmele care au pe listă o activitate secundară per
 
 ::: ghid-temei
 „e) beneficiarul sau un împuternicit al acestuia care folosește zilieri pentru alte activități decât cele expres reglementate de prezenta lege se sancționează cu amendă de la 10.000 la 20.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(2) Activitățile de manipulare mărfuri și activitățile de curățenie și întreținere se prestează numai în domeniile de activitate prevăzute la alin. (1) ."
-— Legea 52/2011, art. 13 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(1) Constatarea contravențiilor și aplicarea sancțiunilor prevăzute la art. 14 alin. (1) lit. a) , b) , e) și f) se realizează de către inspectorii de muncă."
-— Legea 52/2011, art. 15 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 15 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „Împotriva procesului-verbal de constatare a contravenției și de aplicare a sancțiunii se poate face plângere în termen de 15 zile de la data înmânării sau comunicării acestuia."
-— OG 2/2001, art. 31 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce intră la lit. e):

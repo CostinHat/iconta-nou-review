@@ -16,7 +16,7 @@ O casă de marcat nou instalată nu devine funcțională din punct de vedere fis
 „(1) La nivelul Agenției Naționale de Administrare Fiscală se întocmește în formă electronică un registru național de evidență a aparatelor de marcat electronice fiscale instalate în județe și în sectoarele municipiului București, după caz, denumit în continuare Registru.
 [...]
 (4) În vederea realizării supravegherii și monitorizării aparatelor de marcat electronice fiscale, operatorii economici prevăzuți la art. 1 alin. (1) au obligația de a asigura conectarea la distanță a aparatelor de marcat electronice fiscale, în vederea transmiterii de date fiscale către Agenția Națională de Administrare Fiscală."
-— OUG nr. 28/1999 (republicată), art. 3^1 alin. (1), (4) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 (republicată), art. 3^1 alin. (1), (4) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce presupune practic instalarea unei case de marcat noi:
@@ -34,6 +34,6 @@ Ce presupune practic instalarea unei case de marcat noi:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu gestionează înregistrarea unei case de marcat noi în Registrul național ANAF și nu configurează conectarea la distanță a aparatului — acestea sunt pași realizați de operatorul economic împreună cu distribuitorul/unitatea acreditată a AMEF. Aplicația poate importa, ulterior instalării și fiscalizării, Raportul Z generat de aparat (`core/amef_import.py`, conform OPANAF 146/2018), pentru a prelua automat în contabilitate totalurile de vânzări zilnice pe modalități de plată și cote de TVA.
+La data acestui ghid, iConta.eu nu gestionează înregistrarea unei case de marcat noi în Registrul național ANAF și nu configurează conectarea la distanță a aparatului — acestea sunt pași realizați de operatorul economic împreună cu distribuitorul/unitatea acreditată a AMEF. Aplicația poate importa, ulterior instalării și fiscalizării, Raportul Z generat de aparat (conform OPANAF 146/2018), pentru a prelua automat în contabilitate totalurile de vânzări zilnice pe modalități de plată și cote de TVA.
 
 [iConta.eu](/)

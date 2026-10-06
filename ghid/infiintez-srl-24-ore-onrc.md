@@ -14,7 +14,7 @@ Promisiunea „SRL în 24 de ore" circulă des în mediul de afaceri, dar merit�
 
 ::: ghid-temei
 „Articolul 9 (1) Societatea pe acțiuni se constituie prin subscriere integrală și simultană a capitalului social de către semnatarii actului constitutiv sau prin subscripție publică."
-— Legea 31/1990, art. 9 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 9 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 **Limitare onestă, spusă direct:** citatul de mai sus vizează societatea pe acțiuni, nu SRL-ul, și nu conține niciun termen de „24 de ore". Am căutat explicit, în textul Legii 31/1990 disponibil în sursele consultate, o mențiune despre un termen de 24 de ore pentru înregistrarea unei societăți la ONRC — **nu există** o asemenea prevedere în acest act normativ. Procedura de înregistrare la registrul comerțului (termene de soluționare a cererii, condiții de rezolvare rapidă, taxe suplimentare pentru urgentare) e reglementată prin Legea 265/2022 privind registrul comerțului, act care **nu se regăsește printre sursele disponibile aici**.

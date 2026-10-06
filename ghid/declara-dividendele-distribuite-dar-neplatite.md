@@ -14,7 +14,7 @@ Un dividend aprobat spre distribuire (înregistrat contabil, de regulă credit 4
 
 ::: ghid-temei
 "[...] În cazul dividendelor/câștigurilor obținute ca urmare a deținerii de titluri de participare, distribuite, dar care nu au fost plătite acționarilor/asociaților/investitorilor până la sfârșitul anului în care s-a aprobat distribuirea acestora, impozitul pe dividende/câștig se plătește până la data de 25 ianuarie inclusiv a anului următor distribuirii."
-— Codul fiscal, art. 97 alin. (7) (`anaf_surse/cod_fiscal_227_2015_consolidat.txt:9470-9474`)
+— Codul fiscal, art. 97 alin. (7) ([Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Distribuirea (creditul contului 457) și plata (debitul contului 457) sunt două evenimente distincte în contabilitate, iar legea leagă obligația de declarare de momentul aprobării distribuirii, nu de momentul plății.
@@ -25,6 +25,6 @@ Situația cea mai frecventă: dividendul e aprobat și înregistrat contabil, da
 
 ## Ce face iConta.eu
 
-Aici trebuie spusă exact limita actuală a aplicației: generatorul D205 (`core/d205.py`) construiește beneficiarii pornind de la suma efectiv plătită din contul 457; un dividend distribuit, dar cu plata zero la data generării, nu produce automat o linie în declarație — este un gol de conformitate cunoscut la nivel de produs, nu un caz acoperit implicit. Pe de altă parte, dacă dividendul a fost distribuit într-un an și plătit (integral sau eșalonat) în anul următor, iConta aplică deja corect cota fiscală în vigoare la data distribuirii (nu cea de la data plății), verificat prin teste dedicate. Concluzie practică: pentru dividendul distribuit dar rămas complet neplătit la 31 decembrie, interfața iConta nu oferă în acest moment o opțiune de adăugare manuală a beneficiarului la generarea D205 — obligația pentru anul aprobării distribuirii trebuie tratată de contabil separat de fluxul automat al aplicației.
+Aici trebuie spusă exact limita actuală a aplicației: generatorul D205 construiește beneficiarii pornind de la suma efectiv plătită din contul 457; un dividend distribuit, dar cu plata zero la data generării, nu produce automat o linie în declarație — este un gol de conformitate cunoscut la nivel de produs, nu un caz acoperit implicit. Pe de altă parte, dacă dividendul a fost distribuit într-un an și plătit (integral sau eșalonat) în anul următor, iConta aplică deja corect cota fiscală în vigoare la data distribuirii (nu cea de la data plății), verificat prin teste dedicate. Concluzie practică: pentru dividendul distribuit dar rămas complet neplătit la 31 decembrie, interfața iConta nu oferă în acest moment o opțiune de adăugare manuală a beneficiarului la generarea D205 — obligația pentru anul aprobării distribuirii trebuie tratată de contabil separat de fluxul automat al aplicației.
 
 [iConta.eu](/)

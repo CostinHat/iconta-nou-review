@@ -16,18 +16,18 @@ Pentru cumpărătorul obișnuit, fie o persoană fizică, fie o firmă precum SC
 
 ::: ghid-temei
 „Persoanele prevăzute la art. 293 alin. (1) lit. e) și art. 294 alin. (1) lit. j) care au importat sau achiziționat în regim de scutire de la plata TVA mijloace de transport și le înstrăinează într-o perioadă mai scurtă de doi ani de la data importului/achiziției au obligația să plătească TVA de a cărei scutire au beneficiat, în condițiile și conform procedurii stabilite prin ordin al președintelui ANAF."
-— Codul fiscal (Legea 227/2015), art. 294^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 294^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „mijlocul de transport este exportat de către persoana care a achiziționat/importat mijlocul de transport în regim de scutire; [...] mijlocul de transport este înstrăinat către o persoană care ar beneficia de scutirea de TVA conform art. 294 alin. (1) lit. j)-l) [...] cu obligația noului proprietar de a achita TVA în cazul în care înstrăinează mijlocul de transport până la finalul perioadei de doi ani calculate de la data când primul proprietar a importat/achiziționat mijlocul de transport în regim de scutire; [...] mijlocul de transport este distrus sau furat, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător."
-— Codul fiscal (Legea 227/2015), art. 294^1 alin. (2) lit. a)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 294^1 alin. (2) lit. a)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „importul, în regim diplomatic sau consular, al bunurilor scutite de taxe vamale;"
-— Codul fiscal (Legea 227/2015), art. 293 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 293 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „livrările de bunuri și prestările de servicii în favoarea misiunilor diplomatice și oficiilor consulare, a personalului acestora, precum și a cetățenilor străini cu statut diplomatic sau consular în România ori într-un alt stat membru, în condiții de reciprocitate;"
-— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Factura simplificată e o variantă redusă a facturii obișnuite, permisă în 
 
 ::: ghid-temei
 „(12) Persoana impozabilă care are obligația de a emite facturi conform prezentului articol, precum și persoana impozabilă care optează pentru emiterea facturii potrivit alin. (11) pot emite facturi simplificate în oricare dintre următoarele situații: a) atunci când valoarea facturilor, inclusiv TVA, nu este mai mare de 100 euro [...]; b) în cazul documentelor sau mesajelor tratate drept factură conform alin. (2); c) în cazul în care persoana impozabilă beneficiază de regimul de scutire prevăzut la art. 310 și 310^2."
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru transmiterea prin RO e-Factura:

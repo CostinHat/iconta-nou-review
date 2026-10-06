@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „BON DE CONSUM (Cod 14-3-4A) [...] BON DE CONSUM (colectiv - Cod 14-3-4/aA) Bonul de consum servește ca: - document de eliberare din magazie a materialelor; - document justificativ de scădere din gestiune; - document justificativ de înregistrare în contabilitate. Se întocmește pe măsura eliberării materialelor din magazie pentru consum."
-— OMFP nr. 2.634/2015, Anexa 2 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce trebuie să conțină și cum funcționează, în practică, pentru materiale de construcții:

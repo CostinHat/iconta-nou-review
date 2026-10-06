@@ -14,7 +14,7 @@ Nu. Indiferent cât de mari sunt sumele plătite ca dobânzi/majorări de întâ
 
 ::: ghid-temei
 „(4) Următoarele cheltuieli nu sunt deductibile: [...] b) dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități;"
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări importante din chiar textul citat:
@@ -32,6 +32,6 @@ Câteva precizări importante din chiar textul citat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează rezultatul fiscal și impozitul pe profit prin `core/d101.py`, care aplică regulile de deductibilitate ale Codului fiscal pe baza contului contabil pe care e înregistrată fiecare cheltuială. Dacă dobânzile/penalitățile ANAF sunt contate corect, în conturile dedicate cheltuielilor cu penalitățile fiscale, aplicația le tratează ca nedeductibile la calculul impozitului. Aplicația **nu verifică însă natura fiecărei sume** înregistrate manual de utilizator — dacă o penalitate ANAF e introdusă greșit pe un cont de cheltuială deductibilă, iConta.eu nu semnalează automat eroarea; clasificarea corectă a fiecărei sume rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu calculează rezultatul fiscal și impozitul pe profit prin aplicație, care aplică regulile de deductibilitate ale Codului fiscal pe baza contului contabil pe care e înregistrată fiecare cheltuială. Dacă dobânzile/penalitățile ANAF sunt contate corect, în conturile dedicate cheltuielilor cu penalitățile fiscale, aplicația le tratează ca nedeductibile la calculul impozitului. Aplicația **nu verifică însă natura fiecărei sume** înregistrate manual de utilizator — dacă o penalitate ANAF e introdusă greșit pe un cont de cheltuială deductibilă, iConta.eu nu semnalează automat eroarea; clasificarea corectă a fiecărei sume rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

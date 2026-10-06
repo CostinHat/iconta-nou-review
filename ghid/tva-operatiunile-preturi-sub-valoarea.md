@@ -14,7 +14,7 @@ Nu orice vânzare sub prețul „normal" atrage o ajustare a bazei de TVA la val
 
 ::: ghid-temei
 „pentru livrarea de bunuri sau prestarea de servicii pentru care beneficiarul este o persoană afiliată furnizorului/prestatorului potrivit prevederilor art. 7 pct. 26, baza de impozitare este considerată valoarea de piață în următoarele situații: 1. atunci când contrapartida este mai mică decât valoarea de piață, iar beneficiarul livrării sau al prestării nu are drept complet de deducere [...] 2. atunci când contrapartida este mai mică decât valoarea de piață, iar furnizorul sau prestatorul nu are un drept complet de deducere [...] și livrarea sau prestarea este scutită [...] 3. atunci când contrapartida este mai mare decât valoarea de piață, iar furnizorul sau prestatorul nu are drept complet de deducere [...]"
-— Legea 227/2015 (Codul fiscal), art. 286 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 286 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Trei condiții trebuie îndeplinite cumulativ pentru ca baza de impozitare să fie forțată la valoarea de piață, nu la prețul efectiv facturat:

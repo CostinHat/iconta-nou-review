@@ -14,7 +14,7 @@ Plata periodică pe care un francizat o face către francizor pentru dreptul de 
 
 ::: ghid-temei
 „36. redevență: (1) Se consideră redevență plățile de orice natură primite pentru folosirea ori dreptul de folosință al oricăruia dintre următoarele: [...] c) orice brevet, invenție, inovație, licență, marcă de comerț sau de fabrică, **franciză**, proiect, desen, model, plan, schiță, formulă secretă sau procedeu de fabricație ori software; [...] e) orice know-how;"
-— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) și e) — Definiții (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) și e) — Definiții (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Legea include explicit franciza printre drepturile a căror utilizare, contra plată, generează o redevență — deci suma plătită periodic francizorului pentru dreptul de a folosi marca și modelul de franciză se califică drept redevență, nu ca o simplă prestare de servicii generică.
@@ -23,7 +23,7 @@ Pentru TVA, dacă francizorul este stabilit în alt stat (situație frecventă l
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice."
-— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) „Locul prestării de servicii" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) „Locul prestării de servicii" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru un francizat din România care plătește redevență unui francizor din altă țară:

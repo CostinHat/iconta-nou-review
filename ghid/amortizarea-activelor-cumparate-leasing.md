@@ -14,7 +14,7 @@ Regula de bază e simplă, dar deseori confundată: la leasingul financiar, acti
 
 ::: ghid-temei
 „(1) În cazul leasingului financiar utilizatorul este tratat din punct de vedere fiscal ca proprietar, în timp ce, în cazul leasingului operațional, locatorul are această calitate. (2) Amortizarea bunului care face obiectul unui contract de leasing se face de către utilizator, în cazul leasingului financiar, și de către locator, în cazul leasingului operațional, cheltuielile fiind deductibile, potrivit art. 28."
-— Codul fiscal (Legea 227/2015), art. 29 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 29 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Leasing financiar**: utilizatorul înregistrează bunul în activ (de regulă 2133 „Mijloace de transport" sau contul de imobilizare corespunzător) și îl amortizează după regulile normale de la art. 28, în funcție de durata normală de utilizare a activului.

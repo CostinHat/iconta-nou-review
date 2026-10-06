@@ -16,11 +16,11 @@ Beneficiarul răspunde de verificarea vârstei. Actul de identitate al zilierulu
 
 ::: ghid-temei
 „(2) O persoană poate desfășura activități ca zilier numai dacă a împlinit vârsta de cel puțin 16 ani. (3) Prin excepție de la prevederile alin. (2) , minorii cu vârsta cuprinsă între 15 și 16 ani pot desfășura activitate ca zilieri numai cu acordul părinților sau al reprezentanților legali."
-— Legea 52/2011, art. 3 alin. (2)-(3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 3 alin. (2)-(3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „Zilierul minor care are capacitatea de muncă va putea lucra 6 ore pe zi, dar nu mai mult de 30 de ore pe săptămână. Zilierul minor nu va efectua activitate în timpul nopții."
-— Legea 52/2011, art. 4 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(2) Beneficiarul sau un împuternicit al acestuia care folosește minori în vârstă de cel puțin 15 ani și de cel mult 18 ani pentru desfășurarea de activități necalificate cu caracter ocazional are obligația de a respecta toate dispozițiile legale privitoare la protecția minorilor la locul de muncă."
-— Legea 52/2011, art. 12 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 12 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

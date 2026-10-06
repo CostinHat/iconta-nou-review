@@ -14,7 +14,7 @@ Când un restaurant acordă gratuit personalului propriu masa din stocul destina
 
 ::: ghid-temei
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: a) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi utilizate în scopuri care nu au legătură cu activitatea economică desfășurată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial;"
-— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Legea nu tratează diferit „masa personalului" de orice altă preluare de bunuri din stoc pentru un scop fără legătură cu activitatea economică: dacă TVA-ul aferent ingredientelor consumate a fost dedus la achiziție, preluarea acestora pentru consumul angajaților este asimilată unei livrări de bunuri cu plată, deci generează obligația de a colecta TVA.

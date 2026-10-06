@@ -16,13 +16,13 @@ Numărătoarea e o chestiune de fapt, pe care organul fiscal o poate verifica di
 
 ::: ghid-temei
 „Persoanele fizice nerezidente care desfășoară activități dependente în România sunt impozitate potrivit prevederilor cap. III din prezentul titlu."
-— Codul fiscal (Legea 227/2015), art. 127 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 127 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „La determinarea impozitului se va avea în vedere principiul celor 183 de zile care sfârșesc în anul calendaristic în cauză. Modul de calcul al celor 183 de zile se va face aplicându-se metoda zilelor de prezență. Contribuabilul are posibilitatea să furnizeze dovezi referitoare la prezența sa, pe baza datelor din documentele de transport, pașaport și alte documente prin care se atestă intrarea în România. În calculul celor 183 de zile se includ: ziua de sosire, ziua de plecare și toate celelalte zile petrecute pe teritoriul României. Orice fracțiune de zi în care contribuabilul este prezent în România contează drept zi de prezență pentru calculul celor 183 de zile."
-— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (4) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (4) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „veniturile din activități dependente realizate de persoane fizice nerezidente care își desfășoară activitatea în România se impun dacă persoana fizică este prezentă în România una sau mai multe perioade de timp ce depășesc în total 183 de zile în orice perioadă de 12 luni consecutive care se încheie în anul calendaristic în cauză sau în perioada și condițiile menționate în convenția de evitare a dublei impuneri"
-— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (4) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (4) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se numără concret:

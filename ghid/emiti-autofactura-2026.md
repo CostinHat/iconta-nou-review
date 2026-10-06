@@ -14,7 +14,7 @@ Autofactura nu e o excepție rar întâlnită: apare de câte ori firma trebuie 
 
 ::: ghid-temei
 „Persoana impozabilă sau persoana juridică neimpozabilă, obligată la plata taxei în condițiile prevăzute la art. 307 alin. (2)-(4) și (6) și ale art. 308, trebuie să autofactureze operațiunile respective până cel mai târziu în a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator. [...] Persoana impozabilă sau persoana juridică neimpozabilă [...] trebuie să autofactureze suma avansurilor plătite în legătură cu operațiunile respective cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a plătit avansurile, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator, cu excepția situației în care faptul generator de taxă a intervenit în aceeași lună, caz în care sunt aplicabile prevederile alin. (1)."
-— Legea 227/2015 (Codul fiscal), art. 320 alin. (1) și (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 320 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru contabil:

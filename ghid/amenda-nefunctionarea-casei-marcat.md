@@ -15,7 +15,7 @@ Defectarea unei case de marcat nu suspendă automat obligațiile comerciantului.
 ::: ghid-temei
 „Constituie contravenții următoarele fapte [...]: [...] i) nerespectarea de către utilizatori a obligației de a anunța unitatea acreditată pentru service desemnată de distribuitorul autorizat ori, după caz, distribuitorul sau reprezentantul acestuia, în momentul constatării defectării aparatelor de marcat electronice fiscale; [...]
 Contravențiile prevăzute la art. 10 se sancționează cu amendă aplicată operatorilor economici după cum urmează: a) cele prevăzute la art. 10 lit. i), ș), v) și jj), cu amendă de la 2.000 lei la 4.000 lei[...]"
-— OUG nr. 28/1999, art. 10 lit. i) și art. 11 alin. (1) lit. a) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999, art. 10 lit. i) și art. 11 alin. (1) lit. a) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce prevede legea, concret, pentru o casă de marcat defectă:

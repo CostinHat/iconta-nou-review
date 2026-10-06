@@ -14,7 +14,7 @@ Un restaurant nu are un regim special de deductibilitate a cheltuielilor — se 
 
 ::: ghid-temei
 „cheltuielile sociale, în limita unei cote de până la 5%, aplicată asupra valorii cheltuielilor cu salariile personalului, potrivit Codului muncii."
-— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e specific unui restaurant, în plus față de regulile generale de deductibilitate:
@@ -32,6 +32,6 @@ Ce e specific unui restaurant, în plus față de regulile generale de deductibi
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor real pentru tratamentul fiscal al bacșișului (`core/bacsis.py`), care separă corect încasarea de la client (461=462, cu încasare 5121/5311=461) de impozitarea la distribuire (10%, cont 446, plată netă 462=5121/5311), fără TVA și fără CAS/CASS, conform Legii 376/2022 și art. 115 din Codul fiscal. Pentru restul cheltuielilor unui restaurant (materie primă, cheltuieli sociale, protocol), aplicația oferă evidența contabilă generală, dar nu calculează automat plafonul de 5% pentru cheltuielile sociale — verificarea acestuia rămâne manuală.
+La data acestui ghid, iConta.eu are un motor real pentru tratamentul fiscal al bacșișului, care separă corect încasarea de la client (461=462, cu încasare 5121/5311=461) de impozitarea la distribuire (10%, cont 446, plată netă 462=5121/5311), fără TVA și fără CAS/CASS, conform Legii 376/2022 și art. 115 din Codul fiscal. Pentru restul cheltuielilor unui restaurant (materie primă, cheltuieli sociale, protocol), aplicația oferă evidența contabilă generală, dar nu calculează automat plafonul de 5% pentru cheltuielile sociale — verificarea acestuia rămâne manuală.
 
 [iConta.eu](/)

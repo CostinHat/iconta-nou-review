@@ -16,15 +16,15 @@ Pentru firma utilizatoare, limita contează pentru că misiunea trebuie să priv
 
 ::: ghid-temei
 „Misiunea de muncă temporară se stabilește pentru un termen care nu poate fi mai mare de 24 de luni.(2) Durata misiunii de muncă temporară poate fi prelungită pe perioade succesive care, adăugate la durata inițială a misiunii, nu poate conduce la depășirea unei perioade de 36 de luni.(3) Condițiile în care durata unei misiuni de muncă temporară poate fi prelungită sunt prevăzute în contractul de muncă temporară sau pot face obiectul unui act adițional la acest contract."
-— Codul muncii (Legea 53/2003), art. 90 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 90 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Un utilizator poate apela la agenți de muncă temporară pentru executarea unei sarcini precise și cu caracter temporar, cu excepția cazului prevăzut la art. 93."
-— Codul muncii (Legea 53/2003), art. 89 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 89 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Orice clauză prin care se interzice angajarea de către utilizator a salariatului temporar după îndeplinirea misiunii este nulă."
-— Codul muncii (Legea 53/2003), art. 91 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 91 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Regulile de durată și de cadru:

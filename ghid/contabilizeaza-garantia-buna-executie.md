@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „[La calculul rezultatului fiscal, următoarele provizioane sunt deductibile:] provizioanele pentru garanții de bună execuție acordate clienților. Provizioanele pentru garanții de bună execuție acordate clienților se deduc trimestrial/anual numai pentru bunurile livrate, lucrările executate și serviciile prestate în cursul trimestrului/anului respectiv pentru care se acordă garanție în perioadele următoare, la nivelul cotelor prevăzute în convențiile încheiate sau la nivelul procentelor de garantare prevăzut în tariful lucrărilor executate ori serviciilor prestate."
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru lucrările de construcții care necesită garanții de bună execuție, conform prevederilor din contractele încheiate, astfel de provizioane se constituie trimestrial, în limita cotelor prevăzute în contracte, cu condiția reflectării integrale la venituri a valorii lucrărilor executate și confirmate de beneficiar pe baza situațiilor de lucrări."
-— HG 1/2016 (norme metodologice Cod fiscal), pct. 19 alin. (2) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (norme metodologice Cod fiscal), pct. 19 alin. (2) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă practic pentru execuția unei lucrări:

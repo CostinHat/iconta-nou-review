@@ -14,7 +14,7 @@ Nu există, ca termen legal distinct, o „taxă pe activele speciale" — dar e
 
 ::: ghid-temei
 „Impozitul pe construcții anual se calculează astfel: a) prin aplicarea unei cote de 0,5% asupra valorii nete a construcțiilor, altele decât cele prevăzute la lit. b), pentru care nu se datorează impozit pe clădiri/taxa pe clădiri potrivit prevederilor titlului IX, existente în patrimoniul contribuabililor la data de 31 decembrie a anului anterior [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 498 alin. (1) lit. a), coroborat cu art. 497 („construcțiile sunt cele prevăzute în grupa 1 din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe") (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 498 alin. (1) lit. a), coroborat cu art. 497 („construcțiile sunt cele prevăzute în grupa 1 din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe") (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Legătura directă cu amortizarea:

@@ -16,12 +16,12 @@ Somația din procedura de inspecție nu trebuie confundată cu somația din exec
 
 ::: ghid-temei
 „Dacă, în termen de 15 zile de la primirea prezentei somații, nu veți da curs solicitării, în cauză sunt incidente prevederile art. 4 din Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale, cu modificările ulterioare."
-— OPANAF 3711/2015, Anexa nr. 10.a (sursă: anaf_surse/ordin_3711_2015.html)
+— OPANAF 3711/2015, Anexa nr. 10.a (sursă: [OPANAF nr. 3711/2015 privind formularele utilizate în activitatea de inspecție fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174332))
 :::
 
 ::: ghid-temei
 „Constituie infracțiune și se pedepsește cu închisoare de la un an la 6 ani refuzul nejustificat al unei persoane de a prezenta organelor competente documentele legale și bunurile din patrimoniu, în scopul împiedicării verificărilor financiare, fiscale sau vamale, în termen de cel mult 15 zile de la somație."
-— Legea 241/2005, art. 4 (sursă: anaf_surse/legea_241_2005.html)
+— Legea 241/2005, art. 4 (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 :::
 
 Când se emite somația și ce urmează:

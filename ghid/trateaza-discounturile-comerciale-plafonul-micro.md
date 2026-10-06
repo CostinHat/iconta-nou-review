@@ -15,7 +15,7 @@ La microîntreprindere, impozitul se aplică pe venituri, nu pe profit, așa că
 ::: ghid-temei
 „(1) [...] la determinarea bazei impozabile se scad: [...] j) valoarea reducerilor comerciale acordate ulterior facturării, înregistrate în contul «709», potrivit reglementărilor contabile aplicabile.
 (2) Pentru determinarea impozitului pe veniturile microîntreprinderilor, la baza impozabilă determinată potrivit alin. (1) se adaugă următoarele: a) valoarea reducerilor comerciale primite ulterior facturării, înregistrate în contul «609», potrivit reglementărilor contabile aplicabile."
-— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1) lit. j) și alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1) lit. j) și alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, la calculul impozitului pe veniturile microîntreprinderilor:

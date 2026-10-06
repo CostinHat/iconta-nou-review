@@ -67,7 +67,7 @@ Este esențial să nu tratați cele două facilități ca pe una singură cu num
 
 ## Ce face iConta.eu
 
-Motorul `core/sponsorizari.py` are o singură variantă de calcul înregistrată, datată „2018-01-01”, care aplică mereu regula actuală (`min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, cu excedentul tratat ca redirecționabil prin D177), indiferent de `la_data` transmisă. Mecanismul de **reportare pe 7 ani** de la impozitul pe profit (valabil până la 02.02.2022) **nu este implementat deloc** — motorul nu are nicio funcție care să calculeze sau să urmărească o sumă reportată dintr-un an în altul, nici pentru impozitul pe profit, nici pentru trecerea de la impozitul micro.
+Aplicația are o singură variantă de calcul înregistrată, datată „2018-01-01”, care aplică mereu regula actuală (`min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, cu excedentul tratat ca redirecționabil prin D177), indiferent de `la_data` transmisă. Mecanismul de **reportare pe 7 ani** de la impozitul pe profit (valabil până la 02.02.2022) **nu este implementat deloc** — motorul nu are nicio funcție care să calculeze sau să urmărească o sumă reportată dintr-un an în altul, nici pentru impozitul pe profit, nici pentru trecerea de la impozitul micro.
 
 Cu alte cuvinte, pentru situația din acest ghid — sume de sponsorizare rămase de reportat la o firmă care trece de la micro la profit — iConta.eu nu oferă niciun calcul automat: nu există o funcție care să primească un „stoc” de sponsorizare reportată și să îl reconcilieze cu regimul nou. Această situație trebuie analizată și, dacă e cazul, confirmată manual, în afara aplicației.
 

@@ -14,7 +14,7 @@ Contribuțiile pe care angajatorul le suportă pentru pensiile facultative ale s
 
 ::: ghid-temei
 „contribuțiile la un fond de pensii facultative potrivit Legii nr. 204/2006, cu modificările și completările ulterioare, [...] administrate de către entități autorizate stabilite în state membre ale Uniunii Europene sau aparținând Spațiului Economic European ori de către entități autorizate într-un stat aderent la codurile de liberalizare ale Organizației pentru Cooperare și Dezvoltare Economică, suportate de angajator pentru angajații proprii, în limita a 400 euro anual pentru fiecare persoană;"
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (4^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (4^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Trei condiții cumulative rezultă direct din text:

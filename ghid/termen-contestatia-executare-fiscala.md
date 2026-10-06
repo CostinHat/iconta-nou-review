@@ -14,7 +14,7 @@ Când organul fiscal pornește executarea silită (poprire, somație, sechestru)
 
 ::: ghid-temei
 „Contestația se poate face în termen de 15 zile, sub sancțiunea decăderii, de la data când: a) contestatorul a luat cunoștință de executarea ori de actul de executare pe care le contestă, din comunicarea somației sau din altă înștiințare primită ori, în lipsa acestora, cu ocazia efectuării executării silite sau în alt mod; b) contestatorul a luat cunoștință, potrivit lit. a), de refuzul organului de executare silită de a îndeplini un act de executare; c) cel interesat a luat cunoștință, potrivit lit. a), de eliberarea sau distribuirea sumelor pe care le contestă."
-— Legea 207/2015 (Codul de procedură fiscală), art. 261 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 261 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva precizări importante din text:

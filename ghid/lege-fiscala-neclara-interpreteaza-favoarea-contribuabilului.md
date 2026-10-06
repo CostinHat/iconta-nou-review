@@ -16,17 +16,17 @@ Un text fiscal neclar se interpretează în favoarea contribuabilului numai dup�
 
 ::: ghid-temei
 „(6) Dacă după aplicarea regulilor de interpretare prevăzute la alin. (1) - (5), prevederile legislației fiscale rămân neclare, acestea se interpretează în favoarea contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 13 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 13 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(2) în cazul în care voința legiuitorului nu reiese clar din textul legii, la stabilirea voinței legiuitorului se ține seama de scopul emiterii actului normativ astfel cum acesta reiese din documentele publice ce însoțesc actul normativ în procesul de elaborare, dezbatere și aprobare. (3) Prevederile legislației fiscale se interpretează unele prin altele, dând fiecăreia înțelesul ce rezultă din ansamblul legii. (4) Prevederile legislației fiscale susceptibile de mai multe înțelesuri se interpretează în sensul în care corespund cel mai bine obiectului și scopului legii. (5) Prevederile legislației fiscale se interpretează în sensul în care pot produce efecte, iar nu în acela în care nu ar putea produce niciunul."
-— Codul de procedură fiscală (Legea 207/2015), art. 13 alin. (2)-(5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 13 alin. (2)-(5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(4) Buna-credință a contribuabililor se prezumă până când organul fiscal dovedește contrariul."
-— Codul de procedură fiscală (Legea 207/2015), art. 12 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 12 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ordinea în care se aplică regulile:

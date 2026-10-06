@@ -15,7 +15,7 @@ Nu există o scutire generală „ONG-urile nu plătesc impozit pe profit". Lege
 ::: ghid-temei
 „(2) În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, la calculul rezultatului fiscal, următoarele tipuri de venituri sunt venituri neimpozabile: a) cotizațiile și taxele de înscriere ale membrilor; b) contribuțiile bănești sau în natură ale membrilor și simpatizanților; c) taxele de înregistrare stabilite potrivit legislației în vigoare; [...] e) donațiile, precum și banii sau bunurile primite prin sponsorizare/mecenat; f) veniturile din dividende, dobânzi, precum și din diferențele de curs valutar aferente disponibilităților și veniturilor neimpozabile; [...] i) resursele obținute din fonduri publice sau din finanțări nerambursabile; j) veniturile realizate din acțiuni ocazionale precum: evenimente de strângere de fonduri cu taxă de participare, serbări, tombole, conferințe, utilizate în scop social sau profesional, potrivit statutului acestora; [...]
 (3) [...] pentru calculul rezultatului fiscal sunt neimpozabile și alte venituri realizate, până la nivelul echivalentului în lei a 15.000 euro, într-un an fiscal, dar nu mai mult de 10% din veniturile totale neimpozabile prevăzute la alin. (2)."
-— art. 15 alin. (2)-(3) din Legea 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 15 alin. (2)-(3) din Legea 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe scurt:
@@ -26,7 +26,7 @@ Condițiile, pe scurt:
 
 ::: ghid-temei
 „(i) calculul sumei în lei reprezentând echivalentul a 15.000 euro prin utilizarea cursului mediu de schimb valutar EUR/RON comunicat de Banca Națională a României pentru anul fiscal respectiv;"
-— HG 1/2016, norma la art. 15 pct. 3 lit. b) subpct. (i) din Codul fiscal (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norma la art. 15 pct. 3 lit. b) subpct. (i) din Codul fiscal (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ## Ce se greșește în practică

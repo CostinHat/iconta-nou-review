@@ -14,7 +14,7 @@ O firmă nu se „reactivează" pur și simplu, printr-o cerere administrativă,
 
 ::: ghid-temei
 „Societatea a cărei dizolvare a fost constatată de către registrator, precum și Agenția Națională de Administrare Fiscală pot face plângere în termen de 15 zile de la comunicare, iar orice altă persoană interesată, în termen de 15 zile de la data publicării încheierii în Buletinul electronic al registrului comerțului. [...] Împotriva încheierii registratorului de registrul comerțului, societatea, Agenția Națională de Administrare Fiscală sau orice persoană interesată poate formula plângere în termen de 15 zile de la comunicare."
-— Legea 31/1990, art. 237^2 alin. (4) (dizolvare din oficiu) și art. 260 alin. (9) (radiere din oficiu) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 237^2 alin. (4) (dizolvare din oficiu) și art. 260 alin. (9) (radiere din oficiu) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Practic, sunt două momente distincte în procedura administrativă în care se poate interveni:

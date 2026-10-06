@@ -14,7 +14,7 @@ Cota de 10% pentru impozitul pe salarii pare simplă, dar nu se aplică direct p
 
 ::: ghid-temei
 „la locul unde se află funcția de bază, prin aplicarea cotei de 10% asupra bazei de calcul determinată ca diferență între venitul net din salarii calculat prin deducerea din venitul brut a contribuțiilor sociale obligatorii aferente unei luni, datorate potrivit legii în România sau în conformitate cu instrumentele juridice internaționale la care România este parte, precum și, după caz, a contribuției individuale la bugetul de stat datorată potrivit legii, și următoarele: (i) deducerea personală acordată pentru luna respectivă; (ii) cotizația sindicală plătită în luna respectivă, potrivit legii; (iii) contribuțiile la fondurile de pensii facultative [...], suportate de angajați, astfel încât la nivelul anului să nu se depășească echivalentul în lei al sumei de 400 euro."
-— Legea nr. 227/2015, art. 78 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 78 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formula de calcul, pas cu pas:

@@ -58,6 +58,6 @@ Cea mai frecventă greșeală e calcularea CASS pe baza rămasă după scăderea
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`, `_calcul_salariu_2018()`) aplică exact ordinea de mai sus: facilitate → CAS 25% → CASS 10% → deducere personală → impozit 10% → net. Toate cotele vin din registrul „period-aware" `core.common.COTE`, astfel încât aplicația folosește automat valorile corecte pentru fereastra din 2026 în care cade luna calculată.
+Motorul de calcul (`_calcul_salariu_2018()`) aplică exact ordinea de mai sus: facilitate → CAS 25% → CASS 10% → deducere personală → impozit 10% → net. Toate cotele vin din registrul „period-aware" `core.common.COTE`, astfel încât aplicația folosește automat valorile corecte pentru fereastra din 2026 în care cade luna calculată.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Nu există, pentru o firmă mică sub plafonul de 100.000 euro, un buton de „s
 
 ::: ghid-temei
 „(1) Perioada fiscală este luna calendaristică. (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri [...] care nu a depășit plafonul de 100.000 euro [...], cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri. [...] (7) Prin excepție de la prevederile alin. (2)-(6), pentru persoana impozabilă care utilizează trimestrul calendaristic ca perioadă fiscală și care efectuează o achiziție intracomunitară de bunuri taxabilă în România, perioada fiscală devine luna calendaristică începând cu [...] (8) Persoana impozabilă care potrivit alin. (7) este obligată să își schimbe perioada fiscală trebuie să depună o declarație de mențiuni la organul fiscal competent, în termen de maximum 5 zile lucrătoare de la finele lunii în care intervine exigibilitatea achiziției intracomunitare care generează această obligație."
-— Legea 227/2015 (Codul fiscal), art. 322 alin. (1), (2), (7) și (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 322 alin. (1), (2), (7) și (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă că trecerea de la trimestrial la lunar apare, de regulă, în două situații, nu ca opțiune liberă:

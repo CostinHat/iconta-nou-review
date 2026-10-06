@@ -14,7 +14,7 @@ Când o firmă scoate din stoc o marfă pentru a o folosi ea însăși (nu pentr
 
 ::: ghid-temei
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: a) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi utilizate în scopuri care nu au legătură cu activitatea economică desfășurată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, concret, această regulă:
@@ -32,6 +32,6 @@ Ce presupune, concret, această regulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă, prin modulul `core/stocuri.py` (gestiune global-valorică, funcția `descarcare_gv`) și prin evidența generală de stocuri, mecanismul de descărcare a gestiunii pe baza vânzărilor înregistrate — dar **nu am găsit** o funcționalitate dedicată care să identifice automat o preluare pentru scop propriu și să calculeze TVA colectată aferentă, potrivit art. 270 alin. (4) lit. a). Nota contabilă pentru o asemenea operațiune (607 = 371, plus TVA colectată) se înregistrează manual de contabil, folosind evidența contabilă generală a aplicației.
+La data acestui ghid, iConta.eu oferă, prin aplicație (gestiune global-valorică, funcția `descarcare_gv`) și prin evidența generală de stocuri, mecanismul de descărcare a gestiunii pe baza vânzărilor înregistrate — dar **nu am găsit** o funcționalitate dedicată care să identifice automat o preluare pentru scop propriu și să calculeze TVA colectată aferentă, potrivit art. 270 alin. (4) lit. a). Nota contabilă pentru o asemenea operațiune (607 = 371, plus TVA colectată) se înregistrează manual de contabil, folosind evidența contabilă generală a aplicației.
 
 [iConta.eu](/)

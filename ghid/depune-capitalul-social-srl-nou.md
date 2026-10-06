@@ -14,7 +14,7 @@ Constituirea unui SRL nu presupune vărsarea integrală a capitalului social în
 
 ::: ghid-temei
 „Societatea cu răspundere limitată trebuie să verse 30% din valoarea capitalului social subscris nu mai târziu de 3 luni de la data înmatriculării, dar înainte de a începe operațiuni în numele societății, iar diferența de capital social subscris va fi vărsată: a) pentru aportul în numerar, în 12 luni de la data înmatriculării; [...]"
-— Legea 31/1990, art. 9^1 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 9^1 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă un calendar în doi pași pentru SRL:

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Angajatorii au obligația de a completa și de a transmite datele în Registru cel târziu în ziua anterioară începerii activității de către primul salariat."
-— HG 295/2025 privind Registrul general de evidență a salariaților (REGES-ONLINE), art. 7 (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025 privind Registrul general de evidență a salariaților (REGES-ONLINE), art. 7 (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 - Termenul e fix și anterior începerii activității — nu „în aceeași zi" și cu atât mai puțin ulterior primei zile lucrate.

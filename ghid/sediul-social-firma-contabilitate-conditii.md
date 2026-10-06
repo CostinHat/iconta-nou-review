@@ -14,7 +14,7 @@ Firmele de contabilitate/experți contabili întreabă adesea dacă activitatea 
 
 ::: ghid-temei
 „nu mai sunt îndeplinite condițiile referitoare la sediul social, ca urmare a expirării duratei actului care atestă dreptul de folosință asupra spațiului cu destinație de sediu social ori transferului dreptului de folosință sau proprietate asupra spațiului cu destinație de sediu social"
-— Legea nr. 31/1990 privind societățile, art. 237^2 alin. (1) lit. a) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 237^2 alin. (1) lit. a) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din regimul general, aplicabil oricărei societăți, inclusiv firmelor de contabilitate:

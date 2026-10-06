@@ -14,20 +14,20 @@ Creditul fiscal extern se limitează **separat pentru fiecare țară**. Pentru f
 
 ::: ghid-temei
 „Creditul acordat pentru impozitele plătite unui stat străin într-un an fiscal nu poate depăși impozitul pe profit, calculat prin aplicarea cotei de impozit pe profit prevăzute la art. 17 la profitul impozabil obținut în statul străin, determinat în conformitate cu regulile prevăzute în prezentul titlu, sau la venitul obținut din statul străin.”
-— Codul fiscal (Legea 227/2015), art. 39 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 39 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Limitarea prevăzută la art. 39 alin. (6) din Codul fiscal va fi calculată separat pentru fiecare sursă de venit. În scopul aplicării acestei prevederi, toate veniturile persoanei juridice române a căror sursă se află în aceeași țară străină vor fi considerate ca având aceeași sursă.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Rândul se completează cu valoarea cea mai mică dintre următoarele două valori, pe fiecare stat din care se obţin venituri prin intermediul unui sediu permanent sau venituri supuse impozitului cu reţinere la sursă, venituri impuse atât în România, cât şi în statul străin”
-— OPANAF 206/2025, instrucțiunile D101, rândul 42.1 (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— OPANAF 206/2025, instrucțiunile D101, rândul 42.1 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 
 „Suma care se înscrie la acest rând este mai mică sau cel mult egală cu suma înscrisă la rândul 41.”
-— OPANAF 206/2025, instrucțiunile D101, rândul 42.1 (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— OPANAF 206/2025, instrucțiunile D101, rândul 42.1 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 :::
 
 Cum se calculează:

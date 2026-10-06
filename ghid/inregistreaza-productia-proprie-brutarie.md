@@ -14,7 +14,7 @@ O brutărie nu cumpără marfă pentru revânzare — își fabrică produsul. C
 
 ::: ghid-temei
 Reglementările contabile conforme cu directivele europene, aprobate prin OMFP 1802/2014, stabilesc funcționarea contului 345 „Produse finite" (evidența produselor finite, la cost de producție) în corespondență cu contul 711 „Venituri aferente costurilor stocurilor de produse", precum și a contului 348 „Diferențe de preț la produse" pentru diferența dintre costul standard (prestabilit) și costul efectiv de producție.
-— OMFP 1802/2014, planul de conturi general și funcțiunea conturilor 345, 348, 711 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, planul de conturi general și funcțiunea conturilor 345, 348, 711 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Fluxul contabil pentru o brutărie care lucrează la cost standard (metodă uzuală când costul efectiv se cunoaște abia la închiderea lunii) are trei momente:

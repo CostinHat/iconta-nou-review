@@ -14,7 +14,7 @@ Regula de bază pentru arhivarea documentelor contabile e de 5 ani, dar câteva 
 
 ::: ghid-temei
 „Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la art. 1 timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii."
-— Legea contabilității nr. 82/1991 (republicată), art. 25 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991 (republicată), art. 25 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - **Documentele justificative și registrele de contabilitate** (facturi, note contabile, registrul-jurnal, cartea mare) se păstrează **5 ani**, calculați de la 1 iulie al anului următor celui în care s-au întocmit — inclusiv statele de salarii.

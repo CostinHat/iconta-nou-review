@@ -14,7 +14,7 @@ Scutirea de impozit pentru profitul reinvestit nu e o facilitate separată de am
 
 ::: ghid-temei
 „Profitul investit în echipamente tehnologice, active utilizate în activitatea de producție și procesare, activele reprezentând retehnologizare, calculatoare electronice și echipamente periferice, mașini și aparate de casă, de control și de facturare, în programe informatice, precum și pentru dreptul de utilizare a programelor informatice, produse și/sau achiziționate, inclusiv în baza contractelor de leasing financiar, și puse în funcțiune, folosite în scopul desfășurării activității economice, este scutit de impozit. [...] Profitul investit potrivit alin. (1) reprezintă soldul contului de profit și pierdere, respectiv profitul contabil brut cumulat de la începutul anului, obținut până în trimestrul sau în anul punerii în funcțiune a activelor prevăzute la alin. (1). Scutirea de impozit pe profit aferentă investițiilor realizate se acordă în limita impozitului pe profit calculat cumulat de la începutul anului până în trimestrul punerii în funcțiune a activelor [...]."
-— Legea nr. 227/2015, art. 22 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 22 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se leagă cele două mecanisme:
@@ -32,6 +32,6 @@ Cum se leagă cele două mecanisme:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are, la data acestui ghid, un modul dedicat calculului automat al scutirii de impozit pentru profitul reinvestit conform art. 22 — modulul de amortizare a mijloacelor fixe (`core/d406_active.py`) calculează amortizarea de la data punerii în funcțiune, dar corelarea cu profitul contabil cumulat pentru determinarea plafonului scutirii rămâne un calcul separat, făcut de contabil în afara aplicației.
+iConta.eu nu are, la data acestui ghid, un modul dedicat calculului automat al scutirii de impozit pentru profitul reinvestit conform art. 22 — modulul de amortizare a mijloacelor fixe calculează amortizarea de la data punerii în funcțiune, dar corelarea cu profitul contabil cumulat pentru determinarea plafonului scutirii rămâne un calcul separat, făcut de contabil în afara aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ O inspecție fiscală nu e o procedură fără reguli pentru organul de control 
 
 ::: ghid-temei
 „(1) Inspecția fiscală reprezintă activitatea ce are ca obiect verificarea legalității și conformității declarațiilor fiscale, corectitudinii și exactității îndeplinirii obligațiilor în legătură cu stabilirea obligațiilor fiscale de către contribuabil/plătitor [...]. (2) În scopul efectuării inspecției fiscale, organul de inspecție fiscală procedează la: a) examinarea documentelor aflate în dosarul fiscal al contribuabilului/plătitorului; [...] g) solicitarea de explicații scrise de la reprezentantul legal al contribuabilului/plătitorului [...]; h) informarea reprezentantului legal al contribuabilului/plătitorului [...] cu privire la constatările inspecției fiscale, precum și discutarea acestora."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 113 alin. (1)-(2) lit. a), g), h) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 113 alin. (1)-(2) lit. a), g), h) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Inspecția fiscală urmărește **legalitatea și conformitatea** declarațiilor cu evidența contabilă și fiscală, nu doar căutarea unor greșeli izolate — organul de control examinează dosarul fiscal complet.

@@ -14,7 +14,7 @@ Multe firme din construcții pornesc încă de la premisa că beneficiază de sc
 
 ::: ghid-temei
 „5. Abrogat." (referitor la scutirea de impozit pe venit pentru salariile din domeniul construcțiilor, anterior reglementată la art. 60 pct. 5 din Codul fiscal)
-— Legea nr. 227/2015 (Codul fiscal), notă la art. 60, ca urmare a abrogării de Punctul 7, Articolul LXIV din Ordonanța de urgență nr. 156 din 30 decembrie 2024, cu aplicare de la 1 ianuarie 2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), notă la art. 60, ca urmare a abrogării de Punctul 7, Articolul LXIV din Ordonanța de urgență nr. 156 din 30 decembrie 2024, cu aplicare de la 1 ianuarie 2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru o firmă de construcții în 2026:

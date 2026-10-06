@@ -14,7 +14,7 @@ Aici trebuie separate două lucruri diferite: ce spune legea, explicit, despre c
 
 ::: ghid-temei
 „3.1. După primirea declaraţiei, organul fiscal va verifica îndeplinirea obligaţiei de depunere a declaraţiei, prin corelarea informaţiilor referitoare la persoanele impozabile care sunt înregistrate în scopuri de TVA şi au declarat în decontul de TVA numai operaţiuni efectuate pe teritoriul naţional cu informaţiile referitoare la persoanele impozabile care au depus declaraţii informative. 3.2. Pentru persoanele impozabile care nu au depus declaraţiile informative conform pct. 3.1 se emit de către organul fiscal notificări."
-— OPANAF 3769/2015, Anexa 3 pct.3.1-3.2 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt:1281-1286)
+— OPANAF 3769/2015, Anexa 3 pct.3.1-3.2 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 - Legea confirmă explicit doar corelarea dintre **decontul de TVA (D300)** și **obligația de depunere a D394**: dacă o firmă a declarat în D300 operațiuni exclusiv pe teritoriul național, dar nu a depus și D394, organul fiscal emite notificare.
@@ -31,9 +31,9 @@ Aici trebuie separate două lucruri diferite: ce spune legea, explicit, despre c
 
 iConta.eu nu poate replica, și nu pretinde că replică, algoritmul intern de control al ANAF — acela nu e o funcționalitate de aplicație, ci un proces al autorității fiscale. Ce face efectiv aplicația, pe partea ei, sunt trei verificări interne, distincte:
 
-1. **Paritatea D300 ↔ D394**: un test intern (`core/test_d300_d394_paritate.py`) confirmă că TVA colectată pe fiecare cotă coincide între cele două declarații, pentru că ambele se calculează din aceeași sursă — liniile facturilor.
-2. **Validare pe validatorul oficial ANAF**, rulată local înainte de a considera fișierul gata de depus (`core/duk.py`).
-3. **Corelarea structurală cu e-Factura**: D394 se generează din aceeași tabelă de facturi populată de importul e-Factura (`core/efactura_import.py`) — dar **nu există un modul dedicat** care compară explicit ce a plecat/venit prin e-Factura cu ce a intrat în D394; potrivirea rezultă din sursa comună de date, nu dintr-o funcție separată de „matching".
+1. **Paritatea D300 ↔ D394**: un test intern confirmă că TVA colectată pe fiecare cotă coincide între cele două declarații, pentru că ambele se calculează din aceeași sursă — liniile facturilor.
+2. **Validare pe validatorul oficial ANAF**, rulată local înainte de a considera fișierul gata de depus.
+3. **Corelarea structurală cu e-Factura**: D394 se generează din aceeași tabelă de facturi populată de importul e-Factura — dar **nu există un modul dedicat** care compară explicit ce a plecat/venit prin e-Factura cu ce a intrat în D394; potrivirea rezultă din sursa comună de date, nu dintr-o funcție separată de „matching".
 
 Depunerea efectivă a D300 și D394 la ANAF rămâne manuală, prin SPV — aplicația nu are vizibilitate asupra propriului proces intern de control al ANAF asupra e-Factura, și nu ar trebui prezentată ca atare.
 

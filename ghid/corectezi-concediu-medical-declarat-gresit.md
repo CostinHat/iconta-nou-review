@@ -14,7 +14,7 @@ Indiferent ce anume a fost greșit — cod de indemnizație, număr de zile, sum
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă de aici, pentru un concediu medical declarat greșit în D112:

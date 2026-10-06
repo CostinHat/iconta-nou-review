@@ -14,7 +14,7 @@ O firmă plătitoare de impozit pe profit are două tipuri de obligații pe an: 
 
 ::: ghid-temei
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. [...] Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor [...]."
-— Legea 227/2015, art. 41 alin. (1) și art. 42 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (1) și art. 42 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Calendarul, cu nuanța tranziției:

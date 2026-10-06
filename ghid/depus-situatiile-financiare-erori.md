@@ -32,6 +32,6 @@ Erorile se pot referi fie la exercițiul curent, fie la exerciții financiare pr
 
 ## Ce face iConta.eu
 
-De reținut clar: `core/bilant.py` și `core/bilant_api.py` **nu au nicio funcție de corectare/rectificare** a unui S1005/S1003 deja generat sau depus — nu există o astfel de acțiune în aplicație. Ce oferă iConta.eu este suportul contabil corect pentru situația descrisă mai sus: se înregistrează nota de corecție pe rezultatul reportat (117), pentru erorile aferente exercițiilor precedente, iar bilanțul viitor al firmei (cel al exercițiului curent) va reflecta automat corecția, la generarea din balanța actualizată — bilanțul deja depus rămâne, formal, neschimbat.
+De reținut clar: Aplicația **nu au nicio funcție de corectare/rectificare** a unui S1005/S1003 deja generat sau depus — nu există o astfel de acțiune în aplicație. Ce oferă iConta.eu este suportul contabil corect pentru situația descrisă mai sus: se înregistrează nota de corecție pe rezultatul reportat (117), pentru erorile aferente exercițiilor precedente, iar bilanțul viitor al firmei (cel al exercițiului curent) va reflecta automat corecția, la generarea din balanța actualizată — bilanțul deja depus rămâne, formal, neschimbat.
 
 [iConta.eu](/)

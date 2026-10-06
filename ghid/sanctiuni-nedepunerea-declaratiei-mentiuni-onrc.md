@@ -19,7 +19,7 @@ a) nedepunerea de către contribuabil/plătitor la termenele prevăzute de lege 
 [...]
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: [...]
 d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. a) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. a) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate confirma din acest temei — valabil pentru declarația de mențiuni **fiscală**, nu pentru cea de la ONRC:

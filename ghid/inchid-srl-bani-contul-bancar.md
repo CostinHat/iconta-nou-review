@@ -23,7 +23,7 @@ Cea mai gravă greșeală posibilă la acest pas este aplicarea unei cote greși
 
 > „08 1.a) venituri din dividende - 8%/2024, 10%/2025, 16%/2026"
 > „11 1.e) venituri din lichidarea persoanei juridice – 10%"
-> — `anaf_surse/d205_struct_anaf.txt`
+> — [Structura fișierului XML pentru declarația 205, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D205_2025_120226.pdf)
 
 **Atenție — bug cunoscut al aplicației:** iConta.eu calculează în prezent impozitul pe câștigul din partaj (rezerve + profituri distribuite la lichidare) folosind **exact același registru de cote ca la dividendele obișnuite** — adică 16% începând cu 2026, în loc de 10% conform art. 97 alin. (5). Această echivalare a fost o decizie de simplificare la nivel de cod (un singur registru de cote pentru ambele situații), nu o verificare punctuală a articolului corect pentru lichidare. Până la clarificarea sau corectarea acestui aspect, **verificați manual impozitul reținut din netul plătit către asociați** și recalculați la 10% dacă este cazul, mai ales dacă lichidarea are loc după 1 ianuarie 2026.
 

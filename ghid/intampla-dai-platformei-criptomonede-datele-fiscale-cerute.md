@@ -16,10 +16,10 @@ Măsura nu este o sancțiune aplicată de ANAF, ci o obligație a platformei, pr
 
 ::: ghid-temei
 „(6) În cazul în care un Utilizator de Criptoactive nu furnizează informațiile prevăzute în secțiunea III din anexa nr. 6 nici după primirea a două atenționări transmise ulterior solicitării inițiale din partea Furnizorului de Servicii de Criptoactive Raportor, dar nu înainte de expirarea unui termen de 60 de zile de la solicitarea inițială, Furnizorul de Servicii de Criptoactive Raportor nu îi permite Utilizatorului de Criptoactive să efectueze Tranzacții de Schimb."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „2. „Tranzacție de Schimb“ înseamnă orice: a) schimb între criptoactive care fac obiectul raportării și monede fiduciare; și b) schimb între una sau mai multe forme de criptoactive care fac obiectul raportării."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 6, secțiunea IV, subsecțiunea C pct. 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 6, secțiunea IV, subsecțiunea C pct. 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, în ordinea prevăzută de lege:

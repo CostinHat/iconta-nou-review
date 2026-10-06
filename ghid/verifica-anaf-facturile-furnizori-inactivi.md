@@ -14,10 +14,10 @@ Un furnizor poate fi declarat inactiv de ANAF fără ca acest lucru să fie evid
 
 ::: ghid-temei
 „Nu sunt considerate cheltuieli deductibile: [...] j) cheltuielile înregistrate în evidența contabilă, care au la bază un document emis de un contribuabil declarat inactiv conform prevederilor Codului de procedură fiscală, cu excepția celor reprezentând achiziții de bunuri efectuate în cadrul procedurii de executare silită și/sau a achizițiilor de bunuri/servicii de la persoane impozabile aflate în procedura falimentului potrivit Legii nr. 85/2014."
-— Legea 227/2015, art. 25 alin. (4) lit. j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (4) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Beneficiarii care achiziționează bunuri și/sau servicii de la persoane impozabile stabilite în România, după înscrierea acestora ca inactivi în Registrul contribuabililor inactivi/reactivați conform Codului de procedură fiscală, nu beneficiază de dreptul de deducere a cheltuielilor și a taxei pe valoarea adăugată aferente achizițiilor respective [...]"
-— Legea 227/2015, art. 11 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 11 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce verifică, în esență, un inspector la control:
@@ -34,6 +34,6 @@ Ce verifică, în esență, un inspector la control:
 
 ## Ce face iConta.eu
 
-Când se introduce sau se caută un furnizor după CUI, iConta.eu interoghează API-ul public ANAF și afișează, printre datele preluate (denumire, cod CAEN, plătitor de TVA), și statusul de inactivitate (`inactiv`, din `stare_inactiv.statusInactivi`) — vezi `core/anaf_api.py`. Aplicația **nu verifică automat, la fiecare factură înregistrată**, dacă furnizorul era inactiv exact la data emiterii facturii respective, și nu blochează sau semnalează retroactiv facturile deduse de la un furnizor care a devenit între timp inactiv. Confirmarea perioadei exacte de inactivitate față de data fiecărei facturi rămâne o verificare manuală a contabilului.
+Când se introduce sau se caută un furnizor după CUI, iConta.eu interoghează API-ul public ANAF și afișează, printre datele preluate (denumire, cod CAEN, plătitor de TVA), și statusul de inactivitate (`inactiv`, din `stare_inactiv.statusInactivi`) — vezi aplicația. Aplicația **nu verifică automat, la fiecare factură înregistrată**, dacă furnizorul era inactiv exact la data emiterii facturii respective, și nu blochează sau semnalează retroactiv facturile deduse de la un furnizor care a devenit între timp inactiv. Confirmarea perioadei exacte de inactivitate față de data fiecărei facturi rămâne o verificare manuală a contabilului.
 
 [iConta.eu](/)

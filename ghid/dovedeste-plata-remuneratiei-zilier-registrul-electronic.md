@@ -16,11 +16,11 @@ Contează la control. Inspectorul de muncă verifică dacă remunerația a fost 
 
 ::: ghid-temei
 „(3) Dovada plății remunerației se face prin semnătura zilierului în Registru."
-— Legea 52/2011, art. 11 alin. (3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 11 alin. (3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „La data de 20 decembrie 2019 se înființează Registrul electronic de evidență a zilierilor, ca singura modalitate de transmitere a datelor privind evidența zilierilor."
-— Legea 52/2011, art. 4^1 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4^1 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „e) să plătească zilierului remunerația cuvenită, prin orice mijloc de plată admis de lege, la sfârșitul fiecărei zile; [...] modalitatea de plată electronică și aspectele care privesc plata remunerației se stabilesc prin normele metodologice de aplicare a prezentei legi."
-— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

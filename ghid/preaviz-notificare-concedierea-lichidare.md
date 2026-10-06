@@ -14,7 +14,7 @@ Concedierea salariaților ca urmare a lichidării societății se încadrează �
 
 ::: ghid-temei
 „Persoanele concediate în temeiul art. 61 lit. c) și d), al art. 65 și 66 beneficiază de dreptul la un preaviz ce nu poate fi mai mic de 20 de zile lucrătoare.”
-— Legea nr. 53/2003 (Codul muncii, republicată), art. 75 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii, republicată), art. 75 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce presupune, concret, concedierea prin desființarea locului de muncă în contextul lichidării:

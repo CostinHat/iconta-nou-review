@@ -14,7 +14,7 @@ Ultimul pas al lichidării unei firme e depunerea cererii de radiere din registr
 
 ::: ghid-temei
 „(12) În termen de 5 zile de la terminarea lichidării, lichidatorii depun la registrul comerțului cererea de radiere a societății din registrul comerțului, pe baza raportului final de lichidare și a situațiilor financiare de lichidare prin care se prezintă situația patrimoniului, a creanțelor și repartizarea activelor rămase, după caz [...]. Încheierea prin care se constată încheiată lichidarea și se dispune radierea societății din registrul comerțului se publică în Buletinul electronic al registrului comerțului."
-— Legea nr. 31/1990 privind societățile, art. 260 alin. (12) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 260 alin. (12) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce stabilește legea, exact:

@@ -16,15 +16,15 @@ Invers, dacă impozitul pe profit dinainte de scutire e mai mic decât IMCA, se 
 
 ::: ghid-temei
 „g) în cazul în care, în urma comparației efectuate între impozitul pe profit și impozitul minim pe cifra de afaceri, potrivit dispozițiilor art. 18^1 alin. (1) din Codul fiscal, contribuabilul este obligat la plata impozitului pe profit, acesta se datorează și în situația în care, după scăderea sumelor reprezentând credit fiscal extern, impozit pe profit scutit potrivit dispozițiilor art. 22 din Codul fiscal [...] valoarea redusă a impozitului pe profit scade sub valoarea impozitului minim pe cifra de afaceri;"
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. g) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. g) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „și nu se scad sumele reprezentând creditul fiscal extern, impozitul pe profit scutit potrivit dispozițiilor art. 22"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care contribuabilul datorează impozit minim pe cifra de afaceri din acesta nu se scad sumele reprezentând impozitul pe profit scutit, redus și alte sume care se scad din impozitul pe profit, potrivit legilor speciale"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula, pe pași:

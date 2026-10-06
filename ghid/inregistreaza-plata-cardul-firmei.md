@@ -14,7 +14,7 @@ Plățile efectuate cu cardul firmei (de un administrator sau un angajat, pentru
 
 ::: ghid-temei
 „542. Avansuri de trezorerie*18) (A) [...] *18) În acest cont vor fi evidențiate și sumele acordate prin sistemul de carduri."
-— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, planul de conturi general, contul 542 și nota *18) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, planul de conturi general, contul 542 și nota *18) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, mecanismul contabil pentru plata cu cardul firmei urmează pașii unui avans de trezorerie:
@@ -31,6 +31,6 @@ Practic, mecanismul contabil pentru plata cu cardul firmei urmează pașii unui 
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală pentru avansurile de trezorerie, în `core/casa.py`: acordarea unui avans (inclusiv prin card, conform notei *18 din OMFP 1802/2014) generează nota contabilă pe cont 542, decontarea pe bază de documente justificative distribuie sumele pe conturile de cheltuială corespunzătoare (cu TVA separat, dacă e cazul), iar soldurile nedecontate la închidere se pot reclasifica automat pe 4282 (personal) sau 461 (alți debitori), cu temeiul citat direct în cod (`OMFP 1802/2014 pct. 302/306`).
+iConta.eu are o funcționalitate reală pentru avansurile de trezorerie, în aplicație: acordarea unui avans (inclusiv prin card, conform notei *18 din OMFP 1802/2014) generează nota contabilă pe cont 542, decontarea pe bază de documente justificative distribuie sumele pe conturile de cheltuială corespunzătoare (cu TVA separat, dacă e cazul), iar soldurile nedecontate la închidere se pot reclasifica automat pe 4282 (personal) sau 461 (alți debitori), cu temeiul citat direct în cod (`OMFP 1802/2014 pct. 302/306`).
 
 [iConta.eu](/)

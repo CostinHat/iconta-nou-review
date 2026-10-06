@@ -16,9 +16,9 @@ Pentru contabilul care întocmește statul de plată și D112 al asociației, ho
 
 ::: ghid-temei
 „g) adoptă hotărâri asupra fondului anual de salarii și indemnizații; […] h) adoptă hotărâri asupra cuantumului indemnizațiilor, precum și asupra numărului și funcțiilor personalului încadrat cu contract individual de muncă sau contract de prestări servicii în cadrul asociației de proprietari pentru buna administrare, gestionare și funcționare a condominiului, dar și asupra valorii și a modalităților de contractare, în limita bugetului de venituri și cheltuieli;"
-— Legea 196/2018, art. 53 lit. g)-h) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 53 lit. g)-h) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „ș) propune adunării generale cuantumul indemnizațiilor, precum și numărul și funcțiile personalului necesar a fi încadrat cu contract individual de muncă sau contract de prestări servicii în cadrul asociației de proprietari pentru buna administrare, gestionare și funcționare a condominiului, în limita bugetului de venituri și cheltuieli;"
-— Legea 196/2018, art. 55 alin. (1) lit. ș) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 55 alin. (1) lit. ș) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Cum se împart rolurile:

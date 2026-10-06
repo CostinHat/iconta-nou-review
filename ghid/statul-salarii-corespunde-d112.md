@@ -28,6 +28,6 @@ Cea mai frecventă greșeală e "ajustarea" contului contabil (o notă manuală 
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` din `core/control_incrucisat.py` separă exact aceste cazuri: stat necontabilizat → remediu executabil ("Contabilizează statul de plată"), notă cunoscută în ciornă → remediu sugerat ("Validează nota"), orice altă divergență → remediu de tip investigație, cu cauzele posibile enumerate explicit în răspuns. Aplicația nu propune niciodată o ajustare a contului doar pentru a elimina o culoare roșie.
+Funcția `compara_d112` din aplicație separă exact aceste cazuri: stat necontabilizat → remediu executabil ("Contabilizează statul de plată"), notă cunoscută în ciornă → remediu sugerat ("Validează nota"), orice altă divergență → remediu de tip investigație, cu cauzele posibile enumerate explicit în răspuns. Aplicația nu propune niciodată o ajustare a contului doar pentru a elimina o culoare roșie.
 
 [iConta.eu](/)

@@ -21,7 +21,7 @@ Cât timp societatea există juridic și desfășoară operațiuni economice (v�
 
 ## Ce se greșește în practică
 
-Se omite frecvent completarea cotei de TVA la vânzarea unui activ în cursul lichidării, considerând-o „subînțeleasă". Funcția de calcul din motorul de lichidare al iConta.eu (`core/lichidare.py`, `nota_vanzare_activ`) nu are nicio cotă de TVA implicită — cota trebuie introdusă explicit la fiecare operațiune, tocmai pentru ca nota contabilă generată să nu rămână „înghețată" pe o cotă veche dacă legea se schimbă.
+Se omite frecvent completarea cotei de TVA la vânzarea unui activ în cursul lichidării, considerând-o „subînțeleasă". Funcția de calcul din motorul de lichidare al iConta.eu (`nota_vanzare_activ`) nu are nicio cotă de TVA implicită — cota trebuie introdusă explicit la fiecare operațiune, tocmai pentru ca nota contabilă generată să nu rămână „înghețată" pe o cotă veche dacă legea se schimbă.
 
 O a doua greșeală este să se creadă că iConta.eu poate genera și depune declarația de mențiuni vector fiscal (D700) necesară, de regulă, la scoaterea societății din evidența plătitorilor de TVA odată cu radierea.
 

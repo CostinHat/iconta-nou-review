@@ -16,15 +16,15 @@ Pentru firme, termenul are și o miză mai mare: dacă valoarea impozabilă nu a
 
 ::: ghid-temei
 „Valoarea impozabilă a clădirii se actualizează o dată la 5 ani pe baza unui raport de evaluare a clădirii întocmit de un evaluator autorizat în conformitate cu standardele de evaluare a bunurilor aflate în vigoare la data evaluării, depus la organul fiscal local până la primul termen de plată din anul de referință. În situația depunerii raportului de evaluare după primul termen de plată din anul de referință acesta produce efecte începând cu data de 1 ianuarie a anului fiscal următor.”
-— Codul fiscal (Legea 227/2015), art. 460 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe clădiri se plătește anual, în două rate egale, până la datele de 31 martie și 30 septembrie, inclusiv.”
-— Codul fiscal (Legea 227/2015), art. 462 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 462 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În vederea stabilirii impozitului pe clădiri, rapoartele de evaluare se depun în copie, la organul fiscal local, ca anexă la declarația contribuabilului, până la primul termen de plată din anul de referință.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 39 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 39 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie reținut:

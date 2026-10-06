@@ -16,15 +16,15 @@ Limita de 25 de zile se aplică la fel în toate domeniile, inclusiv în agricul
 
 ::: ghid-temei
 „(7) Beneficiarul sau un împuternicit al acestuia nu poate utiliza o persoana mai mult de 25 de zile calendaristice în mod continuu în activitățile de tip zilier."
-— Legea 52/2011, art. 4 alin. (7) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (7) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „(8) Dacă activitatea depusă de zilier necesită o perioadă mai mare decât cea prevăzută la alin. (7) , acesta poate fi utilizat pe bază de contract de muncă pe perioadă determinată."
-— Legea 52/2011, art. 4 alin. (8) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (8) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „(2) Contractul individual de muncă pe durată determinată se poate încheia numai în formă scrisă, cu precizarea expresă a duratei pentru care se încheie."
-— Legea 53/2003 (Codul muncii), art. 82 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 82 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

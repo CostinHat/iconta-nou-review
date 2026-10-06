@@ -14,7 +14,7 @@ Sectorul construcțiilor a beneficiat ani la rând de un pachet de facilități 
 
 ::: ghid-temei
 „5. Abrogat."
-— Legea nr. 227/2015 (Codul fiscal), art. 60 pct. 5, abrogat de la 01-01-2025 prin OUG nr. 156/2024 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 60 pct. 5, abrogat de la 01-01-2025 prin OUG nr. 156/2024 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Punctul 5 al art. 60 era temeiul scutirii de impozit pe venit pentru salariile din sectorul construcțiilor. Fiind abrogat de la 1 ianuarie 2025, scutirea nu mai există nici în 2026 — nu e o schimbare nouă a anului 2026, ci continuarea situației instaurate în 2025.
@@ -23,7 +23,7 @@ Punctul 5 al art. 60 era temeiul scutirii de impozit pe venit pentru salariile d
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 138^1 alin. (1) și (2), art. 138^2 alin. (1) și (2) și art. 138^4 alin. (1) și (2), persoanele fizice care realizează venituri din salarii și asimilate salariilor din domeniile respective **pot opta** pentru plata contribuției datorate la fondul de pensii administrat privat. (2) Opțiunea se depune în scris, la angajator [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 138^5 „Prevederi specifice activității de creare de programe pentru calculator, sectorului construcții, sectorului agricol și industriei alimentare", introdus prin OUG nr. 115/2023 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 138^5 „Prevederi specifice activității de creare de programe pentru calculator, sectorului construcții, sectorului agricol și industriei alimentare", introdus prin OUG nr. 115/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Ce înseamnă pentru 2026:
@@ -40,6 +40,6 @@ Ce înseamnă pentru 2026:
 
 ## Ce face iConta.eu
 
-Da — modulul de salarizare al iConta.eu (`core/salarizare.py`) tratează explicit acest subiect: documentația internă a funcției de calcul notează clar că facilitatea sectorială pentru construcții/agricultură/industrie alimentară (scutire de impozit conform fostului art. 60 pct. 5, CAS redus conform art. 138^1) **nu se aplică**, pentru că art. 60 pct. 5 și art. 60^1 au fost abrogate de la 1 ianuarie 2025 prin OUG nr. 156/2024. De aceea aplicația nu are o ramură separată de calcul după codul CAEN al angajatorului pentru aceste sectoare — orice salariat, indiferent de domeniu, este calculat cu cotele standard de impozit pe venit și CAS. Opțiunea individuală de reducere a CAS din art. 138^5 (OUG 115/2023), care depinde de o cerere scrisă a salariatului, nu apare implementată separat în modulul verificat.
+Da — modulul de salarizare al iConta.eu tratează explicit acest subiect: documentația internă a funcției de calcul notează clar că facilitatea sectorială pentru construcții/agricultură/industrie alimentară (scutire de impozit conform fostului art. 60 pct. 5, CAS redus conform art. 138^1) **nu se aplică**, pentru că art. 60 pct. 5 și art. 60^1 au fost abrogate de la 1 ianuarie 2025 prin OUG nr. 156/2024. De aceea aplicația nu are o ramură separată de calcul după codul CAEN al angajatorului pentru aceste sectoare — orice salariat, indiferent de domeniu, este calculat cu cotele standard de impozit pe venit și CAS. Opțiunea individuală de reducere a CAS din art. 138^5 (OUG 115/2023), care depinde de o cerere scrisă a salariatului, nu apare implementată separat în modulul verificat.
 
 [iConta.eu](/)

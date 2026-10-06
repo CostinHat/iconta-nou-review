@@ -14,7 +14,7 @@ Un sold de client sau furnizor care rămâne neschimbat în balanță de la un a
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. în același scop, organul fiscal are dreptul să solicite informații și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice, iar acestea au obligația de a furniza informațiile solicitate. Informațiile furnizate de alte persoane se iau în considerare numai în măsura în care sunt confirmate și de alte mijloace de probă."
-— Legea 207/2015, art. 58 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 58 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce urmărește, concret, un control pe solduri vechi:

@@ -39,6 +39,6 @@ Greșeala tipică e compararea soldului contului, nu a rulajului creditor al lun
 
 ## Ce face iConta.eu
 
-Funcția `verifica_d112` (`core/control_incrucisat.py`) automatizează exact acest proces: citește rulajele creditoare doar din notele validate, parsează sumele declarate direct din XML-ul D112, aplică toleranța corespunzătoare numărului de salariați și afișează verdictul (verde/roșu/gri) pentru fiecare din cele patru conturi, cu temeiul legal și cauza citate pe fiecare constatare.
+Funcția `verifica_d112` automatizează exact acest proces: citește rulajele creditoare doar din notele validate, parsează sumele declarate direct din XML-ul D112, aplică toleranța corespunzătoare numărului de salariați și afișează verdictul (verde/roșu/gri) pentru fiecare din cele patru conturi, cu temeiul legal și cauza citate pe fiecare constatare.
 
 [iConta.eu](/)

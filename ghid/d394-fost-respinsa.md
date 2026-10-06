@@ -14,7 +14,7 @@ Dacă portalul ANAF afișează erori la starea declarației, ai un termen scurt 
 
 ::: ghid-temei
 „3.5. În cazul în care pe pagina de vizualizare a stării declaraţiei (394) se afişează un mesaj cu erorile pe care le conţine documentul depus, contribuabilul trebuie ca, în termen de 3 zile lucrătoare, să corecteze toate erorile comunicate şi să reia procesul de depunere a declaraţiei (394)."
-— OPANAF 3769/2015, Anexa 3 pct. 3.5 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt) — procedură rămasă neschimbată, OPANAF 2194/2025 a înlocuit doar Anexele 1 și 2
+— OPANAF 3769/2015, Anexa 3 pct. 3.5 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685)) — procedură rămasă neschimbată, OPANAF 2194/2025 a înlocuit doar Anexele 1 și 2
 :::
 
 Ce rezultă concret din acest text:
@@ -31,9 +31,9 @@ Ce rezultă concret din acest text:
 
 ## Ce face iConta.eu
 
-Înainte ca fișierul D394 să fie considerat gata de depus, aplicația îl rulează prin **validatorul oficial ANAF instalat local** (`core/duk.py`, funcția `valideaza(xml, tip, an, luna)`) — aceeași unealtă (DUK) pe care o folosește și portalul ANAF pentru verificarea structurală. Asta reduce riscul unei respingeri de structură la depunere, pentru că majoritatea erorilor de acest tip sunt prinse local, înainte de a ajunge pe portal.
+Înainte ca fișierul D394 să fie considerat gata de depus, aplicația îl rulează prin **validatorul oficial ANAF instalat local** (funcția `valideaza(xml, tip, an, luna)`) — aceeași unealtă (DUK) pe care o folosește și portalul ANAF pentru verificarea structurală. Asta reduce riscul unei respingeri de structură la depunere, pentru că majoritatea erorilor de acest tip sunt prinse local, înainte de a ajunge pe portal.
 
-Separat, D394 are o a doua cale de calcul, independentă (`core/d394_reconciliere.py`), care recalculează totalurile pe cotă direct din liniile facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — un al doilea gard de conținut, nu doar de structură XML.
+Separat, D394 are o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — un al doilea gard de conținut, nu doar de structură XML.
 
 Dacă, în ciuda acestor verificări, portalul ANAF semnalează totuși erori după depunere, corectarea propriu-zisă a conținutului și redepunerea în termenul de 3 zile lucrătoare rămân un pas manual: **iConta.eu nu depune și nu redepune automat la ANAF** — fișierul verificat local se transmite prin portalul SPV.
 

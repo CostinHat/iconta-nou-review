@@ -14,7 +14,7 @@ Contribuabilii administrați de organul fiscal central sunt încadrați într-un
 
 ::: ghid-temei
 „(5) în cazul creanțelor fiscale administrate de organul fiscal central, procedurile de administrare se realizează în funcție de clasa/subclasa de risc fiscal în care sunt încadrați contribuabilii ca urmare a analizei de risc efectuate de organul fiscal. (6) Contribuabilii se încadrează în 3 clase principale de risc, după cum urmează: a) contribuabili cu risc fiscal mic; b) contribuabili cu risc fiscal mediu; c) contribuabili cu risc fiscal ridicat."
-— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5)-(6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5)-(6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru contribuabilii prezumtivi a fi selectați pentru inspecție, legea prevede un pas intermediar:

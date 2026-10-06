@@ -62,4 +62,4 @@ Se emite de organul fiscal local, la solicitarea contribuabilului, a autorităț
 
 ## Legături
 
-Certificatul e primul pas la eșalonare: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf). Ce conțin datoriile pe care le arată: [dobânzi și penalități la datoriile către ANAF](/ghid/dobanzi-penalitati-anaf).
+Certificatul e primul pas la eșalonare: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf-2026). Ce conțin datoriile pe care le arată: [dobânzi și penalități la datoriile către ANAF](/ghid/dobanzi-penalitati-anaf).

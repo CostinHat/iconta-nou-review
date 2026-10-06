@@ -14,7 +14,7 @@ Notarii publici nu se impozitează ca o societate comercială obișnuită, cu im
 
 ::: ghid-temei
 „Articolul 67 Definirea veniturilor din activități independente (1) Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente. [...] (2) Constituie venituri din profesii liberale veniturile obținute din prestarea de servicii cu caracter profesional, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective."
-— Legea nr. 227/2015 privind Codul fiscal, art. 67 alin. (1) și (2), Capitolul II, Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 67 alin. (1) și (2), Capitolul II, Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal definește „profesiile liberale" ca fiind „acele ocupații exercitate pe cont propriu de persoane fizice, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective" (art. 7 pct. 34) — definiție sub care se încadrează activitatea notarială, reglementată prin legea specială a profesiei de notar public. Din coroborarea celor două articole rezultă:
@@ -31,6 +31,6 @@ Codul fiscal definește „profesiile liberale" ca fiind „acele ocupații exer
 
 ## Ce face iConta.eu
 
-Aplicația oferă evidența contabilă generală, dar la data acestui ghid **nu are un modul specific** dedicat calculului impozitului pe venit pentru profesii liberale (inclusiv notari), cu particularitățile Titlului IV din Codul fiscal — funcționalitatea de calcul al impozitului pe profit/microîntreprinderi din `core/d100.py` acoperă persoanele juridice supuse Titlului II, nu regimul veniturilor din activități independente al persoanelor fizice care exercită o profesie liberală. Calculul impozitului pe venit pentru un birou notarial individual rămâne, la această dată, în afara funcționalităților specifice ale aplicației.
+Aplicația oferă evidența contabilă generală, dar la data acestui ghid **nu are un modul specific** dedicat calculului impozitului pe venit pentru profesii liberale (inclusiv notari), cu particularitățile Titlului IV din Codul fiscal — funcționalitatea de calcul al impozitului pe profit/microîntreprinderi din aplicație acoperă persoanele juridice supuse Titlului II, nu regimul veniturilor din activități independente al persoanelor fizice care exercită o profesie liberală. Calculul impozitului pe venit pentru un birou notarial individual rămâne, la această dată, în afara funcționalităților specifice ale aplicației.
 
 [iConta.eu](/)

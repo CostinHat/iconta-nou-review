@@ -14,7 +14,7 @@ Accesul programatic la RO e-Factura nu se face cu o cheie API simplă, ca la mul
 
 ::: ghid-temei
 „(4) Procedura de utilizare şi funcţionare a sistemului naţional privind factura electronică RO e-Factura se aprobă prin ordin al ministrului finanţelor în termen de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al României, Partea I."
-— OUG nr. 120/2021, art. 3 alin. (4) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 3 alin. (4) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Legea stabilește cadrul, dar lasă detaliile tehnice de autentificare — inclusiv mecanismul concret de emitere a token-urilor de acces — în seama unei proceduri aprobate prin ordin al ministrului finanțelor, actualizată periodic de ANAF pe măsură ce sistemul evoluează. Ce rezultă totuși clar din coroborarea cu art. 80 din Codul de procedură fiscală (identificarea electronică) este:
@@ -31,6 +31,6 @@ Legea stabilește cadrul, dar lasă detaliile tehnice de autentificare — inclu
 
 ## Ce face iConta.eu
 
-iConta.eu implementează fluxul de autorizare OAuth2 către ANAF în modulul `core/spv_conector.py`: contribuabilul autorizează, o singură dată, conectarea aplicației la contul său SPV, folosind certificatul digital calificat; iConta.eu primește și stochează criptat tokenul de acces, iar reînnoirea (refresh) se face automat, fără intervenție ulterioară din partea utilizatorului. Parametrii tehnici exacți (durate de expirare, limite de apeluri) sunt cei comunicați de ANAF prin documentația tehnică a sistemului, nu sunt stabiliți de iConta.eu, iar aplicația nu oferă un „token propriu" independent de autorizarea ANAF.
+iConta.eu implementează fluxul de autorizare OAuth2 către ANAF în aplicație: contribuabilul autorizează, o singură dată, conectarea aplicației la contul său SPV, folosind certificatul digital calificat; iConta.eu primește și stochează criptat tokenul de acces, iar reînnoirea (refresh) se face automat, fără intervenție ulterioară din partea utilizatorului. Parametrii tehnici exacți (durate de expirare, limite de apeluri) sunt cei comunicați de ANAF prin documentația tehnică a sistemului, nu sunt stabiliți de iConta.eu, iar aplicația nu oferă un „token propriu" independent de autorizarea ANAF.
 
 [iConta.eu](/)

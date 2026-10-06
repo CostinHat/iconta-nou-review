@@ -14,7 +14,7 @@ Orice firmă care operează cu numerar, chiar și ocazional, are obligația de a
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice, cod 14-4-7A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice, cod 14-4-7A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Regulile esențiale de completare, rezultate din norma citată și din regimul general al plăților/încasărilor în numerar:

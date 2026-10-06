@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În cazul în care au fost acordate sume de natura celor prevăzute la art. 146 alin. (10) și (11), sume reprezentând salarii sau diferențe de salarii, stabilite în baza unor hotărâri judecătorești rămase definitive și irevocabile/hotărâri judecătorești definitive și executorii, inclusiv cele acordate potrivit hotărârilor primei instanțe, executorii de drept, precum și în cazul în care prin astfel de hotărâri s-a dispus reîncadrarea în muncă a unor persoane, în vederea stabilirii prestațiilor acordate de sistemul public de pensii, contribuțiile de asigurări sociale datorate potrivit legii se declară până la data de 25 a lunii următoare celei în care au fost plătite aceste sume, prin depunerea declarațiilor rectificative pentru lunile cărora le sunt aferente sumele respective."
-— Legea 227/2015 (Codul fiscal), art. 147 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 147 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Mecanismul legal de corecție pentru o declarație deja depusă, dar greșită sau incompletă, e declarația rectificativă — depusă pentru luna la care se referă suma corectată, nu pentru luna curentă.

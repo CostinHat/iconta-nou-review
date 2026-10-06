@@ -14,7 +14,7 @@ RO e-Factura nu este gândit ca un portal în care se încarcă manual facturi, 
 
 ::: ghid-temei
 „Sistemul naţional privind factura electronică RO e-Factura asigură interoperabilitatea cu sistemele de facturare ale operatorilor economici."
-— OUG nr. 120/2021, art. 16 (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 16 (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Din text și din articolele conexe rezultă cadrul general al integrării:
@@ -31,6 +31,6 @@ Din text și din articolele conexe rezultă cadrul general al integrării:
 
 ## Ce face iConta.eu
 
-iConta.eu are o integrare API reală cu RO e-Factura, nu doar o interfață de încărcare manuală. Modulul `core/efactura_send.py` generează XML-ul UBL 2.1 / CIUS-RO din facturile emise în aplicație și îl transmite prin apeluri directe la ANAF (endpoint-urile `api.anaf.ro/.../FCTEL/rest`), folosind conectorul OAuth2 din `core/spv_conector.py`. Primirea funcționează simetric: un job programat (`core/spv_poll.py`) interoghează periodic starea trimiterilor, iar `core/spv_receive.py` descarcă automat facturile primite de la furnizori și le pregătește ca ciornă pentru validare de către contabil, fără să creeze automat o cheltuială — verificarea rămâne manuală, pe principiul celor patru ochi.
+iConta.eu are o integrare API reală cu RO e-Factura, nu doar o interfață de încărcare manuală. Aplicația generează XML-ul UBL 2.1 / CIUS-RO din facturile emise în aplicație și îl transmite prin apeluri directe la ANAF (endpoint-urile `api.anaf.ro/.../FCTEL/rest`), folosind conectorul OAuth2 din aplicație. Primirea funcționează simetric: un job programat interoghează periodic starea trimiterilor, iar aplicația descarcă automat facturile primite de la furnizori și le pregătește ca ciornă pentru validare de către contabil, fără să creeze automat o cheltuială — verificarea rămâne manuală, pe principiul celor patru ochi.
 
 [iConta.eu](/)

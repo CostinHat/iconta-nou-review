@@ -14,10 +14,10 @@ Legea cere înregistrarea cu codul special de TVA (conform art. 317 din Codul fi
 
 ::: ghid-temei
 „(1) Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...] c) persoana impozabilă care își are stabilit sediul activității economice în România [...] care nu sunt înregistrate și nu au obligația să se înregistreze conform art. 316 [...], dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective."
-— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 307 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din coroborarea celor două articole rezultă practic:

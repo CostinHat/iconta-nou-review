@@ -17,7 +17,7 @@ O plată în plus la orice obligație administrată de ANAF — TVA, impozit pe 
 [...]
 (7) Compensarea se constată de către organul fiscal competent, la cererea debitorului sau din oficiu. Dispozițiile art. 165 privind ordinea stingerii datoriilor sunt aplicabile în mod corespunzător.
 (8) Organul fiscal competent comunică debitorului decizia cu privire la efectuarea compensării, în termen de 7 zile de la data efectuării operațiunii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (4), (7), (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (4), (7), (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva repere practice din text:

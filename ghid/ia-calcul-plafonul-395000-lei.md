@@ -14,10 +14,10 @@ Multe firme mici cred că orice sumă încasată intră automat în calculul pla
 
 ::: ghid-temei
 „Prin excepție, nu se cuprind în cifra de afaceri prevăzută la alin. (1) livrările de active fixe corporale, astfel cum sunt definite la art. 266 alin. (1) pct. 3, și cesiunea/transferul de active necorporale, efectuate de persoana impozabilă."
-— Legea nr. 227/2015, art. 310 alin. (2) teza finală (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 310 alin. (2) teza finală (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă care realizează în cursul unui an calendaristic exclusiv operațiuni scutite fără drept de deducere conform art. 292 nu se consideră că depășește plafonul prevăzut la alin. (1)."
-— Legea nr. 227/2015, art. 310 alin. (3) teza a doua (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 310 alin. (3) teza a doua (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rămâne, deci, în afara plafonului de 395.000 lei:

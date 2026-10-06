@@ -14,7 +14,7 @@ Când un client reține contractual un procent din valoarea unei lucrări sau a 
 
 ::: ghid-temei
 „(1) Contribuabilul are dreptul la deducerea rezervelor și provizioanelor/ajustărilor pentru depreciere, numai în conformitate cu prezentul articol, astfel: [...] b) provizioanele pentru garanții de bună execuție acordate clienților. Provizioanele pentru garanții de bună execuție acordate clienților se deduc trimestrial/anual numai pentru bunurile livrate, lucrările executate și serviciile prestate în cursul trimestrului/anului respectiv pentru care se acordă garanție în perioadele următoare, la nivelul cotelor prevăzute în convențiile încheiate sau la nivelul procentelor de garantare prevăzut în tariful lucrărilor executate ori serviciilor prestate."
-— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din articolul de mai sus rezultă tratamentul la **impozitul pe profit**:
@@ -32,7 +32,7 @@ Pentru **TVA**, Codul fiscal actual nu prevede un regim special, distinct, pentr
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală pentru provizioanele de garanție de bună execuție, în `core/provizioane.py`: notele de constituire/reluare a provizionului folosesc explicit contul 1512 (din nomenclatorul `PROVIZIOANE`) și aplicația marchează deductibilitatea fiscală **doar** pentru tipul „garantii" (`deductibil = (tip == "garantii")`), conform art. 26 alin. (1) lit. b) citat mai sus — celelalte tipuri de provizioane din nomenclator (litigii, dezafectare) sunt tratate ca nedeductibile.
+iConta.eu are o funcționalitate reală pentru provizioanele de garanție de bună execuție, în aplicație: notele de constituire/reluare a provizionului folosesc explicit contul 1512 (din nomenclatorul `PROVIZIOANE`) și aplicația marchează deductibilitatea fiscală **doar** pentru tipul „garantii" (`deductibil = (tip == "garantii")`), conform art. 26 alin. (1) lit. b) citat mai sus — celelalte tipuri de provizioane din nomenclator (litigii, dezafectare) sunt tratate ca nedeductibile.
 
 Ce nu automatizează astăzi aplicația: nu există o regulă specifică pentru exigibilitatea TVA pe suma reținută drept garanție — pentru că, la verificarea la sursă, Codul fiscal în vigoare nu prevede un regim distinct pentru această situație (regula generală de exigibilitate se aplică integral). Calculul procentului de garantare aplicabil, pe baza contractului, rămâne o valoare introdusă de contabil, nu determinată automat din text contractual.
 

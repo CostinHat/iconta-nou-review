@@ -17,7 +17,7 @@ Orice schimbare a actului constitutiv — sediu, obiect de activitate, capital s
 [...]
 (4) După fiecare modificare a actului constitutiv, administratorii, respectiv directoratul vor depune la registrul comerțului actul modificator și textul complet al actului constitutiv, actualizat cu toate modificările, care vor fi înregistrate în registrul comerțului în temeiul încheierii registratorului de registrul comerțului. [...]
 (5) Oficiul registrului comerțului va înainta din oficiu actul modificator astfel înregistrat și o notificare asupra depunerii textului actualizat al actului constitutiv către Regia Autonomă «Monitorul Oficial», spre a fi publicate în Monitorul Oficial al României, Partea a IV-a, pe cheltuiala societății."
-— Legea 31/1990, art. 204 alin. (1), (4) și (5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 204 alin. (1), (4) și (5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pașii, în ordine, pentru un SRL:

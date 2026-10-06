@@ -37,6 +37,6 @@ Ce nu intră: facturi emise dar neîncasate, avansuri primite pentru servicii vi
 
 ## Ce face iConta.eu
 
-Sursa venitului brut pentru D212 (`core/rip_api.py: fisa_d212`) e suma tuturor operațiunilor de tip "încasare", cu categoria "activitate", care sunt **validate** (au status "validata", adică au document justificativ complet). Operațiunile nevalidate (ciorne) nu intră în venitul brut — sunt doar numărate separat, cu avertisment, ca să știi că mai ai operațiuni de confirmat înainte de a genera declarația. Această abordare pe bază de încasări efective, validate, corespunde exact definiției din art. 68 alin. (2) — sistemul real e construit pe cash, nu pe facturare.
+Sursa venitului brut pentru D212 e suma tuturor operațiunilor de tip "încasare", cu categoria "activitate", care sunt **validate** (au status "validata", adică au document justificativ complet). Operațiunile nevalidate (ciorne) nu intră în venitul brut — sunt doar numărate separat, cu avertisment, ca să știi că mai ai operațiuni de confirmat înainte de a genera declarația. Această abordare pe bază de încasări efective, validate, corespunde exact definiției din art. 68 alin. (2) — sistemul real e construit pe cash, nu pe facturare.
 
 [iConta.eu](/)

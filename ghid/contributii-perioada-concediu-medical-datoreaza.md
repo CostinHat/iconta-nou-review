@@ -16,7 +16,7 @@ Indemnizația de concediu medical nu scapă de contribuții doar pentru că nu e
 „Baza lunară de calcul a contribuției de asigurări sociale [...] o reprezintă câștigul brut realizat din salarii și venituri asimilate salariilor [...] care include: [...] o) indemnizațiile de asigurări sociale de sănătate suportate de angajator sau din Fondul național unic de asigurări sociale de sănătate, potrivit legii, primite pe perioada în care persoanele fizice care realizează venituri din salarii sau asimilate salariilor beneficiază de concedii medicale și de indemnizații de asigurări sociale de sănătate, conform prevederilor legale."
 
 „[Categoriile de venituri supuse contribuției de asigurări sociale de sănătate includ] i) indemnizațiile de asigurări sociale de sănătate, acordate în baza art. 2 alin. (1) lit. a) și b) din [OUG 158/2005] [...] aferente concediilor medicale pentru codurile de indemnizație 01, 07 și 10 [...]."
-— Codul fiscal, art. 139 alin. (1) lit. o) și art. 155 alin. (1) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 139 alin. (1) lit. o) și art. 155 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă o distincție importantă, ratată des:
@@ -33,6 +33,6 @@ Din text rezultă o distincție importantă, ratată des:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`, funcția `taxe_cm`) aplică exact distincția din lege: CAS 25% pe toate indemnizațiile de concediu medical, iar CASS 10% doar pentru codurile 01, 07 și 10 — potrivire exactă cu textul citat mai sus. Calculul rulează automat la introducerea unui certificat de concediu medical în fișa salariatului, iar rezultatul (CAS, CASS, impozit, net) se salvează odată cu certificatul.
+Motorul de calcul (funcția `taxe_cm`) aplică exact distincția din lege: CAS 25% pe toate indemnizațiile de concediu medical, iar CASS 10% doar pentru codurile 01, 07 și 10 — potrivire exactă cu textul citat mai sus. Calculul rulează automat la introducerea unui certificat de concediu medical în fișa salariatului, iar rezultatul (CAS, CASS, impozit, net) se salvează odată cu certificatul.
 
 [iConta.eu](/)

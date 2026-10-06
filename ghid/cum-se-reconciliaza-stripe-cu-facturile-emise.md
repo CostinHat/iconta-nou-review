@@ -20,7 +20,7 @@ Firmele care încasează prin Stripe primesc în extrasul bancar nu plăți indi
 
 Motorul de matching caută facturi deschise ale unui partener pe baza CUI-ului extras din descrierea liniei bancare. Un payout Stripe apare în extras cu textul agregatorului (de exemplu "STRIPE PAYOUT"), nu cu CUI-ul fiecărui client final ale cărui plăți individuale compun acea sumă. Fără CUI detectat, linia primește automat status roșu, motiv "fără CUI în descriere" — indiferent de câte facturi individuale sunt de fapt acoperite de acel payout.
 
-Trebuie spus clar, ca să nu se creeze o așteptare greșită: motorul de matching din F073 nu are un mecanism de "matching pe lot" care să lege un singur payout de N facturi individuale. Pentru a identifica exact ce facturi acoperă un payout, e nevoie de raportul de settlement al Stripe (disponibil în dashboard-ul Stripe, în afara ariei `core/reconciliere.py`), urmat de alocare manuală în iConta.eu.
+Trebuie spus clar, ca să nu se creeze o așteptare greșită: motorul de matching din F073 nu are un mecanism de "matching pe lot" care să lege un singur payout de N facturi individuale. Pentru a identifica exact ce facturi acoperă un payout, e nevoie de raportul de settlement al Stripe (disponibil în dashboard-ul Stripe, în afara ariei aplicația), urmat de alocare manuală în iConta.eu.
 
 ## Ce se greșește în practică
 
@@ -31,7 +31,7 @@ Trebuie spus clar, ca să nu se creeze o așteptare greșită: motorul de matchi
 
 ## Ce face iConta.eu
 
-Motorul de matching (`core/reconciliere.py`) cere un CUI identificat în descrierea fiecărei linii de extras înainte de a căuta facturi deschise ale partenerului. Liniile de payout Stripe, fără CUI individual, primesc automat status roșu. Pentru aceste linii, sistemul poate propune o sugestie de cont pe baza istoricului deja contat de utilizator (`core.ai_incredere.sugestie`) — fără nicio bază legală atribuită, doar confort de utilizare.
+Motorul de matching cere un CUI identificat în descrierea fiecărei linii de extras înainte de a căuta facturi deschise ale partenerului. Liniile de payout Stripe, fără CUI individual, primesc automat status roșu. Pentru aceste linii, sistemul poate propune o sugestie de cont pe baza istoricului deja contat de utilizator (`core.ai_incredere.sugestie`) — fără nicio bază legală atribuită, doar confort de utilizare.
 
 Alocarea sumei payout-ului pe facturile individuale rămâne un pas manual, prin parametrul `alocari` la contare, pe baza raportului de settlement obținut separat din Stripe.
 

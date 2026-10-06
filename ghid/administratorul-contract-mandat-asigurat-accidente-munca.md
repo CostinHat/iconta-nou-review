@@ -16,14 +16,14 @@ Consecința practică e fiscală. Remunerația administratorilor intră în baza
 
 ::: ghid-temei
 „Articolul 5 (1) Sunt asigurate obligatoriu prin efectul prezentei legi: a) persoanele care desfășoară activități pe baza unui contract individual de muncă, a unui raport de serviciu, contract de mandat și contract de management;"
-— Legea 346/2002, art. 5 alin. (1) lit. a) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 5 alin. (1) lit. a) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „d) remunerația administratorilor societăților, companiilor/societăților naționale și regiilor autonome, desemnați/numiți în condițiile legii;"
-— Codul fiscal (Legea 227/2015), art. 220^4 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 220^4 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „Cota contribuției asiguratorii pentru muncă este de 2,25%."
-— Codul fiscal (Legea 227/2015), art. 220^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

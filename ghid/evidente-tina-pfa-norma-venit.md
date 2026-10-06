@@ -14,10 +14,10 @@ Normă de venit simplifică evidența, dar nu o elimină complet — PFA-ul tot 
 
 ::: ghid-temei
 „Contribuabilii care desfășoară activități pentru care venitul net se determină pe bază de norme de venit au obligația să completeze numai partea referitoare la venituri din Registrul de evidență fiscală și nu au obligații privind evidența contabilă."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Registrul de evidență fiscală are ca scop înscrierea informațiilor care stau la baza determinării venitului net anual/pierderii nete anuale cuprins/cuprinse în Declarația privind venitul realizat din România."
-— OMFP 3254/2017, art. 2 alin. (1) (sursă: anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt)
+— OMFP 3254/2017, art. 2 alin. (1) (sursă: [OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice](https://legislatie.just.ro/Public/DetaliiDocument/196396))
 :::
 
 Ce rezultă concret pentru un PFA la normă de venit:

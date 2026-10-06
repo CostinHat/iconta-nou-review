@@ -14,12 +14,12 @@ Titlul de „scutiri și facilități" e puțin înșelător pentru 2026: singur
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1), modificat prin OUG 89/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1), modificat prin OUG 89/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro [...]."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), modificat prin OUG 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), modificat prin OUG 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Cota unică de 1%** e efectiv o simplificare: până la 31.12.2025 exista un sistem cu două cote (1% pentru firmele cu cel puțin un salariat și activitate specifică, 3% pentru celelalte), iar de la 1 ianuarie 2026 cota de 3% a fost abrogată și a rămas o singură cotă, 1%, pentru toate microîntreprinderile.

@@ -16,15 +16,15 @@ Obligația nu se oprește la păstrare. Firma trebuie să asigure **accesul auto
 
 ::: ghid-temei
 „Articolul 23 (1) Persoanele prevăzute la art. 1 care utilizează sisteme informatice de prelucrare automată a datelor au obligația să asigure prelucrarea datelor înregistrate în contabilitate în conformitate cu reglementările contabile aplicabile, controlul și păstrarea acestora pe suporturi tehnice timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite."
-— Legea contabilității (Legea 82/1991), art. 23 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 23 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „(2) Persoanele prevăzute la alin. (1) au obligația să asigure autorităților fiscale accesul la datele păstrate pe suporturi tehnice."
-— Legea contabilității (Legea 82/1991), art. 23 alin. (2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 23 alin. (2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „Articolul 25 Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la art. 1 timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii."
-— Legea contabilității (Legea 82/1991), art. 25 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 25 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

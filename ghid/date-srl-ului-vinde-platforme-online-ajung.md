@@ -16,10 +16,10 @@ Datele unei firme sunt oricum publice în mare parte. Interesul fiscal stă în 
 
 ::: ghid-temei
 „2. Operatorul de platformă care are obligația de raportare colectează toate informațiile următoare pentru fiecare Vânzător care este o Entitate și care nu este Vânzător Exclus: a)denumirea juridică; b)Adresa Principală; c)orice NIF emis Vânzătorului respectiv, inclusiv fiecare stat membru emitent; d)numărul TVA al Vânzătorului respectiv, dacă există; e)numărul de înregistrare în Registrul Comerțului; f)existența oricărui sediu permanent prin care se realizează Activități Relevante în România sau în oricare alt stat membru, dacă informația este disponibilă, indicând fiecare stat membru în care este situat un astfel de sediu permanent."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. B pct. 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. B pct. 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru a determina dacă un Vânzător care este o Entitate se califică drept Vânzător Exclus în sensul descris la pct. 4 lit. a) și b) din subsecțiunea B din secțiunea I, un Operator de platformă care are obligația de raportare poate utiliza informațiile disponibile în mod public sau o confirmare din partea Vânzătorului care este o Entitate."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. A (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. A (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă fiecare element pentru un SRL românesc:

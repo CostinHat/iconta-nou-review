@@ -18,7 +18,7 @@ poarta: v1
 (la 01-01-2026, Alineatul (1), Articolul 51, Titlul III a fost modificat de Punctul 4., Articolul I din ORDONANȚA DE URGENȚĂ nr. 89 din 23 decembrie 2025, publicată în MONITORUL OFICIAL nr. 1203 din 24 decembrie 2025)
 (1^1) Abrogat.
 (la 01-01-2026, [...] a fost abrogat de Punctul 5., Articolul I din ORDONANȚA DE URGENȚĂ nr. 89 din 23 decembrie 2025 [...])"
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1), astfel cum a fost modificat de OUG 89/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1), astfel cum a fost modificat de OUG 89/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Concret, pentru 2026:
@@ -37,6 +37,6 @@ Concret, pentru 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică cota unică de 1%** pentru firmele înregistrate în sistemul de impunere pe veniturile microîntreprinderilor, aliniat cu OUG 89/2025. Modulele care ating impozitul pe veniturile microîntreprinderilor (testate în `core/test_a8_micro_baza.py` și `core/test_note_explicative_micro.py`) nu mai calculează varianta 3%, considerată abrogată pentru anul fiscal curent.
+La data acestui ghid, iConta.eu **aplică cota unică de 1%** pentru firmele înregistrate în sistemul de impunere pe veniturile microîntreprinderilor, aliniat cu OUG 89/2025. Modulele care ating impozitul pe veniturile microîntreprinderilor (testate în aplicație) nu mai calculează varianta 3%, considerată abrogată pentru anul fiscal curent.
 
 [iConta.eu](/)

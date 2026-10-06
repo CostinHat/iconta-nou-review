@@ -16,15 +16,15 @@ Subiectul privește doar firmele care intră sub IMCA, adică cele cu o cifră d
 
 ::: ghid-temei
 „Creditul fiscal reprezintă suma determinată prin aplicarea procentului de 10% la valoarea cheltuielilor eligibile pentru activitățile de cercetare-dezvoltare, potrivit prevederilor art. 20 , înregistrate de contribuabil în perioada fiscală pentru care se efectuează calculul impozitului pe profit sau al impozitului minim pe cifra de afaceri."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Creditul fiscal determinat potrivit prevederilor alin. (2) se scade anual din impozitul pe profit/impozitul minim pe cifra de afaceri datorat și se înregistrează în registrul de evidență fiscală al contribuabilului."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „din acest impozit pe profit se scad sumele reprezentând sponsorizare/mecenat, alte sume care se scad din impozitul pe profit, potrivit legilor speciale, după caz, și nu se scad sumele reprezentând creditul fiscal extern, impozitul pe profit scutit potrivit dispozițiilor art. 22 [...] precum și suma aferentă creditului fiscal pentru cheltuielile de cercetare-dezvoltare care se scade din impozitul pe profit în anul de calcul, după caz."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordinea legii:

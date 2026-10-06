@@ -16,12 +16,12 @@ Excepția e importantă. Dacă participația îndeplinește condițiile de la ar
 
 ::: ghid-temei
 „valoarea titlurilor de participare noi sau sumele reprezentând majorarea valorii nominale a titlurilor de participare existente, înregistrate ca urmare a încorporării rezervelor, beneficiilor sau primelor de emisiune la persoanele juridice la care se dețin titluri de participare. Acestea sunt impozabile la data cesionării, transmiterii cu titlu gratuit, retragerii capitalului social sau lichidării persoanei juridice la care se dețin titlurile de participare, cu excepția celor aferente titlurilor de participare pentru care sunt îndeplinite condițiile prevăzute la lit. i) [...] și j)"
-— Codul fiscal (Legea 227/2015), art. 23 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 23 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul majorării capitalului social la persoana juridică la care se dețin titlurile de participare, se au în vedere următoarele: a) valoarea fiscală a titlurilor de participare noi este valoarea de înregistrare, potrivit reglementărilor contabile aplicabile; [...] b) sumele reprezentând majorarea valorii nominale a titlurilor de participare existente se adaugă la valoarea de achiziție sau de aport a acestora."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

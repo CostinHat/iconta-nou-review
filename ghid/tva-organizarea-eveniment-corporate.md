@@ -14,7 +14,7 @@ Un eveniment corporate amestecă, de regulă, mai multe tipuri de cheltuieli —
 
 ::: ghid-temei
 „Nu sunt deductibile: [...] b) taxa datorată sau achitată pentru achizițiile de băuturi alcoolice și produse din tutun, cu excepția cazurilor în care aceste bunuri sunt destinate revânzării sau pentru a fi utilizate pentru prestări de servicii sau pentru cazurile prevăzute la art. 270 alin. (8) lit. b) și art. 271 alin. (5) lit. b)."
-— Legea nr. 227/2015 (Codul fiscal), art. 297 alin. (7) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 297 alin. (7) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru factura unui eveniment corporate:

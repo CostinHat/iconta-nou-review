@@ -15,7 +15,7 @@ La inventarierea anuală, bunurile care nu se află fizic în gestiunea proprie 
 ::: ghid-temei
 „Bunurile existente în entitate și aparținând altor entități (închiriate, în leasing, în concesiune, în administrare, în custodie, primite în vederea vânzării în regim de consignație, spre prelucrare etc.) se inventariază și se înscriu în liste de inventariere distincte. Listele de inventariere pentru aceste bunuri trebuie să conțină informații cu privire la numărul și data actului de predare-primire și ale documentului de livrare, precum și alte informații utile.
 Listele de inventariere cuprinzând bunurile aparținând terților se trimit și persoanei fizice sau juridice, române ori străine, după caz, căreia îi aparțin bunurile respective, în termen de cel mult 15 zile lucrătoare de la terminarea inventarierii, urmând ca proprietarul bunurilor să comunice eventualele nepotriviri în termen de 5 zile lucrătoare [de la primire]."
-— OMFP 2861/2009, pct. 19 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009, pct. 19 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Norma tratează separat două situații, dar cu aceeași logică de fond — bunul se inventariază acolo unde e evidența, nu unde e locul fizic:

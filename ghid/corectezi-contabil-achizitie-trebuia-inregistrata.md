@@ -14,7 +14,7 @@ Dacă o achiziție care depășea pragul legal de încadrare ca mijloc fix a fos
 
 ::: ghid-temei
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. [...] 67. - (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. [...] 68. - (1) Corectarea erorilor aferente exercițiilor financiare precedente nu determină modificarea situațiilor financiare ale acelor exerciții."
-— OMFP nr. 1.802/2014, pct. 65, 67 și 68 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 65, 67 și 68 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Dacă eroarea aparține **exercițiului financiar curent** (necheiat încă), corectarea se face direct: se stornează înregistrarea greșită (cheltuială) și se recunoaște activul ca imobilizare corporală, pe seama contului de profit și pierdere.

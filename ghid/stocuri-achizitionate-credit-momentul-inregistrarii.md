@@ -14,7 +14,7 @@ Când o firmă cumpără mărfuri sau materii prime „pe credit" — adică pl�
 
 ::: ghid-temei
 „Înregistrarea în contabilitate a intrării stocurilor se efectuează la data transferului riscurilor și beneficiilor. [...] În general, datele de transfer al controlului, de transfer al proprietății și de livrare coincid. Totuși, pot exista decalaje de timp, de exemplu, pentru: [...] – bunuri recepționate pentru care nu s-a primit încă factura, care trebuie înregistrate în activele cumpărătorului; [...] – bunuri livrate și nefacturate, care trebuie scoase din evidență, transferul de proprietate având loc [...]"
-— OMFP 1802/2014, Reglementări contabile, pct. 283 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 283 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text rezultă regula centrală, valabilă indiferent de termenul de plată agreat cu furnizorul:
@@ -32,6 +32,6 @@ Din text rezultă regula centrală, valabilă indiferent de termenul de plată a
 
 ## Ce face iConta.eu
 
-Acest subiect ține de contabilitatea generală a stocurilor și a creditului comercial furnizor-client, nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid — cele două noțiuni de „credit" (creditul comercial dintr-o achiziție de mărfuri și creditul fiscal din sponsorizare) nu au nimic în comun. Cercetarea disponibilă pentru acest ghid a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101 (`core/sponsorizari.py`, `core/d101.py`); nu avem, în acest dosar, o verificare directă a vreunui modul din iConta.eu dedicat gestiunii de stocuri sau recepțiilor de marfă, așa că nu facem aici nicio afirmație despre ce automatizează sau nu automatizează aplicația pe acest subiect.
+Acest subiect ține de contabilitatea generală a stocurilor și a creditului comercial furnizor-client, nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid — cele două noțiuni de „credit" (creditul comercial dintr-o achiziție de mărfuri și creditul fiscal din sponsorizare) nu au nimic în comun. Cercetarea disponibilă pentru acest ghid a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare directă a vreunui modul din iConta.eu dedicat gestiunii de stocuri sau recepțiilor de marfă, așa că nu facem aici nicio afirmație despre ce automatizează sau nu automatizează aplicația pe acest subiect.
 
 [iConta.eu](/)

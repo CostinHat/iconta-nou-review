@@ -14,7 +14,7 @@ Nu există în legislația română un act unic numit „legea comerțului onlin
 
 ::: ghid-temei
 „Operatorii de platforme cărora le revine obligația de raportare trebuie să îndeplinească procedurile de diligență fiscală și de raportare prevăzute în secțiunile II și III din anexa nr. 5. [...] autoritatea competentă din România comunică, prin intermediul schimbului automat [...] următoarele informații referitoare la fiecare Vânzător raportabil: [...] Contraprestația totală plătită sau creditată în fiecare trimestru al Perioadei de raportare și numărul de Activități relevante pentru care aceasta a fost plătită sau creditată [...]."
-— Legea nr. 207/2015, art. 291^5 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 291^5 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret acest regim pentru firmele din România:

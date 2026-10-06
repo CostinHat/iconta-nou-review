@@ -14,7 +14,7 @@ Un antreprenor la prima firmă tinde să gândească bugetul pe an calendaristic
 
 ::: ghid-temei
 „(8) Exercițiul financiar al unităților nou-înființate începe la data înființării, potrivit legii."
-— Legea contabilității nr. 82/1991, art. 27 alin. (8) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 27 alin. (8) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă, practic, pentru bugetul primului an:
@@ -32,6 +32,6 @@ Ce înseamnă, practic, pentru bugetul primului an:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă evidența contabilă generală pentru firme nou-înființate — jurnal, balanță, registre contabile (`core/jurnal_api.py`, `core/bilant_api.py`) — și calculează obligațiile fiscale datorate de la data înregistrării firmei, prin modulul de control fiscal (`core/control_fiscal_api.py`). Aplicația nu oferă însă un instrument dedicat de planificare bugetară sau de estimare a costurilor de înființare și ale primului an — ea intervine din momentul în care firma există și încep să fie introduse operațiuni economice, nu în etapa de planificare prealabilă înființării.
+La data acestui ghid, iConta.eu oferă evidența contabilă generală pentru firme nou-înființate — jurnal, balanță, registre contabile — și calculează obligațiile fiscale datorate de la data înregistrării firmei, prin modulul de control fiscal. Aplicația nu oferă însă un instrument dedicat de planificare bugetară sau de estimare a costurilor de înființare și ale primului an — ea intervine din momentul în care firma există și încep să fie introduse operațiuni economice, nu în etapa de planificare prealabilă înființării.
 
 [iConta.eu](/)

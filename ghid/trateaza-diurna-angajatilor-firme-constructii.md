@@ -14,7 +14,7 @@ Angajații trimiși pe șantiere aflate în altă localitate primesc frecvent in
 
 ::: ghid-temei
 „k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați [...] pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat;"
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat concret, folosind nivelul diurnei bugetare interne stabilit prin HG 714/2018 (20 lei/zi):

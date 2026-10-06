@@ -14,7 +14,7 @@ O reducere comercială acordată unui client (rabat, remiză, risturn, scont) nu
 
 ::: ghid-temei
 „Baza de impozitare nu cuprinde următoarele: a) rabaturile, remizele, risturnele, sconturile și alte reduceri de preț, acordate de furnizori direct clienților la data exigibilității taxei;"
-— Legea 227/2015 (Codul fiscal), art. 286 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 286 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din această regulă:

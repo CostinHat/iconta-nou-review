@@ -16,15 +16,15 @@ Regula protejează firmele cu rețele de vânzări, dar are o limită numerică 
 
 ::: ghid-temei
 „vehiculele utilizate de agenții de vânzări și de achiziții;"
-— Codul fiscal (Legea 227/2015), art. 298 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 298 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „vehiculele utilizate de agenții de vânzări reprezintă vehiculele utilizate în cadrul activității unei persoane impozabile de către angajații acesteia care se ocupă în principal cu prospectarea pieței, desfășurarea activității de merchandising, negocierea condițiilor de vânzare, derularea vânzării bunurilor/serviciilor, asigurarea de servicii postvânzare și monitorizarea clienților. Exercitarea dreptului de deducere în conformitate cu prevederile art. 298 alin. (3) lit. b) din Codul fiscal se limitează la cel mult un vehicul utilizat de fiecare agent de vânzări;"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (6) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (6) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul vehiculelor prevăzute la art. 298 alin. (3) lit. b)-f) din Codul fiscal, taxa aferentă cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului și taxa aferentă cheltuielilor legate de aceste vehicule este deductibilă conform regulilor generale prevăzute la art. 297 și la art. 299-301 din Codul fiscal, nefiind aplicabilă limitarea la 50% a deducerii taxei, utilizarea acestora și pentru uz personal fiind considerată neglijabilă cu excepția situației în care se poate face dovada unei practici abuzive."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie verificat:

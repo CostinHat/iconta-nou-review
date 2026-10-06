@@ -14,7 +14,7 @@ Ieșirea din regimul micro nu se întâmplă „quando se observă" la final de 
 
 ::: ghid-temei
 „Pentru anul fiscal 2025/2026, limita veniturilor realizate, reprezentând echivalentul în lei a 250.000 euro, respectiv echivalentul în lei a 100.000 euro începând cu 1 ianuarie 2026, se verifică pe baza veniturilor realizate de către persoana juridică română la data de 31 decembrie 2024, respectiv la data de 31 decembrie 2025."
-— Legea nr. 227/2015 (Codul fiscal), art. 54 alin. (3), coroborat cu art. 47 alin. (1) lit. c) („a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro") (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 54 alin. (3), coroborat cu art. 47 alin. (1) lit. c) („a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro") (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie urmărit concret în 2026:
@@ -32,6 +32,6 @@ Ce trebuie urmărit concret în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro (confirmat explicit în comentariile din `core/control_fiscal_api.py`); regimul fiscal (`regim_fiscal`) rămâne un câmp declarat manual de contabil, la Date firmă. Verificarea cumulării cu veniturile unor întreprinderi legate externe (alte firme sau PFA-uri ale asociaților, care nu sunt gestionate în același cont iConta.eu) rămâne, firesc, în sarcina utilizatorului, pentru că aplicația nu are acces la evidențele altor entități din afara ei.
+La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro (confirmat explicit în comentariile din aplicație); regimul fiscal (`regim_fiscal`) rămâne un câmp declarat manual de contabil, la Date firmă. Verificarea cumulării cu veniturile unor întreprinderi legate externe (alte firme sau PFA-uri ale asociaților, care nu sunt gestionate în același cont iConta.eu) rămâne, firesc, în sarcina utilizatorului, pentru că aplicația nu are acces la evidențele altor entități din afara ei.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Când organul fiscal nu poate determina situația fiscală reală — pentru că
 ::: ghid-temei
 „(1) Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă. [...]
 (3) [...] Organul fiscal are obligația menționării în actul de impunere a motivelor de fapt și a temeiului de drept care au determinat folosirea estimării, precum și a criteriilor de estimare."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 106 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 106 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru contestarea propriu-zisă, textul relevant e separat, în titlul dedicat contestațiilor:

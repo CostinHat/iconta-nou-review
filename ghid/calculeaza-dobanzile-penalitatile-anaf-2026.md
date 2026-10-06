@@ -14,13 +14,13 @@ poarta: v1
 
 ::: ghid-temei
 „Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015, art. 174 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 174 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Legea 207/2015, art. 176 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 176 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere, contribuabilul/plătitorul datorează o penalitate de nedeclarare de 0,08% pe fiecare zi, începând cu ziua imediat următoare scadenței și până la data stingerii sumei datorate, inclusiv [...]"
-— Legea 207/2015, art. 181 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 181 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele trei accesorii, cu rolurile lor distincte:

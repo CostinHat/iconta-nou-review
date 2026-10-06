@@ -15,7 +15,7 @@ Trebuie spus onest de la început: Codul fiscal reglementează explicit deductib
 ::: ghid-temei
 „Următoarele cheltuieli nu sunt deductibile: [...]
 c) cheltuielile privind bunurile de natura stocurilor sau a mijloacelor fixe amortizabile constatate lipsă din gestiune ori degradate, neimputabile, precum și taxa pe valoarea adăugată aferentă, dacă aceasta este datorată potrivit prevederilor titlului VII. Aceste cheltuieli sunt deductibile în următoarele situații/condiții: 1. bunurile/mijloacele fixe amortizabile distruse ca urmare a unor calamități naturale sau a altor cauze de forță majoră, în condițiile stabilite prin norme; 2. bunurile/mijloacele fixe amortizabile pentru care au fost încheiate contracte de asigurare; 3. bunurile/mijloacele fixe amortizabile degradate calitativ, dacă se face dovada distrugerii; [...]"
-— Cod fiscal, art. 25 alin. (4) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 25 alin. (4) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din acest text, aplicat prin analogie la un furt de numerar:

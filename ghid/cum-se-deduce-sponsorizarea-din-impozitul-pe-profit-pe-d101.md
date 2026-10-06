@@ -48,7 +48,7 @@ O firmă cu cifra de afaceri 6.000.000 lei și impozit pe profit datorat 50.000 
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din `core/sponsorizari.py` calculează exact acest flux: dacă `beneficiar_in_registru=False`, returnează credit 0, cu o notă explicită de respingere; altfel, calculează `credit = min(sponsorizari_efectuate, plafon)` — unde `plafon` vine din `plafon_credit()`, ca `min(0,75% × cifra_afaceri, 20% × impozit_profit)` — și `redirectionabil_d177 = plafon - credit`, adică exact spațiul neconsumat pe care îl puteți redirecționa separat prin D177.
+Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din aplicație calculează exact acest flux: dacă `beneficiar_in_registru=False`, returnează credit 0, cu o notă explicită de respingere; altfel, calculează `credit = min(sponsorizari_efectuate, plafon)` — unde `plafon` vine din `plafon_credit()`, ca `min(0,75% × cifra_afaceri, 20% × impozit_profit)` — și `redirectionabil_d177 = plafon - credit`, adică exact spațiul neconsumat pe care îl puteți redirecționa separat prin D177.
 
 Acest calcul reflectă corect regula actuală (de la 03.02.2022), valabilă pentru anii fiscali curenți precum 2025–2026. Motorul aplică însă aceeași regulă de 0,75%/D177 indiferent de parametrul `la_data` transmis — pentru o D101 aferentă unui an fiscal anterior lui 2022, rezultatul automat nu este corect și trebuie recalculat manual cu regula valabilă atunci.
 

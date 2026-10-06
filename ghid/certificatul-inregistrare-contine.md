@@ -14,7 +14,7 @@ Denumirea „certificat de înregistrare" e folosită în practică pentru mai m
 
 ::: ghid-temei
 „Pe baza declarației de înregistrare fiscală depuse potrivit art. 81 alin. (2) sau, după caz, a cererii depuse potrivit art. 82 alin. (9), organul fiscal central eliberează certificatul de înregistrare fiscală, în termen de 10 zile de la data depunerii declarației ori a cererii. În certificatul de înregistrare fiscală se înscrie obligatoriu codul de identificare fiscală."
-— Legea 207/2015, art. 87 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 87 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate confirma, cu onestitate, din acest text:

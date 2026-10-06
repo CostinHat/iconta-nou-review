@@ -14,7 +14,7 @@ O microîntreprindere plătește impozit pe veniturile realizate, nu pe profit �
 
 ::: ghid-temei
 „CHITANȚA (Cod 14-4-1) [...] Chitanța și chitanța pentru operațiuni în valută sunt documente justificative de înregistrare în registrul de casă/registrul de casă în valută și în contabilitate a încasărilor și plăților efectuate în numerar (lei/valută), precum și a depunerilor de sume la casieria entității. [...] În condițiile utilizării aparatelor de marcat electronice fiscale, în conformitate cu prevederile legale, documentul în baza căruia se înregistrează în contabilitate veniturile aferente încasărilor zilnice este Raportul fiscal de închidere zilnică, respectiv Registrul special întocmit în condițiile defectării aparatelor de marcat electronice fiscale."
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, anexa 2 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, anexa 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă din text pentru o microîntreprindere cu vânzări în numerar:
@@ -32,6 +32,6 @@ Ce rezultă din text pentru o microîntreprindere cu vânzări în numerar:
 
 ## Ce face iConta.eu
 
-Modulul `core/amef_import.py` importă datele din aparatele de marcat electronice fiscale, confirmat direct din cod — funcționalitate relevantă exact pentru scenariul unei microîntreprinderi cu vânzări cash prin AMEF. Reconcilierea automată dintre raportul zilnic AMEF și soldul din registrul de casă (`core/casa.py`), pentru a semnala lipsuri sau plusuri de casă, nu a fost confirmată ca funcționalitate dedicată separat — dacă există, verificarea revine contabilului pe baza celor două surse de date oferite de aplicație.
+Aplicația importă datele din aparatele de marcat electronice fiscale, confirmat direct din cod — funcționalitate relevantă exact pentru scenariul unei microîntreprinderi cu vânzări cash prin AMEF. Reconcilierea automată dintre raportul zilnic AMEF și soldul din registrul de casă, pentru a semnala lipsuri sau plusuri de casă, nu a fost confirmată ca funcționalitate dedicată separat — dacă există, verificarea revine contabilului pe baza celor două surse de date oferite de aplicație.
 
 [iConta.eu](/)

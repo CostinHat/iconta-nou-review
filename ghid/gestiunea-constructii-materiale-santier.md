@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Entitățile vor asigura un regim intern de numerotare a documentelor financiar-contabile [...] fiecare document va avea un număr de ordine sau o serie, după caz, număr sau serie ce trebuie să fie secvențial(ă), stabilit(ă) de entitate. În alocarea numerelor se va ține cont de structura organizatorică, respectiv gestiuni, puncte de lucru, sucursale etc. [...]"
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 1 — Norme generale, pct. 24 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 1 — Norme generale, pct. 24 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce se poate aplica, prin extensie, unui șantier ca punct de lucru:

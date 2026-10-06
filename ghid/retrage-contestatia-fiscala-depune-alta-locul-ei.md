@@ -16,10 +16,10 @@ Situația apare când contestația a fost depusă în grabă: incompletă, pe o 
 
 ::: ghid-temei
 „(1) Contestația poate fi retrasă de către contestator până la soluționarea acesteia. în acest caz, organul de soluționare competent comunică contestatorului decizia prin care se ia act de renunțarea la contestație. (2) Prin retragerea contestației nu se pierde dreptul de a se înainta o nouă contestație în interiorul termenului prevăzut la art. 270 ."
-— Codul de procedură fiscală (Legea 207/2015), art. 271 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 271 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii. [...] (4) Dacă actul administrativ fiscal nu conține elementele prevăzute la art. 46 alin. (2) lit. i), contestația poate fi depusă, în termen de 3 luni de la data comunicării actului administrativ fiscal, la organul fiscal emitent al actului administrativ atacat."
-— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează:

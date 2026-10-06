@@ -14,7 +14,7 @@ O întreprindere individuală (ÎI) e, din punct de vedere fiscal, o persoană f
 
 ::: ghid-temei
 „(3) Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor. Prevederea se aplică și în situațiile prevăzute la alin. (2)."
-— Legea 227/2015 (Codul fiscal), art. 122 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 122 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text și din contextul art. 122 rezultă calendarul concret al unei întreprinderi individuale:
@@ -32,6 +32,6 @@ Din text și din contextul art. 122 rezultă calendarul concret al unei întrepr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează CAS și CASS pentru declarația unică prin `core/d212_engine.py` (`calculeaza_cas()`, `calculeaza_cass()`, `calculeaza_d212()`), cu plafoanele anuale aduse din `plafoane_an()`. Modulul de urmărire a obligațiilor fiscale (`core/control_fiscal_api.py`) tratează însă explicit D212 ca fiind **rutată separat** de calendarul general de obligații pe care îl monitorizează pentru celelalte declarații (D100, D300, D112 etc.) — termenul de 25 mai nu apare în tabloul unic de scadențe urmărite automat de aplicație pentru restul declarațiilor. Calculul sumelor e automatizat; urmărirea scadenței de 25 mai (și a termenelor declarative suplimentare din cursul anului) rămâne, la acest moment, în afara acestui tablou unificat.
+La data acestui ghid, iConta.eu calculează CAS și CASS pentru declarația unică prin aplicație (`calculeaza_cas()`, `calculeaza_cass()`, `calculeaza_d212()`), cu plafoanele anuale aduse din `plafoane_an()`. Modulul de urmărire a obligațiilor fiscale tratează însă explicit D212 ca fiind **rutată separat** de calendarul general de obligații pe care îl monitorizează pentru celelalte declarații (D100, D300, D112 etc.) — termenul de 25 mai nu apare în tabloul unic de scadențe urmărite automat de aplicație pentru restul declarațiilor. Calculul sumelor e automatizat; urmărirea scadenței de 25 mai (și a termenelor declarative suplimentare din cursul anului) rămâne, la acest moment, în afara acestui tablou unificat.
 
 [iConta.eu](/)

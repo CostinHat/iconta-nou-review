@@ -34,6 +34,6 @@ Cea mai frecventă confuzie e presupunerea că bacșișul cu cardul, fiind „vi
 
 ## Ce face iConta.eu
 
-Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 (`core/bacsis.py`) generează automat nota corectă pentru bacșișul cu cardul (`461=462`, `5121=461`), diferențiată de varianta cu numerar (`sursa="numerar"`, care folosește `5311`) doar prin contul de trezorerie. Distribuirea ulterioară, prin `nota_distribuire`, e identică indiferent de sursa de încasare.
+Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 generează automat nota corectă pentru bacșișul cu cardul (`461=462`, `5121=461`), diferențiată de varianta cu numerar (`sursa="numerar"`, care folosește `5311`) doar prin contul de trezorerie. Distribuirea ulterioară, prin `nota_distribuire`, e identică indiferent de sursa de încasare.
 
 [iConta.eu](/)

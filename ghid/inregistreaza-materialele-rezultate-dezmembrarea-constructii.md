@@ -14,7 +14,7 @@ Când o firmă demolează sau dezmembrează o construcție (proprie sau primită
 
 ::: ghid-temei
 „Contul 758 «Alte venituri din exploatare» [...] În creditul contului 758 «Alte venituri din exploatare» se înregistrează: [...] bunurile rezultate din dezmembrarea unor imobilizări (301, 302, 303) [...]"
-— OMFP nr. 1.802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, funcțiunea contului 758 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, funcțiunea contului 758 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul contabil confirmat de sursă:

@@ -18,7 +18,7 @@ Magazinele online au adesea cifre de afaceri care cresc rapid de la un an la alt
 c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile;
 d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale;
 e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul comerțului sau la instanțele judecătorești, potrivit legii."
-— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1) lit. c), d) și e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1) lit. c), d) și e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -39,6 +39,6 @@ Pentru un magazin online tipic, decizia reală de business e alta: impozitul mic
 
 ## Ce face iConta.eu
 
-Testele proprii (`core/test_a8_micro_baza.py`) confirmă funcționalitatea de verificare a condițiilor de încadrare micro; simularea comparativă „ce ar ieși ca impozit micro vs. ca impozit pe profit", pentru un magazin care ezită între cele două regimuri, **nu a fost găsită** ca funcționalitate dedicată în `core/` — aplicația calculează corect impozitul aferent regimului deja ales/aplicabil, dar decizia strategică de a opta pentru un regim sau altul rămâne o analiză pe care contabilul o face separat, pe cifrele reale ale firmei.
+Testele proprii confirmă funcționalitatea de verificare a condițiilor de încadrare micro; simularea comparativă „ce ar ieși ca impozit micro vs. ca impozit pe profit", pentru un magazin care ezită între cele două regimuri, **nu a fost găsită** ca funcționalitate dedicată în aplicație — aplicația calculează corect impozitul aferent regimului deja ales/aplicabil, dar decizia strategică de a opta pentru un regim sau altul rămâne o analiză pe care contabilul o face separat, pe cifrele reale ale firmei.
 
 [iConta.eu](/)

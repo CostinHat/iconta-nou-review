@@ -18,7 +18,7 @@ Din salariul brut lunar, un angajat cu normă întreagă și fără facilități
 „Cota de contribuție de asigurări sociale de sănătate este de 10% și se datorează de către persoanele fizice care au calitatea de angajați [...]."
 
 „Impozitul lunar [...] se determină astfel: a) la locul unde se află funcția de bază, prin aplicarea cotei de 10% asupra bazei de calcul determinată ca diferență între venitul net din salarii calculat prin deducerea din venitul brut a contribuțiilor sociale obligatorii aferente unei luni [...] și [...] deducerea personală acordată pentru luna respectivă [...]."
-— Codul fiscal, art. 138 lit. a), art. 156 și art. 78 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 138 lit. a), art. 156 și art. 78 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ordinea de calcul, exact așa cum rezultă din text:
@@ -36,6 +36,6 @@ Ordinea de calcul, exact așa cum rezultă din text:
 
 ## Ce face iConta.eu
 
-Calculul brut-net e o funcție reală, folosită curent: `core/salarizare.py` (`calcul_salariu`) aplică exact cascada de mai sus — CAS 25%, CASS 10%, apoi impozitul 10% pe venitul net rămas, cu deducerea personală calculată automat din numărul de persoane aflate în întreținere. Rezultatul apare direct pe fluturașul de salariu, din ecranul Stat de plată, cu fiecare reținere afișată pe rândul ei (CAS, CASS, deduceri, impozit, salariu net), plus costul total pentru angajator (inclusiv contribuția asiguratorie pentru muncă de 2,25%, suportată separat de angajator). La fiecare reținere generată, aplicația scrie automat și nota contabilă corespunzătoare (641/421, 421/4315, 421/4316, 421/444).
+Calculul brut-net e o funcție reală, folosită curent: Aplicația (`calcul_salariu`) aplică exact cascada de mai sus — CAS 25%, CASS 10%, apoi impozitul 10% pe venitul net rămas, cu deducerea personală calculată automat din numărul de persoane aflate în întreținere. Rezultatul apare direct pe fluturașul de salariu, din ecranul Stat de plată, cu fiecare reținere afișată pe rândul ei (CAS, CASS, deduceri, impozit, salariu net), plus costul total pentru angajator (inclusiv contribuția asiguratorie pentru muncă de 2,25%, suportată separat de angajator). La fiecare reținere generată, aplicația scrie automat și nota contabilă corespunzătoare (641/421, 421/4315, 421/4316, 421/444).
 
 [iConta.eu](/)

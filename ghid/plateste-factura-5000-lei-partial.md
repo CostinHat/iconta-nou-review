@@ -14,7 +14,7 @@ O factură de peste 5.000 lei, emisă de un furnizor persoană juridică (sau PF
 
 ::: ghid-temei
 „Sunt interzise plățile fragmentate în numerar către furnizorii de bunuri și servicii pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, către magazinele de tipul cash and carry. Persoanele prevăzute la art. 1 alin. (1) pot achita facturile cu valori care depășesc plafonul de 5.000 lei, către furnizorii de bunuri și servicii, respectiv de 10.000 lei, către magazinele de tipul cash and carry, astfel: 5.000 lei/10.000 lei în numerar, suma care depășește acest plafon putând fi achitată numai prin instrumente de plată fără numerar."
-— Legea nr. 70/2015, art. 3 alin. (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Mecanismul, explicat:
@@ -32,6 +32,6 @@ Mecanismul, explicat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat de casierie (`core/casa.py`, funcția `verifica_plafon`) care verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor din Legea 70/2015: încasări/plăți zilnice către/de la persoane juridice (5.000 lei, 10.000 lei pentru cash and carry), plăți din avansuri spre decontare și soldul de casă. Când o sumă introdusă depășește plafonul legal, aplicația semnalează un avertisment (risc la control), fără să blocheze operațiunea — decizia de a împărți plata între numerar și bancă rămâne, ca și până acum, a contabilului.
+La data acestui ghid, iConta.eu are un modul dedicat de casierie (funcția `verifica_plafon`) care verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor din Legea 70/2015: încasări/plăți zilnice către/de la persoane juridice (5.000 lei, 10.000 lei pentru cash and carry), plăți din avansuri spre decontare și soldul de casă. Când o sumă introdusă depășește plafonul legal, aplicația semnalează un avertisment (risc la control), fără să blocheze operațiunea — decizia de a împărți plata între numerar și bancă rămâne, ca și până acum, a contabilului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Spre deosebire de indemnizația de concediu medical, care se calculează dintr-o
 
 ::: ghid-temei
 „Pentru perioada concediului de odihnă salariatul beneficiază de o indemnizaţie de concediu care nu poate fi mai mica decât valoarea totală a drepturilor salariale cuvenite pentru perioada respectiva. [...] Indemnizaţia de concediu de odihnă reprezintă media zilnica a veniturilor din luna/lunile în care este efectuat concediul, multiplicata cu numărul de zile de concediu. [...] Indemnizaţia de concediu de odihnă se plăteşte de către angajator cu cel puţin 5 zile lucrătoare înainte de plecarea în concediu."
-— Legea 53/2003 (Codul muncii), art. 145 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 145 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Din text rezultă exact ce se ia în calcul:
@@ -32,6 +32,6 @@ Din text rezultă exact ce se ia în calcul:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un calcul automat, dedicat, al indemnizației de concediu de odihnă pornind de la zilele de concediu programate ale unui salariat — verificat în cod, nu există nicio funcție care să deriveze automat media zilnică a lunii de concediu și s-o înmulțească cu zilele. Contabilul calculează separat suma (conform formulei de mai sus) și o introduce ca parte a venitului brut al lunii; de acolo, motorul de calcul al salariului (`core/salarizare.py`, `calcul_salariu`) preia suma și aplică restul: contribuții, impozit, notă contabilă, fluturaș.
+iConta.eu nu are un calcul automat, dedicat, al indemnizației de concediu de odihnă pornind de la zilele de concediu programate ale unui salariat — verificat în cod, nu există nicio funcție care să deriveze automat media zilnică a lunii de concediu și s-o înmulțească cu zilele. Contabilul calculează separat suma (conform formulei de mai sus) și o introduce ca parte a venitului brut al lunii; de acolo, motorul de calcul al salariului (`calcul_salariu`) preia suma și aplică restul: contribuții, impozit, notă contabilă, fluturaș.
 
 [iConta.eu](/)

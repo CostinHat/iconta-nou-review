@@ -15,7 +15,7 @@ Remunerația unui administrator numit prin act constitutiv sau contract de manda
 ::: ghid-temei
 „(2) Regulile de impunere proprii veniturilor din salarii se aplică și următoarelor tipuri de venituri, considerate asimilate salariilor: [...]
 f) remunerația obținută de directorii cu contract de mandat și de membrii directoratului de la societățile administrate în sistem dualist și ai consiliului de supraveghere, potrivit legii, precum și drepturile cuvenite managerilor, în baza contractului de management prevăzut de lege; [...]"
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. f), venituri asimilate salariilor (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. f), venituri asimilate salariilor (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, corelarea corectă între cele două declarații ține de natura fiecărui tip de venit:

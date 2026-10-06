@@ -14,7 +14,7 @@ Când o firmă supusă unei inspecții fiscale cere certificatul de atestare fis
 
 ::: ghid-temei
 „(6) Prin excepție de la prevederile alin. (5), în situația contribuabilului/plătitorului supus unei inspecții fiscale și care solicită eliberarea unui certificat de atestare fiscală în scopul radierii din registrele în care a fost înregistrat, certificatul de atestare fiscală se emite în termen de 5 zile lucrătoare de la data emiterii deciziei de impunere sau a deciziei de nemodificare a bazei de impozitare, după caz."
-— Legea 207/2015, art. 158 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 158 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regula, aplicată la o firmă în inspecție care vrea să se radieze:
@@ -31,6 +31,6 @@ Regula, aplicată la o firmă în inspecție care vrea să se radieze:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu depune și nu urmărește cereri de certificat de atestare fiscală** către ANAF — nu există în cod niciun modul care să genereze această cerere sau să calculeze termenul de 5 zile lucrătoare din art. 158 alin. (6). Aplicația are un modul real de conformare fiscală, `core/control_fiscal_api.py`, care urmărește declarațiile datorate versus cele depuse și semnalează neconformități, dar procedura de radiere și obținerea certificatului rămân în afara scopului actual al aplicației.
+La data acestui ghid, iConta.eu **nu depune și nu urmărește cereri de certificat de atestare fiscală** către ANAF — nu există în cod niciun modul care să genereze această cerere sau să calculeze termenul de 5 zile lucrătoare din art. 158 alin. (6). Aplicația are un modul real de conformare fiscală, aplicația, care urmărește declarațiile datorate versus cele depuse și semnalează neconformități, dar procedura de radiere și obținerea certificatului rămân în afara scopului actual al aplicației.
 
 [iConta.eu](/)

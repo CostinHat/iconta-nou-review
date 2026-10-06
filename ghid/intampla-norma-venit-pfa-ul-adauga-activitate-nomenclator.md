@@ -14,12 +14,12 @@ PFA-ul pierde norma de venit pentru toată activitatea, nu doar pentru activitat
 
 ::: ghid-temei
 „În cazul în care un contribuabil desfășoară o activitate inclusă în nomenclatorul prevăzut la alin. (2) și o altă activitate independentă, venitul net anual se determină în sistem real, pe baza datelor din contabilitate, potrivit prevederilor art. 68"
-— Codul fiscal (Legea 227/2015), art. 69 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(13) În aplicarea prevederilor art. 69 din Codul fiscal, contribuabilii care în cursul anului fiscal își completează obiectul de activitate cu o altă activitate care nu este cuprinsă în nomenclator vor fi impuși în sistem real, pentru veniturile realizate din întreaga activitate, de la data respectivă, venitul net anual urmând să fie determinat prin însumarea, de către contribuabili, a fracțiunii din norma de venit aferentă perioadei de impunere pe bază de normă de venit cu venitul net rezultat din evidența contabilă."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (13) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (13) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Concret:

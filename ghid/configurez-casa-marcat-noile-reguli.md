@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(4) În vederea realizării supravegherii și monitorizării aparatelor de marcat electronice fiscale, operatorii economici prevăzuți la art. 1 alin. (1) au obligația de a asigura conectarea la distanță a aparatelor de marcat electronice fiscale, în vederea transmiterii de date fiscale către Agenția Națională de Administrare Fiscală.
 (5) Procedura de conectare a aparatelor de marcat electronice fiscale, precum și data începând cu care acestea se conectează la sistemul informatic național de supraveghere și monitorizare a datelor fiscale se aprobă prin ordin al președintelui Agenției Naționale de Administrare Fiscală."
-— OUG nr. 28/1999 (republicată), art. 3^1 alin. (4), (5) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 (republicată), art. 3^1 alin. (4), (5) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce înseamnă „configurare conformă" pentru un aparat funcțional în 2026:
@@ -33,6 +33,6 @@ Ce înseamnă „configurare conformă" pentru un aparat funcțional în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu configurează sau nu comunică direct cu aparatul de marcat electronic fiscal — setările interne ale casei (cote TVA, articole, conexiunea la distanță la ANAF) se fac exclusiv prin distribuitorul/unitatea acreditată de service a aparatului. Aplicația intervine ulterior, în etapa contabilă: importă Raportul Z generat de aparat (format p7b/XML, structură OPANAF 146/2018) prin `core/amef_import.py`, extrăgând totalurile de vânzări pe modalități de plată și pe cote de TVA, pentru înregistrarea lor în contabilitate.
+La data acestui ghid, iConta.eu nu configurează sau nu comunică direct cu aparatul de marcat electronic fiscal — setările interne ale casei (cote TVA, articole, conexiunea la distanță la ANAF) se fac exclusiv prin distribuitorul/unitatea acreditată de service a aparatului. Aplicația intervine ulterior, în etapa contabilă: importă Raportul Z generat de aparat (format p7b/XML, structură OPANAF 146/2018) prin aplicație, extrăgând totalurile de vânzări pe modalități de plată și pe cote de TVA, pentru înregistrarea lor în contabilitate.
 
 [iConta.eu](/)

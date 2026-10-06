@@ -14,7 +14,7 @@ Licența/autorizarea unei agenții de turism (brevetul de turism, atestarea, în
 
 ::: ghid-temei
 „În sensul prezentului articol: agenția de turism este orice persoană care în nume propriu sau în calitate de agent intermediază, oferă informații sau se angajează să furnizeze persoanelor care călătoresc individual sau în grup servicii de călătorie, care includ cazarea la hotel, [...] transportul aerian, terestru sau maritim, excursii organizate și alte servicii turistice. Agențiile de turism includ și touroperatorii."
-— Legea nr. 227/2015 (Codul fiscal), art. 311 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 311 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Calitatea de „agenție de turism" pentru scopuri de TVA se stabilește după **activitatea desfășurată** (intermedierea/furnizarea de servicii de călătorie în nume propriu), nu după existența unei licențe de turism — cele două sunt fapte juridice diferite, de regim juridic diferit.

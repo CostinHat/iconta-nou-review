@@ -16,7 +16,7 @@ Dacă termenul de 48 de ore trece, se datorează amenda întreagă.
 
 ::: ghid-temei
 „Contravenientul poate achita, în termen de cel mult 48 de ore de la data încheierii procesului-verbal ori, după caz, de la data comunicării acestuia, jumătate din minimul amenzii prevăzute la art. 11 alin. (1) lit. a)-d) și f)-j) , precum și la art. 11 alin. (2) , (4) , (6) și (13) ori, după caz, jumătate din cuantumul amenzii aplicate potrivit dispozițiilor art. 11 alin. (1) lit. e) pct. (ii)-(vi) sau art. 11 alin. (8) , agentul constatator făcând mențiune despre această posibilitate în procesul-verbal. Contravenientul nu are această posibilitate în situațiile prevăzute la art. 11 alin. (3) , (5) , (7) , (9) , (10) și (11) ."
-— OUG 28/1999, art. 12 alin. (3) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 12 alin. (3) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 **Unde se poate plăti jumătate din minim** (art. 11 alin. (1)):

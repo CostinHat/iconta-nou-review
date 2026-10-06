@@ -16,15 +16,15 @@ Regula contează pentru firmele care se lichidează sau se radiază cu procese f
 
 ::: ghid-temei
 „în cazul în care după decesul persoanei fizice sau încetarea persoanei juridice se stabilesc sume de restituit sau de rambursat prin hotărâri judecătorești definitive, aceste sume se restituie sau se rambursează numai dacă există succesori ori alți titulari care au dobândit drepturile de rambursare sau de restituire în condițiile legii."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Drepturile și obligațiile din raportul juridic fiscal trec asupra succesorilor debitorului în condițiile dreptului comun"
-— Codul de procedură fiscală (Legea 207/2015), art. 27 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 27 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Creanțele fiscale privind drepturi de rambursare sau de restituire ale contribuabilului/plătitorului pot fi cesionate numai după stabilirea lor prin decizie de restituire."
-— Codul de procedură fiscală (Legea 207/2015), art. 28 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 28 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cine poate încasa:

@@ -14,13 +14,13 @@ O plată transfrontalieră deductibilă către o întreprindere asociată rezide
 
 ::: ghid-temei
 „1. Un aranjament transfrontalier care implică plăți transfrontaliere deductibile efectuate între două sau mai multe întreprinderi asociate, în cazul în care este prezentă cel puțin una dintre următoarele condiții: a) destinatarul nu este rezident fiscal în nicio jurisdicție; [...] cu toate că destinatarul este rezident fiscal într-o jurisdicție, acea jurisdicție: (i) nu impune un impozit pe profit sau impune un impozit pe profit la o cotă egală cu zero ori mai mică de 1%; sau (ii) este inclusă într-o listă de jurisdicții ale unor țări terțe care au fost evaluate de statele membre, în mod colectiv sau în cadrul Organizației pentru Cooperare și Dezvoltare Economică, și au fost calificate ca fiind necooperante;"
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea a II-a, lit. C pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea a II-a, lit. C pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „1. Semnele distinctive generice din categoria A și semnele distinctive specifice din categoria B și din categoria C pct. 1 lit. b) subpct. (i) și lit. c) și d) pot fi luate în considerare numai în cazul în care trec "testul beneficiului principal"."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „3. în contextul semnului distinctiv de la categoria C pct. 1, prezența condițiilor enunțate la categoria C pct. 1 lit. b) poz. (i), lit. c) sau lit. d), necoroborată cu alte elemente, nu poate constitui singurul motiv pentru a concluziona că un aranjament transfrontalier trece testul beneficiului principal."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 3 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 3 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Verificarea se face în pași:

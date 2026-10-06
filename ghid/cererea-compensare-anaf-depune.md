@@ -17,7 +17,7 @@ O firmă care are, simultan, o sumă de restituit de la buget (TVA de rambursat,
 (4) Dacă legea nu prevede altfel, compensarea operează de drept la data la care creanțele există deodată, fiind deopotrivă certe, lichide și exigibile. [...]
 (7) Compensarea se constată de către organul fiscal competent, la cererea debitorului sau din oficiu. Dispozițiile art. 165 privind ordinea stingerii datoriilor sunt aplicabile în mod corespunzător.
 (8) Organul fiscal competent comunică debitorului decizia cu privire la efectuarea compensării, în termen de 7 zile de la data efectuării operațiunii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (1), (4), (7) și (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (1), (4), (7) și (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret din text:
@@ -36,6 +36,6 @@ Ce rezultă concret din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată depunerii sau urmăririi cererii de compensare** conform art. 167. Aplicația calculează și urmărește obligațiile declarate (prin `core/control_fiscal_api.py`) și poate semnala sume de recuperat (ex. TVA de rambursat), dar nu generează cererea de compensare, nu verifică dacă cele două creanțe sunt administrate de aceeași autoritate și nu urmărește termenul de 7 zile pentru comunicarea deciziei ANAF. Depunerea cererii, prin mijloacele puse la dispoziție de ANAF (ex. Spațiul Privat Virtual), rămâne un demers separat al contribuabilului.
+La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată depunerii sau urmăririi cererii de compensare** conform art. 167. Aplicația calculează și urmărește obligațiile declarate (prin aplicația) și poate semnala sume de recuperat (ex. TVA de rambursat), dar nu generează cererea de compensare, nu verifică dacă cele două creanțe sunt administrate de aceeași autoritate și nu urmărește termenul de 7 zile pentru comunicarea deciziei ANAF. Depunerea cererii, prin mijloacele puse la dispoziție de ANAF (ex. Spațiul Privat Virtual), rămâne un demers separat al contribuabilului.
 
 [iConta.eu](/)

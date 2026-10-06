@@ -14,7 +14,7 @@ O firmă neplătitoare de TVA (înregistrată doar special, conform art. 317, pe
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice."
-— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din regula locului prestării, combinată cu regimul deducerii (art. 297):
@@ -31,6 +31,6 @@ Ce rezultă din regula locului prestării, combinată cu regimul deducerii (art.
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează diferit cele două situații direct în cod: modulul `core/intracomunitar.py` (funcția `note_taxare_inversa`) generează nota contabilă corectă în funcție de statutul beneficiarului — pentru un plătitor de TVA, taxare inversă neutră (4426 = 4427, deductibilă conform art. 297), iar pentru un neplătitor înregistrat conform art. 317, taxa nedeductibilă intră în costul achiziției, cu suma de plată către stat pe contul 446. Aplicația verifică și validitatea codului de TVA al partenerului direct în VIES (funcția `verifica_vies`), pentru a confirma că e vorba de o achiziție intracomunitară reală.
+La data acestui ghid, iConta.eu tratează diferit cele două situații direct în cod: Aplicația (funcția `note_taxare_inversa`) generează nota contabilă corectă în funcție de statutul beneficiarului — pentru un plătitor de TVA, taxare inversă neutră (4426 = 4427, deductibilă conform art. 297), iar pentru un neplătitor înregistrat conform art. 317, taxa nedeductibilă intră în costul achiziției, cu suma de plată către stat pe contul 446. Aplicația verifică și validitatea codului de TVA al partenerului direct în VIES (funcția `verifica_vies`), pentru a confirma că e vorba de o achiziție intracomunitară reală.
 
 [iConta.eu](/)

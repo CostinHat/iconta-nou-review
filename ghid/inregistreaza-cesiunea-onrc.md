@@ -16,7 +16,7 @@ Cesiunea părților sociale ale unui SRL nu produce efecte automat de la data se
 „Articolul 202 (1) Părțile sociale pot fi transmise între asociați. (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social.
 
 Articolul 203 (1) Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății. (2) Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea nr. 31/1990 privind societățile, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din aceste articole rezultă pașii esențiali ai unei cesiuni valabile și opozabile:

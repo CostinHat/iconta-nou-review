@@ -14,7 +14,7 @@ Divizarea unei societăți nu are legătură cu regimul de TVA la încasare — 
 
 ::: ghid-temei
 „Divizarea este operațiunea prin care: a) o societate, după ce este dizolvată fără a intra în lichidare, transferă mai multor societăți totalitatea patrimoniului său, în schimbul repartizării către acționarii societății divizate de acțiuni la societățile beneficiare [...]; b) o societate, după ce este dizolvată fără a intra în lichidare, transferă totalitatea patrimoniului său mai multor societăți nou-constituite [...]."
-— Legea nr. 31/1990, art. 238 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 238 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Divizarea totală** presupune dizolvarea societății inițiale, fără lichidare, și transferul **întregului** ei patrimoniu către două sau mai multe societăți (existente sau nou-constituite). Societatea inițială încetează să existe.

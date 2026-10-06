@@ -15,7 +15,7 @@ Pentru un SRL, înrolarea în Spațiul Privat Virtual nu este un pas facultativ 
 ::: ghid-temei
 „Prin excepţie de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri şi alte entităţi fără personalitate juridică [...] sunt obligaţi să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanţă în condiţiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanţelor/A.N.A.F.
 [art. 80 alin. (1) lit. a)] persoanele juridice, asocierile şi alte entităţi fără personalitate juridică, precum şi persoanele fizice care desfăşoară activităţi economice în mod independent ori exercită profesii libere se identifică numai cu certificate calificate."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) și art. 80 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) și art. 80 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru un SRL, aceste două articole stabilesc împreună cadrul obligatoriu:
@@ -32,6 +32,6 @@ Pentru un SRL, aceste două articole stabilesc împreună cadrul obligatoriu:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu creează contul SPV al societății** — înrolarea propriu-zisă se face de administrator sau împuternicit, direct pe portalul ANAF, cu certificatul calificat al firmei. După ce acest cont există, iConta.eu oferă conectorul OAuth2 (`core/spv_conector.py`) care leagă aplicația de contul SPV al SRL-ului, pentru trimiterea și primirea facturilor prin RO e-Factura din interfața de facturare. Pașii premergători — obținerea certificatului și înscrierea în SPV — rămân în afara aplicației.
+La data acestui ghid, iConta.eu **nu creează contul SPV al societății** — înrolarea propriu-zisă se face de administrator sau împuternicit, direct pe portalul ANAF, cu certificatul calificat al firmei. După ce acest cont există, iConta.eu oferă conectorul OAuth2 care leagă aplicația de contul SPV al SRL-ului, pentru trimiterea și primirea facturilor prin RO e-Factura din interfața de facturare. Pașii premergători — obținerea certificatului și înscrierea în SPV — rămân în afara aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Multe unități de cazare din stațiunile turistice plătesc, pe lângă impozit
 
 ::: ghid-temei
 „(1) Pentru funcţionarea unor servicii publice locale, create în interesul persoanelor fizice şi juridice, consiliile locale, judeţene şi Consiliul General al Municipiului Bucureşti, după caz, aprobă taxe speciale. (2) Cuantumul taxelor speciale se stabileşte anual, iar veniturile obţinute din acestea se utilizează integral pentru acoperirea cheltuielilor efectuate pentru înfiinţarea serviciilor publice de interes local, precum şi pentru finanţarea cheltuielilor curente de întreţinere şi funcţionare a acestor servicii."
-— Legea nr. 273/2006 privind finanțele publice locale, art. 30 alin. (1)-(2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea nr. 273/2006 privind finanțele publice locale, art. 30 alin. (1)-(2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Această normă e temeiul general pentru orice „taxă specială" locală — nu un articol scris special pentru promovarea turistică — dar e chiar mecanismul juridic prin care majoritatea stațiunilor și-au instituit taxa de promovare turistică/taxa hotelieră, în lipsa unei reglementări dedicate în Codul fiscal.

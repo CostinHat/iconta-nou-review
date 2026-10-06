@@ -16,10 +16,10 @@ Obligațiile fiscale **nestinse la data comunicării deciziei de eșalonare** ș
 
 ::: ghid-temei
 „e) să se achite obligațiile fiscale administrate de organul fiscal, nestinse la data comunicării deciziei de eșalonare la plată și care nu fac obiectul eșalonării la plată, în termen de cel mult 60 de zile de la data comunicării acestei decizii sau până la finalizarea eșalonării la plată, cu excepția situației în care debitorul a solicitat eșalonarea la plată potrivit art. 195 ;"
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „s) să se achite obligațiile fiscale prevăzute la art. 184 alin. (6) lit. f), nestinse la data comunicării deciziei de eșalonare la plată și care nu fac obiectul eșalonării la plată, în termen de cel mult 30 de zile de la data comunicării acestei decizii."
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. s) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. s) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce intră aici și ce reguli se aplică:

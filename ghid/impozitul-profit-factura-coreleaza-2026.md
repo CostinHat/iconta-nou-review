@@ -15,19 +15,19 @@ Legătura dintre cele două nu e directă (nu există un articol care să spună
 ::: ghid-temei
 „(1) În înțelesul prezentului titlu sunt considerate facturi documentele sau mesajele pe suport hârtie ori în format electronic, dacă acestea îndeplinesc condițiile stabilite în prezentul articol.
 (1^1) Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura [...]."
-— Codul fiscal (Legea 227/2015), art. 319 alin. (1) și (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (1) și (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Coroborat cu:
 
 ::: ghid-temei
 „(1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice [...]."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea 82/1991 a contabilității, art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 a contabilității, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Pentru tranzacțiile B2B între firme stabilite în România, un document care nu a fost transmis (corect) prin RO e-Factura nu e, din punct de vedere legal, o „factură" — indiferent cum arată sau ce conține.

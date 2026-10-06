@@ -14,7 +14,7 @@ Un asociat poate fi, în același timp, și salariatul propriei firme, cu contra
 
 ::: ghid-temei
 „Sunt considerate venituri din salarii toate veniturile în bani și/sau în natură obținute de o persoană fizică rezidentă ori nerezidentă ce desfășoară o activitate în baza unui contract individual de muncă, a unui raport de serviciu, act de detașare sau a unui statut special prevăzut de lege, indiferent de perioada la care se referă, de denumirea veniturilor ori de forma sub care ele se acordă [...]."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Am căutat explicit un regim fiscal distinct pentru „asociatul angajat în propria firmă" și nu am găsit unul — Codul fiscal definește veniturile din salarii exclusiv prin raportare la existența unui contract individual de muncă, indiferent de calitatea de asociat a persoanei:
@@ -32,6 +32,6 @@ Am căutat explicit un regim fiscal distinct pentru „asociatul angajat în pro
 
 ## Ce face iConta.eu
 
-Am verificat în `core/salarizare.py`: modulul de calcul al salariilor **nu face nicio distincție între un salariat obișnuit și un asociat cu contract individual de muncă** — regulile de calcul (CAS, CASS, impozit, deducere personală) se aplică identic, exact conform art. 76 din Codul fiscal. Separarea corectă între salariu, indemnizație de administrator și dividende rămâne, ca înregistrare distinctă, în sarcina contabilului.
+Am verificat în aplicație: modulul de calcul al salariilor **nu face nicio distincție între un salariat obișnuit și un asociat cu contract individual de muncă** — regulile de calcul (CAS, CASS, impozit, deducere personală) se aplică identic, exact conform art. 76 din Codul fiscal. Separarea corectă între salariu, indemnizație de administrator și dividende rămâne, ca înregistrare distinctă, în sarcina contabilului.
 
 [iConta.eu](/)

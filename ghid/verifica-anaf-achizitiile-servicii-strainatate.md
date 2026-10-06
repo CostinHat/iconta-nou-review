@@ -15,7 +15,7 @@ Când o firmă românească plătitoare de TVA cumpără un serviciu de la un fu
 ```
 ::: ghid-temei
 „(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. Dacă serviciile sunt furnizate către un sediu fix al persoanei impozabile, aflat în alt loc decât cel în care persoana își are sediul activității sale economice, locul de prestare a serviciilor este locul unde se află respectivul sediu fix al persoanei care primește serviciile. În absența unui astfel de loc sau sediu fix, locul de prestare a serviciilor este locul unde persoana impozabilă care primește aceste servicii își are domiciliul stabil sau reședința obișnuită."
-— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -34,6 +34,6 @@ Pornind de la această regulă (aplicabilă serviciilor B2B, adică între perso
 
 ## Ce face iConta.eu
 
-La data acestui ghid, funcționalitatea reală din `core/` acoperă generarea declarațiilor de TVA relevante (D300, D301, D390) pe baza operațiunilor înregistrate, inclusiv logica proprie de taxare inversă din modulele de facturare și de decont. Nu a fost găsită însă în cod o verificare automată a locului prestării în funcție de natura specifică a fiecărui tip de serviciu (de exemplu, distincția între regula generală de la art. 278 alin. (2) și excepțiile de la art. 278 alin. (4) pentru servicii legate de imobile, transport, evenimente etc.) — încadrarea corectă a tipului de serviciu rămâne, la acest moment, o verificare pe care contabilul o face manual, aplicația preluând corect consecințele fiscale odată ce încadrarea e stabilită.
+La data acestui ghid, funcționalitatea reală din aplicație acoperă generarea declarațiilor de TVA relevante (D300, D301, D390) pe baza operațiunilor înregistrate, inclusiv logica proprie de taxare inversă din modulele de facturare și de decont. Nu a fost găsită însă în cod o verificare automată a locului prestării în funcție de natura specifică a fiecărui tip de serviciu (de exemplu, distincția între regula generală de la art. 278 alin. (2) și excepțiile de la art. 278 alin. (4) pentru servicii legate de imobile, transport, evenimente etc.) — încadrarea corectă a tipului de serviciu rămâne, la acest moment, o verificare pe care contabilul o face manual, aplicația preluând corect consecințele fiscale odată ce încadrarea e stabilită.
 
 [iConta.eu](/)

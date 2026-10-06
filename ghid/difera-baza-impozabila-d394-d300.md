@@ -14,10 +14,10 @@ O diferență între baza impozabilă totală din decontul de TVA (D300) și cea
 
 ::: ghid-temei
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană [...]."
-— OPANAF nr. 3.769/2015, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF nr. 3.769/2015, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025 (structura D394), Anexa 2 - Instrucțiuni de completare (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025 (structura D394), Anexa 2 - Instrucțiuni de completare (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Structural, cele două declarații nu au aceeași sferă:
@@ -34,6 +34,6 @@ Structural, cele două declarații nu au aceeași sferă:
 
 ## Ce face iConta.eu
 
-iConta.eu verifică D394 printr-o „a doua cale" internă de reconciliere (`core/d394_reconciliere.py`): recalculează independent, direct din liniile brute ale facturilor, totalurile pe cotă de TVA și le confruntă cu cele produse de generatorul declarației — orice divergență blochează generarea, cu ambele valori afișate, fără reparare tăcută. Aplicația nu confruntă însă D394 cu D300 pe bază de egalitate: decizia documentată în cod arată explicit că o astfel de confruntare ar produce divergențe false, pentru că D300 e prin definiție TVA totală, iar D394 e doar subsetul raportabil — cele două nu sunt, și nu trebuie tratate ca fiind, aceeași cifră.
+iConta.eu verifică D394 printr-o „a doua cale" internă de reconciliere: recalculează independent, direct din liniile brute ale facturilor, totalurile pe cotă de TVA și le confruntă cu cele produse de generatorul declarației — orice divergență blochează generarea, cu ambele valori afișate, fără reparare tăcută. Aplicația nu confruntă însă D394 cu D300 pe bază de egalitate: decizia documentată în cod arată explicit că o astfel de confruntare ar produce divergențe false, pentru că D300 e prin definiție TVA totală, iar D394 e doar subsetul raportabil — cele două nu sunt, și nu trebuie tratate ca fiind, aceeași cifră.
 
 [iConta.eu](/)

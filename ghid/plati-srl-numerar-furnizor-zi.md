@@ -14,7 +14,7 @@ Legea disciplinei financiare limitează strict plățile în numerar între firm
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi[...]"
-— Legea nr. 70/2015, art. 3 alin. (1) lit. c) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă, concret, plafonul pentru un SRL:

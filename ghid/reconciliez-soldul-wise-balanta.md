@@ -14,7 +14,7 @@ Multe firme românești folosesc, pe lângă banca tradițională, un cont Wise 
 
 ::: ghid-temei
 „Disponibilitățile aflate în conturi la bănci sau la unitățile Trezoreriei Statului se inventariază prin confruntarea soldurilor din extrasele de cont emise de acestea cu cele din contabilitatea entității. În acest scop, extrasele de cont din ziua de 31 decembrie sau din ultima zi bancară [...] vor purta ștampila oficială a acestora."
-— OMFP 2861/2009 (normele privind organizarea și efectuarea inventarierii), pct. 29 alin. (2) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009 (normele privind organizarea și efectuarea inventarierii), pct. 29 alin. (2) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Norma vorbește explicit despre conturi "la bănci" — iar o instituție de plată autorizată (cum e Wise, licențiată ca instituție de plată/monedă electronică într-un stat membru UE) intră în aceeași logică de disponibilități bănești ale entității, chiar dacă nu e o bancă tradițională licențiată în România. Practic, reconcilierea presupune:

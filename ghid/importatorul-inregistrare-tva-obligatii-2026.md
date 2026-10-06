@@ -15,7 +15,7 @@ Pentru majoritatea importurilor, TVA se plătește direct la vamă. Dar un impor
 ::: ghid-temei
 „(3) Taxa pentru importuri de bunuri, cu excepția importurilor scutite de taxă, se plătește la organul vamal în conformitate cu reglementările în vigoare privind plata drepturilor de import. [...]
 (4) Prin excepție de la prevederile alin. (3), nu se face plata efectivă la organele vamale pentru: a) importurile efectuate de persoanele impozabile înregistrate în scopuri de TVA conform art. 316, care îndeplinesc cumulativ condițiile prevăzute la alin. (4^1) și care au obținut certificat de amânare de la plată, conform procedurii stabilite prin ordin al ministrului finanțelor publice; [...] b) importurile efectuate de persoanele impozabile înregistrate în scopuri de TVA conform art. 316, care depun declarații vamale prin utilizarea procedurii de vămuire centralizată [...]; c) importurile efectuate prin depunerea unei declarații vamale sub forma unei înscrieri în evidențele declarantului, de persoanele impozabile înregistrate în scopuri de TVA conform art. 316 și care au obținut autorizație conform art. 182 din Regulamentul (UE) nr. 952/2013 [...]"
-— Cod fiscal, art. 326 alin. (3)-(4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 326 alin. (3)-(4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru un importator înregistrat în scopuri de TVA:

@@ -15,7 +15,7 @@ Instruirea unui casier nou nu ține doar de manevrarea casei de marcat — cea m
 ::: ghid-temei
 „Articolul 3 (1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...]
 (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei [...]"
-— Legea 70/2015, art. 3 alin. (1) lit. a) și alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. a) și alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce trebuie să știe, minimal, un casier nou:
@@ -33,6 +33,6 @@ Ce trebuie să știe, minimal, un casier nou:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025)** în modulul de casierie (`core/casa.py`), cu constante explicite pentru fiecare tip de plafon (persoană juridică, cash and carry, persoană fizică). Aplicația nu înlocuiește însă instruirea propriu-zisă a casierului — verifică și semnalează depășirile de plafon la introducerea operațiunilor, dar cunoașterea regulilor rămâne responsabilitatea persoanei care operează casieria.
+La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025)** în modulul de casierie, cu constante explicite pentru fiecare tip de plafon (persoană juridică, cash and carry, persoană fizică). Aplicația nu înlocuiește însă instruirea propriu-zisă a casierului — verifică și semnalează depășirile de plafon la introducerea operațiunilor, dar cunoașterea regulilor rămâne responsabilitatea persoanei care operează casieria.
 
 [iConta.eu](/)

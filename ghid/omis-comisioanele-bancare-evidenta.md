@@ -14,7 +14,7 @@ O eroare frecventă la firmele care importă manual extrasele bancare este omite
 
 ::: ghid-temei
 „(3) Pentru determinarea rezultatului fiscal, erorile înregistrate în contabilitate se corectează astfel: a) erorile care se corectează potrivit reglementărilor contabile pe seama rezultatului reportat, prin ajustarea rezultatului fiscal al anului la care se referă acestea și depunerea unei declarații rectificative în condițiile prevăzute de Codul de procedură fiscală; b) erorile care se corectează potrivit reglementărilor contabile pe seama contului de profit și pierdere sunt luate în calcul pentru determinarea rezultatului fiscal în anul în care se efectuează corectarea acestora."
-— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula împarte corectarea în două căi, în funcție de tratamentul contabil aplicabil:
@@ -31,6 +31,6 @@ Regula împarte corectarea în două căi, în funcție de tratamentul contabil 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu recunoaște automat tranzacțiile de tip comision din extrasul bancar importat și le contează implicit pe contul 627 (`core/banca.py`, cheia „comision": „taxa adm", „speze", „serviciu bancar"), reducând riscul de omisiune la importurile viitoare. Aplicația **nu corectează retroactiv** și nu depune automat declarații rectificative pentru comisioane omise în exerciții financiare anterioare — decizia privind tratamentul corectării (pe rezultatul reportat sau pe rezultatul curent) rămâne a contabilului.
+La data acestui ghid, iConta.eu recunoaște automat tranzacțiile de tip comision din extrasul bancar importat și le contează implicit pe contul 627 (cheia „comision": „taxa adm", „speze", „serviciu bancar"), reducând riscul de omisiune la importurile viitoare. Aplicația **nu corectează retroactiv** și nu depune automat declarații rectificative pentru comisioane omise în exerciții financiare anterioare — decizia privind tratamentul corectării (pe rezultatul reportat sau pe rezultatul curent) rămâne a contabilului.
 
 [iConta.eu](/)

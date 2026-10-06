@@ -16,7 +16,7 @@ Un PFA nou-înființat nu e obligat să se înregistreze în scopuri de TVA din 
 ::: ghid-temei
 „(1) Persoana impozabilă stabilită în România conform art. 266 alin. (2) lit. a), a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1) [...]
 (6) Persoana impozabilă care aplică regimul special de scutire și a cărei cifră de afaceri [...] depășește plafonul de scutire prevăzut la alin. (1) trebuie să solicite înregistrarea în scopuri de TVA, conform art. 316, cel târziu la data depășirii plafonului. Regimul normal de taxare se aplică din data depășirii plafonului prevăzut la alin. (1), începând cu tranzacția care conduce la depășirea plafonului."
-— Legea nr. 227/2015 privind Codul fiscal, art. 310 alin. (1) și (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 310 alin. (1) și (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -35,6 +35,6 @@ Ce înseamnă asta, pas cu pas, pentru un PFA nou:
 
 ## Ce face iConta.eu
 
-Verificarea plafonului de TVA, pe baza operațiunilor înregistrate în aplicație, ține de logica generală a evidenței facturilor emise; nu a fost găsit în `core/` un modul dedicat exclusiv „urmăririi plafonului de scutire TVA cu alertă la depășire" pentru PFA — contabilul rămâne cel care monitorizează cifra de afaceri cumulată și declanșează, la momentul potrivit, cererea de înregistrare în scopuri de TVA conform art. 316 din Codul fiscal.
+Verificarea plafonului de TVA, pe baza operațiunilor înregistrate în aplicație, ține de logica generală a evidenței facturilor emise; nu a fost găsit în aplicație un modul dedicat exclusiv „urmăririi plafonului de scutire TVA cu alertă la depășire" pentru PFA — contabilul rămâne cel care monitorizează cifra de afaceri cumulată și declanșează, la momentul potrivit, cererea de înregistrare în scopuri de TVA conform art. 316 din Codul fiscal.
 
 [iConta.eu](/)

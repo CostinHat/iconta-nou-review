@@ -36,6 +36,6 @@ Regula chapeau de la lit. c) e clară: cheltuiala cu marfă constatată lipsă s
 
 ## Ce face iConta.eu
 
-Nota de perisabilități (`core/uc_tenants.py`, funcția `nota_perisabilitati`) scrie automat descrierea sufixată „ - HG 831/2004" și separă 607 deductibil de nedeductibil pe baza procentului introdus de contabil, dar condițiile documentare (verificare faptică, aprobarea administratorului, proces-verbal) nu sunt validate programatic de aplicație — rămân responsabilitatea contabilului, în afara motorului. O notă introdusă direct pe 607, fără să treacă prin acest ecran, nu beneficiază de separarea automată deductibil/nedeductibil și trebuie corectată manual.
+Nota de perisabilități (funcția `nota_perisabilitati`) scrie automat descrierea sufixată „ - HG 831/2004" și separă 607 deductibil de nedeductibil pe baza procentului introdus de contabil, dar condițiile documentare (verificare faptică, aprobarea administratorului, proces-verbal) nu sunt validate programatic de aplicație — rămân responsabilitatea contabilului, în afara motorului. O notă introdusă direct pe 607, fără să treacă prin acest ecran, nu beneficiază de separarea automată deductibil/nedeductibil și trebuie corectată manual.
 
 [iConta.eu](/)

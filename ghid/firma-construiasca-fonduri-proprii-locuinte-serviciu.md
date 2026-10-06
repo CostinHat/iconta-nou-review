@@ -16,17 +16,17 @@ Pentru contabil, o astfel de investiție e o construcție proprie a firmei. Pe d
 
 ::: ghid-temei
 „Locuințele noi se finanțează, în condițiile legii, din: a) bugetul de stat și bugetele locale, în limitele prevederilor bugetare aprobate anual cu această destinație; … b) bugetele agenților economici, pentru salariații acestora."
-— Legea 114/1996 (Legea locuinței), art. 52 (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 52 (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Locuințele de serviciu se vor amplasa după cum urmează: a) pe terenurile aflate în proprietatea statului sau a unităților administrativ-teritoriale, pentru locuințele finanțate de la bugetul de stat sau de la bugetele locale, cu asigurarea viabilizării terenurilor, potrivit prevederilor art. 12 ; … b) pe terenurile aparținând agenților economici, pentru locuințele și lucrările de viabilizare a terenurilor, finanțate din bugetele acestora."
-— Legea 114/1996 (Legea locuinței), art. 53 alin. (2) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 53 alin. (2) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Condițiile și durata de închiriere vor fi stipulate în contractul de închiriere încheiat intre părțile contractante, accesoriu la contractul de muncă."
-— Legea 114/1996 (Legea locuinței), art. 51 alin. (2) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 51 alin. (2) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 Ce reține contabilul:

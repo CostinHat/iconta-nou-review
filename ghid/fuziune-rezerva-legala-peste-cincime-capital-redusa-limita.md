@@ -16,15 +16,15 @@ Situația e frecventă la fuziunile prin absorbție: beneficiara preia rezervele
 
 ::: ghid-temei
 „În situația în care, ca urmare a efectuării unor operațiuni de reorganizare, prevăzute de lege, rezerva legală a persoanei juridice beneficiare depășește a cincea parte din capitalul social sau din patrimoniul social, după caz, diminuarea rezervei legale la nivelul prevăzut de lege nu este obligatorie."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 19 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 19 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Prevederile prezentului alineat nu se aplică dacă un alt contribuabil preia un provizion sau o rezervă în legătură cu o divizare sau fuziune, sub orice formă, reglementările acestui articol aplicându-se în continuare acelui provizion sau rezervă."
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prevederile prezentului alineat nu se aplică în situația în care, ca urmare a efectuării unor operațiuni de reorganizare, prevăzute de lege, rezerva legală a persoanei juridice beneficiare depășește a cincea parte din capitalul social sau din patrimoniul social, după caz [...]"
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal în vigoare și normele spun același lucru:

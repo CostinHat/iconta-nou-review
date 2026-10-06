@@ -14,10 +14,10 @@ Casarea unui stoc (scoaterea din gestiune a unor bunuri deteriorate, expirate sa
 
 ::: ghid-temei
 „Informațiile privind «stocurile de produse» și «producție în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. [...] Declarațiile informative D406 pentru «Stocuri» se depun în termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării."
-— OPANAF nr. 1.783/2021, Anexa 5, pct. 9-10 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5, pct. 9-10 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
 „Pentru toate plusurile, lipsurile și deprecierile constatate la bunuri [...] comisia de inventariere solicită explicații scrise de la persoanele care au răspunderea gestionării bunurilor."
-— OMFP nr. 2.861/2009, pct. 39 (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2.861/2009, pct. 39 (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Cum se leagă cele două reguli, pentru o casare de stoc:
@@ -35,6 +35,6 @@ Cum se leagă cele două reguli, pentru o casare de stoc:
 
 ## Ce face iConta.eu
 
-Modulul de gestiune al iConta.eu tratează o casare de stoc ca o mișcare de ieșire pentru articolul respectiv, reflectată în soldurile calculate de `core/d406_stocuri.py` la generarea secțiunii de Stocuri din SAF-T, atunci când raportarea e cerută de contabil pentru o anumită perioadă. Documentarea casării prin proces-verbal de inventariere și aprobarea administratorului rămân, la data acestui ghid, în afara aplicației, ca proces administrativ separat.
+Modulul de gestiune al iConta.eu tratează o casare de stoc ca o mișcare de ieșire pentru articolul respectiv, reflectată în soldurile calculate de aplicația la generarea secțiunii de Stocuri din SAF-T, atunci când raportarea e cerută de contabil pentru o anumită perioadă. Documentarea casării prin proces-verbal de inventariere și aprobarea administratorului rămân, la data acestui ghid, în afara aplicației, ca proces administrativ separat.
 
 [iConta.eu](/)

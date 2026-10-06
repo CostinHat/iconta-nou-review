@@ -16,10 +16,10 @@ Singura excepție privește vehiculul: dacă marfa e mutată pe alt camion sau s
 
 ::: ghid-temei
 „(3) Este interzisă modificarea datelor înregistrate în Sistemul RO e-Transport referitoare la transporturile de bunuri după prezentarea în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv după punerea efectivă în mișcare a vehiculului pe drumurile publice, după caz."
-— OUG 41/2022, art. 11 alin. (3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 11 alin. (3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(1^1) Prin excepție de la prevederile art. 11 alin. (3) , organizatorul transportului sau operatorul de transport, după caz, are obligația să actualizeze, în perioada de valabilitate a codului UIT, informațiile privind identificarea vehiculului de transport rutier ori de câte ori acestea se modifică, înainte de repunerea în mișcare."
-— OUG 41/2022, art. 8 alin. (1^1) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (1^1) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce se poate și ce nu:

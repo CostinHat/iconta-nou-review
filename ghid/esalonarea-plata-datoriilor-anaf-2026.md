@@ -14,7 +14,7 @@ Când o firmă sau un PFA nu poate achita integral, la termen, datoriile către 
 
 ::: ghid-temei
 „Organul fiscal central acordă la cererea debitorilor eșalonări la plată pe o perioadă de cel mult 5 ani, dacă sunt îndeplinite condițiile de acordare a acestora. Pentru debitorii care nu au în proprietate bunuri în vederea constituirii de garanții [...] eșalonarea se acordă pe cel mult 6 luni."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 184 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 184 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Perioada maximă de eșalonare este **5 ani**; fără garanții suficiente, perioada se reduce la cel mult **6 luni** (art. 184 alin. (1)).

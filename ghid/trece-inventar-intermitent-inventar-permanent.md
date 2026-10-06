@@ -14,7 +14,7 @@ Reglementările contabile recunosc două metode distincte de evidențiere a stoc
 
 ::: ghid-temei
 „În situația aplicării inventarului intermitent: Stocurile existente la începutul exercițiului financiar, precum și intrările în cursul perioadei de materii prime, materiale consumabile, materiale de natura obiectelor de inventar se înregistrează direct în debitul conturilor 601 «Cheltuieli cu materiile prime», 602 «Cheltuieli cu materialele consumabile» și 603 «Cheltuieli privind materialele de natura obiectelor de inventar». Conturile 301 «Materii prime», 302 «Materiale consumabile» și 303 «Materiale de natura obiectelor de inventar» se debitează numai la sfârșitul perioadei cu valoarea la preț de înregistrare a materiilor prime, materialelor consumabile, materialelor de natura obiectelor de inventar, existente în stoc, stabilită pe baza inventarului [...]"
-— OMFP 1802/2014, reglementări contabile — funcționarea contului 303, metoda inventarului intermitent (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.html)
+— OMFP 1802/2014, reglementări contabile — funcționarea contului 303, metoda inventarului intermitent (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Diferența față de metoda permanentă, pe scurt:

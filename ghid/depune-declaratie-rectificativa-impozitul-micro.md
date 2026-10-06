@@ -14,7 +14,7 @@ Dacă ai declarat greșit impozitul pe veniturile microîntreprinderilor prin fo
 
 ::: ghid-temei
 „Anexa nr. 5 INSTRUCȚIUNI de completare a formularului 710 «Declarație rectificativă», cod 14.13.01.00/r [...] Capitolul I. Depunerea declarației. Declarația rectificativă se utilizează pentru corectarea impozitelor și taxelor administrate de Agenția Națională de Administrare Fiscală și stabilite de către plătitori prin autoimpunere sau cu regim de reținere la sursă, declarate în formularul 100 «Declarație privind obligațiile de plată la bugetul de stat»."
-— OPANAF 587/2016, Anexa 5, Cap. I (sursă: anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt)
+— OPANAF 587/2016, Anexa 5, Cap. I (sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662))
 :::
 
 - Formularul 710 nu e o declarație de sine stătătoare pentru orice obligație — corectează exclusiv sume declarate deja prin D100, prin autoimpunere sau reținere la sursă.

@@ -16,15 +16,15 @@ Ca notarul să nu rețină impozitul de 1% sau 3%, PFA trebuie să prezinte cert
 
 ::: ghid-temei
 „Face excepție de la impunere transmiterea dreptului de proprietate sau a dezmembrămintelor acestuia pentru proprietățile imobiliare din patrimoniul afacerii definite conform pct. 7 alin. (8) din normele metodologice date în aplicarea art. 68 din Codul fiscal, acestea fiind incluse în categoriile de venituri pentru care venitul net anual se determină pe baza datelor din contabilitate. Pentru aplicarea regimului fiscal stabilit în cazul transferului dreptului de proprietate sau al dezmembrămintelor acestuia, pentru proprietățile imobiliare din patrimoniul afacerii, contribuabilii au obligația prezentării următoarelor documente: certificatul de înregistrare sau, după caz, certificatul de înregistrare fiscală și extrasul de carte funciară din care să rezulte că imobilul face parte din patrimoniul afacerii."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În aplicarea prevederilor art. 68 din Codul fiscal, toate bunurile, drepturile și obligațiile aferente desfășurării activității se înscriu în Registrul-inventar și constituie patrimoniul afacerii."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 7 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 7 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „câștigurile din transferul activelor din patrimoniul afacerii, utilizate într-o activitate independentă, exclusiv contravaloarea bunurilor din patrimoniul personal afectate exercitării activității, rămase la încetarea activității;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

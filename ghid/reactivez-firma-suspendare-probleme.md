@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În cazul contribuabilului/plătitorului prevăzut la alin. (1) lit. d) - g), în vederea reactivării, pe lângă condițiile prevăzute la alin. (5), trebuie să nu se mai afle în situația pentru care a fost declarat inactiv, conform mențiunilor înscrise în registrele în care a fost înregistrat, precum în nicio altă situație din cele prevăzute la alin. (1) lit. d) - g)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Cei trei pași, în ordine, pentru o reactivare fără blocaje: (1) rezolvă cauza declarării ca inactiv — de exemplu, pentru inactivitatea temporară, înscrie la registrul comerțului mențiunea de reluare a activității; (2) depune **toate** obligațiile declarative restante, nu doar cele curente (art. 92 alin. (5) lit. a)); (3) clarifică obligațiile fiscale restante — condiția se consideră îndeplinită și dacă acestea au fost deja stabilite prin decizie a organului fiscal (art. 92 alin. (7)).

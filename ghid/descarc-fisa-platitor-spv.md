@@ -14,7 +14,7 @@ Spațiul Privat Virtual (SPV) nu e doar un portal de vizualizare — e definit l
 
 ::: ghid-temei
 „În scopul prezentului ordin comunicarea prin mijloace electronice de transmitere la distanţă se realizează prin intermediul serviciului «Spaţiul privat virtual» - serviciu de distribuţie electronică înregistrată care permite transmiterea de date între terţi prin mijloace electronice şi furnizează dovezi referitoare la manipularea datelor transmise, inclusiv dovezi privind trimiterea şi primirea datelor [...]."
-— OMFP 660/2017, art. 2 (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 2 (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Ce rezultă din acest temei pentru accesul la datele fiscale ale unui contribuabil:
@@ -32,6 +32,6 @@ Ce rezultă din acest temei pentru accesul la datele fiscale ale unui contribuab
 
 ## Ce face iConta.eu
 
-iConta.eu are un conector unic pentru autentificarea OAuth2 cu SPV/ANAF (`core/spv_conector.py`), folosit pentru transmiterea și primirea facturilor electronice (RO e-Factura) prin API-ul ANAF. Documentația internă a modulului precizează explicit că acest conector **nu** acoperă alte funcționalități ale portalului SPV, precum descărcarea fișei pe plătitor — aceasta rămâne o operațiune pe care utilizatorul o face direct din portalul SPV, în afara aplicației.
+iConta.eu are un conector unic pentru autentificarea OAuth2 cu SPV/ANAF, folosit pentru transmiterea și primirea facturilor electronice (RO e-Factura) prin API-ul ANAF. Documentația internă a modulului precizează explicit că acest conector **nu** acoperă alte funcționalități ale portalului SPV, precum descărcarea fișei pe plătitor — aceasta rămâne o operațiune pe care utilizatorul o face direct din portalul SPV, în afara aplicației.
 
 [iConta.eu](/)

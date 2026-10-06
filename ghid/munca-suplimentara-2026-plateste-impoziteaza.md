@@ -17,7 +17,7 @@ Munca suplimentară nu se plătește automat cu un spor — legea prevede întâ
 (1) Munca suplimentară se compensează prin ore libere plătite în următoarele 30 de zile după efectuarea acesteia. [...] (2) În aceste condiţii salariatul beneficiază de salariul corespunzător pentru orele prestate peste programul normal de lucru.
 Articolul 120
 (1) În cazul în care compensarea prin ore libere plătite nu este posibila în termenul prevăzut de art. 119 alin. (1) în luna următoare, munca suplimentară va fi plătită salariatului prin adăugarea unui spor la salariu corespunzător duratei acesteia. (2) Sporul pentru munca suplimentară, acordat în condiţiile prevăzute la alin. (1), se stabileşte prin negociere, în cadrul contractului colectiv de muncă sau, după caz, al contractului individual de muncă, şi nu poate fi mai mic de 75% din salariul de baza."
-— Legea 53/2003 (Codul muncii), art. 119, art. 120 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 119, art. 120 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Mecanismul, în ordinea din lege:
@@ -25,7 +25,7 @@ Mecanismul, în ordinea din lege:
 - **Regula generală**: munca suplimentară se compensează prin **ore libere plătite**, acordate în următoarele 30 de zile de la efectuarea ei — nu prin bani, în primă instanță.
 - **Excepția**: doar dacă, în termenul acesta (extins, „în luna următoare"), compensarea prin timp liber nu e posibilă, munca suplimentară se plătește printr-un **spor**, negociat prin contractul colectiv sau individual de muncă, dar niciodată sub **75% din salariul de bază**.
 - Tinerii sub 18 ani nu pot presta muncă suplimentară deloc (art. 121).
-- **Fiscal**, indiferent dacă e compensată prin ore libere plătite sau prin spor, suma reprezintă venit din salarii, supusă regimului obișnuit: impozit pe venit, CAS și CASS. Sursele consultate în `anaf_surse/` **nu conțin** nicio scutire sau facilitate specială de impozitare pentru orele suplimentare aplicabilă în 2026 — orice facilitate de acest tip trebuie verificată separat, la data concretă a plății, pentru că astfel de măsuri au apărut și au fost eliminate succesiv în ultimii ani.
+- **Fiscal**, indiferent dacă e compensată prin ore libere plătite sau prin spor, suma reprezintă venit din salarii, supusă regimului obișnuit: impozit pe venit, CAS și CASS. Sursele consultate **nu conțin** nicio scutire sau facilitate specială de impozitare pentru orele suplimentare aplicabilă în 2026 — orice facilitate de acest tip trebuie verificată separat, la data concretă a plății, pentru că astfel de măsuri au apărut și au fost eliminate succesiv în ultimii ani.
 
 ## Ce se greșește în practică
 

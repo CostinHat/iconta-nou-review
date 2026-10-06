@@ -37,6 +37,6 @@ Partea neacoperită de ajustarea dedusă anterior e deductibilă doar dacă situ
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează Etapa 1 — `deductibilitate_creanta` întoarce procentul corect (0%/30%/100%) și generează nota `6814=491`. Etapa 2 (scoaterea din evidență și verificarea celor șase excepții) nu e modelată de motor — rămâne o evaluare și o notă contabilă separate, introduse manual de contabil.
+Aplicația calculează Etapa 1 — `deductibilitate_creanta` întoarce procentul corect (0%/30%/100%) și generează nota `6814=491`. Etapa 2 (scoaterea din evidență și verificarea celor șase excepții) nu e modelată de motor — rămâne o evaluare și o notă contabilă separate, introduse manual de contabil.
 
 [iConta.eu](/)

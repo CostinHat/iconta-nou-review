@@ -14,7 +14,7 @@ Schimbarea administratorului unei firme nu e doar o formalitate la Registrul Com
 
 ::: ghid-temei
 „În temeiul prevederilor Legii contabilității nr. 82/1991, republicată, entitățile au obligația să efectueze inventarierea elementelor de natura activelor, datoriilor și capitalurilor proprii deținute, la începutul activității, cel puțin o dată în cursul exercițiului financiar pe parcursul funcționării lor, în cazul fuziunii sau încetării activității, precum și în următoarele situații: [...] c) ori de câte ori intervine o predare-primire de gestiune;"
-— OMFP 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 2 alin. (1) lit. c) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 2 alin. (1) lit. c) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 - Legea nu detaliază o „listă standard" de predat noului administrator, dar impune ca declanșator obligatoriu inventarierea completă a activelor, datoriilor și capitalurilor proprii — practic, o fotografie certificată a situației reale a firmei la data predării.

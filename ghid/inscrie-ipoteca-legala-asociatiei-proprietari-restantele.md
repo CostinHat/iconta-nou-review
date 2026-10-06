@@ -16,11 +16,11 @@ Asociația de proprietari are, prin lege, ipotecă asupra apartamentelor și spa
 
 ::: ghid-temei
 „(1) Asociația de proprietari are ipotecă legală asupra apartamentelor și altor spații proprietăți individuale ale proprietarilor din condominiu, precum și un privilegiu asupra tuturor bunurilor mobile ale acestora, pentru sumele datorate cu titlu de cotă de contribuție la cheltuielile asociației de proprietari."
-— Legea 196/2018, art. 80 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 80 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(3) Ipoteca imobiliară legală se înscrie în cartea funciară la cererea președintelui asociației de proprietari, pe baza extraselor de pe ultima listă lunară de plată a cotelor de contribuție din care rezultă suma datorată cu titlu de restanță, numai după împlinirea termenelor prevăzute la art. 78 alin. (2) . Ipoteca imobiliară legală se radiază la cererea președintelui asociației de proprietari sau a proprietarului, pe baza chitanței ori a altui înscris prin care asociația confirmă plata sumei datorate. (4) Președintele asociației de proprietari are obligația radierii ipotecii imobiliare, legale, în termen de cel mult 10 zile de la data la care suma datorată cu titlul de restanță a fost plătită de către proprietar."
-— Legea 196/2018, art. 80 alin. (3)-(4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 80 alin. (3)-(4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(6) Operațiunile de publicitate imobiliară privitoare la ipoteca imobiliară legală și privilegiul general mobiliar prevăzute la alin. (1) și (2) sunt scutite de tarif sau taxă de timbru."
-— Legea 196/2018, art. 80 alin. (6) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 80 alin. (6) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Pe scurt, procedura:

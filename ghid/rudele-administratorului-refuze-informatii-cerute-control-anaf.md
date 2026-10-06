@@ -16,16 +16,16 @@ Legea dă acest drept soțului sau soției și rudelor ori afinilor contribuabil
 
 ::: ghid-temei
 „Soțul/soția și rudele ori afinii contribuabilului/plătitorului până la gradul al treilea inclusiv pot refuza furnizarea de informații, efectuarea de expertize, precum și prezentarea unor înscrisuri."
-— Codul de procedură fiscală (Legea 207/2015), art. 66 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 66 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Persoanele prevăzute la alin. (1) trebuie înștiințate asupra acestui drept."
-— Codul de procedură fiscală (Legea 207/2015), art. 66 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 66 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pot refuza să furnizeze informații cu privire la datele de care au luat cunoștință în exercitarea activității lor preoții, avocații, consultanții fiscali, auditorii, experții contabili, medicii și [...] psihoterapeuții. Aceste persoane nu pot refuza furnizarea informațiilor cu privire la îndeplinirea obligațiilor prevăzute de legislația fiscală în sarcina lor, atât în calitate de contribuabili/plătitori, cât și în calitate de persoane care exercită profesia respectivă."
-— Codul de procedură fiscală (Legea 207/2015), art. 67 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 67 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în linie colaterală, după numărul nașterilor, urcând de la una dintre rude până la ascendentul comun și coborând de la acesta până la cealaltă rudă; astfel, frații sunt rude de gradul al doilea, unchiul sau mătușa și nepotul, de gradul al treilea, verii primari, de gradul al patrulea."
-— Codul civil (Legea 287/2009), art. 406 alin. (3) lit. b) (sursă: anaf_surse/legea_287_2009.html)
+— Codul civil (Legea 287/2009), art. 406 alin. (3) lit. b) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 Cum se citește:

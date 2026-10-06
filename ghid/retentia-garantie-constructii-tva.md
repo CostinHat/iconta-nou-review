@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Exigibilitatea pentru livrări de bunuri și prestări de servicii [...] (1) Exigibilitatea taxei intervine la data la care are loc faptul generator."
-— Legea nr. 227/2015 privind Codul fiscal, art. 282 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 282 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula generală: TVA devine exigibilă la data faptului generator — adică, pentru o lucrare de construcții, la data recepției/prestării serviciului sau la data facturii, dacă factura e emisă înainte de acest moment. **Reținerea contractuală a unui procent de garanție de către beneficiar nu schimbă acest moment** — antreprenorul datorează TVA pe întreaga valoare facturată, inclusiv pe partea pe care nu o încasează imediat, pentru că e ținută drept garanție.
@@ -29,7 +29,7 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Nu s-a găsit, verificat direct în cod (`core/`), niciun modul dedicat retenției de garanție la construcții — nici la nivelul motoarelor contabile, nici la nivelul facturării. Fișierul al cărui nume ar putea sugera o legătură, `core/audit_retentie.py`, tratează un subiect complet diferit: retenția datelor cu caracter personal (GDPR), nu retenția contractuală de garanție din construcții.
+Nu s-a găsit, verificat direct în cod, niciun modul dedicat retenției de garanție la construcții — nici la nivelul motoarelor contabile, nici la nivelul facturării. Fișierul al cărui nume ar putea sugera o legătură, aplicația, tratează un subiect complet diferit: retenția datelor cu caracter personal (GDPR), nu retenția contractuală de garanție din construcții.
 
 Concluzie onestă: iConta.eu **nu automatizează** tratamentul retenției de garanție la construcții. Facturarea integrală a lucrării (inclusiv partea reținută) și, dacă e cazul, urmărirea separată a exigibilității TVA pentru firmele la TVA la încasare rămân în sarcina utilizatorului, prin operațiunile obișnuite de facturare și notele contabile manuale.
 

@@ -16,12 +16,12 @@ Contează pentru că regula obișnuită, ca deducerea pentru copilul minor să s
 
 ::: ghid-temei
 „Pentru copiii minori ai contribuabililor, suma reprezentând deducerea personală de bază se atribuie fiecărui contribuabil în întreținerea căruia/cărora se află aceștia.”
-— Codul fiscal (Legea 227/2015), art. 77 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru copilul minor aflat în întreținerea părinților sau a tutorelui, deducerea personală se acordă fiecăruia dintre părinți, respectiv tutorelui. Pentru copilul minor provenit din căsătorii anterioare, dreptul la deducerea personală revine părintelui căruia i-a fost încredințat copilul și unuia dintre soți care formează noua familie.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

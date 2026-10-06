@@ -30,6 +30,6 @@ Nivelul maxim al voucherelor ce pot fi acordate într-un an fiscal e stabilit se
 
 ## Ce face iConta.eu
 
-Motorul de salarizare (`core/salarizare.py`) calculează CASS 10% pe valoarea nominală integrală a voucherelor de vacanță (cumulată cu tichetele de masă, dacă există), apoi impozitul 10% pe baza rămasă după scăderea acestei CASS — fără CAS și fără CAM pe vouchere, conform mecanismului confirmat în cod. Plafonul anual de 6 salarii minime brute se citește dinamic din salariul minim valabil la data fiecărei perioade, astfel încât cele două praguri din 2026 (24.300 lei / 25.950 lei) sunt aplicate automat, fără intervenție manuală. Excedentul peste plafon este calculat incremental, pe cumulat anual, și intră automat ca venit salarial obișnuit în stat de plată.
+Motorul de salarizare calculează CASS 10% pe valoarea nominală integrală a voucherelor de vacanță (cumulată cu tichetele de masă, dacă există), apoi impozitul 10% pe baza rămasă după scăderea acestei CASS — fără CAS și fără CAM pe vouchere, conform mecanismului confirmat în cod. Plafonul anual de 6 salarii minime brute se citește dinamic din salariul minim valabil la data fiecărei perioade, astfel încât cele două praguri din 2026 (24.300 lei / 25.950 lei) sunt aplicate automat, fără intervenție manuală. Excedentul peste plafon este calculat incremental, pe cumulat anual, și intră automat ca venit salarial obișnuit în stat de plată.
 
 [iConta.eu](/)

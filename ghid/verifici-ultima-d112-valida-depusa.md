@@ -15,10 +15,10 @@ D112 se poate corecta oricând, din proprie inițiativă, prin depunerea unei de
 ::: ghid-temei
 „2.1. Declaraţia privind obligaţiile de plată a contribuţiilor sociale, impozitului pe venit şi evidenţa nominală a persoanelor asigurate poate fi corectată de contribuabili din proprie iniţiativă, prin depunerea unei declaraţii rectificative.
 2.4. Declaraţia rectificativă se completează integral, înscriindu-se toate datele şi informaţiile prevăzute de formular, inclusiv cele care nu diferă faţă de declaraţia iniţială."
-— OPANAF 605/2026, Instrucțiuni de completare, pct. 2.1, 2.4 (sursă: anaf_surse/opanaf_605_2026_d112.txt)
+— OPANAF 605/2026, Instrucțiuni de completare, pct. 2.1, 2.4 (sursă: [Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026 pentru aprobarea formularului 112](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_605_2026.pdf))
 
 „Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Rectificativa D112 se completează **integral** (pct. 2.4) — dacă o secțiune corectă din declarația inițială nu e reluată în rectificativă, ea dispare din evidență, nu rămâne „moștenită" de la versiunea anterioară.

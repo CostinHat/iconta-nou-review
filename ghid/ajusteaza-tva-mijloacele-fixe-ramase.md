@@ -14,7 +14,7 @@ La lichidarea unei firme, mijloacele fixe pentru care s-a dedus TVA la achiziți
 
 ::: ghid-temei
 „Ajustarea taxei deductibile prevăzute la alin. (1) lit. d) se efectuează: [...] d) în situația în care bunul de capital își încetează existența, cu următoarele excepții: 1. bunul de capital a făcut obiectul unei livrări sau unei livrări către sine pentru care taxa este deductibilă;"
-— Legea 227/2015 (Codul fiscal), art. 305 alin. (4) lit. d) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 305 alin. (4) lit. d) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul e cheia mecanismului: ajustarea TVA se declanșează dacă bunul de capital „își încetează existența" — **cu excepția** situației în care bunul face obiectul unei livrări (sau livrări către sine) pentru care taxa e deductibilă/colectată. La lichidare, tocmai asta se întâmplă cu mijloacele fixe distribuite către asociați.
@@ -23,7 +23,7 @@ Textul e cheia mecanismului: ajustarea TVA se declanșează dacă bunul de capit
 
 ::: ghid-temei
 „Orice distribuire de bunuri din activele unei persoane impozabile către asociații sau acționarii săi, inclusiv o distribuire de bunuri legată de lichidarea sau de dizolvarea fără lichidare a persoanei impozabile, [...] constituie livrare de bunuri efectuată cu plată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Legea tratează expres distribuirea bunurilor la lichidare/dizolvare ca livrare de bunuri cu plată — deci operațiune supusă TVA, cu condiția ca taxa aferentă acelui bun să fi fost dedusă (total sau parțial) la achiziție.
@@ -32,7 +32,7 @@ Legea tratează expres distribuirea bunurilor la lichidare/dizolvare ca livrare 
 
 ::: ghid-temei
 „pentru operațiunile prevăzute la art. 270 alin. (4) și (5), [...] baza de impozitare este [...] prețul de cumpărare al bunurilor respective sau al unor bunuri similare ori, în absența unor astfel de prețuri de cumpărare, prețul de cost, stabilit la data livrării. În cazul în care bunurile reprezintă active corporale fixe, baza de impozitare se stabilește conform procedurii stabilite prin normele metodologice;"
-— Legea 227/2015 (Codul fiscal), art. 286 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 286 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru mijloacele fixe (active corporale fixe), legea nu lasă baza de impozitare la latitudinea firmei — trimite expres la procedura din normele metodologice, tocmai pentru că simplul preț de cumpărare istoric nu mai reflectă valoarea reală a unui activ amortizat parțial.

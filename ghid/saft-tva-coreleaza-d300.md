@@ -14,7 +14,7 @@ SAF-T (declarația D406) nu e o declarație paralelă cu decontul de TVA — e u
 
 ::: ghid-temei
 Declarația D406 — Fișierul Standard de Control Fiscal (SAF-T) — se reglementează prin OPANAF 1783/2021, cu Schema XSD oficială ANAF; structura AuditFile cuprinde secțiunea GeneralLedgerEntries (jurnale și tranzacții contabile, inclusiv codurile de TVA aferente fiecărei linii) și SourceDocuments (facturile de vânzare și achiziție, cu liniile lor de TVA).
-— OPANAF 1783/2021, structura declarației SAF-T/D406 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, structura declarației SAF-T/D406 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Corelarea practică dintre SAF-T și D300 se bazează pe faptul că ambele derivă din aceleași operațiuni economice, dar la niveluri diferite de detaliu:
@@ -32,6 +32,6 @@ Corelarea practică dintre SAF-T și D300 se bazează pe faptul că ambele deriv
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația SAF-T/D406 (`core/d406.py`) direct din schema XSD oficială ANAF, cu un modul dedicat de reconciliere (`core/d406_reconciliere.py`) care verifică liniile facturilor față de antetul documentelor și față de stocuri. Documentația internă a modulului notează explicit stadiul de acoperire: liniile de facturi (vânzare/achiziție) sunt generate cu date reale din facturi, validate structural pe validatorul oficial DUK; codificarea TVA pentru achiziții rămâne, la data acestui ghid, o zonă de rafinare ulterioară (cod de TVA implicit pentru deductibilitate, nu încă pe cazuri reale complete) — exact tipul de detaliu care poate produce discrepanțe față de D300 dacă nu e verificat manual.
+iConta.eu generează declarația SAF-T/D406 direct din schema XSD oficială ANAF, cu un modul dedicat de reconciliere care verifică liniile facturilor față de antetul documentelor și față de stocuri. Documentația internă a modulului notează explicit stadiul de acoperire: liniile de facturi (vânzare/achiziție) sunt generate cu date reale din facturi, validate structural pe validatorul oficial DUK; codificarea TVA pentru achiziții rămâne, la data acestui ghid, o zonă de rafinare ulterioară (cod de TVA implicit pentru deductibilitate, nu încă pe cazuri reale complete) — exact tipul de detaliu care poate produce discrepanțe față de D300 dacă nu e verificat manual.
 
 [iConta.eu](/)

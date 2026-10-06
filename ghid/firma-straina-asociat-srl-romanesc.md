@@ -15,7 +15,7 @@ Da. Legea societăților nu impune o restricție de naționalitate sau de reșed
 ::: ghid-temei
 „(1) În vederea desfășurării de activități cu scop lucrativ, persoanele fizice și persoanele juridice se pot asocia și pot constitui societăți cu personalitate juridică, cu respectarea dispozițiilor prezentei legi.
 (2) Societățile prevăzute la alin. (1) cu sediul în România sunt persoane juridice române."
-— Legea nr. 31/1990, art. 1 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 1 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din formularea legii:

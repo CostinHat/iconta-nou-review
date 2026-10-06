@@ -14,7 +14,7 @@ Revenirea la normă de venit nu se întâmplă automat la finalul celor 2 ani fi
 
 ::: ghid-temei
 „Opțiunea de a determina venitul net în sistem real, pe baza datelor din contabilitate, potrivit prevederilor art. 68, este obligatorie pentru contribuabil pe o perioadă de 2 ani fiscali consecutivi și se consideră reînnoită pentru o nouă perioadă dacă contribuabilul nu solicită revenirea la sistemul anterior. Pentru a reveni la sistemul anterior, contribuabilul completează corespunzător Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice, aferentă veniturilor realizate în anul următor expirării perioadei de 2 ani, și depune formularul la organul fiscal competent, până la termenul legal de depunere prevăzut la art. 122 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 69^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pas cu pas:

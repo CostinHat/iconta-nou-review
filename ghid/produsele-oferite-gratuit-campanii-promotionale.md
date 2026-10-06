@@ -14,7 +14,7 @@ Mostrele, materialele publicitare sau produsele oferite gratuit „la achiziție
 
 ::: ghid-temei
 „Cheltuielile efectuate în scopul desfășurării activității economice [...]"; art. 270 alin. (8): „Nu constituie livrare de bunuri, în sensul alin. (1): [...] b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) și art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) și art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințe practice pentru o campanie promoțională:

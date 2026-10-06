@@ -14,7 +14,7 @@ Pentru relațiile B2B din România, o factură nu mai e valabilă legal doar pen
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura [...]"
-— Cod fiscal (Legea 227/2015), art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru operațiuni B2B între persoane impozabile stabilite în România, doar documentul transmis prin RO e-Factura are, legal, statutul de „factură" — un document creat și trimis clientului pe altă cale (email, PDF) nu are acest regim.

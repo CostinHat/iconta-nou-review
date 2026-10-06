@@ -16,7 +16,7 @@ O firmă cu activitate de jocuri de noroc trece prin același proces general de 
 
 ::: ghid-temei
 „Societatea este administrată de unul sau mai mulți administratori, asociați sau neasociați, numiți prin actul constitutiv sau de adunarea generală."
-— Legea 31/1990 a societăților, art. 197 alin. (1) — regula generală de administrare, aplicabilă oricărei societăți cu răspundere limitată, indiferent de obiectul de activitate (sursă: anaf_surse/legea_31_1990_societatile.html)
+— Legea 31/1990 a societăților, art. 197 alin. (1) — regula generală de administrare, aplicabilă oricărei societăți cu răspundere limitată, indiferent de obiectul de activitate (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce se poate spune cu certitudine, din corpusul disponibil:

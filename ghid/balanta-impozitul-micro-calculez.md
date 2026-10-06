@@ -36,6 +36,6 @@ Din baza impozabilă se exclud, potrivit art. 53 alin. (1), categoriile enumerat
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d100.py`) preia baza impozabilă din soldurile conturilor 70x + 75x + 76x, minus debitul contului 709, și aplică cota de 1% (cu rotunjire aritmetică, nu bancară), pentru fiecare trimestru calendaristic. De reținut: verificat direct în cod, funcția care preia baza include întreaga clasă 76x, fără o excludere explicită a conturilor 765 (diferențe de curs) sau 766 — dacă firma are venituri financiare din diferențe de curs valutar semnificative, verificați manual dacă acestea au fost corect excluse din baza impozabilă declarată, până la o clarificare suplimentară a acestui punct.
+Motorul de calcul preia baza impozabilă din soldurile conturilor 70x + 75x + 76x, minus debitul contului 709, și aplică cota de 1% (cu rotunjire aritmetică, nu bancară), pentru fiecare trimestru calendaristic. De reținut: verificat direct în cod, funcția care preia baza include întreaga clasă 76x, fără o excludere explicită a conturilor 765 (diferențe de curs) sau 766 — dacă firma are venituri financiare din diferențe de curs valutar semnificative, verificați manual dacă acestea au fost corect excluse din baza impozabilă declarată, până la o clarificare suplimentară a acestui punct.
 
 [iConta.eu](/)

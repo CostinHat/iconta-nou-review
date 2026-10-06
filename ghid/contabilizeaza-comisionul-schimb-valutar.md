@@ -14,7 +14,7 @@ Când o firmă schimbă valută la bancă (de exemplu, transformă euro încasa�
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate». Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: valoarea serviciilor bancare și asimilate plătite (471, 512)."
-— OMFP 1802/2014, planul de conturi (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, planul de conturi (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Comisionul de schimb valutar e un **serviciu prestat de bancă**, nu un rezultat al fluctuației cursului — de aceea intră la conturile de cheltuieli cu serviciile bancare (627), separat de conturile 665/765 „Cheltuieli/Venituri din diferențe de curs valutar", care înregistrează exclusiv efectul variației cursului asupra creanțelor, datoriilor sau disponibilităților în valută.

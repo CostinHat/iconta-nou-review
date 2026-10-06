@@ -17,7 +17,7 @@ Alegerea între PFA și SRL nu e doar o decizie de formă juridică — cele dou
 (1) Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]
 Articolul 53 - Baza impozabilă [microîntreprinderi]
 (1) Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]"
-— Cod fiscal, art. 68 alin. (1) (Titlul IV, venituri din activități independente) și art. 53 alin. (1) (Titlul III, microîntreprinderi) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 68 alin. (1) (Titlul IV, venituri din activități independente) și art. 53 alin. (1) (Titlul III, microîntreprinderi) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența structurală, direct din text:

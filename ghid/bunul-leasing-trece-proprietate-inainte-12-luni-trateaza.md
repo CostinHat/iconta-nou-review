@@ -14,12 +14,12 @@ Da. Dacă dreptul de proprietate trece la utilizator înainte să treacă 12 lun
 
 ::: ghid-temei
 „(4) Transmiterea folosinței bunurilor în cadrul unui contract de leasing este considerată prestare de servicii conform art. 271 alin. (3) lit. a) din Codul fiscal. La sfârșitul perioadei de leasing, dacă locatorul/finanțatorul transferă locatarului/utilizatorului dreptul de proprietate asupra bunului, la solicitarea acestuia, operațiunea reprezintă o livrare de bunuri pentru valoarea la care se face transferul. Se consideră a fi sfârșitul perioadei de leasing și data la care locatorul/finanțatorul transferă locatarului/utilizatorului dreptul de proprietate asupra bunului înainte de sfârșitul perioadei de leasing, situație în care valoarea de transfer va cuprinde și suma ratelor care nu au mai ajuns la scadență, inclusiv toate cheltuielile accesorii facturate odată cu rata de leasing. Dacă transferul dreptului de proprietate asupra bunului către locatar/utilizator se realizează înainte de derularea a 12 luni consecutive de la data începerii contractului de leasing, se consideră că nu a mai avut loc o operațiune de leasing, ci o livrare de bunuri la data la care bunul a fost pus la dispoziția locatarului/utilizatorului."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 8 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 8 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „închirierea de bunuri sau transmiterea folosinței bunurilor în cadrul unui contract de leasing;"
-— Codul fiscal (Legea 227/2015), art. 271 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 271 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei situații posibile:

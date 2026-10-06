@@ -14,7 +14,7 @@ Cea mai frecventă greșeală la înregistrarea unui concediu medical nu e calcu
 
 ::: ghid-temei
 „(1) Pentru persoanele prevăzute la art. 1 alin. (1) lit. A și B, baza de calcul al indemnizațiilor prevăzute la art. 2 se determină ca medie a veniturilor brute lunare din ultimele 6 luni din cele 12 luni din care se constituie stagiul de asigurare, până la limita a 12 salarii minime brute pe țară lunar, pe baza cărora se calculează contribuția asiguratorie pentru muncă."
-— OUG 158/2005, art. 10 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005, art. 10 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Ce înseamnă corect, pas cu pas:
@@ -32,6 +32,6 @@ Ce înseamnă corect, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează baza indemnizației de concediu medical exact pe principiul corect: preferă cifrele din statele de plată deja **emise** pentru fiecare din cele 6 luni anterioare, iar pentru lunile neemise folosește recalculul — dar le numără și le raportează **separat**, astfel încât contabilul să vadă din ce anume s-a compus media (`core/baza_cm.py`). Motivația din codul aplicației e explicită: „ce s-a plătit efectiv e un fapt" — un recalcul „la zi" ar produce o bază de calcul care nu corespunde niciunei realități efectiv plătite salariatului.
+La data acestui ghid, iConta.eu calculează baza indemnizației de concediu medical exact pe principiul corect: preferă cifrele din statele de plată deja **emise** pentru fiecare din cele 6 luni anterioare, iar pentru lunile neemise folosește recalculul — dar le numără și le raportează **separat**, astfel încât contabilul să vadă din ce anume s-a compus media. Motivația din codul aplicației e explicită: „ce s-a plătit efectiv e un fapt" — un recalcul „la zi" ar produce o bază de calcul care nu corespunde niciunei realități efectiv plătite salariatului.
 
 [iConta.eu](/)

@@ -33,6 +33,6 @@ La înființarea unei societăți, numirea unui cenzor nu e, de regulă, obligat
 
 ## Ce face iConta.eu
 
-Tratamentul fiscal al remunerației cenzorului — odată numit, indiferent dacă numirea a fost obligatorie sau opțională — e acoperit de modulul F021 (`core/contracte_speciale.py`): CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM (temei fiscal: Codul fiscal art. 76 alin. (2) lit. i)), cu nota contabilă prin contul 621. Verificarea obligativității numirii unui cenzor la înființare — numărul de asociați, forma juridică, eventuala încadrare în criteriile de audit obligatoriu — ține de Legea 31/1990 și de actul constitutiv, nu de un calcul pe care aplicația îl automatizează.
+Tratamentul fiscal al remunerației cenzorului — odată numit, indiferent dacă numirea a fost obligatorie sau opțională — e acoperit de modulul F021: CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM (temei fiscal: Codul fiscal art. 76 alin. (2) lit. i)), cu nota contabilă prin contul 621. Verificarea obligativității numirii unui cenzor la înființare — numărul de asociați, forma juridică, eventuala încadrare în criteriile de audit obligatoriu — ține de Legea 31/1990 și de actul constitutiv, nu de un calcul pe care aplicația îl automatizează.
 
 [iConta.eu](/)

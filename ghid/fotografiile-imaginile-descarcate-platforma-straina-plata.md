@@ -16,18 +16,18 @@ Răspunsul nu depinde de faptul că imaginea vine de pe o platformă străină, 
 
 ::: ghid-temei
 „(9) În cazul unei tranzacții care permite unei persoane să descarce electronic imagini, sunete sau texte, suma care trebuie plătită nu este redevență dacă folosirea acestor materiale se limitează la drepturile necesare pentru a permite descărcarea, stocarea și exploatarea computerului, rețelei sau a altui echipament de stocare, operare sau afișare a utilizatorului. În caz contrar, suma care trebuie plătită pentru transferul dreptului de a reproduce și a face public un produs digital este o redevență."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 2 alin. (9) (norme art. 223 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 2 alin. (9) (norme art. 223 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(11) Se consideră redevență plata făcută în scopul acordării dreptului de folosință a dreptului de autor asupra unui produs digital ce este descărcat electronic. Aceasta ar fi situația unei edituri care plătește pentru a obține dreptul de a reproduce o fotografie protejată de drept de autor pe care o va descărca electronic în scopul includerii ei pe coperta unei cărți pe care o editează."
-— HG 1/2016, Titlul VI, pct. 2 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VI, pct. 2 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Se consideră redevență plățile de orice natură primite pentru folosirea ori dreptul de folosință al oricăruia dintre următoarele: a) drept de autor asupra unei lucrări literare, artistice sau științifice"
-— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt enumerate la art. 223 alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 224 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 224 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

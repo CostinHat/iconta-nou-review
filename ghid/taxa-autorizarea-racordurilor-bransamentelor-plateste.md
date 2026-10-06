@@ -16,12 +16,12 @@ Taxa o datorează **furnizorul serviciului**: compania de apă, de gaze, de ener
 
 ::: ghid-temei
 „(1) În aplicarea art. 474 alin. (15) din Codul fiscal, taxa pentru eliberarea autorizațiilor privind lucrările de racorduri și branșamente la rețelele publice de apă, canalizare, gaze, termice, energie electrică, telefonie și televiziune prin cablu se datorează de către furnizorii serviciilor respective pentru fiecare instalație/beneficiar, înainte de efectuarea lucrărilor."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 145 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 145 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Taxa pentru eliberarea unei autorizații privind lucrările de racorduri și branșamente la rețele publice de apă, canalizare, gaze, termice, energie electrică, telefonie și televiziune prin cablu se stabilește de consiliul local și este de până la 13 lei, inclusiv, pentru fiecare racord."
-— Codul fiscal (Legea 227/2015), art. 474 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt:

@@ -14,7 +14,7 @@ O firmă care desfășoară atât operațiuni cu drept de deducere a TVA, cât �
 
 ::: ghid-temei
 „Dreptul de deducere a taxei deductibile aferente achizițiilor efectuate de către o persoană impozabilă cu regim mixt sau de către o persoană parțial impozabilă se determină conform prezentului articol. [...] Persoana parțial impozabilă poate aplica pro rata în situația în care nu poate ține evidențe separate pentru activitatea desfășurată în calitate de persoană impozabilă și pentru activitatea pentru care nu are calitatea de persoană impozabilă."
-— Codul fiscal (Legea 227/2015), art. 300 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 300 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pe scurt:

@@ -16,13 +16,13 @@ Pentru contabilul unei firme care a livrat bunuri sau servicii unei primării, c
 
 ::: ghid-temei
 „(4) Ordonatorul principal de credite al unității administrativ-teritoriale are obligația ca, în termen de 15 zile de la constatarea stării de insolvență care a intervenit potrivit alin. (1) , să solicite deschiderea procedurii privind insolvența unității administrativ-teritoriale, prin cerere depusa la tribunalul în a cărui circumscripție se află unitatea administrativ-teritorială respectivă. Ordonatorul principal de credite al unității administrativ-teritoriale are obligația de a notifica deschiderea procedurii de insolvență creditorilor și oricăror persoane interesate."
-— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (4) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (4) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(9) Planul de redresare a insolvenței va cuprinde: a) masurile de restabilire a viabilității financiare a unității administrativ-teritoriale; [...] c) planul de achitare a debitelor către creditori."
-— Legea 273/2006, art. 75 alin. (9) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 75 alin. (9) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(10) Planul de redresare a insolvenței se supune aprobării consiliului local, în termen de 10 zile de la întocmirea conform prevederilor alin. (7) , și devine obligatoriu atât pentru autoritatea deliberativă, cât și pentru ordonatorul principal de credite al unității administrativ-teritoriale."
-— Legea 273/2006, art. 75 alin. (10) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 75 alin. (10) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Pașii, pe scurt:

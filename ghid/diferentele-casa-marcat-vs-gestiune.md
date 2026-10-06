@@ -14,7 +14,7 @@ Un magazin sau un restaurant compară, la un moment dat, vânzările raportate d
 
 ::: ghid-temei
 „2. - (1) În temeiul prevederilor Legii contabilității nr. 82/1991, republicată, entitățile au obligația să efectueze inventarierea elementelor de natura activelor, datoriilor și capitalurilor proprii deținute, la începutul activității, cel puțin o dată în cursul exercițiului financiar pe parcursul funcționării lor, în cazul fuziunii sau încetării activității, precum și în următoarele situații: [...] b) ori de câte ori sunt indicii că există lipsuri sau plusuri în gestiune, care nu pot fi stabilite cert decât prin inventariere."
-— OMFP 2861/2009, Anexa 1 (Normele privind inventarierea), pct. 2 alin. (1) lit. b) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009, Anexa 1 (Normele privind inventarierea), pct. 2 alin. (1) lit. b) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Ce înseamnă asta pentru o diferență casă de marcat–gestiune:
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru o diferență casă de marcat–gestiune:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/amef_import.py` conține `parseaza_raport_z()`, care citește raportul Z (XML) exportat de aparatele de marcat electronice fiscale, iar `core/stocuri_cv_api.py` oferă `inventar()` pentru operațiunea de inventariere a gestiunii (compară soldul scriptic cu faptul numărat și propune nota contabilă de plus/minus, la CMP). Aplicația nu are însă un mecanism automat de **reconciliere** între vânzările raportate de AMEF și descărcarea de gestiune pe articole, care să semnaleze diferențele și să declanșeze inventarierea cerută de OMFP 2861/2009 — compararea celor două fluxuri și decizia de a inventaria rămân, azi, în sarcina contabilului.
+La data acestui ghid, aplicația conține `parseaza_raport_z()`, care citește raportul Z (XML) exportat de aparatele de marcat electronice fiscale, iar aplicația oferă `inventar()` pentru operațiunea de inventariere a gestiunii (compară soldul scriptic cu faptul numărat și propune nota contabilă de plus/minus, la CMP). Aplicația nu are însă un mecanism automat de **reconciliere** între vânzările raportate de AMEF și descărcarea de gestiune pe articole, care să semnaleze diferențele și să declanșeze inventarierea cerută de OMFP 2861/2009 — compararea celor două fluxuri și decizia de a inventaria rămân, azi, în sarcina contabilului.
 
 [iConta.eu](/)

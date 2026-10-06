@@ -16,11 +16,11 @@ Consecința practică: în afara domeniilor agricole și a celor asimilate, unde
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 4 alin. (4) , zilierii care ocupă un loc de muncă în urma intermedierii realizate de o agenție acreditată potrivit prezentei legi pot presta activități pentru același beneficiar sau un împuternicit al acestuia pe o perioadă de maximum 180 de zile cumulate pe durata unui an calendaristic."
-— Legea 52/2011, art. 13^5 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13^5 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(6) O persoană nu poate presta activități în regim zilier mai mult de 120 de zile în decursul unui an calendaristic, indiferent de numărul de beneficiari sau împuterniciți ai acestora, cu excepția zilierilor care prestează activități în domeniile agricol, silvic, viticol, pomicol, legumicol, floricol, piscicol, [...]"
-— Legea 52/2011, art. 4 alin. (6) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (6) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(7) Beneficiarul sau un împuternicit al acestuia nu poate utiliza o persoana mai mult de 25 de zile calendaristice în mod continuu în activitățile de tip zilier."
-— Legea 52/2011, art. 4 alin. (7) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (7) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

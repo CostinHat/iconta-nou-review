@@ -44,6 +44,6 @@ Dacă PFA nu e singura sursă de venit independent a persoanei (de exemplu mai a
 
 ## Ce face iConta.eu
 
-`core/d212_engine.py`, funcția `calculeaza_d212`, calculează baza impozabilă ca venitul net minus CAS și minus CASS pe venitul real (minim 0), conform art. 118 alin. (2) lit. b): când venitul net e sub 6 salarii minime, CASS datorată e la baza minimă, dar diferența până la baza minimă nu se scade din baza impozabilă. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
+Aplicația, funcția `calculeaza_d212`, calculează baza impozabilă ca venitul net minus CAS și minus CASS pe venitul real (minim 0), conform art. 118 alin. (2) lit. b): când venitul net e sub 6 salarii minime, CASS datorată e la baza minimă, dar diferența până la baza minimă nu se scade din baza impozabilă. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
 
 [iConta.eu](/)

@@ -16,10 +16,10 @@ Practic, ai la dispoziție termenul legal plus 30 de zile. Depășirea lui duce 
 
 ::: ghid-temei
 „b) să se achite, potrivit legii, obligațiile fiscale stabilite de organul fiscal competent prin decizie, cu termene de plată începând cu data comunicării deciziei de eșalonare la plată, cu excepția situației în care debitorul a solicitat eșalonarea la plată potrivit art. 195 . Eșalonarea la plată își menține valabilitatea și dacă aceste obligații sunt achitate în cel mult 30 de zile de la termenul de plată prevăzut de lege sau până la finalizarea perioadei de eșalonare la plată în situația în care termenul de 30 de zile se împlinește după această dată;"
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „a) dacă data comunicării este cuprinsă în intervalul 1 - 15 din lună, termenul de plată este până la data de 5 a lunii următoare, inclusiv; b) dacă data comunicării este cuprinsă în intervalul 16 - 31 din lună, termenul de plată este până la data de 20 a lunii următoare, inclusiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 156 alin. (1) lit. a)-b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 156 alin. (1) lit. a)-b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, în ordine:

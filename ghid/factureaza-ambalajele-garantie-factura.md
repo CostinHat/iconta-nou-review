@@ -14,7 +14,7 @@ De la intrarea în funcțiune a sistemului garanție-returnare (SGR), fiecare pr
 
 ::: ghid-temei
 „Comercianții sunt obligați: [...] b) să indice distinct valoarea garanției la raft și pe documentele fiscale aferente produsului în ambalaj SGR;"
-— HG nr. 1074/2021 privind stabilirea sistemului de garanție-returnare pentru ambalaje primare nereutilizabile, art. 6 alin. (1) lit. b) (sursă: anaf_surse/hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.txt)
+— HG nr. 1074/2021 privind stabilirea sistemului de garanție-returnare pentru ambalaje primare nereutilizabile, art. 6 alin. (1) lit. b) (sursă: [HG nr. 1074/2021 privind stabilirea sistemului de garanție-returnare pentru ambalaje primare nereutilizabile](https://legislatie.just.ro/Public/DetaliiDocument/247209))
 :::
 
 - Obligația legală e clară: garanția SGR trebuie evidențiată **distinct** pe orice document fiscal aferent produsului ambalat — bon fiscal sau factură deopotrivă —, nu inclusă tacit în prețul unitar al produsului.
@@ -29,7 +29,7 @@ De la intrarea în funcțiune a sistemului garanție-returnare (SGR), fiecare pr
 
 ## Ce face iConta.eu
 
-Verificat exhaustiv în cod: modulul care generează notele contabile SGR (`core/sgr.py`, ruta `POST /tenants/{tenant_id}/nota-sgr`) **nu are nicio legătură** cu modulele de facturare sau e-Factura ale aplicației (`core/facturi_api.py`, `core/efactura_send.py`, `core/efactura_trimitere.py`, `core/efactura_import.py` — căutare pe termenii „sgr"/„garant" în toate: zero rezultate). SGR, în iConta.eu, produce exclusiv note contabile de jurnal (achiziție, vânzare, restituire, autofactură, virare), nu facturi.
+Verificat exhaustiv în cod: modulul care generează notele contabile SGR (ruta `POST /tenants/{tenant_id}/nota-sgr`) **nu are nicio legătură** cu modulele de facturare sau e-Factura ale aplicației (aplicația — căutare pe termenii „sgr"/„garant" în toate: zero rezultate). SGR, în iConta.eu, produce exclusiv note contabile de jurnal (achiziție, vânzare, restituire, autofactură, virare), nu facturi.
 
 Onest: iConta.eu **nu automatizează** facturarea (nici pe hârtie, nici prin e-Factura) a garanției SGR. Mai mult, structura actuală a liniilor de factură din modulul de facturare nu are un concept distinct de „în afara sferei de TVA" pentru o linie — deci reprezentarea corectă a garanției SGR pe o factură emisă din iConta.eu, la data acestui ghid, trebuie gestionată manual, în afara aplicației.
 

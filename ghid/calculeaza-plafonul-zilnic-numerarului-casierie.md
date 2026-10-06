@@ -14,7 +14,7 @@ Legea numerarului nu impune un singur plafon, ci mai multe, diferite după direc
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; b) încasări efectuate de către magazinele de tipul cash and carry [...] în limita unui plafon zilnic de 10.000 lei de la o persoană; c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi; d) plăți către magazinele de tipul cash and carry [...] în limita unui plafon zilnic total de 10.000 lei; e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare. (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei, respectiv de 10.000 lei."
-— Legea nr. 70/2015, art. 3 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - **Încasări de la o persoană (juridică/PFA)**: maximum 5.000 lei pe zi de la aceeași persoană (10.000 lei dacă firma e de tip cash and carry).

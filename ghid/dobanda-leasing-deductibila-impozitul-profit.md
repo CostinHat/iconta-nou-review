@@ -14,7 +14,7 @@ Da, dobânda (mai exact, componenta de finanțare din rata de leasing financiar)
 
 ::: ghid-temei
 „costurile îndatorării - cheltuiala reprezentând dobânda aferentă tuturor formelor de datorii, alte costuri echivalente din punct de vedere economic cu dobânzile, inclusiv alte cheltuieli suportate în legătură cu obținerea de finanțare potrivit reglementărilor legale în vigoare, cum ar fi, dar fără a se limita la acestea: [...] costul de finanțare al plăților de leasing financiar, dobânda capitalizată inclusă în valoarea contabilă a unui activ aferent sau amortizarea dobânzii capitalizate [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 40^1 pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 40^1 pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința directă a acestei definiții:
@@ -31,6 +31,6 @@ Consecința directă a acestei definiții:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă evidența contabilă a contractelor de leasing financiar și operațional și a ratelor aferente (`core/leasing.py`), care înregistrează separat, la fiecare rată, componenta de capital (contul 167) de componenta de dobândă (contul 666) — deci separarea contabilă a dobânzii există. Aplicația **nu însumează însă automat**, la nivelul întregului an fiscal și al tuturor surselor de finanțare (leasing plus alte împrumuturi), costurile excedentare ale îndatorării și **nu verifică** plafonul de 1.000.000 euro de la art. 40^2 sau încadrarea firmei ca entitate independentă. Ajustarea fiscală rezultată din regula de limitare, dacă e cazul, rămâne o evaluare a contabilului, introdusă manual în calculul impozitului pe profit.
+La data acestui ghid, iConta.eu oferă evidența contabilă a contractelor de leasing financiar și operațional și a ratelor aferente, care înregistrează separat, la fiecare rată, componenta de capital (contul 167) de componenta de dobândă (contul 666) — deci separarea contabilă a dobânzii există. Aplicația **nu însumează însă automat**, la nivelul întregului an fiscal și al tuturor surselor de finanțare (leasing plus alte împrumuturi), costurile excedentare ale îndatorării și **nu verifică** plafonul de 1.000.000 euro de la art. 40^2 sau încadrarea firmei ca entitate independentă. Ajustarea fiscală rezultată din regula de limitare, dacă e cazul, rămâne o evaluare a contabilului, introdusă manual în calculul impozitului pe profit.
 
 [iConta.eu](/)

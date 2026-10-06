@@ -16,15 +16,15 @@ Părțile pot conveni altceva în contractul de vânzare. Frecvent, cumpărător
 
 ::: ghid-temei
 „(5) Fondul de rulment încasat se restituie la transmiterea dreptului de proprietate, dacă prin actele translative de proprietate nu se stipulează altfel.”
-— Legea 196/2018, art. 72 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 72 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(1) Proprietarii din condominii care își înstrăinează locuințele sau spațiile cu altă destinație decât aceea de locuință sunt obligați ca la întocmirea actelor de înstrăinare să facă dovada plății la zi a cotelor de contribuție la cheltuielile asociației de proprietari și a utilităților publice.”
-— Legea 196/2018, art. 33 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 33 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „- valoarea debitelor membrilor asociaţiilor de proprietari, scăzute din evidenţă prin compensarea cu fondul de rulment al acestora, în situaţia obligaţiei de restituire a fondului de rulment în conformitate cu prevederile legale (461);”
-— OMFP 3103/2017, anexa nr. 1, contul 115 „Fondul de rulment al membrilor asociațiilor de proprietari" (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 1, contul 115 „Fondul de rulment al membrilor asociațiilor de proprietari" (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Orice firmă care încasează, integral sau parțial, cu numerar sau cu cardul, 
 
 ::: ghid-temei
 „Articolul 1 (1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— Ordonanța de urgență nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— Ordonanța de urgență nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă concret din text:
@@ -31,6 +31,6 @@ Ce rezultă concret din text:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de import al rapoartelor Z din fișierele AMEF (`core/amef_import.py`), pe structura oficială definită prin OPANAF 146/2018, anexa 2, secțiunea II.7 — citește fișierul semnat (XML sau p7b), extrage totalurile pe fiecare tip de plată (card, numerar, tichete de masă, bonuri valorice, voucher, credit, alte) și pe fiecare cotă de TVA, pregătindu-le pentru înregistrarea contabilă corespunzătoare. Ce nu automatizează astăzi aplicația: verificarea faptului că firma respectă obligația legală de a deține și folosi un AMEF acolo unde legea o cere — asta rămâne o decizie și o responsabilitate a firmei, anterioară folosirii aplicației.
+iConta.eu are o funcționalitate reală de import al rapoartelor Z din fișierele AMEF, pe structura oficială definită prin OPANAF 146/2018, anexa 2, secțiunea II.7 — citește fișierul semnat (XML sau p7b), extrage totalurile pe fiecare tip de plată (card, numerar, tichete de masă, bonuri valorice, voucher, credit, alte) și pe fiecare cotă de TVA, pregătindu-le pentru înregistrarea contabilă corespunzătoare. Ce nu automatizează astăzi aplicația: verificarea faptului că firma respectă obligația legală de a deține și folosi un AMEF acolo unde legea o cere — asta rămâne o decizie și o responsabilitate a firmei, anterioară folosirii aplicației.
 
 [iConta.eu](/)

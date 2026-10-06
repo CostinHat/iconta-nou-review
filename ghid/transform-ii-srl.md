@@ -15,13 +15,13 @@ poarta: v1
 ```
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 
 Ce rezultă, punând cap la cap ce se poate confirma din sursele disponibile:
 
-- **Regimul juridic al II-ului** (înființare, funcționare, încetare) e reglementat prin OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act care, la data acestui ghid, nu se regăsește în corpusul de surse (anaf_surse) folosit pentru redactare, deci nu redăm din el citate.
+- **Regimul juridic al II-ului** (înființare, funcționare, încetare) e reglementat prin OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act care, la data acestui ghid, nu se regăsește în corpusul de surse folosit pentru redactare, deci nu redăm din el citate.
 - **Ce se poate confirma cu certitudine** din Codul de procedură fiscală: la încetarea activității II-ului, titularul are obligația de a depune declarația de radiere fiscală în **30 de zile**, așa cum se întâmplă pentru orice subiect de drept fiscal care își încetează activitatea.
 - **Constituirea SRL-ului** e o operațiune separată, reglementată de Legea nr. 31/1990 (act constitutiv, capital social minim, înmatriculare la registrul comerțului) — un SRL nou, cu CUI propriu, nu preia automat istoricul fiscal, contractele sau autorizațiile II-ului.
 - Diferența practică majoră: II-ul răspunde cu patrimoniul de afectațiune (și, subsidiar, cu tot patrimoniul persoanei fizice), în timp ce SRL-ul are răspundere limitată la capitalul social — ceea ce e, de obicei, motivul real al „transformării" dorite.
@@ -34,6 +34,6 @@ Ce rezultă, punând cap la cap ce se poate confirma din sursele disponibile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu automatizează** nici radierea fiscală a unei II, nici constituirea unui SRL — nu a fost găsită în `core/` nicio funcționalitate dedicată acestor proceduri administrative. Aplicația poate ține evidența contabilă separată a celor două entități (II-ul, până la încetare, și SRL-ul, de la constituire), dar pașii legali de închidere a uneia și deschidere a celeilalte rămân, la acest moment, în sarcina titularului/contabilului, prin canalele obișnuite (ONRC pentru II și SRL, ANAF pentru radierea/înregistrarea fiscală).
+La data acestui ghid, iConta.eu **nu automatizează** nici radierea fiscală a unei II, nici constituirea unui SRL — nu a fost găsită în aplicație nicio funcționalitate dedicată acestor proceduri administrative. Aplicația poate ține evidența contabilă separată a celor două entități (II-ul, până la încetare, și SRL-ul, de la constituire), dar pașii legali de închidere a uneia și deschidere a celeilalte rămân, la acest moment, în sarcina titularului/contabilului, prin canalele obișnuite (ONRC pentru II și SRL, ANAF pentru radierea/înregistrarea fiscală).
 
 [iConta.eu](/)

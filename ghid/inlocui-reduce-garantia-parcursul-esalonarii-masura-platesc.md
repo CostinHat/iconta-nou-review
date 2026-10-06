@@ -16,13 +16,13 @@ Pentru o firmă care a plătit deja o parte din rate, redimensionarea poate debl
 
 ::: ghid-temei
 „Pe parcursul derulării eșalonării la plată, garanția se poate înlocui sau redimensiona în funcție de valoarea ratelor rămase de achitat, la cererea temeinic justificată a debitorului. În urma analizării celor solicitate de debitor, organul fiscal poate aproba sau respinge solicitarea privind înlocuirea sau redimensionarea garanției."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „procentajul suplimentar al garanției care se ia în calcul la stabilirea valorii garanției este cel în vigoare la data înlocuirii sau redimensionării garanției, corespunzător perioadei de timp rămase din eșalonarea la plată acordată."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Organul fiscal, la cererea debitorului, eliberează diferența de garanție care depășește valoarea luată în calcul cu ocazia redimensionării, iar în cazul înlocuirii eliberează garanția constituită asupra bunului înlocuit."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18^3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (18^3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează:

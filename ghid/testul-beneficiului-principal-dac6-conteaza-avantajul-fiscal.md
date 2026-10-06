@@ -16,10 +16,10 @@ Celelalte semne funcționează fără test: dacă semnul este prezent, aranjamen
 
 ::: ghid-temei
 „1. Semnele distinctive generice din categoria A și semnele distinctive specifice din categoria B și din categoria C pct. 1 lit. b) subpct. (i) și lit. c) și d) pot fi luate în considerare numai în cazul în care trec "testul beneficiului principal". 2. Testul respectiv se consideră a fi trecut dacă se poate stabili faptul că beneficiul principal sau unul dintre beneficiile principale pe care o persoană se poate aștepta în mod rezonabil să le obțină de pe urma unui aranjament transfrontalier, ținând seama de toate împrejurările și circumstanțele relevante, este obținerea unui avantaj fiscal."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 și 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 și 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „II.10. Testul beneficiului principal - se completează dacă aranjamentul transfrontalier prezintă cel puțin un semn distinctiv aparținând următoarelor categorii de semne distinctive: A, B, Cb, Cbi, Cc sau Cd"
-— OPANAF 1029/2020, anexa nr. 1, pct. II.10 (sursă: anaf_surse/ordin_1029_2020.html)
+— OPANAF 1029/2020, anexa nr. 1, pct. II.10 (sursă: [OPANAF nr. 1029/2020 privind formularul de raportare a aranjamentelor transfrontaliere](https://legislatie.just.ro/Public/DetaliiDocument/225866))
 :::
 
 Cum se citește testul:

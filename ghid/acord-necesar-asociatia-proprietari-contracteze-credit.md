@@ -16,11 +16,11 @@ Regula are o logică practică: creditul se rambursează din contribuțiile tutu
 
 ::: ghid-temei
 „f) în baza acordului scris al tuturor proprietarilor adoptă hotărâri privind contractarea de împrumuturi de la bănci în vederea acoperirii cheltuielilor pentru consolidarea și modernizarea condominiului, modernizarea instalațiilor și dotărilor aferente, reabilitarea termică în scopul creșterii performanței energetice, precum și pentru reabilitarea structural-arhitecturală a anvelopei în vederea creșterii calității ambiental-arhitecturale a condominiului, potrivit prevederilor legale;"
-— Legea 196/2018, art. 53 lit. f) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 53 lit. f) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „p) gestionează, conform hotărârilor adunării generale, derularea creditelor obținute pentru consolidare, reabilitare termică, creșterea calității ambiental-arhitecturale a condominiului și alte lucrări;"
-— Legea 196/2018, art. 55 alin. (1) lit. p) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 55 alin. (1) lit. p) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „b) pentru hotărârile cu privire la stabilirea fondurilor pentru consolidare, reabilitare și modernizare, votul fiecărui proprietar, membru al asociației, are o pondere egală cu cota-parte indiviză din proprietatea comună;"
-— Legea 196/2018, art. 49 alin. (3) lit. b) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 49 alin. (3) lit. b) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

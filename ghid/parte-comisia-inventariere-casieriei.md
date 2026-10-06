@@ -14,7 +14,7 @@ Comisia de inventariere nu se formează la întâmplare — normele contabile st
 
 ::: ghid-temei
 „Din comisia de inventariere nu pot face parte gestionarii depozitelor supuse inventarierii, contabilii care țin evidența gestiunii respective și nici auditorii interni sau statutari."
-— OMFP 2861/2009, Anexa 1, pct. 6 alin. (5) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009, Anexa 1, pct. 6 alin. (5) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 - Inventarierea se efectuează de comisii de inventariere, **numite prin decizie scrisă**, care menționează obligatoriu componența (președinte + membri), modul de efectuare a inventarierii, metoda de inventariere, gestiunea supusă inventarierii și datele de început/sfârșit ale operațiunii (pct. 6 alin. (1)).

@@ -14,7 +14,7 @@ O confuzie frecventă: se caută pentru firme regimul de 1%/3% aplicabil vânză
 
 ::: ghid-temei
 „Definirea venitului din transferul proprietăților imobiliare din patrimoniul personal. La transferul dreptului de proprietate și al dezmembrămintelor acestuia, prin acte juridice între vii asupra construcțiilor de orice fel și a terenurilor aferente acestora, precum și asupra terenurilor de orice fel fără construcții, contribuabilii datorează un impozit care se calculează la valoarea tranzacției prin aplicarea următoarelor cote: a) 3% pentru construcțiile de orice fel și terenurile aferente acestora [...], deținute o perioadă de până la 3 ani inclusiv; b) 1% pentru imobilele descrise la lit. a), deținute o perioadă mai mare de 3 ani."
-— Legea 227/2015 (Codul fiscal), art. 111, titlu și alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 111, titlu și alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cheia e chiar în titlul articolului: **„din patrimoniul personal"** — regimul de 1%/3% e plasat în Titlul IV al Codului fiscal, dedicat impozitului pe venitul persoanelor fizice, și se aplică exclusiv transferurilor din patrimoniul personal al unei persoane fizice, nu bunurilor deținute de o persoană juridică.

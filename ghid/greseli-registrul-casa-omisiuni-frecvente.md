@@ -14,7 +14,7 @@ Registrul de casă e documentul care înregistrează, zilnic, toate încasările
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, Norme specifice privind formularele financiar-contabile (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Norme specifice privind formularele financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Cele mai frecvente omisiuni:
@@ -33,6 +33,6 @@ Cele mai frecvente omisiuni:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu (`core/casa.py`, `core/casa_api.py`) generează registrul de casă pe baza operațiunilor introduse, calculează soldul final zi de zi și verifică automat încadrarea în plafoanele legale de numerar (`verifica_plafon`), cu sursele actualizate — Legea 70/2015, în vigoare cu modificările din Legea 239/2025 (plafon 01.01.2026) și OMFP 1802/2014 pentru monografiile contabile. Aplicația ține și evidența avansurilor de trezorerie (acordare, restituire, decontare, reclasificare la bilanț). La data acestui ghid, iConta.eu **nu poate detecta o operațiune introdusă cu întârziere față de data reală** (de exemplu, o zi completată retroactiv) — corectitudinea cronologică a introducerii datelor rămâne responsabilitatea celui care operează în cont.
+Modulul de casierie din iConta.eu generează registrul de casă pe baza operațiunilor introduse, calculează soldul final zi de zi și verifică automat încadrarea în plafoanele legale de numerar (`verifica_plafon`), cu sursele actualizate — Legea 70/2015, în vigoare cu modificările din Legea 239/2025 (plafon 01.01.2026) și OMFP 1802/2014 pentru monografiile contabile. Aplicația ține și evidența avansurilor de trezorerie (acordare, restituire, decontare, reclasificare la bilanț). La data acestui ghid, iConta.eu **nu poate detecta o operațiune introdusă cu întârziere față de data reală** (de exemplu, o zi completată retroactiv) — corectitudinea cronologică a introducerii datelor rămâne responsabilitatea celui care operează în cont.
 
 [iConta.eu](/)

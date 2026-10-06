@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „La începerea inspecției fiscale, organul de inspecție fiscală trebuie să prezinte contribuabilului/plătitorului legitimația de inspecție și ordinul de serviciu semnat de conducătorul organului de inspecție fiscală. [...] Începerea inspecției fiscale trebuie consemnată în registrul unic de control ori de câte ori există obligația ținerii acestuia."
-— Legea 207/2015, art. 118 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 118 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Punctele de verificat, în ordine, la orice control:

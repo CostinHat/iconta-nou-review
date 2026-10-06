@@ -14,7 +14,7 @@ O firmă cu venituri sezoniere sau inegale de la o lună la alta se întreabă a
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Condiția de venituri pentru încadrarea ca microîntreprindere se verifică o singură dată pe an, **la 31 decembrie a anului fiscal precedent**, prin cumularea veniturilor întregului an — nu se recalculează lunar.

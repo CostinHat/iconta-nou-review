@@ -14,7 +14,7 @@ Un nou asociat, cetățean străin sau persoană juridică străină, intră de 
 
 ::: ghid-temei
 „Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social."
-— Legea 31/1990, art. 202 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 202 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Aprobarea prealabilă**: intrarea unui asociat nou (deci și a unuia străin) prin cesiune de părți sociale către o persoană din afara societății cere, dacă actul constitutiv nu prevede altă majoritate, votul asociaților reprezentând cel puțin 3/4 din capitalul social.
@@ -30,6 +30,6 @@ Un nou asociat, cetățean străin sau persoană juridică străină, intră de 
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu **nu are o funcționalitate pentru cesiunea de părți sociale sau pentru înregistrarea la ONRC a unui asociat nou**, fie el român sau străin. Singurul modul învecinat, F007 (`core/asociati_import_api.py`), importă o listă de asociați (nume, CNP/CUI, cotă) dintr-un fișier .xlsx/.csv, exclusiv la migrarea unei firme deja existente în aplicație — nu depune și nu generează nimic către registrul comerțului, iar validarea CNP din import acoperă doar formatul românesc de 13 cifre, fără o logică dedicată identificării asociaților străini. Cesiunea de părți sociale și depunerea la ONRC rămân, la acest moment, în afara iConta.eu.
+Din verificarea codului, iConta.eu **nu are o funcționalitate pentru cesiunea de părți sociale sau pentru înregistrarea la ONRC a unui asociat nou**, fie el român sau străin. Singurul modul învecinat, F007, importă o listă de asociați (nume, CNP/CUI, cotă) dintr-un fișier .xlsx/.csv, exclusiv la migrarea unei firme deja existente în aplicație — nu depune și nu generează nimic către registrul comerțului, iar validarea CNP din import acoperă doar formatul românesc de 13 cifre, fără o logică dedicată identificării asociaților străini. Cesiunea de părți sociale și depunerea la ONRC rămân, la acest moment, în afara iConta.eu.
 
 [iConta.eu](/)

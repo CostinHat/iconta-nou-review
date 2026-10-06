@@ -33,6 +33,6 @@ Pentru fiecare firmă, verdictul acoperă 9 declarații simultan (D100, D101, D1
 
 ## Ce face iConta.eu
 
-Motorul F022 (`core/control_fiscal_api.py`), accesibil prin `GET /control-fiscal`, evaluează întregul portofoliu al cabinetului dintr-o singură cerere, firmă cu firmă, și întoarce lista sortată cu pastilele de stare. Fiecare verdict poartă motivul explicit — inclusiv pentru D406, unde regula de periodicitate (lunar la plătitorii de TVA cu perioadă lunară, trimestrial pentru restul) e derivată automat din profilul fiscal al fiecărei firme.
+Motorul F022, accesibil prin `GET /control-fiscal`, evaluează întregul portofoliu al cabinetului dintr-o singură cerere, firmă cu firmă, și întoarce lista sortată cu pastilele de stare. Fiecare verdict poartă motivul explicit — inclusiv pentru D406, unde regula de periodicitate (lunar la plătitorii de TVA cu perioadă lunară, trimestrial pentru restul) e derivată automat din profilul fiscal al fiecărei firme.
 
 [iConta.eu](/)

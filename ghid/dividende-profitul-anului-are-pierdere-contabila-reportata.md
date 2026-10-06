@@ -16,13 +16,13 @@ Regula a fost introdusă în Legea societăților prin Legea 239/2025, în vigoa
 
 ::: ghid-temei
 „(1) Societățile care, la sfârșitul exercițiului financiar curent, înregistrează profit pentru exercițiul financiar de raportare, dar înregistrează pierdere contabilă reportată, potrivit prevederilor Legii contabilității nr. 82/1991, republicată , cu modificările și completările ulterioare, pot efectua distribuiri de dividende din profitul exercițiului financiar curent numai după constituirea rezervelor legale, acoperirea pierderii contabile reportate și constituirea de rezerve în conformitate cu cerințele statutare."
-— Legea 31/1990, art. 69^1 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 69^1 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Din profitul societății se va prelua, în fiecare an, cel puțin 5% pentru formarea fondului de rezervă, până ce acesta va atinge minimum a cincea parte din capitalul social."
-— Legea 31/1990, art. 183 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 183 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(3) Nu se vor putea distribui dividende decât din profituri determinate potrivit legii."
-— Legea 31/1990, art. 67 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ordinea, pas cu pas:

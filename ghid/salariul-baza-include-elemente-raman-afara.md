@@ -16,16 +16,16 @@ Distincția nu e doar de terminologie. Mai multe reguli din Codul muncii se apli
 
 ::: ghid-temei
 „(1) Salariul cuprinde salariul de bază, indemnizațiile, sporurile, precum și alte adaosuri. [...] (2) Salariul de bază reprezintă componenta fixă a remunerației brute plătite unui salariat pentru munca pe care o prestează pe parcursul unei luni calendaristice, în care nu sunt incluse sporurile, indemnizațiile și alte adaosuri. [...] (3) Salariul de bază minim brut reprezintă suma minimă la care are dreptul salariatul pentru munca prestată, stabilit prin act normativ sau prin contractul colectiv de muncă aplicabil"
-— Codul muncii (Legea 53/2003), art. 160 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 160 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Pentru perioada concediului de odihnă salariatul beneficiază de o indemnizație de concediu, care nu poate fi mai mică decât salariul de bază, indemnizațiile și sporurile cu caracter permanent cuvenite pentru perioada respectivă, prevăzute în contractul individual de muncă."
-— Codul muncii (Legea 53/2003), art. 150 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 150 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „c) reducerea salariului de bază pe o durată de 1-3 luni cu 5-10%; ... d) reducerea salariului de bază și/sau, după caz, și a indemnizației de conducere pe o perioadă de 1-3 luni cu 5-10%;"
-— Codul muncii (Legea 53/2003), art. 248 alin. (1) lit. c)-d) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 248 alin. (1) lit. c)-d) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „a) nerespectarea dispozițiilor privind garantarea în plată a salariului de bază minim brut stabilit prin act normativ sau a nivelului salarial minim stabilit prin contractul colectiv de muncă aplicabil, cu amendă de la 3.000 lei la 5.000 lei pentru fiecare persoană pentru care s-a constatat nerespectarea acestor dispoziții legale, fără a depăși valoarea cumulată de 200.000 lei;"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. a) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. a) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce include și ce nu:

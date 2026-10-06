@@ -14,10 +14,10 @@ Vânzarea unui autoturism folosit de firmă ridică o întrebare frecventă: dac
 
 ::: ghid-temei
 „Este considerată livrare de bunuri transferul dreptului de a dispune de bunuri ca și un proprietar."
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate [...], în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice."
-— Legea 227/2015 (Codul fiscal), art. 298 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 298 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Vânzarea unui autoturism de către un plătitor de TVA e, ca orice altă vânzare, o livrare de bunuri taxabilă (art. 270 alin. (1)) — se colectează TVA la prețul de vânzare, la cota standard, indiferent dacă la achiziție deducerea a fost limitată la 50%. Aspectele importante de verificat:

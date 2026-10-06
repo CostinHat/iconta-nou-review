@@ -15,7 +15,7 @@ Pe lângă regulile generale de contabilitate (evidența stocurilor de materie p
 ::: ghid-temei
 „(1) Prin bacșiș se înțelege orice sumă de bani oferită în mod voluntar de client, în plus față de contravaloarea bunurilor livrate sau a serviciilor prestate de către operatorii economici care desfășoară activități corespunzătoare codurilor CAEN: 5610 - «Restaurante», 5630 - «Baruri și alte activități de servire a băuturilor». Bacșișul nu poate fi asimilat, din punctul de vedere al TVA, unei livrări de bunuri sau unei prestări de servicii.
 (2) Pentru operatorii economici prevăzuți la alin. (1), bacșișul încasat de la clienți se evidențiază pe bonul fiscal, indiferent de modalitatea de încasare a acestuia. [...]"
-— OUG 28/1999, art. 2^3 alin. (1) și (2), introdus prin Legea 376/2022 (sursă: anaf_surse/legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt)
+— OUG 28/1999, art. 2^3 alin. (1) și (2), introdus prin Legea 376/2022 (sursă: [Legea nr. 376/2022 pentru modificarea și completarea OUG nr. 28/1999](https://legislatie.just.ro/Public/DetaliiDocument/263133))
 :::
 
 Regimul contabil al bacșișului, așa cum rezultă din același act normativ, are particularități importante:

@@ -16,13 +16,13 @@ Contează ce știa consultantul, nu cât de mică a fost intervenția.
 
 ::: ghid-temei
 „De asemenea, înseamnă orice persoană care, având în vedere faptele și circumstanțele relevante și pe baza informațiilor disponibile, a cunoștințelor de specialitate relevante și a înțelegerii necesare pentru furnizarea acestor servicii, știe sau ar fi rezonabil de așteptat să știe că s-a angajat să furnizeze, direct sau prin intermediul altor persoane, ajutor, asistență sau consiliere cu privire la proiectarea, comercializarea, organizarea, punerea la dispoziție în vederea implementării sau gestionarea implementării unui aranjament transfrontalier care face obiectul raportării."
-— Codul de procedură fiscală (Legea 207/2015), art. 286 lit. v) paragraful al doilea (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 286 lit. v) paragraful al doilea (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Orice persoană are dreptul să furnizeze A.N.A.F. dovezi că nu a știut și nu ar fi fost rezonabil de așteptat să știe că a fost implicată într-un aranjament transfrontalier care face obiectul raportării."
-— Codul de procedură fiscală (Legea 207/2015), art. 286 lit. v) paragraful al treilea (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 286 lit. v) paragraful al treilea (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la alin. (1), intermediarii prevăzuți la al doilea paragraf al art. 286 lit. v) au obligația de a raporta A.N.A.F. informațiile relevante în termen de 30 de zile începând din ziua următoare datei la care au furnizat ajutor, asistență sau consiliere în mod direct sau prin intermediul altor persoane."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

@@ -16,21 +16,21 @@ Rolul firmei este să cheme service-ul înainte de mutare, nu după, și să nu 
 
 ::: ghid-temei
 „Ori de câte ori aparatul de marcat electronic fiscal este supus unei intervenții sau este transferat la alt punct de lucru al utilizatorului, distribuitorul autorizat sau unitatea de service acreditată, prin persoanele desemnate, furnizează informațiile prevăzute la pct. 5 și, după caz, pct. 9 subpct. 9.2-9.6 din anexa nr. 1 la ordin."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 5 alin. (1) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 5 alin. (1) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Înregistrarea informațiilor în Registru se efectuează de către persoanele desemnate în termen de: [...] b) 2 zile lucrătoare pentru înregistrarea sau actualizarea informațiilor în celelalte situații."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 7 alin. (1) lit. b) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 7 alin. (1) lit. b) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Termenul prevăzut la alin. (1) lit. b) se raportează la: [...] b) data schimbării locului de utilizare a aparatului de marcat electronic fiscal;"
-— OPANAF 4156/2017, Anexa nr. 3, pct. 7 alin. (2) lit. b) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 7 alin. (2) lit. b) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „Prevederile acestei anexe se aplică cu data operaționalizării în totalitate a Registrului."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 1 (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 1 (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Ori de câte ori intervin schimbări privind situația aparatului de marcat electronic fiscal, utilizatorii informează organul fiscal competent prin transmiterea notificării prevăzute în anexa nr. 2 E."
-— OPANAF 4156/2017, Anexa nr. 2, pct. 6 alin. (1) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 2, pct. 6 alin. (1) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 Corpusul nu precizează data operaționalizării integrale a Registrului, așa că procedura activă se verifică pe portalul ANAF. În etapa anterioară, notificarea din anexa 2E se transmite în maximum 5 zile lucrătoare de la data la care a intervenit situația (anexa 2, pct. 8 alin. (4)).
@@ -47,7 +47,7 @@ Obligația firmei vine din OUG 28/1999. Utilizatorul permite intervenția tehnic
 
 ::: ghid-temei
 „să permită intervenția tehnică numai a persoanelor autorizate pentru efectuarea operațiunilor de service asupra aparatului de marcat electronic fiscal;"
-— OUG 28/1999, art. 4 alin. (12) lit. f) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (12) lit. f) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Nerespectarea acestei obligații este contravenția de la art. 10 lit. u). Se sancționează cu amendă de la 4.000 la 6.000 lei (art. 11 alin. (1) lit. b)).

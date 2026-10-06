@@ -14,7 +14,7 @@ O factură emisă de o firmă înscrisă în sistemul TVA la încasare se transm
 
 ::: ghid-temei
 „Elementele facturii [...] p) în cazul în care exigibilitatea TVA intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, mențiunea «TVA la încasare»."
-— Codul fiscal, art. 319 alin. (20) lit. p) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 319 alin. (20) lit. p) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Mențiunea „TVA la încasare" e obligatorie pe orice factură emisă de o persoană impozabilă la care exigibilitatea taxei intervine la data încasării (art. 282 alin. 3) — nu e opțională și nu depinde de acordul cumpărătorului.
@@ -30,7 +30,7 @@ O factură emisă de o firmă înscrisă în sistemul TVA la încasare se transm
 
 ## Ce face iConta.eu
 
-iConta.eu are infrastructură funcțională de transmitere prin RO e-Factura (`core/efactura_send.py`, funcționalitatea F126): generează XML-ul UBL/CIUS-RO al facturii, îl validează pe schematronul oficial ANAF (standard FACT1), îl încarcă în SPV și urmărește recipisa. Generatorul construiește corect antetul, părțile, liniile și totalurile de TVA pe cote (categoriile UBL folosite azi sunt doar „S" — cotă standard — și „Z" — cotă zero).
+iConta.eu are infrastructură funcțională de transmitere prin RO e-Factura (funcționalitatea F126): generează XML-ul UBL/CIUS-RO al facturii, îl validează pe schematronul oficial ANAF (standard FACT1), îl încarcă în SPV și urmărește recipisa. Generatorul construiește corect antetul, părțile, liniile și totalurile de TVA pe cote (categoriile UBL folosite azi sunt doar „S" — cotă standard — și „Z" — cotă zero).
 
 Onest: la verificarea directă a codului generatorului (`genereaza_xml` din `efactura_send.py`), **acesta nu scrie nicăieri mențiunea legală „TVA la încasare"** — nu există niciun element `cbc:Note` sau echivalent în XML-ul produs, indiferent de regimul TVA al firmei emitente. Dacă firma e înscrisă la TVA la încasare, mențiunea obligatorie de la art. 319 alin. (20) lit. p) nu ajunge automat pe factura electronică transmisă — contabilul trebuie s-o adauge manual, printr-un alt canal (de exemplu pe descrierea unei linii sau printr-un câmp de observații al facturii, dacă există), până când generatorul o va include automat.
 

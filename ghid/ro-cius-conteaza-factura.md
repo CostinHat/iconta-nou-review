@@ -14,7 +14,7 @@ O factură electronică nu ajunge validă în sistemul RO e-Factura doar pentru 
 
 ::: ghid-temei
 „k) specificațiile naționale de utilizare a facturii electronice - RO_CIUS - specificații tehnice de utilizare a elementelor de bază ale facturii electronice așa cum sunt prevăzute în standardul european SR EN 16931-1, aplicabile la nivel național"
-— Ordonanța de urgență nr. 120/2021 privind sistemul național RO e-Factura, art. 2 alin. (1) lit. k) (sursă: anaf_surse/oug_120_2021.txt)
+— Ordonanța de urgență nr. 120/2021 privind sistemul național RO e-Factura, art. 2 alin. (1) lit. k) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - RO_CIUS („Core Invoice Usage Specification" pentru România) nu înlocuiește standardul european SR EN 16931-1, ci îl particularizează: stabilește care elemente sunt obligatorii, opționale sau interzise în contextul specific românesc (de exemplu formatul CUI-ului, codurile de TVA, structura adresei).

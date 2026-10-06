@@ -16,23 +16,23 @@ Sancțiunea e separată de cea pentru depunerea cu întârziere. O firmă poate 
 
 ::: ghid-temei
 „3. prezentarea de situații financiare care conțin date eronate sau necorelate, inclusiv cu privire la identificarea persoanei raportoare;"
-— Legea contabilității (Legea 82/1991), art. 41 pct. 3 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 41 pct. 3 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „i) cea prevăzută la pct. 3 , cu amendă de la 1.000 lei la 3.000 lei;"
-— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. i) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. i) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „Se interzice depunerea la Agenția Națională de Administrare Fiscală a mai multor seturi de situații financiare anuale pentru același exercițiu financiar."
-— Legea contabilității (Legea 82/1991), art. 36^1 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 36^1 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „Erorile constatate după depunerea situațiilor financiare anuale se corectează la data constatării lor, potrivit reglementărilor contabile emise de instituțiile prevăzute la art. 4 alin. (1) și (3) , după caz."
-— Legea contabilității (Legea 82/1991), art. 36^2 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 36^2 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „contravenienții sancționați în baza prevederilor [...] ale Legii contabilității nr. 82/1991, republicată , cu modificările și completările ulterioare, [...] nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ."
-— Legea 296/2023, art. LVIII (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LVIII (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce înseamnă concret:

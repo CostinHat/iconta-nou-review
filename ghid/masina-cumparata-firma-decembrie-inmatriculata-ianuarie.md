@@ -17,15 +17,15 @@ Răspunsul depinde de starea mașinii la data cumpărării. Trebuie verificat da
 
 ::: ghid-temei
 „(2) Pentru mijloacele de transport dobândite de către contribuabili până la 31 decembrie a anului curent, care au fost înmatriculate/înregistrate în România anterior dobândirii, contribuabilii dobânditori datorează impozitul pe mijloacele de transport începând cu data de 1 ianuarie a anului fiscal următor anului curent, chiar dacă nu l-au înmatriculat/înregistrat pe numele lor, după data de 31 decembrie.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 124 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 124 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul pe mijlocul de transport este datorat pentru întregul an fiscal de persoana care deține dreptul de proprietate asupra unui mijloc de transport înmatriculat sau înregistrat în România la data de 31 decembrie a anului fiscal anterior.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul dobândirii unui mijloc de transport, proprietarul acestuia are obligația să depună o declarație la organul fiscal local în a cărui rază teritorială de competență are domiciliul, sediul sau punctul de lucru, după caz, în termen de 30 de zile de la data dobândirii și datorează impozit pe mijloacele de transport începând cu data de 1 ianuarie a anului următor înmatriculării sau înregistrării mijlocului de transport.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 De ce diferă cele două cazuri:

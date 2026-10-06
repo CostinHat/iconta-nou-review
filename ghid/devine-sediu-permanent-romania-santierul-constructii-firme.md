@@ -16,15 +16,15 @@ Miza e mare: odată depășit termenul, firma străină datorează impozit pe pr
 
 ::: ghid-temei
 „Un sediu permanent presupune un șantier de construcții, un proiect de construcție, un ansamblu sau montaj ori activități de supervizare legate de acestea, numai dacă șantierul, proiectul sau activitățile durează mai mult de 6 luni.”
-— Codul fiscal (Legea 227/2015), art. 8 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 8 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În situația în care, înainte de sfârșitul unui an fiscal, nu se determină dacă activitățile unui nerezident în România vor fi pe o durată suficientă pentru a deveni un sediu permanent, veniturile și cheltuielile acelui an fiscal vor fi luate în considerare în următorul an fiscal, în situația în care durata legală de 6 luni sau termenul prevăzut în convenția de evitare a dublei impuneri, după caz, sunt depășite.”
-— Codul fiscal (Legea 227/2015), art. 36 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 36 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru încadrarea unui șantier de construcții sau a unui proiect de construcție, ansamblu ori montaj sau activități de supervizare legate de acestea și a altor activități similare ca sedii permanente se va avea în vedere data începerii activității din contractele încheiate cu persoanele juridice române beneficiare sau alte informații ce probează începerea activității. Perioadele consumate pentru realizarea unor contracte conexe care sunt legate în mod direct cu primul contract ce a fost executat se adaugă la perioada care s-a consumat pentru realizarea contractului de bază.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

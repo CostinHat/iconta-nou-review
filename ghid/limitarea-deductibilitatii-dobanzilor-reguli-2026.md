@@ -15,7 +15,7 @@ Firmele plătitoare de impozit pe profit care se finanțează masiv prin împrum
 ::: ghid-temei
 „Diferența dintre costurile excedentare ale îndatorării, astfel cum sunt definite potrivit art. 40^1 pct. 2, și plafonul deductibil prevăzut la alin. (4) este dedusă limitat în perioada fiscală în care este suportată, până la nivelul a 30% din baza de calcul stabilită conform algoritmului prevăzut la alin. (2).
 (4) Contribuabilul are dreptul de a deduce, într-o perioadă fiscală, costurile excedentare ale îndatorării până la plafonul deductibil reprezentat de echivalentul în lei al sumei de 1.000.000 euro. Costurile excedentare ale îndatorării rezultate din tranzacții/operațiuni [...] efectuate cu persoane afiliate [...] se deduc, într-o perioadă fiscală, până la plafonul deductibil reprezentat de echivalentul în lei al sumei de 500.000 euro."
-— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (1) și (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (1) și (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pe scurt:

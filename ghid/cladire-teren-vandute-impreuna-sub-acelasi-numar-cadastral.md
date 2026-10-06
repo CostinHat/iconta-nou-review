@@ -16,12 +16,12 @@ Contează în practică pentru că o clădire veche se vinde, de regulă, scutit
 
 ::: ghid-temei
 „În aplicarea art. 292 alin. (2) lit. f) din Codul fiscal, atunci când se livrează un corp funciar unic format din construcția și terenul pe care aceasta este edificată, identificat printr-un singur număr cadastral: [...] a) terenul pe care s-a edificat construcția urmează regimul construcției, dacă valoarea acestuia este mai mică decât valoarea construcției așa cum rezultă din raportul de expertiză/evaluare; [...] b) construcția va urma regimul terenului pe care este edificată, dacă valoarea acesteia este mai mică decât valoarea terenului așa cum rezultă din raportul de expertiză/evaluare; [...] c) dacă terenul și construcția au valori egale, așa cum rezultă din raportul de expertiză/evaluare, regimul corpului funciar se stabilește în funcție de bunul imobil cu suprafața cea mai mare."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 55 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 55 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „livrarea de construcții/părți de construcții și a terenurilor pe care sunt construite, precum și a oricăror altor terenuri. Prin excepție, scutirea nu se aplică pentru livrarea de construcții noi, de părți de construcții noi sau de terenuri construibile."
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii de verificare:

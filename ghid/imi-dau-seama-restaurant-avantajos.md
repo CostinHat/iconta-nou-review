@@ -14,7 +14,7 @@ HoReCa are marje mici și cheltuieli mari cu materia primă și personalul — e
 
 ::: ghid-temei
 „Microîntreprinderile care au desfășurat, până la data de 31 decembrie 2023 inclusiv, activități corespunzătoare codurilor CAEN: [...] 5610 - Restaurante, 5621 - Activități de alimentație (catering) pentru evenimente, 5629 - Alte servicii de alimentație n.c.a., 5630 - Baruri și alte activități de servire a băuturilor aplică condiția de a nu mai fi fost plătitoare de impozit pe veniturile microîntreprinderilor, prevăzută la alin. (2), începând cu anul fiscal 2024."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (2^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (2^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie luat în calcul pentru un restaurant:

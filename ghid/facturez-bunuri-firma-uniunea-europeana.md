@@ -13,7 +13,7 @@ Vânzarea de bunuri către o firmă înregistrată în scopuri de TVA în alt st
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring; text complet `cod_fiscal_227_2015_consolidat.txt`, L18397+)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring; text complet `cod_fiscal_227_2015_consolidat.txt`, L18397)
 :::
 
 Scutirea de TVA la o livrare intracomunitară de bunuri se aplică doar dacă, cumulativ: (1) clientul are un cod de TVA valid, verificat în VIES, în alt stat membru și (2) există dovadă că bunurile au părăsit efectiv România către acel stat membru. Dacă oricare dintre condiții lipsește, factura trebuie emisă cu TVA — sistemul e construit exact pe această regulă: fără cod valid sau fără dovadă de transport, operațiunea nu califică drept LIC scutită.

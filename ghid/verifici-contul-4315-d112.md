@@ -31,6 +31,6 @@ Greșeala frecventă e compararea contului 4315 doar cu codul 412, ignorând 458
 
 ## Ce face iConta.eu
 
-Maparea din `core/control_incrucisat.py` (`COD_CONT_D112`) însumează automat codurile 412 și 458 înainte de a compara cu rulajul contului 4315, exact pentru a evita această greșeală. Toleranța se calculează dinamic în funcție de numărul de salariați ai lunii verificate.
+Maparea din aplicație (`COD_CONT_D112`) însumează automat codurile 412 și 458 înainte de a compara cu rulajul contului 4315, exact pentru a evita această greșeală. Toleranța se calculează dinamic în funcție de numărul de salariați ai lunii verificate.
 
 [iConta.eu](/)

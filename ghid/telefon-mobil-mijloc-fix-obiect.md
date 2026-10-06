@@ -14,7 +14,7 @@ Nu contează ce fel de bun e — telefon, laptop, mobilier — ci **valoarea lui
 
 ::: ghid-temei
 „Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului; c) are o durată normală de utilizare mai mare de un an."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei condiții sunt **cumulative** — trebuie îndeplinite toate deodată pentru ca bunul să fie mijloc fix:
@@ -35,6 +35,6 @@ Notă de tranziție: mijloacele fixe aflate deja în evidență la 31.12.2025, c
 
 ## Ce face iConta.eu
 
-Aplicația are un motor dedicat exact acestei clasificări, `core/obiecte_inventar.py`, care citește pragul legal curent dintr-un registru de cote istoricizat (nu un număr fix scris în cod) — motiv pentru care aplică automat 5.000 lei pentru achiziții din 2026 și valoarea anterioară pentru date mai vechi. Funcția `e_obiect_inventar(valoare, la_data, durata_sub_1_an)` decide încadrarea exact pe criteriile de mai sus (sub prag sau durată sub un an → obiect de inventar), iar motorul generează automat notele contabile corespunzătoare: la achiziție (303 + 4426 = 401), la darea în folosință (603 = 303, cu evidență extracontabilă în contul 8035 până la scoaterea din uz) și la scoaterea din uz. Pentru bunurile care depășesc pragul și devin mijloace fixe, aplicația are un motor separat de amortizare (`core/d406_active.py`), care aplică metoda și durata alese conform regulilor de amortizare fiscală.
+Aplicația are un motor dedicat exact acestei clasificări, aplicația, care citește pragul legal curent dintr-un registru de cote istoricizat (nu un număr fix scris în cod) — motiv pentru care aplică automat 5.000 lei pentru achiziții din 2026 și valoarea anterioară pentru date mai vechi. Funcția `e_obiect_inventar(valoare, la_data, durata_sub_1_an)` decide încadrarea exact pe criteriile de mai sus (sub prag sau durată sub un an → obiect de inventar), iar motorul generează automat notele contabile corespunzătoare: la achiziție (303 + 4426 = 401), la darea în folosință (603 = 303, cu evidență extracontabilă în contul 8035 până la scoaterea din uz) și la scoaterea din uz. Pentru bunurile care depășesc pragul și devin mijloace fixe, aplicația are un motor separat de amortizare, care aplică metoda și durata alese conform regulilor de amortizare fiscală.
 
 [iConta.eu](/)

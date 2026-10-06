@@ -26,6 +26,6 @@ Imaginea fidelă a poziției financiare presupune, la nivel elementar, coerența
 
 ## Ce face iConta.eu
 
-Verificarea este deja implementată, nu doar o temă de recomandare: la generarea S1005/S1003, `core/bilant_api.py` compară explicit rândul F(rd15) — activul net — cu rândul J(rd49) — total capitaluri proprii — și, dacă cele două nu coincid, adaugă un avertisment automat de tipul „Verificare: F(rd15)=... != J(rd49)=...". Acest avertisment apare **înainte** de generarea efectivă a XML-ului, tocmai pentru a semnala problema la sursă. Cauza cea mai frecventă este o balanță de verificare neechilibrată sau incompletă (înregistrări nevalidate încă, solduri inițiale introduse greșit) — corectarea se face în balanță, la conturile implicate, nu în bilanț.
+Verificarea este deja implementată, nu doar o temă de recomandare: la generarea S1005/S1003, aplicația compară explicit rândul F(rd15) — activul net — cu rândul J(rd49) — total capitaluri proprii — și, dacă cele două nu coincid, adaugă un avertisment automat de tipul „Verificare: F(rd15)=... != J(rd49)=...". Acest avertisment apare **înainte** de generarea efectivă a XML-ului, tocmai pentru a semnala problema la sursă. Cauza cea mai frecventă este o balanță de verificare neechilibrată sau incompletă (înregistrări nevalidate încă, solduri inițiale introduse greșit) — corectarea se face în balanță, la conturile implicate, nu în bilanț.
 
 [iConta.eu](/)

@@ -18,7 +18,7 @@ Certificatul de atestare fiscală nu e el însuși actul care „creează" o dat
 ART. 268 Posibilitatea de contestare (1) împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. [...]
 
 ART. 270 Termenul de depunere a contestației (1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 158 alin. (2), art. 268 alin. (1) și art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 158 alin. (2), art. 268 alin. (1) și art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din coroborarea acestor articole rezultă calea corectă de acțiune:

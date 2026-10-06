@@ -14,7 +14,7 @@ Plafonul zilnic e doar o parte a restricției. Legea nr. 70/2015 nu se limiteaz�
 
 ::: ghid-temei
 „Operațiunile de încasări și plăți în numerar între persoanele fizice, altele decât operațiunile de încasări și plăți realizate prin intermediul instituțiilor care prestează servicii de plată autorizate de Banca Națională a României [...], efectuate ca urmare a transferului dreptului de proprietate asupra unor bunuri sau drepturi, a prestării de servicii, precum și cele reprezentând acordarea/restituirea de împrumuturi, se pot efectua în limita unui plafon zilnic de 50.000 lei/tranzacție. Sunt interzise încasările și plățile fragmentate în numerar pentru tranzacțiile mai mari de 50.000 lei, precum și fragmentarea unei tranzacții mai mari de 50.000 lei."
-— Legea nr. 70/2015, art. 10 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 10 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Restricțiile depind de cine e partea cealaltă în tranzacție:

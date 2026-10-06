@@ -14,10 +14,10 @@ Da. O persoană juridică română e impozitată pe veniturile obținute din ori
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]."
-— Legea 227/2015, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta, iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]."
-— Legea 227/2015, art. 47 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul „venituri din orice sursă" (art. 53) nu limitează baza la veniturile realizate în România — spre deosebire de impozitul pe profit, unde art. 14 lit. a) spune explicit „asupra profitului impozabil obținut din orice sursă, atât din România, cât și din străinătate", Titlul III (micro) nu are un articol separat privind sfera de cuprindere, dar formularea „din orice sursă" din art. 53 și lipsa oricărei excepții geografice conduc la aceeași concluzie: veniturile realizate în afara României de o persoană juridică română — de exemplu, o prestare de servicii facturată unui client extern — se cumulează atât la baza de 1%, cât și la plafonul de 100.000 euro care decide dacă firma rămâne microîntreprindere.

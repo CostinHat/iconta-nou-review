@@ -14,14 +14,14 @@ Nu orice marfă ajunsă deteriorată la destinație e tratată la fel fiscal. Le
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii;"
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 „Manipularea" acoperă explicit și operațiunile de transport (încărcare, descărcare, deplasare), nu doar depozitarea. Limitele concrete admise sunt cele din anexa HG 831/2004:
 
 ::: ghid-temei
 „Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre."
-— HG 831/2004, art. 1 (sursă: anaf_surse/hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.txt)
+— HG 831/2004, art. 1 (sursă: [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623))
 :::
 
 Anexa stabilește procente distincte pe categorii de mărfuri și pe etape (transport, manipulare, depozitare, desfacere) — diferența constatată la recepție, în limita acestor procente aplicate corect (la cantitatea efectiv transportată, nu la stocul total), rămâne cheltuială deductibilă, fără documentație suplimentară de imputare.

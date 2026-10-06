@@ -16,14 +16,14 @@ Nedepunerea raportului se sancționează cu amendă de la 500 la 1.000 lei. Pent
 
 ::: ghid-temei
 „În termen de 60 de zile de la numire, lichidatorul trebuie să depună la oficiul registrului comerțului, pentru menționare în registrul comerțului, un raport privind situația economică a societății. Dacă, potrivit raportului, debitorul îndeplinește condițiile pentru deschiderea procedurii simplificate de insolvență, lichidatorul are obligația de a solicita deschiderea acestei proceduri în termen de 15 zile de la data depunerii raportului."
-— Legea societăților nr. 31/1990, art. 260 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 260 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Nerespectarea obligației de depunere a raportului prevăzut la alin. (4) [...] constituie contravenție și se sancționează cu amendă de la 500 lei la 1.000 lei. Constatarea contravențiilor și aplicarea sancțiunilor se realizează, din oficiu sau la sesizarea oricărei părți interesate, de către registratorul de registrul comerțului, prin încheiere."
-— Legea societăților nr. 31/1990, art. 260 alin. (5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 260 alin. (5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „În termen de 30 de zile de la numire, lichidatorul trebuie să depună la oficiul registrului comerțului, pentru menționare în registrul comerțului, un raport privind situația economică a societății. Dacă, potrivit raportului, debitorul îndeplinește condițiile pentru deschiderea procedurii simplificate de insolvență, lichidatorul are obligația de a solicita deschiderea acestei proceduri în termen de 5 zile de la data depunerii raportului."
-— Legea 239/2025, art. VIII alin. (10) (sursă: anaf_surse/legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt)
+— Legea 239/2025, art. VIII alin. (10) (sursă: [Legea nr. 239/2025 privind stabilirea unor măsuri de redresare și eficientizare a resurselor publice](https://legislatie.just.ro/Public/DetaliiDocument/305208))
 :::
 
 Ce înseamnă concret:

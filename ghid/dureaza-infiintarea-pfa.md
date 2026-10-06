@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-**Limitare declarată onest:** procedura și durata efectivă de înregistrare a unui PFA sunt reglementate de OUG 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act care se regăsește în sursele verificate pentru acest ghid (anaf_surse/oug_44_2008.html, formă consolidată cu Legea 265/2022). Potrivit art. 13 alin. (2) din OUG 44/2008, termenul de eliberare a certificatului de înregistrare este de **3 zile lucrătoare**, calculat de la data înregistrării cererii sau, după caz, de la data completării cererii cu documentele solicitate.
+**Limitare declarată onest:** procedura și durata efectivă de înregistrare a unui PFA sunt reglementate de OUG 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act care se regăsește în sursele verificate pentru acest ghid ([OUG nr. 44/2008 privind desfășurarea activităților economice de către PFA, II și IF](https://legislatie.just.ro/Public/DetaliiDocument/91808), formă consolidată cu Legea 265/2022). Potrivit art. 13 alin. (2) din OUG 44/2008, termenul de eliberare a certificatului de înregistrare este de **3 zile lucrătoare**, calculat de la data înregistrării cererii sau, după caz, de la data completării cererii cu documentele solicitate.
 
 Ce se poate spune, cu temei fiscal real:
 

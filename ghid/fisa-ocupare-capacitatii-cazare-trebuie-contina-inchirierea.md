@@ -16,15 +16,15 @@ Fișa este documentul din care se poate verifica, ulterior, dacă închirierile 
 
 ::: ghid-temei
 „Contribuabilii au obligația să completeze și să păstreze fișa de ocupare a capacității de cazare, astfel încât să rezulte perioada de ocupare a camerei, precum și datele de identificare a persoanei/persoanelor care a/au ocupat-o."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Modelul, conținutul, precum și modalitatea de gestionare a formularului tipizat «Fișa de ocupare a capacității de cazare» se aprobă prin ordin al președintelui A.N.A.F."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Ordinul președintelui Agenției Naționale de Administrare Fiscală prevăzut la art. XII pct. 10 se emite în termen de 90 de zile de la data publicării în Monitorul Oficial al României, Partea I, a prezentei legi."
-— Legea 239/2025, art. XIV alin. (2) (sursă: anaf_surse/legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt)
+— Legea 239/2025, art. XIV alin. (2) (sursă: [Legea nr. 239/2025 privind stabilirea unor măsuri de redresare și eficientizare a resurselor publice](https://legislatie.just.ro/Public/DetaliiDocument/305208))
 :::
 
 Ce trebuie să rezulte din fișă:

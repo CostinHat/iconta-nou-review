@@ -14,7 +14,7 @@ Acest ghid tratează un singur punct concret de verificare — nu o listă exhau
 
 ::: ghid-temei
 „h) comerțul cu amănuntul prin comis-voiajori, precum și prin corespondență, cu excepția livrărilor de bunuri la domiciliu efectuate de magazine și unitățile de alimentație publică, pe bază de comandă."
-— OUG nr. 28/1999, art. 2 alin. (1) lit. h) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999, art. 2 alin. (1) lit. h) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Cum se citește această excepție de la o excepție:
@@ -32,6 +32,6 @@ Cum se citește această excepție de la o excepție:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu importă și reconciliază datele de la aparatele de marcat electronice fiscale prin modulul dedicat (`core/amef_import.py`), dar nu emite el însuși bonuri fiscale — legătura dintre comenzile unui magazin online și obligația de emitere a bonului fiscal la livrare rămâne o verificare a firmei, în relație cu propriul sistem de casă de marcat.
+La data acestui ghid, iConta.eu importă și reconciliază datele de la aparatele de marcat electronice fiscale prin modulul dedicat, dar nu emite el însuși bonuri fiscale — legătura dintre comenzile unui magazin online și obligația de emitere a bonului fiscal la livrare rămâne o verificare a firmei, în relație cu propriul sistem de casă de marcat.
 
 [iConta.eu](/)

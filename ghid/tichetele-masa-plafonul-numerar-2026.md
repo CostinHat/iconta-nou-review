@@ -14,7 +14,7 @@ Tichetele de masă și plafonul legal de plăți în numerar sunt reglementate d
 
 ::: ghid-temei
 „Tichetele de masă sunt bilete de valoare acordate angajaților lunar, ca alocație individuală de hrană, utilizate numai pentru achitarea mesei sau pentru achiziționarea de produse alimentare."
-— Legea nr. 165/2018 privind acordarea biletelor de valoare, art. 11 alin. (1) (sursă: anaf_surse/legea_165_2018_consolidat.txt)
+— Legea nr. 165/2018 privind acordarea biletelor de valoare, art. 11 alin. (1) (sursă: [Legea nr. 165/2018 privind acordarea biletelor de valoare](https://legislatie.just.ro/Public/DetaliiDocument/202623))
 :::
 
 **Notă de limitare:** sursele verificate nu conțin un articol care să lege explicit tichetele de masă de plafonul operațiunilor cu numerar din Legea nr. 70/2015. Cele două acte reglementează materii distincte: Legea nr. 165/2018 definește tichetele de masă ca „bilete de valoare" — un instrument de plată electronic sau pe suport fizic, decontat exclusiv prin unități bancare sau Trezorerie între unitatea emitentă și comerciant —, în timp ce Legea nr. 70/2015 stabilește plafoane doar pentru „operațiunile de încasări și plăți în numerar" (bancnote și monede, nu instrumente de plată electronice). Un comerciant care acceptă tichete de masă la plată nu încasează, prin acestea, numerar în sensul Legii nr. 70/2015, ci o creanță decontată ulterior prin instituții bancare — deci suma respectivă nu se cumulează cu eventualele încasări în numerar ale aceleiași zile, pentru verificarea plafonului.

@@ -16,13 +16,13 @@ Da. Codul de procedură fiscală dă contribuabilului dreptul să numească un e
 
 ::: ghid-temei
 „Ori de câte ori consideră necesar, organul fiscal are dreptul să apeleze la serviciile unui expert pentru întocmirea unei expertize. Organul fiscal este obligat să comunice contribuabilului/plătitorului numele expertului."
-— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Contribuabilul/plătitorul poate să numească un expert pe cheltuiala proprie."
-— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Onorariile stabilite pentru expertizele prevăzute de prezentul articol se plătesc din bugetul organului fiscal care a apelat la serviciile expertului."
-— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 63 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile expertizei în procedura fiscală:

@@ -14,14 +14,14 @@ Un punct de lucru — numit în lege „sediu secundar" — este orice loc, altu
 
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul are obligația de a declara organului fiscal central, înființarea de sedii secundare, în termen de 30 de zile de la: a) data înregistrării/menționării acestora la registrul comerțului sau în alte registre în care a fost înregistrată entitatea care le-a înființat; b) data actului de înființare, în alte cazuri decât cele prevăzute la lit. a)."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 85 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 85 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea definește explicit ce înseamnă „sediu secundar" în acest context:
 
 ::: ghid-temei
 „În sensul prezentului articol, prin sediu secundar se înțelege un loc prin care se desfășoară integral sau parțial activitatea contribuabilului/plătitorului, cum ar fi: birou, magazin, atelier, depozit și altele asemenea, cu excepția activităților desfășurate de salariați la domiciliul acestora [...]. Prin sediu secundar se înțelege și un șantier de construcții, un proiect de construcție, ansamblu sau montaj ori activități de supervizare legate de acestea, numai dacă șantierul, proiectul sau activitățile durează mai mult de 6 luni."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 85 alin. (3)-(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 85 alin. (3)-(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă pașii esențiali ai înființării unui punct de lucru:

@@ -14,7 +14,7 @@ Nu automat — CAS depinde de un prag valoric, nu de forma de stabilire a venitu
 
 ::: ghid-temei
 „Persoanele fizice care în anul fiscal pentru care se depune Declarația unică [...] au realizat venituri din activitățile prevăzute la art. 137 alin. (1) lit. b) și b^1), din una sau mai multe surse și/sau categorii de venituri, a căror valoare anuală cumulată este cel puțin egală cu 12 salarii minime brute pe țară, datorează contribuția de asigurări sociale la o bază de calcul stabilită potrivit alin. (2)."
-— Codul fiscal (Legea 227/2015), art. 148 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 148 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce contează pentru un PFA la normă de venit:
@@ -32,7 +32,7 @@ Ce contează pentru un PFA la normă de venit:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_cas`) aplică corect pragul de 12 salarii minime brute și plafonarea pe trepte (12-24 sm), cu reperul de salariu minim citit din registrul de cote pentru anul de venit. Fișa `fisa_d212` (`core/rip_api.py`) pornește de la venitul net din Registrul-jurnal de încasări și plăți — deci acoperă sistemul real; pentru norma de venit, CAS se calculează în Declarația unică (D212), pe norma introdusă acolo.
+Aplicația (funcția `calculeaza_cas`) aplică corect pragul de 12 salarii minime brute și plafonarea pe trepte (12-24 sm), cu reperul de salariu minim citit din registrul de cote pentru anul de venit. Fișa `fisa_d212` pornește de la venitul net din Registrul-jurnal de încasări și plăți — deci acoperă sistemul real; pentru norma de venit, CAS se calculează în Declarația unică (D212), pe norma introdusă acolo.
 
 Pentru un PFA la normă de venit, Declarația unică (D212) din aplicație verifică pragul de 12 salarii minime brute pe norma (ajustată) cumulată cu celelalte venituri din activități independente și drepturi de autor introduse în formular; sursele persoanei din afara aplicației le adaugă contabilul.
 

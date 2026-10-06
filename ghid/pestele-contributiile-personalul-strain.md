@@ -14,10 +14,10 @@ Titlul acestui ghid leagă două subiecte fiscale distincte, fără legătură d
 
 ::: ghid-temei
 „Nu sunt venituri impozabile veniturile realizate de persoanele fizice/membrii asocierilor fără personalitate juridică din valorificarea în stare naturală a următoarelor: [...] b) produse capturate din fauna sălbatică, cu excepția celor realizate din activitatea de pescuit comercial supuse impunerii potrivit prevederilor cap. II - Venituri din activități independente."
-— Legea nr. 227/2015 privind Codul fiscal, art. 105 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 105 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru veniturile realizate din străinătate, în vederea stabilirii contribuțiilor sociale obligatorii se aplică regulile proprii fiecărei categorii de venit, în funcție de natura acestora, cu respectarea legislației europene aplicabile în domeniul securității sociale, precum și a acordurilor privind sistemele de securitate socială la care România este parte."
-— Legea nr. 227/2015 privind Codul fiscal, art. 135^2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 135^2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Pescuit.** Regula generală e că produsele culese din natură (inclusiv din fauna sălbatică) de o persoană fizică sunt neimpozabile. Excepția explicită: dacă acele produse provin din **activitate de pescuit comercial**, ele nu mai intră la neimpozabile, ci sunt supuse impunerii ca venituri din activități independente — deci cu evidență contabilă, declarare și, după caz, contribuții sociale, exact ca orice altă activitate independentă.

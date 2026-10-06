@@ -14,13 +14,13 @@ Da. Faptul că la normă de venit nu se înscriu cheltuieli în registru și nu 
 
 ::: ghid-temei
 „În vederea stabilirii stării de fapt fiscale și a obligațiilor fiscale datorate, contribuabilul/plătitorul are obligația să conducă evidențe fiscale, potrivit actelor normative în vigoare."
-— Codul de procedură fiscală (Legea 207/2015), art. 108 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 108 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Contribuabilul/Plătitorul este obligat să evidențieze veniturile realizate și cheltuielile efectuate din activitățile desfășurate, prin întocmirea registrelor sau a oricăror altor documente prevăzute de lege."
-— Codul de procedură fiscală (Legea 207/2015), art. 109 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 109 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dispozițiile legale privind păstrarea, arhivarea și limba folosită pentru evidențele contabile sunt aplicabile și pentru evidențele fiscale."
-— Codul de procedură fiscală (Legea 207/2015), art. 109 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 109 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă pentru un PFA la normă de venit:

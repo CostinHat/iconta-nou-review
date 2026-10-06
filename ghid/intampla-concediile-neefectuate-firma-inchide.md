@@ -14,7 +14,7 @@ Când o firmă intră în lichidare sau își încetează activitatea, salariaț
 
 ::: ghid-temei
 „Compensarea în bani a concediului de odihnă neefectuat este permisă numai în cazul încetării contractului individual de muncă."
-— Legea nr. 53/2003 (Codul muncii), art. 146 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 146 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Aplicat la situația unei firme care se închide:

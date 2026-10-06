@@ -16,7 +16,7 @@ Pro-rata de deducere se calculează ca raport între operațiunile care dau drep
 „Pro rata prevăzută la alin. (5) se determină ca raport între:
 a) suma totală, fără taxă, dar cuprinzând subvențiile legate direct de preț, a operațiunilor constând în livrări de bunuri și prestări de servicii care permit exercitarea dreptului de deducere, la numărător; și
 b) suma totală, fără taxă, a operațiunilor prevăzute la lit. a) și a operațiunilor constând în livrări de bunuri și prestări de servicii care nu permit exercitarea dreptului de deducere, la numitor. Se includ sumele primite de la bugetul de stat sau bugetele locale, acordate în scopul finanțării operațiunilor scutite fără drept de deducere sau operațiunilor care nu se află în sfera de aplicare a taxei."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Detaliat, ce intră la numitor și ce se exclude:

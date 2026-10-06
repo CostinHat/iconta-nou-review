@@ -16,10 +16,10 @@ Nu, potrivit ordinului de aplicare. Ordinul care aprobă formularul, OPANAF 3775
 
 ::: ghid-temei
 „Decontul precompletat RO e-TVA se transmite, pentru fiecare perioadă fiscală de raportare, persoanelor impozabile înregistrate în scopuri de TVA conform art. 316 din Legea nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare, prin mijloace electronice"
-— OPANAF 3775/2024, art. 3 (sursă: anaf_surse/ordin_3775_2024.html)
+— OPANAF 3775/2024, art. 3 (sursă: [OPANAF nr. 3775/2024 pentru aprobarea formularului Decont precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/285907))
 
 „Decontul special de taxă se depune la organele fiscale competente de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316"
-— Codul fiscal (Legea 227/2015), art. 324 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 324 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 De ce răspunsul este „nu":

@@ -14,7 +14,7 @@ Restaurantele și barurile (CAEN 5610, 5630) au câteva obligații fiscale speci
 
 ::: ghid-temei
 „Prin bacșiș se înțelege orice sumă de bani oferită în mod voluntar de client, în plus față de contravaloarea bunurilor livrate sau a serviciilor prestate de către operatorii economici care desfășoară activități corespunzătoare codurilor CAEN: 5610 - «Restaurante», 5630 - «Baruri și alte activități de servire a băuturilor». Bacșișul nu poate fi asimilat, din punctul de vedere al TVA, unei livrări de bunuri sau unei prestări de servicii."
-— Legea 376/2022 (care introduce art. 2^3 în OUG 28/1999), alin. (1) (sursă: anaf_surse/legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt)
+— Legea 376/2022 (care introduce art. 2^3 în OUG 28/1999), alin. (1) (sursă: [Legea nr. 376/2022 pentru modificarea și completarea OUG nr. 28/1999](https://legislatie.just.ro/Public/DetaliiDocument/263133))
 :::
 
 Checklist-ul de conformare specific HoReCa pentru 2026:

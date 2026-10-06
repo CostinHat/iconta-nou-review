@@ -16,15 +16,15 @@ Sponsorizarea intervine de două ori în calcul. O dată se scade din impozitul 
 
 ::: ghid-temei
 „Contribuabilii care efectuează sponsorizări și/sau acte de mecenat, potrivit prevederilor Legii nr. 32/1994 privind sponsorizarea, cu modificările și completările ulterioare, [...] scad sumele aferente din impozitul minim datorat la nivelul valorii minime dintre următoarele: a) valoarea calculată prin aplicarea a 0,75% la cifra de afaceri; pentru situațiile în care reglementările contabile aplicabile nu definesc indicatorul cifra de afaceri, această limită se determină potrivit normelor; ... b) valoarea reprezentând 20% din impozitul pe profit."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „din acest impozit pe profit se scad sumele reprezentând sponsorizare/mecenat, alte sume care se scad din impozitul pe profit, potrivit legilor speciale, după caz"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „pentru stabilirea limitei prevăzute la art. 18^1 alin. (10) lit. b) din Codul fiscal, procentul de 20% se aplică la impozitul pe profit determinat potrivit regulilor generale prevăzute în cadrul titlului II din Codul fiscal care ar fi fost datorat dacă contribuabilii nu ar fi fost obligați la plata impozitului minim pe cifra de afaceri"
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se aplică:

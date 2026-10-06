@@ -31,6 +31,6 @@ D101 nu „reface" ce a fost deja declarat prin D100 — acoperă strict perioad
 
 ## Ce face iConta.eu
 
-Fiecare trimestru se calculează independent, pe baza regimului fiscal (`regim_fiscal`) al firmei valabil la momentul rulării — verificat direct în cod, motorul de calcul D100 (`core/d100.py`) nu are nicio funcție de recalcul retroactiv al trimestrelor deja declarate ca micro. Practic, aplicația nu amestecă automat cele două regimuri într-o singură bază de calcul: trimestrele de micro rămân declarate prin D100 așa cum au fost, iar de la schimbarea de regim, firma trece pe fluxul de impozit pe profit pentru perioada rămasă din an.
+Fiecare trimestru se calculează independent, pe baza regimului fiscal (`regim_fiscal`) al firmei valabil la momentul rulării — verificat direct în cod, motorul de calcul D100 nu are nicio funcție de recalcul retroactiv al trimestrelor deja declarate ca micro. Practic, aplicația nu amestecă automat cele două regimuri într-o singură bază de calcul: trimestrele de micro rămân declarate prin D100 așa cum au fost, iar de la schimbarea de regim, firma trece pe fluxul de impozit pe profit pentru perioada rămasă din an.
 
 [iConta.eu](/)

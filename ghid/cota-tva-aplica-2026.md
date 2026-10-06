@@ -32,6 +32,6 @@ Pentru anul 2026, OUG 8/2026 a modificat alte praguri fiscale (plafonul TVA la �
 
 ## Ce face iConta.eu
 
-Cotele curente (`COTA_STANDARD = 21`, `COTA_REDUSA = 11`) sunt sursa unică internă (`core/cote_tva.py`) folosită de motorul de potrivire cotă↔produs. În paralel, `core/common.py` ține un registru „period-aware" al valorilor istorice (19% până la 31.07.2025, cote istorice 9%/5%) — astfel încât aplicația validează automat cota corectă în funcție de data operațiunii, nu doar de valoarea numerică introdusă.
+Cotele curente (`COTA_STANDARD = 21`, `COTA_REDUSA = 11`) sunt sursa unică internă folosită de motorul de potrivire cotă↔produs. În paralel, aplicația ține un registru „period-aware" al valorilor istorice (19% până la 31.07.2025, cote istorice 9%/5%) — astfel încât aplicația validează automat cota corectă în funcție de data operațiunii, nu doar de valoarea numerică introdusă.
 
 [iConta.eu](/)

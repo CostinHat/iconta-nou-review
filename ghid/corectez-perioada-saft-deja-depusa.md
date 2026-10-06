@@ -14,7 +14,7 @@ Corectarea unei declarații informative D406 (fișierul standard de control fisc
 
 ::: ghid-temei
 „18. Prima Declaraţie informativă D406 validată, depusă pentru o lună sau un trimestru de către un contribuabil/plătitor este considerată declaraţie iniţială. Declaraţiile ulterioare depuse pentru aceeaşi perioadă (lună/trimestru) sunt automat considerate declaraţii rectificative. [...] 21. Declaraţiile rectificative care se depun pentru corectarea unei erori materiale, omisiuni etc. trebuie să cuprindă toate informaţiile din declaraţia iniţială, plus cele asupra cărora s-au efectuat corecţii."
-— OPANAF nr. 1783/2021, Instrucțiuni de completare a Declarației informative D406 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1783/2021, Instrucțiuni de completare a Declarației informative D406 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Nu există un formular distinct de „rectificare SAF-T": se generează un fișier XML nou, complet, pentru aceeași perioadă de raportare, și se transmite din nou prin ANAF sau e-guvernare.ro.
@@ -31,6 +31,6 @@ Corectarea unei declarații informative D406 (fișierul standard de control fisc
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu **generează fișierul SAF-T (D406)** printr-un motor dedicat (`core/d406.py`, cu module complementare pentru active — `core/d406_active.py` — și pentru reconciliere — `core/d406_reconciliere.py`), pe baza datelor contabile din aplicație. Nu am găsit însă, în cod, un flux automatizat specific de „generare declarație rectificativă D406" distinct de generarea declarației inițiale — practic, aplicația produce fișierul SAF-T pentru perioada cerută, iar decizia de a-l retransmite ca rectificativă (conform regulii de mai sus) rămâne un pas realizat prin transmiterea repetată către ANAF.
+Din verificarea codului sursă, iConta.eu **generează fișierul SAF-T (D406)** printr-un motor dedicat (cu module complementare pentru active — aplicația — și pentru reconciliere — aplicația), pe baza datelor contabile din aplicație. Nu am găsit însă, în cod, un flux automatizat specific de „generare declarație rectificativă D406" distinct de generarea declarației inițiale — practic, aplicația produce fișierul SAF-T pentru perioada cerută, iar decizia de a-l retransmite ca rectificativă (conform regulii de mai sus) rămâne un pas realizat prin transmiterea repetată către ANAF.
 
 [iConta.eu](/)

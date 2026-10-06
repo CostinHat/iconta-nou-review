@@ -14,7 +14,7 @@ Structura fișierului standard de control fiscal (SAF-T), raportat prin Declara�
 
 ::: ghid-temei
 „Art. I - Anexa nr. 5 la Ordinul președintelui Agenției Naționale de Administrare Fiscală nr. 1.783/2021 privind natura informațiilor pe care contribuabilul/plătitorul trebuie să le declare prin fișierul standard de control fiscal, modelul de raportare, procedura și condițiile de transmitere, precum și termenele de transmitere și data/datele de la care categoriile de contribuabili/plătitori sunt obligate să transmită fișierul standard de control fiscal, publicat în Monitorul Oficial al României, Partea I, nr. 1073 din 9 noiembrie 2021, cu modificările ulterioare, se modifică și se înlocuiește cu anexa care face parte integrantă din prezentul ordin."
-— OPANAF 407/2025, art. I, având în vedere art. 59^1 alin. (2), (4) și (5) din Legea 207/2015 (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF 407/2025, art. I, având în vedere art. 59^1 alin. (2), (4) și (5) din Legea 207/2015 (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 - Obligația de raportare SAF-T și structura ei sunt reglementate prin ordin al președintelui ANAF (inițial OPANAF 1783/2021), emis în temeiul Codului de procedură fiscală — ceea ce înseamnă că ANAF poate modifica anexele acestui ordin (inclusiv datele de la care diverse categorii de contribuabili devin obligate, sau structura tehnică a fișierului) printr-un ordin ulterior, fără să fie nevoie de o lege nouă.

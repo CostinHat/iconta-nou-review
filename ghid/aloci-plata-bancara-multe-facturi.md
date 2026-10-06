@@ -44,6 +44,6 @@ Pentru situațiile care depășesc automatul (partener cu peste 12 facturi desch
 
 ## Ce face iConta.eu
 
-Motorul de potrivire (`core/reconciliere.py`) rulează exact algoritmul descris mai sus — potrivire exactă, combinații de până la 4 facturi din primele 12 deschise ale partenerului, apoi alocare FIFO parțială. Din ecranul „Bancă", butonul „Alege facturile" deschide picker-ul manual, cu bifă pe fiecare factură deschisă a partenerului, pentru cazurile pe care automatul nu le acoperă complet. Contarea propriu-zisă (`core/reconciliere_api.py`) creează, pentru fiecare factură alocată, o notă contabilă separată, legată de acea factură.
+Motorul de potrivire rulează exact algoritmul descris mai sus — potrivire exactă, combinații de până la 4 facturi din primele 12 deschise ale partenerului, apoi alocare FIFO parțială. Din ecranul „Bancă", butonul „Alege facturile" deschide picker-ul manual, cu bifă pe fiecare factură deschisă a partenerului, pentru cazurile pe care automatul nu le acoperă complet. Contarea propriu-zisă creează, pentru fiecare factură alocată, o notă contabilă separată, legată de acea factură.
 
 [iConta.eu](/)

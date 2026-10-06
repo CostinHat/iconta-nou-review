@@ -14,7 +14,7 @@ Diferențele de curs valutar se recunosc lunar, la reevaluarea soldurilor în va
 
 ::: ghid-temei
 „67. - (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»). (3) Erorile nesemnificative aferente exercițiilor financiare precedente se corectează, de asemenea, pe seama rezultatului reportat. Totuși, potrivit politicilor contabile aprobate, erorile nesemnificative pot fi corectate pe seama contului de profit și pierdere."
-— OMFP nr. 1802/2014, Reglementări contabile, pct. 67 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, Reglementări contabile, pct. 67 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la diferențele de curs valutar greșit calculate:

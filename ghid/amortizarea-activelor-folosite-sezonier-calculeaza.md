@@ -14,10 +14,10 @@ Codul fiscal nu are un regim special de amortizare „sezonieră" — regula de 
 
 ::: ghid-temei
 „Pentru perioada în care mijloacele fixe nu sunt utilizate, recuperarea amortizării aferente acesteia se va face prin recalcularea cotei de amortizare pe durata normală de utilizare rămasă, începând cu luna următoare repunerii în funcțiune a acestora sau se diminuează capitalurile proprii la data scoaterii din funcțiune."
-— HG 2139/2004, Catalog, Secțiunea III pct. 5 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004, Catalog, Secțiunea III pct. 5 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 
 „[Amortizarea se calculează] începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune [...]; în cazul în care mijloacele fixe amortizabile sunt trecute în regim de conservare [...], valoarea fiscală rămasă neamortizată la momentul trecerii în conservare se recuperează pe durata normală de utilizare rămasă, începând cu luna următoare ieșirii din conservare a acestora, prin recalcularea cotei de amortizare fiscală."
-— Codul fiscal, art. 28 alin. (12) lit. a) și lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 28 alin. (12) lit. a) și lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la un activ folosit sezonier (utilaj agricol, echipament de deszăpezire, instalație de aer condiționat industrial etc.):

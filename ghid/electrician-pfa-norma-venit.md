@@ -14,10 +14,10 @@ Activitatea de electrician (instalații electrice, cod CAEN 4321) nu are un act 
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Norma de venit pentru fiecare activitate desfășurată de contribuabil nu poate fi mai mică decât nivelul a 12 salarii de bază minime brute pe țară garantate în plată, în vigoare la data de 1 ianuarie a anului de realizare a venitului."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un electrician PFA, verificarea are doi pași și o consecință de calcul minim:

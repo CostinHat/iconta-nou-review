@@ -14,10 +14,10 @@ Concediul pentru creșterea copilului nu e un „extra" pe care angajatorul îl 
 
 ::: ghid-temei
 „Articolul 51 Contractul individual de muncă poate fi suspendat din iniţiativa salariatului, în următoarele situaţii: a) concediu pentru creşterea copilului în vârsta de până la 2 ani sau, în cazul copilului cu handicap, până la împlinirea vârstei de 3 ani."
-— Legea 53/2003 (Codul muncii), art. 51 alin. (1) lit. a) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 51 alin. (1) lit. a) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Angajatorii [...] completează și transmit în Registru următoarele date, fără a avea caracter limitativ: [...] p) perioada, cauzele de suspendare și data încetării suspendării contractului individual de muncă; [...] datele prevăzute la art. 4 alin. (2) lit. p) se transmit cel târziu în ziua anterioară datei suspendării/datei încetării suspendării, cu excepția cazurilor de suspendare în baza certificatelor medicale, când transmiterea în Registru se face în termen de 3 zile lucrătoare de la data înregistrării la angajator a certificatului de concediu medical [...]."
-— HG 295/2025, art. 4 alin. (2) lit. p) și art. 5 alin. (1) lit. e) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 4 alin. (2) lit. p) și art. 5 alin. (1) lit. e) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Din cele două texte rezultă două obligații distincte pentru angajator:

@@ -14,13 +14,13 @@ Legea răspunde clar pentru baza impozabilă a impozitului pe veniturile microî
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; [...] c) veniturile din producția de imobilizări corporale și necorporale; [...]" (urmează o listă închisă de excepții — subvenții, diferențe de curs, dividende primite, despăgubiri, reduceri comerciale acordate ulterior facturării ș.a. — care nu include veniturile din vânzarea mijloacelor fixe deja folosite în activitate).
-— Legea nr. 227/2015, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[...] a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile."
-— Legea nr. 227/2015, art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru încadrarea în condițiile privind nivelul veniturilor prevăzute la art. 47 alin. (1) lit. c) și la art. 52 alin. (1) se iau în calcul veniturile care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile. Pentru aplicarea prevederilor art. 52 alin. (1), la calculul cifrei de afaceri se adaugă și veniturile din transferul mijloacelor fixe/terenurilor înregistrate cumulat de la începutul anului fiscal, în situația în care microîntreprinderea transferă, în cursul anului fiscal, mai mult de un activ din oricare subgrupă, astfel cum sunt prevăzute în Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe, aprobat prin hotărâre a Guvernului, respectiv mai mult de un teren."
-— Legea nr. 227/2015, art. 54 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 54 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, corect de data asta:

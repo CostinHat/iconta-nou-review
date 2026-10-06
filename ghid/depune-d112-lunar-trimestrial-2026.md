@@ -16,11 +16,11 @@ Regula de bază pentru D112 e depunerea lunară, dar Codul fiscal permite unor c
 „(1) [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate. [...]
 (4) Prin excepție de la prevederile alin. (1), plătitorii de venituri din salarii și asimilate salariilor prevăzuți la art. 80 alin. (2), în calitate de angajatori sau de persoane asimilate angajatorului, depun trimestrial Declarația [...] aferentă fiecărei luni a trimestrului, până la data de 25 inclusiv a lunii următoare trimestrului.
 (5) Depunerea trimestrială a declarației prevăzute la alin. (1) constă în completarea și depunerea a câte unei declarații pentru fiecare lună din trimestru."
-— Legea 227/2015 (Codul fiscal), art. 147 alin. (1), (4) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 147 alin. (1), (4) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „b) persoanele juridice plătitoare de impozit pe profit care, în anul anterior, au înregistrat venituri totale de până la 100.000 euro și au avut un număr mediu de până la 3 salariați exclusiv;
 c) persoanele juridice plătitoare de impozit pe veniturile microîntreprinderilor care, în anul anterior, au avut un număr mediu de până la 3 salariați exclusiv."
-— Legea 227/2015 (Codul fiscal), art. 80 alin. (2) lit. b) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 80 alin. (2) lit. b) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile concrete de încadrare sunt următoarele:

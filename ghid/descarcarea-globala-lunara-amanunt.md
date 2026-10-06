@@ -35,7 +35,7 @@ Pașii calculului, așa cum rezultă din formula legală de mai sus și din moto
 
 ## Ce face iConta.eu
 
-Funcția `descarca_luna` (`core/stocuri_api.py`) automatizează exact pașii de mai sus: preia soldurile inițiale din `solduri_initiale` (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) filtrate explicit pe sursele `horeca_z`, `stocuri` și `facturi_marfa`, doar pe luna curentă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`), cu mențiunea explicită din codul sursă că o repartizare proporțională din contul 4427 ar fi riscantă.
+Funcția `descarca_luna` automatizează exact pașii de mai sus: preia soldurile inițiale din `solduri_initiale` (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) filtrate explicit pe sursele `horeca_z`, `stocuri` și `facturi_marfa`, doar pe luna curentă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`), cu mențiunea explicită din codul sursă că o repartizare proporțională din contul 4427 ar fi riscantă.
 
 Dacă nu au existat vânzări în lună, aplicația nu generează nicio notă, ci întoarce un „fapt" structurat care confirmă lipsa vânzărilor. Nota de descărcare, când există, se creează la data ultimei zile calendaristice a lunii, ca **ciornă** — validarea rămâne manuală, în jurnalul contabil.
 

@@ -16,12 +16,12 @@ Excepția apare când, prin acord, se folosește sau se transferă o tehnologie 
 
 ::: ghid-temei
 „plățile pentru utilizarea serviciilor de telecomunicații din acordurile de roaming, a frecvențelor radio, a comunicațiilor electronice între operatori;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(16) Sumele plătite de un operator de rețea de telecomunicații către un alt operator, în baza unor acorduri clasice de roaming, nu reprezintă redevențe dacă nu este utilizată sau transferată o tehnologie secretă. Sumele plătite în cadrul acestui tip de contract nu pot fi interpretate ca fiind sume plătite pentru utilizarea unui echipament comercial, industrial sau științific, dacă nu este utilizat efectiv un echipament. Aceste sume reprezintă o taxă pentru utilizarea serviciilor de telecomunicații furnizate de operatorul de rețea din străinătate. În mod similar sumele plătite pentru utilizarea sau dreptul de a utiliza frecvențele radio nu reprezintă redevențe."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (16) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (16) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Codul fiscal în vigoare scoate expres din noțiunea de redevență plățile din acordurile de roaming, plățile pentru frecvențele radio și cele pentru comunicațiile electronice între operatori. Normele adaugă condițiile de aplicare:

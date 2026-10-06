@@ -16,15 +16,15 @@ Declararea unor cantități diferite de cele transportate e o contravenție dist
 
 ::: ghid-temei
 „b) declararea în Sistemul RO e-Transport a unor cantități diferite de cele care fac obiectul transportului de bunuri;"
-— OUG 41/2022, art. 13^1 alin. (1) lit. b) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. b) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate."
-— OUG 41/2022, art. 13^1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ::: ghid-temei
 „[...] nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ."
-— Legea 296/2023, art. LVIII (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LVIII (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce înseamnă concret:

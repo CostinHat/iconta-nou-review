@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „218. ‐ (1) În contabilitatea locatarului, bunurile luate în leasing operațional sunt evidențiate în conturi de evidență din afara bilanțului. (2) Sumele plătite sau de plătit se înregistrează în contabilitatea locatarului ca o cheltuială în contul de profit şi pierdere, conform contabilității de angajamente."
-— OMFP 1802/2014, pct. 218 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 218 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „(1) În cazul leasingului financiar utilizatorul este tratat din punct de vedere fiscal ca proprietar, în timp ce, în cazul leasingului operațional, locatorul are această calitate."
-— Legea 227/2015, art. 29 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 29 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - La leasingul operațional nu există niciun transfer al bunului către patrimoniul contabil al locatarului — nici de fapt, nici pe hârtie.

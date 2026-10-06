@@ -14,10 +14,10 @@ Firmele mici din România se lovesc adesea de doi „plafoane" diferite, care nu
 
 ::: ghid-temei
 „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile;"
-— Codul fiscal (Legea nr. 227/2015), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1) [...]"
-— Codul fiscal (Legea nr. 227/2015), art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Plafonul micro** (art. 47 alin. (1) lit. c)) este de **100.000 euro**, exprimat în echivalent lei la cursul de la închiderea exercițiului financiar, și privește **veniturile** firmei, verificate la 31 decembrie a anului precedent, pentru a stabili dacă firma poate aplica impozitul pe veniturile microîntreprinderilor.
@@ -34,6 +34,6 @@ Firmele mici din România se lovesc adesea de doi „plafoane" diferite, care nu
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu urmărește separat, prin constante și module dedicate fiecărei declarații fiscale (de exemplu logica de TVA la încasare din `core/tva_incasare.py`), diverse praguri legale relevante pentru declarațiile aplicabile firmei. Nu am găsit însă, în cod, un ecran sau modul unic care să compare explicit, pentru contabil, plafonul micro (100.000 euro) cu plafonul de TVA (395.000 lei) într-o singură vedere — cele două rămân, la acest moment, verificări separate în aplicație.
+Din verificarea codului sursă, iConta.eu urmărește separat, prin constante și module dedicate fiecărei declarații fiscale (de exemplu logica de TVA la încasare din aplicație), diverse praguri legale relevante pentru declarațiile aplicabile firmei. Nu am găsit însă, în cod, un ecran sau modul unic care să compare explicit, pentru contabil, plafonul micro (100.000 euro) cu plafonul de TVA (395.000 lei) într-o singură vedere — cele două rămân, la acest moment, verificări separate în aplicație.
 
 [iConta.eu](/)

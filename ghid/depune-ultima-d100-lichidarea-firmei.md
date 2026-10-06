@@ -31,6 +31,6 @@ Textul citat vizează explicit lichidarea deschisă și închisă „în cursul 
 
 ## Ce face iConta.eu
 
-Motorul D100 (`core/d100.py`) calculează impozitul micro pe baza veniturilor din balanță și generează XML-ul declarației pentru trimestrul cerut — inclusiv pentru un trimestru final de lichidare, dacă rezultă o bază impozabilă pozitivă. De reținut: verificat direct în cod, aplicația **refuză** generarea XML-ului D100 dacă baza calculată e zero (nicio obligație de plată rezultată) — dacă ultimul trimestru de activitate al firmei lichidate are venituri zero, verificați separat, la organul fiscal, dacă situația concretă cere totuși o depunere „pe zero" prin alte mijloace, întrucât acest caz nu e acoperit automat de fluxul aplicației.
+Motorul D100 calculează impozitul micro pe baza veniturilor din balanță și generează XML-ul declarației pentru trimestrul cerut — inclusiv pentru un trimestru final de lichidare, dacă rezultă o bază impozabilă pozitivă. De reținut: verificat direct în cod, aplicația **refuză** generarea XML-ului D100 dacă baza calculată e zero (nicio obligație de plată rezultată) — dacă ultimul trimestru de activitate al firmei lichidate are venituri zero, verificați separat, la organul fiscal, dacă situația concretă cere totuși o depunere „pe zero" prin alte mijloace, întrucât acest caz nu e acoperit automat de fluxul aplicației.
 
 [iConta.eu](/)

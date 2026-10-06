@@ -14,7 +14,7 @@ Combustibilul înregistrat ca deductibil integral, fără documente care să jus
 
 ::: ghid-temei
 „50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul activității economice, cu o masă totală maximă autorizată care să nu depășească 3.500 kg și care să nu aibă mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietatea sau în folosința contribuabilului. Aceste cheltuieli sunt integral deductibile pentru situațiile în care vehiculele respective se înscriu în oricare dintre următoarele categorii: 1. vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat; 2. vehiculele utilizate de agenții de vânzări și de achiziții [...]"
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de bază, aplicată la combustibil ca și la restul cheltuielilor aferente vehiculului:

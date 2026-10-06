@@ -14,7 +14,7 @@ O sumă ieșită din contul firmei fără ordin de plată emis de firmă — fra
 
 ::: ghid-temei
 „Articolul 6 (1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității nr. 82/1991, art. 6 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Consecința, pentru o plată neautorizată:
@@ -31,6 +31,6 @@ Consecința, pentru o plată neautorizată:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/banca.py` contabilizează liniile din extrasul bancar prin `contabilizeaza_extras()`, pe baza unor cuvinte-cheie din descriere (comision, dobândă, credit, salarii etc.) — nu are o categorie dedicată „plată neautorizată/de clarificat", care să direcționeze automat o astfel de sumă spre un cont de creanțe în litigiu. O plată neidentificată prin niciun cuvânt-cheie cade, implicit, în categoria generică „furnizor" (plată) — reclasificarea ei corectă, pe un cont de clarificat, rămâne azi o intervenție manuală a contabilului.
+La data acestui ghid, aplicația contabilizează liniile din extrasul bancar prin `contabilizeaza_extras()`, pe baza unor cuvinte-cheie din descriere (comision, dobândă, credit, salarii etc.) — nu are o categorie dedicată „plată neautorizată/de clarificat", care să direcționeze automat o astfel de sumă spre un cont de creanțe în litigiu. O plată neidentificată prin niciun cuvânt-cheie cade, implicit, în categoria generică „furnizor" (plată) — reclasificarea ei corectă, pe un cont de clarificat, rămâne azi o intervenție manuală a contabilului.
 
 [iConta.eu](/)

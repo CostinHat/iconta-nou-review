@@ -14,7 +14,7 @@ Un SRL proaspăt înființat nu are perioadă de grație pentru înrolarea în S
 
 ::: ghid-temei
 „Prin excepţie de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri şi alte entităţi fără personalitate juridică [...] sunt obligaţi să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanţă în condiţiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanţelor/A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru un SRL nou, pașii impuși de lege se reduc, în esență, la doi:
@@ -33,6 +33,6 @@ Nu a fost identificată, în sursele verificate, o derogare sau un termen de gra
 
 ## Ce face iConta.eu
 
-iConta.eu **nu creează contul SPV** pentru un SRL nou înființat — acest pas rămâne al administratorului/reprezentantului legal, cu certificatul digital calificat, direct pe portalul ANAF. Odată contul SPV activ, iConta.eu oferă conectorul OAuth2 (`core/spv_conector.py`) pentru a-l lega de aplicație, permițând firmei să emită și să primească facturi prin RO e-Factura din interfața de facturare, de la primele operațiuni economice.
+iConta.eu **nu creează contul SPV** pentru un SRL nou înființat — acest pas rămâne al administratorului/reprezentantului legal, cu certificatul digital calificat, direct pe portalul ANAF. Odată contul SPV activ, iConta.eu oferă conectorul OAuth2 pentru a-l lega de aplicație, permițând firmei să emită și să primească facturi prin RO e-Factura din interfața de facturare, de la primele operațiuni economice.
 
 [iConta.eu](/)

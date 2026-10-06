@@ -15,7 +15,7 @@ Când un PFA plătește CAS, CASS sau impozit pe venit și nu e sigur că suma a
 ::: ghid-temei
 „ART. 158 Certificatul de atestare fiscală emis de organul fiscal central
 (1) Certificatul de atestare fiscală se emite de organul fiscal central competent la solicitarea contribuabilului/plătitorului. Certificatul se emite și din oficiu sau la solicitarea altor autorități publice, în cazurile și în condițiile prevăzute de reglementările legale în vigoare, precum și la solicitarea oricărei persoane care deține titluri de participare la o societate."
-— Legea 207/2015 (Codul de procedură fiscală), art. 158 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 158 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, pentru un PFA care vrea să știe dacă o plată a fost alocată corect:

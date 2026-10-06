@@ -14,7 +14,7 @@ După încărcarea fișierului SAF-T în portalul ANAF, apare aceeași întrebar
 
 ::: ghid-temei
 „22. În urma încărcării Declaraţiei informative D406, în portalul Agenţiei Naţionale de Administrare Fiscală, documentul este verificat şi analizat, iar în cazul în care contribuabilul/plătitorul este înregistrat în Spaţiul Privat Virtual (SPV), acesta poate primi eventuale mesaje de validare, eroare, atenţionare în secţiunea «Mesaje». 23. Recipisa şi informaţiile despre procesarea Declaraţiei informative D406 sunt transmise în mod automat de către Agenţia Naţională de Administrare Fiscală contribuabilului/plătitorul înscris în SPV [...]. Alternativ, contribuabilii/plătitorii pot verifica stadiul şi rezultatele procesării folosind indexul de încărcare prin interogare directă pe site-ul Agenţiei Naţionale de Administrare Fiscală."
-— OPANAF nr. 1.783/2021, Anexa 5 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă practic din text:

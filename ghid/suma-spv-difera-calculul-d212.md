@@ -14,7 +14,7 @@ Cea mai frecventă cauză este că baza de calcul a CAS pentru o persoană cu ve
 
 ::: ghid-temei
 „(3) Încadrarea în plafonul anual de cel puțin 12 salarii minime brute pe țară sau de cel puțin 24 de salarii minime brute pe țară, după caz, se efectuează prin cumularea veniturilor nete și/sau a normelor anuale de venit din activități independente determinate potrivit art. 68, 68^3 și 69, a venitului brut realizat în baza contractelor de activitate sportivă potrivit art. 68^1, precum și a veniturilor nete din drepturi de proprietate intelectuală determinate potrivit art. 72, 72^1 și 73, realizate în anul pentru care se datorează contribuția."
-— Legea nr. 227/2015 (Codul fiscal), art. 148 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 148 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 De ce apar diferențe, concret:
@@ -31,6 +31,6 @@ De ce apar diferențe, concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează CAS/CASS pentru o PFA în sistem real doar pe baza operațiunilor introduse și validate în aplicație, prin `core/rip_api.py` (funcția `fisa_d212`) — adică pentru activitatea evidențiată în acea instanță a aplicației. Aplicația nu are acces singură la veniturile din alte surse ale aceleiași persoane fizice (alte PFA-uri, drepturi de autor etc.). Declarația unică (D212) le poate însă cumula pentru plafonul de la art. 148 alin. (3): contabilul le adaugă în formular (o altă activitate independentă, drepturile de autor), iar CAS și CASS se calculează pe total — fără ele, cifra din aplicație nu va corespunde cu ce afișează ANAF în SPV.
+La data acestui ghid, iConta.eu calculează CAS/CASS pentru o PFA în sistem real doar pe baza operațiunilor introduse și validate în aplicație, prin aplicație (funcția `fisa_d212`) — adică pentru activitatea evidențiată în acea instanță a aplicației. Aplicația nu are acces singură la veniturile din alte surse ale aceleiași persoane fizice (alte PFA-uri, drepturi de autor etc.). Declarația unică (D212) le poate însă cumula pentru plafonul de la art. 148 alin. (3): contabilul le adaugă în formular (o altă activitate independentă, drepturile de autor), iar CAS și CASS se calculează pe total — fără ele, cifra din aplicație nu va corespunde cu ce afișează ANAF în SPV.
 
 [iConta.eu](/)

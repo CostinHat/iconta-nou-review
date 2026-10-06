@@ -16,15 +16,15 @@ Pentru primul an, anul fiscal al microîntreprinderii nu e anul calendaristic î
 
 ::: ghid-temei
 „(1) În cazul înființării unei microîntreprinderi într-un an fiscal, perioada impozabilă începe: a) de la data înregistrării acesteia la registrul comerțului, dacă are această obligație; [...] b) de la data înregistrării în registrul ținut de instanțele judecătorești sau alte autorități competente, dacă are această obligație, potrivit legii.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (1), titlul III (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (1), titlul III (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul unei microîntreprinderi care se înființează sau își încetează existența, anul fiscal este perioada din anul calendaristic în care persoana juridică a existat.”
-— Codul fiscal (Legea 227/2015), art. 50 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 50 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „O persoană juridică română care este nou-înființată poate opta să plătească impozit pe veniturile microîntreprinderilor începând cu primul an fiscal, dacă condițiile prevăzute la art. 47 alin. (1) lit. d) și h) sunt îndeplinite la data înregistrării în registrul comerțului, iar cea prevăzută la lit. g) în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice respective.”
-— Codul fiscal, art. 48 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 48 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

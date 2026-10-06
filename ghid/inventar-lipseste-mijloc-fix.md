@@ -14,7 +14,7 @@ O lipsă constatată la inventarierea anuală nu se rezolvă printr-o simplă no
 
 ::: ghid-temei
 „(2) În cazul constatării unor lipsuri imputabile în gestiune, administratorii trebuie să impute persoanelor vinovate bunurile lipsă la valoarea lor de înlocuire."
-— OMFP 2861/2009, pct. 40 alin. (2) (sursă: anaf_surse/omfp_2861_2009.pdf)
+— OMFP 2861/2009, pct. 40 alin. (2) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Ce cere legea, pas cu pas:

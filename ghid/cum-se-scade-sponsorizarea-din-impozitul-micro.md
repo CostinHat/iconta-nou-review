@@ -45,6 +45,6 @@ Cât timp a fost activă, regula funcționa astfel: plafonul era **20% din impoz
 
 ## Ce face iConta.eu
 
-În `core/sponsorizari.py`, funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval, motorul returnează credit 0, cu o notă explicită de inaplicabilitate — deci pentru orice calcul făcut azi, în 2026, aplicația respinge corect deducerea. În interval, plafonul se calculează ca `plafon_m = 20% × impozit_profit`, unde parametrul `impozit_profit` este folosit, pentru ramura micro, ca fiind **impozitul micro datorat pe trimestrul respectiv** — atenție la această denumire, pentru a nu introduce din greșeală un impozit anual sau un impozit pe profit.
+În aplicația, funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval, motorul returnează credit 0, cu o notă explicită de inaplicabilitate — deci pentru orice calcul făcut azi, în 2026, aplicația respinge corect deducerea. În interval, plafonul se calculează ca `plafon_m = 20% × impozit_profit`, unde parametrul `impozit_profit` este folosit, pentru ramura micro, ca fiind **impozitul micro datorat pe trimestrul respectiv** — atenție la această denumire, pentru a nu introduce din greșeală un impozit anual sau un impozit pe profit.
 
 [iConta.eu](/)

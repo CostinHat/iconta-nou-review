@@ -14,12 +14,12 @@ Indemnizația de concediu de odihnă nu are un tratament contabil separat — pe
 
 ::: ghid-temei
 „Pentru perioada concediului de odihnă salariatul beneficiază de o indemnizaţie de concediu care nu poate fi mai mica decât valoarea totală a drepturilor salariale cuvenite pentru perioada respectiva."
-— Legea 53/2003 (Codul muncii), art. 145 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 145 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Contul 641 «Cheltuieli cu salariile personalului» [...] ține evidența cheltuielilor cu salariile personalului. În debitul contului 641 [...] se înregistrează: valoarea salariilor și a altor drepturi cuvenite personalului (421) [...]."
 
 „Contul 421 «Personal - salarii datorate» [...] ține evidența decontărilor cu personalul pentru drepturile salariale cuvenite acestuia în bani sau în natură [...]. Contul 421 [...] este un cont de pasiv."
-— OMFP 1802/2014 (Reglementările contabile), pct. 641 și pct. 421 din planul de conturi general (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementările contabile), pct. 641 și pct. 421 din planul de conturi general (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din combinarea celor două surse rezultă înregistrarea:
@@ -36,6 +36,6 @@ Din combinarea celor două surse rezultă înregistrarea:
 
 ## Ce face iConta.eu
 
-iConta.eu nu tratează indemnizația de concediu de odihnă ca pe o sumă separată de salariu — contabilul o include în venitul brut al lunii, la fel ca orice alt element salarial, iar motorul de calcul al salariului (`core/salarizare.py`, `calcul_salariu`) generează automat nota contabilă completă (641/421, 421/4315, 421/4316, 421/444) pentru întreaga sumă. Aplicația nu are astăzi un calcul dedicat al zilelor și al sumei indemnizației de concediu de odihnă pornind de la perioada de concediu programată — acel calcul (media zilnică a lunii de concediu × zile) rămâne, pentru moment, în sarcina contabilului, la introducerea brutului lunii.
+iConta.eu nu tratează indemnizația de concediu de odihnă ca pe o sumă separată de salariu — contabilul o include în venitul brut al lunii, la fel ca orice alt element salarial, iar motorul de calcul al salariului (`calcul_salariu`) generează automat nota contabilă completă (641/421, 421/4315, 421/4316, 421/444) pentru întreaga sumă. Aplicația nu are astăzi un calcul dedicat al zilelor și al sumei indemnizației de concediu de odihnă pornind de la perioada de concediu programată — acel calcul (media zilnică a lunii de concediu × zile) rămâne, pentru moment, în sarcina contabilului, la introducerea brutului lunii.
 
 [iConta.eu](/)

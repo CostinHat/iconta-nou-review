@@ -14,10 +14,10 @@ Din perspectiva firmei care primește factura, întrebarea nu e dacă furnizorul
 
 ::: ghid-temei
 „Beneficiarii care achiziționează bunuri și/sau servicii de la persoane impozabile stabilite în România, după înscrierea acestora ca inactivi în Registrul contribuabililor inactivi/reactivați conform Codului de procedură fiscală, nu beneficiază de dreptul de deducere a cheltuielilor și a taxei pe valoarea adăugată aferente achizițiilor respective, cu excepția achizițiilor de bunuri efectuate în cadrul procedurii de executare silită și/sau a achizițiilor de bunuri/servicii de la persoane impozabile aflate în procedura falimentului [...]"
-— Legea 227/2015, art. 11 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 11 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Următoarele cheltuieli nu sunt deductibile: [...] j) cheltuielile înregistrate în evidența contabilă, care au la bază un document emis de un contribuabil declarat inactiv conform prevederilor Codului de procedură fiscală [...]"
-— Legea 227/2015, art. 25 alin. (4) lit. j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (4) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Punctul de control, pentru facturile primite de firmă:
@@ -34,6 +34,6 @@ Punctul de control, pentru facturile primite de firmă:
 
 ## Ce face iConta.eu
 
-La căutarea sau introducerea unui furnizor după CUI, iConta.eu preia din API-ul public ANAF statusul curent de inactivitate al acestuia (`core/anaf_api.py`, câmpul `inactiv`), alături de denumire și plătitor de TVA. La data acestui ghid, iConta.eu **nu verifică automat, pentru fiecare factură primită și înregistrată în contabilitate, dacă furnizorul era inactiv exact la data emiterii acelei facturi** și nu recalculează deducerea la reactivare. Corelarea datei fiecărei facturi cu perioada exactă de inactivitate a furnizorului rămâne o verificare manuală.
+La căutarea sau introducerea unui furnizor după CUI, iConta.eu preia din API-ul public ANAF statusul curent de inactivitate al acestuia (câmpul `inactiv`), alături de denumire și plătitor de TVA. La data acestui ghid, iConta.eu **nu verifică automat, pentru fiecare factură primită și înregistrată în contabilitate, dacă furnizorul era inactiv exact la data emiterii acelei facturi** și nu recalculează deducerea la reactivare. Corelarea datei fiecărei facturi cu perioada exactă de inactivitate a furnizorului rămâne o verificare manuală.
 
 [iConta.eu](/)

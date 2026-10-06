@@ -18,11 +18,11 @@ Pășunatul sezonier tradițional al oilor, caprelor și bovinelor, în regim se
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 11 alin. (2) , pentru activitatea desfășurată de către zilierii prevăzuți în prezentul capitol, cuantumul remunerației brute orare stabilite de părți nu poate fi mai mic decât 50% din valoarea/oră a salariului de bază minim brut pe țară garantat în plată. (2) Remunerația netă nu poate fi mai mică decât 50% din salariul minim brut pe țară garantat în plată stabilit potrivit legii, la care se adaugă și alte drepturi, în bani sau în natură, care reprezintă cel puțin cheltuieli de cazare și masă."
-— Legea 52/2011, art. 13^10 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13^10 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(1) Beneficiarul sau un împuternicit al acestuia este obligat la plata unei cote forfetare ce reprezintă un procent de 10% din salariul minim brut pe țară garantat în plată în vigoare la data plății, pentru fiecare lucrător, conform normei stabilite de venit/persoană potrivit prezentei legi."
-— Legea 52/2011, art. 13^8 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13^8 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(2) Plata cotei forfetare prevăzută la alin. (1) se face o dată pe an, în condițiile stabilite prin ordinul comun prevăzut la art. 13^9 alin. (2) . (3) Prin excepție de la prevederile art. 9 alin. (2) , din cota forfetară se transferă către bugetul asigurărilor sociale de stat sumele aferente contribuției prevăzute la art. 9 alin. (1) ."
-— Legea 52/2011, art. 13^8 alin. (2)-(3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13^8 alin. (2)-(3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

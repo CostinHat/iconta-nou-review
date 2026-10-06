@@ -14,10 +14,10 @@ Din cercetarea legislației, aceste două subiecte nu se intersectează. D205 es
 
 ::: ghid-temei
 „Declarația informativă privind impozitul reținut la sursă și câștigurile/pierderile din investiții, pe beneficiari de venit"
-— titlul formularului 205, aprobat prin Ordinul președintelui A.N.A.F. nr. 179/2022, cu modificările Ordinului nr. 303/2026 (sursă: anaf_surse/opanaf_303_2026_d205.txt)
+— titlul formularului 205, aprobat prin Ordinul președintelui A.N.A.F. nr. 179/2022, cu modificările Ordinului nr. 303/2026 (sursă: [OPANAF nr. 303/2026 privind modificarea anexei nr. 1 la OPANAF nr. 179/2022 (formularul 205)](https://legislatie.just.ro/Public/DetaliiDocument/308166))
 
 „a) rezerva legală este deductibilă în limita unei cote de 5% aplicate asupra profitului contabil, la care se adaugă cheltuielile cu impozitul pe profit, până ce aceasta va atinge a cincea parte din capitalul social subscris și vărsat sau din patrimoniu, după caz."
-— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Ce raportează D205:** impozitul pe venit reținut la sursă de plătitorii de venit (dividende, dobânzi, drepturi de proprietate intelectuală, premii etc.), defalcat pe fiecare beneficiar persoană fizică, plus câștigurile/pierderile din investiții. Se depune anual de către plătitorii de venituri cu obligație de reținere la sursă. Nu conține și nu are cum să conțină informații despre rezerva legală a societății plătitoare — cele două privesc paliere fiscale diferite (impozitul pe venitul beneficiarului vs. impozitul pe profitul plătitorului).

@@ -14,7 +14,7 @@ Statul de plată lunar nu e doar o listă de cifre calculate de motorul de salar
 
 ::: ghid-temei
 „Salariații beneficiază lunar de un număr de tichete de masă cel mult egal cu numărul de zile lucrate, iar acest număr nu poate depăși numărul de zile lucrătoare din luna pentru care se acordă tichetele."
-— HG 1045/2018, Normele metodologice, art. 10 alin. (3) (sursă: anaf_surse/hg_1045_2018_norme_consolidat.txt)
+— HG 1045/2018, Normele metodologice, art. 10 alin. (3) (sursă: [HG nr. 1045/2018 (Normele metodologice de aplicare a Legii nr. 165/2018 privind biletele de valoare)](https://legislatie.just.ro/Public/DetaliiDocument/209698))
 :::
 
 - **Tichete de masă vs. pontaj**: legea leagă explicit numărul de tichete de zilele efectiv lucrate — dacă pontajul lunii nu e confirmat, angajatorul nu are cum să știe câte zile s-au lucrat, deci nu poate acorda tichetele fără riscul de a depăși plafonul legal.

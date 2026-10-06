@@ -14,13 +14,13 @@ RO e-Factura și RO e-Transport nu sunt același sistem și nu se condiționeaz�
 
 ::: ghid-temei
 „(1) Ministerul Finanţelor, prin Centrul Naţional pentru Informaţii Financiare, creează, dezvoltă şi administrează sistemul naţional privind factura electronică RO e-Factura."
-— OUG 120/2021, art. 3 alin. (1) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 3 alin. (1) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 
 „Sistemul RO e-Transport reprezintă ansamblul de principii, reguli şi aplicaţii informatice având drept scop monitorizarea transporturilor de bunuri cu risc fiscal ridicat pe teritoriul naţional, care permite autorităţilor competente determinarea potenţialelor puncte de deturnare din sau în lanţul de aprovizionare, pe baza codului UIT."
-— OUG 41/2022, art. 3 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 3 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „a) Sistemul național privind factura electronică RO e-Factura, prevăzut la art. 3 alin. (2) din Ordonanța de urgență a Guvernului nr. 120/2021 [...]; b) Sistemul național RO e-Transport, prevăzut la art. 3 din Ordonanța de urgență a Guvernului nr. 41/2022 [...]"
-— OUG 70/2024, art. 2 alin. (1) lit. a) și b) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 2 alin. (1) lit. a) și b) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Ce arată concret cele trei texte, puse cap la cap:

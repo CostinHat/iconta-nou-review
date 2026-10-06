@@ -31,6 +31,6 @@ Greșeala tipică e tratarea reconcilierii ca pe o singură cifră totală ("tax
 
 ## Ce face iConta.eu
 
-`verifica_d112` (`core/control_incrucisat.py`) automatizează cei șase pași de mai sus pentru fiecare lună: alege sursa corectă a declarației, parsează sumele din XML, citește rulajele validate, aplică toleranța dinamică și afișează verdictul pe fiecare cont în parte, cu cauza divergenței și remediul recomandat — niciodată o cifră agregată care ar putea ascunde erori individuale.
+`verifica_d112` automatizează cei șase pași de mai sus pentru fiecare lună: alege sursa corectă a declarației, parsează sumele din XML, citește rulajele validate, aplică toleranța dinamică și afișează verdictul pe fiecare cont în parte, cu cauza divergenței și remediul recomandat — niciodată o cifră agregată care ar putea ascunde erori individuale.
 
 [iConta.eu](/)

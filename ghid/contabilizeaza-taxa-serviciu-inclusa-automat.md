@@ -32,6 +32,6 @@ Legea condiționează explicit tot regimul special (fără TVA, fără impozit p
 
 ## Ce face iConta.eu
 
-Motorul F010 din iConta.eu (`core/bacsis.py`) implementează exact traseul bacșișului voluntar definit de Legea 376/2022 — încasare pe bon + distribuire la salariați cu impozit 10%. O taxă de serviciu obligatorie, care nu e bacșiș în sensul legii, nu are un tratament dedicat identificat în acest modul; ea urmează regimul normal al prețului serviciului prestat (parte din baza de TVA și din venitul firmei), nu regimul special F010. Dacă operatorul aplică efectiv o astfel de taxă obligatorie, tratamentul ei corect ține de o verificare separată, nu de acest modul.
+Motorul F010 din iConta.eu implementează exact traseul bacșișului voluntar definit de Legea 376/2022 — încasare pe bon + distribuire la salariați cu impozit 10%. O taxă de serviciu obligatorie, care nu e bacșiș în sensul legii, nu are un tratament dedicat identificat în acest modul; ea urmează regimul normal al prețului serviciului prestat (parte din baza de TVA și din venitul firmei), nu regimul special F010. Dacă operatorul aplică efectiv o astfel de taxă obligatorie, tratamentul ei corect ține de o verificare separată, nu de acest modul.
 
 [iConta.eu](/)

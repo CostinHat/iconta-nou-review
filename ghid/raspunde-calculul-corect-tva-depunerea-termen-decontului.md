@@ -16,13 +16,13 @@ Pentru un cabinet, regula arată cine poartă consecințele față de buget cân
 
 ::: ghid-temei
 „Orice persoană obligată la plata taxei poartă răspunderea pentru calcularea corectă și plata la termenul legal a taxei către bugetul de stat și pentru depunerea la termenul legal a decontului și declarațiilor prevăzute la art. 323-325 , la organul fiscal competent, conform prezentului titlu și legislației vamale în vigoare."
-— Codul fiscal (Legea 227/2015), art. 327 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 327 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."
-— Codul fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Orice persoană trebuie să achite taxa de plată organelor fiscale până la data la care are obligația depunerii unuia dintre deconturile sau declarațiile prevăzute la art. 323 și 324 ."
-— Codul fiscal (Legea 227/2015), art. 326 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 326 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce acoperă răspunderea:

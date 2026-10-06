@@ -14,10 +14,10 @@ Alegerea între micro și profit nu mai este, din 2026, o discuție despre cote 
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea nr. 227/2015 (Codul fiscal), art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt), astfel cum a fost modificat prin OUG nr. 89/2025
+— Legea nr. 227/2015 (Codul fiscal), art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)), astfel cum a fost modificat prin OUG nr. 89/2025
 
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea nr. 227/2015 (Codul fiscal), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă cifrele astea pentru decizie:
@@ -34,6 +34,6 @@ Ce înseamnă cifrele astea pentru decizie:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe veniturile microîntreprinderilor (D100 trimestrial) și impozitul pe profit (D101 anual) în funcție de regimul fiscal setat de contabil în profilul firmei (`core/vector_fiscal_api.py`), folosind cotele curente în vigoare (1% micro, 16% profit). Aplicația **nu recomandă și nu simulează** automat care regim e mai avantajos pentru firmă — comparația între cele două scenarii, pe baza structurii reale de venituri și cheltuieli, rămâne o analiză pe care contabilul o face separat.
+La data acestui ghid, iConta.eu calculează impozitul pe veniturile microîntreprinderilor (D100 trimestrial) și impozitul pe profit (D101 anual) în funcție de regimul fiscal setat de contabil în profilul firmei, folosind cotele curente în vigoare (1% micro, 16% profit). Aplicația **nu recomandă și nu simulează** automat care regim e mai avantajos pentru firmă — comparația între cele două scenarii, pe baza structurii reale de venituri și cheltuieli, rămâne o analiză pe care contabilul o face separat.
 
 [iConta.eu](/)

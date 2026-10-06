@@ -15,7 +15,7 @@ Parțial, nu integral. Un PFA care își desfășoară activitatea la domiciliu 
 ::: ghid-temei
 „Articolul 68 [...]
 (7) Nu sunt cheltuieli deductibile: a) sumele sau bunurile utilizate de contribuabil pentru uzul personal sau al familiei sale; [...]"
-— Cod fiscal, art. 68 alin. (7) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 68 alin. (7) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Corelat cu principiul general de la același articol — „sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul realizării de venituri" (art. 68 alin. (1)) — rezultă un tratament clar pentru energia electrică la domiciliu:

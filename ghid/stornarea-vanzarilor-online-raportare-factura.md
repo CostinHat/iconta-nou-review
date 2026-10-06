@@ -14,7 +14,7 @@ Odată ce o factură electronică a fost comunicată destinatarului prin sistemu
 
 ::: ghid-temei
 „Factura electronică comunicată destinatarului nu se poate returna în sistemul naţional privind factura electronică RO e-Factura. [...] Corecţia facturii electronice comunicată destinatarului în sistemul RO e-Factura se efectuează conform art. 330 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare. Factura electronică corectată se transmite în cadrul aceluiaşi sistem naţional privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 4 alin. (8) și (10) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (8) și (10) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce presupune, practic, stornarea unei vânzări online deja facturate prin e-Factura:

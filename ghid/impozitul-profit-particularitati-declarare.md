@@ -14,12 +14,12 @@ Contrar așteptării că o societate pe acțiuni ar avea un regim fiscal special
 
 ::: ghid-temei
 „Sunt obligate la plata impozitului pe profit, conform prezentului titlu, următoarele persoane, denumite în continuare contribuabili: a) persoanele juridice române, cu excepțiile prevăzute la alin. (2)[.]"
-— Codul fiscal (Legea 227/2015), art. 13 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 13 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „[Societatea-mamă] este constituită ca o «societate pe acțiuni», «societate în comandită pe acțiuni», «societate cu răspundere limitată», «societate în nume colectiv», «societate în comandită simplă» sau are forma de organizare a unei alte persoane juridice aflate sub incidența legislației române[.]"
-— Codul fiscal (Legea 227/2015), art. 24 alin. (1) lit. a) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 24 alin. (1) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Categoria de contribuabili obligați la impozitul pe profit e definită la art. 13 alin. (1) lit. a) prin sintagma generică „persoanele juridice române" — Codul fiscal nu introduce, la nivelul acestui articol sau al Titlului II în ansamblu, o subcategorie separată pentru societățile pe acțiuni.

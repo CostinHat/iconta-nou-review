@@ -32,6 +32,6 @@ Calculul corect pornește mereu de la venituri, nu de la profit: se identifică 
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d100.py`) aplică exact această logică: baza impozabilă vine din soldurile creditoare ale conturilor 70x, 75x, 76x, minus debitul contului 709, fără nicio scădere de cheltuieli, iar impozitul rezultă din înmulțirea cu 1%. Nu există, în acest calcul, niciun pas care să scadă cheltuieli deductibile — aplicația urmează strict logica „pe venituri" a legii, nu logica „pe profit" a impozitului pe profit.
+Motorul de calcul aplică exact această logică: baza impozabilă vine din soldurile creditoare ale conturilor 70x, 75x, 76x, minus debitul contului 709, fără nicio scădere de cheltuieli, iar impozitul rezultă din înmulțirea cu 1%. Nu există, în acest calcul, niciun pas care să scadă cheltuieli deductibile — aplicația urmează strict logica „pe venituri" a legii, nu logica „pe profit" a impozitului pe profit.
 
 [iConta.eu](/)

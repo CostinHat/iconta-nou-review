@@ -14,7 +14,7 @@ Un magazin online nu are un regim fiscal special doar pentru că vinde prin inte
 
 ::: ghid-temei
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile;"
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un magazin online organizat ca SRL, structura taxelor din 2026 arată astfel:
@@ -33,6 +33,6 @@ Pentru un magazin online organizat ca SRL, structura taxelor din 2026 arată ast
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) și generează declarațiile aferente — D100 pentru regimul micro, D101 pentru impozitul pe profit (`core/d100.py`, `core/d101.py`) — precum și deconturile de TVA (`core/d300.py`). Pentru magazinele online conectate la un magazin propriu, aplicația poate importa automat comenzile prin conectorul WooCommerce (`core/woocommerce.py`), generând facturi pe baza lor. Aplicația nu decide însă strategia fiscală a firmei (de exemplu momentul optim de trecere de la micro la profit) — aceasta rămâne o analiză pe care contabilul o face pe baza cifrelor reale ale magazinului.
+La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) și generează declarațiile aferente — D100 pentru regimul micro, D101 pentru impozitul pe profit — precum și deconturile de TVA. Pentru magazinele online conectate la un magazin propriu, aplicația poate importa automat comenzile prin conectorul WooCommerce, generând facturi pe baza lor. Aplicația nu decide însă strategia fiscală a firmei (de exemplu momentul optim de trecere de la micro la profit) — aceasta rămâne o analiză pe care contabilul o face pe baza cifrelor reale ale magazinului.
 
 [iConta.eu](/)

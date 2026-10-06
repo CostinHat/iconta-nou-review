@@ -16,7 +16,7 @@ O firmă poate avea conturi deschise la mai multe bănci sau instituții de plat
 „(1) Instituțiile de credit, instituțiile de plată și instituțiile emitente de monedă electronică au obligația ca, la solicitarea organului fiscal central, să comunice, pentru fiecare titular care face subiectul solicitării, toate rulajele și/sau soldurile conturilor deschise la acestea, precum și informațiile și documentele privind operațiunile derulate prin respectivele conturi.
 (2) Instituțiile de credit, instituțiile de plată și instituțiile emitente de monedă electronică sunt obligate să comunice organului fiscal central, zilnic, următoarele informații:
 a) lista titularilor persoane fizice, juridice sau altor entități fără personalitate juridică ce deschid ori închid conturi bancare sau de plăți [...], precum și cu informațiile privind numărul IBAN și data deschiderii și închiderii pentru fiecare cont în parte [...]."
-— Legea 207/2015 (Codul de procedură fiscală), art. 61 alin. (1) și (2) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 61 alin. (1) și (2) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă cine poartă, de fapt, obligația de raportare:

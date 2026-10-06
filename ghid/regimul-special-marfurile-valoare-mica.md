@@ -14,7 +14,7 @@ Pentru coletele importate din afara UE cu valoare mică (sub 150 euro), legea pr
 
 ::: ghid-temei
 „În situația în care pentru importul bunurilor, cu excepția produselor care fac obiectul accizelor, în loturi cu o valoare intrinsecă de maximum 150 euro, nu se utilizează regimul special prevăzut la art. 315^2, persoana care prezintă bunurile în vamă în numele persoanei căreia îi sunt destinate acestea pe teritoriul României poate să utilizeze mecanismul special pentru declararea și plata TVA la import, pe baza autorizației emise de autoritatea vamală competentă și sub rezerva constituirii unei garanții, în cazul acelor bunuri pentru care expedierea sau transportul se încheie în România."
-— Legea 227/2015, art. 315^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 315^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferențele esențiale între cele două mecanisme:

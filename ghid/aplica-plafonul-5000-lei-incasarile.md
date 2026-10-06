@@ -14,7 +14,7 @@ Plafonul de 5.000 lei nu se aplică "pe factură" sau "pe zi în total", ci dup�
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei."
-— Legea 70/2015, art. 3 alin. (1) lit. a) și alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. a) și alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Formula de calcul, în trei pași:
@@ -32,6 +32,6 @@ Formula de calcul, în trei pași:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/casa.py` implementează exact acest mecanism în funcția `verifica_plafon()`: operațiunile sunt grupate pe zi și pe partener (`defaultdict` cheiat pe partener), sumele se cumulează pentru fiecare persoană juridică în parte, iar depășirea constantei `PLAFON_INCASARE_PJ = Decimal("5000")` generează un avertisment (`PLAFON_INCASARE_PJ`) cu suma găsită și plafonul aplicabil. Verificarea acoperă cumulul zilnic pe partener descris de art. 3 alin. (1) lit. a); interdicția separată de fragmentare pe o singură factură mare (art. 3 alin. (2)) nu e verificată distinct de aplicație.
+La data acestui ghid, aplicația implementează exact acest mecanism în funcția `verifica_plafon()`: operațiunile sunt grupate pe zi și pe partener (`defaultdict` cheiat pe partener), sumele se cumulează pentru fiecare persoană juridică în parte, iar depășirea constantei `PLAFON_INCASARE_PJ = Decimal("5000")` generează un avertisment (`PLAFON_INCASARE_PJ`) cu suma găsită și plafonul aplicabil. Verificarea acoperă cumulul zilnic pe partener descris de art. 3 alin. (1) lit. a); interdicția separată de fragmentare pe o singură factură mare (art. 3 alin. (2)) nu e verificată distinct de aplicație.
 
 [iConta.eu](/)

@@ -16,18 +16,18 @@ Ajustarea e însă o problemă separată. Bunurile lipsă din alte cauze decât 
 
 ::: ghid-temei
 „a) bunuri lipsă în gestiune din alte cauze decât cele prevăzute la art. 304 alin. (2) din Codul fiscal. În cazul bunurilor lipsă din gestiune care sunt imputate, sumele imputate nu sunt considerate contravaloarea unor operațiuni în sfera de aplicare a TVA, indiferent dacă pentru acestea este sau nu obligatorie ajustarea taxei;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (6) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (6) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul bunurilor lipsă din gestiune, altele decât cele prevăzute la art. 305 alin. (4) lit. d) pct. 1 și 2 din Codul fiscal, care sunt imputate, sumele imputate nu sunt considerate contravaloarea unor operațiuni în sfera de aplicare a TVA, indiferent dacă pentru acestea este sau nu obligatorie ajustarea taxei."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 79 alin. (10) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 79 alin. (10) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „persoana impozabilă își pierde sau câștiga dreptul de deducere a taxei pentru bunurile mobile nelivrate și serviciile neutilizate."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două întrebări, separat:

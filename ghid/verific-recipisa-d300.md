@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(4) Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. în cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Alte elemente utile, din același articol:
@@ -32,6 +32,6 @@ Alte elemente utile, din același articol:
 
 iConta.eu nu are, în cod, o funcție de verificare a stării de validare a unei declarații direct din SPV — motorul de control fiscal semnalează explicit acest lucru ca o limită cunoscută: nu există niciun modul care să confirme dacă D300 (sau D390) depuse efectiv la ANAF coincid cu ce calculează aplicația, pentru că o asemenea confirmare ar necesita conectare directă la Spațiul Privat Virtual.
 
-Ce face efectiv aplicația, prin funcționalitatea **F251 — panoul de rânduri manuale D300** (`core/d300_manual_api.py`), e o verificare internă diferită: garantează **paritatea între ce se vede în preview și ce se depune** — rândurile introduse manual (regularizări, ajustări care nu rezultă din facturi) sunt persistate în tabelul `d300_manual` și recitite identic la generarea XML-ului final, indiferent dacă acesta vine din previzualizare sau din coada efectivă de depunere. Aceasta e o garanție de consistență a conținutului declarației înainte de trimitere, nu o confirmare a recipisei primite de la ANAF după trimitere — verificarea propriu-zisă a recipisei/statusului de validare rămâne, azi, o operațiune făcută direct în SPV.
+Ce face efectiv aplicația, prin funcționalitatea **F251 — panoul de rânduri manuale D300**, e o verificare internă diferită: garantează **paritatea între ce se vede în preview și ce se depune** — rândurile introduse manual (regularizări, ajustări care nu rezultă din facturi) sunt persistate în tabelul `d300_manual` și recitite identic la generarea XML-ului final, indiferent dacă acesta vine din previzualizare sau din coada efectivă de depunere. Aceasta e o garanție de consistență a conținutului declarației înainte de trimitere, nu o confirmare a recipisei primite de la ANAF după trimitere — verificarea propriu-zisă a recipisei/statusului de validare rămâne, azi, o operațiune făcută direct în SPV.
 
 [iConta.eu](/)

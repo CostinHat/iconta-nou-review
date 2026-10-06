@@ -16,15 +16,15 @@ Calculul se aplică chiriilor plătite de persoane fizice sau de alți plătitor
 
 ::: ghid-temei
 „Venitul brut din cedarea folosinței bunurilor din patrimoniul personal, altele decât veniturile plătite de persoane juridice sau alte entități care au obligația de a conduce evidență contabilă, din arendarea bunurilor agricole, precum și din închirierea pe termen scurt de către proprietari, uzufructuari sau alți deținători legali a camerelor situate în locuințe proprietate personală reprezintă totalitatea sumelor în bani și/sau echivalentul în lei al veniturilor în natură stabilite potrivit contractului încheiat între părți, pentru fiecare an fiscal, indiferent de momentul încasării acestora. Venitul brut se majorează cu valoarea cheltuielilor ce cad, conform dispozițiilor legale, în sarcina proprietarului, uzufructuarului sau a altui deținător legal, dacă sunt efectuate de cealaltă parte contractantă."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se stabilește prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra venitului brut."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Reprezintă venit brut și valoarea investițiilor la bunurile mobile și imobile ale proprietarului, uzufructuarului sau ale altui deținător legal, care fac obiectul unor contracte de cedare a folosinței bunurilor, inclusiv al contractelor de comodat, și care sunt efectuate de cealaltă parte contractantă."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul IV, pct. 20 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul IV, pct. 20 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pas cu pas:

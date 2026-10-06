@@ -16,7 +16,7 @@ Anul 2026 aduce, pe lângă formula de bază din OUG 158/2005, o regulă suplime
 „Pentru persoanele prevăzute la art. 1 alin. (1) lit. A și B, baza de calcul al indemnizațiilor prevăzute la art. 2 se determină ca medie a veniturilor brute lunare din ultimele 6 luni din cele 12 luni din care se constituie stagiul de asigurare, până la limita a 12 salarii minime brute pe țară lunar [...]."
 
 „Pentru certificatele de concediu medical eliberate în perioada 1 februarie 2026-31 decembrie 2027, indemnizațiile de asigurări sociale de sănătate prevăzute prin [OUG 158/2005] [...] se calculează și se plătesc prin diminuarea cu o zi și se suportă după cum urmează: a) de către angajator, din a 2-a zi până inclusiv în a 6-a zi de incapacitate temporară de muncă [...]; b) din bugetul [FNUASS], începând cu: (i) ziua următoare celor suportate de angajator [...]."
-— OUG 158/2005, art. 10 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt); OUG 91/2025, art. II alin. (1) (sursă: anaf_surse/oug_91_2025.txt)
+— OUG 158/2005, art. 10 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305)); OUG 91/2025, art. II alin. (1) (sursă: [OUG nr. 91/2025 privind stabilirea unor măsuri în cadrul sistemului de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/306237))
 :::
 
 Pașii calculului, în ordine:
@@ -33,7 +33,7 @@ Pașii calculului, în ordine:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`, funcția `calcul_cm`) e dispecerizat pe data certificatului și aplică automat regula corectă pentru 2026: baza pe 6 luni, procentul pe cod și, pentru certificatele din fereastra 1 februarie 2026 – 31 decembrie 2027, diminuarea de o zi, cu excepțiile ei. Nu există un ecran separat „calculator" — calculul rulează în spatele ecranului de introducere a certificatelor de concediu medical din fișa salariatului, unde contabilul completează certificatul și primește direct rezultatul.
+Motorul de calcul (funcția `calcul_cm`) e dispecerizat pe data certificatului și aplică automat regula corectă pentru 2026: baza pe 6 luni, procentul pe cod și, pentru certificatele din fereastra 1 februarie 2026 – 31 decembrie 2027, diminuarea de o zi, cu excepțiile ei. Nu există un ecran separat „calculator" — calculul rulează în spatele ecranului de introducere a certificatelor de concediu medical din fișa salariatului, unde contabilul completează certificatul și primește direct rezultatul.
 
 O limitare reală, verificată în cod: plafonarea bazei de calcul la 12 salarii minime brute pe lună (art. 10 alin. (1)), deși motorul o suportă tehnic, nu se aplică în practică astăzi, pentru că niciun ecran din aplicație nu trimite veniturile defalcate pe fiecare din cele 6 luni — se introduce doar suma agregată. La salariați cu venituri peste plafon, indemnizația calculată poate ieși mai mare decât permite legea.
 

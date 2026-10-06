@@ -15,7 +15,7 @@ Ambele proceduri urmăresc același scop — stabilirea corectă a situației fi
 ::: ghid-temei
 „ART. 113 Obiectul inspecției fiscale (1) Inspecția fiscală reprezintă activitatea ce are ca obiect verificarea legalității și conformității declarațiilor fiscale, corectitudinii și exactității îndeplinirii obligațiilor în legătură cu stabilirea obligațiilor fiscale de către contribuabil/plătitor, respectării prevederilor legislației fiscale și contabile, verificarea sau stabilirea, după caz, a bazelor de impozitare și a situațiilor de fapt aferente, stabilirea diferențelor de obligații fiscale principale.
 ART. 148 Sfera și obiectul verificării documentare (1) Pentru stabilirea corectă a situației fiscale a contribuabilului/plătitorului, organul fiscal poate proceda la o verificare documentară. (2) Verificarea documentară constă în efectuarea unei analize de coerență a situației fiscale a contribuabilului/plătitorului, pe baza documentelor existente la dosarul fiscal al contribuabilului/plătitorului, precum și pe baza oricăror informații și documente transmise de terți sau deținute de organul fiscal, care au relevanță pentru determinarea situației fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 113 alin. (1) și art. 148 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 113 alin. (1) și art. 148 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Diferențele practice esențiale:

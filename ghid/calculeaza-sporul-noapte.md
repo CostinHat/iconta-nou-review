@@ -14,7 +14,7 @@ Munca de noapte nu e compensată automat cu un procent fix — Codul muncii dă 
 
 ::: ghid-temei
 „Munca prestată între orele 22,00-6,00 este considerată muncă de noapte. [...] Salariații de noapte beneficiază: a) fie de program de lucru redus cu o oră față de durata normală a zilei de muncă, pentru zilele în care efectuează cel puțin 3 ore de muncă de noapte, fără ca aceasta să ducă la scăderea salariului de bază; [...] b) fie de un spor pentru munca prestată în timpul nopții de 25% din salariul de bază, dacă timpul astfel lucrat reprezintă cel puțin 3 ore de noapte din timpul normal de lucru."
-— Legea 53/2003 (Codul muncii), art. 125 alin. (1) și art. 126 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 125 alin. (1) și art. 126 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Mecanismul concret:

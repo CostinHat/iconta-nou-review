@@ -16,12 +16,12 @@ Regula vizează tratamentele neuniforme ale rezidenței fiscale. Ea se aplică f
 
 ::: ghid-temei
 „În măsura în care sumele reprezentând plăți, cheltuieli sau pierderi realizate de un contribuabil care își are rezidența fiscală în România și într-o altă jurisdicție fiscală sunt deductibile din baza impozabilă în ambele jurisdicții, contribuabilului nu i se acordă dreptul de deducere în cazul în care cealaltă jurisdicție fiscală permite ca deducerea duplicată să fie compensată cu venituri care nu reprezintă venituri cu dublă includere. În situația în care cealaltă jurisdicție este tot un stat membru și, în temeiul unei convenții de evitare a dublei impuneri încheiate între România și acel stat, contribuabilul nu este considerat ca fiind rezident fiscal în România, acestuia nu i se acordă deducerea pentru plățile/cheltuielile/pierderile respective."
-— Codul fiscal (Legea 227/2015), art. 40^8 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 40^8 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „venituri cu dublă includere - orice element de venit care este inclus atât în temeiul prezentului titlu, cât și în temeiul legislației celeilalte jurisdicții implicate în apariția tratamentului neuniform;"
-— Codul fiscal (Legea 227/2015), art. 40^1 pct. 11 lit. e) subpct. (vi) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 40^1 pct. 11 lit. e) subpct. (vi) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se citește regula:

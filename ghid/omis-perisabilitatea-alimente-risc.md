@@ -30,6 +30,6 @@ Dacă perisabilitatea e recunoscută și documentată la timp (verificare faptic
 
 ## Ce face iConta.eu
 
-Nota de perisabilitate (`core/uc_tenants.py:4085`, `nota_perisabilitati`) cere luna deschisă și separă automat 607 deductibil de nedeductibil pe baza procentului introdus, cu ajustarea de TVA aferentă părții peste limită — dar aplicația nu detectează singură o lipsă neînregistrată din gestiune; dacă nota nu e introdusă deloc, nimic din motorul F066 nu intervine, iar riscul de recalificare ca lipsă nedeductibilă rămâne integral al contabilului care nu a înregistrat-o la timp.
+Nota de perisabilitate (`nota_perisabilitati`) cere luna deschisă și separă automat 607 deductibil de nedeductibil pe baza procentului introdus, cu ajustarea de TVA aferentă părții peste limită — dar aplicația nu detectează singură o lipsă neînregistrată din gestiune; dacă nota nu e introdusă deloc, nimic din motorul F066 nu intervine, iar riscul de recalificare ca lipsă nedeductibilă rămâne integral al contabilului care nu a înregistrat-o la timp.
 
 [iConta.eu](/)

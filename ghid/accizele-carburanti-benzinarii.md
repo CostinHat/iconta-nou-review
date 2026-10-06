@@ -14,7 +14,7 @@ Carburanții (benzină, motorină) sunt produse accizabile, dar o benzinărie ca
 
 ::: ghid-temei
 „(7) Este interzisă deținerea unui produs accizabil în afara antrepozitului fiscal, dacă acciza pentru acel produs nu a fost percepută. Deținerea de produse accizabile în afara antrepozitului fiscal, pentru care nu se poate face dovada perceperii accizelor, atrage obligația de plată a acestora."
-— Legea nr. 227/2015 (Codul fiscal), Titlul VIII — Accize și alte taxe speciale, art. 362 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), Titlul VIII — Accize și alte taxe speciale, art. 362 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la o benzinărie tipică (care nu deține ea însăși un antrepozit fiscal de producție/depozitare a carburanților):

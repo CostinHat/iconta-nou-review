@@ -14,15 +14,15 @@ Dacă firma aplică TVA la încasare, sau cumpără de la un furnizor care o apl
 
 ::: ghid-temei
 „Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă care aplică sistemul TVA la încasare conform prevederilor art. 282 alin. (3)-(8) este amânat până în momentul în care taxa aferentă bunurilor și serviciilor care i-au fost livrate/prestate a fost plătită furnizorului/prestatorului său"
-— Codul fiscal (Legea 227/2015), art. 297 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 297 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „se ajustează la data la care intervine evenimentul care generează ajustarea conform art. 305 alin. (4) lit. a), c) și d) din Codul fiscal, luând în considerare taxa aferentă sumei plătite."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (18) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (18) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „dacă la data la care intervine un eveniment care generează ajustarea nu a fost achitată integral taxa aferentă achiziției, pe măsură ce se plătește diferența de taxă, se determină taxa care ar fi deductibilă sau nedeductibilă corespunzător utilizării bunului de capital pentru operațiuni cu ori fără drept de deducere în cadrul perioadei de ajustare și se evidențiază în decontul de taxă aferent perioadei fiscale în care taxa a fost plătită."
-— HG 1/2016, Titlul VII, pct. 79 alin. (19) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 79 alin. (19) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Regula are trei pași:

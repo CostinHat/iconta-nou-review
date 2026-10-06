@@ -17,7 +17,7 @@ Factura electronică emisă prin RO e-Factura nu este un format liber — respec
 a) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, care sunt aplicabile la nivel naţional;
 b) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional;
 c) conţinutul semantic aşa cum este descris în standardul SR EN 16931-1, sintaxele identificate în CEN/TS 16931-2 [...] şi corelarea adecvată definită în subpartea aplicabilă a CEN/TS 16931-3."
-— OUG nr. 120/2021, art. 4 alin. (1) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (1) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce înseamnă, practic, pentru importul într-un program de contabilitate:
@@ -34,6 +34,6 @@ Ce înseamnă, practic, pentru importul într-un program de contabilitate:
 
 ## Ce face iConta.eu
 
-iConta.eu are un parser dedicat pentru structura RO e-Factura: `core/efactura_import.py` citește arhiva ZIP descărcată din SPV, identifică fișierul XML (format UBL 2.1 / CIUS-RO) și extrage numărul facturii, data emiterii, scadența, datele furnizorului și clientului (după CUI), totalul cu TVA, valoarea TVA, moneda și liniile facturii. Direcția facturii (emisă sau primită) se determină automat prin compararea CUI-ului furnizorului din XML cu CUI-ul firmei din aplicație. Rezultatul parsării alimentează fluxul descris în ghidul despre importul automat al facturilor primite, unde validarea finală rămâne, totuși, la latitudinea contabilului.
+iConta.eu are un parser dedicat pentru structura RO e-Factura: Aplicația citește arhiva ZIP descărcată din SPV, identifică fișierul XML (format UBL 2.1 / CIUS-RO) și extrage numărul facturii, data emiterii, scadența, datele furnizorului și clientului (după CUI), totalul cu TVA, valoarea TVA, moneda și liniile facturii. Direcția facturii (emisă sau primită) se determină automat prin compararea CUI-ului furnizorului din XML cu CUI-ul firmei din aplicație. Rezultatul parsării alimentează fluxul descris în ghidul despre importul automat al facturilor primite, unde validarea finală rămâne, totuși, la latitudinea contabilului.
 
 [iConta.eu](/)

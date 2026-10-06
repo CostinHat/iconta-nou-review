@@ -14,7 +14,7 @@ Ridicarea de numerar din contul bancar al firmei, pentru alimentarea casieriei, 
 
 ::: ghid-temei
 „Dispoziția de plată/încasare către casierie servește ca: [...] document justificativ de înregistrare în Registrul de casă și în contabilitate, în cazul plăților în numerar efectuate fără alt document justificativ. Dispoziția de plată/încasare către casierie se întocmește: [...] în cazul utilizării ca dispoziție de încasare, când nu există alte documente prin care se dispune încasarea (avize de plată, somații de plată etc.)."
-— OMFP nr. 2634/2015 privind documentele financiar-contabile, Anexa 2 — Norme specifice, document cod 14-4-4 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2634/2015 privind documentele financiar-contabile, Anexa 2 — Norme specifice, document cod 14-4-4 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Câteva precizări pentru operațiunea propriu-zisă:
@@ -31,6 +31,6 @@ Câteva precizări pentru operațiunea propriu-zisă:
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul dedicat casieriei (`core/casa.py`), care tratează explicit operațiunea de „ridicare_banca" ca mișcare de trezorerie internă, prin contul de viramente interne: nota contabilă generată este Casă (5311/5314) = 581 „Viramente interne", urmată de 581 = Bancă (5121/5124). Modulul citează explicit ca sursă Legea nr. 70/2015 (plafoanele de numerar) și OMFP nr. 1802/2014 (planul de conturi și monografiile contabile), și este construit special ca operațiunile de ridicare/depunere din/în bancă să nu fie confundate cu încasările sau plățile către clienți/furnizori, care au propriile plafoane legale.
+Da — iConta.eu are un modul dedicat casieriei, care tratează explicit operațiunea de „ridicare_banca" ca mișcare de trezorerie internă, prin contul de viramente interne: nota contabilă generată este Casă (5311/5314) = 581 „Viramente interne", urmată de 581 = Bancă (5121/5124). Modulul citează explicit ca sursă Legea nr. 70/2015 (plafoanele de numerar) și OMFP nr. 1802/2014 (planul de conturi și monografiile contabile), și este construit special ca operațiunile de ridicare/depunere din/în bancă să nu fie confundate cu încasările sau plățile către clienți/furnizori, care au propriile plafoane legale.
 
 [iConta.eu](/)

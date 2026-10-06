@@ -14,7 +14,7 @@ Comercianții care țin evidența mărfurilor la preț de vânzare cu amănuntul
 
 ::: ghid-temei
 „Repartizarea diferențelor de preț asupra valorii bunurilor ieșite și asupra stocurilor se efectuează cu ajutorul unui coeficient [...]. La calcularea procentului mediu de adaos comercial, soldul inițial al contului de mărfuri și valoarea intrărilor de mărfuri nu vor include TVA neexigibilă. Acest coeficient se înmulțește cu valoarea bunurilor ieșite din gestiune la preț de înregistrare, iar suma rezultată se înregistrează în conturile corespunzătoare în care au fost înregistrate bunurile ieșite. [...] În comerțul cu amănuntul poate fi utilizată metoda prețului cu amănuntul, pentru a determina costul stocurilor de articole numeroase și cu mișcare rapidă, care au marje similare [...]. În această situație, costul bunurilor vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor."
-— OMFP 1802/2014, reglementări contabile, pct. 286 alin. (4), nota *2) și alin. (8) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementări contabile, pct. 286 alin. (4), nota *2) și alin. (8) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, calculul are doi pași:

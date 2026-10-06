@@ -16,15 +16,15 @@ Data contează pentru dreptul de deducere al clientului. Codul fiscal leagă pie
 
 ::: ghid-temei
 „înscrierea în registrul prevăzut la alin. (11) se face de către organul fiscal central emitent, după comunicarea deciziei de declarare în inactivitate/reactivare, în termen de cel mult 5 zile de la data comunicării."
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Decizia de declarare în inactivitate/reactivare produce efecte față de terți din ziua următoare datei înscrierii în registrul prevăzut la alin. (10)."
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (13) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (13) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Beneficiarii care achiziționează bunuri și/sau servicii de la persoane impozabile stabilite în România, după înscrierea acestora ca inactivi în Registrul contribuabililor inactivi/reactivați conform Codului de procedură fiscală, nu beneficiază de dreptul de deducere a cheltuielilor și a taxei pe valoarea adăugată aferente achizițiilor respective"
-— Codul fiscal (Legea 227/2015), art. 11 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 11 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei date de urmărit:

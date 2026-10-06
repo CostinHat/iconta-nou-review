@@ -16,12 +16,12 @@ Cu alte cuvinte, legea nu blochează revocarea, ci îi pune un preț atunci cân
 
 ::: ghid-temei
 „Administratorii pot fi revocați oricând de către adunarea generală ordinară a acționarilor. În cazul în care revocarea survine fără justă cauză, administratorul este îndreptățit la plata unor daune-interese."
-— Legea societăților nr. 31/1990, art. 137^1 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 137^1 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Membrii consiliului de administrație, respectiv ai consiliului de supraveghere, nu pot ataca hotărârea adunării generale privitoare la revocarea lor din funcție."
-— Legea societăților nr. 31/1990, art. 132 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 132 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:
@@ -34,7 +34,7 @@ Ce înseamnă concret:
 
 ::: ghid-temei
 „Mandantul care revocă mandatul rămâne ținut să își execute obligațiile față de mandatar. El este, de asemenea, obligat să repare prejudiciile suferite de mandatar din cauza revocării nejustificate ori intempestive."
-— Codul civil (Legea 287/2009), art. 2.032 alin. (1) (sursă: anaf_surse/legea_287_2009.html)
+— Codul civil (Legea 287/2009), art. 2.032 alin. (1) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 ::: ghid-exemplu

@@ -14,7 +14,7 @@ Capitalul social subscris nu trebuie neapărat vărsat integral chiar în ziua �
 
 ::: ghid-temei
 „(1) Societatea în nume colectiv și societatea în comandită simplă sunt obligate să verse integral la constituire capitalul social subscris. (2) Societatea cu răspundere limitată trebuie să verse 30% din valoarea capitalului social subscris nu mai târziu de 3 luni de la data înmatriculării, dar înainte de a începe operațiuni în numele societății, iar diferența de capital social subscris va fi vărsată: a) pentru aportul în numerar, în 12 luni de la data înmatriculării; b) pentru aportul în natură, în termen de cel mult 2 ani de la data înmatriculării."
-— Legea societăților nr. 31/1990, art. 9^1 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 9^1 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Pentru un **SRL**, minimum 30% din capitalul social subscris trebuie vărsat efectiv (în contul bancar al societății sau la casierie, în numerar) cel târziu în 3 luni de la înmatriculare, dar înainte de a începe orice operațiune în numele firmei.

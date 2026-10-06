@@ -14,7 +14,7 @@ Dacă în timpul unei inspecții fiscale organul de control identifică obligaț
 
 ::: ghid-temei
 „(1) Rezultatul inspecției fiscale se consemnează, în scris, într-un raport de inspecție fiscală, în care se prezintă constatările organului de inspecție fiscală din punctul de vedere faptic și legal și consecințele lor fiscale [...] (4) Pentru fiecare perioadă și obligație fiscală ce au făcut obiectul constatărilor, raportul de inspecție fiscală stă la baza emiterii: a) deciziei de impunere, pentru diferențe în plus sau în minus de obligații fiscale principale aferente diferențelor de baze de impozitare; [...] (5) Deciziile prevăzute la alin. (4) se emit în termen de cel mult 25 de zile lucrătoare de la data încheierii inspecției fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 131 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 131 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Etapele care urmează, concret, după identificarea unor taxe nedeclarate:

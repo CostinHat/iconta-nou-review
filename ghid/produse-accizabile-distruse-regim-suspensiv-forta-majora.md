@@ -16,18 +16,18 @@ Partea grea e dovada, nu regula. Fără documente solide, cantitatea lipsă risc
 
 ::: ghid-temei
 „(10) Distrugerea totală sau pierderea iremediabilă, totală sau parțială, a produselor accizabile aflate sub regim suspensiv de accize, ca urmare a unui caz fortuit ori de forță majoră sau ca o consecință a unei autorizații de a distruge produsele din partea autorității competente, nu sunt considerate ca eliberare pentru consum."
-— Codul fiscal (Legea 227/2015), art. 340 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(11) În sensul prezentului capitol, produsele sunt considerate distruse total sau pierdute iremediabil atunci când devin inutilizabile ca produse accizabile. Distrugerea totală sau pierderea iremediabilă, totală sau parțială, a produselor accizabile menționată la alin. (10) este dovedită într-un mod considerat satisfăcător de autoritățile competente din statul membru în care a avut loc distrugerea totală sau pierderea iremediabilă, totală sau parțială"
-— Codul fiscal (Legea 227/2015), art. 340 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(11^3) În cazul în care distrugerea totală sau pierderea iremediabilă, totală sau parțială, a produselor accizabile este stabilită, garanția depusă în conformitate cu prevederile art. 348 se eliberează, integral sau parțial, după caz, la prezentarea unor dovezi corespunzătoare."
-— Codul fiscal (Legea 227/2015), art. 340 alin. (11^3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (11^3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(11^2) Pierderea parțială care are loc din cauza naturii produselor, în cursul unei deplasări în regim suspensiv de accize pe teritoriul național, nu este considerată drept eliberare pentru consum în măsura în care valoarea pierderii se situează sub pragul comun de pierdere parțială pentru respectivele produse accizabile"
-— Codul fiscal (Legea 227/2015), art. 340 alin. (11^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (11^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

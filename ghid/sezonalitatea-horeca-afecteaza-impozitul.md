@@ -14,13 +14,13 @@ Restaurantele, barurile și unitățile de cazare au, prin natura activității,
 
 ::: ghid-temei
 „(1) Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea 227/2015 (Codul fiscal), art. 51 alin. (1), în forma modificată de OUG 89/2025, în vigoare de la 1 ianuarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 51 alin. (1), în forma modificată de OUG 89/2025, în vigoare de la 1 ianuarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „4. La articolul 51, alineatul (1) se modifică și va avea următorul cuprins: (1) Cota de impozit pe veniturile microîntreprinderilor este de 1%. [...] 5. La articolul 51, alineatele (1^1) și (4^1)-(4^3) se abrogă."
-— OUG 89/2025, art. I pct. 4-5 — actul care a eliminat cota de 3% (fostul alin. (1^1)) și pragul de 60.000 euro/lista de coduri CAEN (fostul alin. (4^1)) din art. 51 al Codului fiscal (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 89/2025, art. I pct. 4-5 — actul care a eliminat cota de 3% (fostul alin. (1^1)) și pragul de 60.000 euro/lista de coduri CAEN (fostul alin. (4^1)) din art. 51 al Codului fiscal (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 
 „(1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice pentru un HoReCa sezonier, în 2026:
@@ -38,6 +38,6 @@ Consecințele practice pentru un HoReCa sezonier, în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu aplică, pentru regimul micro, cota unică de 1% conform art. 51 alin. (1) din Codul fiscal (`core/common.py`, registrul de cote „impozit_micro"), fără nicio diferențiere pe cod CAEN — în acord cu abrogarea, din 2026, a fostei cote de 3%. Aplicația **nu determină automat** trimestrul din care o firmă sezonieră depășește pragul de 100.000 euro și trece la impozit pe profit — aceasta rămâne o verificare pe care contabilul o face pe baza evidenței contabile generale oferite de aplicație.
+La data acestui ghid, iConta.eu aplică, pentru regimul micro, cota unică de 1% conform art. 51 alin. (1) din Codul fiscal (registrul de cote „impozit_micro"), fără nicio diferențiere pe cod CAEN — în acord cu abrogarea, din 2026, a fostei cote de 3%. Aplicația **nu determină automat** trimestrul din care o firmă sezonieră depășește pragul de 100.000 euro și trece la impozit pe profit — aceasta rămâne o verificare pe care contabilul o face pe baza evidenței contabile generale oferite de aplicație.
 
 [iConta.eu](/)

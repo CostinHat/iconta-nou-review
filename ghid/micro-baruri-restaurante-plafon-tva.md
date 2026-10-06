@@ -14,10 +14,10 @@ Firmele din HoReCa nu au un plafon diferit de restul microîntreprinderilor, dar
 
 ::: ghid-temei
 „Microîntreprinderile care au desfășurat, până la data de 31 decembrie 2023 inclusiv, activități corespunzătoare codurilor CAEN: 5510 - Hoteluri și alte facilități de cazare similare, 5520 - Facilități de cazare pentru vacanțe și perioade de scurtă durată, 5530 - Parcuri pentru rulote, campinguri și tabere, 5590 - Alte servicii de cazare, 5610 - Restaurante, 5621 - Activități de alimentație (catering) pentru evenimente, 5629 - Alte servicii de alimentație n.c.a., 5630 - Baruri și alte activități de servire a băuturilor aplică condiția de a nu mai fi fost plătitoare de impozit pe veniturile microîntreprinderilor, prevăzută la alin. (2), începând cu anul fiscal 2024."
-— Legea 227/2015, art. 48 alin. (2^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală [...] nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă [...]."
-— Legea 227/2015, art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic:

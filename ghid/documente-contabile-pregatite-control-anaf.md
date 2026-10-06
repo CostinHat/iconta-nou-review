@@ -16,7 +16,7 @@ Obligația de bază e simplă de formulat, dar largă în conținut: contribuabi
 „ART. 64 Prezentarea de înscrisuri
 (1) în vederea stabilirii stării de fapt fiscale, contribuabilul/plătitorul are obligația să pună la dispoziție organului fiscal registre, evidențe, documente de afaceri și orice alte înscrisuri. în același scop, organul fiscal are dreptul să solicite înscrisuri și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice.
 (3) Organul fiscal are dreptul să rețină, în scopul protejării împotriva înstrăinării sau distrugerii, indiferent de mediul în care sunt stocate, documente, acte, înscrisuri, registre și documente financiar-contabile în original sau orice element material care face dovada stabilirii, înregistrării și achitării obligațiilor fiscale de către contribuabil/plătitor, pe o perioadă de cel mult 30 de zile. în cazuri excepționale, cu aprobarea conducătorului organului fiscal, perioada de reținere poate fi prelungită cu cel mult 90 de zile."
-— Legea 207/2015 (Codul de procedură fiscală), art. 64 alin. (1), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 64 alin. (1), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă, practic, pentru pregătirea unui control:

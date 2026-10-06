@@ -16,11 +16,11 @@ Da. La cererea firmei, organul fiscal poate înlocui sechestrul de pe un bun în
 
 ::: ghid-temei
 „La solicitarea debitorului, organul fiscal poate înlocui sechestrul asupra unui bun: a) cu sechestrul asupra altui bun și numai dacă bunul oferit în vederea sechestrării este liber de orice sarcini, sub condiția acoperirii limitei de 150% din valoarea creanței rămase de recuperat pentru care s-a instituit sechestru;"
-— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „b) cu scrisoare de garanție/poliță de asigurare de garanție/consemnare de mijloace bănești la o unitate a Trezoreriei Statului, pe o perioadă de maximum 6 luni, la nivelul obligației fiscale rămase de recuperat la data depunerii garanției, pentru care s-a început executarea silită a bunului ce se solicită a fi înlocuit. Organul de executare execută garanția în ultima zi de valabilitate a acesteia."
-— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „După înlocuirea bunurilor potrivit alin. (1), sechestrul aplicat asupra bunurilor ce s-au înlocuit se ridică."
-— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 241 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două variante, comparate:

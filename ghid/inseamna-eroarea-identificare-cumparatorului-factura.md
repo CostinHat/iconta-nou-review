@@ -14,7 +14,7 @@ Atunci când sistemul RO e-Factura respinge o factură pentru „eroare de ident
 
 ::: ghid-temei
 „Factura cuprinde în mod obligatoriu următoarele informații: [...] denumirea/numele și adresa beneficiarului bunurilor sau serviciilor, precum și codul de înregistrare în scopuri de TVA sau codul de identificare fiscală al beneficiarului, dacă acesta este o persoană impozabilă ori o persoană juridică neimpozabilă [...]"
-— Legea 227/2015, art. 319 alin. (20) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 319 alin. (20) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Onest, despre limitele acestei surse pentru întrebarea concretă:
@@ -31,6 +31,6 @@ Onest, despre limitele acestei surse pentru întrebarea concretă:
 
 ## Ce face iConta.eu
 
-La emiterea unei facturi, iConta.eu citește datele emitentului și ale cumpărătorului (din profilul terțului asociat facturii) și construiește XML-ul UBL 2.1/CIUS-RO pentru transmiterea prin RO e-Factura (`core/efactura_send.py`, `core/efactura_trimitere.py`). Dacă transmiterea eșuează, aplicația distinge explicit între o eroare de structură a facturii și o eroare de drept de acces asupra CIF-ului/serviciului (cod 403), și afișează mesajul de eroare integral primit de la SPV. iConta.eu **nu validează independent**, înainte de trimitere, corectitudinea codului de identificare fiscală al cumpărătorului față de Registrul contribuabililor — corectarea datelor de identificare ale cumpărătorului, în urma unei erori semnalate de SPV, rămâne o intervenție manuală a contabilului pe profilul terțului.
+La emiterea unei facturi, iConta.eu citește datele emitentului și ale cumpărătorului (din profilul terțului asociat facturii) și construiește XML-ul UBL 2.1/CIUS-RO pentru transmiterea prin RO e-Factura. Dacă transmiterea eșuează, aplicația distinge explicit între o eroare de structură a facturii și o eroare de drept de acces asupra CIF-ului/serviciului (cod 403), și afișează mesajul de eroare integral primit de la SPV. iConta.eu **nu validează independent**, înainte de trimitere, corectitudinea codului de identificare fiscală al cumpărătorului față de Registrul contribuabililor — corectarea datelor de identificare ale cumpărătorului, în urma unei erori semnalate de SPV, rămâne o intervenție manuală a contabilului pe profilul terțului.
 
 [iConta.eu](/)

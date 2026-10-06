@@ -16,15 +16,15 @@ Pentru firmă, asta înseamnă că un contract expirat sau reînnoit fără actu
 
 ::: ghid-temei
 „8.6. numărul, data și perioada de valabilitate a contractului de service încheiat, în condițiile legii, de utilizator cu unitatea de service acreditată;"
-— OPANAF 4156/2017, Anexa nr. 1, pct. 8 subpct. 8.6 (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 1, pct. 8 subpct. 8.6 (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Unitatea de service acreditată, prin persoanele desemnate, înregistrează în Registru modificări ale informațiilor prevăzute la pct. 8 subpct. 8.6 din anexa nr. 1 la ordin."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 5 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 5 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „La momentul comercializării aparatului de marcat electronic fiscal sau ulterior, părțile contractante stabilesc modul în care operatorul economic notifică distribuitorul autorizat sau unitatea de service acreditată în cazul defectării aparatului de marcat electronic fiscal. Notificarea efectuată în alt mod decât cel stabilit de părțile contractante nu este valabilă."
-— OUG 28/1999, art. 1 alin. (8^1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (8^1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce date legate de relația cu service-ul ajung în Registru:

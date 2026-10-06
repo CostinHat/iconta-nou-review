@@ -18,7 +18,7 @@ Firma se înființează potrivit regulilor obișnuite din Legea 31/1990 — act 
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: a) înainte de realizarea unor astfel de operațiuni, în următoarele cazuri: 1. dacă declară că urmează să realizeze o cifră de afaceri care depășește plafonul de scutire prevăzut la art. 310 alin. (1) [...]"
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. a) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Exporturile sunt, de regulă, operațiuni scutite de TVA cu drept de deducere — ceea ce înseamnă că firma trebuie să fie înregistrată în scopuri de TVA pentru a le putea desfășura corect (deducerea TVA-ului aferent achizițiilor legate de marfa exportată depinde de această calitate). O firmă nou-înființată care intenționează exportul de la început poate opta pentru înregistrare încă din faza de constituire, odată cu înscrierea la registrul comerțului.

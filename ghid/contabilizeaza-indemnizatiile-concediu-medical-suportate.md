@@ -16,7 +16,7 @@ Din a doua parte a perioadei de incapacitate temporară de muncă, indemnizația
 „[...] din bugetul Fondului național unic de asigurări sociale de sănătate, începând cu: a) ziua următoare celor suportate de angajator [...] și până la data încetării incapacității temporare de muncă a asiguratului [...]."
 
 „Sumele reprezentând indemnizații, care se plătesc asiguraților și care [...] se suportă din bugetul Fondului național unic de asigurări sociale de sănătate, se recuperează din bugetul Fondului național unic de asigurări sociale de sănătate din creditele bugetare prevăzute cu această destinație. Aceste sume nu pot fi recuperate din sumele constituite reprezentând contribuție de asigurări sociale de sănătate."
-— OUG 158/2005, art. 12 lit. B și art. 38 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005, art. 12 lit. B și art. 38 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Consecința pentru contabilitate:

@@ -15,12 +15,12 @@ Regimul aplicat în alte state membre de firmele stabilite în România e reglem
 
 ::: ghid-temei
 „O persoană impozabilă stabilită în România conform art. 266 alin. (2) lit. a) poate aplica regimul special de scutire pentru întreprinderile mici în alte state membre dacă îndeplinește următoarele condiții: a) cifra de afaceri anuală la nivelul Uniunii Europene a respectivei persoane impozabile nu depășește 100.000 euro în anul în care solicită acordarea scutirii și în anul calendaristic precedent; ... b) valoarea livrărilor de bunuri și a prestărilor de servicii efectuate în statul membru în care persoana impozabilă intenționează să aplice scutirea nu depășește plafonul de scutire aplicabil persoanelor impozabile care aplică regimul special de scutire pentru întreprinderi mici, stabilite în acel stat membru."
-— Codul fiscal, art. 310^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 310^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „O persoană impozabilă care are sediul activității economice într-un alt stat membru poate aplica regimul special de scutire pentru mici întreprinderi în România pentru livrările de bunuri și prestările de servicii efectuate în România, dacă sunt îndeplinite următoarele condiții: a) cifra de afaceri anuală la nivelul Uniunii Europene nu depășește 100.000 euro, în anul în care solicită acordarea scutirii și în anul calendaristic precedent; ... b) valoarea livrărilor de bunuri și a prestărilor de servicii efectuate în România nu depășește plafonul de scutire de TVA prevăzut la art. 310 alin. (1) , în anul în care solicită acordarea scutirii și în anul calendaristic precedent."
-— Codul fiscal, art. 310^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 310^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cine poate accesa

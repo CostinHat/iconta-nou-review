@@ -14,7 +14,7 @@ Când marfa este depozitată la un centru de fulfillment terț (de exemplu pentr
 
 ::: ghid-temei
 „40. - (1) În situația constatării unor plusuri în gestiune, bunurile respective se evaluează potrivit reglementărilor contabile aplicabile. (2) În cazul constatării unor lipsuri imputabile în gestiune, administratorii trebuie să impute persoanelor vinovate bunurile lipsă la valoarea lor de înlocuire."
-— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 40 alin. (1)-(2) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 40 alin. (1)-(2) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Aplicat la o diferență raportată de un centru de fulfillment:

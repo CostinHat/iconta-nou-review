@@ -16,13 +16,13 @@ Interdicția are o logică simplă: dacă debitorul are bani să plătească pre
 
 ::: ghid-temei
 „Persoanele înscrise la licitație se pot prezenta și prin mandatari care trebuie să își justifice calitatea prin procură specială autentică. Debitorul nu poate licita nici personal, nici prin persoană interpusă."
-— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Executarea silită încetează dacă: a) s-au stins integral obligațiile fiscale prevăzute în titlul executoriu, inclusiv obligațiile de plată accesorii, cheltuielile de executare și orice alte sume stabilite în sarcina debitorului, potrivit legii;"
-— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Măsurile de executare silită aplicate în condițiile prezentului cod se ridică prin decizie întocmită în cel mult două zile de la data la care a încetat executarea silită, de către organul de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce poate face, legal, firma datornică:

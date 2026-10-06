@@ -14,7 +14,7 @@ Când o firmă românească trebuie să se înregistreze în scopuri de TVA înt
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în Uniunea Europeană, dar nu în România, care are obligația să se înregistreze în scopuri de TVA în România, poate, în condițiile stabilite prin normele metodologice, să își îndeplinească această obligație prin desemnarea unui reprezentant fiscal."
-— Codul fiscal (Legea 227/2015), art. 316 alin. (7) teza I (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (7) teza I (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul citat descrie regula pe care România o aplică firmelor din alte state UE — folosirea cuvântului „poate" arată că reprezentantul fiscal e o **opțiune**, nu o obligație, pentru o firmă stabilită în UE:

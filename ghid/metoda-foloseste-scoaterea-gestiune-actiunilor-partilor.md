@@ -16,19 +16,19 @@ Contează în practică pentru că titlurile cumpărate la momente diferite au p
 
 ::: ghid-temei
 „La scoaterea din gestiune a titlurilor de participare se poate utiliza una dintre metodele folosite pentru scoaterea din evidență a stocurilor."
-— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Metodele contabile, stabilite prin reglementări legale în vigoare, privind ieșirea din gestiune a stocurilor sunt recunoscute la calculul rezultatului fiscal."
-— Codul fiscal (Legea 227/2015), art. 19 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 19 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; [...] b) metoda primul intrat-primul ieșit - FIFO;"
-— Reglementările contabile aprobate prin OMFP 1802/2014, pct. 96 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— Reglementările contabile aprobate prin OMFP 1802/2014, pct. 96 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 „Prevederile pct. 96 se aplică și investițiilor pe termen scurt, cu excepția depozitelor bancare pe termen scurt."
-— OMFP 1802/2014, pct. 98 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 98 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă concret:

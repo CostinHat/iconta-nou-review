@@ -15,7 +15,7 @@ Impozitul pe profit se plătește, de regulă, prin plăți anticipate trimestri
 ::: ghid-temei
 „ART. 168 Restituiri de sume
 (1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată."
-— Legea 207/2015 (Codul de procedură fiscală), art. 168, capitolul „Stingerea creanțelor fiscale prin plată, compensare și restituire" (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 168, capitolul „Stingerea creanțelor fiscale prin plată, compensare și restituire" (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă, concret, pentru impozitul pe profit plătit în plus în cursul anului:

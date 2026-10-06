@@ -24,7 +24,7 @@ Termenele confirmate în Codul fiscal (art. 324) și în regulile de plafon (art
 - **Rămânerea minimă în sistem**: cel puțin până la sfârșitul anului calendaristic al opțiunii (art. 282 alin. 5), cu excepția depășirii plafonului.
 - **Ieșire voluntară**: prin notificare depusă între 1 și 20 ale lunii, dar nu în primul an de aplicare a sistemului (art. 282 alin. 5).
 
-Plafonul relevant pentru eligibilitate, cu valabilitatea în timp (confirmată la sursă în `core/common.py`, tabelul `COTE["plafon_tva_incasare"]`):
+Plafonul relevant pentru eligibilitate, cu valabilitatea în timp (confirmată la sursă în aplicație, tabelul `COTE["plafon_tva_incasare"]`):
 
 | Valabil de la | Plafon | Temei |
 |---|---|---|
@@ -40,6 +40,6 @@ Cea mai costisitoare greșeală e ratarea termenului de 20 a lunii următoare de
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din `core/common.py` e period-aware — întoarce automat plafonul corect (4.500.000 / 5.000.000 / 5.500.000 lei) pentru orice dată, folosită direct de motorul F097. Aplicația nu depune însă notificările către ANAF (art. 324) și nu urmărește automat termenele de 20 ale lunii pentru intrare, depășire sau ieșire — acestea rămân responsabilitatea contabilului.
+Funcția `plafon_la(data)` din aplicație e period-aware — întoarce automat plafonul corect (4.500.000 / 5.000.000 / 5.500.000 lei) pentru orice dată, folosită direct de motorul F097. Aplicația nu depune însă notificările către ANAF (art. 324) și nu urmărește automat termenele de 20 ale lunii pentru intrare, depășire sau ieșire — acestea rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

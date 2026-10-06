@@ -15,7 +15,7 @@ Un PFA depune Declarația unică indiferent dacă își determină venitul net �
 ::: ghid-temei
 „(1) Contribuabilii au obligația depunerii Declarației unice privind impozitul pe venit și contribuțiile sociale la organul fiscal competent, pentru fiecare an fiscal, în cazul în care realizează, individual sau într-o formă de asociere, venituri/pierderi, după caz, din următoarele categorii de venit: a) activități independente; [...]
 (3) Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor."
-— Legea nr. 227/2015 (Codul fiscal), art. 122 alin. (1) lit. a) și alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 122 alin. (1) lit. a) și alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un PFA, câteva situații schimbă și ele termenul sau conținutul declarației:

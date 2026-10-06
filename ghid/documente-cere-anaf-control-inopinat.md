@@ -14,7 +14,7 @@ Spre deosebire de inspecția fiscală obișnuită, controlul inopinat se desfă�
 
 ::: ghid-temei
 „(1) Organul fiscal poate efectua un control fără înștiințarea prealabilă a contribuabilului/plătitorului, denumit în continuare control inopinat. (2) Controlul inopinat constă în: a) verificarea faptică și documentară, în principal, ca urmare a unor informații cu privire la existența unor fapte de încălcare a legislației fiscale; b) verificarea documentelor și operațiunilor impozabile ale unui contribuabil/plătitor, în corelație cu cele deținute de persoana sau entitatea supusă unui control fiscal, denumită control încrucișat; c) verificarea unor elemente ale bazei de impozitare sau cu privire la situația fiscală faptică [...]. (3) Durata efectuării controlului inopinat [...] nu poate fi mai mare de 30 de zile."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 134 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 134 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Controlul inopinat poate viza **verificarea faptică și documentară** legată de fapte semnalate ca posibile încălcări, **controlul încrucișat** (comparând documentele tale cu ale unui partener aflat sub control) sau verificarea unor elemente ale bazei de impozitare/situației fiscale faptice.

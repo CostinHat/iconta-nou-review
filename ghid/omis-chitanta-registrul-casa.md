@@ -14,7 +14,7 @@ Registrul de casă trebuie să reflecte, zi de zi, exact ce a intrat și ce a ie
 
 ::: ghid-temei
 „Registrul de casă servește ca: document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, Anexa 2 „Norme specifice", Grupa IV, Registrul de casă (Cod 14-4-7) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2 „Norme specifice", Grupa IV, Registrul de casă (Cod 14-4-7) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Registrul de casă nu e un document care se completează „la final de lună" sau „când ai timp" — norma spune explicit că **se întocmește zilnic**, pe baza documentelor justificative (inclusiv chitanțele) ale zilei respective.

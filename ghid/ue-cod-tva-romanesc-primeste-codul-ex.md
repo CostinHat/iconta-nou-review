@@ -16,13 +16,13 @@ Data anulării e importantă: ea separă operațiunile facturate cu TVA, ca pers
 
 ::: ghid-temei
 „(7) În situația în care persoana impozabilă prevăzută la alin. (1) este înregistrată în scopuri de TVA în România conform art. 316 , la data la care devine valid în România codul individual de identificare menționat la art. 284 alin. (3) lit. b) din Directiva 112, organul fiscal competent anulează înregistrarea în scopuri de TVA."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „i) în situația prevăzută la art. 310^2 alin. (7) ."
-— Codul fiscal (Legea 227/2015), art. 316 alin. (11) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (11) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(13) Persoanele impozabile aflate în situațiile prevăzute la alin. (11) au obligația să depună ultimul decont de taxă prevăzut la art. 323 , indiferent de perioada fiscală aplicată conform art. 322 , până la data de 25 a lunii următoare celei în care a fost comunicată decizia de anulare a înregistrării în scopuri de TVA."
-— Codul fiscal (Legea 227/2015), art. 316 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce urmează, pas cu pas:

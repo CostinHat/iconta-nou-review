@@ -14,7 +14,7 @@ Pentru relația B2C (firmă către persoană fizică sau altă persoană neimpoz
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice. Dacă serviciile sunt prestate de la un sediu fix al prestatorului, aflat în alt loc decât locul în care persoana impozabilă și-a stabilit sediul activității economice, locul de prestare a serviciilor este locul unde se află respectivul sediu fix. În absența unui astfel de loc sau sediu fix, locul de prestare a serviciilor este locul unde prestatorul își are domiciliul stabil sau reședința obișnuită."
-— Legea 227/2015 (Codul fiscal), art. 278 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 278 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică, pas cu pas:

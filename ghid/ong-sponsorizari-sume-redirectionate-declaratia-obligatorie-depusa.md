@@ -16,14 +16,14 @@ Nerespectarea prevederilor privind întocmirea acestei declarații se sancțione
 
 ::: ghid-temei
 „Persoanele juridice fără scop patrimonial care, în exercițiul financiar de raportare, au primit sume reprezentând subvenții, sponsorizări, sume redirecționate, conform legii, din impozitul pe profit, impozitul pe venitul microîntreprinderilor, respectiv din impozitul pe venitul datorat de persoanele fizice, precum și alte forme similare de finanțare, indiferent de valoarea cumulată a acestora, întocmesc o declarație care însoțește situațiile financiare anuale și evidențiază sumele astfel primite, respectiv utilizate."
-— Legea contabilității nr. 82/1991, art. 34 alin. (3^1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 34 alin. (3^1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „k) cea prevăzută la pct. 4^1 , cu amendă de la 20.000 lei la 30.000 lei;"
-— Legea contabilității nr. 82/1991, art. 42 alin. (1) lit. k) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 42 alin. (1) lit. k) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „Declarația privind situația de trezorerie se depune odată cu situațiile financiare anuale, folosind programul de asistență, pus la dispoziție gratuit de către Ministerul Finanțelor pe site-ul Agenției Naționale de Administrare Fiscală."
-— Ordinul de aprobare a formatului declarației, art. III, reprodus în nota la art. 34 din textul consolidat al Legii contabilității nr. 82/1991 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Ordinul de aprobare a formatului declarației, art. III, reprodus în nota la art. 34 din textul consolidat al Legii contabilității nr. 82/1991 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

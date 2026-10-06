@@ -18,7 +18,7 @@ Legea nr. 296/2023, art. LIX alin. (6), stabilește termenul-limită de transmit
 
 ::: ghid-temei
 „În situația în care sistemul național privind factura electronică RO e-Factura nu este funcțional timp de minimum 24 de ore, obligația de transmitere prevăzută la art. 10 alin. (1) din Ordonanța de urgență a Guvernului nr. 120/2021 [...] se suspendă până la repunerea în funcțiune a sistemului."
-— OUG 115/2023, art. LXXI alin. (1) (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— OUG 115/2023, art. LXXI alin. (1) (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Legea prevede deci explicit un caz de suspendare a obligației de transmitere, dar condiționat: sistemul trebuie să fi fost nefuncțional **cel puțin 24 de ore neîntrerupte**. Sub acest prag, textul nu oferă o suspendare automată. Alin. (2) al aceluiași articol adaugă o condiție: pentru facturile afectate se aplică regulile generale de la art. 319 Cod fiscal, „cu condiția transmiterii ulterioare, în sistemul național privind factura electronică RO e-Factura, a facturilor electronice emise" — deci obligația nu dispare, doar termenul e suspendat pe durata nefuncționării. Alin. (3) prevede că perioadele de nefuncționare a sistemului se publică pe site-urile ANAF și Ministerului Finanțelor — acesta e reperul oficial de verificat pentru a documenta incidentul, nu doar propria captură de ecran.

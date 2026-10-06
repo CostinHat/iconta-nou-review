@@ -14,7 +14,7 @@ Penalitatea de nedeclarare aplicată în urma unui control fiscal nu este întot
 
 ::: ghid-temei
 „(1) Pentru obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere, contribuabilul/plătitorul datorează o penalitate de nedeclarare de 0,08% pe fiecare zi, începând cu ziua imediat următoare scadenței și până la data stingerii sumei datorate, inclusiv [...] (2) Penalitatea de nedeclarare stabilită potrivit alin. (1) se reduce cu 75%, dacă obligațiile fiscale principale stabilite prin decizie: a) se sting prin plată sau compensare până la termenul prevăzut la art. 156 alin. (1); b) sunt eșalonate la plată, în condițiile legii. în acest caz, reducerea se acordă la finalizarea eșalonării la plată."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 181 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 181 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile de reducere, cu tot cu mecanismul de aplicare:

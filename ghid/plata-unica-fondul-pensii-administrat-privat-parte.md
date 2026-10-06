@@ -16,15 +16,15 @@ Regula e valabilă și pentru moștenitorii participantului care primesc suma î
 
 ::: ghid-temei
 „Pentru sumele primite ca plată unică de către participanții la fondurile de pensii administrate privat și moștenitorii acestora, în conformitate cu prevederile Legii nr. 411/2004, republicată, cu modificările și completările ulterioare, venitul impozabil este constituit din sumele care depășesc contribuțiile nete ale participanților, la care fiecare fond de pensii acordă un singur plafon de venit neimpozabil stabilit conform prevederilor alin. (1) și, după caz, deduce contribuția de asigurări sociale de sănătate datorată potrivit prevederilor titlului V - Contribuții sociale obligatorii, în limita venitului impozabil."
-— Codul fiscal (Legea 227/2015), art. 100 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Venitul impozabil lunar din pensii se stabilește prin deducerea din venitul din pensie a sumei neimpozabile lunare de 3.000 lei"
-— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Impozitul se calculează prin aplicarea cotei de impunere de 10% asupra venitului impozabil lunar din pensii determinat potrivit art. 100"
-— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

@@ -16,14 +16,14 @@ Ordinea protejează capacitatea firmei de a lucra în continuare și, implicit, 
 
 ::: ghid-temei
 „Sunt supuse sechestrării și valorificării bunurile urmăribile proprietate a debitorului, prezentate de acesta și/sau identificate de către organul de executare silită, în următoarea ordine: a) bunurile mobile și imobile care nu sunt direct folosite în activitatea ce constituie principala sursă de venit; b) bunuri care nu sunt nemijlocit predestinate pentru desfășurarea activității care constituie principala sursă de venit; c) bunurile mobile și imobile ce se află temporar în deținerea altor persoane în baza contractelor de arendă, de împrumut, de închiriere, de concesiune, de leasing și altele;"
-— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (2) lit. a)–c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (2) lit. a)–c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „d) ansamblu de bunuri în condițiile prevederilor art. 246 ; e) mașini-unelte, utilaje, materii prime și materiale și alte bunuri mobile, precum și bunuri imobile ce servesc activității care constituie principala sursă de venit; f) produse finite."
-— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (2) lit. d)–f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (2) lit. d)–f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Organul fiscal poate trece la sechestrarea bunurilor din următoarea categorie din cele prevăzute la alin. (2) ori de câte ori valorificarea nu este posibilă."
-— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se citește lista:

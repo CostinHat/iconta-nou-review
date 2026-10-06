@@ -15,7 +15,7 @@ De la înmatriculare, administratorul unei societăți are, implicit, puteri lar
 ::: ghid-temei
 „Articolul 70 (1) Administratorii pot face toate operațiunile cerute pentru aducerea la îndeplinire a obiectului de activitate al societății, afară de restricțiile arătate în actul constitutiv. (2) Ei sunt obligați să ia parte la toate adunările societății, la consiliile de administrație și la organele de conducere similare acestora.
 Articolul 71 (1) Administratorii care au dreptul de a reprezenta societatea nu îl pot transmite decât dacă această facultate li s-a acordat în mod expres."
-— Legea 31/1990, art. 70 și art. 71 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 70 și art. 71 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din aceste texte pentru administratorul unei firme la înființare:

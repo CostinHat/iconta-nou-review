@@ -15,7 +15,7 @@ Când o societate românească distribuie dividende către o altă societate rom
 ::: ghid-temei
 „O persoană juridică română care plătește dividende către o persoană juridică română are obligația să rețină, să declare și să plătească impozitul pe dividende reținut către bugetul de stat [...]. Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române. [...]
 (4) Prevederile prezentului articol nu se aplică în cazul dividendelor plătite de o persoană juridică română unei alte persoane juridice române, dacă, la data plății dividendelor, fiecare dintre aceste persoane îndeplinește cumulativ următoarele condiții: a) persoana juridică beneficiară a dividendelor: (i) deține minimum 10% din titlurile de participare ale persoanei juridice române care plătește dividendele, pe o perioadă de un an împlinit până la data plății acestora inclusiv; [...] (iii) plătește, fără posibilitatea unei opțiuni sau exceptări, impozit pe profit sau orice alt impozit care substituie impozitul pe profit."
-— Codul fiscal (Legea 227/2015), art. 43 alin. (1), (2) și (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 43 alin. (1), (2) și (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la un lanț de firme (de exemplu firma C plătește dividende către firma B, care le redistribuie firmei A):

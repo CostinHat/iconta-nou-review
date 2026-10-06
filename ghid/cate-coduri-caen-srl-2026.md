@@ -14,7 +14,7 @@ E o întrebare care revine des la înființare sau la extinderea obiectului de a
 
 ::: ghid-temei
 „[Actul constitutiv cuprinde:] obiectul de activitate al societății, cu precizarea domeniului și a activității principale."
-— Legea 31/1990 (legea societăților), art. 7 lit. c) (elementele actului constitutiv al SRL) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 7 lit. c) (elementele actului constitutiv al SRL) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă de aici:

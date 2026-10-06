@@ -16,16 +16,16 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Întocmirea regulamentului intern la nivelul fiecărui angajator se realizează în termen de 60 de zile de la data intrării în vigoare a prezentului cod. [...] (2) În cazul angajatorilor înființați după intrarea în vigoare a prezentului cod, termenul de 60 de zile prevăzut la alin. (1) începe să curgă de la data dobândirii personalității juridice."
-— Codul muncii (Legea 53/2003), art. 246 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 246 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Societatea este persoană juridică de la data înmatriculării în registrul comerțului."
-— Legea 31/1990, art. 41 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 41 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) În sensul prezentului cod, prin angajator se înțelege persoana fizică sau juridică ce poate, potrivit legii, să angajeze forță de muncă pe bază de contract individual de muncă. [...] (2) Persoana juridică poate încheia contracte individuale de muncă, în calitate de angajator, din momentul dobândirii personalității juridice."
-— Codul muncii (Legea 53/2003), art. 14 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 14 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Angajatorul are obligația de a aduce la cunoștința fiecărui salariat prevederile regulamentului intern, în prima zi de lucru, și de a face dovada îndeplinirii acestei obligații."
-— Codul muncii (Legea 53/2003), art. 243 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 243 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

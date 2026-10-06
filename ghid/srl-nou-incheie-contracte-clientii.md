@@ -14,7 +14,7 @@ Răspunsul e precis și nu ține de data semnării actului constitutiv, de data 
 
 ::: ghid-temei
 „Societatea este persoană juridică de la data înmatriculării în registrul comerțului."
-— Legea nr. 31/1990 privind societățile, art. 41 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 41 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Consecințele directe ale acestei reguli:

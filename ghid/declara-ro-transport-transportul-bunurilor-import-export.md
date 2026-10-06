@@ -16,10 +16,10 @@ Regula privește transportul rutier internațional de bunuri, deci se aplică **
 
 ::: ghid-temei
 „Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: a) destinatarului înscris în declarația vamală de import, respectiv expeditorului înscris în declarația vamală de export, în cazul bunurilor care fac obiectul operațiunilor de import sau export, după caz;"
-— OUG 41/2022, art. 8^1 lit. a) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. a) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „c) transportul bunurilor provenite din import de la locul de import și până la locul de descărcare situat pe teritoriul național; ... d) transportul bunurilor care fac obiectul exportului de la locul de încărcare situat pe teritoriul național până la biroul vamal de export situat pe teritoriul național sau până la punctul rutier de trecere a frontierei, după caz;"
-— OUG 41/2022, art. 2 pct. 9 lit. c) și d) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 9 lit. c) și d) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce segment de traseu se declară:

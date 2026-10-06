@@ -14,7 +14,7 @@ Poate, dar nu automat. O modernizare care aduce beneficii economice reale (param
 
 ::: ghid-temei
 „Investițiile efectuate la mijloacele fixe sub forma cheltuielilor ulterioare trebuie să aibă ca efect îmbunătățirea parametrilor tehnici inițiali ai acestora și sa conducă la obținerea de beneficii economice viitoare. [...] Amortizarea acestor investii se face fie pe durata normala de utilizare rămasa, fie prin majorarea duratei normale de utilizare cu până la 10% sau în cazul instituțiilor publice până la 20%. Dacă cheltuielile ulterioare se fac după expirarea duratei normale, se va stabili o noua durata normala de către o comisie tehnica sau expert tehnic independent. Cheltuielile care se fac la mijloacele fixe ce au ca scop restabilirea stării inițiale sunt considerate cheltuieli de reparații."
-— HG 2139/2004 (Catalogul privind clasificarea și duratele de funcționare a mijloacelor fixe), „Alte precizări" pct. 2 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004 (Catalogul privind clasificarea și duratele de funcționare a mijloacelor fixe), „Alte precizări" pct. 2 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Ce înseamnă, concret, acest text:

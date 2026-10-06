@@ -14,10 +14,10 @@ Regimul de impozitare — micro sau profit — nu e o alegere liberă în orice 
 
 ::: ghid-temei
 „39. vector fiscal - totalitatea tipurilor de obligații fiscale pentru care există obligații de declarare cu caracter permanent;"
-— Legea 207/2015, art. 1 pct. 39 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 1 pct. 39 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...] d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale; [...] g) are cel puțin un salariat [...]"
-— Legea 227/2015, art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste două texte rezultă structura verificării:

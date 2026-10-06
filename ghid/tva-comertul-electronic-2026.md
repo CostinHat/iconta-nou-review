@@ -14,7 +14,7 @@ Un magazin online care vinde către clienți persoane fizice din alte state UE n
 
 ::: ghid-temei
 „Valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent. [...] Atunci când, în cursul unui an calendaristic, pragul prevăzut la alin. (1) lit. c) este depășit, prevederile art. 275 alin. (2) și art. 278 alin. (5) lit. h) se aplică de la momentul depășirii pragului."
-— Legea nr. 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă acest prag pentru un magazin online în 2026:
@@ -32,6 +32,6 @@ Ce înseamnă acest prag pentru un magazin online în 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu emite facturi pentru vânzările online și urmărește volumul de vânzări introdus în aplicație. Aplicația are un modul dedicat pentru declarația D398 (regimurile speciale OSS/IOSS, `core/d398.py`), care generează XML-ul de declarație, dar sumele pe fiecare stat de consum se introduc manual — aplicația **nu calculează automat, la data acestui ghid, depășirea pragului unic de 10.000 euro** pentru vânzările la distanță către alte state UE și nu ține evidența automată a operațiunilor pe stat/cotă străină — aceste verificări rămân în sarcina utilizatorului/contabilului, pe baza datelor de vânzări din aplicație.
+iConta.eu emite facturi pentru vânzările online și urmărește volumul de vânzări introdus în aplicație. Aplicația are un modul dedicat pentru declarația D398 (regimurile speciale OSS/IOSS, aplicația), care generează XML-ul de declarație, dar sumele pe fiecare stat de consum se introduc manual — aplicația **nu calculează automat, la data acestui ghid, depășirea pragului unic de 10.000 euro** pentru vânzările la distanță către alte state UE și nu ține evidența automată a operațiunilor pe stat/cotă străină — aceste verificări rămân în sarcina utilizatorului/contabilului, pe baza datelor de vânzări din aplicație.
 
 [iConta.eu](/)

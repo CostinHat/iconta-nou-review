@@ -15,7 +15,7 @@ O factură emisă nu e „gata" din perspectiva RO e-Factura decât atunci când
 ::: ghid-temei
 „(6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare.
 (7) Nerespectarea prevederilor alin. (6) pentru una sau mai multe facturi al căror termen-limită de transmitere în sistemul național privind factura electronică RO e-Factura intervine în cursul unei luni calendaristice constituie contravenție și se sancționează cu amendă [...]"
-— Legea 296/2023 (măsuri fiscal-bugetare), art. LIX, secțiunea a 2-a, cap. IV, alin. (6)-(7) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023 (măsuri fiscal-bugetare), art. LIX, secțiunea a 2-a, cap. IV, alin. (6)-(7) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce înseamnă asta pentru verificarea de sfârșit de lună:
@@ -33,6 +33,6 @@ Ce înseamnă asta pentru verificarea de sfârșit de lună:
 
 ## Ce face iConta.eu
 
-Modulul e-Factura din iConta.eu (`core/repo_efactura.py`) ține evidența stării fiecărei transmiteri, cu funcția `ultima_trimitere_per_factura`, care întoarce, pentru fiecare factură din evidență, starea ultimei încercări de transmitere (reușită, în curs sau eroare) — exact mecanismul necesar pentru a compara facturile emise într-o lună cu cele efectiv confirmate de sistemul ANAF. Contabilul folosește acest raport pentru a identifica rapid facturile fără confirmare și a le retrimite în termenul legal de 5 zile lucrătoare.
+Modulul e-Factura din iConta.eu ține evidența stării fiecărei transmiteri, cu funcția `ultima_trimitere_per_factura`, care întoarce, pentru fiecare factură din evidență, starea ultimei încercări de transmitere (reușită, în curs sau eroare) — exact mecanismul necesar pentru a compara facturile emise într-o lună cu cele efectiv confirmate de sistemul ANAF. Contabilul folosește acest raport pentru a identifica rapid facturile fără confirmare și a le retrimite în termenul legal de 5 zile lucrătoare.
 
 [iConta.eu](/)

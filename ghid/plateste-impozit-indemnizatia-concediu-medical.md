@@ -14,7 +14,7 @@ Răspunsul depinde de motivul concediului. Pentru boala obișnuită, indemnizaț
 
 ::: ghid-temei
 „În înțelesul impozitului pe venit, următoarele venituri nu sunt impozabile: [...] b) indemnizațiile pentru incapacitate temporară de muncă acordate, potrivit legii, persoanelor fizice, altele decât cele care obțin venituri din salarii și asimilate salariilor; [...] c) indemnizațiile pentru: risc maternal, maternitate, creșterea copilului și îngrijirea copilului bolnav, îngrijirea pacientului cu afecțiuni oncologice, potrivit legii."
-— Codul fiscal, art. 62 lit. b) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 62 lit. b) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Interpretarea corectă a acestor litere, pentru un salariat:
@@ -31,6 +31,6 @@ Interpretarea corectă a acestor litere, pentru un salariat:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`, funcția `taxe_cm`) reține corect distincția din lege: aplică impozitul de 10% (pe baza rămasă după CAS și, unde e cazul, CASS) pentru boala obișnuită și celelalte coduri impozabile, dar **nu** reține niciun impozit pentru codurile de maternitate, îngrijire copil bolnav, risc maternal și îngrijire pacient oncologic — exact lista de la art. 62 lit. c). Calculul rulează automat la introducerea certificatului de concediu medical în fișa salariatului, cu rezultatul salvat odată cu certificatul.
+Motorul de calcul (funcția `taxe_cm`) reține corect distincția din lege: aplică impozitul de 10% (pe baza rămasă după CAS și, unde e cazul, CASS) pentru boala obișnuită și celelalte coduri impozabile, dar **nu** reține niciun impozit pentru codurile de maternitate, îngrijire copil bolnav, risc maternal și îngrijire pacient oncologic — exact lista de la art. 62 lit. c). Calculul rulează automat la introducerea certificatului de concediu medical în fișa salariatului, cu rezultatul salvat odată cu certificatul.
 
 [iConta.eu](/)

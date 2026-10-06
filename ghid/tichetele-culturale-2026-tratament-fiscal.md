@@ -14,7 +14,7 @@ Tichetele culturale sunt unul dintre cele cinci tipuri de bilete de valoare pe c
 
 ::: ghid-temei
 „Tichetele culturale sunt bilete de valoare acordate angajaților, lunar sau ocazional, pentru achitarea contravalorii de bunuri și servicii culturale. [...] Nivelul maxim al sumelor acordate sub forma tichetelor culturale nu poate depăși suma de 150 de lei pentru tichetele acordate lunar, respectiv suma de 300 de lei/eveniment, pentru cele acordate ocazional. Valoarea nominală a unui tichet cultural este de 10 lei sau un multiplu de 10, dar nu mai mare de 50 lei."
-— Legea 165/2018 privind acordarea biletelor de valoare, art. 21 alin. (1) și art. 22 alin. (1), (2) (sursă: anaf_surse/legea_165_2018_consolidat.txt)
+— Legea 165/2018 privind acordarea biletelor de valoare, art. 21 alin. (1) și art. 22 alin. (1), (2) (sursă: [Legea nr. 165/2018 privind acordarea biletelor de valoare](https://legislatie.just.ro/Public/DetaliiDocument/202623))
 :::
 
 Ce trebuie reținut pentru angajator:
@@ -32,6 +32,6 @@ Ce trebuie reținut pentru angajator:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu emite tichete culturale** — furnizarea lor rămâne prin operatorii autorizați. Aplicația are însă un câmp dedicat (`tichet_cultural`) pentru suma introdusă manual de contabil, pe baza căreia calculează automat tratamentul fiscal corect: impozit 10% pe valoarea nominală integrală, fără CAS, CASS sau CAM (`core/salarizare.py`, `core/d112.py`). Aplicația **nu verifică automat** dacă suma introdusă respectă plafoanele legale (150 lei/lună sau 300 lei/eveniment) sau valoarea nominală standardizată a tichetului — încadrarea în plafoanele Legii 165/2018 rămâne responsabilitatea contabilului la introducerea sumei.
+La data acestui ghid, iConta.eu **nu emite tichete culturale** — furnizarea lor rămâne prin operatorii autorizați. Aplicația are însă un câmp dedicat (`tichet_cultural`) pentru suma introdusă manual de contabil, pe baza căreia calculează automat tratamentul fiscal corect: impozit 10% pe valoarea nominală integrală, fără CAS, CASS sau CAM. Aplicația **nu verifică automat** dacă suma introdusă respectă plafoanele legale (150 lei/lună sau 300 lei/eveniment) sau valoarea nominală standardizată a tichetului — încadrarea în plafoanele Legii 165/2018 rămâne responsabilitatea contabilului la introducerea sumei.
 
 [iConta.eu](/)

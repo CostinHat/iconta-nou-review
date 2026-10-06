@@ -17,7 +17,7 @@ Ieșirea din sistemul de impozitare pe veniturile microîntreprinderilor nu e op
 (1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.
 [...]
 (5) Limitele fiscale prevăzute la alin. (1) se verifică pe baza veniturilor înregistrate cumulat de la începutul anului fiscal. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar precedent."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (1) și (5), astfel cum a fost modificat de OUG 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (1) și (5), astfel cum a fost modificat de OUG 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie urmărit, ca să nu se rateze momentul:
@@ -36,6 +36,6 @@ Ce trebuie urmărit, ca să nu se rateze momentul:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro. Modulul `core/test_a8_micro_baza.py` testează doar calculul bazei impozabile trimestriale (cota de 1%), nu verificarea eligibilității sau a plafonului. Aplicația **nu are, la data acestui ghid, o alertă proactivă** care să notifice utilizatorul, automat sau în timp real, la apropierea de plafon — momentul depășirii și trecerea la impozit pe profit rămân integral în sarcina contabilului, pe baza introducerii corecte și la timp a veniturilor cumulate.
+La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro. Aplicația testează doar calculul bazei impozabile trimestriale (cota de 1%), nu verificarea eligibilității sau a plafonului. Aplicația **nu are, la data acestui ghid, o alertă proactivă** care să notifice utilizatorul, automat sau în timp real, la apropierea de plafon — momentul depășirii și trecerea la impozit pe profit rămân integral în sarcina contabilului, pe baza introducerii corecte și la timp a veniturilor cumulate.
 
 [iConta.eu](/)

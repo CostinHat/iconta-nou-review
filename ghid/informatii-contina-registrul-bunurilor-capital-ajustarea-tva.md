@@ -14,12 +14,12 @@ Normele Codului fiscal cer cinci informații pentru fiecare bun de capital: data
 
 ::: ghid-temei
 „(2) În vederea ajustării taxei deductibile aferente bunurilor de capital, persoanele impozabile sunt obligate să țină un registru al bunurilor de capital, în care să evidențieze pentru fiecare bun de capital, astfel cum este definit la art. 305 alin. (1) din Codul fiscal, următoarele informații: a) data achiziției, fabricării, finalizării construirii sau transformării/modernizării; […] b) valoarea (baza de impozitare) bunului de capital; […] c) taxa deductibilă aferentă bunului de capital; […] d) taxa dedusă; […] e) ajustările efectuate conform art. 305 alin. (4) din Codul fiscal."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana impozabilă trebuie să păstreze o situație a bunurilor de capital care fac obiectul ajustării taxei deductibile, care să permită controlul taxei deductibile și al ajustărilor efectuate. Această situație trebuie păstrată pe o perioadă care începe în momentul la care taxa aferentă achiziției bunului de capital devine exigibilă și se încheie la 5 ani după expirarea perioadei în care se poate solicita ajustarea deducerii."
-— Codul fiscal (Legea 227/2015), art. 305 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă fiecare informație:

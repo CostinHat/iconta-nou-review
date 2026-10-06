@@ -18,7 +18,7 @@ O sumă plătită în plus la impozitul pe profit nu se pierde — se restituie,
 (8) În cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod.
 (9) În cazul în care suma de rambursat sau de restituit este mai mică decât obligațiile restante ale contribuabilului/plătitorului, se efectuează compensarea până la concurența sumei de rambursat sau de restituit.
 (10) În cazul în care suma de rambursat sau de restituit este mai mare decât suma reprezentând obligații restante ale contribuabilului/plătitorului, compensarea se efectuează până la concurența obligațiilor restante, diferența rezultată restituindu-se contribuabilului/plătitorului."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (8), (9), (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (8), (9), (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii pentru recuperarea unei sume plătite în plus:
@@ -37,6 +37,6 @@ Pașii pentru recuperarea unei sume plătite în plus:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe profit datorat prin modulul D101 (`core/d101.py`, `core/d101_reconciliere.py`), pe baza rezultatului fiscal introdus/calculat din datele contabile, și poate semnala o diferență între plățile anticipate efectuate și impozitul anual datorat. Aplicația nu depune însă cereri de restituire sau de compensare către ANAF și nu urmărește execuția efectivă a compensării cu alte obligații fiscale ale firmei — identificarea sumei plătite în plus și demersul de recuperare la organul fiscal rămân un pas realizat manual de contabil.
+La data acestui ghid, iConta.eu calculează impozitul pe profit datorat prin modulul D101, pe baza rezultatului fiscal introdus/calculat din datele contabile, și poate semnala o diferență între plățile anticipate efectuate și impozitul anual datorat. Aplicația nu depune însă cereri de restituire sau de compensare către ANAF și nu urmărește execuția efectivă a compensării cu alte obligații fiscale ale firmei — identificarea sumei plătite în plus și demersul de recuperare la organul fiscal rămân un pas realizat manual de contabil.
 
 [iConta.eu](/)

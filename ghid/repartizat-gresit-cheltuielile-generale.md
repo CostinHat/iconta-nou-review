@@ -14,7 +14,7 @@ O greșeală frecventă la firmele care produc sau prestează servicii cu costur
 
 ::: ghid-temei
 „79. – (1) Exemple de costuri care nu trebuie incluse în costul stocurilor, ci sunt recunoscute drept cheltuieli ale perioadei în care au survenit, sunt următoarele: [...] – regiile (cheltuielile) generale de administrație care nu participă la aducerea stocurilor în forma și locul final; – regia fixă nealocată costului, care se recunoaște drept cheltuială în perioada în care a apărut. Alocarea regiei fixe asupra costurilor se face pe baza capacității normale de producție (activitate)."
-— OMFP nr. 1.802/2014, pct. 79 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP nr. 1.802/2014, pct. 79 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din regulă rezultă un test simplu pentru orice cheltuială „generală":

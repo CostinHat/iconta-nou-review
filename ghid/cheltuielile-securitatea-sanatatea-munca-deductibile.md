@@ -16,17 +16,17 @@ Contează în practică pentru că SSM e o obligație legală a angajatorului, n
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare”
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) În aplicarea prevederilor art. 25 alin. (1) din Codul fiscal, sunt cheltuieli deductibile la calculul rezultatului fiscal și cheltuielile reglementate prin acte normative în vigoare. De exemplu: a) cheltuielile efectuate pentru securitate și sănătate în muncă, potrivit legii;”
-— HG 1/2016 (Normele Codului fiscal), titlul II, pct. 13 alin. (2) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul II, pct. 13 alin. (2) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(1) Angajatorul are obligația de a asigura securitatea și sănătatea lucrătorilor în toate aspectele legate de muncă. (2) În cazul în care un angajator apelează la servicii externe, acesta nu este exonerat de responsabilitățile sale în acest domeniu.”
-— Legea 319/2006 a securității și sănătății în muncă, art. 6 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006 a securității și sănătății în muncă, art. 6 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce intră, de regulă, în categoria SSM deductibilă:

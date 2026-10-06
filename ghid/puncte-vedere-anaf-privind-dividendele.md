@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române. Impozitul pe dividende se declară și se plătește la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei în care se plătește dividendul."
-— Legea nr. 227/2015 privind Codul fiscal, art. 43 alin. (2), astfel cum a fost modificat de Legea nr. 141/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 43 alin. (2), astfel cum a fost modificat de Legea nr. 141/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cota de **16%** se aplică dividendelor distribuite **începând cu 1 ianuarie 2026** (Legea 141/2025, art. VII alin. (1) lit. a)).

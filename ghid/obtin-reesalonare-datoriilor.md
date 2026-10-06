@@ -14,7 +14,7 @@ Când o firmă nu poate achita la termen obligațiile fiscale restante, Codul de
 
 ::: ghid-temei
 „Pentru acordarea unei eșalonări la plată de către organul fiscal central, debitorul trebuie să îndeplinească cumulativ următoarele condiții: a) să se afle în dificultate generată de lipsa temporară de disponibilități bănești și să aibă capacitate financiară de plată pe perioada de eșalonare la plată [...]; b) să aibă constituită garanția potrivit art. 193; c) să nu se afle în procedura insolvenței potrivit legii [...]; d) să nu se afle în dizolvare potrivit prevederilor legale în vigoare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 186 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 186 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe lângă condițiile de mai sus, procedura mai cere:

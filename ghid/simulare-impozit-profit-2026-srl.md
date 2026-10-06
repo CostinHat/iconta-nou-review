@@ -18,7 +18,7 @@ Pentru majoritatea firmelor la regim de profit, impozitul din 2026 se calculeaz�
 
 „(1) Contribuabilii, alții decât cei prevăzuți la art. 15, care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit [...] mai mic decât impozitul minim pe cifra de afaceri [...], sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri. [...]
 (16) Pentru anul fiscal 2026/anul fiscal modificat care începe în anul 2026, cota de impozit din cadrul formulei prevăzute la alin. (3) este 0,5%."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (1) și (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (1) și (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru simularea impozitului unui SRL în 2026:

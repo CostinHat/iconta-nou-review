@@ -24,7 +24,7 @@ Greșeala tipică este să se lase contul nemapat "pentru mai târziu" și să s
 
 ## Ce face iConta.eu
 
-Validarea fișierului D406 se face cu validatorul oficial `DUKIntegrator_AnLunaUI.jar` (integrat prin `core/duk.py`, funcția `valideaza(xml, tip, an=, luna=)`) — un cont fără corespondent valid în structura acceptată este exact genul de problemă pe care acest pas de validare este menit să o prindă înainte de depunere.
+Validarea fișierului D406 se face cu validatorul oficial `DUKIntegrator_AnLunaUI.jar` (integrat prin aplicație, funcția `valideaza(xml, tip, an=, luna=)`) — un cont fără corespondent valid în structura acceptată este exact genul de problemă pe care acest pas de validare este menit să o prindă înainte de depunere.
 
 Dosarul de cercetare pentru acest ghid nu conține o descriere a unui ecran dedicat, în iConta.eu, pentru rezolvarea punctuală a unui cont nemapat — dacă întâmpinați această situație, cel mai sigur pas este verificarea planului de conturi al firmei și, dacă problema persistă, contactarea suportului iConta.eu cu exemplul concret al contului respectiv.
 

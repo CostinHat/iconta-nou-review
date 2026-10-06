@@ -14,7 +14,7 @@ Marfa care sosește la sfârșitul lunii fără ca factura furnizorului să fi a
 
 ::: ghid-temei
 „(2) Datoriile către furnizorii de bunuri, respectiv prestatorii de servicii, de la care, până la finele lunii, nu s-au primit facturile se evidențiază distinct în contabilitate (contul 408 «Furnizori - facturi nesosite»), pe baza documentelor care atestă primirea bunurilor, respectiv a serviciilor."
-— OMFP 1802/2014, pct. 310 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 310 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Tratamentul corect, pas cu pas:

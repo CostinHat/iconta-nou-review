@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „D101 nu se poate genera fără CUI valid (checksum verificat prin `core.identitate.valideaza_cui`), denumire, adresă, cod CAEN pe 4 cifre; plus erorile de declarant din `core.firma_profil_api.erori_declarant`."
-— sursă: `core/d101.py`, funcția `erori_generare`, liniile 366–388, dosar de cercetare F027.
+— sursă: Aplicația, funcția `erori_generare`, dosar de cercetare F027.
 
 D101 „citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)"
-— sursă: `core/d101.py`, funcția `pull()`, liniile 448–467, dosar de cercetare F027.
+— sursă: Aplicația, funcția `pull()`, dosar de cercetare F027.
 :::
 
 Pregătirea balanței pentru D101 înseamnă, concret, verificarea a două seturi de lucruri:

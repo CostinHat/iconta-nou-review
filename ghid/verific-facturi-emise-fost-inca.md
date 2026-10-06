@@ -14,7 +14,7 @@ Emiterea unei facturi și transmiterea ei efectivă în sistemul RO e-Factura (S
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare. Calculul termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71 al Consiliului din 3 iunie 1971 privind stabilirea regulilor care se aplică termenelor, datelor și expirării termenelor."
-— OUG 120/2021, art. 10 alin. (7) (text modificat prin OUG 89/2025, art. X pct. 2) (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 120/2021, art. 10 alin. (7) (text modificat prin OUG 89/2025, art. X pct. 2) (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 - Termenul curge de la **data emiterii facturii**, nu de la data prestației/livrării, și se numără în **zile lucrătoare**, nu calendaristice.
@@ -29,6 +29,6 @@ Emiterea unei facturi și transmiterea ei efectivă în sistemul RO e-Factura (S
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare care stă la baza acestui ghid documentează în detaliu o singură funcționalitate legată de exportul facturilor emise — F171, exportul XML către programul de contabilitate SAGA, complet separat de sistemul RO e-Factura/SPV. Aplicația are, potrivit acestui dosar, și un modul distinct pentru transmiterea facturilor către e-Factura (`core/efactura_send.py`), dar acest dosar nu a verificat dacă și cum oferă acel modul o listă sau un raport al facturilor emise încă netransmise în SPV. Nu facem, așadar, nicio afirmație despre existența unei astfel de funcții de verificare în iConta.eu, pentru a nu inventa un comportament neconfirmat în cod.
+Dosarul de cercetare care stă la baza acestui ghid documentează în detaliu o singură funcționalitate legată de exportul facturilor emise — F171, exportul XML către programul de contabilitate SAGA, complet separat de sistemul RO e-Factura/SPV. Aplicația are, potrivit acestui dosar, și un modul distinct pentru transmiterea facturilor către e-Factura, dar acest dosar nu a verificat dacă și cum oferă acel modul o listă sau un raport al facturilor emise încă netransmise în SPV. Nu facem, așadar, nicio afirmație despre existența unei astfel de funcții de verificare în iConta.eu, pentru a nu inventa un comportament neconfirmat în cod.
 
 [iConta.eu](/)

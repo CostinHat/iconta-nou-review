@@ -16,7 +16,7 @@ Cota de 1% pe veniturile microîntreprinderilor rămâne în vigoare în 2026, d
 „(1) Cota de impozit pe veniturile microîntreprinderilor este de 1%.
 [...]
 [Articolul 47] (1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...] d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale; e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul comerțului sau la instanțele judecătorești, potrivit legii. [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3); h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu; i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Cod fiscal, art. 51 alin. (1) și art. 47 alin. (1) lit. c)-i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 51 alin. (1) și art. 47 alin. (1) lit. c)-i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru a aplica 1% în 2026, o persoană juridică română trebuie să îndeplinească, cumulativ, la 31 decembrie 2025:

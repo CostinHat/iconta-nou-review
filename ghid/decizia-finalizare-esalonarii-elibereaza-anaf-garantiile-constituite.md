@@ -16,13 +16,13 @@ Pentru firmă, decizia de finalizare înseamnă mai mult decât bunuri eliberate
 
 ::: ghid-temei
 „Organul fiscal competent eliberează garanțiile după comunicarea deciziei de finalizare a eșalonării la plată, prevăzută la art. 194 alin. (3), cu excepția situației prevăzute la art. 202 alin. (3)."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (19) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (19) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care sumele eșalonate la plată au fost stinse în totalitate și au fost respectate condițiile prevăzute la alin. (1), organul fiscal competent comunică debitorului decizia de finalizare a eșalonării la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care eșalonarea la plată se finalizează în condițiile art. 194 alin. (3), penalitățile de întârziere, precum și majorările de întârziere amânate la plată se anulează prin decizie care se comunică debitorului odată cu decizia de finalizare a eșalonării la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 208 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 208 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Etapele finalizării:

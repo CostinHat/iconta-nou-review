@@ -14,7 +14,7 @@ Nu contabilizezi diferențe de curs la avansuri, pentru că nu apar. Un avans ac
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, pentru un avans plătit unui furnizor extern:
@@ -32,6 +32,6 @@ Practic, pentru un avans plătit unui furnizor extern:
 
 ## Ce face iConta.eu
 
-`core/diferente_curs.py` validează explicit tipurile de solduri acceptate la `creanta`, `disponibil` și `datorie` — un avans nu se încadrează în niciuna dintre acestea, iar un apel cu tipul „avans" produce o eroare, nu o notă contabilă. Aplicația **nu are** o funcție dedicată de „diferențe de curs la avansuri", pentru că o asemenea funcție ar contrazice regula elementelor nemonetare. Regularizarea avansului cu factura finală și înregistrarea restului de sold ca datorie/creanță rămân operațiuni pe care contabilul le face separat, prin ecranele de facturare, respectiv de decontare valutară (F041) doar pentru restul rămas, dacă există.
+Aplicația validează explicit tipurile de solduri acceptate la `creanta`, `disponibil` și `datorie` — un avans nu se încadrează în niciuna dintre acestea, iar un apel cu tipul „avans" produce o eroare, nu o notă contabilă. Aplicația **nu are** o funcție dedicată de „diferențe de curs la avansuri", pentru că o asemenea funcție ar contrazice regula elementelor nemonetare. Regularizarea avansului cu factura finală și înregistrarea restului de sold ca datorie/creanță rămân operațiuni pe care contabilul le face separat, prin ecranele de facturare, respectiv de decontare valutară (F041) doar pentru restul rămas, dacă există.
 
 [iConta.eu](/)

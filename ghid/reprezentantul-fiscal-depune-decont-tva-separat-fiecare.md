@@ -16,17 +16,17 @@ Da. Firma străină înregistrată prin reprezentant fiscal primește un cod de 
 
 ::: ghid-temei
 „Reprezentantul fiscal depune decontul de taxă prevăzut la art. 323 din Codul fiscal pentru operațiunile desfășurate în România de persoana impozabilă nestabilită în România pe care o reprezintă, în care include și facturile emise de persoana impozabilă nestabilită în România sub codul de înregistrare în scopuri de TVA atribuit prin reprezentant fiscal conform art. 316 din Codul fiscal. În situația în care reprezentantul fiscal este mandatat de mai multe persoane impozabile stabilite în străinătate, trebuie să depună câte un decont de taxă pentru fiecare persoană impozabilă nestabilită în România pe care o reprezintă. Nu îi este permis reprezentantului fiscal să evidențieze în decontul de taxă depus pentru activitatea proprie, pentru care este înregistrat în scopuri de TVA, operațiunile desfășurate în numele persoanei impozabile nestabilite în România, pentru care depune un decont de taxă separat.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (13) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (13) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Operațiunile efectuate de reprezentantul fiscal în numele persoanei impozabile nestabilite în România nu se evidențiază în contabilitatea proprie a persoanei desemnate ca reprezentant fiscal.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (10) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (10) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana impozabilă nestabilită în Uniunea Europeană care are obligația să se înregistreze în scopuri de TVA în România este obligată, în condițiile stabilite prin normele metodologice, să se înregistreze prin desemnarea unui reprezentant fiscal.”
-— Codul fiscal (Legea 227/2015), art. 316 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile se completează:

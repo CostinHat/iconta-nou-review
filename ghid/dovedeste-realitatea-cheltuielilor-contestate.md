@@ -18,7 +18,7 @@ Documentele justificative și evidențele contabile ale contribuabilului/plătit
 ART. 73 Sarcina probei în dovedirea situației de fapt fiscale
 (1) Contribuabilul/Plătitorul are sarcina de a dovedi actele și faptele care au stat la baza declarațiilor sale și a oricăror cereri adresate organului fiscal.
 (2) Organul fiscal are sarcina de a motiva actele administrative fiscale emise pe bază de probe sau constatări proprii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 72 și art. 73 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 72 și art. 73 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul probator, așa cum rezultă din text:

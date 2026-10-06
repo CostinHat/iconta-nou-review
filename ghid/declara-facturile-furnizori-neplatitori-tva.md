@@ -14,10 +14,10 @@ D394 nu se limitează la operațiunile cu alți plătitori de TVA. Obligația de
 
 ::: ghid-temei
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF 3769/2015, art.1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt:20-24)
+— OPANAF 3769/2015, art.1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: anaf_surse/opanaf_2194_2025_d394.txt:741-742)
+— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Din cele două texte rezultă regula practică:
@@ -34,7 +34,7 @@ Din cele două texte rezultă regula practică:
 
 ## Ce face iConta.eu
 
-Generatorul D394 din iConta.eu clasifică fiecare partener din factură după prefixul CUI, în cod (`core/d394.py`, funcția `clasifica_partener()`): plătitor RO cu prefix valid, partener fără cod de TVA, partener din UE și partener din afara UE. Aplicația nu tratează tacit un partener autohton fără cod de TVA ca fiind „în afara declarației" — clasificarea există tocmai ca să deosebească acest caz de un partener străin.
+Generatorul D394 din iConta.eu clasifică fiecare partener din factură după prefixul CUI, în cod (funcția `clasifica_partener()`): plătitor RO cu prefix valid, partener fără cod de TVA, partener din UE și partener din afara UE. Aplicația nu tratează tacit un partener autohton fără cod de TVA ca fiind „în afara declarației" — clasificarea există tocmai ca să deosebească acest caz de un partener străin.
 
 Ce nu face aplicația: nu verifică independent, la generare, dacă un CUI RO scris fără prefix e efectiv un CUI valid de neplătitor de TVA sau o simplă greșeală de tastare a codului „RO" — există totuși un gard care semnalează un CUI RO scris greșit înainte ca acesta să fie declarat tacit drept partener străin. Achizițiile intracomunitare sunt excluse explicit din generare (comentariu în cod: „ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390"), în timp ce achizițiile de la furnizori autohtoni, indiferent de statutul lor de TVA, urmează fluxul normal de generare.
 

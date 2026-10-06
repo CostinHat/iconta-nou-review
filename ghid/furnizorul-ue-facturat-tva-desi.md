@@ -14,7 +14,7 @@ La o achiziție intracomunitară de bunuri, TVA nu se plătește furnizorului di
 
 ::: ghid-temei
 „Persoana care efectuează o achiziție intracomunitară de bunuri care este taxabilă, conform prezentului titlu, este obligată la plata taxei."
-— Legea nr. 227/2015 (Codul fiscal), art. 308 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 308 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Regula de bază pentru achizițiile intracomunitare de bunuri e că plata TVA cade în sarcina cumpărătorului**, nu a furnizorului — mecanismul e taxarea inversă: cumpărătorul înscrie taxa atât ca taxă colectată, cât și ca taxă deductibilă (dacă are drept de deducere), fără flux de bani efectiv.

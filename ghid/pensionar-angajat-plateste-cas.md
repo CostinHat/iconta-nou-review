@@ -15,7 +15,7 @@ Da. Un pensionar care are un contract individual de muncă datorează contribuț
 ::: ghid-temei
 „Contribuabilii/Plătitorii de venit la sistemul public de pensii, prevăzuți la art. 136, datorează, după caz, contribuția de asigurări sociale pentru următoarele categorii de venituri realizate din România și din afara României [...]: a) venituri din salarii sau asimilate salariilor, definite conform art. 76; [...]
 (Art. 150) (1) Persoanele fizice asigurate în sisteme proprii de asigurări sociale, care nu au obligația asigurării în sistemul public de pensii potrivit legii, precum și persoanele care au calitatea de pensionari nu datorează contribuția de asigurări sociale pentru veniturile prevăzute la art. 137 alin. (1) lit. b) și b^1)."
-— Legea nr. 227/2015 (Codul fiscal), art. 137 alin. (1) lit. a) și art. 150 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 137 alin. (1) lit. a) și art. 150 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Explicația mecanismului:
@@ -32,6 +32,6 @@ Explicația mecanismului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează corect CAS pentru salariații pensionari ca pentru orice alt angajat, pe baza salariului brut introdus. În plus, modulul de salarizare (`core/salarizare.py`, funcția de calcul salariu) are un parametru dedicat `exceptat_suprataxare`, prin care contabilul poate marca un salariat aflat în una din situațiile de la art. 146 alin. (5^7) din Codul fiscal — printre care „elev/student <26, pensionar, multi-contract cu declarație" — astfel încât aplicația nu mai ridică artificial contribuția de asigurări sociale la nivelul corespunzător salariului minim brut pe țară, ci o calculează la salariul efectiv realizat.
+La data acestui ghid, iConta.eu calculează corect CAS pentru salariații pensionari ca pentru orice alt angajat, pe baza salariului brut introdus. În plus, modulul de salarizare (funcția de calcul salariu) are un parametru dedicat `exceptat_suprataxare`, prin care contabilul poate marca un salariat aflat în una din situațiile de la art. 146 alin. (5^7) din Codul fiscal — printre care „elev/student <26, pensionar, multi-contract cu declarație" — astfel încât aplicația nu mai ridică artificial contribuția de asigurări sociale la nivelul corespunzător salariului minim brut pe țară, ci o calculează la salariul efectiv realizat.
 
 [iConta.eu](/)

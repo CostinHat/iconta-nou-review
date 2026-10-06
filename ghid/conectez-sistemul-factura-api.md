@@ -14,7 +14,7 @@ Nu e nevoie de o soluție ocolitoare pentru a conecta propriul sistem la RO e-Fa
 
 ::: ghid-temei
 „Sistemul naţional privind factura electronică RO e-Factura asigură interoperabilitatea cu sistemele de facturare ale operatorilor economici."
-— OUG nr. 120/2021, art. 16 (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 16 (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Coroborat cu regulile de identificare electronică, conectarea unui sistem propriu presupune:
@@ -31,6 +31,6 @@ Coroborat cu regulile de identificare electronică, conectarea unui sistem propr
 
 ## Ce face iConta.eu
 
-iConta.eu este ea însăși un exemplu de „sistem propriu" conectat prin API la RO e-Factura: modulul `core/spv_conector.py` implementează autorizarea OAuth2 cu ANAF, iar `core/efactura_send.py` folosește acest acces pentru a genera și transmite facturile în format CIUS-RO. Firma sau PFA-ul autorizează o singură dată conexiunea, folosind certificatul digital calificat; ulterior, aplicația reînnoiește automat accesul tehnic (refresh token), fără intervenție repetată.
+iConta.eu este ea însăși un exemplu de „sistem propriu" conectat prin API la RO e-Factura: Aplicația implementează autorizarea OAuth2 cu ANAF, iar aplicația folosește acest acces pentru a genera și transmite facturile în format CIUS-RO. Firma sau PFA-ul autorizează o singură dată conexiunea, folosind certificatul digital calificat; ulterior, aplicația reînnoiește automat accesul tehnic (refresh token), fără intervenție repetată.
 
 [iConta.eu](/)

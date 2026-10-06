@@ -31,6 +31,6 @@ La distribuire, procedura e identică: `462 = 446` (impozitul de 10% reținut la
 
 ## Ce face iConta.eu
 
-Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 (`core/bacsis.py`) tratează fiecare încasare de bacșiș ca operațiune de sine stătătoare, indiferent dacă a fost plătită împreună cu consumația sau separat — nota generată e mereu `461=462` + `5121=461`, niciodată legată de altă tranzacție. Respinge orice sumă mai mică sau egală cu zero, cu mesaj dedicat.
+Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 tratează fiecare încasare de bacșiș ca operațiune de sine stătătoare, indiferent dacă a fost plătită împreună cu consumația sau separat — nota generată e mereu `461=462` + `5121=461`, niciodată legată de altă tranzacție. Respinge orice sumă mai mică sau egală cu zero, cu mesaj dedicat.
 
 [iConta.eu](/)

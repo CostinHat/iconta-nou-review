@@ -14,10 +14,10 @@ Instituțiile de credit au un regim de impozitare distinct de restul firmelor, d
 
 ::: ghid-temei
 „(3) Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] f) persoana juridică română care desfășoară activități în domeniul bancar;"
-— Legea 227/2015, art. 47 alin. (3) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (3) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Instituțiile de credit - persoane juridice române și sucursalele din România ale instituțiilor de credit - persoane juridice străine datorează suplimentar impozitului pe profit un impozit specific pe cifra de afaceri calculat prin aplicarea asupra cifrei de afaceri a următoarelor cote de impozitare: [...] b) 4%, pentru perioada 1 ianuarie 2026-31 decembrie 2026 inclusiv; c) 2%, pentru perioada 1 iulie 2025-31 decembrie 2026 inclusiv, prin excepție de la lit. a) și b), pentru instituțiile de credit [...] care dețin o cotă de piață mai mică de 0,2% din totalul activelor nete ale sectorului bancar din România [...]"
-— Legea 227/2015, art. 46^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 46^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din combinarea celor două texte, pentru anul 2026:

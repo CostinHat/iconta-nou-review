@@ -35,6 +35,6 @@ Se confundă lista de servicii cu lista de produse — de exemplu, se aplică re
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` include în `CATEGORII_11` fiecare serviciu eligibil, cu referință explicită la litera din art. 291 alin. (2) și exemple concrete (ex. „cazare hotel", „meniu restaurant", „catering eveniment"). Motorul de potrivire cotă (`potriveste_cota`) folosește AI pentru a încadra descrierea serviciului în categoria corectă și, dacă nu poate stabili clar cota, blochează linia ca **nedeterminată** — nu completează implicit cu 21%.
+Aplicația include în `CATEGORII_11` fiecare serviciu eligibil, cu referință explicită la litera din art. 291 alin. (2) și exemple concrete (ex. „cazare hotel", „meniu restaurant", „catering eveniment"). Motorul de potrivire cotă (`potriveste_cota`) folosește AI pentru a încadra descrierea serviciului în categoria corectă și, dacă nu poate stabili clar cota, blochează linia ca **nedeterminată** — nu completează implicit cu 21%.
 
 [iConta.eu](/)

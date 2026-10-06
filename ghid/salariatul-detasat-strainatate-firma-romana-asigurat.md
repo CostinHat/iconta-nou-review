@@ -16,12 +16,12 @@ Pentru firmă, asta înseamnă că documentul de legislație aplicabilă se obț
 
 ::: ghid-temei
 „Articolul 7 (1) Prevederile art. 5 sunt aplicabile și angajaților români care prestează muncă în străinătate din dispoziția angajatorilor români, în condițiile legii și ale Regulamentelor europene sau acordurilor internaționale privind coordonarea sistemelor de securitate socială, după caz."
-— Legea 346/2002, art. 7 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 7 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(2) Angajații români prevăzuți la art. 7 alin. (1) sunt asigurați dacă au înregistrat un accident de muncă și dețin un document emis conform regulamentelor europene de coordonare a sistemelor de securitate socială nr. 883/2004 și nr. 987/2009, care să ateste faptul că fac obiectul legislației de securitate socială din România."
-— Legea 346/2002, art. 15 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 15 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Cum se citesc împreună:

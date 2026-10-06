@@ -16,7 +16,7 @@ O încasare înregistrată de două ori în registrul de casă nu se „corectea
 „14. În documentele financiar-contabile nu sunt admise ștersături, modificări sau alte asemenea procedee [...] Erorile se corectează prin tăierea cu o linie a textului sau a cifrei greșite, concomitent înscriindu-se alături textul sau cifra corectă. [...]
 15. În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primește, se eliberează sau se justifică numerarul, ori al altor documente pentru care normele de utilizare prevăd asemenea restricții, documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv. [...]
 20. [...] În cazul stornărilor, pe documentul inițial se menționează numărul și data notei de contabilitate prin care s-a efectuat stornarea operațiunii, iar în nota de contabilitate de stornare se menționează documentul, data și numărul de ordine ale operațiunii care face obiectul stornării."
-— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 14, 15 și 20 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 14, 15 și 20 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Pentru o încasare de casă dublată, rezultă două căi corecte, în funcție de momentul la care descoperiți greșeala:
@@ -33,6 +33,6 @@ Pentru o încasare de casă dublată, rezultă două căi corecte, în funcție 
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) calculează soldul rulant al registrului de casă strict pe baza listei de operațiuni introduse (`registru_casa`), fără o funcție dedicată de „anulare" sau „stornare" a unei operațiuni — o încasare dublată trebuie eliminată sau contrabalansată manual de contabil, prin introducerea corecției ca operațiune nouă, cu urma ei documentară păstrată în afara aplicației. Aplicația verifică automat plafoanele de numerar (art. 4^2 din Legea 70/2015, inclusiv pragurile speciale pentru cash and carry) pe operațiunile introduse, dar nu semnalează dubluri de înregistrare și nu propune stornarea lor.
+Modulul de casierie al iConta.eu calculează soldul rulant al registrului de casă strict pe baza listei de operațiuni introduse (`registru_casa`), fără o funcție dedicată de „anulare" sau „stornare" a unei operațiuni — o încasare dublată trebuie eliminată sau contrabalansată manual de contabil, prin introducerea corecției ca operațiune nouă, cu urma ei documentară păstrată în afara aplicației. Aplicația verifică automat plafoanele de numerar (art. 4^2 din Legea 70/2015, inclusiv pragurile speciale pentru cash and carry) pe operațiunile introduse, dar nu semnalează dubluri de înregistrare și nu propune stornarea lor.
 
 [iConta.eu](/)

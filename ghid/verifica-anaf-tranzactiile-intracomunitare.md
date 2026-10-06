@@ -14,7 +14,7 @@ Controlul pe operațiuni intracomunitare pornește, de regulă, de la declarați
 
 ::: ghid-temei
 „Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]."
-— Cod fiscal (Legea 227/2015), art. 294 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce verifică efectiv ANAF, pe fiecare palier:

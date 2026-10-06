@@ -16,15 +16,15 @@ Pentru anul în care se semnează contractul, impozitul rămâne la cel care de�
 
 ::: ghid-temei
 „În cazul persoanelor fizice și juridice care încheie contracte de fiducie conform Codului civil, impozitele și taxele locale aferente masei patrimoniale fiduciare transferate în cadrul operațiunii de fiducie sunt plătite de către fiduciar la bugetele locale ale unităților administrativ-teritoriale unde sunt înregistrate bunurile care fac obiectul operațiunii de fiducie, cu respectarea prevederilor prezentului titlu, începând cu data de 1 ianuarie a anului următor celui în care a fost încheiat contractul de fiducie."
-— Codul fiscal (Legea 227/2015), art. 488 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 488 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) Impozitul pe clădiri este datorat pentru întregul an fiscal de persoana care are în proprietate clădirea la data de 31 decembrie a anului fiscal anterior."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Impozitul pe teren este datorat pentru întregul an fiscal de persoana care are în proprietate terenul la data de 31 decembrie a anului fiscal anterior."
-— Codul fiscal (Legea 227/2015), art. 466 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -16,13 +16,13 @@ Separarea are un rost practic. Fondurile au destinații diferite și, uneori, so
 
 ::: ghid-temei
 „(4) Pentru încasarea fondului de reparații, administratorul eliberează chitanță nominală separată.”
-— Legea 196/2018, art. 71 alin. (4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 71 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(4) Pentru încasarea fondului de rulment, administratorul eliberează chitanță nominală separată.”
-— Legea 196/2018, art. 72 alin. (4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 72 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(2) Toate fondurile speciale ale asociației de proprietari se depun în contul asociației de proprietari, prevăzut la art. 20 , au evidență separată și pentru fiecare se emite chitanță separată.”
-— Legea 196/2018, art. 73 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 73 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce rezultă concret:

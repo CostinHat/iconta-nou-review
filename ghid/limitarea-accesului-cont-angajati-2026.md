@@ -14,14 +14,14 @@ poarta: v1
 
 ::: ghid-temei
 „570. - Activitățile de control fac parte integrantă din procesul de gestiune prin care entitatea urmărește atingerea obiectivelor propuse. Controlul vizează aplicarea normelor și procedurilor de control intern, la toate nivelurile ierarhice și funcționale: aprobare, autorizare, verificare, evaluarea performanțelor operaționale, securizarea activelor, separarea funcțiilor."
-— OMFP 1802/2014, Capitolul 11 „Controlul intern", pct. 570 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Capitolul 11 „Controlul intern", pct. 570 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 În aceeași secțiune, referitor la accesul la informațiile contabile și financiare:
 
 ::: ghid-temei
 „Sunt necesare, de asemenea: – identificarea cu claritate a persoanelor responsabile cu elaborarea informațiilor contabile și financiare publicate sau care participă la elaborarea situațiilor financiare; – accesul fiecărui colaborator implicat în procesul elaborării de informații contabile și financiare, la informațiile necesare controlului intern [...]"
-— OMFP 1802/2014, Capitolul 11 „Controlul intern", pct. 573 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Capitolul 11 „Controlul intern", pct. 573 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Textul nu fixează o listă tehnică de permisiuni — el stabilește principiul: accesul unui colaborator (inclusiv al unui angajat) la sistemul financiar-contabil trebuie corelat cu rolul lui real, iar separarea funcțiilor (cine introduce o operațiune, cine o validează, cine are vizibilitate completă) e parte a controlului intern pe care entitatea trebuie să îl asigure.
@@ -34,8 +34,8 @@ Textul nu fixează o listă tehnică de permisiuni — el stabilește principiul
 
 ## Ce face iConta.eu
 
-iConta.eu implementează accesul diferențiat pe rol prin funcționalitatea de **autentificare și sesiuni** (`core/auth_api.py`): fiecare utilizator primește un token cu rolul lui — superadmin, admin firmă, **angajat** sau client — iar accesul e limitat la propriul cabinet, respectiv la propriile firme, în funcție de acest rol. Un utilizator cu rol de angajat nu vede, prin construcție, date din afara cabinetului la care e alocat.
+iConta.eu implementează accesul diferențiat pe rol prin funcționalitatea de **autentificare și sesiuni**: fiecare utilizator primește un token cu rolul lui — superadmin, admin firmă, **angajat** sau client — iar accesul e limitat la propriul cabinet, respectiv la propriile firme, în funcție de acest rol. Un utilizator cu rol de angajat nu vede, prin construcție, date din afara cabinetului la care e alocat.
 
-Acest ghid a fost, inițial, asociat funcționalității **F135 — Pontaj angajați** (`core/pontaj.py`), care ține evidența zilelor lucrate/absente ale salariaților unei firme cliente, dar aceasta e o funcționalitate complet diferită — un registru informativ de prezență, fără nicio legătură cu drepturile de acces în sistem ale utilizatorilor iConta.eu. Subiectul acestui ghid ține, funcțional, de autentificare și roluri, nu de pontaj — nu am forțat această legătură.
+Acest ghid a fost, inițial, asociat funcționalității **F135 — Pontaj angajați**, care ține evidența zilelor lucrate/absente ale salariaților unei firme cliente, dar aceasta e o funcționalitate complet diferită — un registru informativ de prezență, fără nicio legătură cu drepturile de acces în sistem ale utilizatorilor iConta.eu. Subiectul acestui ghid ține, funcțional, de autentificare și roluri, nu de pontaj — nu am forțat această legătură.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Nu automat — dar nici fără limită. Legea a introdus în 2026 o regulă expl
 
 ::: ghid-temei
 „În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile și situația este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispozițiile art. 52 alin. (3)."
-— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (3^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (3^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, condiția de la art. 47 alin. (1) lit. g) — „are cel puțin un salariat" — rămâne îndeplinită în timpul suspendării doar dacă:
@@ -32,6 +32,6 @@ Practic, condiția de la art. 47 alin. (1) lit. g) — „are cel puțin un sala
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat** impactul unei suspendări de contract asupra eligibilității pentru regimul micro. Aplicația păstrează, în profilul firmei, un câmp de regim fiscal (`micro`/`profit`, vezi `core/vector_fiscal_api.py`) pe baza căruia generează declarațiile corespunzătoare (D100 trimestrial pentru micro, D101 anual pentru profit), dar nu urmărește zilele de suspendare ale contractelor de muncă și nu alertează contabilul când pragul de 30 de zile este depășit. Verificarea condiției de salariat, în cazul suspendărilor, rămâne o evaluare manuală a contabilului.
+La data acestui ghid, iConta.eu **nu calculează automat** impactul unei suspendări de contract asupra eligibilității pentru regimul micro. Aplicația păstrează, în profilul firmei, un câmp de regim fiscal (`micro`/`profit`, vezi aplicația) pe baza căruia generează declarațiile corespunzătoare (D100 trimestrial pentru micro, D101 anual pentru profit), dar nu urmărește zilele de suspendare ale contractelor de muncă și nu alertează contabilul când pragul de 30 de zile este depășit. Verificarea condiției de salariat, în cazul suspendărilor, rămâne o evaluare manuală a contabilului.
 
 [iConta.eu](/)

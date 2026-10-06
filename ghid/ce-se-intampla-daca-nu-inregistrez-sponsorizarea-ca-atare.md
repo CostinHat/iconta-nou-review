@@ -46,7 +46,7 @@ Sponsorizarea are un regim fiscal special — un credit direct din impozitul pe 
 
 ## Ce face iConta.eu
 
-Funcția `nota_sponsorizare(suma, mod)` din `core/sponsorizari.py` generează automat nota contabilă specifică sponsorizării, izolând-o de alte cheltuieli: `6582 = 401` pentru sponsorizarea acordată prin contract (obligație către beneficiar), respectiv `6582 = 5121` pentru plata directă. Contul 6582 poartă oficial denumirea „Donații acordate” în planul de conturi (nu există un cont dedicat „sponsorizare” în planul de conturi general) — dar folosirea lui distinctă, prin această funcție, vă permite să urmăriți separat sumele eligibile pentru creditul fiscal.
+Funcția `nota_sponsorizare(suma, mod)` din aplicație generează automat nota contabilă specifică sponsorizării, izolând-o de alte cheltuieli: `6582 = 401` pentru sponsorizarea acordată prin contract (obligație către beneficiar), respectiv `6582 = 5121` pentru plata directă. Contul 6582 poartă oficial denumirea „Donații acordate” în planul de conturi (nu există un cont dedicat „sponsorizare” în planul de conturi general) — dar folosirea lui distinctă, prin această funcție, vă permite să urmăriți separat sumele eligibile pentru creditul fiscal.
 
 Atenție: funcția acceptă doar modurile `"contract"` și `"plata"` — sponsorizarea în natură (predare de bunuri) nu are, deocamdată, un mod dedicat în motor, deși este menționată în documentația internă a modulului; pentru acest caz, nota contabilă trebuie tratată manual.
 

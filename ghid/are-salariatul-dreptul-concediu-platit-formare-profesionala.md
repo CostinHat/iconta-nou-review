@@ -16,13 +16,13 @@ Concediul plătit este, în fond, o consecință a unei obligații neîndeplinit
 
 ::: ghid-temei
 „(1) În cazul în care angajatorul nu și-a respectat obligația de a asigura pe cheltuiala sa participarea unui salariat la formare profesională în condițiile prevăzute de lege, salariatul are dreptul la un concediu pentru formare profesională, plătit de angajator, de până la 10 zile lucrătoare sau de până la 80 de ore. [...] (2) În situația prevăzută la alin. (1) indemnizația de concediu va fi stabilită conform art. 150. [...] (3) Perioada în care salariatul beneficiază de concediul plătit prevăzut la alin. (1) se stabilește de comun acord cu angajatorul. Cererea de concediu plătit pentru formare profesională va fi înaintată angajatorului în condițiile prevăzute la art. 156 alin. (1)."
-— Codul muncii (Legea 53/2003), art. 157 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 157 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Angajatorii au obligația de a asigura participarea la programe de formare profesională pentru toți salariații, după cum urmează:a) cel puțin o dată la 2 ani, dacă au cel puțin 21 de salariați; ... b) cel puțin o dată la 3 ani, dacă au sub 21 de salariați. ... (2) Cheltuielile cu participarea la programele de formare profesională, asigurată în condițiile alin. (1), se suportă de către angajatori."
-— Codul muncii (Legea 53/2003), art. 194 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 194 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Indemnizația de concediu de odihnă reprezintă media zilnică a drepturilor salariale prevăzute la alin. (1) din ultimele 3 luni anterioare celei în care este efectuat concediul, multiplicată cu numărul de zile de concediu."
-— Codul muncii (Legea 53/2003), art. 150 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 150 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Condițiile, pe rând:

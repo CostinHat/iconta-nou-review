@@ -17,10 +17,10 @@ O microîntreprindere cu un singur salariat care intră în concediu fără plat
 — Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. g)
 
 „(3^1) În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiţia prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile şi situaţia este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispoziţiile art. 52 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), în vigoare de la 25.02.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), în vigoare de la 25.02.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contractul individual de muncă poate fi suspendat, prin acordul părţilor, în cazul concediilor fără plată pentru studii sau pentru interese personale."
-— Legea 53/2003 (Codul muncii), art. 54 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 54 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Din coroborarea celor două texte rezultă mecanismul exact:

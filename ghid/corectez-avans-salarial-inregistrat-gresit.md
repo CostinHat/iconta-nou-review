@@ -14,7 +14,7 @@ Avansul chenzinal (plata parțială a salariului la mijlocul lunii) e un documen
 
 ::: ghid-temei
 „(1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. [...] Înregistrarea stornării unei operațiuni contabile aferente exercițiului financiar curent se efectuează fie prin corectarea cu semnul minus a operațiunii inițiale (stornare în roșu), fie prin înregistrarea inversă a acesteia (stornare în negru), în funcție de politica contabilă și programele informatice utilizate."
-— OMFP nr. 1802/2014, pct. 65 și pct. 69 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, pct. 65 și pct. 69 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - O eroare se corectează **la data la care e constatată**, nu retroactiv, prin modificarea silențioasă a înregistrării vechi (pct. 65 alin. (2)).

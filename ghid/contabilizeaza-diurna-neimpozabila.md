@@ -14,7 +14,7 @@ Diurna (indemnizația de delegare/detașare) nu este neimpozabilă în întregim
 
 ::: ghid-temei
 „k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat; (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Plafonul neimpozabil are, deci, două limite care trebuie verificate simultan:

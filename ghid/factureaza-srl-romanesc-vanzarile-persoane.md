@@ -14,7 +14,7 @@ Un magazin online din România vinde bunuri unor persoane fizice din Germania, c
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1) lit. a), locul livrării în cazul vânzărilor intracomunitare de bunuri la distanță este considerat a fi locul în care se află bunurile în momentul în care se încheie expedierea sau transportul bunurilor către client."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de bază (locul livrării = locul de unde pleacă marfa) e înlocuită, pentru vânzările la distanță către persoane fizice, cu locul unde ajunge marfa — dar numai peste un prag:

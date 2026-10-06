@@ -14,7 +14,7 @@ Un administrator sau un director cu contract de mandat nu are, de regulă, un co
 
 ::: ghid-temei
 „m) indemnizațiile și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare primite pe perioada deplasării în altă localitate, în țară și în străinătate, în interesul desfășurării activității, [...] de către administratorii stabiliți potrivit actului constitutiv, contractului de administrare/mandat, de către directorii care își desfășoară activitatea în baza contractului de mandat potrivit legii, [...] pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație [...], în limita a 3 remunerații prevăzute în raportul juridic; ... (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă [...], în limita a 3 remunerații prevăzute în raportul juridic. [...] Plafonul aferent valorii a 3 remunerații [...] se calculează distinct pentru fiecare lună [...]"
-— Codul fiscal, art. 76 alin. (2) lit. m) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. m) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e identic și ce diferă față de regimul salariaților:
@@ -32,7 +32,7 @@ Ce e identic și ce diferă față de regimul salariaților:
 
 ## Ce face iConta.eu
 
-Funcția de calcul a plafonului (`plafon_diurna`, din `core/deconturi.py`) este generică — primește ca parametru o bază de calcul numită, la nivel de cod, `salariu_baza`, indiferent dacă persoana pentru care se calculează plafonul este un salariat sau un administrator/director cu mandat. Codul nu are o ramură separată explicit dedicată „administratorului", dar formula fiind identică matematic cu cea de la lit. k), acoperă corect și acest caz — cu condiția ca operatorul să introducă la acest parametru remunerația de mandat a administratorului, nu un salariu de angajat.
+Funcția de calcul a plafonului (`plafon_diurna`, din aplicație) este generică — primește ca parametru o bază de calcul numită, la nivel de cod, `salariu_baza`, indiferent dacă persoana pentru care se calculează plafonul este un salariat sau un administrator/director cu mandat. Codul nu are o ramură separată explicit dedicată „administratorului", dar formula fiind identică matematic cu cea de la lit. k), acoperă corect și acest caz — cu condiția ca operatorul să introducă la acest parametru remunerația de mandat a administratorului, nu un salariu de angajat.
 
 Ca pentru toate celelalte calcule de plafon din acest modul, trebuie menționat: funcția rămâne accesibilă doar la nivel de API, fără un ecran dedicat în interfața iConta unde să fie introdusă remunerația administratorului și să fie afișat plafonul rezultat. Calculul corect al plafonului pentru un administrator rămâne, astăzi, un calcul pe care contabilul trebuie să-l facă manual, folosind formula de mai sus.
 

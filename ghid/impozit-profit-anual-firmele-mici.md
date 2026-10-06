@@ -14,7 +14,7 @@ O firmă plătitoare de impozit pe profit (nu micro) are obligația să calculez
 
 ::: ghid-temei
 „Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor, cu excepția contribuabililor prevăzuți la art. 41 alin. (16) și (17) care depun declarația anuală privind impozitul pe profit până la termenele prevăzute în cadrul acestor alineate."
-— Legea nr. 227/2015 (Codul fiscal), art. 42 alin. (1), astfel cum a fost modificat de OUG nr. 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 42 alin. (1), astfel cum a fost modificat de OUG nr. 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva repere pentru anul fiscal 2026:

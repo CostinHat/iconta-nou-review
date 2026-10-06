@@ -16,17 +16,17 @@ Contează în practică pentru că firmele care își reamenajează curtea sau s
 
 ::: ghid-temei
 „f) În cazul oricăror construcții și amenajări care nu sunt de natura clădirilor, ca de exemplu: gard, construcție fără acoperiș, taxa pentru eliberarea autorizației de desființare parțială sau totală se calculează prin aplicarea unei cote de 0,1% asupra valorii reale a construcțiilor sau amenajării supuse desființării, declarată de beneficiarul autorizației."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 141 lit. f) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 141 lit. f) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Taxa pentru eliberarea autorizației de desființare, totală sau parțială, a unei construcții este egală cu 0,1% din valoarea impozabilă stabilită pentru determinarea impozitului pe clădiri, aferentă părții desființate."
-— Codul fiscal (Legea 227/2015), art. 474 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prin termenul desființare se înțelege demolarea ori dezmembrarea parțială sau totală a construcției și a instalațiilor aferente, precum și a oricăror altor amenajări."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 143 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 143 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt, regula funcționează așa:

@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T), depus prin Declarația informativ�
 
 ::: ghid-temei
 „(1) Constituie contravenții următoarele fapte: a) nedepunerea la termenele prevăzute de lege a fișierului standard de control fiscal; b) depunerea incorectă ori incompletă a fișierului standard de control fiscal. (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: a) cu amendă de la 1.000 lei la 5.000 lei în cazul săvârșirii faptei prevăzute la lit. a); b) cu amendă de la 500 lei la 1.500 lei în cazul săvârșirii faptei prevăzute la lit. b). (3) Nu se sancționează contravențional: a) persoanele care corectează fișierul standard de control fiscal până la termenul legal de depunere a următorului fișier; b) persoanele care, ulterior termenului legal de depunere, corectează fișierul standard de control fiscal ca urmare a unui fapt neimputabil persoanei impozabile."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 337^1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 337^1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut din regimul sancționator:

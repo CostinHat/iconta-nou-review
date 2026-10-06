@@ -14,7 +14,7 @@ TVA neplătit la scadență generează dobândă de întârziere, calculată zil
 
 ::: ghid-temei
 „(5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Dobânda se calculează la un nivel fix de **0,02% pe zi** de întârziere, aplicat la suma de TVA rămasă neachitată — nu la un procent anual convertit, ci direct pe zi.
@@ -30,6 +30,6 @@ TVA neplătit la scadență generează dobândă de întârziere, calculată zil
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează declarațiile de TVA (D300) și urmărește scadențele de plată prin modulul de scadențar (`core/scadente.py`, `core/scadentar.py`), care calculează zilele lucrătoare și datele de scadență conform calendarului fiscal. Nu am găsit însă o funcție care să calculeze automat dobânda de 0,02%/zi pentru TVA achitat cu întârziere — acest calcul, inclusiv distincția față de eventualele penalități aplicate de ANAF, rămâne, la acest moment, în sarcina contabilului, pe baza deciziei de calcul accesorii emise de organul fiscal sau a propriei estimări.
+La data acestui ghid, iConta.eu generează declarațiile de TVA (D300) și urmărește scadențele de plată prin modulul de scadențar, care calculează zilele lucrătoare și datele de scadență conform calendarului fiscal. Nu am găsit însă o funcție care să calculeze automat dobânda de 0,02%/zi pentru TVA achitat cu întârziere — acest calcul, inclusiv distincția față de eventualele penalități aplicate de ANAF, rămâne, la acest moment, în sarcina contabilului, pe baza deciziei de calcul accesorii emise de organul fiscal sau a propriei estimări.
 
 [iConta.eu](/)

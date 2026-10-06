@@ -16,16 +16,16 @@ Regula e o excepție de la principiul că salariul se plătește direct titularu
 
 ::: ghid-temei
 „(1) Salariul se plătește direct titularului sau persoanei împuternicite de acesta. [...] (2) În caz de deces al salariatului, drepturile salariale datorate până la data decesului sunt plătite, în ordine, soțului supraviețuitor, copiilor majori ai defunctului sau părinților acestuia. Dacă nu există niciuna dintre aceste categorii de persoane, drepturile salariale sunt plătite altor moștenitori, în condițiile dreptului comun."
-— Codul muncii (Legea 53/2003), art. 167 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 167 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Contractul individual de muncă existent încetează de drept:a) la data decesului salariatului"
-— Codul muncii (Legea 53/2003), art. 56 alin. (1) lit. a) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 56 alin. (1) lit. a) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Compensarea în bani a concediului de odihnă neefectuat este permisă numai în cazul încetării contractului individual de muncă."
-— Codul muncii (Legea 53/2003), art. 146 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 146 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Plata salariului se dovedește prin semnarea statelor de plată, precum și prin orice alte documente justificative care demonstrează efectuarea plății către salariatul îndreptățit."
-— Codul muncii (Legea 53/2003), art. 168 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 168 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

@@ -13,7 +13,7 @@ Verificarea VIES nu e un pas opțional de bifat „ca să fie” — e condiția
 ## Temeiul legal
 
 ::: ghid-temei
-„`verifica_vies(cod_tva, timeout=15)` — interoghează `https://ec.europa.eu/taxation_customs/vies/rest-api/ms/{MS}/vat/{nr}`, întoarce `{valid, nume, adresa, tara, numar, eroare}`.” — cod sursă `core/intracomunitar.py`, verificat în dosarul F050; folosit pentru condiția „cod TVA valid” din CF art. 294 alin. (2) lit. a) (livrări) și art. 278 alin. (2) (servicii B2B).
+„`verifica_vies(cod_tva, timeout=15)` — interoghează `https://ec.europa.eu/taxation_customs/vies/rest-api/ms/{MS}/vat/{nr}`, întoarce `{valid, nume, adresa, tara, numar, eroare}`.” — codul aplicației, verificat în dosarul F050; folosit pentru condiția „cod TVA valid” din CF art. 294 alin. (2) lit. a) (livrări) și art. 278 alin. (2) (servicii B2B).
 :::
 
 ## Pas cu pas

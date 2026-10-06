@@ -14,7 +14,7 @@ Un credit cumpărat în avans pentru servicii cloud (procesare, stocare, API) nu
 
 ::: ghid-temei
 „Cu ajutorul acestui cont se ține evidența cheltuielilor efectuate în avans care urmează a se suporta eșalonat pe cheltuieli, pe baza unui scadențar, în perioadele/exercițiile financiare viitoare. Contul 471 «Cheltuieli înregistrate în avans» este un cont de activ. În debitul contului 471 «Cheltuieli înregistrate în avans» se înregistrează: – sumele reprezentând chiriile, abonamentele, certificatele de emisii de gaze cu efect de seră achiziționate, sumele aferente prestării ulterioare de servicii (de exemplu, asistența tehnică) și alte cheltuieli efectuate anticipat (401, 512, 531)."
-— OMFP nr. 1.802/2014, Reglementări contabile (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementări contabile (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un credit preplătit pentru servicii cloud:

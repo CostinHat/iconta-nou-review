@@ -16,16 +16,16 @@ Obligația trece la firmă și când intermediarul ține secretul profesional, n
 
 ::: ghid-temei
 „(9) în cazul în care nu există niciun intermediar, obligația de raportare a informațiilor cu privire la aranjamentul transfrontalier care face obiectul raportării revine contribuabilului relevant. (10) Contribuabilul relevant căruia îi revine obligația de raportare raportează informațiile prevăzute la alin. (19) către A.N.A.F. în termen de 30 de zile."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (9) și (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (9) și (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „b) intermediarul notifică, fără întârziere, în scris, contribuabilului relevant obligația de raportare a informațiilor prevăzute la alin. (19), în cazul în care nu există un alt intermediar."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (8) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (8) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „intermediar dintr-o țară terță non UE - în cazul în care intermediarul își are rezidența fiscală într-o țară terță alta decât statele membre UE"
-— OPANAF 1029/2020, anexa nr. 1, pct. I.1.8.2 (sursă: anaf_surse/ordin_1029_2020.html)
+— OPANAF 1029/2020, anexa nr. 1, pct. I.1.8.2 (sursă: [OPANAF nr. 1029/2020 privind formularul de raportare a aranjamentelor transfrontaliere](https://legislatie.just.ro/Public/DetaliiDocument/225866))
 
 „aranjament personalizat - în cazul în care aranjamentul transfrontalier raportabil nu este comercializabil și/sau nu există un intermediar căruia să îi revină obligația de raportare"
-— OPANAF 1029/2020, anexa nr. 1, pct. I.1.8.2 (sursă: anaf_surse/ordin_1029_2020.html)
+— OPANAF 1029/2020, anexa nr. 1, pct. I.1.8.2 (sursă: [OPANAF nr. 1029/2020 privind formularul de raportare a aranjamentelor transfrontaliere](https://legislatie.just.ro/Public/DetaliiDocument/225866))
 :::
 
 Pe scurt, firma raportează singură în trei situații, pe care formularul ANAF le enumeră ca „rol al declarantului":

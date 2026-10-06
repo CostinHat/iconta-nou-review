@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Pe perioada eșalonării la plată, penalitățile de întârziere cuprinse în certificatul de atestare fiscală se amână la plată prin decizie care se comunică debitorului odată cu decizia de eșalonare la plată. Aceste prevederi se aplică, după caz, și unui procent de 50% din majorările de întârziere, reprezentând componenta de penalitate a acestora."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 208 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 208 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - La **organul fiscal central** (ANAF), amânarea la plată nu e un instrument de sine stătător: ea se acordă *automat*, prin aceeași decizie, doar pentru penalitățile de întârziere aferente unei eșalonări deja aprobate — nu poți cere „doar" amânarea, fără eșalonare (art. 208 alin. (1)).

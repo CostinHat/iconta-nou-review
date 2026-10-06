@@ -16,13 +16,13 @@ Pentru cabinet contează pentru că amenda ajunge în contabilitatea clientului,
 
 ::: ghid-temei
 „Constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei neprezentarea de către serviciile externe a raportului semestrial de activitate."
-— Legea 319/2006, art. 40 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 40 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „Sancțiunile contravenționale prevăzute la art. 39 alin. (2)-(9) și la art. 40 se aplică angajatorilor."
-— Legea 319/2006, art. 41 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 41 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(2) În cazul în care un angajator apelează la servicii externe, acesta nu este exonerat de responsabilitățile sale în acest domeniu."
-— Legea 319/2006, art. 6 alin. (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 6 alin. (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce rezultă:

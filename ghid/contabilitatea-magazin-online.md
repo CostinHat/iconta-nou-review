@@ -15,7 +15,7 @@ Nu există un regim contabil separat, dedicat "magazinelor online" — un magazi
 ::: ghid-temei
 „(1) Prevederile art. 275 alin. (2) si art. 278 alin. (5) lit. h) nu se aplică dacă sunt îndeplinite cumulativ următoarele condiții: a) furnizorul sau prestatorul este stabilit [...] într-un singur stat membru; b) [...] sunt expediate ori transportate bunuri către un stat membru, altul decât statul membru prevăzut la lit. a); și c) valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent.
 (2) Atunci când, în cursul unui an calendaristic, pragul prevăzut la alin. (1) lit. c) este depășit, prevederile art. 275 alin. (2) și art. 278 alin. (5) lit. h) se aplică de la momentul depășirii pragului."
-— Legea 227/2015, art. 278^1 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 278^1 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie să înțeleagă concret un magazin online:
@@ -33,6 +33,6 @@ Ce trebuie să înțeleagă concret un magazin online:
 
 ## Ce face iConta.eu
 
-iConta.eu ține evidența vânzărilor de mărfuri, a TVA colectate și a descărcării de gestiune la fel indiferent de canalul de vânzare (fizic sau online). Aplicația are un modul dedicat pentru declarația specială de TVA pentru regimurile speciale OSS/IOSS (D398, `core/d398.py`), dar acesta e declarativ: nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină, așa că sumele pe fiecare stat membru se introduc manual. La data acestui ghid, aplicația nu urmărește automat cumulul anual al vânzărilor intracomunitare la distanță față de pragul de 10.000 euro de la art. 278^1 — verificarea depășirii pragului și, dacă e cazul, opțiunea pentru OSS rămân responsabilitatea contabilului.
+iConta.eu ține evidența vânzărilor de mărfuri, a TVA colectate și a descărcării de gestiune la fel indiferent de canalul de vânzare (fizic sau online). Aplicația are un modul dedicat pentru declarația specială de TVA pentru regimurile speciale OSS/IOSS (D398, aplicația), dar acesta e declarativ: nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină, așa că sumele pe fiecare stat membru se introduc manual. La data acestui ghid, aplicația nu urmărește automat cumulul anual al vânzărilor intracomunitare la distanță față de pragul de 10.000 euro de la art. 278^1 — verificarea depășirii pragului și, dacă e cazul, opțiunea pentru OSS rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

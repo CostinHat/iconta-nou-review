@@ -16,7 +16,7 @@ Un manual intern de casierie nu e un formular ANAF, ci un document de organizare
 „Articolul 1
 (1) Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii.
 (3) Prevederile prezentului capitol se aplică și operațiunilor de încasări și plăți în valută efectuate pe teritoriul României. Încadrarea în plafoanele prevăzute de prezentul capitol se efectuează în funcție de cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunilor de încasări sau plăți."
-— Legea 70/2015, art. 1 alin. (1) și (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 1 alin. (1) și (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Un manual intern serios de casierie pentru 2026 trebuie să acopere cel puțin:
@@ -35,6 +35,6 @@ Un manual intern serios de casierie pentru 2026 trebuie să acopere cel puțin:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu generează un manual intern de proceduri** — acesta rămâne un document de politică internă, redactat de firmă. Aplicația are însă motorul real de casierie descris în `core/casa.py`, cu plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025, în vigoare de la 1 ianuarie 2026) și cu verificarea lor pe fiecare operațiune introdusă, prin `core/casa_api.py` (`verifica_plafon`). Contabilul primește astfel un semnal concret când o operațiune introdusă depășește plafonul legal, dar redactarea manualului de proceduri în sine rămâne în afara aplicației.
+La data acestui ghid, iConta.eu **nu generează un manual intern de proceduri** — acesta rămâne un document de politică internă, redactat de firmă. Aplicația are însă motorul real de casierie descris în aplicație, cu plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025, în vigoare de la 1 ianuarie 2026) și cu verificarea lor pe fiecare operațiune introdusă, prin aplicație (`verifica_plafon`). Contabilul primește astfel un semnal concret când o operațiune introdusă depășește plafonul legal, dar redactarea manualului de proceduri în sine rămâne în afara aplicației.
 
 [iConta.eu](/)

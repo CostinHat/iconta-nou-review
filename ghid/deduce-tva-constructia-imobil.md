@@ -15,7 +15,7 @@ Imobilele au un regim special de TVA față de restul activelor unei firme: drep
 ::: ghid-temei
 „a) bunurile de capital reprezintă toate activele corporale fixe, definite la art. 266 alin. (1) pct. 3, precum și operațiunile de transformare sau modernizare a bunurilor imobile/părților de bunuri imobile [...]. Bunurile imobile sunt considerate bunuri de capital indiferent dacă în contabilitatea persoanelor impozabile sunt înregistrate ca stocuri sau ca imobilizări corporale [...].
 (2) Taxa deductibilă aferentă bunurilor de capital [...] se ajustează [...]: [...] b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil, precum și pentru transformarea sau modernizarea unui bun imobil, dacă valoarea fiecărei transformări sau modernizări este de cel puțin 20% din valoarea totală a bunului imobil/părții de bun imobil după transformare sau modernizare."
-— Legea nr. 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a), alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a), alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul practic, în doi pași:

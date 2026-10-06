@@ -14,7 +14,7 @@ O firmă fără salariați declarați nu e, prin acest simplu fapt, în afara at
 
 ::: ghid-temei
 „analiza de risc - activitatea efectuată de organul fiscal în scopul identificării riscurilor de neconformare în ceea ce priveşte îndeplinirea de către contribuabil/plătitor a obligaţiilor prevăzute de legislaţia fiscală, de a le evalua, de a le gestiona, precum şi de a le utiliza în scopul efectuării activităţilor de administrare fiscală. [...] selectarea contribuabililor/plătitorilor pentru efectuarea acţiunii de inspecţie fiscală se efectuează la nivelul aparatului central al ANAF, în funcţie de nivelul riscului stabilit pe baza analizei de risc."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 1 pct. 3 și art. 121 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 1 pct. 3 și art. 121 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Selecția pentru inspecție fiscală nu e aleatorie și nu se face „la sesizare" în general — se face, în principal, pe baza unei clase/subclase de risc fiscal, stabilite de organul fiscal.

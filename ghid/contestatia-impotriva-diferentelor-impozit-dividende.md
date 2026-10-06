@@ -14,7 +14,7 @@ Când un control sau o verificare documentară ANAF stabilește diferențe de im
 
 ::: ghid-temei
 „(1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Restul mecanismului, verificat la sursă în același text de lege:

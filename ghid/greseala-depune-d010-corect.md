@@ -14,7 +14,7 @@ D010 era, sub vechea denumire, formularul de declarație de mențiuni prin care 
 
 ::: ghid-temei
 „(1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni. (2) În cazul modificărilor intervenite în datele declarate inițial și înscrise în certificatul de înregistrare fiscală, contribuabilul/plătitorul depune, odată cu declarația de mențiuni, și certificatul de înregistrare fiscală, în vederea anulării acestuia și eliberării unui nou certificat. (3) Declarația de mențiuni este însoțită de documente care atestă modificările intervenite. (4) Prevederile prezentului articol se aplică în mod corespunzător ori de câte ori contribuabilul/plătitorul constată erori în declarația de înregistrare fiscală."
-— Legea 207/2015 (Codul de procedură fiscală), art. 88 alin. (1)-(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 88 alin. (1)-(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 **Limitare declarată**: legea nu numește formularul „D010" — numărul formularului și denumirea lui exactă (D010, D700) sunt stabilite prin ordin al președintelui ANAF, nu prin Codul de procedură fiscală. Textul de mai sus e temeiul legal de fond al obligației de declarare a modificărilor și a erorilor din datele de înregistrare fiscală — cel pe care orice formular (vechi sau nou) îl pune în practică.

@@ -15,7 +15,7 @@ O reparație, o îmbunătățire sau o piesă înlocuită la un mijloc fix pun m
 ```
 ::: ghid-temei
 „Cheltuieli ulterioare 227. - (1) Cheltuielile ulterioare efectuate în legătură cu o imobilizare corporală sunt cheltuieli ale perioadei în care sunt efectuate sau majorează valoarea imobilizării respective, în funcție de beneficiile economice aferente acestor cheltuieli (de exemplu, influența asupra duratei de viață rămase a imobilizărilor), potrivit criteriilor generale de recunoaștere. (2) Entitatea stabilește prin politicile contabile criteriile în funcție de care cheltuielile ulterioare efectuate în legătură cu imobilizările corporale majorează valoarea acestora sau se evidențiază în contul de profit și pierdere."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 227 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 227 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce rezultă din text, punct cu punct:
 
 ## Ce face iConta.eu
 
-Modulele legate de mijloace fixe din `core/` (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor deja înregistrate ca imobilizări; decizia dacă o cheltuială ulterioară se capitalizează sau se înregistrează direct pe cheltuieli **rămâne o alegere a contabilului**, pe baza politicii contabile a firmei — nu a fost găsită în cod o regulă automată care să claseze cheltuielile ulterioare în funcție de beneficiul economic viitor, iar o astfel de regulă ar fi, de altfel, greu de automatizat complet, fiind prin natura ei o estimare profesională.
+Modulele legate de mijloace fixe din aplicație (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor deja înregistrate ca imobilizări; decizia dacă o cheltuială ulterioară se capitalizează sau se înregistrează direct pe cheltuieli **rămâne o alegere a contabilului**, pe baza politicii contabile a firmei — nu a fost găsită în cod o regulă automată care să claseze cheltuielile ulterioare în funcție de beneficiul economic viitor, iar o astfel de regulă ar fi, de altfel, greu de automatizat complet, fiind prin natura ei o estimare profesională.
 
 [iConta.eu](/)

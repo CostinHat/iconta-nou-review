@@ -16,7 +16,7 @@ D101 precompletată automat din balanță economisește timp, dar nu înlocuieș
 Art.18^1 alin.(16) CF (introdus de OUG nr.89/2025, MO 1203/24.12.2025, în vigoare de la 01.01.2026): „Pentru anul fiscal 2026/anul fiscal modificat care începe în anul 2026, cota de impozit din cadrul formulei prevăzute la alin.(3) este 0,5%."
 
 „D101 nu se poate genera fără CUI valid (checksum verificat prin `core.identitate.valideaza_cui`), denumire, adresă, cod CAEN pe 4 cifre; plus erorile de declarant din `core.firma_profil_api.erori_declarant`."
-— sursă: `core/d101.py`, funcția `erori_generare`, liniile 366–388, dosar de cercetare F027.
+— sursă: Aplicația, funcția `erori_generare`, dosar de cercetare F027.
 :::
 
 Cota corectă de IMCA (impozitul minim pe cifra de afaceri) pentru anul fiscal 2026 este **0,5%** din baza de calcul (VT − Vs − I − A), nu 1% — modificare introdusă de OUG 89/2025, în vigoare de la 1 ianuarie 2026, valabilă pentru acest an fiscal.

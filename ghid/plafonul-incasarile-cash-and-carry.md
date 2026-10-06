@@ -14,7 +14,7 @@ Magazinele de tip cash and carry, supermagazinele și hipermagazinele au un plaf
 
 ::: ghid-temei
 „Sumele în numerar aflate în casieria persoanelor prevăzute la art. 1 alin. (1) nu pot depăși, la sfârșitul fiecărei zile, plafonul de 50.000 lei. În cazul magazinelor de tipul cash and carry, supermagazinelor și hipermagazinelor care sunt organizate și funcționează în baza legislației în vigoare, sumele în numerar aflate în casierie nu pot depăși, la sfârșitul fiecărei zile, plafonul de 500.000 lei. Sumele în numerar care depășesc plafonul se depun în conturile bancare ale acestor persoane în termen de două zile lucrătoare."
-— Legea 70/2015, art. 4^2 alin. (1), astfel cum a fost modificat prin OUG 115/2023 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— Legea 70/2015, art. 4^2 alin. (1), astfel cum a fost modificat prin OUG 115/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Din text rezultă două plafoane distincte de **sold de casă la sfârșitul zilei** (nu de încasare pe tranzacție):
@@ -33,6 +33,6 @@ Acest plafon de sold e diferit de plafonul de **încasare zilnică de la o singu
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) aplică efectiv acest plafon dublu: funcția `verifica_plafon` calculează soldul de casă la sfârșitul fiecărei zile și semnalează un avertisment (`PLAFON_SOLD_CASA`) când soldul depășește pragul aplicabil — 500.000 lei dacă operațiunile sunt marcate drept `cash_and_carry=True`, respectiv 50.000 lei în regimul standard. Avertismentele generate sunt de nivel informativ (risc la control), nu blocante — aplicația nu împiedică introducerea operațiunii, ci atrage atenția contabilului asupra depășirii.
+Modulul de casierie al iConta.eu aplică efectiv acest plafon dublu: funcția `verifica_plafon` calculează soldul de casă la sfârșitul fiecărei zile și semnalează un avertisment (`PLAFON_SOLD_CASA`) când soldul depășește pragul aplicabil — 500.000 lei dacă operațiunile sunt marcate drept `cash_and_carry=True`, respectiv 50.000 lei în regimul standard. Avertismentele generate sunt de nivel informativ (risc la control), nu blocante — aplicația nu împiedică introducerea operațiunii, ci atrage atenția contabilului asupra depășirii.
 
 [iConta.eu](/)

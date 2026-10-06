@@ -14,7 +14,7 @@ Radierea unei firme din registrul comerțului nu e un formular oarecare — e ul
 
 ::: ghid-temei
 „În termen de 15 zile de la terminarea lichidării, lichidatorii vor depune la registrul comerțului cererea de radiere a societății din registrul comerțului, pe baza raportului final de lichidare și a situațiilor financiare de lichidare prin care se prezintă situația patrimoniului, a creanțelor și repartizarea activelor rămase, după caz, inclusiv, dacă este cazul, dovada îndeplinirii obligației de calculare, reținere și plată a impozitului pe venit din lichidarea societății, prevăzută la art. 97 alin. (5) din Legea nr. 227/2015 privind Codul fiscal [...], sub sancțiunea unei amenzi de 20 lei pe zi de întârziere [...]."
-— Legea 31/1990, art. 260 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 260 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Deci actele obligatorii pentru cererea de radiere, potrivit textului legii, sunt:
@@ -32,6 +32,6 @@ Deci actele obligatorii pentru cererea de radiere, potrivit textului legii, sunt
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor de calcul pentru lichidare (`core/lichidare.py`) care determină corect cota de 10%, impozit final, aplicabilă câștigului distribuit asociaților persoane fizice conform art. 97 alin. (5) din Codul fiscal, distinctă de regimul dividendelor. Aplicația nu depune însă cererea de radiere la Oficiul Registrului Comerțului și nu generează raportul final de lichidare sau situațiile financiare de lichidare — acestea rămân un pas manual al lichidatorului/contabilului, pe baza calculelor produse de aplicație.
+iConta.eu are un motor de calcul pentru lichidare care determină corect cota de 10%, impozit final, aplicabilă câștigului distribuit asociaților persoane fizice conform art. 97 alin. (5) din Codul fiscal, distinctă de regimul dividendelor. Aplicația nu depune însă cererea de radiere la Oficiul Registrului Comerțului și nu generează raportul final de lichidare sau situațiile financiare de lichidare — acestea rămân un pas manual al lichidatorului/contabilului, pe baza calculelor produse de aplicație.
 
 [iConta.eu](/)

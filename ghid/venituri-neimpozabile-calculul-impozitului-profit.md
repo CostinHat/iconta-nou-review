@@ -19,7 +19,7 @@ a) dividendele primite de la o persoană juridică română;
 b) dividende primite de la o persoană juridică străină plătitoare de impozit pe profit sau a unui impozit similar impozitului pe profit, situată într-un stat terț, [...] dacă persoana juridică română care primește dividendele deține la persoana juridică străină [...] pe o perioadă neîntreruptă de un an, minimum 10% din capitalul social [...];
 d) veniturile din anularea, recuperarea, inclusiv refacturarea cheltuielilor pentru care nu s-a acordat deducere, veniturile din reducerea sau anularea provizioanelor pentru care nu s-a acordat deducere, veniturile din restituirea ori anularea unor dobânzi și/sau penalități pentru care nu s-a acordat deducere [...];
 i) veniturile din evaluarea/reevaluarea/vânzarea/cesionarea titlurilor de participare deținute la o persoană juridică română sau la o persoană juridică străină situată într-un stat cu care România are încheiată o convenție de evitare a dublei impuneri, dacă [...] contribuabilul deține pe o perioadă neîntreruptă de un an minimum 10% din capitalul social [...]"
-— Legea 227/2015 (Codul fiscal), art. 23 lit. a), b), d), i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 23 lit. a), b), d), i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lista completă a art. 23 cuprinde 18 litere (a-s, litera q lipsind din numerotare). Cele mai întâlnite în practica firmelor mici și mijlocii sunt:
@@ -39,6 +39,6 @@ Important: lista e limitativă. Un venit care „pare" să nu ar trebui impozita
 
 ## Ce face iConta.eu
 
-Modulul de calcul al Declarației 101 din iConta.eu tratează distinct secțiunea „Venituri neimpozabile" (rândurile 17-21 din formular), separată de veniturile impozabile din rezultatul contabil — vezi `core/d101.py`. Contabilul introduce sumele pe categoriile relevante din contabilitate, iar aplicația le scade din baza de calcul conform structurii oficiale a formularului; verificarea încadrării unui venit concret la litera corespunzătoare din art. 23 (de exemplu, condiția de deținere de 10%/1 an pentru dividende) rămâne responsabilitatea profesională a contabilului, conform regulii de lucru a aplicației privind datele introduse de utilizator.
+Modulul de calcul al Declarației 101 din iConta.eu tratează distinct secțiunea „Venituri neimpozabile" (rândurile 17-21 din formular), separată de veniturile impozabile din rezultatul contabil — vezi aplicația. Contabilul introduce sumele pe categoriile relevante din contabilitate, iar aplicația le scade din baza de calcul conform structurii oficiale a formularului; verificarea încadrării unui venit concret la litera corespunzătoare din art. 23 (de exemplu, condiția de deținere de 10%/1 an pentru dividende) rămâne responsabilitatea profesională a contabilului, conform regulii de lucru a aplicației privind datele introduse de utilizator.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Puteți trimite clientului un PDF sau o copie a facturii oricând, ca informare 
 ::: ghid-temei
 „(6) Exemplarul original al facturii electronice se consideră fișierul de tip XML însoțit de semnătura electronică a Ministerului Finanțelor.
 (7) Data comunicării facturii electronice către destinatar se consideră data la care factura electronică este disponibilă acestuia pentru descărcare din sistemul național privind factura electronică RO e-Factura. Destinatarul este notificat cu privire la facturile electronice primite în sistemul național privind factura electronică RO e-Factura [...]. Data comunicării este accesibilă în sistem și emitentului facturii electronice."
-— OUG 120/2021, art. 4 alin. (6) și (7) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (6) și (7) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce înseamnă practic:

@@ -14,7 +14,7 @@ O firmă abia înmatriculată presupune adesea că, până depune prima declara�
 
 ::: ghid-temei
 „(16^1) În scopul comunicării actelor administrative prevăzute la alin. (16), organul fiscal central poate să înregistreze din oficiu contribuabilii/plătitorii în sistemul de comunicare electronică prin mijloace electronice de transmitere la distanță. Procedura de înregistrare din oficiu se aprobă prin ordin al președintelui A.N.A.F. (16^2) Comunicarea actelor administrative fiscale prevăzute la art. 46 alin. (6), pentru contribuabilii/plătitorii care au fost înregistrați din oficiu potrivit alin. (16^1) și nu au accesat sistemul de comunicare electronică în termen de 15 zile de la comunicarea datelor referitoare la înregistrare, se realizează doar prin publicitate potrivit alin. (5)-(7)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 47 alin. (16^1) și (16^2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 47 alin. (16^1) și (16^2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret pentru o firmă nouă:
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru o firmă nouă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu preia și afișează mesajele primite prin conectorul propriu la Spațiul Privat Virtual, pentru fluxurile de e-Factura (`core/spv_receive.py`, `core/spv_poll.py`), dar nu monitorizează generic **toate** categoriile de acte administrative fiscale pe care ANAF le poate comunica unei firme — accesarea și verificarea periodică a secțiunii „Mesaje" din SPV rămân, în continuare, o responsabilitate directă a firmei sau a contabilului.
+La data acestui ghid, iConta.eu preia și afișează mesajele primite prin conectorul propriu la Spațiul Privat Virtual, pentru fluxurile de e-Factura, dar nu monitorizează generic **toate** categoriile de acte administrative fiscale pe care ANAF le poate comunica unei firme — accesarea și verificarea periodică a secțiunii „Mesaje" din SPV rămân, în continuare, o responsabilitate directă a firmei sau a contabilului.
 
 [iConta.eu](/)

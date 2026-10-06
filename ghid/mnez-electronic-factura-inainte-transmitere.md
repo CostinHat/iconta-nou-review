@@ -14,7 +14,7 @@ Răspunsul scurt: nu tu semnezi factura înainte de a o transmite. În RO e-Fact
 
 ::: ghid-temei
 „(4) În situaţia în care factura electronică transmisă respectă structura prevăzută la alin. (1), se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea acesteia în sistemul naţional privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 4 alin. (4) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (4) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Mecanismul descris de lege este simplu, dar diferit de intuiția „semnez, apoi trimit":
@@ -32,6 +32,6 @@ Mecanismul descris de lege este simplu, dar diferit de intuiția „semnez, apoi
 
 ## Ce face iConta.eu
 
-iConta.eu transmite factura prin RO e-Factura fără să ceară vreo semnătură suplimentară din partea utilizatorului — generarea XML-ului (`core/efactura_send.py`) și transmiterea către ANAF se fac direct, iar validarea de structură și aplicarea semnăturii electronice a Ministerului Finanțelor rămân, așa cum prevede legea, în sarcina sistemului ANAF. Starea trimiterii (acceptată/respinsă, cu semnătura aplicată) este urmărită automat de `core/spv_poll.py`, iar în caz de respingere, aplicația indică erorile primite de la ANAF pentru corectare.
+iConta.eu transmite factura prin RO e-Factura fără să ceară vreo semnătură suplimentară din partea utilizatorului — generarea XML-ului și transmiterea către ANAF se fac direct, iar validarea de structură și aplicarea semnăturii electronice a Ministerului Finanțelor rămân, așa cum prevede legea, în sarcina sistemului ANAF. Starea trimiterii (acceptată/respinsă, cu semnătura aplicată) este urmărită automat de aplicația, iar în caz de respingere, aplicația indică erorile primite de la ANAF pentru corectare.
 
 [iConta.eu](/)

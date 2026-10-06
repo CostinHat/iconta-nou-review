@@ -16,11 +16,11 @@ Pentru asociație, verificarea datei de emitere nu e o formalitate. Un administr
 
 ::: ghid-temei
 „(5) La propunerea compartimentelor specializate în sprijinirea, îndrumarea și controlul asociațiilor de proprietari din cadrul autorității administrației publice locale, primarul, în baza unei hotărâri a consiliului local, atestă persoanele fizice în vederea dobândirii calității de administrator de condominii. (6) Atestatul prevăzut la alin. (5) se emite în baza următoarelor documente: a) certificatul de calificare profesională pentru ocupația de administrator de condominii, conform prevederilor art. 2 lit. f) ; […] b) cazierul judiciar care să ateste că nu a suferit nicio condamnare, prin hotărâre judecătorească rămasă definitivă, pentru o infracțiune de natură economico-financiară; […] c) cazierul fiscal."
-— Legea 196/2018, art. 10 alin. (5)-(6) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 10 alin. (5)-(6) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(10) Atestatul este valabil 4 ani de la data emiterii și poate fi reînnoit în aceleași condiții în care a fost emis. (11) Expirarea, suspendarea sau retragerea atestatului determină automat imposibilitatea exercitării activității de administrare a condominiilor."
-— Legea 196/2018, art. 64 alin. (10)-(11) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 64 alin. (10)-(11) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(5) Candidații pentru funcția de administrator trebuie să prezinte comitetului executiv al asociației de proprietari documentele prevăzute de lege, precum și alte documente solicitate printre care, obligatoriu: a) atestatul prevăzut la art. 2 lit. e) ; […] b) cazierul judiciar care să ateste că nu a suferit nicio condamnare, prin hotărâre judecătorească rămasă definitivă, pentru o infracțiune de natură economico-financiară."
-— Legea 196/2018, art. 64 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 64 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce trebuie verificat:

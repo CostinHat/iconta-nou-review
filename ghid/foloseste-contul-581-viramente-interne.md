@@ -14,7 +14,7 @@ Contul 581 „Viramente interne" nu reprezintă o operațiune economică propriu
 
 ::: ghid-temei
 „GRUPA 58 «VIRAMENTE INTERNE» [...] Contul 581 «Viramente interne» [...] Cu ajutorul acestui cont se ține evidența viramentelor de disponibilități între conturile de trezorerie. Contul 581 «Viramente interne» este un cont de activ. În debitul contului 581 «Viramente interne» se înregistrează: — sumele virate dintr‐un cont de trezorerie în alt cont de trezorerie (512, 531, 541). În creditul contului 581 «Viramente interne» se înregistrează: — sumele intrate într‐un cont de trezorerie din alt cont de trezorerie (512, 531, 541). De regulă, contul nu prezintă sold."
-— OMFP 1802/2014, secțiunea Grupa 58 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, secțiunea Grupa 58 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Contul 581 se folosește ori de câte ori banii trec dintr-un cont de trezorerie propriu în altul: ridicare numerar de la bancă (512 → 581 → 5311), depunere numerar la bancă (5311 → 581 → 512), transfer între două conturi bancare, mișcări prin acreditive (541).

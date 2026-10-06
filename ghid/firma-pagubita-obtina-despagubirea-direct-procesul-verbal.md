@@ -16,9 +16,9 @@ Pentru firma păgubită, distincția contează. Despăgubirea din procesul-verba
 
 ::: ghid-temei
 „(1) În cazul în care prin săvârșirea contravenției s-a cauzat o pagubă și există tarife de evaluare a acesteia, persoana împuternicită să aplice sancțiunea stabilește și despăgubirea, cu acordul expres al persoanei vătămate, făcând mențiunea corespunzătoare în procesulverbal. (2) Dacă nu există tarif de evaluare a pagubei persoana vătămată își va putea valorifica pretențiile potrivit dreptului comun."
-— OG 2/2001, art. 23 alin. (1)-(2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 23 alin. (1)-(2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(2) Partea vătămată poate face plângere numai în ceea ce privește despăgubirea, iar cel căruia îi aparțin bunurile confiscate, altul decât contravenientul, numai în ceea ce privește măsura confiscării."
-— OG 2/2001, art. 31 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

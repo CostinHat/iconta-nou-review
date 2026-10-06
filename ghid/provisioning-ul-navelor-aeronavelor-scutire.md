@@ -14,7 +14,7 @@ Alimentarea cu combustibil, provizii și piese a navelor și aeronavelor folosit
 
 ::: ghid-temei
 „În cazul navelor atribuite navigației în largul mării și care sunt utilizate pentru transportul de călători/bunuri cu plată sau pentru activități comerciale, industriale sau de pescuit, precum și în cazul navelor utilizate pentru salvare ori asistență pe mare sau pentru pescuitul de coastă [...] livrarea de carburanți și provizii destinate a fi utilizate pe nave [...] cu excepția proviziilor la bordul navelor în cazul navelor folosite pentru pescuitul de coastă [...] În cazul aeronavelor utilizate de companiile aeriene care realizează în principal transport internațional de persoane și/sau de bunuri cu plată [...] livrarea de carburanți și provizii destinate utilizării pe aeronave."
-— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. h) pct. 2 și lit. i) pct. 2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. h) pct. 2 și lit. i) pct. 2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Scutirea nu e generală pentru orice navă sau aeronavă, ci condiționată de destinația și utilizarea mijlocului de transport:

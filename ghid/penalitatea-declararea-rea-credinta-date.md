@@ -15,7 +15,7 @@ Declararea cu rea-credință a unor date false organelor fiscale nu e sancționa
 ::: ghid-temei
 „Articolul 8 (1) Constituie infracțiune și se pedepsește cu închisoare de la 3 la 10 ani și interzicerea unor drepturi sau cu amendă stabilirea cu rea-credință de către contribuabil a impozitelor, taxelor sau contribuțiilor, având ca rezultat obținerea, fără drept, a unor sume de bani cu titlu de rambursări sau restituiri de la bugetul general consolidat ori compensări datorate bugetului general consolidat.
 Articolul 9 (1) Constituie infracțiuni de evaziune fiscală și se pedepsesc cu închisoare de la 3 la 10 ani și interzicerea unor drepturi sau cu amendă următoarele fapte săvârșite în scopul sustragerii de la îndeplinirea obligațiilor fiscale: [...] c) evidențierea, în actele contabile, în factura electronică sau în alte documente legale, a cheltuielilor care nu au la bază operațiuni reale ori evidențierea altor operațiuni fictive."
-— Legea 241/2005, art. 8 alin. (1) și art. 9 alin. (1) lit. c) (sursă: anaf_surse/legea_241_2005.html)
+— Legea 241/2005, art. 8 alin. (1) și art. 9 alin. (1) lit. c) (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 :::
 
 Din text rezultă două fapte distincte, ambele legate de „date false" declarate cu rea-credință:

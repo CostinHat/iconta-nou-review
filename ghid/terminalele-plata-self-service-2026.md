@@ -14,7 +14,7 @@ Un automat comercial (terminal self-service, vending, stație de încărcare, pa
 
 ::: ghid-temei
 „(2^3) Prin excepție de la dispozițiile alin. (2), în cazul echipamentelor nesupravegheate de tipul automatelor comerciale ce funcționează exclusiv pe bază de plăți cu cardul, aparatul de marcat electronic fiscal nu este obligatoriu."
-— OUG nr. 28/1999, art. 3 alin. (2^3) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999, art. 3 alin. (2^3) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Distincția depinde exclusiv de modalitatea de plată acceptată:

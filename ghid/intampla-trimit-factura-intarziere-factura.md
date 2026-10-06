@@ -16,7 +16,7 @@ Dacă factura ajunge în sistemul RO e-Factura după termenul legal de 5 zile lu
 „(6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare.
 (7) Nerespectarea prevederilor alin. (6) constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei, pentru persoanele juridice încadrate în categoria contribuabililor mari [...]
 (8) Prin excepție de la prevederile alin. (7), nerespectarea prevederilor alin. (6) pentru facturile al căror termen-limită de transmitere în sistemul național privind factura electronică RO e-Factura intervine până la data de 31 mai 2024 inclusiv nu se sancționează."
-— Legea 296/2023, art. LIX alin. (6)-(8) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (6)-(8) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce rezultă concret din acest cadru:

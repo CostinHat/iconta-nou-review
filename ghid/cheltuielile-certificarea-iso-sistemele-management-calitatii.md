@@ -21,12 +21,12 @@ Intră aici consultanța pentru implementare, auditul organismului de certificar
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare”
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „e) cheltuielile pentru perfecționarea managementului, a sistemelor informatice, introducerea, întreținerea și perfecționarea sistemelor de management al calității, obținerea atestării conform cu standardele de calitate;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. e) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. e) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce acoperă, concret:

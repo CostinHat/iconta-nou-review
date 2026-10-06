@@ -16,15 +16,15 @@ Regula privește în principal persoanele fizice, inclusiv PFA-urile, care prime
 
 ::: ghid-temei
 „Diferențele de impozit pe venit și/sau contribuții sociale de restituit mai mici de 10 lei rămân în evidența fiscală spre a fi compensate cu datorii viitoare, urmând să se restituie atunci când suma cumulată a acestora depășește limita menționată."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la alin. (5), diferențele mai mici de 10 lei se restituie în numerar numai la solicitarea contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Dreptul contribuabilului/plătitorului de a cere restituirea creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere dreptul la restituire."
-— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

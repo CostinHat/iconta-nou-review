@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Documentele justificative trebuie să cuprindă următoarele elemente principale: – denumirea documentului; [...] – menționarea părților care participă la efectuarea operațiunii economico-financiare (când este cazul); [...] – conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia; [...] – datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz[.]"
-— OMFP nr. 2.634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 O factură emisă de un subantreprenor este, ca orice document justificativ, obligată să reflecte corect „conținutul operațiunii economico-financiare" și datele cantitative/valorice aferente. În practica de construcții, situația de lucrări (documentul tehnic care detaliază cantitățile și stadiul fizic al lucrărilor executate, semnat de dirigintele de șantier sau beneficiar) este documentul care probează conținutul real al operațiunii facturate. Corelarea facturii cu situația de lucrări nu este impusă printr-un articol specific, ci decurge din principiul general: o factură trebuie să corespundă unei operațiuni reale, demonstrabile — iar în construcții, situația de lucrări este dovada tipică a acestei realități.

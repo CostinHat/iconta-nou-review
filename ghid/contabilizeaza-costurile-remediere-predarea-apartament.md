@@ -14,7 +14,7 @@ Un dezvoltator imobiliar rămâne, de regulă, obligat contractual să remedieze
 
 ::: ghid-temei
 „b) provizioanele pentru garanții de bună execuție acordate clienților. Provizioanele pentru garanții de bună execuție acordate clienților se deduc trimestrial/anual numai pentru bunurile livrate, lucrările executate și serviciile prestate în cursul trimestrului/anului respectiv pentru care se acordă garanție în perioadele următoare, la nivelul cotelor prevăzute în convențiile încheiate sau la nivelul procentelor de garantare prevăzut în tariful lucrărilor executate ori serviciilor prestate;"
-— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. b) „Provizioane/ajustări pentru depreciere și rezerve" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. b) „Provizioane/ajustări pentru depreciere și rezerve" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru un dezvoltator care vinde apartamente noi cu obligație de garanție:
@@ -31,6 +31,6 @@ Ce rezultă pentru un dezvoltator care vinde apartamente noi cu obligație de ga
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul dedicat provizioanelor (`core/provizioane.py`), care implementează explicit regula de la art. 26 alin. (1) lit. b): provizioanele pentru garanții de bună execuție (cont 1512) sunt marcate ca fiind singurele deductibile integral din categoria provizioanelor de risc (spre deosebire de cele pentru litigii, dezafectare sau restructurare, care sunt nedeductibile), cu notele contabile de constituire (6812 = 1512) și de reluare (1512 = 7812) deja construite.
+Da — iConta.eu are un modul dedicat provizioanelor, care implementează explicit regula de la art. 26 alin. (1) lit. b): provizioanele pentru garanții de bună execuție (cont 1512) sunt marcate ca fiind singurele deductibile integral din categoria provizioanelor de risc (spre deosebire de cele pentru litigii, dezafectare sau restructurare, care sunt nedeductibile), cu notele contabile de constituire (6812 = 1512) și de reluare (1512 = 7812) deja construite.
 
 [iConta.eu](/)

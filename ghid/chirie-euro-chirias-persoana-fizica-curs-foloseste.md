@@ -16,15 +16,15 @@ Consecința practică: venitul brut în lei poate fi calculat corect abia după 
 
 ::: ghid-temei
 „În situația în care chiria reprezintă echivalentul în lei al unei valute, venitul brut anual se determină pe baza chiriei lunare evaluate la cursul de schimb mediu anual al pieței valutare, comunicat de Banca Națională a României, din anul de realizare a venitului."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (3^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (3^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În situația în care chiria reprezintă echivalentul în lei al unei valute, venitul brut se determină pe baza cursului de schimb comunicat de Banca Națională a României, din ziua precedentă celei în care se efectuează plata."
-— Codul fiscal (Legea 227/2015), art. 84^1 alin. (2), chirii plătite de entități cu contabilitate (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84^1 alin. (2), chirii plătite de entități cu contabilitate (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În situația în care chiria reprezintă echivalentul în lei al unei valute, venitul brut anual se determină pe baza chiriei lunare evaluate la cursul de schimb al pieței valutare comunicat de Banca Națională a României, valabil pentru ultima zi a fiecărei luni, corespunzător lunilor din perioada de impunere."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul IV, pct. 20 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul IV, pct. 20 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Trei regimuri de curs, după cine plătește chiria:

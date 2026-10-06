@@ -16,20 +16,20 @@ Nu. Codul fiscal obligă la factură pentru avansurile încasate aferente livră
 
 ::: ghid-temei
 „Persoana impozabilă nu are obligația de a emite facturi conform art. 319 din Codul fiscal pentru avansurile încasate în legătură cu o livrare intracomunitară de bunuri efectuată în condițiile art. 294 alin. (2) din Codul fiscal."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 95 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 95 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „d) pentru orice avans încasat în legătură cu una dintre operațiunile menționate la lit. a) și b)"
-— Codul fiscal (Legea 227/2015), art. 319 alin. (6) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (6) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „exigibilitatea taxei intervine la data emiterii facturii prevăzute la art. 319 alin. (15)"
-— Codul fiscal (Legea 227/2015), art. 283 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 283 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prevederile art. 282 alin. (2) lit. b) nu se aplică în ceea ce privește livrările și transferurile de bunuri prevăzute la alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 283 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 283 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se leagă prevederile:

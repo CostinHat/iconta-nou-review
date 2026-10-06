@@ -16,10 +16,10 @@ Regula contează când angajatorul descoperă un viciu al contractului, de exemp
 
 ::: ghid-temei
 „Nerespectarea oricăreia dintre condițiile legale necesare pentru încheierea valabilă a contractului individual de muncă atrage nulitatea acestuia.(2) Constatarea nulității contractului individual de muncă produce efecte pentru viitor.(3) Nulitatea contractului individual de muncă poate fi acoperită prin îndeplinirea ulterioară a condițiilor impuse de lege."
-— Codul muncii (Legea 53/2003), art. 57 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 57 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Persoana care a prestat munca în temeiul unui contract individual de muncă nul are dreptul la remunerarea acesteia, corespunzător modului de îndeplinire a atribuțiilor de serviciu.(6) Constatarea nulității și stabilirea, potrivit legii, a efectelor acesteia se pot face prin acordul părților.(7) Dacă părțile nu se înțeleg, nulitatea se pronunță de către instanța judecătorească."
-— Codul muncii (Legea 53/2003), art. 57 alin. (5)-(7) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 57 alin. (5)-(7) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă:

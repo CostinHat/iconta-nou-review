@@ -14,7 +14,7 @@ Când un mijloc fix e vândut sau scos din funcțiune (casat), firma nu depune o
 
 ::: ghid-temei
 „Pentru mijloacele fixe amortizabile, deducerile de amortizare se determină fără a lua în calcul amortizarea contabilă. Câștigurile sau pierderile rezultate din vânzarea ori din scoaterea din funcțiune a acestor mijloace fixe se calculează pe baza valorii fiscale a acestora, diminuată cu amortizarea fiscală, cu excepția celor prevăzute la alin. (14)."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (17) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (17) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic:
@@ -33,6 +33,6 @@ Ce înseamnă practic:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat calculului amortizării mijloacelor fixe (`core/d406_active.py`), care determină amortizarea acumulată la o dată dată, pe metoda aleasă pentru fiecare activ (liniară, degresivă etc.), și generează structura XML necesară raportării activelor în D406 (SAF-T). Modulul calculează amortizarea „la zi" pentru scenarii precum casarea sau reevaluarea unui mijloc fix, dar nu depune o declarație separată la ANAF doar pentru scoaterea din evidență — efectul fiscal al operațiunii ajunge, ca și în lege, în calculul impozitului pe profit al perioadei.
+iConta.eu are un modul dedicat calculului amortizării mijloacelor fixe, care determină amortizarea acumulată la o dată dată, pe metoda aleasă pentru fiecare activ (liniară, degresivă etc.), și generează structura XML necesară raportării activelor în D406 (SAF-T). Modulul calculează amortizarea „la zi" pentru scenarii precum casarea sau reevaluarea unui mijloc fix, dar nu depune o declarație separată la ANAF doar pentru scoaterea din evidență — efectul fiscal al operațiunii ajunge, ca și în lege, în calculul impozitului pe profit al perioadei.
 
 [iConta.eu](/)

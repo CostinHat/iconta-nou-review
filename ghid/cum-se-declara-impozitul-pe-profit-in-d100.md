@@ -18,18 +18,18 @@ Declararea trimestrială prin D100 e regula standard pentru impozitul pe profit,
 > efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III.
 > Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la
 > termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4532-4534`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **OPANAF 587/2016, Anexa 4, Cap. I, pct. 1.2 lit. c):**
 > „Trimestrial, pentru obligațiile de plată reprezentând: ... c) impozitul pe profit datorat de persoane
 > juridice române și persoanele juridice străine, altele decât cele prevăzute la lit. a) și b), precum și
 > de către persoanele juridice cu sediul social în România, înființate potrivit legislației europene
 > (trimestrele I-III);"
-— sursă: `anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt:927-930`
+— sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662)
 
 **CF art. 17:**
 > „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.html`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 ## Cum se calculează suma din D100 pentru trimestrele I-III
@@ -49,7 +49,7 @@ Dacă baza cumulată e ≤ 0 (pierdere), declarația nu se poate depune pe zero 
 
 ## Ce face iConta.eu
 
-`core/d100.py` calculează efectiv obligația cod 103 (impozit pe profit) pentru firmele pe regim „profit", cu bază cumulată de la 1 ianuarie, conform mecanismului descris mai sus. Totuși, în `core/control_fiscal_api.py`, semaforul de obligații/restanțe adaugă D100 la lista de urmărit **doar** pentru firmele pe regim „micro" (`_adauga_d100_micro`); pe ramura „profit" se adaugă automat numai D101, nu și D100. Aceasta e o neconformitate deschisă (R95, urmărită în registrul intern al proiectului): deși generatorul calculează corect obligația, o firmă pe profit nu vede D100 în lista de restanțe/obligații urmărite — trebuie generată manual, trimestrial, din ecranul de declarații, pentru trimestrele I-III.
+Aplicația calculează efectiv obligația cod 103 (impozit pe profit) pentru firmele pe regim „profit", cu bază cumulată de la 1 ianuarie, conform mecanismului descris mai sus. Totuși, în aplicație, semaforul de obligații/restanțe adaugă D100 la lista de urmărit **doar** pentru firmele pe regim „micro" (`_adauga_d100_micro`); pe ramura „profit" se adaugă automat numai D101, nu și D100. Aceasta e o neconformitate deschisă (R95, urmărită în registrul intern al proiectului): deși generatorul calculează corect obligația, o firmă pe profit nu vede D100 în lista de restanțe/obligații urmărite — trebuie generată manual, trimestrial, din ecranul de declarații, pentru trimestrele I-III.
 
 Pentru trimestrul IV, existența unei obligații cod 103 generate cu formula standard e o zonă tratată diferit intern față de regimul opțional cu plăți anticipate (vezi ghidul despre plățile anticipate 2026) — dacă firma dvs. se încadrează la un regim special, verificați suplimentar cu contabilul acest caz.
 

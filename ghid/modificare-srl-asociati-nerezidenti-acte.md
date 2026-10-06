@@ -14,7 +14,7 @@ O modificare a actului constitutiv (intrare de asociat nou, cesiune de părți s
 
 ::: ghid-temei
 „Datele de identificare [...] includ: a) pentru persoanele fizice: numele, prenumele, codul numeric personal și, dacă este cazul, echivalentul acestuia, potrivit legislației naționale aplicabile, locul și data nașterii, domiciliul/reședința și cetățenia, actul de identitate/pașaportul, seria, numărul, emitentul, data eliberării, perioada de valabilitate."
-— Legea 31/1990 (a societăților), art. 8^1 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (a societăților), art. 8^1 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pentru un asociat persoană fizică nerezidentă, aceasta înseamnă concret:
@@ -34,6 +34,6 @@ Pentru un asociat persoană fizică nerezidentă, aceasta înseamnă concret:
 
 Subiectul acestui ghid — actele și datele de identificare cerute la o modificare a actului constitutiv cu asociat nerezident — este o **procedură de registrul comerțului**, nu o funcționalitate contabilă sau fiscală. iConta.eu **nu are un modul care să întocmească sau să depună acte de modificare la ONRC** — aplicația lucrează cu evidența contabilă și declarativă a firmei deja înregistrate, nu cu actele constitutive ale acesteia.
 
-Ce are aplicația, legat tangențial de asociați și distribuții către ei, e funcționalitatea **Decontări asociați** (notele de dividende, împrumuturi și regularizări, `core/decontari_asociati.py`), care aplică o cotă unică de impozit pe dividende, fără nicio distincție rezident/nerezident și fără logică de convenție de evitare a dublei impuneri. Fiscalitatea specifică unui asociat nerezident (impozitul reținut la sursă, declarația D207, eventuala aplicare a unei convenții de evitare a dublei impuneri) e un subiect separat, needocumentat în acest modul — de tratat distinct de contabil, nu ca funcție automată a aplicației.
+Ce are aplicația, legat tangențial de asociați și distribuții către ei, e funcționalitatea **Decontări asociați** (notele de dividende, împrumuturi și regularizări, aplicația), care aplică o cotă unică de impozit pe dividende, fără nicio distincție rezident/nerezident și fără logică de convenție de evitare a dublei impuneri. Fiscalitatea specifică unui asociat nerezident (impozitul reținut la sursă, declarația D207, eventuala aplicare a unei convenții de evitare a dublei impuneri) e un subiect separat, needocumentat în acest modul — de tratat distinct de contabil, nu ca funcție automată a aplicației.
 
 [iConta.eu](/)

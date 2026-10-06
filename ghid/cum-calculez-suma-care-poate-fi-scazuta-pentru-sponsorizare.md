@@ -45,7 +45,7 @@ Calculul plafonului de sponsorizare deductibil se face în doi pași simpli — 
 
 ## Ce face iConta.eu
 
-Funcția `plafon_credit(cifra_afaceri, impozit_profit, la_data=None)` din `core/sponsorizari.py` calculează exact acest lucru: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, iar rezultatul e `min(p1, p2)`. Funcția `credit_sponsorizare(...)` merge un pas mai departe și aplică pasul 4 de mai sus: `credit = min(sponsorizari_efectuate, plafon)`, plus `redirectionabil_d177 = plafon - credit` pentru spațiul rămas.
+Funcția `plafon_credit(cifra_afaceri, impozit_profit, la_data=None)` din aplicație calculează exact acest lucru: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, iar rezultatul e `min(p1, p2)`. Funcția `credit_sponsorizare(...)` merge un pas mai departe și aplică pasul 4 de mai sus: `credit = min(sponsorizari_efectuate, plafon)`, plus `redirectionabil_d177 = plafon - credit` pentru spațiul rămas.
 
 Un detaliu de reținut dacă folosiți motorul și pentru calculul de la microîntreprinderi: parametrul `impozit_profit` este redenumit implicit în ramura `tip_impozit="micro"` a funcției — acolo el reprezintă impozitul micro datorat **pe trimestru**, nu un impozit anual, iar plafonul nu mai are componentă legată de cifra de afaceri. Introduceți valoarea corectă pentru fiecare ramură, ca să nu obțineți un plafon calculat greșit.
 

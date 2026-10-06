@@ -16,18 +16,18 @@ Acciza plătită în statul de origine nu se scade din cea românească.
 
 ::: ghid-temei
 „(2) Eliberare pentru consum se consideră și deținerea în scopuri comerciale de către o persoană a produselor accizabile care au fost eliberate în consum în alt stat membru și pentru care accizele nu au fost percepute în România."
-— Codul fiscal (Legea 227/2015), art. 340 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „f) în ceea ce privește produsele accizabile care au fost eliberate pentru consum într-un stat membru și sunt deplasate către teritoriul României pentru a fi livrate în România în scopuri comerciale sau pentru a fi utilizate în România, astfel cum este prevăzut la art. 414 alin. (1) , destinatarul certificat."
-— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) În cazul în care produsele accizabile care au fost eliberate pentru consum într-un stat membru sunt deplasate către teritoriul României pentru a fi livrate în România în scopuri comerciale sau pentru a fi utilizate în România, produsele în cauză sunt supuse accizelor în România. În cadrul domeniului de aplicare al regimului prevăzut în prezenta subsecțiune, produsele accizabile pot fi deplasate numai de la un expeditor certificat către un destinatar certificat."
-— Codul fiscal (Legea 227/2015), art. 414 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 414 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Destinatarului certificat îi revine obligația de a plăti acciza, care devine exigibilă atunci când mărfurile au fost livrate către statul membru de destinație, cu excepția cazului în care în cursul deplasării apare o neregulă în temeiul art. 419 . (2) În cazul lipsei înregistrării uneia sau a tuturor persoanelor implicate în deplasare, acestor persoane le revine, de asemenea, obligația de a plăti accizele."
-— Codul fiscal (Legea 227/2015), art. 414^1 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 414^1 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

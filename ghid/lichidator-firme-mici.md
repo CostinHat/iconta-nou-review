@@ -14,7 +14,7 @@ Lichidatorul unei societăți nu e o funcție pe care asociații o pot atribui o
 
 ::: ghid-temei
 „După rămânerea definitivă a hotărârii judecătorești de dizolvare, Oficiul Național al Registrului Comerțului, prin registrator, la cererea societății, a oricărei persoane interesate sau din oficiu, numește, prin încheiere, un lichidator înscris în Tabloul practicienilor în insolvență. Remunerarea lichidatorului se face din averea societății dizolvate sau, în lipsă, din fondul de lichidare, constituit potrivit legii. Remunerația lichidatorului este în cuantum fix de 1.500 lei, decontul final al cheltuielilor efectuate de lichidator în legătură cu lichidarea societății urmând a se face, pentru situația în care nu există bunuri în averea societății dizolvate, de către Uniunea Națională a Practicienilor în Insolvență din România, la solicitarea lichidatorului."
-— Legea 31/1990, art. 237 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 237 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă, concret, pentru o firmă mică aflată în dizolvare/lichidare:
@@ -32,6 +32,6 @@ Ce rezultă, concret, pentru o firmă mică aflată în dizolvare/lichidare:
 
 ## Ce face iConta.eu
 
-Modulul de lichidare al iConta.eu (`core/lichidare.py`) oferă funcții de calcul contabil pentru operațiunile de lichidare — nota contabilă la vânzarea unui activ în cadrul lichidării, partajul capitalului social, rezervelor și profiturilor între asociați. La data acestui ghid, iConta.eu **nu gestionează desemnarea sau înregistrarea lichidatorului** la Oficiul Național al Registrului Comerțului — această etapă, reglementată de Legea 31/1990, rămâne un demers administrativ separat, în afara aplicației, iar iConta.eu intervine abia la partea de calcul contabil al operațiunilor de lichidare deja decise.
+Modulul de lichidare al iConta.eu oferă funcții de calcul contabil pentru operațiunile de lichidare — nota contabilă la vânzarea unui activ în cadrul lichidării, partajul capitalului social, rezervelor și profiturilor între asociați. La data acestui ghid, iConta.eu **nu gestionează desemnarea sau înregistrarea lichidatorului** la Oficiul Național al Registrului Comerțului — această etapă, reglementată de Legea 31/1990, rămâne un demers administrativ separat, în afara aplicației, iar iConta.eu intervine abia la partea de calcul contabil al operațiunilor de lichidare deja decise.
 
 [iConta.eu](/)

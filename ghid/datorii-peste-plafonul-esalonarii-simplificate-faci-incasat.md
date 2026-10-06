@@ -16,10 +16,10 @@ Contează mai ales pentru firmele care lucrează cu primării, spitale sau alte 
 
 ::: ghid-temei
 „c) obligațiile fiscale principale și accesorii ale persoanelor juridice în sumă totală cuprinse între 5.000-400.000 lei."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (7) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (7) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la alin. (7), în cazul în care debitorul înregistrează obligații fiscale restante peste plafonul prevăzut la alin. (7) și are de încasat sume certe și lichide de la autorități sau instituții publice se acordă eșalonare la plată în condițiile prezentului capitol, în limita acestor sume, în baza unui document eliberat de autoritatea sau instituția publică respectivă prin care certifică aceste sume. Prevederile prezentului alineat nu se aplică sumelor aflate în litigiu."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (7^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (7^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

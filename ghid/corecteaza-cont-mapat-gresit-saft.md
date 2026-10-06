@@ -26,6 +26,6 @@ Greșeala frecventă este să se aștepte o modalitate "mai simplă" de corecți
 
 ## Ce face iConta.eu
 
-Generatorul D406 (`core/d406.py`) produce fișierul pe baza planului de conturi curent al firmei din baza de date (`core/repo_d406.py`). Corectarea unei mapări greșite presupune actualizarea planului de conturi al firmei și regenerarea + revalidarea fișierului pentru perioada respectivă (cu `DUKIntegrator`, `core/duk.py`), înainte de a-l depune ca declarație rectificativă, conform procedurii legale de mai sus.
+Generatorul D406 produce fișierul pe baza planului de conturi curent al firmei din baza de date. Corectarea unei mapări greșite presupune actualizarea planului de conturi al firmei și regenerarea + revalidarea fișierului pentru perioada respectivă (cu `DUKIntegrator`, aplicația), înainte de a-l depune ca declarație rectificativă, conform procedurii legale de mai sus.
 
 [iConta.eu](/)

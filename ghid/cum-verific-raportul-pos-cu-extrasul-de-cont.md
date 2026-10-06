@@ -33,7 +33,7 @@ Verificarea corectă presupune compararea manuală a raportului POS (numărul ș
 
 ## Ce face iConta.eu
 
-Motorul de matching (`core/reconciliere.py`) cere un CUI identificat pentru fiecare linie de extras. Liniile de decontare POS, fără CUI individual în descriere, primesc automat status roșu, alocări goale, motiv "fără CUI în descriere". Pentru aceste linii, sistemul poate propune o sugestie de cont pe baza istoricului deja contat de utilizator, fără nicio bază legală atribuită.
+Motorul de matching cere un CUI identificat pentru fiecare linie de extras. Liniile de decontare POS, fără CUI individual în descriere, primesc automat status roșu, alocări goale, motiv "fără CUI în descriere". Pentru aceste linii, sistemul poate propune o sugestie de cont pe baza istoricului deja contat de utilizator, fără nicio bază legală atribuită.
 
 Verificarea decontării POS față de raportul POS și facturile emise rămâne un pas manual, în afara ariei acestui motor de matching pe CUI și factură.
 

@@ -16,17 +16,17 @@ Ce a rămas în Legea locuinței privește, în principal, categoriile speciale 
 
 ::: ghid-temei
 „Dispozițiile prezentei legi privind închirierea locuințelor se completează cu dispozițiile Codului civil privind contractul de locațiune."
-— Legea 114/1996 (Legea locuinței), art. 72 (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 72 (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Condițiile și durata de închiriere vor fi stipulate în contractul de închiriere încheiat intre părțile contractante, accesoriu la contractul de muncă."
-— Legea 114/1996 (Legea locuinței), art. 51 alin. (2), pentru locuințele de serviciu (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 51 alin. (2), pentru locuințele de serviciu (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „În cazul veniturilor obținute din închirierea bunurilor mobile și imobile din patrimoniul personal, venitul brut se stabilește pe baza chiriei prevăzute în contractul încheiat între părți pentru fiecare an fiscal, indiferent de momentul încasării chiriei."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se împart azi regulile:

@@ -16,15 +16,15 @@ Un dealer auto sau o firmă de leasing care ține pe stoc autovehicule second-ha
 
 ::: ghid-temei
 „Nu se datorează impozitul pe mijloacele de transport pentru: [...] autovehiculele secondhand înregistrate ca stoc de marfă și care nu sunt utilizate în folosul propriu al operatorului economic, comerciant auto sau societate de leasing;"
-— Codul fiscal (Legea 227/2015), art. 469 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 469 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului pe mijloacele de transport."
-— Codul fiscal (Legea 227/2015), art. 471 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „operatorii economici, comercianți auto sau societăți de leasing care au mijloace de transport înregistrate ca stoc de marfă prezintă, după caz, următoarele: a) proces-verbal de reintrare în posesie a vehiculului înscris ca marfă pe stoc - în copie; [...] b) declarație de inventar; [...] c) extras din situațiile financiare care dovedesc înscrierea pe stoc; [...] d) dovada radierii din circulația pe drumurile publice; [...] e) o cerere de scoatere din evidențele fiscale;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 108 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 108 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

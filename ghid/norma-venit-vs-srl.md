@@ -14,13 +14,13 @@ Alegerea între o întreprindere individuală (II) impozitată la normă de veni
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Legea 227/2015, art. 69 alin. (1), Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 69 alin. (1), Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Norma de venit pentru fiecare activitate desfășurată de contribuabil nu poate fi mai mică decât nivelul a 12 salarii de bază minime brute pe țară garantate în plată, în vigoare la data de 1 ianuarie a anului de realizare a venitului."
-— Legea 227/2015, art. 69 alin. (3), astfel cum a fost modificat prin Legea nr. 239/2025, art. XII pct. 6, aplicabil veniturilor aferente anului 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 69 alin. (3), astfel cum a fost modificat prin Legea nr. 239/2025, art. XII pct. 6, aplicabil veniturilor aferente anului 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit este de 10% [...]" (Titlul IV, activități independente) vs. „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%" (art. 17, Titlul II) / „Cota de impozit pe veniturile microîntreprinderilor este de 1%" (art. 51 alin. 1, Titlul III).
-— Legea 227/2015, art. 64 alin. (1); art. 17; art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 64 alin. (1); art. 17; art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferențele legale principale:

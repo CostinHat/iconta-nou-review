@@ -14,10 +14,10 @@ Formularea "impozit pe profit la PFA" apare des în conversații, dar nu corespu
 
 ::: ghid-temei
 „(1) Sunt obligate la plata impozitului pe profit, conform prezentului titlu, următoarele persoane, denumite în continuare contribuabili: a) persoanele juridice române, cu excepțiile prevăzute la alin. (2);"
-— Legea 227/2015, art. 13 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 13 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Legea 227/2015, art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce arată clar cele două texte:

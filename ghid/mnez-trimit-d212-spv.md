@@ -15,7 +15,7 @@ Din punct de vedere legal, „semnarea" D212 nu înseamnă neapărat o semnătur
 ::: ghid-temei
 „(3) Contribuabilul/Plătitorul are obligația de a completa declarația fiscală înscriind corect, complet și cu bună-credință informațiile prevăzute de formular, corespunzătoare situației sale fiscale. Declarația fiscală se semnează de către contribuabil/plătitor sau, după caz, reprezentantul legal ori împuternicitul acestuia.
 (4) Obligația de semnare a declarației fiscale se consideră a fi îndeplinită și în următoarele situații: a) în cazul transmiterii declarației fiscale prin sistemul electronic de plăți; b) în cazul transmiterii declarației fiscale prin sisteme electronice de transmitere la distanță în condițiile art. 103 alin. (1)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 102 alin. (3), (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 102 alin. (3), (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, așa cum rezultă din corelarea art. 79, 80, 102 și 103 din Codul de procedură fiscală:
@@ -33,6 +33,6 @@ Pașii, așa cum rezultă din corelarea art. 79, 80, 102 și 103 din Codul de pr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212), validat structural după schema oficială a validatorului ANAF (`core/d212.py`), pe baza datelor introduse manual de contabil. Aplicația nu efectuează ea însăși autentificarea cu certificat calificat și nu transmite declarația către SPV — încărcarea, semnarea (prin autentificare) și transmiterea efectivă în Spațiul Privat Virtual rămân un pas manual, realizat de contribuabil sau de contabil direct pe portalul ANAF.
+La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212), validat structural după schema oficială a validatorului ANAF, pe baza datelor introduse manual de contabil. Aplicația nu efectuează ea însăși autentificarea cu certificat calificat și nu transmite declarația către SPV — încărcarea, semnarea (prin autentificare) și transmiterea efectivă în Spațiul Privat Virtual rămân un pas manual, realizat de contribuabil sau de contabil direct pe portalul ANAF.
 
 [iConta.eu](/)

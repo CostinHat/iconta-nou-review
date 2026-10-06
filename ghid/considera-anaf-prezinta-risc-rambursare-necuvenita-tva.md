@@ -16,15 +16,15 @@ Codul de procedură fiscală enumeră patru situații în care o persoană impoz
 
 ::: ghid-temei
 „în sensul prezentului articol, se considerâ câ persoanele impozabile prezintâ un risc de rambursare necuvenitâ a TVA dacâ se regâsesc în oricare dintre urmâtoarele situații: a) organele fiscale primesc documente oficiale de la alte instituții, care vizeazâ aspecte de naturâ fiscalâ și se constatâ câ au incidențâ în acordarea unei rambursâri necuvenite de TVA; b) în cadrul acțiunilor de control fiscal s-au constatat fapte care pot întruni elementele constitutive ale unor infracțiuni cu implicații de naturâ fiscalâ; c) cu ocazia inspecției fiscale ulterioare au fost stabilite diferențe mai mari de 10% din suma rambursatâ, dar nu mai puțin de 50.000 lei pentru fiecare decont de TVA care a fâcut obiectul inspecției fiscale ulterioare;"
-— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (4) lit. a)-c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (4) lit. a)-c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „d) alte situaţii stabilite prin ordin al preşedintelui A.N.A.F., din care să rezulte că persoanele impozabile prezintă un risc de rambursare necuvenită a TVA."
-— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (4) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (4) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „b) organul fiscal central, pe baza informațiilor deținute, constatâ câ existâ riscul unei rambursâri necuvenite;"
-— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (3) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (3) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se citesc criteriile:

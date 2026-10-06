@@ -14,7 +14,7 @@ Pro-rata de TVA nu se aplică oricărei firme înregistrate în scopuri de TVA, 
 
 ::: ghid-temei
 „Dreptul de deducere a taxei deductibile aferente achizițiilor efectuate de către o persoană impozabilă cu regim mixt sau de către o persoană parțial impozabilă se determină conform prezentului articol. [...] Dacă persoana parțial impozabilă desfășoară activități în calitate de persoană impozabilă, din care rezultă atât operațiuni cu drept de deducere, cât și operațiuni fără drept de deducere, este considerată persoană impozabilă mixtă pentru respectivele activități și aplică prevederile prezentului articol. Persoana parțial impozabilă poate aplica pro rata în situația în care nu poate ține evidențe separate pentru activitatea desfășurată în calitate de persoană impozabilă și pentru activitatea pentru care nu are calitatea de persoană impozabilă."
-— Legea nr. 227/2015 (Codul fiscal), art. 300 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 300 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cine intră, deci, sub obligația pro-rata:
@@ -31,6 +31,6 @@ Cine intră, deci, sub obligația pro-rata:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, în modulul de decont TVA (`core/d300.py`), iConta.eu permite introducerea manuală a unui procent de pro-rata în profilul firmei, folosit apoi la calculul ajustării taxei deduse (rândul de regularizare aferent). Aplicația **nu calculează automat** pro-rata definitivă sau provizorie pe baza operațiunilor efectiv înregistrate — determinarea procentului, comunicarea lui către organul fiscal și regularizarea anuală rămân în sarcina contabilului.
+La data acestui ghid, în modulul de decont TVA, iConta.eu permite introducerea manuală a unui procent de pro-rata în profilul firmei, folosit apoi la calculul ajustării taxei deduse (rândul de regularizare aferent). Aplicația **nu calculează automat** pro-rata definitivă sau provizorie pe baza operațiunilor efectiv înregistrate — determinarea procentului, comunicarea lui către organul fiscal și regularizarea anuală rămân în sarcina contabilului.
 
 [iConta.eu](/)

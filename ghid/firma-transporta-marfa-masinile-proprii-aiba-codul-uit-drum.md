@@ -16,10 +16,10 @@ Aici nu există un transportator terț căruia să-i fie „predat” codul. Toa
 
 ::: ghid-temei
 „4. organizatorul transportului - operatorul economic care încheie comanda de transport direct cu operatorul de transport rutier sau operatorul economic care preia comanda de la expeditor și o transmite operatorului de transport rutier, precum și operatorul economic sau persoana fizică care transportă bunurile în nume propriu;"
-— OUG 41/2022, art. 2 pct. 4 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 4 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „12. identificarea prin cod UIT - deținerea și prezentarea codului UIT pe timpul transportului de către operatorul de transport rutier sau operatorul economic care transportă cu vehicule care îi aparțin bunuri în nume propriu, în format fizic sau electronic, împreună cu documentul care însoțește transportul bunurilor."
-— OUG 41/2022, art. 2 pct. 12 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 12 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Concret, firma care transportă cu mașinile proprii:

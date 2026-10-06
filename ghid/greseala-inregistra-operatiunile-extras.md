@@ -15,7 +15,7 @@ Omiterea unei tranzacții din extrasul de cont bancar la înregistrarea în cont
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.
 (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea nr. 82/1991 (Legea contabilității), art. 6 alin. (1), (2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (Legea contabilității), art. 6 alin. (1), (2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Consecințele omiterii unor operațiuni din extras, în lumina acestui principiu:
@@ -32,6 +32,6 @@ Consecințele omiterii unor operațiuni din extras, în lumina acestui principiu
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un parser de extrase bancare (`core/banca_parser.py`), care citește fișiere XLS/XLSX/CSV/MT940 de la bănci (testat pe formatul ING) și extrage automat toate liniile de tranzacții din extras, reducând riscul de a omite manual o operațiune la introducerea datelor. Modulul `core/banca.py` (funcția `contabilizeaza_extras`) propune apoi contarea automată a liniilor identificate, pe baza descrierii operațiunii. Validarea finală — confirmarea că toate liniile din extrasul importat au fost efectiv procesate și că soldul rezultat corespunde cu cel din extrasul bancar — rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu are un parser de extrase bancare, care citește fișiere XLS/XLSX/CSV/MT940 de la bănci (testat pe formatul ING) și extrage automat toate liniile de tranzacții din extras, reducând riscul de a omite manual o operațiune la introducerea datelor. Aplicația (funcția `contabilizeaza_extras`) propune apoi contarea automată a liniilor identificate, pe baza descrierii operațiunii. Validarea finală — confirmarea că toate liniile din extrasul importat au fost efectiv procesate și că soldul rezultat corespunde cu cel din extrasul bancar — rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

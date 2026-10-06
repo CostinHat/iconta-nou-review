@@ -14,7 +14,7 @@ Condiția „cel puțin un salariat" de la art. 47 nu se verifică prin simpla n
 
 ::: ghid-temei
 „(4) În sensul prezentului titlu, prin salariat se înțelege persoana angajată cu contract individual de muncă cu normă întreagă, potrivit Legii nr. 53/2003 - Codul muncii (...). Condiția se consideră îndeplinită și în cazul microîntreprinderilor care: a) au persoane angajate cu contract individual de muncă cu timp parțial dacă fracțiunile de normă prevăzute în acestea, însumate, reprezintă echivalentul unei norme întregi; b) au încheiate contracte de administrare sau mandat, potrivit legii, în cazul în care remunerația acestora este cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată."
-— Legea 227/2015, art. 51 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 51 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se numără, corect, în 2026:
@@ -33,6 +33,6 @@ Cum se numără, corect, în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are evidența reală a salariaților firmei, cu un indicator simplu — `are_salariati` — derivat din numărul de rânduri active din tabelul de salariați (`core/salariati_import_api.py`). Acest indicator confirmă doar prezența salariaților în evidență, nu aplică regulile fine de la art. 51 alin. (4): aplicația **nu însumează automat fracțiunile de normă** pentru a verifica echivalentul unei norme întregi și **nu identifică separat** contractele de administrare/mandat remunerate la nivelul minim ca îndeplinind condiția — aceste verificări rămân manuale, pe baza contractelor efectiv introduse.
+La data acestui ghid, iConta.eu are evidența reală a salariaților firmei, cu un indicator simplu — `are_salariati` — derivat din numărul de rânduri active din tabelul de salariați. Acest indicator confirmă doar prezența salariaților în evidență, nu aplică regulile fine de la art. 51 alin. (4): aplicația **nu însumează automat fracțiunile de normă** pentru a verifica echivalentul unei norme întregi și **nu identifică separat** contractele de administrare/mandat remunerate la nivelul minim ca îndeplinind condiția — aceste verificări rămân manuale, pe baza contractelor efectiv introduse.
 
 [iConta.eu](/)

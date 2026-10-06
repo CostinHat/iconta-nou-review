@@ -17,7 +17,7 @@ O firmă care nu are sediu în România, dar face achiziții sau importuri aici 
 (1) În condițiile stabilite prin normele metodologice:
 a) persoana impozabilă nestabilită în România, care este stabilită în alt stat membru, neînregistrată și care nu este obligată să se înregistreze în scopuri de TVA în România, poate beneficia de rambursarea taxei pe valoarea adăugată aferente importurilor și achizițiilor de bunuri/servicii, efectuate în România;
 b) persoana impozabilă neînregistrată și care nu este obligată să se înregistreze în scopuri de TVA în România, nestabilită pe teritoriul Uniunii Europene, poate solicita rambursarea taxei aferente importurilor și achizițiilor de bunuri/servicii efectuate în România, dacă, în conformitate cu legile țării unde este stabilită, o persoană impozabilă stabilită în România ar avea același drept de rambursare [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 302 alin. (1) lit. a)-b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 302 alin. (1) lit. a)-b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Firmă stabilită în alt stat membru UE**: poate cere rambursarea TVA aferente achizițiilor și importurilor din România, prin procedura electronică prevăzută de normele metodologice (mecanism reciproc celui prin care o firmă românească cere rambursare TVA din alt stat UE).

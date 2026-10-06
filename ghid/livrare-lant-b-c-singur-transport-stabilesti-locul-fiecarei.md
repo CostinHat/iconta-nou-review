@@ -16,18 +16,18 @@ Cine primește transportul depinde de cine îl organizează.
 
 ::: ghid-temei
 „În cazul în care aceleași bunuri sunt livrate succesiv și sunt expediate sau transportate dintr-un stat membru în alt stat membru direct de la primul furnizor la ultimul client din lanț, expedierea sau transportul este atribuit numai livrării efectuate către operatorul intermediar."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la dispozițiile alin. (9) [...] expedierea sau transportul este atribuit numai livrării de bunuri efectuate de către operatorul intermediar în cazul în care operatorul intermediar a comunicat furnizorului său codul său de înregistrare în scopuri de TVA care i-a fost eliberat de către statul membru din care sunt expediate sau transportate bunurile."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În sensul prezentului articol, ”operator intermediar” înseamnă un furnizor din lanț, altul decât primul furnizor din lanț, care expediază sau transportă bunurile, fie el însuși, fie prin intermediul unei părți terțe care acționează în numele său."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În al doilea caz, dacă persoana obligată să realizeze transportul este C, pe relația A-B se consideră o livrare fără transport, locul livrării fiind locul unde bunurile sunt puse la dispoziția lui B, iar în relația B-C se consideră o livrare cu transport, locul livrării fiind locul unde începe transportul, respectiv în statul membru al furnizorului A, unde se află bunurile atunci când începe transportul."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 11 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 11 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cele patru situații:

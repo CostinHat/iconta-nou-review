@@ -16,10 +16,10 @@ Asociația de proprietari este obligată să stabilească atât **cuantumul** fo
 
 ::: ghid-temei
 „(1) În scopul asigurării sumelor necesare pentru plăți curente, asociația de proprietari este obligată să stabilească cuantumul și cota de participare a proprietarilor la constituirea fondului de rulment. Fondul de rulment se stabilește astfel încât să poată acoperi cheltuielile curente ale condominiului la nivelul unei luni calendaristice. Stabilirea cuantumului se face prin echivalare cu suma care a fost necesară pentru acoperirea cheltuielilor lunare înregistrate de asociația de proprietari în anul anterior, la nivelul lunii cu cheltuielile cele mai mari, majorate cu rata inflației, iar în cazurile asociațiilor de proprietari nou-înființate, prin aproximarea acestuia cu fondul de rulment stabilit la alte asociații de proprietari echivalente ca mărime.”
-— Legea 196/2018, art. 72 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 72 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(3) Fondul de rulment se constituie prin plata anticipată a cotei ce revine fiecărui proprietar, potrivit hotărârii adunării generale a asociației de proprietari, iar reîntregirea fondului de rulment se face lunar, prin plata sumelor afișate pe lista de plată.”
-— Legea 196/2018, art. 72 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 72 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Metoda, pas cu pas:

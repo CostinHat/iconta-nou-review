@@ -17,7 +17,7 @@ Reducerea capitalului social nu e o simplă notă contabilă — legea impune o 
 (2) Hotărârea va trebui să respecte minimul de capital social, atunci când legea îl fixează, să arate motivele pentru care se face reducerea și procedeul ce va fi utilizat pentru efectuarea ei.
 [...]
 (4) Reducerea capitalului social nu are efect și nu se fac plăți în beneficiul acționarilor până când creditorii nu vor fi obținut realizarea creanțelor lor ori garanții adecvate [...]"
-— Legea 31/1990, art. 208 alin. (1), (2), (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 208 alin. (1), (2), (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă succesiunea corectă a pașilor, inclusiv momentul din care se poate face înregistrarea contabilă:

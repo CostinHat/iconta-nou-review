@@ -15,7 +15,7 @@ Accesul la Spațiul Privat Virtual (SPV) este legat de identificarea electronic�
 ::: ghid-temei
 „ART. 2 În scopul prezentului ordin comunicarea prin mijloace electronice de transmitere la distanţă se realizează prin intermediul serviciului «Spaţiul privat virtual» - serviciu de distribuţie electronică înregistrată care permite transmiterea de date între terţi prin mijloace electronice şi furnizează dovezi referitoare la manipularea datelor transmise, inclusiv dovezi privind trimiterea şi primirea datelor, asigurând protejarea datelor transmise împotriva riscului de pierdere, furt, deteriorare sau orice modificare neautorizată.
 ART. 10 Modificarea datelor şi reînnoirea certificatului calificat. Modificarea datelor de identificare, a celor cu caracter opţional şi reînnoirea certificatului calificat se fac prin accesarea aplicaţiilor informatice specifice, pe platforma informatică dedicată."
-— OMFP nr. 660/2017, art. 2 (Ordin) și Anexă — Procedura de comunicare prin mijloace electronice de transmitere la distanţă, art. 10 (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP nr. 660/2017, art. 2 (Ordin) și Anexă — Procedura de comunicare prin mijloace electronice de transmitere la distanţă, art. 10 (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Din structura normei rezultă cadrul general aplicabil unei situații de acces pierdut:

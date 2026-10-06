@@ -16,18 +16,18 @@ Contează pentru că cele două categorii au reguli de impozitare diferite. Prem
 
 ::: ghid-temei
 „În scopul delimitării veniturilor din premii de veniturile din jocuri de noroc, sunt considerate câștiguri de natura jocurilor de noroc cele acordate participanților la joc de către orice persoană juridică autorizată să exploateze astfel de jocuri de noroc, conform legislației în materie."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 32 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 32 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Veniturile din premii cuprind veniturile din concursuri, altele decât cele prevăzute la art. 62"
-— Codul fiscal (Legea 227/2015), art. 108 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 108 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Veniturile sub formă de premii se impun, prin reținerea la sursă, cu o cotă de 10% aplicată asupra venitului net realizat din fiecare premiu."
-— Codul fiscal (Legea 227/2015), art. 110 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 110 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Veniturile din jocuri de noroc se impozitează prin reținere la sursă. Impozitul datorat se determină la fiecare plată, prin aplicarea următorului barem de impunere asupra fiecărui venit brut primit de un participant de la un organizator sau plătitor de venituri din jocuri de noroc"
-— Codul fiscal (Legea 227/2015), art. 110 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 110 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum aplici criteriul:

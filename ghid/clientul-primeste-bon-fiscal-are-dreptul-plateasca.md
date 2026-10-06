@@ -16,10 +16,10 @@ Pentru firmă, miza e dublă. Pierde contravaloarea produsului, iar refuzul îns
 
 ::: ghid-temei
 „În cazul în care operatorii economici prevăzuți la alin. (1) nu înmânează clientului bonul fiscal sau înmânează un alt document decât bonul fiscal, cu excepția situațiilor prevăzute la alin. (2^1) și (8) , clientul este obligat să solicite operatorului economic înmânarea bonului fiscal."
-— OUG 28/1999, art. 1 alin. (10) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (10) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „În cazul în care operatorii economici prevăzuți la alin. (1) refuză emiterea și înmânarea bonului fiscal clientului, cu excepția situației prevăzute la alin. (8) , acesta din urmă are dreptul de a beneficia de bunul achiziționat sau de serviciul prestat fără plata contravalorii acestuia."
-— OUG 28/1999, art. 1 alin. (10^1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (10^1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Cum se aplică:

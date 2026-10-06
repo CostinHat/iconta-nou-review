@@ -15,7 +15,7 @@ O organizație nonprofit (asociație, fundație, organizație sindicală sau pat
 ::: ghid-temei
 „În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, la calculul rezultatului fiscal, următoarele tipuri de venituri sunt venituri neimpozabile: a) [...]
 Aceste organizații datorează impozit pe profit pentru partea din profitul impozabil care corespunde veniturilor, altele decât cele considerate venituri neimpozabile, potrivit alin. (2) [...]."
-— Legea 227/2015 (Codul fiscal), art. 15 alin. (2) și alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 15 alin. (2) și alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut din structura articolului:

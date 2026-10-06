@@ -16,11 +16,11 @@ Regula contează pentru contabil din două motive. Toate încasările și plăț
 
 ::: ghid-temei
 „(1) Fiecare asociație de proprietari este obligată să dețină un singur cont bancar. (2) În vederea plății cotelor de contribuție la cheltuielile asociației de proprietari, datele de identificare ale contului bancar prevăzut la alin. (1) se comunică tuturor proprietarilor prin afișare la avizier, odată cu lista de plată a cheltuielilor asociației de proprietari. (3) Prin datele de identificare ale contului bancar menționate la alin. (2) se înțelege numele titularului contului, banca la care este deschis contul, sucursala și codul IBAN."
-— Legea 196/2018, art. 20 alin. (1)-(3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 20 alin. (1)-(3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „m) utilizarea și gestionarea veniturilor asociației de proprietari, altfel decât este prevăzut la art. 20 , 70 și 74 ;"
-— Legea 196/2018, art. 102 alin. (1) lit. m) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (1) lit. m) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „d) faptele prevăzute la alin. (1) lit. g) , h) , i) , m) , p) și q) , cu amendă de la 5.000 lei la 10.000 lei;"
-— Legea 196/2018, art. 102 alin. (2) lit. d) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (2) lit. d) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

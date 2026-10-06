@@ -16,18 +16,18 @@ Certificatul decide regimul fiscal al câștigului. Fără el, sau dacă nu exis
 
 ::: ghid-temei
 „(2) Pentru aplicarea prevederilor convențiilor de evitare a dublei impuneri în cazul persoanelor fizice nerezidente care obțin câștiguri din transferul titlurilor de valoare și operațiunea nu se efectuează printr-un intermediar, precum și în cazul persoanelor juridice străine care obțin câștiguri din vânzarea-cesionarea titlurilor de participare deținute la o persoană juridică română, certificatul de rezidență fiscală sau documentul prevăzut la pct. 19 alin. (1) se depune la societatea ale cărei titluri de valoare/titluri de participare sunt transferate, respectiv sunt vândute-cesionate. O copie legalizată a certificatului de rezidență fiscală sau a documentului prevăzut la pct. 19 alin. (1) , însoțită de o traducere autorizată în limba română, se va anexa la declarația care se depune la organul fiscal competent."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 20 alin. (2) (norme art. 230 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 20 alin. (2) (norme art. 230 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „sunt aplicabile persoanelor nerezidente în condițiile neprezentării certificatului de rezidență fiscală sau atunci când România nu are încheiată convenție de evitare a dublei impuneri cu statul de rezidență al beneficiarului acestor profituri/câștiguri ori în cazul în care, prin convenție, România are dreptul de impunere asupra profitului/câștigului. Declarația se depune de persoana nerezidentă la organul fiscal competent."
-— HG 1/2016, Titlul VI, pct. 21 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VI, pct. 21 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „titlu de participare - orice acțiune sau altă parte socială într-o societate în nume colectiv, societate în comandită simplă, societate pe acțiuni, societate în comandită pe acțiuni, societate cu răspundere limitată"
-— Codul fiscal (Legea 227/2015), art. 7 pct. 40 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 40 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „la persoana juridică română ale cărei titluri de valoare sunt înstrăinate în cazul câștigului de capital"
-— Codul fiscal (Legea 227/2015), art. 230 alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 230 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

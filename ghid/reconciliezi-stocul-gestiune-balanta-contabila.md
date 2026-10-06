@@ -14,7 +14,7 @@ Reconcilierea dintre ce arată gestiunea (stocul faptic) și ce arată balanța 
 
 ::: ghid-temei
 „(1) Persoanele prevăzute la art. 1 au obligația să efectueze inventarierea generală a elementelor de natura activelor, datoriilor și capitalurilor proprii deținute la începutul activității, cel puțin o dată în cursul exercițiului financiar, precum și în cazul fuziunii, divizării ori transformării sau al lichidării și în alte situații prevăzute de lege."
-— Legea nr. 82/1991 (Legea contabilității), art. 7 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (Legea contabilității), art. 7 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Mecanismul de reconciliere funcționează astfel:

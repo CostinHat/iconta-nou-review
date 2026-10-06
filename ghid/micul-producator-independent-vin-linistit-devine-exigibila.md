@@ -16,18 +16,18 @@ Regula a fost introdusă prin OUG 68/2025 și se aplică din 15 decembrie 2025. 
 
 ::: ghid-temei
 „(20) În cazul vinurilor liniștite realizate de micii producători independenți, eliberare pentru consum se consideră atunci când vinul liniștit realizat de micii producători independenți este comercializat. (21) Prin excepție de la prevederile alin. (20), nu se consideră eliberare pentru consum comercializarea de către micii producători independenți către antrepozite fiscale a vinurilor liniștite realizate de aceștia și deplasate din spațiul lor de producție către antrepozite fiscale."
-— OUG 68/2025, art. I pct. 3 (art. 342 alin. (20)-(21) din Codul fiscal) (sursă: anaf_surse/oug_68_2025.html)
+— OUG 68/2025, art. I pct. 3 (art. 342 alin. (20)-(21) din Codul fiscal) (sursă: [OUG nr. 68/2025 pentru modificarea și completarea titlului VIII din Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305009))
 
 „prevederile art. I intră în vigoare la data de 15 decembrie 2025, cu următoarele excepții:"
-— OUG 68/2025, art. V alin. (1) (sursă: anaf_surse/oug_68_2025.html)
+— OUG 68/2025, art. V alin. (1) (sursă: [OUG nr. 68/2025 pentru modificarea și completarea titlului VIII din Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305009))
 :::
 
 ::: ghid-temei
 „g) în cazul prevăzut la art. 342 alin. (20) , micul producător independent de vinuri liniștite."
-— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Termenul de plată a accizelor este până la data de 25 inclusiv a lunii următoare celei în care accizele devin exigibile, cu excepția cazurilor pentru care se prevede în mod expres un alt termen de plată."
-— Codul fiscal (Legea 227/2015), art. 345 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 345 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

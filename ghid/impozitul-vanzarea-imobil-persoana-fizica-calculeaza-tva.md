@@ -16,15 +16,15 @@ Situația apare rar, dar apare. De exemplu, o persoană fizică devine persoană
 
 ::: ghid-temei
 „Impozitul prevăzut la alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se calculează la valoarea declarată de părți în actul prin care se transferă dreptul de proprietate, dezmembrămintele sale sau nuda proprietate."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Valoarea tranzacției proprietăților imobiliare din patrimoniul personal, luată în calcul la stabilirea impozitului, nu include TVA aferentă, în cazul în care aceasta se aplică tranzacției respective."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

@@ -16,7 +16,7 @@ Certificatul de atestare fiscală e documentul prin care organul fiscal confirm�
 „(1) Certificatul de atestare fiscală se emite de organul fiscal central competent la solicitarea contribuabilului/plătitorului. Certificatul se emite și din oficiu sau la solicitarea altor autorități publice, în cazurile și în condițiile prevăzute de reglementările legale în vigoare, precum și la solicitarea oricărei persoane care deține titluri de participare la o societate.
 (2) Certificatul de atestare fiscală se eliberează pe baza datelor cuprinse în evidența creanțelor fiscale a organului fiscal central competent și cuprinde obligațiile fiscale restante existente în sold în ultima zi a lunii anterioare depunerii cererii și nestinse până la data eliberării acestuia [...]
 (5) Certificatul de atestare fiscală se emite în maximum 3 zile lucrătoare de la data depunerii cererii și poate fi utilizat de persoana interesată, pe o perioadă de până la 30 de zile de la data eliberării. [...]"
-— Legea 207/2015 privind Codul de procedură fiscală, art. 158 alin. (1), (2), (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 158 alin. (1), (2), (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic:

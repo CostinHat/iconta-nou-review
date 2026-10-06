@@ -16,10 +16,10 @@ Pentru contabilul unui operator de transport alternativ, D397 e oglinda lunară 
 
 ::: ghid-temei
 „5. Coloana „Valoarea curselor realizate de operatorul de transport alternativ“ - se înscrie valoarea totală a curselor realizate în perioada de raportare de operatorul de transport alternativ, consemnată în documentele emise către pasager [...] 6. Coloana „Valoarea încasărilor realizate de operatorul de transport alternativ“ - se înscrie valoarea totală a sumelor încasate de operatorul de transport alternativ prin intermediul operatorului platformei digitale (include: virament bancar și cele în numerar, indiferent de tipul acestora) în perioada de raportare."
-— OPANAF 382/2025, Anexa nr. 2, secț. C.1 pct. 5 și 6 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, secț. C.1 pct. 5 și 6 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 
 „8. Coloana „Venituri realizate“ - se înscrie valoarea totală a curselor realizate în perioada de raportare, consemnată în facturile emise către pasager [...] 9. Coloana „Sumele încasate în numerar pentru cursele realizate“ - se înscrie totalul sumelor încasate în numerar în perioada de raportare."
-— OPANAF 382/2025, Anexa nr. 2, secț. C.2 pct. 8 și 9 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, secț. C.2 pct. 8 și 9 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 :::
 
 Ce apare despre firma ta în D397:

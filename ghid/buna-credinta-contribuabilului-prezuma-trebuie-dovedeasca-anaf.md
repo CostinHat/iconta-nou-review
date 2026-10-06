@@ -16,12 +16,12 @@ Prezumția nu scutește firma de obligațiile ei. Ea trebuie să coopereze, să 
 
 ::: ghid-temei
 „(1) Relațiile dintre contribuabil/plătitor și organul fiscal trebuie să fie fundamentate pe bună-credință. (2) Contribuabilul/Plătitorul trebuie să își îndeplinească obligațiile și să își exercite drepturile potrivit scopului în vederea căruia au fost recunoscute de lege și să declare corect datele și informațiile privitoare la obligațiile fiscale datorate. (3) Organul fiscal trebuie să respecte drepturile contribuabilului/plătitorului în fiecare procedură de administrare a creanțelor fiscale aflată în derulare. (4) Buna-credință a contribuabililor se prezumă până când organul fiscal dovedește contrariul."
-— Codul de procedură fiscală (Legea 207/2015), art. 12 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 12 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul este obligat să coopereze cu organul fiscal în vederea determinării stării de fapt fiscale, prin prezentarea faptelor cunoscute de către acesta, în întregime, conform realității, și prin indicarea mijloacelor doveditoare care îi sunt cunoscute"
-— Codul de procedură fiscală (Legea 207/2015), art. 10 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 10 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă „contrariul" pe care trebuie să îl dovedească ANAF:

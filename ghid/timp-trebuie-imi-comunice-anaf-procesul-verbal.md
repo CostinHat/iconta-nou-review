@@ -16,15 +16,15 @@ Data comunicării contează din două motive. De la ea curg cele 15 zile pentru 
 
 ::: ghid-temei
 „Prezentul proces-verbal s-a încheiat în trei exemplare, din care exemplarul 2 s-a înmânat contravenientului, astăzi, ........................, sau se va comunica acestuia în termen de cel mult două luni de la data încheierii."
-— OPANAF 1094/2016, Anexa 1 (sursă: anaf_surse/ordin_1094_2016.html)
+— OPANAF 1094/2016, Anexa 1 (sursă: [OPANAF nr. 1094/2016 pentru aprobarea formularului Proces-verbal de constatare și sancționare a contravențiilor](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_1094_2016.pdf))
 :::
 
 ::: ghid-temei
 „În cazul în care contravenientul nu este prezent sau, deși prezent, refuză să semneze procesul-verbal, comunicarea acestuia se face de către agentul constatator, în termen de cel mult două luni de la data încheierii."
-— OG 2/2001, art. 26 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 26 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Executarea sancțiunilor contravenționale se prescrie dacă procesul-verbal de constatare a contravenției nu a fost comunicat contravenientului în termen de cel mult două luni de la data aplicării sancțiunii."
-— OG 2/2001, art. 14 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 14 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Cum se aplică:

@@ -14,7 +14,7 @@ Un mijloc fix nu „intră" în contabilitate doar pe baza facturii de achiziți
 
 ::: ghid-temei
 „REGISTRUL NUMERELOR DE INVENTAR (Cod 14-2-1) [...] FIȘA MIJLOCULUI FIX (Cod 14-2-2) [...] BON DE MIȘCARE A MIJLOACELOR FIXE (Cod 14-2-3A) [...] PROCES-VERBAL DE SCOATERE DIN FUNCȚIUNE A MIJLOACELOR FIXE/DE DECLASARE A UNOR BUNURI MATERIALE (Cod 14-2-3/aA) [...] PROCES-VERBAL DE RECEPȚIE (Cod 14-2-5) [...] PROCES-VERBAL DE RECEPȚIE PROVIZORIE (Cod 14-2-5/a) [...] PROCES-VERBAL DE PUNERE ÎN FUNCȚIUNE (Cod 14-2-5/b)."
-— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile, Grupa a II-a (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile, Grupa a II-a (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Fiecare formular are o funcție distinctă, prevăzută explicit de normă:

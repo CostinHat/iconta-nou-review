@@ -14,7 +14,7 @@ Da. Nota de recepție și constatare de diferențe (NIR) este un document financ
 
 ::: ghid-temei
 „Documentele financiar-contabile pot fi prezentate ca documente pe suport hârtie sau în format electronic, cu condiția întocmirii acestora potrivit prezentelor norme. Prin document în format electronic se înțelege documentul care conține informațiile prevăzute de prezentele norme și care a fost emis și primit în format electronic."
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 1 — Norme generale, pct. 12 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 1 — Norme generale, pct. 12 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Condițiile care rezultă din normă pentru un NIR electronic:

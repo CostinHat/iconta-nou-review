@@ -16,15 +16,15 @@ Proprietarul persoană fizică nerezidentă depune cererea de înregistrare a co
 
 ::: ghid-temei
 „Organul fiscal competent este: a) organul fiscal în a cărui rază teritorială persoana fizică rezidentă are domiciliul fiscal, potrivit legii; ... b) organul fiscal în a cărui rază teritorială se află bunul imobil care face obiectul contractului de închiriere, în cazul persoanelor fizice nerezidente/organul fiscal în a cărui rază teritorială se află domiciliul fiscal al împuternicitului, după caz, pentru persoanele fizice nerezidente;"
-— OPANAF 161/2025, anexa (instrucțiunile de completare a cererii de înregistrare a contractelor de locațiune), secțiunea Depunerea cererii, lit. a) și b) (sursă: anaf_surse/ordin_161_2025.html)
+— OPANAF 161/2025, anexa (instrucțiunile de completare a cererii de înregistrare a contractelor de locațiune), secțiunea Depunerea cererii, lit. a) și b) (sursă: [OPANAF nr. 161/2025 (înregistrarea contractelor de locațiune)](https://legislatie.just.ro/Public/DetaliiDocument/294288))
 
 „Cererea se depune, direct sau prin împuternicit, la registratura organului fiscal competent, prin poștă cu scrisoare recomandată sau prin mijloace electronice de transmitere la distanță, după caz, la termenele stabilite de legislația în vigoare."
-— OPANAF 161/2025, anexa, secțiunea Depunerea cererii (sursă: anaf_surse/ordin_161_2025.html)
+— OPANAF 161/2025, anexa, secțiunea Depunerea cererii (sursă: [OPANAF nr. 161/2025 (înregistrarea contractelor de locațiune)](https://legislatie.just.ro/Public/DetaliiDocument/294288))
 :::
 
 ::: ghid-temei
 „au obligația înregistrării contractului încheiat între părți, precum și a modificărilor survenite ulterior, în termen de cel mult 30 de zile de la încheierea/producerea modificării acestuia, la organul fiscal competent."
-— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reiese din instrucțiuni:

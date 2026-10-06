@@ -14,13 +14,13 @@ D394 nu are o amendă proprie, numită explicit în lege — se sancționează p
 
 ::: ghid-temei
 „19. declarație informativă - actul întocmit de contribuabil/plătitor referitor la orice informații în legătură cu impozitele, taxele și contribuțiile sociale, bunurile și veniturile impozabile, precum și în legătură cu evidențele contabile și fiscale, inclusiv fișierul standard de control fiscal, dacă legea prevede declararea acestora, altele decât cele prevăzute la pct. 18."
-— Legea 207/2015 (Codul de procedură fiscală), art. 1 pct. 19 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 1 pct. 19 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „neîndeplinirea de către contribuabil/plătitor la termen a obligaţiilor de declarare prevăzute de lege, a bunurilor şi veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuţiilor şi a altor sume, precum şi orice informaţii în legătură cu impozitele, taxele, contribuţiile, bunurile şi veniturile impozabile, dacă legea prevede declararea acestora"
-— Legea 207/2015, art. 336 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii şi mari şi cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum şi pentru persoanele fizice, în cazul săvârşirii faptei prevăzute la alin. (1) lit. a), b) şi i) - m)"
-— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se leagă textele: D394 e o declarație creată prin ordin ANAF (OPANAF 2194/2025), sub temeiul general al art. 59 din Codul de procedură fiscală, care se încadrează în definiția de la art. 1 pct. 19 — „declarație informativă". Nedepunerea ei la termen intră sub contravenția de la art. 336 alin. (1) lit. b), iar amenda aplicabilă e cea de la alin. (2) lit. d):
@@ -38,7 +38,7 @@ Nu am găsit în corpusul legal disponibil un cuantum specific, numit explicit �
 
 ## Ce face iConta.eu
 
-Termenul de depunere D394 (ziua 30 a lunii următoare, cu excepția lunii ianuarie) e urmărit intern (`core/scadente.py`), iar semaforul de conformare fiscală al aplicației compară declarațiile datorate, din vectorul fiscal al firmei, cu cele depuse.
+Termenul de depunere D394 (ziua 30 a lunii următoare, cu excepția lunii ianuarie) e urmărit intern, iar semaforul de conformare fiscală al aplicației compară declarațiile datorate, din vectorul fiscal al firmei, cu cele depuse.
 
 **iConta.eu nu aplică și nu calculează amenzi** — acestea sunt stabilite exclusiv de organul fiscal, în cazul constatării contravenției. Aplicația generează declarația și o validează local prin validatorul oficial ANAF (DUK), dar depunerea efectivă, la termen sau cu întârziere, rămâne manuală, prin portalul SPV.
 

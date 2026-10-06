@@ -13,7 +13,7 @@ Pentru serviciile B2B intracomunitare, regula de bază schimbă complet locul de
 ## Temeiul legal
 
 ::: ghid-temei
-Antetul modulului de operațiuni intracomunitare citează, printre temeiurile motorului de calcul, art. 278 alin. (2) (servicii B2B, locul beneficiarului) și art. 308-309 (obligat la plată = beneficiarul la AIC/servicii primite) — verificat în dosarul F050, `core/intracomunitar.py`.
+Antetul modulului de operațiuni intracomunitare citează, printre temeiurile motorului de calcul, art. 278 alin. (2) (servicii B2B, locul beneficiarului) și art. 308-309 (obligat la plată = beneficiarul la AIC/servicii primite) — verificat în dosarul F050, aplicația.
 :::
 
 ::: ghid-temei

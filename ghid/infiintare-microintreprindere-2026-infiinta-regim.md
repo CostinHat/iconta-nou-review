@@ -14,10 +14,10 @@ Regimul micro nu a fost desființat, dar condițiile de încadrare au fost modif
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile [...]"
-— Legea 227/2015, art. 47 alin. (1) lit. c), modificată de OUG 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) lit. c), modificată de OUG 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1). Pentru aplicarea sistemului de impunere pe veniturile microîntreprinderii în anul fiscal 2026, condiția prevăzută la art. 47 alin. (1) lit. i) se consideră îndeplinită dacă situațiile financiare anuale sunt depuse până la data de 31 martie 2026 inclusiv."
-— Legea 227/2015, art. 48 alin. (2), modificat de OUG 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2), modificat de OUG 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e valabil, concret, pentru 2026:

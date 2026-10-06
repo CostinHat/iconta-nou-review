@@ -16,13 +16,13 @@ Evaluarea riscurilor nu e un act de formă: pe ea se sprijină planul de preveni
 
 ::: ghid-temei
 „(1) Prezenta lege se aplică în toate sectoarele de activitate, atât publice, cat și private. (2) Prevederile prezentei legi se aplică angajatorilor, lucrătorilor și reprezentanților lucrătorilor."
-— Legea 319/2006, art. 3 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 3 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(1) Angajatorul are următoarele obligații: a) sa realizeze și să fie în posesia unei evaluări a riscurilor pentru securitatea și sănătatea în munca, inclusiv pentru acele grupuri sensibile la riscuri specifice;"
-— Legea 319/2006, art. 12 alin. (1) lit. a) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 12 alin. (1) lit. a) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(4) Constituie contravenție și se sancționează cu amendă de la 4.000 lei la 8.000 lei încălcarea dispozițiilor art. 12 alin. (1) lit. a) și b) , art. 13 lit. a) , d)-f) , h)-m) și o) , art. 20 , art. 29 alin. (1) lit. a) și ale art. 32 alin. (2) ."
-— Legea 319/2006, art. 39 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

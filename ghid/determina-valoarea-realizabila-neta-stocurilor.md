@@ -14,7 +14,7 @@ Stocurile nu rămân întotdeauna în bilanț la costul lor de achiziție sau de
 
 ::: ghid-temei
 „88. - (1) Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate. Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere."
-— OMFP nr. 1802/2014, Reglementări contabile, pct. 88 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, Reglementări contabile, pct. 88 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul de aplicare, potrivit textului și principiilor generale de evaluare de la inventariere:

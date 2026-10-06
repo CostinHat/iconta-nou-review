@@ -14,10 +14,10 @@ Măsura de simplificare a operațiunii triunghiulare există exact pentru cazul 
 
 ::: ghid-temei
 „Nu sunt considerate operațiuni impozabile în România: [...] achiziția intracomunitară de bunuri, efectuată în cadrul unei operațiuni triunghiulare, pentru care locul este în România în conformitate cu prevederile art. 276 alin. (1), atunci când sunt îndeplinite următoarele condiții: 1. achiziția de bunuri este efectuată de către o persoană impozabilă, denumită cumpărător revânzător, care nu este stabilită în România, dar este înregistrată în scopuri de TVA în alt stat membru; [...] 5. beneficiarul livrării ulterioare a fost desemnat în conformitate cu art. 307 alin. (4) ca persoană obligată la plata taxei pentru livrarea efectuată de cumpărătorul revânzător prevăzut la pct. 1."
-— Codul fiscal (Legea 227/2015), art. 268 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Orice persoană impozabilă înregistrată în scopuri de TVA [...] trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...] b) livrările de bunuri efectuate în cadrul unei operațiuni triunghiulare prevăzute la art. 276 alin. (5) efectuate în statul membru de sosire a bunurilor și care se declară drept livrări intracomunitare cu cod T, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă."
-— Codul fiscal, art. 325 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 325 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul de mai sus descrie cazul opus — firma română ca beneficiar final. Când firma din **România e intermediarul** (cumpărătorul revânzător), rolurile se inversează, iar obligațiile ei sunt:
@@ -35,8 +35,8 @@ Textul de mai sus descrie cazul opus — firma română ca beneficiar final. Câ
 
 ## Ce face iConta.eu
 
-`core/d390.py`, modulul de declarație recapitulativă VIES al iConta.eu, susține explicit codul „T" pentru livrările efectuate în cadrul unei operațiuni triunghiulare, ca tip distinct de operațiune (alături de L, A, P, S, R), inclus corect în formula oficială a totalului de plată. Clasificarea unei facturi emise ca „T" în loc de „L" nu se face automat din datele facturii — modulul o tratează explicit ca **clasificare manuală a contabilului**, prin parametrul `manual` al funcției de calcul.
+Aplicația, modulul de declarație recapitulativă VIES al iConta.eu, susține explicit codul „T" pentru livrările efectuate în cadrul unei operațiuni triunghiulare, ca tip distinct de operațiune (alături de L, A, P, S, R), inclus corect în formula oficială a totalului de plată. Clasificarea unei facturi emise ca „T" în loc de „L" nu se face automat din datele facturii — modulul o tratează explicit ca **clasificare manuală a contabilului**, prin parametrul `manual` al funcției de calcul.
 
-`core/intracomunitar.py`, modulul de operațiuni intracomunitare al aplicației, acoperă livrarea intracomunitară standard (cu verificare VIES) și taxarea inversă generică la achiziții, dar nu are o funcție dedicată care să valideze cele cinci condiții ale simplificării triunghiulare sau să determine automat că o tranzacție se califică drept operațiune triunghiulară — încadrarea rămâne o evaluare a contabilului.
+Aplicația, modulul de operațiuni intracomunitare al aplicației, acoperă livrarea intracomunitară standard (cu verificare VIES) și taxarea inversă generică la achiziții, dar nu are o funcție dedicată care să valideze cele cinci condiții ale simplificării triunghiulare sau să determine automat că o tranzacție se califică drept operațiune triunghiulară — încadrarea rămâne o evaluare a contabilului.
 
 [iConta.eu](/)

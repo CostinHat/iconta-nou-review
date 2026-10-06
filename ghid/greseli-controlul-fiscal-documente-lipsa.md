@@ -15,7 +15,7 @@ Documentele lipsă la un control fiscal nu produc, de regulă, doar o observați
 ::: ghid-temei
 „(1) Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă.
 (2) Stabilirea prin estimare a bazei de impozitare se efectuează în situații cum ar fi: [...] b) în situația în care organul fiscal nu poate determina situația fiscală corectă și constată că evidențele contabile sau fiscale ori declarațiile fiscale sau documentele și informațiile prezentate în cursul controlului fiscal sunt incorecte, incomplete, precum și în situația în care acestea nu există ori nu sunt puse la dispoziția organelor fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 106 alin. (1) și (2) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 106 alin. (1) și (2) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva consecințe practice ale documentelor lipsă la control:

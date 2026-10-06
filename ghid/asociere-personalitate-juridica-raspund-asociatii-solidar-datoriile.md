@@ -16,20 +16,20 @@ Răspunderea nu se aplică automat. Se stabilește prin decizie emisă pe numele
 
 ::: ghid-temei
 „(1) Reprezentanții legali ai persoanelor fizice și juridice, precum și reprezentanții desemnați ai asocierilor fără personalitate juridică sunt obligați să îndeplinească obligațiile ce revin potrivit legislației fiscale persoanelor sau entităților reprezentate. Acești reprezentanți îndeplinesc obligațiile fiscale de plată ale persoanelor sau entităților reprezentate din acele mijloace pe care le administrează. (2) în cazul în care, din orice motiv, obligațiile fiscale ale asocierilor fără personalitate juridică nu sunt achitate potrivit alin. (1), asociații răspund solidar pentru îndeplinirea acestora."
-— Codul de procedură fiscală (Legea 207/2015), art. 20 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 20 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „a) asociații din asocierile fără personalitate juridică, inclusiv membrii întreprinderilor familiale, pentru obligațiile fiscale datorate de acestea, în condițiile prevăzute la art. 20 , alături de reprezentanții legali care, cu rea-credință, au determinat nedeclararea și/sau neachitarea obligațiilor fiscale la scadență;"
-— Codul de procedură fiscală (Legea 207/2015), art. 25 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 25 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Răspunderea persoanelor prevăzute de prezentul articol privește obligațiile fiscale principale și accesorii ale perioadei pentru care au avut calitatea ce a stat la baza atragerii răspunderii solidare."
-— Codul de procedură fiscală (Legea 207/2015), art. 25 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 25 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(1) Răspunderea persoanelor prevăzute la art. 25 se stabilește prin decizie emisă de organul fiscal competent pentru fiecare persoană fizică sau juridică în parte. Decizia este act administrativ fiscal potrivit prezentului cod. (2) înaintea emiterii deciziei prevăzute la alin. (1), organul fiscal efectuează audierea persoanei potrivit art. 9 . Persoana are dreptul să își prezinte în scris punctul de vedere, în termen de 5 zile lucrătoare de la data audierii."
-— Codul de procedură fiscală (Legea 207/2015), art. 26 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 26 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul, pas cu pas:

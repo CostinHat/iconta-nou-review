@@ -15,7 +15,7 @@ Regula de bază pentru un decont de TVA cu sumă negativă și opțiune de rambu
 ::: ghid-temei
 „(1) Taxa pe valoarea adăugată [...] solicitată la rambursare prin deconturile cu sumă negativă de TVA cu opțiune de rambursare, depuse în cadrul termenului legal de depunere, se rambursează de organul fiscal central, cu efectuarea, ulterior, a inspecției fiscale.
 (3) Prevederile alin. (1) nu se aplică deconturilor cu sume negative de TVA cu opțiune de rambursare, depuse de alți contribuabili/plătitori decât cei prevăzuți la alin. (2), care se soluționează după efectuarea inspecției fiscale anticipate, în cazul în care: a) contribuabilul/plătitorul are înscrise în cazierul fiscal fapte care sunt sancționate ca infracțiuni; b) organul fiscal central, pe baza informațiilor deținute, constată că există riscul unei rambursări necuvenite; c) pentru contribuabilul/plătitorul respectiv a fost declanșată procedura de lichidare voluntară sau a fost deschisă procedura de insolvență [...]; d) contribuabilul/plătitorul depune primul decont cu sume negative de TVA cu opțiune de rambursare, după înregistrarea în scopuri de TVA; e) soldul sumei negative de TVA solicitată la rambursare provine dintr-un număr de perioade mai mare decât numărul perioadelor de raportare utilizate într-o perioadă de 12 luni."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 169 alin. (1) și alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 169 alin. (1) și alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două regimuri, în practică:
@@ -32,6 +32,6 @@ Cele două regimuri, în practică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează soldul de TVA de rambursat din deconturile D300 generate (`core/d300.py`), dar **nu evaluează** dacă firma se încadrează în vreuna dintre situațiile de risc de la art. 169 alin. (2)-(3), care ar declanșa inspecția fiscală anticipată. Depunerea opțiunii de rambursare și urmărirea procedurii de soluționare rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu calculează soldul de TVA de rambursat din deconturile D300 generate, dar **nu evaluează** dacă firma se încadrează în vreuna dintre situațiile de risc de la art. 169 alin. (2)-(3), care ar declanșa inspecția fiscală anticipată. Depunerea opțiunii de rambursare și urmărirea procedurii de soluționare rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Pentru mulți angajatori din IT, „noutatea" pe care o caută de fapt este dac�
 ::: ghid-temei
 „2. Abrogat.
 (la 01-01-2025, Punctul 2., Articolul 60, Capitolul I, Titlul IV a fost abrogat de Punctul 7., Articolul LXIV din ORDONANȚA DE URGENȚĂ nr. 156 din 30 decembrie 2024, publicată în MONITORUL OFICIAL nr. 1334 din 31 decembrie 2024)"
-— Codul fiscal (Legea 227/2015), art. 60 pct. 2, formă consolidată (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 60 pct. 2, formă consolidată (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Art. 60 din Codul fiscal enumera categoriile de venituri scutite integral de impozitul pe venit; punctul 2 era temeiul scutirii pentru salariile obținute din activitatea de creare de programe pentru calculator (condiții stabilite anterior prin ordin comun MFP/MMSS/MCID).
@@ -30,6 +30,6 @@ Pentru mulți angajatori din IT, „noutatea" pe care o caută de fapt este dac�
 
 ## Ce face iConta.eu
 
-Această temă face parte din **F060 — Monitorul fiscal**, mecanismul intern (`core/monitor_fiscal.py`) care citește săptămânal noutățile legislative de la ANAF/Ministerul Finanțelor, le filtrează cu ajutorul AI după relevanță (TVA, salarii, plafoane, declarații, dividende) și trimite un rezumat prin email către administratorul platformei. F060 **nu** e un modul orientat spre utilizatorul contabil și nu generează automat articole afișate în aplicație — e un cron intern, fără ecran dedicat. Ghidurile de acest tip, inclusiv cel de față, sunt sinteze editoriale redactate manual, pe bază de text de lege verificat direct la sursă, nu un produs al monitorului însuși. Calculul efectiv al salariului (inclusiv impozitul pe venit reținut la sursă, fără nicio scutire specifică IT) se face în modulul de salarizare al aplicației, conform regulilor generale în vigoare.
+Această temă face parte din **F060 — Monitorul fiscal**, mecanismul intern care citește săptămânal noutățile legislative de la ANAF/Ministerul Finanțelor, le filtrează cu ajutorul AI după relevanță (TVA, salarii, plafoane, declarații, dividende) și trimite un rezumat prin email către administratorul platformei. F060 **nu** e un modul orientat spre utilizatorul contabil și nu generează automat articole afișate în aplicație — e un cron intern, fără ecran dedicat. Ghidurile de acest tip, inclusiv cel de față, sunt sinteze editoriale redactate manual, pe bază de text de lege verificat direct la sursă, nu un produs al monitorului însuși. Calculul efectiv al salariului (inclusiv impozitul pe venit reținut la sursă, fără nicio scutire specifică IT) se face în modulul de salarizare al aplicației, conform regulilor generale în vigoare.
 
 [iConta.eu](/)

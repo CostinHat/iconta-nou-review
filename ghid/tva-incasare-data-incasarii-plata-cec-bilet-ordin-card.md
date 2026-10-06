@@ -20,12 +20,12 @@ Data la care primești biletul la ordin nu este data încasării. Dacă îl ții
 
 ::: ghid-temei
 „(10) În cazul încasărilor prin bancă de tipul transfer-credit, data încasării contravalorii totale/parțiale a livrării de bunuri/prestării de servicii de către persoana care aplică sistemul TVA la încasare este data înscrisă în extrasul de cont sau în alt document asimilat acestuia. (11) În cazul în care încasarea se efectuează prin instrumente de plată de tip transfer-debit, respectiv cec, cambie și bilet la ordin, data încasării contravalorii totale/parțiale a livrării de bunuri/prestării de servicii de către persoana care aplică sistemul TVA la încasare este: a) data înscrisă în extrasul de cont sau în alt document asimilat acestuia, în situația în care furnizorul/prestatorul care aplică sistemul TVA la încasare nu girează instrumentul de plată, ci îl încasează/scontează. În cazul scontării instrumentului de plată, se consideră că persoana respectivă a încasat contravaloarea integrală a instrumentului de plată; [...] b) data girului, în situația în care furnizorul/prestatorul care aplică sistemul TVA la încasare girează instrumentul de plată altei persoane. În acest scop se păstrează o copie de pe instrumentul de plată care a fost girat, în care se află mențiunea cu privire la persoana către care a fost girat instrumentul de plată. [...] (12) Data încasării în situația în care plata s-a efectuat prin carduri de debit sau de credit de către cumpărător este data înscrisă în extrasul de cont ori în alt document asimilat acestuia."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 26 alin. (10)-(12) (norme art. 282 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 26 alin. (10)-(12) (norme art. 282 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens, denumite în continuare persoane care aplică sistemul TVA la încasare."
-— Codul fiscal (Legea 227/2015), art. 282 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -15,7 +15,7 @@ Pentru bunurile importate din afara Uniunii Europene, cumpărate online de perso
 ::: ghid-temei
 „Regimul special pentru vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe
 (1) În sensul prezentului articol vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe acoperă numai bunurile, cu excepția produselor care fac obiectul accizelor, în loturi cu o valoare intrinsecă de maximum 150 euro."
-— Legea nr. 227/2015 (Codul fiscal), art. 315^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regimul special descris la art. 315^2 (cunoscut și ca IOSS — Import One Stop Shop) se aplică exclusiv bunurilor, altele decât cele accizabile, importate din afara UE în **loturi cu o valoare intrinsecă de maximum 150 euro**. Un operator care vinde astfel de bunuri (de exemplu un magazin online care importă produse mici direct la clienți) se poate înregistra în acest regim special și colecta TVA direct la vânzare, simplificând vămuirea și evitând ca fiecare colet să fie oprit separat pentru achitarea taxei la import. Peste pragul de 150 euro pe lot, regimul special nu se mai aplică, iar importul urmează procedura vamală obișnuită, cu plata TVA la import.

@@ -16,15 +16,15 @@ Lipsa planului este una dintre cele mai scump sancționate fapte din Legea 319/2
 
 ::: ghid-temei
 „b) sa întocmească un plan de prevenire și protecție compus din măsuri tehnice, sanitare, organizatorice și de alta natura, bazat pe evaluarea riscurilor, pe care să îl aplice corespunzător condițiilor de muncă specifice unității;"
-— Legea 319/2006, art. 13 lit. b) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. b) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(2) Constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei încălcarea dispozițiilor art. 13 lit. b) , c) , p) și r) ."
-— Legea 319/2006, art. 39 alin. (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „(1) Contravenientul poate achita, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, jumătate din minimul amenzii prevăzute de actul normativ, agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— OG 2/2001, art. 28 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce trebuie să conțină și cum se folosește:

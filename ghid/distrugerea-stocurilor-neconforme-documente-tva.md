@@ -14,7 +14,7 @@ Ideea că „distrugerea unui stoc obligă automat la restituirea TVA dedusă la
 
 ::: ghid-temei
 „Nu se ajustează deducerea inițială a taxei în cazul: a) bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă. În cazul bunurilor furate, persoana impozabilă demonstrează furtul bunurilor pe baza actelor doveditoare emise de organele judiciare."
-— Legea 227/2015 (Codul fiscal), art. 304 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică, pentru un stoc de marfă sau materii prime devenite neconforme (expirate, deteriorate, respinse la controlul de calitate):

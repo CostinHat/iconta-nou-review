@@ -14,7 +14,7 @@ La o microîntreprindere, prima linie de verificare a organului fiscal nu ține 
 
 ::: ghid-temei
 „Pentru anul fiscal 2025/2026, limita veniturilor realizate, reprezentând echivalentul în lei a 250.000 euro, respectiv echivalentul în lei a 100.000 euro începând cu 1 ianuarie 2026, se verifică pe baza veniturilor realizate de către persoana juridică română la data de 31 decembrie 2024, respectiv la data de 31 decembrie 2025."
-— Legea nr. 227/2015 (Codul fiscal), art. 54 alin. (3) (dispoziții tranzitorii privind plafonul micro) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 54 alin. (3) (dispoziții tranzitorii privind plafonul micro) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce urmărește practic un control fiscal la o firmă micro:
@@ -31,6 +31,6 @@ Ce urmărește practic un control fiscal la o firmă micro:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește obligațiile declarative datorate pentru regimul fiscal setat de firmă (`core/control_fiscal_api.py`, funcția `obligatii_datorate`), inclusiv D100 trimestrial pentru micro, dar **nu monitorizează automat** depășirea plafonului de venituri și nu alertează contabilul când firma trebuie să treacă la impozitul pe profit. Verificarea continuă a plafonului și a celorlalte condiții de eligibilitate rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu urmărește obligațiile declarative datorate pentru regimul fiscal setat de firmă (funcția `obligatii_datorate`), inclusiv D100 trimestrial pentru micro, dar **nu monitorizează automat** depășirea plafonului de venituri și nu alertează contabilul când firma trebuie să treacă la impozitul pe profit. Verificarea continuă a plafonului și a celorlalte condiții de eligibilitate rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

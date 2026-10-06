@@ -15,7 +15,7 @@ Un cabinet medical individual (formă de exercitare a profesiei reglementate de 
 ```
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. Radierea înregistrării fiscale se poate efectua și din oficiu, de către organul fiscal, ori de câte ori acesta constată îndeplinirea condițiilor de radiere a înregistrării și nu s-a depus declarație de radiere."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 

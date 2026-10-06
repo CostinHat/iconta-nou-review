@@ -14,7 +14,7 @@ Una dintre condițiile cumulative pentru a fi microîntreprindere este să ai ce
 
 ::: ghid-temei
 „(3^1) În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile și situația este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispozițiile art. 52 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), astfel cum a fost modificat de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), astfel cum a fost modificat de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la concediul de maternitate — care este, legal, o cauză de suspendare a contractului individual de muncă — rezultă:

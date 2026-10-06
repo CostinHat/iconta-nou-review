@@ -14,7 +14,7 @@ Nu în sensul clasic de „declarație rectificativă" separată. La D394, corec
 
 ::: ghid-temei
 „persoana impozabilă constată existenţa unor omisiuni/erori [...] trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial."
-— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Câteva precizări importante despre acest mecanism:
@@ -32,8 +32,8 @@ Câteva precizări importante despre acest mecanism:
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`) reconstruiește declarația din tabela unică de facturi a firmei la fiecare generare, pentru perioada cerută — nu păstrează „diferențe" față de o depunere anterioară. Regenerarea, după corectarea sau completarea evidenței (facturi, operațiuni manuale de tip bonuri/borderouri), produce automat o declarație nouă, completă, exact forma cerută de Anexa 2 pct. 3 pentru corecție.
+Generatorul D394 reconstruiește declarația din tabela unică de facturi a firmei la fiecare generare, pentru perioada cerută — nu păstrează „diferențe" față de o depunere anterioară. Regenerarea, după corectarea sau completarea evidenței (facturi, operațiuni manuale de tip bonuri/borderouri), produce automat o declarație nouă, completă, exact forma cerută de Anexa 2 pct. 3 pentru corecție.
 
-Înainte de a considera fișierul gata, aplicația îl rulează prin validatorul oficial ANAF instalat local (`core/duk.py`). **Depunerea rămâne manuală, prin portalul SPV** — iConta.eu nu depune automat la ANAF, nici la prima declarație, nici la o redepunere corectivă.
+Înainte de a considera fișierul gata, aplicația îl rulează prin validatorul oficial ANAF instalat local. **Depunerea rămâne manuală, prin portalul SPV** — iConta.eu nu depune automat la ANAF, nici la prima declarație, nici la o redepunere corectivă.
 
 [iConta.eu](/)

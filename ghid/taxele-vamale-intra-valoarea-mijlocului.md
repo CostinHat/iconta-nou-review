@@ -14,7 +14,7 @@ Când un mijloc fix vine din import, factura furnizorului extern nu e singura su
 
 ::: ghid-temei
 „158. - (1) Costul unei imobilizări necorporale dobândite separat este alcătuit din: a) costul său de achiziție, inclusiv taxele vamale de import și taxele de achiziție nerambursabile, după scăderea reducerilor și rabaturilor comerciale; și b) orice cost direct atribuibil pregătirii activului pentru utilizarea prevăzută."
-— OMFP 1802/2014, Reglementări contabile, pct. 158 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 158 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Deși textul citat vizează explicit imobilizările necorporale, principiul de determinare a costului de achiziție — preț de cumpărare plus taxe vamale de import nerecuperabile, minus reducerile comerciale — e principiul general de evaluare la intrare aplicat de reglementările contabile oricărui activ dobândit prin achiziție, corporal sau necorporal:

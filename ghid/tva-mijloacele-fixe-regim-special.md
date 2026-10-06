@@ -15,7 +15,7 @@ Expresia „regim special de deducere" folosită informal pentru mijloacele fixe
 ::: ghid-temei
 „(1) În sensul prezentului articol: a) bunurile de capital reprezintă toate activele corporale fixe, definite la art. 266 alin. (1) pct. 3 [...]
 (2) Taxa deductibilă aferentă bunurilor de capital [...] se ajustează, în situațiile prevăzute la alin. (4) lit. a)-d): a) pe o perioadă de 5 ani, pentru bunurile de capital achiziționate sau fabricate, altele decât cele prevăzute la lit. b); b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil, precum și pentru transformarea sau modernizarea unui bun imobil, dacă valoarea fiecărei transformări sau modernizări este de cel puțin 20% din valoarea totală a bunului imobil [...] după transformare sau modernizare."
-— Legea nr. 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Ajustarea se declanșează în patru situații, prevăzute la alin. (4): schimbarea destinației de utilizare a bunului (ex. trece de la activitate economică la scop personal, sau de la operațiuni cu drept de deducere la operațiuni fără drept de deducere), modificarea elementelor folosite la calculul taxei deduse (ex. schimbarea pro-ratei), o operațiune ulterioară care redă dreptul de deducere unui bun limitat inițial, sau încetarea existenței bunului (casare, pierdere, furt, livrare).

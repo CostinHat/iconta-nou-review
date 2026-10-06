@@ -14,7 +14,7 @@ Un restaurant sau un local HoReCa organizat ca SRL nu are un regim fiscal separa
 
 ::: ghid-temei
 „Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] f) persoana juridică română care desfășoară activități în domeniul bancar; g) persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital [...]; h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc; i) persoana juridică română care desfășoară activități de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Legea 227/2015, art. 47 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru un restaurant:

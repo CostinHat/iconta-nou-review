@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt` + `core/d101.py`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 :::
 
 Datele pentru D101 sunt citite din profilul firmei și din balanța contabilă, cu separare exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare), plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 (cheltuiala cu impozitul pe profit) pentru calculul rezervei legale.
@@ -23,6 +23,6 @@ Cea mai frecventă cauză de neconcordanță este omiterea add-back-ului pentru 
 
 ## Ce face iConta.eu
 
-La generare, iConta.eu rulează o reconciliere independentă a bazei contabile (`core/d101_reconciliere.py`) și verifică `totalPlata_A` emis (`core/reconciliere_emis.py`), pe lângă avertismentul dedicat contului 691 descris mai sus. Datele sunt citite din profilul firmei și din balanță, cu separarea exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 pentru calculul rezervei legale. Conform surselor verificate, aplicația nu compară însă explicit rezultatul cu soldul contului de bilanț 4411 (impozit pe profit datorat) — verificările acoperă contul de cheltuială (691) și structura balanței, nu soldul de bilanț al obligației față de buget.
+La generare, iConta.eu rulează o reconciliere independentă a bazei contabile și verifică `totalPlata_A` emis, pe lângă avertismentul dedicat contului 691 descris mai sus. Datele sunt citite din profilul firmei și din balanță, cu separarea exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 pentru calculul rezervei legale. Conform surselor verificate, aplicația nu compară însă explicit rezultatul cu soldul contului de bilanț 4411 (impozit pe profit datorat) — verificările acoperă contul de cheltuială (691) și structura balanței, nu soldul de bilanț al obligației față de buget.
 
 [iConta.eu](/)

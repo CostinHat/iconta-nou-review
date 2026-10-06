@@ -16,10 +16,10 @@ Pierderea memoriei sau păstrarea ei în condiții în care nu mai poate fi citi
 
 ::: ghid-temei
 „Operatorii economici care utilizează aparate de marcat electronice fiscale definite la art. 3 alin. (1) și (2) , la umplerea memoriei fiscale, atunci când aceasta trebuie înlocuită ca urmare a defectării, ori când nu mai poate fi folosită de către utilizatori din diverse motive, precum și în cazul în care aceștia își încetează activitatea, sunt obligați să asigure păstrarea și arhivarea memoriilor fiscale pentru o perioadă de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite."
-— OUG 28/1999, art. 4 alin. (9) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (9) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „r) nerespectarea obligației de a păstra și arhiva memoria fiscală, precum și dispozitivul de memorare a jurnalului electronic, în condiții care să permită citirea acestora de către organul fiscal competent;"
-— OUG 28/1999, art. 10 lit. r) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 10 lit. r) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce trebuie știut:
@@ -36,7 +36,7 @@ Ce se întâmplă cu aparatul însuși:
 
 ::: ghid-temei
 „Utilizatorii informează organul fiscal competent în termen de 3 zile lucrătoare de la data la care a intervenit una dintre situațiile prevăzute la pct. 6 subpct. 6.1 sau la pct. 10 subpct. 10.2 lit. b) și c) din anexa nr. 1 la ordin prin completarea „Formularului utilizatorilor de aparate de marcat electronice fiscale“, prevăzut în anexa nr. 3B ."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 **Cum se socotește termenul.** Legea leagă cei 5 ani de „exercițiul financiar în care au fost întocmite" memoriile. O memorie fiscală acumulează însă date pe mai mulți ani. Textul nu spune expres care exercițiu se ia în calcul. Lectura prudentă este exercițiul în care memoria a încetat să fie folosită, adică ultimul an cu înregistrări. Așa se acoperă toate datele din ea.

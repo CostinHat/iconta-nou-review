@@ -16,10 +16,10 @@ Pentru contabilul unei firme în închidere, dreptul salariatului nu e condițio
 
 ::: ghid-temei
 „(10) În cazul în care, potrivit legii, angajatorul își suspendă temporar activitatea sau activitatea acestuia încetează prin divizare ori fuziune, dizolvare, reorganizare, lichidare, reorganizare judiciară, lichidare judiciară, faliment sau prin orice altă modalitate prevăzută de lege, drepturile privind indemnizațiile prevăzute la alin. (1) , care s-au născut anterior ivirii acestor situații, se achită din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale în bugetul asigurărilor sociale de stat de către casele teritoriale de pensii."
-— Legea 346/2002, art. 19 alin. (10) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (10) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(11) Drepturile achitate în condițiile prevăzute la alin. (10) urmează a fi recuperate de către casele teritoriale de pensii de la angajator, după caz, conform legii."
-— Legea 346/2002, art. 19 alin. (11) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (11) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

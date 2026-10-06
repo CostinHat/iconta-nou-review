@@ -14,7 +14,7 @@ O factură recurentă (abonament, chirie, serviciu lunar) nu are un regim specia
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul naţional privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările şi completările ulterioare. Calculul termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71 al Consiliului din 3 iunie 1971 privind stabilirea regulilor care se aplică termenelor, datelor şi expirării termenelor."
-— OUG nr. 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG nr. 89/2025 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG nr. 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG nr. 89/2025 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Pentru facturile emise periodic, din șabloane, termenul funcționează la fel ca pentru orice factură individuală:
@@ -31,6 +31,6 @@ Pentru facturile emise periodic, din șabloane, termenul funcționează la fel c
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul funcțional de facturi recurente (`core/facturi_recurente.py`), care emite automat, printr-un job zilnic (`core/cron.py`), facturile din șabloanele active a căror zi de emitere configurată a fost atinsă și care nu au mai fost emise în luna curentă. Fiecare factură astfel generată intră în fluxul obișnuit de transmitere prin RO e-Factura (`core/efactura_send.py`), fără tratament diferit față de o factură emisă manual — deci termenul legal de 5 zile lucrătoare de la emitere se aplică identic.
+iConta.eu are un modul funcțional de facturi recurente, care emite automat, printr-un job zilnic, facturile din șabloanele active a căror zi de emitere configurată a fost atinsă și care nu au mai fost emise în luna curentă. Fiecare factură astfel generată intră în fluxul obișnuit de transmitere prin RO e-Factura, fără tratament diferit față de o factură emisă manual — deci termenul legal de 5 zile lucrătoare de la emitere se aplică identic.
 
 [iConta.eu](/)

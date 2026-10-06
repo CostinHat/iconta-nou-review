@@ -15,7 +15,7 @@ Radierea din registrul comerțului marchează încetarea existenței juridice a 
 ::: ghid-temei
 „(1) Dizolvarea societății are ca efect deschiderea procedurii lichidării. [...]
 (4) Societatea își păstrează personalitatea juridică pentru operațiunile lichidării, până la terminarea acesteia."
-— Legea 31/1990 privind societățile, art. 233 alin. (1) și (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 233 alin. (1) și (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Personalitatea juridică a societății se păstrează doar pe durata lichidării, exclusiv pentru operațiunile acesteia — nu și după radiere. Odată radiată din registrul comerțului, firma încetează să mai existe ca subiect de drept, deci nu mai poate fi, din punct de vedere legal, nici emitentă, nici destinatară a unei facturi.

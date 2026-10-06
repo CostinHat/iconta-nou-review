@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 "pentru determinarea taxei colectate aferente fiecărei livrări, din marja profitului [...] se calculează suma taxei colectate [...] prin aplicarea procedeului sutei mărite"
-— HG 1/2016 (norme metodologice CF), pct. 86 alin. (4) lit. c), `anaf_surse/hg_1_2016_norme_cod_fiscal.txt` (linia 8919-8920, Titlul VII), dosar de cercetare F098.
+— HG 1/2016 (norme metodologice CF), pct. 86 alin. (4) lit. c), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822) (linia 8919-8920, Titlul VII), dosar de cercetare F098.
 
 "persoana impozabilă revânzătoare va îndeplini următoarele obligații: a) va ține un jurnal special de cumpărări [...]; b) va ține un jurnal special de vânzări [...]; c) va ține un registru care permite să se stabilească, la finele fiecărei perioade fiscale, totalul bazei de impozitare pentru livrările efectuate în respectiva perioadă fiscală, pe fiecare cotă de TVA aplicabilă, și, după caz, taxa colectată"
-— HG 1/2016 (norme metodologice CF), pct. 86 alin. (6) lit. a)-c), `anaf_surse/hg_1_2016_norme_cod_fiscal.txt` (linia 8981-8992, Titlul VII), dosar de cercetare F098.
+— HG 1/2016 (norme metodologice CF), pct. 86 alin. (6) lit. a)-c), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822) (linia 8981-8992, Titlul VII), dosar de cercetare F098.
 :::
 
 Norma leagă explicit taxa colectată de "fiecare livrare" — adică de fiecare bun vândut individual, cu prețul lui de cumpărare și prețul lui de vânzare — nu de o marjă calculată global, la nivel de perioadă, din diferența dintre totalul vânzărilor și totalul achizițiilor. În plus, obligația de a ține jurnal special de cumpărări și de vânzări presupune, structural, o evidență per bun, nu una agregată.
@@ -28,6 +28,6 @@ Cea mai frecventă greșeală e aproximarea unei marje medii pe activitate (de e
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/tva_marja.py`) primește, pentru fiecare vânzare în parte, prețul de vânzare și prețul de cumpărare al bunului respectiv și calculează marja și TVA-ul individual, prin procedeul sutei mărite, cu cota de TVA obligatorie ca parametru (fără valoare implicită). Nota contabilă generată la fiecare vânzare în regim de marjă reflectă separat costul, marja netă și TVA-ul acelei tranzacții — nu există în aplicație o funcție care să agregheze mai multe vânzări într-o marjă medie pentru calculul TVA.
+Motorul de calcul primește, pentru fiecare vânzare în parte, prețul de vânzare și prețul de cumpărare al bunului respectiv și calculează marja și TVA-ul individual, prin procedeul sutei mărite, cu cota de TVA obligatorie ca parametru (fără valoare implicită). Nota contabilă generată la fiecare vânzare în regim de marjă reflectă separat costul, marja netă și TVA-ul acelei tranzacții — nu există în aplicație o funcție care să agregheze mai multe vânzări într-o marjă medie pentru calculul TVA.
 
 [iConta.eu](/)

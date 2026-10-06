@@ -16,7 +16,7 @@ Scutirea de impozit pe profit pentru profitul reinvestit este una dintre puține
 „Articolul 22 Scutirea de impozit a profitului reinvestit
 (1) Profitul investit în echipamente tehnologice, active utilizate în activitatea de producție și procesare, activele reprezentând retehnologizare, calculatoare electronice și echipamente periferice, mașini și aparate de casă, de control și de facturare, în programe informatice, precum și pentru dreptul de utilizare a programelor informatice, produse și/sau achiziționate, inclusiv în baza contractelor de leasing financiar, și puse în funcțiune, folosite în scopul desfășurării activității economice, este scutit de impozit. [...]
 (8) Contribuabilii care beneficiază de prevederile alin. (1) au obligația de a păstra în patrimoniu activele respective cel puțin o perioadă egală cu jumătate din durata de utilizare economică, stabilită potrivit reglementărilor contabile aplicabile, dar nu mai mult de 5 ani. În cazul nerespectării acestei condiții, pentru sumele respective se recalculează impozitul pe profit și se percep creanțe fiscale accesorii potrivit Codului de procedură fiscală, de la data aplicării facilității, potrivit legii."
-— Legea 227/2015 (Codul fiscal), art. 22 alin. (1) și alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 22 alin. (1) și alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul scutirii, așa cum rezultă din textul legal:
@@ -35,6 +35,6 @@ Mecanismul scutirii, așa cum rezultă din textul legal:
 
 ## Ce face iConta.eu
 
-Am verificat în `core/d101.py` și `core/repo_mijloace_fixe.py`: nu am găsit o funcție dedicată care să calculeze automat scutirea de profit reinvestit conform art. 22 sau care să urmărească obligația de păstrare a activelor pe durata legală (jumătate din durata de utilizare, maximum 5 ani) și să alerteze la o eventuală înstrăinare prematură. Calculul scutirii și verificarea condiției de păstrare rămân, la acest moment, în sarcina contabilului.
+Am verificat în aplicație: nu am găsit o funcție dedicată care să calculeze automat scutirea de profit reinvestit conform art. 22 sau care să urmărească obligația de păstrare a activelor pe durata legală (jumătate din durata de utilizare, maximum 5 ani) și să alerteze la o eventuală înstrăinare prematură. Calculul scutirii și verificarea condiției de păstrare rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

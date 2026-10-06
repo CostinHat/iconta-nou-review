@@ -16,13 +16,13 @@ Fără act adițional, obligația nu are de unde să se calculeze. Cele mai mult
 
 ::: ghid-temei
 „(1) Salariații care au beneficiat de un curs sau un stagiu de formare profesională, în condițiile art. 197 alin. (1), nu pot avea inițiativa încetării contractului individual de muncă pentru o perioadă stabilită prin act adițional. [...] (2) Durata obligației salariatului de a presta muncă în favoarea angajatorului care a suportat cheltuielile ocazionate de formarea profesională, precum și orice alte aspecte în legătură cu obligațiile salariatului, ulterioare formării profesionale, se stabilesc prin act adițional la contractul individual de muncă. [...] (3) Nerespectarea de către salariat a dispoziției prevăzute la alin. (1) determină obligarea acestuia la suportarea tuturor cheltuielilor ocazionate de pregătirea sa profesională, proporțional cu perioada nelucrată din perioada stabilită conform actului adițional la contractul individual de muncă. [...] (4) Obligația prevăzută la alin. (3) revine și salariaților care au fost concediați în perioada stabilită prin actul adițional, pentru motive disciplinare"
-— Codul muncii (Legea 53/2003), art. 198 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 198 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) În cazul în care participarea la cursurile sau stagiile de formare profesională este inițiată de angajator, toate cheltuielile ocazionate de această participare sunt suportate de către acesta."
-— Codul muncii (Legea 53/2003), art. 197 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 197 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Nicio reținere din salariu nu poate fi operată, în afara cazurilor și condițiilor prevăzute de lege. [...] (2) Reținerile cu titlu de daune cauzate angajatorului nu pot fi efectuate decât dacă datoria salariatului este scadentă, lichidă și exigibilă și a fost constatată ca atare printr-o hotărâre judecătorească definitivă și irevocabilă."
-— Codul muncii (Legea 53/2003), art. 169 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 169 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Condițiile, pe rând:

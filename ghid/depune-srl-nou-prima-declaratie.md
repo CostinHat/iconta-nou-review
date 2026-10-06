@@ -14,7 +14,7 @@ Prima „declarație fiscală" a unui SRL nou nu e o declarație periodică de t
 
 ::: ghid-temei
 „(6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la: a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică;"
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 82 alin. (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 82 alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Codul de procedură fiscală definește vectorul fiscal drept „totalitatea tipurilor de obligații fiscale pentru care există obligații de declarare cu caracter permanent" (art. 1 pct. 39). Practic:

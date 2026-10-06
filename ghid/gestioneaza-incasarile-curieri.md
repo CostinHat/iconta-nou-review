@@ -15,7 +15,7 @@ Firmele care vând cu livrare prin curier și acceptă plata ramburs (contravalo
 ::: ghid-temei
 „(1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană.
 (2) Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la alin. (1), cu o valoare mai mare de 10.000 lei[.]"
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 4 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 4 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Pentru vânzările către persoane fizice (B2C) — cazul tipic al comerțului online cu ramburs — plafonul zilnic de încasare în numerar este de **10.000 lei de la o singură persoană**, indiferent câte comenzi separate a plasat acel client în aceeași zi: legea interzice explicit fragmentarea unei tranzacții mai mari de 10.000 lei în mai multe încasări pentru a eluda plafonul.

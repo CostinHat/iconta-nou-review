@@ -16,15 +16,15 @@ Diferența față de licența obișnuită contează. Plata pentru un software de
 
 ::: ghid-temei
 „(7) Suma care trebuie plătită pentru folosirea sau dreptul de a folosi ideile sau principiile cu privire la un software, cum ar fi schemele logice, algoritmii sau limbajele de programare, este o redevență."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „orice brevet, invenție, inovație, licență, marcă de comerț sau de fabrică, franciză, proiect, desen, model, plan, schiță, formulă secretă sau procedeu de fabricație ori software;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „plățile pentru achizițiile de software destinate exclusiv operării respectivului software, inclusiv pentru instalarea, implementarea, stocarea, personalizarea sau actualizarea acestuia;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum separi cazurile:

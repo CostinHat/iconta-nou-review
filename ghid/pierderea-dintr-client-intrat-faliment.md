@@ -14,7 +14,7 @@ Da, dar deductibilitatea integrală (100%) nu este automată — ea depinde de u
 
 ::: ghid-temei
 „ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile, în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), [...] sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a falimentului, pe baza hotărârii judecătorești prin care se atestă această situație [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. j) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. j) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, tratamentul fiscal al pierderii depinde strict de dovada procedurii:

@@ -14,7 +14,7 @@ D205 și D100 par legate — ambele pot include impozitul reținut din dividende
 
 ::: ghid-temei
 „ART. 105 Corectarea declarației fiscale (1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Fiecare declarație are propriul temei și propriul mecanism de rectificare:

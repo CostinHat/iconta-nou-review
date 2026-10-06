@@ -18,7 +18,7 @@ D112 — declarația privind obligațiile de plată a contribuțiilor sociale, i
 b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume, precum și orice informații în legătură cu impozitele, taxele, contribuțiile, bunurile și veniturile impozabile, dacă legea prevede declararea acestora; (...)
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: (...)
 d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m)."
-— Legea 207/2015, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Concret, pentru nedepunerea la termen a D112:
@@ -36,6 +36,6 @@ Concret, pentru nedepunerea la termen a D112:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu aplică amenzi** — aplicarea sancțiunilor contravenționale e atributul organului fiscal, nu al aplicației. iConta.eu generează D112 pe baza datelor din statele de plată și urmărește scadențarul oficial ANAF (25 a lunii următoare) prin modulul de conformare fiscală (`core/control_fiscal_api.py`), care semnalează, cu semafor, când o declarație datorată nu a fost încă depusă — un mecanism de prevenire a întârzierii, nu de calcul al amenzii.
+La data acestui ghid, iConta.eu **nu calculează și nu aplică amenzi** — aplicarea sancțiunilor contravenționale e atributul organului fiscal, nu al aplicației. iConta.eu generează D112 pe baza datelor din statele de plată și urmărește scadențarul oficial ANAF (25 a lunii următoare) prin modulul de conformare fiscală, care semnalează, cu semafor, când o declarație datorată nu a fost încă depusă — un mecanism de prevenire a întârzierii, nu de calcul al amenzii.
 
 [iConta.eu](/)

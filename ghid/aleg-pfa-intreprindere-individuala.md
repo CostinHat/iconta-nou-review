@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce se poate spune cu certitudine din perspectivă fiscală, fără a intra pe terenul juridic al OUG 44/2008:

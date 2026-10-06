@@ -16,7 +16,7 @@ Pentru contabil, consecința e directă: un „contract de vânzare” sub semn�
 
 ::: ghid-temei
 „Locuințele și unitățile individuale pot fi înstrăinate și dobândite prin acte juridice între vii, încheiate în formă autentică notarială, sub sancțiunea nulității absolute. Dovada dreptului de proprietate și a celorlalte drepturi reale asupra unei unități de locuit se face numai pe baza actelor de proprietate și a extrasului de carte funciară pentru informare."
-— Legea 114/1996 (Legea locuinței), art. 10^1 (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 10^1 (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 Ce înseamnă concret:

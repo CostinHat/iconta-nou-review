@@ -14,11 +14,11 @@ Un control pe salarizare — fie inspecție fiscală ANAF pe contribuțiile din 
 
 ::: ghid-temei
 „(1) În vederea stabilirii stării de fapt fiscale, contribuabilul/plătitorul are obligația să pună la dispoziție organului fiscal registre, evidențe, documente de afaceri și orice alte înscrisuri. În același scop, organul fiscal are dreptul să solicite înscrisuri și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice."
-— Legea 207/2015, art. 64 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 64 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Plata salariului se dovedește prin semnarea statelor de plată, precum și prin orice alte documente justificative care demonstrează efectuarea plății către salariatul îndreptățit.
 (2) Statele de plată, precum și celelalte documente justificative se păstrează și se arhivează de către angajator în aceleași condiții și termene ca în cazul actelor contabile, conform legii."
-— Legea 53/2003 (Codul muncii), art. 163 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 163 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Din cele două texte rezultă setul minim de documente pe care angajatorul trebuie să-l aibă pregătit:

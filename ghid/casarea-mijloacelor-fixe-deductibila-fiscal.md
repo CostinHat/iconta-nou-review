@@ -14,7 +14,7 @@ Când un mijloc fix e casat, întrebarea corectă nu e "e deductibilă casarea?"
 
 ::: ghid-temei
 „Pentru mijloacele fixe amortizabile, deducerile de amortizare se determină fără a lua în calcul amortizarea contabilă. Câștigurile sau pierderile rezultate din vânzarea ori din scoaterea din funcțiune a acestor mijloace fixe se calculează pe baza valorii fiscale a acestora, diminuată cu amortizarea fiscală, cu excepția celor prevăzute la alin. (14)."
-— Cod fiscal, art. 28 alin. (17) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 28 alin. (17) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică, la scoaterea din funcțiune (casare) a unui mijloc fix:

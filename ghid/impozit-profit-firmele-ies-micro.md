@@ -14,7 +14,7 @@ Ieșirea din regimul de microîntreprindere nu așteaptă întotdeauna finalul a
 
 ::: ghid-temei
 „Reguli de ieșire din sistemul de impunere pe veniturile microîntreprinderilor în cursul anului. (1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe lângă depășirea plafonului de venituri, art. 52 mai prevede și alte evenimente care obligă trecerea la impozit pe profit din cursul anului, fiecare cu propriul moment de declanșare:

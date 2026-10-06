@@ -13,7 +13,7 @@ Această întrebare nu are, la acest moment, un răspuns confirmat printr-un tex
 ## Temeiul legal
 
 ::: ghid-temei
-„Am căutat explicit (grep pe `anaf_surse/` și pe tot codul) termenii radiat/radiere/încetare/dizolvare/lichidare în corelație cu D406/SAF-T — nicio potrivire." — Dosar de cercetare F035, secțiunea Discrepanțe, pct. 4.
+„Am căutat explicit (în actele oficiale și în tot codul) termenii radiat/radiere/încetare/dizolvare/lichidare în corelație cu D406/SAF-T — nicio potrivire." — Dosar de cercetare F035, secțiunea Discrepanțe, pct. 4.
 :::
 
 Ce știm sigur, din sursele legale verificate local (OPANAF 1783/2021 și OPANAF 407/2025):
@@ -30,7 +30,7 @@ Cea mai frecventă greșeală este să se presupună, din analogie cu alte decla
 
 ## Ce face iConta.eu
 
-iConta.eu generează D406 pentru orice perioadă în care firma a fost activă și obligată, indiferent de stadiul ulterior al societății (inclusiv radiată) — generatorul (`core/d406.py`) nu are o regulă specială legată de radiere, pentru că, așa cum am arătat mai sus, o astfel de regulă nu a fost identificată nici în legislația verificată.
+iConta.eu generează D406 pentru orice perioadă în care firma a fost activă și obligată, indiferent de stadiul ulterior al societății (inclusiv radiată) — generatorul nu are o regulă specială legată de radiere, pentru că, așa cum am arătat mai sus, o astfel de regulă nu a fost identificată nici în legislația verificată.
 
 Pentru situația concretă a unei societăți în curs de radiere sau deja radiate, recomandăm verificarea directă cu un consultant fiscal sau cu organul fiscal competent, înainte de a stabili dacă mai este necesară o declarație D406 și pentru ce perioadă — acest ghid nu poate oferi un răspuns definitiv pe un subiect fără temei legal confirmat local.
 

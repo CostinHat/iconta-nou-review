@@ -14,7 +14,7 @@ Când un client nu mai plătește și dreptul de a-l acționa în instanță se 
 
 ::: ghid-temei
 „Contribuabilul are dreptul la deducerea rezervelor și provizioanelor/ajustărilor pentru depreciere, numai în conformitate cu prezentul articol, astfel: [...] c) ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile [...] în limita unui procent de 30% din valoarea acestor ajustări [...], dacă creanțele îndeplinesc cumulativ următoarele condiții: 1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței; 2. nu sunt garantate de altă persoană; 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului; [...] j) ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile, în limita unui procent de 100% din valoarea creanțelor [...], dacă creanțele îndeplinesc cumulativ următoarele condiții: 1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a falimentului [...] sau la o persoană fizică asupra căreia este deschisă procedura de insolvență [...]"
-— Legea 227/2015, art. 26 alin. (1) lit. c) și j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 26 alin. (1) lit. c) și j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Onest față de limitele textului: Codul fiscal **nu menționează prescripția** printre condițiile de deductibilitate a ajustărilor pentru creanțe neîncasate. Condițiile legale sunt altele:

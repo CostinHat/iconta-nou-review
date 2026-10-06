@@ -16,19 +16,19 @@ Dacă asociații nu hotărăsc dizolvarea, societatea are un termen: până la s
 
 ::: ghid-temei
 „(1) Dacă consiliul de administrație, respectiv directoratul, constată că, în urma unor pierderi, stabilite prin situațiile financiare anuale aprobate conform legii, activul net al societății, determinat ca diferență între totalul activelor și totalul datoriilor acesteia, s-a diminuat la mai puțin de jumătate din valoarea capitalului social subscris, va convoca de îndată adunarea generală extraordinară pentru a decide dacă societatea trebuie să fie dizolvată."
-— Legea 31/1990, art. 153^24 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(4) Dacă adunarea generală extraordinară nu hotărăște dizolvarea societății, atunci societatea este obligată ca, cel târziu până la încheierea exercițiului financiar ulterior celui în care au fost constatate pierderile și sub rezerva dispozițiilor art. 10 , să procedeze la reducerea capitalului social cu un cuantum cel puțin egal cu cel al pierderilor care nu au putut fi acoperite din rezerve, dacă în acest interval activul net al societății nu a fost reconstituit până la nivelul unei valori cel puțin egale cu jumătate din capitalul social."
-— Legea 31/1990, art. 153^24 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Nerespectarea de către societate a obligației de reconstituire a activului net până la nivelul unei valori cel puțin egale cu jumătate din capitalul social în termenul prevăzut la alin. (4) constituie contravenție și se sancționează [...] cu amendă de la 10.000 lei la 200.000 lei."
-— Legea 31/1990, art. 153^24 alin. (4^1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Dispozițiile alin. (1)-(4) , (4^1)-(4^3) și (5) se aplică în mod corespunzător și societăților cu răspundere limitată."
-— Legea 31/1990, art. 153^24 alin. (4^4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Prevederile prezentului alineat se aplică începând cu anul 2027, raportat la situațiile financiare anuale aferente exercițiului financiar care începe la data de 1 ianuarie 2025 sau ulterior acestei date."
-— Legea 31/1990, art. 153^24 alin. (4^5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pașii administratorului:

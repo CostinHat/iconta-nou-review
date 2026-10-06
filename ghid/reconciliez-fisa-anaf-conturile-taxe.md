@@ -16,7 +16,7 @@ poarta: v1
 „ART. 153 Evidența creanțelor fiscale
 (1) în scopul exercitării activității de colectare a creanțelor fiscale, organul fiscal organizează, pentru fiecare contribuabil/plătitor, evidența creanțelor fiscale și modul de stingere a acestora. Evidența se organizează pe baza titlurilor de creanță fiscală și a actelor referitoare la stingerea creanțelor fiscale.
 (2) Contribuabilul/Plătitorul are acces la informațiile din evidența creanțelor fiscale, la cererea acestuia, adresată organului fiscal competent."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 153 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 153 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă natura exactă a ceea ce numim, colocvial, „fișa ANAF":

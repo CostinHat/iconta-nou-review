@@ -16,12 +16,12 @@ Diferența față de pensia românească e de mecanism. În România nu există 
 
 ::: ghid-temei
 „Prin excepție de la alin. (2) , veniturile din pensii obținute din străinătate, altele decât pensiile administrate privat, facultative sau ocupaționale similare drepturilor reglementate prin [...] se supun impozitării prin aplicarea cotei de impozit prevăzute la art. 64 alin. (1) asupra venitului brut anual diminuat cu suma lunară neimpozabilă prevăzută la art. 100 alin. (1) și, după caz, contribuția de asigurări sociale de sănătate datorată potrivit prevederilor titlului V - Contribuții sociale obligatorii, calculate la nivelul anului, în limita venitului impozabil anual."
-— Codul fiscal (Legea 227/2015), art. 130 alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 130 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuabilii care obțin venituri din străinătate conform dispozițiilor alin. (1) au obligația să le declare în Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice, până la termenul legal de depunere prevăzut la art. 122 alin. (3) , precum și să efectueze calculul și plata impozitului datorat, în cadrul aceluiași termen, cu luarea în considerare a metodei de evitare a dublei impuneri, prevăzută de convenția de evitare a dublei impuneri."
-— Codul fiscal (Legea 227/2015), art. 130 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 130 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele calculului:

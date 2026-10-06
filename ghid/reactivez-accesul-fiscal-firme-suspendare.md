@@ -14,7 +14,7 @@ Un contribuabil declarat inactiv fiscal — inclusiv din cauza inactivității t
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. a), d) - g) se reactivează dacă sunt îndeplinite, cumulativ, următoarele condiții: a) își îndeplinește toate obligațiile declarative prevăzute de lege; b) nu înregistrează obligații fiscale restante."
-— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Pentru contribuabilul declarat inactiv din cauza inactivității temporare înscrise la registrul comerțului (una din situațiile de la art. 92 alin. (1) lit. d), reactivarea cere, pe lângă cele două condiții de mai sus, ca firma **să nu se mai afle în situația pentru care a fost declarată inactivă**, conform mențiunilor din registrele în care a fost înregistrată (art. 92 alin. (6)) — adică, pentru inactivitatea temporară, mențiunea de reluare a activității trebuie înscrisă efectiv la registrul comerțului.

@@ -28,6 +28,6 @@ Se presupune că simpla cotă 0% de pe rândul facturii înlocuiește mențiunea
 
 ## Ce face iConta.eu
 
-De spus fără ocolișuri: generatorul de XML pentru e-Factura (`core/efactura_send.py`) determină categoria de TVA strict din cota liniei facturii — „S" pentru cotă pozitivă, „Z" pentru cotă zero — și nu produce categoria „E" (exempt), nici un câmp de motiv al scutirii sau cod VATEX. Nu există, în tot codul aplicației, vreo logică sau vreun câmp legat de motivul scutirii. Nu e o opțiune ascunsă sau dezactivabilă — pur și simplu generatorul actual (v1) nu tratează acest caz. Dacă operațiunea ta chiar necesită mențiunea de motiv al scutirii în XML, transmiterea prin iConta.eu nu o acoperă în acest moment.
+De spus fără ocolișuri: generatorul de XML pentru e-Factura determină categoria de TVA strict din cota liniei facturii — „S" pentru cotă pozitivă, „Z" pentru cotă zero — și nu produce categoria „E" (exempt), nici un câmp de motiv al scutirii sau cod VATEX. Nu există, în tot codul aplicației, vreo logică sau vreun câmp legat de motivul scutirii. Nu e o opțiune ascunsă sau dezactivabilă — pur și simplu generatorul actual (v1) nu tratează acest caz. Dacă operațiunea ta chiar necesită mențiunea de motiv al scutirii în XML, transmiterea prin iConta.eu nu o acoperă în acest moment.
 
 [iConta.eu](/)

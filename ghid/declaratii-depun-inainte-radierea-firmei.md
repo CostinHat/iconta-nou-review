@@ -14,13 +14,13 @@ Radierea unei societăți nu se face „pe loc gol" din punct de vedere fiscal: 
 
 ::: ghid-temei
 „Persoanele juridice care se dizolvă cu lichidare, potrivit legii, au obligația să depună declarația anuală de impozit pe profit pentru perioada prevăzută la art. 16 alin. (6) și să plătească impozitul pe profit aferent până la data depunerii situațiilor financiare la organul fiscal competent."
-— Codul fiscal, art. 41 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 41 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele juridice care se dizolvă cu lichidare, potrivit legii, în cursul aceluiași an în care a început lichidarea au obligația să depună declarația de impozit pe veniturile microîntreprinderilor și să plătească impozitul aferent până la data depunerii situațiilor financiare la organul fiscal competent."
-— Codul fiscal, art. 56 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 56 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În termen de 15 zile de la terminarea lichidării, lichidatorii vor depune la registrul comerțului cererea de radiere a societății din registrul comerțului, pe baza raportului final de lichidare și a situațiilor financiare de lichidare prin care se prezintă situația patrimoniului, a creanțelor și repartizarea activelor rămase, după caz, inclusiv, dacă este cazul, dovada îndeplinirii obligației de calculare, reținere și plată a impozitului pe venit din lichidarea societății, prevăzută la art. 97 alin. (5) din Legea nr. 227/2015..."
-— Legea 31/1990, art. 260 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 260 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Declarația de impozit pentru perioada de lichidare** (D101 pentru firmele la impozit pe profit, echivalentul D100 pentru micro) nu are termenul obișnuit (25 iunie, respectiv trimestrial) — termenul special e legat de data depunerii situațiilor financiare de lichidare, nu de un calendar fix.

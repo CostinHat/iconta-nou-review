@@ -14,7 +14,7 @@ Cui nu i s-a întâmplat să scrie o sumă greșită pe o chitanță, sau să o 
 
 ::: ghid-temei
 „În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primește, se eliberează sau se justifică numerarul [...] documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv."
-— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 15 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 15 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Chitanța e un document „pe baza căruia se primește, se eliberează sau se justifică numerarul" — deci intră expres în categoria documentelor **la care nu se admit corecturi** prin tăiere și rescriere (regula generală de la pct. 14 din aceleași norme).

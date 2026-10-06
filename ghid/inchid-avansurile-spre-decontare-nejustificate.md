@@ -14,7 +14,7 @@ Un avans spre decontare (cont 542) acordat unui angajat pentru o deplasare sau o
 
 ::: ghid-temei
 „(1) Nici o reţinere din salariu nu poate fi operata, în afară cazurilor şi condiţiilor prevăzute de lege. (2) Reţinerile cu titlu de daune cauzate angajatorului nu pot fi efectuate decât dacă datoria salariatului este scadentă, lichidă şi exigibilă şi a fost constatată ca atare printr-o hotărâre judecătorească definitivă şi irevocabilă. [...] (4) Reţinerile din salariu cumulate nu pot depăşi în fiecare lună jumătate din salariul net."
-— Legea nr. 53/2003 (Codul muncii), art. 169 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt; în forma în vigoare, reținerile din salariu sunt la art. 169 — art. 164 privește acum salariul minim)
+— Legea nr. 53/2003 (Codul muncii), art. 169 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647); în forma în vigoare, reținerile din salariu sunt la art. 169 — art. 164 privește acum salariul minim)
 :::
 
 Ce rezultă din text pentru un avans nejustificat:

@@ -16,10 +16,10 @@ Pentru firmă, restituirea înseamnă că poate folosi din nou utilajul sau marf
 
 ::: ghid-temei
 „Dacă bunurile supuse executării silite nu au putut fi valorificate prin modalitățile prevăzute la art. 247 , se procedează astfel: a) în cazul bunurilor imobile organul de executare silită menține măsura de indisponibilizare, până la împlinirea termenului de prescripție; în cadrul acestui termen organul de executare silită poate relua oricând procedura de valorificare și poate, după caz, să ia măsura numirii, menținerii ori schimbării administratorului-sechestru; b) în cazul bunurilor mobile, se consideră că acestea nu au valoare de piață și se restituie debitorului; odată cu restituirea bunului mobil organul fiscal ridică și sechestrul; dispozițiile art. 234 alin. (2) sunt aplicabile în mod corespunzător."
-— Codul de procedură fiscală (Legea 207/2015), art. 255 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 255 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Măsurile de executare silită aplicate în condițiile prezentului cod se ridică prin decizie întocmită în cel mult două zile de la data la care a încetat executarea silită, de către organul de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce reiese din text:

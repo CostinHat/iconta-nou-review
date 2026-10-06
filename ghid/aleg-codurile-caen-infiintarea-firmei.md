@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „contravaloarea abonamentelor suportate de angajator pentru angajații proprii, în limita echivalentului în lei a 100 euro anual pentru fiecare persoană, oferite de furnizori ale căror activități sunt încadrate la codurile CAEN 9311, 9312 sau 9313 [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4^1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4^1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal folosește ocazional coduri CAEN ca trimitere punctuală în anumite reguli de deducere, ca mai sus, dar nu conține nicăieri clasificarea completă a codurilor sau un ghid de alegere a lor la înființare. Un alt punct relevant, confirmat de sursele fiscale: Codul fiscal cumulează, la verificarea plafonului de microîntreprindere, veniturile realizate de o persoană juridică română cu cele ale întreprinderilor legate — regulă independentă de codul CAEN declarat (art. 47 alin. (1^1)).

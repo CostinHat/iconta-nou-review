@@ -16,7 +16,7 @@ Accesul la Spațiul Privat Virtual (SPV) e legat direct de identitatea reprezent
 „ART. 15 [...]
 (4) În sensul prezentului ordin, reprezentantul desemnat este persoana fizică, angajat al persoanei juridice sau al entităţii fără personalitate juridică, desemnată de către reprezentantul legal al persoanei juridice sau al entităţii fără personalitate juridică, pentru înregistrarea şi utilizarea SPV.
 (5) Ori de câte ori se schimbă reprezentantul legal sau reprezentantul desemnat, în vederea accesului la SPV, noul reprezentant legal sau reprezentantul desemnat al unei persoane juridice sau al unei entităţi fără personalitate juridică, înregistrată ca utilizator SPV, trebuie să dispună de îndată măsuri privind înregistrarea unei alte persoane, titular al unui certificat calificat, şi radierea înregistrării persoanei schimbate."
-— OMFP 660/2017, art. 15 alin. (4)-(5) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 15 alin. (4)-(5) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Ce trebuie făcut, concret, la schimbarea administratorului:

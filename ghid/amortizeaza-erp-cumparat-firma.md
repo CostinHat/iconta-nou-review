@@ -14,7 +14,7 @@ Un sistem ERP cumpărat sau produs pentru firmă e o imobilizare necorporală (l
 
 ::: ghid-temei
 „Cheltuielile aferente achiziționării de brevete, drepturi de autor, licențe, mărci de comerț sau fabrică, drepturi de explorare a resurselor naturale și alte imobilizări necorporale recunoscute din punct de vedere contabil [...] se recuperează prin intermediul deducerilor de amortizare liniară pe perioada contractului sau pe durata de utilizare, după caz. Cheltuielile aferente achiziționării sau producerii programelor informatice se recuperează prin intermediul deducerilor de amortizare liniară sau degresivă pe o perioadă de 3 ani."
-— Legea nr. 227/2015, art. 28 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 28 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru un ERP:
@@ -32,6 +32,6 @@ Ce rezultă concret pentru un ERP:
 
 ## Ce face iConta.eu
 
-Modulul de amortizare a mijloacelor fixe din iConta.eu (`core/d406_active.py`) recunoaște categoria de activ prin contul de imobilizare asociat și aplică regulile de amortizare corespunzătoare, inclusiv metodele liniară și degresivă. Încadrarea unei achiziții ERP ca „program informatic" (cu durata fixă de 3 ani, conform art. 28 alin. (9)) versus mijloc fix corporal separat pentru hardware rămâne o decizie a contabilului la introducerea activului, pe baza facturii și a naturii reale a achiziției.
+Modulul de amortizare a mijloacelor fixe din iConta.eu recunoaște categoria de activ prin contul de imobilizare asociat și aplică regulile de amortizare corespunzătoare, inclusiv metodele liniară și degresivă. Încadrarea unei achiziții ERP ca „program informatic" (cu durata fixă de 3 ani, conform art. 28 alin. (9)) versus mijloc fix corporal separat pentru hardware rămâne o decizie a contabilului la introducerea activului, pe baza facturii și a naturii reale a achiziției.
 
 [iConta.eu](/)

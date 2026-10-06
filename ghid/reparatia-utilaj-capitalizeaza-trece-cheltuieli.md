@@ -14,7 +14,7 @@ Distincția nu ține de suma cheltuită, ci de **efectul** intervenției asupra 
 
 ::: ghid-temei
 „Investițiile efectuate la mijloacele fixe sub forma cheltuielilor ulterioare trebuie să aibă ca efect îmbunătățirea parametrilor tehnici inițiali ai acestora și sa conducă la obținerea de beneficii economice viitoare. Obținerea de beneficii se poate realiza fie direct prin creșterea veniturilor, fie indirect prin reducerea cheltuielilor de întreținere și funcționare. [...] Cheltuielile care se fac la mijloacele fixe ce au ca scop restabilirea stării inițiale sunt considerate cheltuieli de reparații."
-— HG 2139/2004, Catalog, Secțiunea III pct. 2 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004, Catalog, Secțiunea III pct. 2 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Aplicarea testului la un utilaj:

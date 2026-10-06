@@ -14,7 +14,7 @@ Răspunsul scurt: da, cu o singură excepție. Livrările intracomunitare de bun
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă [...] pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— Legea 227/2015 (Codul fiscal), art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret din text:

@@ -17,7 +17,7 @@ Fișierul SAF-T (Declarația informativă D406) trece printr-o validare în doi 
 4. Declarantul poate genera fişierul SAF-T în format XML cu ajutorul validatorului (program Soft J), pus la dispoziţie de către ANAF. [...] Validatorul Soft J realizează verificările şi validările sintactice ale fişierului în format XML (formă, formatul datelor, conţinut etc.) şi o serie de verificări semantice doar asupra fişierului în format XML. [...]
 10. Transmiterea unei Declaraţii informative D406 se face doar în situaţia în care procesarea a fost realizată cu succes.
 11. Dimensiunea Declaraţiei informative D406 în format PDF cu XML ataşat nu trebuie să depăşească limita maximă specificată în «Ghidul contribuabilului [...]». Dacă Declaraţia informativă D406 are o dimensiune mai mare decât limita maximă, documentul nu va fi acceptat la încărcare [...]"
-— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, pct. 2, 4, 10-11 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, pct. 2, 4, 10-11 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Cele mai frecvente motive pentru care fișierul D406 nu se validează, așa cum rezultă din procedura oficială:

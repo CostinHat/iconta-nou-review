@@ -38,6 +38,6 @@ Termenul e comun pentru declarare și plată — data de 25 e atât data limită
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 din aplicație (`core/d300.py`) calculează TVA de plată/recuperat pentru perioada fiscală selectată, lunară sau trimestrială, conform structurii OPANAF 174/2026, valabilă pentru declararea obligațiilor aferente primei perioade fiscale din 2026. Determinarea perioadei fiscale (lunar/trimestrial) și avertismentele pentru situații atipice (cote neobișnuite, rezultat neașteptat) sunt gestionate direct în modul.
+Decontul de TVA v12 din aplicație calculează TVA de plată/recuperat pentru perioada fiscală selectată, lunară sau trimestrială, conform structurii OPANAF 174/2026, valabilă pentru declararea obligațiilor aferente primei perioade fiscale din 2026. Determinarea perioadei fiscale (lunar/trimestrial) și avertismentele pentru situații atipice (cote neobișnuite, rezultat neașteptat) sunt gestionate direct în modul.
 
 [iConta.eu](/)

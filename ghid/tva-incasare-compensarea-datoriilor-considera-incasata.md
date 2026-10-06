@@ -16,10 +16,10 @@ Contează data exactă a stingerii. Aceea e data de la care TVA trece din 4428 �
 
 ::: ghid-temei
 „În sensul art. 282 alin. (3) din Codul fiscal, prin încasarea contravalorii livrării de bunuri sau a prestării de servicii se înțelege orice modalitate prin care furnizorul/prestatorul obține contrapartida pentru aceste operațiuni de la beneficiarul său ori de la un terț, precum plata în bani, plata în natură, compensarea, cesiunea de creanțe, utilizarea unor instrumente de plată.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 26 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 26 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul compensării datoriilor aferente unor facturi pentru livrări de bunuri/prestări de servicii se consideră că furnizorul/prestatorul a încasat, respectiv beneficiarul a plătit contravaloarea bunurilor/serviciilor, la data la care se sting total sau parțial datoriile, respectiv: a) în cazul compensărilor între persoane juridice, la data compensării [...] b) în cazul compensărilor în care cel puțin una dintre părți nu este persoană juridică, la data semnării unui proces-verbal de compensare care să cuprindă cel puțin următoarele informații: denumirea părților, codul de înregistrare în scopuri de TVA sau, după caz, codul de identificare fiscală, numărul facturii, data emiterii facturii, valoarea facturii, inclusiv taxa pe valoarea adăugată, valoarea compensată, semnătura părților și data semnării procesului-verbal de compensare.”
-— HG 1/2016, pct. 26 alin. (9) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 26 alin. (9) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

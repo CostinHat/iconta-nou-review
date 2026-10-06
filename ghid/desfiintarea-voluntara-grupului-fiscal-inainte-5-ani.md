@@ -16,18 +16,18 @@ Desființarea voluntară e deci scumpă. Pierderile unui membru, care au redus p
 
 ::: ghid-temei
 „În cazul în care în mod voluntar toți membrii grupului fiscal solicită desființarea grupului în cursul unui an fiscal, înainte de expirarea perioadei de 5 ani fiscali, grupul fiscal se desființează începând cu anul fiscal următor. Fiecare membru al grupului calculează impozitul pe profit, în mod individual, pentru perioada în care s-a aplicat sistemul de consolidare prin recalcularea impozitului pe profit pe baza rezultatelor fiscale individuale, cu perceperea de creanțe fiscale accesorii stabilite potrivit Codului de procedură fiscală, după caz, de la data aplicării sistemului și până la începutul anului fiscal în care grupul se desființează."
-— Codul fiscal (Legea 227/2015), art. 42^8 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^8 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În mod corespunzător, și persoana juridică responsabilă recalculează impozitul pe profit datorat de grup cu perceperea de creanțe fiscale accesorii stabilite potrivit Codului de procedură fiscală, după caz, de la data aplicării sistemului și până la începutul anului fiscal în care grupul se desființează și are obligația depunerii declarației fiscale rectificative."
-— Codul fiscal (Legea 227/2015), art. 42^8 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^8 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Codul de procedură fiscală (Legea 207/2015), art. 176 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 176 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii și efectele:

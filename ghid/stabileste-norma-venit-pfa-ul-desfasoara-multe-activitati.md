@@ -14,15 +14,15 @@ Normele se adună. Dacă toate activitățile PFA-ului sunt în nomenclatorul ac
 
 ::: ghid-temei
 „Dacă un contribuabil desfășoară două sau mai multe activități care generează venituri din activități independente, altele decât venituri din profesii liberale, definite la art. 67 alin. (2) , venitul net din aceste activități se stabilește de către contribuabil prin însumarea nivelului normelor de venit corespunzătoare fiecărei activități."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Norma de venit pentru fiecare activitate desfășurată de contribuabil nu poate fi mai mică decât nivelul a 12 salarii de bază minime brute pe țară garantate în plată, în vigoare la data de 1 ianuarie a anului de realizare a venitului."
-— Codul fiscal, art. 69 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(3) În cazul în care un contribuabil desfășoară mai multe activități pentru care venitul net se determină de către contribuabil pe baza normelor de venit, stabilirea venitului net anual se efectuează prin însumarea nivelului normelor de venit corectate potrivit criteriilor specifice."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se aplică:

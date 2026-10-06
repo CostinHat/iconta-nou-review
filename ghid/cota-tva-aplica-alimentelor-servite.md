@@ -32,6 +32,6 @@ Se aplică excepția „zahăr ≥10g/100g" și pentru desertul servit la masă,
 
 ## Ce face iConta.eu
 
-Categoria `restaurant_catering` din `core/cote_tva.py` acoperă alimentele servite ca parte a mesei la cota de 11%, distinct de excepțiile listate în `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, suplimente, alimente cu zahăr pentru livrare de bunuri). Motorul de potrivire cotă folosește contextul denumirii produsului pentru a stabili încadrarea corectă linie cu linie.
+Categoria `restaurant_catering` din aplicație acoperă alimentele servite ca parte a mesei la cota de 11%, distinct de excepțiile listate în `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, suplimente, alimente cu zahăr pentru livrare de bunuri). Motorul de potrivire cotă folosește contextul denumirii produsului pentru a stabili încadrarea corectă linie cu linie.
 
 [iConta.eu](/)

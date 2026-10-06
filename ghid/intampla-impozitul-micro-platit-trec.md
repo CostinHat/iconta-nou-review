@@ -15,7 +15,7 @@ O microîntreprindere care depășește în cursul anului plafonul de venituri d
 ::: ghid-temei
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită. [...]
 (6) Calculul și plata impozitului pe profit de către microîntreprinderile care se încadrează în prevederile alin. (1), (2), (4) și (7) se efectuează luând în considerare veniturile și cheltuielile realizate începând cu trimestrul respectiv."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (1) și (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (1) și (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Trecerea la impozit pe profit **nu e retroactivă**: firma nu recalculează și nu regularizează impozitul micro plătit pentru trimestrele anterioare depășirii plafonului — acele plăți rămân definitive, calculate conform regimului micro aplicabil la momentul respectiv.

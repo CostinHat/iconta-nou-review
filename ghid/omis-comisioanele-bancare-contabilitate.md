@@ -14,7 +14,7 @@ Comisioanele bancare omise dintr-o lună sau dintr-un exercițiu financiar anter
 
 ::: ghid-temei
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. [...] 67. - (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»). (3) Erorile nesemnificative aferente exercițiilor financiare precedente se corectează, de asemenea, pe seama rezultatului reportat. Totuși, potrivit politicilor contabile aprobate, erorile nesemnificative pot fi corectate pe seama contului de profit și pierdere."
-— OMFP 1802/2014, pct. 65 și pct. 67 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 65 și pct. 67 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, pentru comisioanele bancare omise:
@@ -32,6 +32,6 @@ Practic, pentru comisioanele bancare omise:
 
 ## Ce face iConta.eu
 
-iConta.eu importă extrasele bancare și recunoaște automat liniile de comision bancar din descrierea tranzacției (cuvinte-cheie precum „comision", „taxa adm", „speze", „serviciu bancar" — vezi `core/banca.py`), contabilizându-le direct pe contul 627. Acest mecanism reduce riscul de omisiune la importurile viitoare, dar nu corectează retroactiv comisioane deja omise dintr-un extras neimportat sau dintr-un exercițiu deja închis — corecția pentru acele sume rămâne o operațiune manuală a contabilului, conform regulilor de mai sus.
+iConta.eu importă extrasele bancare și recunoaște automat liniile de comision bancar din descrierea tranzacției (cuvinte-cheie precum „comision", „taxa adm", „speze", „serviciu bancar" — vezi aplicația), contabilizându-le direct pe contul 627. Acest mecanism reduce riscul de omisiune la importurile viitoare, dar nu corectează retroactiv comisioane deja omise dintr-un extras neimportat sau dintr-un exercițiu deja închis — corecția pentru acele sume rămâne o operațiune manuală a contabilului, conform regulilor de mai sus.
 
 [iConta.eu](/)

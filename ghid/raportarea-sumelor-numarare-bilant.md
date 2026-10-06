@@ -26,6 +26,6 @@ Legea stabilește obligația de întocmire a bilanțului, dar conținutul tehnic
 
 ## Ce face iConta.eu
 
-Motorul de generare a bilanțului (`core/bilant.py`, funcția `f10_din_balanta`) calculează rândul de disponibilități al F10 ca sumă a soldurilor debitoare de pe conturile **5112, 512, 531, 532, 541, 542** — adică, pe lângă conturile bancare (512), acreditive și avansuri de trezorerie (541/542), sunt incluse explicit conturile de **casă în lei și în valută (531/532)**. Comportamentul e acoperit și de testul automat al aplicației (`test_bilant.py::test_f10_activ_simplu`), care confirmă că un sold pe contul „5311" contribuie la acest rând. Nu există, la acest moment, un rând separat pentru numerar în formularul prescurtat.
+Motorul de generare a bilanțului (funcția `f10_din_balanta`) calculează rândul de disponibilități al F10 ca sumă a soldurilor debitoare de pe conturile **5112, 512, 531, 532, 541, 542** — adică, pe lângă conturile bancare (512), acreditive și avansuri de trezorerie (541/542), sunt incluse explicit conturile de **casă în lei și în valută (531/532)**. Comportamentul e acoperit și de testul automat al aplicației (`test_bilant.py::test_f10_activ_simplu`), care confirmă că un sold pe contul „5311" contribuie la acest rând. Nu există, la acest moment, un rând separat pentru numerar în formularul prescurtat.
 
 [iConta.eu](/)

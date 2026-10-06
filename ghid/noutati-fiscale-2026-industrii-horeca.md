@@ -14,7 +14,7 @@ Modificările fiscale importante ale anului 2026 nu sunt, în cea mai mare parte
 
 ::: ghid-temei
 „o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), modificat de OUG 8/2026 art. 6 pct. 15 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), modificat de OUG 8/2026 art. 6 pct. 15 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Trei praguri generale schimbate de OUG 8/2026, cu impact diferit pe industrii:
@@ -33,6 +33,6 @@ Fiecare industrie resimte aceste praguri diferit doar prin structura veniturilor
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă generală (facturi, jurnale, declarații D100/D101/D300/D390 etc.) și nu are module separate pe industrie (HoReCa, construcții, IT, e-commerce) — cu excepția motorului dedicat de bacșiș pentru restaurante și baruri (`core/bacsis.py`, vezi ghidul „Ce verifică ANAF la un restaurant?"). Cota de impozit micro (1%) e urmărită în cod cu temei citat explicit (art. 51 alin. 1), dar aplicația nu calculează automat, pe baza veniturilor cumulate, momentul în care o firmă depășește plafonul de 100.000 euro și trece la impozit pe profit în cursul anului — regimul fiscal se stabilește manual, în profilul firmei.
+iConta.eu oferă evidența contabilă generală (facturi, jurnale, declarații D100/D101/D300/D390 etc.) și nu are module separate pe industrie (HoReCa, construcții, IT, e-commerce) — cu excepția motorului dedicat de bacșiș pentru restaurante și baruri (vezi ghidul „Ce verifică ANAF la un restaurant?"). Cota de impozit micro (1%) e urmărită în cod cu temei citat explicit (art. 51 alin. 1), dar aplicația nu calculează automat, pe baza veniturilor cumulate, momentul în care o firmă depășește plafonul de 100.000 euro și trece la impozit pe profit în cursul anului — regimul fiscal se stabilește manual, în profilul firmei.
 
 [iConta.eu](/)

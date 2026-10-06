@@ -15,7 +15,7 @@ Taxarea inversă e o regulă despre **cine** calculează și înregistrează TVA
 ::: ghid-temei
 HG 1/2016, norme la CF art. 331, pct. 109 alin. (1): „beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă.”
 
-— confirmat prin dosarul F050, `core/intracomunitar.py`
+— confirmat prin dosarul F050, aplicația
 :::
 
 **Notă de onestitate:** acest ghid nu citează articolul din Codul fiscal care stabilește nivelul exact al cotelor de TVA (standard/reduse) — dosarul de cercetare F050 (operațiuni intracomunitare) nu a extras verbatim acel text, fiind centrat pe mecanismul de taxare inversă, nu pe nivelul cotelor. Cota corectă pentru un bun sau serviciu concret se verifică separat, după regulile generale aplicabile oricărei operațiuni taxabile din România, aceleași reguli aplicându-se indiferent dacă achiziția e internă sau intracomunitară.

@@ -14,7 +14,7 @@ Spre deosebire de secțiunile obișnuite ale fișierului SAF-T (jurnal general, 
 
 ::: ghid-temei
 „9. Informaţiile privind «stocurile de produse» şi «producţie în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. În funcţie de perioada pentru care se solicită furnizarea informaţiilor privind stocurile prin fişierul standard de control fiscal (SAF-T), contribuabilii furnizează una sau mai multe declaraţii informative cuprinzând subsecţiunile din fişierul SAF-T relevante pentru «Stocuri», separate pentru fiecare dintre lunile/trimestrele calendaristice cuprinse în perioada pentru care a fost trimisă solicitarea din partea organelor fiscale centrale. 10. Declaraţiile informative D406 pentru «Stocuri» se depun în termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării."
-— OPANAF nr. 1783/2021, Anexa 4 — Termenele de transmitere a fișierului SAF-T, pct. 9-10 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1783/2021, Anexa 4 — Termenele de transmitere a fișierului SAF-T, pct. 9-10 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Secțiunea Stocuri se transmite **exclusiv pe bază de solicitare**, spre deosebire de restul secțiunilor SAF-T, care au termene fixe (ultima zi calendaristică a lunii următoare perioadei de raportare) sau, pentru secțiunea Active, termenul de depunere a situațiilor financiare.
@@ -31,6 +31,6 @@ Spre deosebire de secțiunile obișnuite ale fișierului SAF-T (jurnal general, 
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu are un **generator dedicat pentru D406 Stocuri** (`core/d406_stocuri.py`), care calculează soldurile de deschidere și închidere pe articol (cantitate și valoare, pe baza mișcărilor de intrare/ieșire) și produce secțiunea `PhysicalStockEntry` a fișierului SAF-T, conform structurii oficiale verificate pe schema XSD a ANAF. Modulul generează fișierul pentru perioada cerută de utilizator; corelarea directă cu solicitarea specifică primită de la ANAF (identificarea automată a perioadei și a termenului-limită comunicate de organul fiscal) rămâne, în prezent, un pas realizat manual de contabil, pe baza informațiilor din solicitarea primită.
+Din verificarea codului sursă, iConta.eu are un **generator dedicat pentru D406 Stocuri**, care calculează soldurile de deschidere și închidere pe articol (cantitate și valoare, pe baza mișcărilor de intrare/ieșire) și produce secțiunea `PhysicalStockEntry` a fișierului SAF-T, conform structurii oficiale verificate pe schema XSD a ANAF. Modulul generează fișierul pentru perioada cerută de utilizator; corelarea directă cu solicitarea specifică primită de la ANAF (identificarea automată a perioadei și a termenului-limită comunicate de organul fiscal) rămâne, în prezent, un pas realizat manual de contabil, pe baza informațiilor din solicitarea primită.
 
 [iConta.eu](/)

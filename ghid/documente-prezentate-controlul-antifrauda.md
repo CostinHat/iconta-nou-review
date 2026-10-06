@@ -19,7 +19,7 @@ Controlul antifraudă e o procedură distinctă, reglementată separat de Codul 
 ART. 137 Reguli privind controlul antifraudă
 (2) La începerea controlului antifraudă, organele de control antifraudă fiscală sunt obligate să se legitimeze în condițiile legii.
 (4) Pe durata controlului antifraudă, contribuabilul/plătitorul are următoarele drepturi: a) de a solicita legitimarea organelor de control antifraudă fiscală care efectuează acțiunea de control antifraudă; b) de a beneficia de asistență de specialitate; c) de a fi informat pe parcursul desfășurării controlului antifraudă asupra constatărilor efectuate; d) ca activitatea sa să fie cât mai puțin afectată pe timpul desfășurării controlului antifraudă; e) de a primi dovada scrisă în cazul reținerii unor documente ca urmare a activității de control antifraudă."
-— Legea 207/2015, art. 136 alin. (1)-(2) și art. 137 alin. (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 136 alin. (1)-(2) și art. 137 alin. (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru un control antifraudă:

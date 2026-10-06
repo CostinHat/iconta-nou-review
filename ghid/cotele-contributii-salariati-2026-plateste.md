@@ -14,7 +14,7 @@ Calculul unui salariu presupune trei contribuții sociale diferite, cu cote dife
 
 ::: ghid-temei
 „Cotele de contribuții de asigurări sociale sunt următoarele: a) 25% datorată de către persoanele fizice care au calitatea de angajați sau pentru care există obligația plății contribuției de asigurări sociale, potrivit prezentei legi [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 138 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 138 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei contribuții aplicabile unui raport de muncă standard, cu debitorul fiecăreia:

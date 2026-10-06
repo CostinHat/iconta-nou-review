@@ -14,7 +14,7 @@ SAF-T nu este o declarație separată pentru comerțul online — este oglinda c
 
 ::: ghid-temei
 „Fișierul standard de control fiscal (SAF-T), prevăzut la art. 59^1 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările și completările ulterioare, reprezintă un standard internațional utilizat pentru transferul electronic de date din evidența contabilă și fiscală, de la contribuabili/plătitori către autoritățile fiscale și auditori."
-— OPANAF nr. 1783/2021, anexa 1, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt), cu referire la Legea nr. 207/2015, art. 59^1 alin. (1)
+— OPANAF nr. 1783/2021, anexa 1, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326)), cu referire la Legea nr. 207/2015, art. 59^1 alin. (1)
 :::
 
 Ce înseamnă asta pentru un magazin online:
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru un magazin online:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează declarația D406 (SAF-T) din registrele contabile ale firmei, inclusiv facturile importate din comerțul electronic (de exemplu, sincronizarea comenzilor WooCommerce, `core/woocommerce.py`), validate structural față de schema oficială ANAF. Aplicația **nu are** o secțiune dedicată operațiunilor OSS în cadrul SAF-T — vânzările online apar ca facturi obișnuite, iar corelarea lor cu sumele raportate separat prin D398/D399 rămâne o verificare manuală a contabilului, aplicația netratând automat legătura dintre cele două raportări.
+La data acestui ghid, iConta.eu generează declarația D406 (SAF-T) din registrele contabile ale firmei, inclusiv facturile importate din comerțul electronic (de exemplu, sincronizarea comenzilor WooCommerce, aplicația), validate structural față de schema oficială ANAF. Aplicația **nu are** o secțiune dedicată operațiunilor OSS în cadrul SAF-T — vânzările online apar ca facturi obișnuite, iar corelarea lor cu sumele raportate separat prin D398/D399 rămâne o verificare manuală a contabilului, aplicația netratând automat legătura dintre cele două raportări.
 
 [iConta.eu](/)

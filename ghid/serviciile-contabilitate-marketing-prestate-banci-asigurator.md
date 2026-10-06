@@ -16,16 +16,16 @@ Contează în practică pentru că o firmă de servicii care facturează „făr
 
 ::: ghid-temei
 „Scutirile se aplică numai în funcție de natura serviciilor, și nu de statutul persoanei care le prestează sau căreia îi sunt prestate."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „Serviciile externalizate aferente operațiunilor prevăzute la art. 292 alin. (2) lit. a) din Codul fiscal, precum serviciile de marketing, cercetare, serviciile juridice, serviciile de contabilitate și/sau de audit nu se cuprind în sfera operațiunilor scutite de taxă."
-— HG 1/2016, Titlul VII, pct. 52 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 52 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „În sfera operațiunilor scutite conform art. 292 alin. (2) lit. b) din Codul fiscal nu se cuprind operațiuni precum serviciile de marketing și serviciile administrative, cum ar fi acceptarea cererilor de asigurare, gestionarea modificării contractelor și a primelor de asigurare, încheierea, administrarea și rezilierea polițelor, organizarea și managementul sistemului informatic, furnizarea de informații și întocmirea rapoartelor pentru părțile asigurate, furnizate de alte persoane impozabile către persoanele impozabile care realizează operațiunile scutite de taxă prevăzute la art. 292 alin. (2) lit. b) din Codul fiscal."
-— HG 1/2016, Titlul VII, pct. 53 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 53 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „operațiunile de asigurare și/sau de reasigurare, precum și prestările de servicii în legătură cu operațiunile de asigurare și/sau de reasigurare efectuate de persoanele impozabile care intermediază astfel de operațiuni;"
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

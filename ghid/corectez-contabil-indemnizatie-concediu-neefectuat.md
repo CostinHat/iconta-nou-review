@@ -14,7 +14,7 @@ Compensarea în bani a zilelor de concediu de odihnă neefectuate nu e o opțiun
 
 ::: ghid-temei
 „Compensarea în bani a concediului de odihnă neefectuat este permisă numai în cazul încetării contractului individual de muncă."
-— Legea 53/2003 (Codul muncii), art. 141 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 141 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă asta pentru corectarea unei înregistrări greșite:
@@ -32,6 +32,6 @@ Ce înseamnă asta pentru corectarea unei înregistrări greșite:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are o funcție dedicată pentru compensarea în bani a concediului de odihnă neefectuat — verificat în cod, nu există un calcul separat pentru acest caz, nici o validare care să blocheze introducerea unei asemenea sume în afara unei încetări de contract. Suma se introduce, ca orice alt element salarial, în venitul brut al lunii, iar motorul de calcul al salariului (`core/salarizare.py`) aplică restul reținerilor și generează nota contabilă obișnuită (641/421 etc.). Verificarea condiției legale (încetarea contractului) și corectitudinea calculului zilelor rămân în sarcina contabilului.
+iConta.eu nu are o funcție dedicată pentru compensarea în bani a concediului de odihnă neefectuat — verificat în cod, nu există un calcul separat pentru acest caz, nici o validare care să blocheze introducerea unei asemenea sume în afara unei încetări de contract. Suma se introduce, ca orice alt element salarial, în venitul brut al lunii, iar motorul de calcul al salariului aplică restul reținerilor și generează nota contabilă obișnuită (641/421 etc.). Verificarea condiției legale (încetarea contractului) și corectitudinea calculului zilelor rămân în sarcina contabilului.
 
 [iConta.eu](/)

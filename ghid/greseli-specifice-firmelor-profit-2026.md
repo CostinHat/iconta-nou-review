@@ -14,7 +14,7 @@ Firmele la impozit pe profit au un regim mai complex decât microîntreprinderil
 
 ::: ghid-temei
 „Contribuabilii, alții decât cei prevăzuți la art. 15, care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit, cumulat de la începutul anului fiscal/anului fiscal modificat până la sfârșitul trimestrului/anului de calcul, mai mic decât impozitul minim pe cifra de afaceri stabilit potrivit prevederilor alin. (3), sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri."
-— Legea 227/2015 (Codul fiscal), art. 18^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 18^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cota de impozit pe profit rămâne 16% (art. 17), dar pentru contribuabilii mari legea impune o a doua verificare, impozitul minim pe cifra de afaceri (IMCA), aplicabil când profitul calculat clasic ar da un impozit prea mic față de cifra de afaceri. Cele mai frecvente greșeli din practică:

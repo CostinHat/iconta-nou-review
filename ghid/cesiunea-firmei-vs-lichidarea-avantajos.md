@@ -14,10 +14,10 @@ Sunt două operațiuni fundamental diferite, nu variante interschimbabile ale ac
 
 ::: ghid-temei
 „Cesiunea aportului de capital social este posibilă dacă a fost permisă prin actul constitutiv. Cesiunea nu liberează pe asociatul cedent de ceea ce mai datorează societății din aportul său de capital."
-— Legea 31/1990 (Legea societăților), art. 87 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 87 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Dizolvarea societății are ca efect deschiderea procedurii lichidării."
-— Legea 31/1990 (Legea societăților), art. 233 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 233 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Diferențele structurale care influențează alegerea:

@@ -14,7 +14,7 @@ Un titlu de tip „tot ce se schimbă în 2026" nu are un temei legal unic — 2
 
 ::: ghid-temei
 „Litera g) , Alineatul (5) , Articolul 68 , Capitolul II , Titlul IV a fost modificată de Punctul 26. , Articolul 6 din ORDONANȚA DE URGENȚĂ nr. 8 din 24 februarie 2026, publicată în MONITORUL OFICIAL nr. 147 din 25 februarie 2026 [...]. Potrivit alin. (6) al art. 10 din ORDONANȚA DE URGENȚĂ nr. 8 din 24 februarie 2026 [...], prevederile art. 6 pct. 26 se aplică începând cu veniturile aferente anului 2026."
-— OUG 8/2026, referință consolidată în Codul fiscal, art. 68 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— OUG 8/2026, referință consolidată în Codul fiscal, art. 68 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 O schimbare concretă adusă de acest act, aplicabilă din 2026: plafonul pentru contribuțiile la fonduri de pensii facultative/ocupaționale/produse paneuropene de pensii, deductibile din venitul net al activităților independente, rămâne la echivalentul a 400 euro anual per persoană, dar regulile de verificare a încadrării în plafon pentru anul 2026 au fost precizate distinct (inclusiv tratamentul sumelor plătite în perioada 1 ianuarie–28 februarie 2026, înainte de intrarea în vigoare a noilor prevederi).

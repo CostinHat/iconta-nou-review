@@ -14,7 +14,7 @@ Un contabil care ține evidența mai multor firme nu depune declarațiile „ca 
 
 ::: ghid-temei
 „ART. 18 Împuterniciții (1) în relațiile cu organul fiscal contribuabilul/plătitorul poate fi reprezentat printr-un împuternicit. Conținutul și limitele reprezentării sunt cele cuprinse în împuternicire sau stabilite de lege, după caz. Desemnarea unui împuternicit nu îl împiedică pe contribuabil/plătitor să își îndeplinească personal obligațiile prevăzute de legislația fiscală, chiar dacă nu a procedat la revocarea împuternicirii potrivit alin. (2). (2) împuternicitul este obligat să depună la organul fiscal actul de împuternicire, în original sau în copie legalizată."
-— Legea 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Răspunsul e da, cu o condiție formală: contabilul poate depune D112 (și orice altă declarație) în numele clientului, ca **împuternicit**, dacă:

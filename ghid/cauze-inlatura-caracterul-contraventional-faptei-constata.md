@@ -16,15 +16,15 @@ A doua parte a răspunsului e la fel de importantă: aceste cauze **se constată
 
 ::: ghid-temei
 „Caracterul contravențional al faptei este înlăturat în cazul legitimei apărări, stării de necesitate, constrângerii fizice sau morale, cazului fortuit, iresponsabilității, beției involuntare complete, erorii de fapt, precum și infirmității, dacă are legătura cu fapta săvârșită."
-— OG 2/2001, art. 11 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 11 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Cauzele care înlătură caracterul contravențional al faptei se constată numai de instanța de judecată."
-— OG 2/2001, art. 11 alin. (5) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 11 alin. (5) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „Împotriva procesului-verbal de constatare a contravenției și de aplicare a sancțiunii se poate face plângere în termen de 15 zile de la data înmânării sau comunicării acestuia."
-— OG 2/2001, art. 31 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

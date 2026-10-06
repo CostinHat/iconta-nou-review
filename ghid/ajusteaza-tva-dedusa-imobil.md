@@ -16,7 +16,7 @@ Un imobil nu e un stoc oarecare din perspectiva TVA — legea îl tratează ca �
 „Articolul 305 Ajustarea taxei deductibile în cazul bunurilor de capital
 [...]
 (2) Taxa deductibilă aferentă bunurilor de capital [...] se ajustează [...]: a) pe o perioadă de 5 ani, pentru bunurile de capital achiziționate sau fabricate, altele decât cele prevăzute la lit. b); b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil, precum și pentru transformarea sau modernizarea unui bun imobil, dacă valoarea fiecărei transformări sau modernizări este de cel puțin 20% din valoarea totală a bunului imobil/părții de bun imobil după transformare sau modernizare."
-— Codul fiscal (Legea 227/2015), art. 305 alin. (2) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (2) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:
@@ -35,6 +35,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un modul dedicat de calcul al ajustării TVA pe 5/20 de ani pentru bunuri de capital** (art. 305 din Codul fiscal) — modulul existent pentru ajustarea TVA (`core/perisabilitati.py`) acoperă un caz diferit, ajustarea TVA la perisabilități peste limita legală (art. 304 din Codul fiscal), nu ajustarea multianuală specifică bunurilor de capital. Calculul ajustării pe 20 de ani pentru un imobil rămâne, la data acestui ghid, o operațiune realizată manual de contabil.
+La data acestui ghid, iConta.eu **nu are un modul dedicat de calcul al ajustării TVA pe 5/20 de ani pentru bunuri de capital** (art. 305 din Codul fiscal) — modulul existent pentru ajustarea TVA acoperă un caz diferit, ajustarea TVA la perisabilități peste limita legală (art. 304 din Codul fiscal), nu ajustarea multianuală specifică bunurilor de capital. Calculul ajustării pe 20 de ani pentru un imobil rămâne, la data acestui ghid, o operațiune realizată manual de contabil.
 
 [iConta.eu](/)

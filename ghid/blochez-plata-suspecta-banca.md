@@ -14,7 +14,7 @@ Când un ordin de plată e trimis din greșeală sau ca urmare a unei fraude (de
 
 ::: ghid-temei
 „Articolul 10 (1) Răspunderea pentru organizarea și conducerea contabilității la persoanele prevăzute la art. 1 alin. (1)-(4) revine administratorului, ordonatorului de credite sau altei persoane care are obligația gestionării entității respective."
-— Legea contabilității nr. 82/1991, art. 10 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 10 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă asta în practică:
@@ -31,6 +31,6 @@ Ce înseamnă asta în practică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are nicio conexiune live cu banca** și nu poate iniția, opri sau bloca o plată. Aplicația importă și clasifică automat operațiunile din extrasul de cont (`core/banca.py`, `core/banca_parser.py`), inclusiv recunoașterea automată a comisioanelor bancare, dar acest lucru se întâmplă întotdeauna **după** ce plata a fost deja procesată de bancă. Verificarea unei plăți înainte de a fi trimisă rămâne integral responsabilitatea persoanei care o aprobă.
+La data acestui ghid, iConta.eu **nu are nicio conexiune live cu banca** și nu poate iniția, opri sau bloca o plată. Aplicația importă și clasifică automat operațiunile din extrasul de cont, inclusiv recunoașterea automată a comisioanelor bancare, dar acest lucru se întâmplă întotdeauna **după** ce plata a fost deja procesată de bancă. Verificarea unei plăți înainte de a fi trimisă rămâne integral responsabilitatea persoanei care o aprobă.
 
 [iConta.eu](/)

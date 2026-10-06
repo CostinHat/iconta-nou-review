@@ -15,7 +15,7 @@ Nedepunerea la termen a unei declarații fiscale nu e sancționată cu o sumă f
 ::: ghid-temei
 „(1) Constituie contravenții următoarele fapte, dacă nu au fost săvârșite în astfel de condiții încât să fie considerate, potrivit legii, infracțiuni: a) nedepunerea de către contribuabil/plătitor la termenele prevăzute de lege a declarațiilor de înregistrare fiscală, de radiere a înregistrării fiscale sau de mențiuni; b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume [...]
 (2) [...] d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. a)-b) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. a)-b) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva praguri distincte de amenzi, pentru situații apropiate dar tratate separat de lege:

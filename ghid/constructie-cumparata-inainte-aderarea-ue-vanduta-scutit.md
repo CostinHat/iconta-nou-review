@@ -16,15 +16,15 @@ Firma care a dedus TVA pentru o construcție cumpărată, construită, transform
 
 ::: ghid-temei
 „Persoana impozabilă care a avut dreptul la deducerea integrală sau parțială a taxei aferente unei construcții sau unei părți din aceasta, terenului pe care este situată sau oricărui altui teren care nu este construibil, construite, achiziționate, transformate sau modernizate înainte de data aderării, și care, la sau după data aderării, nu optează pentru taxarea operațiunilor prevăzute la art. 292 alin. (2) lit. f) va ajusta taxa deductibilă aferentă, în condițiile prevăzute la art. 305 , dar perioada de ajustare este limitată la 5 ani."
-— Codul fiscal (Legea 227/2015), art. 332 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 332 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prevederile alin. (8)-(13) nu sunt aplicabile în cazul livrării unei construcții noi sau a unei părți din aceasta, astfel cum este definită la art. 292 alin. (2) lit. f)"
-— Codul fiscal (Legea 227/2015), art. 332 alin. (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 332 alin. (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție, în cazul trecerii persoanei impozabile de la regimul normal de taxare la regimul de scutire pentru întreprinderile mici prevăzut la art. 310 , precum și în cazul livrării bunului de capital în regim de scutire conform art. 292 , ajustarea deducerii se face o singură dată pentru întreaga perioadă de ajustare rămasă, incluzând anul în care apare modificarea destinației de utilizare;"
-— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

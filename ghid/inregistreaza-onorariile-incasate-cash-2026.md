@@ -14,7 +14,7 @@ Un onorariu plătit cash de un client persoană fizică nu poate fi încasat ori
 
 ::: ghid-temei
 „Articolul 4 (1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană. [...] Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la alin. (1), cu o valoare mai mare de 10.000 lei, precum și fragmentarea tranzacțiilor [...] respectiv fragmentarea unei livrări de bunuri sau a unei prestări de servicii, cu valoare mai mare de 10.000 lei."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 4 alin. (1) și (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 4 alin. (1) și (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Practic, pentru un profesionist (avocat, consultant, notar, orice prestator de servicii) care încasează onorarii cash de la clienți persoane fizice:
@@ -31,6 +31,6 @@ Practic, pentru un profesionist (avocat, consultant, notar, orice prestator de s
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de verificare a plafoanelor de casă, în `core/casa.py`: constanta `PLAFON_PF = 10000` reflectă exact plafonul legal pentru încasările de la persoane fizice (art. 4 alin. 1 din Legea 70/2015), iar funcția `verifica_plafon()` compară suma încasărilor cumulate de la aceeași persoană, în aceeași zi, cu acest plafon și semnalează un avertisment (`PLAFON_PF`) atunci când e depășit. Aplicația nu poate detecta însă o fragmentare intenționată pe mai multe zile diferite, concepută explicit pentru a ocoli plafonul — o astfel de practică rămâne o evaluare pe care contabilul trebuie s-o facă, dincolo de verificarea automată zilnică.
+iConta.eu are o funcționalitate reală de verificare a plafoanelor de casă, în aplicație: constanta `PLAFON_PF = 10000` reflectă exact plafonul legal pentru încasările de la persoane fizice (art. 4 alin. 1 din Legea 70/2015), iar funcția `verifica_plafon()` compară suma încasărilor cumulate de la aceeași persoană, în aceeași zi, cu acest plafon și semnalează un avertisment (`PLAFON_PF`) atunci când e depășit. Aplicația nu poate detecta însă o fragmentare intenționată pe mai multe zile diferite, concepută explicit pentru a ocoli plafonul — o astfel de practică rămâne o evaluare pe care contabilul trebuie s-o facă, dincolo de verificarea automată zilnică.
 
 [iConta.eu](/)

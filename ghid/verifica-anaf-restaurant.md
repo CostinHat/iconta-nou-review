@@ -14,7 +14,7 @@ Restaurantele și barurile (CAEN 5610 și 5630) au, pe lângă obligațiile fisc
 
 ::: ghid-temei
 „Prin bacșiș se înțelege orice sumă de bani oferită în mod voluntar de client, în plus față de contravaloarea bunurilor livrate sau a serviciilor prestate de către operatorii economici care desfășoară activități corespunzătoare codurilor CAEN: 5610 - «Restaurante», 5630 - «Baruri și alte activități de servire a băuturilor». [...] Pentru operatorii economici prevăzuți la alin. (1), bacșișul încasat de la clienți se evidențiază pe bonul fiscal, indiferent de modalitatea de încasare a acestuia."
-— OUG 28/1999, art. 2^3 alin. (1) și (2), introdus prin Legea 376/2022 art. I pct. 1 (sursă: anaf_surse/legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt)
+— OUG 28/1999, art. 2^3 alin. (1) și (2), introdus prin Legea 376/2022 art. I pct. 1 (sursă: [Legea nr. 376/2022 pentru modificarea și completarea OUG nr. 28/1999](https://legislatie.just.ro/Public/DetaliiDocument/263133))
 :::
 
 Ce urmărește efectiv inspectorul la un restaurant/bar:
@@ -33,6 +33,6 @@ Ce urmărește efectiv inspectorul la un restaurant/bar:
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor dedicat pentru bacșiș HoReCa (`core/bacsis.py`), care generează notele contabile la încasare (461=462, cu contrapartida 5121/5311 pentru card/numerar) și la distribuire către salariați (reținere impozit 10% în contul 446, plată netă către salariați), conform Legii 376/2022 și art. 115 din Codul fiscal. Aplicația poate importa și Raportul Z direct din fișierul AMEF (format p7b sau XML, conform OPANAF 146/2018), extrăgând totalurile pe cote de TVA și pe metode de plată. Ce nu face: nu generează automat nota de plată cu rubricile de bacșiș pentru client — acel formular ține de configurarea aparatului de marcat, nu de aplicația de contabilitate.
+iConta.eu are un motor dedicat pentru bacșiș HoReCa, care generează notele contabile la încasare (461=462, cu contrapartida 5121/5311 pentru card/numerar) și la distribuire către salariați (reținere impozit 10% în contul 446, plată netă către salariați), conform Legii 376/2022 și art. 115 din Codul fiscal. Aplicația poate importa și Raportul Z direct din fișierul AMEF (format p7b sau XML, conform OPANAF 146/2018), extrăgând totalurile pe cote de TVA și pe metode de plată. Ce nu face: nu generează automat nota de plată cu rubricile de bacșiș pentru client — acel formular ține de configurarea aparatului de marcat, nu de aplicația de contabilitate.
 
 [iConta.eu](/)

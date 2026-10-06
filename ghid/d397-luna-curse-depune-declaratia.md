@@ -16,10 +16,10 @@ Regula contează la începutul și la sfârșitul activității, la suspendări 
 
 ::: ghid-temei
 „3.2. În situația în care nu au fost înregistrate operațiuni în perioada de raportare, se depune declarația completată doar cu câmpurile referitoare la datele de identificare ale operatorului platformei digitale și ale reprezentantului legal/fiscal sau ale împuternicitului, după caz."
-— OPANAF 382/2025, Anexa nr. 2, pct. 3.2 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, pct. 3.2 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 
 „1.2. În cazul în care după depunerea declarației operatorul platformei digitale constată existența unor omisiuni/erori în datele declarate, acesta trebuie să depună o nouă declarație corect completată cu operațiunile care necesită modificarea și/sau operațiunile care nu au fost declarate, declarație care înlocuiește declarația informativă depusă inițial."
-— OPANAF 382/2025, Anexa nr. 2, pct. 1.2 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, pct. 1.2 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 :::
 
 Cum se completează o declarație fără operațiuni:

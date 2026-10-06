@@ -14,7 +14,7 @@ Contabilii obișnuiți cu limita de 50% pentru combustibilul auto tind să aplic
 
 ::: ghid-temei
 „l) 50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul activității economice, cu o masă totală maximă autorizată care să nu depășească 3.500 kg și care să nu aibă mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietatea sau în folosința contribuabilului."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din definiția strictă a limitei de 50%:

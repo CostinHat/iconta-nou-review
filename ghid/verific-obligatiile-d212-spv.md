@@ -14,10 +14,10 @@ Spațiul Privat Virtual nu e doar o cutie poștală electronică — e definit l
 
 ::: ghid-temei
 „SPV constă în punerea la dispoziţia persoanelor fizice, persoanelor juridice şi altor entităţi fără personalitate juridică a unui spaţiu virtual, aflat pe serverele Ministerului Finanţelor Publice/Agenţiei Naţionale de Administrare Fiscală, prin intermediul căruia se efectuează comunicarea electronică a informaţiilor şi înscrisurilor între Ministerul Finanţelor Publice/organul fiscal central şi persoana fizică, persoana juridică sau altă entitate fără personalitate juridică în legătură cu situaţia financiară sau fiscală proprie a acesteia."
-— OMFP 660/2017, art. 1 alin. (6) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 1 alin. (6) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 
 „Accesarea SPV reprezintă opţiune în sensul art. 47 alin. (3) din Legea nr. 207/2015 privind Codul de procedură fiscală [...] În cazul utilizării SPV nu se mai utilizează şi altă modalitate de comunicare a actului administrativ-fiscal."
-— OMFP 660/2017, art. 1 alin. (3)-(4) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 1 alin. (3)-(4) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Ce înseamnă practic pentru verificarea obligațiilor din D212:
@@ -35,6 +35,6 @@ Ce înseamnă practic pentru verificarea obligațiilor din D212:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația produce fișierul declarației conform structurii validate de ANAF, dar nu are integrare cu Spațiul Privat Virtual și nu preia automat situația obligațiilor înregistrate de ANAF. Verificarea obligațiilor rezultate din D212 se face separat, direct în SPV, în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil — aplicația produce fișierul declarației conform structurii validate de ANAF, dar nu are integrare cu Spațiul Privat Virtual și nu preia automat situația obligațiilor înregistrate de ANAF. Verificarea obligațiilor rezultate din D212 se face separat, direct în SPV, în afara aplicației.
 
 [iConta.eu](/)

@@ -19,7 +19,7 @@ b) data de începere a inspecției fiscale;
 c) obligațiile fiscale, alte obligații prevăzute de legislația fiscală și contabilă, precum și perioadele ce urmează a fi supuse inspecției fiscale;
 d) posibilitatea de a solicita amânarea datei de începere a inspecției fiscale;
 e) posibilitatea depunerii sau corectării declarației de impunere aferentă perioadelor și creanțelor fiscale ce vor face obiectul inspecției fiscale, până la data începerii inspecției fiscale."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 122 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 122 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Avizul de inspecție fiscală se comunică în scris, cu **30 de zile înainte pentru marii contribuabili** și cu **15 zile înainte pentru ceilalți contribuabili/plătitori** — interval în care se poate pregăti documentația.

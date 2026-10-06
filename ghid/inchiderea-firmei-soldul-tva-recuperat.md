@@ -14,7 +14,7 @@ O firmă care intră în lichidare voluntară, cu un sold de TVA de recuperat r�
 
 ::: ghid-temei
 „(2) Prevederile alin. (1) nu se aplică deconturilor cu sume negative de TVA cu opțiune de rambursare, depuse de contribuabilii mari și mijlocii, [...] care se soluționează după efectuarea inspecției fiscale anticipate, în cazul în care: [...] c) pentru contribuabilul/plătitorul respectiv a fost declanșată procedura de lichidare voluntară sau a fost deschisă procedura de insolvență, cu excepția celor pentru care s-a confirmat un plan de reorganizare, în condițiile Legii nr. 85/2014 [...]."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 169 alin. (2) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 169 alin. (2) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă asta pentru soldul de TVA de recuperat la închiderea firmei:
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru soldul de TVA de recuperat la închiderea firmei:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată procedurii de lichidare** și nu semnalează automat că un sold de TVA de recuperat va intra sub regimul inspecției fiscale anticipate atunci când firma își schimbă statutul în lichidare. Aplicația calculează și urmărește soldul TVA de recuperat din deconturile D300 generate (`core/d300.py`), dar decizia și procedura de soluționare a acestui sold la închiderea firmei rămân în sarcina contabilului, în colaborare cu organul fiscal.
+La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată procedurii de lichidare** și nu semnalează automat că un sold de TVA de recuperat va intra sub regimul inspecției fiscale anticipate atunci când firma își schimbă statutul în lichidare. Aplicația calculează și urmărește soldul TVA de recuperat din deconturile D300 generate, dar decizia și procedura de soluționare a acestui sold la închiderea firmei rămân în sarcina contabilului, în colaborare cu organul fiscal.
 
 [iConta.eu](/)

@@ -16,17 +16,17 @@ Regularizarea este opțiunea freelancerului și o face el, la organul fiscal. Fi
 
 ::: ghid-temei
 „Persoana fizică rezidentă într-un stat membru al Uniunii Europene sau al Spațiului Economic European, stat cu care România are încheiată o convenție de evitare a dublei impuneri, care obține venituri din activități independente în condițiile prevăzute la alin. (1) , poate opta pentru regularizarea impozitului plătit conform alin. (1) prin declararea și plata impozitului pe venit pentru venitul impozabil aferent acestor venituri, conform regulilor stabilite în titlul IV. Impozitul reținut la sursă potrivit alin. (1) constituie plată anticipată în contul impozitului pe venit și se scade din impozitul pe venit datorat.”
-— Codul fiscal (Legea 227/2015), art. 226 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 226 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „13. Opțiunea de regularizare a impozitului plătit conform art. 224, respectiv a art. 226 alin. (1) din Codul fiscal poate fi realizată de persoana nerezidentă în perioada de prescripție stabilită potrivit Codului de procedură fiscală. La declarația fiscală care se depune în vederea regularizării impozitului plătit conform art. 224, respectiv a art. 226 alin. (1) din Codul fiscal se anexează două certificate de rezidență fiscale în original sau copie legalizată, însoțite de o traducere autorizată în limba română.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VI, pct. 13 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VI, pct. 13 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(1) Dreptul contribuabilului/plătitorului de a cere restituirea creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere dreptul la restituire.”
-— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, pe scurt:

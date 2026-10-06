@@ -61,7 +61,12 @@ from scripts import scan_refuzuri as s
 # Toate opt sunt de FORMĂ (sumă <= 0, tip/categorie necunoscută, cotă nedată); cele normative din taxare_inversa
 # (art.331 alin.1/6/7) poartă temeiul în proză. common 14->15 = `ancoreaza` (eroare de programare: două surse de
 # adevăr / temei-șir). contracte_speciale 5->4 = coborâre STATĂ găsită acum (cod mort scos în lot18, 30.09).
+# 06.10.2026 (lot 06.10, partea 1): `facturi_api.py` INTRAT ÎN DOMENIU, nu refuzuri noi — a primit `TEMEI_SERIE` (CF art.319
+# alin.(20) lit.a), deci „citează legea", iar cele 26 de refuzuri de dinainte trec din umbră aici: 25 din 01.07–04.10 (git blame)
+# și unul din 05.10 (scadența înaintea emiterii — de FORMĂ, notat lângă el). Toate sunt de formă (linie lipsă, dată/lună/an
+# invalide, stare/tip/direcție necunoscută, factură inexistentă); refuzul nou al părții 1 (`SERIE_LIPSA`) poartă temeiul.
 BASELINE = {
+    "core/facturi_api.py": 26,
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,

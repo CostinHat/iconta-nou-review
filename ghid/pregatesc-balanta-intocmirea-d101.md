@@ -13,10 +13,10 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Rezerva legală (P13) este "calculată automat când nu e dată manual [...], din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a)." — dosarul de cercetare F027, pe baza `core/d101.py` liniile 264–275.
+Rezerva legală (P13) este "calculată automat când nu e dată manual [...], din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a)." — dosarul de cercetare F027, pe baza aplicația liniile 264–275.
 :::
 
-Funcția `pull()` din `core/d101.py` (liniile 448–467) citește profilul firmei și balanța, cu o separare clară: conturile din clasele 76 și 66 sunt tratate ca financiar, iar restul conturilor din clasele 7x și 6x ca exploatare. Tot `pull()` aduce și datele necesare rezervei legale: capitalul social (cont 1012), rezerva deja constituită (cont 1061) și cheltuiala cu impozitul pe profit (cont 691).
+Funcția `pull()` din aplicație citește profilul firmei și balanța, cu o separare clară: conturile din clasele 76 și 66 sunt tratate ca financiar, iar restul conturilor din clasele 7x și 6x ca exploatare. Tot `pull()` aduce și datele necesare rezervei legale: capitalul social (cont 1012), rezerva deja constituită (cont 1061) și cheltuiala cu impozitul pe profit (cont 691).
 
 ## Ce se greșește în practică
 

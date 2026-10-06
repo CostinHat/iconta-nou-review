@@ -14,7 +14,7 @@ Spațiul Privat Virtual (SPV) e canalul obligatoriu de comunicare electronică c
 
 ::: ghid-temei
 „(1) Persoanele juridice sau alte entităţi fără personalitate juridică se pot identifica în mediul electronic astfel: a) cu certificatul calificat al persoanei juridice sau al entităţii fără personalitate juridică; b) cu certificatul calificat deţinut de persoana fizică reprezentant legal al persoanei juridice [...]; c) cu certificatul calificat deţinut de reprezentantul desemnat al persoanei juridice [...]; d) cu certificatul calificat deţinut de împuternicitul persoanei juridice [...]. [...] (6) În scopul accesului la SPV, persoanele fizice, persoanele juridice sau alte entităţi fără personalitate juridică pot desemna un împuternicit în condiţiile art. 18 din Codul de procedură fiscală."
-— OMFP 660/2017, art. 15 alin. (1) și (6) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 15 alin. (1) și (6) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Pașii practici pentru o firmă nouă:

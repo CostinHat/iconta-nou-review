@@ -14,7 +14,7 @@ Da, dacă PFA-ul e la sistem real de impunere și mobilierul este efectiv folosi
 
 ::: ghid-temei
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile generale de deductibilitate, din același articol, cer ca o cheltuială (inclusiv mobilierul de birou) să fie efectuată în cadrul activității independente, justificată prin documente, și înregistrată în evidența contabilă a PFA-ului. Pentru încadrarea ei corectă:

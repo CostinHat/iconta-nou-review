@@ -15,11 +15,11 @@ Da — și obligația nu apare doar dacă PFA-ul prestează servicii către clie
 ::: ghid-temei
 „(1) Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...]
 e) achizițiile de servicii prevăzute la art. 278 alin. (2), efectuate de persoane impozabile din România care au obligația plății taxei conform art. 307 alin. (2), pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă, de la persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană."
-— Legea 227/2015 (Codul fiscal), art. 325 alin. (1), partea introductivă și lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 325 alin. (1), partea introductivă și lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...]
 c) persoana impozabilă care își are stabilit sediul activității economice în România și persoana impozabilă care aplică regimul special de scutire prevăzut la art. 310^2, care nu sunt înregistrate și nu au obligația să se înregistreze conform art. 316 [...] dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective."
-— Legea 227/2015, art. 317 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 317 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pentru un PFA neplătitor de TVA în regimul normal (aplică scutirea de la art. 310^2), dar cu cod special de TVA obținut conform art. 317:
@@ -37,6 +37,6 @@ Mecanismul, pentru un PFA neplătitor de TVA în regimul normal (aplică scutire
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **generează declarația D390** (`core/d390.py`), cu cele șase tipuri oficiale de operațiune din OPANAF 705/2020, inclusiv tipul **„S" — achiziții intracomunitare de servicii**, exact categoria relevantă pentru un PFA cu cod special care primește servicii de la un prestator UE. Aplicația clasifică însă automat din facturi doar operațiunile cu bunuri (factură emisă → tip L, factură primită → tip A); operațiunile de tip P/S (prestări/achiziții de servicii) și T/R (triangulație, agricultori) **rămân de clasificare manuală a contabilului**, prin mecanismul intern de reclasificare — aplicația nu detectează singură, din conținutul facturii, că o achiziție reprezintă un serviciu supus taxării inverse conform art. 307 alin. (2).
+La data acestui ghid, iConta.eu **generează declarația D390**, cu cele șase tipuri oficiale de operațiune din OPANAF 705/2020, inclusiv tipul **„S" — achiziții intracomunitare de servicii**, exact categoria relevantă pentru un PFA cu cod special care primește servicii de la un prestator UE. Aplicația clasifică însă automat din facturi doar operațiunile cu bunuri (factură emisă → tip L, factură primită → tip A); operațiunile de tip P/S (prestări/achiziții de servicii) și T/R (triangulație, agricultori) **rămân de clasificare manuală a contabilului**, prin mecanismul intern de reclasificare — aplicația nu detectează singură, din conținutul facturii, că o achiziție reprezintă un serviciu supus taxării inverse conform art. 307 alin. (2).
 
 [iConta.eu](/)

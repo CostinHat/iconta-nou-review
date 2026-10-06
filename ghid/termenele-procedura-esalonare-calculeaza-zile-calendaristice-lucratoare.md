@@ -16,13 +16,13 @@ Diferența nu e de nuanță. Termenele de 30 și de 60 de zile din condițiile d
 
 ::: ghid-temei
 „Termenele stabilite în prezentul capitol, cu excepția celui prevăzut la art. 191 alin. (2) și (3), se calculează pe zile calendaristice începând cu ziua imediat următoare acestor termene și expiră la ora 24,00 a ultimei zile a termenelor."
-— Codul de procedură fiscală (Legea 207/2015), art. 205 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 205 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care termenele prevăzute la alin. (1) sfârșesc într-o zi de sărbătoare legală sau când serviciul este suspendat, acestea se prelungesc până la sfârșitul primei zile de lucru următoare."
-— Codul de procedură fiscală (Legea 207/2015), art. 205 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 205 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Certificatul de atestare fiscală se eliberează în termen de cel mult 5 zile lucrătoare de la înregistrarea cererii."
-— Codul de procedură fiscală (Legea 207/2015), art. 191 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 191 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Care termen cum se numără:

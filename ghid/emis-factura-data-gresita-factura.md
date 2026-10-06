@@ -14,7 +14,7 @@ O factură transmisă deja în sistemul RO e-Factura nu poate fi „ștearsă" s
 
 ::: ghid-temei
 „Orice document sau mesaj care modifică și care se referă în mod specific și fără ambiguități la factura inițială are același regim juridic ca o factură."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o factură cu data greșită:

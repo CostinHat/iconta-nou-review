@@ -16,12 +16,12 @@ Regula ajută când primăria întârzie plata unei sume câștigate în instan�
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 167, creanțele fiscale ale contribuabilului, certe, lichide și exigibile, față de bugetele locale, stabilite prin hotărâri judecătorești definitive, se sting la cererea contribuabilului și prin compensarea acestora cu obligațiile sale restante, curente sau viitoare către bugetul de stat, fără compensare între bugete, indiferent dacă obligațiile și, respectiv, creanțele supuse stingerii sunt administrate sau nu de aceeași autoritate publică."
-— Codul de procedură fiscală (Legea 207/2015), art. 166^1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 166^1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „cu condiția ca respectivele creanțe să fie administrate de aceeași autoritate publică, inclusiv unitățile subordonate acesteia."
-— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, una câte una:

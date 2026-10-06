@@ -14,7 +14,7 @@ Numerarul existent fizic într-o casierie nu poate fi, prin definiție, o cantit
 
 ::: ghid-temei
 Modelul oficial al Registrului de casă (cod 14-4-7A) structurează fiecare zi ca: „Report/Sold ziua precedentă", urmat de coloanele „Încasări" și „Plăți", cu totalul de reportat pe pagina următoare.
-— OMFP 2634/2015, Anexa 3 — modelul Registrului de casă, cod 14-4-7A (sursă: anaf_surse/omfp_2634_2015_anexa3_modele.txt)
+— OMFP 2634/2015, Anexa 3 — modelul Registrului de casă, cod 14-4-7A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 3, modelele documentelor)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din chiar structura registrului rezultă mecanismul erorii:
@@ -32,6 +32,6 @@ Din chiar structura registrului rezultă mecanismul erorii:
 
 ## Ce face iConta.eu
 
-iConta.eu gestionează casieria și avansurile de trezorerie printr-un modul dedicat (`core/casa.py`), cu plafoanele de încasări/plăți în numerar aplicabile (Legea 70/2015) și monografiile contabile din OMFP 1802/2014. La data acestui ghid, aplicația nu are o verificare automată explicită care să blocheze sau să semnaleze special un sold de casă negativ rezultat din operațiuni introduse — identificarea cauzei rămâne un pas de verificare manuală, pe baza reconcilierii dintre operațiunile înregistrate și documentele justificative reale.
+iConta.eu gestionează casieria și avansurile de trezorerie printr-un modul dedicat, cu plafoanele de încasări/plăți în numerar aplicabile (Legea 70/2015) și monografiile contabile din OMFP 1802/2014. La data acestui ghid, aplicația nu are o verificare automată explicită care să blocheze sau să semnaleze special un sold de casă negativ rezultat din operațiuni introduse — identificarea cauzei rămâne un pas de verificare manuală, pe baza reconcilierii dintre operațiunile înregistrate și documentele justificative reale.
 
 [iConta.eu](/)

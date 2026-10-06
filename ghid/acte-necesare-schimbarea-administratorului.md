@@ -14,7 +14,7 @@ Legea societăților reglementează cine decide numirea sau revocarea unui admin
 
 ::: ghid-temei
 „Obligațiile și răspunderea administratorilor sunt reglementate de dispozițiile referitoare la mandat și de cele special prevăzute în această lege. Pentru ca numirea unui administrator, director, respectiv a unui membru al directoratului sau al consiliului de supraveghere să fie valabilă din punct de vedere juridic, persoana numită trebuie să o accepte în mod expres."
-— Legea nr. 31/1990 privind societățile, art. 137^1 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 137^1 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Numirea unui administrator nou devine valabilă doar prin acceptarea expresă a mandatului** de către persoana numită — fără această acceptare, numirea nu produce efecte juridice, indiferent de hotărârea asociaților.

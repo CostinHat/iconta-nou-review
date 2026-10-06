@@ -32,6 +32,6 @@ La înființarea unei firme, administratorul desemnat prin actul constitutiv e l
 
 ## Ce face iConta.eu
 
-Modulul F021 (`core/contracte_speciale.py`) oferă, prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", tipul „Mandat administrator" chiar din prima lună de activitate a firmei — cu calculul CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM, și nota contabilă prin 621. O limitare de reținut de la înființare: generarea D112 din aplicație nu are, la acest moment, o legătură funcțională cu notele de mandat — declararea corectă a administratorului la D112 (categoria „tip asigurat" 6) rămâne un pas separat.
+Modulul F021 oferă, prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", tipul „Mandat administrator" chiar din prima lună de activitate a firmei — cu calculul CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM, și nota contabilă prin 621. O limitare de reținut de la înființare: generarea D112 din aplicație nu are, la acest moment, o legătură funcțională cu notele de mandat — declararea corectă a administratorului la D112 (categoria „tip asigurat" 6) rămâne un pas separat.
 
 [iConta.eu](/)

@@ -30,6 +30,6 @@ Această regulă se aplică indiferent de direcția corecției (micro→profit s
 
 ## Ce face iConta.eu
 
-Regula (cod intern R46, `core/firma_profil_api.py`) interoghează direct tabelul de perioade blocate ale firmei; dacă găsește orice perioadă închisă, salvarea vectorului e refuzată cu mesajul care indică prima lună blocată. Validarea e strictă și pe alte fronturi: schimbarea regimului fiscal la o firmă în partidă simplă (PFA/II) e refuzată explicit (PFA nu are regim micro/profit), la fel ca o valoare de regim în afara „micro"/"profit" la partidă dublă.
+Regula (cod intern R46, aplicația) interoghează direct tabelul de perioade blocate ale firmei; dacă găsește orice perioadă închisă, salvarea vectorului e refuzată cu mesajul care indică prima lună blocată. Validarea e strictă și pe alte fronturi: schimbarea regimului fiscal la o firmă în partidă simplă (PFA/II) e refuzată explicit (PFA nu are regim micro/profit), la fel ca o valoare de regim în afara „micro"/"profit" la partidă dublă.
 
 [iConta.eu](/)

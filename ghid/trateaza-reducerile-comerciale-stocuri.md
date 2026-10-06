@@ -16,7 +16,7 @@ O reducere comercială (rabat, remiză, risturn) nu se tratează întotdeauna la
 „(1) Reducerile comerciale acordate de furnizor și înscrise pe factura de achiziție ajustează în sensul reducerii costul de achiziție al bunurilor. Atunci când achiziția de produse și primirea reducerii comerciale sunt tratate împreună, reducerile comerciale primite ulterior facturării ajustează, de asemenea, costul de achiziție al bunurilor. [...]
 (2) Reducerile comerciale primite ulterior facturării corectează costul stocurilor la care se referă, dacă acestea mai sunt în gestiune. Dacă stocurile pentru care au fost primite reducerile ulterioare nu mai sunt în gestiune, acestea se evidențiază distinct în contabilitate (contul 609 «Reduceri comerciale primite»), pe seama conturilor de terți. [...]
 (7) Reducerile comerciale pot fi, de exemplu: a) rabaturile - se primesc pentru defecte de calitate și se practică asupra prețului de vânzare; b) remizele - se primesc în cazul vânzărilor superioare volumului convenit sau dacă cumpărătorul are un statut preferențial; și c) risturnele - sunt reduceri de preț calculate asupra ansamblului tranzacțiilor efectuate cu același terț, în decursul unei perioade determinate."
-— OMFP 1802/2014, pct. 76 alin. (1), (2) și (7) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 76 alin. (1), (2) și (7) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula de decizie, în ordine:

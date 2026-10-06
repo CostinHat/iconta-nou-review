@@ -16,12 +16,12 @@ Practic, o pensie de urmaș care, luată întreagă, ar depăși pragul neimpoza
 
 ::: ghid-temei
 „Veniturile din pensiile de urmaș se individualizează în funcție de numărul acestora, iar impozitarea se face în raport cu drepturile cuvenite fiecărui urmaș."
-— Codul fiscal (Legea 227/2015), art. 101 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul impozabil lunar din pensii se stabilește prin deducerea din venitul din pensie a sumei neimpozabile lunare de 3.000 lei și, după caz, a contribuției de asigurări sociale de sănătate datorate potrivit prevederilor titlului V - Contribuții sociale obligatorii."
-— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

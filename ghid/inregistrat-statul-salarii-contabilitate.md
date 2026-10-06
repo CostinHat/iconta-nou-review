@@ -28,6 +28,6 @@ Greșeala tipică e depunerea la timp a D112 (pentru a evita penalitățile de d
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` (`core/control_incrucisat.py`) tratează explicit cazul "cont 0, D112 pozitiv, fără notă" ca roșu cu remediu executabil ("Contabilizează statul de plată"), separat de cazul cu notă în ciornă (remediu "Validează nota") și de orice altă divergență (remediu investigație). Comparația citește rulajele contabile doar din notele cu statut validat — o notă în ciornă nu contează ca evidență, exact ca să nu se raporteze fals că statul a fost înregistrat.
+Funcția `compara_d112` tratează explicit cazul "cont 0, D112 pozitiv, fără notă" ca roșu cu remediu executabil ("Contabilizează statul de plată"), separat de cazul cu notă în ciornă (remediu "Validează nota") și de orice altă divergență (remediu investigație). Comparația citește rulajele contabile doar din notele cu statut validat — o notă în ciornă nu contează ca evidență, exact ca să nu se raporteze fals că statul a fost înregistrat.
 
 [iConta.eu](/)

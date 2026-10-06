@@ -24,7 +24,7 @@ Greșeala tipică este să se trateze o divergență semnalată ca fiind „doar
 
 ## Ce face iConta.eu
 
-`verifica_d112` (`core/control_incrucisat.py`) semnalează cu roșu orice diferență care depășește toleranța de rotunjire (0,5 lei per salariat, minim 1 leu) pe oricare din cele patru conturi, și indică cea mai probabilă cauză:
+`verifica_d112` semnalează cu roșu orice diferență care depășește toleranța de rotunjire (0,5 lei per salariat, minim 1 leu) pe oricare din cele patru conturi, și indică cea mai probabilă cauză:
 
 - **Cel mai riscant caz**: contul e la zero, D112 declară o sumă, și nu există nicio notă (nici în ciornă) — statul de plată pur și simplu nu a fost contabilizat, deși a fost declarat la ANAF. Acesta e tipul de diferență cu cel mai mare potențial de a atrage atenția la un control, pentru că arată o sumă declarată fără corespondent în evidența contabilă.
 - Contul e la zero, dar există o notă de salarii în ciornă (nevalidată) — situație mai puțin gravă, dar tot vizibilă: obligația e cunoscută, doar neînregistrată definitiv.

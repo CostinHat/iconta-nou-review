@@ -15,7 +15,7 @@ Contul 473 „Decontări din operațiuni în curs de clarificare" există pentru
 ::: ghid-temei
 „352. — (1) Operațiunile care nu pot fi înregistrate direct în conturile corespunzătoare, pentru care sunt necesare clarificări ulterioare, se înregistrează, provizoriu, în contul 473 «Decontări din operațiuni în curs de clarificare». Sumele înregistrate în acest cont trebuie clarificate de către entitate într‐un termen de cel mult trei luni de la data constatării.
 (2) Entitățile care înregistrează sold la contul 473 «Decontări din operațiuni în curs de clarificare» la sfârșitul exercițiului financiar prezintă în notele explicative informații privind natura operațiunilor în curs de clarificare."
-— OMFP 1802/2014, pct. 352 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 352 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Legea fixează explicit un termen maxim de trei luni de la data constatării pentru clarificarea sumelor înregistrate provizoriu în contul 473 — un sold care „îmbătrânește" peste acest termen este, prin definiție, o neconformitate contabilă.

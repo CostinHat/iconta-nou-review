@@ -14,7 +14,7 @@ Legea contabilității impune obligația de a conduce evidența contabilă perso
 
 ::: ghid-temei
 „Persoanele fizice care desfășoară activități producătoare de venit, definite de Codul fiscal, și ale căror venituri sunt determinate în sistem real au obligația să conducă evidența contabilă pe baza regulilor contabilității în partidă simplă sau, la opțiunea acestora, pe baza regulilor contabilității în partidă dublă, potrivit reglementărilor contabile emise în acest sens, cu excepția situației în care în legislația fiscală se prevede altfel."
-— Legea nr. 82/1991, art. 1 alin. (5) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991, art. 1 alin. (5) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă din text:

@@ -30,6 +30,6 @@ Greșeala tipică e confuzia dintre CAM și CAS/CASS ca natură — CAM e cheltu
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din `core/control_incrucisat.py` compară direct codul 480 cu rulajul creditor al contului 436, cu toleranța standard calculată pe numărul de salariați ai lunii. Verdictul (verde/roșu/gri) și cauza divergenței sunt afișate exact ca la celelalte trei conturi verificate.
+Maparea `COD_CONT_D112` din aplicație compară direct codul 480 cu rulajul creditor al contului 436, cu toleranța standard calculată pe numărul de salariați ai lunii. Verdictul (verde/roșu/gri) și cauza divergenței sunt afișate exact ca la celelalte trei conturi verificate.
 
 [iConta.eu](/)

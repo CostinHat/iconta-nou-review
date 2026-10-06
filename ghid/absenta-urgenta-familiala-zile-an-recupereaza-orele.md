@@ -16,10 +16,10 @@ Spre deosebire de concediul de îngrijitor, aici nu e vorba de zile libere plăt
 
 ::: ghid-temei
 „(1) Salariatul are dreptul de a absenta de la locul de muncă în situații neprevăzute, determinate de o situație de urgență familială cauzată de boală sau de accident, care fac indispensabilă prezența imediată a salariatului, în condițiile informării prealabile a angajatorului și cu recuperarea perioadei absentate până la acoperirea integrală a duratei normale a programului de lucru a salariatului. [...] (2) Absentarea de la locul de muncă prevăzută la alin. (1) nu poate avea o durată mai mare de 10 zile lucrătoare într-un an calendaristic. [...] (3) Angajatorul și salariatul stabilesc de comun acord modalitatea de recuperare a perioadei de absență, precizată la alin. (1), în limita numărului de zile prevăzute la alin. (2)."
-— Codul muncii (Legea 53/2003), art. 152^2 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 152^2 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Pe durata perioadei prevăzute la alin. (1) salariații au dreptul la zile libere plătite, care nu se includ în durata concediului de odihnă anual"
-— Codul muncii (Legea 53/2003), art. 152^1 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 152^1 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Condițiile, pe rând:

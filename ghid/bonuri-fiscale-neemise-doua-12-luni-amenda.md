@@ -16,15 +16,15 @@ Suspendarea poate fi oprită mai devreme, dar cu un cost foarte mare: amenda plu
 
 ::: ghid-temei
 „În situația în care, într-un interval de 12 luni de la ultima sancționare a faptei, operatorul economic săvârșește o nouă contravenție din categoria celor prevăzute la alin. (1) lit. e) pct. (i)-(vi) , pentru care a fost sancționat, se aplică o amendă egală cu dublul amenzii prevăzute la alin. (1) lit. e) pct. (i)-(vi) , după caz, și se dispune confiscarea sumei nejustificate."
-— OUG 28/1999, art. 11 alin. (5) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (5) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „În situația în care, într-un interval de 12 luni, operatorul economic săvârșește cel puțin două contravenții din categoria celor prevăzute la alin. (1) lit. e) pct. (i)-(vi) , pentru care a fost sancționat, se aplică o amendă egală cu triplul amenzii prevăzute la alin. (1) lit. e) pct. (i)-(vi) , după caz, și se dispun confiscarea sumei nejustificate și suspendarea activității operatorului economic la unitatea de vânzare a bunurilor sau de prestare a serviciilor, pentru 15 zile."
-— OUG 28/1999, art. 11 alin. (6) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (6) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 ::: ghid-temei
 „În situația prevăzută la alin. (6) , dacă operatorul economic achită amenda contravențională, precum și o sumă egală cu de cinci ori amenda aplicată și de cinci ori suma nejustificată confiscată, sancțiunea complementară de suspendare a activității încetează de drept la 24 de ore de la prezentarea dovezii achitării la organul constatator."
-— OUG 28/1999, art. 11 alin. (8) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (8) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Cum funcționează în practică:

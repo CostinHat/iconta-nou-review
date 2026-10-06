@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Organele fiscale au obligația de a publica pe pagina de internet proprie lista debitorilor, persoane fizice și persoane juridice, care înregistrează obligații fiscale restante, precum și cuantumul acestor obligații. Valoarea minimă a obligațiilor fiscale restante, administrate de organele fiscale locale, ale contribuabililor care sunt incluși în listă se aprobă prin hotărâre a Guvernului."
-— Legea 207/2015 (Codul de procedură fiscală), art. 162 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 162 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două căi de verificare, potrivit Codului de procedură fiscală:

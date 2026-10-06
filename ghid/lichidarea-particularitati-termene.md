@@ -15,7 +15,7 @@ Lichidarea unei societăți pe acțiuni urmează regulile generale din Legea 31/
 ::: ghid-temei
 „Articolul 264 (1) Numirea lichidatorilor în societățile pe acțiuni și în comandită pe acțiuni se face de adunarea generală, care hotărăște lichidarea, dacă, prin actul constitutiv, nu se prevede altfel. (2) Adunarea generală hotărăște cu majoritatea prevăzută pentru modificarea actului constitutiv. (3) În cazul în care majoritatea nu a fost obținută, numirea se face de tribunal, la cererea oricăruia dintre administratori, respectiv dintre membrii directoratului, sau dintre asociați, cu citarea societății și a celor care au cerut-o.
 Articolul 260 (1) Lichidarea societății trebuie terminată în cel mult un an de la data înregistrării în registrul comerțului a mențiunii de dizolvare. Pentru motive temeinice, la cererea lichidatorului, oficiul registrului comerțului poate prelungi acest termen de maximum trei ori, cu câte un an."
-— Legea 31/1990, art. 264 alin. (1)-(3) și art. 260 alin. (1) (Capitolul III — Lichidarea societăților pe acțiuni și în comandită pe acțiuni) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 264 alin. (1)-(3) și art. 260 alin. (1) (Capitolul III — Lichidarea societăților pe acțiuni și în comandită pe acțiuni) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Particularitățile de procedură pentru o SA, față de regula generală de lichidare:

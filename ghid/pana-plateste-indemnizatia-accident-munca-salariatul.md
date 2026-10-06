@@ -16,14 +16,14 @@ Pentru salarizare, asta stabilește ultima lună în care se calculează indemni
 
 ::: ghid-temei
 „Articolul 38 În situația în care medicul expert al asigurărilor sociale din sistemul public de pensii decide încadrarea într-un grad de invaliditate, indemnizația se va acorda până la sfârșitul lunii următoare celei în care s-a dat avizul de pensionare, fără a se depăși durata maximă de acordare a concediului medical, prevăzută la art. 36 ."
-— Legea 346/2002, art. 38 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 38 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Articolul 35 Durata de acordare a indemnizației pentru incapacitate temporară de muncă este de 183 de zile în intervalul de un an, socotită din prima zi de concediu medical."
-— Legea 346/2002, art. 35 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 35 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(3) Prelungirea concediului medical peste 183 de zile se face pentru cel mult 90 de zile, în funcție de evoluția cazului și de rezultatele acțiunilor de recuperare, conform procedurilor stabilite de CNPP."
-— Legea 346/2002, art. 36 alin. (3) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 36 alin. (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Cum se aplică:

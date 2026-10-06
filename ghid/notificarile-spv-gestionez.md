@@ -14,7 +14,7 @@ Spațiul Privat Virtual comunică prin mesaje pe mai multe tipuri: facturi trimi
 
 ::: ghid-temei
 „Data comunicării facturii electronice către destinatar se consideră data la care factura electronică este disponibilă acestuia pentru descărcare din sistemul național privind factura electronică RO e-Factura. Destinatarul este notificat cu privire la facturile electronice primite [...]."
-— OUG 120/2021, art. 4 alin. (7) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (7) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce înseamnă, concret, pentru gestionarea notificărilor din SPV:

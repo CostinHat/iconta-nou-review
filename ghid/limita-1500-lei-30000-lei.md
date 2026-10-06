@@ -14,7 +14,7 @@ Când vine vorba de deductibilitatea cheltuielilor cu autoturismele la impozitul
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 7 pct. 44 și 45, pentru mijloacele de transport de persoane care au cel mult 9 scaune de pasageri, incluzând și scaunul șoferului, din categoria M1 [...] cheltuielile cu amortizarea sunt deductibile, pentru fiecare, în limita a 1.500 lei/lună. [...] Sunt exceptate situațiile în care mijloacele de transport respective se înscriu în oricare dintre următoarele categorii: a) vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat; b) vehiculele utilizate de agenții de vânzări și de achiziții, precum și pentru test drive și pentru demonstrații; c) vehiculele utilizate pentru transportul de persoane cu plată, inclusiv pentru serviciile de taximetrie; d) vehiculele utilizate pentru prestarea de servicii cu plată, inclusiv pentru închiriere către alte persoane, transmiterea dreptului de folosință, în cadrul contractelor de leasing operațional sau pentru instruire de către școlile de șoferi."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Limita de 1.500 lei/lună nu e singura care privește autoturismele — există și o limită procentuală separată, pentru altă categorie de cheltuieli:

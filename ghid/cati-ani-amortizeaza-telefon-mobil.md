@@ -14,7 +14,7 @@ Dacă un telefon mobil trece pragul valoric de mijloc fix (5.000 lei din 2026), 
 
 ::: ghid-temei
 „2.1.22.6.4. - receptoare telefonie mobilă. 2-4"
-— HG 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Grupa 2, subgrupa 2.1, clasa 2.1.22 „Mașini, utilaje și instalații pentru transporturi și telecomunicații", subclasa 2.1.22.6 „Mașini, aparate și instalații pentru radio, televiziune și telecomunicații prin sateliți, telefonie mobilă" (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Grupa 2, subgrupa 2.1, clasa 2.1.22 „Mașini, utilaje și instalații pentru transporturi și telecomunicații", subclasa 2.1.22.6 „Mașini, aparate și instalații pentru radio, televiziune și telecomunicații prin sateliți, telefonie mobilă" (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Ce rezultă din catalog:
@@ -31,6 +31,6 @@ Ce rezultă din catalog:
 
 ## Ce face iConta.eu
 
-Pentru un mijloc fix înregistrat în aplicație, durata normală de utilizare e un câmp introdus de contabil la fișa activului — aplicația nu are un catalog al claselor de mijloace fixe din HG 2139/2004 încorporat, care să sugereze automat intervalul de ani pe tipul de bun. Odată introdusă durata, motorul de amortizare (`core/d406_active.py`) calculează corect amortizarea pe metoda aleasă (liniară, degresivă sau accelerată, în funcție de categoria de cont a activului), pornind din luna următoare punerii în funcțiune — dar alegerea intervalului de ani, conform catalogului, rămâne responsabilitatea contabilului.
+Pentru un mijloc fix înregistrat în aplicație, durata normală de utilizare e un câmp introdus de contabil la fișa activului — aplicația nu are un catalog al claselor de mijloace fixe din HG 2139/2004 încorporat, care să sugereze automat intervalul de ani pe tipul de bun. Odată introdusă durata, motorul de amortizare calculează corect amortizarea pe metoda aleasă (liniară, degresivă sau accelerată, în funcție de categoria de cont a activului), pornind din luna următoare punerii în funcțiune — dar alegerea intervalului de ani, conform catalogului, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

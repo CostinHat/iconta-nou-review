@@ -14,10 +14,10 @@ Un sold de casă negativ e imposibil în realitate — nu poți plăti mai mulț
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, anexa 2, cod 14-4-7A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2, cod 14-4-7A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „Erorile din perioadele anterioare sunt omisiuni și declarații eronate cuprinse în situațiile financiare ale entității [...] Astfel de erori includ efectele greșelilor matematice, greșelilor de aplicare a politicilor contabile, ignorării sau interpretării greșite a evenimentelor și fraudelor."
-— OMFP 1802/2014, pct. 66 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 66 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pașii de corectare, în ordine:

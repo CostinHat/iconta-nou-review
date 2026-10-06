@@ -15,7 +15,7 @@ Avansurile spre decontare — sumele date angajaților pentru cheltuieli mărunt
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.
 [...] (4) La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea nr. 70/2015, art. 3 alin. (1) lit. e) și alin. (4) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. e) și alin. (4) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce urmărește efectiv un control pe avansurile de trezorerie:
@@ -32,6 +32,6 @@ Ce urmărește efectiv un control pe avansurile de trezorerie:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/casa.py` conține funcția `verifica_plafon`, care calculează soldul zilnic al casei și verifică explicit plafonul avansurilor spre decontare (`plafon_avans_decontare`), pe baza cotei/temeiului legal ținut în registrul intern al aplicației. Depășirile sunt semnalate ca avertismente cu temei citat (nu blochează operațiunea, dar marchează riscul de control), pentru fiecare zi în care apar. Funcția `avans_deconteaza` din același modul gestionează decontarea efectivă a avansurilor acordate angajaților, cu urmărirea sumei rămase nedecontate.
+Verificat în cod: Aplicația conține funcția `verifica_plafon`, care calculează soldul zilnic al casei și verifică explicit plafonul avansurilor spre decontare (`plafon_avans_decontare`), pe baza cotei/temeiului legal ținut în registrul intern al aplicației. Depășirile sunt semnalate ca avertismente cu temei citat (nu blochează operațiunea, dar marchează riscul de control), pentru fiecare zi în care apar. Funcția `avans_deconteaza` din același modul gestionează decontarea efectivă a avansurilor acordate angajaților, cu urmărirea sumei rămase nedecontate.
 
 [iConta.eu](/)

@@ -16,13 +16,13 @@ Ordinea contează pentru că, în acest interval, firma are și obligații curen
 
 ::: ghid-temei
 „în cazul în care în perioada dintre data eliberării certificatului de atestare fiscală și data comunicării deciziei de eșalonare la plată debitorul efectuează plăți în conturile bugetare aferente tipurilor de creanțe fiscale ce fac obiectul eșalonării la plată, se sting mai întâi obligațiile exigibile în această perioadă și apoi obligațiile cuprinse în certificatul de atestare fiscală, în condițiile art. 207 alin. (2) sau (3), după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 189 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 189 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în cazul în care în perioada cuprinsă între data eliberării certificatului de atestare fiscală și data comunicării deciziei de eșalonare la plată s-au stins obligații fiscale prin orice modalitate prevăzută de lege și care sunt cuprinse în suma care face obiectul eșalonării la plată, debitorul achită ratele eșalonate până la concurența sumei rămase de plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (2), în situația în care, până la emiterea deciziei de eșalonare la plată, se constată că s-au stins mai mult de 50% din obligațiile fiscale care fac obiectul eșalonării la plată, la cererea debitorului, organul fiscal competent eliberează un nou certificat de atestare fiscală"
-— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile, pe scurt:

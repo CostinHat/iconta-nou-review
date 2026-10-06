@@ -16,10 +16,10 @@ Lista contează din două motive. O decizie completă se poate verifica rând cu
 
 ::: ghid-temei
 „Decizia de impunere trebuie să cuprindă, pe lângă elementele prevăzute la art. 46 , și tipul creanței fiscale, baza de impozitare, precum și cuantumul acesteia, pentru fiecare perioadă impozabilă."
-— Codul de procedură fiscală (Legea 207/2015), art. 97 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 97 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „a) denumirea organului fiscal emitent; b) data la care a fost emis și data de la care își produce efectele; c) datele de identificare a contribuabilului/plătitorului și, dacă este cazul, datele de identificare a persoanei împuternicite de contribuabil/plătitor; d) obiectul actului administrativ fiscal; e) motivele de fapt; f) temeiul de drept; g) numele și calitatea persoanelor împuternicite ale organului fiscal, potrivit legii; h) semnătura persoanelor împuternicite ale organului fiscal, potrivit legii, precum și ștampila organului fiscal emitent; i) posibilitatea de a fi contestat, termenul de depunere a contestației și organul fiscal la care se depune contestația; j) mențiuni privind audierea contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 46 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 46 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Lista de verificare la primirea deciziei:

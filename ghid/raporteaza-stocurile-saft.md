@@ -14,7 +14,7 @@ Spre deosebire de restul fișierului SAF-T, secțiunea de Stocuri din D406 nu se
 
 ::: ghid-temei
 „Informațiile privind «stocurile de produse» și «producție în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. În funcție de perioada pentru care se solicită furnizarea informațiilor privind stocurile prin fișierul standard de control fiscal (SAF-T), contribuabilii furnizează una sau mai multe declarații informative cuprinzând subsecțiunile din fișierul SAF-T relevante pentru «Stocuri», separate pentru fiecare dintre lunile/trimestrele calendaristice cuprinse în perioada pentru care a fost trimisă solicitarea din partea organelor fiscale centrale. Declarațiile informative D406 pentru «Stocuri» se depun în termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării."
-— OPANAF nr. 1.783/2021, Anexa 5, pct. 9-10 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5, pct. 9-10 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă concret:
@@ -32,6 +32,6 @@ Ce rezultă concret:
 
 ## Ce face iConta.eu
 
-Generatorul de SAF-T din iConta.eu (`core/d406_stocuri.py`) construiește secțiunea PhysicalStock pe baza mișcărilor de stoc înregistrate pentru fiecare articol, calculând soldurile de deschidere și închidere pentru perioada cerută. Aplicația generează fișierul la cererea contabilului, pentru perioada indicată de acesta — declanșarea propriu-zisă a raportării rămâne legată de solicitarea primită de la ANAF, pe care contabilul o introduce manual ca reper de perioadă.
+Generatorul de SAF-T din iConta.eu construiește secțiunea PhysicalStock pe baza mișcărilor de stoc înregistrate pentru fiecare articol, calculând soldurile de deschidere și închidere pentru perioada cerută. Aplicația generează fișierul la cererea contabilului, pentru perioada indicată de acesta — declanșarea propriu-zisă a raportării rămâne legată de solicitarea primită de la ANAF, pe care contabilul o introduce manual ca reper de perioadă.
 
 [iConta.eu](/)

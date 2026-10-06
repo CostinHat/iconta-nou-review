@@ -14,7 +14,7 @@ Ieșirea din regimul micro nu așteaptă închiderea anului fiscal — legea o d
 
 ::: ghid-temei
 „(1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită. [...] (5) Limitele fiscale prevăzute la alin. (1) se verifică pe baza veniturilor înregistrate cumulat de la începutul anului fiscal. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar precedent."
-— Legea nr. 227/2015 (Codul fiscal), art. 52 alin. (1) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 52 alin. (1) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru raportare:
@@ -32,6 +32,6 @@ Ce înseamnă asta pentru raportare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește regimul fiscal setat în profilul firmei (`core/vector_fiscal_api.py`) și generează declarațiile corespunzătoare regimului activ, dar **nu monitorizează automat** cumulul veniturilor firmei față de pragul de 100.000 euro și nu alertează contabilul la momentul depășirii. Verificarea plafonului și schimbarea regimului fiscal, cu trecerea corectă la calculul impozitului pe profit din trimestrul relevant, rămân operațiuni pe care contabilul le identifică și le introduce manual în aplicație.
+La data acestui ghid, iConta.eu urmărește regimul fiscal setat în profilul firmei și generează declarațiile corespunzătoare regimului activ, dar **nu monitorizează automat** cumulul veniturilor firmei față de pragul de 100.000 euro și nu alertează contabilul la momentul depășirii. Verificarea plafonului și schimbarea regimului fiscal, cu trecerea corectă la calculul impozitului pe profit din trimestrul relevant, rămân operațiuni pe care contabilul le identifică și le introduce manual în aplicație.
 
 [iConta.eu](/)

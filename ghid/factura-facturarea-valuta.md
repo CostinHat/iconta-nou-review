@@ -30,6 +30,6 @@ Cursul BNR folosit efectiv la emiterea facturii (conform art. 290 CF) rămâne o
 
 ## Ce face iConta.eu
 
-Generatorul XML pentru RO e-Factura (`core/efactura_send.py`) scrie codul monedei facturii și toate sumele în acea monedă, conform standardului UBL 2.1/CIUS-RO — dar nu scrie cursul BNR folosit și nici un total de TVA convertit în lei în fișierul transmis prin SPV, deși câmpul de curs există pe factură la nivel intern. Cursul rămâne vizibil pe PDF-ul facturii (sursă, valoare, dată) și e folosit intern pentru celelalte declarații (D300, D390, D394, D406), dar nu ajunge în XML-ul e-Factura. La primirea unei facturi în valută prin e-Factura, aplicația citește codul monedei documentului, nu extrage însă vreo informație de curs de schimb din fișierul primit — cursul se atribuie ulterior, prin fluxul normal de introducere a facturii.
+Generatorul XML pentru RO e-Factura scrie codul monedei facturii și toate sumele în acea monedă, conform standardului UBL 2.1/CIUS-RO — dar nu scrie cursul BNR folosit și nici un total de TVA convertit în lei în fișierul transmis prin SPV, deși câmpul de curs există pe factură la nivel intern. Cursul rămâne vizibil pe PDF-ul facturii (sursă, valoare, dată) și e folosit intern pentru celelalte declarații (D300, D390, D394, D406), dar nu ajunge în XML-ul e-Factura. La primirea unei facturi în valută prin e-Factura, aplicația citește codul monedei documentului, nu extrage însă vreo informație de curs de schimb din fișierul primit — cursul se atribuie ulterior, prin fluxul normal de introducere a facturii.
 
 [iConta.eu](/)

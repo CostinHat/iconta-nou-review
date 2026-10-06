@@ -14,7 +14,7 @@ Legea nu reglementează tehnic „migrarea" datelor SAF-T între două programe 
 
 ::: ghid-temei
 „6. În situația în care contribuabilul constată anumite erori în declarația depusă inițial, acesta poate depune declarații rectificative."
-— Ordinul președintelui A.N.A.F. nr. 1.783/2021, Instrucțiuni de completare D406, pct. 6 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— Ordinul președintelui A.N.A.F. nr. 1.783/2021, Instrucțiuni de completare D406, pct. 6 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Nu am găsit un temei specific pentru procedura tehnică de migrare a datelor SAF-T între programe — principiul de mai sus e cel mai apropiat aplicabil, aplicat prin extensie la situația unei schimbări de software:

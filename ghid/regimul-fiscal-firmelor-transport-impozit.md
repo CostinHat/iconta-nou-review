@@ -14,10 +14,10 @@ O firmă de transport (marfă sau persoane) nu are un regim distinct la impozitu
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015, art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Următorii contribuabili au obligația de a declara și plăti impozitul pe profit, astfel: a) persoanele juridice române prevăzute la art. 15 [...], anual [...]; b) contribuabilii care obțin venituri majoritare din cultura cerealelor, a plantelor tehnice și a cartofului, pomicultură și viticultură [...], anual [...]; c) contribuabilii prevăzuți la art. 13 alin. (1) lit. d) [...], trimestrial [...]."
-— Legea 227/2015, art. 41 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lista limitativă a categoriilor cu regim special de declarare a impozitului pe profit (art. 41 alin. 5) cuprinde doar: persoanele juridice fără scop patrimonial (art. 15), firmele cu venituri majoritare din agricultură (cereale, plante tehnice, cartof, pomicultură, viticultură) și instituțiile de credit (art. 41 alin. 4, sistem anual). **Transportul nu apare în nicio listă de excepție** — o firmă de transport rutier, feroviar, naval sau aerian urmează regimul general: cota de 16% pe profitul impozabil real (venituri minus cheltuieli deductibile), cu declarare și plată trimestrială (sau, la opțiune, anuală cu plăți anticipate, dacă îndeplinește condițiile generale de la art. 41 alin. 2-3), exact ca orice altă firmă din economie.

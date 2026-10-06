@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] f) persoana juridică română care desfășoară activități în domeniul bancar; g) persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital, precum și persoana juridică română care desfășoară activități de intermediere/distribuție în aceste domenii [...]; h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc; i) persoana juridică română care desfășoară activități de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, această listă pentru alegerea regimului:

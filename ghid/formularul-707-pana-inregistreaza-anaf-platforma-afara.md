@@ -16,10 +16,10 @@ Obligația privește operatorii care nu au rezidență fiscală, nu sunt constit
 
 ::: ghid-temei
 „se depune exclusiv prin mijloace electronice de transmitere la distanță, potrivit legii, după cum urmează: a) cererea de înregistrare și de renunțare până la data de 15 decembrie inclusiv a anului pentru care se face raportarea sau a anului în care s-a decis renunțarea; ... b) cererea de mențiuni, în termen de 30 de zile de la data la care au intervenit orice modificări ale informațiilor declarate anterior."
-— OPANAF 1946/2023, Anexa nr. 3, instrucțiuni de completare și utilizare (sursă: anaf_surse/ordin_1946_2023.html)
+— OPANAF 1946/2023, Anexa nr. 3, instrucțiuni de completare și utilizare (sursă: [OPANAF nr. 1946/2023 privind aplicarea art. 291^5 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/277014))
 
 „(10) Operatorul de platformă care are obligația de raportare, în sensul lit. b) de la pct. 4, subsecțiunea A, secțiunea I din anexa nr. 5, trebuie să se înregistreze la autoritatea competentă din România sau din oricare alt stat membru în vederea respectării procedurilor de diligență fiscală și de raportare prevăzute în secțiunile II și III din anexa nr. 5."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii și regulile:

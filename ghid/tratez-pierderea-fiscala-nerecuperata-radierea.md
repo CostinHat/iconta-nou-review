@@ -15,7 +15,7 @@ Pierderea fiscală se recuperează pe o perioadă limitată, din profiturile imp
 ::: ghid-temei
 „(1) Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, începând cu anul 2024/anul fiscal modificat care începe în anul 2024, după caz, se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi. Recuperarea pierderilor se va efectua în ordinea înregistrării acestora, la fiecare termen de plată a impozitului pe profit. [...]
 (6) În cazul contribuabililor care se dizolvă cu lichidare, perioada cuprinsă între prima zi a anului următor celui în care a început operațiunea de lichidare și data închiderii procedurii de lichidare se consideră un an în ceea ce privește recuperarea pierderii fiscale, potrivit alin. (1)."
-— Legea 227/2015 (Codul fiscal), art. 31 alin. (1) și (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 31 alin. (1) și (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, concret, pentru o firmă aflată în lichidare cu pierdere fiscală neconsumată:

@@ -14,7 +14,7 @@ Da, dar de regulă doar în limita de 50% — aceeași regulă de deductibilitat
 
 ::: ghid-temei
 „50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul desfășurării activității și a căror masă totală maximă autorizată nu depășește 3.500 kg și nu au mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietate sau în folosință. [...] Cheltuielile care intră sub incidența acestor prevederi nu includ cheltuielile privind amortizarea."
-— Legea nr. 227/2015, art. 68 alin. (7) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 68 alin. (7) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru un PFA:

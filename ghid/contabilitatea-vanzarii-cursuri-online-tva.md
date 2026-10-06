@@ -14,12 +14,12 @@ Un curs online (înregistrat, cu acces automat, fără intervenție umană semni
 
 ::: ghid-temei
 „serviciile furnizate pe cale electronică includ, în special, serviciile prevăzute în anexa II la Directiva 112 și la art. 7 alin. (1) din Regulamentul de punere în aplicare (UE) nr. 282/2011 al Consiliului [...]. În cazul în care prestatorul unui serviciu și clientul său comunică prin intermediul poștei electronice, acest lucru nu înseamnă, în sine, că serviciul furnizat este un serviciu furnizat pe cale electronică"
-— Cod fiscal (Legea 227/2015), art. 266 alin. (1) pct. 28 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 266 alin. (1) pct. 28 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prevederile art. 275 alin. (2) si art. 278 alin. (5) lit. h) nu se aplică dacă sunt îndeplinite cumulativ următoarele condiții: a) furnizorul sau prestatorul este stabilit [...] într-un singur stat membru; [...] c) valoarea totală, fără TVA, a operațiunilor [...] nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent."
-— Cod fiscal, art. 278^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 278^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste texte rezultă mecanismul aplicabil unui curs online vândut către persoane fizice (B2C) din alte state membre UE:

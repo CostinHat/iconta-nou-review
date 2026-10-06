@@ -14,7 +14,7 @@ Cesiunea părților sociale la un SRL nu funcționează la fel indiferent de cin
 
 ::: ghid-temei
 „(1) Părțile sociale pot fi transmise între asociați. (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social."
-— Legea 31/1990 (a societăților), art. 202 alin. (1) și (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (a societăților), art. 202 alin. (1) și (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Regulile practice care rezultă din acest articol:

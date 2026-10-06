@@ -16,14 +16,14 @@ Pentru angajator, asigurarea înseamnă o contribuție de plătit. Resursele ace
 
 ::: ghid-temei
 „Articolul 5 (1) Sunt asigurate obligatoriu prin efectul prezentei legi: a) persoanele care desfășoară activități pe baza unui contract individual de muncă, a unui raport de serviciu, contract de mandat și contract de management;"
-— Legea 346/2002, art. 5 alin. (1) lit. a) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 5 alin. (1) lit. a) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „d) ucenicii, elevii și studenții, pe toată durata efectuării practicii profesionale. ... e) pensionarii sistemului public de pensii aflați în invaliditate ca urmare a unui accident de muncă sau boală profesională."
-— Legea 346/2002, art. 5 alin. (1) lit. d)–e) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 5 alin. (1) lit. d)–e) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(2) Prevederile prezentei legi nu se aplică personalului militar în activitate, polițiștilor, funcționarilor publici cu statut special, precum și personalului care își desfășoară activitatea în instituțiile din sectorul de apărare, ordine publică, securitate națională, precum și celor din cadrul Ministerului Justiției - Administrația Națională a Penitenciarelor."
-— Legea 346/2002, art. 5 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 5 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Lista completă a asiguraților obligatorii din art. 5 alin. (1):

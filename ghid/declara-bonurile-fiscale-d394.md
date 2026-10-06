@@ -14,7 +14,7 @@ Da, dar nu ca operațiune obișnuită: bonurile fiscale intră în D394 doar dac
 
 ::: ghid-temei
 „De asemenea, în declarație se înscrie valoarea totală a facturilor simplificate şi a bonurilor fiscale care îndeplinesc condiţiile unei facturi simplificate conform prevederilor art. 319 alin. (12), (13) şi (21) din Codul fiscal, dacă au înscris codul de înregistrare în scopuri de TVA al beneficiarului."
-— OPANAF 2194/2025, Anexa 2 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Structura oficială a declarației, confirmată și de codul validatorului instalat, tratează separat mai multe situații:
@@ -34,7 +34,7 @@ Un bon fiscal obișnuit, care nu îndeplinește condițiile unei facturi simplif
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`) include în structura declarației toate câmpurile pentru facturi simplificate și bonuri fiscale (FSLcod, FSL, FSA, FSAI, BFAI) — validatorul oficial le cere prezente chiar și pe 0, așa că aplicația le populează întotdeauna. La data acestui ghid însă, **iConta.eu nu are încă funcționalitate de facturi simplificate sau conectare la case de marcat (AMEF)**: aceste câmpuri se transmit mereu cu valoarea 0, indiferent câte bonuri fiscale a emis sau primit firma în perioadă (comentariu explicit în cod: „iConta nu are inca facturi simplificate si AMEF -> raman 0 pana se construiesc").
+Generatorul D394 include în structura declarației toate câmpurile pentru facturi simplificate și bonuri fiscale (FSLcod, FSL, FSA, FSAI, BFAI) — validatorul oficial le cere prezente chiar și pe 0, așa că aplicația le populează întotdeauna. La data acestui ghid însă, **iConta.eu nu are încă funcționalitate de facturi simplificate sau conectare la case de marcat (AMEF)**: aceste câmpuri se transmit mereu cu valoarea 0, indiferent câte bonuri fiscale a emis sau primit firma în perioadă (comentariu explicit în cod: „iConta nu are inca facturi simplificate si AMEF -> raman 0 pana se construiesc").
 
 Practic, dacă firma ta emite sau primește bonuri fiscale care îndeplinesc condițiile unei facturi simplificate, valoarea lor totală nu ajunge azi automat în D394 prin iConta.eu — trebuie calculată și urmărită separat, până la extinderea aplicației pe acest flux.
 

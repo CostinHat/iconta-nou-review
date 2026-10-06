@@ -14,7 +14,7 @@ O factură de la Google Cloud (de regulă emisă de o entitate Google din alt st
 
 ::: ghid-temei
 „Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României sau nu este considerată a fi stabilită pentru respectivele prestări de servicii pe teritoriul României [...]."
-— Legea 227/2015, art. 307 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul contabil și declarativ:

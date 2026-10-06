@@ -16,7 +16,7 @@ Multe firme mici plătesc încă parte din salariați în numerar, la casierie, 
 „(1) Salariul se plăteşte în bani cel puţin o dată pe luna, la data stabilită în contractul individual de muncă, în contractul colectiv de muncă aplicabil sau în regulamentul intern, după caz.
 (2) Plata salariului se poate efectua prin virament într-un cont bancar, în cazul în care aceasta modalitate este prevăzută în contractul colectiv de muncă aplicabil.
 (3) Plata în natura a unei părţi din salariu, în condiţiile stabilite la art. 160, este posibila numai dacă este prevăzută expres în contractul colectiv de muncă aplicabil sau în contractul individual de muncă."
-— Legea 53/2003 (Codul muncii), art. 161 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 161 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Legea pornește de la premisa că salariul se plătește „în bani" — numerarul e forma implicită, nu una specială care ar cere reguli de calcul diferite; virament bancar se face doar dacă e prevăzut expres în contractul colectiv sau individual.

@@ -14,14 +14,14 @@ Prima de asigurare CASCO plătită pentru un autoturism al firmei ridică aceea�
 
 ::: ghid-temei
 „50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul activității economice, cu o masă totală maximă autorizată care să nu depășească 3.500 kg și care să nu aibă mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietatea sau în folosința contribuabilului. Aceste cheltuieli sunt integral deductibile pentru situațiile în care vehiculele respective se înscriu în oricare dintre următoarele categorii: [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru CASCO în mod concret:
 
 - Prima CASCO intră în categoria „cheltuielilor aferente vehiculelor rutiere motorizate" — deci, dacă autoturismul nu e utilizat **exclusiv** în scopul activității economice, doar **50% din valoarea primei** e deductibilă la calculul impozitului pe profit.
 - Deducerea e **integrală** dacă vehiculul se încadrează în una dintre categoriile exceptate (vehicule de intervenție, pază, curierat, agenți de vânzări, taximetrie, școli de șoferi, închiriere/leasing, transport marfă) sau dacă depășește 3.500 kg ori are peste 9 scaune.
-- Aceeași logică de limitare la 50% se aplică și persoanelor fizice autorizate, pentru cheltuielile aferente vehiculelor folosite în activitatea independentă și nu exclusiv în scop economic (Legea nr. 227/2015, art. 68 alin. (7), sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt).
+- Aceeași logică de limitare la 50% se aplică și persoanelor fizice autorizate, pentru cheltuielile aferente vehiculelor folosite în activitatea independentă și nu exclusiv în scop economic (Legea nr. 227/2015, art. 68 alin. (7), sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)).
 - Limitarea privește **cheltuiala** cu prima de asigurare la impozitul pe profit — e o regulă separată de limitarea la 50% a **TVA deductibile** aferente vehiculului (art. 298 alin. (1) din același Cod fiscal), care se calculează independent, pe fluxul de TVA.
 
 ## Ce se greșește în practică

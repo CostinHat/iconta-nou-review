@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „încasare fragmentată - fracționarea sumei de încasat în mai multe tranșe, pentru a evita plafonul de încasare în numerar stabilit prin lege; plată fragmentată - fracționarea sumei de plată în mai multe tranșe, pentru a evita plafonul de plată în numerar stabilit prin lege. [...] Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, în cazul magazinelor de tipul cash and carry, precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei, respectiv de 10.000 lei."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 2 și art. 3 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 2 și art. 3 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Riscurile concrete, conform legii:

@@ -16,15 +16,15 @@ Spre deosebire de cazul cu facturi emise la timp, aici nu există un document de
 
 ::: ghid-temei
 „d) persoana impozabilă nu a colectat TVA pentru livrările de bunuri/prestările de servicii taxabile efectuate în perioada în care a avut codul de înregistrare în scopuri de TVA anulat, respectiv nu a depus declarația privind taxa pe valoarea adăugată colectată care trebuie plătită conform art. 11 alin. (6) și (8) din Codul fiscal și nu a emis facturi. În această situație, facturile emise după reînregistrarea în scopuri de TVA nu se înscriu în decontul de taxă depus conform art. 323 din Codul fiscal, în secțiunea «Taxa pe valoarea adăugată colectată», dacă nu există diferențe [...]"
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(5) Prevederile alin. (2) nu se aplică în situația în care persoana impozabilă nu are obligația de a emite facturi conform art. 319 din Codul fiscal."
-— HG 1/2016, titlul I, pct. 5^1 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016, titlul I, pct. 5^1 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „După înregistrarea în scopuri de taxă conform art. 316 alin. (12) , pentru livrările de bunuri/prestările de servicii efectuate în perioada în care au avut codul de înregistrare în scopuri de TVA anulat, persoanele impozabile emit facturi în care înscriu distinct taxa pe valoarea adăugată colectată în perioada respectivă, care nu se înregistrează în decontul de taxă depus conform art. 323 ."
-— Codul fiscal (Legea 227/2015), art. 11 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 11 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordine:

@@ -14,7 +14,7 @@ Dacă se descoperă că amortizarea unui mijloc fix nu a fost calculată pentru 
 
 ::: ghid-temei
 „Amortizarea fiscală se calculează după cum urmează: a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5) [...]"
-— Legea 227/2015, art. 28 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce se face concret, în funcție de moment:
@@ -32,6 +32,6 @@ Ce se face concret, în funcție de moment:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (`core/d406_active.py`, funcția `amortizare_luna`) calculează amortizarea lunară pe baza datei de punere în funcțiune, a duratei normale de funcționare și a metodei alese, iar `repo_mijloace_fixe.py` (`de_amortizat`) identifică activele cu amortizare de calculat într-o perioadă dată. La data acestui ghid, aplicația **nu are o funcție dedicată de recalculare automată retroactivă** a lunilor omise dintr-un exercițiu deja închis — corectarea unei amortizări omise pe câteva luni, mai ales dacă privește un an fiscal deja declarat, se face manual de contabil, cu documentarea perioadelor afectate.
+Modulul de mijloace fixe din iConta.eu (funcția `amortizare_luna`) calculează amortizarea lunară pe baza datei de punere în funcțiune, a duratei normale de funcționare și a metodei alese, iar `repo_mijloace_fixe.py` (`de_amortizat`) identifică activele cu amortizare de calculat într-o perioadă dată. La data acestui ghid, aplicația **nu are o funcție dedicată de recalculare automată retroactivă** a lunilor omise dintr-un exercițiu deja închis — corectarea unei amortizări omise pe câteva luni, mai ales dacă privește un an fiscal deja declarat, se face manual de contabil, cu documentarea perioadelor afectate.
 
 [iConta.eu](/)

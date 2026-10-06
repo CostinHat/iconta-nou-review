@@ -14,13 +14,13 @@ Când o firmă plătește chirie unei persoane fizice (nu unei alte firme), regu
 
 ::: ghid-temei
 „Veniturile din cedarea folosinței bunurilor din patrimoniul personal sunt veniturile, în bani și/sau în natură, provenind din cedarea folosinței bunurilor mobile și imobile, obținute de către proprietar, uzufructuar sau alt deținător legal, altele decât veniturile din activități independente."
-— Legea 227/2015, art. 83 alin. (1), Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 83 alin. (1), Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii care obțin venituri din cedarea folosinței bunurilor din patrimoniul personal [...] au obligația înregistrării contractului încheiat între părți, precum și a modificărilor survenite ulterior, în termen de cel mult 30 de zile de la încheierea/producerea modificării acestuia, la organul fiscal competent."
-— Legea 227/2015, art. 83 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 83 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie [...]."
-— Legea 227/2015, art. 64 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 64 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, obligațiile se împart astfel:

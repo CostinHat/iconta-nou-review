@@ -14,7 +14,7 @@ Descoperirea că impozitul pe profit declarat a fost mai mic decât cel real dat
 
 ::: ghid-temei
 „Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative. [...] În cazul creanțelor fiscale administrate de organul fiscal central, pentru diferențele de obligații fiscale principale stabilite de contribuabil/plătitor prin declarații fiscale rectificative, termenul de plată al diferențelor este data depunerii declarației rectificative la organul fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 și art. 156 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 și art. 156 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune, concret, regularizarea:

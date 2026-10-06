@@ -14,7 +14,7 @@ Vânzarea unui produs finit înseamnă două note contabile distincte, nu una si
 
 ::: ghid-temei
 „Contul 345 «Produse finite» [...] În creditul contului 345 «Produse finite» se înregistrează: – valoarea la preț de înregistrare a produselor finite vândute și lipsurile de inventar (711); [...]"
-— OMFP 1802/2014, Reglementările contabile, Planul de conturi general — funcțiunea contului 345 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, Planul de conturi general — funcțiunea contului 345 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul complet, așa cum rezultă din funcțiunea conturilor 345/348/711:
@@ -32,7 +32,7 @@ Mecanismul complet, așa cum rezultă din funcțiunea conturilor 345/348/711:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Producție în curs și produse finite** (ecran Operațiuni speciale → Imobilizări) generează exact acest tipar de note prin funcția `nota_vanzare` din `core/productie.py`: `4111=701` + `4111=4427` (cu cotă de TVA obligatorie — aplicația refuză explicit generarea dacă nu se dă o cotă, ca să nu rămână o valoare implicită „ruptă tăcut de lege la prima schimbare"), apoi descărcarea `711=345` la costul standard ieșit și, dacă se transmite un coeficient `coef_348`, repartizarea diferenței (`711=348`/`348=711`).
+Funcționalitatea **Producție în curs și produse finite** (ecran Operațiuni speciale → Imobilizări) generează exact acest tipar de note prin funcția `nota_vanzare` din aplicație: `4111=701` + `4111=4427` (cu cotă de TVA obligatorie — aplicația refuză explicit generarea dacă nu se dă o cotă, ca să nu rămână o valoare implicită „ruptă tăcut de lege la prima schimbare"), apoi descărcarea `711=345` la costul standard ieșit și, dacă se transmite un coeficient `coef_348`, repartizarea diferenței (`711=348`/`348=711`).
 
 **Limită reală, de menționat onest**: ecranul de introducere a vânzării din iConta (Operațiuni speciale → Imobilizări → Producție → Vânzare + descărcare) are, la data acestui ghid, doar câmpurile preț de vânzare, cost standard ieșit și cotă de TVA — **niciun câmp pentru coeficientul de repartizare 348**, deși motorul din spate îl acceptă și îl aplică corect dacă i se dă. Rezultatul practic: din interfața curentă, orice descărcare de gestiune se înregistrează la cost standard pur, fără repartizarea diferențelor de preț — exact greșeala pe care legea (și avertismentul intern al aplicației) o semnalează ca fiind cea mai frecventă. Calculul manual al coeficientului și transmiterea lui rămân, azi, în afara ecranului standard.
 

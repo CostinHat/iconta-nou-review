@@ -14,7 +14,7 @@ Legea disciplinei financiare nu prevede un regim special, mai strict, pentru ope
 
 ::: ghid-temei
 „ART. 1 (1) Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii."
-— Legea 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 1 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 1 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Precizare importantă: am căutat explicit în Legea 70/2015 o prevedere specială pentru „firme afiliate" și nu există una — legea nu are un articol separat, mai restrictiv, pentru tranzacțiile dintre societăți controlate de aceiași asociați. Se aplică deci **regimul general**, exact ca între oricare două firme:
@@ -32,6 +32,6 @@ Precizare importantă: am căutat explicit în Legea 70/2015 o prevedere special
 
 ## Ce face iConta.eu
 
-Am verificat în `core/casa.py`: aplicația **validează automat plafoanele din Legea 70/2015** (funcția `verifica_plafon`, cu constantele `PLAFON_INCASARE_PJ` și `PLAFON_PLATA_PJ`, ambele setate la 5.000 lei pentru operațiunile cu persoane juridice, respectiv 10.000 lei/zi cumulat la plăți) și semnalează un avertisment când o operațiune de casierie depășește pragul legal, indiferent dacă partenerul este sau nu o firmă afiliată — regula fiind, oricum, aceeași pentru toate persoanele juridice. Aplicația nu are o categorie separată „firmă afiliată" pentru că legea însăși nu face această distincție.
+Am verificat în aplicație: aplicația **validează automat plafoanele din Legea 70/2015** (funcția `verifica_plafon`, cu constantele `PLAFON_INCASARE_PJ` și `PLAFON_PLATA_PJ`, ambele setate la 5.000 lei pentru operațiunile cu persoane juridice, respectiv 10.000 lei/zi cumulat la plăți) și semnalează un avertisment când o operațiune de casierie depășește pragul legal, indiferent dacă partenerul este sau nu o firmă afiliată — regula fiind, oricum, aceeași pentru toate persoanele juridice. Aplicația nu are o categorie separată „firmă afiliată" pentru că legea însăși nu face această distincție.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ O firmă la regim micro care își suspendă temporar activitatea (inactivitate 
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 52, respectiv de la art. 47 alin. (1) și alin. (4), microîntreprinderea care se află în inactivitate temporară înscrisă în registrul comerțului, potrivit prevederilor legale, continuă să fie plătitoare de impozit pe veniturile microîntreprinderilor pentru întreaga perioadă în care înregistrează această situație de inactivitate."
-— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (2^3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (2^3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o firmă în inactivitate temporară:

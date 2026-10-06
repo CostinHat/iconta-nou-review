@@ -16,16 +16,16 @@ Nu. Codul de procedură fiscală spune expres că niciun titlu executoriu nu se 
 
 ::: ghid-temei
 „Niciun titlu executoriu nu se poate emite în absența unui titlu de creanță fiscală emis și comunicat în condițiile legii sau a unui înscris care, potrivit legii, constituie titlu executoriu."
-— Codul de procedură fiscală (Legea 207/2015), art. 226 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 226 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Declarația de impunere întocmită potrivit art. 102 alin. (2) este asimilată cu o decizie de impunere, sub rezerva unei verificări ulterioare, și produce efectele juridice ale înștiințării de plată de la data depunerii acesteia."
-— Codul de procedură fiscală (Legea 207/2015), art. 95 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 95 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „În cazul în care actul administrativ fiscal se comunică prin publicitate, acesta se consideră comunicat în termen de 15 zile de la data afișării anunțului."
-— Codul de procedură fiscală (Legea 207/2015), art. 47 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 47 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Contestația poate fi făcută și împotriva titlului executoriu în temeiul căruia a fost pornită executarea, în cazul în care acest titlu nu este o hotărâre dată de o instanță judecătorească sau de alt organ jurisdicțional și dacă pentru contestarea lui nu există o altă procedură prevăzută de lege."
-— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se verifică dacă titlul executoriu e legal:

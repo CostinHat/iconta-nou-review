@@ -21,7 +21,7 @@ O bază de calcul greșită la contribuțiile sociale (CAS, CASS) sau la impozit
 (5) Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare.
 (6) Prin excepție de la prevederile alin. (5), declarația de impunere poate fi depusă sau corectată după anularea rezervei verificării ulterioare în următoarele situații:
 a) în situația în care corecția se datorează îndeplinirii sau neîndeplinirii unei condiții prevăzute de lege care impune corectarea bazei de impozitare și/sau a creanței fiscale aferente;"
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3), (5), (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3), (5), (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă asta concret pentru o eroare de bază de calcul la contribuții:
@@ -39,6 +39,6 @@ Ce înseamnă asta concret pentru o eroare de bază de calcul la contribuții:
 
 ## Ce face iConta.eu
 
-Generatorul XML pentru D112 din iConta.eu (`core/d112.py`) marchează în prezent, la nivel de cod, declarația exclusiv ca inițială (`d_rec="0"`, valoare fixă în funcția de generare a antetului) — nu există încă suport pentru marcarea unei declarații D112 ca rectificativă (`d_rec="1"`). Alte declarații din aplicație (de exemplu D119, D120, D201, D212, D213, D318) au acest flag implementat dinamic; D301 are, la rândul ei, `d_rec="0"` fix în generarea XML, ca și D112. Până la extinderea suportului și la D112, o corecție de bază de calcul pentru contribuții se pregătește în afara acestui flux automat, cu marcarea manuală a caracterului rectificativ conform procedurii ANAF.
+Generatorul XML pentru D112 din iConta.eu marchează în prezent, la nivel de cod, declarația exclusiv ca inițială (`d_rec="0"`, valoare fixă în funcția de generare a antetului) — nu există încă suport pentru marcarea unei declarații D112 ca rectificativă (`d_rec="1"`). Alte declarații din aplicație (de exemplu D119, D120, D201, D212, D213, D318) au acest flag implementat dinamic; D301 are, la rândul ei, `d_rec="0"` fix în generarea XML, ca și D112. Până la extinderea suportului și la D112, o corecție de bază de calcul pentru contribuții se pregătește în afara acestui flux automat, cu marcarea manuală a caracterului rectificativ conform procedurii ANAF.
 
 [iConta.eu](/)

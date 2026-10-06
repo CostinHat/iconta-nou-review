@@ -14,7 +14,7 @@ Da — un PFA care își determină venitul anual pe bază de normă de venit da
 
 ::: ghid-temei
 „Persoanele fizice care în anul fiscal pentru care se depune declarația prevăzută la art. 122 au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut sau normei anuale de venit, respectiv a normei anuale de venit ajustate, după caz, stabilite potrivit art. 68, 68^1, 68^3 și 69, după caz, care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."
-— Codul fiscal (Legea 227/2015), art. 170 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 170 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Art. 155 alin. (1) lit. b) trimite la „veniturile din activități independente, definite conform art. 67" — categorie în care se încadrează inclusiv PFA-urile care își determină venitul pe bază de normă de venit.

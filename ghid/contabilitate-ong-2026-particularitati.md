@@ -22,7 +22,7 @@ Contabilitatea unui ONG (asociație, fundație) urmează în linii mari reglemen
 736 Venituri din subvenţii de exploatare [...]
 737 Venituri din acţiuni ocazionale, utilizate în scop social sau profesional, potrivit statutului de organizare şi funcţionare
 738 Alte venituri din activităţile fără scop patrimonial [...]"
-— OMFP 3103/2017, planul de conturi, grupa 73 (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, planul de conturi, grupa 73 (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 - Veniturile fără scop patrimonial (cotizații, donații, sponsorizări, fonduri publice, acțiuni ocazionale) se înregistrează pe conturile din grupa **73**, defalcate pe natura lor, nu pe conturile generale de venituri 70x-76x folosite de societățile comerciale.

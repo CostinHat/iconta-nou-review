@@ -17,7 +17,7 @@ Da — proprietarul unei societăți românești nu trebuie să fie el însuși 
 d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale;
 [...]
 h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. d) și h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. d) și h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul de la lit. d) exclude de la impunerea micro doar situația în care capitalul e deținut de **stat sau de unități administrativ-teritoriale** — nu spune nimic despre naționalitatea sau proveniența acționarului persoană juridică. Așadar:

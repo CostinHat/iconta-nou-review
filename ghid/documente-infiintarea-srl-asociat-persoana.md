@@ -14,7 +14,7 @@ Când asociatul unui SRL nu e o persoană fizică, ci o altă firmă, actul cons
 
 ::: ghid-temei
 „Actul constitutiv al societății în nume colectiv, în comandită simplă sau cu răspundere limitată va cuprinde: a) datele de identificare a asociaților[.]"
-— Legea nr. 31/1990 (legea societăților), art. 7 lit. a) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (legea societăților), art. 7 lit. a) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din acest text pentru dosarul de înființare:

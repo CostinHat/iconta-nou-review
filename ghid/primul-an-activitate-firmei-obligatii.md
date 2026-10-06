@@ -14,7 +14,7 @@ Primul an de activitate al unei firme nu are un regim fiscal special declarat ca
 
 ::: ghid-temei
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1). [...] Persoanele juridice române comunică organelor fiscale competente aplicarea sistemului de impunere pe veniturile microîntreprinderilor, până la data de 31 martie inclusiv a anului pentru care se plătește impozitul pe veniturile microîntreprinderilor."
-— Legea 227/2015, art. 48 alin. (2) și art. 55 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2) și art. 55 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Reperele generale ale primului an, indiferent de regimul de impozitare:
@@ -33,6 +33,6 @@ Reperele generale ale primului an, indiferent de regimul de impozitare:
 
 ## Ce face iConta.eu
 
-iConta.eu ține evidența contabilă generală a firmei de la înființare, generează declarațiile fiscale (D100, D112, D300, D406 etc.) pe baza datelor introduse și semnalează, prin modulul de control fiscal (`core/control_fiscal_api.py`), obligațiile declarative datorate în funcție de vectorul fiscal configurat pentru firmă. La data acestui ghid, aplicația **nu are un „checklist" dedicat, pas cu pas, pentru primul an de activitate** — obligațiile lunii curente se văd în ecranul de control fiscal, dar planificarea integrată a primului an (de la înregistrare la primele declarații) rămâne un proces pe care contabilul îl gestionează folosind evidența contabilă generală oferită de aplicație.
+iConta.eu ține evidența contabilă generală a firmei de la înființare, generează declarațiile fiscale (D100, D112, D300, D406 etc.) pe baza datelor introduse și semnalează, prin modulul de control fiscal, obligațiile declarative datorate în funcție de vectorul fiscal configurat pentru firmă. La data acestui ghid, aplicația **nu are un „checklist" dedicat, pas cu pas, pentru primul an de activitate** — obligațiile lunii curente se văd în ecranul de control fiscal, dar planificarea integrată a primului an (de la înregistrare la primele declarații) rămâne un proces pe care contabilul îl gestionează folosind evidența contabilă generală oferită de aplicație.
 
 [iConta.eu](/)

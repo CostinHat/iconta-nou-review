@@ -16,12 +16,12 @@ Regula contează la sechestru: dacă executorul sechestrează bunuri care valore
 
 ::: ghid-temei
 „Executarea silită se poate întinde asupra veniturilor și bunurilor proprietate a debitorului, urmăribile potrivit legii, iar valorificarea acestora se efectuează numai în măsura necesară pentru realizarea creanțelor fiscale și a cheltuielilor de executare. Executarea silită a bunurilor proprietate a debitorului, urmăribile potrivit legii, se efectuează, de regulă, în limita a 150% din valoarea creanțelor fiscale, inclusiv a cheltuielilor de executare, cu excepția cazului în care din motive obiective în legătură cu situația patrimonială a debitorului acest nivel nu poate fi respectat."
-— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „în măsura în care creanțele fiscale înscrise în titluri executorii se sting prin plată, prin poprire sau prin alte modalități prevăzute de prezentul cod, sechestrele aplicate pe acele titluri asupra bunurilor, cu valoare mai mică ori egală cu suma creanțelor fiscale astfel stinse, se ridică, prin decizie întocmită de organul de executare silită, în cel mult două zile de la data stingerii."
-— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 234 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică limita:

@@ -15,7 +15,7 @@ Pentru o PFA care determină venitul net în sistem real, pe baza datelor din co
 ::: ghid-temei
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...].
 (4) Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: a) să fie efectuate în cadrul activităților independente, justificate prin documente."
-— Legea 227/2015, art. 68 alin. (1) și alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 68 alin. (1) și alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, pentru a demonstra că o cheltuială e făcută în scopul activității PFA:
@@ -34,6 +34,6 @@ Practic, pentru a demonstra că o cheltuială e făcută în scopul activități
 
 ## Ce face iConta.eu
 
-La data acestui ghid, pentru PFA în sistem real (partidă simplă) iConta.eu oferă registrul de încasări și plăți cu clasificare pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă (`core/rip_api.py`) — și motorul de calcul al Declarației unice/D212 (`core/d212_engine.py`), care determină venitul net anual și baza CAS/CASS din operațiunile introduse. Aplicația **nu verifică automat** dacă o cheltuială îndeplinește condițiile de la art. 68 alin. (4) (legătura cu activitatea, justificarea prin documente) — încadrarea fiecărei cheltuieli în categoria corectă de deductibilitate rămâne o judecată profesională a contabilului sau a titularului PFA, aplicația doar înregistrează și totalizează categoria aleasă.
+La data acestui ghid, pentru PFA în sistem real (partidă simplă) iConta.eu oferă registrul de încasări și plăți cu clasificare pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă — și motorul de calcul al Declarației unice/D212, care determină venitul net anual și baza CAS/CASS din operațiunile introduse. Aplicația **nu verifică automat** dacă o cheltuială îndeplinește condițiile de la art. 68 alin. (4) (legătura cu activitatea, justificarea prin documente) — încadrarea fiecărei cheltuieli în categoria corectă de deductibilitate rămâne o judecată profesională a contabilului sau a titularului PFA, aplicația doar înregistrează și totalizează categoria aleasă.
 
 [iConta.eu](/)

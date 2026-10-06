@@ -16,11 +16,11 @@ Pentru angajator și contabilul lui, primul lucru de reținut e că această sum
 
 ::: ghid-temei
 „Articolul 42 Au dreptul la o compensație pentru atingerea integrității asigurații sau persoanele care au avut calitatea de asigurat conform prevederilor prezentei legi și care, în urma accidentelor de muncă sau a bolilor profesionale, au rămas cu leziuni permanente care produc deficiențe și reduc capacitatea de muncă între 20-50%, exclusiv persoanele care beneficiază de pensie de invaliditate."
-— Legea 346/2002, art. 42 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 42 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „Articolul 43 Compensația se acordă la solicitarea persoanei îndreptățite, pe baza deciziei medicului asigurătorului, cu îndeplinirea condițiilor prevăzute la art. 42 ."
-— Legea 346/2002, art. 43 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 43 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(1) Compensația pentru atingerea integrității reprezintă o sumă fixă în bani și se acordă integral, o singură dată, fără a afecta celelalte drepturi sau indemnizații la care este îndreptățit asiguratul, și nu este luată în baza de calcul pentru determinarea acestor drepturi. (2) Cuantumul compensației pentru atingerea integrității se stabilește în funcție de gravitatea leziunii, în limita unui plafon maxim de 12 salarii de bază minime brute pe țară garantate în plată la data confirmării caracterului profesional al accidentului sau al bolii."
-— Legea 346/2002, art. 44 alin. (1)–(2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 44 alin. (1)–(2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 **Cine o primește:**

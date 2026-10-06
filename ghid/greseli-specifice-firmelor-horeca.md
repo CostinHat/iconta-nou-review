@@ -15,7 +15,7 @@ Sectorul HoReCa are un regim de TVA cu o particularitate ușor de ratat: cota re
 ::: ghid-temei
 „(1) Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%.
 n) serviciile de restaurant și de catering, cu excepția băuturilor alcoolice, precum și a băuturilor nealcoolice care se încadrează la codul NC 2202."
-— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (1) și alin. (2) lit. n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (1) și alin. (2) lit. n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru o firmă din HoReCa:

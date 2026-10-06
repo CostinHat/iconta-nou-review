@@ -16,11 +16,11 @@ Pentru contabilul firmei, asta înseamnă că restanțele din lista de plată a 
 
 ::: ghid-temei
 „(6) Raporturile juridice stabilite de comun acord între locator și locatar, precum și nerespectarea obligațiilor contractuale de către locatar nu absolvă proprietarul, în calitate de locator, de obligațiile sale față de asociația de proprietari sau față de furnizorii de utilități publice, prevăzute în prezenta lege."
-— Legea 196/2018, art. 30 alin. (6) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 30 alin. (6) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(1) Proprietarii din condominii au obligația să notifice președintelui orice schimbare intervenită în structura și numărul membrilor familiei prin deces, căsătorii sau nașteri, persoanele luate în spațiu, precum și locatarii/comodatarii ca urmare a închirierii sau a împrumutării locuinței. (2) Notificarea prevăzută la alin. (1) se face în scris în termen de 10 zile de la schimbarea intervenită, de la luarea în spațiu, respectiv de la semnarea contractului de închiriere/comodat."
-— Legea 196/2018, art. 30 alin. (1)-(2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 30 alin. (1)-(2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „s) proprietar din condominiu/proprietar - persoana fizică sau juridică, titular al unui drept de proprietate asupra a cel puțin o unitate de proprietate imobiliară dintr-un condominiu;"
-— Legea 196/2018, art. 2 lit. s) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 2 lit. s) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

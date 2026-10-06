@@ -12,7 +12,7 @@ Deschiderea unui cont bancar pentru o firmă nou-înființată e o etapă admini
 
 ## Temeiul legal
 
-**Limitare declarată onest:** documentele necesare pentru deschiderea unui cont bancar de firmă țin de regulile interne ale fiecărei bănci, aplicate în cadrul legislației privind prevenirea spălării banilor și cunoașterea clientelei (know-your-customer) — acte care nu se regăsesc printre sursele fiscale verificate pentru acest ghid (anaf_surse conține Codul fiscal, Codul de procedură fiscală și acte conexe, dar nu legislația bancară/AML aplicabilă deschiderii de cont). Nu se poate cita aici, cu temei verificat din sursele disponibile, o listă legală de documente.
+**Limitare declarată onest:** documentele necesare pentru deschiderea unui cont bancar de firmă țin de regulile interne ale fiecărei bănci, aplicate în cadrul legislației privind prevenirea spălării banilor și cunoașterea clientelei (know-your-customer) — acte care nu se regăsesc printre sursele fiscale verificate pentru acest ghid (acestea cuprind Codul fiscal, Codul de procedură fiscală și acte conexe, dar nu legislația bancară/AML aplicabilă deschiderii de cont). Nu se poate cita aici, cu temei verificat din sursele disponibile, o listă legală de documente.
 
 Ce se poate spune cu certitudine, din practica generală de piață:
 

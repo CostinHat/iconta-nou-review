@@ -14,7 +14,7 @@ Reglementările contabile tratează explicit un caz apropiat — demolarea unei 
 
 ::: ghid-temei
 „(4) În cazul în care o clădire este demolată pentru a fi construită o alta, cheltuielile cu demolarea sunt recunoscute după natura lor, fără a fi considerate costuri de amenajare a amplasamentului. Același tratament contabil se aplică și cheltuielilor reprezentând valoarea neamortizată a clădirii demolate sau costul activului respectiv, atunci când acesta este evidențiat ca stoc."
-— OMFP 1802/2014, pct. 226 alin. (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 226 alin. (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce se poate desprinde onest din acest text:

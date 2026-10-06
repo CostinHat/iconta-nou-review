@@ -14,7 +14,7 @@ Deducerea TVA nu e automată doar pentru că ai primit o factură și ai plătit
 
 ::: ghid-temei
 „(1) Pentru exercitarea dreptului de deducere a taxei, persoana impozabilă trebuie să îndeplinească următoarele condiții: a) pentru taxa datorată sau achitată, aferentă bunurilor care i-au fost ori urmează să îi fie livrate ori serviciilor care i-au fost ori urmează să îi fie prestate în beneficiul său de către o persoană impozabilă, să dețină o factură emisă în conformitate cu prevederile art. 319, precum și dovada plății în cazul achizițiilor efectuate de către persoanele impozabile care aplică sistemul TVA la încasare, respectiv de către persoanele impozabile care achiziționează bunuri/servicii de la persoane impozabile în perioada în care aplică sistemul TVA la încasare."
-— Legea nr. 227/2015 (Codul fiscal), art. 299 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 299 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Deducerea TVA e condiționată de deținerea unei facturi **conforme cu art. 319** — o factură care nu respectă conținutul minim obligatoriu nu îndeplinește această condiție, chiar dacă suma și operațiunea sunt reale.

@@ -16,11 +16,11 @@ Zilele se numără începând cu ziua următoare datei la care se referă situa�
 
 ::: ghid-temei
 „Entitățile care au optat pentru un exercițiu financiar diferit de anul calendaristic depun situațiile financiare anuale în termen de 150 de zile calendaristice de la încheierea exercițiului financiar astfel ales, calculate începând cu data ulterioară celei la care se referă respectivele situații financiare anuale."
-— Legea contabilității nr. 82/1991, art. 36 alin. (1^2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 36 alin. (1^2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „Fac excepție de la prevederile alin. (1^2) entitățile prevăzute la art. 36 alin. (1) lit. b) , care au optat pentru un exercițiu financiar diferit de anul calendaristic. Acestea depun situațiile financiare anuale în termen de 120 de zile calendaristice de la încheierea exercițiului financiar astfel ales, calculate începând cu data ulterioară celei la care se referă respectivele situații financiare anuale."
-— Legea contabilității nr. 82/1991, art. 36 alin. (1^3) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 36 alin. (1^3) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „În cazul în care termenele prevăzute la alin. (1^2) și (1^3) corespund unor zile nelucrătoare, ultima zi de raportare este prima zi lucrătoare următoare acestora."
-— Legea contabilității nr. 82/1991, art. 36 alin. (1^4) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 36 alin. (1^4) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

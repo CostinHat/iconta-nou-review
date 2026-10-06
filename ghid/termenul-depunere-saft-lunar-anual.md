@@ -14,7 +14,7 @@ SAF-T (declarația D406) nu are un termen unic — are **trei regimuri diferite*
 
 ::: ghid-temei
 „Declaraţia informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare, respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind secţiunile «Stocuri» şi «Active»; - la termenul de depunere a situaţiilor financiare aferente exerciţiului financiar, în cazul secţiunii «Active»; - la termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării, în cazul secţiunii «Stocuri»."
-— OPANAF 1783/2021 (SAF-T D406), Anexa 4, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 (SAF-T D406), Anexa 4, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Cele trei regimuri, punctual:
@@ -33,6 +33,6 @@ Confuzia „lunar sau anual" apare de obicei pentru că D406 e tratat ca o singu
 
 ## Ce face iConta.eu
 
-Generarea secțiunilor obișnuite ale D406 (jurnal contabil, facturi) urmează motorul principal de declarație lunară/trimestrială al aplicației, pe perioada fiscală de TVA a firmei. Secțiunea Active are un motor separat (`core/d406_active.py`), care calculează amortizarea pe cele patru metode fiscale (liniară/degresivă/accelerată/superaccelerată) și produce fragmentul XML `<Assets>` pentru anul cerut — coerent cu regimul anual descris mai sus. La data acestui ghid, ruta care întoarce acest calcul funcționează, dar produce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare la ANAF, și nu are încă un ecran dedicat în interfață. Secțiunea Stocuri, cu termenul ei declanșat de cerere ANAF, are propriul modul de calcul, separat de cel al secțiunii Active.
+Generarea secțiunilor obișnuite ale D406 (jurnal contabil, facturi) urmează motorul principal de declarație lunară/trimestrială al aplicației, pe perioada fiscală de TVA a firmei. Secțiunea Active are un motor separat, care calculează amortizarea pe cele patru metode fiscale (liniară/degresivă/accelerată/superaccelerată) și produce fragmentul XML `<Assets>` pentru anul cerut — coerent cu regimul anual descris mai sus. La data acestui ghid, ruta care întoarce acest calcul funcționează, dar produce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare la ANAF, și nu are încă un ecran dedicat în interfață. Secțiunea Stocuri, cu termenul ei declanșat de cerere ANAF, are propriul modul de calcul, separat de cel al secțiunii Active.
 
 [iConta.eu](/)

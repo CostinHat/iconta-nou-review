@@ -14,7 +14,7 @@ Regula implicită pentru orice persoană înregistrată în scopuri de TVA e dec
 
 ::: ghid-temei
 „(1) Perioada fiscală este luna calendaristică. (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri din operațiuni taxabile și/sau scutite cu drept de deducere și/sau neimpozabile în România conform art. 275 și 278, dar care dau drept de deducere conform art. 297 alin. (4) lit. b), care nu a depășit plafonul de 100.000 euro al cărui echivalent în lei se calculează conform normelor metodologice, cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri."
-— Codul fiscal (Legea 227/2015), art. 322 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 322 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Condiția de bază e dublă, nu doar cifra de afaceri: în anul precedent, cifra de afaceri să nu fi depășit 100.000 euro **și** firma să nu fi făcut nicio achiziție intracomunitară de bunuri — o singură achiziție IC în anul precedent scoate firma din trimestrial, indiferent cât de mică e cifra de afaceri.

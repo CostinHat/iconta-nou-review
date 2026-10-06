@@ -14,7 +14,7 @@ Un avans de trezorerie (bani acordați unui angajat sau administrator pentru che
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare. [...] La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea 70/2015 (disciplina financiară privind operațiunile de încasări și plăți în numerar), art. 3 alin. (1) lit. e) și alin. (4) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (disciplina financiară privind operațiunile de încasări și plăți în numerar), art. 3 alin. (1) lit. e) și alin. (4) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce trebuie reținut din regimul avansurilor spre decontare:

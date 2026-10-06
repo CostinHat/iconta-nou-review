@@ -14,10 +14,10 @@ Cele două noțiuni sunt confundate frecvent pentru că ambele se raportează la
 
 ::: ghid-temei
 „Contribuabilii, alții decât cei prevăzuți la art. 15, care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit [...] mai mic decât impozitul minim pe cifra de afaceri stabilit potrivit prevederilor alin. (3), sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri."
-— Legea 227/2015, art. 18^1 alin. (1), Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 18^1 alin. (1), Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea 227/2015, art. 52 alin. (1), Titlul III (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 52 alin. (1), Titlul III (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența e de scară și de mecanism:

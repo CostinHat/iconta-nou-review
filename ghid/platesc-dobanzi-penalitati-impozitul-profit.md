@@ -20,7 +20,7 @@ Răspunsul scurt e da, iar mecanismul e dublu: pentru orice zi de întârziere l
 ART. 176 Penalități de întârziere
 (1) Penalitățile de întârziere se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. [...]
 (2) Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 174 alin. (1) și (5), art. 176 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 174 alin. (1) și (5), art. 176 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 
@@ -39,6 +39,6 @@ Ce rezultă din text, aplicat la impozitul pe profit:
 
 ## Ce face iConta.eu
 
-Modulul `core/d101.py` și modulele conexe de reconciliere (`core/d101_reconciliere.py`) gestionează declararea impozitului pe profit; calculul automat al dobânzilor și penalităților de întârziere pentru o eventuală plată tardivă **nu a fost găsit** ca funcționalitate dedicată în `core/` — aplicația oferă evidența declarațiilor și a termenelor de plată, dar calculul accesoriilor pentru o întârziere efectivă rămâne, la acest moment, o operațiune pe care contabilul o face separat, pe baza numărului exact de zile de întârziere.
+Aplicația și modulele conexe de reconciliere gestionează declararea impozitului pe profit; calculul automat al dobânzilor și penalităților de întârziere pentru o eventuală plată tardivă **nu a fost găsit** ca funcționalitate dedicată în aplicație — aplicația oferă evidența declarațiilor și a termenelor de plată, dar calculul accesoriilor pentru o întârziere efectivă rămâne, la acest moment, o operațiune pe care contabilul o face separat, pe baza numărului exact de zile de întârziere.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Predarea fizică a numerarului către o firmă de transport de valori (servicii 
 
 ::: ghid-temei
 „Plafoanele-limită prevăzute de prezentul capitol nu se aplică de către persoanele prevăzute la art. 1 alin. (1), pentru următoarele operațiuni: a) depunerea de numerar în conturile deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României, inclusiv în automatele de încasări în numerar [...]."
-— Legea nr. 70/2015, art. 5 lit. a) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 5 lit. a) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă practic de aici pentru firmele care apelează la transport de valori:
@@ -31,6 +31,6 @@ Ce rezultă practic de aici pentru firmele care apelează la transport de valori
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține registrul de casă și verifică plafonul de sold de casă introdus în profilul firmei (`core/casa.py`, funcția `verifica_plafon`), dar **nu are o funcționalitate dedicată** predării numerarului către o firmă de transport de valori — operațiunea se înregistrează, ca orice altă ieșire din casă, sub forma unei note de depunere în bancă, pe baza documentelor de predare-primire păstrate în afara aplicației.
+La data acestui ghid, iConta.eu ține registrul de casă și verifică plafonul de sold de casă introdus în profilul firmei (funcția `verifica_plafon`), dar **nu are o funcționalitate dedicată** predării numerarului către o firmă de transport de valori — operațiunea se înregistrează, ca orice altă ieșire din casă, sub forma unei note de depunere în bancă, pe baza documentelor de predare-primire păstrate în afara aplicației.
 
 [iConta.eu](/)

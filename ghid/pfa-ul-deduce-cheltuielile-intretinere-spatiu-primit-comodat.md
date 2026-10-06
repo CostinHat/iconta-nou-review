@@ -16,18 +16,18 @@ Contează în practică pentru că mulți PFA-iști lucrează din locuința fami
 
 ::: ghid-temei
 „r) cheltuielile cu funcționarea și întreținerea aferente bunurilor imobile care fac obiectul unui contract de comodat, potrivit înțelegerii din contract, pentru partea aferentă utilizării în scopul afacerii;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (5) lit. r) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (5) lit. r) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Sunt cheltuieli deductibile și cele efectuate pentru întreținerea și funcționarea spațiilor folosite pentru desfășurarea afacerilor chiar dacă documentele sunt emise pe numele proprietarului, și nu pe numele contribuabilului."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (5) lit. w) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (5) lit. w) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „să fie efectuate în cadrul activităților independente, justificate prin documente;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „să fie cuprinse în cheltuielile exercițiului financiar al anului în cursul căruia au fost plătite;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, concret:

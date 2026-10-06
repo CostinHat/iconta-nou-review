@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(13) Persoanele impozabile aflate în situațiile prevăzute la alin. (11) au obligația să depună ultimul decont de taxă prevăzut la art. 323, indiferent de perioada fiscală aplicată conform art. 322, până la data de 25 a lunii următoare celei în care a fost comunicată decizia de anulare a înregistrării în scopuri de TVA."
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie să conțină acest ultim decont și ce rezultă pentru eventualul sold în favoarea firmei:
@@ -32,6 +32,6 @@ Ce trebuie să conțină acest ultim decont și ce rezultă pentru eventualul so
 
 ## Ce face iConta.eu
 
-Modulul de lichidare din iConta.eu (`core/lichidare.py`) tratează închiderea TVA/impozitelor curente ca parte a fluxului de lichidare, alături de calculul cotei de lichidare, notele de vânzare a activelor și partajul capitalului, conform OMFP 897/2015 și Legii 31/1990. La data acestui ghid, aplicația **nu depune automat ultimul decont de TVA** la anularea înregistrării — contabilul pregătește separat acest decont, cu toate ajustările de taxă impuse de art. 316 alin. (13), și îl depune respectând termenul legal de 25 a lunii următoare comunicării deciziei de anulare.
+Modulul de lichidare din iConta.eu tratează închiderea TVA/impozitelor curente ca parte a fluxului de lichidare, alături de calculul cotei de lichidare, notele de vânzare a activelor și partajul capitalului, conform OMFP 897/2015 și Legii 31/1990. La data acestui ghid, aplicația **nu depune automat ultimul decont de TVA** la anularea înregistrării — contabilul pregătește separat acest decont, cu toate ajustările de taxă impuse de art. 316 alin. (13), și îl depune respectând termenul legal de 25 a lunii următoare comunicării deciziei de anulare.
 
 [iConta.eu](/)

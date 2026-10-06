@@ -16,14 +16,14 @@ ANAF poate institui poprire sau sechestru asigurător și înainte de a emite de
 
 ::: ghid-temei
 „Aceste măsuri pot fi luate și înainte de emiterea titlului de creanță, inclusiv în cazul efectuării de controale sau al antrenării răspunderii solidare."
-— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Se dispun măsuri asigurătorii sub forma popririi asigurătorii și sechestrului asigurător asupra bunurilor mobile și/sau imobile proprietate a debitorului, precum și asupra veniturilor acestuia, în cazuri excepționale, respectiv în situația în care există pericolul ca acesta să se sustragă, să își ascundă ori să își risipească patrimoniul, periclitând sau îngreunând în mod considerabil colectarea."
-— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „în situația în care măsurile asigurătorii au fost luate înainte de emiterea titlului de creanță acestea încetează dacă titlul de creanță nu a fost emis și comunicat în termen de cel mult 6 luni de la data la care au fost dispuse măsurile asigurătorii. în cazuri excepționale, acest termen poate fi prelungit până la un an, de organul fiscal competent, prin decizie."
-— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text:

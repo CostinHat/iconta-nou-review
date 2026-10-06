@@ -16,7 +16,7 @@ Impozitul pe profit nu se calculează direct din rezultatul contabil (contul de 
 „Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. La stabilirea rezultatului fiscal se iau în calcul și elemente similare veniturilor și cheltuielilor, potrivit normelor metodologice, precum și pierderile fiscale care se recuperează în conformitate cu prevederile art. 31."
 
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Codul fiscal, art. 19 alin. (1) și art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 19 alin. (1) și art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Traducerea în pași de verificare, plecând din balanța de verificare:

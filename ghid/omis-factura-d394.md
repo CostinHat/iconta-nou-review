@@ -14,7 +14,7 @@ D394 nu are un mecanism de „adăugare" a unei operațiuni omise: se depune o d
 
 ::: ghid-temei
 „persoana impozabilă constată existenţa unor omisiuni/erori [...] trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial. Nu vor face obiectul redepunerii declaraţiei facturile primite de persoana impozabilă în altă perioadă de raportare faţă de data emiterii acestora de către furnizori."
-— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Din text rezultă mecanica exactă a corecției:
@@ -33,8 +33,8 @@ Procedural, dacă la afișarea stării declarației deja depuse apar erori de st
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`) produce declarația din tabela unică de facturi a firmei (`core/repo_d394.py`), pe baza filtrelor de perioadă și de status ale documentelor (exclude ciornele, facturile anulate/stornate). Dacă o factură a fost omisă din evidență la momentul primei generări, adăugarea ei ulterioară în aplicație și regenerarea declarației pentru aceeași lună produce automat o declarație nouă, completă, cu toate operațiunile perioadei — exact forma cerută de Anexa 2 pct. 3.
+Generatorul D394 produce declarația din tabela unică de facturi a firmei, pe baza filtrelor de perioadă și de status ale documentelor (exclude ciornele, facturile anulate/stornate). Dacă o factură a fost omisă din evidență la momentul primei generări, adăugarea ei ulterioară în aplicație și regenerarea declarației pentru aceeași lună produce automat o declarație nouă, completă, cu toate operațiunile perioadei — exact forma cerută de Anexa 2 pct. 3.
 
-Aplicația rulează validatorul oficial ANAF (DUK) local înainte ca fișierul să fie considerat gata de depus (`core/duk.py`), dar **depunerea efectivă rămâne manuală, prin portalul SPV** — iConta.eu nu retransmite automat la ANAF.
+Aplicația rulează validatorul oficial ANAF (DUK) local înainte ca fișierul să fie considerat gata de depus, dar **depunerea efectivă rămâne manuală, prin portalul SPV** — iConta.eu nu retransmite automat la ANAF.
 
 [iConta.eu](/)

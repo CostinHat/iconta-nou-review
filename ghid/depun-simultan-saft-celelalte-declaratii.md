@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Contribuabilii/Plătitorii transmit Declarația informativă D406 lunar sau trimestrial, urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată (TVA)."
-— OPANAF 1783/2021, Anexa 4, pct. 2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
 „Declarația informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare..."
-— OPANAF 1783/2021, Anexa 4, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - D406 are propriul termen (ultima zi calendaristică a lunii următoare perioadei raportate), diferit de termenul standard de 25 folosit de majoritatea celorlalte declarații — deci „simultan" nu înseamnă neapărat „în aceeași zi", chiar dacă cele două se depun pentru aceeași perioadă de raportare.

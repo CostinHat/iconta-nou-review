@@ -17,7 +17,7 @@ Răspunsul scurt e da, dar condiționat: legea permite decontul trimestrial chia
 
 **Art. 322 alin. (4) CF** (pentru întreprinderile mici care se înregistrează TVA opțional în cursul anului): „[...] trebuie să declare cu ocazia înregistrării cifra de afaceri obținută, recalculată în baza activității corespunzătoare unui an calendaristic întreg. Dacă această cifră de afaceri recalculată depășește plafonul [...], perioada fiscală va fi luna calendaristică [...]. Dacă [...] nu depășește plafonul [...], persoana impozabilă va utiliza trimestrul calendaristic [...], cu excepția situației în care a efectuat [...] una sau mai multe achiziții intracomunitare de bunuri înainte de înregistrarea în scopuri de TVA."
 
-Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, liniile 21807-21819.
+Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Da, un SRL nou poate avea decont trimestrial de TVA încă din primul an de înregistrare — condiția e ca cifra de afaceri estimată pentru perioada rămasă din an (declarată chiar la înregistrarea TVA) să nu depășească plafonul de 100.000 euro, recalculat proporțional cu lunile rămase, și să nu fi efectuat deja achiziții intracomunitare de bunuri înainte de înregistrare.

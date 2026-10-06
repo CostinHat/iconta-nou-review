@@ -14,7 +14,7 @@ Un echipament defect e trimis dintr-o firmă românească la un service dintr-un
 
 ::: ghid-temei
 „În sensul prezentului titlu, nontransferul reprezintă expedierea sau transportul unui bun din România în alt stat membru [...] pentru a fi utilizat în scopul uneia dintre următoarele operațiuni: [...] f) prestarea de servicii în beneficiul persoanei impozabile, care implică evaluarea bunurilor mobile corporale sau lucrări asupra bunurilor mobile corporale efectuate în statul membru în care se termină expedierea ori transportul bunului, cu condiția ca bunurile, după prelucrare, să fie reexpediate persoanei impozabile din România de la care fuseseră expediate sau transportate inițial."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condiția de reexpediere e ceea ce deosebește reparația/prelucrarea de un transfer obișnuit:

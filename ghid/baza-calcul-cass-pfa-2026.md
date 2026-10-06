@@ -14,7 +14,7 @@ Baza de calcul pentru CASS nu e o simplă valoare aleasă de contribuabil, ca la
 
 ::: ghid-temei
 „Persoanele fizice care în anul fiscal pentru care se depune declarația [...] au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut sau normei anuale de venit, respectiv a normei anuale de venit ajustate, după caz, stabilite potrivit art. 68, 68^1, 68^3 și 69, după caz, care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."
-— Codul fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025 art. XII pct. 19, aplicabil veniturilor din 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025 art. XII pct. 19, aplicabil veniturilor din 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce compune concret baza, pentru veniturile din 2026:
@@ -32,7 +32,7 @@ Ce compune concret baza, pentru veniturile din 2026:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` calculează baza CASS conform acestei formule pentru veniturile din 2026: liniar pe venitul net, cu baza minimă de 6 salarii minime brute (diferența arătată separat, cu varianta pentru excepțiile din art. 174 alin. (7)) și plafon maxim de 72 de salarii minime brute (291.600 lei, la reperul de 4.050 lei verificat la sursă din registrul de cote al aplicației). Calculul e disponibil prin `fisa_d212` (`core/rip_api.py`), pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți ținută în aplicație.
+Aplicația calculează baza CASS conform acestei formule pentru veniturile din 2026: liniar pe venitul net, cu baza minimă de 6 salarii minime brute (diferența arătată separat, cu varianta pentru excepțiile din art. 174 alin. (7)) și plafon maxim de 72 de salarii minime brute (291.600 lei, la reperul de 4.050 lei verificat la sursă din registrul de cote al aplicației). Calculul e disponibil prin `fisa_d212`, pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți ținută în aplicație.
 
 Fișa nu cumulează sursele din afara Registrului-jurnal de încasări și plăți; Declarația unică (D212) le cumulează însă, dacă sunt introduse în formular (de exemplu, drepturile de proprietate intelectuală sau o altă activitate independentă), calculând CASS pe fiecare cumul cerut de lege. Ce sursă există, o știe și o introduce contabilul.
 

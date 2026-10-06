@@ -14,7 +14,7 @@ O firmă din România primește o factură de la un furnizor dintr-un alt stat m
 
 ::: ghid-temei
 „Pentru exercitarea dreptului de deducere a taxei, persoana impozabilă trebuie să îndeplinească următoarele condiții: a) pentru taxa datorată sau achitată, aferentă bunurilor care i-au fost ori urmează să îi fie livrate ori serviciilor care i-au fost ori urmează să îi fie prestate în beneficiul său de către o persoană impozabilă, să dețină o factură emisă în conformitate cu prevederile art. 319."
-— Codul fiscal (Legea 227/2015), art. 299 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 299 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Dreptul de deducere din decontul românesc de TVA privește doar taxa datorată potrivit legii române — nu orice sumă etichetată „TVA" pe o factură:

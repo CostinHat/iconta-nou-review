@@ -15,7 +15,7 @@ O firmă cu mai multe puncte de lucru, fiecare cu casă de marcat sau casierie p
 ::: ghid-temei
 „Articolul 1 (1) Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii.
 Articolul 3 (1) [...] a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi."
-— Legea 70/2015, art. 1 alin. (1) și art. 3 alin. (1) lit. a) și c) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 1 alin. (1) și art. 3 alin. (1) lit. a) și c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă din text:
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025, în vigoare din 01.01.2026)** direct în modulul de casierie (`core/casa.py`), cu constante distincte pentru partenerii de tip persoană juridică (5.000 lei/încasare, 5.000 lei/plată cu plafon total de 10.000 lei/zi) și, separat, pentru partenerii marcați ca persoană fizică (constanta `PLAFON_PF`, 10.000 lei) — o distincție de organizare internă a aplicației, nu una explicit textuală în art. 1 sau art. 3 din lege, care condiționează plafoanele de tipul operațiunii, nu de calitatea partenerului. Aplicația **nu segmentează plafonul pe puncte de lucru** — calculul urmează structura legii, la nivelul relației cu partenerul, nu al locației fizice.
+La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025, în vigoare din 01.01.2026)** direct în modulul de casierie, cu constante distincte pentru partenerii de tip persoană juridică (5.000 lei/încasare, 5.000 lei/plată cu plafon total de 10.000 lei/zi) și, separat, pentru partenerii marcați ca persoană fizică (constanta `PLAFON_PF`, 10.000 lei) — o distincție de organizare internă a aplicației, nu una explicit textuală în art. 1 sau art. 3 din lege, care condiționează plafoanele de tipul operațiunii, nu de calitatea partenerului. Aplicația **nu segmentează plafonul pe puncte de lucru** — calculul urmează structura legii, la nivelul relației cu partenerul, nu al locației fizice.
 
 [iConta.eu](/)

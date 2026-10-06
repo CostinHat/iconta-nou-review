@@ -16,10 +16,10 @@ Cumpărarea unei firme cu pierderi care își continuă activitatea nu se încad
 
 ::: ghid-temei
 „1. Un aranjament transfrontalier prin care un participant la aranjamentul respectiv ia măsuri artificiale care constau în achiziționarea unei societăți care înregistrează pierderi, întreruperea activității principale a respectivei societăți și utilizarea pierderilor societății pentru a reduce obligațiile fiscale, inclusiv prin intermediul unui transfer al acestor pierderi către o altă jurisdicție sau prin accelerarea utilizării acestor pierderi"
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea a II-a, lit. B pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea a II-a, lit. B pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „1. Semnele distinctive generice din categoria A și semnele distinctive specifice din categoria B și din categoria C pct. 1 lit. b) subpct. (i) și lit. c) și d) pot fi luate în considerare numai în cazul în care trec "testul beneficiului principal"."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 4, partea I pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Elementele de verificat:

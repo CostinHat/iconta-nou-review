@@ -16,7 +16,7 @@ Când un mijloc fix pentru care s-a dedus TVA la achiziție este scos din patrim
 „(2) Taxa deductibilă aferentă bunurilor de capital [...] se ajustează, în situațiile prevăzute la alin. (4) lit. a)-d): a) pe o perioadă de 5 ani, pentru bunurile de capital achiziționate sau fabricate, altele decât cele prevăzute la lit. b); b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil, precum și pentru transformarea sau modernizarea unui bun imobil [...].
 (4) Ajustarea taxei deductibile [...] se efectuează: [...] d) în situația în care bunul de capital își încetează existența, cu următoarele excepții: [...] 4. în cazul casării unui bun de capital;
 (5) [...] d) pentru cazurile prevăzute la alin. (4) lit. d), ajustarea se efectuează în perioada fiscală în care intervine evenimentul care generează ajustarea și se realizează pentru toată taxa aferentă perioadei rămase din perioada de ajustare, incluzând anul în care apare obligația ajustării."
-— Legea 227/2015 (Codul fiscal), art. 305 alin. (2), (4) lit. d) pct. 4 și alin. (5) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 305 alin. (2), (4) lit. d) pct. 4 și alin. (5) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de calcul care rezultă din text:
@@ -35,6 +35,6 @@ Mecanismul de calcul care rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are în `core/d300.py` rânduri dedicate ajustărilor conform art. 304 (regularizări) și art. 305 (ajustări bunuri de capital) din Codul fiscal, incluse în totalurile decontului. Aceste rânduri se **declară manual** — aplicația nu calculează automat perioada de ajustare rămasă (5 sau 20 de ani, în funcție de tipul bunului) și nu determină singură suma de ajustat la casarea unui mijloc fix. Contabilul trebuie să identifice bunul, perioada de ajustare aplicabilă și anii rămași, apoi să introducă manual valoarea de ajustat în decontul de TVA.
+La data acestui ghid, iConta.eu are în aplicație rânduri dedicate ajustărilor conform art. 304 (regularizări) și art. 305 (ajustări bunuri de capital) din Codul fiscal, incluse în totalurile decontului. Aceste rânduri se **declară manual** — aplicația nu calculează automat perioada de ajustare rămasă (5 sau 20 de ani, în funcție de tipul bunului) și nu determină singură suma de ajustat la casarea unui mijloc fix. Contabilul trebuie să identifice bunul, perioada de ajustare aplicabilă și anii rămași, apoi să introducă manual valoarea de ajustat în decontul de TVA.
 
 [iConta.eu](/)

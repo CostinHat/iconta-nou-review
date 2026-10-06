@@ -16,10 +16,10 @@ Capitalul social al unei firme poate crește nu doar prin aporturi noi în bani 
 „(1) Capitalul social se poate mări prin emisiunea de acțiuni noi sau prin majorarea valorii nominale a acțiunilor existente în schimbul unor noi aporturi în numerar și/sau în natură.
 (2) De asemenea, acțiunile noi sunt liberate prin încorporarea rezervelor, cu excepția rezervelor legale, precum și a beneficiilor sau a primelor de emisiune, ori prin compensarea unor creanțe lichide și exigibile asupra societății cu acțiuni ale acesteia. [...]
 (4) Mărirea capitalului social prin majorarea valorii nominale a acțiunilor poate fi hotărâtă numai cu votul tuturor acționarilor, în afară de cazul când este realizată prin încorporarea rezervelor, beneficiilor sau primelor de emisiune."
-— Legea 31/1990, art. 210 alin. (1), (2) și (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 210 alin. (1), (2) și (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societatea cu răspundere limitată își poate majora capitalul social, în modalitățile și din sursele prevăzute de art. 210."
-— Legea 31/1990, art. 221 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 221 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Textul stabilește regulile pe care orice majorare de capital prin încorporarea rezervelor trebuie să le respecte:

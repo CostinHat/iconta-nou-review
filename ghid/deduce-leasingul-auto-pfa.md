@@ -18,7 +18,7 @@ o) cheltuielile efectuate de utilizator, reprezentând chiria - rata de leasing 
 [...]
 (7) Nu sunt cheltuieli deductibile: [...]
 k) 50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul desfășurării activității și a căror masă totală maximă autorizată nu depășește 3.500 kg și nu au mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietate sau în folosință. Aceste cheltuieli sunt integral deductibile pentru situațiile în care vehiculele respective se înscriu în oricare dintre următoarele categorii: 1. vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat; 2. vehiculele utilizate de agenții de vânzări și de achiziții; 3. vehiculele utilizate pentru transportul de persoane cu plată, inclusiv pentru serviciile de taximetrie; 4. vehiculele utilizate pentru prestarea de servicii cu plată, inclusiv pentru închirierea către alte persoane sau pentru instruire de către școlile de șoferi; 5. vehiculele utilizate ca mărfuri în scop comercial."
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (5) lit. o), alin. (7) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (5) lit. o), alin. (7) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se combină cele două reguli, în practică:
@@ -36,6 +36,6 @@ Cum se combină cele două reguli, în practică:
 
 ## Ce face iConta.eu
 
-Modulul de leasing din iConta.eu (`core/leasing.py`) generează notele contabile pentru rata de leasing financiar (capital, dobândă, comision) și operațional (chirie), pe baza datelor introduse de contabil. La data acestui ghid, aplicația **nu calculează automat limita de 50% pentru vehicule** de la art. 68 alin. (7) lit. k) și nu verifică încadrarea într-una din cele 5 categorii de deducere integrală — contabilul aplică manual limitarea corespunzătoare la calculul venitului net al PFA-ului, pe baza modului real de utilizare a mașinii.
+Modulul de leasing din iConta.eu generează notele contabile pentru rata de leasing financiar (capital, dobândă, comision) și operațional (chirie), pe baza datelor introduse de contabil. La data acestui ghid, aplicația **nu calculează automat limita de 50% pentru vehicule** de la art. 68 alin. (7) lit. k) și nu verifică încadrarea într-una din cele 5 categorii de deducere integrală — contabilul aplică manual limitarea corespunzătoare la calculul venitului net al PFA-ului, pe baza modului real de utilizare a mașinii.
 
 [iConta.eu](/)

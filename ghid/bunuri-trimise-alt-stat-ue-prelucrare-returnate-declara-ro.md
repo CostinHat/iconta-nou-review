@@ -16,12 +16,12 @@ Prestatorul din celălalt stat membru nu are obligații în sistemul românesc. 
 
 ::: ghid-temei
 „Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: [...] f) beneficiarului din România, în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile expediate din România pentru prestarea de servicii într-un stat membru al Uniunii Europene, cât și pentru bunurile rezultate reexpediate în România;"
-— OUG 41/2022, art. 8^1 lit. f) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. f) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ::: ghid-temei
 „f) prestarea de servicii în beneficiul persoanei impozabile, care implică evaluarea bunurilor mobile corporale sau lucrări asupra bunurilor mobile corporale efectuate în statul membru în care se termină expedierea ori transportul bunului, cu condiția ca bunurile, după prelucrare, să fie reexpediate persoanei impozabile din România de la care fuseseră expediate sau transportate inițial;"
-— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reține contabilul:

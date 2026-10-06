@@ -14,7 +14,7 @@ Când un marketplace (Amazon, eMAG și altele similare) reține din suma deconta
 
 ::: ghid-temei
 „432. - Sumele colectate de o entitate în numele unor terțe părți, inclusiv în cazul contractelor de agent, comision sau mandat comercial încheiate potrivit legii, nu reprezintă venit din activitatea curentă, chiar dacă din punct de vedere al taxei pe valoarea adăugată persoanele care acționează în nume propriu sunt considerate cumpărători revânzători. În această situație, veniturile din activitatea curentă sunt reprezentate de comisioanele cuvenite."
-— OMFP 1802/2014, pct. 432 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 432 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Textul reglementează explicit relația din perspectiva intermediarului (agent/comisionar) — regula relevantă pentru vânzătorul care folosește un marketplace e complementară și rezultă din același principiu de recunoaștere brută a veniturilor (pct. 431, 433):

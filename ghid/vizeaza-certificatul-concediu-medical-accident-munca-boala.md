@@ -16,10 +16,10 @@ E o formalitate în plus față de concediul medical obișnuit. Contează pentru
 
 ::: ghid-temei
 „(2) În cazul bolilor profesionale sau al accidentelor de muncă, certificatul medical se vizează în mod obligatoriu, prin grija angajatorului, de direcțiile de sănătate publică județene și a municipiului București, respectiv de casa teritorială de pensii în a cărei rază se află sediul angajatorului sau domiciliul asiguratului."
-— Legea 346/2002, art. 32 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 32 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(1) Indemnizația pentru incapacitate temporară de muncă datorată accidentelor de muncă și bolilor profesionale se acordă pe baza certificatului medical eliberat conform dispozițiilor legale și completat sau modificat, după caz, cu codurile de indemnizație corespunzătoare și care constituie document justificativ de plată."
-— Legea 346/2002, art. 37 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 37 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

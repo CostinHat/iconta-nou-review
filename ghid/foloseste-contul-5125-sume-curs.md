@@ -14,7 +14,7 @@ Contul 5125 rezolvă o problemă concretă de contabilitate bancară: momentul �
 
 ::: ghid-temei
 „(2) Sumele virate sau depuse la bănci ori prin mandat poștal, pe bază de documente prezentate entității și neapărute încă în extrasele de cont, se înregistrează distinct în contabilitate (contul 5125 "Sume în curs de decontare")."
-— OMFP nr. 1.802/2014 (Reglementări contabile), pct. 302 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementări contabile), pct. 302 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din text pentru utilizarea corectă a contului:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru utilizarea corectă a contului:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/plan_omfp.py` include explicit contul „5125": „Sume în curs de decontare" în nomenclatorul de conturi al planului OMFP, alături de „512": „Conturi curente la bănci" — aplicația recunoaște și poate folosi acest cont în înregistrările contabile generate, conform structurii oficiale a planului de conturi.
+Verificat în cod: Aplicația include explicit contul „5125": „Sume în curs de decontare" în nomenclatorul de conturi al planului OMFP, alături de „512": „Conturi curente la bănci" — aplicația recunoaște și poate folosi acest cont în înregistrările contabile generate, conform structurii oficiale a planului de conturi.
 
 [iConta.eu](/)

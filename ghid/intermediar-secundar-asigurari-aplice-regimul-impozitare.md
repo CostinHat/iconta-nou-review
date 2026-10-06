@@ -16,17 +16,17 @@ Intermediarul secundar este, de regulă, o firmă a cărei activitate principal�
 
 ::: ghid-temei
 „persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital, precum și persoana juridică română care desfășoară activități de intermediere/distribuție în aceste domenii, cu excepția intermediarilor secundari de asigurări și/sau reasigurări, definiți potrivit legii, care au realizat venituri din activitatea de distribuție de asigurări/reasigurări în proporție de până la 15% inclusiv din veniturile totale;"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (3) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (3) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „c) persoanele juridice române care desfășoară activități de intermediere/distribuție în domeniul asigurărilor și reasigurărilor, respectiv al pieței de capital, cu excepția intermediarilor secundari de asigurări și/sau reasigurări, definiți potrivit legii, care au realizat venituri din activitatea de distribuție de asigurări/reasigurări în proporție de până la 15% inclusiv din veniturile totale;"
-— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (6) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (6) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(4) Microîntreprinderile care în cursul unui trimestru încep să desfășoare activități dintre cele prevăzute de art. 47 alin. (3) lit. f)-i) datorează impozit pe profit începând cu trimestrul respectiv."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma din 2024 reia textul Codului fiscal în forma actuală, deci cele două sunt în acord.

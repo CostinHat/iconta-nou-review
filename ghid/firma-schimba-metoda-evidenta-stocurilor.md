@@ -14,7 +14,7 @@ Regula de bază e consecvența: o firmă nu poate trece de la CMP la FIFO (sau i
 
 ::: ghid-temei
 „Principiul permanenței metodelor. Politicile contabile și metodele de evaluare trebuie aplicate în mod consecvent de la un exercițiu financiar la altul."
-— OMFP 1802/2014 (reglementările contabile), pct. 50 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementările contabile), pct. 50 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă acest principiu, coroborat cu regulile de modificare a politicilor contabile de la pct. 64:

@@ -16,18 +16,18 @@ Forma de organizare e doar una dintre condițiile cumulative. Aici e însă și 
 
 ::: ghid-temei
 „sintagma societate a unui stat membru înseamnă orice societate: (i) care îmbracă una dintre formele enumerate în lista prevăzută la art. 263;"
-— Codul fiscal (Legea 227/2015), art. 258 lit. a) pct. (i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 258 lit. a) pct. (i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „societăți cunoscute în legislația română ca - "societăți în nume colectiv", "societăți în comandită simplă", "societăți pe acțiuni", "societăți în comandită pe acțiuni", "societăți cu răspundere limitată";"
-— Codul fiscal (Legea 227/2015), art. 263 lit. x) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 263 lit. x) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „societăți cunoscute în legislația germană ca - "Aktiengesellschaft, Kommanditgesellschaft auf Aktien, Gesellschaft mit beschrankter Haftung" și "bergrechtliche Gewerkschaft";"
-— Codul fiscal (Legea 227/2015), art. 263 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 263 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „societăți cunoscute în legislația franceză ca: societe anonyme, societe en commandite par actions, societe e responsabilite limitee, precum și instituțiile și întreprinderile publice cu caracter industrial și comercial;"
-— Codul fiscal (Legea 227/2015), art. 263 lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 263 lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se folosește lista:

@@ -16,12 +16,12 @@ Contează pentru că încadrarea clădirii (rezidențială, nerezidențială sau
 
 ::: ghid-temei
 „pentru o clădire a cărei folosință a fost schimbată integral sau parțial, de la data acestei schimbări; dacă schimbarea folosinței reiese dintr-un contract de închiriere, de comodat sau de alt tip, de la data prevăzută în contract"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 57 lit. f) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 57 lit. f) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dacă încadrarea clădirii în funcție de rangul localității și zonă se modifică în cursul unui an sau în cursul anului intervine un eveniment care conduce la modificarea impozitului pe clădiri, impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

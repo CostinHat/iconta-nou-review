@@ -14,7 +14,7 @@ Un SRL nou-înființat intră, de regulă, direct în regimul de microîntreprin
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...] d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale; e) nu se află în dizolvare, urmată de lichidare [...]; g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3); h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare [...] și este singura persoană juridică stabilită [...] să aplice prevederile prezentului titlu; i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Legea 227/2015, art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru un SRL nou:
@@ -32,6 +32,6 @@ Ce înseamnă asta pentru un SRL nou:
 
 ## Ce face iConta.eu
 
-Regimul fiscal (micro sau profit) e un **câmp ales manual** în ecranul de configurare a firmei din iConta.eu — aplicația nu urmărește automat plafonul de 100.000 euro, numărul de salariați sau apartenența la un grup de firme legate, ca să recomande sau să forțeze schimbarea regimului. Câmpul `regim_fiscal` din profilul firmei (`core/d100.py`) determină doar cum se calculează obligația D100 (cod 121 pe venituri, pentru micro, respectiv cod 103 pe profit, pentru regimul de profit) — D100 rămâne declarația lunară/trimestrială pentru ambele regimuri, iar D101 (declarația anuală privind impozitul pe profit, `core/d101.py`) devine relevantă suplimentar doar pentru firmele pe profit. Generatorul nu blochează efectiv generarea unei declarații „nepotrivite" cu regimul setat — verificarea condițiilor de încadrare din art. 47 și coerența dintre regimul real al firmei și declarațiile generate rămân, la acest moment, în sarcina contabilului.
+Regimul fiscal (micro sau profit) e un **câmp ales manual** în ecranul de configurare a firmei din iConta.eu — aplicația nu urmărește automat plafonul de 100.000 euro, numărul de salariați sau apartenența la un grup de firme legate, ca să recomande sau să forțeze schimbarea regimului. Câmpul `regim_fiscal` din profilul firmei determină doar cum se calculează obligația D100 (cod 121 pe venituri, pentru micro, respectiv cod 103 pe profit, pentru regimul de profit) — D100 rămâne declarația lunară/trimestrială pentru ambele regimuri, iar D101 (declarația anuală privind impozitul pe profit, aplicația) devine relevantă suplimentar doar pentru firmele pe profit. Generatorul nu blochează efectiv generarea unei declarații „nepotrivite" cu regimul setat — verificarea condițiilor de încadrare din art. 47 și coerența dintre regimul real al firmei și declarațiile generate rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

@@ -16,13 +16,13 @@ Contează pentru că aceste cheltuieli sunt stabilite printr-un proces-verbal cu
 
 ::: ghid-temei
 „Cheltuielile ocazionate cu efectuarea procedurii de executare silită sunt în sarcina debitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (1), în cazul creanțelor fiscale administrate de organul fiscal central, cheltuielile generate de comunicarea somației și a adresei de înființare a popririi sunt suportate de organul fiscal central."
-— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Cheltuielile de executare silită care nu au la bază documente care să ateste că au fost efectuate în scopul executării silite nu sunt în sarcina debitorului urmărit."
-— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 256 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă în practică:

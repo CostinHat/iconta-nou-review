@@ -16,13 +16,13 @@ Asta schimbă felul în care pregătești dosarul. Datoriile tuturor sediilor in
 
 ::: ghid-temei
 „Pentru debitorii care au înființate sedii secundare înregistrate fiscal, potrivit legii, cererea de acordare a eșalonărilor la plată se depune de către debitor, atât pentru obligațiile fiscale datorate de acesta, cât și pentru cele ale sediilor sale secundare. Cererea se depune la organul fiscal competent pentru administrarea obligațiilor fiscale ale debitorului și se analizează raportat la totalul obligațiilor debitorului și ale sediilor sale secundare."
-— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (2) (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (2) (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 
 „a) datele de identificare a debitorului: denumirea/numele și prenumele acestuia, a/ale reprezentantului legal/reprezentantului fiscal/împuternicitului, dacă este cazul, domiciliul fiscal, codul de identificare fiscală, numărul de telefon/fax al acestora, adresa de e-mail, precum și datele de identificare pentru sediile secundare înregistrate fiscal, potrivit legii;"
-— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (3) lit. a) (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (3) lit. a) (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 
 „Eșalonarea la plată se acordă pentru toate obligațiile fiscale înscrise în certificatul de atestare fiscală, dacă sunt îndeplinite condițiile prevăzute de prezentul capitol."
-— Codul de procedură fiscală (Legea 207/2015), art. 184 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 184 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă în practică:

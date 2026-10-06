@@ -16,16 +16,16 @@ Pentru o firmă, varianta obișnuită e să rămână ea însăși custode. Poat
 
 ::: ghid-temei
 „Bunurile mobile sechestrate pot fi lăsate în custodia debitorului, a creditorului sau a altei persoane desemnate de organul de executare silită ori de executorul fiscal, după caz, ori pot fi ridicate și depozitate de către acesta. Atunci când bunurile sunt lăsate în custodia debitorului sau a altei persoane desemnate conform legii și când se constată că există pericol de substituire ori de degradare, executorul fiscal poate aplica sigiliul asupra bunurilor."
-— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Cel care primește bunurile în custodie semnează procesul-verbal de sechestru."
-— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „în cazul în care custodele este o altă persoană decât debitorul sau creditorul, organul de executare silită îi stabilește acestuia o remunerație ținând seama de activitatea depusă."
-— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 240 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Dacă se constată că bunurile nu se găsesc la locul menționat în procesul-verbal de sechestru sau dacă au fost substituite ori degradate, executorul fiscal încheie proces-verbal de constatare."
-— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile, punct cu punct:

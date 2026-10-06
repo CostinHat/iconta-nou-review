@@ -14,7 +14,7 @@ Cât timp contractul de muncă e activ, concediul de odihnă neefectuat nu se po
 
 ::: ghid-temei
 „Compensarea în bani a concediului de odihnă neefectuat este permisă numai în cazul încetării contractului individual de muncă."
-— Legea 53/2003 (Codul muncii), art. 141 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 141 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă, coroborat cu restul art. 141 și art. 145 din Codul muncii:

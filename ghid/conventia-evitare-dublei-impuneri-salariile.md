@@ -14,7 +14,7 @@ Un angajat care lucrează în România, dar e plătit de un angajator nerezident
 
 ::: ghid-temei
 „Orice contribuabil prevăzut la alin. (1) care își prelungește perioada de ședere în România, peste perioada menționată în convenția de evitare a dublei impuneri, este obligat să declare și să plătească impozit pentru întreaga perioadă de desfășurare a activității în România, până la data de 25 inclusiv a lunii următoare împlinirii termenului prevăzut de respectiva convenție."
-— Legea 227/2015 (Codul fiscal), art. 82 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 82 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, concret, art. 82 din Codul fiscal:

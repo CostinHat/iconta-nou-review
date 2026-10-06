@@ -21,7 +21,7 @@ Concediul de odihnă anual e un drept garantat oricărui salariat, indiferent de
 
 „Sărbătorile legale în care nu se lucrează, precum şi zilele libere plătite stabilite prin contractul colectiv de muncă aplicabil nu sunt incluse în durata concediului de odihnă anual."
 — Legea 53/2003 (Codul muncii), art. 140 alin. (3)
-(sursă: anaf_surse/legea_53_2003_codul_muncii.txt:1726-1738)
+(sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Câteva precizări care rezultă direct din text:
@@ -41,6 +41,6 @@ Câteva precizări care rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de Codul muncii, nu de calculatorul de concediu medical (CM) al aplicației — cercetarea de fond pe care se sprijină acest ghid a vizat motorul de calcul al indemnizației de concediu medical (`core/salarizare.py`, temei OUG 158/2005), care e o instituție juridică complet diferită de concediul de odihnă. Nu s-a verificat, în acest context, dacă vreun alt modul din iConta.eu calculează sau urmărește soldul de zile de concediu de odihnă al unui salariat.
+Acest subiect ține de Codul muncii, nu de calculatorul de concediu medical (CM) al aplicației — cercetarea de fond pe care se sprijină acest ghid a vizat motorul de calcul al indemnizației de concediu medical (temei OUG 158/2005), care e o instituție juridică complet diferită de concediul de odihnă. Nu s-a verificat, în acest context, dacă vreun alt modul din iConta.eu calculează sau urmărește soldul de zile de concediu de odihnă al unui salariat.
 
 [iConta.eu](/)

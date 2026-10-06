@@ -34,6 +34,6 @@ Această regulă nu se extinde la produsele care au propria lor excepție legal�
 
 ## Ce face iConta.eu
 
-Motorul de potrivire cotă (`core/cote_tva.py`) încadrează fiecare produs/serviciu individual, pe baza denumirii lui, nu pe baza documentului în ansamblu — astfel încât un bon cu produse la cote diferite generează automat liniile de TVA corecte pentru fiecare. Regula ambalajului ca livrare accesorie ține de interpretarea normelor, nu e un câmp separat în aplicație — se aplică manual, la nivelul deciziei de facturare a ambalajului împreună cu alimentul.
+Motorul de potrivire cotă încadrează fiecare produs/serviciu individual, pe baza denumirii lui, nu pe baza documentului în ansamblu — astfel încât un bon cu produse la cote diferite generează automat liniile de TVA corecte pentru fiecare. Regula ambalajului ca livrare accesorie ține de interpretarea normelor, nu e un câmp separat în aplicație — se aplică manual, la nivelul deciziei de facturare a ambalajului împreună cu alimentul.
 
 [iConta.eu](/)

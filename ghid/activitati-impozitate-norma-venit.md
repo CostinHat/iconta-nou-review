@@ -14,13 +14,13 @@ Normă de venit nu e regula implicită pentru activitățile independente — e 
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Constituie venituri din profesii liberale veniturile obținute din prestarea de servicii cu caracter profesional, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care un contribuabil desfășoară o activitate inclusă în nomenclatorul prevăzut la alin. (2) și o altă activitate independentă, venitul net anual se determină în sistem real, pe baza datelor din contabilitate, potrivit prevederilor art. 68."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste trei alineate rezultă că normă de venit e exclusă în cel puțin trei situații distincte:

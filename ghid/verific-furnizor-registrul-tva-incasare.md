@@ -13,9 +13,9 @@ Dacă achiziționezi bunuri sau servicii de la un furnizor care aplică TVA la �
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 324 alin. (16) CF**: „A.N.A.F. organizează Registrul persoanelor impozabile care aplică sistemul TVA la încasare [...]. Registrul este public și se afișează pe site-ul A.N.A.F." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, liniile 22087-22089.
+**Art. 324 alin. (16) CF**: „A.N.A.F. organizează Registrul persoanelor impozabile care aplică sistemul TVA la încasare [...]. Registrul este public și se afișează pe site-ul A.N.A.F." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 
-**Art. 297 alin. (2) CF**: „Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare [...] este amânat până la data la care taxa aferentă [...] a fost plătită furnizorului." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, liniile 18732-18741.
+**Art. 297 alin. (2) CF**: „Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare [...] este amânat până la data la care taxa aferentă [...] a fost plătită furnizorului." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Pasul practic: cauți CUI-ul furnizorului în Registrul public al persoanelor care aplică sistemul TVA la încasare, de pe site-ul ANAF, înainte sau la momentul înregistrării facturii de achiziție. Dacă furnizorul e înscris, dreptul tău de deducere pentru acea factură apare abia când plătești (integral sau proporțional, la fiecare plată parțială) — nu la data facturii.

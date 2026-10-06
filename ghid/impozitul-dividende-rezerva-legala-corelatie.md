@@ -15,14 +15,14 @@ Rezerva legală și impozitul pe dividende sunt două obligații diferite, dar c
 ::: ghid-temei
 „(1) Din profitul societății se va prelua, în fiecare an, cel puțin 5% pentru formarea fondului de rezervă, până ce acesta va atinge minimum a cincea parte din capitalul social.
 (2) Dacă fondul de rezervă, după constituire, s-a micșorat din orice cauză, va fi completat, cu respectarea prevederilor alin. (1)."
-— Legea 31/1990 (legea societăților), art. 183 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 183 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pe partea de impozit pe dividende, sursa relevantă e Codul fiscal:
 
 ::: ghid-temei
 „Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române. Impozitul pe dividende se declară și se plătește la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei în care se plătește dividendul."
-— Legea 227/2015 (Codul fiscal), art. 43 alin. (2), modificat de Legea 141/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 43 alin. (2), modificat de Legea 141/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce leagă cele două obligații:

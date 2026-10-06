@@ -33,6 +33,6 @@ Bacșișul încasat de un restaurant sau bar nu e al firmei, ca să decidă ea c
 
 ## Ce face iConta.eu
 
-Funcția `nota_distribuire(bacsis_brut, sursa)` din modulul F010 (`core/bacsis.py`) calculează, pentru fiecare distribuire introdusă, impozitul de 10% (`COTA_IMPOZIT`) reținut din brut, cu rotunjire aritmetică la 2 zecimale, și generează nota `462=446` (impozitul) + `462=5121/5311` (netul plătit). Exemplu verificat: un bacșiș brut de 100 lei generează impozit 10,00 lei și net 90,00 lei. Aplicația nu impune însă existența unui regulament intern sau a unei evidențe nominale pe salariat înainte de a introduce distribuirea — acestea rămân responsabilitatea operatorului, stabilite separat de flux.
+Funcția `nota_distribuire(bacsis_brut, sursa)` din modulul F010 calculează, pentru fiecare distribuire introdusă, impozitul de 10% (`COTA_IMPOZIT`) reținut din brut, cu rotunjire aritmetică la 2 zecimale, și generează nota `462=446` (impozitul) + `462=5121/5311` (netul plătit). Exemplu verificat: un bacșiș brut de 100 lei generează impozit 10,00 lei și net 90,00 lei. Aplicația nu impune însă existența unui regulament intern sau a unei evidențe nominale pe salariat înainte de a introduce distribuirea — acestea rămân responsabilitatea operatorului, stabilite separat de flux.
 
 [iConta.eu](/)

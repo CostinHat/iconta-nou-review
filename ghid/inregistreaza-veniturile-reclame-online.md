@@ -14,12 +14,12 @@ Veniturile obținute din publicitate online — de exemplu de la un blog, un sit
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice."
-— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...] b) persoana impozabilă care are sediul activității economice în România [...], care aplică regimul special de scutire prevăzut la art. 310^2, neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...], dacă prestează servicii care au locul în alt stat membru, pentru care beneficiarul serviciului este persoana obligată la plata taxei conform echivalentului din legislația altui stat membru al art. 307 alin. (2), înainte de prestarea serviciului."
-— Codul fiscal (Legea 227/2015), art. 317 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 317 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Un serviciu de publicitate online (de exemplu monetizare prin reclame afișate pe un site sau canal propriu) prestat către o companie precum Google, stabilită într-un alt stat membru UE, are locul prestării la sediul beneficiarului (regula B2B de la art. 278 alin. (2)) — deci **nu e taxabil în România**, indiferent dacă prestatorul e sau nu plătitor de TVA în regim normal.

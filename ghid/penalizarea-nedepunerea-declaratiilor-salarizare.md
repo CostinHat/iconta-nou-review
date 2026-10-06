@@ -15,7 +15,7 @@ D112 — declarația unică privind obligațiile de plată a contribuțiilor soc
 ::: ghid-temei
 „(1) Constituie contravenții următoarele fapte [...]: b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume [...]; [...] o) nereținerea, potrivit legii, de către plătitorii obligațiilor fiscale, a sumelor reprezentând impozite și contribuții cu reținere la sursă; p) reținerea și nevărsarea în totalitate, de către plătitorii obligațiilor fiscale, a sumelor reprezentând impozite și contribuții cu reținere la sursă;
 (2) [...] d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice [...], în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m); [...] f) cu amendă de la 4.000 lei la 6.000 lei [...] și cu amendă de la 1.000 lei la 1.500 lei [...] în cazul săvârșirii faptelor prevăzute la alin. (1) lit. o) și p), dacă obligațiile fiscale sustrase la plată sunt de până la 50.000 lei inclusiv; g) cu amendă de la 12.000 lei la 14.000 lei [...] și cu amendă de la 4.000 lei la 6.000 lei [...], dacă obligațiile fiscale sustrase la plată sunt cuprinse între 50.000 lei și 100.000 lei inclusiv; h) cu amendă de la 25.000 lei la 27.000 lei [...] și cu amendă de la 6.000 lei la 8.000 lei [...], dacă obligațiile fiscale sustrase la plată sunt mai mari de 100.000 lei."
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b), o), p) și alin. (2) lit. d), f), g), h) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b), o), p) și alin. (2) lit. d), f), g), h) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Două niveluri de risc, distincte, pentru o firmă cu salariați:
@@ -33,6 +33,6 @@ Două niveluri de risc, distincte, pentru o firmă cu salariați:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează D112 și urmărește termenul ei de depunere prin `core/control_fiscal_api.py` (`obligatii_datorate()`, cu callback-ul `d112_fapt`, verificat față de scadența calculată pentru fiecare lună). Aplicația nu calculează și nu afișează cuantumul amenzii pentru nedepunere și nu distinge, în avertismentele generate, între simpla întârziere a declarației și riscul mult mai grav al reținerii fără virare a sumelor din salarii — urmărirea scadenței arată doar dacă D112 e restantă, nu și consecința financiară potențială.
+La data acestui ghid, iConta.eu generează D112 și urmărește termenul ei de depunere prin aplicație (`obligatii_datorate()`, cu callback-ul `d112_fapt`, verificat față de scadența calculată pentru fiecare lună). Aplicația nu calculează și nu afișează cuantumul amenzii pentru nedepunere și nu distinge, în avertismentele generate, între simpla întârziere a declarației și riscul mult mai grav al reținerii fără virare a sumelor din salarii — urmărirea scadenței arată doar dacă D112 e restantă, nu și consecința financiară potențială.
 
 [iConta.eu](/)

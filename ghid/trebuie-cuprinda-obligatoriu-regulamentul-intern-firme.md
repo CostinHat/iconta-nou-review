@@ -16,22 +16,22 @@ Conținutul contează în practică pentru că regulamentul e baza procedurii di
 
 ::: ghid-temei
 „Regulamentul intern cuprinde cel puțin următoarele categorii de dispoziții:a) reguli privind protecția, igiena și securitatea în muncă în cadrul unității; ... b) reguli privind respectarea principiului nediscriminării și al înlăturării oricărei forme de încălcare a demnității; ... c) drepturile și obligațiile angajatorului și ale salariaților; ... d) procedura de soluționare pe cale amiabilă a conflictelor individuale de muncă, a cererilor sau a reclamațiilor individuale ale salariaților; ... e) reguli concrete privind disciplina muncii în unitate; ... f) abaterile disciplinare și sancțiunile aplicabile; ... g) reguli referitoare la procedura disciplinară; ... h) modalitățile de aplicare a altor dispoziții legale sau contractuale specifice; ... i) criteriile și procedurile de evaluare profesională a salariaților. ... j) reguli referitoare la preaviz; ... k) informații cu privire la politica generală de formare a salariaților, dacă există."
-— Codul muncii (Legea 53/2003), art. 242 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 242 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Regulamentul intern se întocmește de către angajator, cu consultarea sindicatului sau a reprezentanților salariaților, după caz."
-— Codul muncii (Legea 53/2003), art. 241 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 241 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Angajatorul are obligația de a aduce la cunoștința fiecărui salariat prevederile regulamentului intern, în prima zi de lucru, și de a face dovada îndeplinirii acestei obligații."
-— Codul muncii (Legea 53/2003), art. 243 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 243 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Regulamentul intern își produce efectele față de salariat de la momentul luării la cunoștință a acestuia."
-— Codul muncii (Legea 53/2003), art. 243 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 243 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(4) Regulamentul intern se afișează la sediul angajatorului."
-— Codul muncii (Legea 53/2003), art. 243 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 243 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Orice modificare ce intervine în conținutul regulamentului intern este supusă procedurilor de informare prevăzute la art. 243."
-— Codul muncii (Legea 53/2003), art. 244 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 244 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cele 11 categorii, grupate:

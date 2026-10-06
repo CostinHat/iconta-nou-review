@@ -14,7 +14,7 @@ Nu. Legea RO e-Factura fixează o dată de „acceptare" a facturii electronice 
 
 ::: ghid-temei
 „Dreptul de deducere ia naștere la momentul exigibilității taxei."
-— Legea 227/2015 (Codul fiscal), art. 297 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 297 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două reguli, din surse diferite, nu trebuie confundate:
@@ -31,6 +31,6 @@ Cele două reguli, din surse diferite, nu trebuie confundate:
 
 ## Ce face iConta.eu
 
-iConta.eu trimite și primește facturi prin sistemul RO e-Factura (`core/efactura_send.py`), fără să facă distincție de tratament fiscal în funcție de forma juridică a firmei. Aplicația nu am identificat-o legând momentul deducerii TVA de data comunicării facturii în sistemul e-Factura — deducerea rămâne calculată după regulile generale de exigibilitate din decontul de TVA (D300), conform art. 297 și 299 din Codul fiscal.
+iConta.eu trimite și primește facturi prin sistemul RO e-Factura, fără să facă distincție de tratament fiscal în funcție de forma juridică a firmei. Aplicația nu am identificat-o legând momentul deducerii TVA de data comunicării facturii în sistemul e-Factura — deducerea rămâne calculată după regulile generale de exigibilitate din decontul de TVA (D300), conform art. 297 și 299 din Codul fiscal.
 
 [iConta.eu](/)

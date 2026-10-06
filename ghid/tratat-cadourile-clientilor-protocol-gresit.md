@@ -14,7 +14,7 @@ Cadourile oferite clienților — mese de afaceri, obiecte promoționale, atenț
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: a) cheltuielile de protocol în limita unei cote de 2% aplicată asupra profitului contabil la care se adaugă cheltuielile cu impozitul pe profit și cheltuielile de protocol. În cadrul cheltuielilor de protocol se includ și cheltuielile înregistrate cu taxa pe valoarea adăugată colectată potrivit prevederilor titlului VII, pentru cadourile oferite de contribuabil, cu valoare mai mare de 100 lei;"
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic acest plafon de 2%:
@@ -32,6 +32,6 @@ Ce înseamnă practic acest plafon de 2%:
 
 ## Ce face iConta.eu
 
-Am verificat rapid în `core/` dacă există un modul dedicat calculului cheltuielilor de protocol la determinarea impozitului pe profit (D101) și **nu am găsit** o funcție care să aplice automat plafonul de 2% din art. 25 alin. (3) lit. a) din Codul fiscal. Clasificarea unei cheltuieli drept „protocol" și încadrarea ei în plafonul deductibil rămân, la acest moment, o verificare manuală a contabilului la închiderea perioadei fiscale.
+Am verificat rapid în aplicație dacă există un modul dedicat calculului cheltuielilor de protocol la determinarea impozitului pe profit (D101) și **nu am găsit** o funcție care să aplice automat plafonul de 2% din art. 25 alin. (3) lit. a) din Codul fiscal. Clasificarea unei cheltuieli drept „protocol" și încadrarea ei în plafonul deductibil rămân, la acest moment, o verificare manuală a contabilului la închiderea perioadei fiscale.
 
 [iConta.eu](/)

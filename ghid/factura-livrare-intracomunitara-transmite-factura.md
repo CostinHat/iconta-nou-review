@@ -17,7 +17,7 @@ Trebuie spus onest, de la început: regulile actuale privind sfera exactă de ap
 a) livrările intracomunitare scutite de taxă în condițiile prevăzute la art. 294 alin. (2) lit. a) și d), pentru care exigibilitatea taxei a luat naștere în luna calendaristică respectivă;
 [...]
 d) achizițiile intracomunitare de bunuri taxabile, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă; [...]"
-— Cod fiscal, art. 325 alin. (1) lit. a) și d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 325 alin. (1) lit. a) și d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e sigur, pe baza acestui text:

@@ -14,7 +14,7 @@ Pierderea recipisei (mesajului de confirmare) unei declarații transmise electro
 
 ::: ghid-temei
 „Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Recipisa (mesajul electronic) e dovada standard a datei depunerii, dar nu e evenimentul însuși — evenimentul e înregistrarea pe portal. Declarația validată rămâne înregistrată în sistemul ANAF cu data ei reală, indiferent dacă mesajul de confirmare a fost pierdut, șters sau nu a mai fost salvat de utilizator.
@@ -23,7 +23,7 @@ Recipisa (mesajul electronic) e dovada standard a datei depunerii, dar nu e even
 
 ::: ghid-temei
 „Declarația fiscală se depune la registratura organului fiscal competent sau se comunică prin poștă, cu confirmare de primire, ori prin mijloace electronice sau prin sisteme electronice de transmitere la distanță."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru declarațiile depuse pe suport hârtie la registratură, dovada e ștampila de înregistrare, cu numărul de înregistrare — dacă acest document s-a pierdut, situația se rezolvă tot prin verificarea directă a evidenței organului fiscal, nu prin reconstituirea „din memorie" a numărului.

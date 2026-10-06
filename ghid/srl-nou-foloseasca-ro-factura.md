@@ -14,7 +14,7 @@ Un SRL nou-înființat nu beneficiază de o perioadă de grație pentru obligaț
 
 ::: ghid-temei
 „(1) În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Ordonanța de urgență a Guvernului nr. 115/2023, care modifică art. 10 alin. (1) din OUG nr. 120/2021 privind sistemul național RO e-Factura (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— Ordonanța de urgență a Guvernului nr. 115/2023, care modifică art. 10 alin. (1) din OUG nr. 120/2021 privind sistemul național RO e-Factura (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Ce rezultă concret pentru o firmă nou-înființată:
@@ -31,6 +31,6 @@ Ce rezultă concret pentru o firmă nou-înființată:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de generare și transmitere a facturilor electronice prin sistemul RO e-Factura, în `core/efactura_send.py` (construirea XML-ului UBL 2.1/CIUS-RO) și `core/spv_rute.py`/`core/spv_conector.py` (transmiterea efectivă către SPV, în limita de 1.500 de apeluri/zi/CUI). Aplicația nu diferențiază firmele nou-înființate de cele existente — de îndată ce profilul firmei e configurat ca persoană impozabilă stabilită în România, facturile emise către alți parteneri din România pot fi transmise prin RO e-Factura, fără o perioadă de tranziție specială aplicată intern.
+iConta.eu are o funcționalitate reală de generare și transmitere a facturilor electronice prin sistemul RO e-Factura, în aplicație (construirea XML-ului UBL 2.1/CIUS-RO) și aplicația/aplicația (transmiterea efectivă către SPV, în limita de 1.500 de apeluri/zi/CUI). Aplicația nu diferențiază firmele nou-înființate de cele existente — de îndată ce profilul firmei e configurat ca persoană impozabilă stabilită în România, facturile emise către alți parteneri din România pot fi transmise prin RO e-Factura, fără o perioadă de tranziție specială aplicată intern.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Somația este actul prin care începe, formal, executarea silită a unei creanț
 ::: ghid-temei
 „ART. 230 Somația
 (1) Executarea silită începe prin comunicarea somației. Dacă în termen de 15 zile de la comunicarea somației nu se stinge debitul sau nu se notifică organul fiscal cu privire la intenția de a demara procedura de mediere, se continuă măsurile de executare silită. Somația este însoțită de un exemplar al titlului executoriu emis de organul de executare silită."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 230 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 230 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret ignorarea somației:
@@ -32,6 +32,6 @@ Ce înseamnă concret ignorarea somației:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/control_fiscal_api.py` și `core/alerte_control_fiscal.py` verifică și notifică riscuri de neconcordanță între declarații și contabilitate (TVA, D112, D390), dar iConta.eu nu are, la acest moment, un modul care să urmărească somațiile primite de la ANAF sau termenele de 15 zile aferente lor — gestionarea unei somații de executare silită rămâne, integral, în afara aplicației.
+Verificat în cod: Aplicația verifică și notifică riscuri de neconcordanță între declarații și contabilitate (TVA, D112, D390), dar iConta.eu nu are, la acest moment, un modul care să urmărească somațiile primite de la ANAF sau termenele de 15 zile aferente lor — gestionarea unei somații de executare silită rămâne, integral, în afara aplicației.
 
 [iConta.eu](/)

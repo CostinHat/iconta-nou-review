@@ -46,6 +46,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CASS calculat pe p
 
 ## Ce face iConta.eu
 
-Regula „baza_podea" (`core/salarizare.py`, liniile 292-323) tratează CAS și CASS simetric, calculând podeaua o singură dată pentru fereastra activă a lunii și generând, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316), conform `monografie_salariu()` (linia 390).
+Regula „baza_podea" tratează CAS și CASS simetric, calculând podeaua o singură dată pentru fereastra activă a lunii și generând, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316), conform `monografie_salariu()` (linia 390).
 
 [iConta.eu](/)

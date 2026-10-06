@@ -16,7 +16,7 @@ Legea limitării utilizării numerarului nu conține un regim special, mai stric
 „(1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană.
 (2) Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la alin. (1), cu o valoare mai mare de 10.000 lei, precum și fragmentarea tranzacțiilor reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, respectiv fragmentarea unei livrări de bunuri sau a unei prestări de servicii, cu valoare mai mare de 10.000 lei.
 (3) Prevederile alin. (1) și (2) nu se aplică în cazul livrărilor de bunuri și prestărilor de servicii care se efectuează cu plata în rate, în condițiile în care între persoanele prevăzute la art. 1 alin. (1) și persoanele fizice sunt încheiate contracte de vânzare-cumpărare cu plata în rate, conform legii."
-— Legea nr. 70/2015, art. 4 alin. (1), (2), (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 4 alin. (1), (2), (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă concret pentru o tranzacție imobiliară:
@@ -34,6 +34,6 @@ Ce înseamnă concret pentru o tranzacție imobiliară:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are o funcționalitate specifică tranzacțiilor imobiliare. Modulul general de casierie (`core/casa.py`, funcția `verifica_plafon`) semnalează totuși, ca avertisment, orice încasare sau plată în numerar care depășește plafonul legal de 10.000 lei/zi/persoană (pentru persoane fizice) sau 5.000 lei/zi/persoană (pentru persoane juridice), indiferent de natura bunului tranzacționat — deci și pentru o eventuală plată în numerar aferentă unui imobil, dacă operațiunea e introdusă ca atare în aplicație.
+La data acestui ghid, iConta.eu nu are o funcționalitate specifică tranzacțiilor imobiliare. Modulul general de casierie (funcția `verifica_plafon`) semnalează totuși, ca avertisment, orice încasare sau plată în numerar care depășește plafonul legal de 10.000 lei/zi/persoană (pentru persoane fizice) sau 5.000 lei/zi/persoană (pentru persoane juridice), indiferent de natura bunului tranzacționat — deci și pentru o eventuală plată în numerar aferentă unui imobil, dacă operațiunea e introdusă ca atare în aplicație.
 
 [iConta.eu](/)

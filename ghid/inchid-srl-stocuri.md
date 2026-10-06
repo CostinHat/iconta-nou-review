@@ -21,7 +21,7 @@ Formularea „orice avere mobiliară a societății" acoperă, în sens larg, ș
 
 ## Ce se greșește în practică
 
-Se presupune adesea că orice vânzare de bun în perioada de lichidare trece prin ecranul dedicat „Lichidare / radiere firmă" din iConta.eu. Nu este cazul pentru stocuri: funcția de calcul din motorul de lichidare (`core/lichidare.py`, `nota_vanzare_activ`) este construită specific pentru **active imobilizate** — nota contabilă generată descarcă explicit un cont de imobilizare (implicit 2131 — mijloace fixe) și amortizarea cumulată aferentă (implicit 2813). Structura ei nu se potrivește cu ieșirea din gestiune a unui stoc (care nu are amortizare cumulată).
+Se presupune adesea că orice vânzare de bun în perioada de lichidare trece prin ecranul dedicat „Lichidare / radiere firmă" din iConta.eu. Nu este cazul pentru stocuri: funcția de calcul din motorul de lichidare (`nota_vanzare_activ`) este construită specific pentru **active imobilizate** — nota contabilă generată descarcă explicit un cont de imobilizare (implicit 2131 — mijloace fixe) și amortizarea cumulată aferentă (implicit 2813). Structura ei nu se potrivește cu ieșirea din gestiune a unui stoc (care nu are amortizare cumulată).
 
 ## Ce face iConta.eu
 

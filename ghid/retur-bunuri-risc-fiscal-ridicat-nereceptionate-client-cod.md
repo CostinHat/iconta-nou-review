@@ -16,10 +16,10 @@ Cazul e frecvent la distribuția de fructe și legume, băuturi sau materiale di
 
 ::: ghid-temei
 „9. transport care face obiectul monitorizării pe teritoriul național:"
-— OUG 41/2022, art. 2 pct. 9, partea introductivă (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 9, partea introductivă (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „i) transportul pe teritoriul național al bunurilor cu risc fiscal ridicat returnate, care nu au făcut obiectul recepției, între operatori economici diferiți sau între un operator economic și o persoană fizică;"
-— OUG 41/2022, art. 2 pct. 9 lit. i) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 9 lit. i) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce rezultă concret:

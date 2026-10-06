@@ -15,7 +15,7 @@ Când o plată online trece prin mai mulți intermediari — de exemplu un gatew
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.
 (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității nr. 82/1991, art. 6 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Legislația contabilă nu tratează separat "comisioanele de plată online" ca temă distinctă — regula generală de la art. 6 e cea care se aplică: fiecare operațiune (fiecare comision reținut, de fiecare intermediar) e o cheltuială separată, care se înregistrează pe baza documentului propriu, nu se compensează tacit cu venitul.

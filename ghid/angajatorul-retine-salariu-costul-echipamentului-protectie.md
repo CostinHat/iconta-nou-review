@@ -16,18 +16,18 @@ Nu. Echipamentul individual de protecție (căști, bocanci, mănuși, ochelari,
 
 ::: ghid-temei
 „(6) Măsurile privind securitatea, sănătatea și igiena în munca nu trebuie să comporte în nicio situație obligații financiare pentru lucrători."
-— Legea 319/2006, art. 7 alin. (6) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 7 alin. (6) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „r) să asigure echipamente individuale de protecție; [...] s) sa acorde obligatoriu echipament individual de protecție nou, în cazul degradării sau al pierderii calităților de protecție."
-— Legea 319/2006, art. 13 lit. r) și s) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. r) și s) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „Articolul 57 Angajații nu suportă în nicio situație costul măsurilor de prevenire aplicate în condițiile art. 56 ."
-— Legea 346/2002, art. 57 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 57 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(1) Nicio reținere din salariu nu poate fi operată, în afara cazurilor și condițiilor prevăzute de lege."
-— Legea 53/2003 (Codul muncii), art. 169 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 169 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă:

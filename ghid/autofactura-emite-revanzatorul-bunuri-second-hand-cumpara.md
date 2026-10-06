@@ -16,12 +16,12 @@ Autofactura nu e o formalitate de arhivă. Pe ea se sprijină prețul de cumpăr
 
 ::: ghid-temei
 „d) va emite o factură prin autofacturare către fiecare furnizor de la care achiziționează bunuri supuse regimului special și care nu este obligat să emită o factură. Factura emisă prin autofacturare trebuie să cuprindă următoarele informații: 1. numărul de ordine și data emiterii facturii; […] 2. data achiziției și numărul cu care a fost înregistrată în jurnalul special de cumpărări prevăzut la lit. a) sau data primirii bunurilor; […] 3. numele și adresa părților; […] 4. codul de înregistrare în scopuri de TVA al persoanei impozabile revânzătoare; […] 5. descrierea și cantitatea de bunuri cumpărate sau primite; […] 6. prețul de cumpărare, care se înscrie în factură la momentul cumpărării pentru bunurile în regim de consignație.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (6) lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (6) lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În condițiile stabilite prin normele metodologice, persoana impozabilă revânzătoare care aplică regimul special trebuie să îndeplinească următoarele obligații: a) să stabilească taxa colectată în cadrul regimului special pentru fiecare perioadă fiscală în care trebuie să depună decontul de taxă, conform art. 322 și 323 ; […] b) să țină evidența operațiunilor pentru care se aplică regimul special.”
-— Codul fiscal (Legea 227/2015), art. 312 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 312 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

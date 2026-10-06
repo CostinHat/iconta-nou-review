@@ -14,7 +14,7 @@ Retragerea de numerar din contul bancar al firmei, pentru alimentarea casieriei,
 
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Aplicat la retragerea de numerar cu comision bancar:

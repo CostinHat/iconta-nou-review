@@ -14,10 +14,10 @@ Dizolvarea nu înseamnă că firma dispare din evidența fiscală a doua zi. În
 
 ::: ghid-temei
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. [...] Nu intră sub incidența acestor prevederi contribuabilii care se dizolvă cu lichidare, pentru perioada cuprinsă între prima zi a anului fiscal următor celui în care a fost deschisă procedura lichidării și data închiderii procedurii de lichidare."
-— Legea 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Hotărârea tribunalului prin care s-a pronunțat dizolvarea se comunică societății, oficiului registrului comerțului pentru înregistrarea mențiunii de dizolvare în registrul comerțului, Agenției Naționale de Administrare Fiscală [...] și se publică în Buletinul electronic al registrului comerțului."
-— Legea 31/1990 (societăților), art. 237 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (societăților), art. 237 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din combinarea celor două acte rezultă imaginea completă: dizolvarea e comunicată automat și către ANAF, iar în perioada de lichidare regimul de declarare a impozitului pe profit se schimbă — nu se mai aplică termenele trimestriale obișnuite, ci un regim special legat de durata lichidării (art. 41 alin. (1), coroborat cu regulile de recuperare a pierderii fiscale din art. 31 alin. (6), unde întreaga perioadă de lichidare se consideră "un an" pentru acest calcul).

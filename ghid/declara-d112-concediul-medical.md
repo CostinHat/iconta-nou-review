@@ -14,7 +14,7 @@ Concediul medical se declară în D112 diferit față de o lună lucrată integr
 
 ::: ghid-temei
 „Indemnizațiile pentru incapacitate temporară de muncă se suportă după cum urmează: A. de către angajator, din prima zi până în a 5-a zi de incapacitate temporară de muncă, cu excepția indemnizațiilor aferente certificatelor de concediu medical acordate persoanelor asigurate pentru care a fost instituită măsura izolării, potrivit Legii nr. 136/2020."
-— OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 12 lit. A) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 12 lit. A) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Efectul practic pentru declarație:

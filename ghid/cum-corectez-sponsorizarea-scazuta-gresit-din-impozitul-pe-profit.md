@@ -56,7 +56,7 @@ O firmă a depus D101 pentru 2020 și a scăzut din impozitul pe profit o sponso
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/sponsorizari.py`) are funcțiile `plafon_credit()` și `credit_sponsorizare()`, care primesc un parametru `la_data` și, teoretic, ar trebui să aplice regula validă la acea dată. În realitate, în cod există o **singură variantă înregistrată**, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)` și tratează excedentul ca redirecționabil prin D177 — **indiferent de valoarea transmisă în `la_data`**.
+Motorul de calcul are funcțiile `plafon_credit()` și `credit_sponsorizare()`, care primesc un parametru `la_data` și, teoretic, ar trebui să aplice regula validă la acea dată. În realitate, în cod există o **singură variantă înregistrată**, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)` și tratează excedentul ca redirecționabil prin D177 — **indiferent de valoarea transmisă în `la_data`**.
 
 Practic, dacă introduceți în iConta.eu o corecție pentru un an fiscal dinainte de 03.02.2022, motorul va calcula tot cu 0,75% și va afișa suma nescăzută drept „redirecționabilă D177”, ceea ce este incorect pentru acea perioadă. Pentru corectarea unei D101 dintr-un an anterior lui 2022, calculați manual plafonul de 0,5% și tratați excedentul ca report pe 7 ani — nu vă bazați pe rezultatul automat al aplicației pentru aceste date istorice.
 

@@ -14,10 +14,10 @@ Cheltuiala cu un curs sau un stagiu de formare profesională plătit de firmă n
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare [...]"
-— Codul fiscal, art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt:2523-2526)
+— Codul fiscal, art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care participarea la cursurile sau stagiile de formare profesională este initiata de angajator, toate cheltuielile ocazionate de aceasta participare sunt suportate de către acesta."
-— Legea 53/2003 (Codul muncii, formă republicată), art. 197 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii, formă republicată), art. 197 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Legătura dintre cele două texte e directă:
@@ -34,6 +34,6 @@ Legătura dintre cele două texte e directă:
 
 ## Ce face iConta.eu
 
-Acest subiect nu ține de pontajul angajaților (funcționalitatea cercetată pentru acest ghid, `core/pontaj.py`) — pontajul din iConta.eu e o evidență informativă a zilelor de prezență/absență, care **nu alimentează statul de plată** și nu are nicio legătură cu deductibilitatea cheltuielilor de formare profesională. Deductibilitatea cursurilor plătite angajaților ține de motorul de calcul al rezultatului fiscal al firmei, subiect care nu a fost verificat în cercetarea de cod care a stat la baza acestui ghid.
+Acest subiect nu ține de pontajul angajaților (funcționalitatea cercetată pentru acest ghid, aplicația) — pontajul din iConta.eu e o evidență informativă a zilelor de prezență/absență, care **nu alimentează statul de plată** și nu are nicio legătură cu deductibilitatea cheltuielilor de formare profesională. Deductibilitatea cursurilor plătite angajaților ține de motorul de calcul al rezultatului fiscal al firmei, subiect care nu a fost verificat în cercetarea de cod care a stat la baza acestui ghid.
 
 [iConta.eu](/)

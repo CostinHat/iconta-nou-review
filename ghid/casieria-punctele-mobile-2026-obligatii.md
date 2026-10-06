@@ -14,7 +14,7 @@ O firmă cu mai multe puncte de lucru sau case de marcat mobile nu poate „împ
 
 ::: ghid-temei
 „În cazul persoanelor prevăzute la art. 1 alin. (1) care au organizate mai multe casierii, plafoanele prevăzute la art. 3 alin. (1) lit. a) și b) și la art. 4 alin. (1) sunt aplicabile pe fiecare casierie în parte. [...] Sucursalele și alte sedii secundare ale persoanelor juridice care au casierie proprie și/sau cont deschis la o instituție de credit aplică în mod corespunzător prevederile prezentului capitol."
-— Legea 70/2015 (disciplina financiară privind operațiunile de încasări și plăți în numerar), art. 7 și art. 8 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (disciplina financiară privind operațiunile de încasări și plăți în numerar), art. 7 și art. 8 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă pentru o firmă cu puncte mobile de lucru (chioșcuri, standuri, case de marcat mobile):

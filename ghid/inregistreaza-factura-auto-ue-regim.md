@@ -14,7 +14,7 @@ Când cumperi un autoturism second-hand de la un dealer dintr-un alt stat membru
 
 ::: ghid-temei
 „(8) Nu sunt considerate operațiuni impozabile în România: [...] c) achizițiile intracomunitare de bunuri second-hand, opere de artă, obiecte de colecție și de antichități, în sensul prevederilor art. 312, atunci când vânzătorul este o persoană impozabilă revânzătoare, care acționează în această calitate, iar bunurile au fost taxate în statul membru de unde sunt furnizate, conform regimului special pentru intermediarii persoane impozabile, în sensul art. 313 și 326 din Directiva 112, sau vânzătorul este organizator de vânzări prin licitație publică, care acționează în această calitate, iar bunurile au fost taxate în statul membru furnizor, conform regimului special, în sensul art. 333 din Directiva 112;"
-— Codul fiscal (Legea 227/2015), art. 268 alin. (8) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (8) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, legea spune că o astfel de achiziție **nu e deloc o operațiune impozabilă în România**, cu condiția cumulativă a trei elemente:
@@ -33,7 +33,7 @@ Când toate trei sunt îndeplinite, cumpărătorul din România **nu datorează 
 
 ## Ce face iConta.eu
 
-Această situație privește **achiziția** unui autoturism în regim de marjă, dinspre cumpărător. iConta.eu nu are, la data acestui ghid, un circuit dedicat de înregistrare a unei achiziții (intracomunitare sau nu) de bunuri second-hand în regim de marjă — verificat: modulul de calcul al regimului de marjă (`core/tva_marja.py`) nu conține nicio funcție de achiziție, doar de **vânzare** (folosită de operațiunile „Vânzare regim marjă (second-hand)" și „Marjă agenții de turism" din ecranul Operațiuni).
+Această situație privește **achiziția** unui autoturism în regim de marjă, dinspre cumpărător. iConta.eu nu are, la data acestui ghid, un circuit dedicat de înregistrare a unei achiziții (intracomunitare sau nu) de bunuri second-hand în regim de marjă — verificat: modulul de calcul al regimului de marjă nu conține nicio funcție de achiziție, doar de **vânzare** (folosită de operațiunile „Vânzare regim marjă (second-hand)" și „Marjă agenții de turism" din ecranul Operațiuni).
 
 Ce există în aplicație pe partea de regim de marjă e strict dinspre vânzare: motorul de calcul al marjei (funcționalitatea „Regim special marjă") și, separat, un raport de citire („Jurnal regim marjă") care afișează lunar notele deja înregistrate cu acest tip de vânzare. Niciuna din ele nu acoperă înregistrarea unei achiziții ca aceasta. Contabilul trebuie, azi, să introducă manual nota contabilă a achiziției (mașina intră în gestiune/imobilizări la costul de achiziție, fără linie de TVA deductibil, exact fiindcă art. 268 alin. (8) scoate operațiunea din sfera taxării).
 

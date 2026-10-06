@@ -16,13 +16,13 @@ O scrisoare cu valabilitate prea scurtă nu îndeplinește condiția legală. Ia
 
 ::: ghid-temei
 „Perioada de valabilitate a scrisorii de garanție/poliței de asigurare de garanție trebuie să fie cu cel puțin 3 luni mai mare decât scadența ultimei rate din eșalonarea la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (17) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (17) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin acordul de principiu organul fiscal stabilește perioada de eșalonare la plată, data până la care este valabilă garanția în cazul în care aceasta este constituită sub forma scrisorii de garanție/poliței de asigurare de garanție, precum și cuantumul garanției"
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile art. 174 alin. (5), nivelul dobânzii este de 0,015% pentru fiecare zi de întârziere, în situația în care debitorul constituie întreaga garanție sub forma scrisorii de garanție și/sau poliței de asigurare de garanție și/sau consemnării de mijloace bănești la o unitate a Trezoreriei Statului."
-— Codul de procedură fiscală (Legea 207/2015), art. 197 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 197 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie verificat la scrisoare:

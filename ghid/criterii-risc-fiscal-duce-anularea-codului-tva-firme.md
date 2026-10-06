@@ -16,7 +16,7 @@ Pentru cabinet, lista este utilă preventiv. Majoritatea criteriilor pot fi veri
 
 ::: ghid-temei
 „dacă persoana impozabilă, societate cu sediul activității economice în România, înființată în baza Legii nr. 31/1990, republicată, cu modificările și completările ulterioare, supusă înmatriculării la registrul comerțului, prezintă risc fiscal ridicat. Prin normele metodologice se stabilesc criteriile pentru evaluarea riscului fiscal."
-— Codul fiscal (Legea 227/2015), art. 316 alin. (11) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (11) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
@@ -26,7 +26,7 @@ Pentru cabinet, lista este utilă preventiv. Majoritatea criteriilor pot fi veri
 „3.1 Persoana impozabilă analizată nu are desemnată o persoană care să conducă compartimentul de contabilitate, inclusiv situația în care persoana impozabilă analizată nu are încheiate contracte de prestări servicii cu persoane fizice/juridice membre active CECCAR, în cazul în care contabilitatea este organizată și condusă pe bază de contracte de prestări de servicii în domeniul contabilității."
 „4.1 Persoana impozabilă analizată înregistrează neconcordanțe semnificative între informațiile înscrise în declarațiile fiscale/ informative/recapitulative proprii, respectiv între informațiile înregistrate în declarațiile fiscale/informative/recapitulative proprii în relația cu partenerii săi (furnizori/clienți) [...]"
 „5.1 Cel puțin unul dintre administratorii [...] persoanei impozabile analizate este cetățean străin care nu deține rezidență fiscală în România și capitalul social al persoanei impozabile analizate este sub 45.000 lei."
-— HG 1/2016, norme metodologice, anexa nr. 6 la titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, anexa nr. 6 la titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie știut despre criterii:

@@ -14,7 +14,7 @@ Spațiul Privat Virtual (SPV) e interfața ANAF prin care contribuabilul accesea
 
 ::: ghid-temei
 „k) specificaţiile naţionale de utilizare a facturii electronice - RO_CIUS - specificaţii tehnice de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, aplicabile la nivel naţional"
-— OUG 120/2021, art. 2 alin. (1) lit. k) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 alin. (1) lit. k) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce contează, structural, pentru identificarea unei facturi electronice:

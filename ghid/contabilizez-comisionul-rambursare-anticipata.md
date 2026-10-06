@@ -14,7 +14,7 @@ Când un credit e rambursat înainte de termen, banca poate percepe un comision 
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate» [...] Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: – valoarea serviciilor bancare și asimilate plătite (471, 512)."
-— OMFP nr. 1.802/2014, Reglementări contabile (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementări contabile (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 La plata unei rate anticipate cu comision, înregistrarea se împarte pe trei componente:

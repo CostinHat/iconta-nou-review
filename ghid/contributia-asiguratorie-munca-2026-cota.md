@@ -14,10 +14,10 @@ Spre deosebire de CAS și CASS, contribuția asiguratorie pentru muncă (CAM) nu
 
 ::: ghid-temei
 „Cota contribuției asiguratorii pentru muncă este de 2,25%."
-— Legea nr. 227/2015, art. 220^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Baza lunară de calcul al contribuției asiguratorii pentru muncă o reprezintă suma câștigurilor brute realizate din salarii și venituri asimilate salariilor, în țară și în străinătate [...], care include: a) veniturile din salarii, în bani și/sau în natură, obținute în baza unui contract individual de muncă, a unui raport de serviciu sau a unui statut special prevăzut de lege [...]"
-— Legea nr. 227/2015, art. 220^4 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^4 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut despre CAM:

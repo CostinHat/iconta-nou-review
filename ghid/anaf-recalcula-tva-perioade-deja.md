@@ -17,7 +17,7 @@ Regula generală e că o inspecție fiscală încheiată „închide" perioada v
 a) după încheierea inspecției fiscale apar date suplimentare care erau necunoscute organului de inspecție fiscală sau, după caz, contribuabilului, la data efectuării inspecției fiscale;
 b) datele suplimentare influențează rezultatele inspecției fiscale încheiate.
 (2) Prin date suplimentare se înțelege orice fapt sau mijloc de probă de care se ia cunoștință ulterior inspecției, de natură să modifice rezultatele inspecției anterioare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 128 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 128 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Reverificarea nu e la liberul discreționar al inspectorului — cere **ambele** condiții cumulate: date noi, necunoscute la data inspecției, care influențează efectiv rezultatele acesteia. O simplă reinterpretare a acelorași fapte, deja cunoscute, nu justifică reverificarea.
@@ -33,6 +33,6 @@ b) datele suplimentare influențează rezultatele inspecției fiscale încheiate
 
 ## Ce face iConta.eu
 
-Subiectul acestui ghid este pur procedural-legal, guvernat de Codul de procedură fiscală, și nu are legătură cu **F118 — Blocare perioade**, mecanismul intern al aplicației care protejează integritatea evidenței contabile a firmei (blochează scrierea de note noi într-o lună închisă, per tenant). Verificat direct în cod: motorul SAF-T (`core/d406.py`) și modulul de control fiscal nu verifică deloc tabela `perioade_blocate`, iar reverificarea fiscală de care vorbește art. 128 e o procedură desfășurată exclusiv de ANAF, asupra propriei sale decizii de impunere anterioare — nu ceva ce o aplicație de contabilitate ar putea automatiza sau preveni. Ceea ce oferă iConta.eu în zona adiacentă este blocarea perioadelor contabile proprii ale firmei (F118) și, separat, controlul încrucișat intern D300 vs. evidența contabilă, util pentru a reduce riscul ca ANAF să găsească motive de reverificare — dar niciuna dintre aceste funcționalități nu „răspunde" pentru firmă la o reverificare deja declanșată de organul fiscal.
+Subiectul acestui ghid este pur procedural-legal, guvernat de Codul de procedură fiscală, și nu are legătură cu **F118 — Blocare perioade**, mecanismul intern al aplicației care protejează integritatea evidenței contabile a firmei (blochează scrierea de note noi într-o lună închisă, per tenant). Verificat direct în cod: motorul SAF-T și modulul de control fiscal nu verifică deloc tabela `perioade_blocate`, iar reverificarea fiscală de care vorbește art. 128 e o procedură desfășurată exclusiv de ANAF, asupra propriei sale decizii de impunere anterioare — nu ceva ce o aplicație de contabilitate ar putea automatiza sau preveni. Ceea ce oferă iConta.eu în zona adiacentă este blocarea perioadelor contabile proprii ale firmei (F118) și, separat, controlul încrucișat intern D300 vs. evidența contabilă, util pentru a reduce riscul ca ANAF să găsească motive de reverificare — dar niciuna dintre aceste funcționalități nu „răspunde" pentru firmă la o reverificare deja declanșată de organul fiscal.
 
 [iConta.eu](/)

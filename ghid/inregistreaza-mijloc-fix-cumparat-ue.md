@@ -15,7 +15,7 @@ Faptul că bunul cumpărat e un mijloc fix, nu marfă de revânzare, nu schimbă
 ::: ghid-temei
 „CF art. 268 alin. (1)-(3) lit. a) — Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” — `cod_fiscal_227_2015_consolidat.txt` L16593-16626, dosarul F050.
 
-„`achizitie_ic` (achiziție intracomunitară): câmpuri dată, valoare RON, cod TVA furnizor UE, nr. factură, furnizor, cont destinație (sugestie `371`), tip (bunuri/servicii), cotă TVA % (opțional, sugestie 21)...” — `static/js/ecrane/operatiuni_ecran.js`, dosarul F050.
+„`achizitie_ic` (achiziție intracomunitară): câmpuri dată, valoare RON, cod TVA furnizor UE, nr. factură, furnizor, cont destinație (sugestie `371`), tip (bunuri/servicii), cotă TVA % (opțional, sugestie 21)...” — aplicația, dosarul F050.
 :::
 
 Ca la orice achiziție intracomunitară de bunuri: taxa se calculează prin taxare inversă (4426=4427), iar operațiunea intră în D390 la codul A. Diferența față de o achiziție de marfă e doar destinația contabilă — un mijloc fix nu intră în contul de mărfuri.

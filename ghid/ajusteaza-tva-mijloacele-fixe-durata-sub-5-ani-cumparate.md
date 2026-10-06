@@ -14,15 +14,15 @@ Nu se aplică regula cincimilor din art. 305, ci o regulă tranzitorie. TVA se a
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 305 alin. (5) , se ajustează taxa deductibilă proporțional cu valoarea rămasă neamortizată la momentul la care intervin evenimentele prevăzute la art. 305 alin. (4) pentru următoarele categorii de active corporale fixe care până la data de 31 decembrie 2015 nu erau considerate bunuri de capital"
-— Codul fiscal (Legea 227/2015), art. 306 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 306 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „a) activele corporale fixe amortizabile a căror durată normală de utilizare stabilită pentru amortizarea fiscală este mai mică de 5 ani, care au fost achiziționate sau fabricate după data aderării până la data 31 decembrie 2015 inclusiv"
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 80 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 80 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(4) Ajustarea taxei în cazul activelor corporale fixe prevăzute la alin. (1) se efectuează proporțional cu valoarea rămasă neamortizată la momentul la care intervin evenimentele prevăzute la alin. (2) . Dacă activele sunt complet amortizate la momentul la care intervin evenimentele prevăzute la alin. (2) nu se mai fac ajustări de taxă."
-— HG 1/2016, Titlul VII, pct. 80 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 80 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce active intră:

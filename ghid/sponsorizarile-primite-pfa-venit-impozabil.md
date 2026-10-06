@@ -14,7 +14,7 @@ Nu. Sumele sau bunurile pe care un PFA le primește sub formă de sponsorizare, 
 
 ::: ghid-temei
 „(3) Nu sunt considerate venituri brute: a) aporturile în numerar sau echivalentul în lei al aporturilor în natură făcute la începerea unei activități sau în cursul desfășurării acesteia; b) sumele primite sub formă de credite bancare sau de împrumuturi de la persoane fizice sau juridice; c) sumele primite ca despăgubiri; d) sumele sau bunurile primite sub formă de sponsorizări și mecenat, conform legii, sau donații."
-— Cod fiscal, art. 68 alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 68 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta, concret, pentru un PFA:

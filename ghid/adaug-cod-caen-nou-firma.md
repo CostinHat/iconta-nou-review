@@ -14,7 +14,7 @@ Adăugarea unui cod CAEN presupune două pași distincți: înregistrarea propri
 
 ::: ghid-temei
 „Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Legea nr. 207/2015, art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă pentru adăugarea unui cod CAEN:
@@ -32,6 +32,6 @@ Ce rezultă pentru adăugarea unui cod CAEN:
 
 ## Ce face iConta.eu
 
-Câmpul de cod CAEN din profilul firmei în iConta.eu (`core/firma_profil_api.py`) e folosit direct la generarea declarațiilor D101, D300 și D394, iar aplicația verifică activ dacă valoarea introdusă se regăsește în nomenclatorul acceptat de D112, semnalând eroarea contabilului înainte de depunere dacă nu se regăsește. Aplicația gestionează însă un singur cod CAEN activ în profilul firmei, nu o listă completă de coduri secundare, iar depunerea declarației de mențiuni la ANAF pentru adăugarea codului rămâne un pas separat, în afara aplicației.
+Câmpul de cod CAEN din profilul firmei în iConta.eu e folosit direct la generarea declarațiilor D101, D300 și D394, iar aplicația verifică activ dacă valoarea introdusă se regăsește în nomenclatorul acceptat de D112, semnalând eroarea contabilului înainte de depunere dacă nu se regăsește. Aplicația gestionează însă un singur cod CAEN activ în profilul firmei, nu o listă completă de coduri secundare, iar depunerea declarației de mențiuni la ANAF pentru adăugarea codului rămâne un pas separat, în afara aplicației.
 
 [iConta.eu](/)

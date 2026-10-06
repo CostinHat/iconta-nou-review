@@ -15,7 +15,7 @@ Când un inspector fiscal cere justificarea pro-ratei aplicate, întrebarea real
 ::: ghid-temei
 „(6) Pro rata prevăzută la alin. (5) se determină ca raport între: a) suma totală, fără taxă, dar cuprinzând subvențiile legate direct de preț, a operațiunilor constând în livrări de bunuri și prestări de servicii care permit exercitarea dreptului de deducere, la numărător; și b) suma totală, fără taxă, a operațiunilor prevăzute la lit. a) și a operațiunilor constând în livrări de bunuri și prestări de servicii care nu permit exercitarea dreptului de deducere, la numitor. [...]
 (8) Pro rata definitivă se determină anual, iar calculul acesteia include toate operațiunile prevăzute la alin. (6), pentru care exigibilitatea taxei ia naștere în timpul anului calendaristic respectiv [...]. Pro rata definitivă se determină procentual și se rotunjește până la cifra unităților imediat următoare. La decontul de taxă [...], în care s-a efectuat ajustarea prevăzută la alin. (14), se anexează un document care prezintă metoda de calcul al pro ratei definitive."
-— Cod fiscal, art. 300 alin. (6) și (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 300 alin. (6) și (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un control, verificați pe rând:

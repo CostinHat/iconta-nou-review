@@ -14,7 +14,7 @@ Indemnizația de concediu medical nu e suportată integral de casa de sănătate
 
 ::: ghid-temei
 „Indemnizațiile pentru incapacitate temporară de muncă se suportă după cum urmează: A. de către angajator, din prima zi până în a 5-a zi de incapacitate temporară de muncă, cu excepția indemnizațiilor aferente certificatelor de concediu medical acordate persoanelor asigurate pentru care a fost instituită măsura izolării, potrivit Legii nr. 136/2020; B. din bugetul Fondului național unic de asigurări sociale de sănătate, începând cu: a) ziua următoare celor suportate de angajator, conform lit. A [...]; [...] c) prima zi de incapacitate temporară de muncă, în cazul persoanelor asigurate pentru care a fost instituită măsura izolării, potrivit Legii nr. 136/2020."
-— OUG 158/2005, art. 12 (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005, art. 12 (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Regula, pe scurt:
@@ -32,7 +32,7 @@ Regula, pe scurt:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`) împarte automat zilele plătite între angajator și FNUASS și întoarce direct, pentru fiecare certificat, zilele și sumele pe fiecare sursă — vizibile contabilului la introducerea certificatului în fișa salariatului.
+Motorul de calcul împarte automat zilele plătite între angajator și FNUASS și întoarce direct, pentru fiecare certificat, zilele și sumele pe fiecare sursă — vizibile contabilului la introducerea certificatului în fișa salariatului.
 
 O eroare reală, verificată în cod: pentru certificatele cu codul de **izolare**, aplicația alocă în continuare o porțiune din indemnizație în sarcina angajatorului (până la 5 zile), deși legea, citată mai sus, exceptează explicit izolarea de la regula generală și cere ca FNUASS să suporte totul din prima zi. Sursa erorii pare să fie faptul că lista internă de coduri „suportate integral din FNUASS" a fost construită după structura declarației D112, care nu include separat codul de izolare în acea listă, fără o verificare încrucișată cu textul art. 12 din OUG 158/2005. Pentru certificatele de izolare, verificați manual, până la corectare, că suma reținută ca fiind „în sarcina angajatorului" e de fapt zero.
 

@@ -15,10 +15,10 @@ Există o diferență importantă între „dividende aprobate" și „dividende
 ::: ghid-temei
 „(2) Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat, opțional trimestrial pe baza situațiilor financiare interimare și anual, după regularizarea efectuată prin situațiile financiare anuale, dacă prin actul constitutiv nu se prevede altfel. [...]
 (2^1) În cazul distribuirii parțiale a dividendelor între asociați sau acționari în cursul anului financiar, situațiile financiare anuale vor evidenția dividendele atribuite parțial și vor regulariza diferențele rezultate, în mod corespunzător."
-— Legea 31/1990, art. 67 alin. (2) și (2^1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (2) și (2^1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(7) [...] Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor/sumelor reprezentând câștigul obținut ca urmare a deținerii de titluri de participare de către acționari/asociați/investitori. [...] În cazul dividendelor/câștigurilor obținute ca urmare a deținerii de titluri de participare, distribuite, dar care nu au fost plătite acționarilor/asociaților/investitorilor până la sfârșitul anului în care s-a aprobat distribuirea acestora, impozitul pe dividende/câștig se plătește până la data de 25 ianuarie inclusiv a anului următor distribuirii."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din cele două texte rezultă exact ce anume trebuie documentat, pentru a dovedi o distribuire reală, nu doar aprobată:

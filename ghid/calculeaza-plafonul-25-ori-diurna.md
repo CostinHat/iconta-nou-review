@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat; [...] (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Descompunerea formulei „2,5 ori":
@@ -32,7 +32,7 @@ Descompunerea formulei „2,5 ori":
 
 ## Ce face iConta.eu
 
-Formula 2,5× este implementată exact conform textului de mai sus, ca primă componentă a calculului din funcția `plafon_diurna` (`core/deconturi.py`): aplicația calculează `2,5 × diurna_bugetară` și îl compară automat cu al doilea prag (3×salariu/zile lucrătoare), reținând minimul. Calculul e „period-aware" — alege automat 20 sau 23 lei ca bază, în funcție de data la care se raportează plafonul.
+Formula 2,5× este implementată exact conform textului de mai sus, ca primă componentă a calculului din funcția `plafon_diurna`: aplicația calculează `2,5 × diurna_bugetară` și îl compară automat cu al doilea prag (3×salariu/zile lucrătoare), reținând minimul. Calculul e „period-aware" — alege automat 20 sau 23 lei ca bază, în funcție de data la care se raportează plafonul.
 
 Ca și în cazul celorlalte întrebări despre plafon, trebuie spus clar: acest calcul **nu are un ecran dedicat în iConta**. Formula de 2,5× nu e vizibilă nicăieri în interfața de „Decont deplasare / diurnă" — există doar ca funcție de calcul internă, apelabilă azi doar prin API, nu prin niciun buton din aplicație. Un contabil care vrea să vadă rezultatul acestei formule pentru un caz concret trebuie să-l calculeze manual.
 

@@ -14,10 +14,10 @@ Diferența dintre „obiect de inventar" (cheltuială curentă) și „mijloc fi
 
 ::: ghid-temei
 „mijloc fix - orice imobilizare corporală, care este deținută pentru a fi utilizată în producția sau livrarea de bunuri ori în prestarea de servicii, pentru a fi închiriată terților sau în scopuri administrative, dacă are o durată normală de utilizare mai mare de un an și o valoare egală sau mai mare decât limita stabilită prin hotărâre a Guvernului."
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: ... b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) lit. b), modificată de OUG 8/2026 art. 6 pct. 7, aplicabilă începând cu anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) lit. b), modificată de OUG 8/2026 art. 6 pct. 7, aplicabilă începând cu anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă un prag unic, valabil pentru toți contribuabilii — inclusiv PFA în sistem real, care aplică regulile de amortizare din Codul fiscal la fel ca o firmă:

@@ -16,7 +16,7 @@ Cercetarea este obligatorie în toate cazurile, iar rezultatul se consemnează �
 
 ::: ghid-temei
 „(1) Cercetarea evenimentelor este obligatorie și se efectuează după cum urmează: a) de către angajator, în cazul evenimentelor care au produs incapacitate temporară de muncă; ... b) de către inspectoratele teritoriale de muncă, în cazul evenimentelor care au produs invaliditate evidenta sau confirmată, deces, accidente colective, incidente periculoase, în cazul evenimentelor care au produs incapacitate temporară de muncă lucrătorilor la angajatorii persoane fizice, precum și în situațiile cu persoane date dispărute; ... c) de către Inspecția Muncii, în cazul accidentelor colective, generate de unele evenimente deosebite, precum avariile sau exploziile; ... d) de către autoritățile de sănătate publică teritoriale, respectiv a municipiului București, în cazul suspiciunilor de boala profesională și a bolilor legate de profesiune. ... (2) Rezultatul cercetării evenimentului se va consemna într-un proces-verbal."
-— Legea 319/2006, art. 29 alin. (1) și (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 29 alin. (1) și (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Împărțirea competenței:

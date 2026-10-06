@@ -14,7 +14,7 @@ D406 nu este o declarație completată manual, câmp cu câmp — este un fișie
 
 ::: ghid-temei
 „Fişierul standard de control fiscal (SAF-T) se transmite de către contribuabili/plătitori prin intermediul unei declaraţii informative, denumită în continuare Declaraţia informativă D406 [...] SAF-T este un fişier în format electronic, de tip XML, conţinând date extrase [din evidența contabilă şi fiscală]."
-— OPANAF nr. 1.783/2021 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Câteva elemente structurale, așa cum rezultă din procedura ANAF:
@@ -32,6 +32,6 @@ Câteva elemente structurale, așa cum rezultă din procedura ANAF:
 
 ## Ce face iConta.eu
 
-iConta.eu generează efectiv fișierul XML SAF-T pentru Declarația D406, în modulul `core/d406.py`, pe baza registrelor contabile din aplicație (jurnal general, facturi, plăți, active). Generatorul a fost verificat pe validatorul oficial ANAF (DUK), inclusiv pentru cazul unei luni fără mișcări, când se depune o declarație „pe zero", fără a inventa tranzacții. Aplicația mapează sursele interne (facturi, note contabile, jurnal de casă/bancă) pe structura de jurnale auxiliare cerută de normă, iar liniile de tranzacție poartă identificarea partenerului sau a codului propriu, conform regulilor XSD ale schemei SAF-T.
+iConta.eu generează efectiv fișierul XML SAF-T pentru Declarația D406, în aplicație, pe baza registrelor contabile din aplicație (jurnal general, facturi, plăți, active). Generatorul a fost verificat pe validatorul oficial ANAF (DUK), inclusiv pentru cazul unei luni fără mișcări, când se depune o declarație „pe zero", fără a inventa tranzacții. Aplicația mapează sursele interne (facturi, note contabile, jurnal de casă/bancă) pe structura de jurnale auxiliare cerută de normă, iar liniile de tranzacție poartă identificarea partenerului sau a codului propriu, conform regulilor XSD ale schemei SAF-T.
 
 [iConta.eu](/)

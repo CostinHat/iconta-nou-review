@@ -16,13 +16,13 @@ Pentru cabinet, partea practică e lanțul de transmitere: firma-client care dec
 
 ::: ghid-temei
 „(1) Conducătorul vehiculului de transport este obligat să prezinte, la solicitarea organelor competente din cadrul Agenției Naționale de Administrare Fiscală ori din cadrul Autorității Vamale Române, respectiv la solicitarea ofițerilor și agenților de poliție din cadrul Poliției Române, documentele care însoțesc transportul de bunuri care fac obiectul monitorizării prin sistemul RO e-Transport împreună cu codul UIT pus la dispoziție conform prevederilor art. 8^2 alin. (4) ."
-— OUG 41/2022, art. 10 alin. (1) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 10 alin. (1) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(4) Operatorul de transport rutier este obligat să pună la dispoziția conducătorului auto codul UIT primit conform prevederilor art. 8 alin. (2) ."
-— OUG 41/2022, art. 8^2 alin. (4) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^2 alin. (4) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „12. identificarea prin cod UIT - deținerea și prezentarea codului UIT pe timpul transportului de către operatorul de transport rutier sau operatorul economic care transportă cu vehicule care îi aparțin bunuri în nume propriu, în format fizic sau electronic, împreună cu documentul care însoțește transportul bunurilor."
-— OUG 41/2022, art. 2 pct. 12 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 12 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce are șoferul la el:

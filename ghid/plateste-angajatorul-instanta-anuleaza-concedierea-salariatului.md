@@ -16,18 +16,18 @@ Pentru contabil, despăgubirea are regim de salariu pentru perioade anterioare: 
 
 ::: ghid-temei
 „În cazul în care concedierea a fost efectuată în mod netemeinic sau nelegal, instanța va dispune anularea ei și va obliga angajatorul la plata unei despăgubiri egale cu salariile indexate, majorate și reactualizate și cu celelalte drepturi de care ar fi beneficiat salariatul.(2) La solicitarea salariatului instanța care a dispus anularea concedierii va repune părțile în situația anterioară emiterii actului de concediere."
-— Codul muncii (Legea 53/2003), art. 80 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 80 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) În cazul în care salariatul nu solicită repunerea în situația anterioară emiterii actului de concediere, contractul individual de muncă va înceta de drept la data rămânerii definitive și irevocabile a hotărârii judecătorești."
-— Codul muncii (Legea 53/2003), art. 80 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 80 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „În cazul veniturilor reprezentând salarii/solde, diferențe de salarii/solde [...] stabilite în baza unor hotărâri judecătorești rămase definitive și irevocabile/hotărâri judecătorești definitive și executorii, inclusiv cele acordate potrivit hotărârilor primei instanțe, executorii de drept, impozitul se calculează și se reține la data efectuării plății, în conformitate cu reglementările legale în vigoare la data plății pentru veniturile realizate în afara funcției de bază, și se plătește până la data de 25 a lunii următoare celei în care au fost plătite."
-— Codul fiscal (Legea 227/2015), art. 78 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 78 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „sumele respective se defalcă pe lunile la care se referă și se utilizează cotele de contribuții de asigurări sociale care erau în vigoare în acea perioadă. Contribuțiile de asigurări sociale datorate potrivit legii se calculează, se rețin la data efectuării plății și se plătesc până la data de 25 a lunii următoare celei în care au fost plătite aceste sume."
-— Codul fiscal (Legea 227/2015), art. 146 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 146 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce intră în plată și cum se tratează:

@@ -14,7 +14,7 @@ VIES (sistemul de verificare a codurilor de TVA intracomunitare) și regimurile 
 
 ::: ghid-temei
 „Orice persoană impozabilă nestabilită în Uniunea Europeană poate utiliza un regim special pentru toate serviciile prestate către persoane neimpozabile care sunt stabilite, au domiciliul stabil ori reședința obișnuită în Uniunea Europeană. Regimul special permite, printre altele, înregistrarea unei persoane impozabile nestabilite în Uniunea Europeană într-un singur stat membru, conform prezentului articol, pentru toate serviciile prestate către persoane neimpozabile stabilite în Uniunea Europeană."
-— Legea 227/2015 (Codul fiscal), art. 314 alin. (2) — regimul special pentru servicii prestate de persoane nestabilite în UE (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 314 alin. (2) — regimul special pentru servicii prestate de persoane nestabilite în UE (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce confirmă structura Codului fiscal:

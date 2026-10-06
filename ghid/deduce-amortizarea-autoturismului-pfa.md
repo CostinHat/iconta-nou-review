@@ -15,7 +15,7 @@ Pentru un PFA care conduce contabilitate în sistem real, amortizarea unui autot
 ::: ghid-temei
 „Articolul 68 Reguli generale de stabilire a venitului net anual din activități independente, determinat în sistem real, pe baza datelor din contabilitate
 (1) Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri, cu excepția situațiilor în care sunt aplicabile prevederile art. 68^1, 68^3 și 69."
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru amortizarea unui autoturism la PFA:

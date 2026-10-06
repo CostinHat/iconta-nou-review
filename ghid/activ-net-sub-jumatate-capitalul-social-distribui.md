@@ -16,16 +16,16 @@ Regula, introdusă prin Legea 239/2025 și aplicabilă din 18 decembrie 2025, sc
 
 ::: ghid-temei
 „(2) Societățile care, pe baza situațiilor financiare anuale, aprobate potrivit legii, au o valoare a activului net diminuată la mai puțin de jumătate din valoarea capitalului social subscris pot efectua distribuiri de dividende din profitul exercițiului financiar curent numai după reîntregirea activului net la valoarea minimă prevăzută de lege. (3) Societățile care, pe baza situațiilor financiare interimare, aprobate potrivit legii, au o valoare a activului net diminuată la mai puțin de jumătate din valoarea capitalului social subscris nu pot efectua distribuiri de dividende interimare din profitul exercițiului financiar curent dacă nu au reîntregit activul net la valoarea minimă prevăzută de lege."
-— Legea 31/1990, art. 69^1 alin. (2)-(3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 69^1 alin. (2)-(3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „activul net al societății, determinat ca diferență între totalul activelor și totalul datoriilor acesteia, s-a diminuat la mai puțin de jumătate din valoarea capitalului social subscris"
-— Legea 31/1990, art. 153^24 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Dacă se constată o pierdere a activului net, capitalul social subscris va trebui reîntregit sau redus înainte de a se putea face vreo repartizare sau distribuire de profit."
-— Legea 31/1990, art. 69 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 69 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societățile care, pe baza situațiilor financiare anuale, aprobate potrivit legii, au o valoare a activului net diminuată la mai puțin de jumătate din valoarea capitalului social subscris nu pot restitui acționarilor sau asociaților, după caz, sau altor persoane afiliate, așa cum sunt definite conform reglementărilor contabile aplicabile, împrumuturile luate de la aceștia."
-— Legea 31/1990, art. 67 alin. (2^4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (2^4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

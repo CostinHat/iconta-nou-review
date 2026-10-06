@@ -14,7 +14,7 @@ Un client care returnează un produs cumpărat dintr-un magazin online nu anulea
 
 ::: ghid-temei
 „Baza de impozitare se reduce în următoarele situații: [...] b) în cazul refuzurilor totale sau parțiale privind cantitatea, calitatea ori prețurile bunurilor livrate sau ale serviciilor prestate, precum și în cazul desființării totale ori parțiale a contractului pentru livrarea sau prestarea în cauză ca urmare a unui acord scris între părți sau ca urmare a unei hotărâri judecătorești definitive/definitive și irevocabile, după caz, sau în urma unui arbitraj."
-— Legea 227/2015 (Codul fiscal), art. 287 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 287 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Un retur de marfă e, fiscal, un „refuz total sau parțial" al bunurilor livrate — situație care impune reducerea bazei de impozitare a TVA, nu doar o simplă notă internă.

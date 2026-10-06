@@ -16,9 +16,9 @@ Pentru contabilul firmei de dezvoltare, asta înseamnă mai mult decât un cont 
 
 ::: ghid-temei
 „(1) Prețurile și tarifele practicate pentru furnizarea serviciilor de utilități publice de către proprietarii/ dezvoltatorii ansamblurilor rezidențiale se aprobă de către autoritatea de reglementare competentă. Aceștia au obligația să țină evidența contabilă separată pentru fiecare serviciu de utilitate publică furnizat/prestat."
-— Legea 196/2018, art. 101 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 101 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(3) Proprietarii/Dezvoltatorii ansamblurilor rezidențiale care asigură furnizarea serviciilor de utilități publice prin rețele private au aceleași drepturi și obligații ca și operatorii care furnizează/ prestează servicii de utilități publice prin intermediul rețelelor publice […]"
-— Legea 196/2018, art. 101 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 101 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

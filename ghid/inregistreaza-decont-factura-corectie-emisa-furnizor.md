@@ -16,18 +16,18 @@ Pe scurt: furnizorul o raportează separat și **nu mai colectează** TVA-ul, de
 
 ::: ghid-temei
 „Persoanele impozabile care au fost supuse unui control fiscal și au fost constatate și stabilite erori în ceea ce privește stabilirea corectă a taxei colectate, fiind obligate la plata acestor sume în baza actului administrativ emis de autoritatea fiscală competentă, pot emite facturi de corecție conform alin. (1) lit. b) către beneficiari. Pe facturile emise se va face mențiunea că sunt emise după control și vor fi înscrise într-o rubrică separată în decontul de taxă."
-— Codul fiscal (Legea 227/2015), art. 330 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 330 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție, în cazul în care furnizorul emite facturi de corecție, fie din inițiativă proprie, fie în urma inspecției fiscale în cadrul căreia organul fiscal a stabilit TVA colectată pentru anumite operațiuni efectuate în perioada supusă inspecției fiscale, beneficiarul respectivelor operațiuni are dreptul să deducă taxa înscrisă în factura de corecție emisă de furnizor chiar dacă termenul de prescripție a dreptului de a stabili obligații fiscale s-a împlinit. În aceste situații, dreptul de deducere poate fi exercitat în cel mult un an de la data primirii facturii de corecție, sub sancțiunea decăderii."
-— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Furnizorii/Prestatorii care emit facturi de corecție după inspecția fiscală, în conformitate cu prevederile art. 330 alin. (3) din Codul fiscal, înscriu aceste facturi în jurnalul pentru vânzări într-o rubrică separată, iar acestea se preiau de asemenea într-o rubrică separată din decontul de taxă, fără a avea obligația să colecteze taxa pe valoarea adăugată înscrisă în respectivele facturi."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Beneficiarii au dreptul de deducere a taxei pe valoarea adăugată înscrise în aceste facturi în limitele și în condițiile stabilite la art. 297-301 din Codul fiscal, taxa fiind înscrisă în rubricile din decontul de taxă aferente achizițiilor de bunuri și servicii."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 **La furnizor:**

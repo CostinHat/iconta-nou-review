@@ -14,7 +14,7 @@ Pentru firme, PFA-uri și profesii liberale, comunicarea electronică cu ANAF nu
 
 ::: ghid-temei
 „Prin excepție de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri și alte entități fără personalitate juridică, precum și persoane fizice care desfășoară o profesie liberală sau exercită o activitate economică în mod independent în una dintre formele prevăzute de Ordonanța de urgență a Guvernului nr. 44/2008 [...] sunt obligați să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanță în condițiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanțelor/A.N.A.F."
-— Legea 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, orice firmă (persoană juridică) și orice PFA/II/IF sunt obligate să se înroleze în sistemul de comunicare electronică al ANAF (practic, Spațiul Privat Virtual) și să transmită pe acest canal cererile, înscrisurile și documentele către organul fiscal central. Persoanele fizice fără activitate economică rămân, pentru comunicarea uzuală, pe regimul opțional.
@@ -27,7 +27,7 @@ Comunicarea electronică nu se limitează la declarațiile fiscale periodice —
 
 ::: ghid-temei
 „Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. în cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Diferența e esențială: nu contează momentul la care ai apăsat „trimite", ci momentul înregistrării pe portal, confirmat prin mesajul electronic — și doar dacă declarația a fost validată. Dacă transmiterea a fost respinsă (erori de conținut), data depunerii rămâne cea a mesajului inițial doar dacă se depune o declarație validă până în ultima zi a lunii în care se împlinește termenul legal — altfel data care contează e cea a validării efective.

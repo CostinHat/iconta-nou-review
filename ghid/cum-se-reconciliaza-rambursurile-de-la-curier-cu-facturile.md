@@ -20,7 +20,7 @@ Firmele care vând cu plata ramburs primesc de la curier, de regulă, o singură
 
 Motorul de matching identifică facturile unui partener pe baza CUI-ului extras din descrierea liniei bancare. O decontare de ramburs de la curier conține, de regulă, un singur transfer agregat, cu textul curierului în descriere (de exemplu "DECONTARE RAMBURS"), nu CUI-ul fiecărui client final care a plătit ramburs la livrare. Fără CUI detectat, motorul marchează automat linia cu status roșu, motivul fiind explicit "fără CUI în descriere" — indiferent de câte facturi individuale acoperă real suma decontată.
 
-Nu există în motorul de matching (`core/reconciliere.py`) niciun mecanism de "matching pe lot", care să lege o singură linie de decontare agregată de N facturi individuale. Pentru a înregistra corect aceste încasări, e nevoie fie de alocare manuală linie cu linie, fie de un raport separat de settlement (în afara ariei acestui motor), care să identifice comenzile individuale acoperite de decontare.
+Nu există în motorul de matching niciun mecanism de "matching pe lot", care să lege o singură linie de decontare agregată de N facturi individuale. Pentru a înregistra corect aceste încasări, e nevoie fie de alocare manuală linie cu linie, fie de un raport separat de settlement (în afara ariei acestui motor), care să identifice comenzile individuale acoperite de decontare.
 
 ## Ce se greșește în practică
 
@@ -31,7 +31,7 @@ Nu există în motorul de matching (`core/reconciliere.py`) niciun mecanism de "
 
 ## Ce face iConta.eu
 
-`core/reconciliere.py` cere un CUI identificat pentru fiecare linie de extras (populat în amonte, prin extragerea automată din descriere) înainte de a căuta facturi deschise ale partenerului. O linie fără CUI detectat primește direct status roșu, alocări goale. Pentru liniile roșii fără notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără bază legală, utilizatorul rămânând responsabil de validare.
+Aplicația cere un CUI identificat pentru fiecare linie de extras (populat în amonte, prin extragerea automată din descriere) înainte de a căuta facturi deschise ale partenerului. O linie fără CUI detectat primește direct status roșu, alocări goale. Pentru liniile roșii fără notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără bază legală, utilizatorul rămânând responsabil de validare.
 
 Pentru decontările agregate de ramburs, alocarea pe facturile individuale rămâne un pas manual, folosind parametrul `alocari` la contare (`conteaza`) pentru a specifica exact ce facturi se sting.
 

@@ -14,13 +14,13 @@ Firma aflată în procedură de dizolvare cu lichidare are un regim special de d
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1) și (5), în cazul contribuabililor care se dizolvă cu lichidare, perioada cuprinsă între prima zi a anului fiscal următor celui în care a fost deschisă procedura lichidării și data închiderii procedurii de lichidare se consideră un singur an fiscal."
-— Legea 227/2015, art. 16 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 16 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul dizolvării urmate de lichidarea contribuabilului, [perioada impozabilă se încheie] la data încheierii operațiunilor de lichidare, dar nu mai târziu de data depunerii situațiilor financiare la organul fiscal competent."
-— Legea 227/2015, art. 16 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 16 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Calculul, declararea și plata impozitului pe profit [...] se efectuează trimestrial [...]. Nu intră sub incidența acestor prevederi contribuabilii care se dizolvă cu lichidare, pentru perioada cuprinsă între prima zi a anului fiscal următor celui în care a fost deschisă procedura lichidării și data închiderii procedurii de lichidare."
-— Legea 227/2015, art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic: în anul în care se deschide lichidarea, firma continuă să declare și să plătească impozit pe profit trimestrial, ca de obicei, până la finalul acelui an. Din prima zi a anului fiscal următor, întreaga perioadă până la închiderea efectivă a lichidării — chiar dacă durează mai mulți ani calendaristici — se consideră, fiscal, **un singur an fiscal**, exceptat de la obligațiile trimestriale obișnuite (art. 41 alin. 1). Impozitul pe profit final se definitivează la închiderea lichidării, iar dreptul organului fiscal de a stabili impozitul pe profit pentru contribuabilii cu an fiscal modificat/de lichidare urmează regulile de prescripție specifice.

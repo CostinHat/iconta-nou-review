@@ -16,17 +16,17 @@ Atenție la o capcană: normele (HG 1/2016, pct. 15 alin. (2)) spun că suprafa�
 
 ::: ghid-temei
 „cheltuielile pentru funcționarea, întreținerea și repararea locuințelor de serviciu, deductibile în limita corespunzătoare suprafețelor construite prevăzute de Legea locuinței nr. 114/1996, republicată, cu modificările și completările ulterioare;"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. j), în vigoare de la 01.01.2024 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. j), în vigoare de la 01.01.2024 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „cheltuielile pentru funcționarea, întreținerea și repararea locuințelor de serviciu, deductibile în limita corespunzătoare suprafețelor construite prevăzute de Legea locuinței nr. 114/1996 , republicată, cu modificările și completările ulterioare, care se majorează din punct de vedere fiscal cu 10%;"
-— Codul fiscal, art. 25 alin. (3) lit. j), forma inițială, astăzi înlocuită (sursă: anaf_surse/cf_2015_forma_initiala.txt)
+— Codul fiscal, art. 25 alin. (3) lit. j), forma inițială, astăzi înlocuită (sursă: [Legea nr. 227/2015 privind Codul fiscal (forma inițială)](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) În aplicarea art. 25 alin. (3) lit. j) din Codul fiscal, în cazul locuinței de serviciu date în folosința unui salariat sau administrator, cheltuielile pentru funcționarea, întreținerea și repararea acesteia sunt deductibile în limita corespunzătoare raportului dintre suprafața construită prevăzută de Legea locuinței nr. 114/1996, republicată, cu modificările și completările ulterioare, majorată cu 10%, și totalul suprafeței construite a locuinței de serviciu respective."
-— HG 1/2016, Normele metodologice, titlul II, pct. 15 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul II, pct. 15 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce rămâne valabil din norme: **metoda proporțională**, adică suprafața din lege raportată la suprafața construită totală a locuinței. Ce nu mai e valabil: **majorarea de 10%**, pentru că textul actual al codului, pe care normele îl aplică, nu o mai conține.
@@ -35,7 +35,7 @@ Suprafețele construite din Legea 114/1996 (anexa nr. 1, tabelul B) depind de nu
 
 ::: ghid-temei
 „Suprafață construită pe locuință, prevăzută în tabelul B, este suma suprafețelor utile ale încăperilor, logiilor, balcoanelor, precum și a cotei-părți din suprafețele părților comune ale clădirilor"
-— Legea 114/1996, anexa nr. 1, nota la tabelul B (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996, anexa nr. 1, nota la tabelul B (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-exemplu

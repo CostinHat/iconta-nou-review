@@ -33,7 +33,7 @@ Textul legal citat mai sus vorbește explicit despre inventarierea disponibilit�
 
 ## Ce face iConta.eu
 
-`core/reconciliere.py` rulează motorul pur de matching pe fiecare linie de extras, iar `core/reconciliere_api.py` persistă rezultatul și calculează soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Pentru liniile care ies roșii și nu au notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat de utilizator (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără nicio bază legală, utilizatorul rămânând responsabil pentru validarea sugestiei.
+Aplicația rulează motorul pur de matching pe fiecare linie de extras, iar aplicația persistă rezultatul și calculează soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Pentru liniile care ies roșii și nu au notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat de utilizator (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără nicio bază legală, utilizatorul rămânând responsabil pentru validarea sugestiei.
 
 La contare, fiecare alocare generează o înregistrare separată (`status='ciorna'`, `sursa='banca'`), iar dacă firma e pe TVA la încasare, exigibilitatea TVA se calculează separat pentru fiecare sumă alocată.
 

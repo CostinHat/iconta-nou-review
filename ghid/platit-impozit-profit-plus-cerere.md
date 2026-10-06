@@ -14,7 +14,7 @@ O firmă care descoperă că a achitat mai mult impozit pe profit decât datora 
 
 ::: ghid-temei
 „(1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată. [...] (8) în cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod. (9) în cazul în care suma de rambursat sau de restituit este mai mică decât obligațiile restante ale contribuabilului/plătitorului, se efectuează compensarea până la concurența sumei de rambursat sau de restituit. (10) în cazul în care suma de rambursat sau de restituit este mai mare decât suma reprezentând obligații restante ale contribuabilului/plătitorului, compensarea se efectuează până la concurența obligațiilor restante, diferența rezultată restituindu-se contribuabilului/plătitorului."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (8)-(10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (8)-(10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune, în practică, o cerere de restituire pentru impozit pe profit plătit în plus:

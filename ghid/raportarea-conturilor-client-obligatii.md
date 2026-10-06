@@ -14,7 +14,7 @@ Dincolo de evidența analitică internă (fișa fiecărui client, cont 411), fir
 
 ::: ghid-temei
 „Customers (Clienți) — Conţine informaţii despre clienţi, precum detaliile de identificare (denumire, adresa, cod de înregistrare fiscală), contul analitic în care este înregistrat soldul clientului respectiv, soldul iniţial debitor/creditor, sold final debitor/creditor etc."
-— OPANAF 1783/2021 (Ghidul contribuabilului pentru D406 — SAF-T), secțiunea MasterFiles > Customers (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 (Ghidul contribuabilului pentru D406 — SAF-T), secțiunea MasterFiles > Customers (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce presupune, concret, această obligație:
@@ -31,6 +31,6 @@ Ce presupune, concret, această obligație:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **generează secțiunea Customers** a declarației D406/SAF-T: modulul `core/d406.py` construiește, pentru fiecare client, elementul `<Customer>` cu `CustomerID`, `AccountID` (contul 4111) și identificarea fiscală, iar `core/repo_d406.py` extrage lista clienților din baza de date (`select_clienti`). Aplicația asigură și consecvența `CustomerID` între secțiunea Customers și liniile de tranzacție din registrul general, cerută de validatorul oficial ANAF (DUK). Judecata asupra completitudinii datelor de identificare introduse pentru fiecare client rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **generează secțiunea Customers** a declarației D406/SAF-T: Aplicația construiește, pentru fiecare client, elementul `<Customer>` cu `CustomerID`, `AccountID` (contul 4111) și identificarea fiscală, iar aplicația extrage lista clienților din baza de date (`select_clienti`). Aplicația asigură și consecvența `CustomerID` între secțiunea Customers și liniile de tranzacție din registrul general, cerută de validatorul oficial ANAF (DUK). Judecata asupra completitudinii datelor de identificare introduse pentru fiecare client rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

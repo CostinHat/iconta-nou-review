@@ -15,7 +15,7 @@ Codul fiscal stabilește clar cota de TVA aplicabilă cazării hoteliere, dar nu
 ::: ghid-temei
 „Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...]
 m) cazarea în cadrul sectorului hotelier sau al sectoarelor cu funcție similară, inclusiv închirierea terenurilor amenajate pentru camping."
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. m) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. m) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e cert, direct din text:

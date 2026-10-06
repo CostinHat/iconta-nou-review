@@ -16,15 +16,15 @@ Contează pentru că încadrarea clădirii (rezidențială, nerezidențială sau
 
 ::: ghid-temei
 „Pentru încadrarea în una dintre categoriile de la art. 453 lit. d)-f) din Codul fiscal, se are în vedere destinația finală a clădirilor, inclusiv în cazul în care acestea sunt utilizate de alte persoane decât proprietarii lor, precum și modul de înregistrare a cheltuielilor cu utilitățile. Proprietarii clădirilor vor anexa la declarațiile fiscale orice document din care reiese destinația clădirii, precum: contracte de închiriere, contracte de comodat, autorizații de construire și orice altele documente justificative."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 7 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 7 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „clădire cu destinație mixtă - clădire folosită atât în scop rezidențial, cât și nerezidențial;"
-— Codul fiscal (Legea 227/2015), art. 453 lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 453 lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul clădirilor cu destinație mixtă aflate în proprietatea persoanelor juridice, impozitul se determină prin însumarea impozitului calculat pentru suprafața folosită în scop rezidențial conform alin. (1) , cu impozitul calculat pentru suprafața folosită în scop nerezidențial, conform alin. (2) sau (3) ."
-— Codul fiscal (Legea 227/2015), art. 460 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Documentele utile, după situație:

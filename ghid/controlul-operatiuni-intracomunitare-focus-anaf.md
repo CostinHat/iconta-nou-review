@@ -13,7 +13,7 @@ Operațiunile intracomunitare sunt vizibile din exterior prin VIES, sistemul pri
 ## Temeiul legal
 
 ::: ghid-temei
-„D390 baza … (facturi intracomunitare, auto — art. 325 Cod fiscal, declarația…)” — cod sursă `core/control_incrucisat.py`, funcția `compara_d390()`. Temeiul declarat pentru controlul încrucișat pe operațiuni intracomunitare: „art. 325 Cod fiscal (declarația recapitulativă); art. 294 alin. (2)/278; OMFP 1802/2014 (evidența)” (sursă: dosar F050, secțiunea „Control încrucișat / control fiscal”).
+„D390 baza … (facturi intracomunitare, auto — art. 325 Cod fiscal, declarația…)” — codul aplicației, funcția `compara_d390()`. Temeiul declarat pentru controlul încrucișat pe operațiuni intracomunitare: „art. 325 Cod fiscal (declarația recapitulativă); art. 294 alin. (2)/278; OMFP 1802/2014 (evidența)” (sursă: dosar F050, secțiunea „Control încrucișat / control fiscal”).
 :::
 
 Practic, controlul se face pe trei niveluri suprapuse, nu pe unul singur:

@@ -16,17 +16,17 @@ Vârsta minimă contează la fel de mult ca orele: de la 16 ani minorul poate lu
 
 ::: ghid-temei
 „(2) Durata zilnică de executare a activității unui zilier nu poate depăși 12 ore. Zilierul minor care are capacitatea de muncă va putea lucra 6 ore pe zi, dar nu mai mult de 30 de ore pe săptămână. Zilierul minor nu va efectua activitate în timpul nopții."
-— Legea 52/2011, art. 4 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „(3) Zilierul minor poate presta activități necalificate cu caracter ocazional la împlinirea vârstei de 16 ani. Prin excepție, minorul cu vârsta cuprinsă între 15 și 16 ani poate presta activități necalificate cu caracter ocazional numai cu acordul părinților sau al reprezentanților legali, pentru activități potrivite cu dezvoltarea fizică, aptitudinile și cunoștințele sale, dacă astfel nu îi sunt periclitate dezvoltarea și sănătatea personală."
-— Legea 52/2011, art. 4 alin. (3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „f) beneficiarul sau un împuternicit al acestuia care folosește zilieri pentru desfășurarea de activități necalificate cu caracter ocazional fără respectarea dispozițiilor art. 4 se sancționează cu amendă de 6.000 lei."
-— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

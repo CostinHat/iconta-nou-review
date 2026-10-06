@@ -14,7 +14,7 @@ Cea mai frecventă greșeală la diferențele de curs valutar nu e formula de ca
 
 ::: ghid-temei
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - „Trebuie recunoscute în luna în care apar" e o obligație, nu o recomandare — nu există opțiunea de a le reporta pe o lună viitoare pentru simplitate.
@@ -30,6 +30,6 @@ Cea mai frecventă greșeală la diferențele de curs valutar nu e formula de ca
 
 ## Ce face iConta.eu
 
-Ambele operațiuni relevante din iConta.eu — decontarea (`core/uc_tenants.py: decontare_valuta`) și reevaluarea lunară (`reevaluare_valuta`) — generează nota contabilă în chiar luna operațiunii, cu data cerută de utilizator, respectând momentul de recunoaștere cerut de pct. 322. Ce **nu automatizează** aplicația este verificarea că, de fapt, contabilul a rulat reevaluarea în fiecare lună la timp: dacă o lună a fost închisă fără reevaluare, aplicația nu emite niciun avertisment proactiv — constrângerea `_cere_luna_deschisa` doar blochează încercarea de a mai scrie retroactiv într-o lună închisă, nu semnalează omisiunea în avans.
+Ambele operațiuni relevante din iConta.eu — decontarea și reevaluarea lunară (`reevaluare_valuta`) — generează nota contabilă în chiar luna operațiunii, cu data cerută de utilizator, respectând momentul de recunoaștere cerut de pct. 322. Ce **nu automatizează** aplicația este verificarea că, de fapt, contabilul a rulat reevaluarea în fiecare lună la timp: dacă o lună a fost închisă fără reevaluare, aplicația nu emite niciun avertisment proactiv — constrângerea `_cere_luna_deschisa` doar blochează încercarea de a mai scrie retroactiv într-o lună închisă, nu semnalează omisiunea în avans.
 
 [iConta.eu](/)

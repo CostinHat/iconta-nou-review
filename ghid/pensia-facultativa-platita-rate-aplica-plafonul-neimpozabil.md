@@ -16,17 +16,17 @@ Regula contează pentru că e diferită de cea de la plata unică. Acolo, fiecar
 
 ::: ghid-temei
 „Pentru sumele primite ca plăți eșalonate în rate de către participanții la fondurile de pensii facultative și/sau ocupaționale, precum și moștenitorii acestora, în conformitate cu prevederile Legii [...] venitul impozabil este constituit din sumele care depășesc contribuțiile nete ale participanților, la care se aplică plafonul de venit neimpozabil stabilit conform prevederilor alin. (1) și, după caz, se deduce contribuția de asigurări sociale de sănătate datorată potrivit prevederilor titlului V - Contribuții sociale obligatorii, în limita venitului impozabil, pentru fiecare rată lunară de la fiecare fond de pensii."
-— Codul fiscal (Legea 227/2015), art. 100 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul impozabil lunar din pensii se stabilește prin deducerea din venitul din pensie a sumei neimpozabile lunare de 3.000 lei"
-— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Impozitul se calculează prin aplicarea cotei de impunere de 10% asupra venitului impozabil lunar din pensii determinat potrivit art. 100"
-— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordinea din lege:

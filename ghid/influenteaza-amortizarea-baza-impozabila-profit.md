@@ -15,7 +15,7 @@ Un mijloc fix nu devine cheltuială deductibilă dintr-o dată, la cumpărare, c
 ::: ghid-temei
 „(1) Cheltuielile aferente achiziționării, producerii, construirii mijloacelor fixe amortizabile, precum și investițiile efectuate la acestea se recuperează din punct de vedere fiscal prin deducerea amortizării potrivit prevederilor prezentului articol.
 (2) Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; [...] c) are o durată normală de utilizare mai mare de un an."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1), (2) lit. a), c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1), (2) lit. a), c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru baza impozabilă:
@@ -33,6 +33,6 @@ Ce înseamnă asta pentru baza impozabilă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează amortizarea mijloacelor fixe pe baza datelor introduse de utilizator — categorie, valoare de intrare, durată normală de utilizare, metodă — folosind modulele `core/mijloace_fixe_import_api.py` și `core/repo_mijloace_fixe.py`, cu reflectare directă în registrul de amortizare și în calculul impozitului pe profit din D101 (`core/d101.py`). Aplicația nu decide însă categoria de mijloc fix sau durata normală de utilizare aplicabilă unui bun anume din catalogul HG 2.139/2004 — aceste încadrări rămân o decizie a contabilului la introducerea mijlocului fix în aplicație.
+La data acestui ghid, iConta.eu calculează amortizarea mijloacelor fixe pe baza datelor introduse de utilizator — categorie, valoare de intrare, durată normală de utilizare, metodă — folosind aplicația, cu reflectare directă în registrul de amortizare și în calculul impozitului pe profit din D101. Aplicația nu decide însă categoria de mijloc fix sau durata normală de utilizare aplicabilă unui bun anume din catalogul HG 2.139/2004 — aceste încadrări rămân o decizie a contabilului la introducerea mijlocului fix în aplicație.
 
 [iConta.eu](/)

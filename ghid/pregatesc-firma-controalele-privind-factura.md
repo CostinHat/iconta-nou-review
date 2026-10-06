@@ -15,7 +15,7 @@ Pregătirea pentru un control privind RO e-Factura nu înseamnă doar „am tran
 ::: ghid-temei
 „(6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare.
 (7) Nerespectarea prevederilor alin. (6) pentru una sau mai multe facturi al căror termen-limită de transmitere în sistemul național privind factura electronică RO e-Factura intervine în cursul unei luni calendaristice constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei, pentru persoanele juridice încadrate în categoria contribuabililor mari, [...] cu amendă de la 2.500 lei la 5.000 lei, pentru persoanele juridice încadrate în categoria contribuabililor mijlocii, [...] și cu amendă de la 1.000 lei la 2.500 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice."
-— Legea 296/2023, art. LIX alin. (6) și (7) (Secțiunea a 2-a, Capitolul IV) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (6) și (7) (Secțiunea a 2-a, Capitolul IV) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce rezultă din text pentru pregătirea unui control:
@@ -34,6 +34,6 @@ Ce rezultă din text pentru pregătirea unui control:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu automatizează transmiterea efectivă în RO e-Factura prin `core/efactura_send.py` — generarea XML-ului UBL (`genereaza_xml()`), validarea față de schema FACT1 (`valideaza()`), încărcarea (`upload_ubl()`) și interogarea stării mesajului (`stare_mesaj()`, `lista_mesaje()`). Aplicația nu are însă, la acest moment, o verificare automată explicită a încadrării în termenul de 5 zile lucrătoare din art. LIX alin. (6) — nu există o funcție dedicată care să semnaleze facturile aflate în risc de depășire a termenului sau să genereze un raport lunar de conformitate pentru pregătirea unui control. Reconstituirea istoricului de transmitere pe fiecare factură, pentru dovada la control, se face din stările interogate individual (`stare_mesaj`), nu dintr-un tablou de bord dedicat conformității.
+La data acestui ghid, iConta.eu automatizează transmiterea efectivă în RO e-Factura prin aplicație — generarea XML-ului UBL (`genereaza_xml()`), validarea față de schema FACT1 (`valideaza()`), încărcarea (`upload_ubl()`) și interogarea stării mesajului (`stare_mesaj()`, `lista_mesaje()`). Aplicația nu are însă, la acest moment, o verificare automată explicită a încadrării în termenul de 5 zile lucrătoare din art. LIX alin. (6) — nu există o funcție dedicată care să semnaleze facturile aflate în risc de depășire a termenului sau să genereze un raport lunar de conformitate pentru pregătirea unui control. Reconstituirea istoricului de transmitere pe fiecare factură, pentru dovada la control, se face din stările interogate individual (`stare_mesaj`), nu dintr-un tablou de bord dedicat conformității.
 
 [iConta.eu](/)

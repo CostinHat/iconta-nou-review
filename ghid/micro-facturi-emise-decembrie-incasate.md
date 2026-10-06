@@ -14,7 +14,7 @@ O microîntreprindere care emite o factură pe 20 decembrie și încasează cont
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]"
-— Legea nr. 227/2015 (Codul fiscal), Titlul III, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), Titlul III, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Baza de calcul a impozitului micro sunt **veniturile din orice sursă**, așa cum sunt ele înregistrate potrivit reglementărilor contabile — adică la data facturării (venituri realizate, în accepțiunea contabilă), nu la data încasării banilor. Legea nu condiționează recunoașterea veniturilor la calculul impozitului micro de plata efectivă.

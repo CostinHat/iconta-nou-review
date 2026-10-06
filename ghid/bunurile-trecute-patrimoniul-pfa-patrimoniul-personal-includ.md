@@ -16,17 +16,17 @@ Contează pentru că operațiunea nu aduce niciun ban în registrul de încasăr
 
 ::: ghid-temei
 „(2) În venitul brut al afacerii se include și suma reprezentând contravaloarea bunurilor și drepturilor din patrimoniul afacerii care trec pe parcursul exercitării activității în patrimoniul personal al contribuabilului, operațiune considerată din punct de vedere fiscal o înstrăinare. Evaluarea acestora se face la prețurile practicate pe piață sau stabilite prin expertiză tehnică."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „în venitul brut al activității care urmează să se transforme/schimbe se include și suma reprezentând contravaloarea bunurilor și drepturilor din patrimoniul afacerii care trec în patrimoniul personal al contribuabilului, la momentul transformării/schimbării activității, operațiune considerată din punct de vedere fiscal o înstrăinare. Evaluarea acestora se face la prețurile practicate pe piață sau stabilite prin expertiză tehnică."
-— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „câștigurile din transferul activelor din patrimoniul afacerii, utilizate într-o activitate independentă, exclusiv contravaloarea bunurilor din patrimoniul personal afectate exercitării activității, rămase la încetarea activității;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

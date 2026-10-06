@@ -16,7 +16,7 @@ Concediul de risc maternal nu e un concediu medical „obișnuit" — el intervi
 „(2) Pe durata concediului de risc maternal se acordă o indemnizație de risc maternal care se suportă integral din bugetul Fondului național unic de asigurări sociale de sănătate.
 (3) Concediul și indemnizația de risc maternal se acordă fără condiție de stagiu de asigurare.
 (4) Cuantumul indemnizației prevăzute la alin. (2) reprezintă 75% din baza de calcul stabilită conform prevederilor art. 10."
-— OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 31 alin. (2), (3), (4) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 31 alin. (2), (3), (4) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Elementele de calcul, potrivit textului:
@@ -34,6 +34,6 @@ Elementele de calcul, potrivit textului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu recunoaște codul de concediu medical „15" (risc maternal) în modulul de salarizare, cu cota de calcul de 75% aplicată automat (`core/salarizare.py`) și raportarea corespunzătoare în D112, unde suma e marcată distinct cu indicativul „RM" (`core/d112.py`, `core/nomenclator_cm.py`). Sumele reprezentând indemnizația de risc maternal sunt tratate ca neimpozabile, conform art. 62 lit. c) din Codul fiscal. Introducerea certificatului medical și verificarea eligibilității salariatei pentru acest tip de concediu rămân, însă, o operațiune manuală a persoanei care întocmește statul de plată.
+La data acestui ghid, iConta.eu recunoaște codul de concediu medical „15" (risc maternal) în modulul de salarizare, cu cota de calcul de 75% aplicată automat și raportarea corespunzătoare în D112, unde suma e marcată distinct cu indicativul „RM". Sumele reprezentând indemnizația de risc maternal sunt tratate ca neimpozabile, conform art. 62 lit. c) din Codul fiscal. Introducerea certificatului medical și verificarea eligibilității salariatei pentru acest tip de concediu rămân, însă, o operațiune manuală a persoanei care întocmește statul de plată.
 
 [iConta.eu](/)

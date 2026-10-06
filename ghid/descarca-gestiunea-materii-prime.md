@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „95. - (1) La data ieșirii din entitate sau la darea în consum, bunurile se evaluează și se scad din gestiune la valoarea lor de intrare sau valoarea la care sunt înregistrate în contabilitate [...]. 96. - (1) Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; [...] b) metoda primul intrat-primul ieșit - FIFO; [...] c) metoda ultimul intrat-primul ieșit - LIFO."
-— OMFP 1802/2014 (reglementările contabile), pct. 95 alin. (1) și pct. 96 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementările contabile), pct. 95 alin. (1) și pct. 96 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Detaliile metodelor, conform aceluiași punct 96:

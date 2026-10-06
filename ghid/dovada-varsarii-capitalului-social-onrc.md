@@ -15,7 +15,7 @@ Vărsarea capitalului social nu e o formalitate uniformă pentru toate tipurile 
 ::: ghid-temei
 „Articolul 9 (1) Societatea pe acțiuni se constituie prin subscriere integrală și simultană a capitalului social de către semnatarii actului constitutiv sau prin subscripție publică.
 (2) În cazul unei subscrieri integrale și simultane a capitalului social de către toți semnatarii actului constitutiv, capitalul social vărsat la constituire nu va putea fi mai mic de 30% din cel subscris. Diferența de capital social subscris va fi vărsată: a) pentru acțiunile emise pentru un aport în numerar, în termen de 12 luni de la data înmatriculării societății; b) pentru acțiunile emise pentru un aport în natură, în termen de cel mult 2 ani de la data înmatriculării."
-— Legea 31/1990, art. 9 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 9 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Regula, pe puncte:

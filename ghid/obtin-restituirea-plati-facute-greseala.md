@@ -14,7 +14,7 @@ O sumă virată din greșeală către buget — plătită de două ori, plătit�
 
 ::: ghid-temei
 „(1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată. (2) în situația în care s-a făcut o plată fără a fi datorată, cel pentru care s-a făcut astfel plata are dreptul la restituirea sumei respective."
-— Legea 207/2015, art. 168 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 168 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut despre acest drept:

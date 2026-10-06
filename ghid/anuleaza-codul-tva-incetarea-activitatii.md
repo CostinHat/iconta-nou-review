@@ -17,7 +17,7 @@ Codul de înregistrare în scopuri de TVA nu e un cod separat de codul de identi
 (1) Radierea înregistrării fiscale reprezintă activitatea de retragere a codului de identificare fiscală și a certificatului de înregistrare fiscală.
 (2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. Radierea înregistrării fiscale se poate efectua și din oficiu, de către organul fiscal, ori de câte ori acesta constată îndeplinirea condițiilor de radiere a înregistrării și nu s-a depus declarație de radiere.
 (3) Radierea înregistrării fiscale se efectuează din oficiu, de către organul fiscal central, în cazul decesului persoanei fizice sau, după caz, încetării existenței persoanei juridice potrivit legii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret pentru firmă:
@@ -35,6 +35,6 @@ Ce înseamnă concret pentru firmă:
 
 ## Ce face iConta.eu
 
-Modulul de lichidare din iConta.eu (`core/lichidare.py`) calculează operațiunile specifice închiderii unei firme — cota de lichidare, nota de vânzare a activelor (cu TVA colectată explicit, fără cotă implicită), partajul capitalului și rezervelor — conform OMFP 897/2015 și Legii 31/1990, art. 227 și următoarele. La data acestui ghid, aplicația **nu depune automat declarația de radiere (formularul 010) la ANAF** — aceasta rămâne o depunere separată, pe care contabilul o pregătește în afara fluxului de lichidare din aplicație, respectând termenul de 30 de zile de la încetarea existenței firmei.
+Modulul de lichidare din iConta.eu calculează operațiunile specifice închiderii unei firme — cota de lichidare, nota de vânzare a activelor (cu TVA colectată explicit, fără cotă implicită), partajul capitalului și rezervelor — conform OMFP 897/2015 și Legii 31/1990, art. 227 și următoarele. La data acestui ghid, aplicația **nu depune automat declarația de radiere (formularul 010) la ANAF** — aceasta rămâne o depunere separată, pe care contabilul o pregătește în afara fluxului de lichidare din aplicație, respectând termenul de 30 de zile de la încetarea existenței firmei.
 
 [iConta.eu](/)

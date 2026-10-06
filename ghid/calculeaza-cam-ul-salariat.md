@@ -14,10 +14,10 @@ CAM-ul nu apare pe fluturașul de salariu al angajatului — e o obligație supl
 
 ::: ghid-temei
 „Cota contribuției asiguratorii pentru muncă este de 2,25%."
-— Legea nr. 227/2015, art. 220^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii obligați la plata contribuției asiguratorii pentru muncă sunt, după caz: a) persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora, pentru cetățenii români, cetățeni ai altor state sau apatrizii, pe perioada în care au, conform legii, domiciliul sau reședința în România [...]"
-— Legea nr. 227/2015, art. 220^1 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^1 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Calculul, pentru un salariat cu contract individual de muncă, este o singură înmulțire:

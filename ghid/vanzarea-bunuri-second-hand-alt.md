@@ -34,6 +34,6 @@ Motorul de calcul al marjei nu face nicio distincție după țara clientului —
 
 Confirmarea că, pentru acest tip de vânzare, scutirea intracomunitară obișnuită nu se aplică e o regulă de lege, nu un calcul automatizat — aplicația nu propune eronat scutirea de 0% pentru o operațiune de tip marjă, dar contabilul rămâne cel care alege corect tipul de operațiune la introducere.
 
-Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-pentru-marja-de-profit-la-bunurile-second-hand)
+Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-marja-profit-bunurile-second)
 
 [iConta.eu](/)

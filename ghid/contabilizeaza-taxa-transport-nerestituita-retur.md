@@ -14,7 +14,7 @@ Ce e cunoscut popular drept „taxă" pe ambalaj, la produsele care intră sub s
 
 ::: ghid-temei
 „SGR sistem garantie-returnare — motor PUR (HG 1074/2021, garantie 0,50 lei/ambalaj, administrator RetuRO). Tratament MFP/CECCAR: garantia NU intra in sfera TVA; tariful de gestionare primit de la RetuRO este purtator de TVA (autofactura emisa de RetuRO in numele comerciantului)."
-— HG 1074/2021 (garanția SGR), citat din documentația modulului core/sgr.py, verificat la sursă
+— HG 1074/2021 (garanția SGR), citat din documentația modulului aplicația, verificat la sursă
 :::
 
 Monografia contabilă, pentru un comerciant care vinde produse cu ambalaj SGR:
@@ -33,6 +33,6 @@ Monografia contabilă, pentru un comerciant care vinde produse cu ambalaj SGR:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor real, dedicat, pentru contabilizarea garanției SGR (`core/sgr.py`): generează notele contabile pentru achiziția mărfii cu garanție plătită furnizorului, încasarea garanției la vânzare, restituirea către consumatorul care returnează ambalajul și autofactura lunară de la RetuRO — cu tratamentul corect de TVA (garanția în afara sferei TVA, tariful de gestionare purtător de TVA), conform monografiei MFP/CECCAR citate în cod.
+La data acestui ghid, iConta.eu are un motor real, dedicat, pentru contabilizarea garanției SGR: generează notele contabile pentru achiziția mărfii cu garanție plătită furnizorului, încasarea garanției la vânzare, restituirea către consumatorul care returnează ambalajul și autofactura lunară de la RetuRO — cu tratamentul corect de TVA (garanția în afara sferei TVA, tariful de gestionare purtător de TVA), conform monografiei MFP/CECCAR citate în cod.
 
 [iConta.eu](/)

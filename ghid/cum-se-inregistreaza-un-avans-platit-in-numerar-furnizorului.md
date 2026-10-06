@@ -43,6 +43,6 @@ O firmă vrea să plătească un avans de 8.000 lei cash unui furnizor. Plafonul
 
 Înregistrarea contabilă a avansului plătit cash folosește aceeași funcție ca orice alt avans plătit: `nota_avans_platit(suma_fara_tva, cota, destinatie="stocuri")`, generând `409x + 4426 = 401`. Modulul nu face nicio distincție internă între plata prin numerar sau prin bancă — contrapartida contabilă (401) e aceeași, diferența de instrument de plată se reflectă abia la decontarea ulterioară a contului 401.
 
-Important de reținut: `core/avansuri.py` **nu verifică plafonul de numerar** din Legea 70/2015. Motorul nu are nicio validare a limitei de 5.000 lei/zi/furnizor sau a plafonului total de 10.000 lei/zi — aplicația nu vă va avertiza automat dacă introduceți un avans mare plătit cash care depășește plafonul legal. Respectarea plafonului și evitarea fragmentării rămân integral responsabilitatea profesională a contabilului la momentul înregistrării plății.
+Important de reținut: Aplicația **nu verifică plafonul de numerar** din Legea 70/2015. Motorul nu are nicio validare a limitei de 5.000 lei/zi/furnizor sau a plafonului total de 10.000 lei/zi — aplicația nu vă va avertiza automat dacă introduceți un avans mare plătit cash care depășește plafonul legal. Respectarea plafonului și evitarea fragmentării rămân integral responsabilitatea profesională a contabilului la momentul înregistrării plății.
 
 [iConta.eu](/)

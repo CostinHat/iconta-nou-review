@@ -16,20 +16,20 @@ Lipsa politicilor contabile aprobate se sancționează cu **amendă de la 4.000 
 
 ::: ghid-temei
 „Constituie contravenție următoarele fapte: [...] 2. nerespectarea reglementărilor emise de Ministerul Finanțelor Publice, respectiv de instituțiile cu atribuții de reglementare în domeniul contabilității prevăzute la art. 4 alin. (3) , cu privire la: a) aprobarea politicilor și procedurilor contabile prevăzute de legislație;"
-— Legea contabilității (Legea 82/1991), art. 41 pct. 2 lit. a) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 41 pct. 2 lit. a) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „Contravențiile prevăzute la art. 41 se sancționează cu amendă după cum urmează: [...] b) cele prevăzute la pct. 2 lit. a) , cu amendă de la 4.000 lei la 10.000 lei;"
-— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. b) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. b) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „61. - (1) Administratorii entității trebuie să aprobe politici contabile pentru operațiunile derulate, inclusiv proceduri proprii pentru situațiile prevăzute de legislație. În cazul entităților care nu au administratori, politicile contabile se aprobă de persoanele care au obligația gestionării entității respective."
-— OMFP 1802/2014, Reglementările contabile, pct. 61 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, pct. 61 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 ::: ghid-temei
 „Amenzile contravenționale prevăzute la alin. (1) și (2) se suportă de persoanele vinovate."
-— Legea contabilității (Legea 82/1991), art. 42 alin. (6) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 42 alin. (6) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

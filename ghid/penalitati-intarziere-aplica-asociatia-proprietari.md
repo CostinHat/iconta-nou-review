@@ -20,10 +20,10 @@ Pentru o firmă care are un spațiu în bloc, sau pentru contabilul care verific
 
 ::: ghid-temei
 „(1) Asociația de proprietari poate stabili un sistem propriu de penalități pentru orice sumă cu titlu de restanță, afișată pe lista de plată. Penalitățile nu vor fi mai mari de 0,2% pentru fiecare zi de întârziere și se vor aplica numai după o perioadă de 30 de zile de la termenul scadent pentru plată, fără ca suma penalităților să poată depăși suma la care s-au aplicat.”
-— Legea 196/2018, art. 77 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 77 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(3) Sumele rezultate din aplicarea penalităților de întârziere, prevăzute la alin. (1) , se includ în fondul de penalități al asociației de proprietari și se vor utiliza cu prioritate pentru plata penalităților impuse asociației de proprietari de către terți, precum și pentru cheltuieli cu reparațiile asupra proprietății comune, reabilitarea termică sau consolidarea condominiului. Sumele rezultate din aplicarea penalităților de întârziere nu pot fi utilizate și în alte scopuri.”
-— Legea 196/2018, art. 77 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 77 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 De reținut:

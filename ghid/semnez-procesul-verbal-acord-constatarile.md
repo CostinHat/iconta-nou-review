@@ -14,10 +14,10 @@ Răspunsul depinde de ce fel de document e vorba. Pentru marea majoritate a insp
 
 ::: ghid-temei
 „ART. 131 Rezultatul inspecției fiscale (1) Rezultatul inspecției fiscale se consemnează, în scris, într-un raport de inspecție fiscală, în care se prezintă constatările organului de inspecție fiscală din punctul de vedere faptic și legal și consecințele lor fiscale, cu excepția cazurilor în care se fac constatări în legătură cu săvârșirea unor fapte prevăzute de legea penală în legătură cu mijloacele de probă privind stabilirea bazei de impozitare care fac obiectul inspecției fiscale, pentru care sunt aplicabile prevederile art. 132."
-— Legea 207/2015 (Codul de procedură fiscală), art. 131 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 131 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „ART. 132 Sesizarea organelor de urmărire penală (1) Organul de inspecție fiscală are obligația de a sesiza organele judiciare competente în legătură cu constatările efectuate cu ocazia inspecției fiscale și care ar putea întruni elemente constitutive ale unei infracțiuni, în condițiile prevăzute de legea penală. (2) În situațiile prevăzute la alin. (1) organul de inspecție fiscală are obligația de a întocmi proces-verbal semnat de organul de inspecție fiscală și de către contribuabilul/plătitorul supus inspecției, cu sau fără explicații ori obiecțiuni din partea contribuabilului/plătitorului. În cazul în care cel supus inspecției fiscale refuză să semneze procesul-verbal, organul de inspecție fiscală consemnează despre aceasta în procesul-verbal. În toate cazurile procesul-verbal trebuie comunicat contribuabilului/plătitorului."
-— Legea 207/2015 (Codul de procedură fiscală), art. 132 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 132 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă două regimuri diferite, în funcție de ce se întâmplă la inspecție:

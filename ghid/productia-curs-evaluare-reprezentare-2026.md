@@ -14,7 +14,7 @@ Producția în curs de execuție este stocul de produse care, la finalul unei pe
 
 ::: ghid-temei
 „Contul 331 „Produse în curs de execuție" Cu ajutorul acestui cont se ține evidența stocurilor de produse în curs de execuție (care nu au trecut prin toate fazele de prelucrare prevăzute de procesul tehnologic, respectiv producția neterminată) existente la sfârșitul perioadei. Contul 331 „Produse în curs de execuție" este un cont de activ. În debitul contului 331 [...] se înregistrează: – valoarea la cost de producție a stocului de produse în curs de execuție la sfârșitul perioadei, stabilită pe bază de inventar (711). [...] În creditul contului 331 [...] se înregistrează: – scăderea din gestiune a valorii produselor în curs de execuție la începutul perioadei următoare (711). [...] Soldul contului reprezintă valoarea la cost de producție a produselor aflate în curs de execuție la sfârșitul perioadei."
-— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 331 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 331 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text rezultă un mecanism clar, în doi timpi:

@@ -15,7 +15,7 @@ Munca de casier se reduce, din punct de vedere legal, la câteva reguli fixe des
 ::: ghid-temei
 „Articolul 3 (1) [...] se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi [...]
 Articolul 4 (1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice [...] se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană."
-— Legea 70/2015, art. 3 alin. (1) lit. a) și c), art. 4 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. a) și c), art. 4 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Cele patru plafoane pe care orice casier trebuie să le știe pe de rost, pentru 2026:
@@ -35,6 +35,6 @@ Plafoanele se aplică per **zi calendaristică** și per **relație cu parteneru
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015, actualizată prin Legea 239/2025 (în vigoare de la 01.01.2026)**, direct în modulul de casierie (`core/casa.py`) — constantele `PLAFON_INCASARE_PJ`, `PLAFON_PLATA_PJ`, `PLAFON_PLATA_PJ_TOTAL` și `PLAFON_PF` reflectă exact valorile din lege, iar aplicația generează avertismente la depășirea lor, calculate cumulat pe zi, la nivel de firmă.
+La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015, actualizată prin Legea 239/2025 (în vigoare de la 01.01.2026)**, direct în modulul de casierie — constantele `PLAFON_INCASARE_PJ`, `PLAFON_PLATA_PJ`, `PLAFON_PLATA_PJ_TOTAL` și `PLAFON_PF` reflectă exact valorile din lege, iar aplicația generează avertismente la depășirea lor, calculate cumulat pe zi, la nivel de firmă.
 
 [iConta.eu](/)

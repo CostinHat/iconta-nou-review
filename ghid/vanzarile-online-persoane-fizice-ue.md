@@ -14,10 +14,10 @@ Odată ce un magazin online depășește pragul de 10.000 euro pe vânzările c�
 
 ::: ghid-temei
 „Prezentul regim special poate fi utilizat de către orice persoană impozabilă care are sediul activității economice în România [...]. Regimul special poate fi utilizat în următoarele cazuri: a) de către orice persoană impozabilă care efectuează vânzări intracomunitare de bunuri la distanță [...]."
-— Legea 227/2015, art. 315 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 315 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Până la sfârșitul următoarei luni după încheierea fiecărui trimestru calendaristic, persoana impozabilă trebuie să depună la organul fiscal competent, prin mijloace electronice, o declarație specială de TVA, [...] indiferent dacă au fost sau nu efectuate livrări de bunuri sau dacă au fost sau nu prestate servicii pentru care se utilizează regimul special reglementat de prezentul articol."
-— Legea 227/2015, art. 315 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 315 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, practic, regimul OSS pentru un magazin online din România:

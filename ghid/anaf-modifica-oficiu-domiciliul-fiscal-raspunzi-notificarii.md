@@ -16,15 +16,15 @@ Domiciliul fiscal stabilește organul fiscal competent și adresa la care se com
 
 ::: ghid-temei
 „vă rugăm ca în termen de 15 zile de la data primirii prezentei notificări să prezentați punctul dumneavoastră de vedere fie în scris, fie prin prezentarea la sediul nostru, în vederea clarificării acestei situații. În cazul în care nu vă exprimați punctul de vedere solicitat în termenul menționat mai sus, organul fiscal poate emite decizia privind înregistrarea/modificarea din oficiu a domiciliului fiscal pe baza constatărilor proprii."
-— OPANAF 3845/2015, Anexa nr. 5c) (sursă: anaf_surse/ordin_3845_2015.html)
+— OPANAF 3845/2015, Anexa nr. 5c) (sursă: [OPANAF nr. 3845/2015 privind înregistrarea/modificarea domiciliului fiscal](https://legislatie.just.ro/Public/DetaliiDocument/174717))
 :::
 
 ::: ghid-temei
 „Organul fiscal prevăzut la alin. (2) emite din oficiu decizia de înregistrare/modificare a domiciliului fiscal ori de câte ori constată că domiciliul fiscal este diferit de domiciliul sau sediul social, iar contribuabilul/plătitorul nu a depus cerere de modificare a domiciliului fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Data înregistrării/modificării domiciliului fiscal este data comunicării deciziei de înregistrare/modificare a domiciliului fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 De ce poate ANAF să considere că domiciliul tău fiscal e altul:

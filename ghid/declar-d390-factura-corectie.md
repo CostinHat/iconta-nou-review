@@ -15,7 +15,7 @@ O livrare intracomunitară deja declarată în D390 se poate corecta ulterior �
 ::: ghid-temei
 „(1) Orice persoană impozabilă înregistrată în scopuri de TVA [...] trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: a) livrările intracomunitare scutite de taxă [...], pentru care exigibilitatea taxei a luat naștere în luna calendaristică respectivă; [...]
 (2) Termenul de depunere al declarației recapitulative și modelul acesteia se stabilesc prin ordin al președintelui Agenției Naționale de Administrare Fiscală. Declarația se întocmește pentru fiecare lună calendaristică în care ia naștere exigibilitatea taxei pentru operațiunile prevăzute la alin. (1) [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 325 alin. (1) lit. a) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 325 alin. (1) lit. a) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Limitare declarată:** textul stabilește principiul de fond — declarația recapitulativă raportează operațiunile în luna în care ia naștere **exigibilitatea taxei** pentru operațiunea respectivă, nu în luna emiterii documentului. Pentru mecanismul tehnic exact al corecției (dacă o factură de stornare/corecție se raportează în luna facturii inițiale, prin rectificarea acelei declarații, sau în luna proprie de exigibilitate a corecției), sursele verificate nu conțin un text explicit, punctual, care să detalieze această situație pentru D390. Ce se poate spune cu certitudine din structura generală a sistemului:
@@ -31,6 +31,6 @@ O livrare intracomunitară deja declarată în D390 se poate corecta ulterior �
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/d390.py` generează declarația D390 prin auto-derivare din facturile deja înregistrate în aplicație (livrări/achiziții intracomunitare, prestări de servicii art. 278 alin. (2)), validând coerența datelor (cod CUI, țară, temei) înainte de generare. Aplicația **nu are o rută dedicată explicit „factură de corecție"** — nu am găsit în cod un tratament separat pentru facturile de stornare sau de corecție a unei livrări intracomunitare deja declarate; o astfel de corecție trebuie reflectată de contabil prin ajustarea facturii corespunzătoare și, dacă e nevoie, prin depunerea manuală a unei declarații recapitulative rectificative pentru luna afectată.
+Verificat în cod: Aplicația generează declarația D390 prin auto-derivare din facturile deja înregistrate în aplicație (livrări/achiziții intracomunitare, prestări de servicii art. 278 alin. (2)), validând coerența datelor (cod CUI, țară, temei) înainte de generare. Aplicația **nu are o rută dedicată explicit „factură de corecție"** — nu am găsit în cod un tratament separat pentru facturile de stornare sau de corecție a unei livrări intracomunitare deja declarate; o astfel de corecție trebuie reflectată de contabil prin ajustarea facturii corespunzătoare și, dacă e nevoie, prin depunerea manuală a unei declarații recapitulative rectificative pentru luna afectată.
 
 [iConta.eu](/)

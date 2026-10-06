@@ -16,15 +16,15 @@ Greșeala tipică: facturile de corecție sunt trecute în D300 ca operațiuni a
 
 ::: ghid-temei
 „c) persoana impozabilă nu a colectat TVA pentru livrările de bunuri/prestările de servicii taxabile efectuate în perioada în care a avut codul de înregistrare în scopuri de TVA anulat, respectiv nu a depus declarația privind taxa pe valoarea adăugată colectată care trebuie plătită conform art. 11 alin. (6) și (8) din Codul fiscal, dar a emis facturi. În această situație, după reînregistrarea în scopuri de TVA, persoana impozabilă trebuie să emită facturi de corecție conform art. 330 alin. (1) lit. b) din Codul fiscal."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Persoana impozabilă datorează obligații fiscale accesorii conform art. 173 și 181 din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările și completările ulterioare, de la data la care avea obligația să plătească TVA aferentă livrărilor de bunuri/prestărilor de servicii taxabile, efectuate în perioada în care a avut codul de înregistrare în scopuri de TVA anulat, și până la data plății taxei"
-— HG 1/2016, titlul I, pct. 5^1 alin. (2) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016, titlul I, pct. 5^1 alin. (2) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „emit facturi de corecție pentru livrările de bunuri/prestările de servicii taxabile efectuate în perioada în care au avut codul de înregistrare în scopuri de TVA anulat, pentru care nu au colectat TVA, dar au emis facturi în acea perioadă"
-— OPANAF nr. 188/2018, anexa nr. 2 (instrucțiunile de completare a D311) (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2 (instrucțiunile de completare a D311) (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 Ce rezultă concret:

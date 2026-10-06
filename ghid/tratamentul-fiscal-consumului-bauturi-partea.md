@@ -14,7 +14,7 @@ Un local (bar, restaurant, cafenea) care oferă ocazional băuturi „din partea
 
 ::: ghid-temei
 „Nu constituie livrare de bunuri, în sensul alin. (1): [...] acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 privind Codul fiscal, art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Dacă băutura oferită gratuit se încadrează la această literă b) — adică e un gest comercial obișnuit, orientat spre fidelizarea sau atragerea clientelei, și nu spre o relație de afaceri specifică — nu se colectează TVA pentru bunul respectiv, deși TVA-ul aferent achiziției lui rămâne, în principiu, deductibil (fiind legat de activitatea economică).
@@ -23,7 +23,7 @@ Situația e diferită atunci când băutura se oferă în cadru de protocol/repr
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: a) cheltuielile de protocol în limita unei cote de 2% aplicată asupra profitului contabil la care se adaugă cheltuielile cu impozitul pe profit și cheltuielile de protocol. În cadrul cheltuielilor de protocol se includ și cheltuielile înregistrate cu taxa pe valoarea adăugată colectată potrivit prevederilor titlului VII, pentru cadourile oferite de contribuabil, cu valoare mai mare de 100 lei."
-— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din coroborarea celor două texte rezultă practic:

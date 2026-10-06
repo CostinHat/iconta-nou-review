@@ -16,15 +16,15 @@ Diferența se vede în cotă. La persoanele fizice, clădirile-anexă urmează r
 
 ::: ghid-temei
 „3. (1) În înțelesul art. 453 lit. c) din Codul fiscal, clădirile-anexă sunt clădiri care servesc ca dependințe ale clădirilor rezidențiale, situate în afara clădirii de locuit, cum sunt: bucătăriile, cămările, pivnițele, grajdurile, magaziile, depozitele, garajele și altele asemenea. [...] (2) Clădirile menționate la alin. (1) nu sunt considerate clădiri-anexă dacă sunt utilizate pentru desfășurarea de activități economice.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (1)-(2), titlul IX (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (1)-(2), titlul IX (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „clădire-anexă - clădiri situate în afara clădirii de locuit, precum: bucătării, grajduri, pivnițe, cămări, pătule, magazii, depozite, garaje și altele asemenea;”
-— Codul fiscal (Legea 227/2015), art. 453 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 453 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru clădirile nerezidențiale aflate în proprietatea sau deținute de persoanele juridice, impozitul/taxa pe clădiri se calculează prin aplicarea unei cote cuprinse între 0,2%-1,3%, inclusiv, asupra valorii impozabile a clădirii.”
-— Codul fiscal, art. 460 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 460 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Vectorul fiscal e setul de atribute care spun ANAF-ului (și, practic, oricărui
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: a) înainte de realizarea unor astfel de operațiuni, în următoarele cazuri: 1. dacă declară că urmează să realizeze o cifră de afaceri care depășește plafonul de scutire prevăzut la art. 310 alin. (1) [...]"
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie decis efectiv la înființare:
@@ -31,6 +31,6 @@ Ce trebuie decis efectiv la înființare:
 
 ## Ce face iConta.eu
 
-iConta.eu are un ecran dedicat „Date firmă" (`core/vector_fiscal_api.py`) unde se completează exact aceste patru atribute: regim fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu permite salvarea unui vector incomplet — cere explicit fiecare alegere, fără valori implicite tăcute, tocmai pentru că o valoare presupusă greșit duce la declarații lipsă mai târziu. Din acest vector, motorul de conformare al aplicației (`core/control_fiscal_api.py`) derivă automat ce declarații (D100, D300, D390, D101 etc.) sunt datorate lunar sau trimestrial. iConta.eu nu depune însă declarația de înregistrare fiscală la ANAF — aceasta rămâne un pas separat, făcut de contabil sau prin portalul ANAF.
+iConta.eu are un ecran dedicat „Date firmă" unde se completează exact aceste patru atribute: regim fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu permite salvarea unui vector incomplet — cere explicit fiecare alegere, fără valori implicite tăcute, tocmai pentru că o valoare presupusă greșit duce la declarații lipsă mai târziu. Din acest vector, motorul de conformare al aplicației derivă automat ce declarații (D100, D300, D390, D101 etc.) sunt datorate lunar sau trimestrial. iConta.eu nu depune însă declarația de înregistrare fiscală la ANAF — aceasta rămâne un pas separat, făcut de contabil sau prin portalul ANAF.
 
 [iConta.eu](/)

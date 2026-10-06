@@ -14,7 +14,7 @@ Un magazin online care vinde, de exemplu, atât produse alimentare (cotă redus�
 
 ::: ghid-temei
 „Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%. [...] Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...] b) livrarea următoarelor bunuri: alimente, inclusiv băuturi, destinate consumului uman și animal, animale și păsări vii din specii domestice, ale căror coduri NC se stabilesc prin normele metodologice, cu excepția: [...] băuturilor alcoolice [...]"
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (1) și alin. (2) lit. b), forma în vigoare de la 01.08.2025 (modificată prin Legea 141/2025) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (1) și alin. (2) lit. b), forma în vigoare de la 01.08.2025 (modificată prin Legea 141/2025) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cota standard de TVA e 21% și se aplică oricărei operațiuni care nu e scutită și nu se încadrează la o cotă redusă.

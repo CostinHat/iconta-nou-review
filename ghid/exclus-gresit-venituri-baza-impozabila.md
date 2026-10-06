@@ -32,6 +32,6 @@ Se recalculează baza corectă pentru trimestrul afectat, incluzând veniturile 
 
 ## Ce face iConta.eu
 
-Corectarea unei sume declarate greșit în D100 se face prin ecranul formularului 710 (`core/d710.py`), care calculează diferența dintre suma declarată inițial și suma corectă pentru obligația de cod 121. Calculul dobânzilor și penalităților de întârziere pentru diferența plătită cu întârziere rămâne o verificare separată, pe baza scadenței inițiale a trimestrului corectat, nu una automatizată în fluxul de corecție D710 al aplicației.
+Corectarea unei sume declarate greșit în D100 se face prin ecranul formularului 710, care calculează diferența dintre suma declarată inițial și suma corectă pentru obligația de cod 121. Calculul dobânzilor și penalităților de întârziere pentru diferența plătită cu întârziere rămâne o verificare separată, pe baza scadenței inițiale a trimestrului corectat, nu una automatizată în fluxul de corecție D710 al aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Un service auto nu are un regim legal distinct de evidențiere a numerarului —
 
 ::: ghid-temei
 „(1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— OUG nr. 28/1999 (republicată), art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 (republicată), art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce înseamnă concret pentru un service auto:
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru un service auto:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul de casierie (`core/casa.py`) care ține un registru de casă cu sold rulant (`registru_casa`) și verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor legale de numerar din Legea 70/2015 (`verifica_plafon`) — inclusiv pentru avansurile spre decontare. Aplicația poate importa, separat, Raportul Z generat de aparatul de marcat electronic fiscal al service-ului (`core/amef_import.py`), cu totalurile de încasări pe modalitate de plată. Aplicația nu are însă o funcționalitate specifică sectorului auto (de exemplu, legarea încasărilor de comenzi de reparație individuale) — evidența numerarului se face la nivelul general al oricărei firme cu casierie.
+La data acestui ghid, iConta.eu are un modul de casierie care ține un registru de casă cu sold rulant (`registru_casa`) și verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor legale de numerar din Legea 70/2015 (`verifica_plafon`) — inclusiv pentru avansurile spre decontare. Aplicația poate importa, separat, Raportul Z generat de aparatul de marcat electronic fiscal al service-ului, cu totalurile de încasări pe modalitate de plată. Aplicația nu are însă o funcționalitate specifică sectorului auto (de exemplu, legarea încasărilor de comenzi de reparație individuale) — evidența numerarului se face la nivelul general al oricărei firme cu casierie.
 
 [iConta.eu](/)

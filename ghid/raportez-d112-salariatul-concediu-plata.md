@@ -18,13 +18,13 @@ Concediul fără plată e un drept al salariatului pentru rezolvarea unor situa�
 
 „Durata concediului fără plata se stabileşte prin contractul colectiv de muncă aplicabil sau prin regulamentul intern."
 — Legea 53/2003 (Codul muncii), art. 148 alin. (2)
-(sursă: anaf_surse/legea_53_2003_codul_muncii.txt:1790-1794)
+(sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Structura oficială a formularului 112 tratează explicit zilele fără plată ca zile care reduc baza favorabilă de calcul, alături de zilele nemotivate — spre deosebire de zilele efectiv lucrate sau de cele de concediu medical, care intră normal în formula de calcul a facilității pe venitul din salarii:
 
 > „B2_5P=((4050-300)/NZL*(zile lucrate+zile CM)) - zilele fara plata si zilele nemotivate se supra-taxeaza"
-> — structura tehnică D112 (sursă: anaf_surse/d112_struct_anaf.txt:124-125)
+> — structura tehnică D112 (sursă: [Structura fișierului XML pentru declarația D112, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D112_0126_300326.pdf))
 
 Practic: formula oficială a facilității include explicit zilele lucrate și zilele de concediu medical, dar exclude zilele fără plată și cele nemotivate — acestea două se „supra-taxează", adică nu beneficiază de aceeași proporționare favorabilă.
 
@@ -36,6 +36,6 @@ Practic: formula oficială a facilității include explicit zilele lucrate și z
 
 ## Ce face iConta.eu
 
-Cercetarea de fond pentru acest ghid a vizat motorul de calcul al indemnizației de concediu medical (`core/salarizare.py`, calculatorul CM, temei OUG 158/2005) — un motor complet separat de generatorul D112 general al salariilor. Nu s-a verificat, în acest context, dacă și cum motorul de salarizare din iConta.eu (`core/d112.py`, `core/salarizare.py`) implementează formula de mai sus pentru zilele fără plată; acest subiect ține de funcționalitatea generală de calcul al salariului și al declarației 112, nu de calculatorul de concediu medical care a stat la baza acestei cercetări.
+Cercetarea de fond pentru acest ghid a vizat motorul de calcul al indemnizației de concediu medical (calculatorul CM, temei OUG 158/2005) — un motor complet separat de generatorul D112 general al salariilor. Nu s-a verificat, în acest context, dacă și cum motorul de salarizare din iConta.eu implementează formula de mai sus pentru zilele fără plată; acest subiect ține de funcționalitatea generală de calcul al salariului și al declarației 112, nu de calculatorul de concediu medical care a stat la baza acestei cercetări.
 
 [iConta.eu](/)

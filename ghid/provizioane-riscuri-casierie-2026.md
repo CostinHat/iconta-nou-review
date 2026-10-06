@@ -30,6 +30,6 @@ Enumerarea de mai sus nu e strict închisă — textul o introduce cu „cum sun
 
 ## Ce face iConta.eu
 
-Modulul de provizioane (`core/provizioane.py`) generează note doar pentru categoriile recunoscute: litigii, garanții, dezafectare, restructurare, impozite și altele — dicționarul intern al aplicației nu conține o categorie „risc de casierie". Casieria (`core/casa.py`) e un modul separat, fără legătură cu motorul de provizioane; eventualele diferențe de casă se gestionează prin acel modul, nu prin F071.
+Modulul de provizioane generează note doar pentru categoriile recunoscute: litigii, garanții, dezafectare, restructurare, impozite și altele — dicționarul intern al aplicației nu conține o categorie „risc de casierie". Casieria e un modul separat, fără legătură cu motorul de provizioane; eventualele diferențe de casă se gestionează prin acel modul, nu prin F071.
 
 [iConta.eu](/)

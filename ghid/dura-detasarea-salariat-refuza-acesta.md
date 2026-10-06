@@ -16,10 +16,10 @@ Spre deosebire de delegare, detașarea înseamnă muncă la un alt angajator, î
 
 ::: ghid-temei
 „Detașarea este actul prin care se dispune schimbarea temporară a locului de muncă, din dispoziția angajatorului, la un alt angajator, în scopul executării unor lucrări în interesul acestuia. În mod excepțional, prin detașare se poate modifica și felul muncii, dar numai cu consimțământul scris al salariatului."
-— Codul muncii (Legea 53/2003), art. 45 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 45 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Detașarea poate fi dispusă pe o perioadă de cel mult un an.(2) În mod excepțional, perioada detașării poate fi prelungită pentru motive obiective ce impun prezența salariatului la angajatorul la care s-a dispus detașarea, cu acordul ambelor părți, din 6 în 6 luni.(3) Salariatul poate refuza detașarea dispusă de angajatorul său numai în mod excepțional și pentru motive personale temeinice.(4) Salariatul detașat are dreptul la plata cheltuielilor de transport și cazare, precum și la o indemnizație de detașare, în condițiile prevăzute de lege sau de contractul colectiv de muncă aplicabil."
-— Codul muncii (Legea 53/2003), art. 46 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 46 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce trebuie verificat:

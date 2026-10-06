@@ -19,12 +19,12 @@ Ce primește peste această limită nu mai este restituire de aport. Scutirea de
 
 ::: ghid-temei
 „sumele primite ca urmare a restituirii cotei-părți din aporturile acționarilor/asociaților, cu ocazia reducerii capitalului social, potrivit legii.”
-— Codul fiscal (Legea 227/2015), art. 23 lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 23 lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(6) În aplicarea prevederilor art. 23 lit. o) din Codul fiscal, se vor avea în vedere următoarele: a) sumele în bani sau în natură primite de către acționarii/asociații inițiali, ca urmare a reducerii capitalului social la persoana juridică la care se dețin acțiunile/părțile sociale, sunt venituri neimpozabile dacă reprezintă capital aportat de acționari/asociați din patrimoniul personal; [...] b) în cazul restituirilor în bani sau în natură, efectuate cu ocazia reducerii capitalului social către acționarii/asociații care au achiziționat ulterior acțiunile/părțile sociale, sunt venituri neimpozabile sumele primite până la nivelul costului de achiziție a acțiunilor/părților sociale respective.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie verificat:

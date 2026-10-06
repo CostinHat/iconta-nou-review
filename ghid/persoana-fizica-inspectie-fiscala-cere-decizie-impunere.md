@@ -16,15 +16,15 @@ Contează pentru că decizia provizorie permite plata diferenței înainte de fi
 
 ::: ghid-temei
 „Decizia de impunere provizorie privind obligaţiile fiscale principale reprezintă actul administrativ fiscal care se emite la cererea contribuabilului/plătitorului verificat, persoană fizică sau juridică, în scopul plăţii obligaţiilor fiscale principale suplimentare aferente unei perioade, pentru unul sau mai multe tipuri de obligaţii fiscale verificate"
-— OPANAF 3708/2015, Anexa nr. 2 (sursă: anaf_surse/ordin_3708_2015.html)
+— OPANAF 3708/2015, Anexa nr. 2 (sursă: [OPANAF nr. 3708/2015 pentru aprobarea formularului Decizie de impunere provizorie](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_3708_2015.pdf))
 
 „Obligaţiile fiscale principale stabilite prin decizii de impunere provizorii, emise pentru contribuabili/plătitori, persoane fizice sau juridice, se includ şi se regularizează în deciziile de impunere emise în condiţiile art. 131 din Legea nr. 207/2015"
-— OPANAF 3708/2015, art. 2 (sursă: anaf_surse/ordin_3708_2015.html)
+— OPANAF 3708/2015, art. 2 (sursă: [OPANAF nr. 3708/2015 pentru aprobarea formularului Decizie de impunere provizorie](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_3708_2015.pdf))
 :::
 
 ::: ghid-temei
 „La cererea contribuabilului/plătitorului, decizia de impunere provizorie se emite și se comunică în termen de cel mult 10 zile lucrătoare de la data solicitării, în cazul marilor contribuabili, sau în termen de cel mult 5 zile lucrătoare pentru ceilalți contribuabili/plătitori, în scopul stingerii obligațiilor fiscale suplimentare."
-— Codul de procedură fiscală (Legea 207/2015), art. 133 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 133 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să știe persoana fizică:

@@ -14,7 +14,7 @@ Decontul special de taxă pe valoarea adăugată (D301) se depune pentru anumite
 
 ::: ghid-temei
 „Declarația depusă inițial se rectifică prin depunerea unei noi declarații, pe același format, bifând căsuța corespunzătoare de pe formular. În situația în care persoana impozabilă depune declarația după anularea rezervei verificării ulterioare, în condițiile art. 105 alin. (6) din Legea nr. 207/2015 privind Codul de procedură fiscală [...] se bifează, în căsuța corespunzătoare, temeiul legal pentru depunerea declarației."
-— OPANAF 592/2016 (instrucțiuni de completare a decontului special de TVA, formularul 301) (sursă: anaf_surse/opanaf_592_2016_d301.txt)
+— OPANAF 592/2016 (instrucțiuni de completare a decontului special de TVA, formularul 301) (sursă: [OPANAF nr. 592/2016 pentru aprobarea formularului 301](https://legislatie.just.ro/Public/DetaliiDocument/175654))
 :::
 
 - Rectificativa D301 e, la fel ca la D101, un formular „refăcut" — se redepune același tip de declarație, cu bifa de rectificare activată, nu un formular separat.

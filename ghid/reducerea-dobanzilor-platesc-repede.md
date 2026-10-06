@@ -15,7 +15,7 @@ Titlul acestei întrebări se referă, în practică, la un mecanism care nu est
 ::: ghid-temei
 „Articolul 7 Acordarea unei bonificații în cazul impozitului pe profit și impozitului pe veniturile microîntreprinderilor
 (1) Contribuabilii plătitori de impozit pe profit, indiferent de sistemul de declarare și plată prevăzut la art. 41 din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, precum și contribuabilii plătitori de impozit pe veniturile microîntreprinderilor, potrivit titlului III „Impozitul pe veniturile microîntreprinderilor“ din aceeași lege, beneficiază de o bonificație de 3% din impozitul pe profit anual/impozitul pe veniturile microîntreprinderilor, aferente anului fiscal 2025/anului fiscal modificat care începe în anul 2025, după caz."
-— Ordonanța de urgență a Guvernului nr. 8/2026, art. 7 alin. (1), reprodus în nota la Legea nr. 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Ordonanța de urgență a Guvernului nr. 8/2026, art. 7 alin. (1), reprodus în nota la Legea nr. 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Precizări importante despre acest mecanism:
@@ -32,6 +32,6 @@ Precizări importante despre acest mecanism:
 
 ## Ce face iConta.eu
 
-Verificat în cod: nu am găsit în `core/` un modul dedicat calculului automat al bonificației de 3% la impozitul pe profit sau la impozitul micro — declarațiile D100/D101 generate de aplicație reflectă impozitul datorat calculat conform regulilor curente, dar aplicarea bonificației (verificarea condițiilor, compensarea) rămâne, la acest moment, un proces gestionat direct de organul fiscal, în afara automatizării din iConta.eu.
+Verificat în cod: nu am găsit în aplicație un modul dedicat calculului automat al bonificației de 3% la impozitul pe profit sau la impozitul micro — declarațiile D100/D101 generate de aplicație reflectă impozitul datorat calculat conform regulilor curente, dar aplicarea bonificației (verificarea condițiilor, compensarea) rămâne, la acest moment, un proces gestionat direct de organul fiscal, în afara automatizării din iConta.eu.
 
 [iConta.eu](/)

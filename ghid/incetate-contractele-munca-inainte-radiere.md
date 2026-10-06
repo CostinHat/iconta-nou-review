@@ -15,7 +15,7 @@ Contractul individual de muncă nu încetează automat „înainte" de radiere �
 ::: ghid-temei
 „Articolul 56
 Contractul individual de muncă încetează de drept: [...] c) ca urmare a dizolvării angajatorului persoana juridică, de la data la care persoana juridică îşi încetează existenta."
-— Legea 53/2003 (Codul muncii), art. 56 lit. c) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 56 lit. c) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă din text:
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu am identificat în cod** o funcționalitate care să coordoneze automat încetarea contractelor de muncă cu procedura de lichidare/radiere a firmei. Modulul `core/lichidare.py` acoperă motorul contabil al lichidării (valorificarea activelor, partajul, impozitul pe câștigul asociaților), nu gestiunea resurselor umane; aplicația oferă evidența contabilă generală și statul de plată, în care contabilul înregistrează manual încetarea fiecărui contract, pe baza deciziei de concediere emise de angajator.
+La data acestui ghid, iConta.eu **nu am identificat în cod** o funcționalitate care să coordoneze automat încetarea contractelor de muncă cu procedura de lichidare/radiere a firmei. Aplicația acoperă motorul contabil al lichidării (valorificarea activelor, partajul, impozitul pe câștigul asociaților), nu gestiunea resurselor umane; aplicația oferă evidența contabilă generală și statul de plată, în care contabilul înregistrează manual încetarea fiecărui contract, pe baza deciziei de concediere emise de angajator.
 
 [iConta.eu](/)

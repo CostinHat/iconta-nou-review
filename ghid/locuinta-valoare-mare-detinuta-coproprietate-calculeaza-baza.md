@@ -16,17 +16,17 @@ Ordinea pașilor schimbă rezultatul. Dacă s-ar împărți întâi valoarea cl�
 
 ::: ghid-temei
 „se înscrie suma rezultată prin aplicarea cotei de deținere asupra diferenței pozitive dintre valoarea impozabilă a clădirii rezidențiale (rd. 1) și plafonul neimpozabil (rd. 2)."
-— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.4 rd. 3 (sursă: anaf_surse/ordin_3738_2024.html)
+— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.4 rd. 3 (sursă: [OPANAF nr. 3738/2024 pentru aprobarea formularului 216](https://legislatie.just.ro/Public/DetaliiDocument/285515))
 :::
 
 ::: ghid-temei
 „Rd. 3 „Cota de deținere“ - se completează cota-parte deținută din imobil."
-— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.3 (sursă: anaf_surse/ordin_3738_2024.html)
+— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.3 (sursă: [OPANAF nr. 3738/2024 pentru aprobarea formularului 216](https://legislatie.just.ro/Public/DetaliiDocument/285515))
 :::
 
 ::: ghid-temei
 „Rd. 4. „Impozitul datorat“ - se înscrie suma rezultată prin aplicarea cotei de 0,9% asupra valorii înscrise la rd. 3."
-— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.4 (sursă: anaf_surse/ordin_3738_2024.html)
+— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 10.1.4 (sursă: [OPANAF nr. 3738/2024 pentru aprobarea formularului 216](https://legislatie.just.ro/Public/DetaliiDocument/285515))
 :::
 
 Rândurile din secțiunea 1 a formularului 216, în ordine:

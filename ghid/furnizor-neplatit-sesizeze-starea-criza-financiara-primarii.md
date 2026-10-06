@@ -16,10 +16,10 @@ Sesizarea are sens atunci când datele indică una dintre situațiile în care l
 
 ::: ghid-temei
 „(2) Situația de criză financiară poate fi sesizată de ordonatorul principal de credite al unității administrativ-teritoriale, conducătorul compartimentului financiar-contabil din cadrul aparatului propriu de specialitate al autorităților administrației publice locale, de ordonatorii secundari de credite și ordonatorii terțiari de credite din cadrul serviciilor publice subordonate consiliului local, de conducătorii societăților comerciale sau ai regiilor autonome din subordinea consiliului local, de diverși creditori, de directorul direcției generale a finanțelor publice județene, respectiv a municipiului București și de structurile teritoriale ale Curții de Conturi. Sesizarea se face la direcția generală a finanțelor publice județene sau a municipiului București și la ordonatorul principal de credite al unității administrativ-teritoriale care se află în situația de criză financiară."
-— Legea 273/2006 privind finanțele publice locale, art. 74 alin. (2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 74 alin. (2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „a) neachitarea obligațiilor de plată, lichide și exigibile, mai vechi de 90 de zile și care depășesc 15% din cheltuielile prevăzute în bugetul general al unității administrativ-teritoriale respective, cu excepția celor aflate în litigiu comercial;"
-— Legea 273/2006, art. 74 alin. (1) lit. a) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 74 alin. (1) lit. a) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

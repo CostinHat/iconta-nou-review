@@ -18,7 +18,7 @@ Plafoanele legale pentru operațiunile cu numerar există de mai mulți ani, dar
 a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană;
 ...
 c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. a) și c) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. a) și c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 ```
 
@@ -39,6 +39,6 @@ Structura actuală a plafoanelor, așa cum rezultă din lege:
 
 ## Ce face iConta.eu
 
-Modulul `core/casa.py` conține funcția `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate, dacă plafonul legal a fost depășit — inclusiv distincția pentru cash and carry și pentru avansurile spre decontare, confirmat direct din cod (`plafon_avans_decontare` ca parametru distinct al cotei aplicate). Verificarea acoperă operațiunile trecute prin registrul de casă din aplicație; tranzacțiile în numerar care nu sunt înregistrate prin acest modul nu pot fi, evident, verificate automat.
+Aplicația conține funcția `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate, dacă plafonul legal a fost depășit — inclusiv distincția pentru cash and carry și pentru avansurile spre decontare, confirmat direct din cod (`plafon_avans_decontare` ca parametru distinct al cotei aplicate). Verificarea acoperă operațiunile trecute prin registrul de casă din aplicație; tranzacțiile în numerar care nu sunt înregistrate prin acest modul nu pot fi, evident, verificate automat.
 
 [iConta.eu](/)

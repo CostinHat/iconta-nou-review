@@ -119,6 +119,21 @@ def test_ajutor_se_reconstruieste_identic():
         ajutor._CACHE = vechi
 
 
+def test_ghid_teme_se_reconstruieste_identic():
+    """Cache-ul golit se reface identic din aceleași surse (lot 06.10)."""
+    import main
+    from core import ghid_teme
+    vechi = dict(ghid_teme._CACHE)
+    try:
+        ghid_teme._CACHE.clear(); ghid_teme._CACHE["cheie"] = None
+        intai = main._ghid_teme_index()
+        assert len(intai[0]) > 5000, "doar %d ghiduri: sursa pare trunchiată" % len(intai[0])
+        ghid_teme._CACHE.clear(); ghid_teme._CACHE["cheie"] = None
+        assert main._ghid_teme_index() == intai
+    finally:
+        ghid_teme._CACHE.clear(); ghid_teme._CACHE.update(vechi)
+
+
 def test_baza_ai_se_reconstruieste_identic():
     from core import raportari_ai
     vechi = raportari_ai._BAZA

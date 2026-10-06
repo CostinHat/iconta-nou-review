@@ -14,7 +14,7 @@ Contabil, o entitate poate — și, potrivit principiului prudenței, chiar treb
 
 ::: ghid-temei
 „(1) Contribuabilul are dreptul la deducerea rezervelor și provizioanelor/ajustărilor pentru depreciere, numai în conformitate cu prezentul articol, astfel: a) rezerva legală [...]; b) provizioanele pentru garanții de bună execuție acordate clienților [...]; c) ajustările pentru deprecierea creanțelor [...] în limita unui procent de 30% [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Art. 26 alin. (1) este formulat expres ca listă **limitativă** („numai în conformitate cu prezentul articol"): rezerva legală, provizioane pentru garanții de bună execuție, ajustări pentru deprecierea creanțelor (client, în anumite condiții), provizioane specifice ale instituțiilor financiare, rezerve tehnice de asigurare etc.
@@ -31,6 +31,6 @@ Contabil, o entitate poate — și, potrivit principiului prudenței, chiar treb
 
 ## Ce face iConta.eu
 
-iConta.eu **are o funcție dedicată** pentru exact acest caz: `nota_ajustare_stoc` din `core/provizioane.py` generează nota contabilă de constituire/reluare a ajustării de valoare a stocurilor (6814=39x, respectiv 39x=7814) și marchează explicit rezultatul cu `deductibil: False`, cu comentariul din cod „nedeductibil fiscal (nu figurează în art. 26)" — exact regula descrisă mai sus. Aplicația are și un modul consistent de gestiune a stocurilor (`stocuri.py`, `stocuri_api.py`, `stocuri_cv.py`) pentru mișcări, cantități și valori. Nu am găsit însă, în modulele verificate, o legătură automată între acest marcaj `deductibil: False` și completarea efectivă a rândului corespunzător din declarația 101 — reportarea sumei ca element similar cheltuielilor nedeductibile în D101 rămâne, la acest moment, o verificare manuală a contabilului.
+iConta.eu **are o funcție dedicată** pentru exact acest caz: `nota_ajustare_stoc` din aplicație generează nota contabilă de constituire/reluare a ajustării de valoare a stocurilor (6814=39x, respectiv 39x=7814) și marchează explicit rezultatul cu `deductibil: False`, cu comentariul din cod „nedeductibil fiscal (nu figurează în art. 26)" — exact regula descrisă mai sus. Aplicația are și un modul consistent de gestiune a stocurilor (`stocuri.py`, `stocuri_api.py`, `stocuri_cv.py`) pentru mișcări, cantități și valori. Nu am găsit însă, în modulele verificate, o legătură automată între acest marcaj `deductibil: False` și completarea efectivă a rândului corespunzător din declarația 101 — reportarea sumei ca element similar cheltuielilor nedeductibile în D101 rămâne, la acest moment, o verificare manuală a contabilului.
 
 [iConta.eu](/)

@@ -16,12 +16,12 @@ Fiecare dintre cele patru are reguli proprii. O clauză redactată fără condi�
 
 ::: ghid-temei
 „(1) În afara clauzelor esențiale prevăzute la art. 17, între părți pot fi negociate și cuprinse în contractul individual de muncă și alte clauze specifice.(2) Sunt considerate clauze specifice, fără ca enumerarea să fie limitativă:a) clauza cu privire la formarea profesională; ... b) clauza de neconcurență; ... c) clauza de mobilitate; ... d) clauza de confidențialitate."
-— Codul muncii (Legea 53/2003), art. 20 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 20 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Nerespectarea de către salariat a dispoziției prevăzute la alin. (1) determină obligarea acestuia la suportarea tuturor cheltuielilor ocazionate de pregătirea sa profesională, proporțional cu perioada nelucrată din perioada stabilită conform actului adițional la contractul individual de muncă."
-— Codul muncii (Legea 53/2003), art. 198 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 198 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cele patru clauze, pe scurt:

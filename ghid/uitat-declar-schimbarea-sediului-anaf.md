@@ -14,7 +14,7 @@ Schimbarea sediului social nu se rezolvă doar la Registrul Comerțului. Codul d
 
 ::: ghid-temei
 „Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Legea 207/2015 (Codul de procedură fiscală), art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Termenul de 15 zile curge de la data la care s-a produs modificarea (de regulă, data înregistrării noului sediu la Registrul Comerțului), nu de la data la care contabilul observă că nu a fost declarată. Dacă termenul a trecut deja:

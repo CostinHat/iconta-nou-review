@@ -14,7 +14,7 @@ Când administratorul (sau un asociat) depune numerar propriu în contul bancar 
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității nr. 82/1991, art. 6 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Fără un document justificativ clar (contract de împrumut asociat, hotărâre AGA de majorare de capital, decizie de restituire avans etc.), suma depusă rămâne o intrare de bani fără cauză economică identificabilă — exact ce verifică inspecția fiscală în primul rând.

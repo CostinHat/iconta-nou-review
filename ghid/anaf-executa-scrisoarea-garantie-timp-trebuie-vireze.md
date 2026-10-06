@@ -16,13 +16,13 @@ Pentru firmă, executarea scrisorii înseamnă că banca plătește bugetului î
 
 ::: ghid-temei
 „Organul fiscal competent se îndestulează din garanțiile depuse dacă nu s-a realizat scopul pentru care acestea au fost constituite."
-— Codul de procedură fiscală (Legea 207/2015), art. 212 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 212 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În cazul garanțiilor prevăzute la art. 211 lit. a) și b), organul fiscal dispune instituției de credit sau societății de asigurare emitente a scrisorii de garanție sau poliței de asigurare de garanție, după caz, sau instituției de credit ori societății de asigurare din România care a confirmat scrisoarea de garanție/polița de asigurare de garanție ori unității de Trezorerie a Statului, după caz, virarea, în termen de cel mult 15 zile de la data solicitării, a sumei de bani în conturile de venituri bugetare corespunzătoare."
-— Codul de procedură fiscală (Legea 207/2015), art. 212 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 212 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în cazul pierderii valabilității eșalonării la plată, organul fiscal competent execută garanțiile în contul obligațiilor fiscale rămase nestinse."
-— Codul de procedură fiscală (Legea 207/2015), art. 202 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 202 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Când și cum se ajunge la executare:

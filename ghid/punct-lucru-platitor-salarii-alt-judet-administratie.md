@@ -16,20 +16,20 @@ Sunt două competențe distincte. **Înregistrarea fiscală** a punctului de luc
 
 ::: ghid-temei
 „(1) în cazul sediilor secundare înregistrate fiscal, potrivit legii, competența pentru administrarea impozitului pe venitul din salarii datorat de acestea revine organului fiscal competent pentru administrarea obligațiilor datorate de contribuabilul/plătitorul care le-a înființat. (2) Competența pentru înregistrarea fiscală a sediilor secundare ca plătitoare de salarii și venituri asimilate salariilor, potrivit legii, revine organului fiscal central în a cărui rază teritorială se află situate acestea."
-— Codul de procedură fiscală (Legea 207/2015), art. 33 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 33 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(7) Orice persoană subiect al unui raport juridic fiscal, inclusiv operatorul economic, instituția publică și instituția publică locală, care are organizată o entitate, cu sau fără personalitate juridică, la altă adresă decât sediul social al subiectului respectiv, cu cel puțin o persoană care realizează venituri din salarii, are obligația să solicite înregistrarea fiscală a entității respective, ca plătitoare de salarii și de venituri asimilate salariilor, la organul fiscal din subordinea Agenției Naționale de Administrare Fiscală în a cărui rază teritorială se află adresa unde se desfășoară efectiv activitatea acelei entități. Solicitarea se face în termen de 30 de zile de la data înființării, pentru entitățile nou-înființate."
-— Legea 273/2006, art. 32 alin. (7) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 32 alin. (7) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația să organizeze și să conducă contabilitatea astfel încât aceasta să reflecte impozitul aferent veniturilor fiecărei luni, calculat, reținut și virat, pe fiecare entitate care intră sub incidența prezentului alineat."
-— Legea 273/2006, art. 32 alin. (7) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 32 alin. (7) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 ::: ghid-temei
 „(3) Contribuabilul/Plătitorul care are organizate unul sau mai multe sedii secundare ca plătitoare de salarii și de venituri asimilate salariilor potrivit Legii nr. 273/2006, cu modificările și completările ulterioare, pe raza teritorială a aceleiași unități/subdiviziuni administrativ-teritoriale cu domiciliul fiscal al contribuabilului/ plătitorului, nu are obligația să solicite înregistrarea fiscală a acestora."
-— Codul de procedură fiscală (Legea 207/2015), art. 81^1 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 81^1 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile pe scurt (art. 32 alin. (7) din Legea 273/2006, în forma aplicabilă de la 1 ianuarie 2026):

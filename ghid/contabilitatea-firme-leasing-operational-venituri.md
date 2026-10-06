@@ -14,7 +14,7 @@ O societate de leasing (locator) care dă bunuri în regim de leasing operațion
 
 ::: ghid-temei
 „217. ‐ (1) La contabilizarea operațiunilor de leasing operațional, locatorul trebuie să prezinte bunurile date în regim de leasing operațional în conturile de imobilizări necorporale şi imobilizări corporale, în conformitate cu natura acestora. (2) Sumele încasate sau de încasat se înregistrează în contabilitatea locatorului ca un venit în contul de profit şi pierdere, conform contabilității de angajamente."
-— OMFP 1802/2014, pct. 217 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 217 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Bunurile date în leasing operațional rămân, la locator, în conturile de imobilizări corporale/necorporale, în funcție de natura lor — el e cel care le amortizează.

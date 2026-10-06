@@ -14,7 +14,7 @@ O firmă neplătitoare de TVA (de exemplu aflată sub plafonul de scutire) care 
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: a) persoana impozabilă care are sediul activității economice în România [...] neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...] care efectuează o achiziție intracomunitară taxabilă în România, înainte de efectuarea achiziției intracomunitare, dacă valoarea achiziției intracomunitare respective depășește plafonul pentru achiziții intracomunitare în anul calendaristic în care are loc achiziția intracomunitară; [...] (4) Dacă persoana obligată să se înregistreze în scopuri de TVA, în condițiile prevăzute la alin. (1), nu solicită înregistrarea, organele fiscale competente vor înregistra persoana respectivă din oficiu."
-— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) și alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) și alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o achiziție deja făcută fără codul special:

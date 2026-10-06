@@ -14,10 +14,10 @@ Norma de venit nu e un număr unic pe țară pentru fiecare tip de activitate �
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Legea nr. 227/2015, art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București au următoarele obligații: a) stabilirea nivelului normelor de venit; b) publicarea acestora, anual, în cursul trimestrului IV al anului anterior celui în care urmează a se aplica, precum și a coeficienților de corecție stabiliți prin consultarea consiliilor județene/Consiliului General al Municipiului București, după caz."
-— Legea nr. 227/2015, art. 69 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 69 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta practic pentru un PFA din București:

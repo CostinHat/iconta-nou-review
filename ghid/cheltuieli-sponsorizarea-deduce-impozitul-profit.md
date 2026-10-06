@@ -36,7 +36,7 @@ Sponsorizarea are un regim fiscal diferit de restul cheltuielilor firmei: nu red
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din `core/sponsorizari.py` implementează exact acest mecanism: dacă `beneficiar_in_registru=False`, returnează credit 0, cu notă explicită de respingere; altfel, calculează plafonul prin `plafon_credit()` = `min(0,75% × cifra_afaceri, 20% × impozit_profit)`, apoi `credit = min(sponsorizari_efectuate, plafon)`. Diferența rămasă neconsumată din plafon (`redirectionabil_d177 = plafon - credit`) poate fi redirecționată separat, prin formularul D177, până la termenul de depunere a D101.
+Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din aplicație implementează exact acest mecanism: dacă `beneficiar_in_registru=False`, returnează credit 0, cu notă explicită de respingere; altfel, calculează plafonul prin `plafon_credit()` = `min(0,75% × cifra_afaceri, 20% × impozit_profit)`, apoi `credit = min(sponsorizari_efectuate, plafon)`. Diferența rămasă neconsumată din plafon (`redirectionabil_d177 = plafon - credit`) poate fi redirecționată separat, prin formularul D177, până la termenul de depunere a D101.
 
 Nota contabilă a sponsorizării în sine se generează cu `nota_sponsorizare(suma, mod="contract"|"plata")`, pe contul 6582 „Donații acordate” (denumirea oficială din planul de conturi OMFP 1802/2014 — nu există un cont dedicat „sponsorizare”).
 

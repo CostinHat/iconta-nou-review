@@ -17,7 +17,7 @@ O firmă cu regim mixt de TVA (care realizează atât operațiuni cu drept de de
 (2) Taxa deductibilă aferentă bunurilor de capital [...] se ajustează [...]: a) pe o perioadă de 5 ani, pentru bunurile de capital achiziționate sau fabricate, altele decât cele prevăzute la lit. b); [...] b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil [...]
 (4) Ajustarea taxei deductibile [...] se efectuează: [...] b) în cazurile în care apar modificări ale elementelor folosite la calculul taxei deduse; [...]
 (5) Ajustarea taxei deductibile se efectuează astfel: a) pentru cazurile prevăzute la alin. (4) lit. a), ajustarea se efectuează în cadrul perioadei de ajustare prevăzute la alin. (2), pentru o cincime sau, după caz, o douăzecime din taxa dedusă inițial, pentru fiecare an în care apare o modificare a destinației de utilizare. [...]"
-— Cod fiscal, art. 305 alin. (2), (4) lit. b) și alin. (5) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 305 alin. (2), (4) lit. b) și alin. (5) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, corelat cu definirea pro-rata de la art. 300:

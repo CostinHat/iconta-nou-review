@@ -16,10 +16,10 @@ Contractul pe durată determinată e o excepție. Regula Codului muncii este con
 
 ::: ghid-temei
 „Contractul individual de muncă poate fi încheiat pentru o durată determinată numai în următoarele cazuri:a) înlocuirea unui salariat în cazul suspendării contractului său de muncă, cu excepția situației în care acel salariat participă la grevă; ... b) creșterea și/sau modificarea temporară a structurii activității angajatorului; ... c) desfășurarea unor activități cu caracter sezonier; ... d) în situația în care este încheiat în temeiul unor dispoziții legale emise cu scopul de a favoriza temporar anumite categorii de persoane fără loc de muncă; ... e) angajarea unei persoane care, în termen de 5 ani de la data angajării, îndeplinește condițiile de pensionare pentru limită de vârstă; ... f) ocuparea unei funcții eligibile în cadrul organizațiilor sindicale, patronale sau al organizațiilor neguvernamentale, pe perioada mandatului; ... g) angajarea pensionarilor care, în condițiile legii, pot cumula pensia cu salariul; ... h) în alte cazuri prevăzute expres de legi speciale ori pentru desfășurarea unor lucrări, proiecte sau programe."
-— Codul muncii (Legea 53/2003), art. 83 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 83 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Contractul individual de muncă pe durată determinată se poate încheia numai în formă scrisă, cu precizarea expresă a duratei pentru care se încheie."
-— Codul muncii (Legea 53/2003), art. 82 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 82 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cazurile, pe înțelesul firmei:

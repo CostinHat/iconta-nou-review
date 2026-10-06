@@ -15,7 +15,7 @@ O firmă nou-înființată nu e obligată automat la impozit pe profit doar pent
 ```
 ::: ghid-temei
 „O persoană juridică română care este nou-înființată poate opta să plătească impozit pe veniturile microîntreprinderilor începând cu primul an fiscal, dacă condițiile prevăzute la art. 47 alin. (1) lit. d) și h) sunt îndeplinite la data înregistrării în registrul comerțului, iar cea prevăzută la lit. g) în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice respective. În cazul în care, în acest termen, nu se îndeplinește condiția de la art. 47 alin. (1) lit. g), microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care expiră perioada de 90 de zile."
-— Legea nr. 227/2015 privind Codul fiscal, art. 48 alin. (3) (sursă: anaf_surse/oug_8_2026.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 48 alin. (3) (sursă: [OUG nr. 8/2026 privind instituirea unor măsuri de relansare economică](https://legislatie.just.ro/Public/DetaliiDocument/307580))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce presupune concret opțiunea, pentru o firmă nouă:
 
 ## Ce face iConta.eu
 
-Testul propriu al aplicației (`core/test_a8_micro_baza.py`) acoperă doar calculul bazei de impozitare pentru regimul micro (includerea veniturilor din cont 766 și scăderea celor din cont 709) — nu testează și nu implementează verificarea condițiilor de încadrare din art. 47. Nu a fost identificată în cod nicio rutină dedicată verificării condițiilor de eligibilitate pentru regimul micro (art. 47 alin. (1), inclusiv excepția de 90 de zile de la art. 48 alin. (3)) — regimul fiscal rămâne un câmp ales manual de utilizator, iar verificarea acestui termen specific rămâne, la acest moment, o atenție pe care contabilul o acordă manual firmelor aflate în primul lor an de activitate.
+Testul propriu al aplicației acoperă doar calculul bazei de impozitare pentru regimul micro (includerea veniturilor din cont 766 și scăderea celor din cont 709) — nu testează și nu implementează verificarea condițiilor de încadrare din art. 47. Nu a fost identificată în cod nicio rutină dedicată verificării condițiilor de eligibilitate pentru regimul micro (art. 47 alin. (1), inclusiv excepția de 90 de zile de la art. 48 alin. (3)) — regimul fiscal rămâne un câmp ales manual de utilizator, iar verificarea acestui termen specific rămâne, la acest moment, o atenție pe care contabilul o acordă manual firmelor aflate în primul lor an de activitate.
 
 [iConta.eu](/)

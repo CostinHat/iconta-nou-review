@@ -23,12 +23,12 @@ Un magazin alimentar de cartier are exact profilul pentru care legea permite met
 > vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor**.
 > Orice modificare a prețului de vânzare presupune recalcularea marjei brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (1) și (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (1) și (8).
 
 > "(5) Inventarul intermitent **nu se utilizează în comerțul cu amănuntul** în situația în care se
 > aplică metoda global-valorică."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 291 alin. (5).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 291 alin. (5).
 :::
 
 ## Sortimentul mixt de cote TVA

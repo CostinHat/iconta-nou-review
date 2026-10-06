@@ -14,7 +14,7 @@ Declarația 112 nu se poate depune pe suport hârtie — legea impune transmiter
 
 ::: ghid-temei
 „Persoanele fizice şi juridice care au calitatea de angajatori sau sunt asimilate acestora, instituţiile şi persoanele fizice prevăzute la art. 68^1 alin. (2), art. 72 alin. (2), art. 84 alin. (8), art. 125 alin. (8) şi (9), art. 147 alin. (1), (1^1), (1^2) şi (1^3), art. 151 alin. (8), art. 169 alin. (1) şi (1^1), art. 174 alin. (5), art. 174^1 alin. (5), art. 220 alin. (1) şi (2) şi art. 220^7 din Legea nr. 227/2015 [...], au obligaţia depunerii declaraţiei prevăzute la art. 1 prin mijloace electronice de transmitere la distanţă."
-— Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026, art. 3 (sursă: anaf_surse/opanaf_605_2026_d112.txt)
+— Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026, art. 3 (sursă: [Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026 pentru aprobarea formularului 112](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_605_2026.pdf))
 :::
 
 - Obligația e clară în privința canalului (electronic, nu hârtie), dar textul nu descrie el însuși mecanica tehnică a semnării — aceasta ține de procedura generală ANAF de depunere prin Spațiul Privat Virtual (SPV), unde documentul transmis e asociat identității depunătorului prin certificat digital calificat sau prin autentificarea contului SPV, potrivit procedurii aplicabile la data depunerii.

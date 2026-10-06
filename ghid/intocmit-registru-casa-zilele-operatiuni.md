@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2634/2015, anexa 2, secțiunea „Registrul de casă" (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2634/2015, anexa 2, secțiunea „Registrul de casă" (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Norma leagă întocmirea registrului de **existența documentelor justificative de încasări și plăți** — nu descrie o obligație separată de a genera un rând „zero" pentru o zi fără nicio mișcare de numerar.

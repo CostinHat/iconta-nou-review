@@ -14,7 +14,7 @@ Da, dar dreptul este limitat: legea permite o singură cerere de amânare, motiv
 
 ::: ghid-temei
 „în cazul prevăzut la alin. (2), după primirea avizului de inspecție fiscală, contribuabilul/plătitorul poate solicita, o singură dată, pentru motive justificate, amânarea datei de începere a inspecției fiscale. Amânarea se aprobă sau se respinge prin decizie emisă de conducătorul activității de inspecție fiscală care se comunică contribuabilului. în cazul în care cererea de amânare a fost admisă, în decizie se menționează și data la care a fost reprogramată inspecția fiscală."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 122 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 122 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Cererea de amânare se poate depune **o singură dată** per acțiune de inspecție și trebuie să fie **motivată** (organul fiscal poate respinge o cerere fără justificare temeinică).
@@ -31,6 +31,6 @@ Da, dar dreptul este limitat: legea permite o singură cerere de amânare, motiv
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcție dedicată** pentru depunerea sau urmărirea cererilor de amânare a inspecției fiscale — acesta rămâne un demers pe care contribuabilul sau contabilul îl face direct la organul fiscal, în afara aplicației. iConta.eu are însă un modul propriu de **alerte de control fiscal** (`core/alerte_control_fiscal.py`), care rulează zilnic verificări încrucișate (TVA, D112, D390, cotă TVA) și notifică echipa contabilă atunci când apar riscuri fiscale în roșu la o firmă — dar acesta este un instrument intern al aplicației, diferit de avizul oficial de inspecție fiscală emis de ANAF, și nu automatizează procedura de amânare descrisă mai sus.
+La data acestui ghid, iConta.eu **nu are o funcție dedicată** pentru depunerea sau urmărirea cererilor de amânare a inspecției fiscale — acesta rămâne un demers pe care contribuabilul sau contabilul îl face direct la organul fiscal, în afara aplicației. iConta.eu are însă un modul propriu de **alerte de control fiscal**, care rulează zilnic verificări încrucișate (TVA, D112, D390, cotă TVA) și notifică echipa contabilă atunci când apar riscuri fiscale în roșu la o firmă — dar acesta este un instrument intern al aplicației, diferit de avizul oficial de inspecție fiscală emis de ANAF, și nu automatizează procedura de amânare descrisă mai sus.
 
 [iConta.eu](/)

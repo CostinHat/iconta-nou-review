@@ -14,15 +14,15 @@ Un preț total nu înseamnă automat o singură cotă de TVA. Normele Codului fi
 
 ::: ghid-temei
 „În situația în care se comercializează un pachet care cuprinde bunuri supuse atât cotei reduse de TVA, cât și cotei standard de TVA, la un preț total, și nu se poate stabili o operațiune principală, se aplică cota de TVA corespunzătoare fiecărui bun, în măsura în care bunurile care compun pachetul pot fi separate, în caz contrar se consideră că are loc o operațiune complexă unică, aplicându-se cota standard de TVA la valoarea totală a pachetului.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 37 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 37 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În situația în care se comercializează un pachet care cuprinde bunuri/servicii supuse atât cotei reduse de TVA, cât și cotei standard de TVA și se poate stabili o operațiune principală, cota de TVA aplicabilă pachetului este cota de TVA aplicabilă operațiunii principale [...] chiar dacă prețul fiecărui element care compune prețul total plătit de un consumator pentru a putea beneficia de această prestație poate fi identificat”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 37 alin. (21) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 37 alin. (21) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%.”
-— Codul fiscal (Legea 227/2015), art. 291 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 291 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ordinea verificării:

@@ -15,7 +15,7 @@ Dividendul nu se împarte „pe din două" între asociați sau după o înțele
 ::: ghid-temei
 „Cota-parte din profit ce se plătește fiecărui asociat constituie dividend.
 [...] Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat, opțional trimestrial pe baza situațiilor financiare interimare și anual, după regularizarea efectuată prin situațiile financiare anuale [...]"
-— Legea 31/1990, art. 67 alin. (1) și (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (1) și (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Criteriul de împărțire e **cota de participare la capitalul social vărsat**, nu numărul de asociați și nu o cotă negociată separat de actul constitutiv.

@@ -14,7 +14,7 @@ Plata eșalonată nu schimbă momentul sau valoarea la care se recunoaște mijlo
 
 ::: ghid-temei
 „6. cost de achiziție înseamnă prețul datorat și eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție."
-— OMFP 1802/2014, pct. 8 subpct. 6, Secțiunea 1.2 (Definiții) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 8 subpct. 6, Secțiunea 1.2 (Definiții) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un mijloc fix cumpărat cu plata în rate:
@@ -32,6 +32,6 @@ Aplicat la un mijloc fix cumpărat cu plata în rate:
 
 ## Ce face iConta.eu
 
-iConta.eu importă și înregistrează mijloacele fixe (`core/mijloace_fixe_import_api.py`) pe baza unui registru cu valoare de intrare, valoare reziduală și durată de amortizare, verificând informativ pragul de 5.000 lei (OUG 8/2026) sub care un bun nu se mai califică drept mijloc fix amortizabil pentru intrările noi din 2026. Aplicația nu are însă o logică separată pentru contractele cu plată în rate — costul de achiziție introdus trebuie să fie deja cel corect, stabilit conform definiției de mai sus, calculul revenind contabilului la introducerea datelor.
+iConta.eu importă și înregistrează mijloacele fixe pe baza unui registru cu valoare de intrare, valoare reziduală și durată de amortizare, verificând informativ pragul de 5.000 lei (OUG 8/2026) sub care un bun nu se mai califică drept mijloc fix amortizabil pentru intrările noi din 2026. Aplicația nu are însă o logică separată pentru contractele cu plată în rate — costul de achiziție introdus trebuie să fie deja cel corect, stabilit conform definiției de mai sus, calculul revenind contabilului la introducerea datelor.
 
 [iConta.eu](/)

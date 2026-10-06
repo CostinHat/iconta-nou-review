@@ -16,10 +16,10 @@ Pragul este foarte ridicat. Un singur furnizor rareori are creanțe de peste jum
 
 ::: ghid-temei
 „(2) Orice creditor sau grup de creditori care are una ori mai multe creanțe certe, lichide și exigibile împotriva unei unități administrativ-teritoriale, cu o valoare însumată care depășește 50% din bugetul acesteia pe o perioadă de 120 de zile consecutive, poate introduce la tribunalul în a cărui circumscripție își are sediul unitatea administrativ-teritorială o cerere de deschidere a procedurii insolvenței acestei unități administrativ-teritoriale."
-— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „a) neachitarea obligațiilor de plată, lichide și exigibile, mai vechi de 120 de zile și care depășesc 50% din cheltuielile prevăzute în bugetul general al unităților administrativ-teritoriale, fără a se lua în calcul cele aflate în litigiu comercial;"
-— Legea 273/2006, art. 75 alin. (1) lit. a) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 75 alin. (1) lit. a) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

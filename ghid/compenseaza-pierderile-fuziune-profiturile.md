@@ -14,7 +14,7 @@ Pierderea fiscală a unei firme nu dispare la fuziune — trece la societatea ca
 
 ::: ghid-temei
 „(1) Pierderile fiscale anuale stabilite prin declarația de impozit pe profit... se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi. Recuperarea pierderilor se va efectua în ordinea înregistrării acestora, la fiecare termen de plată a impozitului pe profit. (2) Pierderea fiscală înregistrată de contribuabilii care își încetează existența ca efect al unei operațiuni de fuziune sau divizare totală se recuperează de către contribuabilii nou-înființați ori de către cei care preiau patrimoniul societății absorbite sau divizate, după caz, proporțional cu activele transferate persoanelor juridice beneficiare, potrivit proiectului de fuziune/divizare."
-— Legea 227/2015 (Codul fiscal), art. 31 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 31 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de compensare, punctual:

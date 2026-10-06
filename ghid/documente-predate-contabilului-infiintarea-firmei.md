@@ -14,7 +14,7 @@ Fondatorii unei firme noi caută adesea o „listă oficială" de documente pe c
 
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității nr. 82/1991, art. 6 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 **Limitare declarată:** nu am găsit, în sursele verificate, un act normativ care să enumere exhaustiv „documentele de predat contabilului la înființare" ca listă formală — asta e mai degrabă o practică organizatorică, nu o obligație legală distinctă. Ce transează legea e principiul de fond: **orice operațiune economico-financiară trebuie să aibă un document justificativ** care să stea la baza înregistrării ei în contabilitate. De aici derivă, indirect, ce anume trebuie predat:

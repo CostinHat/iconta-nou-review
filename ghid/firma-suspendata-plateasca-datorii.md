@@ -14,10 +14,10 @@ Da — declararea unei firme ca inactivă fiscal (sau inactivitatea temporară �
 
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul persoană juridică sau orice entitate fără personalitate juridică este declarat inactiv și îi sunt aplicabile prevederile din Codul fiscal privind efectele inactivității dacă se află în una dintre următoarele situații: [...] d) inactivitatea temporară înscrisă la registrul comerțului."
-— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „j) cheltuielile înregistrate în evidența contabilă, care au la bază un document emis de un contribuabil declarat inactiv conform prevederilor Codului de procedură fiscală, cu excepția celor reprezentând achiziții de bunuri efectuate în cadrul procedurii de executare silită și/sau a achizițiilor de bunuri/servicii de la persoane impozabile aflate în procedura falimentului potrivit Legii nr. 85/2014."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din cele două texte:

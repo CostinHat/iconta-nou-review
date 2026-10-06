@@ -16,15 +16,15 @@ Nerespectarea e contravenție distinctă, sancționată cu amendă de la 2.000 l
 
 ::: ghid-temei
 „În cazul în care utilizatorii aparatelor de marcat electronice fiscale își încetează activitatea, precum și în cazul aparatelor confiscate potrivit legii ori preluate spre valorificare de societățile bancare ca urmare a neachitării împrumutului contractat pentru achiziționarea acestor aparate, valorificarea lor se va realiza numai prin distribuitorii autorizați."
-— OUG 28/1999, art. 8 alin. (2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 8 alin. (2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 ::: ghid-temei
 „Contravențiile prevăzute la art. 10 se sancționează cu amendă aplicată operatorilor economici după cum urmează: a) cele prevăzute la art. 10 lit. i) , ș) , v) și jj) , cu amendă de la 2.000 lei la 4.000 lei;"
-— OUG 28/1999, art. 11 alin. (1) lit. a) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (1) lit. a) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „În situația în care, în termen de 12 luni de la ultima sancționare a faptei, operatorul economic săvârșește o nouă contravenție din categoria celor prevăzute la alin. (1) lit. a) , pentru care a fost sancționat, contravenția se sancționează cu amendă de la 6.000 lei la 8.000 lei."
-— OUG 28/1999, art. 11 alin. (2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă:

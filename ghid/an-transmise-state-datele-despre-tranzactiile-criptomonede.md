@@ -16,10 +16,10 @@ Practic, operațiunile cu criptomonede făcute începând cu 1 ianuarie 2026 pri
 
 ::: ghid-temei
 „(2) În temeiul cerințelor de raportare aplicabile și al procedurilor de diligență fiscală prevăzute în secțiunile II și III din anexa nr. 6 , autoritatea competentă din România comunică informațiile menționate la alin. (3) aferente perioadelor impozabile care încep la 1 ianuarie 2026, prin intermediul unui schimb automat și în termenul stabilit la alin. (5), către autoritățile competente din toate celelalte state membre"
-— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Comunicarea în temeiul alin. (3) se efectuează prin intermediul formularului-tip electronic prevăzut la art. 303 alin. (5), anual, în termen de 9 luni de la sfârșitul anului calendaristic sau a altei perioade de raportare adecvate la care se referă informațiile. Primele informații se comunică pentru anul calendaristic relevant sau pentru altă perioadă de raportare adecvată începând cu 1 ianuarie 2026."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Calendarul, pe etape:

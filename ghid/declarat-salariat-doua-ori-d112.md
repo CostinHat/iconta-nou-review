@@ -14,7 +14,7 @@ Un salariat raportat de două ori în aceeași lună în D112 (de exemplu, print
 
 ::: ghid-temei
 „Declarațiile [fiscale] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 („Corectarea declarației fiscale"), cu referire la art. 102-103 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 („Corectarea declarației fiscale"), cu referire la art. 102-103 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune corectarea, concret, pentru D112:

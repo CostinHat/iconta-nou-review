@@ -15,7 +15,7 @@ Legea nu cere doar „să ai contabilitatea la zi" — enumeră explicit ce evid
 ::: ghid-temei
 „(1) în vederea stabilirii stării de fapt fiscale și a obligațiilor fiscale datorate, contribuabilul/plătitorul are obligația să conducă evidențe fiscale, potrivit actelor normative în vigoare. [...]
 (3) Sunt evidențe fiscale registrele, situațiile, precum și orice alte înscrisuri care, potrivit legislației fiscale, trebuie întocmite în mod obligatoriu în scopul stabilirii stării de fapt fiscale și a creanțelor fiscale, cum ar fi: jurnalul pentru vânzări, jurnalul pentru cumpărări, registrul de evidență fiscală."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Un checklist minim, construit pe text de lege, ar trebui să acopere:

@@ -15,7 +15,7 @@ Dividendele încasate de o persoană fizică nu se analizează izolat pentru CAS
 ::: ghid-temei
 „(4) Încadrarea în plafonul anual de cel puțin 6, 12 sau 24 de salarii minime brute pe țară, după caz, se efectuează prin cumularea veniturilor prevăzute la art. 155 alin. (1) lit. c)-h), după cum urmează: [...]
 d) venitul și/sau câștigul/câștigul net din investiții, stabilit conform dispozițiilor art. 94-97. În cazul veniturilor din dobânzi se iau în calcul sumele plătite, diminuate cu impozitul reținut, iar în cazul veniturilor din dividende se iau în calcul dividendele plătite, diminuate cu impozitul reținut, distribuite începând cu anul 2018;"
-— Legea nr. 227/2015 (Codul fiscal), art. 170 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 170 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de calcul, pas cu pas:
@@ -33,6 +33,6 @@ Mecanismul de calcul, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de calcul D212 al iConta.eu (`core/d212_engine.py`) calculează CASS pentru veniturile din activități independente (PFA în sistem real), cu plafonul liniar de 72 de salarii minime aplicabil veniturilor 2026, conform art. 170 alin. (1) din Codul fiscal. Pentru dividende, dobânzi, chirii și celelalte venituri de aceeași natură, Declarația unică (D212) din aplicație calculează CASS pe trepte de 6, 12 sau 24 de salarii minime (art. 170 alin. (2)-(4)), cumulându-le din sumele introduse de contabil (dividendele și dobânzile nete de impozit).
+La data acestui ghid, motorul de calcul D212 al iConta.eu calculează CASS pentru veniturile din activități independente (PFA în sistem real), cu plafonul liniar de 72 de salarii minime aplicabil veniturilor 2026, conform art. 170 alin. (1) din Codul fiscal. Pentru dividende, dobânzi, chirii și celelalte venituri de aceeași natură, Declarația unică (D212) din aplicație calculează CASS pe trepte de 6, 12 sau 24 de salarii minime (art. 170 alin. (2)-(4)), cumulându-le din sumele introduse de contabil (dividendele și dobânzile nete de impozit).
 
 [iConta.eu](/)

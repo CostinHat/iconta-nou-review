@@ -14,7 +14,7 @@ Schimbarea administratorului unei firme nu produce efecte doar prin decizia asoc
 
 ::: ghid-temei
 „Societatea este administrată de unul sau mai mulți administratori, asociați sau neasociați, numiți prin actul constitutiv sau de adunarea generală."
-— Legea 31/1990 a societăților, art. 197 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.html)
+— Legea 31/1990 a societăților, art. 197 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce se poate confirma din corpusul disponibil, plus o limitare asumată onest:

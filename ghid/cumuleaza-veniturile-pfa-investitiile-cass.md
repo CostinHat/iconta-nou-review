@@ -14,7 +14,7 @@ Nu într-o bază unică de calcul — Codul fiscal tratează veniturile din acti
 
 ::: ghid-temei
 „Diferența de contribuție de asigurări sociale de sănătate prevăzută la alin. (6) nu se datorează în cazul în care, în anul fiscal pentru care se depune declarația prevăzută la art. 122, persoana fizică a realizat venituri: a) din salarii și asimilate salariilor la un nivel cel puțin egal cu 6 salarii minime brute pe țară; sau [...] b) din cele prevăzute la art. 155 alin. (1) lit. c)-h), pentru care datorează contribuția de asigurări sociale de sănătate la un nivel cel puțin egal cu 6 salarii minime brute pe țară."
-— Legea 227/2015 (Codul fiscal), art. 174 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 174 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce arată, structural, cele două articole:

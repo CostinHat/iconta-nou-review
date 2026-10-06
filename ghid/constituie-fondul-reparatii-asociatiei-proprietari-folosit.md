@@ -16,12 +16,12 @@ Fondul are și o a doua sursă de alimentare: toate veniturile din exploatarea p
 
 ::: ghid-temei
 „(2) Proprietarii membri ai asociației de proprietari au obligația să aprobe un fond de reparații anual, necesar pentru repararea și îmbunătățirea proprietății comune. Comitetul executiv fundamentează și prezintă adunării generale suma anuală necesară pentru constituirea sau completarea fondului de reparații, care se alimentează în avans, în tranșe lunare egale, prevăzute în lista de plată a cheltuielilor asociației de proprietari. Fondul de reparații este utilizat numai pentru consolidarea condominiului, reabilitarea termică, creșterea calității ambiental-arhitecturale a construcțiilor, precum și pentru repararea și îmbunătățirea proprietății comune. (3) Sumele încasate pentru constituirea fondului de reparații se depun, în conformitate cu prevederile prezentei legi, în contul asociației de proprietari prevăzut la art. 20 alin. (1) .”
-— Legea 196/2018, art. 71 alin. (2)-(3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 71 alin. (2)-(3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „Serveşte ca document pentru evidenţa fondului de reparaţii al asociaţiei de proprietari constituit din contribuţiile proprietarilor conform cotelor-părţi indivize.”
-— OMFP 3103/2017, anexa nr. 2, Registrul pentru evidența fondului de reparații (cod 14-6-25/b) (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 2, Registrul pentru evidența fondului de reparații (cod 14-6-25/b) (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 Pașii de constituire:

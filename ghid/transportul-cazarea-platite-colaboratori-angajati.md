@@ -16,12 +16,12 @@ Biletul de avion al unui consultant extern care vine la sediul clientului, cazar
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare”
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) cheltuielile de transport și de cazare în țară și în străinătate și pentru alte persoane fizice în condițiile în care cheltuielile respective sunt efectuate în legătură cu lucrări executate sau servicii prestate de acestea în scopul desfășurării activității economice a contribuabilului;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie să existe la dosar:

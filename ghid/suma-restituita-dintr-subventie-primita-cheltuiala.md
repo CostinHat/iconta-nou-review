@@ -16,12 +16,12 @@ Da, dar numai pentru partea din restituire care ajunge efectiv pe cheltuieli. No
 
 ::: ghid-temei
 „(2) În aplicarea prevederilor art. 25 alin. (1) din Codul fiscal, sunt cheltuieli deductibile la calculul rezultatului fiscal și cheltuielile reglementate prin acte normative în vigoare. De exemplu: [...] c) cheltuielile înregistrate ca urmare a restituirii subvențiilor primite, potrivit legii, de la Guvern, agenții guvernamentale și alte instituții naționale și internaționale.”
-— HG 1/2016 (Normele Codului fiscal), titlul II, pct. 13 alin. (2) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul II, pct. 13 alin. (2) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(1) Restituirea unei subvenții referitoare la un activ se înregistrează prin reducerea soldului venitului amânat cu suma rambursabilă. (2) Restituirea unei subvenții aferente veniturilor se efectuează prin reducerea veniturilor amânate, dacă există, sau, în lipsa acestora, pe seama cheltuielilor. (3) În măsura în care suma rambursată depășește venitul amânat sau dacă nu există un asemenea venit, surplusul, respectiv valoarea integrală restituită, se recunoaște imediat ca o cheltuială.”
-— OMFP 1802/2014 (Reglementările contabile), pct. 404 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementările contabile), pct. 404 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Cum se aplică:

@@ -14,7 +14,7 @@ Firmele care dețin autoturisme folosite și în scop personal cunosc regula: TV
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate și a taxei aferente cheltuielilor legate de vehiculele aflate în proprietatea sau în folosința persoanei impozabile, în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice."
-— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru raportarea SAF-T:
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru raportarea SAF-T:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de generare D406 din iConta.eu (`core/d406.py`) emite coduri de taxă atât pentru livrări (seria `310xxx`, cu `BaseRate = 1`), cât și pentru achiziții — dar pentru achiziții folosește deocamdată un cod generic de deductibilitate (`300501`, respectiv `300101` pentru taxare inversă/cotă 0), nu codurile fine din seria `320xxx` pentru deducere limitată pro-rata (cazul autoturismelor la 50%). Această limitare e semnalată explicit în cod, ca datorie deschisă („TaxCode achiziții pe deductibilitate reală — acum grosier 300501"), nu ascunsă tăcut. Până la acoperirea ei, achizițiile cu deducere de 50% pentru autoturisme trebuie verificate și, dacă e cazul, ajustate manual înainte de depunerea D406.
+La data acestui ghid, motorul de generare D406 din iConta.eu emite coduri de taxă atât pentru livrări (seria `310xxx`, cu `BaseRate = 1`), cât și pentru achiziții — dar pentru achiziții folosește deocamdată un cod generic de deductibilitate (`300501`, respectiv `300101` pentru taxare inversă/cotă 0), nu codurile fine din seria `320xxx` pentru deducere limitată pro-rata (cazul autoturismelor la 50%). Această limitare e semnalată explicit în cod, ca datorie deschisă („TaxCode achiziții pe deductibilitate reală — acum grosier 300501"), nu ascunsă tăcut. Până la acoperirea ei, achizițiile cu deducere de 50% pentru autoturisme trebuie verificate și, dacă e cazul, ajustate manual înainte de depunerea D406.
 
 [iConta.eu](/)

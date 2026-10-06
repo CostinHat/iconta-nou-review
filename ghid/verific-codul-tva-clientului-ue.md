@@ -13,7 +13,7 @@ Scutirea de TVA la livrarea intracomunitară depinde de un singur lucru verifica
 ## Temeiul legal
 
 ::: ghid-temei
-„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397+, verificat în dosarul F050).
+„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397, verificat în dosarul F050).
 :::
 
 ## Pasul 1 — forma codului

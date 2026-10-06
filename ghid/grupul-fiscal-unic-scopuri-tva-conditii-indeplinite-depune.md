@@ -16,18 +16,18 @@ Odată aprobat grupul, membrii (alții decât reprezentantul) nu mai plătesc ș
 
 ::: ghid-temei
 „În condițiile și în limitele prevăzute în normele metodologice, este considerat drept grup fiscal unic un grup de persoane impozabile stabilite în România care, independente fiind din punct de vedere juridic, sunt în relații strânse una cu alta din punct de vedere organizatoric, financiar și economic."
-— Codul fiscal (Legea 227/2015), art. 269 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „grupul de persoane impozabile stabilite în România, independente din punct de vedere juridic și aflate în strânsă legătură din punct de vedere financiar, economic și organizatoric, poate opta să fie tratat drept grup fiscal unic, cu următoarele condiții cumulative: a) o persoană impozabilă nu poate face parte decât dintr-un singur grup fiscal; [...] b) opțiunea trebuie să se refere la o perioadă de cel puțin 2 ani; [...] c) toate persoanele impozabile din grup trebuie să aplice aceeași perioadă fiscală."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 5 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 5 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „Grupul fiscal se poate constitui din minimum două persoane impozabile."
-— HG 1/2016, Titlul VII, pct. 5 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 5 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „Se consideră [...] în strânsă legătură din punct de vedere financiar, economic și organizatoric persoanele impozabile al căror capital este deținut direct sau indirect în proporție de mai mult de 50% de către aceeași asociați."
-— HG 1/2016, Titlul VII, pct. 5 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 5 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „În vederea implementării grupului fiscal se depune la organul fiscal competent prevăzut la alin. (4) o cerere semnată de către reprezentanții legali ai tuturor membrilor grupului, care să cuprindă următoarele: a) numele, adresa, obiectul de activitate și codul de înregistrare în scopuri de TVA al fiecărui membru; [...] b) dovada că membrii sunt în strânsă legătură conform alin. (5) ; [...] c) numele membrului numit reprezentant."
-— HG 1/2016, Titlul VII, pct. 5 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 5 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Condițiile, pe scurt:

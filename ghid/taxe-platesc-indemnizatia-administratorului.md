@@ -35,6 +35,6 @@ Din indemnizația brută se calculează, în această ordine:
 
 ## Ce face iConta.eu
 
-Funcția `calcul_mandat(brut)` din modulul F021 (`core/contracte_speciale.py`) aplică exact această structură — CAS 25% + CASS 10% + impozit 10% pe (brut − CAS − CASS), fără CAM — pentru ambele cazuri, mandat de administrator și cenzor. Notă: docstring-ul modulului citează generic „CF art. 76(2) lit. g/i" pentru cele două cazuri; verificarea la sursă arată că lit. g) nu e temeiul corect pentru administrator — temeiul corect e lit. o), care nu apare în comentariul din cod, deși calculul aplicat e cel corect.
+Funcția `calcul_mandat(brut)` din modulul F021 aplică exact această structură — CAS 25% + CASS 10% + impozit 10% pe (brut − CAS − CASS), fără CAM — pentru ambele cazuri, mandat de administrator și cenzor. Notă: docstring-ul modulului citează generic „CF art. 76(2) lit. g/i" pentru cele două cazuri; verificarea la sursă arată că lit. g) nu e temeiul corect pentru administrator — temeiul corect e lit. o), care nu apare în comentariul din cod, deși calculul aplicat e cel corect.
 
 [iConta.eu](/)

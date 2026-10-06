@@ -14,7 +14,7 @@ Atragerea răspunderii solidare (de exemplu, a unui administrator pentru obliga�
 
 ::: ghid-temei
 „Ori de câte ori Codul fiscal sau alte acte normative care reglementează creanțe fiscale prevăd răspunderea solidară a două sau mai multor persoane pentru aceeași creanță fiscală, titlul de creanță fiscală se emite pe numele fiecărei persoane cu menționarea și a celorlalte persoane care răspund solidar pentru creanța respectivă."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 26 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 26 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din lege pentru contestarea unei asemenea decizii:

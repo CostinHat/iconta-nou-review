@@ -16,14 +16,14 @@ Condiția este ca deplasările să țină de fișa postului. Pentru un angajat d
 
 ::: ghid-temei
 „(7) Nu sunt considerate avantaje: a) contravaloarea abonamentelor pe mijloacele de transport în comun pentru angajații a căror activitate presupune deplasarea frecventă în interiorul localității;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (7) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (7) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „permise de călătorie pe orice mijloace de transport, folosite în scopul personal;”
-— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „contravaloarea transportului la și de la locul de muncă al salariatului, acordate de angajator pentru salariații proprii sau alte persoane, astfel cum este prevăzut în contractul de muncă sau în regulamentul intern."
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două texte se completează. Codul fiscal impozitează ca avantaj permisele de călătorie folosite **în scop personal**. Norma precizează că abonamentul dat pentru deplasările cerute de activitate nu este un astfel de avantaj.

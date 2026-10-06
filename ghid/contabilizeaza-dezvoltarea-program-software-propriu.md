@@ -14,12 +14,12 @@ O firmă care își dezvoltă intern un program software — pentru uz propriu s
 
 ::: ghid-temei
 „O imobilizare necorporală provenită din dezvoltare (sau din faza de dezvoltare a unui proiect intern) trebuie recunoscută dacă, și numai dacă, o entitate poate demonstra toate elementele de mai jos: a) fezabilitatea tehnică necesară finalizării imobilizării necorporale, astfel încât aceasta să fie disponibilă pentru utilizare sau vânzare; b) intenția sa de a finaliza imobilizarea necorporală și de a o utiliza sau de a o vinde; c) capacitatea sa de a utiliza sau de a vinde imobilizarea necorporală; d) modul în care imobilizarea necorporală va genera beneficii economice viitoare probabile [...]; e) disponibilitatea unor resurse tehnice, financiare și de altă natură, adecvate pentru finalizarea dezvoltării imobilizării necorporale și pentru utilizarea sau vânzarea acesteia; f) capacitatea sa de a evalua fiabil costurile atribuibile imobilizării necorporale în cursul dezvoltării sale."
-— OMFP 1.802/2014, Reglementările contabile, pct. 167 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1.802/2014, Reglementările contabile, pct. 167 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 ::: ghid-temei
 „(1) Costul unei imobilizări necorporale generate intern este suma costurilor suportate de la data la care imobilizarea necorporală a îndeplinit pentru prima oară criteriile de recunoaștere ca imobilizări necorporale. (2) [...] Exemple de costuri direct atribuibile sunt: a) cheltuielile cu materialele și serviciile utilizate sau consumate pentru generarea imobilizării necorporale; b) cheltuielile cu personalul provenite din generarea imobilizării necorporale; c) taxele de înregistrare a unui drept legal; [...]. (3) Următoarele elemente nu sunt componente ale costului unei imobilizări necorporale generate intern: a) costurile aferente vânzării, cele administrative și alte costuri generale de regie [...]; b) ineficiențele identificate și pierderile inițiale din exploatare suportate înainte ca imobilizarea să atingă performanța planificată; și c) costurile cu instruirea personalului pentru a utiliza activul."
-— OMFP 1.802/2014, Reglementările contabile, pct. 170 alin. (1)-(3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1.802/2014, Reglementările contabile, pct. 170 alin. (1)-(3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, tratamentul contabil al unui software dezvoltat intern urmează acest fir:

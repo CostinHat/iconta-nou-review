@@ -15,13 +15,13 @@ Când vorbim despre „cesiunea unei firme" în cazul unui SRL, ne referim de fa
 ::: ghid-temei
 „(1) Părțile sociale pot fi transmise între asociați.
 (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social."
-— Legea 31/1990 privind societățile, art. 202 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 202 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „(1) Certificatul de atestare fiscală se emite de organul fiscal central competent la solicitarea contribuabilului/plătitorului. Certificatul se emite și din oficiu sau la solicitarea altor autorități publice, [...] precum și la solicitarea oricărei persoane care deține titluri de participare la o societate.
 (2) Certificatul de atestare fiscală se eliberează pe baza datelor cuprinse în evidența creanțelor fiscale [...] și cuprinde obligațiile fiscale restante existente în sold în ultima zi a lunii anterioare depunerii cererii [...], precum și alte creanțe bugetare individualizate în titluri executorii [...]."
-— Legea 207/2015 (Codul de procedură fiscală), art. 158 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 158 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Cesiunea părților sociale către o persoană din afara societății necesită, de regulă, aprobarea asociaților reprezentând cel puțin trei pătrimi din capitalul social (dacă actul constitutiv nu prevede altfel) — o verificare de drept societar, dar cu impact direct asupra valabilității actului fiscal ulterior.

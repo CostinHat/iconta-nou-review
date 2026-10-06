@@ -30,6 +30,6 @@ Dosarul de cercetare al acestei funcționalități semnalează și o regulă tra
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din `core/common.py` e period-aware — pe baza tabelului `COTE["plafon_tva_incasare"]`, întoarce automat plafonul corect pentru orice dată de referință: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027.
+Funcția `plafon_la(data)` din aplicație e period-aware — pe baza tabelului `COTE["plafon_tva_incasare"]`, întoarce automat plafonul corect pentru orice dată de referință: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027.
 
 [iConta.eu](/)

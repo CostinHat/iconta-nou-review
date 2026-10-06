@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-Notă onestă: distincția juridică propriu-zisă dintre PFA și întreprindere individuală (constituire, răspundere patrimonială, posibilitatea de a angaja personal) e reglementată prin OUG 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act pe care **nu l-am găsit în sursele locale din `anaf_surse/`**, așa că nu citez din el text verbatim. Ce pot confirma din sursele consultate:
+Notă onestă: distincția juridică propriu-zisă dintre PFA și întreprindere individuală (constituire, răspundere patrimonială, posibilitatea de a angaja personal) e reglementată prin OUG 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale — act pe care **nu l-am găsit în sursele locale**, așa că nu citez din el text verbatim. Ce pot confirma din sursele consultate:
 
 - Din perspectiva Codului fiscal (art. 67 alin. (1)), atât PFA, cât și întreprinderea individuală generează „venituri din activități independente" — regimul de impozitare a venitului (sistem real sau normă de venit, potrivit art. 69 din Codul fiscal, citat și în normele metodologice) e același pentru ambele forme.
 - Cifra de afaceri consolidată a mai multor forme de organizare fără personalitate juridică deținute de aceeași persoană (PFA, întreprindere individuală, întreprindere familială) se **cumulează** atunci când se verifică plafoane legate de alte entități controlate de același titular (de exemplu la calculul plafonului de microîntreprindere al unei firme legate) — o mențiune care arată că, fiscal, ANAF privește aceste forme ca fiind legate de aceeași persoană, nu izolate.
@@ -30,6 +30,6 @@ Notă onestă: distincția juridică propriu-zisă dintre PFA și întreprindere
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține pentru PFA, II și IF registrul de încasări și plăți (partidă simplă) și generează declarația unică (D212) din el și din datele introduse de contabil (`core/d212.py`), indiferent dacă venitul provine de la o PFA sau o întreprindere individuală — calculul e același pentru ambele, ca venituri din activități independente. Decizia privind forma de organizare potrivită rămâne una juridică și antreprenorială, în afara evidenței contabile oferite de aplicație.
+La data acestui ghid, iConta.eu ține pentru PFA, II și IF registrul de încasări și plăți (partidă simplă) și generează declarația unică (D212) din el și din datele introduse de contabil, indiferent dacă venitul provine de la o PFA sau o întreprindere individuală — calculul e același pentru ambele, ca venituri din activități independente. Decizia privind forma de organizare potrivită rămâne una juridică și antreprenorială, în afara evidenței contabile oferite de aplicație.
 
 [iConta.eu](/)

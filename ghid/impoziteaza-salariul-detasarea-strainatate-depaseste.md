@@ -19,15 +19,15 @@ Situația delicată e detașarea scurtă care se prelungește. Din momentul dep�
 
 ::: ghid-temei
 „Fac excepție veniturile salariale plătite de către sau în numele unui angajator care este rezident în România ori are sediul permanent în România, care sunt impozabile în România numai în situația în care România are drept de impunere;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În situația în care contribuabilii prevăzuți la art. 59 alin. (1) lit. a) și alin. (2) din Codul fiscal care au desfășurat activitatea dependentă în alt stat pentru o perioadă mai mică decât perioada prevăzută în convenția de evitare a dublei impuneri încheiată de România cu statul în care se desfășoară activitatea își prelungesc ulterior perioada de ședere în statul respectiv peste perioada prevăzută de convenție, dreptul de impunere asupra veniturilor din salarii revine statului străin. După expirarea perioadei prevăzute în convenție, angajatorul care este rezident în România sau are sediul permanent în România nu mai calculează, nu mai reține și nu mai virează impozitul pe venitul din salarii. Contribuabilii prevăzuți la art. 59 alin. (1) lit. a) și alin. (2) din Codul fiscal datorează în statul străin impozit din prima zi pentru veniturile realizate ca urmare a desfășurării activității în acel stat."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (21) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (21) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În această situație, angajatorul care este rezident în România sau are sediul permanent în România și care efectuează plata veniturilor din salarii către contribuabilii prevăzuți la art. 59 alin. (1) lit. a) și alin. (2) din Codul fiscal nu are obligația calculării, reținerii și virării impozitului pe venitul din salarii, întrucât dreptul de impunere revine statului străin în care persoana fizică își desfășoară activitatea."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (22) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (22) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cele trei situații din norme:

@@ -14,10 +14,10 @@ D301 și D390 sunt adesea confundate pentru că amândouă privesc operațiuni i
 
 ::: ghid-temei
 „I. Contribuabilii care au obligaţia să depună decontul special de taxă pe valoarea adăugată. Secţiunea 1 «Achiziţii intracomunitare de bunuri taxabile - altele decât mijloacele de transport noi şi produsele accizabile» se completează numai de către persoanele înregistrate conform art. 317 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, denumită în continuare Codul fiscal, dar care nu sunt înregistrate şi nu trebuie să se înregistreze conform art. 316 din acelaşi cod."
-— OPANAF 592/2016, Anexa 2, Instrucțiuni cap. I (sursă: anaf_surse/opanaf_592_2016_d301.txt)
+— OPANAF 592/2016, Anexa 2, Instrucțiuni cap. I (sursă: [OPANAF nr. 592/2016 pentru aprobarea formularului 301](https://legislatie.just.ro/Public/DetaliiDocument/175654))
 
 „1.1. Declaraţia recapitulativă se depune lunar, în condiţiile prevăzute la art. 325 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare (Codul fiscal), până la data de 25 inclusiv a lunii următoare unei luni calendaristice, de către persoanele impozabile înregistrate în scopuri de TVA conform art. 316 sau 317 din Codul fiscal."
-— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1.1 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1.1 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Diferența esențială stă chiar în cine are obligația de a le depune și ce anume declară fiecare:

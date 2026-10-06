@@ -16,17 +16,17 @@ Asta înseamnă că o velă, o barcă pneumatică sau un iaht mic cumpărat de f
 
 ::: ghid-temei
 „În cazul mijloacelor de transport pe apă, impozitul pe mijlocul de transport este egal cu suma corespunzătoare din tabelul următor:”
-— Codul fiscal (Legea 227/2015), art. 470 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 470 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „121. Sub incidența prevederilor de la pct. 4 din tabelul prevăzut la art. 470 alin. (8) din Codul fiscal, respectiv nave de sport și agrement, se include orice ambarcațiune, indiferent de tip și de modul de propulsie, al cărei corp are lungimea de 2,5 m până la 24 m, măsurată conform standardelor armonizate aplicabile și care este destinată utilizării în scopuri sportive și recreative [...]”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 121 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 121 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul pe mijlocul de transport este datorat pentru întregul an fiscal de persoana care deține dreptul de proprietate asupra unui mijloc de transport înmatriculat sau înregistrat în România la data de 31 decembrie a anului fiscal anterior.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Categoriile din tabelul art. 470 alin. (8) CF, în forma în vigoare:

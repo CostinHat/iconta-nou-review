@@ -14,7 +14,7 @@ O firmă de curățenie care prestează servicii direct către persoane fizice (
 
 ::: ghid-temei
 „Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%."
-— Codul fiscal (Legea 227/2015), art. 291 alin. (1), astfel cum a fost modificat de Legea nr. 141/2025, aplicabil de la 01.08.2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 291 alin. (1), astfel cum a fost modificat de Legea nr. 141/2025, aplicabil de la 01.08.2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 De ce nu se aplică o cotă redusă:

@@ -14,7 +14,7 @@ Firma românească primește o factură de la un furnizor înregistrat, de exemp
 
 ::: ghid-temei
 „Se consideră a fi locul livrării de bunuri: a) locul unde se găsesc bunurile în momentul când începe expedierea sau transportul, în cazul bunurilor care sunt expediate sau transportate de furnizor, de cumpărător sau de un terț."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Locul livrării — și, prin urmare, statul membru din care e considerată achiziția intracomunitară a firmei românești — se leagă de mișcarea fizică reală a bunurilor, nu de identitatea juridică a furnizorului:

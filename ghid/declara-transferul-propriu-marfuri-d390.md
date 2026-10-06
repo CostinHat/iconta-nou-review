@@ -16,7 +16,7 @@ Când o firmă își mută propriile bunuri dintr-un depozit din România într-
 „(10) Este asimilat cu livrarea intracomunitară cu plată transferul de către o persoană impozabilă de bunuri aparținând activității sale economice din România într-un alt stat membru, cu excepția nontransferurilor prevăzute la alin. (12).
 (11) Transferul prevăzut la alin. (10) reprezintă expedierea sau transportul oricăror bunuri mobile corporale din România către alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizate în scopul desfășurării activității sale economice.
 (12) În sensul prezentului titlu, nontransferul reprezintă expedierea sau transportul unui bun din România în alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizat în scopul uneia dintre următoarele operațiuni: [...]"
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (10), (11) și (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (10), (11) și (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula practică de raportare:

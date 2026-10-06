@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T), depus prin Declarația informativ�
 
 ::: ghid-temei
 „9. Informațiile privind «stocurile de produse» și «producție în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. În funcție de perioada pentru care se solicită furnizarea informațiilor privind stocurile prin fișierul standard de control fiscal (SAF-T), contribuabilii furnizează una sau mai multe declarații informative cuprinzând subsecțiunile din fișierul SAF-T relevante pentru «Stocuri» [...] 10. Declarațiile informative D406 pentru «Stocuri» se depun în termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării."
-— OPANAF nr. 1.783/2021, Anexa 4, pct. 9-10 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 4, pct. 9-10 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Câteva precizări utile despre acest mecanism:

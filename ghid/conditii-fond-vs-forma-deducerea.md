@@ -14,10 +14,10 @@ Distincția „condiții de fond" și „condiții de formă" este un mod uzual 
 
 ::: ghid-temei
 „Orice persoană impozabilă are dreptul să deducă taxa aferentă achizițiilor, dacă acestea sunt destinate utilizării în folosul următoarelor operațiuni: [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 297 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 297 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru exercitarea dreptului de deducere a taxei, persoana impozabilă trebuie să îndeplinească următoarele condiții: [...] e) pentru taxa aferentă unei achiziții intracomunitare de bunuri, să dețină o factură sau documentul prevăzut la art. 320 alin. (1)."
-— Legea nr. 227/2015 (Codul fiscal), art. 299 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 299 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două articole corespund, în esență, exact celor două tipuri de condiții urmărite:

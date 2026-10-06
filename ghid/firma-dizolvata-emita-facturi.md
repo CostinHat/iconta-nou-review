@@ -14,7 +14,7 @@ Dizolvarea nu înseamnă dispariția imediată a firmei — între dizolvare și
 
 ::: ghid-temei
 „În afară de puterile conferite de asociați, cu aceeași majoritate cerută pentru numirea lor, lichidatorii vor putea: a) să stea în judecată în numele societății; [...] b) să execute și să termine operațiunile de comerț referitoare la lichidare;"
-— Legea 31/1990 (legea societăților), art. 255 alin. (1) lit. a) și b) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 255 alin. (1) lit. a) și b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Legea acordă expres lichidatorului puterea de a „executa și termina operațiunile de comerț referitoare la lichidare" — ceea ce include finalizarea contractelor în curs, livrarea bunurilor/serviciilor deja angajate și, implicit, facturarea acestor operațiuni. O firmă dizolvată nu emite facturi pentru activitate nouă, extinsă, dar poate și trebuie să factureze finalizarea a ceea ce era deja în curs la data dizolvării.
@@ -23,7 +23,7 @@ Legea acordă expres lichidatorului puterea de a „executa și termina operați
 
 ::: ghid-temei
 „Orice distribuire de bunuri din activele unei persoane impozabile către asociații sau acționarii săi, inclusiv o distribuire de bunuri legată de lichidarea sau de dizolvarea fără lichidare a persoanei impozabile, [...] constituie livrare de bunuri efectuată cu plată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Acest text confirmă, indirect dar clar, că regimul de TVA continuă să se aplice firmei pe toată perioada lichidării — chiar și distribuirea bunurilor rămase către asociați, la finalul lichidării, e tratată ca livrare de bunuri cu plată, deci supusă acelorași reguli de facturare ca orice altă livrare.
@@ -32,7 +32,7 @@ Acest text confirmă, indirect dar clar, că regimul de TVA continuă să se apl
 
 ::: ghid-temei
 „Numai după înregistrarea în registrul comerțului lichidatorii vor exercita această funcție."
-— Legea 31/1990 (legea societăților), art. 252 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 252 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Condiția de formă contează: puterile lichidatorului (inclusiv cea de a termina operațiunile comerciale și de a factura) devin exercitabile abia după înregistrarea numirii sale în registrul comerțului — până atunci, administratorii continuă să-și exercite atribuțiile, cu excepțiile prevăzute de lege pentru actele specifice lichidării.

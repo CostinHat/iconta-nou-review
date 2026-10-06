@@ -15,7 +15,7 @@ Codul muncii stabilește un minim legal pentru concediul de odihnă anual, sub c
 ::: ghid-temei
 „(1) Durata minima a concediului de odihnă anual este de 20 de zile lucrătoare.
 (2) Durata efectivă a concediului de odihnă anual se stabileşte prin contractul colectiv de muncă aplicabil, este prevăzută în contractul individual de muncă şi se acordă proporţional cu activitatea prestată într-un an calendaristic."
-— Legea nr. 53/2003 (Codul muncii), art. 140 alin. (1) și (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 140 alin. (1) și (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce trebuie reținut pentru calculul concediului în 2026:

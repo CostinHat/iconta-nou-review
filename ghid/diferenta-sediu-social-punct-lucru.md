@@ -14,7 +14,7 @@ Sediul social e adresa juridică unică a firmei, cea înscrisă în actul const
 
 ::: ghid-temei
 „(3) În sensul prezentului articol, prin sediu secundar se înțelege un loc prin care se desfășoară integral sau parțial activitatea contribuabilului/plătitorului, cum ar fi: birou, magazin, atelier, depozit și altele asemenea, cu excepția activităților desfășurate de salariați la domiciliul acestora, potrivit prevederilor Legii nr. 53/2003 - Codul muncii [...] și a Legii nr. 81/2018 privind reglementarea activității de telemuncă [...]. (4) Prin sediu secundar se înțelege și un șantier de construcții, un proiect de construcție, ansamblu sau montaj ori activități de supervizare legate de acestea, numai dacă șantierul, proiectul sau activitățile durează mai mult de 6 luni. Sunt sedii secundare sediile permanente definite potrivit Codului fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 85 alin. (3), (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 85 alin. (3), (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Diferența, pas cu pas:

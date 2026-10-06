@@ -14,7 +14,7 @@ Există ideea că un magazin cu amănuntul e obligat să țină evidența mărfu
 
 ::: ghid-temei
 „289. - Contabilitatea stocurilor se ține cantitativ și valoric sau numai valoric prin folosirea inventarului permanent sau a inventarului intermitent. [...] 287. - (8) În comerțul cu amănuntul poate fi utilizată metoda prețului cu amănuntul, pentru a determina costul stocurilor de articole numeroase și cu mișcare rapidă, care au marje similare și pentru care nu este practic să se folosească altă metodă."
-— OMFP 1802/2014, pct. 289 și pct. 287 alin. (8) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 289 și pct. 287 alin. (8) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din formulare rezultă clar structura de opțiuni:
@@ -31,6 +31,6 @@ Din formulare rezultă clar structura de opțiuni:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu susține ambele mecanisme: `core/stocuri_cv.py` calculează evidența **cantitativ-valorică**, la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96), iar `core/stocuri.py` (`nir_gv`, `coeficient_k`, `descarcare_gv`) susține evidența **global-valorică**, cu adaos comercial și coeficient de repartizare K. Alegerea metodei pentru fiecare gestiune rămâne o decizie a firmei, pe care aplicația o poate opera tehnic în oricare dintre cele două variante.
+La data acestui ghid, iConta.eu susține ambele mecanisme: Aplicația calculează evidența **cantitativ-valorică**, la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96), iar aplicația (`nir_gv`, `coeficient_k`, `descarcare_gv`) susține evidența **global-valorică**, cu adaos comercial și coeficient de repartizare K. Alegerea metodei pentru fiecare gestiune rămâne o decizie a firmei, pe care aplicația o poate opera tehnic în oricare dintre cele două variante.
 
 [iConta.eu](/)

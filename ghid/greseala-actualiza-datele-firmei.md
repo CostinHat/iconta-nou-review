@@ -18,7 +18,7 @@ Sediul social schimbat, un nou asociat, o activitate CAEN adăugată, un cont ba
 (2) în cazul modificărilor intervenite în datele declarate inițial și înscrise în certificatul de înregistrare fiscală, contribuabilul/plătitorul depune, odată cu declarația de mențiuni, și certificatul de înregistrare fiscală, în vederea anulării acestuia și eliberării unui nou certificat.
 [...]
 (4) Prevederile prezentului articol se aplică în mod corespunzător ori de câte ori contribuabilul/plătitorul constată erori în declarația de înregistrare fiscală."
-— Legea 207/2015, art. 88 alin. (1), (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 88 alin. (1), (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic:

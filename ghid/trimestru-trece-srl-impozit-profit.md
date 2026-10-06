@@ -14,7 +14,7 @@ O microîntreprindere depășește, în cursul anului, plafonul de venituri care
 
 ::: ghid-temei
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Codul fiscal, art. 52 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula e explicită și nu lasă loc de interpretare:

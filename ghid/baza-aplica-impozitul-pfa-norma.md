@@ -14,10 +14,10 @@ La normă de venit, baza impozabilă nu are nicio legătură cu banii efectiv î
 
 ::: ghid-temei
 „Contribuabilii care realizează venituri din activități independente pentru care venitul net anual se stabilește pe baza normelor de venit au obligația stabilirii impozitului anual datorat, pe baza Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice prin aplicarea cotei de 10% asupra normei anuale de venit ajustate, după caz."
-— Codul fiscal (Legea 227/2015), art. 69^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal, art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce compune baza impozabilă:
@@ -35,8 +35,8 @@ Ce compune baza impozabilă:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_d212`) implementează regula sistemului real (art. 118 alin. (2) lit. b) CF) — venit net, apoi CAS și CASS, apoi impozitul de 10% pe rest — pentru venitul net rezultat din venit brut minus cheltuieli deductibile înregistrate în Registrul-jurnal de încasări și plăți (`core/rip_api.py`, `fisa_d212`). Acest motor nu se aplică și normei de venit, unde formula legală e alta (art. 69^2 alin. (1): 10% direct pe norma ajustată, fără deducere de CAS/CASS).
+Aplicația (funcția `calculeaza_d212`) implementează regula sistemului real (art. 118 alin. (2) lit. b) CF) — venit net, apoi CAS și CASS, apoi impozitul de 10% pe rest — pentru venitul net rezultat din venit brut minus cheltuieli deductibile înregistrate în Registrul-jurnal de încasări și plăți (`fisa_d212`). Acest motor nu se aplică și normei de venit, unde formula legală e alta (art. 69^2 alin. (1): 10% direct pe norma ajustată, fără deducere de CAS/CASS).
 
-Pentru normă de venit, norma anuală și ajustarea cu coeficienți le introduce contabilul în Declarația unică (D212); reducerea proporțională pentru activitate parțială (datele de început/încetare, zilele de întrerupere) și impozitul de 10% le calculează aplicația. Registrul de evidență fiscală (`core/registru_evidenta_fiscala.py`, OMFP 3254/2017) susține corect regula specifică — la normă de venit nu se înscriu cheltuieli deductibile — dar nu calculează impozitul propriu-zis.
+Pentru normă de venit, norma anuală și ajustarea cu coeficienți le introduce contabilul în Declarația unică (D212); reducerea proporțională pentru activitate parțială (datele de început/încetare, zilele de întrerupere) și impozitul de 10% le calculează aplicația. Registrul de evidență fiscală (OMFP 3254/2017) susține corect regula specifică — la normă de venit nu se înscriu cheltuieli deductibile — dar nu calculează impozitul propriu-zis.
 
 [iConta.eu](/)

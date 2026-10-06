@@ -16,10 +16,10 @@ Pentru un client, asta înseamnă că vânzările de criptomonede contra lei sau
 
 ::: ghid-temei
 „1. în cazul unei persoane fizice care este un utilizator care face obiectul raportării: numele, adresa, statul membru (statele membre)/jurisdicția (jurisdicțiile) de rezidență, numărul (numerele) de identificare fiscală (NIF), data și locul nașterii."
-— Codul de procedură fiscală (Legea 207/2015), anexa nr. 6, secțiunea II, subsecțiunea B pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), anexa nr. 6, secțiunea II, subsecțiunea B pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „2. suma brută agregată plătită, numărul agregat de unități și numărul de Tranzacții care fac obiectul raportării în contextul achizițiilor în schimbul monedei fiduciare; 3. suma brută agregată încasată, numărul agregat de unități și numărul de Tranzacții care fac obiectul raportării în contextul vânzărilor în schimbul monedei fiduciare;"
-— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (3) lit. c) pct. 2 și 3 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (3) lit. c) pct. 2 și 3 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Lista completă, pe fiecare tip de criptoactiv cu care furnizorul a lucrat pentru client în anul respectiv (anexa nr. 6, secțiunea II, subsecțiunea B pct. 3):

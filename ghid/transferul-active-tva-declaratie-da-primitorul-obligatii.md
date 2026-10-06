@@ -16,15 +16,15 @@ Pe lângă active, primitorul preia și istoricul de TVA al cedentului. Devine *
 
 ::: ghid-temei
 „Pentru ca o operațiune să poată fi considerată transfer de active, în sensul art. 270 alin. (7) din Codul fiscal, primitorul activelor trebuie să facă dovada intenției de a desfășura activitatea economică sau partea din activitatea economică care i-a fost transferată, și nu să lichideze imediat activitatea respectivă și, după caz, să vândă eventualele stocuri. Primitorul activelor are obligația să transmită cedentului o declarație pe propria răspundere din care să rezulte îndeplinirea acestei condiții."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Beneficiarul va prelua toate drepturile și obligațiile cedentului, inclusiv pe cele privind livrările către sine prevăzute la art. 270 alin. (4) din Codul fiscal, ajustările deducerii prevăzute la art. 304 și 305 din Codul fiscal. […] Momentul de referință pentru determinarea datei de la care începe ajustarea taxei, în cazul bunurilor de capital, nu este data transferului, ci data obținerii bunului de către cedent, conform art. 305 sau 332 din Codul fiscal, după caz. Cedentul va trebui să transmită cesionarului o copie de pe registrul bunurilor de capital, dacă acestea sunt obținute după data aderării."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (9) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (9) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana impozabilă care este beneficiar al transferului de active prevăzut la art. 270 alin. (7) […] trebuie să depună, până la data de 25 inclusiv a lunii următoare celei în care a avut loc transferul, o declarație privind sumele rezultate ca urmare a livrărilor/ajustărilor taxei pe valoarea adăugată efectuate conform art. 270 alin. (4)"
-— Codul fiscal (Legea 227/2015), art. 324 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 324 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, obligațiile primitorului:

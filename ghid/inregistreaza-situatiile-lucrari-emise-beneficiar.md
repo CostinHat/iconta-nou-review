@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Prestările de servicii care determină decontări sau plăți succesive, cum sunt serviciile de construcții-montaj, consultanță, cercetare, expertiză și alte servicii similare, sunt considerate efectuate la data la care sunt emise situații de lucrări, rapoarte de lucru, alte documente similare pe baza cărora se stabilesc serviciile efectuate sau, după caz, în funcție de prevederile contractuale, la data acceptării acestora de către beneficiari."
-— Legea nr. 227/2015 (Codul fiscal), Titlul VII, art. 281 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), Titlul VII, art. 281 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru servicii de tipul lucrărilor de construcții-montaj, faptul generator al TVA (momentul în care serviciul „se consideră prestat" din punct de vedere fiscal) e legat de **emiterea situației de lucrări**, nu de finalizarea efectivă pe teren, nici de emiterea facturii.

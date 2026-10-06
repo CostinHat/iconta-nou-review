@@ -14,7 +14,7 @@ La impozitul pe profit, amortizarea unui autoturism afectează direct baza impoz
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (1) — regulă generală, Titlul II, Impozitul pe profit (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (1) — regulă generală, Titlul II, Impozitul pe profit (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Citatul de mai sus descrie mecanismul de la impozitul pe profit — cheltuielile (inclusiv amortizarea) se scad din venituri pentru a obține rezultatul fiscal. La microîntreprinderi însă, Titlul III al aceluiași cod stabilește un mecanism diametral opus:
@@ -31,6 +31,6 @@ Citatul de mai sus descrie mecanismul de la impozitul pe profit — cheltuielile
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține evidența mijloacelor fixe și calculează amortizarea contabilă lunară pe baza duratei normale de funcționare introduse (`core/repo_mijloace_fixe.py`), inclusiv pentru autoturisme. Aplicația **nu diferențiază automat** efectul fiscal al amortizării în funcție de regimul firmei (micro sau profit) — ea calculează amortizarea contabilă identic în ambele cazuri, iar interpretarea fiscală (dacă amortizarea reduce sau nu impozitul datorat) rămâne responsabilitatea contabilului, în funcție de regimul fiscal aplicabil firmei.
+La data acestui ghid, iConta.eu ține evidența mijloacelor fixe și calculează amortizarea contabilă lunară pe baza duratei normale de funcționare introduse, inclusiv pentru autoturisme. Aplicația **nu diferențiază automat** efectul fiscal al amortizării în funcție de regimul firmei (micro sau profit) — ea calculează amortizarea contabilă identic în ambele cazuri, iar interpretarea fiscală (dacă amortizarea reduce sau nu impozitul datorat) rămâne responsabilitatea contabilului, în funcție de regimul fiscal aplicabil firmei.
 
 [iConta.eu](/)

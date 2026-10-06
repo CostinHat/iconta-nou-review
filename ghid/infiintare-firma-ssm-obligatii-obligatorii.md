@@ -14,7 +14,7 @@ Securitatea și sănătatea în muncă (SSM) nu este o obligație legată de for
 
 ::: ghid-temei
 „(1) În cadrul responsabilităţilor sale, angajatorul are obligaţia să ia măsurile necesare pentru: a) asigurarea securităţii şi protecţia sănătăţii lucrătorilor; b) prevenirea riscurilor profesionale; c) informarea şi instruirea lucrătorilor; d) asigurarea cadrului organizatoric şi a mijloacelor necesare securităţii şi sănătăţii în muncă."
-— Legea nr. 319/2006 a securității și sănătății în muncă, art. 7 alin. (1) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea nr. 319/2006 a securității și sănătății în muncă, art. 7 alin. (1) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Concret, printre primele obligații ale unui angajator nou sunt:

@@ -14,7 +14,7 @@ Regula B2C e inversul celei B2B: la servicii prestate către o persoană impozab
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice. Dacă serviciile sunt prestate de la un sediu fix al prestatorului, aflat în alt loc decât locul în care persoana impozabilă și-a stabilit sediul activității economice, locul de prestare a serviciilor este locul unde se află respectivul sediu fix. În absența unui astfel de loc sau sediu fix, locul de prestare a serviciilor este locul unde prestatorul își are domiciliul stabil sau reședința obișnuită."
-— Codul fiscal (Legea 227/2015), art. 278 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie verificat înainte de a aplica regula generală:
@@ -32,7 +32,7 @@ Ce trebuie verificat înainte de a aplica regula generală:
 
 ## Ce face iConta.eu
 
-`core/intracomunitar.py`, modulul de operațiuni intracomunitare al iConta.eu, implementează explicit regula B2B pentru prestări de servicii (`valideaza_prestare_ic`, conform art. 278 alin. (2)) — locul la beneficiarul persoană impozabilă din alt stat membru, cu verificare VIES a codului de TVA. Funcția respinge explicit cazul unui cod de TVA invalid, semnalând că operațiunea trece în regim B2C, cu TVA românesc conform art. 278 alin. (3).
+Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează explicit regula B2B pentru prestări de servicii (`valideaza_prestare_ic`, conform art. 278 alin. (2)) — locul la beneficiarul persoană impozabilă din alt stat membru, cu verificare VIES a codului de TVA. Funcția respinge explicit cazul unui cod de TVA invalid, semnalând că operațiunea trece în regim B2C, cu TVA românesc conform art. 278 alin. (3).
 
 Aplicația nu are însă un modul dedicat regulilor speciale B2C (servicii electronice și regimul OSS, servicii legate de imobile, transport de călători, închiriere mijloace de transport) — pentru aceste excepții de la regula generală, încadrarea corectă a operațiunii rămâne o evaluare manuală a contabilului.
 

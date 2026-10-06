@@ -14,7 +14,7 @@ Indemnizația de maternitate nu e suportată de angajator din fondul de salarii,
 
 ::: ghid-temei
 „concediul de lăuzie obligatoriu este concediul de 42 de zile pe care salariata mamă are obligația să îl efectueze după naștere, în cadrul concediului pentru sarcină și lăuzie cu durată totală de 126 de zile, de care beneficiază salariatele în condițiile legii"
-— OUG 96/2003, art. 2 lit. g) (sursă: anaf_surse/oug_96_2003_protectia_maternitatii_locurile_munca.txt)
+— OUG 96/2003, art. 2 lit. g) (sursă: [OUG nr. 96/2003 privind protecția maternității la locurile de muncă](https://legislatie.just.ro/Public/DetaliiDocument/47216))
 :::
 
 Baza de calcul a indemnizațiilor de asigurări sociale de sănătate, inclusiv cea de maternitate, se stabilește potrivit OUG 158/2005:
@@ -32,6 +32,6 @@ Baza de calcul a indemnizațiilor de asigurări sociale de sănătate, inclusiv 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează baza indemnizației (inclusiv cea de maternitate/concediu medical) plecând de la statele de plată deja **emise**, nu prin recalcul retroactiv: pentru fiecare din cele 6 luni anterioare, aplicația preferă cifrele din statul emis, iar pentru lunile neemise folosește recalculul — dar le numără separat, ca să nu se amestece tacit două tipuri de cifre în aceeași medie (`core/baza_cm.py`). Motivul, explicit în cod: „ce s-a plătit efectiv e un fapt" — media legală (OUG 158/2005 art. 10 alin. (4)) se face pe ce a primit omul, nu pe ce ar rezulta dintr-un calcul refăcut azi. Depunerea efectivă a cererii de concediu și calculul deciziei medicale rămân, în continuare, pe baza documentelor introduse de contabil.
+La data acestui ghid, iConta.eu calculează baza indemnizației (inclusiv cea de maternitate/concediu medical) plecând de la statele de plată deja **emise**, nu prin recalcul retroactiv: pentru fiecare din cele 6 luni anterioare, aplicația preferă cifrele din statul emis, iar pentru lunile neemise folosește recalculul — dar le numără separat, ca să nu se amestece tacit două tipuri de cifre în aceeași medie. Motivul, explicit în cod: „ce s-a plătit efectiv e un fapt" — media legală (OUG 158/2005 art. 10 alin. (4)) se face pe ce a primit omul, nu pe ce ar rezulta dintr-un calcul refăcut azi. Depunerea efectivă a cererii de concediu și calculul deciziei medicale rămân, în continuare, pe baza documentelor introduse de contabil.
 
 [iConta.eu](/)

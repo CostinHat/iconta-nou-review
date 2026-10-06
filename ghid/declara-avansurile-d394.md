@@ -14,7 +14,7 @@ Un avans facturat nu e o operațiune „provizorie" din perspectiva D394 — din
 
 ::: ghid-temei
 „Declaraţia se depune pentru orice operaţiune taxabilă în România pentru care, conform titlului VII din Codul fiscal, este emisă o factură, inclusiv pentru avansuri, precum şi pentru operaţiunile la care se aplică sistemul TVA la încasare."
-— OPANAF 2194/2025, Anexa 2 pct.1 (sursă: anaf_surse/opanaf_2194_2025_d394.txt:721-723)
+— OPANAF 2194/2025, Anexa 2 pct.1 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - Regula e clară și explicită: „inclusiv pentru avansuri" — nu există o excepție sau o amânare a declarării până la factura finală de livrare/prestare.
@@ -29,6 +29,6 @@ Un avans facturat nu e o operațiune „provizorie" din perspectiva D394 — din
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`, cu datele preluate din `core/repo_d394.py`) nu tratează facturile de avans ca o categorie separată, pentru că legea nu cere asta — orice factură emisă din tabela de facturi a firmei, indiferent dacă e de avans sau finală, intră în calculul bazei și al TVA pe tipul de operațiune corespunzător (L pentru livrări, A pentru achiziții etc.), exact ca orice altă factură. Nu există niciun filtru care să excludă documentele marcate ca avans — ele urmează același flux de agregare pe cotă de TVA ca restul facturilor emise în perioada de raportare.
+Generatorul D394 (cu datele preluate din aplicație) nu tratează facturile de avans ca o categorie separată, pentru că legea nu cere asta — orice factură emisă din tabela de facturi a firmei, indiferent dacă e de avans sau finală, intră în calculul bazei și al TVA pe tipul de operațiune corespunzător (L pentru livrări, A pentru achiziții etc.), exact ca orice altă factură. Nu există niciun filtru care să excludă documentele marcate ca avans — ele urmează același flux de agregare pe cotă de TVA ca restul facturilor emise în perioada de raportare.
 
 [iConta.eu](/)

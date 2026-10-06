@@ -35,6 +35,6 @@ Cele două reguli nu se substituie una alteia: operațiunile din timpul lunii r�
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit la contabilizarea unei operațiuni în contul bancar în valută se determină pentru data operațiunii, prin motorul de curs (`core/curs_bnr.py`) — „ultimul curs BNR comunicat, valabil cel târziu la data cerută", fără fallback tăcut la un curs implicit dacă acesta nu poate fi determinat (curs indisponibil, prea vechi sau monedă necotată). Reevaluarea lunară a soldului în valută, cu recunoașterea diferenței pe 665/765, rămâne o regulă contabilă (pct. 325) pe care contabilul o aplică pe baza cursului BNR preluat din aceeași sursă.
+Cursul BNR folosit la contabilizarea unei operațiuni în contul bancar în valută se determină pentru data operațiunii, prin motorul de curs — „ultimul curs BNR comunicat, valabil cel târziu la data cerută", fără fallback tăcut la un curs implicit dacă acesta nu poate fi determinat (curs indisponibil, prea vechi sau monedă necotată). Reevaluarea lunară a soldului în valută, cu recunoașterea diferenței pe 665/765, rămâne o regulă contabilă (pct. 325) pe care contabilul o aplică pe baza cursului BNR preluat din aceeași sursă.
 
 [iConta.eu](/)

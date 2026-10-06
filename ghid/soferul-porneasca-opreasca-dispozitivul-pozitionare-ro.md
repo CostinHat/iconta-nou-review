@@ -16,11 +16,11 @@ Pentru cabinetul de contabilitate regula contează din două motive. Amenda se a
 
 ::: ghid-temei
 „În cazul unui transport de bunuri prevăzut la art. 1 alin. (2) conducătorul vehiculului de transport are obligația să pornească dispozitivul de poziționare înainte de începerea transportului pe teritoriul național, respectiv să oprească dispozitivul de poziționare numai după livrarea bunurilor la locul de livrare declarat pe teritoriul național sau după părăsirea teritoriului național."
-— OUG 41/2022, art. 8^3 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^3 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 „d) nerespectarea de către conducătorul vehiculului de transport a prevederilor art. 8^3 și art. 10 alin. (1) ;"
-— OUG 41/2022, art. 13^1 alin. (1) lit. d) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. d) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 „(4) Contravențiile prevăzute la alin. (1) lit. d) se sancționează cu amendă de la 5.000 de lei la 10.000 de lei."
-— OUG 41/2022, art. 13^1 alin. (4) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (4) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce înseamnă concret:

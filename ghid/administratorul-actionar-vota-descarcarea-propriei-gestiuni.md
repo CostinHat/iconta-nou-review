@@ -16,9 +16,9 @@ Legea face o singură excepție. Situațiile financiare anuale pot fi votate și
 
 ::: ghid-temei
 „Acționarii care au calitatea de membri ai consiliului de administrație, directoratului sau consiliului de supraveghere nu pot vota, în baza acțiunilor pe care le posedă, nici personal, nici prin mandatar, descărcarea gestiunii lor sau o problemă în care persoana sau administrația lor ar fi în discuție."
-— Legea societăților nr. 31/1990, art. 126 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 126 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Persoanele respective pot vota însă situația financiară anuală, dacă nu se poate forma majoritatea prevăzută de lege sau de actul constitutiv."
-— Legea societăților nr. 31/1990, art. 126 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 126 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

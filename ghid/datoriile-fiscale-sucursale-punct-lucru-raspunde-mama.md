@@ -16,20 +16,20 @@ Regula e firească: sucursalele și punctele de lucru nu au personalitate juridi
 
 ::: ghid-temei
 „(1) Pentru obligațiile fiscale ale debitorului răspunde ca debitor garant, cu renunțarea la beneficiul discuțiunii și diviziunii: [...] b) persoana juridică pentru obligațiile fiscale datorate, potrivit legii, de sediile secundare ale acesteia. (2) Organul fiscal este îndreptățit să solicite stingerea obligației fiscale de către debitorul garant."
-— Codul de procedură fiscală (Legea 207/2015), art. 24 alin. (1) lit. b) și alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 24 alin. (1) lit. b) și alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Sucursalele sunt dezmembrăminte fără personalitate juridică ale societăților și se înregistrează, înainte de începerea activității lor, în registrul comerțului din județul în care vor funcționa."
-— Legea 31/1990, art. 43 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 43 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Celelalte sedii secundare - agenții, puncte de lucru sau alte asemenea sedii - sunt dezmembrăminte fără personalitate juridică ale societăților și se menționează numai în cadrul înmatriculării societății în registrul comerțului de la sediul principal."
-— Legea 31/1990, art. 43 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 43 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „(3) În sensul prezentului articol, prin sediu secundar se înțelege un loc prin care se desfășoară integral sau parțial activitatea contribuabilului/plătitorului, cum ar fi: birou, magazin, atelier, depozit și altele asemenea"
-— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

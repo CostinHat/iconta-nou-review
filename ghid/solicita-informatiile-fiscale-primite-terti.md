@@ -15,7 +15,7 @@ Codul de procedură fiscală reglementează explicit obligația contribuabilului
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. în același scop, organul fiscal are dreptul să solicite informații și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice, iar acestea au obligația de a furniza informațiile solicitate. Informațiile furnizate de alte persoane se iau în considerare numai în măsura în care sunt confirmate și de alte mijloace de probă.
 (2) Cererea de furnizare a informațiilor se formulează în scris. În cerere, organul fiscal trebuie să specifice natura informațiilor solicitate pentru determinarea stării de fapt fiscale și documentele care susțin informațiile furnizate, atunci când acestea nu sunt deținute de organul fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 58 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 58 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din acest mecanism, relevant pentru contribuabil:

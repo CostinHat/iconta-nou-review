@@ -15,7 +15,7 @@ O firmă cu un singur asociat-administrator, fără niciun angajat, poate crede 
 ::: ghid-temei
 „(1) Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii.
 (2) Prevederile prezentului capitol nu se aplică Trezoreriei Statului, instituțiilor de credit, instituțiilor emitente de monedă electronică, instituțiilor care prestează servicii de plată, autorizate de Banca Națională a României sau autorizate în alt stat membru al Uniunii Europene și notificate către Banca Națională a României, potrivit legii, instituțiilor financiare nebancare și entităților care efectuează operațiuni de schimb valutar, definite potrivit legii, pentru operațiunile specifice activității pentru care acestea au fost autorizate, precum și operatorilor din domeniul jocurilor de noroc."
-— Legea 70/2015 (formă consolidată, în vigoare de la 01.01.2026), art. 1 alin. (1) și (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (formă consolidată, în vigoare de la 01.01.2026), art. 1 alin. (1) și (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din text rezultă clar sfera de aplicare a legii:

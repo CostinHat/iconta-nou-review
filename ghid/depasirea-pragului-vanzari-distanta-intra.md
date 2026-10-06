@@ -14,12 +14,12 @@ O firmă românească ce vinde bunuri online către persoane fizice din alte sta
 
 ::: ghid-temei
 „Prevederile art. 275 alin. (2) si art. 278 alin. (5) lit. h) nu se aplică dacă sunt îndeplinite cumulativ următoarele condiții: a) furnizorul sau prestatorul este stabilit sau, dacă nu este stabilit, își are domiciliul stabil sau reședința obișnuită într-un singur stat membru; [...] b) sunt prestate servicii către persoane neimpozabile [...] sau sunt expediate ori transportate bunuri către un stat membru, altul decât statul membru prevăzut la lit. a); și c) valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent."
-— Cod fiscal (Legea 227/2015), art. 278^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 278^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) Atunci când, în cursul unui an calendaristic, pragul prevăzut la alin. (1) lit. c) este depășit, prevederile art. 275 alin. (2) și art. 278 alin. (5) lit. h) se aplică de la momentul depășirii pragului."
-— Cod fiscal, art. 278^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 278^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru o firmă din România:

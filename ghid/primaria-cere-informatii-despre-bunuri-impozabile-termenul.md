@@ -16,15 +16,15 @@ Obligația nu privește doar notarii, avocații sau poliția, ci „orice altă 
 
 ::: ghid-temei
 „(12) În vederea clarificării și stabilirii reale a situației fiscale a contribuabililor, compartimentele de specialitate ale autorităților administrației publice locale au competența de a solicita informații și documente cu relevanță fiscală sau pentru identificarea contribuabililor sau a materiei impozabile ori taxabile, după caz, iar notarii, avocații, executorii judecătorești, [...] precum și orice altă entitate care deține informații sau documente cu privire la bunurile impozabile sau taxabile, după caz, ori la persoanele care au calitatea de contribuabil au obligația furnizării acestora fără plată, în termen de 15 zile lucrătoare de la data primirii solicitării."
-— Codul fiscal (Legea 227/2015), art. 494 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 494 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Necomunicarea informațiilor și a documentelor de natura celor prevăzute la art. 494 alin. (12) în termen de cel mult 15 zile lucrătoare de la data primirii solicitării constituie contravenție și se sancționează cu amendă de la 500 la 2.500 lei."
-— Codul fiscal (Legea 227/2015), art. 493 alin. (4^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 493 alin. (4^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul persoanelor juridice, limitele minime și maxime ale amenzilor prevăzute la alin. (3) și (4) se majorează cu 300%."
-— Codul fiscal (Legea 227/2015), art. 493 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 493 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

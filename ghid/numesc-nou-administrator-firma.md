@@ -14,7 +14,7 @@ Numirea unui nou administrator la un SRL nu e o simplă formalitate internă —
 
 ::: ghid-temei
 „Asociații care reprezintă majoritatea absolută a capitalului social pot alege unul sau mai mulți administratori dintre ei, fixându-le puterile, durata însărcinării și eventuala lor remunerație, afară numai dacă prin actul constitutiv nu se dispune altfel."
-— Legea 31/1990 (legea societăților), art. 77 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 77 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce presupune, concret, procedura:
@@ -31,6 +31,6 @@ Ce presupune, concret, procedura:
 
 ## Ce face iConta.eu
 
-iConta.eu nu automatizează procedura de numire a administratorului la Registrul Comerțului — aceasta rămâne o formalitate juridică separată, în afara aplicației. Aplicația oferă evidența contabilă generală (state de plată, declarații), inclusiv posibilitatea de a genera documente pentru un administrator remunerat, dar depinde de completarea corectă a datelor firmei (`core/vector_fiscal_api.py`, ecranul „Date firmă") — un test intern al codului (`test_document_fara_administrator.py`) confirmă că aplicația semnalează explicit lipsa datelor de administrator la generarea documentelor care le necesită, în loc să le lase necompletate tăcut.
+iConta.eu nu automatizează procedura de numire a administratorului la Registrul Comerțului — aceasta rămâne o formalitate juridică separată, în afara aplicației. Aplicația oferă evidența contabilă generală (state de plată, declarații), inclusiv posibilitatea de a genera documente pentru un administrator remunerat, dar depinde de completarea corectă a datelor firmei (ecranul „Date firmă") — un test intern al codului (`test_document_fara_administrator.py`) confirmă că aplicația semnalează explicit lipsa datelor de administrator la generarea documentelor care le necesită, în loc să le lase necompletate tăcut.
 
 [iConta.eu](/)

@@ -14,14 +14,14 @@ Da — și cele două efecte au temeiuri complet diferite, în titluri diferite 
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (2)-(6), pentru persoana impozabilă care utilizează trimestrul calendaristic ca perioadă fiscală și care efectuează o achiziție intracomunitară de bunuri taxabilă în România, perioada fiscală devine luna calendaristică începând cu: a) prima lună a unui trimestru calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în această primă lună a respectivului trimestru; [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (7) „Perioada fiscală" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (7) „Perioada fiscală" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Iar pentru regimul micro, baza legală arată clar ce se ia în calcul:
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie **veniturile din orice sursă**, din care se scad: a) veniturile aferente costurilor stocurilor de produse; [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1), Titlul III „Impozitul pe veniturile microîntreprinderilor" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1), Titlul III „Impozitul pe veniturile microîntreprinderilor" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din cele două articole citite împreună:

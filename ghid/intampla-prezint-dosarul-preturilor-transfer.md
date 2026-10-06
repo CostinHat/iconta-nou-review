@@ -15,7 +15,7 @@ Dosarul prețurilor de transfer nu este un document opțional pentru firmele car
 ::: ghid-temei
 „În vederea documentării respectării principiului valorii de piață contribuabilul/plătitorul care desfășoară tranzacții cu persoane afiliate are obligația să întocmească dosarul prețurilor de transfer. La solicitarea organului fiscal central competent contribuabilul/plătitorul are obligația de a prezenta dosarul prețurilor de transfer. [...]
 nerespectarea de către contribuabil/plătitor a obligațiilor de întocmire a dosarului prețurilor de transfer în condițiile și la termenele prevăzute prin ordinul președintelui A.N.A.F., precum și nerespectarea de către contribuabil/plătitor a obligației de a prezenta dosarul prețurilor de transfer la solicitarea organului fiscal central în condițiile art. 108 alin. (2)[...] se sancționează [...] cu amendă de la 12.000 lei la 14.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 2.000 lei la 3.500 lei, pentru celelalte persoane juridice[...]"
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (2) și art. 336 alin. (1) lit. e), alin. (2) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (2) și art. 336 alin. (1) lit. e), alin. (2) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce prevede legea, concret:

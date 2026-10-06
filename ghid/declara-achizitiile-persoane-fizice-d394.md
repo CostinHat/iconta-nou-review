@@ -16,7 +16,7 @@ Da, dar spre deosebire de facturile emise către persoane fizice — care se cum
 „<op11> [...] Aparitie numai pentru tip in (L,A,V,C,AI) pt tip_partener=1 și tip=N pt (tip_partener=2 și cota=0). Pt ((tip în (V,C) și tip_partener=1) sau (tip=N și (lung(cuiP)=13 sau cuiP=null))) sectiunea este obligatorie."
 „codPR — Cod produs [...] Verificare cu nomenclator produse — Verificare unicitate apariție codPR — ERR - Cod produs necompletat."
 „bazaPR — Bază impozabilă [...] ERR - bază impozabilă necompletată."
-— Structura oficială D394, poziția 233–236 (sursă: anaf_surse/d394_struct_anaf.txt)
+— Structura oficială D394, poziția 233–236 (sursă: [Structura fișierului XML pentru declarația D394 (versiunea 2020), publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf))
 :::
 
 Pentru o achiziție de bunuri de la o persoană fizică fără CUI valid, D394 cere:
@@ -35,6 +35,6 @@ Important: pentru ca taxarea inversă (art. 331 CF) să se aplice unei achiziți
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu clasifică automat partenerii fără CUI valid de pe facturile de achiziție și, pentru cei care necesită defalcare pe cod de produs conform structurii oficiale, verifică prezența categoriei de bun (`codPR`, derivată din categoria art. 331 înscrisă pe factură). Dacă aceasta lipsește, aplicația **nu respinge generarea întregii declarații**: exclude explicit acea operațiune din D394 și afișează un avertisment cu furnizorul și suma exclusă, restul declarației rămânând valid și generabil (`core/d394.py`) — nu o omite tacit. Adăugarea categoriei corecte pe factură, pentru ca operațiunea să fie inclusă, rămâne responsabilitatea utilizatorului.
+La data acestui ghid, iConta.eu clasifică automat partenerii fără CUI valid de pe facturile de achiziție și, pentru cei care necesită defalcare pe cod de produs conform structurii oficiale, verifică prezența categoriei de bun (`codPR`, derivată din categoria art. 331 înscrisă pe factură). Dacă aceasta lipsește, aplicația **nu respinge generarea întregii declarații**: exclude explicit acea operațiune din D394 și afișează un avertisment cu furnizorul și suma exclusă, restul declarației rămânând valid și generabil — nu o omite tacit. Adăugarea categoriei corecte pe factură, pentru ca operațiunea să fie inclusă, rămâne responsabilitatea utilizatorului.
 
 [iConta.eu](/)

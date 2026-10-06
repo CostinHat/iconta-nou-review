@@ -15,7 +15,7 @@ Fiecare linie și fiecare subtotal de TVA dintr-o factură electronică RO e-Fac
 ::: ghid-temei
 „j) standard european privind factura electronică - standard european special pentru modelul de date semantice privind elementele esențiale ale unei facturi electronice, astfel cum este definit la art. 2 alin. (1) lit. b) din Regulamentul (UE) nr. 1.025/2012;
 k) specificațiile naționale de utilizare a facturii electronice - RO_CIUS - specificații tehnice de utilizare a elementelor de bază ale facturii electronice așa cum sunt prevăzute în standardul european SR EN 16931-1, aplicabile la nivel național."
-— OUG 120/2021, art. 2 alin. (1) lit. j) și k) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 alin. (1) lit. j) și k) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Legea trimite direct la standardul tehnic (SR EN 16931-1, în specificația națională RO_CIUS) pentru elementele obligatorii ale facturii, inclusiv codul de categorie de TVA aplicat fiecărei linii și fiecărui subtotal — codul nu e o interpretare internă, ci o clasificare standardizată european. Practic, semnificația codului depinde de regimul de TVA al operațiunii facturate: cotă standard sau redusă, cotă zero, scutire, taxare inversă sau operațiune în afara sferei TVA sunt tratate diferit, fiecare cu codul ei propriu în standard.
@@ -28,7 +28,7 @@ Legea trimite direct la standardul tehnic (SR EN 16931-1, în specificația naț
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul de XML e-Factura al iConta.eu (`core/efactura_send.py`) implementează **doar codurile de categorie TVA „S" (cotă standard sau redusă, pentru orice linie cu cotă mai mare de zero) și „Z" (cotă zero)** — conform comentariului explicit din cod: „Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O), storno/nota de credit (381) NU sunt tratate în v1 - se adaugă după confirmare pe TEST." Concret:
+La data acestui ghid, generatorul de XML e-Factura al iConta.eu implementează **doar codurile de categorie TVA „S" (cotă standard sau redusă, pentru orice linie cu cotă mai mare de zero) și „Z" (cotă zero)** — conform comentariului explicit din cod: „Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O), storno/nota de credit (381) NU sunt tratate în v1 - se adaugă după confirmare pe TEST." Concret:
 
 - Pentru o factură cu **taxare inversă**, aplicația **refuză explicit generarea** — codul aruncă o eroare (`NotImplementedError`) dacă factura e marcată cu taxare inversă, în loc să genereze un XML cu cod de categorie greșit.
 - Pentru facturi către **beneficiari neplătitori de TVA** (cod „O") sau pentru **storno/notă de credit**, generatorul nu are încă suport dedicat.

@@ -16,16 +16,16 @@ Pentru o firmă care descoperă o somație pentru o amendă veche, primul pas e 
 
 ::: ghid-temei
 „Dreptul organului de executare silită de a cere executarea silită a creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere acest drept."
-— Codul de procedură fiscală (Legea 207/2015), art. 215 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 215 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Termenul de prescripție prevăzut la alin. (1) se aplică și creanțelor provenind din amenzi contravenționale."
-— Codul de procedură fiscală (Legea 207/2015), art. 215 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 215 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Executarea sancțiunilor contravenționale se prescrie dacă procesul-verbal de constatare a contravenției nu a fost comunicat contravenientului în termen de cel mult două luni de la data aplicării sancțiunii."
-— OG 2/2001, art. 14 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 14 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „Procesul-verbal neatacat în termenul prevăzut la art. 31 , precum și hotărârea judecătorească definitivă prin care s-a soluționat plângerea constituie titlu executoriu, fără vreo altă formalitate."
-— OG 2/2001, art. 37 (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 37 (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Cum se aplică regulile:

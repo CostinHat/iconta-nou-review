@@ -16,15 +16,15 @@ Limitele sunt în vigoare din 15 decembrie 2025, prin OUG 68/2025. Tot de atunci
 
 ::: ghid-temei
 „(3) Produsele achiziționate și transportate ocazional de persoanele fizice se consideră a fi destinate uzului propriu, în condițiile în care nu depășesc următoarele limite cantitative: a) tutunuri prelucrate: 1. țigarete - 800 de bucăți; [...] 2. țigări (cu o greutate maximă de 3 grame/bucată) - 400 de bucăți; [...] 3. țigări de foi - 200 de bucăți; [...] 4. tutun de fumat - 1 kg; [...] b) băuturi alcoolice: 1. băuturi spirtoase - 10 litri; [...] 2. produse intermediare - 20 litri; [...] 3. vinuri - 90 litri (din care maximum 60 l de vinuri spumoase); [...] 4. bere - 110 litri. [...] (4) Produsele achiziționate și transportate ocazional în cantități superioare limitelor prevăzute la alin. (3) și destinate consumului în România se consideră a fi achiziționate în scopuri comerciale și, în acest caz, se datorează acciza în România."
-— OUG 68/2025, art. I pct. 7 (art. 413 alin. (3)-(4) din Codul fiscal) (sursă: anaf_surse/oug_68_2025.html)
+— OUG 68/2025, art. I pct. 7 (art. 413 alin. (3)-(4) din Codul fiscal) (sursă: [OUG nr. 68/2025 pentru modificarea și completarea titlului VIII din Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305009))
 :::
 
 ::: ghid-temei
 „(1^1) În sensul prevederilor alin. (1) , se consideră că produsele accizabile achiziționate de o persoană fizică sunt destinate pentru uzul său propriu doar în măsura în care transportul în România din alte state membre al produselor accizabile are caracter ocazional, respectiv nu este realizat în mod repetitiv și sistematic."
-— Codul fiscal (Legea 227/2015), art. 413 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 413 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a) statutul comercial al celui care deține produsele accizabile și motivele pentru care le deține;"
-— Codul fiscal (Legea 227/2015), art. 413 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 413 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

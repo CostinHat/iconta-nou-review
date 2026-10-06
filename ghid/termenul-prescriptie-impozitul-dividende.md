@@ -14,7 +14,7 @@ Impozitul pe dividende nu are un termen de prescripție separat, specific — se
 
 ::: ghid-temei
 „Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel. [...] Termenul de prescripție a dreptului prevăzut la alin. (1) începe să curgă de la data de 1 iulie a anului următor celui pentru care se datorează obligația fiscală, dacă legea nu dispune altfel."
-— Legea 207/2015, art. 110 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 110 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret pentru impozitul pe dividende:

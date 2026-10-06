@@ -15,7 +15,7 @@ Se întâmplă: o sumă e virată către buget deși nu era datorată — o obli
 ::: ghid-temei
 „(1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată.
 (2) În situația în care s-a făcut o plată fără a fi datorată, cel pentru care s-a făcut astfel plata are dreptul la restituirea sumei respective."
-— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva reguli importante din același articol:
@@ -34,6 +34,6 @@ Câteva reguli importante din același articol:
 
 ## Ce face iConta.eu
 
-Pentru cazul general al art. 168 (orice sumă plătită fără a fi datorată), iConta.eu nu automatizează depunerea cererii de restituire — nu am găsit în cod o funcție dedicată acestui proces general. Există însă, în cod, un modul dedicat exact procedurii speciale menționate mai sus, de la art. 170: declarația D110 (`core/d110.py`), „Declarație de regularizare/cerere de restituire privind impozitul pe venit reținut la sursă", care compară suma datorată cu suma reținută per obligație fiscală și generează cererea de restituire a diferenței. Codul modulului citează explicit CPF art. 168 și art. 170 ca temei. Pentru restul situațiilor de plată nedatorată, evidența corectă a obligațiilor fiscale calculate (declarații, scadențe) rămâne utilă pentru a identifica de la bun început dacă o plată a fost sau nu efectiv datorată.
+Pentru cazul general al art. 168 (orice sumă plătită fără a fi datorată), iConta.eu nu automatizează depunerea cererii de restituire — nu am găsit în cod o funcție dedicată acestui proces general. Există însă, în cod, un modul dedicat exact procedurii speciale menționate mai sus, de la art. 170: declarația D110, „Declarație de regularizare/cerere de restituire privind impozitul pe venit reținut la sursă", care compară suma datorată cu suma reținută per obligație fiscală și generează cererea de restituire a diferenței. Codul modulului citează explicit CPF art. 168 și art. 170 ca temei. Pentru restul situațiilor de plată nedatorată, evidența corectă a obligațiilor fiscale calculate (declarații, scadențe) rămâne utilă pentru a identifica de la bun început dacă o plată a fost sau nu efectiv datorată.
 
 [iConta.eu](/)

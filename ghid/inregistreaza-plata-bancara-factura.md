@@ -14,7 +14,7 @@ O plată din contul firmei nu poate fi înregistrată în contabilitate „doar 
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea 82/1991 (Legea contabilității), art. 6 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 6 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Aplicat la o plată bancară fără factură:

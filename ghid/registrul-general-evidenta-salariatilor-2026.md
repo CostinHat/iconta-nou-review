@@ -14,7 +14,7 @@ Registrul general de evidență a salariaților este ținut, din 2025, prin sist
 
 ::: ghid-temei
 „Prezenta hotărâre stabilește condițiile de întocmire și accesare a Registrului general de evidență a salariaților, denumit în continuare Registru, de completare și transmitere în acesta a elementelor contractului individual de muncă, privind încheierea, modificarea, suspendarea și încetarea acestuia, de către următoarele categorii de angajatori: a) persoane fizice sau juridice de drept privat; ... b) instituții/autorități publice/alte entități juridice care angajează personal în baza unui contract individual de muncă; ... c) misiunile diplomatice, oficiile consulare ale altor state în România [...]"
-— HG 295/2025, art. 1 (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 1 (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 HG 295/2025 a abrogat vechea HG 905/2017 (cea de sub care circula numele „REVISAL"): art. 15 prevede abrogarea, cu termenul prelungit până la 31 decembrie 2025 prin OUG 46/2025. Așadar, de la acea dată, orice obligație legată de „registrul salariaților" se raportează la HG 295/2025.

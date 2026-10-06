@@ -13,7 +13,7 @@ Declararea propriu-zisă a primului trimestru de impozit pe profit, după depă�
 ## Temeiul legal
 
 ::: ghid-temei
-"«121»: «5503XXXXXX», poz.5 Nomenclator: impozit pe veniturile microîntreprinderilor; «103»: «5503XXXXXX», poz.2 Nomenclator: impozit pe profit/plăți anticipate PJ române [...] Deci plățile trimestriale/anticipate de impozit pe profit (cod_oblig 103) se depun prin D100, nu prin D101." — dosarul de cercetare F027, pe baza `core/d100.py`, nomenclator `COD_BUGETAR`.
+"«121»: «5503XXXXXX», poz.5 Nomenclator: impozit pe veniturile microîntreprinderilor; «103»: «5503XXXXXX», poz.2 Nomenclator: impozit pe profit/plăți anticipate PJ române [...] Deci plățile trimestriale/anticipate de impozit pe profit (cod_oblig 103) se depun prin D100, nu prin D101." — dosarul de cercetare F027, pe baza aplicația, nomenclator `COD_BUGETAR`.
 :::
 
 Pentru primul trimestru în care firma datorează deja impozit pe profit (conform art.52 alin.(1) și (6): de la trimestrul depășirii plafonului de 100.000 EUR, nu retroactiv), declarația folosită este D100, cu codul de obligație 103. Elementele de curs valutar din acel trimestru se tratează ca venituri similare, conform art.53 alin.(2) lit.b).

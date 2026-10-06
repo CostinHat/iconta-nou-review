@@ -14,7 +14,7 @@ Nu automat. Codul fiscal leagă statutul de „întreprinderi legate" de deține
 
 ::: ghid-temei
 „[...] persoana juridică română este legată cu o altă persoană dacă există oricare dintre următoarele raporturi: [...] c) persoana juridică română care verifică condiția este legată cu o altă persoană juridică română dacă o persoană deține, în mod direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot, sau are dreptul de a numi sau de a revoca administratorul/majoritatea membrilor consiliului de administrație, de conducere ori de supraveghere atât la prima persoană juridică, cât și la cea de-a doua persoană juridică."
-— Legea nr. 227/2015, art. 47 alin. (1^1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 47 alin. (1^1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă exact din text:

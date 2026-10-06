@@ -16,13 +16,13 @@ Pentru cabinet, cazul privește clienții care sunt ei înșiși transportatori,
 
 ::: ghid-temei
 „Articolul 8^2 (1) Operatorul de transport rutier este obligat să asigure transferul datelor curente de poziționare a vehiculului de transport, care fac obiectul declarației, pe toată durata traseului de transport al bunurilor care fac obiectul monitorizării prin Sistemul RO e-Transport. (2) Operatorul de transport rutier este obligat să echipeze vehiculele de transport cu dispozitive de tip terminal de telecomunicații care utilizează tehnologii de poziționare și transmisie de date prin satelit menționate la art. 4 alin. (1) lit. b^1) . (3) Prevederile alin. (2) nu se aplică în cazul în care datele de poziționare ale vehiculului de transport sunt transferate de dispozitivele acestuia."
-— OUG 41/2022, art. 8^2 alin. (1)-(3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^2 alin. (1)-(3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „e) nerespectarea de către operatorul de transport a prevederilor art. 8^2 ."
-— OUG 41/2022, art. 13^1 alin. (1) lit. e) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. e) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(3) Contravențiile prevăzute la alin. (1) lit. c) și e) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice."
-— OUG 41/2022, art. 13^1 alin. (3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce obligații are transportatorul, sancționate prin lit. e):

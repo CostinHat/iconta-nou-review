@@ -14,7 +14,7 @@ Spre deosebire de alte declarații, D406 (fișierul standard de control fiscal, 
 
 ::: ghid-temei
 „12. În situația în care, ca urmare a încercării de transmitere a Declarației D406, sunt primite mesaje de eroare/erori, utilizatorul trebuie să verifice cauza erorii prin analiza documentului generat de programul «Validator», fișierul SAFT.xml.err.txt. Odată identificată eroarea sau identificate erorile, se corectează problema semnalată de către utilizator și se generează un nou fișier XML. [...] 16. Formularele și fișierele SAF-T atașate pentru care nu este validată identitatea sunt respinse."
-— OPANAF nr. 1.783/2021, Instrucțiuni de completare și transmitere D406 (SAF-T), pct. 12 și pct. 16 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Instrucțiuni de completare și transmitere D406 (SAF-T), pct. 12 și pct. 16 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Procedura de corectare, așa cum rezultă din instrucțiuni:
@@ -31,6 +31,6 @@ Procedura de corectare, așa cum rezultă din instrucțiuni:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează fișierul XML pentru D406 cu un set extins de validări interne, aplicate **înainte** de transmitere (`core/d406.py`) — de exemplu, respinge la generare conturile care nu se regăsesc în planul de conturi declarat al firmei sau unitățile de măsură neconforme, tocmai pentru a evita o respingere ulterioară de la validatorul oficial ANAF. Dacă totuși ANAF respinge declarația la transmitere efectivă, corectarea pe baza mesajului de eroare primit și retransmiterea rămân un pas manual, realizat de contabil în afara aplicației.
+La data acestui ghid, iConta.eu generează fișierul XML pentru D406 cu un set extins de validări interne, aplicate **înainte** de transmitere — de exemplu, respinge la generare conturile care nu se regăsesc în planul de conturi declarat al firmei sau unitățile de măsură neconforme, tocmai pentru a evita o respingere ulterioară de la validatorul oficial ANAF. Dacă totuși ANAF respinge declarația la transmitere efectivă, corectarea pe baza mesajului de eroare primit și retransmiterea rămân un pas manual, realizat de contabil în afara aplicației.
 
 [iConta.eu](/)

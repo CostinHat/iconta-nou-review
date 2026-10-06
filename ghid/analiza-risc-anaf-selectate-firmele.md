@@ -14,10 +14,10 @@ Selectarea firmelor pentru inspecție fiscală nu e aleatorie (cu o excepție li
 
 ::: ghid-temei
 „[...] În cazul creanțelor fiscale administrate de organul fiscal central, selectarea contribuabililor/plătitorilor pentru efectuarea acțiunii de inspecție fiscală se efectuează la nivelul aparatului central al ANAF, în funcție de nivelul riscului stabilit pe baza analizei de risc."
-— Legea nr. 207/2015, art. 121 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 121 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la alin. (1), în cazul creanțelor fiscale administrate de organul fiscal central, contribuabilii/plătitorii pot fi selectați în mod aleatoriu pentru efectuarea unei acțiuni de inspecție fiscală. [...] Într-un an calendaristic, procentul maximal de contribuabili/plătitori selectați în mod aleatoriu nu poate depăși 10% din totalul contribuabililor/plătitorilor selectați pentru efectuarea inspecției fiscale în anul respectiv."
-— Legea nr. 207/2015, art. 121 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 121 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul, așa cum rezultă din lege:

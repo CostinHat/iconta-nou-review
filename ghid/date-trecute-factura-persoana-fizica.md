@@ -14,7 +14,7 @@ Spre deosebire de facturile către alte firme (B2B), unde identificarea se face 
 
 ::: ghid-temei
 „Livrările de bunuri/Prestările de servicii efectuate către o persoană fizică care nu se identifică în relația cu furnizorul/prestatorul prin niciun cod de identificare fiscală sau optează să se identifice prin codul numeric personal se consideră efectuate în relația B2C. Dacă beneficiarul, persoană fizică, nu se identifică prin niciun cod de identificare fiscală, facturile se emit utilizând un cod format din 13 cifre de zero în locul codului de identificare fiscală a beneficiarului."
-— OUG nr. 120/2021, art. 10^1 alin. (3), astfel cum a fost modificat prin OUG nr. 138/2024 (sursă: anaf_surse/oug_138_2024.txt)
+— OUG nr. 120/2021, art. 10^1 alin. (3), astfel cum a fost modificat prin OUG nr. 138/2024 (sursă: [OUG nr. 138/2024 privind modificarea și completarea unor acte normative în domeniul fiscal-bugetar](https://legislatie.just.ro/Public/DetaliiDocument/292029))
 :::
 
 Ce rezultă concret pentru datele obligatorii ale unei facturi electronice către o persoană fizică:

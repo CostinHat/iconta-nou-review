@@ -16,10 +16,10 @@ Pentru un beneficiar care folosește zilieri ocazional — o livadă la cules, u
 
 ::: ghid-temei
 „(3) În domeniul securității și sănătății în muncă, beneficiarul sau un împuternicit al acestuia are următoarele obligații: a) să asigure securitatea și sănătatea în muncă a zilierilor; ... b) să asigure instruirea zilierului, înainte de începerea activității și/sau la schimbarea locului de muncă, cu privire la pericolele la care poate fi expus și la măsurile de prevenire și protecție pe care trebuie să le respecte; ... c) să solicite zilierilor asumarea pe propria răspundere, prin semnătură, că starea sănătății le permite desfășurarea activităților repartizate de beneficiar sau un împuternicit al acestuia;"
-— Legea 52/2011, art. 5 alin. (3) lit. a)-c) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (3) lit. a)-c) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „d) să pună la dispoziție zilierilor echipamente de muncă adecvate, care nu pun în pericol securitatea și sănătatea acestora; ... e) să asigure, în mod gratuit, echipamente individuale de protecție adecvate activității desfășurate de zilieri; ... f) să comunice de îndată, către inspectoratul teritorial de muncă pe raza căruia s-a produs, orice eveniment în care au fost implicați zilieri; ... g) să înregistreze accidentele de muncă suferite de zilieri în timpul activității;"
-— Legea 52/2011, art. 5 alin. (3) lit. d)-g) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (3) lit. d)-g) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Obligațiile, pe scurt:

@@ -15,7 +15,7 @@ Când o firmă (nu o persoană fizică) încasează chirii — de exemplu pentru
 ::: ghid-temei
 „Baza impozabilă
 Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **La microîntreprindere**: venitul din chirii intră, ca orice alt venit din exploatare, în baza impozabilă de la art. 53 — se impozitează la cota de micro (1% sau 3%, în funcție de îndeplinirea condițiilor legale) aplicată la valoarea brută a chiriei încasate/de încasat, fără a scădea cheltuielile aferente (întreținere, amortizare, reparații) — regimul micro nu permite deducerea cheltuielilor, spre deosebire de impozitul pe profit.

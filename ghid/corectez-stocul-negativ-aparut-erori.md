@@ -14,7 +14,7 @@ Un stoc negativ (o cantitate de marfă înregistrată contabil sub zero) nu e o 
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea 82/1991 (legea contabilității), art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (legea contabilității), art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Limitare clară: sursele verificate nu conțin un act normativ care să reglementeze explicit „stocul negativ" ca situație distinctă — regula generală de mai sus (fiecare mișcare de stoc are la bază un document justificativ, înregistrat cronologic) e temeiul pe care se sprijină orice corectare:

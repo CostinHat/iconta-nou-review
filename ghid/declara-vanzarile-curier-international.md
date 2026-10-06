@@ -16,7 +16,7 @@ O vânzare expediată prin curier către un client dintr-un alt stat nu e o livr
 „Vânzare la distanță de bunuri importate din teritorii terțe sau țări terțe înseamnă o livrare de bunuri expediate sau transportate de furnizor sau în numele acestuia, inclusiv în cazul în care furnizorul intervine în mod indirect în transportul sau expedierea bunurilor, dintr-un teritoriu terț sau dintr-o țară terță către un client dintr-un stat membru, dacă sunt îndeplinite [...] condițiile [prevăzute la lit. a) și b)]."
 
 „Prin excepție de la prevederile alin. (1) lit. a), locul livrării în cazul vânzărilor la distanță de bunuri importate din teritorii terțe sau țări terțe într-un alt stat membru decât cel în care se încheie expedierea sau transportul bunurilor către client este considerat a fi locul unde se află bunurile în momentul în care se încheie expedierea sau transportul acestora către client."
-— Codul fiscal, art. 266 alin. (1) pct. 36 și art. 275 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 266 alin. (1) pct. 36 și art. 275 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Distincția esențială pentru o firmă care vinde prin curier internațional:
@@ -33,6 +33,6 @@ Distincția esențială pentru o firmă care vinde prin curier internațional:
 
 ## Ce face iConta.eu
 
-Facturile de vânzare către clienți externi se emit prin fluxul general de facturare. iConta.eu are un modul dedicat pentru declarația D398 (regimurile speciale OSS/IOSS, `core/d398.py`), care generează XML-ul de declarație, dar sumele pe fiecare stat de consum se introduc manual, nu se deduc automat din facturile emise — încadrarea corectă în regimul de vânzare la distanță (plafoane, stat de destinație) rămâne o verificare manuală a contabilului.
+Facturile de vânzare către clienți externi se emit prin fluxul general de facturare. iConta.eu are un modul dedicat pentru declarația D398 (regimurile speciale OSS/IOSS, aplicația), care generează XML-ul de declarație, dar sumele pe fiecare stat de consum se introduc manual, nu se deduc automat din facturile emise — încadrarea corectă în regimul de vânzare la distanță (plafoane, stat de destinație) rămâne o verificare manuală a contabilului.
 
 [iConta.eu](/)

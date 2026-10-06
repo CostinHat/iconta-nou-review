@@ -16,7 +16,7 @@ O fuziune prin absorbție înseamnă că firma absorbită își încetează exis
 „Articolul 31 Pierderi fiscale [...] (2) Pierderea fiscală înregistrată de contribuabilii care își încetează existența ca efect al unei operațiuni de fuziune sau divizare totală se recuperează de către contribuabilii nou-înființați ori de către cei care preiau patrimoniul societății absorbite sau divizate, după caz, proporțional cu activele transferate persoanelor juridice beneficiare, potrivit proiectului de fuziune/divizare.
 
 Articolul 32 Regimul fiscal care se aplică fuziunilor, divizărilor totale, divizărilor parțiale, transferurilor de active și achizițiilor de titluri de participare între persoane juridice române [...] (6) În cazul operațiunilor de reorganizare prevăzute la alin. (1) se aplică următoarele reguli: a) valoarea fiscală a unui activ sau pasiv, transferate societății beneficiare, este egală cu valoarea fiscală pe care activul/pasivul a avut-o la societatea cedentă."
-— Legea nr. 227/2015 (Codul fiscal), art. 31 alin. (2) și art. 32 alin. (6) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 31 alin. (2) și art. 32 alin. (6) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste două articole rezultă regimul de neutralitate fiscală al fuziunii:

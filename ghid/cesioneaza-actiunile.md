@@ -15,7 +15,7 @@ Spre deosebire de cesiunea părților sociale la un SRL, transmiterea acțiunilo
 ::: ghid-temei
 „(1) Dreptul de proprietate asupra acțiunilor emise în formă materială se transmite prin declarație făcută în registrul acționarilor și prin mențiunea făcută pe titlu, semnată de cedent și de cesionar sau de mandatarii lor. Dreptul de proprietate asupra acțiunilor emise în formă dematerializată se transmite prin declarație făcută în registrul acționarilor, semnată de cedent și de cesionar sau de mandatarii lor. Prin actul constitutiv se pot prevedea și alte forme de transmitere a dreptului de proprietate asupra acțiunilor.
 (3) Subscriitorii și cesionării ulteriori sunt răspunzători solidar de plata acțiunilor timp de 3 ani, socotiți de la data când s-a făcut mențiunea de transmitere în registrul acționarilor."
-— Legea 31/1990, art. 98 alin. (1) și (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 98 alin. (1) și (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă mecanismul concret de cesiune, în funcție de forma acțiunilor:

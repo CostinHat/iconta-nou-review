@@ -16,14 +16,14 @@ Nu. O construcție încă neterminată, înregistrată ca imobilizare corporală
 
 ::: ghid-temei
 „(2) Nu sunt considerate construcții, în sensul art. 497 din Codul fiscal, imobilizările corporale în curs de execuție evidențiate potrivit reglementărilor contabile aplicabile."
-— HG 1/2016, norme metodologice, titlul X, pct. 1 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul X, pct. 1 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În înțelesul prezentului titlu, construcțiile sunt cele prevăzute în grupa 1 din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe."
-— Codul fiscal (Legea 227/2015), art. 497 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 497 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „În sensul alin. (1) lit. a) , valoarea netă a construcțiilor reprezintă valoarea evidențiată în soldul debitor al conturilor corespunzătoare construcțiilor din care se scade valoarea contabilă cumulată a amortizării acestora."
-— Codul fiscal (Legea 227/2015), art. 498 alin. (1^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 498 alin. (1^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma este mai veche decât forma actuală a art. 498, dar nu o contrazice. Codul fiscal leagă acum baza de valoarea netă din soldul conturilor de construcții, iar o investiție în curs nu este încă înregistrată în aceste conturi.
@@ -38,7 +38,7 @@ Ce reții:
 
 ::: ghid-temei
 „Începând cu anul 2027/anul fiscal modificat care începe în anul 2027, titlul X - Impozitul pe construcții se abrogă."
-— OUG 89/2025, art. I pct. 52 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 89/2025, art. I pct. 52 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 ::: ghid-exemplu

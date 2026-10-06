@@ -16,7 +16,7 @@ Cea mai frecventă greșeală a unui PFA nu e la calculul impozitului pe venit, 
 „(1) Persoanele fizice care în anul fiscal pentru care se depune Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice prevăzută la art. 122 au realizat venituri din activitățile prevăzute la art. 137 alin. (1) lit. b) și b^1), din una sau mai multe surse și/sau categorii de venituri, a căror valoare anuală cumulată este cel puțin egală cu 12 salarii minime brute pe țară, datorează contribuția de asigurări sociale la o bază de calcul stabilită potrivit alin. (2).
 (2) Baza anuală de calcul al contribuției de asigurări sociale [...] o reprezintă venitul ales de contribuabil, care nu poate fi mai mic decât: a) nivelul de 12 salarii minime brute pe țară, în cazul veniturilor realizate cuprinse între 12 salarii minime brute pe țară inclusiv și 24 de salarii minime brute pe țară; b) nivelul de 24 de salarii minime brute pe țară, în cazul veniturilor realizate cel puțin egale cu 24 de salarii minime brute pe țară.
 (3) Încadrarea în plafonul anual [...] se efectuează prin cumularea veniturilor nete și/sau a normelor anuale de venit din activități independente [...]."
-— Legea 227/2015 (Codul fiscal), art. 148 alin. (1)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 148 alin. (1)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanismul pe care majoritatea greșelilor îl ratează:

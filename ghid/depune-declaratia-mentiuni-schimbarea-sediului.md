@@ -15,7 +15,7 @@ Schimbarea sediului unei firme trece prin două proceduri separate: înregistrar
 ```
 ::: ghid-temei
 „(1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce înseamnă asta concret pentru schimbarea sediului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu generează și nu depune automat declarația de mențiuni** către ANAF — nu a fost găsit în `core/` un modul dedicat acestui proces. Aplicația păstrează datele de identificare ale firmei (inclusiv sediul) în profilul acesteia, pentru a fi folosite corect pe facturi și declarații, dar actualizarea efectivă a sediului la ONRC și transmiterea declarației de mențiuni către ANAF rămân, la acest moment, proceduri realizate separat, prin mijloacele obișnuite.
+La data acestui ghid, iConta.eu **nu generează și nu depune automat declarația de mențiuni** către ANAF — nu a fost găsit în aplicație un modul dedicat acestui proces. Aplicația păstrează datele de identificare ale firmei (inclusiv sediul) în profilul acesteia, pentru a fi folosite corect pe facturi și declarații, dar actualizarea efectivă a sediului la ONRC și transmiterea declarației de mențiuni către ANAF rămân, la acest moment, proceduri realizate separat, prin mijloacele obișnuite.
 
 [iConta.eu](/)

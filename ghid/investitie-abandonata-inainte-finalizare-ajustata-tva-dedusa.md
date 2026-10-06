@@ -16,17 +16,17 @@ Dacă însă firma renunță la investiție din motive care țin de propria deci
 
 ::: ghid-temei
 „În cazul imobilizărilor în curs de execuție care nu se mai finalizează, în baza unei decizii de abandonare a executării lucrărilor de investiții, fiind scoase din evidență pe seama conturilor de cheltuieli, persoana impozabilă își poate păstra dreptul de deducere exercitat în baza art. 297 alin. (4) din Codul fiscal, indiferent dacă sunt sau nu valorificate prin livrarea imobilizărilor ca atare ori după casare, dacă din circumstanțe care nu depind de voința sa persoana impozabilă nu utilizează niciodată aceste bunuri/servicii pentru activitatea sa economică"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (17) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (17) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dreptul de deducere poate fi păstrat și în alte situații în care achizițiile de bunuri/servicii pentru care dreptul de deducere a fost exercitat conform art. 297 alin. (4) din Codul fiscal nu sunt utilizate pentru activitatea economică a persoanei impozabile, din motive obiective, care nu depind de voința sa"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (17) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (17) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „persoana impozabilă își pierde sau câștiga dreptul de deducere a taxei pentru bunurile mobile nelivrate și serviciile neutilizate."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie să existe ca deducerea să rămână:

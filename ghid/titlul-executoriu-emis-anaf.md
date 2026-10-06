@@ -16,7 +16,7 @@ Titlul executoriu e documentul pe baza căruia organul fiscal poate trece la exe
 „Executarea silită a creanțelor fiscale se efectuează în temeiul unui titlu executoriu emis potrivit prevederilor prezentului Cod de către organul de executare silită competent potrivit art. 30, 37 și 38.
 (2) în titlul executoriu emis, potrivit legii, de organul de executare silită prevăzut la alin. (1) se înscriu creanțele fiscale, principale și accesorii, neachitate la scadență, stabilite și individualizate în titluri de creanță fiscală întocmite și comunicate în condițiile legii [...]. Niciun titlu executoriu nu se poate emite în absența unui titlu de creanță fiscală emis și comunicat în condițiile legii sau a unui înscris care, potrivit legii, constituie titlu executoriu.
 [...] (4) Titlul de creanță devine titlu executoriu la data la care se împlinește scadența sau termenul de plată prevăzut de lege."
-— Legea 207/2015 (Codul de procedură fiscală), art. 226 alin. (1), (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 226 alin. (1), (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut din text:

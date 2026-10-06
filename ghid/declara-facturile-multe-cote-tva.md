@@ -20,7 +20,7 @@ Declarația D394 propriu-zisă are temei legal separat (OPANAF 3769/2015), al c�
 
 ## Ce e confirmat despre D394
 
-D394 e o funcționalitate distinctă de D300, cu modul propriu de cod (`core/d394.py`). Codul confirmă o logică proprie de împărțire pe cote: comentariul din sursă spune explicit *„Facturile lunii, cu cota din linii. O factura cu doua cote da doua intrari"* — adică o factură cu două cote de TVA generează două înregistrări separate în D394, una pentru fiecare cotă, nu o singură linie cumulată.
+D394 e o funcționalitate distinctă de D300, cu modul propriu de cod. Codul confirmă o logică proprie de împărțire pe cote: comentariul din sursă spune explicit *„Facturile lunii, cu cota din linii. O factura cu doua cote da doua intrari"* — adică o factură cu două cote de TVA generează două înregistrări separate în D394, una pentru fiecare cotă, nu o singură linie cumulată.
 
 Dincolo de acest mecanism de bază, pașii concreți de completare a D394 (câmpuri, secțiuni, termene de depunere) nu fac parte din sursele verificate pentru acest ghid — nu le reproducem aici ca să nu riscăm o afirmație nesusținută.
 
@@ -31,6 +31,6 @@ Dincolo de acest mecanism de bază, pașii concreți de completare a D394 (câmp
 
 ## Ce face iConta.eu
 
-Pentru facturile cu mai multe cote de TVA, modulul D394 (`core/d394.py`) generează automat câte o intrare separată pentru fiecare cotă prezentă pe factură, pe baza liniilor facturii. Pentru pașii compleți de completare și depunere a D394, recomandăm consultarea unui ghid dedicat acestei declarații — acest ghid acoperă doar D300 (decontul de TVA) în detaliu.
+Pentru facturile cu mai multe cote de TVA, modulul D394 generează automat câte o intrare separată pentru fiecare cotă prezentă pe factură, pe baza liniilor facturii. Pentru pașii compleți de completare și depunere a D394, recomandăm consultarea unui ghid dedicat acestei declarații — acest ghid acoperă doar D300 (decontul de TVA) în detaliu.
 
 [iConta.eu](/)

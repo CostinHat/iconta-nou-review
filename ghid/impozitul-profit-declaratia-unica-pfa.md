@@ -14,13 +14,13 @@ O PFA nu plătește niciodată impozit pe profit — acest impozit e reglementat
 
 ::: ghid-temei
 „Sunt obligate la plata impozitului pe profit, conform prezentului titlu, următoarele persoane, denumite în continuare contribuabili: a) persoanele juridice române, cu excepțiile prevăzute la alin. (2); b) persoanele juridice străine care desfășoară activitate prin intermediul unui sediu permanent [...]; [...]."
-— Legea 227/2015, art. 13 alin. (1), Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 13 alin. (1), Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]."
-— Legea 227/2015, art. 68 alin. (1), Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 68 alin. (1), Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din: a) activități independente; [...]."
-— Legea 227/2015, art. 64 alin. (1), Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 64 alin. (1), Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența e structurală, nu doar terminologică: art. 13 (Titlul II) enumeră cine e „contribuabil" la impozitul pe profit — exclusiv persoane juridice (societăți, sedii permanente ale unor persoane juridice străine etc.). O PFA (persoană fizică autorizată) e persoană fizică, nu persoană juridică, deci nu intră niciodată sub incidența Titlului II. PFA-urile sunt reglementate de Titlul IV — Impozitul pe venit, capitolul „Venituri din activități independente" — unde venitul net (sistem real sau normă de venit) se impozitează cu cota de 10%, raportat anual prin Declarația Unică, alături de contribuțiile sociale (CAS/CASS) datorate, dacă venitul net depășește plafoanele legale.

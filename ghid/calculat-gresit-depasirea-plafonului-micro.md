@@ -33,6 +33,6 @@ Verificați, pentru fiecare trimestru cumulat de la începutul anului: venituril
 
 ## Ce face iConta.eu
 
-Aplicația nu calculează sau monitorizează automat plafonul de 100.000 euro — verificat direct în cod, nu există în `core/` o constantă sau o logică dedicată acestui plafon. Recalcularea corectă a plafonului (venituri cumulate, curs fix corect, eventuale venituri afiliate) rămâne o verificare manuală a contabilului. Odată stabilit trimestrul corect al depășirii (sau lipsa acesteia), corectarea declarațiilor afectate se face prin ecranul formularului 710 (`core/d710.py`), pentru fiecare obligație greșit declarată.
+Aplicația nu calculează sau monitorizează automat plafonul de 100.000 euro — verificat direct în cod, nu există în aplicație o constantă sau o logică dedicată acestui plafon. Recalcularea corectă a plafonului (venituri cumulate, curs fix corect, eventuale venituri afiliate) rămâne o verificare manuală a contabilului. Odată stabilit trimestrul corect al depășirii (sau lipsa acesteia), corectarea declarațiilor afectate se face prin ecranul formularului 710, pentru fiecare obligație greșit declarată.
 
 [iConta.eu](/)

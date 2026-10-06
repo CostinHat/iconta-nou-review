@@ -14,14 +14,14 @@ Când o platformă digitală intermediază servicii între un prestator real și
 
 ::: ghid-temei
 „Atunci când o persoană impozabilă care acționează în nume propriu, dar în contul altei persoane, ia parte la o prestare de servicii, se consideră că a primit și a prestat ea însăși serviciile respective."
-— Legea nr. 227/2015 (Codul fiscal), art. 271 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 271 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma metodologică ilustrează exact acest mecanism aplicat unei platforme de intermediere de servicii publicitare:
 
 ::: ghid-temei
 „În sensul art. 271 alin. (2) din Codul fiscal, când pentru aceeași prestare de servicii intervin mai multe persoane impozabile care acționează în nume propriu, prin tranzacții succesive, indiferent de natura contractului, se consideră că fiecare persoană este cumpărător și revânzător, respectiv a primit și a prestat în nume propriu serviciul respectiv. [...] Exemplu: Societatea A prestează servicii de publicitate pentru produsele societății B. Serviciile sunt facturate către societatea C și aceasta le facturează către societatea B. Societatea C se consideră că a primit și a prestat în nume propriu servicii de publicitate."
-— HG nr. 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii nr. 227/2015, pct. 8 alin. (2), Titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG nr. 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii nr. 227/2015, pct. 8 alin. (2), Titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Aplicat la o platformă digitală de intermediere:

@@ -16,15 +16,15 @@ Distincția contează față de chiria obișnuită. Proprietarul care dă în ch
 
 ::: ghid-temei
 „Pentru determinarea venitului net din închirierea pe termen scurt a camerelor situate în locuințe proprietate personală, contribuabilii completează numai partea referitoare la venituri din Registrul de evidență fiscală și nu au obligații privind evidența contabilă."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii au obligația să completeze și să păstreze fișa de ocupare a capacității de cazare, astfel încât să rezulte perioada de ocupare a camerei, precum și datele de identificare a persoanei/persoanelor care a/au ocupat-o."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuabilii care obțin venituri din cedarea folosinței bunurilor nu au obligația completării Registrului de evidență fiscală și de conducere a evidenței contabile."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, ce are de ținut proprietarul:

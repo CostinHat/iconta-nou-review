@@ -14,10 +14,10 @@ Dacă o firmă descoperă, ulterior, că pierderea fiscală declarată într-un 
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, începând cu anul 2024/anul fiscal modificat care începe în anul 2024, după caz, se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi."
-— Legea 227/2015 (Codul fiscal), art. 31 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 31 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Corectarea pierderii fiscale dintr-un an anterior se face, deci, prin declarație rectificativă D101, depusă cât timp nu s-a împlinit termenul de prescripție a dreptului organului fiscal de a stabili creanțe fiscale (de regulă 5 ani, cu unele excepții). Consecințele practice ale unei corecții:

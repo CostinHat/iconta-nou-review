@@ -14,18 +14,18 @@ Titularul PFA-ului ajustează el însuși norma de venit, în Declarația unică
 
 ::: ghid-temei
 „Contribuabilii pot ajusta normele anuale de venit de la alin. (4) în declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice. Ajustarea normelor anuale de venit se realizează de către contribuabil prin aplicarea coeficienților de corecție publicați de către Direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București, asupra normelor anuale de venit."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „La stabilirea normelor anuale de venit, plafonul de venit determinat prin înmulțirea cu 12 a salariului de bază minim brut pe țară garantat în plată reprezintă venitul net anual înainte de aplicarea criteriilor."
-— Codul fiscal, art. 69 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(6) În aplicarea prevederilor art. 69 alin. (11) din Codul fiscal, norma anuală de venit se ajustează de către contribuabili, în sensul majorării/reducerii, prin aplicarea coeficienților de corecție corespunzători criteriilor prevăzute la alin. (7) asupra normelor anuale de venit stabilite și publicate de către direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Contribuabilii care beneficiază de mai mulți coeficienți de corecție, în sensul reducerii/majorării normelor de venit anuale, iau în calcul coeficientul cel mai mare."
-— HG 1/2016, Titlul IV, pct. 8 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul IV, pct. 8 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii, după modelul din normă:

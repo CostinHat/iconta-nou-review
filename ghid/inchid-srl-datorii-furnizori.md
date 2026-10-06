@@ -27,6 +27,6 @@ Se presupune uneori că, dacă datoriile către furnizori nu pot fi acoperite in
 
 ## Ce face iConta.eu
 
-Datoriile către furnizori se sting, în cursul lichidării, prin operațiunile obișnuite de plată din aplicație, la fel ca înainte de deschiderea procedurii — societatea își păstrează personalitatea juridică pentru aceste operațiuni până la terminarea lichidării (L31/1990, art. 233 alin. 4). Motorul dedicat de lichidare (`core/lichidare.py`, F057) intervine abia la etapele de valorificare a activelor (`nota_vanzare_activ`) și de partaj final (`partaj`) — stingerea datoriilor curente către furnizori nu are o funcție separată în acest motor, ci urmează fluxul normal de plăți.
+Datoriile către furnizori se sting, în cursul lichidării, prin operațiunile obișnuite de plată din aplicație, la fel ca înainte de deschiderea procedurii — societatea își păstrează personalitatea juridică pentru aceste operațiuni până la terminarea lichidării (L31/1990, art. 233 alin. 4). Motorul dedicat de lichidare (F057) intervine abia la etapele de valorificare a activelor (`nota_vanzare_activ`) și de partaj final (`partaj`) — stingerea datoriilor curente către furnizori nu are o funcție separată în acest motor, ci urmează fluxul normal de plăți.
 
 [iConta.eu](/)

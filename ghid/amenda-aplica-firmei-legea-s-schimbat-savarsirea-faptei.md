@@ -20,12 +20,12 @@ Pentru firmă, regula contează mai ales când amenzile se modifică des, cum se
 
 ::: ghid-temei
 „Dacă printr-un act normativ fapta nu mai este considerată contravenție, ea nu se mai sancționează […] chiar dacă a fost săvârșită înainte de data intrării în vigoare a noului act normativ. (2) Dacă sancțiunea prevăzută în noul act normativ este mai ușoară se va aplica aceasta. În cazul în care noul act normativ prevede o sancțiune mai grava, contravenția săvârșită anterior va fi sancționată conform dispozițiilor actului normativ în vigoare la data săvârșirii acesteia."
-— OG 2/2001, art. 12 alin. (1)-(2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 12 alin. (1)-(2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „Dispozițiile prezentului titlu se completează cu prevederile Ordonanței Guvernului nr. 2/2001 privind regimul juridic al contravențiilor"
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

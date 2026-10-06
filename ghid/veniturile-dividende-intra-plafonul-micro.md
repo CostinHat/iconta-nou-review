@@ -15,7 +15,7 @@ O firmă plătitoare de impozit pe veniturile microîntreprinderilor care încas
 ::: ghid-temei
 „a) realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...]
 (1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta, iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile/veniturile menționate la lit. d), după caz."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c) și alin. (1^1), în forma aplicabilă de la 25.02.2026 (OUG 8/2026, art. 6 pct. 15-16; conform art. 10 alin. (3) din aceeași ordonanță, se aplică inclusiv pentru încadrarea ca microîntreprindere în anul fiscal 2026) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c) și alin. (1^1), în forma aplicabilă de la 25.02.2026 (OUG 8/2026, art. 6 pct. 15-16; conform art. 10 alin. (3) din aceeași ordonanță, se aplică inclusiv pentru încadrarea ca microîntreprindere în anul fiscal 2026) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe lângă acest text, mai există un al doilea articol relevant, care privește nu plafonul de intrare/ieșire, ci baza pe care se calculează efectiv impozitul de 1%:

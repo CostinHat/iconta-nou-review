@@ -14,7 +14,7 @@ O firmă poate ajunge cu sume de recuperat de la buget din mai multe motive — 
 
 ::: ghid-temei
 „Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată. (2) În situația în care s-a făcut o plată fără a fi datorată, cel pentru care s-a făcut astfel plata are dreptul la restituirea sumei respective."
-— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regula generală e cererea de restituire, dar există și cazuri de restituire din oficiu, fără cerere separată:

@@ -37,6 +37,6 @@ Fiecare verdict poartă motivul explicit — de exemplu, D112 apare doar în lun
 
 ## Ce face iConta.eu
 
-Ecranul Control fiscal, alimentat de motorul F022 (`core/control_fiscal_api.py`), răspunde exact acestei întrebări pentru fiecare firmă: ce e datorat, cu ce termen, și de ce. Verdictul se recalculează la fiecare accesare, pe baza profilului fiscal curent al firmei și a declarațiilor deja confirmate ca depuse în aplicație.
+Ecranul Control fiscal, alimentat de motorul F022, răspunde exact acestei întrebări pentru fiecare firmă: ce e datorat, cu ce termen, și de ce. Verdictul se recalculează la fiecare accesare, pe baza profilului fiscal curent al firmei și a declarațiilor deja confirmate ca depuse în aplicație.
 
 [iConta.eu](/)

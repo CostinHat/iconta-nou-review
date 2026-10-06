@@ -16,7 +16,7 @@ D700 este formularul unic online prin care se depun azi cererile de înregistrar
 „ART. 88 Modificări ulterioare înregistrării fiscale
 (1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni.
 (4) Prevederile prezentului articol se aplică în mod corespunzător ori de câte ori contribuabilul/plătitorul constată erori în declarația de înregistrare fiscală."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1), (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1), (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă câteva reguli practice:

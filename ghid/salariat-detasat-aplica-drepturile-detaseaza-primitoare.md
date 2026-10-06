@@ -16,13 +16,13 @@ Pentru contabil, întrebarea practică e cine pune salariatul în statul de plat
 
 ::: ghid-temei
 „Drepturile cuvenite salariatului detașat se acordă de angajatorul la care s-a dispus detașarea."
-— Codul muncii (Legea 53/2003), art. 47 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 47 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Pe durata detașării salariatul beneficiază de drepturile care îi sunt mai favorabile, fie de drepturile de la angajatorul care a dispus detașarea, fie de drepturile de la angajatorul la care este detașat."
-— Codul muncii (Legea 53/2003), art. 47 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 47 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Angajatorul care detașează are obligația de a lua toate măsurile necesare pentru ca angajatorul la care s-a dispus detașarea să își îndeplinească integral și la timp toate obligațiile față de salariatul detașat.(4) Dacă angajatorul la care s-a dispus detașarea nu își îndeplinește integral și la timp toate obligațiile față de salariatul detașat, acestea vor fi îndeplinite de angajatorul care a dispus detașarea."
-— Codul muncii (Legea 53/2003), art. 47 alin. (3)-(4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 47 alin. (3)-(4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cum se aplică:

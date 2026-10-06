@@ -14,7 +14,7 @@ Când o firmă din România prestează un serviciu către o firmă dintr-un alt 
 
 ::: ghid-temei
 „Factura cuprinde în mod obligatoriu următoarele informații: [...] în cazul în care clientul este persoana obligată la plata TVA, mențiunea «taxare inversă»;"
-— Codul fiscal (Legea 227/2015), art. 319 alin. (20) lit. m) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (20) lit. m) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru un serviciu B2B intracomunitar (locul prestării la sediul beneficiarului, art. 278 alin. (2) CF), beneficiarul din celălalt stat membru e persoana obligată la plata TVA în statul lui — deci factura românească trebuie să poarte mențiunea **„taxare inversă"**.

@@ -14,7 +14,7 @@ Da. Modul în care este determinat venitul impozabil — normă de venit sau sis
 
 ::: ghid-temei
 „(2) Începând cu data de 1 ianuarie 2025, operatorii economici - persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 [...], indiferent dacă sunt sau nu înregistraţi în scopuri de TVA conform art. 316 din Legea nr. 227/2015 [...], pentru livrările de bunuri şi prestările de servicii care au locul livrării/prestării în România [...], efectuate în relaţia B2C [...], au obligaţia să transmită facturile emise în sistemul naţional privind factura electronică RO e-Factura. Fac excepţie bonurile fiscale emise în conformitate cu prevederile Ordonanţei de urgenţă a Guvernului nr. 28/1999 [...] care îndeplinesc condiţiile unei facturi simplificate [...]"
-— OUG nr. 120/2021, art. 10^1 alin. (2), astfel cum a fost modificat prin OUG nr. 138/2024 (sursă: anaf_surse/oug_138_2024.txt)
+— OUG nr. 120/2021, art. 10^1 alin. (2), astfel cum a fost modificat prin OUG nr. 138/2024 (sursă: [OUG nr. 138/2024 privind modificarea și completarea unor acte normative în domeniul fiscal-bugetar](https://legislatie.just.ro/Public/DetaliiDocument/292029))
 :::
 
 Textul rezolvă direct întrebarea:
@@ -31,6 +31,6 @@ Textul rezolvă direct întrebarea:
 
 ## Ce face iConta.eu
 
-iConta.eu nu face nicio distincție, în modulul de facturare electronică, între un PFA la normă de venit și alți emitenți de facturi — generarea și transmiterea XML-ului prin RO e-Factura (`core/efactura_send.py`) urmează aceleași reguli pentru toți utilizatorii care emit facturi din aplicație, indiferent de forma de organizare sau de sistemul de impunere a venitului. Aplicația nu oferă, la acest moment, o funcție separată de verificare automată a încadrării fiecărui utilizator în categoriile de obligativitate din lege — aceasta rămâne responsabilitatea contribuabilului sau a contabilului său.
+iConta.eu nu face nicio distincție, în modulul de facturare electronică, între un PFA la normă de venit și alți emitenți de facturi — generarea și transmiterea XML-ului prin RO e-Factura urmează aceleași reguli pentru toți utilizatorii care emit facturi din aplicație, indiferent de forma de organizare sau de sistemul de impunere a venitului. Aplicația nu oferă, la acest moment, o funcție separată de verificare automată a încadrării fiecărui utilizator în categoriile de obligativitate din lege — aceasta rămâne responsabilitatea contribuabilului sau a contabilului său.
 
 [iConta.eu](/)

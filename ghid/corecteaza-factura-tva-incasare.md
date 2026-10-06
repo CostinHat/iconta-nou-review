@@ -13,14 +13,14 @@ Când o operațiune de TVA la încasare e respinsă sau are cota greșită, cauz
 ## Temeiul legal
 
 ::: ghid-temei
-Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (`cod_fiscal_227_2015_consolidat.txt`, liniile 18151-18159)
+Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (`cod_fiscal_227_2015_consolidat.txt`)
 :::
 
 Legea distinge două situații pentru cota aplicabilă: regula generală (cota de la faptul generator) și excepția (cota de la data facturii sau a avansului, dacă acestea au fost emise/încasate înainte de livrare). Aplicarea greșită a acestei distincții e cea mai frecventă sursă de eroare de cotă într-o operațiune de TVA la încasare.
 
 ## Ce se greșește în practică
 
-Modulul care calculează cota (`core/cota_tva_incasare.py`) refuză explicit patru situații, fiecare cu cod de eroare distinct:
+Modulul care calculează cota refuză explicit patru situații, fiecare cu cod de eroare distinct:
 
 1. lipsă dată a faptului generator;
 2. ramura art. 291 alin. (5) nealeasă (nu s-a precizat dacă se aplică regula generală sau excepția);

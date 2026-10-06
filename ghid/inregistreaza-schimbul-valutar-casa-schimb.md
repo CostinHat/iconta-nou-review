@@ -14,7 +14,7 @@ Contabilitatea nu urmărește cursul comercial afișat de casa de schimb — ori
 
 ::: ghid-temei
 „O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014, pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul contabil complet, din normă:
@@ -31,6 +31,6 @@ Mecanismul contabil complet, din normă:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat cursului BNR (`core/curs_bnr.py`) folosit la contarea facturilor și operațiunilor în valută. Nu am identificat însă în cod o funcție specifică pentru operațiunea de schimb valutar la casa de schimb (cu evidențierea separată a diferenței dintre cursul comercial practicat și cursul BNR al zilei) — o astfel de operațiune, dacă apare, se înregistrează în prezent ca notă contabilă introdusă manual de contabil, cu aplicarea regulilor generale de curs valutar din aplicație.
+iConta.eu are un modul dedicat cursului BNR folosit la contarea facturilor și operațiunilor în valută. Nu am identificat însă în cod o funcție specifică pentru operațiunea de schimb valutar la casa de schimb (cu evidențierea separată a diferenței dintre cursul comercial practicat și cursul BNR al zilei) — o astfel de operațiune, dacă apare, se înregistrează în prezent ca notă contabilă introdusă manual de contabil, cu aplicarea regulilor generale de curs valutar din aplicație.
 
 [iConta.eu](/)

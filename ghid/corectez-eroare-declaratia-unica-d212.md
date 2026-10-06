@@ -14,10 +14,10 @@ Odată validată, o D212 nu se „suprascrie" — se corectează exclusiv prin d
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel."
-— Legea 207/2015, art. 110 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 110 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce spune combinația celor două articole pentru D212:
@@ -35,6 +35,6 @@ Ce spune combinația celor două articole pentru D212:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) expune pe rădăcina declarației câmpurile obligatorii de rectificare (`rectif1`, `rectif2`), care marchează declarația ca inițială sau rectificativă, respectând structura validată de ANAF. Decizia de a corecta o eroare, identificarea sursei ei și verificarea încadrării în termenul de prescripție rămân responsabilitatea contabilului — aplicația nu ține un istoric fiscal al declarațiilor D212 depuse anterior și nu compară automat versiunile pentru a semnala diferențele.
+Generatorul D212 al iConta.eu expune pe rădăcina declarației câmpurile obligatorii de rectificare (`rectif1`, `rectif2`), care marchează declarația ca inițială sau rectificativă, respectând structura validată de ANAF. Decizia de a corecta o eroare, identificarea sursei ei și verificarea încadrării în termenul de prescripție rămân responsabilitatea contabilului — aplicația nu ține un istoric fiscal al declarațiilor D212 depuse anterior și nu compară automat versiunile pentru a semnala diferențele.
 
 [iConta.eu](/)

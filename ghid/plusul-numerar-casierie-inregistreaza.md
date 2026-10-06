@@ -14,10 +14,10 @@ Casieria unei firme e un element de trezorerie supus inventarierii ca oricare al
 
 ::: ghid-temei
 „În situația constatării unor plusuri în gestiune, bunurile respective se evaluează potrivit reglementărilor contabile aplicabile."
-— OMFP nr. 2.861/2009, pct. 40 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2.861/2009, pct. 40 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 
 „Persoanele prevăzute la art. 1 au obligația să efectueze inventarierea generală a elementelor de natura activelor, datoriilor și capitalurilor proprii deținute la începutul activității, cel puțin o dată în cursul exercițiului financiar [...]."
-— Legea nr. 82/1991, art. 7 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991, art. 7 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă pentru un plus de casă:
@@ -35,6 +35,6 @@ Ce rezultă pentru un plus de casă:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu (`core/casa.py`) ține evidența soldului rulant al registrului de casă pe baza operațiunilor de încasare și plată introduse, dar aplicația nu are, la data acestui ghid, o funcție dedicată constatării și înregistrării automate a unui plus de inventar la numerar — regularizarea unui plus constatat la inventarierea fizică a casieriei se introduce manual, ca operațiune de venit, de către contabil.
+Modulul de casierie din iConta.eu ține evidența soldului rulant al registrului de casă pe baza operațiunilor de încasare și plată introduse, dar aplicația nu are, la data acestui ghid, o funcție dedicată constatării și înregistrării automate a unui plus de inventar la numerar — regularizarea unui plus constatat la inventarierea fizică a casieriei se introduce manual, ca operațiune de venit, de către contabil.
 
 [iConta.eu](/)

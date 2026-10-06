@@ -16,18 +16,18 @@ Nu e o amendă care se plătește și se uită. Pentru restul anului se schimbă
 
 ::: ghid-temei
 „În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „4^1. În cursul anului fiscal N, prevederile art. 52 alin. (2) din Codul fiscal se aplică prin referință la situațiile financiare anuale pentru exercițiul financiar N – 1 și la termenul de depunere la organele fiscale competente, conform Legii contabilității nr. 82/1991, republicată, cu modificările și completările ulterioare."
-— HG 1/2016 (Normele Codului fiscal), Titlul III, pct. 4^1 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul III, pct. 4^1 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „societățile reglementate de Legea nr. 31/1990, republicată , cu modificările și completările ulterioare, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare, subunitățile fără personalitate juridică din România care aparțin unor persoane juridice cu sediul în străinătate, cu excepția subunităților deschise în România de societăți rezidente în state aparținând Spațiului Economic European, până la data de 31 mai inclusiv a exercițiului financiar următor celui de raportare"
-— Legea contabilității 82/1991, art. 36 alin. (1) lit. a) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității 82/1991, art. 36 alin. (1) lit. a) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

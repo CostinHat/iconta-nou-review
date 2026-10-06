@@ -34,6 +34,6 @@ Dacă însă firma se dizolvă **fără** lichidare (de exemplu prin fuziune sau
 
 ## Ce face iConta.eu
 
-În `core/`, motorul de declarații nu conține nicio adaptare a acestui termen special pentru microîntreprinderi aflate în lichidare. Un precedent similar există în `core/d107.py` (declarația de sponsorizări), care respinge explicit exercițiul financiar legat de dizolvare — un tipar consecvent în aplicație: exercițiul financiar de lichidare nu este tratat de motoarele de declarații verificate. iConta.eu oferă doar notele contabile de lichidare (vânzarea activelor, partajul final) — urmărirea termenului special de declarare și plată pentru impozitul pe veniturile microîntreprinderilor rămâne responsabilitatea contabilului.
+În aplicație, motorul de declarații nu conține nicio adaptare a acestui termen special pentru microîntreprinderi aflate în lichidare. Un precedent similar există în aplicație (declarația de sponsorizări), care respinge explicit exercițiul financiar legat de dizolvare — un tipar consecvent în aplicație: exercițiul financiar de lichidare nu este tratat de motoarele de declarații verificate. iConta.eu oferă doar notele contabile de lichidare (vânzarea activelor, partajul final) — urmărirea termenului special de declarare și plată pentru impozitul pe veniturile microîntreprinderilor rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -17,7 +17,7 @@ Ieșirea dintr-o microîntreprindere spre impozit pe profit nu se produce niciod
 (2) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție.
 (3) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu mai îndeplinește condiția prevăzută la art. 47 alin. (1) lit. g) [are cel puțin un salariat], microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă. [...]
 (4) Microîntreprinderile care în cursul unui trimestru încep să desfășoare activități dintre cele prevăzute de art. 47 alin. (3) lit. f)-i) [activități bancare, asigurări, jocuri de noroc, explorare petrol și gaze] datorează impozit pe profit începând cu trimestrul respectiv."
-— Cod fiscal, art. 52 alin. (1)-(4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 52 alin. (1)-(4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Patru situații, patru momente diferite de la care începe impozitul pe profit:

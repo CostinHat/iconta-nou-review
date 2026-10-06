@@ -16,12 +16,12 @@ Contează pentru că documentul centralizator justifică baza de impozitare și 
 
 ::: ghid-temei
 „livrările de bunuri și prestările de servicii, altele decât cele menționate la lit. a) și b) […] care prin natura lor nu permit furnizorului/prestatorului identificarea beneficiarului, cum sunt: livrările de bunuri efectuate prin automatele comerciale, serviciile de parcări auto a căror contravaloare se încasează prin automate, servicii de reîncărcare electronică a cartelelor telefonice preplătite."
-— Codul fiscal (Legea 227/2015), art. 319 alin. (10) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (10) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În situația în care nu optează pentru emiterea de facturi simplificate, aceștia au obligația întocmirii unui document centralizator pentru fiecare perioadă fiscală care să cuprindă cel puțin următoarele informații: a) un număr de ordine; … b) data la care a intervenit exigibilitatea taxei pentru livrarea de bunuri și/sau prestarea de servicii; … c) denumirea bunurilor livrate și/sau a serviciilor prestate; … d) cantitatea bunurilor livrate; … e) baza de impozitare a livrărilor de bunurilor/prestărilor de servicii ori, după caz, avansurile încasate, pentru fiecare cotă, scutire sau operațiune netaxabilă, prețul unitar, exclusiv taxa, precum și rabaturile, remizele, risturnele și alte reduceri de preț, în cazul în care acestea nu sunt incluse în prețul unitar; … f) indicarea cotei de taxă aplicate și a sumei taxei colectate, exprimate în lei, în funcție de cotele taxei; … g) valoarea totală a bazei de impozitare și a taxei colectate."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 93 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 93 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

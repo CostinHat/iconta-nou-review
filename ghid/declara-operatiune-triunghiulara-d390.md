@@ -14,7 +14,7 @@ O operațiune triunghiulară (firma din România cumpără dintr-un stat membru 
 
 ::: ghid-temei
 „Se completează cu tranzacţiile intracomunitare efectuate, în următoarea ordine: a) livrări intracomunitare de bunuri (L); b) livrări ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare (T); [...]"
-— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 - Coloana „Cod operator intracomunitar" pentru tipul T cere „codul de identificare în scopuri de TVA al persoanei beneficiare a livrării ulterioare, din al treilea stat membru, pe baza căruia cumpărătorul revânzător din România i-a efectuat livrarea ulterioară" — deci codul de TVA al **cumpărătorului final**, nu al furnizorului inițial.

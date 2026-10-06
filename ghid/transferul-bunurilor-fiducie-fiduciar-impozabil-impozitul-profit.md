@@ -16,15 +16,15 @@ Regula nu se aplică dacă beneficiarul fiduciei este **fiduciarul sau un terț*
 
 ::: ghid-temei
 „În cazul contractelor de fiducie, încheiate conform dispozițiilor Codului civil, în care constituitorul are și calitatea de beneficiar, se aplică următoarele reguli: a) transferul masei patrimoniale fiduciare de la constituitor către fiduciar nu este transfer impozabil în înțelesul prezentului titlu"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „valoarea fiscală a activelor cuprinse în masa patrimonială fiduciară, preluată de fiduciar, este egală cu valoarea fiscală pe care acestea au avut-o la constituitor"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul contractelor de fiducie, încheiate conform dispozițiilor Codului civil, în care calitatea de beneficiar o are fiduciarul sau o terță persoană, cheltuielile înregistrate din transferul masei patrimoniale fiduciare de la constituitor către fiduciar sunt considerate cheltuieli nedeductibile."
-— Codul fiscal (Legea 227/2015), art. 30 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică regula:

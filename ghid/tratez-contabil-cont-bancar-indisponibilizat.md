@@ -16,7 +16,7 @@ Indisponibilizarea unui cont bancar (poprirea) e un mecanism de executare silit�
 „Atunci când se constată că există pericolul evident de înstrăinare, substituire sau de sustragere de la executare silită a bunurilor și veniturilor urmăribile ale debitorului, organul de executare silită în a cărui rază teritorială se află domiciliul fiscal al debitorului poate proceda la indisponibilizarea și executarea silită a acestora, indiferent de locul în care se găsesc bunurile."
 
 „Suspendarea executării silite prin poprire bancară are ca efect încetarea indisponibilizării sumelor viitoare provenite din încasările zilnice în conturile în lei și în valută, începând cu data și ora comunicării către instituțiile de credit a adresei de suspendare a executării silite prin poprire."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 220 alin. (11) și art. 233 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 220 alin. (11) și art. 233 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă pentru evidența contabilă:

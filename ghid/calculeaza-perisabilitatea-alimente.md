@@ -35,6 +35,6 @@ Procentul (`procent_limită`) trebuie stabilit din anexele HG 831/2004, pe grupa
 
 ## Ce face iConta.eu
 
-Funcția `calcul` din `core/perisabilitati.py` aplică exact această formulă, cu rotunjire `Decimal`/`ROUND_HALF_UP`, și generează liniile contabile corespunzătoare (607 pe partea deductibilă și, dacă e cazul, pe analiticul nedeductibil, plus 635=4426 pe ajustarea de TVA). Procentul de limită e introdus manual de contabil — aplicația nu conține coeficienții din anexele HG 831/2004 pe grupe de alimente, care trebuie verificați direct în hotărâre.
+Funcția `calcul` din aplicație aplică exact această formulă, cu rotunjire `Decimal`/`ROUND_HALF_UP`, și generează liniile contabile corespunzătoare (607 pe partea deductibilă și, dacă e cazul, pe analiticul nedeductibil, plus 635=4426 pe ajustarea de TVA). Procentul de limită e introdus manual de contabil — aplicația nu conține coeficienții din anexele HG 831/2004 pe grupe de alimente, care trebuie verificați direct în hotărâre.
 
 [iConta.eu](/)

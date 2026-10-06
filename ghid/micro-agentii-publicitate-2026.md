@@ -21,7 +21,7 @@ e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul
 g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3);
 h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu;
 i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pragul de venituri e **100.000 euro**, aplicabil începând cu 1 ianuarie 2026 (art. 54 alin. (3): „echivalentul în lei a 100.000 euro începând cu 1 ianuarie 2026"); OUG 8/2026 a reformulat doar redactarea lit. c) privind cursul de schimb, nu a introdus plafonul — un prag general, care se aplică la fel unei agenții de publicitate ca oricărei alte firme.

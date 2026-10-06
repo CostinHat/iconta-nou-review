@@ -16,7 +16,7 @@ Diferența de credit fiscal pentru cercetare-dezvoltare se poate compensa cu **o
 
 ::: ghid-temei
 „Diferența de credit fiscal prevăzută la alin. (3) și (4) reprezintă creanță fiscală a contribuabilului și poate fi utilizată, în următorii 4 ani fiscali/ani fiscali modificați, consecutivi, pentru stingerea, prin compensare, a obligațiilor fiscale restante reprezentând impozit pe profit/impozit minim pe cifra de afaceri sau alte taxe, impozite și contribuții, cu excepția impozitului suplimentar sau a impozitului suplimentar național reglementat de prevederile [...] și a obligațiilor fiscale cu reținere la sursă stabilite prin declarații fiscale depuse de contribuabil sau prin restituire, în condițiile prevăzute de prevederile art. 167 și 168 din Legea nr. 207/2015, cu modificările și completările ulterioare."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

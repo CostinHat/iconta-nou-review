@@ -16,7 +16,7 @@ Firmele care au atât operațiuni cu drept de deducere a TVA, cât și operațiu
 „(3) Taxa aferentă achizițiilor destinate exclusiv realizării de operațiuni care permit exercitarea dreptului de deducere, inclusiv de investiții destinate realizării de astfel de operațiuni, se deduce integral.
 (4) Taxa aferentă achizițiilor destinate exclusiv realizării de operațiuni care nu dau drept de deducere, precum și de investiții care sunt destinate realizării de astfel de operațiuni nu se deduce.
 (5) Taxa aferentă achizițiilor pentru care nu se cunoaște destinația, respectiv dacă vor fi utilizate pentru realizarea de operațiuni care dau drept de deducere sau pentru operațiuni care nu dau drept de deducere, ori pentru care nu se poate determina proporția în care sunt sau vor fi utilizate [...] se deduce pe bază de pro rata."
-— Legea nr. 227/2015 privind Codul fiscal, art. 300 alin. (3)-(5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 300 alin. (3)-(5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pro-rata se aplică **doar** achizițiilor cu destinație mixtă sau necunoscută — nu tuturor achizițiilor unei firme cu regim mixt de TVA.

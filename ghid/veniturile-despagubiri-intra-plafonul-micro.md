@@ -14,7 +14,7 @@ Nu orice sumă încasată de o microîntreprindere devine automat parte din baza
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...] g) veniturile realizate din despăgubiri, de la societățile de asigurare/reasigurare, pentru pagubele produse bunurilor de natura stocurilor sau a activelor corporale proprii."
-— Legea 227/2015, art. 53 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă o distincție care nu ține de plafonul de încadrare la micro (cel de 100.000 euro de la art. 47), ci de **baza impozabilă lunară/trimestrială** pe care se aplică cota de impozit micro:

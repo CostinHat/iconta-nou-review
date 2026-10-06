@@ -14,7 +14,7 @@ Deducerea personală reduce venitul net impozabil din salariu, dar valoarea ei n
 
 ::: ghid-temei
 „(1) Persoanele fizice prevăzute la art. 59 alin. (1) lit. a), alin. (2) și (2^1) au dreptul la deducerea din venitul net lunar din salarii a unei sume sub formă de deducere personală, acordată pentru fiecare lună a perioadei impozabile numai pentru veniturile din salarii la locul unde se află funcția de bază. (2) Deducerea personală cuprinde deducerea personală de bază și deducerea personală suplimentară și se acordă în limita venitului impozabil lunar realizat."
-— Legea nr. 227/2015 (Codul fiscal), art. 77 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 77 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Deducerea personală se acordă **numai la locul unde se află funcția de bază** a salariatului — nu se poate acorda simultan la mai mulți angajatori pentru aceeași persoană.
@@ -30,6 +30,6 @@ Deducerea personală reduce venitul net impozabil din salariu, dar valoarea ei n
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de salarizare din iConta.eu (`core/salarizare.py`, `core/salariati_api.py`) calculează impozitul pe venitul din salarii pornind de la datele introduse pentru fiecare salariat, inclusiv informațiile despre persoanele aflate în întreținere, dacă acestea au fost înregistrate în profilul salariatului. Aplicația nu gestionează însă documentele justificative propriu-zise (declarații pe propria răspundere, certificate de naștere) care stau la baza acestei informații — colectarea și păstrarea acestor documente rămâne un proces separat, în sarcina departamentului de resurse umane sau a contabilului.
+La data acestui ghid, motorul de salarizare din iConta.eu calculează impozitul pe venitul din salarii pornind de la datele introduse pentru fiecare salariat, inclusiv informațiile despre persoanele aflate în întreținere, dacă acestea au fost înregistrate în profilul salariatului. Aplicația nu gestionează însă documentele justificative propriu-zise (declarații pe propria răspundere, certificate de naștere) care stau la baza acestei informații — colectarea și păstrarea acestor documente rămâne un proces separat, în sarcina departamentului de resurse umane sau a contabilului.
 
 [iConta.eu](/)

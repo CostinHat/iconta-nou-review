@@ -32,6 +32,6 @@ Dacă din corecție rezultă o sumă suplimentară de plată, iar aceasta ajunge
 
 ## Ce face iConta.eu
 
-D100 nu are, în cod, niciun atribut de rectificare asupra ei însăși — verificat direct: `core/d100.py` nu conține un mecanism `d_rec` (spre deosebire de alte declarații, cum sunt D300 sau D390). Corectarea sumelor declarate greșit se face prin ecranul dedicat formularului 710 (`core/d710.py`), care calculează diferența dintre suma declarată eronat și suma corectă pentru obligația selectată (cod 121, pentru impozitul micro) și generează declarația rectificativă corespunzătoare.
+D100 nu are, în cod, niciun atribut de rectificare asupra ei însăși — verificat direct: Aplicația nu conține un mecanism `d_rec` (spre deosebire de alte declarații, cum sunt D300 sau D390). Corectarea sumelor declarate greșit se face prin ecranul dedicat formularului 710, care calculează diferența dintre suma declarată eronat și suma corectă pentru obligația selectată (cod 121, pentru impozitul micro) și generează declarația rectificativă corespunzătoare.
 
 [iConta.eu](/)

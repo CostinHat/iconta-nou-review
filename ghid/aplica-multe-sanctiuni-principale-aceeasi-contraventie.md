@@ -16,9 +16,9 @@ Situația e diferită când firma a săvârșit **mai multe contravenții**. Atu
 
 ::: ghid-temei
 „(7) Pentru una și aceeași contravenție se poate aplica numai o sancțiune contravențională principala și una sau mai multe sancțiuni complementare."
-— OG 2/2001, art. 5 alin. (7) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 5 alin. (7) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(1) Dacă aceeași persoana a săvârșit mai multe contravenții sancțiunea se aplică pentru fiecare contravenție. (2) Când contravențiile au fost constatate prin același proces-verbal, sancțiunile contravenționale se cumulează fără a putea depăși dublul maximului amenzii prevăzut pentru contravenția cea mai grava sau, după caz, maximul general stabilit în prezenta ordonanța pentru prestarea unei activități în folosul comunității."
-— OG 2/2001, art. 10 alin. (1)-(2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 10 alin. (1)-(2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

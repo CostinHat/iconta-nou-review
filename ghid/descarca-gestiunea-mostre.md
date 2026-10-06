@@ -16,10 +16,10 @@ Precizare importantă: legea nu reglementează procedura contabilă de „descă
 „(8) Nu constituie livrare de bunuri, în sensul alin. (1):
 [...]
 b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice;"
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „b) bunurile acordate în scop de reclamă cuprind, fără a se limita la acestea, bunurile oferite în mod gratuit în cadrul campaniilor promoționale, mostre acordate pentru încercarea produselor sau pentru demonstrații la punctele de vânzare."
-— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. 7 alin. (10) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. 7 alin. (10) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Consecința practică, din combinarea celor două texte:
@@ -37,6 +37,6 @@ Consecința practică, din combinarea celor două texte:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un tip de mișcare de stoc dedicat pentru „mostre"**. Modulul de gestiune (`core/stocuri.py`) gestionează intrările (NIR) și ieșirile generice de marfă; o ieșire pentru mostre acordate gratuit se înregistrează manual de contabil ca notă de consum/transfer, la fel ca orice altă ieșire fără factură de vânzare, fără colectare automată de TVA — deci nu există în cod o validare care să verifice automat condiția „de același fel cu bunurile comercializate" din normele metodologice; aceasta rămâne o evaluare pe care contabilul o face la introducerea documentului.
+La data acestui ghid, iConta.eu **nu are un tip de mișcare de stoc dedicat pentru „mostre"**. Modulul de gestiune gestionează intrările (NIR) și ieșirile generice de marfă; o ieșire pentru mostre acordate gratuit se înregistrează manual de contabil ca notă de consum/transfer, la fel ca orice altă ieșire fără factură de vânzare, fără colectare automată de TVA — deci nu există în cod o validare care să verifice automat condiția „de același fel cu bunurile comercializate" din normele metodologice; aceasta rămâne o evaluare pe care contabilul o face la introducerea documentului.
 
 [iConta.eu](/)

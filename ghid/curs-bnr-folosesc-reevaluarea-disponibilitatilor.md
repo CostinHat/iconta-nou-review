@@ -30,6 +30,6 @@ Diferența dintre soldul evaluat la cursul BNR de la finalul lunii și soldul ev
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit pentru determinarea unui sold în valută la o dată dată provine din motorul de curs (`core/curs_bnr.py`) — ultimul curs BNR comunicat, valabil cel târziu la data cerută. Calculul diferenței față de cursul de evidență al soldului și recunoașterea ei pe 665/765 rămân, ca la orice reevaluare lunară, o operațiune realizată de contabil pe baza cursului preluat din motorul de curs. Dacă moneda soldului nu are curs BNR comunicat sau cursul găsit e prea vechi pentru pragul intern de siguranță, operațiunea e blocată cu un mesaj explicit, nu se aplică tăcut un curs aproximativ.
+Cursul BNR folosit pentru determinarea unui sold în valută la o dată dată provine din motorul de curs — ultimul curs BNR comunicat, valabil cel târziu la data cerută. Calculul diferenței față de cursul de evidență al soldului și recunoașterea ei pe 665/765 rămân, ca la orice reevaluare lunară, o operațiune realizată de contabil pe baza cursului preluat din motorul de curs. Dacă moneda soldului nu are curs BNR comunicat sau cursul găsit e prea vechi pentru pragul intern de siguranță, operațiunea e blocată cu un mesaj explicit, nu se aplică tăcut un curs aproximativ.
 
 [iConta.eu](/)

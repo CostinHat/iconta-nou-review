@@ -14,10 +14,10 @@ O firmă înregistrată în scopuri de TVA nu rămâne definitiv legată de aces
 
 ::: ghid-temei
 „Persoana impozabilă înregistrată în scopuri de TVA conform art. 316 care în cursul anului calendaristic precedent nu depășește plafonul de scutire prevăzut la alin. (1) poate solicita scoaterea din evidența persoanelor înregistrate în scopuri de TVA conform art. 316, în vederea aplicării regimului special de scutire, cu condiția ca la data solicitării să nu fi depășit plafonul de scutire pentru anul în curs. Solicitarea se poate depune la organele fiscale competente între data de 1 și 10 a fiecărei luni următoare perioadei fiscale aplicate de persoana impozabilă, în conformitate cu prevederile art. 322. Anularea va fi valabilă de la data comunicării deciziei privind anularea înregistrării în scopuri de TVA."
-— Legea nr. 227/2015, art. 310 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 310 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă care a solicitat scoaterea din evidență are obligația să depună ultimul decont de taxă prevăzut la art. 323 [...] până la data de 25 a lunii următoare celei în care a fost comunicată decizia de anulare a înregistrării în scopuri de TVA. În ultimul decont de taxă depus, persoanele impozabile au obligația să evidențieze valoarea rezultată ca urmare a efectuării tuturor ajustărilor de taxă, conform prezentului titlu."
-— Legea nr. 227/2015, art. 310 alin. (7) teza finală (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 310 alin. (7) teza finală (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii impuși de lege:

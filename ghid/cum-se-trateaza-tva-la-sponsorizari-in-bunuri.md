@@ -47,7 +47,7 @@ O firmă cumpără calculatoare, deduce TVA la achiziție, apoi le donează unei
 
 ## Ce face iConta.eu
 
-Funcția `nota_sponsorizare(suma, mod)` din `core/sponsorizari.py` generează nota contabilă doar pentru două moduri: `"contract"` (`6582 = 401`) și `"plata"` (`6582 = 5121`). Modulul menționează în documentația internă și un mod „în natură” (cont din clasa 3xx, pentru ieșirea bunurilor din gestiune), dar **acesta nu este implementat** — apelul funcției cu orice altă valoare decât `"contract"` sau `"plata"` generează eroare.
+Funcția `nota_sponsorizare(suma, mod)` din aplicație generează nota contabilă doar pentru două moduri: `"contract"` (`6582 = 401`) și `"plata"` (`6582 = 5121`). Modulul menționează în documentația internă și un mod „în natură” (cont din clasa 3xx, pentru ieșirea bunurilor din gestiune), dar **acesta nu este implementat** — apelul funcției cu orice altă valoare decât `"contract"` sau `"plata"` generează eroare.
 
 Practic, pentru o sponsorizare acordată sub formă de bunuri, iConta.eu nu generează automat nici nota de ieșire a bunurilor din gestiune, nici eventuala notă de colectare a TVA dacă operațiunea nu se încadrează în condițiile de scutire. Această sponsorizare trebuie înregistrată și verificată manual, inclusiv sub aspectul TVA descris mai sus.
 

@@ -14,7 +14,7 @@ Emiterea unei facturi și transmiterea ei în sistemul național RO e-Factura su
 
 ::: ghid-temei
 „(6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Legea 296/2023, art. LIX alin. (6) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (6) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Structura termenului, cu cele două ancore posibile:
@@ -32,6 +32,6 @@ Structura termenului, cu cele două ancore posibile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/efactura_send.py` (`fctel`) generează XML-ul facturii (`genereaza_xml()`), îl validează (`valideaza()`) și îl transmite prin `upload_ubl()` către SPV, cu urmărirea stării prin `stare_mesaj()`. Transmiterea propriu-zisă către ANAF e deci o funcționalitate reală a aplicației — verificarea automată a încadrării în termenul de 5 zile lucrătoare de la art. LIX alin. (6), cu semnalarea unei transmiteri care riscă să depășească termenul, nu a fost identificată ca funcție distinctă în cod.
+La data acestui ghid, aplicația (`fctel`) generează XML-ul facturii (`genereaza_xml()`), îl validează (`valideaza()`) și îl transmite prin `upload_ubl()` către SPV, cu urmărirea stării prin `stare_mesaj()`. Transmiterea propriu-zisă către ANAF e deci o funcționalitate reală a aplicației — verificarea automată a încadrării în termenul de 5 zile lucrătoare de la art. LIX alin. (6), cu semnalarea unei transmiteri care riscă să depășească termenul, nu a fost identificată ca funcție distinctă în cod.
 
 [iConta.eu](/)

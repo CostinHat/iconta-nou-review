@@ -16,7 +16,7 @@ Spre deosebire de o clădire sau un utilaj, un teren nu se "uzează" în sensul 
 „(4) Nu reprezintă active amortizabile: a) terenurile, inclusiv cele împădurite;
 b) tablourile și operele de artă;
 c) fondul comercial;"
-— Cod fiscal, art. 28 alin. (4) lit. a)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 28 alin. (4) lit. a)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din această excludere:

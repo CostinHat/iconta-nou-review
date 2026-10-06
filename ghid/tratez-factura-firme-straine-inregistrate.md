@@ -13,7 +13,7 @@ Nu contează unde are sediul social o firmă, ci cu ce cod de TVA a facturat ope
 ## Temeiul legal
 
 ::: ghid-temei
-„`desparte_cod_tva(cod)` — separă prefixul de țară de restul codului (...); validează prefixul contra `TARI_UE` (cele 27 state + `XI` = Irlanda de Nord, post-Brexit); erori distincte pentru cod absent / prefix nevalid / prefix fără număr.” — `core/intracomunitar.py`, dosarul F050.
+„`desparte_cod_tva(cod)` — separă prefixul de țară de restul codului (...); validează prefixul contra `TARI_UE` (cele 27 state + `XI` = Irlanda de Nord, post-Brexit); erori distincte pentru cod absent / prefix nevalid / prefix fără număr.” — aplicația, dosarul F050.
 :::
 
 Regimul de achiziție/prestare intracomunitară (art. 268, art. 278 alin. 2) se leagă de un furnizor stabilit și identificat cu un cod de TVA emis de alt stat membru. Dacă firma, deși are sediul în străinătate, a ales să factureze cu cod de TVA românesc (RO), factura urmează regimul intern de TVA — nu se mai verifică în VIES ca operațiune intracomunitară, iar taxa e cea aplicată direct pe factură, nu prin taxare inversă specifică IC.

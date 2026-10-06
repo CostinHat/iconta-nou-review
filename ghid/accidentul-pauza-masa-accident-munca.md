@@ -16,10 +16,10 @@ Contează pentru că încadrarea ca accident de muncă schimbă regimul concediu
 
 ::: ghid-temei
 „k) accidentul suferit în timpul pauzelor regulamentare, dacă acesta a avut loc în locuri organizate de angajator, precum și în timpul și pe traseul normal spre și de la aceste locuri"
-— Legea 319/2006, art. 30 alin. (1) lit. k) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 30 alin. (1) lit. k) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „g) accident de muncă - vătămarea violenta a organismului, precum și intoxicatia acuta profesională, care au loc în timpul procesului de muncă sau în îndeplinirea îndatoririlor de serviciu și care provoacă incapacitate temporară de muncă de cel puțin 3 zile calendaristice, invaliditate ori deces"
-— Legea 319/2006, art. 5 lit. g) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 5 lit. g) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Condițiile, citite împreună:

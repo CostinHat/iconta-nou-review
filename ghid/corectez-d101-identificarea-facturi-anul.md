@@ -14,7 +14,7 @@ O factură „uitată" din anul fiscal anterior, descoperită după depunerea de
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative. [...] (5) Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Elementele esențiale pentru cazul unei facturi omise din anul precedent:

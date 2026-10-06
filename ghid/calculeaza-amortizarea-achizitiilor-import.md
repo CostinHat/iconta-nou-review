@@ -14,7 +14,7 @@ Amortizarea unui mijloc fix cumpărat din afara UE nu se calculează doar pe pre
 
 ::: ghid-temei
 „6. cost de achiziție înseamnă prețul datorat și eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție. În acest sens, costul de achiziție al bunurilor cuprinde prețul de cumpărare, taxele de import și alte taxe (cu excepția acelora pe care persoana juridică le poate recupera de la autoritățile fiscale), cheltuielile de transport, manipulare și alte cheltuieli care pot fi atribuibile direct achiziției bunurilor respective."
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 8 subpct. 6 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 8 subpct. 6 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un mijloc fix din import, baza de amortizare (valoarea fiscală de intrare) se formează astfel:
@@ -32,6 +32,6 @@ Aplicat la un mijloc fix din import, baza de amortizare (valoarea fiscală de in
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează amortizarea pe baza valorii de intrare introduse manual de utilizator pentru fiecare mijloc fix (`core/mijloace_fixe_import_api.py`, `core/repo_mijloace_fixe.py`). Aplicația **nu însumează automat** prețul din factura externă cu taxele vamale, cheltuielile de transport sau alte cheltuieli conexe dintr-o declarație vamală de import — determinarea costului de achiziție complet, conform pct. 8 subpct. 6 din OMFP 1802/2014, și introducerea lui ca valoare de intrare a mijlocului fix rămân o operațiune manuală a contabilului, pe baza documentelor vamale și de transport.
+La data acestui ghid, iConta.eu calculează amortizarea pe baza valorii de intrare introduse manual de utilizator pentru fiecare mijloc fix. Aplicația **nu însumează automat** prețul din factura externă cu taxele vamale, cheltuielile de transport sau alte cheltuieli conexe dintr-o declarație vamală de import — determinarea costului de achiziție complet, conform pct. 8 subpct. 6 din OMFP 1802/2014, și introducerea lui ca valoare de intrare a mijlocului fix rămân o operațiune manuală a contabilului, pe baza documentelor vamale și de transport.
 
 [iConta.eu](/)

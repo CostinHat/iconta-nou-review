@@ -14,7 +14,7 @@ Neținerea contabilității nu e o simplă abatere administrativă „ușoară" 
 
 ::: ghid-temei
 „Articolul 41 Constituie contravenție următoarele fapte: 1. deținerea, cu orice titlu, de elemente de natura activelor și datoriilor, precum și efectuarea de operațiuni economico-financiare, fără să fie înregistrate în contabilitate; [...] Articolul 42 (1) Contravențiile prevăzute la art. 41 se sancționează cu amendă după cum urmează: a) cele prevăzute la pct. 1, cu amendă de la 2.000 lei la 20.000 lei [...]."
-— Legea 82/1991 (Legea contabilității), art. 41 pct. 1 și art. 42 alin. (1) lit. a) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 41 pct. 1 și art. 42 alin. (1) lit. a) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Câteva precizări utile din structura articolului:

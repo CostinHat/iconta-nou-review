@@ -14,7 +14,7 @@ Sistemul RO e-Factura a fost gândit inițial pentru relația dintre operatori e
 
 ::: ghid-temei
 „n) relația comercială dintre doi operatori economici - B2B - tranzacția având ca obiect execuția de lucrări, livrarea de bunuri/produse și/sau prestarea de servicii dintre doi operatori economici."
-— OUG nr. 120/2021, art. 2 alin. (1) lit. n) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 2 alin. (1) lit. n) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 **Limitare declarată:** definiția de mai sus delimitează explicit relația B2B (între doi operatori economici) ca obiect central al reglementării inițiale a sistemului RO e-Factura, alături de relația B2G (către autorități contractante). Sursele verificate **nu conțin un text distinct, explicit, care să reglementeze regimul de transmitere a facturilor emise către persoane fizice (relația B2C)** prin sistemul RO e-Factura — deși obligativitatea facturării electronice B2B a fost extinsă succesiv prin acte ulterioare (Legea nr. 296/2023 și modificările ei), textul exact al clauzei privind opțiunea de transmitere facultativă către persoane fizice nu a fost identificat verbatim în corpusul disponibil. Redirecționăm onest: cadrul cert e obligația de facturare electronică în relația B2B/B2G, definită de OUG 120/2021; pentru facturile către persoane fizice, regimul aplicabil (obligatoriu sau opțional, după caz) trebuie verificat direct în forma consolidată curentă a Legii nr. 296/2023 și în procedura ANAF de utilizare a sistemului, aprobată prin ordin al ministrului finanțelor.
@@ -27,6 +27,6 @@ Sistemul RO e-Factura a fost gândit inițial pentru relația dintre operatori e
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/efactura_send.py` și `core/efactura_trimitere.py` gestionează trimiterea facturilor prin sistemul RO e-Factura, dar nu conțin o ramificație de tratament separată pentru destinatari persoane fizice (nu am găsit referințe la CNP sau la un flux distinct „persoană fizică" în aceste module). Aplicația tratează transmiterea facturilor conform fluxului standard B2B/B2G; pentru facturile emise către persoane fizice, includerea sau nu în fluxul de transmitere prin SPV rămâne o decizie pe care contabilul o ia în funcție de regimul aplicabil firmei respective.
+Verificat în cod: Aplicația gestionează trimiterea facturilor prin sistemul RO e-Factura, dar nu conțin o ramificație de tratament separată pentru destinatari persoane fizice (nu am găsit referințe la CNP sau la un flux distinct „persoană fizică" în aceste module). Aplicația tratează transmiterea facturilor conform fluxului standard B2B/B2G; pentru facturile emise către persoane fizice, includerea sau nu în fluxul de transmitere prin SPV rămâne o decizie pe care contabilul o ia în funcție de regimul aplicabil firmei respective.
 
 [iConta.eu](/)

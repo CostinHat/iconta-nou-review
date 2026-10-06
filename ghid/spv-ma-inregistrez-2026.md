@@ -14,7 +14,7 @@ Spațiul Privat Virtual (SPV) e serviciul oficial prin care Ministerul Finanțel
 
 ::: ghid-temei
 „În scopul prezentului ordin comunicarea prin mijloace electronice de transmitere la distanţă se realizează prin intermediul serviciului «Spaţiul privat virtual» - serviciu de distribuţie electronică înregistrată care permite transmiterea de date între terţi prin mijloace electronice şi furnizează dovezi referitoare la manipularea datelor transmise, inclusiv dovezi privind trimiterea şi primirea datelor, asigurând protejarea datelor transmise împotriva riscului de pierdere, furt, deteriorare sau orice modificare neautorizată."
-— OMFP 660/2017 privind aprobarea Procedurii de comunicare prin mijloace electronice de transmitere la distanță, art. 2 (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017 privind aprobarea Procedurii de comunicare prin mijloace electronice de transmitere la distanță, art. 2 (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Elemente-cheie din procedură:

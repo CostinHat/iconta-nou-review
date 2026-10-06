@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Registrele de contabilitate se utilizează în strictă concordanță cu destinația acestora și se prezintă în mod ordonat și astfel completate încât să permită, în orice moment, identificarea și controlul operațiunilor contabile efectuate. Articolul 22 Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare."
-— Legea contabilității nr. 82/1991, art. 21-22 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 21-22 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Cum se aplică principiul la reconcilierea casă de marcat – extras de cont:
@@ -31,6 +31,6 @@ Cum se aplică principiul la reconcilierea casă de marcat – extras de cont:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/amef_import.py` importă raportul fiscal de închidere zilnică, iar `core/banca.py` (`contabilizeaza_extras()`) contabilizează liniile din extrasul bancar. Aplicația nu are însă o funcție dedicată de **reconciliere automată** între încasările cu cardul raportate de AMEF și sumele efectiv intrate în bancă de la procesatorul de plăți — compararea celor două fluxuri, identificarea decalajelor de decontare și separarea comisionului rămân, azi, o verificare manuală a contabilului.
+La data acestui ghid, aplicația importă raportul fiscal de închidere zilnică, iar aplicația (`contabilizeaza_extras()`) contabilizează liniile din extrasul bancar. Aplicația nu are însă o funcție dedicată de **reconciliere automată** între încasările cu cardul raportate de AMEF și sumele efectiv intrate în bancă de la procesatorul de plăți — compararea celor două fluxuri, identificarea decalajelor de decontare și separarea comisionului rămân, azi, o verificare manuală a contabilului.
 
 [iConta.eu](/)

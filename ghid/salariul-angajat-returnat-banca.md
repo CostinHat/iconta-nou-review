@@ -17,7 +17,7 @@ Un transfer salarial poate fi returnat din motive banale — IBAN introdus greș
 (2) Plata salariului se poate efectua prin virament într-un cont bancar, în cazul în care această modalitate este prevăzută în contractul colectiv de muncă aplicabil.
 (4) Întârzierea nejustificată a plăţii salariului sau neplata acestuia poate determina obligarea angajatorului la plata de daune-interese pentru repararea prejudiciului produs salariatului.
 Articolul 162 (1) Salariul se plătește direct titularului sau persoanei împuternicite de acesta."
-— Legea nr. 53/2003 (Codul muncii), art. 161 alin. (1), (2) și (4), art. 162 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 161 alin. (1), (2) și (4), art. 162 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă pentru situația unui transfer returnat:

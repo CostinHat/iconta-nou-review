@@ -14,7 +14,7 @@ Spre deosebire de cazul unei facturi greșit taxate, aici vorbim despre TVA plă
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România poate beneficia de rambursarea TVA aferente importurilor și achizițiilor de bunuri/servicii efectuate în alt stat membru, în condițiile prevăzute în normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 302 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 302 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, recuperarea presupune parcurgerea unei proceduri cu pași și termene fixe, stabiliți prin norma de aplicare (HG 1/2016, care transpune Directiva 2008/9/CE):

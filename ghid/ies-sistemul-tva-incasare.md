@@ -28,6 +28,6 @@ Cea mai frecventă greșeală e depunerea notificării de ieșire prea devreme, 
 
 ## Ce face iConta.eu
 
-Motorul de decont (`core/d300.py`) citește un flag `tva_la_incasare` de pe profilul firmei pentru a decide dacă aplică mecanismul de exigibilitate la încasare (accesibil, conform înregistrării funcționalității, din „Operatiuni speciale > TVA regimuri"). Aplicația nu depune și nu transmite automat notificarea de intrare/ieșire către ANAF — aceasta rămâne o procedură administrativă separată (art. 324), iar aplicația nu verifică live Registrul public ANAF al persoanelor înscrise. Calculul de exigibilitate din decont urmează pur și simplu starea flagului setat de contabil pe profilul firmei.
+Motorul de decont citește un flag `tva_la_incasare` de pe profilul firmei pentru a decide dacă aplică mecanismul de exigibilitate la încasare (accesibil, conform înregistrării funcționalității, din „Operatiuni speciale > TVA regimuri"). Aplicația nu depune și nu transmite automat notificarea de intrare/ieșire către ANAF — aceasta rămâne o procedură administrativă separată (art. 324), iar aplicația nu verifică live Registrul public ANAF al persoanelor înscrise. Calculul de exigibilitate din decont urmează pur și simplu starea flagului setat de contabil pe profilul firmei.
 
 [iConta.eu](/)

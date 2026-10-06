@@ -16,11 +16,11 @@ Contractul de muncă devine necesar când munca nu mai încape în limitele legi
 
 ::: ghid-temei
 „(1) Raportul de muncă dintre zilier și beneficiar sau un împuternicit al acestuia se stabilește în condițiile prevăzute la art. 2 , prin acordul de voință al părților, fără încheierea, în formă scrisă, a unui contract individual de muncă."
-— Legea 52/2011, art. 3 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 3 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „Prin derogare de la prevederile Legii nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare, prezenta lege reglementează modul în care zilierii pot desfășura activități necalificate cu caracter ocazional, sub forma raporturilor de muncă."
-— Legea 52/2011, art. 2 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 2 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(8) Dacă activitatea depusă de zilier necesită o perioadă mai mare decât cea prevăzută la alin. (7) , acesta poate fi utilizat pe bază de contract de muncă pe perioadă determinată."
-— Legea 52/2011, art. 4 alin. (8) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (8) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

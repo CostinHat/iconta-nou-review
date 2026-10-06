@@ -14,7 +14,7 @@ La achiziția de marfă în valută nu apare, propriu-zis, nicio „diferență 
 
 ::: ghid-temei
 „319. - O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014, Reglementările contabile, pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Corelat cu definiția elementelor nemonetare de la pct. 315 alin. (3) din aceleași reglementări — care numește explicit „stocurile" printre exemplele de elemente nemonetare — rezultă mecanismul complet:

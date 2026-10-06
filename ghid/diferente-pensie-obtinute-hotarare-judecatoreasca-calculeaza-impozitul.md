@@ -16,12 +16,12 @@ Cel mai important detaliu e reperul în timp. La restanțele din decizia casei d
 
 ::: ghid-temei
 „În cazul veniturilor din pensii și/sau al diferențelor de venituri din pensii, dobânzilor acordate în legătură cu acestea, precum și al sumelor reprezentând actualizarea acestora cu indicele de inflație, stabilite în baza hotărârilor judecătorești rămase definitive și irevocabile/hotărârilor judecătorești definitive și executorii, impozitul se calculează separat față de impozitul aferent drepturilor lunii curente, prin aplicarea prevederilor alin. (2) , impozitul reținut fiind impozit final. Impozitul se reține la data efectuării plății, în conformitate cu reglementările legale în vigoare la data plății veniturilor respective. Impozitul astfel reținut se plătește până la data de 25 inclusiv a lunii următoare celei în care s-au plătit veniturile."
-— Codul fiscal (Legea 227/2015), art. 101 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Impozitul se calculează prin aplicarea cotei de impunere de 10% asupra venitului impozabil lunar din pensii determinat potrivit art. 100"
-— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce intră sub această regulă și cum se aplică:
@@ -37,7 +37,7 @@ CASS are o regulă proprie, diferită de cea a impozitului: pentru sumele din ho
 
 ::: ghid-temei
 „În cazul în care au fost acordate sume reprezentând pensii sau diferențe de pensii, stabilite prin lege sau în baza unor hotărâri judecătorești rămase definitive și irevocabile/hotărâri judecătorești definitive și executorii, aferente unor perioade în care se datorează contribuția individuală de asigurări sociale de sănătate/contribuția de asigurări sociale de sănătate, după caz, pentru sumele respective se utilizează cotele de contribuții în vigoare în acele perioade."
-— Codul fiscal (Legea 227/2015), art. 168 alin. (7^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (7^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul privește doar perioadele în care contribuția se datora. CASS se calculează și se reține la plată și se plătește tot până pe 25 a lunii următoare plății.

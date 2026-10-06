@@ -16,12 +16,12 @@ Practic, nu poți „salva" activitatea mutând-o pe un punct de lucru care pare
 
 ::: ghid-temei
 „(1) Sediile secundare înregistrate fiscal ale contribuabililor declarați inactivi sunt considerate inactive pe perioada în care contribuabilii care le-au înființat rămân inactivi. (2) Sediile secundare înregistrate fiscal ale contribuabililor reactivați sunt considerate active, începând cu data reactivării contribuabililor care le-au înființat."
-— OPANAF 3846/2015, art. 7^1 (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, art. 7^1 (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 ::: ghid-temei
 „Competența pentru înregistrarea fiscală a sediilor secundare ca plătitoare de salarii și venituri asimilate salariilor, potrivit legii, revine organului fiscal central în a cărui rază teritorială se află situate acestea."
-— Codul de procedură fiscală (Legea 207/2015), art. 33 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 33 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă pentru firmă și pentru punctele ei de lucru:

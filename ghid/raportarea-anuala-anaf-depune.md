@@ -14,7 +14,7 @@ Inventarierea anuală obligatorie și „raportarea anuală către ANAF" sunt lu
 
 ::: ghid-temei
 „Situațiile financiare anuale și, după caz, situațiile financiare anuale consolidate se depun la Agenția Națională de Administrare Fiscală, în conformitate cu prevederile legale în vigoare."
-— Legea contabilității nr. 82/1991 (republicată), art. 35 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991 (republicată), art. 35 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Documentele oficiale de prezentare a activității economico-financiare sunt **situațiile financiare anuale** (art. 9 alin. (1) din Legea 82/1991) — acestea, nu rezultatele brute ale inventarierii, sunt cele care se depun la ANAF.

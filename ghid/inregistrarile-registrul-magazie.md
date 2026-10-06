@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „FIȘĂ DE MAGAZIE (Cod 14-3-8) Fișa de magazie servește ca document de evidență a intrărilor, ieșirilor și stocurilor de bunuri materiale. Fișele de magazie se țin pe fiecare loc de depozitare a valorilor materiale, pe feluri de materiale, ordonate pe conturi, grupe, eventual subgrupe, sau în ordine alfabetică. [...] Înregistrările în fișele de magazie se fac document cu document."
-— OMFP 2634/2015, anexa 2, cod 14-3-8 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2, cod 14-3-8 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă din textul normei:

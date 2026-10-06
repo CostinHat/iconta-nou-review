@@ -16,7 +16,7 @@ Da, dar nu oricând și nu automat. Un SRL care a devenit plătitor de impozit p
 „(1) Impozitul reglementat de prezentul titlu este opțional.
 (2) Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1). [...]
 (2^1) Microîntreprinderile nu pot opta pentru plata impozitului pe profit în cursul anului fiscal, opțiunea putând fi exercitată începând cu anul fiscal următor, cu excepțiile prevăzute la art. 52. Opțiunea se comunică organelor fiscale competente, potrivit prevederilor Legii nr. 207/2015 privind Codul de procedură fiscală, cu modificările și completările ulterioare."
-— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (1), (2), (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (1), (2), (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul funcționează astfel:
@@ -33,6 +33,6 @@ Mecanismul funcționează astfel:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu decide și nu recomandă automat momentul din care o firmă poate reveni la impozitul micro. Aplicația are, în profilul firmei, un câmp `regim_fiscal` cu valorile „micro" sau „profit" (vezi `core/vector_fiscal_api.py`), pe baza căruia motorul fiscal stabilește ce declarații sunt datorate — D100 trimestrial pentru regimul micro, D101 anual pentru regimul profit (`core/d100.py`, `core/d101.py`). Contabilul este cel care evaluează îndeplinirea condițiilor de la art. 47 și setează manual regimul corect în profilul firmei; iConta.eu nu validează eligibilitatea pentru revenirea la sistemul micro și nu depune declarația de mențiuni către ANAF.
+La data acestui ghid, iConta.eu nu decide și nu recomandă automat momentul din care o firmă poate reveni la impozitul micro. Aplicația are, în profilul firmei, un câmp `regim_fiscal` cu valorile „micro" sau „profit" (vezi aplicația), pe baza căruia motorul fiscal stabilește ce declarații sunt datorate — D100 trimestrial pentru regimul micro, D101 anual pentru regimul profit. Contabilul este cel care evaluează îndeplinirea condițiilor de la art. 47 și setează manual regimul corect în profilul firmei; iConta.eu nu validează eligibilitatea pentru revenirea la sistemul micro și nu depune declarația de mențiuni către ANAF.
 
 [iConta.eu](/)

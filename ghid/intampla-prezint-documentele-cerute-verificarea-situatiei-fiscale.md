@@ -16,10 +16,10 @@ Miza este mare, pentru că sarcina explicației revine practic persoanei verific
 
 ::: ghid-temei
 „(3) în cazul în care se constată că declarațiile fiscale, documentele și informațiile prezentate în cadrul procedurii de verificare sunt incorecte, incomplete, false sau dacă persoana fizică verificată refuză, în cadrul aceleiași proceduri, prezentarea documentelor pentru verificare ori acestea nu sunt prezentate în termenul legal sau persoana se sustrage prin orice alte mijloace de la verificare, organul fiscal central stabilește baza de impozitare ajustată pentru impozitul pe venit și emite decizia de impunere."
-— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(10) În cazul în care persoana fizică supusă verificării nu îndeplinește obligațiile prevăzute la alin. (6) și (7) verificarea situației fiscale personale se face pe baza informațiilor și documentelor deținute sau obținute de organul fiscal central în condițiile prezentului cod. [...] (12) Ori de câte ori, pe parcursul verificării situației fiscale personale, organul fiscal central apreciază că sunt necesare noi documente sau informații relevante pentru verificare, le poate solicita persoanei fizice, în condițiile prezentului cod. În acest caz, organul fiscal central stabilește un termen rezonabil, care nu poate fi mai mic de 10 zile, pentru prezentarea documentelor și/sau a informațiilor solicitate."
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (10) și (12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (10) și (12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut:

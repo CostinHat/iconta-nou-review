@@ -14,7 +14,7 @@ Facturile cu multe linii, cote de TVA diferite sau discounturi pe linie produc u
 
 ::: ghid-temei
 „(8) Factura electronică comunicată destinatarului nu se poate returna în sistemul naţional privind factura electronică RO e-Factura. (9) În situaţia unei facturi electronice asupra căreia destinatarul are obiecţii, acesta înştiinţează emitentul facturii electronice [...]. (10) Corecţia facturii electronice comunicată destinatarului în sistemul RO e-Factura se efectuează conform art. 330 din Legea nr. 227/2015 privind Codul fiscal [...]. Factura electronică corectată se transmite în cadrul aceluiaşi sistem naţional privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 4 alin. (8)-(10) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (8)-(10) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce înseamnă asta practic pentru o eroare de rotunjire:
@@ -32,6 +32,6 @@ Ce înseamnă asta practic pentru o eroare de rotunjire:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează și transmite facturi către sistemul RO e-Factura prin motorul propriu (`core/efactura_trimitere.py`, `core/efactura_send.py`), dar corectarea unei facturi deja transmise, inclusiv pentru diferențe de rotunjire, urmează fluxul standard de emitere a unei facturi de corecție/stornare — nu există în aplicație un mecanism de „editare" a unei facturi deja comunicate prin sistem.
+La data acestui ghid, iConta.eu generează și transmite facturi către sistemul RO e-Factura prin motorul propriu, dar corectarea unei facturi deja transmise, inclusiv pentru diferențe de rotunjire, urmează fluxul standard de emitere a unei facturi de corecție/stornare — nu există în aplicație un mecanism de „editare" a unei facturi deja comunicate prin sistem.
 
 [iConta.eu](/)

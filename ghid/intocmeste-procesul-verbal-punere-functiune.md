@@ -15,10 +15,10 @@ Data punerii în funcțiune a unui mijloc fix nu e un detaliu administrativ — 
 ::: ghid-temei
 „Amortizarea fiscală se calculează după cum urmează:
 a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5)."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „2. Documentele justificative trebuie să cuprindă următoarele elemente principale: denumirea documentului; denumirea/numele și prenumele și, după caz, sediul persoanei juridice/adresa persoanei fizice care întocmește documentul; numărul documentului și data întocmirii acestuia; menționarea părților care participă la efectuarea operațiunii economico-financiare (când este cazul); conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia; datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz; numele și prenumele, precum și semnăturile persoanelor care răspund de efectuarea operațiunii economico-financiare."
-— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din cele două texte rezultă atât motivul pentru care procesul-verbal contează, cât și conținutul lui minim:
@@ -35,6 +35,6 @@ Din cele două texte rezultă atât motivul pentru care procesul-verbal conteaz�
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației o funcție care să genereze automat procesul-verbal de punere în funcțiune ca document — modulele legate de mijloace fixe (`core/mijloace_fixe_import_api.py`, `core/repo_mijloace_fixe.py`) gestionează evidența activelor și calculul amortizării pe baza datei de punere în funcțiune introduse de contabil, dar întocmirea și semnarea procesului-verbal ca document justificativ rămân un pas manual, în afara aplicației.
+La data acestui ghid, nu am putut confirma din codul aplicației o funcție care să genereze automat procesul-verbal de punere în funcțiune ca document — modulele legate de mijloace fixe gestionează evidența activelor și calculul amortizării pe baza datei de punere în funcțiune introduse de contabil, dar întocmirea și semnarea procesului-verbal ca document justificativ rămân un pas manual, în afara aplicației.
 
 [iConta.eu](/)

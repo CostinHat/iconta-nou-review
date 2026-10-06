@@ -16,7 +16,7 @@ Da — legea nu pune o limită numărului de declarații rectificative D406 pe c
 „6. În situaţia în care contribuabilul constată anumite erori în declaraţia depusă iniţial, acesta poate depune declaraţii rectificative.
 11. Pentru declaraţia informativă D406 transmisă cu erori identificate de Agenţia Naţională de Administrare Fiscală şi pentru care a fost comunicată recipisa ce le semnalează, contribuabilul retransmite integral Declaraţia informativă D406, care trebuie să cuprindă fişierul SAF-T corectat.
 12. Nu este admisă transmiterea unor corecţii parţiale prin transmiterea selectivă a înregistrărilor sau câmpurilor corectate pentru Declaraţia informativă D406 anterior transmisă şi pentru care au fost primite recipise ce semnalau erori."
-— OPANAF 1783/2021, Anexa 4, pct. 6, 11, 12 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 6, 11, 12 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Textul folosește pluralul „declarații rectificative" (pct. 6), fără plafon numeric — poți corecta de câte ori constați o eroare nouă, atâta timp cât fiecare corecție respectă regula de la pct. 11-12.

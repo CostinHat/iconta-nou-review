@@ -14,7 +14,7 @@ O firmă cu mai multe conturi bancare — lei, valută, la bănci diferite — s
 
 ::: ghid-temei
 „Conturile sintetice din planul de conturi se pot dezvolta pe conturi analitice în funcție de necesitățile impuse de anumite reglementări sau potrivit necesităților proprii ale fiecărei entități."
-— OMFP nr. 1.802/2014, pct. 593 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 593 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **Dezvoltarea pe analitice e o posibilitate, nu o obligație generală** — norma folosește "se pot dezvolta", nu "trebuie dezvoltate".
@@ -29,6 +29,6 @@ O firmă cu mai multe conturi bancare — lei, valută, la bănci diferite — s
 
 ## Ce face iConta.eu
 
-Modulul de bancă din iConta.eu (`core/banca.py`) tratează fiecare cont bancar adăugat de utilizator ca entitate separată la nivel de aplicație, cu soldul și extrasul lui propriu, indiferent dacă structura contabilă de export folosește un analitic distinct sau un cont sintetic unic pentru toate conturile — alegerea structurii de analitice pentru cont 512 rămâne o decizie a contabilului, nu una impusă de aplicație.
+Modulul de bancă din iConta.eu tratează fiecare cont bancar adăugat de utilizator ca entitate separată la nivel de aplicație, cu soldul și extrasul lui propriu, indiferent dacă structura contabilă de export folosește un analitic distinct sau un cont sintetic unic pentru toate conturile — alegerea structurii de analitice pentru cont 512 rămâne o decizie a contabilului, nu una impusă de aplicație.
 
 [iConta.eu](/)

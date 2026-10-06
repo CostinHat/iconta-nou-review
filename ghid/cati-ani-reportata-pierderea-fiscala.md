@@ -14,7 +14,7 @@ Spre deosebire de o firmă plătitoare de impozit pe profit, un PFA care înregi
 
 ::: ghid-temei
 „Pierderea fiscală anuală înregistrată pe fiecare sursă din activități independente, din drepturi de proprietate intelectuală și din activități agricole, silvicultură și piscicultură, determinată în sistem real, se reportează și se compensează de către contribuabil în limita a 70% din veniturile nete anuale, obținute din aceeași sursă de venit în următorii 5 ani fiscali consecutivi."
-— Legea nr. 227/2015 (Codul fiscal), art. 118 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 118 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula, pe scurt, pentru un PFA cu contabilitate în sistem real:

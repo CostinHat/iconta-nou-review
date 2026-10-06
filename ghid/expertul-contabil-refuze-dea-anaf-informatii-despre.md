@@ -16,10 +16,10 @@ Da. Codul de procedură fiscală (Legea 207/2015) dă expertului contabil, audit
 
 ::: ghid-temei
 „(1) Pot refuza să furnizeze informații cu privire la datele de care au luat cunoștință în exercitarea activității lor preoții, avocații, consultanții fiscali, auditorii, experții contabili, medicii și psihoterapeuții. Aceste persoane nu pot refuza furnizarea informațiilor cu privire la îndeplinirea obligațiilor prevăzute de legislația fiscală în sarcina lor, atât în calitate de contribuabili/plătitori, cât și în calitate de persoane care exercită profesia respectivă. (2) Sunt asimilate persoanelor prevăzute la alin. (1) asistenții acestora, precum și persoanele care participă la activitatea profesională a acestora. (3) Persoanele prevăzute la alin. (1), cu excepția preoților, pot furniza informații, cu acordul persoanei despre care au fost solicitate informațiile."
-— Codul de procedură fiscală (Legea 207/2015), art. 67 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 67 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. în același scop, organul fiscal are dreptul să solicite informații și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice, iar acestea au obligația de a furniza informațiile solicitate."
-— Codul de procedură fiscală (Legea 207/2015), art. 58 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 58 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

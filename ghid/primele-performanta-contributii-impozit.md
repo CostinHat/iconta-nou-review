@@ -14,7 +14,7 @@ O primă de performanță nu are un regim fiscal special sau mai blând față d
 
 ::: ghid-temei
 „s) orice alte sume sau avantaje în bani ori în natură."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. s) — categorie reziduală a veniturilor asimilate salariilor (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. s) — categorie reziduală a veniturilor asimilate salariilor (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal nu enumeră explicit „prima de performanță" printre veniturile asimilate salariilor de la art. 76 alin. (2) — dar nici nu trebuie: lista de la acest alineat se închide cu o categorie reziduală, litera s), care acoperă **orice altă sumă sau avantaj** plătit unui salariat, în bani sau în natură, în afara enumerării exprese anterioare (indemnizații ale administratorilor, sume din hotărâri judecătorești, indemnizații de neconcurență etc.).

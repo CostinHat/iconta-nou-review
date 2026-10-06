@@ -14,12 +14,12 @@ Deși ambele operațiuni au un lucru în comun — bunurile părăsesc România 
 
 ::: ghid-temei
 „(9) Livrarea intracomunitară reprezintă o livrare de bunuri, în înțelesul alin. (1), care sunt expediate sau transportate dintr-un stat membru în alt stat membru de către furnizor sau de persoana către care se efectuează livrarea ori de altă persoană în contul acestora."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Sunt scutite de taxă: a) livrările de bunuri expediate sau transportate **în afara Uniunii Europene** de către furnizor sau de altă persoană în contul său; b) livrările de bunuri expediate sau transportate în afara Uniunii Europene de către cumpărătorul care nu este stabilit în România sau de altă persoană în contul său [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 294 alin. (1) lit. a) și b) „Scutiri pentru exporturi sau alte operațiuni similare" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 294 alin. (1) lit. a) și b) „Scutiri pentru exporturi sau alte operațiuni similare" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferențele-cheie:

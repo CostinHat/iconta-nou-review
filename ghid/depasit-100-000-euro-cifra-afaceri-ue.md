@@ -16,10 +16,10 @@ Termenul curge de la data depășirii, nu de la sfârșitul trimestrului. Raport
 
 ::: ghid-temei
 „(16) Persoana impozabilă are obligația de a informa organul fiscal competent cu privire la depășirea plafonului cifrei de afaceri anuale la nivelul Uniunii Europene în termen de 15 zile lucrătoare de la data la care plafonul a fost depășit. În același timp persoana impozabilă are obligația de a raporta valoarea livrărilor de bunuri și a prestărilor de servicii menționate la alin. (13) care au fost efectuate de la începutul trimestrului calendaristic curent până la data la care plafonul cifrei de afaceri anuale la nivel de Uniune a fost depășit."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(17) Organul fiscal competent fie anulează de îndată codul individual de identificare menționat la alin. (6) , prin eliminarea sufixului «EX», în cazul în care persoana impozabilă nu mai aplică regimul special de scutire în niciunul dintre celelalte state membre, fie, în cazul în care persoana impozabilă continuă să aplice regimul de scutire în unul sau mai multe alte state membre, adaptează imediat informațiile primite"
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (17) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (17) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce faci, concret:

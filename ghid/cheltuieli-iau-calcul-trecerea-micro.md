@@ -14,7 +14,7 @@ Când o microîntreprindere depășește plafonul de venituri sau nu mai îndepl
 
 ::: ghid-temei
 „(6) Calculul și plata impozitului pe profit de către microîntreprinderile care se încadrează în prevederile alin. (1), (2), (4) și (7) se efectuează luând în considerare veniturile și cheltuielile realizate începând cu trimestrul respectiv."
-— Legea 227/2015 (Codul fiscal), art. 52 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 52 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința e directă: **doar veniturile și cheltuielile din trimestrul în care are loc trecerea, și cele din trimestrele următoare, intră în baza de calcul a impozitului pe profit.** Situațiile care declanșează trecerea, conform art. 52:
@@ -35,6 +35,6 @@ Practic, cheltuielile din trimestrele anterioare trecerii — cele în care firm
 
 ## Ce face iConta.eu
 
-iConta.eu calculează Declarația 100/101 pornind de la regimul fiscal (micro sau profit) configurat pentru firmă în vector fiscal, cu cota implicită de 1% pentru micro și 16% pentru profit (`core/d100.py`, `core/d101.py`) — regim pe care contabilul îl setează la nivel de firmă. La data acestui ghid, aplicația **nu automatizează recalcularea automată a trimestrului de tranziție** conform art. 52 alin. (6): dacă o firmă trece de la micro la profit în cursul anului, contabilul trebuie să schimbe manual regimul fiscal începând cu trimestrul corect și să se asigure că veniturile și cheltuielile introduse pentru calculul de profit pornesc de la acel trimestru, nu de la 1 ianuarie.
+iConta.eu calculează Declarația 100/101 pornind de la regimul fiscal (micro sau profit) configurat pentru firmă în vector fiscal, cu cota implicită de 1% pentru micro și 16% pentru profit — regim pe care contabilul îl setează la nivel de firmă. La data acestui ghid, aplicația **nu automatizează recalcularea automată a trimestrului de tranziție** conform art. 52 alin. (6): dacă o firmă trece de la micro la profit în cursul anului, contabilul trebuie să schimbe manual regimul fiscal începând cu trimestrul corect și să se asigure că veniturile și cheltuielile introduse pentru calculul de profit pornesc de la acel trimestru, nu de la 1 ianuarie.
 
 [iConta.eu](/)

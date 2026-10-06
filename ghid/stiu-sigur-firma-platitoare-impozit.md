@@ -13,9 +13,9 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 47 alin. (1) CF** (condiții cumulative de eligibilitate pentru regimul micro — dacă oricare nu e îndeplinită, firma e la profit): venituri sub echivalentul a 100.000 euro (lit. c), depunerea la termen a situațiilor financiare anuale, condiția salariatului (lit. g), condiția „o singură microîntreprindere" la asociați cu peste 25% la firme legate. Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6095 și următoarele.
+**Art. 47 alin. (1) CF** (condiții cumulative de eligibilitate pentru regimul micro — dacă oricare nu e îndeplinită, firma e la profit): venituri sub echivalentul a 100.000 euro (lit. c), depunerea la termen a situațiilor financiare anuale, condiția salariatului (lit. g), condiția „o singură microîntreprindere" la asociați cu peste 25% la firme legate. Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282) și următoarele.
 
-**Art. 52 alin. (1) CF**: obligația de trecere la profit „începând cu trimestrul în care s-a depășit" plafonul de venituri, dacă depășirea are loc în cursul anului. Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6414.
+**Art. 52 alin. (1) CF**: obligația de trecere la profit „începând cu trimestrul în care s-a depășit" plafonul de venituri, dacă depășirea are loc în cursul anului. Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Prima verificare, imediată: câmpul „Regim fiscal" din ecranul Date firmă → Vector fiscal, care poate fi „micro" sau „profit". Dacă e gol, vectorul nu e completat (`completat=False`), iar declarațiile dependente de regim apar gri în semafor, nu implicit „micro" sau „profit" — necompletarea nu are o valoare implicită tacită.

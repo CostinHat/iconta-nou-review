@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Plătitorii de venituri cu regim de reținere la sursă a impozitelor [...] au obligația să depună o declarație privind calcularea și reținerea impozitului pentru fiecare beneficiar de venit la organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat."
-— Codul fiscal (Legea 227/2015), art. 231 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 231 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Venituri plătite unor nerezidenți** (dividende, dobânzi, redevențe, servicii de management/consultanță etc., conform art. 223 alin. (1) CF), pentru care firma română reține impozit la sursă, se declară în **D207**, anual, cu termenul de la art. 231 alin. (1).

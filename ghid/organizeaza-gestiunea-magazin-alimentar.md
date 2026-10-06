@@ -33,7 +33,7 @@ Un magazin alimentar e exact tipul de activitate pentru care legea a gândit met
 
 ## Ce face iConta.eu
 
-Pentru un magazin alimentar, motorul relevant e cel de gestiune global-valorică (`core/stocuri.py` + `core/stocuri_api.py`): `nir_gv` pentru recepții (cu cost, adaos, TVA neexigibilă separate pe fiecare linie), `descarcare_gv`/`descarca_luna` pentru descărcarea lunară automată, propusă ca ciornă pentru validare.
+Pentru un magazin alimentar, motorul relevant e cel de gestiune global-valorică: `nir_gv` pentru recepții (cu cost, adaos, TVA neexigibilă separate pe fiecare linie), `descarcare_gv`/`descarca_luna` pentru descărcarea lunară automată, propusă ca ciornă pentru validare.
 
 Nu am găsit, în `FUNCTIONALITATI.csv` sau în codul verificat, nicio funcționalitate sau particularizare de cod specifică sectorului alimentar (cote speciale, regim distinct de gestiune) — orice specificitate fiscală a comerțului alimentar (dincolo de cota de TVA aplicată la vânzare, calculată separat) nu e implementată ca atare în motorul de stocuri; gestiunea unui magazin alimentar folosește mecanismul general F088, la fel ca orice alt comerț cu amănuntul cu articole numeroase.
 

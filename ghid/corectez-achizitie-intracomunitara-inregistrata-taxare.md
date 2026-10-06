@@ -28,7 +28,7 @@ Corecția, în linii mari:
 3. Reflectă corect suma în decont — pentru achiziții intracomunitare de **bunuri**, rândurile dedicate din D300 sunt distincte de cele folosite pentru taxarea inversă internă (art. 331): nu se introduc pe aceleași rânduri de decont, ci pe cele specifice achizițiilor intracomunitare.
 4. Verifică dreptul de deducere al taxei autolichidate — se aplică în limitele și condițiile obișnuite de deducere (art. 297-301 din Codul fiscal).
 
-**Notă**: motorul de taxare inversă verificat pentru acest ghid (`core/taxare_inversa.py`) acoperă exclusiv categoriile din art. 331 (operațiuni interne) — el nu e sursa de comportament pentru achizițiile intracomunitare de bunuri. Codul specific acestora, din modulul dedicat operațiunilor intracomunitare, nu a fost examinat linie cu linie pentru acest ghid; dacă ai nevoie de detalii tehnice suplimentare despre exact cum se completează rândurile respective în aplicație, verifică direct ecranul de operațiuni intracomunitare.
+**Notă**: motorul de taxare inversă verificat pentru acest ghid acoperă exclusiv categoriile din art. 331 (operațiuni interne) — el nu e sursa de comportament pentru achizițiile intracomunitare de bunuri. Codul specific acestora, din modulul dedicat operațiunilor intracomunitare, nu a fost examinat linie cu linie pentru acest ghid; dacă ai nevoie de detalii tehnice suplimentare despre exact cum se completează rândurile respective în aplicație, verifică direct ecranul de operațiuni intracomunitare.
 
 ## Ce se greșește în practică
 

@@ -14,7 +14,7 @@ O firmă de evenimente — organizator de conferințe, agenție de nunți, firm�
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), exigibilitatea taxei intervine: [...] b) la data la care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator. Avansurile reprezintă plata parțială sau integrală a contravalorii bunurilor și serviciilor, efectuată înainte de data livrării ori prestării acestora;"
-— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula se aplică oricărei firme de evenimente — organizator de conferințe, firmă de catering, agenție de nunți — nu doar unui tip particular de eveniment.
@@ -30,6 +30,6 @@ O firmă de evenimente — organizator de conferințe, agenție de nunți, firm�
 
 ## Ce face iConta.eu
 
-iConta.eu tratează avansurile prin modulul generic `core/avansuri.py`, cu funcțiile `nota_avans_incasat` (avansul facturat clientului: `4111 = 419 + 4427`) și `nota_avans_platit` (avansul plătit unui furnizor/subcontractor: `409x + 4426 = 401`, pe destinații — stocuri, servicii, imobilizări), plus funcțiile de regularizare la factura finală (`nota_regularizare_avans_incasat`/`nota_regularizare_avans_platit`) — exact mecanica impusă de art. 282 alin. (2) lit. b) de mai sus. Modulul e complet generic, valabil pentru orice tip de avans din orice activitate; nu există în cod o monografie sau un flux dedicat special firmelor de evenimente (subcontractare pe mai multe niveluri, garanții returnabile, facturare eșalonată pe etape ale evenimentului) — contabilul aplică motorul general de avansuri, tranzacție cu tranzacție, cu aceeași disciplină ca la orice altă activitate.
+iConta.eu tratează avansurile prin modulul generic aplicația, cu funcțiile `nota_avans_incasat` (avansul facturat clientului: `4111 = 419 + 4427`) și `nota_avans_platit` (avansul plătit unui furnizor/subcontractor: `409x + 4426 = 401`, pe destinații — stocuri, servicii, imobilizări), plus funcțiile de regularizare la factura finală (`nota_regularizare_avans_incasat`/`nota_regularizare_avans_platit`) — exact mecanica impusă de art. 282 alin. (2) lit. b) de mai sus. Modulul e complet generic, valabil pentru orice tip de avans din orice activitate; nu există în cod o monografie sau un flux dedicat special firmelor de evenimente (subcontractare pe mai multe niveluri, garanții returnabile, facturare eșalonată pe etape ale evenimentului) — contabilul aplică motorul general de avansuri, tranzacție cu tranzacție, cu aceeași disciplină ca la orice altă activitate.
 
 [iConta.eu](/)

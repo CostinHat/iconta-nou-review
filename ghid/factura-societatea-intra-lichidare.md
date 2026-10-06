@@ -14,7 +14,7 @@ Deschiderea procedurii de lichidare nu scoate firma din sistemul RO e-Factura. C
 
 ::: ghid-temei
 „(1^1) Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura și factura electronică în România [...], cu modificările și completările ulterioare."
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text pentru o firmă în lichidare:
@@ -32,6 +32,6 @@ Ce rezultă din text pentru o firmă în lichidare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are module dedicate atât pentru transmiterea facturilor prin RO e-Factura (`core/efactura_send.py`, `core/efactura_trimitere.py`), cât și pentru tratamentul fiscal specific lichidării — de exemplu calculul cotei de impozit pe câștigul din lichidare la asociatul persoană fizică (`core/lichidare.py`, cota de 10% conform art. 97 alin. (5) din Codul fiscal). Aplicația **nu suspendă și nu oprește automat fluxul de e-Factura** atunci când o firmă e marcată ca aflându-se în lichidare — facturile continuă să fie generate și transmise prin același flux ca înainte, atâta vreme cât firma rămâne activă și înregistrată, iar utilizatorul are acces la conectorul SPV configurat.
+La data acestui ghid, iConta.eu are module dedicate atât pentru transmiterea facturilor prin RO e-Factura, cât și pentru tratamentul fiscal specific lichidării — de exemplu calculul cotei de impozit pe câștigul din lichidare la asociatul persoană fizică (cota de 10% conform art. 97 alin. (5) din Codul fiscal). Aplicația **nu suspendă și nu oprește automat fluxul de e-Factura** atunci când o firmă e marcată ca aflându-se în lichidare — facturile continuă să fie generate și transmise prin același flux ca înainte, atâta vreme cât firma rămâne activă și înregistrată, iar utilizatorul are acces la conectorul SPV configurat.
 
 [iConta.eu](/)

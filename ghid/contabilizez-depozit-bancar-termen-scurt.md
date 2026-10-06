@@ -14,7 +14,7 @@ Un depozit bancar pe termen scurt e o investiție pe termen scurt, nu o simplă 
 
 ::: ghid-temei
 „La intrarea în entitate, investițiile pe termen scurt se evaluează la costul de achiziție sau la valoarea stabilită potrivit contractelor. Depozitele bancare pe termen scurt în valută se înregistrează la constituire la cursul de schimb valutar comunicat de Banca Națională a României, de la data operațiunii de constituire. [...] Lichidarea depozitelor constituite în valută se efectuează la cursul de schimb valutar comunicat de Banca Națională a României, de la data operațiunii de lichidare. Diferențele de curs valutar între cursul de la data constituirii sau cursul la care sunt înregistrate în contabilitate și cursul Băncii Naționale a României de la data lichidării depozitelor bancare se înregistrează la venituri sau cheltuieli din diferențe de curs valutar, după caz."
-— OMFP 1802/2014, reglementări contabile, pct. 295 alin. (1)-(2) și pct. 296 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementări contabile, pct. 295 alin. (1)-(2) și pct. 296 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă practic pentru evidența unui asemenea depozit:

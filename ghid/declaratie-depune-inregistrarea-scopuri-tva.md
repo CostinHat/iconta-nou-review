@@ -14,10 +14,10 @@ Vechile formulare de înregistrare fiscală pe hârtie/PDF au fost înlocuite, p
 
 ::: ghid-temei
 „(1) Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: [...]"
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(3) Organele fiscale competente vor înregistra în scopuri de TVA, conform prezentului articol, orice persoană care solicită înregistrarea, conform alin. (1)-(2^1)."
-— Legea 227/2015 (Codul fiscal), art. 317 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 317 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 În 2026, procedural, situația e următoarea:

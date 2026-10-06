@@ -15,7 +15,7 @@ O firmă românească poate obține venituri dintr-un stat cu care România are 
 ::: ghid-temei
 „Evitarea dublei impuneri
 (1) Impozitul plătit unui stat străin se scade din impozitul pe profit, dacă se aplică prevederile convenției de evitare a dublei impuneri încheiate între România și statul străin."
-— Legea 227/2015 (Codul fiscal), art. 39 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 39 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul de mai sus e formulat expres pentru **impozitul pe profit** (Titlul II al Codului fiscal), nu pentru impozitul pe veniturile microîntreprinderilor:

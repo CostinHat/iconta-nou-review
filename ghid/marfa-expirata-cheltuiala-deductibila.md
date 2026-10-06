@@ -14,7 +14,7 @@ Marfa care expiră pe raft sau în depozit e o realitate a oricărui comerciant,
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice [...]." [alin. (1)] „Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii [...]."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) și alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) și alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula generală de la alin. (1) — cheltuiala e deductibilă dacă e făcută „în scopul desfășurării activității economice" — nu se aplică fără rezerve pierderilor din marfă expirată: art. 25 alin. (3) lit. d) le încadrează explicit la **cheltuieli cu deductibilitate limitată**.

@@ -16,10 +16,10 @@ Pentru un cabinet de contabilitate, situația apare des la clienții din constru
 
 ::: ghid-temei
 „(5) Fără a aduce atingere altor prevederi ale prezentei legi, atunci când în același loc de muncă își desfășoară activitatea lucrători din mai multe întreprinderi și/sau unități, angajatorii acestora au următoarele obligații: a) sa coopereze în vederea implementării prevederilor privind securitatea, sănătatea și igiena în munca, luând în considerare natura activităților; [...] b) să își coordoneze acțiunile în vederea protecției lucrătorilor și prevenirii riscurilor profesionale, luând în considerare natura activităților; [...] c) să se informeze reciproc despre riscurile profesionale; [...] d) sa informeze lucrătorii și/sau reprezentanții acestora despre riscurile profesionale."
-— Legea 319/2006, art. 7 alin. (5) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 7 alin. (5) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(3) Angajatorul se va asigura ca lucrătorii din întreprinderi și/sau unități din exterior, care desfășoară activități în întreprinderea și/sau unitatea proprie, au primit instrucțiuni adecvate referitoare la riscurile legate de securitate și sănătate în munca, pe durata desfășurării activităților."
-— Legea 319/2006, art. 20 alin. (3) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 20 alin. (3) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Pe scurt, ce are de făcut fiecare firmă:

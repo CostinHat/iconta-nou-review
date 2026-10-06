@@ -15,7 +15,7 @@ Comunicarea electronică a actelor fiscale nu e doar o comoditate — are efecte
 ::: ghid-temei
 „(15) Actul administrativ fiscal emis în formă electronică se comunică prin mijloace electronice de transmitere la distanță potrivit alin. (16) sau (17), după caz, iar acesta se consideră comunicat la data punerii la dispoziția contribuabilului/plătitorului prin aceste mijloace.
 (16) în cazul actelor administrative fiscale emise de către organul fiscal central, mijloacele electronice de transmitere la distanță, procedura de comunicare a actelor administrative fiscale prin mijloace electronice de transmitere la distanță, precum și condițiile în care aceasta se realizează se aprobă prin ordin al președintelui A.N.A.F., cu avizul Autorității pentru Digitalizarea României."
-— Legea 207/2015, art. 47 alin. (15)-(16) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 47 alin. (15)-(16) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic pentru un contribuabil înregistrat în SPV:

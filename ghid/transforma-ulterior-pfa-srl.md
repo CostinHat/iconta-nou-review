@@ -14,7 +14,7 @@ Spre deosebire de transformările reglementate între tipuri de societăți come
 
 ::: ghid-temei
 „Capitalul social se poate mări prin emisiunea de acțiuni noi sau prin majorarea valorii nominale a acțiunilor existente în schimbul unor noi aporturi în numerar și/sau în natură."
-— Legea nr. 31/1990, art. 210 alin. (1), Titlul IV „Modificarea actului constitutiv" (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 210 alin. (1), Titlul IV „Modificarea actului constitutiv" (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 **Limitare de temei:** sursele disponibile nu conțin actul normativ care reglementează în mod direct statutul juridic al PFA (OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale). Acest ghid nu poate cita, așadar, un temei legal specific pentru „transformarea PFA în SRL", pentru că sursele confirmate nu îl includ; redirecționăm către ce este verificat, respectiv mecanismul general de constituire/majorare de capital al unui SRL prin aport, din Legea 31/1990.

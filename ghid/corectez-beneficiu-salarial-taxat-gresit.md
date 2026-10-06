@@ -14,7 +14,7 @@ Un beneficiu salarial (bonus, tichet, avantaj în natură) impozitat greșit —
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă. (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă acest text pentru un beneficiu salarial taxat greșit:

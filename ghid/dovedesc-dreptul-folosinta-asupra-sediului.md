@@ -14,7 +14,7 @@ Dovada dreptului de folosință asupra sediului social nu e o formalitate cerut�
 
 ::: ghid-temei
 „Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății în următoarele cazuri, la cererea oricărei persoane interesate sau din oficiu, în cazurile în care: a) nu mai sunt îndeplinite condițiile referitoare la sediul social, ca urmare a expirării duratei actului care atestă dreptul de folosință asupra spațiului cu destinație de sediu social ori transferului dreptului de folosință sau proprietate asupra spațiului cu destinație de sediu social [...]"
-— Legea 31/1990 privind societățile, art. 237^2 alin. (1) lit. a) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 237^2 alin. (1) lit. a) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din acest text pentru administrarea curentă a firmei:

@@ -16,19 +16,19 @@ Diferența e mare: la persoanele juridice, minimul amenzilor pentru faptele prin
 
 ::: ghid-temei
 „(1) Contravenientul poate achita, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, jumătate din minimul amenzii prevăzute de actul normativ, agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— OG 2/2001, art. 28 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „Prin derogare de la prevederile art. 16 alin. (1) și art. 28 alin. (1) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor […] contravenienții sancționați în baza prevederilor […] Ordonanței de urgență a Guvernului nr. 41/2022 pentru instituirea Sistemului național privind monitorizarea transporturilor rutiere de bunuri cu risc fiscal ridicat RO e-Transport […] nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ."
-— Legea 296/2023, art. LVIII (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LVIII (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 „Plata amenzilor contravenționale aplicate anterior intrării în vigoare a prezentei legi în temeiul actelor normative prevăzute la art. LVIII"
-— Legea 296/2023, art. LXIX (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LXIX (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 ::: ghid-temei
 „(2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate."
-— OUG 41/2022, art. 13^1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce înseamnă concret:

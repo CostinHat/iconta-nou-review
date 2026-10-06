@@ -16,10 +16,10 @@ Pentru contabil, lista contează din două motive. Arată care clienți vor apă
 
 ::: ghid-temei
 „8. Activitate Relevantă înseamnă o activitate realizată în schimbul unei Contraprestații și constă în oricare dintre următoarele: a)închirierea de bunuri imobile, inclusiv rezidențiale și comerciale, precum și de orice alte bunuri imobile și spații de parcare; b)un Serviciu Personal; c)vânzarea de Bunuri; d)închirierea oricărui mijloc de transport. Termenul Activitate Relevantă nu include o activitate realizată de un Vânzător care acționează în calitate de angajat al Operatorului de platformă sau de o Entitate afiliată Operatorului de platformă."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 8 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 8 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „11. Serviciu Personal înseamnă un serviciu care implică o muncă pe bază de intervale de timp sau sarcini, prestată de una sau mai multe persoane care acționează fie independent, fie în numele unei Entități, și realizată la cererea unui utilizator, fie online, fie în mod fizic, offline, după ce a fost facilitată prin intermediul unei Platforme."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 11 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 11 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se citesc cele patru categorii:

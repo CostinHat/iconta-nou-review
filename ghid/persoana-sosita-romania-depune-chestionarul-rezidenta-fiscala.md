@@ -16,15 +16,15 @@ Chestionarul pentru stabilirea rezidenței fiscale la sosirea în România se de
 
 ::: ghid-temei
 „Are obligația completării formularului "Chestionar pentru stabilirea rezidenței fiscale a persoanei fizice la sosirea în România" persoana fizică sosită în România care are o ședere în statul român o perioadă sau mai multe perioade care depășesc în total 183 de zile, pe parcursul oricărui interval de 12 luni consecutive, care se încheie în anul calendaristic vizat."
-— OMFP 1099/2016, art. 2 (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 2 (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 
 „Persoana fizică nerezidentă trebuie să înregistreze la organul fiscal central competent formularul prevăzut la art. 1 lit. a) , în 30 de zile de la împlinirea termenului de 183 de zile de prezență în România."
-— OMFP 1099/2016, art. 14 (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 14 (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 ::: ghid-temei
 „Persoanele fizice care sosesc în România și au o ședere în statul român pe o perioadă sau mai multe perioade ce depășesc în total 183 de zile, pe parcursul oricărui interval de 12 luni consecutive, care se încheie în anul calendaristic vizat au obligația completării formularelor prevăzute la alin. (7) , la termenele stabilite prin norme."
-— Codul fiscal (Legea 227/2015), art. 230 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 230 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie știut:

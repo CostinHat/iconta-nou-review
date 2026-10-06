@@ -16,10 +16,10 @@ Pentru clienții mici ai cabinetului, de cele mai multe ori exact asta e situaț
 
 ::: ghid-temei
 „(1) Fără a aduce atingere obligațiilor prevăzute la art. 6 și 7 , angajatorul desemnează unul sau mai mulți lucrători pentru a se ocupa de activitățile de protecție și de activitățile de prevenire a riscurilor profesionale din întreprindere și/sau unitate, denumiți în continuare lucrători desemnați."
-— Legea 319/2006, art. 8 alin. (1) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 8 alin. (1) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(4) Dacă în întreprindere și/sau unitate nu se pot organiza activitățile de prevenire și cele de protecție din lipsa personalului competent, angajatorul trebuie să recurgă la servicii externe."
-— Legea 319/2006, art. 8 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 8 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Cum se citește regula:

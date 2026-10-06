@@ -15,7 +15,7 @@ Pentru anumite activități, un PFA nou-înființat poate alege să fie impus pe
 ::: ghid-temei
 „(1) În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității.
 [Articolul 69^1] (1) Contribuabilii care obțin venituri din activități independente, impuși pe bază de norme de venit, au dreptul să opteze pentru determinarea venitului net în sistem real, potrivit art. 68."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) și art. 69^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) și art. 69^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, concret, alegerea:

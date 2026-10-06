@@ -14,10 +14,10 @@ Inspecția fiscală se desfășoară, de regulă, la sediul organului fiscal —
 
 ::: ghid-temei
 „(1) Inspecția fiscală se desfășoară, de regulă, la sediul organului de inspecție fiscală. (2) Din inițiativa organului de inspecție fiscală sau la solicitarea motivată a contribuabilului/plătitorului, inspecția fiscală se poate desfășura în spațiile de lucru ale contribuabilului/plătitorului. [...] (3) Indiferent de locul unde se desfășoară inspecția fiscală, organul de inspecție fiscală are dreptul să inspecteze locurile în care se desfășoară activitatea, sau unde se află bunurile impozabile, în prezența contribuabilului/plătitorului ori a unei persoane desemnate de acesta."
-— Legea 207/2015 (Codul de procedură fiscală), art. 125 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 125 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) La începerea inspecției fiscale, contribuabilul/plătitorul trebuie informat că poate numi persoane care să dea informații. [...] (3) Pe toată durata exercitării inspecției fiscale contribuabilul/plătitorul are dreptul de a beneficia de asistență de specialitate sau juridică."
-— Legea 207/2015, art. 124 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 124 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret din aceste texte:

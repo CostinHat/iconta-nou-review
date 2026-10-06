@@ -16,15 +16,15 @@ Practic, firma nu poate „câștiga timp" prin plângere. Dacă vrea să plăte
 
 ::: ghid-temei
 „Prin derogare de la art. 32 alin. (3) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin Legea nr. 180/2002 , cu modificările și completările ulterioare, plângerea nu suspendă executarea în cazul contravențiilor prevăzute la art. 10 lit. c) , d) , e) și cc) ."
-— OUG 28/1999, art. 12 alin. (4) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 12 alin. (4) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 ::: ghid-temei
 „(3) Plângerea suspendă executarea."
-— OG 2/2001, art. 32 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 32 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Împotriva procesului-verbal de constatare a contravenției și de aplicare a sancțiunii se poate face plângere în termen de 15 zile de la data înmânării sau comunicării acestuia."
-— OG 2/2001, art. 31 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Cele patru fapte pentru care plângerea nu suspendă executarea (art. 10 din OUG 28/1999):

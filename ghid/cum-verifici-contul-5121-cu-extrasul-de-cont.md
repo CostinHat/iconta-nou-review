@@ -31,7 +31,7 @@ Doar după ce toate liniile din extras au un status final și au fost contate, a
 
 ## Ce face iConta.eu
 
-`core/reconciliere_api.py` persistă liniile de extras importate și rulează motorul de matching (`potriveste_extras`) pe fiecare linie, calculând totodată soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Listarea liniilor și a facturilor deschise (`lista`, `facturi_deschise_detalii`) oferă doar formatarea necesară verificării — fără logică de matching suplimentară.
+Aplicația persistă liniile de extras importate și rulează motorul de matching (`potriveste_extras`) pe fiecare linie, calculând totodată soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Listarea liniilor și a facturilor deschise (`lista`, `facturi_deschise_detalii`) oferă doar formatarea necesară verificării — fără logică de matching suplimentară.
 
 Confruntarea finală de sold — 5121/5124 din contabilitate versus soldul de închidere din extrasul bancar — nu e generată automat ca raport unic în acest motor; rămâne pasul de verificare manuală descris mai sus, pe fișa de cont completă.
 

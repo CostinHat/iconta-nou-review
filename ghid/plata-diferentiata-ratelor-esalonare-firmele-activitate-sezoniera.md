@@ -16,13 +16,13 @@ Pentru un hotel pe litoral sau o firmă agricolă, un grafic cu rate egale poate
 
 ::: ghid-temei
 „În cazuri justificate, în funcție de specificul activității contribuabilului și de capacitatea financiară de plată a acestuia pe parcursul unui an, la cererea debitorului, organul fiscal central poate aproba plata diferențiată a ratelor de eșalonare."
-— Codul de procedură fiscală (Legea 207/2015), art. 192 alin. (2^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 192 alin. (2^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Numărul de luni în care debitorul poate plăti rate mai mici este: a) de maxim 6 luni într-un an calendaristic sau, după caz, fracție de an, în cazul debitorilor care desfășoară activități cu caracter sezonier;"
-— OPANAF 90/2016, Anexa nr. 1, modelul cererii, secțiunea D, nota *6 (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, modelul cererii, secțiunea D, nota *6 (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 
 „Procentul nu poate fi mai mic de: a) 10% din cuantumul ratei de eșalonare la plată stabilită potrivit prevederilor art.7 alin.(13) din Anexa nr. 2 [...], în cazul debitorilor care desfășoară activități cu caracter sezonier;"
-— OPANAF 90/2016, Anexa nr. 1, modelul cererii, secțiunea D, nota *7 (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, modelul cererii, secțiunea D, nota *7 (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 :::
 
 Ce trebuie știut:

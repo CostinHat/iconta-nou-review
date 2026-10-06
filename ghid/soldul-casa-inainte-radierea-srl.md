@@ -14,10 +14,10 @@ Firma nu poate fi radiată cu bani în casă sau în cont — orice sumă rămas
 
 ::: ghid-temei
 „(5) Venitul impozabil obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice sau din reducerea capitalului social, potrivit legii, care nu reprezintă distribuții în bani sau în natură ca urmare a restituirii cotei-părți din aporturi se impun cu o cotă de 10%, impozitul fiind final. Obligația calculării, reținerii și plății impozitului revine persoanei juridice. Impozitul calculat și reținut la sursă în cazul lichidării persoanei juridice se plătește până la data depunerii situației financiare finale la oficiul registrului comerțului, întocmită de lichidatori [...]."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Lichidatorii nu pot plăti asociaților nici o sumă în contul părților ce li s-ar cuveni din lichidare, înaintea achitării creditorilor societății."
-— Legea 31/1990, art. 256 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 256 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din cele două texte rezultă traseul obligatoriu al oricărei sume rămase în casierie sau în conturi la finalul lichidării:

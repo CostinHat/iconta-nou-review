@@ -16,13 +16,13 @@ Diferența contează la firmele mari, cu politici de bonusare a clienților. Fă
 
 ::: ghid-temei
 „a) indicatorul «venituri totale (VT)» prevăzut la art. 18^1 alin. (3) din Codul fiscal reprezintă totalul veniturilor înregistrate potrivit reglementărilor contabile aplicabile, din care au fost scăzute reducerile comerciale acordate ulterior facturării; în același mod se determină și indicatorul «venituri totale (VT)» prevăzut la art. 18^3 alin. (2) din Codul fiscal;"
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Impozitul minim pe cifra de afaceri se determină astfel: IMCA = 1% x (VT – Vs – I – A), unde indicatorii au următoarea semnificație: IMCA - impozit minim pe cifra de afaceri, determinat cumulat de la începutul anului fiscal/anului fiscal modificat până la sfârșitul trimestrului/anului de calcul;"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru anul fiscal 2026/anul fiscal modificat care începe în anul 2026, cota de impozit din cadrul formulei prevăzute la alin. (3) este 0,5%."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

@@ -16,7 +16,7 @@ Precizare de temei, înainte de conținut: „lichiditatea" și „solvabilitate
 „491. - (1) În măsura în care este necesar pentru a înțelege dezvoltarea, performanța sau poziția entității, analiza cuprinde indicatori-cheie de performanță financiari și, atunci când este cazul, nefinanciari relevanți pentru activitățile specifice [...]
 (2) Raportul administratorilor oferă, de asemenea, informații despre: [...]
 e) în ceea ce privește utilizarea de către entitate a instrumentelor financiare, dacă sunt semnificative pentru evaluarea activelor sale, a datoriilor, a poziției financiare și a profitului sau pierderii: [...] expunerea entității la riscul de preț, riscul de credit, riscul de lichiditate și la riscul fluxului de numerar."
-— OMFP 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 491 alin. (1), (2) lit. e) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 491 alin. (1), (2) lit. e) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Dat fiind că norma nu definește termenii, distincția de mai jos e prezentată ca **practică uzuală de analiză financiară**, nu ca definiție legală:

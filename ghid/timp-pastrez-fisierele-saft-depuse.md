@@ -14,7 +14,7 @@ Fiecare lună sau trimestru, firma generează și depune un fișier SAF-T (decla
 
 ::: ghid-temei
 „Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la art. 1 timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii."
-— Legea 82/1991, art. 25 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991, art. 25 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Trebuie spus clar: în actele care reglementează direct SAF-T verificate pentru acest ghid — Ordinul ANAF 1783/2021 și Ordinul ANAF 407/2025, ambele privind Declarația informativă D406 — **nu am găsit un termen explicit de păstrare a fișierului SAF-T** ca atare. Redirecționăm onest spre cel mai apropiat temei real disponibil, cu limita clar menționată:

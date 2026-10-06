@@ -14,7 +14,7 @@ Capitalul social nu poate fi „retras" liber, oricând, de către asociați —
 
 ::: ghid-temei
 „(1) Capitalul social poate fi redus prin: a) micșorarea numărului de acțiuni sau părți sociale; b) reducerea valorii nominale a acțiunilor sau a părților sociale; c) dobândirea propriilor acțiuni, urmată de anularea lor. (2) Capitalul social mai poate fi redus, atunci când reducerea nu este motivată de pierderi, prin: a) scutirea totală sau parțială a asociaților de vărsămintele datorate; b) restituirea către acționari a unei cote-părți din aporturi, proporțională cu reducerea capitalului social și calculată egal pentru fiecare acțiune sau parte socială; c) alte procedee prevăzute de lege."
-— Legea nr. 31/1990 a societăților, art. 207 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 a societăților, art. 207 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Reducerea capitalului social **nu se poate face imediat**: potrivit art. 208 alin. (1), ea poate fi efectuată numai după trecerea a **două luni** de la publicarea hotărârii în Monitorul Oficial, Partea a IV-a.
@@ -31,6 +31,6 @@ Capitalul social nu poate fi „retras" liber, oricând, de către asociați —
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu are un motor pentru **lichidarea/radierea societății** (`core/lichidare.py`), care tratează restituirea capitalului social către asociați ca etapă a partajului de lichidare (înregistrarea contabilă 1012 = 456, neimpozabilă la asociat, distinctă de impozitarea câștigului din lichidare). Acest modul acoperă însă restituirea capitalului **la închiderea societății**, nu o reducere de capital social pe o firmă activă, în funcțiune — pentru acest din urmă caz, iConta.eu nu are, la acest moment, un flux dedicat, iar procedura de la art. 207-208 rămâne una gestionată direct de contabil/asociați, în afara aplicației.
+Din verificarea codului sursă, iConta.eu are un motor pentru **lichidarea/radierea societății**, care tratează restituirea capitalului social către asociați ca etapă a partajului de lichidare (înregistrarea contabilă 1012 = 456, neimpozabilă la asociat, distinctă de impozitarea câștigului din lichidare). Acest modul acoperă însă restituirea capitalului **la închiderea societății**, nu o reducere de capital social pe o firmă activă, în funcțiune — pentru acest din urmă caz, iConta.eu nu are, la acest moment, un flux dedicat, iar procedura de la art. 207-208 rămâne una gestionată direct de contabil/asociați, în afara aplicației.
 
 [iConta.eu](/)

@@ -16,10 +16,10 @@ Ghidul arată cum se verifică fiecare condiție înainte de depunere. Pe o decl
 
 ::: ghid-temei
 „b) administratorii, în cazul societăților pe acțiuni sau în comandită pe acțiuni, și asociații majoritari sau, după caz, asociatul unic și/sau administratorii, în cazul celorlalte societăți, altele decât societățile pe acțiuni sau în comandită pe acțiuni, nu au fapte înscrise în cazierul fiscal; c) nu se află în inactivitate temporară înscrisă la registrul comerțului sau în registre ținute de instanțe judecătorești competente; d) nu are obligații fiscale restante mai mari de 12 luni; e) nu a înregistrat, conform reglementărilor contabile, pierderi din exploatare în ultimul exercițiu financiar închis; f) în cazul persoanelor juridice, să fi fost înființate cu minimum 12 luni anterior depunerii cererii."
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (3) lit. b)-f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (3) lit. b)-f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care, ulterior emiterii deciziei de eșalonare la plată, organul fiscal constată că informațiile cuprinse în documentele anexate la cererea depusă potrivit alin. (2) lit. a) nu corespund realității, organul fiscal emite decizia de anulare a deciziei de eșalonare la plată și a deciziei de amânare la plată a penalităților de întârziere"
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum verifici fiecare condiție:

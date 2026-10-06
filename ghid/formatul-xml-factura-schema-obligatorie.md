@@ -15,7 +15,7 @@ Facturile transmise prin sistemul RO e-Factura nu pot fi în orice format XML �
 ```
 ::: ghid-temei
 „Se aprobă Specificațiile tehnice și de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - și regulile operaționale specifice aplicabile la nivel național, prevăzute [în anexă]."
-— Ordinul ministrului finanțelor nr. 1.366/2021 pentru aprobarea Specificațiilor tehnice și de utilizare a elementelor de bază ale facturii electronice - RO_CIUS, art. 1 (sursă: anaf_surse/ordin_1366_2021.html)
+— Ordinul ministrului finanțelor nr. 1.366/2021 pentru aprobarea Specificațiilor tehnice și de utilizare a elementelor de bază ale facturii electronice - RO_CIUS, art. 1 (sursă: [OMF nr. 1366/2021 pentru aprobarea Specificațiilor tehnice RO_CIUS (factura electronică)](https://legislatie.just.ro/Public/DetaliiDocument/248303))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce trebuie reținut din acest act și din contextul lui legal:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/efactura_send.py`, `core/efactura_trimitere.py` și `core/efactura_import.py` implementează generarea, trimiterea și importul facturilor electronice către/de la sistemul RO e-Factura, cu teste dedicate de validare a structurii (`core/test_efactura_send.py`, `core/test_a10_efactura_baza_linie.py`) — confirmat direct din cod. Structura XML generată e verificată prin rulările proprii ale proiectului împotriva regulilor sistemului ANAF, conform disciplinei de lucru care cere probă funcțională reală, nu doar verificare de sintaxă, la orice schimbare care afectează generarea declarațiilor/documentelor fiscale.
+La data acestui ghid, aplicația implementează generarea, trimiterea și importul facturilor electronice către/de la sistemul RO e-Factura, cu teste dedicate de validare a structurii — confirmat direct din cod. Structura XML generată e verificată prin rulările proprii ale proiectului împotriva regulilor sistemului ANAF, conform disciplinei de lucru care cere probă funcțională reală, nu doar verificare de sintaxă, la orice schimbare care afectează generarea declarațiilor/documentelor fiscale.
 
 [iConta.eu](/)

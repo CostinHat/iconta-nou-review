@@ -16,15 +16,15 @@ Pentru cabinet, comunicarea către asigurător contează direct. Indemnizația d
 
 ::: ghid-temei
 „(1) Angajatorul are obligația sa comunice evenimentele, de îndată, după cum urmează: a) inspectoratelor teritoriale de muncă, toate eveni-mentele asa cum sunt definite la art. 5 lit. f) ; ... b) asiguratorului, potrivit Legii nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale, cu modificările și completările ulterioare, evenimentele urmate de incapacitate temporară de muncă, invaliditate sau deces, la confirmarea acestora; ... c) organelor de urmărire penală, după caz."
-— Legea 319/2006, art. 27 alin. (1) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 27 alin. (1) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „(1) Angajatorii au obligația de a comunica asigurătorului accidentele soldate cu incapacitate de muncă sau cu decesul asiguraților. (2) Comunicarea trebuie realizată de îndată ce angajatorul a luat cunoștință despre accident."
-— Legea 346/2002, art. 50 alin. (1) și (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 50 alin. (1) și (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(2) Atribuțiile specifice de asigurare pentru accidente de muncă și boli profesionale se exercită de casele teritoriale de pensii."
-— Legea 346/2002, art. 8 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 8 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Pe pași:

@@ -16,9 +16,9 @@ Pentru firmă contează două lucruri. Primul: restituirea nu depinde de o nouă
 
 ::: ghid-temei
 „(2) În caz de anulare sau de constatare a nulității procesului-verbal bunurile confiscate, cu excepția celor a căror deținere sau circulație este interzisă prin lege, se restituie de îndată celui în drept. (3) Dacă bunurile prevăzute la alin. (2) au fost valorificate, instanța va dispune să se achite celui în drept o despăgubire care se stabilește în raport cu valoarea de circulație a bunurilor."
-— OG 2/2001, art. 41 alin. (2)-(3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 41 alin. (2)-(3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(3) Plângerea suspendă executarea. Plângerea persoanelor prevăzute la art. 31 alin. (2) suspendă executarea numai în ceea ce privește despăgubirea sau, după caz, măsura confiscării."
-— OG 2/2001, art. 32 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 32 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

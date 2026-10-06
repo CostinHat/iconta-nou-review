@@ -16,10 +16,10 @@ Este calea generală prin care o firmă fără restanțe își poate planifica p
 
 ::: ghid-temei
 „în condițiile prezentului articol, debitorii care, la data depunerii cererii, nu au obligații fiscale restante pot solicita eșalonarea la plată a obligațiilor fiscale declarate, precum și a obligațiilor fiscale stabilite prin decizie de impunere și pentru care nu s-a împlinit scadența sau termenul de plată prevăzut la art. 156 alin. (1), după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În cazul solicitării unei eșalonări în temeiul art. 206 alin. (5) din lege [...] cererea trebuie depusă anterior împlinirii scadenței sau termenului de plată prevăzute la art. 154 și 156 din lege, după caz."
-— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (5) (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, art. 1 alin. (5) (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 :::
 
 Ce condiții se aplică:

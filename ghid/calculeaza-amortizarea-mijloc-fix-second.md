@@ -38,6 +38,6 @@ Motorul unic de amortizare din registrul de mijloace fixe calculează consecvent
 
 Durata normală de utilizare rămâne un câmp introdus de contabil, pe baza catalogului și a judecății sale profesionale asupra stării reale a bunului — aplicația nu validează sau nu propune automat un interval de durate.
 
-Vezi și: [Catalogul mijloacelor fixe: durate normale de amortizare](/ghid/catalogul-mijloacelor-fixe-durate-normale-de-amortizare)
+Vezi și: [Catalogul mijloacelor fixe: durate normale de amortizare](/ghid/catalog-mijloace-fixe-durate)
 
 [iConta.eu](/)

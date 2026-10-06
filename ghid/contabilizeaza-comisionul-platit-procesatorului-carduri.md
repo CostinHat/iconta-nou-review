@@ -14,7 +14,7 @@ Firmele care acceptă plăți cu cardul (POS fizic sau plăți online, prin proc
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate» Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: – valoarea serviciilor bancare și asimilate plătite (471, 512); [...] – sume clarificate trecute pe cheltuieli (473)."
-— OMFP 1802/2014, funcțiunea contului 627 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, funcțiunea contului 627 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Comisionul plătit unui procesator de carduri (bancă emitentă de POS, sau un procesator online) se încadrează în categoria cheltuielilor cu serviciile bancare și asimilate — deci se înregistrează pe **contul 627**, în contrapartidă cu banca (512) sau cu debitori diverși (471), în funcție de modul în care apare comisionul:

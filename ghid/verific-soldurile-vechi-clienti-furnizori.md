@@ -14,7 +14,7 @@ Soldurile de clienți și furnizori care „stau" ani la rând în balanță, ne
 
 ::: ghid-temei
 „Creanțele și obligațiile față de terți sunt supuse verificării și confirmării pe baza extraselor soldurilor debitoare și creditoare ale conturilor de creanțe și datorii care dețin ponderea valorică în totalul soldurilor acestor conturi, potrivit «Extrasului de cont» (cod 14-6-3) sau punctajelor reciproce scrise. Nerespectarea acestei proceduri, precum și refuzul de confirmare constituie abateri de la prezentele norme și se sancționează potrivit legii."
-— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 28 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 28 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Ce înseamnă în practică pentru soldurile vechi:
@@ -32,6 +32,6 @@ Ce înseamnă în practică pentru soldurile vechi:
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul de inventariere (`core/inventariere.py`), construit pe baza OMFP 2861/2009 și OMFP 1802/2014, care generează notele contabile pentru plusurile și minusurile constatate la inventar (stocuri, mijloace fixe). Modulul acoperă rezultatele inventarierii fizice și ale ajustărilor de valoare, dar procedura de trimitere și primire a confirmărilor de sold către/de la clienți și furnizori (extrasul de cont cod 14-6-3) rămâne, la acest moment, un proces manual, în afara aplicației.
+Da — iConta.eu are un modul de inventariere, construit pe baza OMFP 2861/2009 și OMFP 1802/2014, care generează notele contabile pentru plusurile și minusurile constatate la inventar (stocuri, mijloace fixe). Modulul acoperă rezultatele inventarierii fizice și ale ajustărilor de valoare, dar procedura de trimitere și primire a confirmărilor de sold către/de la clienți și furnizori (extrasul de cont cod 14-6-3) rămâne, la acest moment, un proces manual, în afara aplicației.
 
 [iConta.eu](/)

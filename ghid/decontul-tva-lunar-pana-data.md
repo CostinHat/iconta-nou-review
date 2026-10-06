@@ -14,12 +14,12 @@ Termenul decontului de TVA e printre cele mai stabile din calendarul fiscal — 
 
 ::: ghid-temei
 „Persoanele înregistrate conform art. 316 trebuie să depună [...] un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."
-— Cod fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Creanțele fiscale administrate de organul fiscal central pentru care, potrivit Codului fiscal sau altor legi care le reglementează, scadența și/sau termenul de declarare se împlinesc la 25 decembrie, sunt scadente și/sau se declară până la data de 21 decembrie. În situația în care data de 21 decembrie, este zi nelucrătoare, creanțele fiscale sunt scadente și/sau se declară până în ultima zi lucrătoare anterioară datei de 21 decembrie."
-— Legea 207/2015 (Codul de procedură fiscală), art. 155 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 155 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din temeiul de mai sus, coroborat cu instrucțiunile formularului:
@@ -37,7 +37,7 @@ Ce rezultă din temeiul de mai sus, coroborat cu instrucțiunile formularului:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Declarația D300** (`core/d300.py`) calculează automat decontul de TVA din facturile firmei, pe cote (21%/11%/9%), cu tratarea distinctă a livrărilor/achizițiilor intracomunitare, a taxării inverse și a TVA la încasare, și validează XML-ul generat cu DUKIntegrator, validatorul oficial ANAF rulat local, înainte de a-l pune la dispoziția contabilului. Perioada fiscală (lunară sau trimestrială) e determinată automat pe baza vectorului fiscal al firmei. Calendarul de termene al aplicației (semaforul și lista de termene) afișează pentru decont data de 25 a lunii următoare, iar pentru obligațiile lunii noiembrie, 21 decembrie (sau ultima zi lucrătoare dinaintea ei), potrivit art. 155 alin. (2) din Codul de procedură fiscală.
+Funcționalitatea **Declarația D300** calculează automat decontul de TVA din facturile firmei, pe cote (21%/11%/9%), cu tratarea distinctă a livrărilor/achizițiilor intracomunitare, a taxării inverse și a TVA la încasare, și validează XML-ul generat cu DUKIntegrator, validatorul oficial ANAF rulat local, înainte de a-l pune la dispoziția contabilului. Perioada fiscală (lunară sau trimestrială) e determinată automat pe baza vectorului fiscal al firmei. Calendarul de termene al aplicației (semaforul și lista de termene) afișează pentru decont data de 25 a lunii următoare, iar pentru obligațiile lunii noiembrie, 21 decembrie (sau ultima zi lucrătoare dinaintea ei), potrivit art. 155 alin. (2) din Codul de procedură fiscală.
 
 Aplicația **nu depune** automat declarația la ANAF — validarea confirmă doar că XML-ul e corect structurat, nu că a fost transmisă; depunerea rămâne în sarcina contabilului, prin SPV. De asemenea, aplicația **nu automatizează** alegerea dintre rambursarea și reportarea unei sume negative de TVA (bifa din decont) — calculează corect soldul, dar decizia rămâne manuală. Cotele atipice (19%, 5%) nu au rând automat în decont; dacă apar pe facturi, aplicația generează un avertisment explicit, nu le omite tăcut.
 

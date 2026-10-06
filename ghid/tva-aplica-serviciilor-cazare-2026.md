@@ -35,6 +35,6 @@ Această excepție e specifică pachetului de cazare — nu se extinde la restau
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` include categoria `cazare` la cota de 11% (art. 291 alin. (2) lit. m), separat de categoria `restaurant_catering`. Tratamentul special al pachetelor demipensiune/pensiune completă/all-inclusive (cota redusă aplicată prețului total, inclusiv alcool inclus) ține de modul în care e facturat pachetul, nu de un câmp automat distinct — la emiterea facturii, pachetul se declară ca o singură linie de cazare, la cota de 11%, nu defalcat pe componente cu cote diferite.
+Aplicația include categoria `cazare` la cota de 11% (art. 291 alin. (2) lit. m), separat de categoria `restaurant_catering`. Tratamentul special al pachetelor demipensiune/pensiune completă/all-inclusive (cota redusă aplicată prețului total, inclusiv alcool inclus) ține de modul în care e facturat pachetul, nu de un câmp automat distinct — la emiterea facturii, pachetul se declară ca o singură linie de cazare, la cota de 11%, nu defalcat pe componente cu cote diferite.
 
 [iConta.eu](/)

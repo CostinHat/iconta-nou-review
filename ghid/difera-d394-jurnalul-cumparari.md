@@ -14,10 +14,10 @@ Un jurnal de cumpărări clasic înregistrează, în ordine cronologică, toate 
 
 ::: ghid-temei
 „Persoanele impozabile stabilite în România trebuie să țină evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice."
-— Codul fiscal, art. 321 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt:21609-21612)
+— Codul fiscal, art. 321 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: anaf_surse/opanaf_2194_2025_d394.txt:741-742)
+— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Legea îți cere să ții evidențe complete ale operațiunilor (art.321) — dar D394, ca declarație, nu preia mecanic acea evidență, ci aplică filtre proprii:
@@ -34,7 +34,7 @@ Legea îți cere să ții evidențe complete ale operațiunilor (art.321) — da
 
 ## Ce face iConta.eu
 
-D394 se generează în iConta.eu direct din tabelele de facturi ale aplicației (`facturi` + `factura_linii`), cu filtre explicite în cod: sunt excluse documentele de tip proformă/aviz, precum și facturile anulate sau stornate (filtru adăugat explicit în `core/repo_d394.py`). Achizițiile intracomunitare sunt excluse programatic din generare, cu un comentariu explicit în cod care trimite la D390.
+D394 se generează în iConta.eu direct din tabelele de facturi ale aplicației (`facturi` + `factura_linii`), cu filtre explicite în cod: sunt excluse documentele de tip proformă/aviz, precum și facturile anulate sau stornate (filtru adăugat explicit în aplicație). Achizițiile intracomunitare sunt excluse programatic din generare, cu un comentariu explicit în cod care trimite la D390.
 
 Aplicația nu are un „jurnal de cumpărări" ca document separat de registrul de facturi — orice diferență între o evidență ținută paralel (de exemplu, într-un tabel Excel) și D394 trebuie verificată pornind de la aceleași reguli de excludere de mai sus, nu tratată automat ca eroare de generare.
 

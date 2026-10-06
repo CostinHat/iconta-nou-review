@@ -13,7 +13,7 @@ Un furnizor dintr-un alt stat membru poate fi, în același timp, înregistrat �
 ## Temeiul legal
 
 ::: ghid-temei
-„`desparte_cod_tva(cod)` — separă prefixul de țară de restul codului (...); validează prefixul contra `TARI_UE` (cele 27 state + `XI` = Irlanda de Nord, post-Brexit)...” — `core/intracomunitar.py`, dosarul F050.
+„`desparte_cod_tva(cod)` — separă prefixul de țară de restul codului (...); validează prefixul contra `TARI_UE` (cele 27 state + `XI` = Irlanda de Nord, post-Brexit)...” — aplicația, dosarul F050.
 :::
 
 Motorul de operațiuni intracomunitare lucrează cu prefixul de țară al codului de TVA de pe factură. Dacă acel cod are prefixul RO, furnizorul acționează, pentru operațiunea respectivă, ca persoană înregistrată în România — nu se mai verifică validitatea printr-un cod străin în VIES, iar operațiunea nu se încadrează ca achiziție intracomunitară de bunuri sau servicii conform art. 268 / art. 278 alin. (2).

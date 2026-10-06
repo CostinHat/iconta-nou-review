@@ -18,10 +18,10 @@ Un punct de lucru nu e o firmă nouă și nu are personalitate juridică proprie
 [...]
 (3) Celelalte sedii secundare - agenții, puncte de lucru sau alte asemenea sedii - sunt dezmembrăminte fără personalitate juridică ale societăților și se menționează numai în cadrul înmatriculării societății în registrul comerțului de la sediul principal.
 (4) Nu se pot înființa sedii secundare sub denumirea de filială."
-— Legea 31/1990 (Legea societăților), art. 43 alin. (1), (3), (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 43 alin. (1), (3), (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Adunarea generală extraordinară se întrunește ori de câte ori este necesar a se lua o hotărâre pentru: [...] d) înființarea sau desființarea unor sedii secundare: sucursale, agenții, reprezentanțe sau alte asemenea unități fără personalitate juridică, dacă prin actul constitutiv nu se prevede altfel;"
-— Legea 31/1990 (Legea societăților), art. 113 lit. d) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 113 lit. d) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din combinarea celor două texte rezultă mecanismul concret:

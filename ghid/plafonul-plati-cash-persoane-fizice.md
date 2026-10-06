@@ -14,7 +14,7 @@ Simetric cu încasările, și plățile în numerar către o persoană fizică a
 
 ::: ghid-temei
 „(4) Operațiunile de plăți în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), către persoane fizice, reprezentând contravaloarea unor achiziții de bunuri sau a unor prestări de servicii, dividende, cesiuni de creanțe sau alte drepturi și restituiri de împrumuturi sau alte finanțări se efectuează cu încadrarea în plafonul zilnic de 10.000 lei către o persoană. Sunt interzise plățile fragmentate în numerar către o persoană, pentru tranzacțiile mai mari de 10.000 lei."
-— Legea nr. 70/2015, art. 4 alin. (4) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 4 alin. (4) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - **Plafon: 10.000 lei/zi, către aceeași persoană fizică** — se cumulează toate plățile din ziua respectivă, indiferent de natura lor (achiziție, dividend, restituire împrumut).

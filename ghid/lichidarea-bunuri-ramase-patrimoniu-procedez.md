@@ -14,7 +14,7 @@ Când lichidarea unei societăți se încheie cu bunuri (numerar, mărfuri, mijl
 
 ::: ghid-temei
 „Venitul impozabil realizat din lichidarea unei persoane juridice reprezintă excedentul distribuțiilor în bani sau în natură peste aportul la capitalul social al persoanei fizice beneficiare. Se consideră venituri din lichidarea unei persoane juridice, din punct de vedere fiscal, și veniturile obținute în cazul reducerii capitalului social, potrivit legii, altele decât cele primite ca urmare a restituirii cotei-părți din aporturi. Venitul impozabil reprezintă diferența între distribuțiile în bani sau în natură efectuate peste valoarea fiscală a titlurilor de valoare."
-— Legea nr. 227/2015 (Codul fiscal), art. 94 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 94 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru bunurile rămase la finalul lichidării:

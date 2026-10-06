@@ -14,7 +14,7 @@ Când încarci o factură în RO e-Factura și serverul ANAF răspunde cu o eroa
 
 ::: ghid-temei
 „(1) În situaţia în care sistemul naţional privind factura electronică RO e-Factura nu este funcţional timp de minimum 24 de ore, obligaţia de transmitere prevăzută la art. 10 alin. (1) [...] se suspendă până la repunerea în funcţiune a sistemului. (2) [...] cu condiţia transmiterii ulterioare [...] a facturilor electronice emise. (3) Perioadele de nefuncţionare [...] vor fi publicate pe paginile de internet ale [ANAF] şi [Ministerului Finanţelor]."
-— OUG 115/2023, art. LXXI (modifică art. 10 alin. (1) din OUG 120/2021) (sursă: anaf_surse/oug_115_2023_consolidat.html)
+— OUG 115/2023, art. LXXI (modifică art. 10 alin. (1) din OUG 120/2021) (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 - O eroare de server izolată, la o singură încercare, **nu** declanșează suspendarea legală — aceea se aplică doar dacă sistemul e nefuncțional cel puțin 24 de ore consecutive.

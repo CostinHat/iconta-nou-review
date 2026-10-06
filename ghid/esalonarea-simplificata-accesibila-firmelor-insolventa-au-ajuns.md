@@ -16,13 +16,13 @@ Diferența față de forma clasică e importantă. Acolo, debitorul în insolven
 
 ::: ghid-temei
 „b) să nu se afle în procedura falimentului; c) să nu se afle în dizolvare;"
-— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (8) lit. b)-c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (8) lit. b)-c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „e) obligațiile fiscale admise la masa credală, pentru debitorii pentru care s-a deschis procedura insolvenței;"
-— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (6) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (6) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „c) să nu se afle în procedura insolvenței potrivit legii. Debitorul care se află în procedura insolvenței și dorește eșalonarea la plată poate solicita această înlesnire la plată cu condiția ca până la data emiterii deciziei de eșalonare la plată să iasă din procedura insolvenței;"
-— Codul de procedură fiscală (Legea 207/2015), art. 186 alin. (1) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 186 alin. (1) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se citesc împreună:

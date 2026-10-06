@@ -16,7 +16,7 @@ Terenurile, ca regulă, nu se amortizează fiscal — dar investițiile făcute 
 „(3) Sunt, de asemenea, considerate mijloace fixe amortizabile: [...] f) amenajările de terenuri; [...]
 (4) Nu reprezintă active amortizabile: a) terenurile, inclusiv cele împădurite; [...]
 (12) Amortizarea fiscală se calculează după cum urmează: [...] e) pentru cheltuielile cu investițiile efectuate pentru amenajarea terenurilor, liniar, pe o perioadă de 10 ani."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. f), alin. (4) lit. a) și alin. (12) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. f), alin. (4) lit. a) și alin. (12) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă o distincție clară pe care contabilitatea trebuie să o respecte:
@@ -34,6 +34,6 @@ Din text rezultă o distincție clară pe care contabilitatea trebuie să o resp
 
 ## Ce face iConta.eu
 
-Am verificat în `core/repo_mijloace_fixe.py` și `core/mijloace_fixe_import_api.py`: aplicația reține durata normală de funcționare (`dnf_luni`) introdusă de contabil pentru fiecare mijloc fix și calculează amortizarea pe baza ei, dar **nu are o categorie predefinită „amenajări de terenuri" cu durata fixă de 10 ani și metoda liniară impuse de art. 28 alin. (12) lit. e)** — încadrarea corectă a unei investiții ca amenajare de teren, separat de valoarea terenului, și aplicarea duratei legale de 10 ani rămân responsabilitatea contabilului la introducerea datelor.
+Am verificat în aplicație: aplicația reține durata normală de funcționare (`dnf_luni`) introdusă de contabil pentru fiecare mijloc fix și calculează amortizarea pe baza ei, dar **nu are o categorie predefinită „amenajări de terenuri" cu durata fixă de 10 ani și metoda liniară impuse de art. 28 alin. (12) lit. e)** — încadrarea corectă a unei investiții ca amenajare de teren, separat de valoarea terenului, și aplicarea duratei legale de 10 ani rămân responsabilitatea contabilului la introducerea datelor.
 
 [iConta.eu](/)

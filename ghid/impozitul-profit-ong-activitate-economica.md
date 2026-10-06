@@ -17,7 +17,7 @@ Când un ONG desfășoară și o activitate economică (vânzări, servicii, chi
 b) determinarea veniturilor neimpozabile prevăzute la art. 15 alin. (3) din Codul fiscal, prin parcurgerea următorilor pași: (i) calculul sumei în lei reprezentând echivalentul a 15.000 euro prin utilizarea cursului mediu de schimb valutar EUR/RON comunicat de Banca Națională a României pentru anul fiscal respectiv; (ii) calculul valorii procentului de 10% din veniturile prevăzute la lit. a); (iii) stabilirea veniturilor neimpozabile prevăzute la art. 15 alin. (3) din Codul fiscal ca fiind valoarea cea mai mică dintre sumele stabilite conform precizărilor anterioare;
 c) stabilirea veniturilor neimpozabile prin adunarea sumelor de la lit. a) și b);
 d) determinarea veniturilor impozabile prin scăderea din totalul veniturilor a celor de la lit. c), precum și a celorlalte venituri neimpozabile prevăzute de titlul II din Codul fiscal;"
-— HG 1/2016, norma la art. 15 pct. 3 din Codul fiscal (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norma la art. 15 pct. 3 din Codul fiscal (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Concret, calculul impozitului pe profit datorat de un ONG cu activitate economică urmează acești pași:

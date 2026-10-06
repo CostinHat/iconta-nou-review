@@ -14,7 +14,7 @@ IOSS (Import One Stop Shop) este regimul special de TVA pentru vânzarea la dist
 
 ::: ghid-temei
 „În sensul prezentului articol vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe acoperă numai bunurile, cu excepția produselor care fac obiectul accizelor, în loturi cu o valoare intrinsecă de maximum 150 euro."
-— Legea 227/2015, art. 315^2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 315^2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează mecanismul, pe scurt:
@@ -33,6 +33,6 @@ Cum funcționează mecanismul, pe scurt:
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația D399 — Declarația specială de TVA pentru regimul special de import (IOSS), potrivit Legii 33/2024 (`core/d399.py`). Declarația calculează structura pe linii de operațiuni și stat membru de consum, dar, așa cum e documentat explicit în cod, **„D399 (IOSS) declară vânzări la distanță pe stat de consum, care aplicația nu le ține pe schema" internă a firmei** — la data acestui ghid, valorile pe stat de consum și cota aplicabilă în fiecare stat **se introduc manual**, prin datele furnizate de contribuabil, aplicația neurmărind automat, pe fiecare vânzare, țara clientului final și cota locală de TVA aplicabilă.
+iConta.eu generează declarația D399 — Declarația specială de TVA pentru regimul special de import (IOSS), potrivit Legii 33/2024. Declarația calculează structura pe linii de operațiuni și stat membru de consum, dar, așa cum e documentat explicit în cod, **„D399 (IOSS) declară vânzări la distanță pe stat de consum, care aplicația nu le ține pe schema" internă a firmei** — la data acestui ghid, valorile pe stat de consum și cota aplicabilă în fiecare stat **se introduc manual**, prin datele furnizate de contribuabil, aplicația neurmărind automat, pe fiecare vânzare, țara clientului final și cota locală de TVA aplicabilă.
 
 [iConta.eu](/)

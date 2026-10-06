@@ -15,7 +15,7 @@ O firmă care iese dintr-o perioadă de inactivitate temporară înscrisă în r
 ::: ghid-temei
 „(6) Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5), aplică sistemul de declarare și plată prevăzut la alin. (1) în anul pentru care se datorează impozit pe profit, dacă în anul precedent se încadrează în una dintre următoarele situații: (...)
 c) s-au aflat în inactivitate temporară sau au declarat pe propria răspundere că nu desfășoară activități la sediul social/sediile secundare, situații înscrise, potrivit prevederilor legale, în registrul comerțului sau în registrul ținut de instanțele judecătorești competente, după caz."
-— Legea 227/2015, art. 41 alin. (6) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (6) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se calculează, concret, impozitul pentru o astfel de firmă:

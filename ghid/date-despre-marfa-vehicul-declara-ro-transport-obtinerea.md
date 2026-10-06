@@ -16,13 +16,13 @@ Datele trebuie să corespundă transportului real. Declararea unor cantități d
 
 ::: ghid-temei
 „(1) Sistemul RO e-Transport include: a) module informatice de gestiune a transporturilor de bunuri prin care sunt înregistrate datele referitoare la expeditor și beneficiar, denumirea, caracteristicile, cantitățile și contravaloarea bunurilor transportate, locurile de încărcare și descărcare, detalii cu privire la mijlocul de transport utilizat, precum și codul UIT generat;"
-— OUG 41/2022, art. 4 alin. (1) lit. a) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 4 alin. (1) lit. a) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „b) declararea în Sistemul RO e-Transport a unor cantități diferite de cele care fac obiectul transportului de bunuri;"
-— OUG 41/2022, art. 13^1 alin. (1) lit. b) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. b) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate."
-— OUG 41/2022, art. 13^1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Pe grupe, datele care se declară:

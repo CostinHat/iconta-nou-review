@@ -15,7 +15,7 @@ Deductibilitatea cheltuielilor cu dobânzile nu mai e o simplă chestiune de „
 ::: ghid-temei
 „cheltuielile cu dobânzile și alte costuri echivalente dobânzii din punct de vedere economic, potrivit art. 40^2 [...]
 Costurile excedentare ale îndatorării reportate la 31 decembrie 2023 potrivit prevederilor art. 40^2 se alocă, pentru aplicarea alin. (4) al acestui articol în anii fiscali următori, plafonului deductibil reprezentat de echivalentul în lei al sumei de 1.000.000 euro."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. h) și art. 45 alin. (19) cu trimitere la art. 40^2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. h) și art. 45 alin. (19) cu trimitere la art. 40^2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele-cheie ale regulii (art. 40^2, regula costurilor excedentare ale îndatorării, transpunerea ATAD):

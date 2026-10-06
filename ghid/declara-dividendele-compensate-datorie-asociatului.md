@@ -24,6 +24,6 @@ Cea mai frecventă greșeală e tratarea compensării ca și cum ar fi parte din
 
 ## Ce face iConta.eu
 
-iConta generează automat nota de dividend (repartizare + impozit, cu cota valabilă la data aprobării) și, separat, notele de împrumut/decontare cu asociatul (primire și restituire pe 4551). Motorul din spatele acestor note (`core/decontari_asociati.py`) nu are însă o funcție dedicată de compensare între dividendul de plată și datoria asociatului — cele două note se generează independent, iar stingerea reciprocă a soldurilor (457 = 4551) rămâne o notă contabilă manuală, în afara acestor patru funcții. Declararea fiscală a dividendului la D205 este o funcționalitate separată de decontările cu asociații.
+iConta generează automat nota de dividend (repartizare + impozit, cu cota valabilă la data aprobării) și, separat, notele de împrumut/decontare cu asociatul (primire și restituire pe 4551). Motorul din spatele acestor note nu are însă o funcție dedicată de compensare între dividendul de plată și datoria asociatului — cele două note se generează independent, iar stingerea reciprocă a soldurilor (457 = 4551) rămâne o notă contabilă manuală, în afara acestor patru funcții. Declararea fiscală a dividendului la D205 este o funcționalitate separată de decontările cu asociații.
 
 [iConta.eu](/)

@@ -16,13 +16,13 @@ De aceea, cine cesionează părți sociale în cursul anului are interes să scr
 
 ::: ghid-temei
 „(6) Dividendele care se cuvin după data transmiterii acțiunilor aparțin cesionarului, în afară de cazul în care părțile au convenit altfel."
-— Legea 31/1990, art. 67 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Cota-parte din profit ce se plătește fiecărui asociat constituie dividend. (2) Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat"
-— Legea 31/1990, art. 67 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății. (2) Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea 31/1990, art. 203 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 203 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

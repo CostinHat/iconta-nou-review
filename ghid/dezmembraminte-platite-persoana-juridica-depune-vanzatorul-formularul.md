@@ -16,15 +16,15 @@ Formularul 217 rămâne obligatoriu pentru încasările de la plătitori fără 
 
 ::: ghid-temei
 „Declarația nu se depune de către persoanele fizice care încasează, începând cu 1 ianuarie 2025, venituri din transferul dezmembrămintelor dreptului de proprietate sub condiție suspensivă, plătite de persoane juridice sau alte entități care au obligația de a conduce evidență contabilă, pentru care impozitul se reține la sursă de către plătitorii de venituri."
-— OPANAF 396/2025, Anexa nr. 2, pct. 3 (sursă: anaf_surse/ordin_396_2025.html)
+— OPANAF 396/2025, Anexa nr. 2, pct. 3 (sursă: [OPANAF nr. 396/2025 pentru aprobarea formularului 217](https://legislatie.just.ro/Public/DetaliiDocument/296042))
 :::
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (6^1)-(6^3) [...] în cazul veniturilor din transferul dezmembrămintelor dreptului de proprietate sub condiție suspensivă, plătite de persoane juridice sau alte entități care au obligația de a conduce evidență contabilă, plătitorii acestor venituri au obligația de a calcula, reține, declara și plăti impozitul corespunzător sumelor plătite."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (6^4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (6^4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul calculat și reținut potrivit prevederilor alin. (6^4) și (6^5) reprezintă impozit final, se declară și se plătește la bugetul de stat până la data de 25 inclusiv a lunii următoare celei în care a fost reținut."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (6^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (6^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din texte:
@@ -37,7 +37,7 @@ Ce rezultă din texte:
 
 ::: ghid-temei
 „l) venituri din transferul dezmembrămintelor dreptului de proprietate sub condiţie suspensivă, plătite de persoane juridice sau alte entităţi care au obligaţia de a conduce evidenţă contabilă."
-— OPANAF 303/2026, art. I pct. 1 (sursă: anaf_surse/opanaf_303_2026_d205.txt)
+— OPANAF 303/2026, art. I pct. 1 (sursă: [OPANAF nr. 303/2026 privind modificarea anexei nr. 1 la OPANAF nr. 179/2022 (formularul 205)](https://legislatie.just.ro/Public/DetaliiDocument/308166))
 :::
 
 Pe lângă declararea lunară a impozitului reținut, plătitorul raportează sumele pe fiecare beneficiar în declarația informativă 205, la categoria nouă introdusă de OPANAF 303/2026. Ordinul se aplică veniturilor plătite începând cu 1 ianuarie 2025 (art. II). În structura oficială a declarației 100 din corpus, obligația apare cu codul 629, „Impozit pe veniturile din transferul dezmembramintele dreptului de proprietate sub conditie suspensiva".

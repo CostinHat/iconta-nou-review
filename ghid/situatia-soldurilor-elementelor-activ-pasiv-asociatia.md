@@ -16,15 +16,15 @@ Administratorul o **întocmește lunar**. O **depune semestrial** la compartimen
 
 ::: ghid-temei
 „n) întocmește lunar și depune semestrial la compartimentul specializat în sprijinirea și îndrumarea asociațiilor de proprietari pe a cărei rază teritorială se află condominiul situația soldurilor elementelor de activ și pasiv”
-— Legea 196/2018, art. 66 alin. (1) lit. n) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. n) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „8. Pentru verificarea înregistrării corecte în contabilitate a operaţiunilor efectuate, lunar se întocmeşte "Situaţia soldurilor elementelor de activ şi de pasiv" (cod 14-6-30/d), pe baza datelor înscrise şi totalizate în fişe şi jurnale contabile.”
-— OMFP 3103/2017, anexa nr. 2, cap. 2 lit. A pct. 8 (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 2, cap. 2 lit. A pct. 8 (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 
 „NOTĂ: Corelaţie: total partea I = total partea a II-a.”
-— OMFP 3103/2017, anexa nr. 2, modelul formularului 14-6-30/d (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 2, modelul formularului 14-6-30/d (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 Ce conține modelul din OMFP 3103/2017:

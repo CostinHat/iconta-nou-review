@@ -16,13 +16,13 @@ Pentru contabil, ordinea asta decide ce rămâne de plată după executare. De e
 
 ::: ghid-temei
 „Sumele realizate din executare silită potrivit alin. (1) sting creanțele fiscale în ordinea vechimii titlurilor executorii, cu excepția sumelor realizate prin poprire. În cadrul titlului executoriu se sting mai întâi creanțele fiscale principale, în ordinea vechimii, și apoi creanțele fiscale accesorii, în ordinea vechimii."
-— Codul de procedură fiscală (Legea 207/2015), art. 257 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 257 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Sumele realizate ca urmare a popririi sting creanțele fiscale în ordinea vechimii titlurilor executorii, pentru care s-a înființat poprirea."
-— Codul de procedură fiscală (Legea 207/2015), art. 257 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 257 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în scopul stingerii obligațiilor fiscale, vechimea acestora se stabilește astfel: a) în funcție de scadență, pentru obligațiile fiscale principale; b) în funcție de data [...] comunicării, pentru diferențele de obligații fiscale principale stabilite de organul fiscal competent, precum și pentru obligațiile fiscale accesorii;"
-— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile, pe scurt:

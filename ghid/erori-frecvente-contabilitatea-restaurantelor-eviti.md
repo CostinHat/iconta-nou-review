@@ -14,7 +14,7 @@ Contabilitatea unui restaurant pare simplă — încasări zilnice, cheltuieli c
 
 ::: ghid-temei
 „Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...] n) serviciile de restaurant și de catering, cu excepția băuturilor alcoolice, precum și a băuturilor nealcoolice care se încadrează la codul NC 2202."
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele mai frecvente puncte unde apar erori:

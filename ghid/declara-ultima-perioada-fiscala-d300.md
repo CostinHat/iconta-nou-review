@@ -34,6 +34,6 @@ Sursele verificate nu conțin o regulă explicită care să elimine pragul de 5.
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 (`core/d300.py`) calculează corect soldul sumei negative/de plată la finalul perioadei (R33-R42), inclusiv reportarea soldului din perioada precedentă. Aplicația nu automatizează alegerea între rambursare și reportare — bifarea casetei corespunzătoare din decont rămâne o decizie manuală, făcută de contabil la depunerea în SPV, cu atât mai importantă la ultima perioadă fiscală declarată.
+Decontul de TVA v12 calculează corect soldul sumei negative/de plată la finalul perioadei (R33-R42), inclusiv reportarea soldului din perioada precedentă. Aplicația nu automatizează alegerea între rambursare și reportare — bifarea casetei corespunzătoare din decont rămâne o decizie manuală, făcută de contabil la depunerea în SPV, cu atât mai importantă la ultima perioadă fiscală declarată.
 
 [iConta.eu](/)

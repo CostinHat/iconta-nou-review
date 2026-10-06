@@ -14,10 +14,10 @@ Activitatea de curierat (servicii de curierat, cod CAEN 5320 și similare) nu ar
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „La stabilirea normelor anuale de venit, plafonul de venit determinat prin înmulțirea cu 12 a salariului de bază minim brut pe țară garantat în plată reprezintă venitul net anual înainte de aplicarea criteriilor. Criteriile pentru stabilirea normelor de venit de către direcțiile generale regionale ale finanțelor publice sunt cele prevăzute în normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un curier PFA, două lucruri contează concret:

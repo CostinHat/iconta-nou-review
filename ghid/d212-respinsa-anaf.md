@@ -14,10 +14,10 @@ O respingere la depunere nu înseamnă că declarația s-a pierdut, dar nici că
 
 ::: ghid-temei
 „Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. În cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (4), în situația în care declarația fiscală a fost depusă până la termenul legal, iar din mesajul electronic transmis de sistemul de tranzacționare a informațiilor rezultă că aceasta nu a fost validată ca urmare a detectării unor erori în completarea declarației, data depunerii declarației este data din mesajul transmis inițial în cazul în care contribuabilul/plătitorul depune o declarație validă până în ultima zi a lunii în care se împlinește termenul legal de depunere."
-— Legea 207/2015, art. 103 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 103 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic:
@@ -35,6 +35,6 @@ Ce înseamnă practic:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) construiește XML-ul conform structurii validate de ANAF (D212Validator) — respectă câmpurile obligatorii pe rădăcină și pe fiecare capitol, ceea ce reduce riscul unei respingeri din cauza unor câmpuri lipsă sau invalide la nivel de structură. Aplicația nu are însă integrare directă cu portalul ANAF pentru depunere și validare online: nu primește și nu procesează automat mesajul de respingere al sistemului ANAF, iar urmărirea termenului de „ultima zi a lunii" pentru redepunerea validă rămâne o obligație a contabilului, în afara aplicației.
+Generatorul D212 al iConta.eu construiește XML-ul conform structurii validate de ANAF (D212Validator) — respectă câmpurile obligatorii pe rădăcină și pe fiecare capitol, ceea ce reduce riscul unei respingeri din cauza unor câmpuri lipsă sau invalide la nivel de structură. Aplicația nu are însă integrare directă cu portalul ANAF pentru depunere și validare online: nu primește și nu procesează automat mesajul de respingere al sistemului ANAF, iar urmărirea termenului de „ultima zi a lunii" pentru redepunerea validă rămâne o obligație a contabilului, în afara aplicației.
 
 [iConta.eu](/)

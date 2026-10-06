@@ -14,7 +14,7 @@ Termenul "cont de trezorerie" apare des în discuții contabile ca și cum ar fi
 
 ::: ghid-temei
 „CLASA 5 - CONTURI DE TREZORERIE GRUPA 50 - INVESTIȚII PE TERMEN SCURT [...] GRUPA 51 - CONTURI LA BĂNCI [...] 5121 Conturi la bănci în lei [...] GRUPA 53 - CASA [...] GRUPA 54 - ACREDITIVE [...] GRUPA 58 - VIRAMENTE INTERNE."
-— OMFP 1802/2014, planul de conturi general, clasa 5 „Conturi de trezorerie" (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, planul de conturi general, clasa 5 „Conturi de trezorerie" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Distincția, structural:
@@ -31,6 +31,6 @@ Distincția, structural:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează separat cele două module de disponibilități: `core/banca.py`, pentru conturile bancare comerciale (5121/5124), și `core/casa.py`, pentru numerar (5311/5314) și avansuri de trezorerie (542) — ambele fac parte, contabil, din clasa 5 „Conturi de trezorerie". Aplicația nu are un raport consolidat de "trezorerie" care să agrege toate componentele clasei 5 (bancă, casă, avansuri, acreditive) într-o singură cifră de disponibil — fiecare componentă se urmărește azi separat.
+La data acestui ghid, iConta.eu tratează separat cele două module de disponibilități: Aplicația, pentru conturile bancare comerciale (5121/5124), și aplicația, pentru numerar (5311/5314) și avansuri de trezorerie (542) — ambele fac parte, contabil, din clasa 5 „Conturi de trezorerie". Aplicația nu are un raport consolidat de "trezorerie" care să agrege toate componentele clasei 5 (bancă, casă, avansuri, acreditive) într-o singură cifră de disponibil — fiecare componentă se urmărește azi separat.
 
 [iConta.eu](/)

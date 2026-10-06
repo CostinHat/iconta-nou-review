@@ -14,7 +14,7 @@ Codul fiscal tratează explicit deductibilitatea bunurilor distruse din cauze de
 
 ::: ghid-temei
 „În sensul prevederilor art. 25 alin. (4) lit. c) din Codul fiscal, cheltuielile privind stocurile și mijloacele fixe amortizabile distruse ca urmare a unor calamități naturale sau a altor cauze de forță majoră sunt considerate cheltuieli deductibile la calculul rezultatului fiscal, în măsura în care acestea se găsesc situate în zone declarate afectate, potrivit prevederilor legale pentru fiecare domeniu. Cauzele de forță majoră pot fi: epidemii, epizootii, accidente industriale sau nucleare, incendii, fenomene sociale sau economice, conjuncturi externe și în caz de război."
-— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. aferent art. 25 alin. (4) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. aferent art. 25 alin. (4) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce rezultă de aici pentru bunurile furate:

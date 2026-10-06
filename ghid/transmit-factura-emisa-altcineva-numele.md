@@ -15,7 +15,7 @@ Legea permite explicit ca factura să fie emisă „în numele și în contul" f
 ::: ghid-temei
 „(18) Pot fi emise facturi de către beneficiar în numele și în contul furnizorului/prestatorului în condițiile stabilite prin normele metodologice.
 (19) Pot fi emise facturi de către un terț în numele și în contul furnizorului/prestatorului în condițiile stabilite prin normele metodologice, cu excepția situației în care partea terță este stabilită într-o țară cu care nu există niciun instrument juridic referitor la asistența reciprocă."
-— Cod fiscal, art. 319 alin. (18) și (19) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 319 alin. (18) și (19) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Puncte esențiale pentru situația în care altcineva emite factura pentru dumneavoastră:

@@ -14,7 +14,7 @@ Pro-rata nu se aplică oricărei firme plătitoare de TVA — doar celor care fa
 
 ::: ghid-temei
 „Persoana impozabilă care realizează sau urmează să realizeze atât operațiuni care dau drept de deducere, cât și operațiuni care nu dau drept de deducere este denumită în continuare persoană impozabilă cu regim mixt."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Exemplul tipic: o firmă care face atât vânzări taxabile, cât și operațiuni scutite fără drept de deducere (de exemplu unele servicii financiare, unele închirieri de imobile fără opțiune de taxare). Doar pentru astfel de firme se pune problema pro-ratei.
@@ -23,7 +23,7 @@ Exemplul tipic: o firmă care face atât vânzări taxabile, cât și operațiun
 
 ::: ghid-temei
 „Taxa aferentă achizițiilor destinate exclusiv realizării de operațiuni care permit exercitarea dreptului de deducere, inclusiv de investiții destinate realizării de astfel de operațiuni, se deduce integral. [...] Taxa aferentă achizițiilor destinate exclusiv realizării de operațiuni care nu dau drept de deducere, [...] nu se deduce."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (3) și (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (3) și (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pro-rata nu se aplică automat la toate achizițiile unei firme cu regim mixt — doar la cele pentru care nu se poate stabili clar destinația. Dacă o achiziție se poate aloca direct (de exemplu, materiale folosite exclusiv pentru activitatea taxabilă), TVA-ul se deduce integral sau deloc, fără pro-rata.
@@ -32,7 +32,7 @@ Pro-rata nu se aplică automat la toate achizițiile unei firme cu regim mixt �
 
 ::: ghid-temei
 „Taxa aferentă achizițiilor pentru care nu se cunoaște destinația, respectiv dacă vor fi utilizate pentru realizarea de operațiuni care dau drept de deducere sau pentru operațiuni care nu dau drept de deducere, ori pentru care nu se poate determina proporția în care sunt sau vor fi utilizate [...] se deduce pe bază de pro rata."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pro-rata e deci soluția pentru achizițiile „mixte" prin natura lor (chirie sediu, utilități, servicii de contabilitate) — cele care deservesc deopotrivă activitatea taxabilă și cea fără drept de deducere, fără să poată fi separate.
@@ -41,7 +41,7 @@ Pro-rata e deci soluția pentru achizițiile „mixte" prin natura lor (chirie s
 
 ::: ghid-temei
 „Persoanele impozabile trebuie să comunice organului fiscal competent, la începutul fiecărui an fiscal, cel mai târziu până la data de 25 ianuarie inclusiv, pro rata provizorie care va fi aplicată în anul respectiv, precum și modul de determinare a acesteia."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pro-rata provizorie (de regulă, pro-rata definitivă a anului precedent) se aplică lunar/trimestrial pe parcursul anului, iar la final se calculează pro-rata definitivă și se ajustează diferența.

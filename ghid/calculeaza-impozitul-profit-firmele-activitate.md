@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 D101 „citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare)"
-— sursă: `core/d101.py`, funcția `pull()`, liniile 448–467, dosar de cercetare F027.
+— sursă: Aplicația, funcția `pull()`, dosar de cercetare F027.
 
 „Art.18: regim special 5% pentru baruri/cluburi de noapte/discoteci/cazinouri, dacă impozitul normal ar fi sub 5% din venituri."
 — sursă: dosar de cercetare F027, secțiunea „Temei legal".

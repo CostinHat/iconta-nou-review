@@ -16,15 +16,15 @@ La facturile electronice transmise prin RO e-Factura, problema se pune altfel: o
 
 ::: ghid-temei
 „Justificarea deducerii taxei se face numai pe baza exemplarului original al documentelor prevăzute la art. 299 alin. (1) din Codul fiscal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul pierderii, sustragerii sau distrugerii exemplarului original al facturii, beneficiarul trebuie să solicite emitentului un duplicat al facturii, pe care se menționează că înlocuiește factura inițială. În cazul facturilor emise pe suport hârtie, duplicatul poate fi o factură nouă emisă de furnizor/prestator, care să cuprindă aceleași date ca factura inițială și pe care să se menționeze că este duplicat și că înlocuiește factura inițială sau, o fotocopie a facturii inițiale, pe care furnizorul/prestatorul menționează că este duplicat și că înlocuiește factura inițială."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Exemplarul original al facturii electronice se consideră fișierul de tip XML însoțit de sigiliul electronic al Ministerului Finanțelor."
-— OUG 120/2021, art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Pașii, după tipul facturii:

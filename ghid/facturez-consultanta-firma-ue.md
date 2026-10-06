@@ -13,9 +13,9 @@ Consultanța e un serviciu, nu o livrare de bunuri — regula de TVA nu urmăre�
 ## Temeiul legal
 
 ::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România; fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — `core/intracomunitar.py`, dosarul F050.
+„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România; fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
 
-OPANAF 705/2020: „prestări servicii — în care se înscriu prestările intracomunitare de servicii (cod P)”. (sursă: `anaf_surse/opanaf_705_2020_d390.txt`, L664)
+OPANAF 705/2020: „prestări servicii — în care se înscriu prestările intracomunitare de servicii (cod P)”. (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Condiția din lege (art. 278 alin. 2) e ca locul prestării să fie la beneficiar — adică la firma din UE, nu în România. Practic, două lucruri trebuie confirmate înainte de a emite factura fără TVA: clientul e o persoană impozabilă (are cod de TVA valid, comunicat) și codul acela e verificat, nu doar primit prin e-mail.

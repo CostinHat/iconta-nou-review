@@ -19,7 +19,7 @@ Legea nu-ți lasă complet la liberă alegere lunar sau trimestrial — pentru o
 
 **Art. 322 alin. (2) CF** (plafonul de referință): „[...] plafonul de 100.000 euro [...], cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri."
 
-Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, liniile 21798-21819.
+Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 La momentul înregistrării TVA (art. 316), firma trebuie să declare estimativ ce cifră de afaceri va realiza în lunile rămase până la finalul anului calendaristic. Dacă acea estimare, recalculată proporțional cu numărul de luni rămase, nu depășește plafonul de 100.000 euro, firma poate depune deconturi trimestriale chiar din anul înregistrării — nu trebuie să aștepte un an complet de activitate.

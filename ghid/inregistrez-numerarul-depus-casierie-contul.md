@@ -14,7 +14,7 @@ Plafoanele stricte pentru încasări și plăți în numerar impuse de Legea 70/
 
 ::: ghid-temei
 „Plafoanele-limită prevăzute de prezentul capitol nu se aplică de către persoanele prevăzute la art. 1 alin. (1), pentru următoarele operațiuni: a) depunerea de numerar în conturile deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României, inclusiv în automatele de încasări în numerar."
-— Legea nr. 70/2015, art. 5 lit. a) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 5 lit. a) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă asta pentru operațiunea de zi cu zi:
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru operațiunea de zi cu zi:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează soldul rulant al registrului de casă (modulul de casierie) pe baza operațiunilor de încasare/plată introduse, cu plafoanele Legii 70/2015 aplicate corect distinct pe categorii (încasări/plăți către persoane juridice, persoane fizice, cash and carry). Depunerea numerarului din casierie în contul bancar se înregistrează ca operațiune de casă și de bancă, fără a fi supusă vreunui plafon de numerar. Aplicația are un modul de import al extraselor bancare (`core/banca_parser.py`, formate XLS/XLSX/CSV și MT940), care ajută la corelarea automată a operațiunii de depunere cu încasarea din extrasul bancar — dar potrivirea finală cu suma din foaia de vărsământ/registrul de casă rămâne verificată de utilizator.
+iConta.eu calculează soldul rulant al registrului de casă (modulul de casierie) pe baza operațiunilor de încasare/plată introduse, cu plafoanele Legii 70/2015 aplicate corect distinct pe categorii (încasări/plăți către persoane juridice, persoane fizice, cash and carry). Depunerea numerarului din casierie în contul bancar se înregistrează ca operațiune de casă și de bancă, fără a fi supusă vreunui plafon de numerar. Aplicația are un modul de import al extraselor bancare (formate XLS/XLSX/CSV și MT940), care ajută la corelarea automată a operațiunii de depunere cu încasarea din extrasul bancar — dar potrivirea finală cu suma din foaia de vărsământ/registrul de casă rămâne verificată de utilizator.
 
 [iConta.eu](/)

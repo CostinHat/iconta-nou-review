@@ -15,7 +15,7 @@ O investiție într-o clădire deja existentă în patrimoniul firmei (renovare 
 ::: ghid-temei
 „(3) Sunt, de asemenea, considerate mijloace fixe amortizabile: [...]
 d) investițiile efectuate la mijloacele fixe existente, sub forma cheltuielilor ulterioare realizate în scopul îmbunătățirii parametrilor tehnici inițiali și care conduc la obținerea de beneficii economice viitoare, prin majorarea valorii mijlocului fix;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condiția-cheie e dublă, nu doar una: investiția trebuie (1) să îmbunătățească parametrii tehnici inițiali ai clădirii **și** (2) să conducă la beneficii economice viitoare, prin majorarea valorii mijlocului fix. Din combinarea acestei condiții cu regulile generale de amortizare rezultă:
@@ -33,6 +33,6 @@ Condiția-cheie e dublă, nu doar una: investiția trebuie (1) să îmbunătăț
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (`core/repo_mijloace_fixe.py`) permite introducerea unei investiții ca activ amortizabil separat, cu propria valoare, cont de imobilizare și durată normală de funcționare — mecanismul tehnic necesar pentru a trata corect o investiție într-o clădire existentă conform art. 28 alin. (3) lit. d). La data acestui ghid, aplicația **nu verifică automat** dacă o cheltuială introdusă îndeplinește condiția legală de „îmbunătățire a parametrilor tehnici și majorare a valorii" (deci dacă trebuie amortizată sau dedusă integral) — această calificare rămâne o evaluare profesională a contabilului, la introducerea documentului justificativ.
+Modulul de mijloace fixe din iConta.eu permite introducerea unei investiții ca activ amortizabil separat, cu propria valoare, cont de imobilizare și durată normală de funcționare — mecanismul tehnic necesar pentru a trata corect o investiție într-o clădire existentă conform art. 28 alin. (3) lit. d). La data acestui ghid, aplicația **nu verifică automat** dacă o cheltuială introdusă îndeplinește condiția legală de „îmbunătățire a parametrilor tehnici și majorare a valorii" (deci dacă trebuie amortizată sau dedusă integral) — această calificare rămâne o evaluare profesională a contabilului, la introducerea documentului justificativ.
 
 [iConta.eu](/)

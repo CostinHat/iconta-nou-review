@@ -16,10 +16,10 @@ Costurile apar abia în alte etape. Dacă firma cere instanței suspendarea exec
 
 ::: ghid-temei
 „(4) Contestația se depune la organul fiscal emitent al actului administrativ atacat și nu este supusă taxelor extrajudiciare de timbru."
-— Codul de procedură fiscală (Legea 207/2015), art. 269 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 269 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Introducerea contestației pe calea administrativă de atac nu suspendă executarea actului administrativ fiscal. (2) Dispozițiile prezentului articol nu aduc atingere dreptului contestatorului de a cere suspendarea executării actului administrativ fiscal, [...] Instanța competentă poate suspenda executarea, dacă se depune o cauțiune, după cum urmează: a) de 10%, dacă această valoare este până la 10.000 lei; b) de 1.000 lei plus 5% pentru ceea ce depășește 10.000 lei; c) de 5.500 lei plus 1% pentru ceea ce depășește 100.000 lei; d) de 14.500 lei plus 0,1% pentru ceea ce depășește 1.000.000 lei e) 1.000 lei, dacă obiectul contestației nu este evaluabil în bani."
-— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (1)–(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (1)–(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă:

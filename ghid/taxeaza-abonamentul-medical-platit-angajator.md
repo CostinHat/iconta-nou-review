@@ -14,7 +14,7 @@ Abonamentele medicale plătite de angajator pentru salariați nu sunt automat ne
 
 ::: ghid-temei
 „primele de asigurare voluntară de sănătate, precum și serviciile medicale furnizate sub formă de abonament, suportate de angajați, astfel încât la nivelul anului să nu se depășească echivalentul în lei al sumei de 400 euro. Contractul de asigurare, respectiv abonamentul vizează servicii medicale furnizate angajatului și/sau oricărei persoane aflate în întreținerea sa, așa cum este definită la art. 77 alin. (5)."
-— Cod fiscal, art. 78 alin. (2) lit. a) pct. (iv) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 78 alin. (2) lit. a) pct. (iv) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru salarizare:

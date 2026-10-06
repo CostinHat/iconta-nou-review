@@ -14,7 +14,7 @@ Când o sumă e plătită din contul societății pentru o cheltuială personal�
 
 ::: ghid-temei
 „Contul 461 «Debitori diverși» Cu ajutorul acestui cont se ține evidența debitorilor proveniți din pagube materiale create de terți, alte creanțe provenind din existența unor titluri executorii și a altor creanțe, altele decât entitățile afiliate, entitățile asociate și entitățile controlate în comun. Contul 461 «Debitori diverși» este un cont de activ."
-— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, Funcțiunea conturilor, cont 461 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, Funcțiunea conturilor, cont 461 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Suma plătită din contul firmei pentru o cheltuială personală se stornează din contul de cheltuieli în care a fost inițial înregistrată (dacă a fost deja contată acolo) și se trece în debitul contului 461 „Debitori diverși", pe seama contului de disponibilități (5121/5311) din care a fost plătită — devine, contabil, o creanță a firmei, nu o cheltuială.

@@ -15,7 +15,7 @@ Legea disciplinei financiare privind operațiunile în numerar nu se mulțumeșt
 ::: ghid-temei
 „(1) [...] constituie contravenții, dacă nu au fost săvârșite în astfel de condiții încât, potrivit legii penale, să constituie infracțiuni, și se sancționează, prin derogare de la prevederile art. 8 din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor [...], cu amendă de 10% din suma încasată/plătită care depășește plafonul stabilit de prezentul capitol pentru fiecare tip de operațiune, dar nu mai puțin de 100 lei.
 (2) Nerespectarea prevederilor art. 6 și art. 11 alin. (1)-(4) constituie contravenție și se sancționează cu amendă de la 3.000 lei la 4.500 lei."
-— Legea nr. 70/2015, art. 12 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 12 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Sunt, de fapt, **două regimuri sancționatorii distincte**, în funcție de tipul încălcării:
@@ -32,6 +32,6 @@ Sunt, de fapt, **două regimuri sancționatorii distincte**, în funcție de tip
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/casa.py` semnalează depășirile plafoanelor legate de operațiunile în numerar (sold casă, încasări de la persoane juridice, avansuri spre decontare) ca **avertismente cu temei citat**, prin funcția `verifica_plafon` — util pentru a preveni o depășire înainte să devină o problemă de control. Aplicația **nu calculează automat cuantumul amenzii potențiale** (10% din depășire, minimum 100 lei, sau amenda fixă de 3.000-4.500 lei, după caz) — avertismentele arată doar că un prag legal a fost depășit, nu și expunerea financiară concretă la sancțiune, care rămâne o evaluare separată.
+Verificat în cod: Aplicația semnalează depășirile plafoanelor legate de operațiunile în numerar (sold casă, încasări de la persoane juridice, avansuri spre decontare) ca **avertismente cu temei citat**, prin funcția `verifica_plafon` — util pentru a preveni o depășire înainte să devină o problemă de control. Aplicația **nu calculează automat cuantumul amenzii potențiale** (10% din depășire, minimum 100 lei, sau amenda fixă de 3.000-4.500 lei, după caz) — avertismentele arată doar că un prag legal a fost depășit, nu și expunerea financiară concretă la sancțiune, care rămâne o evaluare separată.
 
 [iConta.eu](/)

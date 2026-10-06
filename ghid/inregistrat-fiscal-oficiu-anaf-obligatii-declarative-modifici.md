@@ -16,18 +16,18 @@ Vectorul fiscal contează direct: din el rezultă ce declarații trebuie depuse 
 
 ::: ghid-temei
 „Conform art. 82 alin. (7) din Codul de procedură fiscală , ați fost înregistrat fiscal din oficiu/la cererea altei autorități care administrează creanțe fiscale și vi s-a atribuit codul de identificare fiscală ..........., la data (zz/ll/aaaa) ........... ."
-— OPANAF 2430/2025, Anexa nr. 6 (sursă: anaf_surse/ordin_2430_2025.html)
+— OPANAF 2430/2025, Anexa nr. 6 (sursă: [OPANAF nr. 2430/2025 privind procedura de înregistrare fiscală din oficiu](https://legislatie.just.ro/Public/DetaliiDocument/303981))
 
 „De la data înregistrării fiscale aveți următoarele obligații declarative înscrise în vectorul fiscal ............ ............................. . Obligațiile declarative înscrise în vectorul fiscal pot fi modificate și completate prin depunerea, la organul fiscal central competent, a unei declarații de mențiuni."
-— OPANAF 2430/2025, Anexa nr. 6 (sursă: anaf_surse/ordin_2430_2025.html)
+— OPANAF 2430/2025, Anexa nr. 6 (sursă: [OPANAF nr. 2430/2025 privind procedura de înregistrare fiscală din oficiu](https://legislatie.just.ro/Public/DetaliiDocument/303981))
 
 „Împotriva prezentei decizii se poate formula contestație la organul fiscal emitent, în conformitate cu dispozițiile art. 272 alin. (1) din Codul de procedură fiscală , în termen de 45 de zile de la data comunicării, potrivit art. 270 alin. (1) din același act normativ."
-— OPANAF 2430/2025, Anexa nr. 6 (sursă: anaf_surse/ordin_2430_2025.html)
+— OPANAF 2430/2025, Anexa nr. 6 (sursă: [OPANAF nr. 2430/2025 privind procedura de înregistrare fiscală din oficiu](https://legislatie.just.ro/Public/DetaliiDocument/303981))
 :::
 
 ::: ghid-temei
 „(11) Data înregistrării fiscale este: a) data depunerii declarației fiscale, în cazul contribuabililor prevăzuți la alin. (5); b) data atribuirii codului de identificare fiscală, în celelalte cazuri. (12) Codul de identificare fiscală poate fi utilizat de contribuabili și pentru îndeplinirea obligațiilor fiscale aferente perioadelor anterioare datei de înregistrare fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (11)-(12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (11)-(12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă:

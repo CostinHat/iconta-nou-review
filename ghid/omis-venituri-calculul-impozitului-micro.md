@@ -17,7 +17,7 @@ Omiterea unor venituri din baza de calcul a impozitului pe veniturile microîntr
 (1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 [...]
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă acest temei pentru veniturile omise la impozitul micro:
@@ -34,6 +34,6 @@ Ce înseamnă acest temei pentru veniturile omise la impozitul micro:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/test_a8_micro_baza.py` și `core/test_note_explicative_micro.py` arată că baza impozitului micro este calculată din datele contabile curente ale trimestrului; iConta.eu nu are, la acest moment, un asistent dedicat pentru generarea automată a unei declarații D100 rectificative în cazul unor venituri omise dintr-un trimestru anterior — o astfel de corecție se face manual, prin recalcularea trimestrului respectiv și redepunerea declarației.
+Verificat în cod: Aplicația arată că baza impozitului micro este calculată din datele contabile curente ale trimestrului; iConta.eu nu are, la acest moment, un asistent dedicat pentru generarea automată a unei declarații D100 rectificative în cazul unor venituri omise dintr-un trimestru anterior — o astfel de corecție se face manual, prin recalcularea trimestrului respectiv și redepunerea declarației.
 
 [iConta.eu](/)

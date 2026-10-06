@@ -14,7 +14,7 @@ Distribuirea de dividende în cursul anului nu e un drept automat al asociațilo
 
 ::: ghid-temei
 „Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat, opțional trimestrial pe baza situațiilor financiare interimare și anual, după regularizarea efectuată prin situațiile financiare anuale, dacă prin actul constitutiv nu se prevede altfel. Acestea se pot plăti în mod opțional trimestrial în termenul stabilit de adunarea generală a asociaților [...], regularizarea diferențelor rezultate din distribuirea dividendelor în timpul anului urmând să se facă prin situațiile financiare anuale. Plata diferențelor rezultate din regularizare se face în termen de 60 de zile de la data aprobării situațiilor financiare anuale."
-— Legea nr. 31/1990 (Legea societăților), art. 67 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (Legea societăților), art. 67 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce presupune, concret, procesul:

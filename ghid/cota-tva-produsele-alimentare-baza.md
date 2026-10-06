@@ -14,7 +14,7 @@ Alimentele beneficiază, ca regulă, de cotă redusă de TVA. Dar legea nu trate
 
 ::: ghid-temei
 „Articolul 291 alin. (2) lit. b) livrarea următoarelor bunuri: alimente, inclusiv băuturi, destinate consumului uman și animal, animale și păsări vii din specii domestice, ale căror coduri NC se stabilesc prin normele metodologice, cu excepția: 1. băuturilor alcoolice; [...] 2. băuturilor nealcoolice care se încadrează la codul NC 2202; [...] 3. alimentelor cu zahăr adăugat, al căror conținut total de zahăr este de minimum 10 g/100 g produs, altele decât laptele praf pentru nou-născuți, sugari și copii de vârstă mică; [...] 4. suplimentelor alimentare definite de Legea nr. 56/2021 privind suplimentele alimentare, cu modificările și completările ulterioare;"
-— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula de bază: alimentele și băuturile destinate consumului uman și animal intră la cota redusă, care este **11%** de la 01.08.2025 (Legea nr. 141/2025, care a abrogat cotele de 5% și 9%).

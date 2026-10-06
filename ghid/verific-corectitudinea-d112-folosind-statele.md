@@ -39,6 +39,6 @@ Greșeala frecventă e compararea manuală doar a impozitului pe venit din statu
 
 ## Ce face iConta.eu
 
-Funcția `verifica_d112` (`core/control_incrucisat.py`) execută automat acest control pentru fiecare lună: generează sau preia D112, parsează sumele declarate direct din XML (nu printr-o reagregare separată a salariaților, pentru a evita o "a treia cifră"), citește rulajele contabile doar din notele validate, aplică toleranța corectă și afișează verdictul pe fiecare din cele patru conturi, cu temeiul citat explicit pentru fiecare constatare.
+Funcția `verifica_d112` execută automat acest control pentru fiecare lună: generează sau preia D112, parsează sumele declarate direct din XML (nu printr-o reagregare separată a salariaților, pentru a evita o "a treia cifră"), citește rulajele contabile doar din notele validate, aplică toleranța corectă și afișează verdictul pe fiecare din cele patru conturi, cu temeiul citat explicit pentru fiecare constatare.
 
 [iConta.eu](/)

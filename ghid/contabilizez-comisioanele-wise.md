@@ -14,7 +14,7 @@ Firmele care folosesc Wise pentru încasări/plăți în valută primesc extrase
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate» Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: – valoarea serviciilor bancare și asimilate plătite (471, 512) [...]"
-— OMFP 1802/2014, reglementările contabile, planul de conturi general (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementările contabile, planul de conturi general (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 În practică, pentru o operațiune Wise cu comision reținut:
@@ -31,6 +31,6 @@ Firmele care folosesc Wise pentru încasări/plăți în valută primesc extrase
 
 ## Ce face iConta.eu
 
-Modulul de bancă din iConta.eu (`core/banca.py`) analizează descrierea fiecărei linii din extrasul de cont și încearcă să detecteze automat tipul operațiunii (client, furnizor, salarii, TVA, transfer intern etc.), aplicând nota contabilă corespunzătoare pe contul de disponibilități potrivit (5121 sau 5124 pentru valută). La data acestui ghid, aplicația **nu are o regulă dedicată de recunoaștere automată a comisioanelor Wise** ca linie separată de cheltuială pe contul 627 — dacă extrasul importat conține comisionul ca rând distinct, acesta trebuie alocat manual pe 627 în cadrul procesului de contare a extrasului bancar.
+Modulul de bancă din iConta.eu analizează descrierea fiecărei linii din extrasul de cont și încearcă să detecteze automat tipul operațiunii (client, furnizor, salarii, TVA, transfer intern etc.), aplicând nota contabilă corespunzătoare pe contul de disponibilități potrivit (5121 sau 5124 pentru valută). La data acestui ghid, aplicația **nu are o regulă dedicată de recunoaștere automată a comisioanelor Wise** ca linie separată de cheltuială pe contul 627 — dacă extrasul importat conține comisionul ca rând distinct, acesta trebuie alocat manual pe 627 în cadrul procesului de contare a extrasului bancar.
 
 [iConta.eu](/)

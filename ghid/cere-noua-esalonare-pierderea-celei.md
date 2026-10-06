@@ -14,7 +14,7 @@ Când o eșalonare la plată își pierde valabilitatea (de regulă din cauza ne
 
 ::: ghid-temei
 „Debitorul poate solicita organului fiscal competent menținerea unei eșalonări a cărei valabilitate a fost pierdută din cauza nerespectării condițiilor prevăzute la alin. (2) și la art. 194 alin. (1), cu excepția cazului în care eșalonarea a fost pierdută ca urmare a nerespectării condiției prevăzute la art. 194 alin. (1) lit. k) și p)-s) [...] o singură dată într-un an calendaristic sau fracție de an calendaristic, dacă depune o cerere în acest scop înainte de executarea garanției de către organul fiscal competent sau înainte de stingerea tuturor obligațiilor fiscale care au făcut obiectul eșalonării la plată, după caz."
-— Legea 207/2015 (Codul de procedură fiscală), art. 200 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 200 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva puncte esențiale din text:

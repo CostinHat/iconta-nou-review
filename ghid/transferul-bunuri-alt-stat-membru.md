@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Transferul [...] reprezintă expedierea sau transportul oricăror bunuri mobile corporale din România către alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizate în scopul desfășurării activității sale economice. [...] nontransferul reprezintă expedierea sau transportul unui bun din România în alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizat în scopul uneia dintre următoarele operațiuni [...]."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (11)-(12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (11)-(12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula generală și excepția funcționează ca o pereche: orice mutare e transfer, în afară de cazurile enumerate limitativ ca nontransfer:

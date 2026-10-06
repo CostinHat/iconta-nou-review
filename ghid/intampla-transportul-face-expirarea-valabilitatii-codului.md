@@ -16,13 +16,13 @@ Situația apare când transportul se amână (camionul nu vine, marfa nu e gata)
 
 ::: ghid-temei
 „(2) Termenul de valabilitate a codului UIT este de 5 zile calendaristice, respectiv de 15 zile calendaristice în cazul achizițiilor intracomunitare de bunuri, precum și în cazul operațiunilor comerciale prevăzute la art. 2 pct. 9 lit. g) și j) , începând cu data declarată pentru începerea transportului. Utilizarea de către operatorul de transport rutier a codului UIT peste termenul de valabilitate a acestuia este interzisă."
-— OUG 41/2022, art. 11 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 11 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „a) nerespectarea prevederilor art. 9 alin. (2) și (3) , art. 11 alin. (2) și (4) ;"
-— OUG 41/2022, art. 13^1 alin. (1) lit. a) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. a) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate."
-— OUG 41/2022, art. 13^1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce trebuie reținut:

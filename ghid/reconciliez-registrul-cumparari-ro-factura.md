@@ -15,7 +15,7 @@ Legea nu prevede o procedură explicită numită „reconciliere” între regis
 ::: ghid-temei
 „c) emitent al facturii electronice - operatorul economic care emite factura electronică către destinatar şi o transmite în sistemul naţional privind factura electronică RO e-Factura [...]
 (2) Sistemul naţional privind factura electronică RO e-Factura reprezintă ansamblul de principii, reguli şi aplicaţii informatice având drept scop primirea facturii electronice de la emitent cu respectarea structurii facturii electronice prevăzute la art. 4 alin. (1), stocarea prin mijloace electronice a facturilor şi transmiterea către destinatar."
-— OUG nr. 120/2021, art. 2 lit. c) și art. 3 alin. (2) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 2 lit. c) și art. 3 alin. (2) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce rezultă de aici pentru practica de reconciliere:

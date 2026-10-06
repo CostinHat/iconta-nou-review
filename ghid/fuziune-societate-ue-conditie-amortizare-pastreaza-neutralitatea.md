@@ -16,15 +16,15 @@ Practic, activele rămase în România, la sediul permanent al societății str�
 
 ::: ghid-temei
 „Operațiunile de fuziune, divizare sub orice formă nu sunt transferuri impozabile pentru diferența dintre prețul de piață al elementelor din activ și pasiv transferate și valoarea lor fiscală."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dispozițiile alin. (3) se aplică numai dacă societatea beneficiară calculează amortizarea și orice câștig sau pierdere, aferente activelor și pasivelor transferate, în concordanță cu dispozițiile care ar fi fost aplicate societății cedente dacă fuziunea, divizarea sub orice formă nu ar fi avut loc."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „active și pasive transferate - activele și pasivele societății cedente care, în urma fuziunii, divizării totale sau divizării parțiale, sunt integrate unui sediu permanent al societății beneficiare, situat în statul membru al societății cedente, și care contribuie la generarea profiturilor sau pierderilor luate în calcul la stabilirea bazei de impozitare"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 4 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 4 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se citește condiția:

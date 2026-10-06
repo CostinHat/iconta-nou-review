@@ -33,6 +33,6 @@ Cea mai frecventă formă a acestei greșeli e tratarea indemnizației de mandat
 
 ## Ce face iConta.eu
 
-Modulul F021 (`core/contracte_speciale.py`) oferă calculul și nota corecte pentru mandat, prin funcțiile `calcul_mandat` și `nota(fel="mandat")`. O limitare importantă de reținut la corectare: generarea automată a D112 din aplicație (`core/d112.py`) citește exclusiv din tabela de salariați cu CIM — nu are, la acest moment, o punte funcțională spre notele de mandat/cenzor. Dacă indemnizația a fost declarată greșit la D112 ca salariat clasic, rectificarea acelei declarații rămâne un pas manual, în afara acestui modul.
+Modulul F021 oferă calculul și nota corecte pentru mandat, prin funcțiile `calcul_mandat` și `nota(fel="mandat")`. O limitare importantă de reținut la corectare: generarea automată a D112 din aplicație citește exclusiv din tabela de salariați cu CIM — nu are, la acest moment, o punte funcțională spre notele de mandat/cenzor. Dacă indemnizația a fost declarată greșit la D112 ca salariat clasic, rectificarea acelei declarații rămâne un pas manual, în afara acestui modul.
 
 [iConta.eu](/)

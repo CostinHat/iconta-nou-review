@@ -16,18 +16,18 @@ Amenda nu e singura consecință. La clădirile nedeclarate, impozitul stabilit 
 
 ::: ghid-temei
 „Constituie contravenții următoarele fapte, dacă nu au fost săvârșite în astfel de condiții încât să fie considerate, potrivit legii, infracțiuni: a) depunerea peste termen a declarațiilor de impunere prevăzute la art. 461 alin. (2) [...] b) nedepunerea declarațiilor de impunere prevăzute la art. 461 alin. (2)"
-— Codul fiscal (Legea 227/2015), art. 493 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 493 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contravenția prevăzută la alin. (2) lit. a) se sancționează cu amendă de la 70 lei la 279 lei, iar cele de la alin. (2) lit. b) cu amendă de la 279 lei la 696 lei."
-— Codul fiscal (Legea 227/2015), art. 493 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 493 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul persoanelor juridice, limitele minime și maxime ale amenzilor prevăzute la alin. (3) și (4) se majorează cu 300%."
-— Codul fiscal (Legea 227/2015), art. 493 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 493 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „contravenienții sancționați în baza prevederilor [...] a Legii nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare, [...] nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ."
-— Legea 296/2023, art. LVIII (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LVIII (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce declarații intră sub sancțiune (art. 493 alin. (2)):

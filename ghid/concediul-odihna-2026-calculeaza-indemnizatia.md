@@ -16,7 +16,7 @@ Indemnizația de concediu de odihnă nu e salariul obișnuit al lunii — e un c
 „(1) Pentru perioada concediului de odihnă salariatul beneficiază de o indemnizaţie de concediu care nu poate fi mai mica decât valoarea totală a drepturilor salariale cuvenite pentru perioada respectiva.
 (2) Indemnizaţia de concediu de odihnă reprezintă media zilnica a veniturilor din luna/lunile în care este efectuat concediul, multiplicata cu numărul de zile de concediu.
 (3) Indemnizaţia de concediu de odihnă se plăteşte de către angajator cu cel puţin 5 zile lucrătoare înainte de plecarea în concediu."
-— Legea 53/2003 (Codul muncii), art. 145 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 145 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă concret din formulă:
@@ -35,6 +35,6 @@ Ce rezultă concret din formulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează salariul obișnuit (`core/salarizare.py`, `calcul_salariu()`) și indemnizația de concediu medical (`calcul_cm()`, cu regulile OUG 158/2005 și Codul fiscal), dar **nu are o funcție dedicată calculului indemnizației de concediu de odihnă** conform formulei „media zilnică a veniturilor × zile de concediu" din art. 145 din Codul muncii. Modulul de pontaj (`core/pontaj.py`) urmărește zilele lucrate și grila de lucru, dar nu generează automat suma de plată pentru zilele de concediu de odihnă. Calculul indemnizației și respectarea termenului de plată de 5 zile lucrătoare înainte de concediu rămân, la acest moment, în sarcina angajatorului/contabilului.
+La data acestui ghid, iConta.eu calculează salariul obișnuit (`calcul_salariu()`) și indemnizația de concediu medical (`calcul_cm()`, cu regulile OUG 158/2005 și Codul fiscal), dar **nu are o funcție dedicată calculului indemnizației de concediu de odihnă** conform formulei „media zilnică a veniturilor × zile de concediu" din art. 145 din Codul muncii. Modulul de pontaj urmărește zilele lucrate și grila de lucru, dar nu generează automat suma de plată pentru zilele de concediu de odihnă. Calculul indemnizației și respectarea termenului de plată de 5 zile lucrătoare înainte de concediu rămân, la acest moment, în sarcina angajatorului/contabilului.
 
 [iConta.eu](/)

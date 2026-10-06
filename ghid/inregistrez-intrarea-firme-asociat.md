@@ -17,7 +17,7 @@ O firmă (persoană juridică) poate deveni asociat într-un SRL fie prin cesiun
 (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social.
 Art. 203 (1) Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății.
 (2) Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea 31/1990 privind societățile, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Dacă firma nouă cumpără/preia părți sociale de la un asociat existent, e vorba de o **cesiune de părți sociale** — transmiterea către o persoană din afara societății trebuie aprobată de asociați reprezentând cel puțin 3/4 din capitalul social (dacă actul constitutiv nu prevede un alt cvorum).

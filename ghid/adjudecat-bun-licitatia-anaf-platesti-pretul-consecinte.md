@@ -16,13 +16,13 @@ Pentru o firmă care licitează, adjudecarea e un angajament ferm, nu o opțiune
 
 ::: ghid-temei
 „Dacă adjudecatarul nu plătește prețul, licitația se reia în termen de 10 zile de la data adjudecării. în acest caz, adjudecatarul este obligat să plătească cheltuielile prilejuite de noua licitație și, în cazul în care prețul obținut la noua licitație este mai mic, diferența de preț. Adjudecatarul poate să achite prețul oferit inițial și să facă dovada achitării acestuia până la termenul prevăzut la art. 250 alin. (7), caz în care este obligat numai la plata cheltuielilor cauzate de noua licitație."
-— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă la următoarea licitație bunul nu a fost vândut, fostul adjudecatar este obligat să plătească toate cheltuielile prilejuite de urmărirea acestuia."
-— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Suma reprezentând diferența de preț și/sau cheltuielile prevăzute la alin. (1) și (4) se stabilesc de organul de executare silită, prin proces-verbal, care constituie titlu executoriu potrivit prezentului cod."
-— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Consecințele, pe rând:

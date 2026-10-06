@@ -14,7 +14,7 @@ RO e-Factura și Declarația informativă D406 (SAF-T) sunt două obligații de 
 
 ::: ghid-temei
 „Documentele oficiale de prezentare a activității economico-financiare a persoanelor [...] sunt situațiile financiare anuale, întocmite potrivit reglementărilor contabile aplicabile și care trebuie să ofere o imagine fidelă a poziției financiare, performanței financiare și a altor informații, în condițiile legii, referitoare la activitatea desfășurată."
-— Legea 82/1991 (Legea contabilității), art. 9 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 9 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Notă onestă: nu am găsit în corpus un articol care să reglementeze explicit „reconcilierea" dintre RO e-Factura și D406 — cele două obligații sunt reglementate separat (OUG 120/2021 pentru facturarea electronică, OPANAF 1783/2021 pentru SAF-T). Citatul de mai sus este principiul general al imaginii fidele din Legea contabilității, aplicat la această situație, nu un articol specific pe subiect.

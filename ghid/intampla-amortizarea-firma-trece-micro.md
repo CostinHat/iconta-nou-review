@@ -14,7 +14,7 @@ Când o microîntreprindere depășește plafonul de venituri sau nu mai îndepl
 
 ::: ghid-temei
 „Cheltuielile aferente achiziționării, producerii, construirii mijloacelor fixe amortizabile, precum și investițiile efectuate la acestea se recuperează din punct de vedere fiscal prin deducerea amortizării potrivit prevederilor prezentului articol."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din regula generală de amortizare, aplicată la schimbarea de regim fiscal:

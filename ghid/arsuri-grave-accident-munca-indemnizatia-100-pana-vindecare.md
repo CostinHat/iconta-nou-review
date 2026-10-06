@@ -16,7 +16,7 @@ Regula a fost introdusă în Legea 346/2002 în noiembrie 2024. Materialele mai 
 
 ::: ghid-temei
 „(1) Asigurații sistemului de asigurare pentru accidente de muncă și boli profesionale înregistrați cu accident de muncă, care au suferit arsuri de gradul IIB-III localizate pe față, scalp, mâini, picioare, organe genitale, perineu, articulații mari și/sau arsuri de gradul III cu alte localizări, dar care afectează cel puțin 10% din suprafața corporală, beneficiază de indemnizație pentru incapacitate temporară de muncă în cuantum de 100%, din media veniturilor din salarii sau asimilate salariilor. (2) Prin excepție de la prevederile art. 35 și 36 alin. (3) , în cazul asiguraților prevăzuți la alin. (1) , indemnizația pentru incapacitate temporară de muncă se acordă pe toată perioada de tratament, până la vindecare, inclusiv pentru perioada de recuperare."
-— Legea 346/2002, art. 36^1 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 36^1 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Condițiile, pe rând:

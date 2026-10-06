@@ -14,7 +14,7 @@ O idee frecventă la finalul anului: dacă firma se apropie de plafonul de venit
 
 ::: ghid-temei
 „c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile"
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta, concret:
@@ -31,6 +31,6 @@ Ce înseamnă asta, concret:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează obligațiile fiscale ale regimului micro (D100) pe baza veniturilor introduse de utilizator pentru trimestrul respectiv (`core/d100.py`, funcția `deriva_obligatii`), nu pe baza încasărilor din casă sau bancă. Aplicația nu are, la acest moment, o alertă automată care să semnaleze apropierea de plafonul de 100.000 euro cumulat de la începutul anului — verificarea acestui plafon rămâne o responsabilitate a contabilului, urmărind veniturile cumulate raportate în declarațiile trimestriale.
+iConta.eu calculează obligațiile fiscale ale regimului micro (D100) pe baza veniturilor introduse de utilizator pentru trimestrul respectiv (funcția `deriva_obligatii`), nu pe baza încasărilor din casă sau bancă. Aplicația nu are, la acest moment, o alertă automată care să semnaleze apropierea de plafonul de 100.000 euro cumulat de la începutul anului — verificarea acestui plafon rămâne o responsabilitate a contabilului, urmărind veniturile cumulate raportate în declarațiile trimestriale.
 
 [iConta.eu](/)

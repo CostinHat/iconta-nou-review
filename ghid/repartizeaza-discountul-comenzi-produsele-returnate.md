@@ -14,7 +14,7 @@ Când o comandă cu discount e parțial returnată, întrebarea practică e simp
 
 ::: ghid-temei
 „433. - Suma veniturilor rezultate dintr-o tranzacție este determinată, de obicei, printr-un acord între vânzătorul și cumpărătorul/utilizatorul activului, ținând cont de suma oricăror reduceri comerciale."
-— OMFP 1802/2014, pct. 433 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 433 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o comandă parțial returnată cu discount acordat la nivel de comandă (nu per produs individual):

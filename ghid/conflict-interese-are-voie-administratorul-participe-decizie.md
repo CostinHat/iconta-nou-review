@@ -16,11 +16,11 @@ Administratorul care încalcă aceste obligații răspunde pentru daunele rezult
 
 ::: ghid-temei
 „Administratorul care are într-o anumită operațiune, direct sau indirect, interese contrare intereselor societății trebuie să îi înștiințeze despre aceasta pe ceilalți administratori și pe cenzori sau auditori interni și să nu ia parte la nicio deliberare privitoare la această operațiune."
-— Legea societăților nr. 31/1990, art. 144^3 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 144^3 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Aceeași obligație o are administratorul în cazul în care, într-o anumită operațiune, știe că sunt interesate soțul sau soția sa, rudele ori afinii săi până la gradul al IV-lea inclusiv."
-— Legea societăților nr. 31/1990, art. 144^3 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 144^3 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Administratorul care nu a respectat prevederile alin. (1) și (2) răspunde pentru daunele care au rezultat pentru societate."
-— Legea societăților nr. 31/1990, art. 144^3 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 144^3 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

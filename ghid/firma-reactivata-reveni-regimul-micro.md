@@ -14,7 +14,7 @@ O firmă care a stat o vreme în inactivitate temporară, înscrisă ca atare la
 
 ::: ghid-temei
 „O microîntreprindere care s-a aflat în inactivitate temporară înscrisă în registrul comerțului, potrivit prevederilor legale, continuă să fie plătitoare de impozit pe veniturile microîntreprinderilor de la data înscrierii în registrul comerțului a mențiunii de reluare a activității, dacă îndeplinește condițiile prevăzute la art. 47 alin. (1) lit. d), h) și i), iar pe cea de la lit. g) în termen de 30 de zile inclusiv de la data înregistrării mențiunii în Registrul Comerțului."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (3^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (3^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, la reluarea activității:

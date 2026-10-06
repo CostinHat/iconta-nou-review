@@ -15,7 +15,7 @@ D205 e o declarație informativă, depusă de plătitorii de venituri pentru a r
 ::: ghid-temei
 „(1) Constituie contravenții următoarele fapte, dacă nu au fost săvârșite în astfel de condiții încât să fie considerate, potrivit legii, infracțiuni: [...] b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume, precum și orice informații în legătură cu impozitele, taxele, contribuțiile, bunurile și veniturile impozabile, dacă legea prevede declararea acestora [...]
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: [...] d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m)."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **D205, ca declarație informativă a plătitorului de venit**, intră sub fapta generică de la art. 336 alin. (1) lit. b) — neîndeplinirea la termen a obligațiilor de declarare prevăzute de lege — sancționată conform alin. (2) lit. d).
@@ -30,6 +30,6 @@ D205 e o declarație informativă, depusă de plătitorii de venituri pentru a r
 
 ## Ce face iConta.eu
 
-Modulul D205 din iConta.eu (`core/d205.py`) generează declarația pe baza reținerilor la sursă înregistrate în aplicație, dar nu urmărește automat termenul de depunere și nu emite alerte legate de sancțiunea contravențională pentru nedepunere — urmărirea termenului legal și depunerea efectivă la ANAF rămân responsabilitatea contabilului.
+Modulul D205 din iConta.eu generează declarația pe baza reținerilor la sursă înregistrate în aplicație, dar nu urmărește automat termenul de depunere și nu emite alerte legate de sancțiunea contravențională pentru nedepunere — urmărirea termenului legal și depunerea efectivă la ANAF rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

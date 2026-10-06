@@ -16,15 +16,15 @@ Taxa de autorizare nu e singura posibilă. Dacă pe chioșc sau separat se afiș
 
 ::: ghid-temei
 „(14) Taxa pentru autorizarea amplasării de chioșcuri, containere, tonete, cabine, spații de expunere, corpuri și panouri de afișaj, firme și reclame situate pe căile și în spațiile publice este de până la 8 lei, inclusiv, pentru fiecare metru pătrat de suprafață ocupată de construcție."
-— Codul fiscal (Legea 227/2015), art. 474 alin. (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Valoarea taxei pentru afișaj în scop de reclamă și publicitate se calculează anual prin înmulțirea numărului de metri pătrați sau a fracțiunii de metru pătrat a suprafeței afișajului pentru reclamă sau publicitate cu suma stabilită de consiliul local, astfel: a) în cazul unui afișaj situat în locul în care persoana derulează o activitate economică, suma este de până la 32 lei, inclusiv; [...] b) în cazul oricărui altui panou, afișaj sau oricărei altei structuri de afișaj pentru reclamă și publicitate, suma este de până la 23 lei, inclusiv."
-— Codul fiscal (Legea 227/2015), art. 478 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 478 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele care datorează taxa pentru afișaj în scop de reclamă și publicitate sunt obligate să depună o declarație la compartimentul de specialitate al autorității administrației publice locale în termen de 30 de zile de la data amplasării structurii de afișaj."
-— Codul fiscal (Legea 227/2015), art. 478 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 478 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

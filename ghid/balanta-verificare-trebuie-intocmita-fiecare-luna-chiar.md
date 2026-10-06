@@ -16,12 +16,12 @@ Contează din două motive. Balanța lunară e cea pe care se sprijină declara�
 
 ::: ghid-temei
 „Articolul 22 Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare."
-— Legea contabilității (Legea 82/1991), art. 22 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 22 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „Articolul 20 Registrele de contabilitate obligatorii sunt: Registrul-jurnal, Registrul-inventar și Cartea mare."
-— Legea contabilității (Legea 82/1991), art. 20 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 20 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

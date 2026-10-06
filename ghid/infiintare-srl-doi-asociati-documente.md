@@ -18,7 +18,7 @@ a) datele de identificare a asociaților [...];
 b) forma, denumirea și sediul social;
 c) obiectul de activitate al societății, cu precizarea domeniului și a activității principale;
 d) capitalul social subscris, cu menționarea aportului fiecărui asociat, în numerar sau în natură, valoarea aportului în natură, modul evaluării acestuia; la societățile cu răspundere limitată se vor preciza numărul și valoarea nominală a părților sociale, precum și numărul părților sociale atribuite fiecărui asociat pentru aportul său [...]"
-— Legea 31/1990, art. 7 lit. a)-d) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 7 lit. a)-d) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Termenul de înmatriculare**: „În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori [...] vor cere înmatricularea societății în registrul comerțului în a cărui rază teritorială își va avea sediul societatea" — Legea 31/1990, art. 36 alin. (1).
@@ -34,6 +34,6 @@ d) capitalul social subscris, cu menționarea aportului fiecărui asociat, în n
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă (`FUNCTIONALITATI.csv` și modulele din `core/`), iConta.eu **nu are nicio funcționalitate pentru înființarea sau înmatricularea unei societăți**. Aplicația intervine abia după ce firma există deja în registrul comerțului: F007 (`core/asociati_import_api.py`) importă lista de asociați dintr-un fișier .xlsx/.csv, la migrarea unei firme deja înființate în aplicație, fără nicio legătură cu depunerea actului constitutiv sau cu cererea de înmatriculare. Documentele de înființare de mai sus se pregătesc și se depun la registrul comerțului prin mijloace din afara iConta.eu.
+Din verificarea codului sursă (`FUNCTIONALITATI.csv` și modulele din aplicație), iConta.eu **nu are nicio funcționalitate pentru înființarea sau înmatricularea unei societăți**. Aplicația intervine abia după ce firma există deja în registrul comerțului: F007 importă lista de asociați dintr-un fișier .xlsx/.csv, la migrarea unei firme deja înființate în aplicație, fără nicio legătură cu depunerea actului constitutiv sau cu cererea de înmatriculare. Documentele de înființare de mai sus se pregătesc și se depun la registrul comerțului prin mijloace din afara iConta.eu.
 
 [iConta.eu](/)

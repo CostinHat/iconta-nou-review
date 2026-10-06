@@ -17,7 +17,7 @@ Când o contestație administrativă duce la desființarea unui act de inspecți
 (3) Refacerea inspecției fiscale și emiterea noului act administrativ-fiscal sunt posibile chiar dacă pentru perioadele și obligațiile fiscale vizate de refacere s-a anulat rezerva verificării ulterioare potrivit art. 94 alin. (3).
 (4) Refacerea inspecției fiscale se realizează de către o altă echipă de inspecție fiscală decât cea care a încheiat actul desființat.
 (5) Prin excepție de la prevederile alin. (4), refacerea inspecției fiscale se realizează de către aceeași echipă de inspecție care a încheiat actul desființat dacă, din motive obiective, nu există posibilitatea refacerii inspecției fiscale de către o altă echipă de inspecție."
-— Legea 207/2015 (Codul de procedură fiscală), art. 129 alin. (2)-(5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 129 alin. (2)-(5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile concrete pe care le impune legea:

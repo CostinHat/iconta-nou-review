@@ -16,15 +16,15 @@ Termenul de 5 zile e scurt, iar datele din registru nu sunt formale: registrul c
 
 ::: ghid-temei
 „În cazul în care considerați că nu aveți obligația depunerii declarației de mențiuni cu privire la situația prezentată mai sus, vă rugăm ca, în temeiul prevederilor art. 9 din Codul de procedură fiscală , în termen de 5 zile de la data primirii prezentei notificări, să vă prezentați la sediul nostru în vederea exercitării dreptului de a fi ascultat. În cazul în care nu depuneți declarația de mențiuni sau nu prezentați organului fiscal documente din care să rezulte că nu au intervenit modificări în datele din declarația de înregistrare fiscală, organul fiscal va aplica procedura de modificare din oficiu a datelor din Registrul contribuabililor/plătitorilor, conform legii."
-— OPANAF 3792/2024, Anexa nr. 2 (sursă: anaf_surse/ordin_3792_2024.html)
+— OPANAF 3792/2024, Anexa nr. 2 (sursă: [OPANAF nr. 3792/2024 privind modificarea din oficiu a datelor din Registrul contribuabililor](https://legislatie.just.ro/Public/DetaliiDocument/286607))
 :::
 
 ::: ghid-temei
 „Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Codul de procedură fiscală (Legea 207/2015), art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Datele din registrul contribuabililor/plătitorilor pot fi modificate din oficiu ori de câte ori se constată că acestea nu corespund stării de fapt reale. Modificările se comunică contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 91 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 91 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii procedurii, din formularele ordinului:

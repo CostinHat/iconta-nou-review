@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Concedierea pentru motive care nu țin de persoana salariatului reprezintă încetarea contractului individual de muncă, determinată de desființarea locului de muncă ocupat de salariat ca urmare a dificultăților economice, a transformărilor tehnologice sau a reorganizării activității. [...] Desființarea locului de muncă trebuie să fie efectivă și să aibă o cauză reală și serioasă [...]."
-— Legea 53/2003 (Codul muncii), art. 65 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 65 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Pașii care rezultă din Codul muncii pentru încetarea contractelor la închiderea firmei:

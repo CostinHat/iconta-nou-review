@@ -14,7 +14,7 @@ Un client dintr-un alt stat membru vine cu propriul mijloc de transport și ridi
 
 ::: ghid-temei
 „Livrarea intracomunitară reprezintă o livrare de bunuri, în înțelesul alin. (1), care sunt expediate sau transportate dintr-un stat membru în alt stat membru de către furnizor sau de persoana către care se efectuează livrarea ori de altă persoană în contul acestora."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Legea prevede explicit cele trei variante posibile ale transportatorului, tratându-le identic pentru calificarea operațiunii:

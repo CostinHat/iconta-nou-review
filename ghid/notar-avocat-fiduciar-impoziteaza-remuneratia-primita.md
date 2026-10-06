@@ -16,15 +16,15 @@ Regula privește strict remunerația, adică ce primește fiduciarul pentru munc
 
 ::: ghid-temei
 „Remunerația fiduciarului contribuabil potrivit prezentului titlu, notar public sau avocat, primită pentru administrarea masei patrimoniale, constituie, în înțelesul prezentului titlu, venit din activitatea adiacentă și se supune impunerii cumulat cu veniturile din activitatea desfășurată de notar sau avocat, potrivit prevederilor cap. II - Venituri din activități independente."
-— Codul fiscal (Legea 227/2015), art. 63 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 63 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Tratamentul fiscal al veniturilor realizate din administrarea masei patrimoniale de către fiduciar, altele decât remunerația fiduciarului, se stabilește în funcție de natura venitului respectiv și se supune impunerii potrivit regulilor proprii fiecărei categorii de venituri. [...] În cazul în care constituitorul este contribuabil potrivit prezentului titlu, obligațiile fiscale ale acestuia în legătură cu masa patrimonială administrată vor fi îndeplinite de fiduciar."
-— Codul fiscal (Legea 227/2015), art. 63 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 63 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Concret:

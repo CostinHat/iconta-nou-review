@@ -16,17 +16,17 @@ Normele nu prevăd însă o procedură separată prin care primăria să „cont
 
 ::: ghid-temei
 „Rapoartele de evaluare în scopul stabilirii impozitului pe clădiri pot fi verificate de autoritățile locale în conformitate cu standardele de evaluare în vigoare la data evaluării.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 40 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 40 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „b) valoarea rezultată dintr-un raport de evaluare întocmit de un evaluator autorizat în conformitate cu standardele de evaluare a bunurilor aflate în vigoare la data evaluării;”
-— Codul fiscal (Legea 227/2015), art. 460 alin. (5) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (5) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal.”
-— Codul de procedură fiscală (Legea 207/2015), art. 268 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 268 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce verifică, de regulă, organul fiscal local:

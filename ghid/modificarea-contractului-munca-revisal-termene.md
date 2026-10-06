@@ -16,7 +16,7 @@ Orice schimbare a unui element din contractul individual de muncă — funcție,
 „Orice modificare a datelor prevăzute la art. 4 alin. (2) lit. b) și c) se transmite în Registru în termen de 3 zile lucrătoare de la data înregistrării la angajator a documentului din care rezultă modificarea intervenită.
 alin. (3) Orice modificare a datelor prevăzute la art. 4 alin. (2) lit. e)-i) se transmite în Registru cel târziu în ziua anterioară producerii modificării. Excepție fac situațiile în care modificarea se produce ca urmare a unei hotărâri judecătorești, când transmiterea [...] se face în termen de 10 zile lucrătoare.
 alin. (4) Orice modificare a datelor prevăzute la art. 4 alin. (2) lit. j) [salariul] se transmite în Registru în termen de 20 de zile lucrătoare de la data producerii modificării."
-— HG 295/2025, art. 5 alin. (2), (3), (4) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 5 alin. (2), (3), (4) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Așadar, în 2026, termenele de raportare a modificărilor contractului nu sunt uniforme, ci depind de natura datei modificate:

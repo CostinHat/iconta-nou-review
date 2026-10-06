@@ -14,7 +14,7 @@ Formularea „dividendele la un PFA" ascunde o confuzie frecventă: o persoană 
 
 ::: ghid-temei
 „Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor/sumelor reprezentând câștigul obținut ca urmare a deținerii de titluri de participare de către acționari/asociați/investitori. Termenul de virare a impozitului este până la data de 25 inclusiv a lunii următoare celei în care se face plata."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (7), modificat prin Legea 141/2025, art. II pct. 5, în vigoare de la 1 ianuarie 2026 (sursă: anaf_surse/legea_141_2025_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (7), modificat prin Legea 141/2025, art. II pct. 5, în vigoare de la 1 ianuarie 2026 (sursă: [Legea nr. 141/2025 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/300022))
 :::
 
 Ce înseamnă concret pentru 2026:

@@ -15,7 +15,7 @@ Firmele care optează pentru sistemul anual de impozit pe profit nu declară tri
 ::: ghid-temei
 „Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5), pot opta pentru calculul, declararea și plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial. Termenul până la care se efectuează plata impozitului anual este termenul de depunere a declarației privind impozitul pe profit, prevăzut la art. 42.
 Opțiunea pentru sistemul anual de declarare și plată a impozitului pe profit se efectuează la începutul anului fiscal pentru care se solicită aplicarea prevederilor alin. (2). Opțiunea este obligatorie pentru cel puțin 2 ani fiscali consecutivi."
-— Codul fiscal (Legea 227/2015), art. 41 alin. (2)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (2)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, concret, sistemul anual cu plăți anticipate:

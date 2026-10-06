@@ -16,7 +16,7 @@ Da. Legea nu limitează numărul de declarații rectificative pe care le poate d
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 [...]
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text:
@@ -33,6 +33,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu poate genera D212 marcată drept declarație rectificativă: modulul `core/d212.py` include atributele `rectif1` și `rectif2` din structura oficială a formularului, pe care contabilul le poate seta la generarea fiecărei variante corectate. Aplicația nu ține însă un istoric automat al declarațiilor rectificative deja depuse la ANAF și nu verifică dacă rezerva verificării ulterioare a fost anulată pentru perioada respectivă — aceste aspecte rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu poate genera D212 marcată drept declarație rectificativă: Aplicația include atributele `rectif1` și `rectif2` din structura oficială a formularului, pe care contabilul le poate seta la generarea fiecărei variante corectate. Aplicația nu ține însă un istoric automat al declarațiilor rectificative deja depuse la ANAF și nu verifică dacă rezerva verificării ulterioare a fost anulată pentru perioada respectivă — aceste aspecte rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

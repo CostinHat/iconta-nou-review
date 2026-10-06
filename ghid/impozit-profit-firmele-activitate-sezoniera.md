@@ -14,10 +14,10 @@ Codul fiscal nu are un regim special pentru firmele cu activitate sezonieră (de
 
 ::: ghid-temei
 „Anul fiscal este anul calendaristic. Când un contribuabil se înființează sau încetează să mai existe în cursul unui an fiscal, perioada impozabilă este perioada din anul calendaristic pentru care contribuabilul a existat."
-— Legea 227/2015, art. 16 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 16 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Calculul, declararea și plata impozitului pe profit [...] se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— Legea 227/2015, art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința: o firmă cu activitate sezonieră (de exemplu, venituri concentrate în trimestrele II-III și activitate redusă restul anului) declară și, dacă e cazul, plătește impozit pe profit pentru fiecare trimestru, conform obligațiilor generale — dacă un trimestru „mort" nu generează profit impozabil, nu se datorează impozit pentru acel trimestru (declarația se depune totuși, dacă firma e obligată la sistemul trimestrial), iar impozitul se calculează cumulat de la începutul anului: pierderea unui trimestru diminuează impozitul datorat pentru trimestrele următoare cu profit, până la definitivarea anuală. Nu există un plafon special, o cotă redusă sau un termen extins doar pentru că activitatea e sezonieră.

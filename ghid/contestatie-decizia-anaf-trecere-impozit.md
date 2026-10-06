@@ -15,10 +15,10 @@ Când ANAF constată din oficiu că firma nu mai îndeplinește condițiile de m
 ::: ghid-temei
 „(1) Împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal.
 (2) Este îndreptățit la contestație numai cel care consideră că a fost lezat în drepturile sale printr-un act administrativ fiscal."
-— Legea 207/2015, art. 268 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 268 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Legea 207/2015, art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret pentru o firmă care primește o astfel de decizie:

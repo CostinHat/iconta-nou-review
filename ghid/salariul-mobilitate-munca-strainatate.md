@@ -14,7 +14,7 @@ Nu orice salariat care lucrează în afara unui loc fix are "mobilitate" în sen
 
 ::: ghid-temei
 „Prin clauza de mobilitate părţile în contractul individual de muncă stabilesc ca, în considerarea specificului muncii, executarea obligaţiilor de serviciu de către salariat nu se realizează într-un loc stabil de muncă. În acest caz salariatul beneficiază de prestaţii suplimentare în bani sau în natură."
-— Legea nr. 53/2003 (Codul muncii), art. 25 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 25 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - **Clauza de mobilitate se stabilește prin contract**, nu se prezumă — trebuie să fie o prevedere expresă, negociată între angajator și salariat, potrivit specificului muncii (agenți de vânzări, curieri, personal cu activitate itinerantă).

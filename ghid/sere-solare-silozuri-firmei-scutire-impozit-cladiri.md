@@ -16,15 +16,15 @@ Facilitatea e prevăzută direct în Codul fiscal, deci nu depinde de o hotărâ
 
 ::: ghid-temei
 „(3) În anul 2026, clădirile care sunt utilizate ca sere, solare, răsadnițe, ciupercării, silozuri pentru furaje, silozuri și/sau pătule pentru depozitarea și conservarea cerealelor, cu excepția încăperilor care sunt folosite pentru alte activități economice, sunt scutite de la plata impozitului pe clădiri, iar începând cu anul 2027 pentru acestea impozitul pe clădiri se reduce cu 50%."
-— Codul fiscal (Legea 227/2015), art. 456 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(3) Pentru clădirile nerezidențiale aflate în proprietatea sau deținute de persoanele juridice, utilizate pentru activități din domeniul agricol, impozitul/taxa pe clădiri se calculează prin aplicarea unei cote de 0,4% asupra valorii impozabile a clădirii."
-— Codul fiscal (Legea 227/2015), art. 460 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului sau a taxei pe clădiri."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

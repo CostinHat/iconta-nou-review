@@ -14,7 +14,7 @@ Când ANAF „semnalează" o diferență de TVA, de regulă vorbim despre rezult
 
 ::: ghid-temei
 „(1) Valorificarea datelor și informațiilor din decontul precompletat RO e-TVA se realizează de către Agenția Națională de Administrare Fiscală, prin identificarea diferențelor dintre datele și informațiile din decontul precompletat RO e-TVA și cele din decontul de taxă pe valoarea adăugată, astfel cum este prevăzut în Legea nr. 227/2015 privind Codul fiscal [...] (Codul fiscal), prin intermediul Modulului de valorificare a datelor și informațiilor RO e-TVA."
-— OUG 70/2024, art. 4 alin. (1) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 4 alin. (1) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Câteva repere pentru a înțelege de unde vine diferența și ce trebuie făcut:

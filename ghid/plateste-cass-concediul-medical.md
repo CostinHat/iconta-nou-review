@@ -30,6 +30,6 @@ Greșeala frecventă e presupunerea, fără verificare, că toate veniturile unu
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial (`core/salarizare.py`) aplică CASS 10% exclusiv pe veniturile salariale obișnuite, din registrul „period-aware" `core.common.COTE`. Pentru tratamentul CASS al indemnizațiilor de concediu medical, verifică ecranul dedicat din iConta.eu (F122) — dosarul de cercetare pentru F080 nu acoperă acest flux.
+Motorul de calcul salarial aplică CASS 10% exclusiv pe veniturile salariale obișnuite, din registrul „period-aware" `core.common.COTE`. Pentru tratamentul CASS al indemnizațiilor de concediu medical, verifică ecranul dedicat din iConta.eu (F122) — dosarul de cercetare pentru F080 nu acoperă acest flux.
 
 [iConta.eu](/)

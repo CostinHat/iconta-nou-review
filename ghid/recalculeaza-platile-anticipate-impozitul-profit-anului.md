@@ -16,15 +16,15 @@ Regula privește doar firmele în sistemul anual cu plăți anticipate. Cele în
 
 ::: ghid-temei
 „În situația în care, în cursul anului pentru care se efectuează plățile anticipate, impozitul pe profit aferent anului precedent se modifică și se corectează în condițiile prevăzute de Codul de procedură fiscală, plățile anticipate care se datorează începând cu trimestrul efectuării modificării se determină în baza impozitului pe profit recalculat.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 41 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 41 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul pe profit pentru anul precedent, pe baza căruia se determină plățile anticipate trimestriale, este impozitul pe profit anual, conform declarației privind impozitul pe profit.”
-— Codul fiscal (Legea 227/2015), art. 41 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la prevederile alin. (8) [...] plata anticipată pentru trimestrul I al fiecărui an fiscal/an fiscal modificat se calculează prin aplicarea cotei de impozit asupra profitului contabil al perioadei pentru care se efectuează plata anticipată.”
-— Codul fiscal (Legea 227/2015), art. 41 alin. (10^1), aplicabil din anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (10^1), aplicabil din anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică în 2026:

@@ -14,7 +14,7 @@ Contul 308 apare atunci când o firmă ține evidența materiilor prime și mate
 
 ::: ghid-temei
 „Contul 308 «Diferențe de preț la materii prime și materiale» — Cu ajutorul acestui cont se ține evidența diferențelor (în plus sau nefavorabile, respectiv în minus sau favorabile) între prețul de înregistrare standard (prestabilit) și costul de achiziție, aferente materiilor prime, materialelor consumabile și materialelor de natura obiectelor de inventar. Contul 308 «Diferențe de preț la materii prime și materiale» este un cont rectificativ al valorii de înregistrare a materiilor prime, materialelor consumabile și materialelor de natura obiectelor de inventar."
-— OMFP 1802/2014, reglementările contabile — funcțiunea contului 308 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, reglementările contabile — funcțiunea contului 308 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din funcțiunea contului rezultă mecanismul de lucru:

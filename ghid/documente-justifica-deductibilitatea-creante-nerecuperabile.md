@@ -14,7 +14,7 @@ Deductibilitatea fiscală a unei creanțe neîncasate nu se stabilește pe baza 
 
 ::: ghid-temei
 „ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile, în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), e), f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: 1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a falimentului, pe baza hotărârii judecătorești prin care se atestă această situație, sau la o persoană fizică asupra căreia este deschisă procedura de insolvență [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. j) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 26 alin. (1) lit. j) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Documentele care fac diferența între deductibilitatea de 30% și cea de 100%:
@@ -31,6 +31,6 @@ Documentele care fac diferența între deductibilitatea de 30% și cea de 100%:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **calculează automat procentul de deductibilitate** al ajustării pentru deprecierea creanțelor (`core/provizioane.py`, funcția `deductibilitate_creanta`): pe baza numărului de zile de întârziere de la scadență și a răspunsurilor date de contabil — creanța e garantată, e la o persoană afiliată, există faliment/insolvență declarată — aplicația stabilește procentul corect (0%, 30% sau 100%, potrivit art. 26 lit. c)/j)) și generează nota contabilă de ajustare. Aplicația **nu verifică însă ea însăși existența sau conținutul hotărârii judecătorești** de deschidere a falimentului/insolvenței — confirmarea faptului că un astfel de document există și susține procentul de 100% rămâne o constatare a contabilului, introdusă ca atare în aplicație.
+La data acestui ghid, iConta.eu **calculează automat procentul de deductibilitate** al ajustării pentru deprecierea creanțelor (funcția `deductibilitate_creanta`): pe baza numărului de zile de întârziere de la scadență și a răspunsurilor date de contabil — creanța e garantată, e la o persoană afiliată, există faliment/insolvență declarată — aplicația stabilește procentul corect (0%, 30% sau 100%, potrivit art. 26 lit. c)/j)) și generează nota contabilă de ajustare. Aplicația **nu verifică însă ea însăși existența sau conținutul hotărârii judecătorești** de deschidere a falimentului/insolvenței — confirmarea faptului că un astfel de document există și susține procentul de 100% rămâne o constatare a contabilului, introdusă ca atare în aplicație.
 
 [iConta.eu](/)

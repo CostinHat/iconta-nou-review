@@ -16,15 +16,15 @@ Diferența are efecte concrete. O nouă livrare ar însemna factură emisă de c
 
 ::: ghid-temei
 „în cazul refuzurilor totale sau parțiale privind cantitatea, calitatea ori prețurile bunurilor livrate sau ale serviciilor prestate, precum și în cazul desființării totale ori parțiale a contractului pentru livrarea sau prestarea în cauză ca urmare a unui acord scris între părți sau ca urmare a unei hotărâri judecătorești definitive/definitive și irevocabile, după caz, sau în urma unui arbitraj;"
-— Codul fiscal (Legea 227/2015), art. 287 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 287 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 287 lit. b) din Codul fiscal, desființarea unui contract reprezintă orice modalitate prin care părțile renunță la contract de comun acord sau ca urmare a unei hotărâri judecătorești sau a unui arbitraj. În cazul bunurilor, dacă desființarea contractului presupune și restituirea bunurilor deja livrate, nu se consideră că are loc o nouă livrare de la cumpărător către vânzătorul inițial. În cazul prestărilor de servicii, art. 287 lit. b) din Codul fiscal se aplică numai pentru servicii care nu au fost prestate, desființarea unui contract care are ca obiect prestări de servicii având efecte numai pentru viitor în ce privește reducerea bazei de impozitare."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 32 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 32 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În acest scop furnizorii/prestatorii trebuie să emită facturi cu valorile înscrise cu semnul minus când baza de impozitare se reduce"
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 32 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 32 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

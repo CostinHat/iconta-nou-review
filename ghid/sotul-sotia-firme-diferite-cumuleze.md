@@ -14,7 +14,7 @@ Nu automat. Legea nu cumulează veniturile a două firme doar pentru că asocia�
 
 ::: ghid-temei
 „În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta [...] persoana juridică română este legată cu o altă persoană dacă există oricare dintre următoarele raporturi: a) persoana juridică română care verifică condiția deține la o altă persoană juridică română, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot [...]"
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, „întreprinderi legate" pentru verificarea plafonului de 100.000 euro:
@@ -31,6 +31,6 @@ Ce înseamnă, concret, „întreprinderi legate" pentru verificarea plafonului 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul care să verifice automat raporturile de deținere dintre firme diferite și să cumuleze veniturile pentru testul plafonului micro — aplicația calculează impozitul micro (`core/d100.py`) pe baza veniturilor introduse pentru firma respectivă, tratată individual. Verificarea existenței unei relații de „întreprindere legată" cu o altă firmă, potrivit art. 47 alin. (1^1), rămâne o analiză pe care contabilul o face manual, pe baza structurii acționariatului.
+La data acestui ghid, iConta.eu nu are un modul care să verifice automat raporturile de deținere dintre firme diferite și să cumuleze veniturile pentru testul plafonului micro — aplicația calculează impozitul micro pe baza veniturilor introduse pentru firma respectivă, tratată individual. Verificarea existenței unei relații de „întreprindere legată" cu o altă firmă, potrivit art. 47 alin. (1^1), rămâne o analiză pe care contabilul o face manual, pe baza structurii acționariatului.
 
 [iConta.eu](/)

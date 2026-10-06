@@ -30,6 +30,6 @@ De asemenea, legea nu condiționează cota redusă de statutul de „medicament 
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` include categoria „medicamente" în `CATEGORII_11`, pe litera a) din art. 291 alin. (2). Suplimentele alimentare (Legea 56/2021) apar explicit în `EXCEPTII_21`, tocmai pentru a nu fi confundate cu medicamentele la clasificarea automată a liniei de factură. Dacă motorul de potrivire nu poate stabili cu certitudine dacă un produs e medicament, supliment sau alt tip de bun (de exemplu, dintr-o denumire comercială ambiguă), aplicația nu presupune tăcut o cotă — răspunde cu un statut de cotă nedeterminată, care cere o clasificare manuală înainte de emiterea facturii.
+Aplicația include categoria „medicamente" în `CATEGORII_11`, pe litera a) din art. 291 alin. (2). Suplimentele alimentare (Legea 56/2021) apar explicit în `EXCEPTII_21`, tocmai pentru a nu fi confundate cu medicamentele la clasificarea automată a liniei de factură. Dacă motorul de potrivire nu poate stabili cu certitudine dacă un produs e medicament, supliment sau alt tip de bun (de exemplu, dintr-o denumire comercială ambiguă), aplicația nu presupune tăcut o cotă — răspunde cu un statut de cotă nedeterminată, care cere o clasificare manuală înainte de emiterea facturii.
 
 [iConta.eu](/)

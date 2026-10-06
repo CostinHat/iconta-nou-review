@@ -16,14 +16,14 @@ Regula este utilă pentru firmele cu activitate sezonieră sau ocazională, de e
 
 ::: ghid-temei
 „Prin normele metodologice se stabilesc situațiile și condițiile în care se poate folosi o altă perioadă fiscală decât luna sau trimestrul calendaristic, cu condiția ca această perioadă să nu depășească un an calendaristic."
-— Codul fiscal (Legea 227/2015), art. 322 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 322 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(4) În sensul art. 322 alin. (9) din Codul fiscal, organele fiscale competente pot aproba, la solicitarea justificată a persoanei impozabile, o altă perioadă fiscală, respectiv: a) semestrul calendaristic, dacă persoana impozabilă efectuează operațiuni impozabile numai pe maximum 3 luni calendaristice dintr-un semestru;"
 „b) anul calendaristic, dacă persoana impozabilă efectuează operațiuni impozabile numai pe maximum 6 luni calendaristice dintr-o perioadă de un an calendaristic."
 „(5) Solicitarea prevăzută la alin. (4) se transmite autorităților fiscale competente până la data de 25 februarie a anului în care se exercită opțiunea și este valabilă pe durata păstrării condițiilor prevăzute la alin. (4) ."
-— HG 1/2016, norme metodologice, titlul VII, pct. 103 alin. (4) și (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 103 alin. (4) și (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Norma este dată în aplicarea art. 322 alin. (9) din Codul fiscal, care are același conținut și în forma actuală. Codul fixează limita maximă de un an calendaristic.

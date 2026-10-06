@@ -14,7 +14,7 @@ D406 (SAF-T) e o declarație informativă structurată, care preia date deja exi
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea 82/1991 (Legea contabilității), art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă pentru firmele obligate să depună D406:

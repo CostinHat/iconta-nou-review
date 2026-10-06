@@ -16,20 +16,20 @@ Pentru contabil, asta înseamnă că evidența investiției, adică facturile de
 
 ::: ghid-temei
 „c) În situația în care se apreciază că valoarea declarată a lucrărilor este subevaluată în raport cu alte lucrări similare, compartimentul de specialitate al organului fiscal local din raza de competență unde se realizează lucrările de construire, la sesizarea structurii de specialitate, are obligația să efectueze cel puțin inspecția fiscală parțială, în condițiile Codului de procedură fiscală, pentru verificarea concordanței dintre valoarea reală a lucrărilor declarate pentru regularizarea taxei și înregistrările efectuate în evidența contabilă. Noțiunea situația finală corespunde procesului-verbal de recepție.”
-— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 141 lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 141 lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „taxa datorată se stabilește pe baza valorii lucrărilor de construcție declarate de persoana care solicită autorizația și se plătește înainte de emiterea acesteia;”
-— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „în termen de 15 zile de la data finalizării lucrărilor de construcție, dar nu mai târziu de 15 zile de la data la care expiră autorizația respectivă, persoana care a obținut autorizația trebuie să depună o declarație privind valoarea lucrărilor de construcție la compartimentul de specialitate al autorității administrației publice locale;”
-— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) inspecția fiscală parțială, care reprezintă activitatea de verificare a modului de îndeplinire a uneia sau mai multor obligații fiscale, precum și a altor obligații prevăzute de legislația fiscală și contabilă, ce revin unui contribuabil/plătitor pentru o perioadă de timp determinată.”
-— Codul de procedură fiscală (Legea 207/2015), art. 115 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 115 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum decurge, pe scurt:

@@ -14,7 +14,7 @@ Când asociații unui SRL aduc aporturi de valori diferite, capitalul social nu 
 
 ::: ghid-temei
 „Capitalul social al unei societăți cu răspundere limitată se divide în părți sociale egale."
-— Legea 31/1990, art. 11 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 11 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Cum se reflectă practic aporturi inegale, din coroborarea cu art. 7:

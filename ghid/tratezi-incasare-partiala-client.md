@@ -13,9 +13,9 @@ Nu trebuie să aștepți plata integrală a unei facturi ca să raportezi TVA �
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 282 alin. (3) CF**: „[...] exigibilitatea taxei intervine la data încasării contravalorii **integrale sau parțiale** a livrării de bunuri ori a prestării de servicii [...]" Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 17635.
+**Art. 282 alin. (3) CF**: „[...] exigibilitatea taxei intervine la data încasării contravalorii **integrale sau parțiale** a livrării de bunuri ori a prestării de servicii [...]" Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 
-**Art. 282 alin. (8) CF**: „[...] fiecare încasare totală sau parțială se consideră că include și taxa aferentă." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, liniile 17727-17729.
+**Art. 282 alin. (8) CF**: „[...] fiecare încasare totală sau parțială se consideră că include și taxa aferentă." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Practic, fluxul e în doi pași. La facturare, dacă suma nu a fost încă încasată, TVA merge pe contul 4428 „TVA neexigibilă" (nu pe 4427). Când vine o încasare parțială, se calculează TVA aferentă exact acelei sume, prin metoda sutei mărite (suma încasată × cotă/(100+cotă)), și doar acea porție trece din 4428 în 4427 „TVA colectată" — restul rămâne mai departe pe 4428, până la următoarea încasare.
@@ -32,6 +32,6 @@ Dacă factura are mai multe cote de TVA sau regimuri de impozitare diferite, iar
 
 ## Ce face iConta.eu
 
-Ecranul manual „TVA la încasare" (rută `nota-tva-incasare`) generează articolul contabil 4428=4427 pentru sensul „încasare", pe baza sumei și datei introduse de contabil, calculate cu formula sutei mărite din `core/tva_incasare.py`. Pentru firmele cu decontări alocate automat pe facturi, motorul `core/d300.py` trece sumele prin aceeași funcție, cotă cu cotă, generând direct baza exigibilă și TVA exigibilă corespunzătoare fiecărei încasări parțiale.
+Ecranul manual „TVA la încasare" (rută `nota-tva-incasare`) generează articolul contabil 4428=4427 pentru sensul „încasare", pe baza sumei și datei introduse de contabil, calculate cu formula sutei mărite din aplicație. Pentru firmele cu decontări alocate automat pe facturi, aplicația trece sumele prin aceeași funcție, cotă cu cotă, generând direct baza exigibilă și TVA exigibilă corespunzătoare fiecărei încasări parțiale.
 
 [iConta.eu](/)

@@ -16,17 +16,17 @@ Pentru un cabinet care completează declarația unică a unui agricultor, asta s
 
 ::: ghid-temei
 „Informațiile cuprinse în declarație vizează suprafețele cultivate în anul de realizare a venitului și/sau animalele/familiile de albine deținute la data de 25 mai inclusiv a anului de realizare a venitului, de către contribuabili/asocieri fără personalitate juridică. Modificarea pe parcursul anului de realizare a venitului a structurii suprafețelor destinate producției agricole vegetale cultivate, a numărului de capete de animale/familii de albine deținute de contribuabili/asocieri fără personalitate juridică nu conduce la recalcularea normei anuale de venit.”
-— Codul fiscal (Legea 227/2015), art. 107 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 107 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(6) Modificarea structurii suprafețelor destinate producției agricole vegetale/numărului de capete de animale/familiilor de albine, intervenite după data de 15 martie inclusiv, nu conduce la ajustarea normelor de venit, respectiv a venitului anual impozabil.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 28 alin. (6), titlul IV (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 28 alin. (6), titlul IV (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul în care în cursul anului fiscal de realizare a veniturilor s-au înregistrat pierderi ca urmare a unor fenomene meteorologice nefavorabile ce pot fi asimilate dezastrelor naturale ca îngheț, grindină, polei, ploaie abundentă, secetă și inundații, precum și a epizootiilor ce afectează peste 30% din suprafețele destinate producției agricole vegetale/animalele deținute, norma de venit se reduce proporțional cu pierderea respectivă”
-— Codul fiscal, art. 106 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 106 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

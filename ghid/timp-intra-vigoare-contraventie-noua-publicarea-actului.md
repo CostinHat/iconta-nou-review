@@ -16,16 +16,16 @@ Pentru o firmă, asta înseamnă că o obligație nouă, însoțită de o amend�
 
 ::: ghid-temei
 „(1) Dispozițiile din actele normative prin care se stabilesc și se sancționează contravențiile intră în vigoare în termen de 30 de zile de la data publicării […]"
-— OG 2/2001, art. 4 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 4 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(2) În cazuri urgente se poate prevedea intrarea în vigoare într-un termen mai scurt, dar nu mai puțin de 10 zile."
-— OG 2/2001, art. 4 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 4 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „(1) Dacă printr-un act normativ fapta nu mai este considerată contravenție, ea nu se mai sancționează"
-— OG 2/2001, art. 12 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 12 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(2) Dacă sancțiunea prevăzută în noul act normativ este mai ușoară se va aplica aceasta. În cazul în care noul act normativ prevede o sancțiune mai grava, contravenția săvârșită anterior va fi sancționată conform dispozițiilor actului normativ în vigoare la data săvârșirii acesteia."
-— OG 2/2001, art. 12 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 12 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

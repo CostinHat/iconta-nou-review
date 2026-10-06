@@ -17,7 +17,7 @@ Un avantaj în natură — folosința unei mașini de serviciu în scop personal
 a) utilizarea oricărui bun, inclusiv a unui vehicul de orice tip, din patrimoniul afacerii sau închiriat de la o terță persoană, în scop personal, cu excepția deplasării pe distanță dus-întors de la domiciliu sau reședință la locul de muncă/locul desfășurării activității;
 [...]
 b) cazare, hrană, îmbrăcăminte, personal pentru munci casnice, precum și alte bunuri sau servicii oferite gratuit ori la un preț mai mic decât prețul pieței, altele decât cele care se încadrează în limitele prevăzute la alin. (4^1) lit. b) și c);"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. a), a^1) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. a), a^1) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, mecanismul funcționează astfel:

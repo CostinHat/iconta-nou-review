@@ -14,7 +14,7 @@ O firmă românească cumpără bunuri de la un furnizor dintr-un stat membru ș
 
 ::: ghid-temei
 „În cazul în care aceleași bunuri sunt livrate succesiv și sunt expediate sau transportate dintr-un stat membru în alt stat membru direct de la primul furnizor la ultimul client din lanț, expedierea sau transportul este atribuit numai livrării efectuate către operatorul intermediar. [...] Prin excepție [...] expedierea sau transportul este atribuit numai livrării de bunuri efectuate de către operatorul intermediar în cazul în care operatorul intermediar a comunicat furnizorului său codul său de înregistrare în scopuri de TVA care i-a fost eliberat de către statul membru din care sunt expediate sau transportate bunurile."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (9)-(10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (9)-(10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula rezolvă o problemă altfel ambiguă: cu un singur transport fizic, dar mai multe livrări „pe hârtie", doar una poate fi calificată drept livrare intracomunitară scutită:

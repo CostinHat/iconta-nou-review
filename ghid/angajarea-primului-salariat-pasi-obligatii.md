@@ -14,7 +14,7 @@ Când o firmă angajează primul salariat, contabilul trebuie să strângă și 
 
 ::: ghid-temei
 „Angajatorul poate încadra salariaţi cu program de lucru corespunzător unei fracţiuni de norma de cel puţin două ore pe zi, prin contracte individuale de muncă pe durata nedeterminată sau pe durata determinata, denumite contracte individuale de muncă cu timp parţial. [...] Durata saptamanala de lucru a unui salariat angajat cu contract individual de muncă cu timp parţial este inferioară celei a unui salariat cu norma întreaga comparabil, fără a putea fi mai mica de 10 ore."
-— Legea 53/2003 (Codul Muncii), art. 101 alin. (1) și (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul Muncii), art. 101 alin. (1) și (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Norma parțială e permisă doar dacă programul e de **cel puțin 2 ore pe zi**.

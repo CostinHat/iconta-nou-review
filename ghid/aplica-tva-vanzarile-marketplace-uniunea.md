@@ -14,7 +14,7 @@ Când un comerciant vinde prin intermediul unei platforme electronice (marketpla
 
 ::: ghid-temei
 „În cazul în care o persoană impozabilă, prin utilizarea unei interfețe electronice cum ar fi o piață online, o platformă, un portal sau alte mijloace similare, facilitează livrarea de bunuri în Uniunea Europeană de către o persoană impozabilă nestabilită în Uniunea Europeană către o persoană neimpozabilă, se consideră că persoana impozabilă care a facilitat livrarea a primit și a livrat ea însăși bunurile respective."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva situații concrete în care se aplică ficțiunea de livrare:

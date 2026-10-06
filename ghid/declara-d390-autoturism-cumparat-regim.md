@@ -14,12 +14,12 @@ Nu. Dacă vânzătorul dintr-un alt stat membru UE a facturat autoturismul secon
 
 ::: ghid-temei
 „c) Achiziţii intracomunitare de bunuri – se înscrie suma totală a achiziţiilor intracomunitare de bunuri, pe fiecare furnizor, pentru care persoana impozabilă, care depune declaraţia, este obligată la plata taxei conform art. 308 din Codul fiscal, şi pentru care exigibilitatea taxei intervine în luna calendaristică respectivă, inclusiv sumele din facturile primite pentru plăţi de avansuri pentru achiziţii intracomunitare de bunuri."
-— OPANAF 394/2017, Anexa 2 (Instrucțiuni D390 VIES), Secțiunea a 2-a, pct. 1 lit. c) (sursă: anaf_surse/opanaf_394_2017_d390_anexa2_instructiuni.txt)
+— OPANAF 394/2017, Anexa 2 (Instrucțiuni D390 VIES), Secțiunea a 2-a, pct. 1 lit. c) (sursă: [Instrucțiunile de completare a formularului 390 VIES (anexa 2), publicate de ANAF](https://static.anaf.ro/static/10/Anaf/legislatie/anexa2_ordin_394_19012017.pdf))
 :::
 
 D390 declară, la rubrica „A", strict achizițiile intracomunitare **pentru care cumpărătorul din România e obligat la plata taxei** (autolichidare, conform art. 308 din Codul fiscal). Iar Codul fiscal exclude explicit din categoria operațiunilor impozabile achiziția de bunuri second-hand facturate în regim de marjă de un dealer din UE:
 
-- Codul fiscal, art. 268 alin. (8) lit. c): „Nu sunt considerate operațiuni impozabile în România [...] achizițiile intracomunitare de bunuri second-hand [...] în sensul prevederilor art. 312, atunci când vânzătorul este o persoană impozabilă revânzătoare, care acționează în această calitate, iar bunurile au fost taxate în statul membru de unde sunt furnizate, conform regimului special [...]" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt).
+- Codul fiscal, art. 268 alin. (8) lit. c): „Nu sunt considerate operațiuni impozabile în România [...] achizițiile intracomunitare de bunuri second-hand [...] în sensul prevederilor art. 312, atunci când vânzătorul este o persoană impozabilă revânzătoare, care acționează în această calitate, iar bunurile au fost taxate în statul membru de unde sunt furnizate, conform regimului special [...]" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)).
 - Cum nu e o achiziție impozabilă, cumpărătorul **nu e obligat la plata taxei conform art. 308** — deci nu se încadrează în definiția rubricii A din instrucțiunile D390 de mai sus.
 
 Concluzia curge direct din lanțul celor două texte: nefiind o operațiune „pentru care persoana impozabilă este obligată la plata taxei conform art. 308", achiziția nu are ce căuta în declarația recapitulativă.
@@ -32,6 +32,6 @@ Concluzia curge direct din lanțul celor două texte: nefiind o operațiune „p
 
 ## Ce face iConta.eu
 
-Această întrebare privește exclusiv declarația D390 și tratamentul unei achiziții intracomunitare — nu are legătură cu funcționalitatea „Jurnal regim marjă" din iConta.eu, care e un raport de citire pentru **vânzările** proprii înregistrate în regim special de marjă (second-hand sau turism), nu pentru achiziții. Verificat: modulul de completare D390 din aplicație (`core/d390.py`) nu conține nicio linie legată de regimul de marjă sau de art. 312 — deci aplicația nu are, la data acestui ghid, o excludere automată a acestui tip de achiziție din baza de calcul a D390. Contabilul trebuie să recunoască manual acest caz și să nu introducă factura respectivă în circuitul care alimentează D390.
+Această întrebare privește exclusiv declarația D390 și tratamentul unei achiziții intracomunitare — nu are legătură cu funcționalitatea „Jurnal regim marjă" din iConta.eu, care e un raport de citire pentru **vânzările** proprii înregistrate în regim special de marjă (second-hand sau turism), nu pentru achiziții. Verificat: modulul de completare D390 din aplicație nu conține nicio linie legată de regimul de marjă sau de art. 312 — deci aplicația nu are, la data acestui ghid, o excludere automată a acestui tip de achiziție din baza de calcul a D390. Contabilul trebuie să recunoască manual acest caz și să nu introducă factura respectivă în circuitul care alimentează D390.
 
 [iConta.eu](/)

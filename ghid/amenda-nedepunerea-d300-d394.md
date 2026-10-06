@@ -14,10 +14,10 @@ Deși sunt declarații diferite — D300 e decontul de TVA, D394 e o declarație
 
 ::: ghid-temei
 „neîndeplinirea de către contribuabil/plătitor la termen a obligaţiilor de declarare prevăzute de lege, a bunurilor şi veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuţiilor şi a altor sume, precum şi orice informaţii în legătură cu impozitele, taxele, contribuţiile, bunurile şi veniturile impozabile, dacă legea prevede declararea acestora"
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii şi mari şi cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum şi pentru persoanele fizice, în cazul săvârşirii faptei prevăzute la alin. (1) lit. a), b) şi i) - m)"
-— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Amenda e identică pentru cele două declarații, pentru că ambele se încadrează în aceeași literă a contravenției:
@@ -37,7 +37,7 @@ Termenele diferă însă: D300 se depune până pe **25** ale lunii următoare, 
 
 ## Ce face iConta.eu
 
-Termenele celor două declarații sunt urmărite separat în aplicație (`core/scadente.py`): D300 la ziua 25, D394 la ziua 30 (cu excepția lunii ianuarie). Semaforul de conformare fiscală compară declarațiile datorate, din vectorul fiscal al firmei, cu cele efectiv depuse, pentru ambele.
+Termenele celor două declarații sunt urmărite separat în aplicație: D300 la ziua 25, D394 la ziua 30 (cu excepția lunii ianuarie). Semaforul de conformare fiscală compară declarațiile datorate, din vectorul fiscal al firmei, cu cele efectiv depuse, pentru ambele.
 
 **iConta.eu nu aplică și nu calculează amenzi** — acestea sunt stabilite exclusiv de organul fiscal, la constatarea contravenției. Aplicația generează și validează local, prin validatorul oficial ANAF (DUK), atât D300, cât și D394, dar depunerea efectivă la termen rămâne responsabilitatea contabilului, prin portalul SPV.
 

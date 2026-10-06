@@ -14,7 +14,7 @@ De când plafonul de scutire pentru bunurile de mică valoare a dispărut (din 2
 
 ::: ghid-temei
 „În sensul prezentului articol vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe acoperă numai bunurile, cu excepția produselor care fac obiectul accizelor, în loturi cu o valoare intrinsecă de maximum 150 euro."
-— Cod fiscal, art. 315^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 315^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru un colet livrat prin curier dintr-o țară din afara UE:

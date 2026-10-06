@@ -14,12 +14,12 @@ Pentru firma care folosește bunul în leasing, perioada de ajustare începe la 
 
 ::: ghid-temei
 „bunurile care fac obiectul unui contract de închiriere, de leasing, de concesionare sau oricărui altui tip de contract prin care bunurile se pun la dispoziția unei persoane sunt considerate bunuri de capital aparținând persoanei care le închiriază, le dă în leasing sau le pune la dispoziția altei persoane."
-— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Data la care bunul de capital se consideră achiziționat din punctul de vedere al taxei pe valoarea adăugată de locatar/utilizator este data la care se face transferul dreptului de proprietate de către locator/finanțator. Pentru taxa aferentă achiziției bunurilor de capital care au fost cumpărate de locatar/utilizator printr-un contract de leasing, perioada de ajustare începe la data de 1 ianuarie a anului în care a avut loc transferul dreptului de proprietate asupra bunurilor, dar ajustarea se efectuează pentru suma integrală a taxei deductibile aferente bunurilor de capital, inclusiv pentru taxa plătită sau datorată înainte de data transferului dreptului de proprietate."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se aplică:

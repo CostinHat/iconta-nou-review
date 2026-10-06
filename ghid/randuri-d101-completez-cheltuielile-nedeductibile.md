@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt` + `core/d101.py`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 :::
 
 Rândul principal pentru cheltuielile nedeductibile este P23 din D101 — total cheltuieli nedeductibile, verificat de aplicație în avertismentul dedicat contului 691. Pentru cheltuiala cu amortizarea contabilă tratată ca nedeductibilă, sursele verificate arată că valoarea intră în rollup-ul P34 „cheltuieli nedeductibile”, prin rândurile de tip P2x/P28.

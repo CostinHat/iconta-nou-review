@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— OUG 120/2021, art. 10 alin. (1) (text în forma actuală, modificat prin OUG 115/2023, art. LXV pct. 4) (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— OUG 120/2021, art. 10 alin. (1) (text în forma actuală, modificat prin OUG 115/2023, art. LXV pct. 4) (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 - Obligația de transmitere B2B în RO e-Factura se aplică strict între **două persoane impozabile stabilite în România** (conform art. 266 alin. (2) din Codul fiscal). Un client dintr-un stat terț (destinația tipică a unei operațiuni de export) nu e o persoană impozabilă stabilită în România, deci relația nu se încadrează în definiția B2B din lege.
@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din acest dosar de cercetare este documentată și verificată în cod o singură funcționalitate apropiată ca terminologie — F171, exportul facturilor emise către programul de contabilitate SAGA, în format XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu (nicio citare de act normativ în codul modulului). Aplicația are, conform dosarului, și un fișier separat pentru transmiterea facturilor către e-Factura (`core/efactura_send.py`), dar comportamentul lui concret — inclusiv modul în care tratează facturile de export — nu a fost verificat în acest dosar, așa că nu facem afirmații neconfirmate despre el aici.
+Din acest dosar de cercetare este documentată și verificată în cod o singură funcționalitate apropiată ca terminologie — F171, exportul facturilor emise către programul de contabilitate SAGA, în format XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu (nicio citare de act normativ în codul modulului). Aplicația are, conform dosarului, și un fișier separat pentru transmiterea facturilor către e-Factura, dar comportamentul lui concret — inclusiv modul în care tratează facturile de export — nu a fost verificat în acest dosar, așa că nu facem afirmații neconfirmate despre el aici.
 
 [iConta.eu](/)

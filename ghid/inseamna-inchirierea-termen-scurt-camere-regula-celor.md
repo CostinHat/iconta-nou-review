@@ -16,12 +16,12 @@ Definiția decide regimul fiscal. Închirierea pe termen scurt are reguli propri
 
 ::: ghid-temei
 „Închirierea pe termen scurt de către proprietari, uzufructuari sau alți deținători legali a camerelor situate în locuințe proprietate personală reprezintă închirierea neîntreruptă a unei camere aceleiași persoane, pentru perioade de maximum 30 de zile, într-un an calendaristic. În situația în care închirierea se realizează pentru o fracție de zi, se consideră închiriere pentru o zi."
-— Codul fiscal (Legea 227/2015), art. 83 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuabilii care obțin venituri din cedarea folosinței bunurilor din patrimoniul personal, altele decât veniturile din arendare și cele din închirierea pe termen scurt de către proprietari a camerelor situate în locuințe proprietate personală, au obligația înregistrării contractului încheiat între părți"
-— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele definiției:

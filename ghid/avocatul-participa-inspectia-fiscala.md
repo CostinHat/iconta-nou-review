@@ -14,10 +14,10 @@ Da — Codul de procedură fiscală recunoaște explicit atât posibilitatea rep
 
 ::: ghid-temei
 „(3) În cazul reprezentării contribuabilului/plătitorul în relația cu organul fiscal prin avocat, consultant fiscal sau expert contabil, forma și conținutul împuternicirii sunt cele prevăzute de dispozițiile legale privind organizarea și exercitarea profesiei de avocat, consultant fiscal sau expert contabil, după caz."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(3) Pe toată durata exercitării inspecției fiscale contribuabilul/plătitorul are dreptul de a beneficia de asistență de specialitate sau juridică."
-— aceeași lege, art. 124 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— aceeași lege, art. 124 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două texte se completează: art. 18 alin. (3) confirmă că un contribuabil poate fi reprezentat de un avocat în relația generală cu organul fiscal (împuternicirea urmând regulile profesiei de avocat), iar art. 124 alin. (3), specific inspecției fiscale, garantează dreptul contribuabilului de a beneficia de „asistență de specialitate sau juridică" pe toată durata controlului — nu doar la începutul sau la finalul lui. Practic, avocatul poate fi prezent și poate asista contribuabilul pe parcursul inspecției, alături de sau în locul unui consultant fiscal ori expert contabil.

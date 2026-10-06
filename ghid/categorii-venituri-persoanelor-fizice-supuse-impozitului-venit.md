@@ -16,15 +16,15 @@ Codul fiscal enumeră zece categorii: activități independente, drepturi de pro
 
 ::: ghid-temei
 „Categoriile de venituri supuse impozitului pe venit, potrivit prevederilor prezentului titlu, sunt următoarele: a) venituri din activități independente, definite conform art. 67; [...] a^1) venituri din drepturi de proprietate intelectuală, definite potrivit art. 70 [...] b) venituri din salarii și asimilate salariilor, definite conform art. 76; [...] c) venituri din cedarea folosinței bunurilor, definite conform art. 83; [...] d) venituri din investiții, definite conform art. 91; [...] e) venituri din pensii, definite conform art. 99; [...] f) venituri din activități agricole, silvicultură și piscicultură, definite conform art. 103; [...] g) venituri din premii și din jocuri de noroc, definite conform art. 108; [...] h) venituri din transferul proprietăților imobiliare, definite conform art. 111; [...] i) venituri din alte surse, definite conform art. 114 și 117 ."
-— Codul fiscal (Legea 227/2015), art. 61 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 61 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venituri din alte surse sunt orice venituri identificate ca fiind impozabile, care nu se încadrează în categoriile prevăzute la art. 61 lit. a)-h) , altele decât veniturile neimpozabile în conformitate cu prezentul titlu."
-— Codul fiscal (Legea 227/2015), art. 114 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 114 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Fac excepție de la prevederile alin. (1) cotele de impozit prevăzute expres pentru categoriile de venituri cuprinse în titlul IV."
-— Codul fiscal (Legea 227/2015), art. 64 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 64 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică:

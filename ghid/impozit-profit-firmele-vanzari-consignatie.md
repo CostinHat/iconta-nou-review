@@ -14,7 +14,7 @@ Pentru bunurile predate spre vânzare printr-un contract de consignație, moment
 
 ::: ghid-temei
 „443. - Pentru bunurile livrate în baza unui contract de consignație, se consideră că livrarea bunurilor de la consignant la consignatar are loc la data la care bunurile sunt livrate de consignatar clienților săi."
-— OMFP nr. 1.802/2014, Reglementările contabile, pct. 443 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementările contabile, pct. 443 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Consecințele pentru impozitul pe profit al consignantului:

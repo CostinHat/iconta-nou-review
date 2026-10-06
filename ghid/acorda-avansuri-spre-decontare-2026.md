@@ -14,7 +14,7 @@ Avansul spre decontare — banii dați unui angajat înainte de o deplasare sau 
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare."
-— Legea 70/2015, art. 3 alin. (1) lit. e) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. e) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - Plafonul de 5.000 lei/zi se aplică per persoană care a primit avansul, nu per firmă — dacă mai mulți angajați primesc avansuri în aceeași zi, plafonul se verifică separat, pentru fiecare în parte.

@@ -16,15 +16,15 @@ Situația e diferită când **furnizorul a facturat cu TVA** o operațiune supus
 
 ::: ghid-temei
 „Pentru achizițiile de bunuri și/sau servicii pentru care persoana impozabilă, care este înregistrată în scopuri de TVA conform art. 316 din Codul fiscal, este obligată la plata taxei prin mecanismul taxării inverse conform art. 308, art. 307 alin. (2)-(6) și art. 326 alin. (4) din Codul fiscal, nu poate fi anulat dreptul de deducere a taxei în situația în care obligațiile prevăzute la art. 326 alin. (2) sau, după caz, la art. 326 alin. (5) din Codul fiscal nu au fost îndeplinite, dar achizițiile sunt destinate operațiunilor cu drept de deducere conform art. 297-300 din Codul fiscal și persoana respectivă deține un document care corespunde cerințelor prevăzute la art. 299 din Codul fiscal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „dacă achizițiile de bunuri și servicii prevăzute la alin. (8) sunt destinate exclusiv realizării de operațiuni care dau drept de deducere, dispun aplicarea prevederilor art. 326 alin. (2) sau, după caz, ale art. 326 alin. (5) din Codul fiscal în perioada fiscală în care s-a finalizat inspecția fiscală;"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (9) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 69 alin. (9) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul neaplicării taxării inverse prevăzute de lege, respectiv în situația în care furnizorul/prestatorul emite o factură cu TVA pentru operațiunile prevăzute la art. 331 alin. (2) din Codul fiscal și nu înscrie mențiunea "taxare inversă" în respectiva factură, iar beneficiarul deduce taxa înscrisă în factură, acesta își pierde dreptul de deducere pentru achiziția respectivă de bunuri sau servicii deoarece condițiile de fond privind taxarea inversă nu au fost respectate și factura a fost întocmită în mod eronat."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 109 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 109 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cele trei tratamente de la control, după destinația achiziției (pct. 69 alin. (9)):

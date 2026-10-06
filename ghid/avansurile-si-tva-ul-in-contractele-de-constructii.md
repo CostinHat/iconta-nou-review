@@ -37,7 +37,7 @@ O firmă de construcții încasează un avans de 100.000 lei în decembrie, la c
 
 ## Ce face iConta.eu
 
-Orchestrarea din `core/uc_tenants.py::nota_avans` (liniile 3466-3522) cere explicit data livrării (`data_livrare`) pentru orice operație al cărei tip începe cu `"regularizare"`, exact conform cerinței art. 291 alin. (6): cota de regularizare se calculează prin `_common.cota_ceruta({**corp, "data": _data_cota})`, adică pe data livrării, nu pe data la care se operează efectiv regularizarea. Descrierea notei contabile generate poartă explicit mențiunea "- art. 282(2)b CF".
+Orchestrarea din aplicație cere explicit data livrării (`data_livrare`) pentru orice operație al cărei tip începe cu `"regularizare"`, exact conform cerinței art. 291 alin. (6): cota de regularizare se calculează prin `_common.cota_ceruta({**corp, "data": _data_cota})`, adică pe data livrării, nu pe data la care se operează efectiv regularizarea. Descrierea notei contabile generate poartă explicit mențiunea "- art. 282(2)b CF".
 
 O limitare importantă pentru contractele de construcții cu plăți eșalonate: modulul `avansuri.py` **nu agregă** mai multe avansuri pe aceeași comandă/factură finală — fiecare apel produce o notă separată, iar suma corectă pentru regularizare (cumulul tuturor avansurilor/situațiilor de plată anterioare) trebuie calculată și transmisă corect de utilizator sau de stratul care apelează motorul. Dacă suma cumulată e greșită la intrare, motorul nu are context despre facturile anterioare și nu poate detecta eroarea.
 

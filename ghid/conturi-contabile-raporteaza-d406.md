@@ -26,6 +26,6 @@ Cea mai frecventă greșeală este raportarea parțială — de exemplu, include
 
 ## Ce face iConta.eu
 
-Conform stadiului tehnic curent al generatorului (`core/d406.py`, actualizat 03.08.2026): „Header + MasterFiles + GeneralLedgerEntries complet din XSD" — secțiunea de conturi contabile (GeneralLedgerAccounts) este generată integral, automat, din planul de conturi al firmei, fără intervenție manuală de selecție. Fișierul rezultat este validat structural cu DUKIntegrator înainte de a fi considerat conform.
+Conform stadiului tehnic curent al generatorului (actualizat 03.08.2026): „Header + MasterFiles + GeneralLedgerEntries complet din XSD" — secțiunea de conturi contabile (GeneralLedgerAccounts) este generată integral, automat, din planul de conturi al firmei, fără intervenție manuală de selecție. Fișierul rezultat este validat structural cu DUKIntegrator înainte de a fi considerat conform.
 
 [iConta.eu](/)

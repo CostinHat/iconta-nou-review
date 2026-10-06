@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Înregistrarea în contabilitate a intrării stocurilor se efectuează la data transferului riscurilor și beneficiilor. În general, datele de transfer al controlului, de transfer al proprietății și de livrare coincid."
-— OMFP 1802/2014 (reglementări contabile), pct. 283 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 283 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Simetric, ieșirea din gestiune (descărcarea) urmează aceeași logică: de regulă transferul proprietății, livrarea și facturarea coincid, dar reglementările prevăd expres situațiile în care nu coincid.
@@ -23,7 +23,7 @@ Simetric, ieșirea din gestiune (descărcarea) urmează aceeași logică: de reg
 
 ::: ghid-temei
 „în cazul unor decalaje între vânzarea și livrarea bunurilor, acestea se înregistrează ca ieșiri din entitate, nemaifiind considerate proprietatea acesteia, astfel: – bunurile vândute și nelivrate se înregistrează distinct în gestiune, iar în contabilitate în conturi în afara bilanțului; – bunurile livrate, dar nefacturate se înregistrează ca ieșiri din gestiune atât la locurile de depozitare, cât și în contabilitate, pe baza documentelor care confirmă ieșirea din gestiune potrivit legii;"
-— OMFP 1802/2014 (reglementări contabile), pct. 284 alin. (2) lit. c) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 284 alin. (2) lit. c) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic: momentul descărcării urmează transferul proprietății, nu plecarea fizică a bunului. Dacă proprietatea a fost transferată — de exemplu la vânzările cu condiția de livrare „ex-work", când bunurile ies din stocul vânzătorului din momentul punerii lor la dispoziția cumpărătorului — bunurile vândute și nelivrate se scot din stoc ca ieșiri din entitate, nemaifiind considerate proprietatea acesteia: se înregistrează distinct în gestiune, iar în contabilitate în conturi în afara bilanțului, chiar dacă nu au plecat încă fizic. Invers, dacă bunul a fost livrat dar factura nu a sosit/nu a fost emisă încă, descărcarea se face pe baza documentelor de livrare, nu se așteaptă factura.
@@ -32,7 +32,7 @@ Practic: momentul descărcării urmează transferul proprietății, nu plecarea 
 
 ::: ghid-temei
 „Deținerea, cu orice titlu, de bunuri materiale, precum și efectuarea de operațiuni economice, fără să fie înregistrate în contabilitate, sunt interzise."
-— OMFP 1802/2014 (reglementări contabile), pct. 284 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 284 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Această regulă generală explică de ce descărcarea de gestiune trebuie să reflecte realitatea faptică (ce a ieșit fizic din depozit), nu doar documentul emis — o factură fără livrare nu justifică singură scoaterea bunului din stoc.

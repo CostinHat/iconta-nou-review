@@ -14,10 +14,10 @@ Când o firmă din România cumpără publicitate online de la Google (Google Ir
 
 ::: ghid-temei
 „(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...]"
-— Legea 227/2015, art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]"
-— Legea 227/2015, art. 307 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic pentru factura de la Google/Facebook:
@@ -35,6 +35,6 @@ Ce rezultă practic pentru factura de la Google/Facebook:
 
 ## Ce face iConta.eu
 
-iConta.eu gestionează operațiunile de taxare inversă și achizițiile intracomunitare de servicii prin modulul de TVA (`core/d301.py` — pentru persoanele neînregistrate normal în scopuri de TVA, care fac achiziții intracomunitare sau operațiuni cu taxare inversă) și prin cotele de TVA aplicate facturilor (`core/cote_tva.py`). La data acestui ghid, aplicația **nu are o regulă automată de recunoaștere a furnizorilor Google/Meta** pentru a aplica direct taxarea inversă la introducerea facturii — încadrarea corectă a achiziției de publicitate online ca operațiune cu taxare inversă se face manual, la introducerea documentului.
+iConta.eu gestionează operațiunile de taxare inversă și achizițiile intracomunitare de servicii prin modulul de TVA (aplicația — pentru persoanele neînregistrate normal în scopuri de TVA, care fac achiziții intracomunitare sau operațiuni cu taxare inversă) și prin cotele de TVA aplicate facturilor. La data acestui ghid, aplicația **nu are o regulă automată de recunoaștere a furnizorilor Google/Meta** pentru a aplica direct taxarea inversă la introducerea facturii — încadrarea corectă a achiziției de publicitate online ca operațiune cu taxare inversă se face manual, la introducerea documentului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Impozitul pe veniturile microîntreprinderilor nu se aplică pe cifra de afaceri
 
 ::: ghid-temei
 „(1) Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile aferente costurilor serviciilor în curs de execuție; c) veniturile din producția de imobilizări corporale și necorporale; d) veniturile din subvenții; [...] f) veniturile rezultate din restituirea sau anularea unor dobânzi și/sau penalități de întârziere, care au fost cheltuieli nedeductibile la calculul profitului impozabil; g) veniturile realizate din despăgubiri, de la societățile de asigurare/reasigurare, pentru pagubele produse bunurilor de natura stocurilor sau a activelor corporale proprii; h) veniturile din diferențe de curs valutar; i) veniturile financiare aferente creanțelor și datoriilor cu decontare în funcție de cursul unei valute, rezultate din evaluarea sau decontarea acestora; [...] n) dividendele primite de la o persoană juridică română."
-— Legea 227/2015, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structura practică a calculului:

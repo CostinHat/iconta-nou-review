@@ -14,7 +14,7 @@ Da. Obligația de a folosi sistemul RO e-Factura pentru facturile emise în rela
 
 ::: ghid-temei
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Din text rezultă clar criteriile reale de obligativitate:

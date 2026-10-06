@@ -14,7 +14,7 @@ Vectorul fiscal — totalitatea obligațiilor declarative permanente ale unei fi
 
 ::: ghid-temei
 „(1) Modificările intervenite în datele declarate inițial de persoanele fizice, juridice sau de alte entități care se înregistrează potrivit legii speciale la registrul comerțului se fac potrivit dispozițiilor legii speciale. (2) în cazul persoanelor sau entităților prevăzute la alin. (1), modificările intervenite în datele declarate inițial în vectorul fiscal se declară la organul fiscal central."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 89 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 89 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie făcut concret dacă vectorul fiscal a fost completat greșit la înființare:

@@ -14,7 +14,7 @@ D112 nu e doar o declarație de contribuții — e, prin denumirea ei oficială,
 
 ::: ghid-temei
 „(1) Persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate."
-— Cod fiscal, art. 147 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 147 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Modelul, conținutul și procedura de depunere efectivă a formularului 112 sunt aprobate separat, prin ordin comun ANAF – Casa Națională de Pensii Publice – Casa Națională de Asigurări de Sănătate – Agenția Națională pentru Ocuparea Forței de Muncă (Ordinul 605/95/928/2.314/2026, în vigoare la data acestui ghid), emis „având în vedere dispozițiile art. 147 alin. (17)" din Codul fiscal.

@@ -15,7 +15,7 @@ Declarația informativă D406 (fișierul standard de control fiscal, SAF-T) nu s
 ::: ghid-temei
 „12. În situația în care, ca urmare a încercării de transmitere a Declarației D406, sunt primite mesaje de eroare/erori, utilizatorul trebuie să verifice cauza erorii prin analiza documentului generat de programul «Validator», fișierul SAFT.xml.err.txt. Odată identificată eroarea sau identificate erorile, se corectează problema semnalată de către utilizator și se generează un nou fișier XML. [...]
 13. Transmiterea Declarației informative D406 se poate face de către contribuabilii/plătitorii cu obligație de depunere, începând cu prima zi calendaristică a lunii următoare perioadei pentru care obligația devine activă, până la data-limită de depunere — ultima zi a lunii care urmează perioadei pentru care se face raportarea."
-— OPANAF 1783/2021, Anexa 3 — Procedura și condițiile de transmitere a fișierului standard de control fiscal (SAF-T), pct. 12-13 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 3 — Procedura și condițiile de transmitere a fișierului standard de control fiscal (SAF-T), pct. 12-13 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Fișierul XML generat trebuie mai întâi trecut prin programul „Validator" pus la dispoziție de ANAF; dacă apar erori, acestea sunt listate într-un fișier separat (`SAFT.xml.err.txt`), care trebuie analizat și corectat înainte de a reface fișierul XML — declarația nu se transmite direct fără această etapă.

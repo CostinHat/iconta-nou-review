@@ -16,12 +16,12 @@ Opțiunea contează din două motive. Diferențele stabilite la inspecție gener
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), în cazul obligațiilor fiscale de plată stabilite de organele de inspecție fiscală, precum și a amenzilor de orice fel, se stinge cu prioritate obligația fiscală sau amenda pe care o alege contribuabilul."
-— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 165 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Penalitatea de nedeclarare stabilită potrivit alin. (1) se reduce cu 75%, dacă obligațiile fiscale principale stabilite prin decizie: a) se sting prin plată sau compensare până la termenul prevăzut la art. 156 alin. (1);"
-— Codul de procedură fiscală (Legea 207/2015), art. 181 alin. (2) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 181 alin. (2) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce acoperă excepția:

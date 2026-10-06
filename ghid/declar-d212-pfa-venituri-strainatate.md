@@ -14,7 +14,7 @@ Ca și la chirii, D212 tratează veniturile din străinătate ca sursă separat�
 
 ::: ghid-temei
 „Persoanele fizice prevăzute la art. 59 alin. (1) lit. a) și cele care îndeplinesc condițiile prevăzute la art. 59 alin. (2) și (2^1) datorează impozit pentru veniturile obținute din străinătate. [...] Veniturile realizate din străinătate se supun impozitării prin aplicarea cotelor de impozit asupra bazei de calcul determinate după regulile proprii fiecărei categorii de venit, în funcție de natura acestuia."
-— Codul fiscal (Legea 227/2015), art. 130 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 130 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru completarea D212:
@@ -32,7 +32,7 @@ Ce rezultă pentru completarea D212:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) susține capitolul dedicat veniturilor din străinătate (`cap14`), cu câmpurile oficiale pentru venit brut, cheltuieli deductibile, impozit datorat în România, impozit plătit în străinătate și creditul fiscal aferent (`str_impozit_datorat_Ro`, `str_impozit_platit`, `str_credit_fiscal`). Contabilul introduce țara, categoria, metoda de evitare a dublei impuneri, sumele în lei și impozitul plătit acolo (dovada lui o păstrează contribuabilul); aplicația calculează impozitul datorat în România cu cota categoriei, creditul fiscal — cel mult cât impozitul român — și diferența de plată.
+Generatorul D212 al iConta.eu susține capitolul dedicat veniturilor din străinătate (`cap14`), cu câmpurile oficiale pentru venit brut, cheltuieli deductibile, impozit datorat în România, impozit plătit în străinătate și creditul fiscal aferent (`str_impozit_datorat_Ro`, `str_impozit_platit`, `str_credit_fiscal`). Contabilul introduce țara, categoria, metoda de evitare a dublei impuneri, sumele în lei și impozitul plătit acolo (dovada lui o păstrează contribuabilul); aplicația calculează impozitul datorat în România cu cota categoriei, creditul fiscal — cel mult cât impozitul român — și diferența de plată.
 
 Aplicația nu verifică dacă România are convenție de evitare a dublei impuneri cu statul respectiv și ce metodă prevede — contabilul alege metoda (creditul fiscal sau scutirea), iar aplicația aplică regula metodei alese.
 

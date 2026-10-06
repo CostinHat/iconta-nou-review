@@ -14,7 +14,7 @@ Obiectul unei inspecții fiscale nu e definit vag — Codul de procedură fiscal
 
 ::: ghid-temei
 „Inspecția fiscală reprezintă activitatea ce are ca obiect verificarea legalității și conformității declarațiilor fiscale, corectitudinii și exactității îndeplinirii obligațiilor în legătură cu stabilirea obligațiilor fiscale de către contribuabil/plătitor, respectării prevederilor legislației fiscale și contabile, verificarea sau stabilirea, după caz, a bazelor de impozitare și a situațiilor de fapt aferente, stabilirea diferențelor de obligații fiscale principale."
-— Legea 207/2015, art. 113 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 113 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce face concret organul de inspecție, potrivit alin. (2) al aceluiași articol:
@@ -32,6 +32,6 @@ Ce face concret organul de inspecție, potrivit alin. (2) al aceluiași articol:
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor de control fiscal încrucișat (`core/control_incrucisat.py`, coordonat prin `core/control_fiscal_api.py`) care verifică independent concordanța dintre TVA, D112 (salarii) și D390 (intracomunitar) cu datele din evidența contabilă a firmei — aceleași tipuri de neconcordanțe pe care le urmărește și inspecția fiscală, potrivit art. 113 alin. (2) lit. b). Aplicația semnalează constatările „roșii" printr-un sistem de alerte (`core/alerte_control_fiscal.py`), agregat pe firmă, pentru ca acestea să fie corectate înainte de un eventual control real — dar nu simulează sau nu înlocuiește inspecția fiscală propriu-zisă, care rămâne o procedură administrativă separată.
+iConta.eu are un motor de control fiscal încrucișat (coordonat prin aplicație) care verifică independent concordanța dintre TVA, D112 (salarii) și D390 (intracomunitar) cu datele din evidența contabilă a firmei — aceleași tipuri de neconcordanțe pe care le urmărește și inspecția fiscală, potrivit art. 113 alin. (2) lit. b). Aplicația semnalează constatările „roșii" printr-un sistem de alerte, agregat pe firmă, pentru ca acestea să fie corectate înainte de un eventual control real — dar nu simulează sau nu înlocuiește inspecția fiscală propriu-zisă, care rămâne o procedură administrativă separată.
 
 [iConta.eu](/)

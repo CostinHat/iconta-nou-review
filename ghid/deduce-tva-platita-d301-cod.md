@@ -14,7 +14,7 @@ O firmă neplătitoare de TVA în regim normal, dar înregistrată doar cu „co
 
 ::: ghid-temei
 „Orice persoană impozabilă înregistrată în scopuri de TVA, conform art. 316, are dreptul să scadă din valoarea totală a taxei colectate, pentru o perioadă fiscală, valoarea totală a taxei pentru care, în aceeași perioadă, a luat naștere și poate fi exercitat dreptul de deducere, conform art. 297-300."
-— Codul fiscal, art. 301 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 301 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Dreptul de deducere prin decont este condiționat explicit de înregistrarea „conform art. 316" — adică înregistrarea normală în scopuri de TVA, cu decontul de taxă (formularul 300), nu de simpla deținere a unui cod de TVA de orice fel.
@@ -30,6 +30,6 @@ O firmă neplătitoare de TVA în regim normal, dar înregistrată doar cu „co
 
 ## Ce face iConta.eu
 
-Această întrebare privește o funcționalitate reală, dar separată, a aplicației: modulul `core/d301.py`, care generează efectiv declarația 301 (Decont special de TVA, conform OPANAF 592/2016) pentru achizițiile intracomunitare și operațiunile cu taxare inversă ale unei firme. Modulul urmărește explicit statutul de înregistrare art. 317 al firmei (câmpul `pers_inreg`, cu valorile „1 = neînregistrat" sau „2 = înregistrat doar conform art. 317") pentru completarea corectă a formularului — dar, consistent cu legea de mai sus, nu conține nicio logică de deducere a taxei raportate prin D301: modulul calculează și declară taxa datorată, nu o taxă deductibilă. Acest modul este distinct de funcționalitatea „Regim special agricultori" (compensația forfetară de 8%), cu care nu are legătură funcțională.
+Această întrebare privește o funcționalitate reală, dar separată, a aplicației: Aplicația, care generează efectiv declarația 301 (Decont special de TVA, conform OPANAF 592/2016) pentru achizițiile intracomunitare și operațiunile cu taxare inversă ale unei firme. Modulul urmărește explicit statutul de înregistrare art. 317 al firmei (câmpul `pers_inreg`, cu valorile „1 = neînregistrat" sau „2 = înregistrat doar conform art. 317") pentru completarea corectă a formularului — dar, consistent cu legea de mai sus, nu conține nicio logică de deducere a taxei raportate prin D301: modulul calculează și declară taxa datorată, nu o taxă deductibilă. Acest modul este distinct de funcționalitatea „Regim special agricultori" (compensația forfetară de 8%), cu care nu are legătură funcțională.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Da, dar nu chiar din prima zi de activitate — obligația începe de la data ef
 
 ::: ghid-temei
 „g) pentru contribuabilii nou-înregistraţi/încadraţi după data de referinţă pentru fiecare categorie în parte, obligaţia de depunere a Declaraţiei informative D406 începe de la data efectivă a înregistrării, prima depunere a Declaraţiei informative D406 urmând să se facă în ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de referinţă pentru categoria în care au fost înregistraţi/încadraţi."
-— OPANAF 407/2025, Anexa nr. 5 la OPANAF 1.783/2021, pct. 1.1 lit. g) (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF 407/2025, Anexa nr. 5 la OPANAF 1.783/2021, pct. 1.1 lit. g) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Concret, pentru un SRL nou-înființat în 2026 (deci după data de referință pentru contribuabilii mici, 1 ianuarie 2025):
@@ -31,6 +31,6 @@ Concret, pentru un SRL nou-înființat în 2026 (deci după data de referință 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat** data de la care o firmă nou-înregistrată intră sub obligația D406, pe baza categoriei de contribuabil și a datelor de referință din OPANAF 1783/2021. Generarea propriu-zisă a fișierului SAF-T există și e funcțională (`core/d406.py`, cu reconciliere independentă în `core/d406_reconciliere.py`), dar decizia „de când trebuie depus D406 pentru firma X" rămâne o verificare pe care contabilul o face manual, pe baza datei de înregistrare și a categoriei firmei.
+La data acestui ghid, iConta.eu **nu calculează automat** data de la care o firmă nou-înregistrată intră sub obligația D406, pe baza categoriei de contribuabil și a datelor de referință din OPANAF 1783/2021. Generarea propriu-zisă a fișierului SAF-T există și e funcțională (cu reconciliere independentă în aplicație), dar decizia „de când trebuie depus D406 pentru firma X" rămâne o verificare pe care contabilul o face manual, pe baza datei de înregistrare și a categoriei firmei.
 
 [iConta.eu](/)

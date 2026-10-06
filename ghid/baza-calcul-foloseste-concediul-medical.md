@@ -28,6 +28,6 @@ Greșeala frecventă e tratarea concediului medical ca un salariu obișnuit — 
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial (F080, `core/salarizare.py`, `monografie_salariu()`) tratează rețineri și cheltuieli specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Dosarul de cercetare disponibil pentru F080 nu confirmă dacă și cum acest motor sau o componentă distinctă calculează baza indemnizației de concediu medical — pentru asta, verifică ecranul dedicat concediilor medicale din iConta.eu (F122).
+Motorul de calcul salarial (F080, aplicația, `monografie_salariu()`) tratează rețineri și cheltuieli specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Dosarul de cercetare disponibil pentru F080 nu confirmă dacă și cum acest motor sau o componentă distinctă calculează baza indemnizației de concediu medical — pentru asta, verifică ecranul dedicat concediilor medicale din iConta.eu (F122).
 
 [iConta.eu](/)

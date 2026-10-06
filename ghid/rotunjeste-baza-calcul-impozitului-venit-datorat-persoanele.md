@@ -16,15 +16,15 @@ Regula se aplică la determinarea impozitului anual sau lunar pe veniturile pers
 
 ::: ghid-temei
 „În aplicarea prevederilor art. 64 din Codul fiscal, la determinarea impozitului anual/lunar, bazele de calcul al impozitului vor fi stabilite prin rotunjire la un leu, prin neglijarea fracțiunilor de până la 50 de bani inclusiv sau prin majorarea la leu a fracțiunilor ce depășesc 50 de bani.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV pct. 4 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV pct. 4 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din:”
-— Codul fiscal (Legea 227/2015), art. 64 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 64 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Sumele sunt calculate prin rotunjire la un leu, prin neglijarea fracțiunilor de până la 50 de bani inclusiv și majorarea la leu a fracțiunilor ce depășesc 50 de bani.”
-— Codul fiscal (Legea 227/2015), art. 66 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 66 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

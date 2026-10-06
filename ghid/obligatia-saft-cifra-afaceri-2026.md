@@ -16,7 +16,7 @@ poarta: v1
 „1.1. Obligaţia de transmitere a fişierului standard de control fiscal prin intermediul Declaraţiei informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: [...]
 d) pentru contribuabilii care nu sunt încadraţi la data de 31 decembrie 2021 în categoria marilor contribuabili sau a contribuabililor mijlocii, denumiţi generic contribuabili mici, şi care îşi păstrează această încadrare şi după data de 1 ianuarie 2022, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1 ianuarie 2025, care reprezintă data de referinţă pentru contribuabilii mici;
 e) contribuabilii nerezidenţi înregistraţi doar în scop de TVA în România au obligaţia de depunere a Declaraţiei informative D406 începând cu data de referinţă pentru contribuabilii mici (1 ianuarie 2025)."
-— OPANAF nr. 407/2025, modificând Anexa 5 la OPANAF nr. 1.783/2021 (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF nr. 407/2025, modificând Anexa 5 la OPANAF nr. 1.783/2021 (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Din procedura ANAF rezultă un calendar pe categorii, nu un prag unic de cifră de afaceri:
@@ -37,6 +37,6 @@ Din procedura ANAF rezultă un calendar pe categorii, nu un prag unic de cifră 
 
 ## Ce face iConta.eu
 
-Pentru firmele care intră sub obligația SAF-T, iConta.eu generează Declarația D406 din propriile registre contabile (`core/d406.py`), confirmată ca validă pe validatorul oficial ANAF. Aplicația **nu determină automat** dacă o firmă se încadrează, la un moment dat, în categoria mari/mijlocii/mici contribuabili — această încadrare este comunicată contribuabilului de ANAF, iar decizia de a depune sau nu D406 la un anumit moment rămâne responsabilitatea contabilului, pe baza acestei încadrări oficiale.
+Pentru firmele care intră sub obligația SAF-T, iConta.eu generează Declarația D406 din propriile registre contabile, confirmată ca validă pe validatorul oficial ANAF. Aplicația **nu determină automat** dacă o firmă se încadrează, la un moment dat, în categoria mari/mijlocii/mici contribuabili — această încadrare este comunicată contribuabilului de ANAF, iar decizia de a depune sau nu D406 la un anumit moment rămâne responsabilitatea contabilului, pe baza acestei încadrări oficiale.
 
 [iConta.eu](/)

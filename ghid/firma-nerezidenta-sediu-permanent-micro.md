@@ -14,7 +14,7 @@ O companie străină care își deschide un sediu permanent în România (birou,
 
 ::: ghid-temei
 „Sunt obligate la plata impozitului pe profit, conform prezentului titlu, următoarele persoane, denumite în continuare contribuabili: a) persoanele juridice române, cu excepțiile prevăzute la alin. (2); [...] b) persoanele juridice străine care desfășoară activitate prin intermediul unui sediu permanent/mai multor sedii permanente în România."
-— Legea nr. 227/2015 (Codul fiscal), art. 13 alin. (1) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 13 alin. (1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Coroborarea acestei prevederi cu definiția microîntreprinderii dă răspunsul direct:

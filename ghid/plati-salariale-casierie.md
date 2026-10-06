@@ -15,11 +15,11 @@ Da. Plata salariului în numerar, prin casierie, rămâne regula implicită în 
 ::: ghid-temei
 „(1) Salariul se plătește în bani cel puțin o dată pe lună, la data stabilită în contractul individual de muncă, în contractul colectiv de muncă aplicabil sau în regulamentul intern, după caz.
 (2) Plata salariului se poate efectua prin virament într-un cont bancar.”
-— Legea 53/2003 (Codul muncii, republicată), art. 166 alin. (1) și (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii, republicată), art. 166 alin. (1) și (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Plafoanele-limită prevăzute de prezentul capitol nu se aplică de către persoanele prevăzute la art. 1 alin. (1), pentru următoarele operațiuni: [...]
 d) retragerea de numerar din conturi deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României pentru plata salariilor și a altor drepturi de personal prevăzute de lege și pentru alte operațiuni de plăți efectuate către persoanele fizice."
-— Legea 70/2015, art. 5 lit. d) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 5 lit. d) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Cele două texte, citite împreună, confirmă practica:

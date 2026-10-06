@@ -16,15 +16,15 @@ Diferența față de refacturare e importantă. Dacă factura furnizorului e emi
 
 ::: ghid-temei
 „sumele achitate de o persoană impozabilă în numele și în contul altei persoane și care apoi se decontează acesteia"
-— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Persoana care achită sume în numele și în contul altei persoane nu primește facturi pe numele său și nici nu emite facturi pe numele său. Pentru recuperarea sumelor achitate în numele și în contul altei persoane se poate emite, în mod opțional, o factură de decontare de către persoana impozabilă care a achitat respectivele facturi. În situația în care părțile convin să își deconteze sumele achitate pe baza facturii de decontare, taxa nu se menționează distinct, fiind inclusă în totalul sumei de recuperat. Factura de decontare se transmite beneficiarului însoțită de factura achitată în numele său."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Persoana care a achitat facturile în numele altei persoane nu exercită dreptul de deducere pentru sumele achitate, nu colectează taxa pe baza facturii de decontare și nu înregistrează aceste sume în conturile de cheltuieli, respectiv de venituri. Beneficiarul ale cărui facturi au fost achitate de altă persoană își va deduce în condițiile legii taxa pe baza facturii care a fost emisă pe numele său de furnizori/prestatori, factura de decontare fiind doar un document care se anexează la factura achitată."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Condițiile, pe scurt:

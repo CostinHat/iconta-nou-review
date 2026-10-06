@@ -14,7 +14,7 @@ Plafonul de scutire de TVA pentru întreprinderile mici (395.000 lei, din 2025) 
 
 ::: ghid-temei
 „Cifra de afaceri care servește drept referință pentru aplicarea alin. (1) este constituită din valoarea totală, exclusiv taxa [...], a livrărilor de bunuri și a prestărilor de servicii efectuate de persoana impozabilă în cursul unui an calendaristic, taxabile sau, după caz, care ar fi taxabile dacă nu ar fi desfășurate de o mică întreprindere, a operațiunilor scutite cu drept de deducere și, dacă nu sunt accesorii activității principale, a operațiunilor scutite fără drept de deducere prevăzute la art. 292 alin. (2) lit. a), b), e) și f), cu locul în România."
-— Legea 227/2015 (Codul fiscal), art. 310 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 310 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din formularea legii rezultă:
@@ -31,6 +31,6 @@ Din formularea legii rezultă:
 
 ## Ce face iConta.eu
 
-iConta.eu urmărește plafonul relevant pentru TVA la încasare (`core/tva_incasare.py`, funcția `plafon_la()`), care e un prag distinct de cel de înregistrare în scopuri de TVA analizat mai sus. Aplicația nu are, la data acestui ghid, o funcție separată care să calculeze automat cifra de afaceri relevantă pentru plafonul de scutire al întreprinderilor mici (art. 310) și să distingă în acest calcul avansurile de livrările/prestările efective — verificarea plafonului de înregistrare rămâne, pentru acest scenariu, responsabilitatea contabilului.
+iConta.eu urmărește plafonul relevant pentru TVA la încasare (funcția `plafon_la()`), care e un prag distinct de cel de înregistrare în scopuri de TVA analizat mai sus. Aplicația nu are, la data acestui ghid, o funcție separată care să calculeze automat cifra de afaceri relevantă pentru plafonul de scutire al întreprinderilor mici (art. 310) și să distingă în acest calcul avansurile de livrările/prestările efective — verificarea plafonului de înregistrare rămâne, pentru acest scenariu, responsabilitatea contabilului.
 
 [iConta.eu](/)

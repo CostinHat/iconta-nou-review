@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Principiul contabilității de angajamente. Efectele tranzacțiilor și ale altor evenimente sunt recunoscute atunci când tranzacțiile și evenimentele se produc (și nu pe măsură ce numerarul sau echivalentul său este încasat sau plătit) și sunt înregistrate în contabilitate și raportate în situațiile financiare ale perioadelor aferente. (2) Trebuie să se țină cont de veniturile și cheltuielile aferente exercițiului financiar, indiferent de data încasării veniturilor sau data plății cheltuielilor."
-— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă pentru un contract de construcții care se întinde pe mai multe exerciții financiare:

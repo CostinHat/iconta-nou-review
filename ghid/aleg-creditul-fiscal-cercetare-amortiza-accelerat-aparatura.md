@@ -16,15 +16,15 @@ Precizarea contează pentru că, în regula generală, metoda accelerată e perm
 
 ::: ghid-temei
 „Prevederile art. 20 alin. (1) lit. b) se aplică și în situația în care contribuabilul optează pentru aplicarea creditului fiscal potrivit prezentului articol."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „aplicarea metodei de amortizare accelerată și în cazul aparaturii și echipamentelor destinate activităților de cercetare-dezvoltare."
-— Codul fiscal (Legea 227/2015), art. 20 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „pentru primul an de utilizare, amortizarea nu poate depăși 50% din valoarea fiscală de la data intrării în patrimoniul contribuabilului a mijlocului fix"
-— Codul fiscal (Legea 227/2015), art. 28 alin. (8) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (8) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

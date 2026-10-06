@@ -232,6 +232,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     _d_scadenta = _data_ceruta("data scadenței", data_scadenta)
     # [comanda Costin 05.10.2026 pct.4] scadența se stabilește pe formular și alimentează scadențarul; înaintea emiterii n-are sens
     if _d_scadenta is not None and _d_emitere is not None and _d_scadenta < _d_emitere:
+        # refuz de FORMĂ, fără temei normativ: o scadență anterioară emiterii e o dată imposibilă, nu o regulă fiscală
         raise ValueError(MESAJ_SCADENTA_INAINTE_DE_EMITERE)
     # [3i · CF art. 282 alin. (9)] la evenimentele art. 287 (storno, reducere de pret) taxa e
     # exigibila la data evenimentului (data_emitere = azi), dar COTELE APLICABILE sunt aceleasi

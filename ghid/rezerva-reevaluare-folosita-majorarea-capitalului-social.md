@@ -16,19 +16,19 @@ Rezerva din reevaluare e un câștig nerealizat: clădirea sau terenul valoreaz�
 
 ::: ghid-temei
 „(2) De asemenea, acțiunile noi sunt liberate prin încorporarea rezervelor, cu excepția rezervelor legale, precum și a beneficiilor sau a primelor de emisiune, ori prin compensarea unor creanțe lichide și exigibile asupra societății cu acțiuni ale acesteia. (3) Diferențele favorabile din reevaluarea patrimoniului vor fi incluse în rezerve, fără a majora capitalul social."
-— Legea 31/1990, art. 210 alin. (2)-(3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 210 alin. (2)-(3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societatea cu răspundere limitată își poate majora capitalul social, în modalitățile și din sursele prevăzute de art. 210"
-— Legea 31/1990, art. 221 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 221 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(4) Rezervele din reevaluarea imobilizărilor corporale au caracter nedistribuibil. Diminuarea rezervelor din reevaluare se poate efectua numai cu respectarea prevederilor subsecțiunii 3.4.1 "Reevaluarea imobilizărilor corporale" din prezentele reglementări."
-— OMFP 1802/2014, Reglementări, pct. 418 alin. (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări, pct. 418 alin. (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „(1) Surplusul din reevaluare inclus în rezerva din reevaluare este capitalizat prin transferul direct în rezultatul reportat (contul 1175 "Rezultatul reportat reprezentând surplusul realizat din rezerve din reevaluare"), atunci când acest surplus reprezintă un câștig realizat. (2) În sensul prezentelor reglementări, câștigul se consideră realizat la scoaterea din evidență a activului pentru care s-a constituit rezerva din reevaluare. Cu toate acestea, o parte din câștig poate fi realizat pe măsură ce activul este folosit de entitate."
-— OMFP 1802/2014, Reglementări, pct. 109 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări, pct. 109 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei"
-— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

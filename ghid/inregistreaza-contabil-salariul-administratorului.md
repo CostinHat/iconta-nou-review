@@ -34,7 +34,7 @@ Vorbim aici despre indemnizația unui administrator cu contract de mandat — nu
 
 ## Ce face iConta.eu
 
-Funcția `nota(brut, fel="mandat", sursa, la_data)` din modulul F021 (`core/contracte_speciale.py`) generează exact secvența de mai sus: `621 → 421`, apoi `421 → 4315` (CAS), `421 → 4316` (CASS, doar dacă rezultă o sumă pozitivă), `421 → 444` (impozit), `421 → 5311/5121` (plata netului). Ecranul e disponibil în categoria „Personal și deconturi", sub „Contracte speciale (zilieri, mandat, cenzori)".
+Funcția `nota(brut, fel="mandat", sursa, la_data)` din modulul F021 generează exact secvența de mai sus: `621 → 421`, apoi `421 → 4315` (CAS), `421 → 4316` (CASS, doar dacă rezultă o sumă pozitivă), `421 → 444` (impozit), `421 → 5311/5121` (plata netului). Ecranul e disponibil în categoria „Personal și deconturi", sub „Contracte speciale (zilieri, mandat, cenzori)".
 
 O limitare de reținut: nota generată de F021 nu are, în acest moment, o legătură funcțională cu generarea declarației D112 din aplicație — motorul D112 citește exclusiv din tabela de salariați cu contract individual de muncă, nu din notele de mandat/cenzor/zilier. Declararea la D112 (categoria „tip asigurat" 6, pentru administratori) rămâne, pentru moment, un pas separat de acest ecran.
 

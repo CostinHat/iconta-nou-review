@@ -16,20 +16,20 @@ Situația apare în practică la facturi găsite târziu, la documente primite c
 
 ::: ghid-temei
 „persoana impozabilă își poate exercita dreptul de deducere prin decontul perioadei fiscale în care sunt îndeplinite aceste condiții și formalități sau printr-un decont ulterior, dar în cadrul termenului de prescripție prevăzut în Codul de procedură fiscală, inclusiv în cazul anulării rezervei verificării ulterioare ca urmare a inspecției fiscale."
-— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin normele metodologice se precizează condițiile necesare aplicării prevederilor alin. (2) […] pentru situația în care dreptul de deducere este exercitat după mai mult de 3 ani consecutivi după anul în care acest drept ia naștere."
-— Codul fiscal (Legea 227/2015), art. 301 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 301 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(3) În aplicarea art. 301 alin. (3) din Codul fiscal, persoana impozabilă va notifica organele fiscale competente printr-o scrisoare recomandată, însoțită de copii de pe facturi sau alte documente justificative ale dreptului de deducere, faptul că va exercita dreptul de deducere după mai mult de 3 ani consecutivi după anul în care acest drept a luat naștere."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 71 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 71 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(1) Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel. (2) Termenul de prescripție a dreptului prevăzut la alin. (1) începe să curgă de la data de 1 iulie a anului următor celui pentru care se datorează obligația fiscală, dacă legea nu dispune altfel."
-— Codul de procedură fiscală (Legea 207/2015), art. 110 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 110 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce conține notificarea și când se trimite:

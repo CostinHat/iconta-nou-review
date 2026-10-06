@@ -42,6 +42,6 @@ Pentru că F073 nu ține un calcul de sold, o diferență între contul 5121 și
 
 ## Ce face iConta.eu
 
-Ecranul „Bancă" arată starea fiecărei linii de extras (nepotrivită, potrivire parțială, contată, ignorată), astfel încât liniile necontate să fie ușor de găsit. Contabilizarea generală a extrasului (`core/banca.py`), separată de motorul de matching pe facturi, tratează operațiunile fără factură (comisioane, dobânzi, credite). iConta.eu nu are însă un raport dedicat de comparație automată „sold 5121 vs. sold bancă" — verificarea finală rămâne pe fișa de cont 5121 și balanța de verificare, comparată manual cu soldul din extras.
+Ecranul „Bancă" arată starea fiecărei linii de extras (nepotrivită, potrivire parțială, contată, ignorată), astfel încât liniile necontate să fie ușor de găsit. Contabilizarea generală a extrasului, separată de motorul de matching pe facturi, tratează operațiunile fără factură (comisioane, dobânzi, credite). iConta.eu nu are însă un raport dedicat de comparație automată „sold 5121 vs. sold bancă" — verificarea finală rămâne pe fișa de cont 5121 și balanța de verificare, comparată manual cu soldul din extras.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Una dintre condițiile cumulative pentru încadrarea la impozitul pe veniturile 
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Definiția „salariatului" pentru acest titlu e la art. 51 alin. (4): prin salariat se înțelege persoana angajată cu contract individual de muncă cu normă întreagă. Condiția se consideră îndeplinită și dacă microîntreprinderea: a) are persoane angajate cu contract individual de muncă cu timp parțial, dacă fracțiunile de normă, însumate, reprezintă echivalentul unei norme întregi; b) are încheiate contracte de administrare sau mandat, dacă remunerația e cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată.

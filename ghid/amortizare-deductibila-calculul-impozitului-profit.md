@@ -17,10 +17,10 @@ Nu orice cheltuială cu amortizarea contabilă e automat deductibilă la calculu
 a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative;
 b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului;
 c) are o durată normală de utilizare mai mare de un an."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(4) Nu reprezintă active amortizabile: a) terenurile, inclusiv cele împădurite; b) tablourile și operele de artă; c) fondul comercial; d) lacurile, bălțile și iazurile care nu sunt rezultatul unei investiții; [...] f) orice mijloc fix care nu își pierde valoarea în timp datorită folosirii, potrivit normelor; g) casele de odihnă proprii, locuințele de protocol, navele, aeronavele, vasele de croazieră, altele decât cele utilizate pentru desfășurarea activității economice; h) imobilizările necorporale cu durată de viață utilă nedeterminată, încadrate astfel potrivit reglementărilor contabile aplicabile."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă condițiile cumulative pe care trebuie să le îndeplinească un activ pentru ca amortizarea lui să fie fiscal deductibilă:

@@ -14,7 +14,7 @@ După ce depui o declarație rectificativă — inclusiv o 710 — vrei confirma
 
 ::: ghid-temei
 „(3) Data depunerii declarației fiscale este data înregistrării acesteia la organul fiscal [...]. În situația în care declarația fiscală se depune prin mijloace electronice de transmitere la distanță, data depunerii declarației este data înregistrării acesteia pe pagina de internet a organului fiscal, astfel cum rezultă din mesajul electronic de confirmare transmis ca urmare a primirii declarației. (4) [...] cu condiția validării conținutului declarației. În cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic."
-— Codul de procedură fiscală (Legea 207/2015), art. 103 alin. (3)-(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 103 alin. (3)-(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Confirmarea legală că o declarație (inclusiv o rectificativă) a fost primită și validată e un **mesaj electronic emis de sistemul ANAF**, nu o presupunere bazată pe faptul că ai apăsat „trimite".

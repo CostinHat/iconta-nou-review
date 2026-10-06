@@ -16,12 +16,12 @@ Tractoarele înmatriculate apar în tabelul de calcul al impozitului pe mijloace
 
 ::: ghid-temei
 „(2) Consiliile locale/Consiliul General al Municipiului București pot/poate hotărî să acorde scutirea sau reducerea impozitului pe mijloacele de transport pentru: a) mijloacele de transport agricole utilizate efectiv în domeniul agricol. În cazul scutirii sau reducerii impozitului pe mijloacele de transport acordate persoanelor juridice se vor avea în vedere prevederile legale în vigoare privind acordarea ajutorului de stat;"
-— Codul fiscal (Legea 227/2015), art. 469 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 469 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prin hotărârea prin care s-a stabilit să se acorde scutirea sau reducerea impozitului pe mijloacele de transport, potrivit alin. (2) , se dispune și cu privire la documentele justificative pentru fiecare situație în parte, după caz. Scutirea sau reducerea se aplică persoanelor care dețin documente justificative ce sunt depuse la organul fiscal local în termenul stabilit prin hotărârea consiliului local/Consiliului General al Municipiului București și care și-au îndeplinit obligația de plată a impozitului/taxei pentru anul fiscal anterior în termenele prevăzute de lege, începând cu data de 1 ianuarie a anului fiscal următor celui în care a fost emisă hotărârea consiliului local/Consiliului General al Municipiului București."
-— Codul fiscal (Legea 227/2015), art. 469 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 469 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

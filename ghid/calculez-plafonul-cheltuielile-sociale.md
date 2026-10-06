@@ -14,7 +14,7 @@ Cheltuielile sociale — funcționarea creșelor, grădinițelor, cadourile pent
 
 ::: ghid-temei
 „cheltuielile sociale, în limita unei cote de până la 5%, aplicată asupra valorii cheltuielilor cu salariile personalului, potrivit Codului muncii."
-— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Calculul plafonului, pas cu pas:

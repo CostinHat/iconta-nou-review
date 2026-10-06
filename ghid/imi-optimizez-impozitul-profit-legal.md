@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Contribuabilul are dreptul la deducerea rezervelor și provizioanelor/ajustărilor pentru depreciere, numai în conformitate cu prezentul articol, astfel: a) rezerva legală este deductibilă în limita unei cote de 5% aplicate asupra profitului contabil, la care se adaugă cheltuielile cu impozitul pe profit, până ce aceasta va atinge a cincea parte din capitalul social subscris și vărsat sau din patrimoniu, după caz."
-— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „cheltuielile de sponsorizare și/sau mecenat, acordate potrivit legii; contribuabilii care efectuează sponsorizări și/sau acte de mecenat, potrivit prevederilor Legii nr. 32/1994 privind sponsorizarea, [...] scad sumele aferente din impozitul pe profit datorat la nivelul valorii minime dintre următoarele: 1. valoarea calculată prin aplicarea a 0,75% la cifra de afaceri; [...] 2. valoarea reprezentând 20% din impozitul pe profit datorat."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret cele două pârghii:
@@ -35,6 +35,6 @@ Ce înseamnă concret cele două pârghii:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat (`core/sponsorizari.py`) care calculează exact acest plafon: creditul fiscal pentru sponsorizare, ca minim dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit datorat, cu istoricul de reguli aplicat corect pe perioadă (inclusiv regimul special de micro-sponsorizare valabil între 2019 și 2023). Nu am găsit însă, în modulele verificate, o funcție separată care să calculeze automat plafonul de deducere a rezervei legale (5% din profitul contabil, limitat la a cincea parte din capitalul social) — acest calcul rămâne, la acest moment, în sarcina contabilului.
+iConta.eu are un modul dedicat care calculează exact acest plafon: creditul fiscal pentru sponsorizare, ca minim dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit datorat, cu istoricul de reguli aplicat corect pe perioadă (inclusiv regimul special de micro-sponsorizare valabil între 2019 și 2023). Nu am găsit însă, în modulele verificate, o funcție separată care să calculeze automat plafonul de deducere a rezervei legale (5% din profitul contabil, limitat la a cincea parte din capitalul social) — acest calcul rămâne, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

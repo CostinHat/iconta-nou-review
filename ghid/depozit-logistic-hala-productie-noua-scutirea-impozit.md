@@ -16,15 +16,15 @@ Practic, o clădire nouă începe oricum să fie impozitată de la 1 ianuarie a 
 
 ::: ghid-temei
 „Nu se datorează impozit/taxă pe clădiri pentru: a) [...] h) clădirile noi realizate ca parte a unor proiecte investiționale din domeniul industriei prelucrătoare, depozitării și logisticii, pe baza procesului-verbal de recepție finală întocmit la terminarea lucrărilor, în condițiile legii, pentru o perioadă de 2 ani de la recepția acestora, începând cu data de 1 ianuarie a anului următor celui în care a avut loc recepția și cu respectarea legislației în materia ajutorului de stat; activitățile ce intră sub incidența prevederii se stabilesc prin normele metodologice date în aplicarea prezentului cod;"
-— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „terenurile aferente clădirilor noi realizate ca parte a unor proiecte investiționale din domeniul industriei prelucrătoare, depozitării și logisticii, pentru o perioadă de 2 ani de la recepția finală a clădirii potrivit procesului-verbal de recepție întocmit la terminarea lucrărilor, în condițiile legii, începând cu data de 1 ianuarie a anului următor celui în care a avut loc recepția"
-— Codul fiscal (Legea 227/2015), art. 464 alin. (1) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 464 alin. (1) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului sau a taxei pe clădiri."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(2) Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat, opțional trimestrial pe baza situațiilor financiare interimare și anual, după regularizarea efectuată prin situațiile financiare anuale, dacă prin actul constitutiv nu se prevede altfel. [...] regularizarea diferențelor rezultate din distribuirea dividendelor în timpul anului urmând să se facă prin situațiile financiare anuale. Plata diferențelor rezultate din regularizare se face în termen de 60 de zile de la data aprobării situațiilor financiare anuale aferente exercițiului financiar încheiat."
-— Legea nr. 31/1990, art. 67 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 67 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Mecanismul complet al dividendelor interimare:

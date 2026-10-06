@@ -14,7 +14,7 @@ O firmă în lichidare descoperă adesea, la inventarierea finală, avansuri spr
 
 ::: ghid-temei
 „(4) La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea nr. 70/2015, art. 3 alin. (4), astfel cum a fost completat de OUG nr. 115/2023 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (4), astfel cum a fost completat de OUG nr. 115/2023 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă pentru avansurile rămase nejustificate la momentul lichidării:

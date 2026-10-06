@@ -16,7 +16,7 @@ Distribuirea și plata efectivă a dividendelor este un pas separat de declarare
 „Articolul 43 - Declararea, reținerea și plata impozitului pe dividende
 (1) O persoană juridică română care plătește dividende către o persoană juridică română are obligația să rețină, să declare și să plătească impozitul pe dividende reținut către bugetul de stat, astfel cum se prevede în prezentul articol.
 (2) Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române. Impozitul pe dividende se declară și se plătește la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei în care se plătește dividendul."
-— Cod fiscal, art. 43 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 43 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă clar din text:

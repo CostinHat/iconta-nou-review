@@ -18,7 +18,7 @@ b) verificarea concordanței dintre datele din declarațiile fiscale cu cele din
 f) verificarea locurilor unde se realizează activități generatoare de venituri impozabile ori unde se află bunurile impozabile; [...]
 k) dispunerea măsurilor asigurătorii în condițiile legii;
 l) aplicarea de sigilii asupra bunurilor, întocmind în acest sens proces-verbal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 113 alin. (2) lit. b), f), k) și l) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 113 alin. (2) lit. b), f), k) și l) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Aplicat concret la un control pe stocuri și gestiune, textul de lege arată că organul de inspecție fiscală poate:

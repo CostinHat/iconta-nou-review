@@ -14,7 +14,7 @@ Când o firmă decide să modifice prețul de vânzare al unui produs sau servic
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Legea contabilității nu prevede un formular special, numit sau tipizat, pentru „schimbarea prețului de vânzare" — nici în corpul legii, nici în nomenclatorul documentelor financiar-contabile aprobat prin OMFP nr. 2.634/2015. Ce rezultă din principiul general de la art. 6:

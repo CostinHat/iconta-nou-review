@@ -16,15 +16,15 @@ Informarea nu e o formalitate: candidatul trebuie să știe la ce se expune îna
 
 ::: ghid-temei
 „h) să asigure informarea fiecărei persoane, anterior angajării în munca, asupra riscurilor la care aceasta este expusă la locul de muncă, precum și asupra măsurilor de prevenire și de protecție necesare;"
-— Legea 319/2006, art. 13 lit. h) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. h) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(4) Constituie contravenție și se sancționează cu amendă de la 4.000 lei la 8.000 lei încălcarea dispozițiilor art. 12 alin. (1) lit. a) și b) , art. 13 lit. a) , d)-f) , h)-m) și o) , art. 20 , art. 29 alin. (1) lit. a) și ale art. 32 alin. (2) ."
-— Legea 319/2006, art. 39 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „(3) Persoana selectată în vederea angajării ori salariatul, după caz, va fi informată cu privire la cel puțin următoarele elemente:a) identitatea părților; [...] f) riscurile specifice postului;"
-— Legea 53/2003 (Codul muncii), art. 17 alin. (3) lit. f) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 17 alin. (3) lit. f) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

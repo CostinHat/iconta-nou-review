@@ -14,7 +14,7 @@ Alegerea codului CAEN principal e una dintre primele decizii formale la înfiin�
 
 ::: ghid-temei
 „Asociații nu pot lua parte, ca asociați cu răspundere nelimitată, în alte societăți concurente sau având același obiect de activitate, nici să facă operațiuni în contul lor sau al altora, în același fel de comerț sau într-unul asemănător, fără consimțământul celorlalți asociați."
-— Legea nr. 31/1990 (Legea societăților), art. 82 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (Legea societăților), art. 82 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 **Limitare declarată:** textul de mai sus arată că Legea societăților nr. 31/1990 vorbește despre „obiectul de activitate" al firmei — folosit ca noțiune juridică (de exemplu pentru interdicția de concurență a asociaților cu răspundere nelimitată) — dar **nu conține reguli tehnice despre alegerea codului CAEN principal**. Clasificarea CAEN (Clasificarea Activităților din Economia Națională) e un sistem de nomenclatură statistică, stabilit prin acte ale Institutului Național de Statistică, nu prin Legea societăților sau prin Codul fiscal, iar aceste acte nu se regăsesc în sursele verificate pentru acest ghid. Ce se poate spune cu certitudine, din practica de înregistrare la Registrul Comerțului:

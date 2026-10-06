@@ -16,7 +16,7 @@ Un utilaj cumpărat cu deducere de TVA nu „închide" definitiv acea deducere d
 „Articolul 305 Ajustarea taxei deductibile în cazul bunurilor de capital
 (1) În sensul prezentului articol: a) bunurile de capital reprezintă toate activele corporale fixe, definite la art. 266 alin. (1) pct. 3 [...]
 (2) Taxa deductibilă aferentă bunurilor de capital, în condițiile în care nu se aplică regulile privind livrarea către sine sau prestarea către sine, se ajustează, în situațiile prevăzute la alin. (4) lit. a)-d): a) pe o perioadă de 5 ani, pentru bunurile de capital achiziționate sau fabricate, altele decât cele prevăzute la lit. b); b) pe o perioadă de 20 de ani, pentru construcția sau achiziția unui bun imobil, precum și pentru transformarea sau modernizarea unui bun imobil, dacă valoarea fiecărei transformări sau modernizări este de cel puțin 20% din valoarea totală a bunului imobil/părții de bun imobil după transformare sau modernizare."
-— Legea 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) și alin. (2) lit. a), b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) și alin. (2) lit. a), b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta, concret, pentru un utilaj:

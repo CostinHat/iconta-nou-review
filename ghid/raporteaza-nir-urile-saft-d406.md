@@ -15,10 +15,10 @@ Nota de recepție și constatare de diferențe (NIR) e documentul cu care mărfu
 ::: ghid-temei
 „ART. 59^1 Obligația de depunere a fișierului standard de control fiscal
 (1) Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(Cod 14-3-1A) Nota de recepție și constatare de diferențe (NIR) servește ca: document pentru recepția bunurilor aprovizionate; document justificativ pentru încărcare în gestiune; document justificativ de înregistrare în contabilitate. [...] se folosește ca document de recepție obligatoriu numai în cazul: bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; bunurilor materiale procurate de la persoane fizice; bunurilor materiale care sosesc neînsoțite de documente de livrare; bunurilor materiale care prezintă diferențe la recepție; mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare."
-— OMFP nr. 2634/2015, Anexa 2, Grupa a III-a, Cod 14-3-1A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2634/2015, Anexa 2, Grupa a III-a, Cod 14-3-1A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din combinarea celor două texte rezultă mecanismul real:
@@ -35,6 +35,6 @@ Din combinarea celor două texte rezultă mecanismul real:
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația D406/SAF-T din datele contabile deja înregistrate (facturi de achiziție, mișcări de stoc), conform structurii impuse de ANAF — modulele `core/d406.py`, `core/d406_active.py` și `core/d406_stocuri.py` din aplicație construiesc fișierul pornind de la aceste înregistrări. Aplicația nu are un formular separat de „Notă de recepție și constatare de diferențe" care să fie completat manual pentru fiecare intrare de marfă; recepția se reflectă prin înregistrarea facturii/avizului și, dacă apar diferențe cantitative sau valorice, prin corectarea directă a intrării de stoc.
+iConta.eu generează declarația D406/SAF-T din datele contabile deja înregistrate (facturi de achiziție, mișcări de stoc), conform structurii impuse de ANAF — aplicația din aplicație construiesc fișierul pornind de la aceste înregistrări. Aplicația nu are un formular separat de „Notă de recepție și constatare de diferențe" care să fie completat manual pentru fiecare intrare de marfă; recepția se reflectă prin înregistrarea facturii/avizului și, dacă apar diferențe cantitative sau valorice, prin corectarea directă a intrării de stoc.
 
 [iConta.eu](/)

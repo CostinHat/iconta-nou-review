@@ -14,11 +14,11 @@ Dacă descoperiți o eroare în timpul unui control ANAF deja început, reflexul
 
 ::: ghid-temei
 „(8) În situația în care în timpul inspecției fiscale contribuabilul/plătitorul depune sau corectează declarația de impunere aferentă perioadelor și creanțelor fiscale ce fac obiectul inspecției fiscale, aceasta nu va fi luată în considerare de organul fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) În vederea stabilirii stării de fapt fiscale, contribuabilul/plătitorul are obligația să pună la dispoziție organului fiscal registre, evidențe, documente de afaceri și orice alte înscrisuri. [...]
 (7) La finalizarea inspecției fiscale, contribuabilul/plătitorul este obligat să dea o declarație scrisă, pe propria răspundere, din care să rezulte că au fost puse la dispoziție toate documentele și informațiile solicitate pentru inspecția fiscală."
-— Legea 207/2015, art. 64 alin. (1) și art. 118 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 64 alin. (1) și art. 118 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul corect de documentare a unei ajustări descoperite în timpul controlului:

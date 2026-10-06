@@ -14,7 +14,7 @@ O firmă la impozit pe profit nu calculează separat impozitul pentru fiecare lu
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală. (2) Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
-— Legea nr. 227/2015 privind Codul fiscal, art. 19 alin. (1) și (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 19 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința practică a calculului cumulat:
@@ -31,6 +31,6 @@ Consecința practică a calculului cumulat:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit trimestrial exact pe baza logicii cumulate cerute de art. 19 alin. (2): în `core/d100.py`, baza efectivă a fiecărui trimestru se determină ca diferență între profitul cumulat de la 1 ianuarie până la sfârșitul trimestrului curent (plafonat la minimum zero) și profitul cumulat până la sfârșitul trimestrului anterior (plafonat la minimum zero) — mecanism care evită eroarea de a impozita integral, la cota de 16%, un trimestru cu profit venit imediat după un trimestru cu pierdere, și care dă corect zero de plată atunci când profitul cumulat scade sub nivelul deja impozitat anterior.
+iConta.eu calculează impozitul pe profit trimestrial exact pe baza logicii cumulate cerute de art. 19 alin. (2): în aplicație, baza efectivă a fiecărui trimestru se determină ca diferență între profitul cumulat de la 1 ianuarie până la sfârșitul trimestrului curent (plafonat la minimum zero) și profitul cumulat până la sfârșitul trimestrului anterior (plafonat la minimum zero) — mecanism care evită eroarea de a impozita integral, la cota de 16%, un trimestru cu profit venit imediat după un trimestru cu pierdere, și care dă corect zero de plată atunci când profitul cumulat scade sub nivelul deja impozitat anterior.
 
 [iConta.eu](/)

@@ -16,15 +16,15 @@ La **cota în vigoare la data achiziției** bunului sau serviciului. Ajustarea c
 
 ::: ghid-temei
 „(13) Ajustarea se efectuează în funcție de cota de taxă în vigoare la data achiziției bunurilor/serviciilor prevăzute la alin. (1) . În situația în care nu se poate determina cota de la data achiziției se efectuează ajustarea utilizând cota de taxă în vigoare la data la care intervine obligația/dreptul de ajustare."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (13) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (13) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(6) Ajustarea de taxă se efectuează în funcție de cota de taxă în vigoare la data achiziției activului corporal fix."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 80 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 80 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „pentru cazurile prevăzute la alin. (4) lit. a) […] ajustarea se efectuează în cadrul perioadei de ajustare prevăzute la alin. (2) […] pentru o cincime sau, după caz, o douăzecime din taxa dedusă inițial, pentru fiecare an în care apare o modificare a destinației de utilizare."
-— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe categorii de ajustare:

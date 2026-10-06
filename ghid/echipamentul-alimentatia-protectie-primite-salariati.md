@@ -16,15 +16,15 @@ Condiția care contează este „potrivit legislației în vigoare". Casca, boca
 
 ::: ghid-temei
 „contravaloarea echipamentelor tehnice, a echipamentului individual de protecție și de lucru, a alimentației de protecție, a medicamentelor și materialelor igienico-sanitare, a altor drepturi privind sănătatea și securitatea în muncă, precum și a uniformelor obligatorii și a drepturilor de echipament, ce se acordă potrivit legislației în vigoare;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (neimpozabile la impozitul pe venit) și art. 142 lit. e) (excluse din baza CAS) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (neimpozabile la impozitul pe venit) și art. 142 lit. e) (excluse din baza CAS) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu se cuprind în baza lunară de calcul al contribuției asiguratorie pentru muncă sumele prevăzute la art. 142"
-— Codul fiscal (Legea 227/2015), art. 220^4 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 220^4 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) contravaloarea echipamentului individual de protecție cu care este dotat fiecare participant în procesul muncii pentru a fi protejat împotriva factorilor de risc; [...] c) contravaloarea echipamentului individual de lucru care cuprinde mijloacele primite de un angajat în vederea utilizării lor în timpul procesului muncii pentru a-i proteja îmbrăcămintea și încălțămintea; [...] d) contravaloarea alimentației de protecție primite în mod gratuit de persoanele fizice care lucrează în condiții de muncă ce impun acest lucru, conform reglementărilor privind securitatea și sănătatea în muncă;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (15) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (15) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pentru CASS, art. 157 alin. (2) exclude din bază sumele prevăzute la art. 142, deci și pe acestea.

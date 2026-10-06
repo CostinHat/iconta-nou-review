@@ -33,6 +33,6 @@ Când un administrator cu contract de mandat e introdus în aplicație ca angaja
 
 ## Ce face iConta.eu
 
-Modulul F021 (`core/contracte_speciale.py`) oferă calculul corect (`calcul_mandat`) și nota corectă (`nota(fel="mandat")`, prin contul 621) pentru administratorul de mandat. O limitare de reținut, verificată direct în cod: generarea D112 din aplicație citește exclusiv din tabela de salariați cu contract individual de muncă (`asigCI="1" asigSO="1"`, hardcodat) — nu are, la acest moment, un traseu care să ducă o notă de mandat spre categoria corectă de „tip asigurat" (6, pentru administratori) din D112. Dacă administratorul a fost deja declarat greșit ca salariat cu CIM, rectificarea declarației rămâne un pas manual, în afara acestui modul.
+Modulul F021 oferă calculul corect (`calcul_mandat`) și nota corectă (`nota(fel="mandat")`, prin contul 621) pentru administratorul de mandat. O limitare de reținut, verificată direct în cod: generarea D112 din aplicație citește exclusiv din tabela de salariați cu contract individual de muncă (`asigCI="1" asigSO="1"`, hardcodat) — nu are, la acest moment, un traseu care să ducă o notă de mandat spre categoria corectă de „tip asigurat" (6, pentru administratori) din D112. Dacă administratorul a fost deja declarat greșit ca salariat cu CIM, rectificarea declarației rămâne un pas manual, în afara acestui modul.
 
 [iConta.eu](/)

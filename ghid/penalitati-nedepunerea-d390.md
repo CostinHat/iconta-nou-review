@@ -17,7 +17,7 @@ Spre deosebire de multe alte declarații fiscale, pentru D390 Codul de procedur�
 (1) Constituie contravenții următoarele fapte: a) nedepunerea la termenele prevăzute de lege a declarațiilor recapitulative reglementate de normele din Codul fiscal privind taxa pe valoarea adăugată; b) depunerea de declarații recapitulative incorecte ori incomplete.
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: a) cu amendă de la 1.000 lei la 5.000 lei în cazul săvârșirii faptei prevăzute la lit. a); b) cu amendă de la 500 lei la 1.500 lei în cazul săvârșirii faptei prevăzute la lit. b).
 (3) Nu se sancționează contravențional: a) persoanele care corectează declarația recapitulativă până la termenul legal de depunere a următoarei declarații recapitulative, dacă fapta prevăzută la alin. (1) lit. b) nu a fost constatată de organul fiscal anterior corectării; b) persoanele care, ulterior termenului legal de depunere, corectează declarațiile ca urmare a unui fapt neimputabil persoanei impozabile."
-— Legea 207/2015 (Codul de procedură fiscală), art. 337 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 337 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă un regim în două trepte, cu excepții clare de la sancționare:

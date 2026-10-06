@@ -16,15 +16,15 @@ Pentru operațiunile din 2026, impozitul reținut este de 3% sau 6% din fiecare 
 
 ::: ghid-temei
 „Determinarea câștigului/pierderii din operațiuni cu instrumentele financiare derivate se face de către intermediar, așa cum este definit de legislația în materie, rezident fiscal român sau nerezident care are în România un sediu permanent ce are calitatea de intermediar, la momentul fiecărei tranzacții, pe bază de documente justificative."
-— Codul fiscal (Legea 227/2015), art. 95 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 95 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „în cazul operațiunilor cu instrumente financiare derivate: (i) prin aplicarea unei cote de 3% asupra fiecărui câștig din efectuarea de operațiuni cu instrumente financiare derivate deținute o perioadă mai mare de 365 de zile inclusiv de la data dobândirii; [...] (ii) prin aplicarea unei cote de 6% asupra fiecărui câștig din efectuarea de operațiuni cu instrumente financiare derivate deținute o perioadă mai mică de 365 de zile de la data dobândirii."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (8^1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (8^1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pierderile obținute din transferul titlurilor de valoare și din operațiuni cu instrumente financiare derivate, efectuate prin entitățile prevăzute la art. 96^1 alin. (1) , după caz, nu se reportează și nu se compensează, acestea reprezentând pierderi definitive ale contribuabilului."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (8^5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (8^5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Obligațiile intermediarului (art. 96^1 alin. (1)):

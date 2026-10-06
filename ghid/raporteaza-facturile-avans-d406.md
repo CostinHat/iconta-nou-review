@@ -14,12 +14,12 @@ Fișierul standard de control fiscal (SAF-T, declarat prin D406) nu are o catego
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), exigibilitatea taxei intervine: [...] b) la data la care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator. Avansurile reprezintă plata parțială sau integrală a contravalorii bunurilor și serviciilor, efectuată înainte de data livrării ori prestării acestora."
-— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Obligația de a depune D406/SAF-T e generală (art. 59^1 din Codul de procedură fiscală) și nu distinge, la nivel de lege, între tipurile de facturi raportate — orice factură emisă sau primită intră în evidența contabilă și fiscală ce trebuie declarată.

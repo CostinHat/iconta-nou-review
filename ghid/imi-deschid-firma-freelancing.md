@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Semnatarii actului constitutiv, precum și persoanele care au un rol determinant în constituirea societății sunt considerați fondatori."
-— Legea nr. 31/1990 (Legea societăților), art. 6 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (Legea societăților), art. 6 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societatea cu răspundere limitată trebuie să verse 30% din valoarea capitalului social subscris nu mai târziu de 3 luni de la data înmatriculării, dar înainte de a începe operațiuni în numele societății, iar diferența de capital social subscris va fi vărsată: a) pentru aportul în numerar, în 12 luni de la data înmatriculării; b) pentru aportul în natură, în termen de cel mult 2 ani de la data înmatriculării."
-— Legea nr. 31/1990 (Legea societăților), art. 9^1 alin. (2), aplicabil societății cu răspundere limitată (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (Legea societăților), art. 9^1 alin. (2), aplicabil societății cu răspundere limitată (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce presupune, concret, constituirea unui SRL:

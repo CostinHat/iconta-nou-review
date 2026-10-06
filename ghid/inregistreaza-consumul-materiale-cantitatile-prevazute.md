@@ -16,7 +16,7 @@ Devizul e un document tehnic de estimare, nu un plafon contabil — contabilitat
 „51. - (1) Principiul prudenței. La întocmirea situațiilor financiare anuale, recunoașterea și evaluarea trebuie realizate pe o bază prudentă și, în special: [...]
 57. - (1) Contabilizarea și prezentarea elementelor din bilanț și din contul de profit și pierdere ținând seama de fondul economic al tranzacției sau al angajamentului în cauză. Respectarea acestui principiu are drept scop înregistrarea în contabilitate și prezentarea fidelă a operațiunilor economico-financiare, în conformitate cu realitatea economică [...]
 (2) Evenimentele și operațiunile economico-financiare trebuie evidențiate în contabilitate așa cum acestea se produc, în baza documentelor justificative."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 51 alin. (1) și pct. 57 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 51 alin. (1) și pct. 57 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din aceste principii rezultă cum se tratează consumul peste deviz:

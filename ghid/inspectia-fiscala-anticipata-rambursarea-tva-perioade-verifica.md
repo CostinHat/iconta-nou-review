@@ -16,15 +16,15 @@ Pentru firmă, limita stabilește ce documente trebuie pregătite și cât poate
 
 ::: ghid-temei
 „în cazul inspecției fiscale anticipate, efectuate pentru soluționarea deconturilor cu sumâ negativâ de TVA, prin excepție de la prevederile art. 117, perioada supusâ inspecției fiscale va cuprinde exclusiv perioadele fiscale în care s-au derulat operațiunile care au generat soldul sumei negative a taxei. Dispozițiile art. 94 alin. (3) râmân aplicabile."
-— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care se constatâ indicii privind nerespectarea legislației fiscale ori stabilirea incorectâ a obligațiilor fiscale, prin operațiuni care s-au desfâșurat în afara perioadei prevâzute la alin. (9), inspecția fiscalâ se extinde corespunzâtor, cu respectarea prevederilor art. 117."
-— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 169 alin. (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Selectarea perioadelor care vor fi supuse inspecției fiscale se efectuează de organul fiscal în funcție de riscul fiscal identificat. Inspecția fiscală se poate extinde, cu respectarea alin. (1) și asupra celorlalte perioade fiscale neverificate."
-— Codul de procedură fiscală (Legea 207/2015), art. 117 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 117 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

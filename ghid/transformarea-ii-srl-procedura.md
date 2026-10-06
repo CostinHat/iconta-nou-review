@@ -14,7 +14,7 @@ Termenul de „transformare" induce în eroare: din punct de vedere juridic, o �
 
 ::: ghid-temei
 „Acționarii, asociații comanditari, precum și asociații în societatea cu răspundere limitată răspund numai până la concurența capitalului social subscris."
-— Legea nr. 31/1990 privind societățile, art. 3 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 3 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Notă onestă: în corpusul disponibil nu am găsit textul OUG nr. 44/2008 (actul care reglementează înființarea/încetarea PFA, II și IF), deci nu pot cita verbatim procedura exactă de radiere a unei II. Ce pot documenta, din sursele identificate, sunt cele două fațete reale ale operațiunii:

@@ -14,7 +14,7 @@ Da, ANAF poate sechestra un autoturism aflat în proprietatea firmei, ca parte a
 
 ::: ghid-temei
 „Executarea silită a bunurilor mobile se face prin sechestrarea și valorificarea acestora, chiar dacă acestea se află la un terț. Sechestrul se instituie printr-un proces-verbal. În cazul sechestrării autovehiculelor, prevederile art. 740 din Codul de procedură civilă, republicat, sunt aplicabile în mod corespunzător."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 238 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 238 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ordinea în care organul fiscal poate trece la sechestrare este stabilită explicit de lege:

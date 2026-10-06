@@ -16,11 +16,11 @@ Sancțiunile complementare nu se aplică automat. Ele se aplică **în funcție 
 
 ::: ghid-temei
 „(3) Sancțiunile contravenționale complementare sunt: a) confiscarea bunurilor destinate, folosite sau rezultate din contravenții; […] b) suspendarea sau anularea, după caz, a avizului, acordului sau a autorizației de exercitare a unei activități; […] c) închiderea unității; […] d) blocarea contului bancar; […] e) suspendarea activității agentului economic; […] f) retragerea licenței sau a avizului pentru anumite operațiuni ori pentru activități de comerț exterior, temporar sau definitiv; […] g) desființarea lucrărilor și aducerea terenului în starea inițială."
-— OG 2/2001, art. 5 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 5 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(4) Prin legi speciale se pot stabili și alte sancțiuni principale sau complementare."
-— OG 2/2001, art. 5 alin. (4) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 5 alin. (4) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(6) Sancțiunile complementare se aplică în funcție de natura și de gravitatea faptei."
-— OG 2/2001, art. 5 alin. (6) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 5 alin. (6) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

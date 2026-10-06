@@ -14,7 +14,7 @@ Diferența fundamentală în contabilitatea unui dezvoltator imobiliar față de
 
 ::: ghid-temei
 „199. - Următoarele constituie exemple de elemente care nu sunt investiții imobiliare: a) proprietățile imobiliare deținute pentru a fi vândute pe parcursul desfășurării normale a activității sau în procesul de construcție ori de amenajare în vederea unei astfel de vânzări, de exemplu, proprietățile imobiliare dobândite cu scopul exclusiv de a fi cedate ulterior, în viitorul apropiat, sau cu scopul de a fi amenajate și revândute. Acestea reprezintă, din punct de vedere contabil, stocuri; [...]"
-— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, pct. 199 lit. a) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, pct. 199 lit. a) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **Terenuri și clădiri destinate vânzării** (obiectul de activitate al dezvoltatorului): se contabilizează ca stocuri, la cost, pe măsura avansării lucrărilor — nu se amortizează și nu intră la imobilizări corporale, chiar dacă rămân în evidență mai mulți ani până la vânzare.

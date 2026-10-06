@@ -14,7 +14,7 @@ Termenul de depunere a decontului de TVA depinde de un singur lucru din perspect
 
 ::: ghid-temei
 „Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."
-— Legea nr. 227/2015 (Codul fiscal), art. 323 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Termenele efective, corelate cu regula perioadei fiscale (art. 322):

@@ -14,7 +14,7 @@ Scutirea de TVA pentru o livrare intracomunitară nu se acordă doar pentru că 
 
 ::: ghid-temei
 „Scutirile cu drept de deducere prevăzute la art. 294, 295 și 296 din Codul fiscal sunt aplicate în măsura în care persoanele impozabile pot justifica scutirea cu documentele prevăzute de instrucțiuni aprobate de ministrul finanțelor publice. Aplicarea regimului de taxare pentru operațiuni scutite cu drept de deducere de către persoanele impozabile nu implică anularea dreptului de deducere la beneficiarii operațiunilor."
-— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 65 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 65 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Norma nu enumeră ea însăși documentele necesare — trimite la un act separat, ceea ce înseamnă că lista concretă de documente trebuie verificată la sursa ei proprie, nu presupusă:

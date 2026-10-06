@@ -16,7 +16,7 @@ Momentul înmatriculării la Registrul Comerțului nu e doar o formalitate admin
 „Articolul 40 (2) Încheierea de înmatriculare va reda, după caz, mențiunile actului constitutiv prevăzute la art. 7 și 8.
 
 Articolul 41 (1) Societatea este persoană juridică de la data înmatriculării în registrul comerțului."
-— Legea nr. 31/1990 privind societățile, art. 40 alin. (2) și art. 41 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 40 alin. (2) și art. 41 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă concret pentru o firmă nou-înmatriculată:

@@ -15,7 +15,7 @@ Concediul paternal este recunoscut de Codul muncii ca motiv legal de suspendare 
 ::: ghid-temei
 „Articolul 51
 Contractul individual de muncă poate fi suspendat din iniţiativa salariatului, în următoarele situaţii: a) concediu pentru creşterea copilului în vârsta de până la 2 ani sau, în cazul copilului cu handicap, până la împlinirea vârstei de 3 ani; [...] b) concediu pentru îngrijirea copilului bolnav în vârsta de până la 7 ani sau, în cazul copilului cu handicap, pentru afecţiuni intercurente, până la împlinirea vârstei de 18 ani; [...] c) concediu paternal;"
-— Legea 53/2003 (Codul muncii), art. 51 lit. c) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 51 lit. c) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Onest, ce putem confirma din sursele verificate pentru acest ghid și ce nu:

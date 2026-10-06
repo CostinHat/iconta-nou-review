@@ -14,7 +14,7 @@ Nu există, în sensul strict al termenului, o „chitanță" pentru impozitul p
 
 ::: ghid-temei
 „Calculul și plata impozitului pe veniturile microîntreprinderilor se efectuează trimestrial, până la data de 25 inclusiv a lunii următoare trimestrului pentru care se calculează impozitul."
-— Legea 227/2015, art. 56 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 56 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 În practică, circuitul e următorul: firma calculează impozitul micro pe baza veniturilor trimestrului (art. 53), depune declarația privind obligațiile de plată la bugetul de stat (formularul 100), apoi achită suma prin ordin de plată către contul de trezorerie corespunzător codului de impozit pe veniturile microîntreprinderilor, până la data de 25 a lunii următoare încheierii trimestrului. Confirmarea plății — echivalentul modern al unei „chitanțe" — e extrasul de cont al firmei, ordinul de plată vizat de bancă și, ulterior, evidența din contul fiscal virtual al firmei de pe portalul ANAF, unde plata apare reflectată în fișa pe plătitor.

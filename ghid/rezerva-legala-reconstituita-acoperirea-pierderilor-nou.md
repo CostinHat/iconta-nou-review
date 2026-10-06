@@ -16,15 +16,15 @@ Cine reține doar a doua parte deduce de două ori aceeași sumă. Cine reține 
 
 ::: ghid-temei
 „rezerva legală este deductibilă în limita unei cote de 5% aplicate asupra profitului contabil, la care se adaugă cheltuielile cu impozitul pe profit, până ce aceasta va atinge a cincea parte din capitalul social subscris și vărsat sau din patrimoniu, după caz;"
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv."
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul în care rezerva legală este utilizată pentru acoperirea pierderilor sau este distribuită sub orice formă, inclusiv pentru majorarea capitalului social, rezerva reconstituită ulterior acestei utilizări, în aceeași limită, este deductibilă la calculul rezultatului fiscal."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 19 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 19 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

@@ -14,7 +14,7 @@ Digitalizarea fiscală din ultimii ani nu a fost un proces uniform — a intrat 
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura [...]."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Două fire separate de digitalizare afectează direct firmele mici:
@@ -31,6 +31,6 @@ Două fire separate de digitalizare afectează direct firmele mici:
 
 ## Ce face iConta.eu
 
-iConta.eu are module dedicate ambelor direcții de digitalizare: transmiterea și primirea facturilor prin RO e-Factura (`core/efactura_send.py`, `core/efactura_trimitere.py`, `core/efactura_import.py`) și generarea declarației SAF-T/D406 (`core/d406.py`, `core/d406_reconciliere.py`), construită pe schema XSD oficială publicată de ANAF. Aplicația automatizează astfel exact cele două obligații structurale ale digitalizării fiscale relevante pentru firmele mici, reducând nevoia de intervenție manuală asupra formatelor electronice.
+iConta.eu are module dedicate ambelor direcții de digitalizare: transmiterea și primirea facturilor prin RO e-Factura și generarea declarației SAF-T/D406, construită pe schema XSD oficială publicată de ANAF. Aplicația automatizează astfel exact cele două obligații structurale ale digitalizării fiscale relevante pentru firmele mici, reducând nevoia de intervenție manuală asupra formatelor electronice.
 
 [iConta.eu](/)

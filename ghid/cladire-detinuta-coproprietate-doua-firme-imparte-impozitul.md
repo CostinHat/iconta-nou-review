@@ -16,15 +16,15 @@ Contează pentru că fiecare firmă înregistrează în contabilitate și plăte
 
 ::: ghid-temei
 „(6) În cazul în care o clădire se află în proprietatea comună a două sau mai multe persoane, fiecare dintre proprietarii comuni ai clădirii datorează impozitul pentru spațiile situate în partea din clădire aflată în proprietatea sa. În cazul în care nu se pot stabili părțile individuale ale proprietarilor în comun, fiecare proprietar în comun datorează o parte egală din impozitul pentru clădirea respectivă.”
-— Codul fiscal (Legea 227/2015), art. 455 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 455 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) Dacă o clădire se află în proprietatea comună a două sau mai multor persoane, la stabilirea impozitului datorat se au în vedere următoarele: a) cotele-părți sunt prezumate a fi egale, până la proba contrară. Fiecare dintre coproprietari datorează un impozit egal, rezultat în urma împărțirii impozitului datorat pentru întreaga clădire;”
-— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 14 alin. (2) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 14 alin. (2) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „b) în cazul în care cotele-părți din dreptul de proprietate asupra clădirii sunt determinate, fiecare coproprietar datorează impozitul corespunzător cotei-părți deținute.”
-— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 14 alin. (2) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 14 alin. (2) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii de urmat:

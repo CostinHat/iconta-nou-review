@@ -16,13 +16,13 @@ Pentru firmele care vând online către clienți din alte state membre, pragul s
 
 ::: ghid-temei
 „(4) Obligația care le revine prestatorilor de servicii de plată în temeiul alin. (2) se aplică în cazul în care, în cursul unui trimestru calendaristic, un prestator de servicii de plată prestează servicii de plată care corespund unui număr de peste 25 de plăți transfrontaliere către același beneficiar al plăților."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(5) Numărul de plăți transfrontaliere prevăzut la alin. (4) se calculează cu referire la serviciile de plată prestate de prestatorul de servicii de plată pentru fiecare stat membru și pentru fiecare element de identificare astfel cum este prevăzut la alin. (10) . În cazul în care prestatorul de servicii de plată deține informații conform cărora beneficiarul plăților dispune de mai multe elemente de identificare, calculul se efectuează pe beneficiar al plăților."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Se consideră că o plată este transfrontalieră în cazul în care plătitorul se află într-un stat membru, iar beneficiarul plății se află într-un alt stat membru, într-un teritoriu terț sau o țară terță."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică pragul:

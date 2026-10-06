@@ -14,7 +14,7 @@ Nu. Contul 531 „Casa" (uzual notat analitic 5311 pentru lei) este definit ca *
 
 ::: ghid-temei
 „GRUPA 53 «CASA» [...] Contul 531 «Casa» Cu ajutorul acestui cont se ține evidența numerarului aflat în casieria entității, precum și a mișcării acestuia, ca urmare a încasărilor și plăților efectuate. Contul 531 «Casa» este un cont de activ. [...] Soldul contului reprezintă numerarul existent în casierie."
-— OMFP 1802/2014, Cap. 16 „Funcțiunea conturilor", Grupa 53, Contul 531 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Cap. 16 „Funcțiunea conturilor", Grupa 53, Contul 531 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Consecințele definiției „cont de activ":

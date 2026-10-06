@@ -14,10 +14,10 @@ Furtul unui mijloc fix ridică imediat o întrebare de TVA: dacă bunul a dispă
 
 ::: ghid-temei
 „bunurile de capital reprezintă toate activele corporale fixe, definite la art. 266 alin. (1) pct. 3 [...]."
-— Legea 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 305 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Ajustarea taxei deductibile prevăzute la alin. (1) lit. d) se efectuează: [...] d) în situația în care bunul de capital își încetează existența, cu următoarele excepții: 1. bunul de capital a făcut obiectul unei livrări sau unei livrări către sine pentru care taxa este deductibilă; 2. bunul de capital este pierdut, distrus sau furat, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător. În cazul bunurilor furate, persoana impozabilă demonstrează furtul bunurilor pe baza actelor doveditoare emise de organele judiciare; [...]."
-— Legea 227/2015 (Codul fiscal), art. 305 alin. (4) lit. d) pct. 2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 305 alin. (4) lit. d) pct. 2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Un mijloc fix e, din perspectiva TVA, un „bun de capital" (art. 305 alin. (1) lit. a) din Codul fiscal), nu un bun oarecare — de aceea regula de ajustare aplicabilă e cea de la art. 305, cu regim de ajustare eșalonat pe 5 ani (bunuri mobile) sau 20 de ani (imobile), nu regula generală de ajustare imediată de la art. 304, care vizează explicit „bunurile, altele decât bunurile de capital".
@@ -37,6 +37,6 @@ Condiții și consecințe practice:
 
 ## Ce face iConta.eu
 
-iConta.eu importă și gestionează registrul de mijloace fixe (`core/mijloace_fixe_import_api.py`, `core/repo_mijloace_fixe.py`), cu valoarea de intrare, amortizarea cumulată și valoarea reziduală. Aplicația nu are, la data acestui ghid, o funcție dedicată scoaterii din gestiune a unui mijloc fix furat și verificării condiției de neajustare a TVA (existența actelor doveditoare emise de organele judiciare) — această verificare și decizia de tratament fiscal rămân în sarcina contabilului, pe baza documentelor obținute.
+iConta.eu importă și gestionează registrul de mijloace fixe, cu valoarea de intrare, amortizarea cumulată și valoarea reziduală. Aplicația nu are, la data acestui ghid, o funcție dedicată scoaterii din gestiune a unui mijloc fix furat și verificării condiției de neajustare a TVA (existența actelor doveditoare emise de organele judiciare) — această verificare și decizia de tratament fiscal rămân în sarcina contabilului, pe baza documentelor obținute.
 
 [iConta.eu](/)

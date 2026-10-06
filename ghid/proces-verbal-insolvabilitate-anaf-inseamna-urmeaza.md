@@ -16,13 +16,13 @@ Nu trebuie confundată cu insolvența din Legea 85/2014, care e o procedură jud
 
 ::: ghid-temei
 „În sensul prezentului cod este insolvabil debitorul ale cărui venituri și/sau bunuri urmăribile au o valoare mai mică decât obligațiile fiscale de plată sau care nu are venituri ori bunuri urmăribile. În acest sens, organul fiscal comunică debitorului procesul-verbal de insolvabilitate."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Se consideră debitori care nu au venituri sau bunuri urmăribile și următoarele categorii: a) debitorii ce dețin în proprietate bunuri a căror valorificare acoperă cel mult cheltuielile estimate de executare silită; b) debitorii care dețin în proprietate bunuri a căror valoare este mai mică de 2% din cuantumul obligațiilor fiscale restante."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în cazul debitorilor prevăzuți la alin. (2) executarea silită se întrerupe. Organul fiscal are obligația ca cel puțin o dată pe an să efectueze o investigație asupra stării acestor contribuabili, care nu constituie acte de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce urmează pentru firmă:

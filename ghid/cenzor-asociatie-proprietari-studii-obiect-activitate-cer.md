@@ -20,11 +20,11 @@ Nu se cere calitatea de expert contabil sau contabil autorizat. Candidatul trebu
 
 ::: ghid-temei
 „(1) În cazul în care cenzorul/membrii comisiei de cenzori sunt persoane fizice, acestea trebuie să aibă cel puțin studii medii în domeniul economic sau studii în domeniul juridic. (2) În cazul în care cenzorul este persoană juridică, acesta trebuie să aibă domeniul de activitate contabilitate, audit financiar sau consultanță în domeniul fiscal, conform legislației în vigoare."
-— Legea 196/2018, art. 60 alin. (1)-(2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (1)-(2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(2) Dacă dintre membrii asociației de proprietari nu se poate alege un cenzor, atunci adunarea generală a proprietarilor mandatează comitetul executiv pentru angajarea unui cenzor din afara asociației de proprietari, persoană fizică cu studii superioare în domeniul economic sau juridic ori persoană juridică cu domeniul de activitate contabilitate, audit financiar sau consultanță în domeniul fiscal, pe bază de contract individual de muncă sau, după caz, contract de prestări de servicii."
-— Legea 196/2018, art. 46 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 46 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(5) Funcția de președinte, respectiv membru în comitetul executiv, este incompatibilă cu funcția de cenzor sau membru în comisia de cenzori."
-— Legea 196/2018, art. 46 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 46 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Alte condiții care se verifică la numire:

@@ -16,17 +16,17 @@ Pentru contabil, diferența contează la dosarul justificativ al achiziției: f�
 
 ::: ghid-temei
 „Veniturile reglementate la art. 67 din Codul fiscal obținute din valorificarea în regim de consignație sau prin vânzare directă către agenți economici și alte instituții a bunurilor rezultate în urma unei prelucrări sau procurate în scopul revânzării sunt considerate venituri din activități independente. În această situație consignatarul/cumpărătorul va solicita documente care atestă proveniența bunurilor respective, precum și cele care atestă desfășurarea unei activități independente. Nu se încadrează în aceste prevederi bunurile din patrimoniul personal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV, pct. 6 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV, pct. 6 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Borderoul de achiziție servește ca: - document de înregistrare în gestiune a bunurilor cumpărate de la persoane fizice; - document justificativ de înregistrare în contabilitate a valorii bunurilor cumpărate;"
-— OMFP 2634/2015, anexa 2 (Norme specifice de utilizare a documentelor financiar-contabile), Borderou de achiziție, cod 14-4-13 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2 (Norme specifice de utilizare a documentelor financiar-contabile), Borderou de achiziție, cod 14-4-13 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce înseamnă concret:

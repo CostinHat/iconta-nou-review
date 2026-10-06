@@ -14,10 +14,10 @@ Multe probleme care par „doar" de management financiar — bani scoși din fir
 
 ::: ghid-temei
 „51. ‐ (1) Principiul prudenței. La întocmirea situațiilor financiare anuale, recunoașterea și evaluarea trebuie realizate pe o bază prudentă și, în special: a) în contul de profit și pierdere poate fi inclus numai profitul realizat la data bilanțului; b) sunt recunoscute datoriile apărute în cursul exercițiului financiar curent sau al unui exercițiu precedent, chiar dacă acestea devin evidente numai între data bilanțului și data întocmirii acestuia [...] (2) Activele și veniturile nu trebuie să fie supraevaluate, iar datoriile și cheltuielile, subevaluate."
-— OMFP 1802/2014, pct. 51 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 51 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „66. ‐ (1) Erorile din perioadele anterioare sunt omisiuni și declarații eronate cuprinse în situațiile financiare ale entității pentru una sau mai multe perioade anterioare rezultând din greșeala de a utiliza sau de a nu utiliza informații credibile care: a) erau disponibile la momentul la care situațiile financiare pentru acele perioade au fost aprobate spre a fi emise [...] (2) Astfel de erori includ efectele greșelilor matematice, greșelilor de aplicare a politicilor contabile, ignorării sau interpretării greșite a evenimentelor și fraudelor."
-— OMFP 1802/2014, pct. 66 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 66 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Legătura dintre management financiar defectuos și erori contabile e directă:

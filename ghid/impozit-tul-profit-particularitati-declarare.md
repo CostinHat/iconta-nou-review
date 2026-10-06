@@ -16,7 +16,7 @@ O confuzie frecventă este că forma juridică de societate pe acțiuni (SA) ar 
 „(1) Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. [...]
 (4) Instituțiile de credit - persoane juridice române și sucursalele din România ale instituțiilor de credit - persoane juridice străine - au obligația de a declara și plăti impozit pe profit anual, cu plăți anticipate efectuate trimestrial. [...]
 (5) Următorii contribuabili au obligația de a declara și plăti impozitul pe profit, astfel: a) persoanele juridice române prevăzute la art. 15 au obligația de a declara și plăti impozitul pe profit, anual, până la termenele prevăzute la art. 42 [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 41 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 41 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text pentru o SA:

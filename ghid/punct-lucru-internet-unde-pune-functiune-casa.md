@@ -16,15 +16,15 @@ Pașii tehnici sunt aceiași ca la orice fiscalizare. Se schimbă doar locul în
 
 ::: ghid-temei
 „Procedura prevăzută la alin. (1) se efectuează la sediul distribuitorului/unității de service acreditată, pentru aparatele de marcat electronice fiscale utilizate în puncte de lucru care nu dispun de niciun mijloc de conexiune la internet, la solicitarea utilizatorului exprimată prin „Declarația pe propria răspundere“, prevăzută în anexa nr. 3A."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Declarația pe propria răspundere, întocmită de către administratorul sau reprezentantul legal al utilizatorului, împreună cu copia actului de identitate a declarantului și, după caz, a împuternicirii notariale, se arhivează la distribuitorul autorizat sau la unitatea de service acreditată care efectuează punerea în funcțiune"
-— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (3) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (3) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „În vederea realizării supravegherii și monitorizării aparatelor de marcat electronice fiscale, operatorii economici prevăzuți la art. 1 alin. (1) au obligația de a asigura conectarea la distanță a aparatelor de marcat electronice fiscale, în vederea transmiterii de date fiscale către Agenția Națională de Administrare Fiscală."
-— OUG 28/1999, art. 3^1 alin. (4) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 3^1 alin. (4) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Cum decurge punerea în funcțiune:

@@ -17,7 +17,7 @@ Când organul fiscal nu poate determina situația fiscală corectă a unui contr
 (2) Stabilirea prin estimare a bazei de impozitare se efectuează în situații cum ar fi: [...]
 (3) în situațiile în care, potrivit legii, organul fiscal este îndreptățit să stabilească prin estimare bazele de impozitare, acesta identifică acele elemente care sunt cele mai apropiate situației de fapt fiscale. Organul fiscal are obligația menționării în actul de impunere a motivelor de fapt și a temeiului de drept care au determinat folosirea estimării, precum și a criteriilor de estimare.
 (4) în cazul creanțelor fiscale administrate de organul fiscal central și în scopul stabilirii prin estimare a bazei de impozitare, organul fiscal poate folosi metode de stabilire prin estimare a bazelor de impozitare, aprobate prin ordin al președintelui A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 106 alin. (1)-(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 106 alin. (1)-(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Structura articolului stabilește un cadru cu trei elemente obligatorii pentru organul fiscal:

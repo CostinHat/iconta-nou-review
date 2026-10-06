@@ -16,15 +16,15 @@ Pentru contabil contează din două motive: înlocuirea generează o cheltuială
 
 ::: ghid-temei
 „r) să asigure echipamente individuale de protecție; ... s) sa acorde obligatoriu echipament individual de protecție nou, în cazul degradării sau al pierderii calităților de protecție."
-— Legea 319/2006, art. 13 lit. r) și s) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. r) și s) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(6) Măsurile privind securitatea, sănătatea și igiena în munca nu trebuie să comporte în nicio situație obligații financiare pentru lucrători."
-— Legea 319/2006, art. 7 alin. (6) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 7 alin. (6) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „contravaloarea echipamentelor tehnice, a echipamentului individual de protecție și de lucru, a alimentației de protecție, a medicamentelor și materialelor igienico-sanitare, a altor drepturi privind sănătatea și securitatea în muncă, precum și a uniformelor obligatorii și a drepturilor de echipament, ce se acordă potrivit legislației în vigoare"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -35,6 +35,6 @@ Cheltuiala de constituire a ajustării (6814) e ea însăși încadrată la chel
 
 ## Ce face iConta.eu
 
-`deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din `core/provizioane.py` parcurge exact această ordine de verificare și generează nota `6814=491` pentru constituire. Aplicația nu calculează automat numărul de zile de întârziere sau stadiul procedurii de insolvență a debitorului — aceste date se introduc manual, pe baza documentelor firmei.
+`deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație parcurge exact această ordine de verificare și generează nota `6814=491` pentru constituire. Aplicația nu calculează automat numărul de zile de întârziere sau stadiul procedurii de insolvență a debitorului — aceste date se introduc manual, pe baza documentelor firmei.
 
 [iConta.eu](/)

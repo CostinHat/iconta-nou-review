@@ -14,7 +14,7 @@ Legea impune, fără excepție, prezentarea a două documente la începutul oric
 
 ::: ghid-temei
 „La începerea controlului inopinat, organul de control este obligat să prezinte contribuabilului/plătitorului legitimația de control și ordinul de serviciu."
-— Legea 207/2015, art. 135 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 135 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile de verificare, din text:

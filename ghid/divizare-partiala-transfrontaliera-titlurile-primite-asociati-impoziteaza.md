@@ -16,15 +16,15 @@ Spre deosebire de fuziune, la divizarea parțială asociatul rămâne cu două p
 
 ::: ghid-temei
 „atribuirea, în cazul divizării parțiale, a titlurilor de participare ale societății cedente, reprezentând capitalul societății beneficiare, nu reprezintă transferuri impozabile potrivit prezentului titlu și titlului IV"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „dispozițiile lit. b) se aplică numai dacă acționarul nu atribuie titlurilor de participare primite și celor deținute în compania cedentă o valoare fiscală mai mare decât valoarea titlurilor deținute la societatea cedentă înainte de divizarea parțială;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „divizare parțială - operațiunea prin care o societate transferă, fără a fi dizolvată, una sau mai multe ramuri de activitate, către una sau mai multe societăți existente ori nouînființate, lăsând cel puțin o ramură de activitate în societatea cedentă, în schimbul emiterii către participanții săi, pe bază de proporționalitate, de titluri de participare reprezentând capitalul societăților beneficiare"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică:

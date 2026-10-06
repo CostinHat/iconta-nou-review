@@ -16,15 +16,15 @@ Diferența contează pentru că, în practica obișnuită, salariul lunii se pl�
 
 ::: ghid-temei
 „(5) Transformarea în lei a sumelor obținute, potrivit legii, în valută, reprezentând venituri din salarii realizate în România, se face la cursul de schimb valutar comunicat de Banca Națională a României, astfel: a) în situația în care veniturile din salarii sunt plătite în cursul lunii sau în cazul încetării raporturilor de muncă, se utilizează cursul de schimb valutar în vigoare în ziua precedentă celei în care se face plata; sau ... b) în celelalte cazuri, cursul de schimb valutar în vigoare în ultima zi a lunii pentru care se face plata acestor drepturi.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitele, taxele și contribuțiile sociale obligatorii se plătesc în moneda națională a României.”
-— Codul fiscal (Legea 227/2015), art. 9 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 9 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „cursul de schimb valutar, folosit pentru a converti în moneda națională a României sumele exprimate în moneda străină, este cursul de schimb comunicat de Banca Națională a României valabil pentru datele respective, exceptând cazurile prevăzute expres în prezentul cod.”
-— Codul fiscal (Legea 227/2015), art. 9 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 9 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

@@ -16,16 +16,16 @@ Termenul protejează acționarii existenți de diluarea participației. O majora
 
 ::: ghid-temei
 „(1) Acțiunile emise pentru majorarea capitalului social vor fi oferite spre subscriere, în primul rând acționarilor existenți, proporțional cu numărul acțiunilor pe care le posedă. (2) Exercitarea dreptului de preferință se va putea realiza numai în interiorul termenului hotărât de adunarea generală sau de consiliul de administrație, respectiv directorat, în condițiile art. 220^1 alin. (4) , dacă actul constitutiv nu prevede alt termen. În toate situațiile, termenul acordat pentru exercitarea drepturilor de preferință nu poate fi mai mic de o lună de la data publicării hotărârii adunării generale, respectiv a deciziei consiliului de administrație/directoratului, în Monitorul Oficial al României, Partea a IV-a. După expirarea acestui termen, acțiunile vor putea fi oferite spre subscriere publicului."
-— Legea 31/1990, art. 216 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 216 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(3) Orice majorare a capitalului social efectuată cu încălcarea prezentului articol este anulabilă."
-— Legea 31/1990, art. 216 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 216 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Dreptul de preferință al acționarilor poate fi limitat sau ridicat numai prin hotărârea adunării generale extraordinare a acționarilor. (2) Consiliul de administrație, respectiv directoratul, va pune la dispoziție adunării generale extraordinare a acționarilor un raport scris, prin care se precizează motivele limitării sau ridicării dreptului de preferință. Acest raport va explica, de asemenea, modul de determinare a valorii de emisiune a acțiunilor. (3) Hotărârea va fi luată în prezența acționarilor reprezentând trei pătrimi din capitalul social subscris, cu majoritatea voturilor acționarilor prezenți."
-— Legea 31/1990, art. 217 alin. (1)-(3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 217 alin. (1)-(3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societatea cu răspundere limitată își poate majora capitalul social, în modalitățile și din sursele prevăzute de art. 210"
-— Legea 31/1990, art. 221 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 221 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

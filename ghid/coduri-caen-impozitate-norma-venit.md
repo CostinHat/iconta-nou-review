@@ -14,7 +14,7 @@ Mulți contribuabili caută în Codul fiscal o listă de coduri CAEN eligibile p
 
 ::: ghid-temei
 „Ministerul Finanțelor Publice elaborează nomenclatorul activităților pentru care venitul net se poate determina pe baza normelor anuale de venit, care se aprobă prin ordin al ministrului finanțelor publice, în conformitate cu activitățile din Clasificarea activităților din economia națională - CAEN, aprobată prin ordin al președintelui Institutului Național de Statistică."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele acestei formulări pentru anul 2026:

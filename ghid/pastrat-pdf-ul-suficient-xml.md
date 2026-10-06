@@ -14,7 +14,7 @@ De când transmiterea prin sistemul RO e-Factura a devenit obligatorie pentru op
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura [...]."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Coroborat cu structura tehnică a facturii electronice definită de OUG 120/2021 (art. 3 alin. 2 și art. 4 alin. 1: fișierul XML conform standardului SR EN 16931-1/RO_CIUS, primit, stocat și transmis de sistemul național RO e-Factura), rezultă:
@@ -32,6 +32,6 @@ Coroborat cu structura tehnică a facturii electronice definită de OUG 120/2021
 
 ## Ce face iConta.eu
 
-iConta.eu transmite facturile prin sistemul național RO e-Factura (`core/efactura_send.py`, `core/efactura_trimitere.py`) și importă/reconciliază facturile primite (`core/efactura_import.py`), păstrând fișierele XML aferente. Aplicația generează și o vizualizare lizibilă a facturii pentru utilizator, dar arhiva legală relevantă rămâne fișierul XML transmis/primit prin sistemul ANAF, nu reprezentarea vizuală generată intern.
+iConta.eu transmite facturile prin sistemul național RO e-Factura și importă/reconciliază facturile primite, păstrând fișierele XML aferente. Aplicația generează și o vizualizare lizibilă a facturii pentru utilizator, dar arhiva legală relevantă rămâne fișierul XML transmis/primit prin sistemul ANAF, nu reprezentarea vizuală generată intern.
 
 [iConta.eu](/)

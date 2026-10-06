@@ -16,7 +16,7 @@ Când o firmă acceptă de la clienți plata în tichete de masă, tichete cadou
 „Articolul 7
 (1) Decontarea biletelor de valoare între unitățile care acceptă aceste bilete de valoare și unitățile emitente se face numai prin intermediul unităților bancare sau prin unitățile teritoriale ale Trezoreriei Statului, după caz, potrivit legii. Același regim de decontare se va aplica și în cazul relației dintre angajator și unitatea emitentă.
 (2) Sumele derulate prin operațiunile cu biletele de valoare de către unitățile emitente nu pot fi utilizate pentru reinvestirea în alte scopuri."
-— Legea 165/2018 (privind acordarea biletelor de valoare), art. 7 (sursă: anaf_surse/legea_165_2018_consolidat.txt)
+— Legea 165/2018 (privind acordarea biletelor de valoare), art. 7 (sursă: [Legea nr. 165/2018 privind acordarea biletelor de valoare](https://legislatie.just.ro/Public/DetaliiDocument/202623))
 :::
 
 Ce înseamnă asta pentru firma care primește vouchere de la clienți:
@@ -34,6 +34,6 @@ Ce înseamnă asta pentru firma care primește vouchere de la clienți:
 
 ## Ce face iConta.eu
 
-Modulul de beneficii din iConta.eu (`core/beneficii_api.py`) gestionează biletele de valoare din perspectiva angajatorului care le acordă salariaților (tichete de masă, cadou, cultură, creșă, vacanță), cu validările specifice fiecărui tip (de exemplu, valoarea tichetului de creșă/cultural trebuie să fie multiplu de 10 lei, conform Legii 165/2018, art. 19 și 22). La data acestui ghid, aplicația **nu acoperă latura de comerciant** — decontarea biletelor de valoare primite de la clienți ca mijloc de plată se procesează prin circuitul bancar direct cu unitatea emitentă, în afara iConta.eu; contabilul înregistrează manual în evidență sumele decontate, pe baza extraselor bancare și rapoartelor primite de la emitent.
+Modulul de beneficii din iConta.eu gestionează biletele de valoare din perspectiva angajatorului care le acordă salariaților (tichete de masă, cadou, cultură, creșă, vacanță), cu validările specifice fiecărui tip (de exemplu, valoarea tichetului de creșă/cultural trebuie să fie multiplu de 10 lei, conform Legii 165/2018, art. 19 și 22). La data acestui ghid, aplicația **nu acoperă latura de comerciant** — decontarea biletelor de valoare primite de la clienți ca mijloc de plată se procesează prin circuitul bancar direct cu unitatea emitentă, în afara iConta.eu; contabilul înregistrează manual în evidență sumele decontate, pe baza extraselor bancare și rapoartelor primite de la emitent.
 
 [iConta.eu](/)

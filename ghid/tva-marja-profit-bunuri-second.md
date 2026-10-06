@@ -38,6 +38,6 @@ Motorul de calcul al marjei nu face nicio distincție după originea furnizorulu
 
 Ce nu automatizează aplicația: verificarea dacă furnizorul din UE se încadrează efectiv la art. 312 alin. (2) — dacă a aplicat el însuși regimul special în statul lui, sau dacă e persoană neimpozabilă. Aceasta rămâne o verificare de fond a contabilului, înainte de a introduce operațiunea în regim de marjă.
 
-Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-pentru-marja-de-profit-la-bunurile-second-hand)
+Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-marja-profit-bunurile-second)
 
 [iConta.eu](/)

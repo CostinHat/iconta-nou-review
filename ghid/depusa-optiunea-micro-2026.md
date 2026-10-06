@@ -14,7 +14,7 @@ Impozitul pe veniturile microîntreprinderilor e opțional, dar opțiunea nu e r
 
 ::: ghid-temei
 „(1) Impozitul reglementat de prezentul titlu este opțional. (2) Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1). Pentru aplicarea sistemului de impunere pe veniturile microîntreprinderii în anul fiscal 2026, condiția prevăzută la art. 47 alin. (1) lit. i) se consideră îndeplinită dacă situațiile financiare anuale sunt depuse până la data de 31 martie 2026 inclusiv."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, pentru anul fiscal 2026:

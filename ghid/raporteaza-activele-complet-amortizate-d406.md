@@ -14,7 +14,7 @@ Secțiunea "Active" a Declarației informative D406 (fișierul standard de contr
 
 ::: ghid-temei
 „Informaţiile privind «Activele» din cadrul Declaraţiei informative D406 sunt întocmite la nivelul anului financiar aplicat de către contribuabili şi transmise printr-o singură depunere, respectiv o singură raportare a Declaraţiei informative D406, până la data depunerii situaţiilor financiare aferente exerciţiului financiar la care se referă."
-— OPANAF nr. 1.783/2021, Instrucțiunile de completare a Declarației informative D406 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Instrucțiunile de completare a Declarației informative D406 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Instrucțiunile ANAF stabilesc termenul și modul de transmitere a secțiunii "Active", dar nu tratează explicit cazul activelor complet amortizate — nu există o normă care să le excludă din raportare. Limitarea trebuie spusă clar: sursele disponibile nu conțin o prevedere dedicată acestei situații; ce se poate afirma cu temei e principiul general — secțiunea "Active" reflectă inventarul contabil existent, nu valoarea contabilă netă.
@@ -31,6 +31,6 @@ Instrucțiunile ANAF stabilesc termenul și modul de transmitere a secțiunii "A
 
 ## Ce face iConta.eu
 
-Motorul de amortizare al iConta.eu (`core/d406_active.py`) plafonează amortizarea calculată la valoarea amortizabilă a activului — odată atins acest plafon, amortizarea lunară se oprește, dar activul rămâne în evidență și e inclus în continuare în secțiunea Active a D406, cu valoare contabilă netă zero, până la o operațiune explicită de scoatere din gestiune.
+Motorul de amortizare al iConta.eu plafonează amortizarea calculată la valoarea amortizabilă a activului — odată atins acest plafon, amortizarea lunară se oprește, dar activul rămâne în evidență și e inclus în continuare în secțiunea Active a D406, cu valoare contabilă netă zero, până la o operațiune explicită de scoatere din gestiune.
 
 [iConta.eu](/)

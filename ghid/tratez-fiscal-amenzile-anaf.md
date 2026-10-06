@@ -14,7 +14,7 @@ O amendă primită de la ANAF (de exemplu pentru o contravenție constatată la 
 
 ::: ghid-temei
 „Următoarele cheltuieli nu sunt deductibile: [...] dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități [...]"
-— Legea 227/2015, art. 25 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic, atât contabil, cât și fiscal:
@@ -32,6 +32,6 @@ Ce înseamnă practic, atât contabil, cât și fiscal:
 
 ## Ce face iConta.eu
 
-Planul de conturi din iConta.eu (`core/plan_omfp.py`) include explicit contul **6581 „Despăgubiri, amenzi și penalități"**, folosit pentru înregistrarea acestui tip de cheltuieli. La data acestui ghid, aplicația **nu calculează automat, în cadrul declarației de impozit pe profit, ajustarea de nedeductibilitate** pentru sumele înregistrate în 6581 — evidențierea sumei ca element nedeductibil la calculul impozitului pe profit rămâne un pas pe care contabilul îl aplică manual, pe baza soldului contului.
+Planul de conturi din iConta.eu include explicit contul **6581 „Despăgubiri, amenzi și penalități"**, folosit pentru înregistrarea acestui tip de cheltuieli. La data acestui ghid, aplicația **nu calculează automat, în cadrul declarației de impozit pe profit, ajustarea de nedeductibilitate** pentru sumele înregistrate în 6581 — evidențierea sumei ca element nedeductibil la calculul impozitului pe profit rămâne un pas pe care contabilul îl aplică manual, pe baza soldului contului.
 
 [iConta.eu](/)

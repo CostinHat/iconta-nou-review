@@ -16,17 +16,17 @@ Obligația cade pe proprietar, nu pe primărie. Organul fiscal local nu află si
 
 ::: ghid-temei
 „(2) Dacă în cursul unui an intervin schimbări care conduc la modificarea condițiilor în care se acordă scutirile sau reducerile de impozit pe clădiri, persoanele în cauză trebuie să depună noi declarații fiscale în termen de 30 de zile de la apariția schimbărilor.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 27 alin. (2), titlul IX (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 27 alin. (2), titlul IX (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dacă încadrarea clădirii în funcție de rangul localității și zonă se modifică în cursul unui an sau în cursul anului intervine un eveniment care conduce la modificarea impozitului pe clădiri, impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor.”
-— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Facilitățile fiscale acordate la plata impozitului/taxei pe clădiri prevăzute la art. 456 din Codul fiscal se acordă pe baza cererii persoanelor fizice sau juridice, la care se anexează copii ale documentelor justificative care atestă situația respectivă”
-— HG 1/2016, pct. 27 alin. (1), titlul IX (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 27 alin. (1), titlul IX (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

@@ -14,10 +14,10 @@ Activitatea de instructor auto (pregătirea candidaților pentru obținerea perm
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care un contribuabil desfășoară o activitate care generează venituri din activități independente, altele decât venituri din profesii liberale, definite la art. 67 alin. (2), pe perioade mai mici decât anul calendaristic, norma de venit aferentă acelei activități se reduce proporțional, astfel încât să reflecte perioada de an calendaristic în care a fost desfășurată activitatea respectivă."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce contează practic pentru un instructor auto PFA:

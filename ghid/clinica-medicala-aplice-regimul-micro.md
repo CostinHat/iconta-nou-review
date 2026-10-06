@@ -20,7 +20,7 @@ e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul
 g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3); (...)
 h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu;
 i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Legea 227/2015, art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Separat, art. 48 exclude explicit doar două categorii de activitate:

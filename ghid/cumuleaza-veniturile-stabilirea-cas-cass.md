@@ -14,10 +14,10 @@ Cumularea nu se face „la grămadă", pe toate veniturile unei persoane — leg
 
 ::: ghid-temei
 „Încadrarea în plafonul anual de cel puțin 12 salarii minime brute pe țară sau de cel puțin 24 de salarii minime brute pe țară, după caz, se efectuează prin cumularea veniturilor nete și/sau a normelor anuale de venit din activități independente determinate potrivit art. 68, 68^3 și 69, a venitului brut realizat în baza contractelor de activitate sportivă potrivit art. 68^1, precum și a veniturilor nete din drepturi de proprietate intelectuală determinate potrivit art. 72, 72^1 și 73, realizate în anul pentru care se datorează contribuția."
-— Codul fiscal (Legea 227/2015), art. 148 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 148 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Încadrarea în plafonul anual de cel puțin 6, 12 sau 24 de salarii minime brute pe țară, după caz, se efectuează prin cumularea veniturilor prevăzute la art. 155 alin. (1) lit. c)-h)."
-— Codul fiscal, art. 170 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 170 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează, pe cele două contribuții:
@@ -35,7 +35,7 @@ Cum funcționează, pe cele două contribuții:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` calculează corect CAS și CASS pentru un singur venit net dat ca parametru — funcțiile `calculeaza_cas` și `calculeaza_cass` aplică regulile de prag și plafonare exact cum le cere legea, pentru categoria „activități independente". Cumularea venitului dintr-o singură sursă evidențiată în Registrul-jurnal de încasări și plăți (`core/rip_api.py`, `fisa_d212`) e automată în interiorul acelei surse.
+Aplicația calculează corect CAS și CASS pentru un singur venit net dat ca parametru — funcțiile `calculeaza_cas` și `calculeaza_cass` aplică regulile de prag și plafonare exact cum le cere legea, pentru categoria „activități independente". Cumularea venitului dintr-o singură sursă evidențiată în Registrul-jurnal de încasări și plăți (`fisa_d212`) e automată în interiorul acelei surse.
 
 Declarația unică (D212) din aplicație cumulează veniturile introduse din surse diferite (de exemplu, o normă de venit plus drepturi de autor plus chirii ale aceleiași persoane) și le separă pe cumulurile legii: CAS pe activități independente și drepturi de autor (art. 148), CASS pe activități independente (art. 170 alin. (1)) și CASS pe celelalte venituri, pe trepte (art. 170 alin. (2)-(4)). Ce surse are persoana o știe contabilul — el le introduce.
 

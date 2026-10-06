@@ -16,15 +16,15 @@ Greșeala apare des la facturile mixte: alimente la 11% și nealimentare la 21%,
 
 ::: ghid-temei
 „Baza de impozitare nu cuprinde următoarele: a) rabaturile, remizele, risturnele, sconturile și alte reduceri de preț, acordate de furnizori direct clienților la data exigibilității taxei;”
-— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „31. (1) În sensul art. 286 alin. (4) lit. a) din Codul fiscal, rabaturile, remizele, risturnele, sconturile și alte reduceri de preț nu se cuprind în baza de impozitare a taxei dacă sunt acordate de furnizor/prestator direct în beneficiul clientului la momentul livrării/prestării și nu constituie, în fapt, remunerarea unui serviciu sau unei livrări.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 31 alin. (1), titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 31 alin. (1), titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Pe factură se înscrie baza impozabilă a celor două livrări, respectiv 2.000 lei plus 5.000 lei, baza se reduce cu 10%, iar TVA se aplică asupra bazei reduse [...] Se consideră că factura este corectă inclusiv dacă TVA este menționată integral înainte de reducerea bazei și apoi se menționează cu minus TVA aferentă reducerii.”
-— HG 1/2016, pct. 31 alin. (1), Exemplul nr. 2 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 31 alin. (1), Exemplul nr. 2 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Exemplul din norme folosește cotele din 2016 (20% și 9%). Metoda rămâne valabilă, dar cotele de azi sunt 21% (standard) și 11% (redusă), conform art. 291 din Codul fiscal, în vigoare din 1 august 2025.

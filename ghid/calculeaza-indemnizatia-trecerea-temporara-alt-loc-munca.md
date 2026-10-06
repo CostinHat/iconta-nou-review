@@ -16,12 +16,12 @@ Nu e un concediu medical obișnuit. Salariatul lucrează, iar indemnizația comp
 
 ::: ghid-temei
 „(2) Indemnizația pentru trecerea temporară în alt loc de muncă se acordă în condițiile în care venitul salarial brut lunar realizat de asigurat la noul loc de muncă este inferior mediei veniturilor sale lunare din ultimele 6 luni, calculate de la momentul depistării afecțiunii."
-— Legea 346/2002, art. 39 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 39 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(1) Indemnizațiile prevăzute la art. 39 alin. (2) și la art. 40 se acordă la propunerea medicului curant, cu avizul medicului asigurătorului, pentru cel mult 90 de zile într-un an calendaristic, în una sau mai multe etape. (2) Cuantumul lunar al indemnizațiilor prevăzute la alin. (1) este egal cu diferența dintre media veniturilor salariale din ultimele 6 luni și venitul salarial brut realizat de asigurat la noul loc de muncă sau prin reducerea timpului normal de muncă, fără a se depăși 25% din baza de calcul."
-— Legea 346/2002, art. 41 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 41 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Pașii de calcul:

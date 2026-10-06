@@ -16,13 +16,13 @@ Contează pentru contabil pentru că, de cele mai multe ori, cabinetul e primul 
 
 ::: ghid-temei
 „p) sa nu modifice starea de fapt rezultată din producerea unui accident mortal sau colectiv, în afară de cazurile în care menținerea acestei stări ar genera alte accidente ori ar periclita viața accidentaților și a altor persoane"
-— Legea 319/2006, art. 13 lit. p) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. p) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „b) de către inspectoratele teritoriale de muncă, în cazul evenimentelor care au produs invaliditate evidenta sau confirmată, deces, accidente colective, incidente periculoase"
-— Legea 319/2006, art. 29 alin. (1) lit. b) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 29 alin. (1) lit. b) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(1) Angajatorul are obligația sa comunice evenimentele, de îndată, după cum urmează: a) inspectoratelor teritoriale de muncă, toate eveni-mentele asa cum sunt definite la art. 5 lit. f) ; [...] b) asiguratorului, potrivit Legii nr. 346/2002 [...] c) organelor de urmărire penală, după caz."
-— Legea 319/2006, art. 27 alin. (1) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 27 alin. (1) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce are de făcut firma, în ordine:

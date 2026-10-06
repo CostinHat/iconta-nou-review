@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile;"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), astfel cum a fost modificată de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), astfel cum a fost modificată de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă direct din text, fără a fi nevoie de o interpretare administrativă suplimentară:

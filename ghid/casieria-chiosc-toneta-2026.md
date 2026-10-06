@@ -14,7 +14,7 @@ Un chioșc sau o tonetă care vinde mărfuri cu amănuntul și încasează numer
 
 ::: ghid-temei
 „Se exceptează de la prevederile art. 1 alin. (1) încasările efectuate din următoarele activități: a) comerțul ocazional cu produse agricole din producție proprie efectuat de către producătorii agricoli individuali, autorizați în condițiile legii, în piețe, târguri, oboare sau în alte locuri publice autorizate; [...] b) vânzarea de ziare și reviste prin distribuitori specializați; [...]"
-— OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 2 lit. a) și b) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 2 lit. a) și b) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Art. 1 alin. (1) din aceeași ordonanță instituie regula generală: obligația de a utiliza AMEF pentru orice încasare cu numerar sau prin card din livrarea de bunuri cu amănuntul ori prestarea de servicii direct către populație. Art. 2 listează exhaustiv excepțiile — printre care comerțul ocazional cu produse agricole proprii în piețe, vânzarea de ziare și reviste prin distribuitori specializați, transportul public, activitățile de asigurări, profesiile liberale fără formă de societate comercială și altele. Un chioșc obișnuit (presă generală, produse alimentare, tutun, băuturi) sau o tonetă de comerț cu amănuntul **nu se regăsesc** printre aceste excepții și, prin urmare, intră sub regula generală de la art. 1.

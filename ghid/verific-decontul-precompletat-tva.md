@@ -14,7 +14,7 @@ Decontul precompletat RO e-TVA nu e decontul de TVA pe care firma îl depune —
 
 ::: ghid-temei
 „(1) Decontul precompletat RO e-TVA se implementează cu data de 1 august 2024 pentru operațiunile efectuate începând cu data de 1 iulie 2024 de persoanele impozabile înregistrate în scopuri de TVA. (2) Decontul precompletat RO e-TVA se transmite, pentru fiecare perioadă fiscală de raportare, persoanelor impozabile înregistrate în scopuri de TVA, prin mijloace electronice, până la data de 5 inclusiv a lunii următoare termenului legal de depunere a decontului de taxă pe valoarea adăugată. [...] (5) Decontul precompletat RO e-TVA nu constituie titlu de creanță în sensul Legii nr. 207/2015, cu modificările și completările ulterioare. (6) După primirea decontului precompletat RO e-TVA, persoanele impozabile înregistrate în scopuri de TVA verifică datele și informațiile precompletate în concordanță cu operațiunile impozabile realizate și starea de fapt fiscală."
-— OUG 70/2024, art. 3 alin. (1), (2), (5) și (6) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 3 alin. (1), (2), (5) și (6) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Ce trebuie știut înainte de a folosi acest instrument:

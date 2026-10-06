@@ -43,8 +43,8 @@ Alegerea depinde de natura activității: un magazin cu multe articole mărunte 
 
 iConta implementează **două** din cele patru metode legale, nu toate:
 
-- **Metoda cantitativ-valorică (CMP)** — `core/stocuri_cv.py` + `core/stocuri_cv_api.py`, cu cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol și validare cronologică (o ieșire nu poate depăși stocul la data ei).
-- **Metoda global-valorică (preț cu amănuntul)** — `core/stocuri.py` + `core/stocuri_api.py`, cu coeficient de repartizare K, descrisă pe larg în ghidurile dedicate contului 378 și adaosului comercial.
+- **Metoda cantitativ-valorică (CMP)** — aplicația, cu cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol și validare cronologică (o ieșire nu poate depăși stocul la data ei).
+- **Metoda global-valorică (preț cu amănuntul)** — aplicația, cu coeficient de repartizare K, descrisă pe larg în ghidurile dedicate contului 378 și adaosului comercial.
 
 **FIFO și LIFO nu sunt implementate** ca metodă de evaluare la ieșire — nu există, în codul verificat, niciun modul care să urmărească loturi de intrare în ordine cronologică pentru scoaterea din gestiune la costul primului sau ultimului lot. Dacă activitatea firmei impune, legal sau operațional, FIFO ori LIFO, calculul respectiv nu poate fi automatizat momentan prin iConta — rămâne de făcut manual, în afara aplicației.
 

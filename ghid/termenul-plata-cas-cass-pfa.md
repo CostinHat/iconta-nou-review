@@ -15,7 +15,7 @@ PFA-urile care realizează venituri peste plafoanele legale datorează contribu�
 ```
 ::: ghid-temei
 „(3) Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor."
-— Legea nr. 227/2015 privind Codul fiscal, art. 122 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 122 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce rezultă concret pentru un PFA, pentru anul fiscal 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă a veniturilor și cheltuielilor PFA pe parcursul anului, din care rezultă venitul net, și are un modul dedicat pentru Declarația unică: `core/d212_engine.py` calculează CAS (25%, cu plafonare 12/24 salarii minime) și CASS (10%, cu plafonare 6/60, respectiv 6/72 salarii minime pentru veniturile din 2026, conform Legii 239/2025), iar `core/d212.py` generează formularul D212 (XML), structura fiind confirmată pe validatorul oficial ANAF. Venitul din registrul de încasări și plăți se preia în D212 la generare (bifa „Include venitul din registrul RIP”), iar contribuțiile și impozitul se calculează. Ce **nu automatizează** aplicația: depunerea efectivă a declarației la ANAF, care rămâne, la acest moment, în sarcina contabilului.
+iConta.eu oferă evidența contabilă a veniturilor și cheltuielilor PFA pe parcursul anului, din care rezultă venitul net, și are un modul dedicat pentru Declarația unică: Aplicația calculează CAS (25%, cu plafonare 12/24 salarii minime) și CASS (10%, cu plafonare 6/60, respectiv 6/72 salarii minime pentru veniturile din 2026, conform Legii 239/2025), iar aplicația generează formularul D212 (XML), structura fiind confirmată pe validatorul oficial ANAF. Venitul din registrul de încasări și plăți se preia în D212 la generare (bifa „Include venitul din registrul RIP”), iar contribuțiile și impozitul se calculează. Ce **nu automatizează** aplicația: depunerea efectivă a declarației la ANAF, care rămâne, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

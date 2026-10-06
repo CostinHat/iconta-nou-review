@@ -14,7 +14,7 @@ Când ANAF trimite o recipisă cu erori pentru o Declarație informativă D406, 
 
 ::: ghid-temei
 „Pentru declarația informativă D406 transmisă cu erori identificate de Agenția Națională de Administrare Fiscală și pentru care a fost comunicată recipisa ce le semnalează, contribuabilul retransmite integral Declarația informativă D406, care trebuie să cuprindă fișierul SAF-T corectat. Nu este admisă transmiterea unor corecții parțiale prin transmiterea selectivă a înregistrărilor sau câmpurilor corectate pentru Declarația informativă D406 anterior transmisă și pentru care au fost primite recipise ce semnalau erori."
-— OPANAF nr. 1.783/2021, Anexa 5, pct. 11-12 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5, pct. 11-12 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă din regulă:
@@ -32,6 +32,6 @@ Ce rezultă din regulă:
 
 ## Ce face iConta.eu
 
-Generatorul de SAF-T din iConta.eu (`core/d406.py` și modulele conexe) reconstruiește fișierul complet de fiecare dată când e rulat pentru o perioadă dată, pe baza datelor curente din aplicație — nu produce fișiere „delta" cu doar corecțiile. Această modalitate de lucru e compatibilă cu regula de la pct. 11-12: o retransmitere din iConta.eu e, prin construcție, o declarație D406 integrală, nu o corecție parțială. Marcarea declarației ca „retransmisă în urma unei recipise cu erori" rămâne, la data acestui ghid, o notă pe care contabilul o gestionează la depunere, în afara aplicației.
+Generatorul de SAF-T din iConta.eu (aplicația și modulele conexe) reconstruiește fișierul complet de fiecare dată când e rulat pentru o perioadă dată, pe baza datelor curente din aplicație — nu produce fișiere „delta" cu doar corecțiile. Această modalitate de lucru e compatibilă cu regula de la pct. 11-12: o retransmitere din iConta.eu e, prin construcție, o declarație D406 integrală, nu o corecție parțială. Marcarea declarației ca „retransmisă în urma unei recipise cu erori" rămâne, la data acestui ghid, o notă pe care contabilul o gestionează la depunere, în afara aplicației.
 
 [iConta.eu](/)

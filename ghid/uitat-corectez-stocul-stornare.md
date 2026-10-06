@@ -14,7 +14,7 @@ O factură de vânzare stornată — pentru că marfa a fost returnată sau fact
 
 ::: ghid-temei
 „330. (1) În cazul mărfurilor returnate de clienți în același exercițiu financiar în care a avut loc operațiunea de vânzare, se corectează conturile 411 «Clienți», 707 «Venituri din vânzarea mărfurilor», 607 «Cheltuieli privind mărfurile» și 371 «Mărfuri». [...] Tratamentul TVA în aceste situații este cel prevăzut de legislația în domeniu."
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 330 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 330 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă, concret, „a corecta" o stornare completă:
@@ -33,6 +33,6 @@ Ce înseamnă, concret, „a corecta" o stornare completă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție de stornare a facturilor (`core/facturi_api.py`, funcția `storneaza`), care generează o factură de corecție cu cantități negative, referențiată la factura originală. Modulul de gestiune a stocurilor (`core/stocuri.py`) descarcă gestiunea pe baza facturilor de vânzare emise. Aplicația **nu garantează automat** că stornarea unei facturi de vânzare readuce marfa în stoc — dacă factura de stornare nu e emisă și contată corect, cu liniile corespunzătoare de marfă, corectarea stocului rămâne o verificare manuală a contabilului, separată de simpla anulare a facturii.
+La data acestui ghid, iConta.eu are o funcție de stornare a facturilor (funcția `storneaza`), care generează o factură de corecție cu cantități negative, referențiată la factura originală. Modulul de gestiune a stocurilor descarcă gestiunea pe baza facturilor de vânzare emise. Aplicația **nu garantează automat** că stornarea unei facturi de vânzare readuce marfa în stoc — dacă factura de stornare nu e emisă și contată corect, cu liniile corespunzătoare de marfă, corectarea stocului rămâne o verificare manuală a contabilului, separată de simpla anulare a facturii.
 
 [iConta.eu](/)

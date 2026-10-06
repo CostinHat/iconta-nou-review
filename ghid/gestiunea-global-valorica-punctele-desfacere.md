@@ -32,7 +32,7 @@ Pentru a calcula separat pe puncte de desfacere, e nevoie de conturi analitice d
 
 ## Ce face iConta.eu
 
-`core/stocuri_api.py`, funcția `descarca_luna(conn, schema, an, luna)`, calculează descărcarea de gestiune **la nivel de firmă/schemă** — nu am găsit, în cod, niciun parametru de „gestiune”, „punct de lucru” sau „locație” care să permită rularea calculului separat, pe fiecare punct de desfacere. Motorul citește soldurile și rulajele conturilor 371/378/4428 global, pentru întreaga schemă a tenantului, nu filtrate pe o subgestiune.
+Aplicația, funcția `descarca_luna(conn, schema, an, luna)`, calculează descărcarea de gestiune **la nivel de firmă/schemă** — nu am găsit, în cod, niciun parametru de „gestiune”, „punct de lucru” sau „locație” care să permită rularea calculului separat, pe fiecare punct de desfacere. Motorul citește soldurile și rulajele conturilor 371/378/4428 global, pentru întreaga schemă a tenantului, nu filtrate pe o subgestiune.
 
 Dacă firma dvs. operează mai multe puncte de desfacere și dorește coeficienți de adaos separați pentru fiecare, conform alin. (5), acest calcul nu e susținut momentan ca funcționalitate dedicată în iConta — rămâne de organizat manual, în afara aplicației, sau de discutat cu privire la structura de conturi analitice folosită.
 

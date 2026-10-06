@@ -15,7 +15,7 @@ D301 (Decontul special de taxă) nu e doar o declarație informativă — pentru
 ::: ghid-temei
 „Decontul special de taxă se depune la organele fiscale competente de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316, astfel: a) pentru achiziții intracomunitare de bunuri taxabile [...], de către persoanele impozabile înregistrate conform art. 317; [...]
 Decontul special de taxă trebuie întocmit potrivit modelului stabilit prin ordin al președintelui A.N.A.F. și se depune până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea operațiunilor menționate la alin. (1)."
-— Codul fiscal, art. 324 alin. (1) lit. a) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 324 alin. (1) lit. a) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru plată:

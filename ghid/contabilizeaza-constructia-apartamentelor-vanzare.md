@@ -14,7 +14,7 @@ Un dezvoltator care ridică un bloc de apartamente pentru a le vinde nu trateaz�
 
 ::: ghid-temei
 „În cazul activelor de natura ansamblurilor sau complexurilor de locuințe care inițial erau destinate vânzării și care ulterior își schimbă destinația, urmând a fi folosite de entitate pe o perioadă îndelungată sau să fie închiriate unor terți, în contabilitate se înregistrează un transfer de la stocuri la imobilizări corporale."
-— OMFP 1802/2014, reglementări contabile, pct. 275 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementări contabile, pct. 275 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regulile de bază pentru acest tip de activitate:

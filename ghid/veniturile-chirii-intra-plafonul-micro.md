@@ -14,7 +14,7 @@ Un SRL care încasează chirii — dintr-un spațiu deținut și închiriat unui
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile aferente costurilor serviciilor în curs de execuție; c) veniturile din producția de imobilizări corporale și necorporale; d) veniturile din subvenții; [...] h) veniturile din diferențe de curs valutar; [...] n) dividendele primite de la o persoană juridică română."
-— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Regula e "venituri din orice sursă"**, iar excepțiile de la art. 53 sunt enumerate limitativ (stocuri, producție de imobilizări, subvenții, diferențe de curs, dividende primite de la altă persoană juridică română etc.) — chiriile nu apar în listă.

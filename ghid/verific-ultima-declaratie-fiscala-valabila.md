@@ -16,7 +16,7 @@ Pentru orice tip de declarație — D100, D112, D300, D390, D394, D406 — legea
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Regula acoperă **ambele** categorii de declarații: cele de impunere (unde contribuabilul calculează el obligația — D100, D112, D300) și cele informative (D406/SAF-T) — dar cu limite de timp diferite: cele de impunere doar în termenul de prescripție, cele informative oricând.

@@ -14,7 +14,7 @@ Când discrepanța nu vine din declarația ta, ci din felul în care ANAF a înr
 
 ::: ghid-temei
 „Organul fiscal poate îndrepta oricând erorile materiale din cuprinsul actului administrativ fiscal, din oficiu sau la cererea contribuabilului/plătitorului. [...] Prin erori materiale, în sensul prezentului articol, se înțelege orice greșeli de redactare, omisiuni sau mențiuni greșite din actele administrative fiscale, cu excepția acelora care atrag nulitatea actului administrativ fiscal, potrivit legii, sau care privesc fondul actului administrativ fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 53 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 53 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce distincție contează aici:
@@ -32,6 +32,6 @@ Ce distincție contează aici:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`), conform structurii validate de ANAF, dar aplicația nu are vizibilitate asupra modului în care ANAF procesează sau înregistrează ulterior datele în sistemele proprii. Aplicația nu ține evidența discrepanțelor dintre declarația transmisă și obligațiile efectiv înregistrate de ANAF — compararea celor două rămâne o verificare manuală, iar formularea cererii de îndreptare a erorii materiale se face direct către organul fiscal, în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil, conform structurii validate de ANAF, dar aplicația nu are vizibilitate asupra modului în care ANAF procesează sau înregistrează ulterior datele în sistemele proprii. Aplicația nu ține evidența discrepanțelor dintre declarația transmisă și obligațiile efectiv înregistrate de ANAF — compararea celor două rămâne o verificare manuală, iar formularea cererii de îndreptare a erorii materiale se face direct către organul fiscal, în afara aplicației.
 
 [iConta.eu](/)

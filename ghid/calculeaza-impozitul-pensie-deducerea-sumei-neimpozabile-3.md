@@ -16,15 +16,15 @@ Ordinea scăderilor contează. Pentru pensiile aferente perioadei august 2025 �
 
 ::: ghid-temei
 „Venitul impozabil lunar din pensii se stabilește prin deducerea din venitul din pensie a sumei neimpozabile lunare de 3.000 lei și, după caz, a contribuției de asigurări sociale de sănătate datorate potrivit prevederilor titlului V - Contribuții sociale obligatorii."
-— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 100 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul se calculează prin aplicarea cotei de impunere de 10% asupra venitului impozabil lunar din pensii determinat potrivit art. 100"
-— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Baza lunară de calcul al contribuției de asigurări sociale de sănătate, în cazul persoanelor fizice care realizează venituri din pensii, se stabilește prin deducerea din venitul din pensie a sumei lunare de 3.000 lei, pentru fiecare drept de pensie."
-— Codul fiscal (Legea 227/2015), art. 157^6 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 157^6 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formula, pas cu pas:

@@ -16,13 +16,13 @@ Aici se greșește des: registrul completat seara sau la sfârșitul săptămân
 
 ::: ghid-temei
 „(2) Beneficiarul sau un împuternicit al acestuia are următoarele obligații: a) să înființeze, să completeze și să transmită Registrul electronic de evidență a zilierilor conform metodologiei și modelului stabilite prin ordinul ministrului muncii și justiției sociale;"
-— Legea 52/2011, art. 5 alin. (2) lit. a) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (2) lit. a) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „b) să transmită Registrul electronic de evidență a zilierilor inspectoratului teritorial de muncă, zilnic, înainte de începerea activității de către fiecare persoană care urmează să se afle întrun raport de muncă cu beneficiarul sau un împuternicit al acestuia;"
-— Legea 52/2011, art. 5 alin. (2) lit. b) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (2) lit. b) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(1) Beneficiarul sau un împuternicit al acestuia are obligația să înregistreze, în Registrul electronic de evidență a zilierilor, în ordine cronologică, toți zilierii care prestează în folosul său activități cu caracter ocazional în baza prezentei legi."
-— Legea 52/2011, art. 8 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 8 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „b) încălcarea prevederilor art. 5 alin. (2) lit. a)-d) , art. 5 alin. (3) lit. e)-g) și art. 8 alin. (1) și (2) , cu amendă de 6.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. b) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. b) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce acoperă amenda de la lit. b):

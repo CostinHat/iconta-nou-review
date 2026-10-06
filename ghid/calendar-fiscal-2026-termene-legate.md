@@ -14,7 +14,7 @@ Amortizarea fiscală nu are propriul ei termen de „depunere" — nu există o 
 
 ::: ghid-temei
 „(1) Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— Legea nr. 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice pentru calculul care include amortizarea fiscală:
@@ -31,6 +31,6 @@ Consecințele practice pentru calculul care include amortizarea fiscală:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează amortizarea lunară a mijloacelor fixe, cu regula punerii în funcțiune din luna următoare (`core/d406_active.py`), și generează declarațiile de impozit pe profit trimestriale (D100) și anuale (D101) pe baza datelor introduse (`core/d101.py`). Aplicația nu are o funcționalitate separată de „calendar al amortizării" — termenele relevante sunt exclusiv cele generale de declarare a impozitului pe profit, urmărite prin scadențarul fiscal al aplicației.
+La data acestui ghid, iConta.eu calculează amortizarea lunară a mijloacelor fixe, cu regula punerii în funcțiune din luna următoare, și generează declarațiile de impozit pe profit trimestriale (D100) și anuale (D101) pe baza datelor introduse. Aplicația nu are o funcționalitate separată de „calendar al amortizării" — termenele relevante sunt exclusiv cele generale de declarare a impozitului pe profit, urmărite prin scadențarul fiscal al aplicației.
 
 [iConta.eu](/)

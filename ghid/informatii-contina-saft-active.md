@@ -14,7 +14,7 @@ Secțiunea „Active" din SAF-T (D406) e cea mai apropiată de un registru de mi
 
 ::: ghid-temei
 „Assets (Active): Conține detalii cu privire la active, precum ID-ul unic de inventar al activului, contul analitic în care este înregistrat activul, descrierea activului, furnizorul activului, data achiziției și data punerii în funcțiune, precum și informații contabile cu privire la evaluarea activului (de exemplu, costurile totale de achiziție/producție la începutul și finalul perioadei selectate pentru raportare, valoarea costului cu capitalizările, perioada de viață a activului în ani/luni, valori contabile asociate transferurilor de active/ieșirilor de active, metoda de amortizare, valoarea amortizării din perioada selectată, reevaluări etc.)."
-— Ordinul președintelui A.N.A.F. nr. 1.783/2021, Instrucțiuni de completare D406, secțiunea Assets (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— Ordinul președintelui A.N.A.F. nr. 1.783/2021, Instrucțiuni de completare D406, secțiunea Assets (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Fișierul trebuie să identifice fiecare mijloc fix printr-un **ID unic de inventar** și contul analitic în care e înregistrat, plus o descriere clară a activului și furnizorul de la care a fost achiziționat.

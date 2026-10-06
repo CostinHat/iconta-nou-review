@@ -14,13 +14,13 @@ poarta: v1
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: a) cheltuielile de protocol în limita unei cote de 2% aplicată asupra profitului contabil la care se adaugă cheltuielile cu impozitul pe profit și cheltuielile de protocol. În cadrul cheltuielilor de protocol se includ și cheltuielile înregistrate cu taxa pe valoarea adăugată colectată potrivit prevederilor titlului VII, pentru cadourile oferite de contribuabil, cu valoare mai mare de 100 lei."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Sunt cheltuieli de protocol cele făcute pentru **reprezentare** (mese, cadouri, evenimente cu parteneri de afaceri) — nu se confundă cu reclama/publicitatea, care e deductibilă integral, dacă e făcută în scopul activității.
 - Pentru **cadourile cu valoare mai mare de 100 lei**, TVA colectată aferentă (tratată ca livrare către sine, potrivit titlului VII din Codul fiscal) se include în valoarea cheltuielii de protocol supuse plafonului de 2%.
 - Justificarea documentară contează la fel de mult ca încadrarea în plafon: fără document care să arate scopul de afaceri al cheltuielii (factură, listă de participanți, justificare a evenimentului), riscul e ca suma să fie considerată nedeductibilă integral, nu doar peste plafon.
-- Nu am identificat, la verificarea în `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, o modificare a cotei de 2% sau a bazei de calcul aplicabilă specific anului 2026 — regula rămâne cea din art. 25 alin. (3) lit. a).
+- Nu am identificat, la verificarea în [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), o modificare a cotei de 2% sau a bazei de calcul aplicabilă specific anului 2026 — regula rămâne cea din art. 25 alin. (3) lit. a).
 
 ## Ce se greșește în practică
 
@@ -30,6 +30,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu permite înregistrarea cheltuielilor de protocol pe contul 623 (`core/plan_omfp.py`) și emiterea facturilor/documentelor aferente prin modulele de facturare existente. Aplicația nu are, la acest moment, un asistent care să distingă automat între cheltuieli de protocol și de reclamă pe baza descrierii sau să calculeze TVA colectată pentru cadourile peste 100 lei ca livrare către sine — încadrarea corectă a fiecărei cheltuieli rămâne o decizie a contabilului.
+La data acestui ghid, iConta.eu permite înregistrarea cheltuielilor de protocol pe contul 623 și emiterea facturilor/documentelor aferente prin modulele de facturare existente. Aplicația nu are, la acest moment, un asistent care să distingă automat între cheltuieli de protocol și de reclamă pe baza descrierii sau să calculeze TVA colectată pentru cadourile peste 100 lei ca livrare către sine — încadrarea corectă a fiecărei cheltuieli rămâne o decizie a contabilului.
 
 [iConta.eu](/)

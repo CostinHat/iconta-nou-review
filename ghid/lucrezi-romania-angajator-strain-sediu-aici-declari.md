@@ -16,15 +16,15 @@ Ghidul tratează **impozitul pe venit**. Contribuțiile sociale sunt o întrebar
 
 ::: ghid-temei
 „Orice contribuabil prevăzut la alin. (1) are obligația de a declara și de a plăti impozit lunar la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei pentru care s-a realizat venitul. Impozitul aferent unei luni se stabilește potrivit art. 78"
-— Codul fiscal (Legea 227/2015), art. 82 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 82 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Declarația se depune de către persoanele fizice care își desfășoară activitatea în România, obțin venituri sub formă de salarii sau asimilate salariilor de la angajatori care nu au sediu social, sediu permanent sau reprezentanță în România și care datorează contribuțiile sociale obligatorii pentru salariații lor, potrivit prevederilor legislației europene aplicabile în domeniul securității sociale, precum și ale acordurilor privind sistemele de securitate socială la care România este parte, și care nu au încheiat cu angajatorul un acord referitor la obligația declarării și plății contribuțiilor sociale obligatorii."
-— OPANAF 3780/2017, Anexa nr. 5, pct. 1 (sursă: anaf_surse/ordin_3780_2017.html)
+— OPANAF 3780/2017, Anexa nr. 5, pct. 1 (sursă: [OPANAF nr. 3780/2017 privind formularele utilizate în administrarea impozitului pe venit](https://legislatie.just.ro/Public/DetaliiDocument/196288))
 
 „Declarația se depune la organul fiscal central competent, astfel: – lunar, până la data de 25 inclusiv a lunii următoare celei pentru care s-a realizat venitul."
-— OPANAF 3780/2017, Anexa nr. 5, pct. 2 (sursă: anaf_surse/ordin_3780_2017.html)
+— OPANAF 3780/2017, Anexa nr. 5, pct. 2 (sursă: [OPANAF nr. 3780/2017 privind formularele utilizate în administrarea impozitului pe venit](https://legislatie.just.ro/Public/DetaliiDocument/196288))
 :::
 
 Cum se completează, pe scurt (Anexa nr. 5, cap. II):

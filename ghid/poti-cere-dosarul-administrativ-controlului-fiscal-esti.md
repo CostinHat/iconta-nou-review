@@ -16,15 +16,15 @@ Practic, poți vedea pe ce se sprijină inspectorii înainte de discuția final�
 
 ::: ghid-temei
 „(4 1 ) Organul fiscal are obligația ca, la cererea scrisă a contribuabilului/plătitorului supus unei acțiuni de control fiscal, să pună la dispoziția acestuia dosarul administrativ al acțiunii de control fiscal. Acolo unde este cazul, documentele/informațiile sunt anonimizate pentru a se asigura confidențialitatea datelor cu caracter personal și secretul fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 7 alin. (4^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 7 alin. (4^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(1) înaintea luării deciziei, organul fiscal este obligat să asigure contribuabilului/plătitorului posibilitatea de a-și exprima punctul de vedere cu privire la faptele și împrejurările relevante în luarea deciziei."
-— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1 3 ) În procedura de control fiscal ori de soluționare a contestației, cererile, înscrisurile sau orice alte documente pot fi transmise de contribuabili/plătitori [...] prin poștă, cu confirmare de primire sau prin poșta electronică la adresa de e-mail indicată de organul de control sau de soluționare a contestației ori depuse la registratura organului fiscal competent."
-— Codul de procedură fiscală (Legea 207/2015), art. 79 alin. (1^3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 79 alin. (1^3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, pe rând:

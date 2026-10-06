@@ -14,7 +14,7 @@ Un SRL cu venituri anuale de 500.000 lei se întreabă firesc dacă mai poate r�
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile[.]"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), astfel cum a fost modificată de OUG nr. 8/2026, aplicabilă inclusiv pentru încadrarea ca microîntreprindere în anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), astfel cum a fost modificată de OUG nr. 8/2026, aplicabilă inclusiv pentru încadrarea ca microîntreprindere în anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru un SRL cu venituri de 500.000 lei:

@@ -14,7 +14,7 @@ Categoria de „contribuabil mijlociu" nu schimbă, prin ea însăși, termenele
 
 ::: ghid-temei
 „(3) În scopul administrării de către organul fiscal central a obligațiilor fiscale datorate de contribuabilii mari și mijlocii, inclusiv de sediile secundare ale acestora, prin ordin al președintelui A.N.A.F. se poate stabili competența de administrare în sarcina altor organe fiscale decât cele prevăzute la alin. (1), precum și criteriile de selecție și listele contribuabililor care dobândesc calitatea de contribuabil mare sau, după caz, contribuabil mijlociu. (4) Organul fiscal central competent notifică contribuabilul ori de câte ori intervin modificări cu privire la calitatea de contribuabil mare sau, după caz, contribuabil mijlociu."
-— Legea 207/2015 (Codul de procedură fiscală), art. 30 alin. (3), (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 30 alin. (3), (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text:
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată** categorisirii firmei ca „mare", „mijlociu" sau „mic" contribuabil și nu calculează diferit termenele de declarare în funcție de această categorie — nu am găsit în cod un asemenea mecanism în `core/control_fiscal_api.py`, modulul care calculează obligațiile și termenele declarative generale. Aplicația generează termenele uzuale (D100, D112, D300 etc.) pe baza tipului de decont și a datelor firmei, indiferent de categoria ei de mărime; verificarea calendarului specific SAF-T, legat de categoria de contribuabil, rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată** categorisirii firmei ca „mare", „mijlociu" sau „mic" contribuabil și nu calculează diferit termenele de declarare în funcție de această categorie — nu am găsit în cod un asemenea mecanism în aplicație, modulul care calculează obligațiile și termenele declarative generale. Aplicația generează termenele uzuale (D100, D112, D300 etc.) pe baza tipului de decont și a datelor firmei, indiferent de categoria ei de mărime; verificarea calendarului specific SAF-T, legat de categoria de contribuabil, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

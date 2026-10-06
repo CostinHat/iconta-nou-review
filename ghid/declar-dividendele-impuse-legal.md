@@ -14,7 +14,7 @@ Impozitul pe dividende nu e o declarație pe care o depune asociatul care le în
 
 ::: ghid-temei
 „Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor [...] Termenul de virare a impozitului este până la data de 25 inclusiv a lunii următoare celei în care se face plata."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie știut la declararea dividendelor:
@@ -31,6 +31,6 @@ Ce trebuie știut la declararea dividendelor:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul funcțional pentru calculul impozitului pe dividende (`core/dividende_curs.py`), care urmărește mișcările contului 457 (distribuiri și plăți) și atribuie, prin metodă FIFO pe dată, cota corectă în funcție de momentul **distribuirii** — nu al plății — respectând astfel exact regula de tranziție 10%→16% din Legea 141/2025. Rezultatul alimentează generatorul D205 (`core/d205.py`), care produce declarația informativă anuală. Aplicația nu depune însă declarația la ANAF — generează documentul pregătit pentru depunere, pas care rămâne al contabilului.
+iConta.eu are un modul funcțional pentru calculul impozitului pe dividende, care urmărește mișcările contului 457 (distribuiri și plăți) și atribuie, prin metodă FIFO pe dată, cota corectă în funcție de momentul **distribuirii** — nu al plății — respectând astfel exact regula de tranziție 10%→16% din Legea 141/2025. Rezultatul alimentează generatorul D205, care produce declarația informativă anuală. Aplicația nu depune însă declarația la ANAF — generează documentul pregătit pentru depunere, pas care rămâne al contabilului.
 
 [iConta.eu](/)

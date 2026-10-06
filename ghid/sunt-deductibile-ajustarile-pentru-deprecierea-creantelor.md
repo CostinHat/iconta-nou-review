@@ -56,6 +56,6 @@ O creanță de 10.000 lei, neîncasată de 300 de zile, negarantată, la un clie
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din `core/provizioane.py` aplică exact această ordine de verificare: o creanță garantată sau afiliată primește 0% necondiționat, indiferent de celelalte argumente; abia apoi se verifică falimentul declarat (100%) și, în lipsa lui, depășirea celor 270 de zile (30%, strict peste prag). Notă: aplicația nu calculează automat pierderea propriu-zisă la scoaterea din evidență a creanței (vezi ghidul „Când pot deduce pierderea dintr-o creanță neîncasată?") și nu preia automat rezultatul în D101 — valoarea nedeductibilă trebuie introdusă manual la rândurile corespunzătoare.
+Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație aplică exact această ordine de verificare: o creanță garantată sau afiliată primește 0% necondiționat, indiferent de celelalte argumente; abia apoi se verifică falimentul declarat (100%) și, în lipsa lui, depășirea celor 270 de zile (30%, strict peste prag). Notă: aplicația nu calculează automat pierderea propriu-zisă la scoaterea din evidență a creanței (vezi ghidul „Când pot deduce pierderea dintr-o creanță neîncasată?") și nu preia automat rezultatul în D101 — valoarea nedeductibilă trebuie introdusă manual la rândurile corespunzătoare.
 
 [iConta.eu](/)

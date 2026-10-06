@@ -16,10 +16,10 @@ E un termen **special**. Codul fiscal derogă expres de la regula generală a pr
 
 ::: ghid-temei
 „Termenul special de prescripție de 4 ani prevăzut la alin. (5) începe să curgă din prima zi a anului fiscal/anului fiscal modificat, următor celui pentru care se determină creditul fiscal potrivit prezentului articol."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin derogare de la prevederile art. 219 din Legea nr. 207/2015, cu modificările și completările ulterioare, dreptul contribuabililor de a cere restituirea diferenței de credit fiscal prevăzută la alin. (3) și (4) este supus termenului special de prescripție de 4 ani prevăzut la alin. (5) ."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

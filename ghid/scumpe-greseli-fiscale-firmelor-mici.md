@@ -14,7 +14,7 @@ Nu toate greșelile fiscale costă la fel. Unele sunt corectabile printr-o decla
 
 ::: ghid-temei
 „constituie contravenții, dacă nu au fost săvârșite în astfel de condiții încât, potrivit legii penale, să constituie infracțiuni, și se sancționează, prin derogare de la prevederile art. 8 din Ordonanța Guvernului nr. 2/2001 [...], cu amendă de 10% din suma încasată/plătită care depășește plafonul stabilit de prezentul capitol pentru fiecare tip de operațiune, dar nu mai puțin de 100 lei."
-— Legea nr. 70/2015, art. 12 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 12 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - **Depășirea plafonului de numerar** — orice încasare sau plată în numerar peste plafonul legal (5.000–10.000 lei, în funcție de tip de operațiune) e sancționată cu **10% din suma care depășește plafonul**, minimum 100 lei — nu doar din partea excedentară raportată la o factură, ci pe fiecare tip de operațiune fragmentată.

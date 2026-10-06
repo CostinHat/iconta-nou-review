@@ -14,7 +14,7 @@ Răspunsul scurt: nu se înregistrează, pentru că nu există. Stocul e un elem
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, o achiziție de marfă în valută se înregistrează în doi pași distincți, niciunul dintre ei nefiind o „diferență de curs a stocului":
@@ -32,6 +32,6 @@ Practic, o achiziție de marfă în valută se înregistrează în doi pași dis
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar (`core/diferente_curs.py`) respinge explicit tipul „stoc": funcția care calculează diferența acceptă doar `creanta`, `disponibil` sau `datorie`. Aplicația nu generează, deci, nicio notă de diferență de curs pe conturile de stoc — corect, conform regulii de mai sus. Ce automatizează F041 este diferența de curs pe datoria față de furnizorul mărfii (cont 401), prin ecranele „Operațiuni speciale" → decontare sau reevaluare valutară; înregistrarea inițială a stocului la cursul de recepție se face separat, din ecranul de facturare/achiziții.
+Funcționalitatea de diferențe de curs valutar respinge explicit tipul „stoc": funcția care calculează diferența acceptă doar `creanta`, `disponibil` sau `datorie`. Aplicația nu generează, deci, nicio notă de diferență de curs pe conturile de stoc — corect, conform regulii de mai sus. Ce automatizează F041 este diferența de curs pe datoria față de furnizorul mărfii (cont 401), prin ecranele „Operațiuni speciale" → decontare sau reevaluare valutară; înregistrarea inițială a stocului la cursul de recepție se face separat, din ecranul de facturare/achiziții.
 
 [iConta.eu](/)

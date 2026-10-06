@@ -16,14 +16,14 @@ Contează în practică pentru că doar asociatul administrator facturează căt
 
 ::: ghid-temei
 „Asocierile în participațiune nu dau naștere unei persoane impozabile separate."
-— Codul fiscal (Legea 227/2015), art. 269 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „În cazul asociațiilor în participațiune care nu constituie o persoană impozabilă, drepturile și obligațiile legale privind taxa revin asociatului care contabilizează veniturile și cheltuielile, potrivit contractului încheiat între părți."
-— Codul fiscal (Legea 227/2015), art. 321 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(11) Pe parcursul derulării contractului de asociere, drepturile și obligațiile legale privind taxa pe valoarea adăugată prevăzute de titlul VII al Codului fiscal revin asociatului administrator, care cuprinde în propriul decont de taxă inclusiv achizițiile de bunuri/servicii, precum și livrările de bunuri/prestările de servicii aferente asocierii."
-— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Norma se aplică împreună cu art. 269 alin. (11) și art. 321 alin. (5) din Codul fiscal actual și este în acord cu acestea.

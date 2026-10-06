@@ -16,12 +16,12 @@ Situația apare când dividendele interimare din cursul anului se dovedesc, la a
 
 ::: ghid-temei
 „În cazul în care din regularizarea anuală a dividendelor distribuite parțial în cursul anului, potrivit art. 67 din Legea societăților nr. 31/1990, republicată, cu modificările și completările ulterioare, rezultă sume de restituit de la buget, plătitorul de dividende depune la organul fiscal competent o declarație de regularizare/cerere de restituire, după restituirea de către asociați sau acționari a dividendelor plătite sau după aprobarea situațiilor financiare anuale în cazul dividendelor interimare distribuite neplătite, până la împlinirea termenului de prescripție a dreptului de a cere restituirea. Pentru diferențele de restituit sunt aplicabile prevederile art. 167 sau 168, după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 170^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 170^1 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Dreptul contribuabilului/plătitorului de a cere restituirea creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere dreptul la restituire."
-— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două situații prevăzute de text:

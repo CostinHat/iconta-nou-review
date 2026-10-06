@@ -14,7 +14,7 @@ O evidență contabilă în care lipsesc operațiuni, active sau datorii reale n
 
 ::: ghid-temei
 „ART. 41 Constituie contravenție următoarele fapte: 1. deținerea, cu orice titlu, de elemente de natura activelor și datoriilor, precum și efectuarea de operațiuni economico-financiare, fără să fie înregistrate în contabilitate."
-— Legea nr. 82/1991 (legea contabilității), art. 41 pct. 1, coroborat cu art. 42 alin. (1) lit. a) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (legea contabilității), art. 41 pct. 1, coroborat cu art. 42 alin. (1) lit. a) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Fapta de a deține active/datorii sau de a efectua operațiuni economico-financiare **fără să fie înregistrate în contabilitate** e contravenție de sine stătătoare, prevăzută expres la art. 41 pct. 1 — indiferent dacă lipsa înregistrării a generat sau nu o diferență de impozit.

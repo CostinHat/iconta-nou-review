@@ -46,6 +46,6 @@ Până la îndeplinirea condițiilor de mai sus, ajustarea rămâne constituită
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta` din `core/provizioane.py` primește numărul de zile de depășire a scadenței, precum și marcajele „garantată", „afiliată" și „faliment declarat", și întoarce procentul de deducere aplicabil (0%, 30% sau 100%) plus temeiul textual corespunzător. O creanță garantată sau afiliată primește întotdeauna 0%, indiferent de vechime; sub pragul de 270 de zile și fără faliment declarat, procentul e tot 0% ("sub 270 zile ... nedeductibil încă"). Nota contabilă la constituire e generată automat prin `nota_ajustare_creanta` (6814=491).
+Funcția `deductibilitate_creanta` din aplicație primește numărul de zile de depășire a scadenței, precum și marcajele „garantată", „afiliată" și „faliment declarat", și întoarce procentul de deducere aplicabil (0%, 30% sau 100%) plus temeiul textual corespunzător. O creanță garantată sau afiliată primește întotdeauna 0%, indiferent de vechime; sub pragul de 270 de zile și fără faliment declarat, procentul e tot 0% ("sub 270 zile ... nedeductibil încă"). Nota contabilă la constituire e generată automat prin `nota_ajustare_creanta` (6814=491).
 
 [iConta.eu](/)

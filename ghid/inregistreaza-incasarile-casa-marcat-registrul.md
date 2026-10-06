@@ -14,7 +14,7 @@ Vânzările cu numerar către populație, prin aparatul de marcat electronic fis
 
 ::: ghid-temei
 „Chitanța și chitanța pentru operațiuni în valută sunt documente justificative de înregistrare în registrul de casă/registrul de casă în valută și în contabilitate a încasărilor și plăților efectuate în numerar (lei/valută) [...]. În condițiile utilizării aparatelor de marcat electronice fiscale, în conformitate cu prevederile legale, documentul în baza căruia se înregistrează în contabilitate veniturile aferente încasărilor zilnice este Raportul fiscal de închidere zilnică, respectiv Registrul special întocmit în condițiile defectării aparatelor de marcat electronice fiscale."
-— OMFP 2634/2015, Anexa 2, Cod 14-4-1 — Chitanța (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-4-1 — Chitanța (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă pentru registrul de casă:
@@ -32,6 +32,6 @@ Ce rezultă pentru registrul de casă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/amef_import.py` conține `parseaza_raport_z()`, care preia raportul fiscal de închidere zilnică (XML) exportat de aparatul de marcat, iar `core/uc_tenants.py` (`horeca_import_amef()`) generează automat o singură notă contabilă zilnică din acel raport Z (5311/5125 = 707, cu TVA colectată pe 4427), nu bon cu bon. Nota generată din AMEF intră direct ca înregistrare contabilă; ea nu trece prin `casa_operatiuni`/`registru_casa()` din `core/casa.py`, care rămâne motorul soldului rulant al casei doar pentru operațiunile introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Rezultatul practic respectă totuși mecanismul din normă: raportul Z e documentul-sumă a zilei, nu chitanța bon cu bon.
+La data acestui ghid, aplicația conține `parseaza_raport_z()`, care preia raportul fiscal de închidere zilnică (XML) exportat de aparatul de marcat, iar aplicația (`horeca_import_amef()`) generează automat o singură notă contabilă zilnică din acel raport Z (5311/5125 = 707, cu TVA colectată pe 4427), nu bon cu bon. Nota generată din AMEF intră direct ca înregistrare contabilă; ea nu trece prin `casa_operatiuni`/`registru_casa()` din aplicație, care rămâne motorul soldului rulant al casei doar pentru operațiunile introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Rezultatul practic respectă totuși mecanismul din normă: raportul Z e documentul-sumă a zilei, nu chitanța bon cu bon.
 
 [iConta.eu](/)

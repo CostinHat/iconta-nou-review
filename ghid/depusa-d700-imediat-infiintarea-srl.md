@@ -15,7 +15,7 @@ Formularul D700 este, în prezent, mijlocul electronic prin care se depun la ANA
 ::: ghid-temei
 „ART. 88 Modificări ulterioare înregistrării fiscale
 (1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate confirma, onest, din acest temei:

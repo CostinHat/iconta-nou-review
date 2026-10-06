@@ -16,9 +16,9 @@ Actul constitutiv poate cere mai mult, dar numai pentru prima convocare. Pentru 
 
 ::: ghid-temei
 „Pentru validitatea deliberărilor adunării generale ordinare este necesară prezența acționarilor care să dețină cel puțin o pătrime din numărul total de drepturi de vot. Hotărârile adunării generale ordinare se iau cu majoritatea voturilor exprimate. Actul constitutiv poate prevedea cerințe mai ridicate de cvorum și majoritate."
-— Legea societăților nr. 31/1990, art. 112 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 112 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „adunarea ce se va întruni la o a doua convocare poate să delibereze asupra punctelor de pe ordinea de zi a celei dintâi adunări, indiferent de cvorumul întrunit, luând hotărâri cu majoritatea voturilor exprimate. Pentru adunarea generală întrunită la a doua convocare, actul constitutiv nu poate prevedea un cvorum minim sau o majoritate mai ridicată."
-— Legea societăților nr. 31/1990, art. 112 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 112 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pe scurt:

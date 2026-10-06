@@ -14,7 +14,7 @@ Practica de a înregistra o firmă pe numele altei persoane — de obicei pentru
 
 ::: ghid-temei
 „Constituie infracțiuni de evaziune fiscală și se pedepsesc cu închisoare de la 3 la 10 ani și interzicerea unor drepturi sau cu amendă următoarele fapte săvârșite în scopul sustragerii de la îndeplinirea obligațiilor fiscale: a) ascunderea bunului ori a sursei impozabile sau taxabile [...]."
-— Legea 241/2005, art. 9 alin. (1) lit. a) (sursă: anaf_surse/legea_241_2005.html)
+— Legea 241/2005, art. 9 alin. (1) lit. a) (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 :::
 
 Legea nu incriminează separat „firma pe numele altcuiva" ca atare, dar mecanismul din spatele ei se lovește de mai multe prevederi concrete:

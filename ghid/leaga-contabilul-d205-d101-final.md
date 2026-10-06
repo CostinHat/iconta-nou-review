@@ -14,7 +14,7 @@ D205 (declarația informativă privind impozitul reținut la sursă, inclusiv pe
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul are obligația de a completa declarația fiscală înscriind corect, complet și cu bună-credință informațiile prevăzute de formular, corespunzătoare situației sale fiscale."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 102 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 102 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie corelat, practic, la final de an:

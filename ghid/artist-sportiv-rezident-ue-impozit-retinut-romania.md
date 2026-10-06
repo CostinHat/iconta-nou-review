@@ -16,12 +16,12 @@ Opțiunea contează pentru că reținerea de 10% (persoane fizice) sau 16% (pers
 
 ::: ghid-temei
 „Persoana fizică rezidentă într-un stat membru al Uniunii Europene sau într-un stat cu care România are încheiată o convenție de evitare a dublei impuneri care realizează venituri din România în calitate de artist de spectacol sau ca sportiv, din activitățile artistice și sportive, indiferent dacă acestea sunt plătite direct artistului sau sportivului ori unei terțe părți care acționează în numele acelui artist sau sportiv poate opta pentru regularizarea impozitului plătit conform alin. (1) prin declararea și plata impozitului pe venit pentru venitul impozabil aferent acestor venituri, conform regulilor stabilite în titlul IV . Impozitul reținut la sursă potrivit alin. (1) constituie plată anticipată în contul impozitului anual pe venit și se scade din impozitul pe venit datorat."
-— Codul fiscal (Legea 227/2015), art. 227 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 227 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Persoana juridică rezidentă într-un stat membru al Uniunii Europene sau într-un stat cu care România are încheiată o convenție de evitare a dublei impuneri care obține venituri din activități desfășurate în România de artiști de spectacol sau sportivi poate opta pentru regularizarea impozitului plătit conform alin. (1) prin declararea și plata impozitului pe profit pentru profitul impozabil aferent acestor venituri, conform regulilor stabilite în titlul II."
-— Codul fiscal (Legea 227/2015), art. 227 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 227 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează opțiunea:

@@ -14,10 +14,10 @@ La fel ca la CAS, o diferență între CASS-ul din D112 și o sumă calculată r
 
 ::: ghid-temei
 „Calculul contribuției de asigurări sociale de sănătate se realizează prin aplicarea cotei prevăzute la art. 156 asupra bazelor lunare de calcul menționate la art. 157, 157^1 sau 157^4-157^9, după caz."
-— Legea nr. 227/2015, art. 168 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 168 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prevederile art. 146 alin. (5^6)-(5^9) se aplică în mod corespunzător."
-— Legea nr. 227/2015, art. 168 alin. (6^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 168 alin. (6^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Explicația diferenței:

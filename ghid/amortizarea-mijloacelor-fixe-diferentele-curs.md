@@ -14,7 +14,7 @@ Un mijloc fix cumpărat în valută nu generează diferențe de curs pe durata l
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Mijlocul fix (cont 21x) se înregistrează inițial la cursul BNR din data recepției/facturii (pct. 319), în lei, și rămâne acolo — valoarea lui în lei nu se mai modifică din cauza cursului valutar.
@@ -30,6 +30,6 @@ Un mijloc fix cumpărat în valută nu generează diferențe de curs pe durata l
 
 ## Ce face iConta.eu
 
-Motorul `core/diferente_curs.py` din iConta.eu respectă exact această limită: funcția `diferenta()` acceptă strict `tip ∈ {creanta, disponibil, datorie}` — un apel cu un tip precum „mijloc fix" sau „imobilizare" ridică o eroare de validare, nu generează nicio notă. Aplicația **nu are și nu poate avea** o funcție de „diferențe de curs la mijloacele fixe", pentru că o asemenea operațiune ar fi contrară OMFP 1802/2014. Ce calculează F041 este strict diferența de curs pe datoria față de furnizorul mijlocului fix, dacă acea datorie e încă nedecontată — prin ecranele de decontare/reevaluare valutară, nu prin fișa mijlocului fix.
+Aplicația din iConta.eu respectă exact această limită: funcția `diferenta()` acceptă strict `tip ∈ {creanta, disponibil, datorie}` — un apel cu un tip precum „mijloc fix" sau „imobilizare" ridică o eroare de validare, nu generează nicio notă. Aplicația **nu are și nu poate avea** o funcție de „diferențe de curs la mijloacele fixe", pentru că o asemenea operațiune ar fi contrară OMFP 1802/2014. Ce calculează F041 este strict diferența de curs pe datoria față de furnizorul mijlocului fix, dacă acea datorie e încă nedecontată — prin ecranele de decontare/reevaluare valutară, nu prin fișa mijlocului fix.
 
 [iConta.eu](/)

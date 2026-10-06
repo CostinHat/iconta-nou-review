@@ -15,7 +15,7 @@ Descărcarea de gestiune — momentul în care o marfă sau materie primă iese 
 ::: ghid-temei
 „(2) Metoda «costului mediu ponderat» (CMP) presupune calcularea costului fiecărui element pe baza mediei ponderate a costurilor elementelor similare aflate în stoc la începutul perioadei și a costului elementelor similare produse sau cumpărate în timpul perioadei. [...]
 (3) Potrivit metodei «primul intrat-primul ieșit» (FIFO), bunurile ieșite din gestiune se evaluează la costul de achiziție sau de producție al primei intrări (lot). [...]"
-— OMFP 1802/2014, pct. 96 alin. (2)-(3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (2)-(3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - La descărcarea prin **CMP**, fiecare ieșire se evaluează la costul mediu ponderat curent al stocului, calculat din toate loturile amestecate valoric.
@@ -31,7 +31,7 @@ Descărcarea de gestiune — momentul în care o marfă sau materie primă iese 
 
 ## Ce face iConta.eu
 
-La descărcarea de gestiune, iConta.eu aplică **exclusiv metoda CMP**, niciodată FIFO. Funcția de ieșire din modulul de stocuri cantitativ-valorice (`core/stocuri_cv_api.py`) calculează valoarea ieșirii la costul mediu ponderat curent și generează automat nota contabilă de descărcare (607=371 pentru mărfuri, respectiv 601=301 pentru materii prime, în funcție de conturile atașate articolului). Nu există, nicăieri în motorul de calcul (`core/stocuri_cv.py`), o cale alternativă care să evalueze ieșirea la costul primului lot intrat — algoritmul lucrează mereu cu media ponderată a întregului stoc.
+La descărcarea de gestiune, iConta.eu aplică **exclusiv metoda CMP**, niciodată FIFO. Funcția de ieșire din modulul de stocuri cantitativ-valorice calculează valoarea ieșirii la costul mediu ponderat curent și generează automat nota contabilă de descărcare (607=371 pentru mărfuri, respectiv 601=301 pentru materii prime, în funcție de conturile atașate articolului). Nu există, nicăieri în motorul de calcul, o cale alternativă care să evalueze ieșirea la costul primului lot intrat — algoritmul lucrează mereu cu media ponderată a întregului stoc.
 
 Prin urmare, un ghid „FIFO vs CMP la descărcarea de gestiune" în context iConta.eu nu descrie o alegere reală din aplicație: descărcarea se face întotdeauna la CMP, indiferent de preferința utilizatorului. Comparația FIFO/CMP rămâne utilă doar ca informație legală generală, pentru firmele care evaluează stocul manual sau în alt sistem înainte de a importa datele în iConta.
 

@@ -18,7 +18,7 @@ Art. 118 (1) La solicitarea angajatorului salariaţii pot efectua munca suplimen
 Art. 119 (1) Munca suplimentară se compensează prin ore libere plătite în următoarele 30 de zile după efectuarea acesteia. [...]
 Art. 120 (1) În cazul în care compensarea prin ore libere plătite nu este posibila în termenul prevăzut de art. 119 alin. (1) în luna următoare, munca suplimentară va fi plătită salariatului prin adăugarea unui spor la salariu corespunzător duratei acesteia.
 (2) Sporul pentru munca suplimentară, acordat în condiţiile prevăzute la alin. (1), se stabileşte prin negociere, în cadrul contractului colectiv de muncă sau, după caz, al contractului individual de muncă, şi nu poate fi mai mic de 75% din salariul de baza."
-— Legea 53/2003 (Codul muncii), art. 117, 118, 119 și 120 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 117, 118, 119 și 120 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ordinea prevăzută de lege e clară și trebuie respectată în această succesiune:

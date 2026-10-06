@@ -14,7 +14,7 @@ Un salariat cetățean al unui stat din afara Uniunii Europene nu se declară au
 
 ::: ghid-temei
 „Următoarele persoane au calitatea de contribuabili/plătitori de venit la sistemul public de pensii, cu respectarea legislației europene aplicabile în domeniul securității sociale, precum și a acordurilor privind sistemele de securitate socială la care România este parte, după caz: a) cetățenii români, cetățenii altor state sau apatrizii, pe perioada în care au, conform legii, domiciliul ori reședința în România."
-— Legea 227/2015 (Codul fiscal), art. 136 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 136 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de fond, pentru contribuțiile sociale: se aplică legislația română, **cu respectarea** legislației europene de coordonare (irelevantă pentru un cetățean din afara UE) **și a acordurilor bilaterale de securitate socială** pe care România le are cu alte state. Practic:

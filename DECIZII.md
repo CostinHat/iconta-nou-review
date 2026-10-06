@@ -17111,3 +17111,35 @@ pe toate și publică four-way. Alternativa respinsă: patru commituri pe `main`
    dinainte și de după salvare — deci pe TOATE drumurile de scriere (fiscale, formă/capital, AMEF, metoda de stoc, CUI și denumire
    prin provisioning). Salvarea fără autor se refuză. Jurnalul (inclusiv regimul de TVA, deja jurnalizat) se vede în Date firmă,
    „Istoricul modificărilor”. Drepturile rămân: Date firmă la „Poate pregăti”.
+
+**Consecințe (executor) — partea 2 (/ghid pentru indexare; NU s-au publicat ghiduri noi, lotul 20 nu a început):**
+5. **(pct.5) Adresele care au existat răspund 301, nu 404.** Lista celor 17 din Search Console nu se vede de pe server; s-a
+   reconstruit din jurnalele nginx (14 zile) și din linkurile interne rupte: 6 slug-uri vechi cu înlocuitor (hartă
+   `_GHID_REDIRECT`), `/ghid/<slug>.md` -> pagina ghidului, `/ghid/GH-<5 cifre>` -> `slug_publicat` din registru (altfel `/ghid`),
+   `proba-ghid` -> `/ghid` (fără înlocuitor: hub). 11 linkuri interne rupte în 10 ghiduri, reparate. Ce NU se poate ști de aici:
+   dacă cele 17 din Search Console coincid cu acestea — lista e la Costin.
+6. **(pct.6) `/ghid` = cuprinsul temelor** (5,6 KB, 19 linkuri, față de 2,3 MB / 6.559). Temele: `core/ghid_teme.py`, sursa
+   unică (19 teme). Încadrarea: categoria din registru, apoi regula pe cuvinte, apoi „Alte teme”. **„altele” din registru nu e o
+   încadrare** — măsurat: 1.575 de ghiduri ajungeau în „Alte teme” (pagină de 558 KB, adică lista plată pe altă adresă); după
+   regulă: 486. Plafon gardat: nicio temă peste 800, „Alte teme” sub 10%. Paginile temelor intră în sitemap. Alternativa
+   respinsă: paginarea temelor — mai multe adrese de indexat, aceeași listă lungă. E o grupare de NAVIGARE, nu o încadrare fiscală.
+7. **(pct.7) Fiecare ghid are „Tema: …” și „Ghiduri înrudite” (6)**: aceeași temă, ordonate după cuvintele comune din titlu, apoi
+   după slug — determinist, fără sursă externă.
+8. **(pct.8) Calea internă de fișier -> numele actului + link oficial.** 132 de fișiere-sursă citate; pentru fiecare, adresa
+   oficială deschisă și citită (antet: tip, număr, dată, emitent, MO): 118 pe legislatie.just.ro, 11 pe static.anaf.ro (două
+   identice byte cu byte, SHA-256); 1 fără adresă verificată (structura D100 locală e o versiune înlocuită de ANAF) -> numai
+   numele; 2 note interne -> scoase (nu sunt surse publice). 3.828 de ghiduri rescrise (6.965 de rânduri), inclusiv numerele de
+   linie din fișierele locale. **Clasa, generalizată:** orice cale internă pe o pagină publică — și ~1.500 de căi `core/….py` din
+   proză („Modulul `core/casa.py` are…”) au devenit „aplicația”; gard: nicio cale internă în ghiduri și nicio sursă citată spre
+   un domeniu neoficial. Constatare din verificare: „OPANAF 394/2017” (citat în `core/d390.py`, `core/d390_clasificare_api.py`,
+   `core/control_fiscal_api.py`) NU apare ca act publicat în MO — documentul ANAF e anexa 2 la OPANAF 591/2016 în forma OPANAF
+   592/2017 (amândouă în afara corpusului local, deci eticheta de pe ghid numește documentul ANAF, fără număr de ordin —
+   poarta ghidurilor respinge un act necitit); în cod citarea e marcată deja „abrogat”, iar instrucțiunile în vigoare sunt
+   OPANAF 705/2020.
+9. **(pct.9) /sitemap.xml:** jurnalele nginx țin 14 zile (de la 22.09); 17.08–21.09 nu mai există pe disc, iar formatul nu are
+   `$request_time`. 22.09–06.10: Google real (66.249.x, DNS invers googlebot.com) — 505 cereri, ZERO pe `/sitemap.xml`; cele 7
+   cereri „Googlebot” de pe 05.10 vin din 160.79.106.x (fără DNS invers: nu sunt Google). Acum: 200, 769.183 B, XML valid, 6.562
+   `<loc>` (6.581 cu temele), 0,37–0,46 s. Ce nu se vede de pe server: proprietatea din Search Console și URL-ul exact trimis.
+10. **(pct.10) Titluri aprobate nepublicate:** registrul nu are stare „aprobat”. Lotul 19 (441 aprobate): 433 publicate, 7
+   „asemănătoare”, **1 aprobat nepublicat: GH-09299**. Lotul 18, lista „candidați blocați” (204): 133 publicate de atunci, 46 încă
+   „candidat”, 25 „asemănătoare” — dacă lista aceea era aprobată nu e consemnat nicăieri în depozit.

@@ -14,10 +14,10 @@ Precizare importantă înainte de orice altceva: în 2026 nu există o „autori
 
 ::: ghid-temei
 „Articolul 7 Angajatorii au obligația de a completa și de a transmite datele în Registru cel târziu în ziua anterioară începerii activității de către primul salariat."
-— HG 295/2025 (privind registrul general de evidență a salariaților), art. 7 (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025 (privind registrul general de evidență a salariaților), art. 7 (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 
 „b) să întocmească un plan de prevenire și protecție compus din măsuri tehnice, sanitare, organizatorice și de altă natură, bazat pe evaluarea riscurilor, pe care să îl aplice corespunzător condițiilor de muncă specifice unității;"
-— Legea 319/2006 (securitatea și sănătatea în muncă), art. 13 lit. b) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006 (securitatea și sănătatea în muncă), art. 13 lit. b) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce trebuie să facă real o firmă înainte de a angaja primul salariat:
@@ -36,6 +36,6 @@ Notă: HG 295/2025 (care a înlocuit vechea HG 905/2017, cunoscută popular sub 
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare directă cu REGES-ONLINE (`core/reges_client.py`), care generează și trimite mesajul de înregistrare a identității salariatului (`mesaj_inregistrare_salariat`) și mesajul de adăugare a contractului individual de muncă (`mesaj_adaugare_contract`), din ecranul Stat de plată — acoperind exact obligația de la art. 7 din HG 295/2025. Obligațiile de securitate și sănătate în muncă (evaluarea riscurilor, planul de prevenire, instructajul) **nu sunt gestionate de aplicație** — ele țin de un domeniu separat de expertiză (SSM), nu de contabilitate, și rămân în sarcina firmei sau a unui furnizor specializat.
+iConta.eu are integrare directă cu REGES-ONLINE, care generează și trimite mesajul de înregistrare a identității salariatului (`mesaj_inregistrare_salariat`) și mesajul de adăugare a contractului individual de muncă (`mesaj_adaugare_contract`), din ecranul Stat de plată — acoperind exact obligația de la art. 7 din HG 295/2025. Obligațiile de securitate și sănătate în muncă (evaluarea riscurilor, planul de prevenire, instructajul) **nu sunt gestionate de aplicație** — ele țin de un domeniu separat de expertiză (SSM), nu de contabilitate, și rămân în sarcina firmei sau a unui furnizor specializat.
 
 [iConta.eu](/)

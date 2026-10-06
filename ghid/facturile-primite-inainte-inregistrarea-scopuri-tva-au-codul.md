@@ -14,18 +14,18 @@ Da. Când firma trece de la regimul de scutire al întreprinderilor mici la regi
 
 ::: ghid-temei
 „(13) Pentru ajustarea taxei prevăzute la alin. (11) , persoana impozabilă trebuie să îndeplinească condițiile și formalitățile prevăzute la art. 297-306 din Codul fiscal. Prin excepție de la prevederile art. 319 alin. (20) din Codul fiscal, factura pentru achiziții de bunuri/servicii efectuate înainte de înregistrarea în scopuri de TVA a persoanei impozabile nu trebuie să conțină mențiunea referitoare la codul de înregistrare în scopuri de TVA atribuit persoanei impozabile conform art. 316 din Codul fiscal."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 83 alin. (13) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 83 alin. (13) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „persoanele impozabile care solicită înregistrarea în scopuri de taxă prin opțiune conform prevederilor art. 310 alin. (3), coroborate cu prevederile art. 316 alin. (1) lit. c) din Codul fiscal, și persoanele impozabile care solicită înregistrarea în scopuri de taxă în cazul depășirii plafonului de scutire în termenul stabilit la art. 310 alin. (6) din Codul fiscal au dreptul la ajustarea taxei deductibile aferente"
-— HG 1/2016, Titlul VII, pct. 83 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 83 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Prin normele metodologice se stabilesc ajustările de efectuat în cazul modificării regimului de taxă."
-— Codul fiscal (Legea 227/2015), art. 310 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție, în cazul trecerii persoanei impozabile de la regimul de scutire pentru întreprinderile mici prevăzut la art. 310 la regimul normal de taxare, precum și în cazul livrării bunului de capital în regim de taxare, ajustarea deducerii se face o singură dată pentru întreaga perioadă de ajustare rămasă, incluzând anul în care apare modificarea destinației de utilizare"
-— Codul fiscal, art. 305 alin. (5) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 305 alin. (5) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru ce achiziții se aplică (pct. 83 alin. (11)):

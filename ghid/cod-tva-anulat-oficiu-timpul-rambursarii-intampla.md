@@ -16,15 +16,15 @@ Practic, banii rămân blocați până la reînregistrare. Cât de repede îi re
 
 ::: ghid-temei
 „vă informăm că a încetat procedura de soluționare a decontului cu sume negative de TVA cu opțiune de rambursare aferent perioadei [...] Sumele negative cuprinse în decont se pot cuprinde în primul decont de TVA care va fi depus după înregistrarea în scopuri de TVA a persoanei impozabile, potrivit art. 316 alin. (12) din Codul fiscal ."
-— OPANAF 352/2022, Anexa nr. 4 (sursă: anaf_surse/ordin_352_2022.html)
+— OPANAF 352/2022, Anexa nr. 4 (sursă: [OPANAF nr. 352/2022 privind soluționarea deconturilor cu sume negative de TVA cu opțiune de rambursare](https://legislatie.just.ro/Public/DetaliiDocument/252538))
 :::
 
 ::: ghid-temei
 „Procedura de anulare a înregistrării în scopuri de TVA este stabilită prin normele procedurale în vigoare. După anularea înregistrării în scopuri de TVA conform alin. (11) lit. a)-e)"
-— Codul fiscal (Legea 227/2015), art. 316 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „organele fiscale înregistrează persoanele impozabile la solicitarea acestora, astfel:"
-— Codul fiscal (Legea 227/2015), art. 316 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce urmează, pas cu pas:

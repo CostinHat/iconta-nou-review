@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „(8) [...] operatorii economici utilizatori sunt obligați să înregistreze într-un registru special, întocmit în acest sens, toate operațiunile efectuate și să emită chitanțe, în condițiile legii, pentru respectivele operațiuni și facturi, la cererea clientului."
-— OUG 28/1999, art. 1 alin. (8) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (8) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „Chitanța și chitanța pentru operațiuni în valută sunt documente justificative de înregistrare în registrul de casă/registrul de casă în valută și în contabilitate a încasărilor și plăților efectuate în numerar (lei/valută) [...]. În condițiile utilizării aparatelor de marcat electronice fiscale, în conformitate cu prevederile legale, documentul în baza căruia se înregistrează în contabilitate veniturile aferente încasărilor zilnice este Raportul fiscal de închidere zilnică."
-— OMFP 2634/2015, Anexa 2, Cod 14-4-1 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-4-1 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Distincția, aplicată:
@@ -34,6 +34,6 @@ Distincția, aplicată:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/chitante.py` (`pdf_chitanta()`) generează chitanța document justificativ (Cod 14-4-1), pentru situațiile în care ea e cerută. Emiterea propriu-zisă a bonului fiscal rămâne, evident, în sarcina aparatului de marcat electronic fiscal — iConta.eu preia rezultatul lui prin `core/amef_import.py` (`parseaza_raport_z()`), care citește raportul de închidere zilnică, nu bonurile individuale.
+La data acestui ghid, aplicația (`pdf_chitanta()`) generează chitanța document justificativ (Cod 14-4-1), pentru situațiile în care ea e cerută. Emiterea propriu-zisă a bonului fiscal rămâne, evident, în sarcina aparatului de marcat electronic fiscal — iConta.eu preia rezultatul lui prin aplicație (`parseaza_raport_z()`), care citește raportul de închidere zilnică, nu bonurile individuale.
 
 [iConta.eu](/)

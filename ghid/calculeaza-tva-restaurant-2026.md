@@ -36,6 +36,6 @@ Cea mai frecventă greșeală este aplicarea unei singure cote pe tot bonul, de 
 
 ## Ce face iConta.eu
 
-Motorul de potrivire cotă (`core/cote_tva.py`) distinge explicit categoria `restaurant_catering` (11%) de excepțiile `bauturi_alcoolice` și `bauturi_nc2202` (21%), astfel încât fiecare linie de bon/factură primește cota corectă în funcție de denumirea produsului, nu o cotă unică aplicată global pe document.
+Motorul de potrivire cotă distinge explicit categoria `restaurant_catering` (11%) de excepțiile `bauturi_alcoolice` și `bauturi_nc2202` (21%), astfel încât fiecare linie de bon/factură primește cota corectă în funcție de denumirea produsului, nu o cotă unică aplicată global pe document.
 
 [iConta.eu](/)

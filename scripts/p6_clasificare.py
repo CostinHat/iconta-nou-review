@@ -54,6 +54,10 @@ TABEL = {
         "Enumerarile din XSD-ul D112. Sursa e un artefact ADUS, cu amprenta in registrul de "
         "provenienta; un XSD nou intra ca FISIER NOU, deci cheia veche nu-si poate schimba "
         "raspunsul sub cache."),
+    ("core.ghid_teme", "_CACHE"): V(
+        ABD, "declarat", REGULA_DECLARAT,
+        "Indexul pe teme al ghidurilor publice (lot 06.10). Sursele sunt fisiere VERSIONATE; cheia e starea lor pe disc, "
+        "deci o schimbare de continut se vede la urmatoarea cerere, iar repornirea de la commit il goleste oricum."),
     ("core.scadente", "_cache_sarb"): V(
         ABD, "declarat", REGULA_DECLARAT,
         "Memo pe o functie PURA, marginit prin `_AN_MIN`/`_AN_MAX` la cel mult 76 de chei. "

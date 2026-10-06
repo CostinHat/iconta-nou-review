@@ -14,7 +14,7 @@ O firmă de alimentație publică (restaurant, bar, catering) se înființează,
 
 ::: ghid-temei
 „obiectul de activitate al societății, cu precizarea domeniului și a activității principale"
-— Legea 31/1990, art. 7 lit. c) — element obligatoriu al actului constitutiv la SRL (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 7 lit. c) — element obligatoriu al actului constitutiv la SRL (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret pentru o firmă din alimentație publică:

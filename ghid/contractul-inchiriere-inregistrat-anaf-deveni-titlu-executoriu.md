@@ -16,20 +16,20 @@ Instrucțiunile ANAF tratează separat această situație: înregistrarea o poat
 
 ::: ghid-temei
 „Contractele de locațiune încheiate prin înscris sub semnătură privată care au fost înregistrate la organele fiscale, precum și cele încheiate în formă autentică constituie titluri executorii pentru plata chiriei la termenele și în modalitățile stabilite în contract sau, în lipsa acestora, prin lege."
-— Codul civil (Legea 287/2009), art. 1.798 (sursă: anaf_surse/legea_287_2009.html)
+— Codul civil (Legea 287/2009), art. 1.798 (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 ::: ghid-temei
 „locatorii care solicită înregistrarea contractului la organul fiscal pentru a constitui titlu executoriu pentru plata chiriei la termenele și modalitățile stabilite în contract sau, în lipsa acestora, prin lege."
-— OPANAF 161/2025, anexa, secțiunea Depunerea cererii (sursă: anaf_surse/ordin_161_2025.html)
+— OPANAF 161/2025, anexa, secțiunea Depunerea cererii (sursă: [OPANAF nr. 161/2025 (înregistrarea contractelor de locațiune)](https://legislatie.just.ro/Public/DetaliiDocument/294288))
 
 „d) organul fiscal în a cărui evidență este înregistrat ca plătitor de impozite, taxe și contribuții locatorul persoană juridică/altă entitate fără personalitate juridică."
-— OPANAF 161/2025, anexa, secțiunea Depunerea cererii, lit. d) (sursă: anaf_surse/ordin_161_2025.html)
+— OPANAF 161/2025, anexa, secțiunea Depunerea cererii, lit. d) (sursă: [OPANAF nr. 161/2025 (înregistrarea contractelor de locațiune)](https://legislatie.just.ro/Public/DetaliiDocument/294288))
 :::
 
 ::: ghid-temei
 „Dispozițiile alin. (2) se aplică în mod corespunzător și contractului încheiat pe perioadă determinată prin înscris sub semnătură privată și înregistrat la organul fiscal competent."
-— Codul civil (Legea 287/2009), art. 1.809 alin. (3) (sursă: anaf_surse/legea_287_2009.html)
+— Codul civil (Legea 287/2009), art. 1.809 alin. (3) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 Ce înseamnă practic:

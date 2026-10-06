@@ -16,7 +16,7 @@ O firmă care raportează pierdere fiscală an de an, fără profit impozabil, a
 „ART. 121 Selectarea contribuabililor/plătitorilor pentru inspecție fiscală
 (1) [...] În cazul creanțelor fiscale administrate de organul fiscal central, selectarea contribuabililor/plătitorilor pentru efectuarea acțiunii de inspecție fiscală se efectuează la nivelul aparatului central al ANAF, în funcție de nivelul riscului stabilit pe baza analizei de risc.
 (2) Contribuabilul/Plătitorul nu poate face obiecții cu privire la procedura de selectare folosită."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 121 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 121 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 **Limitare declarată:** legea stabilește principiul (selecție bazată pe analiza de risc, fără posibilitate de contestare a procedurii de selectare) și criteriile *generale* de risc — printre care, la art. 7 alin. (7) lit. c), „criterii cu privire la nivelul de declarare" — dar **dezvoltarea acestor criterii generale în subcriterii concrete se aprobă prin ordin al președintelui ANAF** (art. 7 alin. (8) și (12)), iar textul acelor ordine nu se regăsește în sursele verificate pentru acest ghid. Nu putem afirma cu temei legal exact ce prag sau ce număr de ani de pierdere declanșează o verificare — dar putem arăta contextul legal relevant:

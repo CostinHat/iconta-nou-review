@@ -14,7 +14,7 @@ O firmă cu cifră de afaceri sub plafonul de scutire poate opta, oricând, pent
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: a) înainte de realizarea unor astfel de operațiuni, în următoarele cazuri: [...] 2. dacă declară că urmează să realizeze o cifră de afaceri inferioară plafonului de scutire prevăzut la art. 310 alin. (1), dar optează pentru aplicarea regimului normal de taxă; [...] c) dacă cifra de afaceri realizată în cursul unui an calendaristic este inferioară plafonului de scutire prevăzut la art. 310 alin. (1), dar optează pentru aplicarea regimului normal de taxă."
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. a) pct. 2 și lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. a) pct. 2 și lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic:

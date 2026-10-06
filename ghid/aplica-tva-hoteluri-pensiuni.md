@@ -36,6 +36,6 @@ Regula depinde de ce anume e facturat, nu de locație: dacă suma apare ca parte
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` ține separat categoria `cazare` (art. 291 alin. (2) lit. m) de categoria `restaurant_catering` (lit. n), fiecare cu regulile ei proprii de excepție. Motorul de potrivire cotă lucrează linie cu linie: o linie de cazare (inclusiv pachet cu masă) primește 11% integral, iar o linie de restaurant/catering primește 11% cu excepția explicită pentru băuturile alcoolice și NC 2202, care rămân la 21%. Distincția rămâne, în ultimă instanță, de felul în care emitentul structurează factura — pe linie de cazare sau pe linie de consumație separată.
+Aplicația ține separat categoria `cazare` (art. 291 alin. (2) lit. m) de categoria `restaurant_catering` (lit. n), fiecare cu regulile ei proprii de excepție. Motorul de potrivire cotă lucrează linie cu linie: o linie de cazare (inclusiv pachet cu masă) primește 11% integral, iar o linie de restaurant/catering primește 11% cu excepția explicită pentru băuturile alcoolice și NC 2202, care rămân la 21%. Distincția rămâne, în ultimă instanță, de felul în care emitentul structurează factura — pe linie de cazare sau pe linie de consumație separată.
 
 [iConta.eu](/)

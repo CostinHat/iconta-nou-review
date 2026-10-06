@@ -14,7 +14,7 @@ Nu toate cheltuielile cu dobânzile sunt automat deductibile integral la impozit
 
 ::: ghid-temei
 „Contribuabilul are dreptul de a deduce, într-o perioadă fiscală, costurile excedentare ale îndatorării până la plafonul deductibil reprezentat de echivalentul în lei al sumei de 1.000.000 euro. [...] diferența dintre costurile excedentare ale îndatorării [...] și plafonul deductibil [...] este dedusă limitat în perioada fiscală în care este suportată, până la nivelul a 30% din baza de calcul."
-— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (4) și alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (4) și alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează mecanismul, din text:

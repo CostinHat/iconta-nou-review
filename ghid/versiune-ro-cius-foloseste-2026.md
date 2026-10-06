@@ -14,10 +14,10 @@ RO_CIUS e specificația națională de utilizare a facturii electronice, derivat
 
 ::: ghid-temei
 „k) specificaţiile naţionale de utilizare a facturii electronice - RO_CIUS - specificaţii tehnice de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, aplicabile la nivel naţional;"
-— OUG 120/2021, art. 2 lit. k) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 lit. k) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 
 „b) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional;"
-— OUG 120/2021, art. 4 alin. (1) lit. b) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (1) lit. b) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce se poate confirma din text:
@@ -35,6 +35,6 @@ Ce se poate confirma din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **generează facturile electronice conform schemei RO_CIUS curente**, cu validare pe schema ANAF activă la momentul trimiterii (modulul `core/efactura_send.py`, documentat explicit ca „loader pe schema CURENTĂ"), fără a fixa în cod un număr de versiune static care ar deveni rapid depășit. Verificarea versiunii aplicabile se face la momentul trimiterii, direct pe schema publicată de ANAF, nu dintr-o constantă presupusă.
+La data acestui ghid, iConta.eu **generează facturile electronice conform schemei RO_CIUS curente**, cu validare pe schema ANAF activă la momentul trimiterii (aplicația, documentat explicit ca „loader pe schema CURENTĂ"), fără a fixa în cod un număr de versiune static care ar deveni rapid depășit. Verificarea versiunii aplicabile se face la momentul trimiterii, direct pe schema publicată de ANAF, nu dintr-o constantă presupusă.
 
 [iConta.eu](/)

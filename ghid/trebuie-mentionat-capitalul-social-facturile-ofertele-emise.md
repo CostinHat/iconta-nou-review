@@ -16,16 +16,16 @@ Obligația vine din Legea societăților, nu din regulile fiscale de facturare, 
 
 ::: ghid-temei
 „(1) În orice factură, ofertă, comandă, tarif, prospect și alte documente întrebuințate în comerț, emanând de la o societate, trebuie să se menționeze denumirea, forma juridică, sediul social, numărul din registrul comerțului și codul unic de înregistrare. Sunt exceptate bonurile fiscale emise de aparatele de marcat electronice, care vor cuprinde elementele prevăzute de legislația din domeniu."
-— Legea 31/1990, art. 74 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 74 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(3) În documentele prevăzute la alin. (1) , dacă acestea provin de la o societate cu răspundere limitată, se va menționa și capitalul social, iar dacă ele provin de la o societate pe acțiuni sau în comandită pe acțiuni, se vor menționa atât capitalul social subscris, cât și cel vărsat. (4) În situația în care documentele prevăzute la alin. (1) sunt emise de o sucursală, acestea trebuie să menționeze și oficiul registrului comerțului la care a fost înregistrată sucursala și numărul ei de înregistrare. (5) Dacă societatea deține o pagină de internet proprie, informațiile prevăzute la alin. (1) și (3) vor fi publicate și pe pagina de internet a societății."
-— Legea 31/1990, art. 74 alin. (3)-(5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 74 alin. (3)-(5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Încălcarea prevederilor art. 74 constituie contravenție și este sancționată cu amendă de la 2.500 lei la 5.000 lei."
-— Legea 31/1990, art. 270^3 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 270^3 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Constatarea contravențiilor și aplicarea sancțiunilor prevăzute la alin. (1)-(2^1) se realizează de către organele cu atribuții de control ale Ministerului Finanțelor - Agenția Națională de Administrare Fiscală și ale unităților sale teritoriale."
-— Legea 31/1990, art. 270^3 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 270^3 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

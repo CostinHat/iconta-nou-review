@@ -14,7 +14,7 @@ Toate facturile transmise sau primite prin sistemul RO e-Factura rămân disponi
 
 ::: ghid-temei
 „(10) Prin excepție de la prevederile alin. (6) lit. a), persoana impozabilă este scutită de obligația emiterii facturii pentru următoarele operațiuni, cu excepția cazului în care beneficiarul solicită factura: a) livrările de bunuri prin magazinele de comerț cu amănuntul și prestările de servicii către populație, pentru care este obligatorie emiterea de bonuri fiscale [...], conform Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată, cu modificările și completările ulterioare."
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (10) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (10) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Citatul de mai sus nu privește direct arhivarea, ci delimitează ce operațiuni sunt obligate să emită factură (deci să existe în SPV) — este relevant pentru a înțelege de ce nu orice vânzare a firmei apare în arhiva e-Factura: vânzările către populație, documentate prin bonuri fiscale, rămân în afara sistemului RO e-Factura, cu excepția cazului în care clientul cere expres factură.
@@ -31,6 +31,6 @@ Citatul de mai sus nu privește direct arhivarea, ci delimitează ce operațiuni
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu importă și înregistrează local facturile primite și trimise prin RO e-Factura (`core/efactura_import.py`, `core/efactura_send.py`), iar funcția `lista_facturi` din `core/facturi_api.py` permite filtrarea facturilor proprii după an, lună și direcție (emise/primite), direct din evidența firmei, fără interogarea portalului ANAF de fiecare dată. Aplicația nu oferă însă un motor de căutare full-text peste conținutul facturilor (produse, descrieri) și nu înlocuiește arhiva oficială SPV ca sursă legală a documentului original.
+La data acestui ghid, iConta.eu importă și înregistrează local facturile primite și trimise prin RO e-Factura, iar funcția `lista_facturi` din aplicație permite filtrarea facturilor proprii după an, lună și direcție (emise/primite), direct din evidența firmei, fără interogarea portalului ANAF de fiecare dată. Aplicația nu oferă însă un motor de căutare full-text peste conținutul facturilor (produse, descrieri) și nu înlocuiește arhiva oficială SPV ca sursă legală a documentului original.
 
 [iConta.eu](/)

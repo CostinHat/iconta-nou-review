@@ -14,7 +14,7 @@ O firmă care cumpără bunuri de la o persoană fizică — de exemplu cereale 
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316."
-— Legea nr. 227/2015, art. 331 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 331 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința practică pentru achizițiile de la persoane fizice:

@@ -14,7 +14,7 @@ Un magazin online românesc plătitor de TVA care își mută stocul propriu în
 
 ::: ghid-temei
 „Este asimilat cu livrarea intracomunitară cu plată transferul de către o persoană impozabilă de bunuri aparținând activității sale economice din România într-un alt stat membru, cu excepția nontransferurilor prevăzute la alin. (12)."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice ale asimilării:

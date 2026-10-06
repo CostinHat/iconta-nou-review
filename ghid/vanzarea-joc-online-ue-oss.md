@@ -14,7 +14,7 @@ O firmă românească ce vinde acces la un joc online (abonamente, achiziții î
 
 ::: ghid-temei
 „Regimul special pentru vânzările intracomunitare de bunuri la distanță, pentru livrările de bunuri interne efectuate de interfețele electronice care facilitează aceste livrări și pentru serviciile prestate de persoane impozabile stabilite în Uniunea Europeană, dar nu în statul membru de consum. [...] Prezentul regim special poate fi utilizat de către orice persoană impozabilă care are sediul activității economice în România [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 315, titlul articolului și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315, titlul articolului și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul pentru vânzarea unui joc online către consumatori din UE:

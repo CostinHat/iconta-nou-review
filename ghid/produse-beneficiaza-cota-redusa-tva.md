@@ -43,6 +43,6 @@ Cea mai frecventă greșeală este aplicarea automată a cotei de 11% oricărui 
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` ține lista limitativă (`CATEGORII_11`) cu fiecare categorie legată explicit de litera din art. 291 alin. (2), plus lista separată a excepțiilor care rămân la 21% (`EXCEPTII_21`). Motorul de potrivire (`potriveste_cota`) folosește AI pentru a încadra denumirea unui produs în categoria corectă, dar dacă răspunsul nu e clar sau AI e indisponibil, linia rămâne **nedeterminată** și emiterea facturii se blochează — aplicația nu completează tăcut o cotă implicită.
+Aplicația ține lista limitativă (`CATEGORII_11`) cu fiecare categorie legată explicit de litera din art. 291 alin. (2), plus lista separată a excepțiilor care rămân la 21% (`EXCEPTII_21`). Motorul de potrivire (`potriveste_cota`) folosește AI pentru a încadra denumirea unui produs în categoria corectă, dar dacă răspunsul nu e clar sau AI e indisponibil, linia rămâne **nedeterminată** și emiterea facturii se blochează — aplicația nu completează tăcut o cotă implicită.
 
 [iConta.eu](/)

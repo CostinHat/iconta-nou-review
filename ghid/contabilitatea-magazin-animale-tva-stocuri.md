@@ -15,7 +15,7 @@ Un magazin de animale vinde, de regulă, două categorii complet diferite din pe
 ::: ghid-temei
 „(2) Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...]
 b) livrarea următoarelor bunuri: alimente, inclusiv băuturi, destinate consumului uman și animal, animale și păsări vii din specii domestice, ale căror coduri NC se stabilesc prin normele metodologice, cu excepția: 1. băuturilor alcoolice; 2. băuturilor nealcoolice care se încadrează la codul NC 2202; 3. alimentelor cu zahăr adăugat, al căror conținut total de zahăr este de minimum 10 g/100 g produs, altele decât laptele praf pentru nou-născuți, sugari și copii de vârstă mică; 4. suplimentelor alimentare definite de Legea nr. 56/2021 privind suplimentele alimentare, cu modificările și completările ulterioare;"
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru un magazin de animale:
@@ -33,6 +33,6 @@ Ce înseamnă concret pentru un magazin de animale:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat de clasificare a cotelor de TVA (`core/cote_tva.py`), care implementează exact distincția din art. 291 alin. (2): o listă limitativă de categorii la cota redusă de 11%, între care „alimente și băuturi pentru consum uman și animal; animale și [păsări vii]", cu tot ce nu se încadrează explicit tratat implicit la cota standard de 21% — regula aplicată e „nu se inventează încadrarea; dacă nu se potrivește clar la 11%, cota e 21%". Contabilul rămâne responsabil să verifice, produs cu produs, dacă acesta se încadrează în categoria redusă (de exemplu, prin codul NC), mai ales pentru produse la limita dintre categorii (suplimente alimentare, hrană cu zahăr adăugat).
+iConta.eu are un modul dedicat de clasificare a cotelor de TVA, care implementează exact distincția din art. 291 alin. (2): o listă limitativă de categorii la cota redusă de 11%, între care „alimente și băuturi pentru consum uman și animal; animale și [păsări vii]", cu tot ce nu se încadrează explicit tratat implicit la cota standard de 21% — regula aplicată e „nu se inventează încadrarea; dacă nu se potrivește clar la 11%, cota e 21%". Contabilul rămâne responsabil să verifice, produs cu produs, dacă acesta se încadrează în categoria redusă (de exemplu, prin codul NC), mai ales pentru produse la limita dintre categorii (suplimente alimentare, hrană cu zahăr adăugat).
 
 [iConta.eu](/)

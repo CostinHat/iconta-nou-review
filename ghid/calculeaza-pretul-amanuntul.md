@@ -36,8 +36,8 @@ Suma acestor trei componente e prețul cu amănuntul afișat clientului. Legea c
 
 ## Ce face iConta.eu
 
-Funcția `nir_gv(linii, cota_tva_implicita, transport, taxe, ...)` din `core/stocuri.py` calculează prețul cu amănuntul la recepție: capitalizează costurile accesorii (transport, taxe) proporțional cu costul de bază al fiecărei linii, cu restul de rotunjire alocat pe ultima linie, apoi generează notele separate pentru cost (`371=401`), TVA deductibilă (`4426=401`), transport/taxe accesorii (`371=cont_transport`/`cont_taxe`), adaos (`371=378`) și TVA neexigibilă (`371=4428`). Funcția validează explicit: cotă de TVA lipsă → eroare; cantitate ≤ 0 → eroare; preț de vânzare mai mic decât costul → eroare de „adaos negativ”.
+Funcția `nir_gv(linii, cota_tva_implicita, transport, taxe, ...)` din aplicație calculează prețul cu amănuntul la recepție: capitalizează costurile accesorii (transport, taxe) proporțional cu costul de bază al fiecărei linii, cu restul de rotunjire alocat pe ultima linie, apoi generează notele separate pentru cost (`371=401`), TVA deductibilă (`4426=401`), transport/taxe accesorii (`371=cont_transport`/`cont_taxe`), adaos (`371=378`) și TVA neexigibilă (`371=4428`). Funcția validează explicit: cotă de TVA lipsă → eroare; cantitate ≤ 0 → eroare; preț de vânzare mai mic decât costul → eroare de „adaos negativ”.
 
-**Limitare confirmată**: `nir_gv` fixează prețul de vânzare doar la intrarea NIR. Nu există în `core/stocuri_api.py` un endpoint dedicat de „reprețuire” a unui stoc deja recepționat — dacă modificați prețul de vânzare al unei mărfi aflate deja în stoc, recalcularea marjei brute cerută de pct. 286 alin. (8) trebuie făcută manual, printr-o notă de ajustare a adaosului, nu printr-un ecran automat dedicat.
+**Limitare confirmată**: `nir_gv` fixează prețul de vânzare doar la intrarea NIR. Nu există în aplicație un endpoint dedicat de „reprețuire” a unui stoc deja recepționat — dacă modificați prețul de vânzare al unei mărfi aflate deja în stoc, recalcularea marjei brute cerută de pct. 286 alin. (8) trebuie făcută manual, printr-o notă de ajustare a adaosului, nu printr-un ecran automat dedicat.
 
 [iConta.eu](/)

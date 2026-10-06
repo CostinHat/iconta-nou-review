@@ -16,7 +16,7 @@ Cea mai frecventă particularitate contabilă a unui hotel nu ține de complexit
 „(2) Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...]
 m) cazarea în cadrul sectorului hotelier sau al sectoarelor cu funcție similară, inclusiv închirierea terenurilor amenajate pentru camping;
 n) serviciile de restaurant și de catering, cu excepția băuturilor alcoolice, precum și a băuturilor nealcoolice care se încadrează la codul NC 2202."
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. m), n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (2) lit. m), n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru evidența unui hotel:
@@ -34,6 +34,6 @@ Ce rezultă concret pentru evidența unui hotel:
 
 ## Ce face iConta.eu
 
-Modulul de cote TVA din iConta.eu (`core/cote_tva.py`) are categorii dedicate pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară, inclusiv loc de camping) și „restaurant_catering", ambele la cota redusă de 11%, cu o categorie separată pentru băuturile alcoolice — care rămân la cota standard chiar și în context de restaurant/catering, conform excepției explicite din lege. Contabilul rămâne responsabil să descompună corect un pachet mixt (cazare + masă + băutură) pe componentele lui, atunci când firma nu emite facturi separate pentru fiecare element.
+Modulul de cote TVA din iConta.eu are categorii dedicate pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară, inclusiv loc de camping) și „restaurant_catering", ambele la cota redusă de 11%, cu o categorie separată pentru băuturile alcoolice — care rămân la cota standard chiar și în context de restaurant/catering, conform excepției explicite din lege. Contabilul rămâne responsabil să descompună corect un pachet mixt (cazare + masă + băutură) pe componentele lui, atunci când firma nu emite facturi separate pentru fiecare element.
 
 [iConta.eu](/)

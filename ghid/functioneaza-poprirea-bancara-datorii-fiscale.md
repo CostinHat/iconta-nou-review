@@ -14,10 +14,10 @@ Poprirea bancară e o formă de executare silită: organul fiscal instruiește b
 
 ::: ghid-temei
 „(5) Poprirea asupra veniturilor debitorilor persoane fizice sau persoane juridice se înființează de către organul de executare silită, printr-o adresă care se comunică terțului poprit, cu respectarea termenului prevăzut la art. 230 și cu înștiințarea debitorului despre înființarea popririi. (6) Poprirea nu este supusă validării. [...] (8) Poprirea se consideră înființată din momentul primirii adresei de înființare de către terțul poprit."
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (5), (6), (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (5), (6), (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(3) [...] suspendarea executării silite prin poprire bancară are ca efect încetarea indisponibilizării sumelor viitoare provenite din încasările zilnice în conturile în lei și în valută, începând cu data și ora comunicării către instituțiile de credit a adresei de suspendare a executării silite prin poprire. (4) Sumele existente în cont la data și ora comunicării adresei de suspendare a executării silite rămân indisponibilizate [...]."
-— Legea 207/2015 (Codul de procedură fiscală), art. 209^11 alin. (3), (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 209^11 alin. (3), (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează mecanismul, în practică:

@@ -14,7 +14,7 @@ Radierea din registrul comerțului și radierea înregistrării fiscale la ANAF 
 
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală [...] trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. [...] Radierea înregistrării fiscale se poate efectua și din oficiu, de către organul fiscal, ori de câte ori acesta constată îndeplinirea condițiilor de radiere a înregistrării și nu s-a depus declarație de radiere. (3) Radierea înregistrării fiscale se efectuează din oficiu, de către organul fiscal central, în cazul decesului persoanei fizice sau, după caz, încetării existenței persoanei juridice potrivit legii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (2)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (2)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă mecanismul și, implicit, ce trebuie făcut când sincronizarea nu s-a produs:

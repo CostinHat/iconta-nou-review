@@ -16,11 +16,11 @@ Fiecare asociație e o persoană juridică distinctă, cu propriul cod de identi
 
 ::: ghid-temei
 „f) organizează și conduce contabilitatea în partidă simplă și activitatea de casierie; […] g) gestionează, separat pentru fiecare asociație, bunurile materiale și fondurile bănești ale asociației, conform hotărârilor adunării generale și deciziilor comitetului executiv;"
-— Legea 196/2018, art. 66 alin. (1) lit. f)-g) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. f)-g) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(2) Administratorul nu poate utiliza în niciun fel fondurile asociației de proprietari, fără hotărârea scrisă a adunării generale sau a deciziei comitetului executiv, după caz. (3) Administratorul are obligația de a ține evidențe contabile separate pentru fiecare condominiu în parte pe care îl are în administrare."
-— Legea 196/2018, art. 66 alin. (2)-(3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (2)-(3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(1) Fiecare asociație de proprietari este obligată să dețină un singur cont bancar."
-— Legea 196/2018, art. 20 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 20 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

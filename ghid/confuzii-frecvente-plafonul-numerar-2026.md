@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Operațiunile de încasări și plăți efectuate de persoane juridice [...] se vor realiza numai prin instrumente de plată fără numerar [...]. Prin excepție [...] se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] în limita unui plafon zilnic de 10.000 lei de la o persoană [pentru magazinele de tipul cash and carry]; [...] plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare. Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei."
-— Legea 70/2015, art. 1 alin. (1), art. 3 alin. (1) lit. a), b), e) și alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 1 alin. (1), art. 3 alin. (1) lit. a), b), e) și alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Plafoanele care se confundă cel mai des:
@@ -33,6 +33,6 @@ Plafoanele care se confundă cel mai des:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **verifică automat** toate aceste plafoane: modulul `core/casa.py`, funcția `verifica_plafon`, calculează pe zi soldul casei, încasările și plățile agregate pe fiecare partener persoană juridică (cu regim separat pentru cash and carry), operațiunile cu persoane fizice și avansurile spre decontare, semnalând fiecare depășire ca avertisment (risc la control, nu blocaj al operațiunii). Verificarea acoperă și distincția dintre plafonul standard și cel majorat pentru cash and carry, urmărite separat.
+La data acestui ghid, iConta.eu **verifică automat** toate aceste plafoane: Aplicația, funcția `verifica_plafon`, calculează pe zi soldul casei, încasările și plățile agregate pe fiecare partener persoană juridică (cu regim separat pentru cash and carry), operațiunile cu persoane fizice și avansurile spre decontare, semnalând fiecare depășire ca avertisment (risc la control, nu blocaj al operațiunii). Verificarea acoperă și distincția dintre plafonul standard și cel majorat pentru cash and carry, urmărite separat.
 
 [iConta.eu](/)

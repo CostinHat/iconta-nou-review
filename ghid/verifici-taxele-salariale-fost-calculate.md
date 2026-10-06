@@ -34,6 +34,6 @@ Greșeala tipică e interpretarea unui verdict gri drept "totul e în regulă" (
 
 ## Ce face iConta.eu
 
-`verifica_d112` (`core/control_incrucisat.py`) implementează exact cele trei stări, cu cauza precisă pentru gri (nu un mesaj generic) și cu sursa declarației (depusă/regenerată) comunicată explicit pe fiecare constatare. Comparația propriu-zisă (`compara_d112`) e o funcție pură care nu modifică nimic în baza de date — doar raportează, cu temei legal citat pentru fiecare din cele patru obligații verificate.
+`verifica_d112` implementează exact cele trei stări, cu cauza precisă pentru gri (nu un mesaj generic) și cu sursa declarației (depusă/regenerată) comunicată explicit pe fiecare constatare. Comparația propriu-zisă (`compara_d112`) e o funcție pură care nu modifică nimic în baza de date — doar raportează, cu temei legal citat pentru fiecare din cele patru obligații verificate.
 
 [iConta.eu](/)

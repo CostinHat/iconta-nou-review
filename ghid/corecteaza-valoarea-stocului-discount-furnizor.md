@@ -14,7 +14,7 @@ Un discount (reducere comercială) primit de la furnizor după emiterea facturii
 
 ::: ghid-temei
 „76. [...] (2) Reducerile comerciale primite ulterior facturării corectează costul stocurilor la care se referă, dacă acestea mai sunt în gestiune. Dacă stocurile pentru care au fost primite reducerile ulterioare nu mai sunt în gestiune, acestea se evidențiază distinct în contabilitate (contul 609 "Reduceri comerciale primite"), pe seama conturilor de terți. (2^1) În cazul în care informațiile deținute nu permit corectarea valorii stocurilor, potrivit alin. (2), reducerile menționate la acel alineat se reflectă, de asemenea, pe seama contului 609 "Reduceri comerciale primite"."
-— OMFP 1802/2014, pct. 76 alin. (2) și (2^1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 76 alin. (2) și (2^1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula, tradusă în pași:

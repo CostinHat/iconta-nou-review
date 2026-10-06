@@ -37,7 +37,7 @@ Un comerciant cu mai multe magazine sau puncte de desfacere care aplică metoda 
 > (7) Diferențele de preț se repartizează proporțional atât asupra valorii bunurilor ieșite, cât și
 > asupra bunurilor rămase în stoc."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (4)-(7) și
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (4)-(7) și
 > nota *2).
 :::
 

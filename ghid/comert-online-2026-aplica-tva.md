@@ -14,7 +14,7 @@ Pentru un magazin online românesc care vinde către persoane fizice din alte st
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1) lit. a), locul livrării în cazul vânzărilor intracomunitare de bunuri la distanță este considerat a fi locul în care se află bunurile în momentul în care se încheie expedierea sau transportul bunurilor către client."
-— Legea nr. 227/2015 (Codul fiscal), art. 275 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 275 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice ale acestei reguli:
@@ -31,6 +31,6 @@ Consecințele practice ale acestei reguli:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează declarația D398 pentru regimurile speciale OSS (UE, non-UE, import), dar **aceasta este o declarație manuală**: aplicația nu ține evidența automată a operațiunilor de vânzare la distanță pe stat de consum și cotă de TVA aplicabilă în fiecare țară — toate valorile trebuie introduse de contabil (`core/d398.py`). Aplicația validează structura declarației față de validatorul oficial ANAF, dar nu calculează singură TVA-ul datorat în funcție de destinația mărfii pentru fiecare comandă online.
+La data acestui ghid, iConta.eu generează declarația D398 pentru regimurile speciale OSS (UE, non-UE, import), dar **aceasta este o declarație manuală**: aplicația nu ține evidența automată a operațiunilor de vânzare la distanță pe stat de consum și cotă de TVA aplicabilă în fiecare țară — toate valorile trebuie introduse de contabil. Aplicația validează structura declarației față de validatorul oficial ANAF, dar nu calculează singură TVA-ul datorat în funcție de destinația mărfii pentru fiecare comandă online.
 
 [iConta.eu](/)

@@ -14,10 +14,10 @@ Amortizarea fiscală e una dintre puținele cheltuieli pe care legea le condiți
 
 ::: ghid-temei
 „Regimul de amortizare pentru un mijloc fix amortizabil se determină conform următoarelor reguli: a) în cazul construcțiilor, se aplică metoda de amortizare liniară; [...] c) în cazul echipamentelor tehnologice, respectiv al mașinilor, uneltelor și instalațiilor de lucru, precum și pentru computere și echipamente periferice ale acestora, contribuabilul poate opta pentru metoda de amortizare liniară, degresivă sau accelerată; d) în cazul oricărui altui mijloc fix amortizabil, contribuabilul poate opta pentru metoda de amortizare liniară sau degresivă."
-— Legea nr. 227/2015 privind Codul fiscal, art. 28 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 28 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[...] pentru activele respective. Prin excepție de la aceste prevederi, în cazul în care scutirea de impozit se aplică în anul 2026 pentru subgrupa 2.1 - Echipamente tehnologice, respectiv mașini, unelte și instalații de lucru, precum și pentru computere și echipamente periferice ale acestora contribuabilii pot opta pentru amortizarea accelerată potrivit prevederilor art. 28 alin. (5) lit. b)."
-— Legea nr. 227/2015 (Codul fiscal), art. 22 alin. (9) — excepție aplicabilă contribuabililor care aplică scutirea de impozit pe profitul reinvestit, nu regula generală a amortizării superaccelerate (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 22 alin. (9) — excepție aplicabilă contribuabililor care aplică scutirea de impozit pe profitul reinvestit, nu regula generală a amortizării superaccelerate (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e important de reținut din regulile de amortizare pentru 2026:

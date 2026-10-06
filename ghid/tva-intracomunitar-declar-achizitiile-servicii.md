@@ -14,7 +14,7 @@ Spre deosebire de achiziția intracomunitară de bunuri, la servicii nu există 
 
 ::: ghid-temei
 „(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...] În absența unui astfel de loc sau sediu fix, locul de prestare a serviciilor este locul unde persoana impozabilă care primește aceste servicii își are domiciliul stabil sau reședința obișnuită."
-— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de declarare pentru o firmă românească plătitoare de TVA care achiziționează servicii de la un prestator dintr-un alt stat membru UE:
@@ -31,6 +31,6 @@ Mecanismul de declarare pentru o firmă românească plătitoare de TVA care ach
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu preia automat facturile de achiziții de servicii intracomunitare pentru calculul D301 (`core/d390.py`, funcția `achizitii_d301`), pe baza operațiunilor deja înregistrate în contabilitate. Aplicația **nu clasifică automat** fiecare serviciu în funcție de excepțiile de la regula locului prestării — contabilul trebuie să verifice, la contarea facturii, dacă operațiunea respectă regula generală B2B sau intră sub o excepție cu loc de prestare diferit.
+La data acestui ghid, iConta.eu preia automat facturile de achiziții de servicii intracomunitare pentru calculul D301 (funcția `achizitii_d301`), pe baza operațiunilor deja înregistrate în contabilitate. Aplicația **nu clasifică automat** fiecare serviciu în funcție de excepțiile de la regula locului prestării — contabilul trebuie să verifice, la contarea facturii, dacă operațiunea respectă regula generală B2B sau intră sub o excepție cu loc de prestare diferit.
 
 [iConta.eu](/)

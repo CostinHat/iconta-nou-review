@@ -16,17 +16,17 @@ Nu. Chiar dacă firma ta e înscrisă în sistemul TVA la încasare, livrările 
 
 ::: ghid-temei
 „Persoanele impozabile care optează pentru aplicarea sistemului TVA la încasare aplică sistemul respectiv numai pentru operațiuni pentru care locul livrării, conform prevederilor art. 275 [...] nu aplică sistemul respectiv pentru următoarele operațiuni care intră sub incidența regulilor generale privind exigibilitatea TVA: [...] d) livrările de bunuri/prestările de servicii pentru care beneficiarul este o persoană afiliată furnizorului/prestatorului potrivit art. 7 pct. 26”
-— Codul fiscal (Legea 227/2015), art. 282 alin. (6) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (6) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 282 alin. (6) lit. d) din Codul fiscal, se exclud de la aplicarea sistemului TVA la încasare livrările de bunuri/prestările de servicii dacă, la momentul emiterii facturii sau, după caz, la data termenului-limită prevăzut de lege pentru emiterea facturii în situația în care factura nu a fost emisă în termenul prevăzut de lege, beneficiarul este o persoană afiliată furnizorului/prestatorului potrivit art. 7 pct. 26 din Codul fiscal.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 26 alin. (14) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 26 alin. (14) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „o persoană juridică este afiliată cu altă persoană juridică dacă cel puțin aceasta deține, în mod direct sau indirect, inclusiv deținerile persoanelor afiliate, minimum 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot la cealaltă persoană juridică ori dacă controlează în mod efectiv acea persoană juridică;”
-— Codul fiscal, art. 7 pct. 26 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 7 pct. 26 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -16,12 +16,12 @@ Mai important pentru buget: termenul de plată nu este același lucru cu momentu
 
 ::: ghid-temei
 „În cazul creanțelor fiscale administrate de organul fiscal central, pentru diferențele de obligații fiscale principale stabilite de contribuabil/plătitor prin declarații fiscale rectificative, termenul de plată al diferențelor este data depunerii declarațieirectificative la organul fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 156 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 156 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Pentru diferențele suplimentare de creanțe fiscale rezultate din corectarea declarațiilor sau modificarea unei decizii de impunere, dobânzile se datorează începând cu ziua imediat următoare scadenței creanței fiscale pentru care s-a stabilit diferența și până la data stingerii acesteia, inclusiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă, punct cu punct:

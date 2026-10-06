@@ -14,10 +14,10 @@ Spre deosebire de declarația inițială, care are un termen legal fix (25 mai),
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare."
-— Legea 207/2015, art. 105 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 105 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din combinația regulii și a excepției:
@@ -35,6 +35,6 @@ Ce rezultă din combinația regulii și a excepției:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) permite marcarea declarației ca rectificativă prin câmpurile `rectif1`/`rectif2` de pe rădăcina documentului, respectând structura oficială. Aplicația nu urmărește automat perioadele de prescripție pe fiecare an fiscal declarat și nu semnalează dacă rezerva verificării ulterioare a fost anulată pentru o anumită perioadă — aceste verificări, care țin de istoricul relației contribuabilului cu ANAF, rămân în sarcina contabilului.
+Generatorul D212 al iConta.eu permite marcarea declarației ca rectificativă prin câmpurile `rectif1`/`rectif2` de pe rădăcina documentului, respectând structura oficială. Aplicația nu urmărește automat perioadele de prescripție pe fiecare an fiscal declarat și nu semnalează dacă rezerva verificării ulterioare a fost anulată pentru o anumită perioadă — aceste verificări, care țin de istoricul relației contribuabilului cu ANAF, rămân în sarcina contabilului.
 
 [iConta.eu](/)

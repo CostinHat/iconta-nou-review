@@ -16,15 +16,15 @@ Distincția e importantă. Proporționalitatea privește banii: salariul și dre
 
 ::: ghid-temei
 „Salariatul încadrat cu contract de muncă cu timp parțial se bucură de drepturile salariaților cu normă întreagă, în condițiile prevăzute de lege și de contractele colective de muncă aplicabile. [...] (2) Drepturile salariale se acordă proporțional cu timpul efectiv lucrat, raportat la drepturile stabilite pentru programul normal de lucru."
-— Codul muncii (Legea 53/2003), art. 106 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 106 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Contractul individual de muncă cu timp parțial cuprinde, în afara elementelor prevăzute la art. 17 alin. (3), următoarele:a) durata muncii și repartizarea programului de lucru; ... b) condițiile în care se poate modifica programul de lucru; ... c) interdicția de a efectua ore suplimentare, cu excepția cazurilor de forță majoră sau pentru alte lucrări urgente destinate prevenirii producerii unor accidente ori înlăturării consecințelor acestora. ... (2) În situația în care într-un contract individual de muncă cu timp parțial nu sunt precizate elementele prevăzute la alin. (1), contractul se consideră a fi încheiat pentru normă întreagă."
-— Codul muncii (Legea 53/2003), art. 105 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 105 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „e^3) primirea la muncă a unuia sau a mai multor salariați cu depășirea duratei timpului de muncă stabilită în cadrul contractelor individuale de muncă cu timp parțial, cu amendă de la 10.000 lei la 15.000 lei pentru fiecare persoană astfel identificată, fără a depăși valoarea cumulată de 200.000 lei;"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. e^3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. e^3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

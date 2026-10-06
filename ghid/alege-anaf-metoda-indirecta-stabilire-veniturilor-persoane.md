@@ -16,10 +16,10 @@ Pentru persoana verificată, aceste limite sunt instrumentul de apărare. Ea nu 
 
 ::: ghid-temei
 „(9) Cu ocazia verificării situației fiscale personale, organul fiscal central stabilește veniturile obținute de persoana fizică în cursul perioadei verificate. În acest scop organul fiscal central utilizează metode indirecte de stabilire a veniturilor, aprobate prin ordin al președintelui A.N.A.F."
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(11) Organul fiscal central apreciază asupra metodei indirecte folosite și a întinderii acesteia, în limitele rezonabilității și echității, asigurând o proporție justă între scopul urmărit și mijloacele utilizate pentru atingerea acestuia."
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează alegerea:

@@ -14,7 +14,7 @@ Da, în principiu — metoda de evaluare a stocurilor este o alegere de politic�
 
 ::: ghid-temei
 „96. - (1) Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; ... b) metoda primul intrat-primul ieșit - FIFO; ... c) metoda ultimul intrat-primul ieșit - LIFO."
-— OMFP 1802/2014, pct. 96 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Legea nu leagă alegerea metodei de tipul de activitate sau de mărimea firmei — formularea „uneia din următoarele metode" lasă alegerea deschisă.
@@ -30,7 +30,7 @@ Da, în principiu — metoda de evaluare a stocurilor este o alegere de politic�
 
 ## Ce face iConta.eu
 
-Această întrebare presupune o funcționalitate care **nu există în iConta.eu**: nu există, nicăieri în codul aplicației, un comutator sau o setare care să permită alegerea sau schimbarea metodei de evaluare între FIFO și CMP. Motorul de stocuri cantitativ-valorice (`core/stocuri_cv.py`) implementează exclusiv metoda CMP, fără nicio ramură alternativă pentru FIFO sau LIFO — costul se calculează mereu ca medie ponderată (`cmp_curent = valoare / cantitate`), indiferent de preferințele firmei.
+Această întrebare presupune o funcționalitate care **nu există în iConta.eu**: nu există, nicăieri în codul aplicației, un comutator sau o setare care să permită alegerea sau schimbarea metodei de evaluare între FIFO și CMP. Motorul de stocuri cantitativ-valorice implementează exclusiv metoda CMP, fără nicio ramură alternativă pentru FIFO sau LIFO — costul se calculează mereu ca medie ponderată (`cmp_curent = valoare / cantitate`), indiferent de preferințele firmei.
 
 Așadar, un utilizator care caută în iConta.eu o opțiune „schimbă metoda FIFO cu CMP" nu o va găsi, pentru simplul motiv că aplicația nu a oferit niciodată FIFO ca alternativă — singura metodă disponibilă pentru gestiunea cantitativ-valorică este CMP. Dacă firma folosea efectiv FIFO în altă parte (pe hârtie sau în alt sistem) și trece la iConta, trecerea înseamnă, de fapt, adoptarea metodei CMP ca metodă unică de evidență în aplicație, nu o alegere între cele două în interiorul ei.
 

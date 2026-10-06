@@ -16,7 +16,7 @@ Când o inspecție fiscală stabilește diferențe de impozite, taxe sau contrib
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. [...]
 67. - (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»). (3) Erorile nesemnificative aferente exercițiilor financiare precedente se corectează, de asemenea, pe seama rezultatului reportat. Totuși, potrivit politicilor contabile aprobate, erorile nesemnificative pot fi corectate pe seama contului de profit și pierdere. [...]
 68. - (1) Corectarea erorilor aferente exercițiilor financiare precedente nu determină modificarea situațiilor financiare ale acelor exerciții. (2) [...] Informații comparative referitoare la poziția financiară și performanța financiară [...] sunt prezentate în notele explicative. (3) În notele explicative la situațiile financiare trebuie prezentate informații cu privire la natura erorilor constatate și perioadele afectate de acestea."
-— OMFP 1802/2014, pct. 65, 67 și 68 (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 65, 67 și 68 (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o diferență stabilită printr-un act de control fiscal, mecanismul e:
@@ -35,6 +35,6 @@ Aplicat la o diferență stabilită printr-un act de control fiscal, mecanismul 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu raportează diferențele stabilite de inspecția fiscală **doar în declarația de TVA** — modulul `core/d300.py` are rândurile dedicate R36 („diferențe stabilite de inspecție fiscală") și R39 („diferențe negative stabilite de inspecție fiscală"), care alimentează regularizarea din decont. Aplicația nu are însă un modul dedicat pentru **înregistrarea contabilă** a diferențelor de control pe contul 1174 și nu automatizează evaluarea pragului de semnificație din pct. 67 — nota contabilă pentru corectarea erorilor aferente exercițiilor anterioare se introduce, la acest moment, manual, conform politicii contabile a firmei.
+La data acestui ghid, iConta.eu raportează diferențele stabilite de inspecția fiscală **doar în declarația de TVA** — aplicația are rândurile dedicate R36 („diferențe stabilite de inspecție fiscală") și R39 („diferențe negative stabilite de inspecție fiscală"), care alimentează regularizarea din decont. Aplicația nu are însă un modul dedicat pentru **înregistrarea contabilă** a diferențelor de control pe contul 1174 și nu automatizează evaluarea pragului de semnificație din pct. 67 — nota contabilă pentru corectarea erorilor aferente exercițiilor anterioare se introduce, la acest moment, manual, conform politicii contabile a firmei.
 
 [iConta.eu](/)

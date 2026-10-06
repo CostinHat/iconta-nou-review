@@ -14,7 +14,7 @@ Suspendarea activității unei PFA e, în esență, o mențiune înscrisă la re
 
 ::: ghid-temei
 „Entitățile înregistrate în registrul comerțului, pentru care există înscrise mențiuni privind inactivitatea temporară, nu au obligația depunerii declarațiilor fiscale pentru perioada în care se află în inactivitate temporară, începând cu data de 1 a lunii următoare înscrierii mențiunii privind inactivitatea temporară în registrul comerțului."
-— Legea 207/2015, art. 101 alin. (4^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 101 alin. (4^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret din text pentru o PFA fără activitate:

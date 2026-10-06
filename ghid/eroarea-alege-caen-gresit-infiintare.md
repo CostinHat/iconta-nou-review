@@ -14,7 +14,7 @@ Codul CAEN nu este un detaliu administrativ oarecare — obiectul de activitate 
 
 ::: ghid-temei
 „Actul constitutiv al societății în nume colectiv, în comandită simplă sau cu răspundere limitată va cuprinde: [...] c) obiectul de activitate al societății, cu precizarea domeniului și a activității principale;"
-— Legea nr. 31/1990 a societăților, art. 7 lit. c) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 a societăților, art. 7 lit. c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Obiectul de activitate (deci și codul CAEN al activității principale) este un element **obligatoriu** al actului constitutiv, alături de datele asociaților, forma și denumirea societății, capitalul social și sediul social.

@@ -33,6 +33,6 @@ Partea din pierdere care depășește coeficientul de perisabilitate al grupei d
 
 ## Ce face iConta.eu
 
-Motorul F066 (`core/perisabilitati.py`) generează linia de ajustare TVA (635=4426) doar dacă există parte nedeductibilă ȘI parametrul `degradare_dovedita_distrusa` nu e bifat; dacă e bifat, ajustarea nu se face, indiferent de mărimea depășirii. Decizia că degradarea și distrugerea sunt „dovedite" rămâne o evaluare a contabilului, pe baza documentelor disponibile (proces-verbal de distrugere) — aplicația nu verifică singură existența acestei dovezi.
+Motorul F066 generează linia de ajustare TVA (635=4426) doar dacă există parte nedeductibilă ȘI parametrul `degradare_dovedita_distrusa` nu e bifat; dacă e bifat, ajustarea nu se face, indiferent de mărimea depășirii. Decizia că degradarea și distrugerea sunt „dovedite" rămâne o evaluare a contabilului, pe baza documentelor disponibile (proces-verbal de distrugere) — aplicația nu verifică singură existența acestei dovezi.
 
 [iConta.eu](/)

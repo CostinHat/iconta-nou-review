@@ -14,10 +14,10 @@ Marfa donată nu iese din gestiune „ca o vânzare fără factură" — există
 
 ::: ghid-temei
 „Avizul de însoțire a mărfii se întocmește de către entitățile care nu au posibilitatea întocmirii facturii în momentul livrării produselor, mărfurilor sau altor valori materiale, precum și în alte situații stabilite prin procedurile proprii ale entității. [...] În cazul transferului de bunuri între gestiunile aceleiași entități, dispersate teritorial, precum și al transportului bunurilor cedate cu titlu gratuit (mostre, bunuri date pentru stimularea vânzării sau testări la locul de desfacere, premii, materiale promoționale etc.), Avizul de însoțire a mărfii va purta mențiunea «Fără factură», după caz."
-— OMFP 2634/2015, anexa 2, cod 14-3-6A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2, cod 14-3-6A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „Nu constituie livrare de bunuri [...] acordarea de bunuri de mică valoare, în mod gratuit, în cadrul acțiunilor de sponsorizare, de mecenat, de protocol/reprezentare, în condițiile stabilite prin normele metodologice."
-— Codul fiscal, art. 270 alin. (8) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 270 alin. (8) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic:

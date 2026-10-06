@@ -14,7 +14,7 @@ Regula generală e simplă: TVA dedusă la achiziția unei mărfi rămâne dedus
 
 ::: ghid-temei
 „(2) Nu se ajustează deducerea inițială a taxei în cazul: a) bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă. În cazul bunurilor furate, persoana impozabilă demonstrează furtul bunurilor pe baza actelor doveditoare emise de organele judiciare;"
-— Cod fiscal, art. 304 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul funcționează „pe dos" față de cum e citit adesea: excepția de la ajustare (deci dreptul de a păstra deducerea) se aplică **numai** dacă lipsa e demonstrată sau confirmată corespunzător — nu automat, orice lipsă constatată la inventar.

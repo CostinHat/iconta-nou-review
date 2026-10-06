@@ -16,10 +16,10 @@ Pentru firmă și contabil, asta înseamnă două fronturi deodată. Pe partea s
 
 ::: ghid-temei
 „(2) în situațiile prevăzute la alin. (1) organul de inspecție fiscală are obligația de a întocmi proces-verbal semnat de organul de inspecție fiscală și de către contribuabilul/plătitorul supus inspecției, cu sau fără explicații ori obiecțiuni din partea contribuabilului/plătitorului. în cazul în care cel supus inspecției fiscale refuză să semneze procesul-verbal, organul de inspecție fiscală consemnează despre aceasta în procesul-verbal. în toate cazurile procesul-verbal trebuie comunicat contribuabilului/plătitorului. (3) Procesul-verbal întocmit potrivit alin. (2) reprezintă act de sesizare și stă la baza documentației de sesizare a organelor de urmărire penală. (4) După sesizarea organelor de urmărire penală, inspecția fiscală încetează numai pentru obligațiile și perioadele fiscale care au făcut obiectul sesizării potrivit alin. (1)."
-— Codul de procedură fiscală (Legea 207/2015), art. 132 alin. (2)–(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 132 alin. (2)–(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „după sesizarea organelor de urmărire penală, procurorul, prin ordonanță, dispune clasarea ori renunțarea la urmărirea penală sau dacă, după trimiterea în judecată, instanța lasă nesoluționată acțiunea civilă, organul de inspecție fiscală poate relua inspecția. În acest caz, se transmite un nou aviz de inspecție fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 132 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 132 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pas cu pas:

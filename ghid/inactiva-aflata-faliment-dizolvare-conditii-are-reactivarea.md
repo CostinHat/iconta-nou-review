@@ -16,12 +16,12 @@ Regimul e logic: o firmă în faliment sau dizolvare are, de regulă, datorii pe
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (5), (5 1 ), (6) și (7 1 ), contribuabilul/plătitorul pentru care s-a deschis procedura insolvenței în formă simplificată, contribuabilul/plătitorul care a intrat în faliment sau contribuabilul/plătitorul pentru care s-a pronunțat ori a fost adoptată o hotărâre de dizolvare se reactivează de organul fiscal central, la cererea acestora, după îndeplinirea obligațiilor declarative"
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), contribuabilul/plătitorul pentru care s-a deschis procedura insolvenței în formă simplificată, contribuabilul/plătitorul care a intrat în faliment sau contribuabilul/plătitorul pentru care s-a pronunțat ori a fost adoptată o hotărâre de dizolvare este declarat inactiv doar dacă se află în situația prevăzută la alin. (1) lit. a)."
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

@@ -14,7 +14,7 @@ Controlul tranzacțiilor între firme afiliate nu urmărește dacă acestea „a
 
 ::: ghid-temei
 „Tranzacțiile între persoane afiliate se realizează conform principiului valorii de piață. În cadrul unei tranzacții, al unui grup de tranzacții între persoane afiliate, organele fiscale pot ajusta, în cazul în care principiul valorii de piață nu este respectat, sau pot estima, în cazul în care contribuabilul nu pune la dispoziția organului fiscal competent datele necesare pentru a stabili dacă prețurile de transfer practicate în situația analizată respectă principiul valorii de piață, suma venitului sau a cheltuielii aferente rezultatului fiscal oricăreia dintre părțile afiliate pe baza nivelului tendinței centrale a pieței."
-— Legea nr. 227/2015 (Codul fiscal), art. 11 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 11 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce anume verifică, concret, organul fiscal:

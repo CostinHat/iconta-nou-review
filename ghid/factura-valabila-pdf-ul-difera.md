@@ -14,7 +14,7 @@ Dacă observi o sumă diferită între PDF-ul facturii și XML-ul transmis prin 
 
 ::: ghid-temei
 „Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Legea desemnează XML-ul semnat electronic de Ministerul Finanțelor drept exemplarul original al facturii electronice — nicio altă variantă (PDF, tipărit, capturi de ecran) nu are acest statut.
@@ -28,7 +28,7 @@ Dacă observi o sumă diferită între PDF-ul facturii și XML-ul transmis prin 
 
 ## Ce face iConta.eu
 
-Aici există și o cauză tehnică reală, verificată în codul aplicației: cele două generatoare rotunjesc sumele diferit. PDF-ul (`core/pdf_util.py::bani`) rotunjește fără să specifice explicit metoda de rotunjire, ceea ce face ca Python să folosească implicit rotunjirea bancară (ROUND_HALF_EVEN). XML-ul pentru e-Factura (`core/efactura_send.py::_bani`) rotunjește explicit cu ROUND_HALF_UP — regula standard folosită de aplicație pentru sumele fiscale.
+Aici există și o cauză tehnică reală, verificată în codul aplicației: cele două generatoare rotunjesc sumele diferit. PDF-ul rotunjește fără să specifice explicit metoda de rotunjire, ceea ce face ca Python să folosească implicit rotunjirea bancară (ROUND_HALF_EVEN). XML-ul pentru e-Factura rotunjește explicit cu ROUND_HALF_UP — regula standard folosită de aplicație pentru sumele fiscale.
 
 Exemplu reprodus direct din calcul: pentru 3 bucăți la 3,335 lei/bucată, baza de calcul e 10,005 lei. Rotunjită implicit (stilul din PDF), rezultă **10,00 lei**; rotunjită cu ROUND_HALF_UP (stilul din XML), rezultă **10,01 lei** — o diferență reală de un bănuț, din exact aceleași date sursă, nu o eroare de introducere. La facturi cu multe linii, astfel de diferențe se pot cumula pe subtotalul pe cotă de TVA sau pe total.
 

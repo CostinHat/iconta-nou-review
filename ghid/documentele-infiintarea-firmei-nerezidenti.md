@@ -14,13 +14,13 @@ poarta: v1
 
 ::: ghid-temei
 „Semnatarii actului constitutiv, precum și persoanele care au un rol determinant în constituirea societății sunt considerați fondatori."
-— Legea 31/1990 privind societățile, art. 6 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 6 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Actul constitutiv se încheie, ca regulă, sub semnătură privată, semnat de toți asociații; forma autentică e obligatorie doar în cazuri specifice — aport în natură cu imobil, societate în nume colectiv/comandită simplă, sau constituire prin subscripție publică (art. 5 alin. (6)).
 - Legea nu condiționează calitatea de fondator de cetățenia sau rezidența persoanei — singurele restricții explicite (art. 6 alin. (2)) privesc persoanele incapabile sau cărora li s-a interzis prin hotărâre judecătorească definitivă dreptul de a fi fondator, ca pedeapsă complementară pentru anumite infracțiuni.
 - Societatea dobândește personalitate juridică **de la data înmatriculării în registrul comerțului** (Legea 31/1990, art. 41 alin. (1)) — până la acel moment, nu există firmă, deci nu există nici CUI, nici vreo evidență fiscală de administrat.
-- Procedura tehnică de înregistrare la ONRC (documentele specifice cerute unui fondator străin — pașaport, apostilă, traducere legalizată, împuternicire) e reglementată de Legea 265/2022 privind registrul comerțului (care a abrogat Legea 26/1990, potrivit art. 140 alin. (1) lit. a) din Legea 265/2022) și de normele ONRC de aplicare — text care se regăsește în sursele legale disponibile pentru acest ghid (anaf_surse/legea_265_2022.html).
+- Procedura tehnică de înregistrare la ONRC (documentele specifice cerute unui fondator străin — pașaport, apostilă, traducere legalizată, împuternicire) e reglementată de Legea 265/2022 privind registrul comerțului (care a abrogat Legea 26/1990, potrivit art. 140 alin. (1) lit. a) din Legea 265/2022) și de normele ONRC de aplicare — text care se regăsește în sursele legale disponibile pentru acest ghid ([Legea nr. 265/2022 privind registrul comerțului](https://legislatie.just.ro/Public/DetaliiDocument/257835)).
 
 ## Ce se greșește în practică
 

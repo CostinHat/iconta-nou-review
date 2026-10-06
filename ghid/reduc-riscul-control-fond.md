@@ -16,7 +16,7 @@ Selectarea pentru inspecție fiscală nu e aleatorie în marea majoritate a cazu
 „(1) Pentru contribuabilii/plătitorii prezumtivi a fi selectați pentru efectuarea inspecției fiscale, organul de inspecție fiscală transmite acestora, în scris, o notificare de conformare cu privire la riscurile fiscale identificate în scopul reanalizării de către aceștia a situației fiscale și, după caz, de a depune sau de a corecta declarațiile fiscale.
 (2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. [...]
 (4) După împlinirea termenului prevăzut la alin. (2) contribuabilii/plătitorii cu risc fiscal ridicat care nu au remediat riscurile fiscale pentru care au fost notificați sunt supuși obligatoriu unei inspecții fiscale sau unei verificări documentare."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121^1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121^1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Selectarea pentru inspecție se face în funcție de nivelul riscului**, stabilit pe baza analizei de risc a organului fiscal central (art. 121 alin. (1)) — nu există control "la întâmplare" pentru marea majoritate a cazurilor, cu excepția unui procent limitat de selectare aleatorie (maximum 10% pe an, potrivit art. 121 alin. (1^1)).

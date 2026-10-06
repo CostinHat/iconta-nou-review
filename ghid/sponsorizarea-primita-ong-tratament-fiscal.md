@@ -14,7 +14,7 @@ Din perspectiva ONG-ului care primește banii sau bunurile, sponsorizarea nu e u
 
 ::: ghid-temei
 „(2) În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, la calculul rezultatului fiscal, următoarele tipuri de venituri sunt venituri neimpozabile: [...] e) donațiile, precum și banii sau bunurile primite prin sponsorizare/mecenat; [...]"
-— art. 15 alin. (2) lit. e) din Legea 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 15 alin. (2) lit. e) din Legea 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Suma sau bunurile primite prin sponsorizare de la o firmă sau de la o persoană fizică sunt **neimpozabile**, fără plafon, indiferent de valoare — spre deosebire de veniturile economice, scutite doar sub plafonul de la alin. (3).

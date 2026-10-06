@@ -16,7 +16,7 @@ Nu există în Codul de procedură fiscală o normă care să spună explicit �
 „ART. 78 Cazul de forță majoră și cazul fortuit
 (1) Termenele prevăzute de lege pentru îndeplinirea obligațiilor fiscale, după caz, nu încep să curgă sau se suspendă în situația în care îndeplinirea acestor obligații a fost împiedicată de ivirea unui caz de forță majoră sau a unui caz fortuit.
 (2) Obligațiile fiscale se consideră a fi îndeplinite în termen, fără perceperea de dobânzi, penalități de întârziere sau majorări de întârziere, după caz, ori aplicarea de sancțiuni prevăzute de lege, dacă acestea se execută în termen de 60 de zile de la încetarea evenimentelor prevăzute la alin. (1)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 78 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 78 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă, onest, din text:

@@ -14,7 +14,7 @@ Obligația de a ține evidențe corecte ale operațiunilor de TVA e generală, �
 
 ::: ghid-temei
 „Persoanele impozabile stabilite în România trebuie să țină evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice."
-— Codul fiscal, art. 321 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt:21609-21612)
+— Codul fiscal, art. 321 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Obligația de evidență corectă și completă e generală — legea nu impune un format anume de „jurnal de TVA", ci doar rezultatul: operațiunile trebuie să poată fi verificate și reconstituite.
@@ -27,12 +27,12 @@ Obligația de evidență corectă și completă e generală — legea nu impune 
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un modul separat numit „jurnal de TVA" — D394 se generează direct din tabelele de facturi (`facturi` + `factura_linii`, `core/repo_d394.py`), aceleași folosite de restul aplicației, cu filtre explicite care exclud din generare documentele de tip proformă/aviz și facturile anulate sau stornate.
+iConta.eu nu are un modul separat numit „jurnal de TVA" — D394 se generează direct din tabelele de facturi (`facturi` + `factura_linii`, aplicația), aceleași folosite de restul aplicației, cu filtre explicite care exclud din generare documentele de tip proformă/aviz și facturile anulate sau stornate.
 
 Înainte de a considera fișierul gata de depus, aplicația rulează două verificări:
 
-1. **Validarea pe validatorul oficial ANAF (DUK)**, instalat local (`core/duk.py`), care confirmă că structura XML respectă schema oficială.
-2. **O a doua cale de calcul, independentă** (`core/d394_reconciliere.py`), care recalculează totalurile pe fiecare cotă de TVA direct din liniile brute ale facturilor, cu cod separat de cel al generatorului principal, și **oprește generarea** dacă cele două calcule diferă.
+1. **Validarea pe validatorul oficial ANAF (DUK)**, instalat local, care confirmă că structura XML respectă schema oficială.
+2. **O a doua cale de calcul, independentă**, care recalculează totalurile pe fiecare cotă de TVA direct din liniile brute ale facturilor, cu cod separat de cel al generatorului principal, și **oprește generarea** dacă cele două calcule diferă.
 
 Limitele acestor două gărzi sunt declarate explicit în cod: nu acoperă operațiunile manuale (bonuri fiscale, borderouri, care nu au ecran dedicat) și nu prind o eroare de intrare comună ambelor căi de calcul, cum ar fi o cotă de TVA tastată greșit o singură dată pe factură. Depunerea efectivă rămâne manuală, prin portalul SPV, cu fișierul deja validat.
 

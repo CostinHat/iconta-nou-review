@@ -16,10 +16,10 @@ Contestarea contează pentru că suspendarea nu este neutră. Perioada suspendat
 
 ::: ghid-temei
 „(1) Conducătorul inspecției fiscale competent poate decide suspendarea unei inspecții fiscale în oricare din următoarele situații și numai dacă apariția acestei situații împiedică finalizarea inspecției fiscale:"
-— Codul de procedură fiscală (Legea 207/2015), art. 127 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 127 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) În cazul prevăzut la alin. (1), inspecția fiscală este suspendată până la data la care încetează motivul suspendării, dar nu mai mult de 6 luni de la data suspendării. [...] (7) Perioadele în care inspecția fiscală este suspendată nu sunt incluse în calculul duratei acesteia. [...] (10) Contribuabilul/plătitorul poate contesta decizia de suspendare, potrivit titlului VIII."
-— Codul de procedură fiscală (Legea 207/2015), art. 127 alin. (2), (7) și (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 127 alin. (2), (7) și (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe ce se poate sprijini contestația:

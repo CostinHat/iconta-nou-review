@@ -16,15 +16,15 @@ Regula surprinde mulți proprietari, pentru că alte venituri din închiriere se
 
 ::: ghid-temei
 „În cazul veniturilor obținute din închirierea bunurilor mobile și imobile din patrimoniul personal, venitul brut se stabilește pe baza chiriei prevăzute în contractul încheiat între părți pentru fiecare an fiscal, indiferent de momentul încasării chiriei."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul brut reprezintă totalitatea sumelor în bani și/sau echivalentul în lei al veniturilor în natură încasate în cursul anului fiscal."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (2), închirierea camerelor pe termen scurt (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (2), închirierea camerelor pe termen scurt (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „au obligația înregistrării contractului încheiat între părți, precum și a modificărilor survenite ulterior, în termen de cel mult 30 de zile de la încheierea/producerea modificării acestuia, la organul fiscal competent."
-— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce urmează din regulă:

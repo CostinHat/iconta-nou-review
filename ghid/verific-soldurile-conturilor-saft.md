@@ -14,7 +14,7 @@ Fișierul SAF-T (declarația D406) nu e doar o listă de tranzacții — el con�
 
 ::: ghid-temei
 „GeneralLedgerEntries → Înregistrări Contabile"
-— OPANAF 1783/2021 pentru aprobarea specificațiilor tehnice de completare a fișierului standard de control fiscal (SAF-T), documentația structurii D406 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 pentru aprobarea specificațiilor tehnice de completare a fișierului standard de control fiscal (SAF-T), documentația structurii D406 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce trebuie verificat, pe baza structurii oficiale a fișierului:
@@ -31,6 +31,6 @@ Ce trebuie verificat, pe baza structurii oficiale a fișierului:
 
 ## Ce face iConta.eu
 
-Modulul SAF-T din iConta.eu (`core/d406.py`) generează fișierul D406 direct din datele contabile ale firmei, inclusiv secțiunea de înregistrări contabile cu soldurile conturilor — astfel încât soldurile din SAF-T provin din aceeași sursă ca balanța de verificare afișată în aplicație, fără o etapă de transcriere manuală separată care ar putea introduce diferențe.
+Modulul SAF-T din iConta.eu generează fișierul D406 direct din datele contabile ale firmei, inclusiv secțiunea de înregistrări contabile cu soldurile conturilor — astfel încât soldurile din SAF-T provin din aceeași sursă ca balanța de verificare afișată în aplicație, fără o etapă de transcriere manuală separată care ar putea introduce diferențe.
 
 [iConta.eu](/)

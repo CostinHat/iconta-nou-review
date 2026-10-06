@@ -17,11 +17,11 @@ Legea 52/2011 sancționează ambele părți, dar diferit:
 
 ::: ghid-temei
 „f) beneficiarul sau un împuternicit al acestuia care folosește zilieri pentru desfășurarea de activități necalificate cu caracter ocazional fără respectarea dispozițiilor art. 4 se sancționează cu amendă de 6.000 lei."
-— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „i) nerespectarea de către zilier a prevederilor art. 4 alin. (6) se sancționează cu amendă de la 500 lei la 2.000 lei."
-— Legea 52/2011, art. 14 alin. (1) lit. i) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. i) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(6) O persoană nu poate presta activități în regim zilier mai mult de 120 de zile în decursul unui an calendaristic, indiferent de numărul de beneficiari sau împuterniciți ai acestora, cu excepția zilierilor care prestează activități în domeniile agricol, silvic, viticol, pomicol, legumicol, floricol, piscicol, [...]"
-— Legea 52/2011, art. 4 alin. (6) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (6) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Limitele din art. 4 pe care beneficiarul trebuie să le respecte:

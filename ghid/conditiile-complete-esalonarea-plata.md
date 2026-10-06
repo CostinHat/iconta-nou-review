@@ -14,7 +14,7 @@ Eșalonarea la plată nu se acordă doar pentru că un debitor o solicită — C
 
 ::: ghid-temei
 „Pentru acordarea unei eșalonări la plată de către organul fiscal central, debitorul trebuie să îndeplinească cumulativ următoarele condiții: a) să se afle în dificultate generată de lipsa temporară de disponibilități bănești și să aibă capacitate financiară de plată pe perioada de eșalonare la plată [...]; b) să aibă constituită garanția potrivit art. 193; c) să nu se afle în procedura insolvenței potrivit legii [...]; c^1) să prezinte contract de fideiusiune potrivit art. 193^1; d) să nu se afle în dizolvare potrivit prevederilor legale în vigoare."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 186 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 186 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile cumulative, pe scurt:

@@ -14,7 +14,7 @@ O firmă românească ce deține participații la o societate din alt stat și p
 
 ::: ghid-temei
 „La calculul rezultatului fiscal, următoarele venituri sunt neimpozabile: a) dividendele primite de la o persoană juridică română; [...] b) dividende primite de la o persoană juridică străină plătitoare de impozit pe profit sau a unui impozit similar impozitului pe profit, situată într-un stat terț, astfel cum acesta este definit la art. 24 alin. (5) lit. c), cu care România are încheiată o convenție de evitare a dublei impuneri, dacă persoana juridică română care primește dividendele deține la persoana juridică străină din statul terț, la data înregistrării acestora potrivit reglementărilor contabile aplicabile, pe o perioadă neîntreruptă de un an, minimum 10% din capitalul social al persoanei juridice care distribuie dividende[.]"
-— Codul fiscal (Legea 227/2015), art. 23 lit. a)-b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 23 lit. a)-b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile cumulative pentru neimpozitarea dividendelor primite din străinătate (lit. b)):

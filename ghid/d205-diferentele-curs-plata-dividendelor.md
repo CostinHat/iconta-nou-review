@@ -16,7 +16,7 @@ Titlul ăsta pornește dintr-o confuzie de nume: dividendele plătite unei perso
 „Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române. [...]
 [Art. 97 alin. (7)] Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. [...]
 [Art. VII] În cazul dividendelor distribuite în baza situațiilor financiare interimare întocmite în cursul anului 2025/anului fiscal modificat care începe în anul 2025, cota de impozit pe dividende este de 10%, fără recalcularea impozitului pe dividendele respective, după regularizarea acestora pe baza situațiilor financiare anuale [...]"
-— Legea 141/2025, art. II pct. 1 (modifică art. 43 alin. (2) Cod fiscal), art. II pct. 5 (modifică art. 97 alin. (7) Cod fiscal) și art. VII (sursă: anaf_surse/legea_141_2025_consolidat.txt)
+— Legea 141/2025, art. II pct. 1 (modifică art. 43 alin. (2) Cod fiscal), art. II pct. 5 (modifică art. 97 alin. (7) Cod fiscal) și art. VII (sursă: [Legea nr. 141/2025 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/300022))
 :::
 
 - De la 1 ianuarie 2026, cota standard de impozit pe dividende, atât pentru persoane juridice cât și pentru persoane fizice, e **16%** (majorată de la 8%, prin Legea 141/2025).
@@ -32,6 +32,6 @@ Titlul ăsta pornește dintr-o confuzie de nume: dividendele plătite unei perso
 
 ## Ce face iConta.eu
 
-`core/d205.py` importă un modul numit `core/dividende_curs.py` — numele poate induce în eroare, dar acest modul **nu are nicio legătură cu cursul valutar BNR**. „Curs" se referă aici la succesiunea cronologică (FIFO pe dată) a distribuirilor și plăților de dividende, folosită pentru a aplica cota de impozit corectă în timp (10% pentru distribuiri pe bază de situații interimare 2025, 16% ulterior), conform Legii 141/2025 art. VII. Funcționalitatea de diferențe de curs valutar propriu-zisă (F041, `core/diferente_curs.py`) nu e apelată nicăieri din `d205.py` și nu are nimic de-a face cu plata dividendelor — dividendele nu generează diferențe de curs, fiind distribuite și plătite în lei.
+Calculul D205 folosește un modul intern numit „dividende_curs” — numele poate induce în eroare, dar acest modul **nu are nicio legătură cu cursul valutar BNR**. „Curs" se referă aici la succesiunea cronologică (FIFO pe dată) a distribuirilor și plăților de dividende, folosită pentru a aplica cota de impozit corectă în timp (10% pentru distribuiri pe bază de situații interimare 2025, 16% ulterior), conform Legii 141/2025 art. VII. Funcționalitatea de diferențe de curs valutar propriu-zisă (F041, aplicația) nu e apelată nicăieri din `d205.py` și nu are nimic de-a face cu plata dividendelor — dividendele nu generează diferențe de curs, fiind distribuite și plătite în lei.
 
 [iConta.eu](/)

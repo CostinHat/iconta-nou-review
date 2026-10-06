@@ -14,7 +14,7 @@ Da, dar nu oricând și nu automat — trecerea (înapoi) la impozitul pe venitu
 
 ::: ghid-temei
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1). Pentru aplicarea sistemului de impunere pe veniturile microîntreprinderii în anul fiscal 2026, condiția prevăzută la art. 47 alin. (1) lit. i) se consideră îndeplinită dacă situațiile financiare anuale sunt depuse până la data de 31 martie 2026 inclusiv."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (2), astfel cum a fost modificat prin OUG 8/2026, art. 6 pct. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (2), astfel cum a fost modificat prin OUG 8/2026, art. 6 pct. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o firmă care vrea, în 2026, să revină de la impozit pe profit la micro:

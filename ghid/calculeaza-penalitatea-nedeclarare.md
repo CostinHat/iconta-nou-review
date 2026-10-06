@@ -14,7 +14,7 @@ Penalitatea de nedeclarare nu e aceeași cu penalitatea de întârziere — se a
 
 ::: ghid-temei
 „Pentru obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere, contribuabilul/plătitorul datorează o penalitate de nedeclarare de 0,08% pe fiecare zi, începând cu ziua imediat următoare scadenței și până la data stingerii sumei datorate, inclusiv, din obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune, mecanic, calculul:
@@ -31,6 +31,6 @@ Ce presupune, mecanic, calculul:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu calculează penalitatea de nedeclarare — aceasta se stabilește exclusiv de organul fiscal, prin decizie de impunere, ca urmare a unui control sau a unei verificări. Aplicația oferă evidența contabilă generală și motorul de urmărire a declarațiilor datorate (`core/control_fiscal_api.py`), care ajută la identificarea declarațiilor lipsă înainte ca acestea să devină obiectul unei decizii de impunere, dar nu simulează accesoriile pe care ANAF le-ar calcula într-un astfel de caz.
+La data acestui ghid, iConta.eu nu calculează penalitatea de nedeclarare — aceasta se stabilește exclusiv de organul fiscal, prin decizie de impunere, ca urmare a unui control sau a unei verificări. Aplicația oferă evidența contabilă generală și motorul de urmărire a declarațiilor datorate, care ajută la identificarea declarațiilor lipsă înainte ca acestea să devină obiectul unei decizii de impunere, dar nu simulează accesoriile pe care ANAF le-ar calcula într-un astfel de caz.
 
 [iConta.eu](/)

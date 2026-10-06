@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T), depus prin D406, cere transferul e
 
 ::: ghid-temei
 „1. Fişierul standard de control fiscal (SAF-T), prevăzut la art. 59^1 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, reprezintă un standard internaţional utilizat pentru transferul electronic de date din evidenţa contabilă şi fiscală, de la contribuabili/plătitori către autorităţile fiscale şi auditori."
-— OPANAF 1783/2021, anexa 1, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, anexa 1, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce se poate confirma din sursele disponibile:
@@ -33,6 +33,6 @@ Ce se poate confirma din sursele disponibile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un tratament distinct pentru importuri** în generatorul de D406/SAF-T — nu există, în codul modulelor `core/d406.py`, `core/d406_active.py` sau `core/d406_stocuri.py`, o secțiune dedicată operațiunilor de import sau declarațiilor vamale. Importurile ajung în declarație pe același flux ca orice altă achiziție înregistrată contabil.
+La data acestui ghid, iConta.eu **nu are un tratament distinct pentru importuri** în generatorul de D406/SAF-T — nu există, în codul modulelor aplicația sau aplicația, o secțiune dedicată operațiunilor de import sau declarațiilor vamale. Importurile ajung în declarație pe același flux ca orice altă achiziție înregistrată contabil.
 
 [iConta.eu](/)

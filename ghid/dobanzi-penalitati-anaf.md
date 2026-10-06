@@ -57,4 +57,4 @@ Dacă instituția de credit nu decontează suma în **3 zile lucrătoare** de la
 
 ## Legături
 
-Ce faci când datoria e prea mare: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf). Când ANAF poate bloca conturile: [poprirea conturilor](/ghid/poprire-conturi-anaf). Stingerea prin compensare: [compensarea datoriilor cu partenerii](/ghid/compensare-datorii-terti).
+Ce faci când datoria e prea mare: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf-2026). Când ANAF poate bloca conturile: [poprirea conturilor](/ghid/poprire-conturi-anaf). Stingerea prin compensare: [compensarea datoriilor cu partenerii](/ghid/compensare-datorii-terti).

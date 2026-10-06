@@ -16,12 +16,12 @@ Nu, în ce privește impozitul pe venit. O persoană fizică rezidentă în Rom�
 
 ::: ghid-temei
 „sumele sau avantajele primite de persoane fizice din activități dependente desfășurate într-un stat străin, indiferent de tratamentul fiscal din statul respectiv, inclusiv din activități dependente desfășurate la bordul navelor și aeronavelor operate în trafic internațional. Fac excepție veniturile salariale plătite de către sau în numele unui angajator care este rezident în România ori are sediul permanent în România, care sunt impozabile în România numai în situația în care România are drept de impunere;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În aplicarea prevederilor art. 76 alin. (4) lit. o) din Codul fiscal, veniturile din activități dependente desfășurate în străinătate și plătite de un angajator nerezident nu sunt impozabile și nu se declară în România potrivit prevederilor Codului fiscal."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (19) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (19) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Condițiile, ambele necesare:

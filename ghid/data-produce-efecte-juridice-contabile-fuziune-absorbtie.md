@@ -16,12 +16,12 @@ Pentru contabil contează și o a doua dată: cea de la care tranzacțiile socie
 
 ::: ghid-temei
 „Fuziunea/divizarea produce efecte: [...] b) în alte cazuri, de la data înregistrării hotărârii ultimei adunări generale care a aprobat operațiunea, cu excepția cazului în care, prin acordul părților, se stipulează că operațiunea va avea efect la o altă dată, care nu poate fi însă ulterioară încheierii exercițiului financiar curent al societății absorbante sau societăților beneficiare, nici anterioară încheierii ultimului exercițiu financiar încheiat al societății sau societăților ce își transferă patrimoniul."
-— Legea societăților nr. 31/1990, art. 249 lit. b) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 249 lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „j) data de la care tranzacțiile societății absorbite sau divizate sunt considerate din punct de vedere contabil ca aparținând societății absorbante sau uneia ori alteia dintre societățile beneficiare;"
-— Legea societăților nr. 31/1990, art. 241 lit. j) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 241 lit. j) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:
@@ -35,7 +35,7 @@ Ce înseamnă concret:
 
 ::: ghid-temei
 „În proiectul de fuziune sau divizare trebuie să se prevadă societatea care răspunde de păstrarea şi arhivarea documentelor justificative şi a registrelor de contabilitate ale societăţii care îşi încetează existenţa."
-— OMFP 897/2015, art. 3 alin. (2) (sursă: anaf_surse/omfp_897_2015.txt)
+— OMFP 897/2015, art. 3 alin. (2) (sursă: [OMFP nr. 897/2015 privind reflectarea în contabilitate a operațiunilor de fuziune, divizare, dizolvare și lichidare](https://legislatie.just.ro/Public/DetaliiDocument/171454))
 :::
 
 ::: ghid-exemplu

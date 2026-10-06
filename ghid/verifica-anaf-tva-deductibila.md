@@ -14,7 +14,7 @@ Dreptul de a deduce TVA nu se naște automat din simpla existență a unei factu
 
 ::: ghid-temei
 „Orice persoană impozabilă înregistrată în scopuri de TVA, conform art. 316, are dreptul să scadă din valoarea totală a taxei colectate, pentru o perioadă fiscală, valoarea totală a taxei pentru care, în aceeași perioadă, a luat naștere și poate fi exercitat dreptul de deducere, conform art. 297-300."
-— Legea nr. 227/2015 (Codul fiscal), art. 301 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 301 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce urmărește, în esență, o verificare a TVA deductibile:

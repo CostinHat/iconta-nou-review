@@ -16,12 +16,12 @@ La a doua parte a întrebării răspunsul e **nu**. Legea locuinței spune expre
 
 ::: ghid-temei
 „e) Locuința de intervenție Locuința destinată cazării personalului unităților economice sau bugetare, care, prin contractul de muncă, îndeplinește activități sau funcții ce necesita prezenta permanenta sau în caz de urgență în cadrul unităților economice."
-— Legea 114/1996 (Legea locuinței), art. 2 lit. e) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 2 lit. e) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Locuința de intervenție urmează regimul locuinței de serviciu. Locuințele de intervenție se realizează o dată cu obiectivul de investiție și se amplasează în incinta acestuia sau în imediata apropiere. Locuințele de intervenție nu pot fi vândute chiriașilor."
-— Legea 114/1996 (Legea locuinței), art. 54 (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 54 (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 Ce rezultă din cele două texte:

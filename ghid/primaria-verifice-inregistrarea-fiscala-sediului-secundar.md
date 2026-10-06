@@ -16,10 +16,10 @@ Interesul primăriei este direct: o parte din impozitul pe salarii se repartizea
 
 ::: ghid-temei
 „(8) Primarul, prin compartimentele de specialitate, poate verifica corecta înregistrare fiscala a contribuabililor la organul fiscal teritorial atât a sediului social principal, cât și a sediului secundar. (9) Primarul are obligația să sesizeze orice nereguli constatate organului fiscal teritorial al Ministerului Finanțelor Publice."
-— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (8)-(9) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (8)-(9) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „Organul fiscal are obligația ca, în termen de 5 zile de la înregistrarea fiscală, să transmită o copie de pe certificatul de înregistrare fiscală primarului unității administrativteritoriale/ sectorului municipiului București în a cărei/cărui rază teritorială își desfășoară efectiv activitatea entitatea respectivă."
-— Legea 273/2006, art. 32 alin. (7) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 32 alin. (7) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

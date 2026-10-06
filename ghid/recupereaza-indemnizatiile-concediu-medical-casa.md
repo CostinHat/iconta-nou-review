@@ -16,7 +16,7 @@ Angajatorul plătește salariatului întreaga indemnizație de concediu medical,
 „Indemnizațiile pot fi solicitate pe baza actelor justificative [...] în termen de 90 de zile de la data de la care persoanele [...] precum și plătitorii [...] erau în drept să le solicite."
 
 „[Angajatorii] solicită sumele prevăzute la alin. (1) [suportate din FNUASS], pe suport hârtie sau prin mijloace de transmitere la distanță, în termenul prevăzut la art. 40 și în condițiile reglementate prin normele de aplicare a prezentei ordonanțe de urgență."
-— OUG 158/2005, art. 40 alin. (1) și art. 38 alin. (2) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005, art. 40 alin. (1) și art. 38 alin. (2) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Mecanismul recuperării, pe scurt:

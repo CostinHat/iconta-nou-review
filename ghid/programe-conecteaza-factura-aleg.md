@@ -14,14 +14,14 @@ Transmiterea facturilor prin sistemul național RO e-Factura este obligatorie pe
 
 ::: ghid-temei
 „(1) În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 [...], pentru livrările de bunuri și prestările de servicii care au locul livrării/prestării în România [...], emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura [...]."
-— OUG 120/2021 privind sistemul național RO e-Factura, art. 10 alin. (1), astfel cum a fost modificat prin OUG 138/2024, art. I pct. 2 (sursă: anaf_surse/oug_138_2024.txt)
+— OUG 120/2021 privind sistemul național RO e-Factura, art. 10 alin. (1), astfel cum a fost modificat prin OUG 138/2024, art. I pct. 2 (sursă: [OUG nr. 138/2024 privind modificarea și completarea unor acte normative în domeniul fiscal-bugetar](https://legislatie.just.ro/Public/DetaliiDocument/292029))
 :::
 
 Legea stabilește și termenul-limită pe care orice program folosit pentru emitere trebuie să-l respecte:
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015 [...]."
-— OUG 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG 89/2025, art. X pct. 2 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG 89/2025, art. X pct. 2 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Din aceste texte rezultă criteriile legale minime pe care un program de facturare trebuie să le acopere, indiferent de furnizor:

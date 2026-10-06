@@ -16,10 +16,10 @@ Spre deosebire de vânzările de bunuri, la închirieri nu există pragul de 30 
 
 ::: ghid-temei
 „(3) În cazul în care Vânzătorul raportabil prestează servicii de închiriere de bunuri imobile, se comunică următoarele informații suplimentare: a)adresa fiecărui Bun imobil listat, stabilită pe baza procedurii prevăzute în subsecțiunea E din secțiunea II a anexei nr. 5 și numărul cărții funciare respective sau echivalentul acestuia în temeiul dreptului intern al statului membru în care se află Bunul imobil respectiv, dacă este disponibil; b)Contraprestația totală plătită sau creditată în fiecare trimestru al Perioadei de raportare și numărul de Activități relevante corespunzător fiecărui Bun imobil listat; c)dacă este disponibil, numărul de zile pentru care a fost închiriat fiecare Bun imobil listat în timpul Perioadei de raportare și tipul fiecărui Bun imobil listat."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „7. Bun Imobil Listat înseamnă toate unitățile bunului imobil situate la aceeași adresă fizică, deținute de același proprietar și oferite spre închiriere pe o Platformă de către același Vânzător."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. C pct. 7 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. C pct. 7 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

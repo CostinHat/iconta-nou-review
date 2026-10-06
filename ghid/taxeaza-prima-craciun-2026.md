@@ -14,7 +14,7 @@ Cadoul de Crăciun oferit salariaților nu e, implicit, neimpozabil doar pentru 
 
 ::: ghid-temei
 „În cazul cadourilor în bani și/sau în natură, inclusiv tichetele cadou, oferite de angajatori, veniturile sunt neimpozabile, în măsura în care valoarea acestora pentru fiecare persoană în parte, cu fiecare ocazie din cele de mai jos, nu depășește 300 lei: (i) cadouri oferite angajaților, precum și cele oferite pentru copiii minori ai acestora, cu ocazia Paștelui, Crăciunului și a sărbătorilor similare ale altor culte religioase [...]"
-— Legea 227/2015, art. 76 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 76 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula, pas cu pas:

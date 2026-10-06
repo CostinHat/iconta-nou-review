@@ -16,13 +16,13 @@ Regula este strictă pentru că banii nu sunt ai administratorului. Legea îi in
 
 ::: ghid-temei
 „(2) Administratorul este obligat să folosească pentru plățile curente și pentru încasări contul curent al asociației prevăzut la art. 20 alin. (1) […]. În acest cont sunt vărsate, în termen de 24 de ore de la primirea acestora, toate sumele sau valorile primite în numele sau în contul asociației.”
-— Legea 196/2018, art. 67 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 67 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(1) Fiecare asociație de proprietari este obligată să dețină un singur cont bancar.”
-— Legea 196/2018, art. 20 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 20 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(5) Prin excepție de la prevederile alin. (2) , cu acordul adunării generale a asociației de proprietari, exclusiv în vederea efectuării operațiunilor de plăți pentru cheltuieli neprevăzute, administratorul poate păstra în casierie numerar, în limita unui plafon lunar de 1.000 lei.”
-— Legea 196/2018, art. 67 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 67 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

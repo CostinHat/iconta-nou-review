@@ -14,7 +14,7 @@ Comisioanele de administrare cont, comisioanele de transfer sau taxele pentru se
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— OMFP 1802/2014 (reglementări contabile), pct. 314 alin. (2), cu trimitere la art. 6 alin. (1) din Legea contabilității nr. 82/1991 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 314 alin. (2), cu trimitere la art. 6 alin. (1) din Legea contabilității nr. 82/1991 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pentru comisioanele bancare, documentul justificativ e chiar extrasul de cont emis de bancă, ștampilat/certificat de instituția de credit — nu e nevoie de o factură separată, pentru că extrasul îndeplinește el însuși rolul de document justificativ pentru operațiunile de trezorerie. Monografia contabilă standard:

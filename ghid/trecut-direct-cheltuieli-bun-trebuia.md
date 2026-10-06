@@ -14,7 +14,7 @@ Un bun care îndeplinește condițiile unui mijloc fix (durată de utilizare pes
 
 ::: ghid-temei
 „(3) Pentru determinarea rezultatului fiscal, erorile înregistrate în contabilitate se corectează astfel: a) erorile care se corectează potrivit reglementărilor contabile pe seama rezultatului reportat, prin ajustarea rezultatului fiscal al anului la care se referă acestea și depunerea unei declarații rectificative în condițiile prevăzute de Codul de procedură fiscală; b) erorile care se corectează potrivit reglementărilor contabile pe seama contului de profit și pierdere sunt luate în calcul pentru determinarea rezultatului fiscal în anul în care se efectuează corectarea acestora."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (3) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (3) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la situația unui mijloc fix trecut eronat pe cheltuieli:

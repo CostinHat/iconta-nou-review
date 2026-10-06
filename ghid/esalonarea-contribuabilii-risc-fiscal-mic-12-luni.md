@@ -16,13 +16,13 @@ Ghidul se ocupă de mecanica acestei forme: cât reprezintă garanția, când se
 
 ::: ghid-temei
 „c) debitorul depune, în cel mult 30 de zile de la data comunicării certificatului de atestare fiscală, o garanție în valoare de minimum 20% din sumele ce pot face obiectul eșalonării la plată, precum și a penalităților de întârziere și dobânzilor ce pot face obiectul amânării la plată potrivit art. 208, înscrise în certificatul de atestare fiscală emis în condițiile prezentului capitol."
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (2) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (2) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Cererea depusă potrivit prevederilor alin. (2) lit. a) se soluționează de organul fiscal competent în termen de 15 zile lucrătoare de la data înregistrării acesteia. Acest termen se prelungește cu perioada cuprinsă între data comunicării certificatului de atestare fiscală de către organul fiscal competent și data depunerii garanției de către debitor."
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prevederile art. 208 se aplică în mod corespunzător pentru penalitățile de întârziere și pentru un procent de 50% din dobânzile cuprinse în certificatul de atestare fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 206 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanica, pe scurt:

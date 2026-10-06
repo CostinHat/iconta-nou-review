@@ -16,15 +16,15 @@ Merită observată o diferență de formulare. Declarația lunară exceptează e
 
 ::: ghid-temei
 „(4) Orice plătitor de accize are obligația de a depune anual la autoritatea competentă decontul privind accizele, conform dispozițiilor legale privind obligațiile de plată la bugetul de stat, până la data de 30 aprilie a anului următor celui de raportare."
-— Codul fiscal (Legea 227/2015), art. 346 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 346 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Orice plătitor de accize, cu excepția importatorului autorizat, are obligația de a depune lunar la autoritatea competentă o declarație de accize, indiferent dacă se datorează sau nu plata accizei pentru luna respectivă."
-— Codul fiscal (Legea 227/2015), art. 346 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 346 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Persoana plătitoare de accize care au devenit exigibile este: a) în ceea ce privește ieșirea unor produse accizabile dintr-un regim suspensiv de accize, potrivit prevederilor art. 340 alin. (1) lit. a) : 1. antrepozitarul autorizat, destinatarul înregistrat sau orice altă persoană care eliberează produsele accizabile din regimul suspensiv de accize sau în numele căreia se efectuează această eliberare"
-— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. a) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

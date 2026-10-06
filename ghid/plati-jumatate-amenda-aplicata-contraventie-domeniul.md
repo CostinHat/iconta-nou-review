@@ -16,9 +16,9 @@ Regula **nu se aplică** însă când lucrările sunt executate fără autoriza�
 
 ::: ghid-temei
 „(1^1) Pentru amenzile aplicate în domeniul autorizării executării lucrărilor de construcții și urbanismului, contravenientul poate achita jumătate din cuantumul amenzii aplicate de agentul constatator, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, agentul constatator făcând mențiune expresă despre această posibilitate în cuprinsul procesului-verbal, cu excepția situațiilor în care sunt executate lucrări fără autorizația de construire sau desființare cerută de lege sau cu nerespectarea prevederilor acestora."
-— OG 2/2001, art. 28 alin. (1^1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1^1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(1) Contravenientul poate achita, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, jumătate din minimul amenzii prevăzute de actul normativ, agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— OG 2/2001, art. 28 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

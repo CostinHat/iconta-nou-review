@@ -14,7 +14,7 @@ O factură electronică nu e „validă" doar pentru că fișierul XML se deschi
 
 ::: ghid-temei
 „k) specificaţiile naţionale de utilizare a facturii electronice - RO_CIUS - specificaţii tehnice de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, aplicabile la nivel naţional."
-— OUG 120/2021, art. 2 lit. k) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 lit. k) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 RO_CIUS nu e un standard nou și paralel, ci o **implementare națională** a standardului european SR EN 16931-1 — stabilește, concret, ce câmpuri sunt obligatorii, opționale sau interzise pentru o factură emisă în România prin sistemul RO e-Factura, peste regulile generale europene.

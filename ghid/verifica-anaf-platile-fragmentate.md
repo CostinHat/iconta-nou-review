@@ -15,7 +15,7 @@ Legea disciplinei financiare interzice nu doar depășirea plafoanelor de numera
 ::: ghid-temei
 „a) încasare fragmentată - fracționarea sumei de încasat în mai multe tranșe, pentru a evita plafonul de încasare în numerar stabilit prin lege; b) plată fragmentată - fracționarea sumei de plată în mai multe tranșe, pentru a evita plafonul de plată în numerar stabilit prin lege. [...]
 (3) Sunt interzise plățile fragmentate în numerar către furnizorii de bunuri și servicii pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, către magazinele de tipul cash and carry."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 2 lit. a)-b) și art. 3 alin. (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 2 lit. a)-b) și art. 3 alin. (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - **Fragmentarea e definită prin scopul ei**: împărțirea sumei tocmai pentru a evita plafonul legal — deci ce se verifică e valoarea totală a operațiunii (facturii, livrării, prestării), nu fiecare tranșă izolat.

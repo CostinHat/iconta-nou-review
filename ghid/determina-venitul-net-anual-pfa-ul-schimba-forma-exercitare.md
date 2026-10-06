@@ -16,12 +16,12 @@ Practic: două seturi de evidență (până la data schimbării și după), dar 
 
 ::: ghid-temei
 „(3) În cazul schimbării modalității de exercitare a unei activități și/sau al transformării formei de exercitare a acesteia într-o altă formă, potrivit legislației în materie, în timpul anului, venitul net/pierderea se determină separat pentru fiecare perioadă în care activitatea independentă a fost desfășurată de contribuabil într-o formă de organizare prevăzută de lege. Venitul net anual/Pierderea anuală se determină prin însumarea venitului net/pierderii înregistrat/înregistrate în toate perioadele fiscale din anul fiscal în care a avut loc schimbarea și/sau transformarea formei de exercitare a activității. Venitul net anual/Pierderea anuală se înscrie în declarația privind venitul realizat. Pierderea fiscală înregistrată în anul în care a avut loc schimbarea modalității de exercitare a activității și/sau transformarea formei de exercitare a activității se reportează și se compensează potrivit regulilor de reportare prevăzute la art. 118 din Codul fiscal."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IV, pct. 7 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „nu se include în venitul brut al activității care urmează să se transforme/schimbe și nu este supusă impozitării contravaloarea bunurilor și drepturilor, inclusiv creanțele neîncasate care se transferă în patrimoniul afacerii în care s-a transformat/schimbat;"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (7^1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică, pas cu pas:

@@ -14,7 +14,7 @@ O firmă cu perioadă fiscală trimestrială la TVA trece obligatoriu la lună c
 
 ::: ghid-temei
 „(8) Persoana impozabilă care potrivit alin. (7) este obligată să își schimbe perioada fiscală trebuie să depună o declarație de mențiuni la organul fiscal competent, în termen de maximum 5 zile lucrătoare de la finele lunii în care intervine exigibilitatea achiziției intracomunitare care generează această obligație, și va utiliza ca perioadă fiscală luna calendaristică pentru anul curent și pentru anul următor. Dacă în cursul anului următor nu efectuează nicio achiziție intracomunitară de bunuri, persoana respectivă va reveni conform alin. (1) la trimestrul calendaristic drept perioadă fiscală. În acest sens va trebui să depună declarația de mențiuni prevăzută la alin. (6)."
-— Codul fiscal (Legea 227/2015), art. 322 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 322 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pas cu pas:
@@ -32,6 +32,6 @@ Mecanismul, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu automatizează** schimbarea sau revenirea perioadei fiscale TVA în funcție de achizițiile intracomunitare efectuate. Am găsit în cod modulul `core/perioada_fiscala_tva.py`, care oferă doar text explicativ despre diferența dintre periodicitatea declarației D100 (întotdeauna trimestrială din temeiul impozitului pe profit) și cea a TVA (lunară sau trimestrială, în funcție de situația firmei) — nu calculează și nu urmărește automat momentul din care trebuie depusă declarația de mențiuni. Verificarea condiției de revenire la trimestru rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu automatizează** schimbarea sau revenirea perioadei fiscale TVA în funcție de achizițiile intracomunitare efectuate. Am găsit în cod aplicația, care oferă doar text explicativ despre diferența dintre periodicitatea declarației D100 (întotdeauna trimestrială din temeiul impozitului pe profit) și cea a TVA (lunară sau trimestrială, în funcție de situația firmei) — nu calculează și nu urmărește automat momentul din care trebuie depusă declarația de mențiuni. Verificarea condiției de revenire la trimestru rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

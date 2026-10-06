@@ -16,12 +16,12 @@ Regula aliniază scadențele la aceeași zi a lunii, pentru ca plata prin contul
 
 ::: ghid-temei
 „Pentru creanțele fiscale administrate de organul fiscal central stabilite pe baza declarațiilor de impunere, care se plătesc în contul unic și care au scadența diferită de data de 25, aceasta se înlocuiește cu data de 25 a lunii prevăzute de actul normativ care le reglementează."
-— Codul de procedură fiscală (Legea 207/2015), art. 154 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 154 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „În cazul creanțelor fiscale administrate de organul fiscal central și organul fiscal local, debitorii efectuează plata acestora într-un cont unic, prin utilizarea unui ordin de plată pentru Trezoreria Statului pentru obligațiile fiscale datorate. Tipurile de obligații fiscale supuse acestor prevederi se aprobă prin ordin al președintelui A.N.A.F., în cazul creanțelor fiscale administrate de organul fiscal central"
-— Codul de procedură fiscală (Legea 207/2015), art. 163 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 163 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele trei condiții, pe rând:

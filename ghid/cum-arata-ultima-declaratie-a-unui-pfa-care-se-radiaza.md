@@ -34,6 +34,6 @@ Ultima declarație unică (D212) a unui PFA care se radiază nu diferă structur
 
 ## Ce face iConta.eu
 
-Fișa D212 (`core/rip_api.py: fisa_d212`) însumează toate încasările și plățile validate din anul fiscal declarat, indiferent de data exactă a radierii în cursul anului — nu există o logică separată pentru "perioada de dinainte de radiere" versus restul anului. Calculul CAS și CASS (`core/d212_engine.py`) aplică pragurile anuale întregi, conform art. 151 alin. (2). Motorul acceptă generarea declarației doar pentru venituri din 2025 sau 2026; pentru un an anterior, plafoanele trebuie verificate manual la surse oficiale, iar generatorul XML (`core/d212.py`) oricum nu acceptă un an de raportare sub 2025.
+Fișa D212 însumează toate încasările și plățile validate din anul fiscal declarat, indiferent de data exactă a radierii în cursul anului — nu există o logică separată pentru "perioada de dinainte de radiere" versus restul anului. Calculul CAS și CASS aplică pragurile anuale întregi, conform art. 151 alin. (2). Motorul acceptă generarea declarației doar pentru venituri din 2025 sau 2026; pentru un an anterior, plafoanele trebuie verificate manual la surse oficiale, iar generatorul XML oricum nu acceptă un an de raportare sub 2025.
 
 [iConta.eu](/)

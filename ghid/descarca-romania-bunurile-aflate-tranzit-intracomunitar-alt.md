@@ -16,10 +16,10 @@ Pentru cabinet, cazul apare la clienții care operează depozite, platforme logi
 
 ::: ghid-temei
 „(4) Este interzisă descărcarea pe teritoriul României a bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit, cu excepția celor care fac obiectul depozitării sau formării unui nou transport din una sau mai multe partide de bunuri."
-— OUG 41/2022, art. 11 alin. (4) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 11 alin. (4) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „d) depozitarului, în cazul bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit, atât pentru bunurile descărcate pe teritoriul României spre depozitare sau pentru formarea unui nou transport din una sau mai multe partide de bunuri, cât și pentru bunurile încărcate după depozitare sau după formarea unui nou transport pe teritoriul național din una sau mai multe partide de bunuri."
-— OUG 41/2022, art. 8^1 lit. d) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. d) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Cum funcționează excepția:

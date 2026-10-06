@@ -16,13 +16,13 @@ Pentru contabilul unei firme executate, ordinea asta explică de ce ANAF poate p
 
 ::: ghid-temei
 „în cazul în care executarea silită a fost pornită de mai mulți creditori sau când până la eliberarea ori distribuirea sumei rezultate din executare au depus și alți creditori titlurile lor, organele prevăzute la art. 220 procedează la distribuirea sumei potrivit următoarei ordini de preferință, dacă legea nu prevede altfel: a) creanțele reprezentând cheltuielile de orice fel, făcute cu urmărirea și conservarea bunurilor al căror preț se distribuie, inclusiv cheltuielile făcute în interesul comun al creditorilor; b) cheltuielile de înmormântare a debitorului, în raport cu condiția și starea acestuia; c) creanțele reprezentând salarii și alte datorii asimilate acestora, pensiile, sumele cuvenite șomerilor, potrivit legii, ajutoarele pentru întreținerea și îngrijirea copiilor, pentru maternitate, pentru incapacitate temporară de muncă"
-— Codul de procedură fiscală (Legea 207/2015), art. 258 alin. (1) lit. a)-c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 258 alin. (1) lit. a)-c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „e) creanțele fiscale provenite din impozite, taxe, contribuții sociale și din alte sume stabilite potrivit legii, datorate bugetului de stat, bugetului Trezoreriei Statului, bugetului asigurărilor sociale de stat, bugetelor locale și bugetelor fondurilor speciale, inclusiv amenzile cuvenite bugetului de stat sau bugetelor locale;"
-— Codul de procedură fiscală (Legea 207/2015), art. 258 alin. (1) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 258 alin. (1) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă există creditori care, asupra bunului vândut, au drepturi de gaj, ipotecă sau alte drepturi reale, despre care organul de executare silită a luat cunoștință [...] la distribuirea sumei rezultate din vânzarea bunului, creanțele lor sunt plătite înaintea creanțelor prevăzute la art. 258 alin. (1) lit. b)."
-— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ordinea completă, pe scurt:

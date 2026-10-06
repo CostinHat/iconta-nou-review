@@ -14,7 +14,7 @@ Pentru un SRL plătitor de impozit pe profit, planificarea fiscală legitimă nu
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015 (Codul fiscal), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Principalele pârghii legale relevante pentru un SRL pe profit, pe baza surselor verificate:

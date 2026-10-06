@@ -14,7 +14,7 @@ O firmă înregistrată în România poate avea un cont bancar deschis într-un 
 
 ::: ghid-temei
 „Contabilitatea operațiunilor efectuate în valută se ține atât în moneda națională, cât și în valută, potrivit reglementărilor elaborate în acest sens. [...] Documentele financiar-contabile pot fi întocmite și într-o altă limbă și altă monedă, dacă acest fapt este prevăzut expres printr-un act normativ."
-— OMFP nr. 2.634/2015, Norme generale, pct. 8-9, aplicând Legea contabilității nr. 82/1991 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Norme generale, pct. 8-9, aplicând Legea contabilității nr. 82/1991 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Câteva puncte care rămân valabile indiferent unde e deschis contul:

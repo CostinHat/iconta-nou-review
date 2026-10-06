@@ -16,12 +16,12 @@ Inversarea celor două coduri e greșeala cu cele mai mari consecințe. Dacă su
 
 ::: ghid-temei
 „(4) Codul de identificare fiscală retras ca urmare a radierii înregistrării fiscale poate fi utilizat ulterior radierii numai pentru îndeplinirea, de către succesorii persoanelor/entităților care și-au încetat existența, a obligațiilor fiscale aferente perioadelor în care persoana/entitatea a avut calitatea de subiect de drept fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 90 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 90 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „se bifează cu X în situația îndeplinirii, de către succesorii persoanelor/entităților care și-au încetat existența, a obligațiilor fiscale aferente perioadelor în care persoana/entitatea a avut calitatea de subiect de drept fiscal. În această situație se înscrie codul de identificare fiscală al succesorului. De asemenea, la secțiunea „Date de identificare a persoanei impozabile“, la rubrica „cod de identificare fiscală“ se înscrie codul de identificare fiscală radiat, potrivit art. 90 alin. (4) din Codul de procedură fiscală ."
-— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației” (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației” (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 Cine e succesorul și ce completează:

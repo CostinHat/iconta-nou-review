@@ -16,10 +16,10 @@ Termenul are efecte în lanț. De la data afișării curge termenul de plată al
 
 ::: ghid-temei
 „m) calculează, întocmește, supune verificării cenzorilor/comisiei de cenzori, supune aprobării comitetului executiv și afișează la avizier lista lunară a cheltuielilor de întreținere, întocmită conform reglementărilor în vigoare, în termen de maximum 5 zile de la primirea ultimei facturi de la furnizorii de servicii”
-— Legea 196/2018, art. 66 alin. (1) lit. m) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. m) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(2) Termenul de plată a cotelor de contribuție la cheltuielile asociației de proprietari, afișate pe lista lunară de plată, este de maximum 30 de zile calendaristice de la data afișării.”
-— Legea 196/2018, art. 77 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 77 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

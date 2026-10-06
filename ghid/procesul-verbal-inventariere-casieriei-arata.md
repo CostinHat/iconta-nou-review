@@ -14,7 +14,7 @@ Procesul-verbal al comisiei de inventariere nu e un formular liber — normele d
 
 ::: ghid-temei
 „Disponibilitățile în lei și în valută din casieria entității se inventariază în ultima zi lucrătoare a exercițiului financiar, după înregistrarea tuturor operațiunilor de încasări și plăți privind exercițiul respectiv, confruntându-se soldurile din registrul de casă cu monetarul și cu cele din contabilitate."
-— OMFP 2861/2009, Anexa 1, pct. 29 alin. (3) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009, Anexa 1, pct. 29 alin. (3) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 - Procesul-verbal (pct. 42) conține obligatoriu: data întocmirii, membrii comisiei, numărul și data deciziei de numire a comisiei, gestiunea inventariată, data începerii și terminării operațiunii, rezultatele constatate, concluziile și propunerile privind cauzele plusurilor/lipsurilor și persoanele eventual vinovate, plus propunerile de casare/scoatere din uz, dacă e cazul.

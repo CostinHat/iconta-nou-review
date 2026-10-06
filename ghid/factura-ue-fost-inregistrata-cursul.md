@@ -32,6 +32,6 @@ Corecția se face prin stornarea integrală a notei contabile greșite (sumele s
 
 ## Ce face iConta.eu
 
-Stornarea unei note în aplicație întoarce aceleași sume cu semn negativ, la cursul facturii originale — nu recalculează cursul la stornare, exact pentru a păstra corectitudinea corecției pe aceeași bază ca înregistrarea inițială. Reînregistrarea la cursul corect se face ca o operațiune nouă, cu cursul BNR cerut explicit pentru data respectivă prin motorul de curs (`core/curs_bnr.py`) — aplicația nu presupune tăcut un curs implicit dacă acesta nu e introdus sau nu poate fi determinat pentru data cerută.
+Stornarea unei note în aplicație întoarce aceleași sume cu semn negativ, la cursul facturii originale — nu recalculează cursul la stornare, exact pentru a păstra corectitudinea corecției pe aceeași bază ca înregistrarea inițială. Reînregistrarea la cursul corect se face ca o operațiune nouă, cu cursul BNR cerut explicit pentru data respectivă prin motorul de curs — aplicația nu presupune tăcut un curs implicit dacă acesta nu e introdus sau nu poate fi determinat pentru data cerută.
 
 [iConta.eu](/)

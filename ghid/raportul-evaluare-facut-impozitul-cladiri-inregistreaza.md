@@ -16,12 +16,12 @@ Distincția contează pentru că se confundă ușor două operațiuni diferite: 
 
 ::: ghid-temei
 „Rapoartele de evaluare se întocmesc de un evaluator autorizat în conformitate cu standardele de evaluare a bunurilor aflate în vigoare la data evaluării și reflectă valoarea clădirii la data de 31 decembrie a anului anterior anului de referință și nu se înregistrează în evidențele contabile.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 39 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX pct. 39 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Pentru stabilirea impozitului/taxei pe clădiri, valoarea impozabilă a clădirilor aflate în proprietatea persoanelor juridice este valoarea de la 31 decembrie a anului anterior celui pentru care se datorează impozitul/taxa și poate fi: a) [...] b) valoarea rezultată dintr-un raport de evaluare întocmit de un evaluator autorizat în conformitate cu standardele de evaluare a bunurilor aflate în vigoare la data evaluării;”
-— Codul fiscal (Legea 227/2015), art. 460 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică:

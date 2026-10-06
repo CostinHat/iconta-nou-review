@@ -14,7 +14,7 @@ O rectificativă care mărește suma datorată nu aduce doar diferența de impoz
 
 ::: ghid-temei
 „(2) Pentru diferențele suplimentare de creanțe fiscale rezultate din corectarea declarațiilor sau modificarea unei decizii de impunere, dobânzile se datorează începând cu ziua imediat următoare scadenței creanței fiscale pentru care s-a stabilit diferența și până la data stingerii acesteia, inclusiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Dobânda nu curge de la data depunerii rectificativei, ci de la **scadența inițială** a obligației corectate — o rectificativă depusă azi pentru o perioadă de acum doi ani aduce dobândă pe toți cei doi ani, nu doar de la momentul corecției.

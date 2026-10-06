@@ -16,7 +16,7 @@ Media zilnică e cifra de la care pornește tot calculul indemnizației de conce
 „Pentru persoanele prevăzute la art. 1 alin. (1) lit. A și B, baza de calcul al indemnizațiilor prevăzute la art. 2 se determină ca medie a veniturilor brute lunare din ultimele 6 luni din cele 12 luni din care se constituie stagiul de asigurare, până la limita a 12 salarii minime brute pe țară lunar, pe baza cărora se calculează contribuția asiguratorie pentru muncă."
 
 „Din duratele de acordare a concediilor medicale, exprimate în zile calendaristice, se plătesc zilele lucrătoare."
-— OUG 158/2005, art. 10 alin. (1) și alin. (8) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005, art. 10 alin. (1) și alin. (8) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Formula rezultă direct din text:
@@ -34,8 +34,8 @@ Formula rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`, funcția `calcul_cm`) aplică formula de mai sus — media zilnică din veniturile și zilele lucrătoare pe 6 luni — odată ce cele două cifre agregate sunt disponibile. Există și un modul (`core/baza_cm.py`) care adună automat veniturile și zilele lucrătoare din ultimele 6 luni pe baza statelor de plată emise (cu recalcul explicit pentru lunile încă neemise), dar el e conectat astăzi doar la un API intern (`/tenants/{tenant_id}/calcul-cm`), fără ecran propriu în aplicație.
+Motorul de calcul (funcția `calcul_cm`) aplică formula de mai sus — media zilnică din veniturile și zilele lucrătoare pe 6 luni — odată ce cele două cifre agregate sunt disponibile. Există și un modul care adună automat veniturile și zilele lucrătoare din ultimele 6 luni pe baza statelor de plată emise (cu recalcul explicit pentru lunile încă neemise), dar el e conectat astăzi doar la un API intern (`/tenants/{tenant_id}/calcul-cm`), fără ecran propriu în aplicație.
 
-O limitare reală, verificată în cod: ecranul real de introducere a certificatului (secțiunea Concedii din fișa salariatului) nu folosește deloc `core/baza_cm.py` — contabilul introduce el însuși suma veniturilor și numărul de zile lucrătoare pe cele 6 luni, ca sumă agregată, nu defalcate pe lună, iar aplicația nu recalculează sau confruntă acea sumă cu statele de plată deja emise. Din același motiv, plafonarea la 12 salarii minime brute **pe fiecare lună**, deși motorul o suportă tehnic printr-un parametru opțional, nu se activează în practică — nimic din ecranul folosit efectiv nu trimite veniturile defalcate pe lună. La un salariat cu venituri lunare peste plafonul legal, media zilnică (și, în consecință, indemnizația) calculată de iConta.eu poate ieși mai mare decât permite legea.
+O limitare reală, verificată în cod: ecranul real de introducere a certificatului (secțiunea Concedii din fișa salariatului) nu folosește deloc aplicația — contabilul introduce el însuși suma veniturilor și numărul de zile lucrătoare pe cele 6 luni, ca sumă agregată, nu defalcate pe lună, iar aplicația nu recalculează sau confruntă acea sumă cu statele de plată deja emise. Din același motiv, plafonarea la 12 salarii minime brute **pe fiecare lună**, deși motorul o suportă tehnic printr-un parametru opțional, nu se activează în practică — nimic din ecranul folosit efectiv nu trimite veniturile defalcate pe lună. La un salariat cu venituri lunare peste plafonul legal, media zilnică (și, în consecință, indemnizația) calculată de iConta.eu poate ieși mai mare decât permite legea.
 
 [iConta.eu](/)

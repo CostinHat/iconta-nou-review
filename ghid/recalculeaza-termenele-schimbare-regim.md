@@ -14,7 +14,7 @@ Firmele mici de TVA raportează, de regulă, trimestrial. Dar o singură achizi�
 
 ::: ghid-temei
 „(7) Prin excepție de la prevederile alin. (2)-(6), pentru persoana impozabilă care utilizează trimestrul calendaristic ca perioadă fiscală și care efectuează o achiziție intracomunitară de bunuri taxabilă în România, perioada fiscală devine luna calendaristică începând cu: a) prima lună a unui trimestru calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în această primă lună a respectivului trimestru; b) a treia lună a trimestrului calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a doua lună a respectivului trimestru. Primele două luni ale trimestrului respectiv vor constitui o perioadă fiscală distinctă, pentru care persoana impozabilă va avea obligația depunerii unui decont de taxă [...]; c) prima lună a trimestrului calendaristic următor, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a treia lună a unui trimestru calendaristic."
-— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula are trei scenarii distincte, în funcție de luna în care apare exigibilitatea taxei pentru achiziția intracomunitară:
@@ -31,6 +31,6 @@ Regula are trei scenarii distincte, în funcție de luna în care apare exigibil
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu detectează și nu recalculează automat** schimbarea perioadei fiscale de TVA la apariția unei achiziții intracomunitare. Aplicația generează deconturile D300 pe baza perioadei fiscale setate în profilul firmei (`core/d300.py`, `core/perioada_fiscala_tva.py`), dar contabilul este cel care trebuie să identifice apariția condiției de la art. 322 alin. (7) și să ajusteze manual perioada fiscală și termenele de declarare aferente.
+La data acestui ghid, iConta.eu **nu detectează și nu recalculează automat** schimbarea perioadei fiscale de TVA la apariția unei achiziții intracomunitare. Aplicația generează deconturile D300 pe baza perioadei fiscale setate în profilul firmei, dar contabilul este cel care trebuie să identifice apariția condiției de la art. 322 alin. (7) și să ajusteze manual perioada fiscală și termenele de declarare aferente.
 
 [iConta.eu](/)

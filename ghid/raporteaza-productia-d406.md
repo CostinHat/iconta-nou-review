@@ -15,7 +15,7 @@ Spre deosebire de secțiunile obligatorii ale D406 (facturi, plăți, registrul-
 ::: ghid-temei
 „9. Informaţiile privind «stocurile de produse» şi «producţie în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. În funcţie de perioada pentru care se solicită furnizarea informaţiilor privind stocurile prin fişierul standard de control fiscal (SAF-T), contribuabilii furnizează una sau mai multe declaraţii informative cuprinzând subsecţiunile din fişierul SAF-T relevante pentru «Stocuri», separate pentru fiecare dintre lunile/trimestrele calendaristice cuprinse în perioada pentru care a fost trimisă solicitarea din partea organelor fiscale centrale.
 10. Declaraţiile informative D406 pentru «Stocuri» se depun în termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării."
-— OPANAF 1.783/2021, Anexa nr. 5, pct. 9 și 10 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1.783/2021, Anexa nr. 5, pct. 9 și 10 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Din structura oficială a fișierului SAF-T rezultă:
@@ -32,7 +32,7 @@ Din structura oficială a fișierului SAF-T rezultă:
 
 ## Ce face iConta.eu
 
-iConta.eu are un generator funcțional pentru secțiunea de stocuri a SAF-T, în `core/d406_stocuri.py`: calculează soldurile de deschidere și închidere (cantitate și valoare) pe fiecare articol, pe baza mișcărilor de intrare/ieșire din perioada raportată, și construiește elementul XML `PhysicalStockEntry` cerut de schema oficială (`ProductType`, `UnitPrice`, `OpeningStockQuantity/Value`, `ClosingStockQuantity/Value` etc.).
+iConta.eu are un generator funcțional pentru secțiunea de stocuri a SAF-T, în aplicație: calculează soldurile de deschidere și închidere (cantitate și valoare) pe fiecare articol, pe baza mișcărilor de intrare/ieșire din perioada raportată, și construiește elementul XML `PhysicalStockEntry` cerut de schema oficială (`ProductType`, `UnitPrice`, `OpeningStockQuantity/Value`, `ClosingStockQuantity/Value` etc.).
 
 Ce nu automatizează astăzi aplicația: identificarea automată a momentului în care vine o solicitare ANAF de raportare a stocurilor/producției în curs și declanșarea raportării corespunzătoare. Generarea secțiunii de stocuri rămâne, la această dată, o acțiune pe care contabilul o inițiază manual, când primește solicitarea de la organul fiscal.
 

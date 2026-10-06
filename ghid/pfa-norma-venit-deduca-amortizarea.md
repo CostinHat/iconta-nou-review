@@ -14,7 +14,7 @@ Un PFA care plătește impozit pe baza normei anuale de venit, nu în sistem rea
 
 ::: ghid-temei
 „(8) Contribuabilii care desfășoară activități pentru care venitul net se determină pe bază de norme de venit au obligația să completeze numai partea referitoare la venituri din Registrul de evidență fiscală și nu au obligații privind evidența contabilă."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința e directă:
@@ -31,6 +31,6 @@ Consecința e directă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un Registru de evidență fiscală dedicat persoanelor fizice (`core/registru_evidenta_fiscala.py`, temei art. 68 alin. (8)-(9) din Codul fiscal și OMFP 3254/2017), cu un mod distinct pentru „normă de venit": la acest mod, aplicația **refuză** înscrierea oricărei cheltuieli deductibile în registru — inclusiv, deci, orice amortizare —, exact regula de la art. 69 alin. (8). Pentru amortizarea propriu-zisă a mijloacelor fixe (utilă unui PFA în sistem real sau unei firme cu contabilitate în partidă dublă), aplicația oferă motorul general din `core/repo_mijloace_fixe.py`, dar acesta nu e legat de modul „normă de venit" al registrului — pentru un PFA la normă de venit, care prin lege nu are obligații de evidență contabilă, aplicarea unui calcul de amortizare nu are corespondent legal, indiferent de instrumentul folosit.
+La data acestui ghid, iConta.eu are un Registru de evidență fiscală dedicat persoanelor fizice (temei art. 68 alin. (8)-(9) din Codul fiscal și OMFP 3254/2017), cu un mod distinct pentru „normă de venit": la acest mod, aplicația **refuză** înscrierea oricărei cheltuieli deductibile în registru — inclusiv, deci, orice amortizare —, exact regula de la art. 69 alin. (8). Pentru amortizarea propriu-zisă a mijloacelor fixe (utilă unui PFA în sistem real sau unei firme cu contabilitate în partidă dublă), aplicația oferă motorul general din aplicație, dar acesta nu e legat de modul „normă de venit" al registrului — pentru un PFA la normă de venit, care prin lege nu are obligații de evidență contabilă, aplicarea unui calcul de amortizare nu are corespondent legal, indiferent de instrumentul folosit.
 
 [iConta.eu](/)

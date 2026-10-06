@@ -16,12 +16,12 @@ Da. Pe durata concediului medical pentru un accident de muncă sau o boală prof
 
 ::: ghid-temei
 „Perioada de suspendare a contractului individual de muncă în cazul concediului pentru incapacitate temporară de muncă datorată producerii unui accident de muncă sau boală profesională se consideră vechime în muncă."
-— Legea 346/2002, art. 112 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 112 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Contractul individual de muncă se suspendă de drept în următoarele situații:a) concediu de maternitate; ... b) concediu pentru incapacitate temporară de muncă;"
-— Codul muncii (Legea 53/2003), art. 50 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 50 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

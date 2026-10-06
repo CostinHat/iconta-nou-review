@@ -16,15 +16,15 @@ Diferența apare după cum e plătită cotizația. Dacă angajatorul o reține p
 
 ::: ghid-temei
 „(ii) cotizația sindicală plătită în luna respectivă, potrivit legii;”
-— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. a) pct. (ii) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. a) pct. (ii) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „a) pentru veniturile obținute la locul unde se află funcția de bază, ca diferență între venitul net din salarii, calculat prin deducerea din venitul brut a contribuțiilor sociale obligatorii aferente unei luni, datorate potrivit legii în România sau în conformitate cu instrumentele juridice internaționale la care România este parte, precum și, după caz, a contribuției individuale la bugetul de stat datorată potrivit legii și următoarele: (i) deducerea personală acordată pentru luna respectivă; ... (ii) cotizația sindicală plătită în luna respectivă;”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (6) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (6) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(8) În cazul sumelor plătite direct de către angajat, membru de sindicat, pentru determinarea bazei de calcul al impozitului pe veniturile din salarii, cotizația sindicală plătită se deduce, în limitele stabilite potrivit legii, din veniturile lunii în care s-a efectuat plata cotizației, pe baza documentelor justificative emise de către organizația de sindicat.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Regulile care rezultă:

@@ -14,7 +14,7 @@ PFA-urile care țin contabilitate în sistem real și folosesc mașina firmei at
 
 ::: ghid-temei
 „50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul desfășurării activității și a căror masă totală maximă autorizată nu depășește 3.500 kg și nu au mai mult de 9 scaune de pasageri, incluzând și scaunul șoferului, aflate în proprietate sau în folosință. Aceste cheltuieli sunt integral deductibile pentru situațiile în care vehiculele respective se înscriu în oricare dintre următoarele categorii: [...] vehiculele utilizate de agenții de vânzări și de achiziții; [...] vehiculele utilizate pentru prestarea de servicii cu plată [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (7) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (7) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru un PFA la sistem real:

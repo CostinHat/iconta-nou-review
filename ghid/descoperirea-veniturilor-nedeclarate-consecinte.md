@@ -16,7 +16,7 @@ Când organul fiscal constată, în cadrul unui control sau al unei verificări 
 „(1) Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă. [...]
 (1) Pentru obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere, contribuabilul/plătitorul datorează o penalitate de nedeclarare de 0,08% pe fiecare zi, începând cu ziua imediat următoare scadenței și până la data stingerii sumei datorate, inclusiv [...]
 (3) Penalitatea de nedeclarare prevăzută la alin. (1) se majorează cu 100% în cazul în care obligațiile fiscale principale au rezultat ca urmare a săvârșirii unor fapte de evaziune fiscală, constatate de organele judiciare, potrivit legii."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 106 alin. (1) și art. 181 alin. (1), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 106 alin. (1) și art. 181 alin. (1), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Organul fiscal **nu are nevoie de o declarație corectă** ca să impună o obligație fiscală: dacă evidențele sunt incorecte, incomplete sau lipsesc, poate estima rezonabil baza de impozitare pe orice probă admisă de lege (art. 106 alin. (2) lit. b)).

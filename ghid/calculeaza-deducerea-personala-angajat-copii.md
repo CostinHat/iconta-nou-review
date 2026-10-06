@@ -48,6 +48,6 @@ Această sumă e distinctă de scara de mai sus — se adaugă la deducerea calc
 
 ## Ce face iConta.eu
 
-Deducerea calculată după numărul de persoane în întreținere e acoperită integral de `deducere_personala()` din `core/salarizare.py`, folosind registrul „period-aware" de cote și praguri. Pentru deducerea de 100 lei/copil la învățământ, codul are un gard defensiv care respinge introducerea unui număr de copii la învățământ fără declarația pe propria răspundere bifată — regula legală e implementată strict, nu se acordă tacit.
+Deducerea calculată după numărul de persoane în întreținere e acoperită integral de `deducere_personala()` din aplicație, folosind registrul „period-aware" de cote și praguri. Pentru deducerea de 100 lei/copil la învățământ, codul are un gard defensiv care respinge introducerea unui număr de copii la învățământ fără declarația pe propria răspundere bifată — regula legală e implementată strict, nu se acordă tacit.
 
 [iConta.eu](/)

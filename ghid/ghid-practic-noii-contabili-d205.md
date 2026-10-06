@@ -14,7 +14,7 @@ D205 este declarația informativă privind impozitul reținut la sursă și câ�
 
 ::: ghid-temei
 „6. Termenul de depunere a declarației 6.1. Declarația se completează și se depune anual: a) până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat; b) ori de câte ori plătitorul de venit constată erori în declarația depusă anterior, acesta completează și depune o declarație rectificativă, în condițiile art. 105 și 170 din Legea nr. 207/2015 privind Codul de procedură fiscală [...]"
-— OPANAF 102/2025 (care a înlocuit integral anexa nr. 1/instrucțiunile de completare D205 aprobate prin OPANAF 179/2022), capitolul I pct. 6.1 (sursă: anaf_surse/opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.txt)
+— OPANAF 102/2025 (care a înlocuit integral anexa nr. 1/instrucțiunile de completare D205 aprobate prin OPANAF 179/2022), capitolul I pct. 6.1 (sursă: [OPANAF nr. 102/2025 privind modificarea OPANAF nr. 179/2022 (formularele 205/207)](https://legislatie.just.ro/Public/DetaliiDocument/293917))
 :::
 
 Ce trebuie să știe un contabil aflat la prima completare:
@@ -31,6 +31,6 @@ Ce trebuie să știe un contabil aflat la prima completare:
 
 ## Ce face iConta.eu
 
-iConta.eu are un generator D205 funcțional (`core/d205.py`), care calculează impozitul pe dividende pe baza mișcărilor din contul 457 (distribuiri și plăți), aplicând cota corectă în funcție de data distribuirii — inclusiv tranziția de cotă de la 10% la 16%, aplicată prin metodă FIFO pe tranșe distribuite/plătite (`core/dividende_curs.py`). Aplicația construiește XML-ul declarației și verifică erorile de completare înainte de generare. La acest moment, D205 din iConta.eu acoperă în principal fluxul de dividende; alte categorii de venituri reținute la sursă (dobânzi, premii, pensii) pot necesita completare manuală suplimentară, în funcție de datele disponibile în aplicație.
+iConta.eu are un generator D205 funcțional, care calculează impozitul pe dividende pe baza mișcărilor din contul 457 (distribuiri și plăți), aplicând cota corectă în funcție de data distribuirii — inclusiv tranziția de cotă de la 10% la 16%, aplicată prin metodă FIFO pe tranșe distribuite/plătite. Aplicația construiește XML-ul declarației și verifică erorile de completare înainte de generare. La acest moment, D205 din iConta.eu acoperă în principal fluxul de dividende; alte categorii de venituri reținute la sursă (dobânzi, premii, pensii) pot necesita completare manuală suplimentară, în funcție de datele disponibile în aplicație.
 
 [iConta.eu](/)

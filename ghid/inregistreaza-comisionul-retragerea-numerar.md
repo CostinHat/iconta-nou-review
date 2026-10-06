@@ -14,7 +14,7 @@ Când o firmă retrage numerar din contul bancar pentru alimentarea casieriei, b
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate» Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: – valoarea serviciilor bancare și asimilate plătite (471, 512) [...]"
-— OMFP 1802/2014, reglementările contabile, planul de conturi general (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementările contabile, planul de conturi general (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Înregistrarea corectă, în două note distincte:
@@ -31,6 +31,6 @@ Când o firmă retrage numerar din contul bancar pentru alimentarea casieriei, b
 
 ## Ce face iConta.eu
 
-Modulul de bancă din iConta.eu (`core/banca.py`) detectează automat, din descrierea liniei de extras, operațiunile de tip „numerar" (transfer intern) și aplică nota contabilă corespunzătoare pe contul 581, separat de operațiunile de tip „comision" (cont 627). Modulul de casierie (`core/casa_api.py`) oferă categoria predefinită „ridicare_banca" (5311 = 581), prin care contabilul înregistrează manual, în registrul de casă, intrarea numerarului ridicat din bancă. La data acestui ghid, aplicația **nu separă automat comisionul bancar de suma retrasă** atunci când extrasul importat prezintă operațiunea ca o singură linie netă — dacă banca afișează comisionul distinct pe extras, alocarea acestuia pe contul 627 se face manual, la contarea extrasului.
+Modulul de bancă din iConta.eu detectează automat, din descrierea liniei de extras, operațiunile de tip „numerar" (transfer intern) și aplică nota contabilă corespunzătoare pe contul 581, separat de operațiunile de tip „comision" (cont 627). Modulul de casierie oferă categoria predefinită „ridicare_banca" (5311 = 581), prin care contabilul înregistrează manual, în registrul de casă, intrarea numerarului ridicat din bancă. La data acestui ghid, aplicația **nu separă automat comisionul bancar de suma retrasă** atunci când extrasul importat prezintă operațiunea ca o singură linie netă — dacă banca afișează comisionul distinct pe extras, alocarea acestuia pe contul 627 se face manual, la contarea extrasului.
 
 [iConta.eu](/)

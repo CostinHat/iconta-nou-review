@@ -16,15 +16,15 @@ Cota generală este 16% din suma brută. Se poate aplica o cotă mai mică dintr
 
 ::: ghid-temei
 „(17) Sumele plătite pentru difuzarea unor filme la cinematograf sau prin televiziune reprezintă redevență."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (17) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (17) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „drept de autor asupra unei lucrări literare, artistice sau științifice, inclusiv asupra filmelor, benzilor pentru emisiunile de radio sau de televiziune, precum și efectuarea de înregistrări audio, video;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul se calculează, respectiv se reține în momentul plății venitului, se declară și se plătește la bugetul de stat până la data de 25 inclusiv a lunii următoare celei în care s-a plătit venitul."
-— Legea 227/2015 (Codul fiscal), art. 224 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 224 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

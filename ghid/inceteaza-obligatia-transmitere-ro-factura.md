@@ -14,10 +14,10 @@ O firmă aflată în lichidare continuă să emită facturi — pentru vânzarea
 
 ::: ghid-temei
 „(1^1) Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura și factura electronică în România [...], cu modificările și completările ulterioare."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Transmiterea dreptului de proprietate asupra bunurilor rămase după plata creditorilor are loc la data radierii societății din registrul comerțului."
-— Legea 31/1990 (legea societăților), art. 235 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 235 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Cum se leagă cele două texte:

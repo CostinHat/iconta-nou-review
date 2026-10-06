@@ -14,7 +14,7 @@ O amendă de circulație primită de o firmă (de exemplu pentru un vehicul din 
 
 ::: ghid-temei
 „Următoarele cheltuieli nu sunt deductibile: [...] dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități;"
-— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula se aplică identic și persoanelor fizice care determină venitul net în sistem real, printr-o normă paralelă din Titlul IV al Codului fiscal, referitoare la cheltuielile nedeductibile la calculul venitului din activități independente.

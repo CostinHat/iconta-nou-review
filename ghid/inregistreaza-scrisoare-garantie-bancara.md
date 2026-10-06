@@ -14,7 +14,7 @@ Scrisoarea de garanție bancară e un instrument prin care o bancă se angajeaz�
 
 ::: ghid-temei
 „Din grupa 80 «Conturi în afara bilanțului» fac parte: Contul 801 «Angajamente acordate» [...] (giruri, cauțiuni, garanții, alte angajamente acordate) [...] Contul 802 «Angajamente primite» [...] (giruri, cauțiuni, garanții, alte angajamente primite) [...] Pentru grupa 80 «Conturi în afara bilanțului» se folosește metoda de înregistrare în partidă simplă, conform căreia înregistrările se fac în debitul și creditul unui singur cont, fără folosirea de conturi corespondente."
-— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 8 „Conturi speciale", Grupa 80 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 8 „Conturi speciale", Grupa 80 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - O scrisoare de garanție bancară e, prin natura ei, un **gir/o garanție** în sensul textului de mai sus — deci intră în grupa conturilor extrabilanțiere 801/802, nu într-o notă contabilă obișnuită cu conturi corespondente.
@@ -29,7 +29,7 @@ Scrisoarea de garanție bancară e un instrument prin care o bancă se angajeaz�
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: `core/credite.py` conține o funcție generică de înregistrare a unei garanții (`nota_garantie`, acordată sau primită), care poate genera, la nivel de motor de calcul, exact notele extrabilanțiere descrise mai sus (8011=891 sau 8021=891).
+Verificat direct în cod: Aplicația conține o funcție generică de înregistrare a unei garanții (`nota_garantie`, acordată sau primită), care poate genera, la nivel de motor de calcul, exact notele extrabilanțiere descrise mai sus (8011=891 sau 8021=891).
 
 Onest: iConta.eu **nu are** un tip de operațiune dedicat, distinct, numit „scrisoare de garanție bancară" — cu câmpuri specifice precum numărul scrisorii, banca emitentă sau beneficiarul. Din ecranul **Credite bancare** (operațiunea „Garanție"), disponibilă azi în interfață, se poate genera doar nota pentru garanție **primită** (`8021=891`) — formularul nu are un câmp pentru a alege „acordată", deci varianta 8011=891 (relevantă când firma e cea care oferă scrisoarea de garanție) nu poate fi produsă azi din UI, deși motorul de calcul o suportă.
 

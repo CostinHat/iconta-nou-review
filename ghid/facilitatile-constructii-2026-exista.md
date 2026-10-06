@@ -15,7 +15,7 @@ Nu. Scutirea de impozit pe venit pentru salariile din domeniul construcțiilor �
 ::: ghid-temei
 „5. Abrogat."
 — Legea 227/2015 (Codul fiscal), art. 60 pct. 5, cu nota: „(la 01-01-2025, Punctul 5., Articolul 60, Capitolul I, Titlul IV a fost abrogat de Punctul 7., Articolul LXIV din ORDONANȚA DE URGENȚĂ nr. 156 din 30 decembrie 2024, publicată în MONITORUL OFICIAL nr. 1334 din 31 decembrie 2024)"
-— sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 Punctul 5 al art. 60 era exact temeiul scutirii de impozit pe venit pentru salariile din construcții (calculate prin raportare la salariul minim brut pe țară specific sectorului, cu plafon de 10.000 lei brut lunar pentru aplicarea facilității, potrivit textului introdus anterior prin Legea 296/2023). OUG 156/2024 a abrogat acest punct începând cu 1 ianuarie 2025 — deci:

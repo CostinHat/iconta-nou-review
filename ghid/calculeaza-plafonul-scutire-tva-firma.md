@@ -17,7 +17,7 @@ O firmă nou-înființată poate rămâne, de la început, neplătitoare de TVA 
 [...]
 (4) O persoană impozabilă nou-înființată poate beneficia de aplicarea regimului special de scutire, dacă la momentul începerii activității economice declară o cifră de afaceri anuală estimată, conform alin. (2), sub plafonul de scutire și nu optează pentru aplicarea regimului normal de taxă.
 (5) Pentru persoana impozabilă nou-înființată care începe o activitate economică în decursul unui an calendaristic, plafonul de scutire este plafonul prevăzut la alin. (1)."
-— Cod fiscal, art. 310 alin. (1), (4) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 310 alin. (1), (4) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, concret, pentru o firmă la început de drum:

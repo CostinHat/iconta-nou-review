@@ -16,15 +16,15 @@ Ca regulă, nu. Taxa specială nu este un impozit general pe care îl plătesc t
 
 ::: ghid-temei
 „(6) Taxele speciale se fac venit la bugetul local și se încasează numai de la persoanele fizice și juridice care beneficiază de serviciile publice locale pentru care s-au instituit taxele respective."
-— Legea 273/2006 privind finanțele publice locale, art. 30 alin. (6) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 30 alin. (6) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(1) Pentru funcționarea unor servicii publice locale, create în interesul persoanelor fizice și juridice, consiliile locale, județene și Consiliul General al Municipiului București, după caz, aprobă taxe speciale."
-— Legea 273/2006, art. 30 alin. (1) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 30 alin. (1) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 ::: ghid-temei
 „Taxele speciale se încasează numai de la persoanele fizice și juridice care beneficiază de serviciile oferite de instituția sau serviciul public de interes local, potrivit regulamentului de organizare și funcționare al acestora, sau de la cele care sunt obligate, potrivit legii, să efectueze prestații ce intră în sfera de activitate a acestui tip de serviciu."
-— Codul fiscal (Legea 227/2015), art. 484 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 484 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

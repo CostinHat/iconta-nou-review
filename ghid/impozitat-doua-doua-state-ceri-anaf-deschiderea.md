@@ -16,15 +16,15 @@ Procedura amiabilă e calea prin care cele două administrații fiscale negociaz
 
 ::: ghid-temei
 „Cazul privind chestiunea litigioasă trebuie prezentat de persoana afectată în termen de trei ani sau în termenul prevăzut în convenția sau acordul de evitare/eliminare a dublei impuneri, calculat de la data comunicării actului administrativ fiscal sau orice altă notificare din care rezultă o impozitare care nu este în conformitate cu prevederile convenției sau acordului de evitare/eliminare a dublei impuneri încheiat de România cu un alt stat."
-— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă convenția sau acordul de evitare/eliminare a dublei impuneri încheiat de România cu alt stat prevede o perioadă de prezentare a cazului mai scurtă decât perioada de trei ani prevăzută la alin. (7), această perioadă se extinde la trei ani."
-— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „În România, autoritatea competentă în realizarea procedurii amiabile este A.N.A.F."
-— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 282 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se desfășoară, pe pași:

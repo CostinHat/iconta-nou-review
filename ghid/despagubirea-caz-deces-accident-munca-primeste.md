@@ -16,16 +16,16 @@ Cabinetul trebuie să știe că plata nu o face angajatorul. Cererea se depune l
 
 ::: ghid-temei
 „(1) În cazul decesului asiguratului, ca urmare a unui accident de muncă sau a unei boli profesionale, beneficiază de despăgubire în caz de deces o singură persoană, care poate fi, după caz: soțul supraviețuitor, copilul, părintele, tutorele, curatorul, moștenitorul, în condițiile dreptului comun, sau, în lipsa acesteia, persoana care dovedește că a suportat cheltuielile ocazionate de deces. (2) Cuantumul despăgubirii în caz de deces este de 4 salarii medii brute, comunicate de Institutul Național de Statistică."
-— Legea 346/2002, art. 45 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 45 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Articolul 46 Cererea pentru obținerea despăgubirii în caz de deces se depune la sediul asigurătorului, însoțită de actele din care rezultă dreptul solicitantului, potrivit prezentei legi."
-— Legea 346/2002, art. 46 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 46 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(1) Admiterea sau respingerea cererii se face prin decizie emisă de asigurător în termen de 20 de zile de la data depunerii cererii. (2) Decizia se comunică în scris solicitantului în termen de 5 zile de la data emiterii ei."
-— Legea 346/2002, art. 47 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 47 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „Articolul 48 Plata despăgubirii în caz de deces se face în termen de 15 zile de la data comunicării deciziei prevăzute la art. 47 ."
-— Legea 346/2002, art. 48 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 48 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 **Cine o primește.** O singură persoană, dintre:

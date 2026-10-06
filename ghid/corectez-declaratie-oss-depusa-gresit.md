@@ -14,7 +14,7 @@ Firmele înregistrate în regimul special One Stop Shop (OSS) raportează, print
 
 ::: ghid-temei
 „Regimul special pentru vânzările intracomunitare de bunuri la distanță, pentru livrările de bunuri interne efectuate de interfețele electronice care facilitează aceste livrări și pentru serviciile prestate de persoane impozabile stabilite în Uniunea Europeană, dar nu în statul membru de consum"
-— Codul fiscal (Legea 227/2015), secțiunea dedicată regimului special UE (OSS), art. 315 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), secțiunea dedicată regimului special UE (OSS), art. 315 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Limitare de temei:** sursele disponibile conțin textul Codului fiscal (art. 314 pentru regimul non-UE, art. 315 pentru regimul UE, art. 315^2 pentru regimul de import/IOSS) și normele metodologice aferente, dar nu conțin ordinul ANAF de aprobare a modelului declarației D398 — acesta nu a fost identificat printre sursele verificate, structura formularului fiind stabilită, în practică, prin validatorul oficial ANAF, nu printr-un act normativ distinct publicat separat.

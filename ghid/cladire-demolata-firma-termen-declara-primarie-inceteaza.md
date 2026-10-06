@@ -16,18 +16,18 @@ Firma care demolează o clădire are **30 de zile de la data demolării** ca să
 
 ::: ghid-temei
 „În cazul desființării unei clădiri, proprietarul are obligația să depună o nouă declarație de impunere la organul fiscal local în a cărui rază teritorială de competență se află clădirea, în termen de 30 de zile de la data demolării sau distrugerii și încetează să datoreze impozitul începând cu data de 1 ianuarie a anului următor, inclusiv în cazul clădirilor pentru care nu s-a eliberat autorizație de desființare."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „pentru o clădire desființată, de la data demolării sau distrugerii."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 57 lit. g) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 57 lit. g) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Impozitul pe clădiri se stabilește pe baza declarațiilor prevăzute la pct. 57 , începând cu data de 1 ianuarie a anului fiscal următor."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 58 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 58 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Prin grija structurilor de specialitate ale autorității administrației publice locale, în termen de cel mult 15 zile de la data terminării lucrărilor de desființare, se întocmește procesul-verbal, formular tipizat, în care se menționează, pe lângă elementele de identificare a contribuabilului și a autorizației de desființare, data de la care intervin modificări asupra impozitului pe clădiri și/sau asupra impozitului pe terenul aferent construcțiilor/amenajărilor supuse desființării"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 142 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 142 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce reținem:

@@ -16,10 +16,10 @@ Cheltuielile cu dobânzile și costurile echivalente lor din punct de vedere eco
 „(1) [...] diferența dintre costurile excedentare ale îndatorării [...] și plafonul deductibil prevăzut la alin. (4) este dedusă limitat în perioada fiscală în care este suportată, până la nivelul a 30% din baza de calcul stabilită conform algoritmului prevăzut la alin. (2).
 (4) Contribuabilul are dreptul de a deduce, într-o perioadă fiscală, costurile excedentare ale îndatorării până la plafonul deductibil reprezentat de echivalentul în lei al sumei de 1.000.000 euro. [...]
 (5) Prin excepție de la alin. (1) și (4), în cazul în care contribuabilul este o entitate independentă, în sensul că nu face parte dintr-un grup consolidat în scopuri de contabilitate financiară, și nu are nicio întreprindere asociată și niciun sediu permanent, acesta deduce integral costurile excedentare ale îndatorării, în perioada fiscală în care acestea sunt suportate."
-— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (1), (4) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 40^2 alin. (1), (4) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „costurile îndatorării - cheltuiala reprezentând dobânda aferentă tuturor formelor de datorii, alte costuri echivalente din punct de vedere economic cu dobânzile [...] comisioane de garantare pentru mecanisme de finanțare, comisioane de intermediere și costuri similare aferente împrumuturilor de fonduri."
-— Legea 227/2015, art. 40^1 pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 40^1 pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de plafonare, pas cu pas:

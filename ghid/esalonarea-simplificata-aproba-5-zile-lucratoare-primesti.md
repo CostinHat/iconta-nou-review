@@ -16,13 +16,13 @@ Spre deosebire de forma clasică, nu există un acord de principiu urmat de cons
 
 ::: ghid-temei
 „Cererea debitorului se soluționează de organul fiscal în termen de 5 zile lucrătoare de la data înregistrării acesteia, prin decizie de eșalonare la plată ori decizie de respingere, după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^3 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^3 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Cuantumul și termenele de plată a ratelor de eșalonare se stabilesc prin grafice de eșalonare care fac parte integrantă din decizia de eșalonare la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^3 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^3 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Certificatul de atestare fiscală se eliberează în termen de cel mult 5 zile lucrătoare de la data înregistrării cererii, inclusiv în cazul cererilor depuse de debitorii persoane fizice care desfășoară activități economice în mod independent sau exercită profesii libere."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^2 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^2 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce documente primești, pe rând:

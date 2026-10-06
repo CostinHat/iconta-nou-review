@@ -16,7 +16,7 @@ Pentru contabil, sumele de serviciu explică diferența dintre numerarul din ser
 
 ::: ghid-temei
 „Raportul fiscal de închidere zilnică emis de aparatul de marcat electronic fiscal definit la art. 3 alin. (2) trebuie să conțină pe lângă datele definite la alin. (6) și următoarele date: [...] numărul și valoarea reducerilor, anulărilor, sume de serviciu, precum și sumele rezultate pentru fiecare mijloc de plată utilizat. Sumele de serviciu reprezintă sumele de bani utilizate pentru plata restului către client, puse la dispoziția operatorului aparatului de marcat electronic fiscal la începutul fiecărei zile de lucru. Acestea se regăsesc în soldul contului de casă și, de asemenea, în soldul de la sfârșitul zilei de lucru."
-— OUG 28/1999, art. 4 alin. (7) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (7) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă:

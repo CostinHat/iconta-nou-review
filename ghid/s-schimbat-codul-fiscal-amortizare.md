@@ -14,7 +14,7 @@ Pentru anumite categorii de mijloace fixe puse în funcțiune în 2026, Codul fi
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (5) și (8), pentru activele noi, achiziționate/produse și puse în funcțiune, în perioada cuprinsă între 1 ianuarie 2026-31 decembrie 2026 inclusiv, respectiv în anul fiscal modificat care începe în anul 2026, după caz, din subgrupa 2.1 - Echipamente tehnologice, respectiv mașini, unelte și instalații de lucru și/sau subgrupa 2.4 - «Animale și plantații» se poate aplica o metodă de amortizare superaccelerată potrivit căreia amortizarea se calculează după cum urmează: a) pentru primul an de utilizare, amortizarea nu poate depăși 65% din valoarea fiscală de la data intrării în patrimoniul contribuabilului a activului; b) pentru următorii ani de utilizare, amortizarea se calculează prin raportarea valorii rămase de amortizare a activului la durata normală de utilizare rămasă a acestuia."
-— Legea 227/2015, art. 28 alin. (8^1), introdus de OUG 8/2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (8^1), introdus de OUG 8/2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce e nou, comparativ cu amortizarea accelerată „obișnuită" (unde primul an e limitat la 50%):
@@ -32,6 +32,6 @@ Ce e nou, comparativ cu amortizarea accelerată „obișnuită" (unde primul an 
 
 ## Ce face iConta.eu
 
-Motorul de amortizare al iConta.eu (`core/d406_active.py`, folosit atât pentru registrul mijloacelor fixe, cât și pentru D406) calculează amortizarea pe patru metode distincte, în funcție de metoda selectată pentru fiecare activ, conform prevederilor art. 28 din Codul fiscal — ecranul de mijloace fixe și notele lunare de amortizare consumă acest motor unic, astfel încât cifra de amortizare afișată reflectă metoda reală a activului, nu implicit liniară. Confirmarea că un anumit activ se încadrează în subgrupa 2.1 sau 2.4 și că a fost pus efectiv în funcțiune în 2026, condiții necesare pentru metoda superaccelerată de la art. 28 alin. (8^1), rămâne, la acest moment, o verificare manuală a contabilului la momentul înregistrării activului.
+Motorul de amortizare al iConta.eu (folosit atât pentru registrul mijloacelor fixe, cât și pentru D406) calculează amortizarea pe patru metode distincte, în funcție de metoda selectată pentru fiecare activ, conform prevederilor art. 28 din Codul fiscal — ecranul de mijloace fixe și notele lunare de amortizare consumă acest motor unic, astfel încât cifra de amortizare afișată reflectă metoda reală a activului, nu implicit liniară. Confirmarea că un anumit activ se încadrează în subgrupa 2.1 sau 2.4 și că a fost pus efectiv în funcțiune în 2026, condiții necesare pentru metoda superaccelerată de la art. 28 alin. (8^1), rămâne, la acest moment, o verificare manuală a contabilului la momentul înregistrării activului.
 
 [iConta.eu](/)

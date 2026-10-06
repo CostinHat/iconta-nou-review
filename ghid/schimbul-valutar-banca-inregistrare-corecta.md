@@ -17,7 +17,7 @@ Când firma schimbă valută la bancă (vinde EUR/USD încasat de la un client e
 319. - O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii.
 322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar.
 325. - (1) La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. [...] b) cursul de schimb al pieței valutare comunicat de Banca Națională a României, din ultima zi bancară a lunii în cauză, pentru evaluarea creanțelor și datoriilor în valută, a disponibilităților în valută și a altor valori de trezorerie [...] existente în sold la sfârșitul lunii."
-— OMFP 1802/2014 (reglementările contabile), pct. 317, 319, 322, 325 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementările contabile), pct. 317, 319, 322, 325 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul complet al operațiunii, din normă:
@@ -35,6 +35,6 @@ Mecanismul complet al operațiunii, din normă:
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs valutar (`core/diferente_curs.py`) calculează, pur, diferența 665/765 rezultată la decontarea unei creanțe, datorii sau a unui disponibil în valută (inclusiv, deci, la un schimb valutar la bancă) — pe baza cursului inițial și a cursului final introduse, cu regula de semn corectă (câștig 765 dacă valoarea crește pentru o creanță/disponibil, pierdere 665 dacă e o datorie). Curs BNR pentru facturi e preluat automat prin modulul dedicat (curs BNR pentru facturare/TVA), dar pentru o operațiune de schimb valutar la bancă propriu-zisă, cursul comercial obținut efectiv de la bancă și data operațiunii se introduc de contabil — aplicația nu descarcă automat cotațiile băncilor comerciale.
+Motorul de diferențe de curs valutar calculează, pur, diferența 665/765 rezultată la decontarea unei creanțe, datorii sau a unui disponibil în valută (inclusiv, deci, la un schimb valutar la bancă) — pe baza cursului inițial și a cursului final introduse, cu regula de semn corectă (câștig 765 dacă valoarea crește pentru o creanță/disponibil, pierdere 665 dacă e o datorie). Curs BNR pentru facturi e preluat automat prin modulul dedicat (curs BNR pentru facturare/TVA), dar pentru o operațiune de schimb valutar la bancă propriu-zisă, cursul comercial obținut efectiv de la bancă și data operațiunii se introduc de contabil — aplicația nu descarcă automat cotațiile băncilor comerciale.
 
 [iConta.eu](/)

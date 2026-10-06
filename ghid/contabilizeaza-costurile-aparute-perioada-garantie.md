@@ -34,6 +34,6 @@ Pe măsură ce garanția expiră sau costurile efective de service/reparație di
 
 ## Ce face iConta.eu
 
-`nota_provizion(suma, tip="garantii", actiune)` din `core/provizioane.py` generează notele 6812=1512 (constituire) / 1512=7812 (reluare), marcate explicit ca deductibile în cod — singura categorie din dicționarul `PROVIZIOANE` cu acest tratament. Aplicația nu calculează automat suma provizionului (cota din contract sau procentul de garantare din tarif) — aceasta se introduce de contabil, ca parametru de intrare, iar costurile efective de service din perioada de garanție se înregistrează separat, prin cheltuielile obișnuite ale firmei.
+`nota_provizion(suma, tip="garantii", actiune)` din aplicație generează notele 6812=1512 (constituire) / 1512=7812 (reluare), marcate explicit ca deductibile în cod — singura categorie din dicționarul `PROVIZIOANE` cu acest tratament. Aplicația nu calculează automat suma provizionului (cota din contract sau procentul de garantare din tarif) — aceasta se introduce de contabil, ca parametru de intrare, iar costurile efective de service din perioada de garanție se înregistrează separat, prin cheltuielile obișnuite ale firmei.
 
 [iConta.eu](/)

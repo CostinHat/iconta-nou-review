@@ -18,10 +18,10 @@ a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui p
 c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi; [...]
 e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.
 (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei."
-— Legea 70/2015 (formă consolidată, în vigoare de la 01.01.2026), art. 3 alin. (1) și (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (formă consolidată, în vigoare de la 01.01.2026), art. 3 alin. (1) și (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 
 „(1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană."
-— Legea 70/2015 (formă consolidată), art. 4 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (formă consolidată), art. 4 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din forma actuală a legii rezultă rețeaua de plafoane pe care practicienii trebuie s-o aplice:

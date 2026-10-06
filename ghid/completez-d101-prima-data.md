@@ -13,7 +13,7 @@ Pentru prima D101, aplicația nu generează declarația decât după ce datele d
 ## Temeiul legal
 
 ::: ghid-temei
-"D101 nu se poate genera fără CUI valid (checksum verificat prin `core.identitate.valideaza_cui`), denumire, adresă, cod CAEN pe 4 cifre; plus erorile de declarant din `core.firma_profil_api.erori_declarant`." — dosarul de cercetare F027, pe baza `core/d101.py`, funcția `erori_generare(prof)`, liniile 366–388.
+"D101 nu se poate genera fără CUI valid (checksum verificat prin `core.identitate.valideaza_cui`), denumire, adresă, cod CAEN pe 4 cifre; plus erorile de declarant din `core.firma_profil_api.erori_declarant`." — dosarul de cercetare F027, pe baza aplicația, funcția `erori_generare(prof)`.
 :::
 
 După ce identitatea firmei e validă, `pull()` citește balanța (conturile 76/66 ca financiar, 7x/6x ca exploatare, plus 1012/1061/691 pentru rezerva legală). Contabilul introduce apoi manual amortizarea fiscală (P11) și add-back-ul contabil al amortizării (P2x/P28), iar aplicația calculează automat rezerva legală dacă nu e dată manual.

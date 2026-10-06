@@ -14,7 +14,7 @@ Una dintre condițiile de încadrare ca microîntreprindere e să existe cel pu�
 
 ::: ghid-temei
 „În sensul prezentului titlu, prin salariat se înțelege persoana angajată cu contract individual de muncă cu normă întreagă, potrivit Legii nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare. Condiția se consideră îndeplinită și în cazul microîntreprinderilor care: a) au persoane angajate cu contract individual de muncă cu timp parțial dacă fracțiunile de normă prevăzute în acestea, însumate, reprezintă echivalentul unei norme întregi; b) au încheiate contracte de administrare sau mandat, potrivit legii, în cazul în care remunerația acestora este cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată."
-— Legea 227/2015 (Codul fiscal), art. 51 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 51 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru o firmă cu angajați part-time:
@@ -34,6 +34,6 @@ Ce înseamnă concret pentru o firmă cu angajați part-time:
 
 Verificarea condiției de încadrare la regimul micro (inclusiv testul „normă întreagă echivalentă" pentru salariații part-time) **nu are o funcționalitate dedicată în iConta.eu** — nu există în cod un modul care să calculeze automat fracțiunile de normă însumate și să confirme sau infirme îndeplinirea condiției de salariat pentru regimul micro. Decizia de încadrare rămâne, azi, o evaluare pe care contabilul o face manual, pe baza contractelor de muncă ale firmei.
 
-Ce are aplicația, tangențial la acest subiect, e generatorul **Declarației D112** (`core/d112.py`), care calculează corect contribuțiile și baza minimă pentru salariații part-time — inclusiv mecanismul de suprataxare la contract parțial cu venit sub salariul minim (art. 146 alin. 5^6 și art. 168 alin. 6^1 Cod fiscal) — dar acesta e un calcul de contribuții sociale, nu o verificare a condiției de eligibilitate pentru regimul micro. Cele două subiecte sunt distincte: D112 confirmă corectitudinea contribuțiilor plătite pentru salariații part-time existenți, nu dacă suma fracțiunilor lor de normă satisface condiția de „salariat" cerută de art. 51 alin. (4) pentru regimul micro.
+Ce are aplicația, tangențial la acest subiect, e generatorul **Declarației D112**, care calculează corect contribuțiile și baza minimă pentru salariații part-time — inclusiv mecanismul de suprataxare la contract parțial cu venit sub salariul minim (art. 146 alin. 5^6 și art. 168 alin. 6^1 Cod fiscal) — dar acesta e un calcul de contribuții sociale, nu o verificare a condiției de eligibilitate pentru regimul micro. Cele două subiecte sunt distincte: D112 confirmă corectitudinea contribuțiilor plătite pentru salariații part-time existenți, nu dacă suma fracțiunilor lor de normă satisface condiția de „salariat" cerută de art. 51 alin. (4) pentru regimul micro.
 
 [iConta.eu](/)

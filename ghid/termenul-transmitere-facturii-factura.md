@@ -14,7 +14,7 @@ Termenul de transmitere prin RO e-Factura s-a schimbat în timp — de la 5 zile
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul naţional privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările şi completările ulterioare. Calculul termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71 al Consiliului din 3 iunie 1971 privind stabilirea regulilor care se aplică termenelor, datelor şi expirării termenelor."
-— OUG nr. 120/2021, art. 10 alin. (7) și art. 10^1 alin. (2^1), astfel cum au fost modificate prin OUG nr. 89/2025 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG nr. 120/2021, art. 10 alin. (7) și art. 10^1 alin. (2^1), astfel cum au fost modificate prin OUG nr. 89/2025 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Regula are, de fapt, două componente care trebuie citite împreună:
@@ -32,6 +32,6 @@ Regula are, de fapt, două componente care trebuie citite împreună:
 
 ## Ce face iConta.eu
 
-iConta.eu transmite facturile prin RO e-Factura la inițiativa utilizatorului sau prin sincronizarea programată a facturilor recurente, folosind `core/efactura_send.py`. Aplicația nu afișează, la acest moment, un contor vizibil al termenului legal rămas pentru fiecare factură netransmisă — respectarea termenului de 5 zile lucrătoare rămâne în responsabilitatea utilizatorului, care vede însă starea fiecărei trimiteri (în așteptare, acceptată, respinsă) urmărită automat de `core/spv_poll.py`.
+iConta.eu transmite facturile prin RO e-Factura la inițiativa utilizatorului sau prin sincronizarea programată a facturilor recurente, folosind aplicația. Aplicația nu afișează, la acest moment, un contor vizibil al termenului legal rămas pentru fiecare factură netransmisă — respectarea termenului de 5 zile lucrătoare rămâne în responsabilitatea utilizatorului, care vede însă starea fiecărei trimiteri (în așteptare, acceptată, respinsă) urmărită automat de aplicația.
 
 [iConta.eu](/)

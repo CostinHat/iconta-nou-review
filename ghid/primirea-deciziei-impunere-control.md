@@ -20,7 +20,7 @@ ART. 156 Termenele de plată
 (1) Pentru diferențele de obligații fiscale principale și pentru obligațiile fiscale accesorii, stabilite prin decizie potrivit legii, termenul de plată se stabilește în funcție de data comunicării deciziei, astfel:
 a) dacă data comunicării este cuprinsă în intervalul 1 - 15 din lună, termenul de plată este până la data de 5 a lunii următoare, inclusiv;
 b) dacă data comunicării este cuprinsă în intervalul 16 - 31 din lună, termenul de plată este până la data de 20 a lunii următoare, inclusiv."
-— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) și art. 156 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) și art. 156 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din textul de mai sus rezultă două lucruri esențiale pentru contribuabilul care primește o decizie de impunere:
@@ -38,6 +38,6 @@ Din textul de mai sus rezultă două lucruri esențiale pentru contribuabilul ca
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu automatizează etapa de după finalizarea unui control fiscal**. Aplicația are un semafor de conformare fiscală (`core/control_fiscal_api.py`) care compară declarațiile datorate cu cele depuse și semnalează lipsurile, dar acesta funcționează *înainte* de un control, nu gestionează decizia de impunere, termenul de plată din art. 156 sau termenul de contestare din art. 270 — nu există în cod nicio funcție care să calculeze aceste termene sau să genereze o alertă la primirea unei decizii de impunere. Urmărirea acestor termene rămâne, pentru moment, responsabilitatea contabilului sau a angajatorului.
+La data acestui ghid, iConta.eu **nu automatizează etapa de după finalizarea unui control fiscal**. Aplicația are un semafor de conformare fiscală care compară declarațiile datorate cu cele depuse și semnalează lipsurile, dar acesta funcționează *înainte* de un control, nu gestionează decizia de impunere, termenul de plată din art. 156 sau termenul de contestare din art. 270 — nu există în cod nicio funcție care să calculeze aceste termene sau să genereze o alertă la primirea unei decizii de impunere. Urmărirea acestor termene rămâne, pentru moment, responsabilitatea contabilului sau a angajatorului.
 
 [iConta.eu](/)

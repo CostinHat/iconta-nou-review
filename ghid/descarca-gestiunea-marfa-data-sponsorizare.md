@@ -14,7 +14,7 @@ Marfa acordată în cadrul unei acțiuni de sponsorizare iese din gestiune ca or
 
 ::: ghid-temei
 „Nu constituie livrare de bunuri, în sensul alin. (1): [...] c) acordarea de bunuri de mică valoare, în mod gratuit, în cadrul acțiunilor de sponsorizare, de mecenat, de protocol/reprezentare, în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanismul de urmat:

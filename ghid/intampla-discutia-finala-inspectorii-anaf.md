@@ -17,7 +17,7 @@ Discuția finală este ultimul moment în care contribuabilul poate reacționa l
 (3) Contribuabilul/Plătitorul poate renunța la discuția finală, notificând acest fapt organului de inspecție fiscală.
 (4) Data încheierii inspecției fiscale este data programată pentru discuția finală cu contribuabilul/plătitorul sau data notificării de către contribuabil/plătitor că renunță la acest drept.
 (5) Contribuabilul/Plătitorul are dreptul să își prezinte, în scris, punctul de vedere cu privire la constatările organului de inspecție fiscală, în termen de cel mult 5 zile lucrătoare de la data încheierii inspecției fiscale. în cazul marilor contribuabili termenul de prezentare a punctului de vedere este de cel mult 7 zile lucrătoare."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 130 alin. (2)-(5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 130 alin. (2)-(5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă un mecanism cu pași preciși:

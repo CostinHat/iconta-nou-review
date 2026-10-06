@@ -14,7 +14,7 @@ D112 se depune lunar, atâta vreme cât firma are calitatea de plătitor de veni
 
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă pentru calendarul concret al ultimei D112:
@@ -32,6 +32,6 @@ Ce rezultă pentru calendarul concret al ultimei D112:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu am identificat în cod** o legătură automată între procedura de lichidare/radiere a firmei și generarea sau oprirea depunerii D112. Aplicația generează D112 lunar pe baza datelor din statul de plată curent (module `core/d112.py`, `core/stat_plata_api.py`); modulul `core/lichidare.py` acoperă doar motorul contabil al lichidării (valorificarea activelor, partajul, impozitul pe câștigul asociaților), nu coordonarea calendarului declarativ cu radierea firmei. Oprirea corectă a depunerilor D112 și corelarea cu momentul radierii rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu am identificat în cod** o legătură automată între procedura de lichidare/radiere a firmei și generarea sau oprirea depunerii D112. Aplicația generează D112 lunar pe baza datelor din statul de plată curent (module aplicația); aplicația acoperă doar motorul contabil al lichidării (valorificarea activelor, partajul, impozitul pe câștigul asociaților), nu coordonarea calendarului declarativ cu radierea firmei. Oprirea corectă a depunerilor D112 și corelarea cu momentul radierii rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

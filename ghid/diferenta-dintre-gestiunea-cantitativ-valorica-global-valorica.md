@@ -14,7 +14,7 @@ Alegerea metodei de evidență a stocurilor nu e doar o preferință de organiza
 
 ::: ghid-temei
 „Contabilitatea stocurilor se ține cantitativ și valoric sau numai valoric prin folosirea inventarului permanent sau a inventarului intermitent."
-— OMFP 1802/2014 (reglementări contabile), pct. 289 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 289 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Textul stabilește direct cele două axe ale alegerii: (1) evidența poate fi cantitativă și valorică, sau doar valorică; (2) evidența se poate ține prin inventar permanent sau prin inventar intermitent. Gestiunea cantitativ-valorică și cea global-valorică sunt, în esență, cele două variante de pe prima axă.
@@ -23,7 +23,7 @@ Textul stabilește direct cele două axe ale alegerii: (1) evidența poate fi ca
 
 ::: ghid-temei
 „În condițiile folosirii inventarului permanent, în contabilitate se înregistrează toate operațiunile de intrare și ieșire, ceea ce permite stabilirea și cunoașterea în orice moment a stocurilor, atât cantitativ, cât și valoric."
-— OMFP 1802/2014 (reglementări contabile), pct. 290 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 290 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Fiecare intrare și fiecare ieșire de marfă/produs se înregistrează separat, pe cantitate și valoare, ceea ce permite să se știe oricând stocul exact, pe fiecare sortiment. E metoda tipică pentru firme cu gamă de produse gestionabilă individual (angro, producție, distribuție cu SKU-uri clare).
@@ -32,7 +32,7 @@ Fiecare intrare și fiecare ieșire de marfă/produs se înregistrează separat,
 
 ::: ghid-temei
 „În comerțul cu amănuntul poate fi utilizată metoda prețului cu amănuntul, pentru a determina costul stocurilor de articole numeroase și cu mișcare rapidă, care au marje similare și pentru care nu este practic să se folosească altă metodă. În această situație, costul bunurilor vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor."
-— OMFP 1802/2014 (reglementări contabile), pct. 286 alin. (8) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 286 alin. (8) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Metoda global-valorică (metoda prețului cu amănuntul) e gândită exact pentru situația opusă: multe articole diferite, mișcare rapidă, marje similare, unde urmărirea cantitativă a fiecărui produs în parte nu e practică — de exemplu un magazin cu mii de referințe. Se urmărește doar valoarea totală a stocului, la preț de vânzare, iar costul se determină scăzând marja brută.
@@ -41,7 +41,7 @@ Metoda global-valorică (metoda prețului cu amănuntul) e gândită exact pentr
 
 ::: ghid-temei
 „Inventarul intermitent nu se utilizează în comerțul cu amănuntul în situația în care se aplică metoda global-valorică."
-— OMFP 1802/2014 (reglementări contabile), pct. 291 alin. (5) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 291 alin. (5) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Există o restricție explicită: cele două metode simplificate (global-valorică și inventar intermitent) nu se combină — dacă se aplică metoda global-valorică, evidența nu poate fi ținută prin inventar intermitent.

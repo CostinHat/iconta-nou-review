@@ -12,7 +12,7 @@ Alegerea băncii la care o firmă nou-înființată își deschide contul curent
 
 ## Temeiul legal
 
-**Limitare declarată onest:** alegerea băncii pentru o firmă e o decizie comercială, care nu ține de legislația fiscală și nu se regăsește reglementată în sursele verificate pentru acest ghid (anaf_surse conține Codul fiscal, Codul de procedură fiscală și acte conexe, nu legislație bancară sau comercială privind alegerea unei instituții de credit). Nu se poate cita aici un temei legal specific pentru această întrebare.
+**Limitare declarată onest:** alegerea băncii pentru o firmă e o decizie comercială, care nu ține de legislația fiscală și nu se regăsește reglementată în sursele verificate pentru acest ghid (acestea cuprind Codul fiscal, Codul de procedură fiscală și acte conexe, nu legislație bancară sau comercială privind alegerea unei instituții de credit). Nu se poate cita aici un temei legal specific pentru această întrebare.
 
 Ce rămâne, totuși, relevant din punct de vedere fiscal-contabil, indiferent de banca aleasă:
 

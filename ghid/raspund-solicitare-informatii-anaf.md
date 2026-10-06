@@ -14,7 +14,7 @@ Când organul fiscal cere lămuriri, documente sau date suplimentare — fie des
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. În același scop, organul fiscal are dreptul să solicite informații și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice, iar acestea au obligația de a furniza informațiile solicitate. Informațiile furnizate de alte persoane se iau în considerare numai în măsura în care sunt confirmate și de alte mijloace de probă."
-— Legea 207/2015 (Codul de procedură fiscală), art. 58 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 58 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă practic din text:

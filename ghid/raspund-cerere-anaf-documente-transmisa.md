@@ -16,7 +16,7 @@ O cerere primită prin Spațiul Privat Virtual (SPV) prin care ANAF solicită do
 „ART. 64 Prezentarea de înscrisuri
 (1) în vederea stabilirii stării de fapt fiscale, contribuabilul/plătitorul are obligația să pună la dispoziție organului fiscal registre, evidențe, documente de afaceri și orice alte înscrisuri. în același scop, organul fiscal are dreptul să solicite înscrisuri și altor persoane cu care contribuabilul/plătitorul are sau a avut raporturi economice sau juridice.
 (2) Organul fiscal poate solicita punerea la dispoziție a înscrisurilor la sediul său ori la domiciliul fiscal al persoanei obligate să le prezinte. Punerea la dispoziție a înscrisurilor la sediul organului fiscal se poate realiza prin transmiterea acestora prin poștă, cu confirmare de primire, prin depunerea la registratura organului fiscal sau prin mijloacele electronice de transmitere la distanță în condițiile art. 79."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 64 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 64 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru o cerere primită prin SPV:

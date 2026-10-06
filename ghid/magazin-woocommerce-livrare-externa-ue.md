@@ -14,13 +14,13 @@ Tehnic, da — integrarea importă orice comandă WooCommerce cu statusul potriv
 
 ::: ghid-temei
 „(2) Prin excepție de la prevederile alin. (1) lit. a), locul livrării în cazul vânzărilor intracomunitare de bunuri la distanță este considerat a fi locul în care se află bunurile în momentul în care se încheie expedierea sau transportul bunurilor către client."
-— Codul fiscal, art. 275 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 275 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Prevederile art. 275 alin. (2) și art. 278 alin. (5) lit. h) nu se aplică dacă sunt îndeplinite cumulativ următoarele condiții: [...] c) valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent."
-— Codul fiscal, art. 278^1 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 278^1 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) Prezentul regim special poate fi utilizat de către orice persoană impozabilă care are sediul activității economice în România [...] Regimul special poate fi utilizat în următoarele cazuri: a) de către orice persoană impozabilă care efectuează vânzări intracomunitare de bunuri la distanță."
-— Codul fiscal, art. 315 alin. (2) lit. a) — Regimul special pentru vânzările intracomunitare de bunuri la distanță (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 315 alin. (2) lit. a) — Regimul special pentru vânzările intracomunitare de bunuri la distanță (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Peste pragul de 10.000 euro cumulat (bunuri + servicii electronice către persoane neimpozabile din UE), TVA datorat pentru o vânzare cu livrare într-un alt stat membru nu mai e cel românesc, ci cel al statului de destinație — declarat fie direct în acel stat, fie printr-o singură declarație OSS depusă în România.

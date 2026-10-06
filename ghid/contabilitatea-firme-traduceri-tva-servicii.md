@@ -13,7 +13,7 @@ O firmă de traduceri care lucrează cu clienți din UE nu are un regim de TVA d
 ## Temeiul legal
 
 ::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — `core/intracomunitar.py`, dosarul F050.
+„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
 :::
 
 Dacă firma-client din UE are cod de TVA valid, verificat, factura pentru serviciul de traducere se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Fără cod valid — client persoană fizică sau firmă neînregistrată — se aplică regimul B2C, cu TVA românesc.

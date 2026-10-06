@@ -16,16 +16,16 @@ Pentru angajator nu e o facilitate opțională: Codul muncii spune că are „ob
 
 ::: ghid-temei
 „(1) Angajatorul are obligația acordării concediului de îngrijitor salariatului în vederea oferirii de către acesta de îngrijire sau sprijin personal unei rude sau unei persoane care locuiește în aceeași gospodărie cu salariatul și care are nevoie de îngrijire sau sprijin ca urmare a unei probleme medicale grave, cu o durată de 5 zile lucrătoare într-un an calendaristic, la solicitarea scrisă a salariatului. [...] (2) Prin legi speciale sau prin contractul colectiv de muncă aplicabil se poate stabili pentru concediul de îngrijitor o durată mai mare decât cea prevăzută la alin. (1). [...] (3) Pe durata perioadei prevăzute la alin. (1) salariații au dreptul la zile libere plătite, care nu se includ în durata concediului de odihnă anual și constituie vechime în muncă și în specialitate"
-— Codul muncii (Legea 53/2003), art. 152^1 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 152^1 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „salariații care beneficiază de concediul de îngrijitor sunt asigurați, pe această perioadă, în sistemul asigurărilor sociale de sănătate fără plata contribuției. Perioada concediului de îngrijitor constituie stagiu de cotizare pentru stabilirea dreptului la indemnizație de șomaj și indemnizație pentru incapacitate temporară de muncă acordate în conformitate cu legislația în vigoare."
-— Codul muncii (Legea 53/2003), art. 152^1 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 152^1 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „În sensul art. 152^1 alin. (1), precum și al alin. (3), prin rudă se înțelege fiul, fiica, mama, tatăl sau soțul/soția unui salariat."
-— Codul muncii (Legea 53/2003), art. 153^1 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 153^1 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „t) neacordarea concediului de îngrijitor salariaților care îndeplinesc condițiile prevăzute la art. 152^1, cu amendă de la 4.000 lei la 8.000 lei;"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. t) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. t) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

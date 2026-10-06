@@ -16,14 +16,14 @@ Pentru o firmă, asta înseamnă că o clasare penală nu închide automat subie
 
 ::: ghid-temei
 „(1) Aplicarea sancțiunii amenzii contravenționale se prescrie în termen de 6 luni de la data săvârșirii faptei."
-— OG 2/2001, art. 13 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(3) Când fapta a fost urmărită ca infracțiune și ulterior s-a stabilit ca ea constituie contravenție, prescripția aplicării sancțiunii nu curge pe tot timpul în care cauza s-a aflat în fața organelor de cercetare sau de urmărire penală ori în fața instanței de judecata, dacă sesizarea s-a făcut înăuntrul termenului prevăzut la alin. (1) sau (2) . Prescripția operează totuși dacă sancțiunea nu a fost aplicată în termen de un an de la data săvârșirii, respectiv constatării faptei, dacă prin lege nu se dispune altfel."
-— OG 2/2001, art. 13 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „(2) În cazul în care fapta a fost urmărită ca infracțiune și ulterior s-a stabilit de către procuror sau de către instanță că ea ar putea constitui contravenție, actul de sesizare sau de constatare a faptei, împreună cu o copie de pe rezoluția, ordonanța sau, după caz, de pe hotărârea judecătorească, se trimite de îndată organului în drept să constate contravenția, pentru a lua măsurile ce se impun conform legii. (3) Termenul de 6 luni pentru aplicarea sancțiunii în cazul prevăzut la alin. (2) curge de la data sesizării organului în drept să aplice sancțiunea."
-— OG 2/2001, art. 30 alin. (2)-(3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 30 alin. (2)-(3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

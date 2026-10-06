@@ -14,7 +14,7 @@ Răspunsul scurt: dividendele plătite unui beneficiar nerezident **nu se comple
 
 ::: ghid-temei
 Nomenclator D205: "08 1.a) venituri din dividende - 8%/2024, 10%/2025, 16%/2026"; câmpul `Rezid` este "obligatoriu «1»" pentru tip_venit1="08" (dividende).
-— Structura XML oficială D205, `anaf_surse/d205_struct_anaf.txt`, linia 428 și câmpurile aferente tip_venit1="08"
+— Structura XML oficială D205, [Structura fișierului XML pentru declarația 205, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D205_2025_120226.pdf) și câmpurile aferente tip_venit1="08"
 :::
 
 Regula de validare a formularului (validatorul oficial DUK, regula R32) admite valoarea "Rezid = 2" (nerezident) doar pentru alte tipuri de venit din formular, nu și pentru tipul "08" (dividende). Pentru un beneficiar nerezident, dividendele nu se raportează pe D205, ci pe declarația D207, care este destinată special veniturilor obținute din România de nerezidenți.
@@ -25,6 +25,6 @@ Se încearcă introducerea beneficiarului nerezident direct în D205, eventual c
 
 ## Ce face iConta.eu
 
-Aplicația derivă automat rezidența beneficiarului din CNP (cod numeric personal românesc, 13 cifre, prima cifră între 1 și 8 pentru rezident) — nu există un câmp separat "rezident/nerezident" introdus manual. Un beneficiar fără CNP românesc valid (de exemplu cu NIF străin sau pașaport) este **respins automat la generarea D205** (`core/d205.py`), confirmat inclusiv prin testul intern care simulează un CNP început cu cifra 9 și primește eroare explicită, fără emiterea vreunei declarații. Concret: pentru un beneficiar nerezident, nu folosiți fluxul D205 din iConta — dividendele respective trebuie raportate pe D207.
+Aplicația derivă automat rezidența beneficiarului din CNP (cod numeric personal românesc, 13 cifre, prima cifră între 1 și 8 pentru rezident) — nu există un câmp separat "rezident/nerezident" introdus manual. Un beneficiar fără CNP românesc valid (de exemplu cu NIF străin sau pașaport) este **respins automat la generarea D205**, confirmat inclusiv prin testul intern care simulează un CNP început cu cifra 9 și primește eroare explicită, fără emiterea vreunei declarații. Concret: pentru un beneficiar nerezident, nu folosiți fluxul D205 din iConta — dividendele respective trebuie raportate pe D207.
 
 [iConta.eu](/)

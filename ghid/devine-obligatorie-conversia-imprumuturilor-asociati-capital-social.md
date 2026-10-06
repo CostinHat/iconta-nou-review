@@ -16,22 +16,22 @@ Obligația a fost introdusă prin Legea 239/2025, se aplică și SRL-urilor, iar
 
 ::: ghid-temei
 „Societățile aflate în situația prevăzută la alin. (1) care înregistrează datorii față de acționari rezultate din împrumuturi sau alte finanțări acordate de aceștia și care nu respectă obligația prevăzută la alin. (4) în termen de 2 ani de la încheierea exercițiului financiar ulterior celui în care au fost constatate pierderile au obligația de a majora capitalul social prin conversia acestor creanțe, cu respectarea drepturilor celorlalți acționari, prevăzute la art. 216 ."
-— Legea 31/1990, art. 153^24 alin. (4^2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Nerespectarea de către societate a obligației prevăzute la alin. (4^2) constituie contravenție și se sancționează [...] cu amendă de la 40.000 lei la 300.000 lei."
-— Legea 31/1990, art. 153^24 alin. (4^3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Prevederile prezentului alineat se aplică începând cu anul 2027, raportat la situațiile financiare anuale aferente exercițiului financiar care începe la data de 1 ianuarie 2025 sau ulterior acestei date."
-— Legea 31/1990, art. 153^24 alin. (4^5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Pe perioada inactivității societăților declarate inactive potrivit prevederilor prezentei legi, prevederile alin. (4^1)-(4^6) nu se aplică."
-— Legea 31/1990, art. 153^24 alin. (4^7) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^7) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Prevederile alin. (4^1) și (4^2) nu se aplică acționarilor/asociaților care: [...] cu condiția ca, în oricare din situațiile prevăzute la lit. a)-e) din prezentul alineat, împrumuturile să nu fie restituite acționarilor/asociaților într-un termen de 4 ani de la data acordării împrumuturilor."
-— Legea 31/1990, art. 153^24 alin. (4^9) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^9) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Prevederile alin. (4^2) nu se aplică în cazul finanțării societăților prin intermediul fondurilor europene sau naționale alocate din programe destinate sprijinirii sectorului privat și al finanțărilor acordate de instituții financiare internaționale."
-— Legea 31/1990, art. 153^24 alin. (4^10) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 153^24 alin. (4^10) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Cronologia, pe pași:

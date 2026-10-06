@@ -15,7 +15,7 @@ Aici trebuie separate două calcule diferite, ușor de confundat: **plafonul** c
 ::: ghid-temei
 „(1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta, iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]
 [Art. 53] Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...] h) veniturile din diferențe de curs valutar; [...] i) veniturile financiare aferente creanțelor și datoriilor cu decontare în funcție de cursul unei valute, rezultate din evaluarea sau decontarea acestora [...]"
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1^1) și art. 53 alin. (1) lit. h) și i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1^1) și art. 53 alin. (1) lit. h) și i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **La plafon (art. 47)**: se ia în calcul doar cifra de afaceri, definiție contabilă — veniturile din activitatea curentă (vânzări, servicii). Veniturile din diferențe de curs (cont 765) sunt venituri financiare și nu se cuprind aici deloc.
@@ -31,6 +31,6 @@ Aici trebuie separate două calcule diferite, ușor de confundat: **plafonul** c
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar din iConta.eu (`core/diferente_curs.py`) generează notele contabile pe 665/765, dar **nu calculează impozitul pe veniturile microîntreprinderilor** și nu aplică distincția de mai sus (scădere lunară vs. regularizare de trimestrul IV) — căutare în cod confirmă că niciun modul de declarație D710/plafon micro nu citește sau nu procesează aceste conturi. Rulajul 665/765 generat automat de F041 rămâne materia primă din care contabilul calculează separat baza impozabilă micro, pentru declarația trimestrială.
+Funcționalitatea de diferențe de curs valutar din iConta.eu generează notele contabile pe 665/765, dar **nu calculează impozitul pe veniturile microîntreprinderilor** și nu aplică distincția de mai sus (scădere lunară vs. regularizare de trimestrul IV) — căutare în cod confirmă că niciun modul de declarație D710/plafon micro nu citește sau nu procesează aceste conturi. Rulajul 665/765 generat automat de F041 rămâne materia primă din care contabilul calculează separat baza impozabilă micro, pentru declarația trimestrială.
 
 [iConta.eu](/)

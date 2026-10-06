@@ -14,7 +14,7 @@ Un utilaj, un echipament sau orice altă imobilizare corporală poate ajunge în
 
 ::: ghid-temei
 „75. - (1) La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: a) la cost de achiziție - pentru bunurile procurate cu titlu oneros; ... b) la cost de producție - pentru bunurile produse în entitate; ... c) la valoarea de aport, stabilită în urma evaluării - pentru bunurile reprezentând aport la capitalul social; ... d) la valoarea justă - pentru bunurile obținute cu titlu gratuit sau constatate plus la inventariere."
-— OMFP 1802/2014, pct. 75 alin. (1) lit. d) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 75 alin. (1) lit. d) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din normă rezultă mecanismul complet de înregistrare:
@@ -31,6 +31,6 @@ Din normă rezultă mecanismul complet de înregistrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/repo_mijloace_fixe.py` oferă funcții generale de gestiune a mijloacelor fixe — `adauga()` și `adauga_cu_reevaluare()` — cu parametri liberi pentru cont de imobilizare, cont de amortizare și valoare de intrare. Contabilul poate introduce manual valoarea justă și poate alege contul de contrapartidă potrivit (475), dar aplicația **nu are un flux dedicat „primire cu titlu gratuit"** care să completeze automat contrapartida 475 și să genereze, lună de lună, trecerea proporțională la 7584 corespunzător amortizării. Această corelare rămâne, azi, în sarcina contabilului.
+La data acestui ghid, aplicația oferă funcții generale de gestiune a mijloacelor fixe — `adauga()` și `adauga_cu_reevaluare()` — cu parametri liberi pentru cont de imobilizare, cont de amortizare și valoare de intrare. Contabilul poate introduce manual valoarea justă și poate alege contul de contrapartidă potrivit (475), dar aplicația **nu are un flux dedicat „primire cu titlu gratuit"** care să completeze automat contrapartida 475 și să genereze, lună de lună, trecerea proporțională la 7584 corespunzător amortizării. Această corelare rămâne, azi, în sarcina contabilului.
 
 [iConta.eu](/)

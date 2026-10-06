@@ -14,7 +14,7 @@ Dobânda pentru o obligație fiscală neplătită la timp nu începe să curgă 
 
 ::: ghid-temei
 „(1) Dobânzile se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. (2) Pentru diferențele suplimentare de creanțe fiscale rezultate din corectarea declarațiilor sau modificarea unei decizii de impunere, dobânzile se datorează începând cu ziua imediat următoare scadenței creanței fiscale pentru care s-a stabilit diferența și până la data stingerii acesteia, inclusiv. [...] (5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (1), (2) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (1), (2) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă practic din aceste reguli:

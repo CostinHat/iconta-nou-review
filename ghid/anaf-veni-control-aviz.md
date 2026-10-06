@@ -14,7 +14,7 @@ Regula generală e că inspecția fiscală se anunță din timp, printr-un aviz 
 
 ::: ghid-temei
 „(4) Avizul de inspecție fiscală se comunică la începerea inspecției fiscale în următoarele situații: a) în cazul efectuării unei inspecții fiscale la un contribuabil/plătitor aflat în procedura de insolvență; b) în cazul în care, ca urmare a unui control inopinat, se impune începerea imediată a inspecției fiscale; c) pentru extinderea inspecției fiscale la perioade sau creanțe fiscale, altele decât cele cuprinse în avizul de inspecție fiscală inițial; d) în cazul refacerii inspecției fiscale ca urmare a unei decizii de soluționare a contestației; e) în cazul unor cereri ale contribuabilului/plătitorului pentru a căror soluționare, ca urmare a analizei de risc, este necesară efectuarea inspecției fiscale."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 122 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 122 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Regula generală**: avizul de inspecție fiscală se comunică înainte de începerea controlului — cu 30 de zile pentru marii contribuabili, cu 15 zile pentru ceilalți (art. 122 alin. (2)).
@@ -29,6 +29,6 @@ Regula generală e că inspecția fiscală se anunță din timp, printr-un aviz 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul care să gestioneze procedura de control fiscal (control inopinat sau inspecție fiscală) — există module de alerte legate de control fiscal (`core/alerte_control_fiscal.py`, `core/control_fiscal_api.py`) care semnalează contabilului riscuri sau neconcordanțe interne, dar interacțiunea efectivă cu organul de control, inclusiv verificarea avizului sau a legitimației, rămâne în sarcina firmei și a contabilului.
+La data acestui ghid, iConta.eu nu are un modul care să gestioneze procedura de control fiscal (control inopinat sau inspecție fiscală) — există module de alerte legate de control fiscal care semnalează contabilului riscuri sau neconcordanțe interne, dar interacțiunea efectivă cu organul de control, inclusiv verificarea avizului sau a legitimației, rămâne în sarcina firmei și a contabilului.
 
 [iConta.eu](/)

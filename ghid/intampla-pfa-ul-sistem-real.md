@@ -14,13 +14,13 @@ Dacă cheltuielile deductibile depășesc venitul brut, venitul net e zero pentr
 
 ::: ghid-temei
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri, cu excepția situațiilor în care sunt aplicabile prevederile art. 68^1, 68^3 și 69."
-— Cod fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pierderea fiscală anuală înregistrată pe fiecare sursă din activități independente, din drepturi de proprietate intelectuală și din activități agricole, silvicultură și piscicultură, determinată în sistem real, se reportează și se compensează de către contribuabil în limita a 70% din veniturile nete anuale, obținute din aceeași sursă de venit în următorii 5 ani fiscali consecutivi."
-— Cod fiscal, art. 118 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 118 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Regulile de reportare a pierderilor sunt următoarele: a) reportul se efectuează cronologic, în funcție de vechimea pierderii, în următorii 5 ani consecutivi; [...]"
-— Cod fiscal, art. 118 alin. (5) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 118 alin. (5) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste texte rezultă mecanismul complet:
@@ -37,7 +37,7 @@ Din aceste texte rezultă mecanismul complet:
 
 ## Ce face iConta.eu
 
-Motorul de calcul D212 (`core/d212_engine.py`) implementează exact regula de bază: venitul net rezultă din venitul brut minus cheltuielile deductibile din registrul de încasări și plăți validat, iar dacă rezultatul e negativ, e limitat (clampat) la zero pentru calculul CAS, CASS și impozitului anului respectiv — nu apare niciodată un venit net negativ în fișa de calcul.
+Motorul de calcul D212 implementează exact regula de bază: venitul net rezultă din venitul brut minus cheltuielile deductibile din registrul de încasări și plăți validat, iar dacă rezultatul e negativ, e limitat (clampat) la zero pentru calculul CAS, CASS și impozitului anului respectiv — nu apare niciodată un venit net negativ în fișa de calcul.
 
 **Aplicația nu ține însă evidența pierderii reportabile de la un an la altul** — Fișa D212 calculează fiecare an fiscal independent, pe baza registrului de încasări și plăți al acelui an. În formularul D212, contabilul scrie pierderile fiscale reportate din anii precedenți, iar declarația le compensează în limita a 70% din venitul net al anului (art. 118 alin. (4)) și calculează venitul net recalculat; ordinea pe vechimea pierderilor și expirarea după 5 ani rămân urmărite de contabil.
 

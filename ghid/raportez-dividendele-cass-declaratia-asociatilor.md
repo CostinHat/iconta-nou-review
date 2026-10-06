@@ -14,7 +14,7 @@ Dividendele încasate de o persoană fizică intră la categoria „venituri din
 
 ::: ghid-temei
 „Baza anuală de calcul al contribuției de asigurări sociale de sănătate în cazul persoanelor care realizează venituri din cele prevăzute la art. 155 alin. (1) lit. c)-h) o reprezintă: a) nivelul a 6 salarii minime brute pe țară, în cazul veniturilor realizate cuprinse între 6 salarii minime brute pe țară inclusiv și 12 salarii minime brute pe țară; b) nivelul de 12 salarii minime brute pe țară, în cazul veniturilor realizate cuprinse între 12 salarii minime brute pe țară inclusiv și 24 de salarii minime brute pe țară; c) nivelul de 24 de salarii minime brute pe țară, în cazul veniturilor realizate cel puțin egale cu 24 de salarii minime brute pe țară."
-— Legea 227/2015, art. 170 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 170 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de raportare, pas cu pas:

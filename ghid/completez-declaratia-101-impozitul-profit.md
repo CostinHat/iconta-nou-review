@@ -14,7 +14,7 @@ Declarația 101 nu e o formalitate administrativă generică, ci formularul prin
 
 ::: ghid-temei
 „Art. 1 - (1) Se aprobă modelul, conţinutul şi instrucţiunile de completare a formularului 101 «Declaraţie privind impozitul pe profit», prevăzute în anexa nr. 1. (2) Se aprobă modelul, conţinutul şi instrucţiunile de completare a formularului 101 Grup fiscal «Declaraţie consolidată privind impozitul pe profit determinat de grupul fiscal», prevăzute în anexa nr. 2. ... Art. 4 - Formularele prevăzute la art. 1 se utilizează începând cu declararea obligaţiilor anuale aferente anului fiscal 2024/anului modificat care începe în anul 2024."
-— OPANAF 206/2025, art. 1 și art. 4 (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— OPANAF 206/2025, art. 1 și art. 4 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 :::
 
 Din text rezultă cadrul actual de completare:

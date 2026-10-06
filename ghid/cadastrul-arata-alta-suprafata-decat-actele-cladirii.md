@@ -16,15 +16,15 @@ Diferența poate merge în ambele sensuri. Dacă măsurătorile arată mai puți
 
 ::: ghid-temei
 „(9) În cazul clădirilor la care se constată diferențe între suprafețele înscrise în actele de proprietate și situația reală rezultată din măsurătorile executate în condițiile Legii cadastrului și a publicității imobiliare [...] pentru determinarea sarcinii fiscale se au în vedere suprafețele care corespund situației reale, dovedite prin lucrări de cadastru. Datele rezultate din lucrările de cadastru se înscriu în evidențele fiscale, în registrul agricol, precum și în cartea funciară, iar impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor celui în care se înregistrează lucrarea de cadastru la oficiile de cadastru și publicitate imobiliară, ca anexă la declarația fiscală."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „pentru determinarea sarcinii fiscale se au în vedere suprafețele care corespund situației reale, dovedite prin lucrări de cadastru. Datele rezultate din lucrările de cadastru se înscriu în evidențele fiscale, în registrul agricol, precum și în cartea funciară, iar impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor celui în care se înregistrează lucrarea de cadastru"
-— Codul fiscal (Legea 227/2015), art. 466 alin. (6), pentru terenuri (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (6), pentru terenuri (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Declararea clădirilor în scop fiscal nu este condiționată de înregistrarea acestor imobile la oficiile de cadastru și publicitate imobiliară."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

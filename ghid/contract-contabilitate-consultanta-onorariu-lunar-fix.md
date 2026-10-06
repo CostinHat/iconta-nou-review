@@ -21,12 +21,12 @@ Regula e importantă pentru cabinetele de contabilitate și pentru consultanți.
 
 ::: ghid-temei
 „(5) În cazul contractelor de prestări de servicii în cadrul cărora clientul s-a angajat să plătească sume forfetare cu titlu de remunerație convenită între părți, independent de volumul și de natura serviciilor efectiv furnizate în perioada la care se raportează această remunerație, serviciile trebuie considerate efectuate în perioada la care se raportează plata, indiferent dacă prestatorul a furnizat sau nu a furnizat efectiv servicii clientului său în această perioadă. [...] Faptul generator al taxei intervine conform prevederilor art. 281 alin. (8) din Codul fiscal, fără să prezinte importanță dacă beneficiarul a apelat efectiv sau cât de des a apelat la serviciile prestatorului. [...] Aceste prevederi se aplică inclusiv în cazul serviciilor de consultanță, juridice, de contabilitate, de expertiză, de mentenanță, de service și alte servicii similare, pentru care nu se întocmesc rapoarte de lucru sau alte situații pe baza cărora prestatorul atestă serviciile prestate, fiind încheiate contracte în condițiile descrise de prezentul alineat."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 24 alin. (5) (norme art. 281 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 24 alin. (5) (norme art. 281 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „se consideră că livrarea de bunuri/prestarea de servicii este efectuată la fiecare dată prevăzută în contract pentru plata bunurilor livrate/serviciilor prestate sau, în lipsa unei astfel de prevederi contractuale, la data emiterii unei facturi, dar perioada de decontare nu poate depăși un an."
-— Codul fiscal (Legea 227/2015), art. 281 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 281 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

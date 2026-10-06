@@ -15,7 +15,7 @@ Insolvența nu este, prin ea însăși, un motiv de excludere din regimul de imp
 ::: ghid-temei
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...]
 e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul comerțului sau la instanțele judecătorești, potrivit legii."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din formularea exactă a condiției rezultă limitele ei:

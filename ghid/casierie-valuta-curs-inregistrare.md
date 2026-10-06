@@ -14,7 +14,7 @@ Casieria în valută (de exemplu, avansuri în valută pentru deplasări externe
 
 ::: ghid-temei
 „(3) Sumele exprimate într-o monedă străină se convertesc în moneda națională a României, după cum urmează: [...] b) în oricare alt caz, sumele se convertesc în moneda națională a României prin utilizarea cursului de schimb valutar la data la care se primesc sau se plătesc sumele respective ori la altă dată prevăzută expres în prezentul cod. (4) În înțelesul prevederilor alin. (3), cursul de schimb valutar, folosit pentru a converti în moneda națională a României sumele exprimate în moneda străină, este cursul de schimb comunicat de Banca Națională a României valabil pentru datele respective, exceptând cazurile prevăzute expres în prezentul cod."
-— Codul fiscal (Legea 227/2015), art. 9 alin. (3) lit. b) și alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 9 alin. (3) lit. b) și alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cursul folosit este **cursul BNR valabil la data încasării sau plății efective** în numerar, nu un curs mediu lunar sau cursul de la data facturii, dacă acestea diferă.

@@ -49,7 +49,7 @@ Rd. 39.1 corect = **84.000 lei**, nu 120.000. Rd. 40 (profit impozabil) = 120.00
 
 ## Pentru pierderile mai vechi de 2024
 
-Dacă la 31 decembrie 2023 mai aveai pierdere nerecuperată din ani anteriori lui 2024, ea nu se pierde, dar se supune aceluiași plafon de 70%, pe perioada rămasă din cei 7 ani consecutivi de la anul în care a apărut. Când într-un an recuperezi și pierderi vechi, și pierderi noi (din 2024+), cele două se cumulează pentru aplicarea limitei de 70% — nu sunt plafoane separate.
+Dacă la 31 decembrie 2023 mai aveai pierdere nerecuperată din ani anteriori lui 2024, ea nu se pierde, dar se supune aceluiași plafon de 70%, pe perioada rămasă din cei 7 ani consecutivi de la anul în care a apărut. Când într-un an recuperezi și pierderi vechi, și pierderi noi (din 2024), cele două se cumulează pentru aplicarea limitei de 70% — nu sunt plafoane separate.
 
 ## Ce se greșește în practică
 

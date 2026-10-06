@@ -16,10 +16,10 @@ Pentru contabilul furnizorului, asta înseamnă că factura neîncasată rămân
 
 ::: ghid-temei
 „(15) În cazul în care nu mai sunt îndeplinite condițiile stării de insolvență a unității administrativ-teritoriale, judecătorul-sindic pronunță o sentință de închidere a procedurii, chiar dacă nu au fost stinse toate creanțele cuprinse în planul de redresare a stării de insolvență. Restul creanțelor nestinse în procedura de insolvență vor fi cuprinse în planul de redresare a stării de criză financiară."
-— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (15) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 75 alin. (15) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(17) Unitatea administrativ-teritorială revine la statutul de criză financiară, iar ordonatorul principal de credite și consiliul local își reiau atribuțiile și vor proceda conform art. 74 la aplicarea întocmai a planului de redresare financiară pentru ieșirea unității administrativ-teritoriale din criza financiară."
-— Legea 273/2006, art. 75 alin. (17) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 75 alin. (17) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:
@@ -35,7 +35,7 @@ Cât timp creanța rămâne neîncasată, furnizorul poate constitui o ajustare 
 
 ::: ghid-temei
 „ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile, reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea acestor ajustări"
-— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Limita de 30% se aplică doar dacă sunt îndeplinite cumulativ condițiile de la aceeași literă: creanța e neîncasată de peste 270 de zile de la scadență, nu e garantată de altă persoană și debitorul nu e persoană afiliată. Deducerea de 100% de la lit. j) vizează falimentul unei persoane juridice sau insolvența unei persoane fizice. Insolvența unei unități administrativ-teritoriale nu e faliment, așa că regula de 100% nu se aplică aici.

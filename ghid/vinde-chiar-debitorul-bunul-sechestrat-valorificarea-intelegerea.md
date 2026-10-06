@@ -16,13 +16,13 @@ Da. Codul de procedură fiscală permite ca bunul sechestrat să fie vândut chi
 
 ::: ghid-temei
 „Valorificarea bunurilor potrivit înțelegerii părților se realizează de debitorul însuși, cu acordul organului de executare silită, astfel încât să se asigure o recuperare corespunzătoare a creanței fiscale. Debitorul este obligat să prezinte în scris organului de executare silită propunerile ce i s-au făcut și nivelul de acoperire a creanțelor fiscale, indicând numele și adresa potențialului cumpărător, precum și termenul în care acesta din urmă va achita prețul propus."
-— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prețul propus de cumpărător și acceptat de organul de executare silită nu poate fi mai mic decât prețul de evaluare."
-— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (2), prețul propus de cumpărător poate fi mai mic decât prețul de evaluare în cazul în care, din prețul oferit, se asigură acoperirea integrală a creanței fiscale, inclusiv a accesoriilor și a cheltuielilor de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (2^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (2^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează concret:

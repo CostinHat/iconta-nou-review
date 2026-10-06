@@ -14,7 +14,7 @@ Ridicarea de numerar din contul bancar al firmei, pentru alimentarea propriei ca
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice de întocmire și utilizare a documentelor financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - **Ridicarea de numerar din bancă pentru casierie proprie nu cade sub plafoanele Legii nr. 70/2015** — acele plafoane (5.000 lei/10.000 lei) privesc încasări și plăți între persoane distincte, definite la art. 1 alin. (1) din acea lege, nu transferul de fonduri în interiorul aceleiași firme.
@@ -29,6 +29,6 @@ Ridicarea de numerar din contul bancar al firmei, pentru alimentarea propriei ca
 
 ## Ce face iConta.eu
 
-Modulele de bancă și casierie din iConta.eu (`core/banca.py`, `core/casa.py`, `core/casa_api.py`) permit înregistrarea unui transfer între contul bancar și casierie ca operațiune internă, dar generarea automată a documentului justificativ (chitanța/foaia de vărsământ de la bancă) și corelarea ei cu extrasul bancar real rămân în sarcina contabilului, pe baza documentului primit efectiv de la bancă.
+Modulele de bancă și casierie din iConta.eu permit înregistrarea unui transfer între contul bancar și casierie ca operațiune internă, dar generarea automată a documentului justificativ (chitanța/foaia de vărsământ de la bancă) și corelarea ei cu extrasul bancar real rămân în sarcina contabilului, pe baza documentului primit efectiv de la bancă.
 
 [iConta.eu](/)

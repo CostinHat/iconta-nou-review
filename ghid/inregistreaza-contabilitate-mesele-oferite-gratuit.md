@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Următoarele venituri nu sunt impozabile, în înțelesul impozitului pe venit: [...] b) drepturile de hrană acordate de angajatori angajaților, în conformitate cu legislația în vigoare; c) hrană acordată de angajatori angajaților, în cazul în care potrivit legislației în materie este interzisă introducerea alimentelor în incinta unității[...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4) lit. b) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4) lit. b) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, onest, din text pentru un hotel:

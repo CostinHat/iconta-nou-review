@@ -14,10 +14,10 @@ Un sediu permanent deschis în străinătate nu scoate, prin el însuși, firma 
 
 ::: ghid-temei
 „Impozitul plătit unui stat străin se scade din impozitul pe profit, dacă se aplică prevederile convenției de evitare a dublei impuneri încheiate între România și statul străin. [...] Dacă o persoană juridică română obține venituri dintr-un stat străin prin intermediul unui sediu permanent [...], impozitul plătit către statul străin [...] se scade din impozitul pe profit determinat potrivit prevederilor prezentului titlu."
-— Legea 227/2015, art. 39 alin. (1)-(2), Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 39 alin. (1)-(2), Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]."
-— Legea 227/2015, art. 53 alin. (1), Titlul III (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1), Titlul III (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența e structurală: art. 39 (mecanismul de credit fiscal pentru evitarea dublei impuneri) face parte din Titlul II — Impozitul pe profit — și nu e reluat, sub nicio formă, în Titlul III — Impozitul pe veniturile microîntreprinderilor. Așadar o microîntreprindere românească cu sediu permanent în străinătate:

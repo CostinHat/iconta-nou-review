@@ -16,9 +16,9 @@ Alegerea schimbă fiscalitatea pentru asociație. Cu CIM, asociația e angajator
 
 ::: ghid-temei
 „(1) Administrarea condominiului poate fi realizată de către persoane fizice, persoane fizice autorizate, sau persoane juridice specializate, autorizate conform legii. (2) Activitatea de administrare include activități de administrare tehnică și întreținere a proprietății comune, de contabilitate și de casierie. (3) Orice alte activități de administrare care nu sunt reglementate prin lege sau prin statutul asociației sunt condiționate de hotărârea adunării generale a asociației de proprietari. (4) Administratorii sunt angajați pe bază de contract individual de muncă sau contract de prestări servicii, cu respectarea prevederilor legale în vigoare."
-— Legea 196/2018, art. 64 alin. (1)-(4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 64 alin. (1)-(4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „i) contract de administrare - acordul scris încheiat între o asociație de proprietari și un administrator de condominii, care poate fi persoană fizică, persoană fizică autorizată sau o persoană juridică cu obiect de activitate administrarea condominiilor, în vederea prestării unor activități și îndeplinirii unor obiective stabilite de asociația de proprietari, conform legii. Contractul de administrare este un contract cu titlu oneros și se încheie în formă scrisă;"
-— Legea 196/2018, art. 2 lit. i) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 2 lit. i) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Cum se alege, practic:

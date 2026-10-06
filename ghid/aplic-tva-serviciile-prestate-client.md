@@ -16,7 +16,7 @@ Regula de bază pentru serviciile B2B intracomunitare e că locul prestării e l
 „CF art. 278 alin. (2) — Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” — sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420, verificat în dosarul F050.
 :::
 
-Codul sursă al motorului F050 descrie explicit efectul lipsei codului valid: „`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” Referința la alin. (3) vine din antetul modulului `core/intracomunitar.py`; textul integral al alineatului nu a fost extras verbatim în dosarul de cercetare F050, doar numărul articolului și efectul lui, așa cum reiese din cod.
+Codul sursă al motorului F050 descrie explicit efectul lipsei codului valid: „`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” Referința la alin. (3) vine din antetul modulului aplicația; textul integral al alineatului nu a fost extras verbatim în dosarul de cercetare F050, doar numărul articolului și efectul lui, așa cum reiese din cod.
 
 ## Ce înseamnă practic
 

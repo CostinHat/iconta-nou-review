@@ -14,7 +14,7 @@ O diferență de câțiva bani, care „nu se leagă" între balanță și extra
 
 ::: ghid-temei
 „Registrele de contabilitate obligatorii sunt: Registrul-jurnal, Registrul-inventar și Cartea mare. Întocmirea, editarea și păstrarea registrelor de contabilitate se efectuează conform normelor elaborate de Ministerul Finanțelor Publice."
-— Legea contabilității nr. 82/1991, art. 20 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 20 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce oferă, concret, aceste registre pentru localizarea diferenței:

@@ -14,7 +14,7 @@ D394 se generează din aceleași facturi care alimentează jurnalul de vânzări
 
 ::: ghid-temei
 „În cazul în care, după depunerea declaraţiei, persoana impozabilă constată existenţa unor omisiuni/erori în datele declarate, aceasta trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial."
-— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 pct. 3 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Textul confirmă un punct important pentru orice verificare făcută înainte de un control: D394 nu are o „rectificativă" separată ca formular — o eroare descoperită se corectează prin depunerea unei **noi declarații complete**, care înlocuiește integral declarația inițială pentru acea perioadă, nu doar prin corectarea unei linii.

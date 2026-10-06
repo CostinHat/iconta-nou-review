@@ -19,18 +19,18 @@ Până atunci, bunurile rămân în stocul furnizorului, chiar dacă fizic se af
 
 ::: ghid-temei
 „Pentru bunurile livrate în baza unui contract de consignație se consideră că livrarea bunurilor de la consignant la consignatar are loc la data la care bunurile sunt livrate de consignatar clienților săi."
-— Codul fiscal (Legea 227/2015), art. 281 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 281 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru stocurile la dispoziția clientului se consideră că livrarea bunurilor are loc la data la care clientul retrage bunurile din stoc în vederea utilizării, în principal pentru activitatea de producție."
-— Codul fiscal (Legea 227/2015), art. 281 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 281 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul titlului VII din Codul fiscal, contractul de consignație reprezintă un contract prin care consignantul se angajează să livreze bunuri consignatarului, pentru ca acesta din urmă să găsească un cumpărător pentru aceste bunuri. Consignatarul acționează în nume propriu, dar în contul consignantului, când livrează bunurile către cumpărători."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 24 alin. (1) (norme art. 281 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 24 alin. (1) (norme art. 281 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Stocurile la dispoziția clientului reprezintă o operațiune potrivit căreia furnizorul transferă regulat bunuri într-un depozit propriu sau într-un depozit al clientului, iar transferul proprietății bunurilor intervine, potrivit contractului, la data la care clientul scoate bunurile din depozit, în principal pentru a le utiliza în procesul de producție, dar și pentru alte activități economice."
-— HG 1/2016, Titlul VII, pct. 24 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 24 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

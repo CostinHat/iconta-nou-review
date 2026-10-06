@@ -14,12 +14,12 @@ Obligativitatea RO e-Factura în relația B2B nu e o noutate a lui 2026 — ea e
 
 ::: ghid-temei
 „(1) În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 [...], pentru livrările de bunuri și prestările de servicii care au locul livrării/prestării în România [...], emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura [...]."
-— OUG 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin OUG 138/2024, art. I pct. 2 (sursă: anaf_surse/oug_138_2024.txt)
+— OUG 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin OUG 138/2024, art. I pct. 2 (sursă: [OUG nr. 138/2024 privind modificarea și completarea unor acte normative în domeniul fiscal-bugetar](https://legislatie.just.ro/Public/DetaliiDocument/292029))
 :::
 
 ::: ghid-temei
 „Furnizorii/Prestatorii care au obligația să respecte prevederile art. 5, art. 9^1, art. 10 alin. (1) și art. 10^1 alin. (2) [...] și care se identifică fiscal prin codul numeric personal, care au început să desfășoare activități economice anterior datei de 15 ianuarie 2026, au obligația de a solicita înscrierea în Registrul RO e-Factura obligatoriu înainte de această dată."
-— OUG 89/2025, art. XI alin. (1) — dispoziție tranzitorie proprie a OUG 89/2025, care face trimitere la obligațiile din OUG 120/2021 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 89/2025, art. XI alin. (1) — dispoziție tranzitorie proprie a OUG 89/2025, care face trimitere la obligațiile din OUG 120/2021 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 - Obligația B2B generalizată există deja din 2024 (OUG 120/2021, modificată prin OUG 138/2024) — practic toate firmele stabilite în România trebuie să transmită facturile emise prin RO e-Factura.

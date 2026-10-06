@@ -17,7 +17,7 @@ Un administrator de societate nu are nevoie de contract individual de muncă pen
 d) sumele din profitul net cuvenite administratorilor societăților, potrivit legii sau actului constitutiv, după caz, precum și participarea la profitul unității pentru managerii cu contract de management, potrivit legii;
 [...]
 f) remunerația obținută de directorii cu contract de mandat și de membrii directoratului de la societățile administrate în sistem dualist și ai consiliului de supraveghere, potrivit legii, precum și drepturile cuvenite managerilor, în baza contractului de management prevăzut de lege."
-— Cod fiscal, art. 76 alin. (2) lit. d) și f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 76 alin. (2) lit. d) și f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o firmă care plătește un administrator neangajat cu contract individual de muncă:

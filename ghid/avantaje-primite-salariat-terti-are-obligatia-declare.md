@@ -16,17 +16,17 @@ CASS pentru avantajele în bani sau în natură primite de salariat de la terți
 
 ::: ghid-temei
 „În cazul veniturilor reprezentând avantaje în bani și/sau în natură primite de la terți ca urmare a prevederilor contractului individual de muncă, a unui raport de serviciu, act de detașare sau a unui statut special prevăzut de lege ori a unei relații contractuale între părți, după caz, obligația de declarare a contribuției de asigurări sociale de sănătate potrivit alin. (1) revine persoanelor prevăzute la art. 168 alin. (2^1) sau (2^2) , după caz."
-— Codul fiscal (Legea 227/2015), art. 169 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 169 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „angajatorului rezident fiscal român, când avantajele în bani și/sau în natură sunt acordate de alte entități decât acesta și plata se efectuează prin intermediul angajatorului; ... b) plătitorilor de venituri rezidenți fiscali români, când avantajele în bani și/sau în natură sunt acordate și plătite direct persoanei fizice de alte entități decât angajatorul"
-— Codul fiscal (Legea 227/2015), art. 168 alin. (2^1) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (2^1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „persoanelor fizice, când avantajele în bani și/sau în natură sunt acordate și plătite direct persoanei fizice de plătitori de venituri care nu sunt rezidenți fiscali români, alții decât angajatorul."
-— Codul fiscal (Legea 227/2015), art. 168 alin. (2^1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (2^1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei situații, plus opțiunea:

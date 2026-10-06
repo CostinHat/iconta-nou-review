@@ -14,7 +14,7 @@ Denumirea populară — "ajustare de TVA" — induce în eroare: pentru mărfuri
 
 ::: ghid-temei
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: [...] b) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi puse la dispoziția altor persoane în mod gratuit, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial. [...] (8) Nu constituie livrare de bunuri, în sensul alin. (1): [...] b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice; c) acordarea de bunuri de mică valoare, în mod gratuit, în cadrul acțiunilor de sponsorizare, de mecenat, de protocol/reprezentare, în condițiile stabilite prin normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. b) și alin. (8) lit. b)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. b) și alin. (8) lit. b)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pas cu pas:

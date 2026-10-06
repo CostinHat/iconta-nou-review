@@ -14,10 +14,10 @@ O eroare de CAS în D212 aproape întotdeauna vine dintr-o bază de calcul greș
 
 ::: ghid-temei
 „Baza anuală de calcul al contribuției de asigurări sociale, în cazul persoanelor care realizează veniturile prevăzute la art. 137 alin. (1) lit. b) și b^1), o reprezintă venitul ales de contribuabil, care nu poate fi mai mic decât: a) nivelul de 12 salarii minime brute pe țară, în cazul veniturilor realizate cuprinse între 12 salarii minime brute pe țară inclusiv și 24 de salarii minime brute pe țară; [...] b) nivelul de 24 de salarii minime brute pe țară, în cazul veniturilor realizate cel puțin egale cu 24 de salarii minime brute pe țară."
-— Codul fiscal (Legea 227/2015), art. 148 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 148 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii pentru o corecție reală, nu doar formală:
@@ -35,7 +35,7 @@ Pașii pentru o corecție reală, nu doar formală:
 
 ## Ce face iConta.eu
 
-Motorul de calcul din `core/d212_engine.py` implementează exact regula de plafonare pe trepte pentru CAS (`calculeaza_cas`): sub pragul de 12 salarii minime brute contribuția e opțională, între 12 și 24 baza e fixă la 12 salarii minime, iar peste 24 baza e plafonată la 24 de salarii minime — cu reperul de salariu minim citit din registrul de cote al aplicației pentru anul de venit corect, nu hardcodat. Calculul e disponibil prin `fisa_d212` (`core/rip_api.py`) pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, dar numai pentru veniturile anilor 2025 și 2026.
+Motorul de calcul din aplicație implementează exact regula de plafonare pe trepte pentru CAS (`calculeaza_cas`): sub pragul de 12 salarii minime brute contribuția e opțională, între 12 și 24 baza e fixă la 12 salarii minime, iar peste 24 baza e plafonată la 24 de salarii minime — cu reperul de salariu minim citit din registrul de cote al aplicației pentru anul de venit corect, nu hardcodat. Calculul e disponibil prin `fisa_d212` pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, dar numai pentru veniturile anilor 2025 și 2026.
 
 Aplicația nu depune declarația: rectificativa se generează din același formular D212, bifând „Rectificativă”, cu cifrele corecte, iar depunerea rămâne a contabilului.
 

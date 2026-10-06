@@ -14,7 +14,7 @@ O criză de lichiditate reală — momentul în care firma nu mai poate onora la
 
 ::: ghid-temei
 „Contribuabilii, persoane juridice, indiferent de forma de organizare si de tipul de proprietate, in termen de 15 zile de la data intrarii in vigoare a prezentei ordonante de urgenta vor organiza evidenta obligatiilor de plata si evidenta creantelor, pe termene scadente, catre orice creditor, respectiv de la orice debitor, dupa caz. Evidenta prevazuta la alin. 1 se actualizeaza zilnic."
-— OUG 77/1999 privind unele măsuri pentru prevenirea incapacității de plată, art. 1 (sursă: anaf_surse/oug_77_1999_masuri_prevenire_incapacitate_plata.txt)
+— OUG 77/1999 privind unele măsuri pentru prevenirea incapacității de plată, art. 1 (sursă: [OUG nr. 77/1999 privind unele măsuri pentru prevenirea incapacității de plată](https://legislatie.just.ro/Public/DetaliiDocument/18352))
 :::
 
 Câteva observații necesare despre acest act:

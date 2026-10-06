@@ -14,7 +14,7 @@ Consignatarul nu cumpără bunurile pe care le primește de la consignant — le
 
 ::: ghid-temei
 „(Cod 14-3-1A) Nota de recepție și constatare de diferențe (NIR) servește ca: - document pentru recepția bunurilor aprovizionate; [...] Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare."
-— OMFP 2634/2015, Anexa 2 (Norme specifice) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2 (Norme specifice) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Observație importantă: textul normativ de mai sus enumeră explicit cazurile în care NIR-ul e obligatoriu — printre ele, bunurile primite „spre prelucrare, în custodie sau în păstrare". Cuvântul „consignație" nu apare ca atare în listă. Nu există, în sursele verificate, un temei care să numească explicit consignația printre situațiile NIR obligatoriu; redirecționăm onest spre cel mai apropiat caz reglementat — custodia/păstrarea — pentru că, din punct de vedere contabil, bunurile primite în consignație au aceeași natură: aparțin unui terț (consignantul), nu sunt proprietatea consignatarului până la vânzare.

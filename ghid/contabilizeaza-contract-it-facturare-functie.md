@@ -14,7 +14,7 @@ Contractele „time and material" — frecvente în IT, unde clientul plătește
 
 ::: ghid-temei
 „Principiul contabilității de angajamente. Efectele tranzacțiilor și ale altor evenimente sunt recunoscute atunci când tranzacțiile și evenimentele se produc (și nu pe măsură ce numerarul sau echivalentul său este încasat sau plătit) și sunt înregistrate în contabilitate și raportate în situațiile financiare ale perioadelor aferente."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Nu am găsit în corpusul de legislație verificat un articol specific pentru recunoașterea veniturilor din contracte de servicii facturate pe ore lucrate (gen „time and material" în IT) — citatul de mai sus e principiul general de recunoaștere aplicabil oricărei tranzacții, aplicat aici prin extensie firească:

@@ -16,20 +16,20 @@ Diferența contează pentru că amenda pentru neauditare e una dintre cele mai m
 
 ::: ghid-temei
 „(8^1) Persoanele prevăzute la art. 1 alin. (1) care optează pentru repartizarea trimestrială de dividende au obligația să întocmească situații financiare interimare."
-— Legea contabilității (Legea 82/1991), art. 28 alin. (8^1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 28 alin. (8^1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „Articolul 34^1 (1) Situațiile financiare interimare întocmite potrivit art. 28 alin. (8^1) sunt supuse auditului, în situația în care persoanele care le întocmesc au obligația de auditare statutară a situațiilor financiare anuale sau optează pentru auditarea acestora, potrivit legii. (2) Situațiile financiare interimare sunt supuse verificării de către cenzori în cazul în care situațiile financiare anuale fac obiectul verificării de către cenzori, potrivit legii."
-— Legea contabilității (Legea 82/1991), art. 34^1 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 34^1 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 ::: ghid-temei
 „7. nerespectarea obligației privind auditarea, conform legii, a situațiilor financiare anuale, a situațiilor financiare anuale consolidate, precum și a situațiilor financiare interimare;"
-— Legea contabilității (Legea 82/1991), art. 41 pct. 7 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 41 pct. 7 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „n) cea prevăzută la pct. 7 , cu amendă de la 30.000 lei la 40.000 lei;"
-— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. n) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 42 alin. (1) lit. n) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Cum se stabilește regimul, pas cu pas:

@@ -14,7 +14,7 @@ Nu. Este una dintre puținele scutiri clare și necondiționate din regimul de n
 
 ::: ghid-temei
 „Contribuabilii care desfășoară activități pentru care venitul net se determină pe bază de norme de venit au obligația să completeze numai partea referitoare la venituri din Registrul de evidență fiscală și nu au obligații privind evidența contabilă."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret această scutire:

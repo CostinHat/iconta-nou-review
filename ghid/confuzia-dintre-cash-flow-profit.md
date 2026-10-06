@@ -14,7 +14,7 @@ Una dintre cele mai costisitoare confuzii de management la firmele mici este să
 
 ::: ghid-temei
 „(1) Principiul contabilității de angajamente. Efectele tranzacțiilor și ale altor evenimente sunt recunoscute atunci când tranzacțiile și evenimentele se produc (și nu pe măsură ce numerarul sau echivalentul său este încasat sau plătit) și sunt înregistrate în contabilitate și raportate în situațiile financiare ale perioadelor aferente. (2) Trebuie să se țină cont de veniturile și cheltuielile aferente exercițiului financiar, indiferent de data încasării veniturilor sau data plății cheltuielilor."
-— OMFP 1802/2014, pct. 53 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 53 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Chiar textul reglementării explică sursa confuziei:
@@ -31,6 +31,6 @@ Chiar textul reglementării explică sursa confuziei:
 
 ## Ce face iConta.eu
 
-În portalul clientului, ecranul „Cifrele firmei" pune vizual, una sub alta, exact cele două mărimi care se confundă: rândul „Profit" (calculat contabil, pe bază de angajamente, din `documente_api.balanta`) și, imediat dedesubt, secțiunea „Previziune bani (8 săptămâni)" — proiecția de cash pe scadențe, generată de motorul `core/cashflow.py`. Astfel poți avea, pe același ecran, un profit contabil pozitiv și, câteva rânduri mai jos, un sold de bani proiectat care devine negativ peste 3-4 săptămâni — colorat automat cu roșu în interfață. Proiecția e explicit etichetată în aplicație drept „estimare pe scadențele facturilor — orientativ", nu o certitudine, iar ecranul e strict informativ: nu există niciun buton de acțiune, nu se pot programa plăți sau amâna facturi din el.
+În portalul clientului, ecranul „Cifrele firmei" pune vizual, una sub alta, exact cele două mărimi care se confundă: rândul „Profit" (calculat contabil, pe bază de angajamente, din `documente_api.balanta`) și, imediat dedesubt, secțiunea „Previziune bani (8 săptămâni)" — proiecția de cash pe scadențe, generată de aplicația. Astfel poți avea, pe același ecran, un profit contabil pozitiv și, câteva rânduri mai jos, un sold de bani proiectat care devine negativ peste 3-4 săptămâni — colorat automat cu roșu în interfață. Proiecția e explicit etichetată în aplicație drept „estimare pe scadențele facturilor — orientativ", nu o certitudine, iar ecranul e strict informativ: nu există niciun buton de acțiune, nu se pot programa plăți sau amâna facturi din el.
 
 [iConta.eu](/)

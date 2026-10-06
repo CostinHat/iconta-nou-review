@@ -14,7 +14,7 @@ Tipul de normă (întreagă sau parțială) nu e doar o mențiune informativă �
 
 ::: ghid-temei
 „Contribuția de asigurări sociale datorată de către persoanele fizice care obțin venituri din salarii sau asimilate salariilor, în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial, calculată potrivit alin. (5), nu poate fi mai mică decât nivelul contribuției de asigurări sociale calculate prin aplicarea cotei prevăzute la art. 138 lit. a) asupra salariului de bază minim brut pe țară în vigoare în luna pentru care se datorează contribuția de asigurări sociale, corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ."
-— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru completarea D112:
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru completarea D112:
 
 ## Ce face iConta.eu
 
-Am verificat în `core/salarizare.py`: aplicația **calculează automat baza minimă de CAS** conform art. 146 alin. (5^6)-(5^7), diferențiat pentru salariat cu normă întreagă (parametrul `norma_intreaga=True`, baza raportată la salariul minim brut pe economie din luna respectivă) și pentru timp parțial (proporțional). Codul citează explicit acest temei în comentarii („CF art.146 alin.(5^6)/(5^7)") și rezultatul e preluat direct în generarea D112.
+Am verificat în aplicație: aplicația **calculează automat baza minimă de CAS** conform art. 146 alin. (5^6)-(5^7), diferențiat pentru salariat cu normă întreagă (parametrul `norma_intreaga=True`, baza raportată la salariul minim brut pe economie din luna respectivă) și pentru timp parțial (proporțional). Codul citează explicit acest temei în comentarii („CF art.146 alin.(5^6)/(5^7)") și rezultatul e preluat direct în generarea D112.
 
 [iConta.eu](/)

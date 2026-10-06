@@ -16,20 +16,20 @@ Pentru firma sponsor, asta înseamnă că destinația trebuie scrisă clar în c
 
 ::: ghid-temei
 „(2) Fondurile bănești acordate de persoanele juridice și fizice, primite în condițiile alin. (1) , în situația instituțiilor publice finanțate integral de la buget, sunt vărsate direct la bugetul local din care se finanțează acestea. Cu aceste sume se majorează veniturile și cheltuielile bugetului local, iar fondurile respective se vor utiliza cu respectarea destinațiilor stabilite de transmițător."
-— Legea 273/2006 privind finanțele publice locale, art. 69 alin. (2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 69 alin. (2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(1) Instituțiile publice mai pot folosi pentru desfășurarea activității lor bunuri materiale și fonduri bănești, primite de la persoane juridice și fizice sub forma de donații și sponsorizări, cu respectarea dispozițiilor legale."
-— Legea 273/2006, art. 69 alin. (1) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 69 alin. (1) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 ::: ghid-temei
 „Contractul de sponsorizare se încheie în forma scrisă, cu specificarea obiectului, valorii și duratei sponsorizarii, precum și a drepturilor și obligațiilor părților."
-— Legea 32/1994 privind sponsorizarea, art. 1 alin. (2) (sursă: anaf_surse/legea_32_1994_sponsorizarea.txt)
+— Legea 32/1994 privind sponsorizarea, art. 1 alin. (2) (sursă: [Legea nr. 32/1994 privind sponsorizarea](https://legislatie.just.ro/Public/DetaliiDocument/4058))
 :::
 
 ::: ghid-temei
 „În cazul sponsorizărilor efectuate către entități persoane juridice fără scop lucrativ, inclusiv unități de cult, sumele aferente acestora se scad din impozitul pe profit datorat, în limitele prevăzute de prezenta literă, doar dacă beneficiarul sponsorizării este înscris, la data încheierii contractului, în Registrul entităților/unităților de cult pentru care se acordă deduceri fiscale [...]"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. i) pct. 2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. i) pct. 2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

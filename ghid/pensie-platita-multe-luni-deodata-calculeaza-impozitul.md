@@ -16,12 +16,12 @@ Diferența față de un calcul pe suma întreagă e mare. Dacă plata pe trei lu
 
 ::: ghid-temei
 „În cazul unei pensii care nu este plătită lunar, impozitul ce trebuie reținut se stabilește prin împărțirea pensiei plătite la fiecare dintre lunile cărora le este aferentă pensia."
-— Codul fiscal (Legea 227/2015), art. 101 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul în care au fost acordate cumulat sume reprezentând ajutoare sociale, indemnizații de șomaj, venituri din pensii, indemnizații pe perioada concediului de acomodare sau indemnizații pentru creșterea copilului, sumele respective se defalcă pe lunile la care se referă și se utilizează cotele de contribuții de asigurări sociale de sănătate care erau în vigoare în acea perioadă."
-— Codul fiscal (Legea 227/2015), art. 168 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

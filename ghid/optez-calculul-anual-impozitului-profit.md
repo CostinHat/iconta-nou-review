@@ -14,7 +14,7 @@ Alternativa la declararea trimestrială clasică există, dar nu e o opțiune �
 
 ::: ghid-temei
 „(2) Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5), pot opta pentru calculul, declararea și plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial. [...] (3) Opțiunea pentru sistemul anual de declarare și plată a impozitului pe profit se efectuează la începutul anului fiscal pentru care se solicită aplicarea prevederilor alin. (2). Opțiunea este obligatorie pentru cel puțin 2 ani fiscali consecutivi. [...] Contribuabilii comunică organelor fiscale competente modificarea sistemului anual/trimestrial de declarare și plată a impozitului pe profit, potrivit prevederilor Codului de procedură fiscală, până la data de 31 ianuarie inclusiv a anului fiscal respectiv."
-— Legea nr. 227/2015 (Codul fiscal), art. 41 alin. (2) și (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 41 alin. (2) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii concreți ai opțiunii:
@@ -32,6 +32,6 @@ Pașii concreți ai opțiunii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează atât declarația trimestrială de impozit pe profit (D100), cât și declarația anuală (D101), din datele contabile introduse (`core/d100.py`, `core/d101.py`), dar **nu gestionează** opțiunea propriu-zisă pentru sistemul anual și nu depune comunicarea către ANAF privind schimbarea sistemului de declarare. Decizia de a opta pentru sistemul anual, respectarea termenului de 31 ianuarie și obligativitatea celor 2 ani consecutivi rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu generează atât declarația trimestrială de impozit pe profit (D100), cât și declarația anuală (D101), din datele contabile introduse, dar **nu gestionează** opțiunea propriu-zisă pentru sistemul anual și nu depune comunicarea către ANAF privind schimbarea sistemului de declarare. Decizia de a opta pentru sistemul anual, respectarea termenului de 31 ianuarie și obligativitatea celor 2 ani consecutivi rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

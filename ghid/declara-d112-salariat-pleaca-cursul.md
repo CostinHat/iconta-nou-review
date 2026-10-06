@@ -14,7 +14,7 @@ Când contractul individual de muncă încetează în cursul lunii, plafonul min
 
 ::: ghid-temei
 „În sensul aplicării prevederilor art. 146 alin. (5^1) din Codul fiscal, prin perioada în care contractul individual de muncă este activ se înțelege perioada în care contractul individual de muncă nu este suspendat potrivit Legii nr. 53/2003, republicată, cu modificările și completările ulterioare. În cazul în care, în cursul lunii, contractul individual de muncă este activ pentru o fracțiune din lună, nivelul salariului minim brut pe țară aferent zilelor lucrate din lună se stabilește după cum urmează: [...]"
-— HG 1/2016 (Normele de aplicare a Codului fiscal), Titlul V, Capitolul II, Secțiunea a 3-a, pct. 6 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele de aplicare a Codului fiscal), Titlul V, Capitolul II, Secțiunea a 3-a, pct. 6 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Din text rezultă principiul aplicabil oricărui salariat care pleacă (sau este angajat) în cursul lunii:

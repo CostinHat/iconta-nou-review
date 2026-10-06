@@ -16,12 +16,12 @@ Când firma primește dividende neimpozabile, cheltuielile făcute pentru a obț
 
 ::: ghid-temei
 „cheltuielile aferente veniturilor neimpozabile. În situația în care evidența contabilă nu asigură informația necesară identificării acestor cheltuieli, la determinarea rezultatului fiscal se iau în calcul cheltuielile de conducere și administrare, precum și alte cheltuieli comune ale contribuabilului, prin utilizarea unei metode raționale de alocare a acestora sau proporțional cu ponderea veniturilor neimpozabile respective în totalul veniturilor înregistrate de contribuabil."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (4) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (4) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru determinarea părții din cheltuielile de conducere ca fiind aferente veniturilor din dividende, în acest exemplu, se folosește regula de alocare «ponderea veniturilor neimpozabile în totalul veniturilor înregistrate de contribuabil»."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 17 alin. (4^1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul II, pct. 17 alin. (4^1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce reiese din aceste texte:

@@ -14,7 +14,7 @@ Declararea tranzacțiilor cu părți afiliate are două fațete legale distincte
 
 ::: ghid-temei
 „(2) în vederea documentării respectării principiului valorii de piață contribuabilul/plătitorul care desfășoară tranzacții cu persoane afiliate are obligația să întocmească dosarul prețurilor de transfer. La solicitarea organului fiscal central competent contribuabilul/plătitorul are obligația de a prezenta dosarul prețurilor de transfer. Cuantumul tranzacțiilor pentru care contribuabilul/plătitorul are obligația întocmirii dosarului prețurilor de transfer, termenele pentru întocmirea acestuia, conținutul dosarului prețurilor de transfer, precum și condițiile în care se solicită acesta se aprobă prin ordin al președintelui A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 108 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru declararea tranzacțiilor cu părți afiliate:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru declararea tranzacțiilor cu părți afiliate:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/d394.py` populează indicatorul „prsAfiliat" din formularul D394 pe baza unui flag explicit din profilul firmei (`are_operatiuni_afiliate`), fără să-l deducă automat din relațiile de acționariat sau din tranzacțiile efective cu partenerii; aplicația nu are, la acest moment, un model de „persoană afiliată" (nicio coloană dedicată în profilul firmei, clienți sau furnizori) și nu generează dosarul prețurilor de transfer — încadrarea unei tranzacții ca fiind cu o parte afiliată și documentarea aferentă rămân, integral, responsabilitatea contabilului.
+Verificat în cod: Aplicația populează indicatorul „prsAfiliat" din formularul D394 pe baza unui flag explicit din profilul firmei (`are_operatiuni_afiliate`), fără să-l deducă automat din relațiile de acționariat sau din tranzacțiile efective cu partenerii; aplicația nu are, la acest moment, un model de „persoană afiliată" (nicio coloană dedicată în profilul firmei, clienți sau furnizori) și nu generează dosarul prețurilor de transfer — încadrarea unei tranzacții ca fiind cu o parte afiliată și documentarea aferentă rămân, integral, responsabilitatea contabilului.
 
 [iConta.eu](/)

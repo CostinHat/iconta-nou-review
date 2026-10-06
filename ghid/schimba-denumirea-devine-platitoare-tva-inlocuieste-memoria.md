@@ -16,12 +16,12 @@ Faptul că memoria rămâne nu înseamnă că aparatul rămâne neatins. Bonul f
 
 ::: ghid-temei
 „Nu este obligatorie înlocuirea memoriei fiscale a aparatelor de marcat electronice fiscale instalate, aceasta putând fi utilizată până la umplere, în următoarele cazuri: a) la schimbarea atributului fiscal al codului de identificare fiscală al utilizatorului; ... b) la schimbarea formei de constituire a societății fără modificarea denumirii acesteia; ... c) la modificarea denumirii și/sau adresei societății dacă se păstrează codul de identificare fiscală;"
-— OUG 28/1999, art. 4 alin. (10) lit. a)-c) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (10) lit. a)-c) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 ::: ghid-temei
 „Bonul fiscal este documentul emis de aparatul de marcat electronic fiscal care trebuie să cuprindă cel puțin: denumirea și codul de identificare fiscală ale operatorului economic emitent; [...] valoarea pe fiecare operațiune, inclusiv taxa pe valoarea adăugată, cu indicarea cotei de taxă; valoarea totală a bonului, inclusiv taxa pe valoarea adăugată; valoarea totală a taxei pe valoarea adăugată pe cote de taxă, cu indicarea nivelului de cotă;"
-— OUG 28/1999, art. 4 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Pe situații:

@@ -14,7 +14,7 @@ Dizolvarea unei societăți nu înseamnă că activitatea ei economică se opre�
 
 ::: ghid-temei
 „În afară de puterile conferite de asociați, cu aceeași majoritate cerută pentru numirea lor, lichidatorii vor putea: a) să stea în judecată în numele societății; [...] b) să execute și să termine operațiunile de comerț referitoare la lichidare; [...] f) să contracteze obligații cambiale, să facă împrumuturi neipotecare și să îndeplinească orice alte acte necesare."
-— Legea 31/1990 a societăților, art. 255 alin. (1) lit. a), b) și f) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 a societăților, art. 255 alin. (1) lit. a), b) și f) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Odată numit, lichidatorul **preia conducerea societății** de la administratori și are, printre altele, puterea de a „executa și termina operațiunile de comerț referitoare la lichidare" — ceea ce include stingerea datoriilor curente, deci și plata furnizorilor.
@@ -31,6 +31,6 @@ Dizolvarea unei societăți nu înseamnă că activitatea ei economică se opre�
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat lichidării (`core/lichidare.py`), dar acesta acoperă doar valorificarea activelor (nota de vânzare, cu descărcarea din gestiune și TVA aferentă) și partajul final către asociați (inclusiv impozitul pe câștigul din lichidare, 10% conform art. 97 alin. (5) din Codul fiscal). Nu am găsit însă în cod vreo funcție specifică pentru **gestiunea priorității plăților către creditori** în cursul lichidării (ordinea taxe/cheltuieli de lichidare înaintea furnizorilor, conform art. 255^1) — evidența operațiunilor curente (facturi, plăți către furnizori) rămâne disponibilă ca pentru orice firmă activă, prin fluxurile obișnuite ale aplicației, dar deciziile specifice lichidării — ce se plătește, în ce ordine, cu ce autorizare — rămân în sarcina lichidatorului și a contabilului.
+iConta.eu are un modul dedicat lichidării, dar acesta acoperă doar valorificarea activelor (nota de vânzare, cu descărcarea din gestiune și TVA aferentă) și partajul final către asociați (inclusiv impozitul pe câștigul din lichidare, 10% conform art. 97 alin. (5) din Codul fiscal). Nu am găsit însă în cod vreo funcție specifică pentru **gestiunea priorității plăților către creditori** în cursul lichidării (ordinea taxe/cheltuieli de lichidare înaintea furnizorilor, conform art. 255^1) — evidența operațiunilor curente (facturi, plăți către furnizori) rămâne disponibilă ca pentru orice firmă activă, prin fluxurile obișnuite ale aplicației, dar deciziile specifice lichidării — ce se plătește, în ce ordine, cu ce autorizare — rămân în sarcina lichidatorului și a contabilului.
 
 [iConta.eu](/)

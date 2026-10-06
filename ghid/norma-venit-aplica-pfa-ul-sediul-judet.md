@@ -14,7 +14,7 @@ Codul fiscal leagă norma de venit de **locul desfășurării activității**, n
 
 ::: ghid-temei
 „(1) În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Legea nr. 227/2015 (Codul fiscal), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din formularea legii:
@@ -31,6 +31,6 @@ Ce rezultă din formularea legii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un nomenclator încărcat cu normele de venit pe județe și activități CAEN și nu determină automat, în funcție de locul desfășurării activității, care normă se aplică unei PFA. Contribuabilul/contabilul trebuie să identifice manual norma de venit corectă (publicată de direcția generală regională a finanțelor publice competentă pentru locul activității) și să o introducă direct în declarație. Pentru PFA-urile în sistem real, aplicația oferă evidența operațiunilor prin `core/rip_api.py`, dar pentru cele la normă de venit nu există o funcționalitate specifică de localizare geografică a normei.
+La data acestui ghid, iConta.eu nu are un nomenclator încărcat cu normele de venit pe județe și activități CAEN și nu determină automat, în funcție de locul desfășurării activității, care normă se aplică unei PFA. Contribuabilul/contabilul trebuie să identifice manual norma de venit corectă (publicată de direcția generală regională a finanțelor publice competentă pentru locul activității) și să o introducă direct în declarație. Pentru PFA-urile în sistem real, aplicația oferă evidența operațiunilor prin aplicație, dar pentru cele la normă de venit nu există o funcționalitate specifică de localizare geografică a normei.
 
 [iConta.eu](/)

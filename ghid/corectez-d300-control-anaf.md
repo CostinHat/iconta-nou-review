@@ -16,7 +16,7 @@ Regula generală e simplă: o declarație fiscală se poate corecta prin rectifi
 „(5) Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare.
 (6) Prin excepție de la prevederile alin. (5), declarația de impunere poate fi depusă sau corectată după anularea rezervei verificării ulterioare în următoarele situații: a) în situația în care corecția se datorează îndeplinirii sau neîndeplinirii unei condiții prevăzute de lege care impune corectarea bazei de impozitare și/sau a creanței fiscale aferente; b) în situația în care prin hotărâri judecătorești definitive s-au stabilit în sarcina plătitorului obligații de plată reprezentând venituri sau diferențe de venituri către beneficiarii acestora ori plata unor sume sau acceptarea unor cheltuieli care generează modificarea bazei de impozitare și a obligațiilor fiscale aferente unor perioade pentru care s-a anulat rezerva verificării ulterioare.
 (8) în situația în care în timpul inspecției fiscale contribuabilul/plătitorul depune sau corectează declarația de impunere aferentă perioadelor și creanțelor fiscale ce fac obiectul inspecției fiscale, aceasta nu va fi luată în considerare de organul fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (5), (6), (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (5), (6), (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă un mecanism cu două praguri, nu o singură regulă:

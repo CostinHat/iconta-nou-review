@@ -14,7 +14,7 @@ Când o firmă intră în lichidare, contractele de muncă ale salariaților în
 
 ::: ghid-temei
 „Contractul individual de muncă încetează de drept: [...] b) la data rămânerii irevocabile a hotărârii judecătorești de declarare a morții sau a punerii sub interdicție a salariatului ori a angajatorului persoana fizică, dacă aceasta antrenează lichidarea afacerii."
-— Legea nr. 53/2003 (Codul muncii), art. 56 lit. b) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 56 lit. b) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 **Limitare declarată:** textul de mai sus tratează explicit doar cazul angajatorului persoană fizică; pentru angajatorul persoană juridică aflat în dizolvare/lichidare, sursele verificate nu conțin un articol distinct din HG nr. 295/2025 (actul care reglementează REGES-ONLINE) care să detalieze o procedură specială de „închidere a registrului" la încetarea firmei. Ce rămâne cert, din mecanismul general al registrului:
@@ -31,6 +31,6 @@ Când o firmă intră în lichidare, contractele de muncă ale salariaților în
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/reges_client.py` conține funcția `mesaj_incetare_contract`, care generează mesajul de tip `ActiuneIncetare` transmis către REGES-ONLINE pentru încetarea unui contract individual de muncă, pe baza datei și temeiului de încetare. Aplicația **nu are o funcționalitate separată de „închidere a registrului" la nivelul întregii firme** — nu există în cod o acțiune dedicată radierii angajatorului din registru la lichidare. Practic, contabilul folosește mecanismul existent de încetare a contractelor, pentru fiecare salariat în parte, iar radierea firmei din Registrul Comerțului rămâne un pas separat, în afara aplicației.
+Verificat în cod: Aplicația conține funcția `mesaj_incetare_contract`, care generează mesajul de tip `ActiuneIncetare` transmis către REGES-ONLINE pentru încetarea unui contract individual de muncă, pe baza datei și temeiului de încetare. Aplicația **nu are o funcționalitate separată de „închidere a registrului" la nivelul întregii firme** — nu există în cod o acțiune dedicată radierii angajatorului din registru la lichidare. Practic, contabilul folosește mecanismul existent de încetare a contractelor, pentru fiecare salariat în parte, iar radierea firmei din Registrul Comerțului rămâne un pas separat, în afara aplicației.
 
 [iConta.eu](/)

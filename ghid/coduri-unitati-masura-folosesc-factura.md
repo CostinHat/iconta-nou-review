@@ -14,7 +14,7 @@ Pe o factură pe hârtie poți scrie „buc", „bucată" sau „buc." fără ni
 
 ::: ghid-temei
 „Structura facturii electronice respectă: a) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, care sunt aplicabile la nivel naţional; b) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional; [...]"
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (1) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (1) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Legea nu enumeră ea însăși codurile de unități de măsură — le trimite la un standard tehnic european (SR EN 16931-1) și la specificațiile naționale de utilizare (RO_CIUS), care detaliază exact ce coduri sunt acceptate pentru fiecare tip de poziție de pe factură. Practic, RO_CIUS preia, pentru unitatea de măsură, lista de coduri standard UN/ECE Recomandarea 20 (aceleași coduri folosite în comerțul electronic european în general: de exemplu „H87" pentru bucată, „KGM" pentru kilogram, „MTR" pentru metru, „LTR" pentru litru) — nu abrevierile uzuale românești.
@@ -23,7 +23,7 @@ Legea nu enumeră ea însăși codurile de unități de măsură — le trimite 
 
 ::: ghid-temei
 „În situaţia în care factura electronică transmisă nu respectă structura prevăzută la alin. (1), emitentul primeşte mesaj cu erorile identificate."
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (5) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (5) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 O unitate de măsură scrisă greșit (cod inexistent în lista standard, sau text liber în loc de cod) nu trece de validarea automată a sistemului — factura e respinsă cu eroare de structură, nu e doar o „imperfecțiune" tolerată.

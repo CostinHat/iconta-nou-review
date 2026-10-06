@@ -14,7 +14,7 @@ O factură de 8.000 lei emisă către o altă firmă nu trebuie neapărat încas
 
 ::: ghid-temei
 „(2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, în cazul magazinelor de tipul cash and carry, precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei, respectiv de 10.000 lei."
-— Legea 70/2015, art. 3 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Mecanismul, coroborat cu plafonul zilnic general de la art. 3 alin. (1) lit. a):
@@ -31,6 +31,6 @@ Mecanismul, coroborat cu plafonul zilnic general de la art. 3 alin. (1) lit. a):
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/casa.py` are constanta `PLAFON_INCASARE_PJ = Decimal("5000")` (10.000 lei pentru cash and carry), folosită de `verifica_plafon()` pentru a semnala orice încasare cumulată de la un partener persoană juridică ce depășește plafonul într-o zi. Verificarea agregă operațiunile pe zi și pe partener, coerent cu regula de interzicere a fragmentării de la art. 3 alin. (2), dar rămâne un avertisment de control — decizia de a încasa parțial numerar și restul prin virament aparține contabilului.
+La data acestui ghid, aplicația are constanta `PLAFON_INCASARE_PJ = Decimal("5000")` (10.000 lei pentru cash and carry), folosită de `verifica_plafon()` pentru a semnala orice încasare cumulată de la un partener persoană juridică ce depășește plafonul într-o zi. Verificarea agregă operațiunile pe zi și pe partener, coerent cu regula de interzicere a fragmentării de la art. 3 alin. (2), dar rămâne un avertisment de control — decizia de a încasa parțial numerar și restul prin virament aparține contabilului.
 
 [iConta.eu](/)

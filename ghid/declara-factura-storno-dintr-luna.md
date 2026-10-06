@@ -14,7 +14,7 @@ O factură storno nu „redeschide" luna facturii pe care o corectează. Ea e ea
 
 ::: ghid-temei
 „2.2.1. seria şi numărul facturilor stornate; factura stornată reprezintă factura emisă de persoana impozabilă, a cărei valoare totală este negativă; [...] 6. Coloana «Baza impozabilă» de la lit. C, D, E, F [...] se înscrie valoarea bazei impozabile, în lei, aferentă livrărilor/prestărilor/achiziţiilor, [...] precum şi valoarea bazei impozabile aferentă facturilor de stornare, defalcate pe cote de TVA (24%, 21%, 20%, 19%, 11%, 9%, 5%). În cazul în care baza impozabilă este negativă valoarea totală a acesteia se înscrie cu semnul (-)."
-— OPANAF 2194/2025, instrucțiuni de completare D394, pct. 2.2.1 și 6-7 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, instrucțiuni de completare D394, pct. 2.2.1 și 6-7 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - Factura de stornare e, pentru D394, un document cu identitate proprie — are propriul număr, propria dată de emitere și propria serie — chiar dacă „corectează" o factură din altă lună.

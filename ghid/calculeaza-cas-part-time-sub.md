@@ -46,6 +46,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CAS calculat pe po
 
 ## Ce face iConta.eu
 
-Regula „baza_podea" (`core/salarizare.py`, liniile 292-323) calculează automat podeaua pentru fereastra activă a lunii și generează, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315), conform `monografie_salariu()` (linia 390).
+Regula „baza_podea" calculează automat podeaua pentru fereastra activă a lunii și generează, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315), conform `monografie_salariu()` (linia 390).
 
 [iConta.eu](/)

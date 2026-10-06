@@ -16,17 +16,17 @@ Nu neapărat. Firma străină datorează ea TVA în România pentru un serviciu 
 
 ::: ghid-temei
 „Prin normele metodologice se stabilesc cazurile în care persoanele nestabilite în România care sunt obligate la plata TVA în România conform art. 307 alin. (1) pot fi scutite de înregistrarea în scopuri de TVA în România.”
-— Codul fiscal (Legea 227/2015), art. 318 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 318 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 318 alin. (3) din Codul fiscal, persoana impozabilă nestabilită în România care este obligată la plata TVA în România conform art. 307 alin. (1) din Codul fiscal poate fi scutită de obligația înregistrării în scopuri de TVA în următoarele situații: […] a) când efectuează în România servicii prestate ocazional, dacă aceste operațiuni nu sunt precedate de achiziții intracomunitare de bunuri efectuate în România; […] (2) În sensul alin. (1) lit. a) și b) , livrările de bunuri și prestările de servicii sunt considerate ocazionale dacă sunt realizate o singură dată în cursul unui an.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 91 alin. (1)-(2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 91 alin. (1)-(2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul în care persoana impozabilă nu este stabilită în România și este scutită, în condițiile prevăzute la art. 318 alin. (3) , de la înregistrare, conform art. 316 , organele fiscale competente trebuie să emită o decizie în care să precizeze modalitatea de plată a taxei pentru livrările de bunuri și/sau prestările de servicii realizate ocazional, pentru care persoana impozabilă este obligată la plata taxei.”
-— Codul fiscal (Legea 227/2015), art. 326 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 326 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

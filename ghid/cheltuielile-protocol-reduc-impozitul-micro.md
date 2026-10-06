@@ -14,7 +14,7 @@ Răspunsul scurt este nu, iar motivul ține de însăși structura impozitului p
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie **veniturile din orice sursă**, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile aferente costurilor serviciilor în curs de execuție; c) veniturile din producția de imobilizări corporale și necorporale; d) veniturile din subvenții; [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1), Titlul III „Impozitul pe veniturile microîntreprinderilor" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 53 alin. (1), Titlul III „Impozitul pe veniturile microîntreprinderilor" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Observația esențială: lista de scăderi din art. 53 alin. (1) conține exclusiv **venituri** (venituri aferente costurilor stocurilor, venituri din subvenții, venituri din diferențe de curs valutar etc.) — nicio literă a acestui articol nu permite scăderea vreunei **cheltuieli**, indiferent de tipul ei. Cheltuielile de protocol nu apar și nu ar putea apărea în această listă, pentru că nu sunt venituri.

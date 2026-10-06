@@ -16,7 +16,7 @@ O greșeală frecventă la corectarea unei erori contabile descoperite ulterior 
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. [...]
 67. - (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»). (3) Erorile nesemnificative aferente exercițiilor financiare precedente se corectează, de asemenea, pe seama rezultatului reportat. [...]
 68. - (1) Corectarea erorilor aferente exercițiilor financiare precedente nu determină modificarea situațiilor financiare ale acelor exerciții. (2) [...] corectarea acestora nu presupune ajustarea informațiilor comparative prezentate în situațiile financiare. Informații comparative referitoare la poziția financiară și performanța financiară [...] sunt prezentate în notele explicative."
-— OMFP 1802/2014, pct. 65, 67, 68 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 65, 67, 68 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text rezultă mecanismul corect:

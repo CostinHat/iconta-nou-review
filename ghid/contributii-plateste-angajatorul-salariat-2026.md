@@ -13,7 +13,7 @@ Spre deosebire de CAS, CASS și impozitul pe venit — toate reținute din brutu
 ## Temeiul legal
 
 ::: ghid-temei
-„Ordinea reținerilor din brut: facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net. CAM 2,25% e cheltuială angajator, nu reținere." — Dosar de cercetare F080, secțiunea „Cod sursă verificat" (`core/salarizare.py`)
+„Ordinea reținerilor din brut: facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net. CAM 2,25% e cheltuială angajator, nu reținere." — Dosar de cercetare F080, secțiunea „Cod sursă verificat"
 :::
 
 CAM se calculează cu cota de 2,25%, conform art.220^3 alin.(1) din Codul fiscal (confirmat în registrul de cote `core.common.COTE`, activ din 2018-01-01, fără modificări până azi). Fiind o cheltuială a angajatorului, CAM nu se scade din brutul sau din netul angajatului și nu figurează printre reținerile de pe fluturaș.

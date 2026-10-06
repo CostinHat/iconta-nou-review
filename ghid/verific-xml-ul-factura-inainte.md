@@ -15,7 +15,7 @@ Factura electronică din sistemul RO e-Factura nu e un simplu PDF, ci un fișier
 ::: ghid-temei
 „Structura facturii electronice respectă: a) specificațiile tehnice și de utilizare a elementelor de bază ale facturii electronice așa cum sunt prevăzute în standardul european SR EN 16931-1 [...]; b) specificațiile tehnice și de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - și regulile operaționale specifice aplicabile la nivel național [...].
 (5) În situația în care factura electronică transmisă nu respectă structura prevăzută la alin. (1), emitentul primește mesaj cu erorile identificate. După corectarea erorilor identificate, factura electronică se transmite în cadrul aceluiași sistem național privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 4 alin. (1), (5) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (1), (5) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Factura electronică e definită de lege ca „factura emisă, transmisă şi primită într-un format electronic structurat de tip XML, care permite prelucrarea sa electronică şi automată" (art. 2 alin. (1) lit. a)).
@@ -33,6 +33,6 @@ Factura electronică din sistemul RO e-Factura nu e un simplu PDF, ci un fișier
 
 ## Ce face iConta.eu
 
-iConta.eu **generează XML-ul de factură (UBL, conform schemei curente) și îl trimite spre verificare la validatorul public oficial al ANAF** înainte de emitere — funcția `valideaza` din modulul `core/efactura_send.py` apelează adresa `https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/{standard}`, validatorul de structură (schematron CIUS-RO) pus la dispoziție public de ANAF, fără a necesita token sau drept pe CIF. Astfel, XML-ul e verificat structural la sursă, înainte de a fi transmis efectiv prin sistemul RO e-Factura, reducând riscul de respingere ulterioară.
+iConta.eu **generează XML-ul de factură (UBL, conform schemei curente) și îl trimite spre verificare la validatorul public oficial al ANAF** înainte de emitere — funcția `valideaza` din aplicație apelează adresa `https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/{standard}`, validatorul de structură (schematron CIUS-RO) pus la dispoziție public de ANAF, fără a necesita token sau drept pe CIF. Astfel, XML-ul e verificat structural la sursă, înainte de a fi transmis efectiv prin sistemul RO e-Factura, reducând riscul de respingere ulterioară.
 
 [iConta.eu](/)

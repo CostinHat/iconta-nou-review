@@ -16,14 +16,14 @@ Pentru contabil, contează cine a primit chiria și în ce cont. De asta depinde
 
 ::: ghid-temei
 „La instituirea sechestrului și în tot cursul executării silite, organul de executare silită poate numi un administrator-sechestru, dacă această măsură este necesară pentru administrarea imobilului urmărit, a chiriilor, a arendei și a altor venituri obținute din administrarea acestuia, inclusiv pentru apărarea în litigii privind imobilul respectiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Administratorul-sechestru consemnează veniturile încasate potrivit alin. (1) la unitățile abilitate și depune recipisa la organul de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Sunt supuse executării silite prin poprire orice sume urmăribile reprezentând venituri și disponibilități bănești în lei și în valută, titluri de valoare sau alte bunuri mobile necorporale, deținute și/sau datorate, cu orice titlu, debitorului de către terțe persoane sau pe care aceștia le vor datora și/sau deține în viitor în temeiul unor raporturi juridice existente."
-— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele trei situații posibile:

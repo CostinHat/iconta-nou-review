@@ -15,7 +15,7 @@ Codul de înregistrare în scopuri de TVA (sau codul de identificare fiscală) a
 ::: ghid-temei
 „Factura cuprinde în mod obligatoriu următoarele informații: [...]
 f) denumirea/numele și adresa beneficiarului bunurilor sau serviciilor, precum și codul de înregistrare în scopuri de TVA sau codul de identificare fiscală al beneficiarului, dacă acesta este o persoană impozabilă ori o persoană juridică neimpozabilă."
-— Codul fiscal, art. 319 alin. (20) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 319 alin. (20) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic:

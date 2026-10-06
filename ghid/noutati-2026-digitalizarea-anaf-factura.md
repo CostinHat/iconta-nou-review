@@ -14,7 +14,7 @@ Trei dintre sistemele digitale ale ANAF au reguli care s-au schimbat sau au ajun
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015 [...]. Calculul termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71 al Consiliului din 3 iunie 1971 privind stabilirea regulilor care se aplică termenelor, datelor și expirării termenelor."
-— OUG 89/2025, art. X pct. 2 (modifică art. 10 alin. (7) din OUG 120/2021) (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 89/2025, art. X pct. 2 (modifică art. 10 alin. (7) din OUG 120/2021) (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Pentru RO e-TVA, textul distinge două situații:
@@ -27,7 +27,7 @@ Pentru RO e-Transport, mecanismul de bază (necontestat, în vigoare) e codul UI
 ::: ghid-temei
 „11. cod UIT - codul unic generat de Sistemul RO e-Transport prin intermediul căruia se identifică bunurile aferente fiecărei relații comerciale care face obiectul transportului de bunuri cu risc fiscal ridicat; [...]
 (2) Termenul de valabilitate a codului UIT este de 5 zile calendaristice, începând cu data declarată pentru începerea transportului [...]"
-— OUG 41/2022, art. 2 pct. 11 și art. 11 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 11 și art. 11 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ## Ce se greșește în practică

@@ -16,12 +16,12 @@ Condiția este simetria: anularea are efect fiscal doar dacă penalitățile ini
 
 ::: ghid-temei
 „Pentru calculul rezultatului fiscal, dobânzile penalizatoare/ penalitățile/daunele-interese contractuale anulate prin convenții încheiate între părțile contractante sunt cheltuieli deductibile/ venituri impozabile, în anul fiscal în care se înregistrează în evidența contabilă anularea acestora, în condițiile în care dobânzile penalizatoare/penalitățile/daunele-interese, stabilite în cadrul contractelor inițiale încheiate în derularea activității economice, pe măsura înregistrării lor, au reprezentat venituri impozabile/cheltuieli deductibile."
-— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile."
-— Codul fiscal (Legea 227/2015), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

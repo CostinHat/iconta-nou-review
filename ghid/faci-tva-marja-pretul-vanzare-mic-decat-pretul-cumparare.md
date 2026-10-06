@@ -16,17 +16,17 @@ Contează și ce nu faci. Marja negativă nu devine TVA de recuperat și nu redu
 
 ::: ghid-temei
 „Persoana impozabilă nu colectează TVA conform regimului special în situația în care marja profitului, determinată conform alin. (4) lit. b) , este negativă.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „a) baza de impozitare pentru fiecare livrare de bunuri supusă regimului special este diferența dintre marja de profit realizată de persoana impozabilă revânzătoare și valoarea taxei aferente marjei respective; […] Taxa colectată într-o perioadă fiscală pentru bunurile supuse regimului special reprezintă suma taxelor pe valoarea adăugată aferente fiecărei livrări de bunuri efectuate în perioada respectivă.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „baza de impozitare este marja profitului, determinată conform alin. (1) lit. g) , exclusiv valoarea taxei aferente.”
-— Codul fiscal (Legea 227/2015), art. 312 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 312 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula se aplică în trei pași:

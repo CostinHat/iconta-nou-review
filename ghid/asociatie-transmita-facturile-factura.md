@@ -14,10 +14,10 @@ Depinde — nu de forma juridică (asociație, fundație), ci de faptul dacă de
 
 ::: ghid-temei
 „b) operator economic - orice entitate care desfășoară o activitate economică constând în executarea de lucrări, livrarea de bunuri/produse și/sau prestarea de servicii."
-— OUG 120/2021, art. 2 alin. (1) lit. b) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 alin. (1) lit. b) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 
 „n) relația comercială dintre doi operatori economici - B2B - tranzacția având ca obiect execuția de lucrări, livrarea de bunuri/produse și/sau prestarea de servicii dintre doi operatori economici."
-— OUG 120/2021, art. 2 alin. (1) lit. n) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 alin. (1) lit. n) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Din definiția legii rezultă testul relevant pentru o asociație:
@@ -35,6 +35,6 @@ Din definiția legii rezultă testul relevant pentru o asociație:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică automat** dacă o entitate înregistrată în aplicație (inclusiv o asociație) se încadrează, pentru o factură anume, în definiția „operatorului economic" de la art. 2 alin. (1) lit. b) din OUG 120/2021 — aplicația transmite facturile prin sistemul RO e-Factura (`core/efactura_send.py`) pe baza configurării firmei/entității făcute de contabil, fără o evaluare separată a naturii economice sau non-economice a fiecărei operațiuni facturate.
+La data acestui ghid, iConta.eu **nu verifică automat** dacă o entitate înregistrată în aplicație (inclusiv o asociație) se încadrează, pentru o factură anume, în definiția „operatorului economic" de la art. 2 alin. (1) lit. b) din OUG 120/2021 — aplicația transmite facturile prin sistemul RO e-Factura pe baza configurării firmei/entității făcute de contabil, fără o evaluare separată a naturii economice sau non-economice a fiecărei operațiuni facturate.
 
 [iConta.eu](/)

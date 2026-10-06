@@ -14,7 +14,7 @@ O firmă care exportă bunuri sau servicii nu beneficiază, la impozitul pe prof
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea nr. 227/2015 privind Codul fiscal, art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări importante:

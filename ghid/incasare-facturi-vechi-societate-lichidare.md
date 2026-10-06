@@ -34,6 +34,6 @@ Cât timp lichidarea nu s-a terminat, societatea continuă să existe ca persoan
 
 ## Ce face iConta.eu
 
-Încasarea creanțelor este parte din procesul de lichidare descris în documentația motorului aplicației, dar nu are o funcție dedicată în modulul de lichidare — se folosește motorul general de facturare și încasări al aplicației, exact ca pentru orice altă operațiune curentă a firmei. Motorul de lichidare propriu-zis (`core/lichidare.py`) acoperă doar două note contabile punctuale: vânzarea unui mijloc fix în timpul lichidării și partajul final către asociați.
+Încasarea creanțelor este parte din procesul de lichidare descris în documentația motorului aplicației, dar nu are o funcție dedicată în modulul de lichidare — se folosește motorul general de facturare și încasări al aplicației, exact ca pentru orice altă operațiune curentă a firmei. Motorul de lichidare propriu-zis acoperă doar două note contabile punctuale: vânzarea unui mijloc fix în timpul lichidării și partajul final către asociați.
 
 [iConta.eu](/)

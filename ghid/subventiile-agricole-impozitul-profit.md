@@ -14,13 +14,13 @@ Spre deosebire de impozitul micro, unde subvențiile sunt explicit excluse din b
 
 ::: ghid-temei
 „La calculul rezultatului fiscal, următoarele venituri sunt neimpozabile: a) dividendele primite [...]; b) dividende primite de la o persoană juridică străină [...]; c) valoarea titlurilor de participare noi [...]; d) veniturile din anularea, recuperarea [...]; [...]." — lista, limitativă, nu conține subvențiile.
-— Legea 227/2015, art. 23, Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 23, Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la prevederile art. 7 pct. 44 și 45, în situația în care, potrivit reglementărilor contabile aplicabile, contribuabilul deduce subvenția guvernamentală la calculul valorii contabile a mijloacelor fixe, valoarea rezultată este și valoare fiscală."
-— Legea 227/2015, art. 28 alin. (13), Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (13), Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 Pentru comparație, la microîntreprinderi: „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...] d) veniturile din subvenții; [...]."
-— Legea 227/2015, art. 53 alin. (1) lit. d), Titlul III (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) lit. d), Titlul III (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Concluzia din combinarea textelor:

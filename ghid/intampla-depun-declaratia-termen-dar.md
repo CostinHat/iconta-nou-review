@@ -14,7 +14,7 @@ Depunerea declarației la termen nu stinge obligația de plată — cele două s
 
 ::: ghid-temei
 „Pentru neachitarea la termenul de scadență de către debitor a obligațiilor fiscale principale, se datorează după acest termen dobânzi și penalități de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se întâmplă concret, pas cu pas:

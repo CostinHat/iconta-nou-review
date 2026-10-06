@@ -20,17 +20,17 @@ Fiecare proprietar declară și plătește impozitul pe partea lui de venit. Pen
 
 ::: ghid-temei
 „Venitul net obținut din exploatarea bunurilor și drepturilor de orice fel, deținute în comun, este considerat ca fiind obținut de proprietari, uzufructuari sau de alți deținători legali, înscriși într-un document oficial, și se atribuie proporțional cu cotele-părți pe care aceștia le dețin în acea proprietate sau în mod egal, în situația în care acestea nu se cunosc.”
-— Codul fiscal (Legea 227/2015), art. 124 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 124 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul net din cedarea folosinței bunurilor deținute în comun pe cote-părți se repartizează între coproprietari proporțional cu cotele deținute de aceștia în coproprietate. Venitul net din cedarea folosinței bunurilor deținute în comun în devălmășie se repartizează în mod egal între proprietarii comuni. Repartizarea venitului net conform prevederilor de mai sus se face în condițiile în care în contractul de cedare a folosinței se menționează că partea contractantă care cedează folosința este reprezentată de coproprietari. În condițiile în care coproprietarii decid asupra unei alte împărțiri, se va anexa la contract un act autentificat din care să rezulte voința părților.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV pct. 40 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IV pct. 40 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din:”
-— Codul fiscal (Legea 227/2015), art. 64 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 64 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie verificat:

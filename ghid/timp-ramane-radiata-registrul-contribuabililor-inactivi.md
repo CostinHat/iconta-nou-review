@@ -16,12 +16,12 @@ Pentru cine verifică un fost partener, asta înseamnă că firma apare în regi
 
 ::: ghid-temei
 „Registrul contribuabililor inactivi/reactivați se actualizează cu contribuabilii radiați, înscriind pentru fiecare contribuabil data radierii/încetării activității. Contribuabilii radiați se mențin în evidența contribuabililor declarați inactivi 5 ani de la data de 1 ianuarie a anului următor celui în care au fost radiați."
-— OPANAF 3846/2015, Anexa nr. 7, pct. 3 (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, Anexa nr. 7, pct. 3 (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 ::: ghid-temei
 „Inactivitatea fiscală a persoanei juridice sau a entității fără personalitate juridică înscrisă anterior radierii acestora în cazierul fiscal al reprezentanților legali sau al reprezentanților desemnați se scoate din evidență la data împlinirii unui termen de un an de la data radierii contribuabilului reprezentat."
-— OG 39/2015, art. 6 alin. (1) lit. j) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 6 alin. (1) lit. j) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Ce informații păstrează registrul:

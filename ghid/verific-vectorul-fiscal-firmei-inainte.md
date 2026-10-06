@@ -30,6 +30,6 @@ Un al treilea nivel privește operațiunile efective: dacă vectorul spune „f�
 
 ## Ce face iConta.eu
 
-Motorul din `core/control_fiscal_api.py` (funcția `declaratii_datorate`) traduce cei patru parametri ai vectorului, plus faptele reale (salariați, facturi IC), în lista de declarații datorate/scadente. Un atribut necompletat nu produce niciodată un „default tăcut" — declarația dependentă iese gri, cu cauza declarată explicit. Comparația live cu ANAF (roșu/verde/gri) e un semnal, nu un blocaj: salvarea rămâne posibilă chiar dacă diferă de ce arată ANAF, decizia finală fiind a contabilului.
+Motorul din aplicație (funcția `declaratii_datorate`) traduce cei patru parametri ai vectorului, plus faptele reale (salariați, facturi IC), în lista de declarații datorate/scadente. Un atribut necompletat nu produce niciodată un „default tăcut" — declarația dependentă iese gri, cu cauza declarată explicit. Comparația live cu ANAF (roșu/verde/gri) e un semnal, nu un blocaj: salvarea rămâne posibilă chiar dacă diferă de ce arată ANAF, decizia finală fiind a contabilului.
 
 [iConta.eu](/)

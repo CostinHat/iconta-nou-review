@@ -16,10 +16,10 @@ Cartea e un document simplu, dar lipsa ei sau o carte necompletată atrage o ame
 
 ::: ghid-temei
 „Aparatele de marcat electronice fiscale trebuie să fie dotate de către distribuitor cu manual de utilizare a acestora, precum și cu o broșură cu pagini numerotate, care conține evoluția exploatării aparatului, denumită carte de intervenții. Utilizatorii aparatelor sunt obligați să păstreze cartea de intervenții, iar împreună cu unitățile acreditate pentru service răspund de completarea și de actualizarea acesteia cu datele referitoare la identitatea utilizatorului și la intervențiile service efectuate. În cazul revânzării aparatului de marcat electronic fiscal, cartea de intervenții însoțește aparatul."
-— OUG 28/1999, art. 5 alin. (3) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 5 alin. (3) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „p) nerespectarea obligației de a păstra, de a completa și de a actualiza cartea de intervenții prevăzută la art. 5 alin. (3) , dosarul de asistență tehnică prevăzut la art. 5 alin. (12) ;"
-— OUG 28/1999, art. 10 lit. p) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 10 lit. p) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Cine ce face:

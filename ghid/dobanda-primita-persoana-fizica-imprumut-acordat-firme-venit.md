@@ -16,15 +16,15 @@ Pentru firma care plătește dobânda, obligația este concretă. La momentul pl
 
 ::: ghid-temei
 „22. (1) În aplicarea art. 91 lit. b) din Codul fiscal sunt considerate venituri din dobânzi, fără a fi limitate, următoarele: [...] c) suma primită sub forma de dobândă pentru împrumuturile acordate;"
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 22 alin. (1) lit. c) (norme art. 91 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 22 alin. (1) lit. c) (norme art. 91 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Veniturile din investiții cuprind: a) venituri din dividende; [...] b) venituri din dobânzi;"
-— Codul fiscal (Legea 227/2015), art. 91 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 91 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Veniturile sub formă de dobânzi pentru depozitele la termen constituite, instrumentele de economisire dobândite, contractele civile încheiate se impun cu o cotă de 10% din suma acestora, impozitul fiind final, indiferent de data constituirii raportului juridic. [...] În situația sumelor primite sub formă de dobândă pentru împrumuturile acordate pe baza contractelor civile, calculul impozitului datorat de către plătitorii de venit se efectuează la momentul plății dobânzii."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

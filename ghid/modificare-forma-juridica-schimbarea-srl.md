@@ -14,7 +14,7 @@ Transformarea unei societăți cu răspundere limitată în societate pe acțiun
 
 ::: ghid-temei
 „Adunarea generală extraordinară se întrunește ori de câte ori este necesar a se lua o hotărâre pentru: a) schimbarea formei juridice a societății."
-— Legea 31/1990, art. 113 lit. a) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 113 lit. a) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pe lângă cerința de decizie prin adunarea generală extraordinară, transformarea în SA presupune îndeplinirea condiției specifice de capital a noii forme:
@@ -32,6 +32,6 @@ Pe lângă cerința de decizie prin adunarea generală extraordinară, transform
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un flux dedicat pentru schimbarea formei juridice a unei societăți** — nu am găsit în cod (`core/`) o funcționalitate care să gestioneze tranziția SRL→SA (verificare capital social minim, actualizare formă juridică în profilul firmei, generare de documente pentru Registrul Comerțului). O astfel de operațiune se derulează, la acest moment, integral în afara aplicației.
+La data acestui ghid, iConta.eu **nu are un flux dedicat pentru schimbarea formei juridice a unei societăți** — nu am găsit în cod o funcționalitate care să gestioneze tranziția SRL→SA (verificare capital social minim, actualizare formă juridică în profilul firmei, generare de documente pentru Registrul Comerțului). O astfel de operațiune se derulează, la acest moment, integral în afara aplicației.
 
 [iConta.eu](/)

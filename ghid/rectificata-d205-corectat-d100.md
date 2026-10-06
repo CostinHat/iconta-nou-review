@@ -14,7 +14,7 @@ D100 declară obligații de plată stabilite prin autoimpunere sau reținere la 
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă."
-— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - D100 e o „declarație de impunere" — corecția ei e supusă termenului de prescripție a dreptului organului fiscal de a stabili creanțe fiscale (regula generală: 5 ani).

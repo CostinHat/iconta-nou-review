@@ -15,7 +15,7 @@ O creanță fiscală neplătită nu rămâne executabilă la nesfârșit. Codul 
 ::: ghid-temei
 „(1) Dreptul organului de executare silită de a cere executarea silită a creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere acest drept.
 (2) Termenul de prescripție prevăzut la alin. (1) se aplică și creanțelor provenind din amenzi contravenționale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 215 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 215 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce verifică efectiv organul fiscal, potrivit acelorași reguli:

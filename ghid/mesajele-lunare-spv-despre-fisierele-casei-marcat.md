@@ -16,15 +16,15 @@ Mesajul lunar este, practic, singurul semnal oficial că datele nu ajung corect 
 
 ::: ghid-temei
 „Lunar, Agenția Națională de Administrare Fiscală transmite către operatorii economici utilizatori de aparate de marcat electronice fiscale, prin intermediul serviciului „Spațiul Privat Virtual“, mesaje despre eventualele disfuncționalități privind fișierele transmise de la aparatele de marcat electronice fiscale către sistemul informatic."
-— OPANAF 435/2021, art. 2 alin. (2) (sursă: anaf_surse/ordin_435_2021.html)
+— OPANAF 435/2021, art. 2 alin. (2) (sursă: [OPANAF nr. 435/2021 privind procedura de conectare a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/240150))
 :::
 
 ::: ghid-temei
 „În situația defectării aparatelor de marcat electronice fiscale utilizatorii sunt obligați ca, în momentul constatării defecțiunii, să anunțe distribuitorul autorizat care a livrat aparatul sau, după caz, unitatea acreditată pentru service a acestui distribuitor autorizat."
-— OUG 28/1999, art. 1 alin. (6) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (6) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „e) să asigure funcționarea aparatului de marcat electronic fiscal în parametrii tehnici legali, pe toată durata de utilizare a acestuia; ... f) să permită intervenția tehnică numai a persoanelor autorizate pentru efectuarea operațiunilor de service asupra aparatului de marcat electronic fiscal;"
-— OUG 28/1999, art. 4 alin. (12) lit. e) și f) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 4 alin. (12) lit. e) și f) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce faci, în ordine, când mesajul semnalează probleme:

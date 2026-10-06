@@ -14,7 +14,7 @@ Nu. Codul unic de înregistrare rămâne același atunci când firma își mută
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), în cazul în care se modifică domiciliul fiscal potrivit art. 32 alin. (5), competența teritorială trece la noul organ fiscal central de la data împlinirii termenului prevăzut la acest alineat."
-— Legea 207/2015 (Codul de procedură fiscală), art. 36 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 36 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Pentru firmele înregistrate la registrul comerțului, codul de identificare fiscală este codul unic de înregistrare atribuit potrivit legii speciale (Legea 207/2015, art. 82 alin. (1) lit. b)). Codul de procedură fiscală nu leagă acest cod de adresa sediului și nu prevede atribuirea unui cod nou la mutarea lui.

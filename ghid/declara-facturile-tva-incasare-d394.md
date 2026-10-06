@@ -15,7 +15,7 @@ Pentru o factură de la un furnizor înscris la TVA la încasare, contabilul are
 ::: ghid-temei
 **Art. 297 alin. (2) CF**: *„Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare... este amânat până la data la care taxa aferentă... a fost plătită furnizorului."*
 
-Verificat direct în codul sursă (`static/js/ecrane/facturi_ecran.js`, linia 142): `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
+Verificat direct în codul sursă (linia 142): `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
 :::
 
 ## Ce e sigur
@@ -24,7 +24,7 @@ Pe factura de achiziție, contabilul bifează manual dacă furnizorul aplică TV
 
 ## Ce nu am putut confirma
 
-Comentariul din cod leagă explicit această bifă de D300, nu de D394. Cercetarea de temei pentru acest ghid nu a inclus o citire a modulului de generare D394 (`core/d394.py`) — nu putem confirma dacă facturile marcate cu „furnizor TVA la încasare" primesc vreun tratament sau indicator distinct în D394, sau dacă informația respectivă e relevantă deloc pentru acea declarație.
+Comentariul din cod leagă explicit această bifă de D300, nu de D394. Cercetarea de temei pentru acest ghid nu a inclus o citire a modulului de generare D394 — nu putem confirma dacă facturile marcate cu „furnizor TVA la încasare" primesc vreun tratament sau indicator distinct în D394, sau dacă informația respectivă e relevantă deloc pentru acea declarație.
 
 ## Ce se greșește în practică
 

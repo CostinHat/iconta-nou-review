@@ -13,7 +13,7 @@ Serviciile contabile prestate unei firme din alt stat membru urmează aceeași r
 ## Temeiul legal
 
 ::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — `core/intracomunitar.py`, dosarul F050.
+„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
 :::
 
 Dacă clientul e o firmă din UE cu cod de TVA valid, factura se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Dacă nu are cod valid (persoană neimpozabilă), regimul devine B2C — TVA românesc pe factură.

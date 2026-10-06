@@ -16,15 +16,15 @@ Dacă salariatul are deja contract și pleacă ulterior, informațiile obligator
 
 ::: ghid-temei
 „În cazul în care persoana selectată în vederea angajării ori salariatul, după caz, urmează să își desfășoare activitatea în străinătate, angajatorul are obligația de a-i comunica în timp util, înainte de plecare, informațiile prevăzute la art. 17 alin. (3), precum și informații referitoare la:a) țara sau țările, precum și durata perioadei de muncă ce urmează să fie prestată în străinătate; ... b) moneda în care vor fi plătite drepturile salariale, precum și modalitățile de plată; ... c) prestațiile în bani și/sau în natură aferente desfășurării activității în străinătate;"
-— Codul muncii (Legea 53/2003), art. 18 alin. (1) lit. a)-c) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 18 alin. (1) lit. a)-c) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(2) Informațiile prevăzute la alin. (1) lit. a), b) și c) trebuie să se regăsească și în conținutul contractului individual de muncă.(3) Dispozițiile alin. (1) se completează prin legi speciale care reglementează condițiile specifice de muncă în străinătate."
-— Codul muncii (Legea 53/2003), art. 18 alin. (2)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 18 alin. (2)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Orice modificare a unuia dintre elementele prevăzute la alin. (3) în timpul executării contractului individual de muncă impune încheierea unui act adițional la contract, anterior producerii modificării, cu excepția situațiilor în care o asemenea modificare este prevăzută în mod expres de lege sau în contractul colectiv de muncă aplicabil."
-— Codul muncii (Legea 53/2003), art. 17 alin. (5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 17 alin. (5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce intră obligatoriu în contract sau în actul adițional (art. 18 alin. (2)):

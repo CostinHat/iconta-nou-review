@@ -36,12 +36,12 @@ Pentru actele emise în inspecție fiscală, Codul leagă expres refacerea de in
 
 ::: ghid-temei
 „În situația în care, ca urmare a deciziei de soluționare emise potrivit art. 279 se desființează total sau parțial actul administrativ-fiscal atacat, emis în procedura de inspecție fiscală, organul de inspecție fiscală reface inspecția fiscală, cu respectarea dispozițiilor art. 276 alin. (3)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 129 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 129 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Prin soluționarea contestației nu se poate crea o situație mai grea contestatorului în propria cale de atac."
-— Legea 207/2015 (Codul de procedură fiscală), art. 276 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 276 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce spune și ce nu spune textul:

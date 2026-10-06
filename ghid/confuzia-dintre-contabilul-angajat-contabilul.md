@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(2) Contabilitatea se organizează și se conduce, de regulă, în compartimente distincte, conduse de către directorul economic, contabilul-șef sau altă persoană împuternicită să îndeplinească această funcție. Aceste persoane trebuie să aibă studii economice superioare. Prin persoană împuternicită să îndeplinească funcția de director economic sau contabil-șef se înțelege o persoană angajată potrivit legii, care are studii economice superioare și care are atribuții privind conducerea contabilității entității. (3) Contabilitatea poate fi organizată și condusă pe bază de contracte de prestări de servicii în domeniul contabilității, încheiate cu persoane fizice sau juridice, autorizate potrivit legii, membre ale Corpului Experților Contabili și Contabililor Autorizați din România."
-— Legea 82/1991, art. 10 alin. (2), (3) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991, art. 10 alin. (2), (3) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Cele două variante, cu răspunderi diferite:

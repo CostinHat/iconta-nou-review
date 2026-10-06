@@ -14,7 +14,7 @@ Ambalajele au propriul grup de conturi în planul de conturi — distinct de mă
 
 ::: ghid-temei
 „Contul 381 «Ambalaje» [...] este un cont de activ. [...] În creditul contului 381 «Ambalaje» se înregistrează: – valoarea la preț de înregistrare a ambalajelor vândute ca atare (371); – valoarea la preț de înregistrare a ambalajelor consumate și lipsurile constatate la inventar (608); – valoarea ambalajelor trimise la terți (358); – valoarea la preț de înregistrare a ambalajelor livrate unității sau subunităților (481, 482); – valoarea donațiilor și a pierderilor din calamități (658). Soldul contului reprezintă valoarea la preț de înregistrare a ambalajelor existente în stoc la sfârșitul perioadei."
-— OMFP 1802/2014 (Reglementări contabile), Funcțiunea conturilor, Grupa 38 „Ambalaje", contul 381 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementări contabile), Funcțiunea conturilor, Grupa 38 „Ambalaje", contul 381 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din funcțiunea contului rezultă cele patru situații principale în care se descarcă gestiunea de ambalaje:

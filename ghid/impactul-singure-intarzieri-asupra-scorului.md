@@ -14,7 +14,7 @@ Ce numim colocvial „scor fiscal" corespunde, legal, clasei/subclasei de risc f
 
 ::: ghid-temei
 „În cazul creanțelor fiscale administrate de organul fiscal central, procedurile de administrare se realizează în funcție de clasa/subclasa de risc fiscal în care sunt încadrați contribuabilii ca urmare a analizei de risc efectuate de organul fiscal. [...] Contribuabilul nu poate face obiecții cu privire la modul de stabilire a riscului și a clasei/subclasei de risc fiscal în care a fost încadrat."
-— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5) și alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5) și alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate spune, cu certitudine, din text:
@@ -31,6 +31,6 @@ Ce se poate spune, cu certitudine, din text:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are acces la criteriile interne de risc fiscal ale ANAF și nu calculează sau estimează „scorul fiscal" al unei firme — aceste criterii nu sunt publice. Aplicația oferă însă un motor propriu de urmărire a conformării declarative (`core/control_fiscal_api.py`, `core/alerte_control_fiscal.py`), care semnalează declarațiile lipsă, depuse fără obligație sau contradictorii — tocmai genul de neconcordanțe care, în practică, cresc probabilitatea unei încadrări nefavorabile la analiza de risc a organului fiscal, fără ca aplicația să pretindă că reproduce acea analiză.
+iConta.eu nu are acces la criteriile interne de risc fiscal ale ANAF și nu calculează sau estimează „scorul fiscal" al unei firme — aceste criterii nu sunt publice. Aplicația oferă însă un motor propriu de urmărire a conformării declarative, care semnalează declarațiile lipsă, depuse fără obligație sau contradictorii — tocmai genul de neconcordanțe care, în practică, cresc probabilitatea unei încadrări nefavorabile la analiza de risc a organului fiscal, fără ca aplicația să pretindă că reproduce acea analiză.
 
 [iConta.eu](/)

@@ -14,10 +14,10 @@ Da. Echipamentul de lucru — și, mai ales, echipamentul individual de protecț
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare [...]"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „j) echipament individual de protecție - orice echipament destinat a fi purtat sau mânuit de un lucrător pentru a-l proteja împotriva unuia ori mai multor riscuri care ar putea să îi pună în pericol securitatea și sănătatea la locul de muncă, precum și orice supliment sau accesoriu proiectat pentru a îndeplini acest obiectiv;"
-— Legea nr. 319/2006 a securității și sănătății în muncă, art. 5 lit. j) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea nr. 319/2006 a securității și sănătății în muncă, art. 5 lit. j) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Coroborând cele două texte:

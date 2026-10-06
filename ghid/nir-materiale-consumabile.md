@@ -14,7 +14,7 @@ Nu întotdeauna. Nota de recepție și constatare de diferențe (NIR) nu este ob
 
 ::: ghid-temei
 „Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare. În cazurile în care nu este obligatorie întocmirea NIR-ului, recepția și încărcarea în gestiune, după caz, și înregistrarea în contabilitate se fac pe baza documentului de livrare care însoțește transportul (factura, avizul de însoțire a mărfii etc.)."
-— OMFP nr. 2.634/2015, Anexa 2, cod 14-3-1A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2, cod 14-3-1A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Aplicat la materialele consumabile:
@@ -31,6 +31,6 @@ Aplicat la materialele consumabile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul complet de NIR (`core/stocuri.py`, `core/stocuri_api.py`), care calculează adaosul comercial, TVA neexigibilă și coeficientul K, și generează notele contabile aferente pentru orice recepție introdusă — inclusiv pentru materiale consumabile. Aplicația **nu decide automat** dacă întocmirea unui NIR este obligatorie pentru o anumită recepție; contabilul este cel care alege, la fiecare achiziție, dacă înregistrează recepția direct pe bază de factură/aviz sau printr-un NIR complet, în funcție de situațiile prevăzute de normă.
+La data acestui ghid, iConta.eu are un modul complet de NIR, care calculează adaosul comercial, TVA neexigibilă și coeficientul K, și generează notele contabile aferente pentru orice recepție introdusă — inclusiv pentru materiale consumabile. Aplicația **nu decide automat** dacă întocmirea unui NIR este obligatorie pentru o anumită recepție; contabilul este cel care alege, la fiecare achiziție, dacă înregistrează recepția direct pe bază de factură/aviz sau printr-un NIR complet, în funcție de situațiile prevăzute de normă.
 
 [iConta.eu](/)

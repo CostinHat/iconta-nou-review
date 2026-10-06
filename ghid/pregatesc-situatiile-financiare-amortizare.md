@@ -14,7 +14,7 @@ Pregătirea corectă a situațiilor financiare în privința mijloacelor fixe po
 
 ::: ghid-temei
 „Agenții economici, indiferent de forma de organizare și de tipul de proprietate, precum și persoanele juridice fără scop lucrativ au obligația să evidențieze în contabilitate, în conturi distincte, mijloacele fixe și amortizarea acestora."
-— Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale, art. 20 (sursă: anaf_surse/legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.txt)
+— Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale, art. 20 (sursă: [Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale](https://legislatie.just.ro/Public/DetaliiDocument/3915))
 :::
 
 Consecințe practice pentru pregătirea situațiilor financiare:
@@ -31,6 +31,6 @@ Consecințe practice pentru pregătirea situațiilor financiare:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/bilant.py` generează situațiile financiare anuale (F10/F20, potrivit OMF 107/2025) din soldurile și rulajele conturilor din balanță; aplicația nu recalculează separat amortizarea mijloacelor fixe ca modul dedicat la acest moment — ea preia soldurile deja înregistrate pe conturile de imobilizări și de amortizare, așa cum sunt introduse/generate în contabilitatea curentă a firmei.
+Verificat în cod: Aplicația generează situațiile financiare anuale (F10/F20, potrivit OMF 107/2025) din soldurile și rulajele conturilor din balanță; aplicația nu recalculează separat amortizarea mijloacelor fixe ca modul dedicat la acest moment — ea preia soldurile deja înregistrate pe conturile de imobilizări și de amortizare, așa cum sunt introduse/generate în contabilitatea curentă a firmei.
 
 [iConta.eu](/)

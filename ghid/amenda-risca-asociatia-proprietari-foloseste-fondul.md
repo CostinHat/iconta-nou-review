@@ -16,18 +16,18 @@ Pentru aceste fapte, legea nu permite avertismentul la prima abatere. Avertismen
 
 ::: ghid-temei
 „l) utilizarea cu altă destinație a fondului de rulment sau a fondului de reparații, altfel decât este prevăzut la art. 71 și 72 ; […] m) utilizarea și gestionarea veniturilor asociației de proprietari, altfel decât este prevăzut la art. 20 , 70 și 74 ;"
-— Legea 196/2018, art. 102 alin. (1) lit. l)-m) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (1) lit. l)-m) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „d) faptele prevăzute la alin. (1) lit. g) , h) , i) , m) , p) și q) , cu amendă de la 5.000 lei la 10.000 lei; […] e) faptele prevăzute la alin. (1) lit. l) , n) , și o) , cu amendă de la 4.000 lei la 9.000 lei."
-— Legea 196/2018, art. 102 alin. (2) lit. d)-e) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (2) lit. d)-e) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(3) Sancțiunile pentru contravențiile prevăzute la alin. (1) se aplică persoanelor fizice sau juridice vinovate."
-— Legea 196/2018, art. 102 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „Fondul de reparații este utilizat numai pentru consolidarea condominiului, reabilitarea termică, creșterea calității ambiental-arhitecturale a construcțiilor, precum și pentru repararea și îmbunătățirea proprietății comune."
-— Legea 196/2018, art. 71 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 71 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „Fondul de rulment se stabilește astfel încât să poată acoperi cheltuielile curente ale condominiului la nivelul unei luni calendaristice."
-— Legea 196/2018, art. 72 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 72 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

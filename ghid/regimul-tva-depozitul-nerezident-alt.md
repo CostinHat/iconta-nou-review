@@ -14,7 +14,7 @@ O firmă românească ține un depozit propriu în alt stat membru, unde mută m
 
 ::: ghid-temei
 „Este asimilat cu livrarea intracomunitară cu plată transferul de către o persoană impozabilă de bunuri aparținând activității sale economice din România într-un alt stat membru, cu excepția nontransferurilor prevăzute la alin. (12). [...] Transferul [...] reprezintă expedierea sau transportul oricăror bunuri mobile corporale din România către alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizate în scopul desfășurării activității sale economice."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (10)-(11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (10)-(11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula are consecințe simetrice, pe ambele laturi ale operațiunii:

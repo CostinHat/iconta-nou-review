@@ -16,21 +16,21 @@ Locul unei achiziții intracomunitare este statul membru în care se încheie tr
 
 ::: ghid-temei
 „Locul achiziției intracomunitare de bunuri se consideră a fi locul unde se găsesc bunurile în momentul în care se încheie expedierea sau transportul bunurilor.”
-— Codul fiscal (Legea 227/2015), art. 276 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 276 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dacă o achiziție intracomunitară a fost supusă la plata taxei în alt stat membru, conform alin. (1)”
-— Codul fiscal (Legea 227/2015), art. 276 alin. (3), prima parte (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 276 alin. (3), prima parte (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „nu se aplică dacă cumpărătorul face dovada că achiziția intracomunitară a fost supusă la plata TVA în statul membru în care are loc achiziția intracomunitară”
-— Codul fiscal (Legea 227/2015), art. 276 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 276 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul în care, conform art. 276 alin. (2) din Codul fiscal, cumpărătorul furnizează un cod de înregistrare în scopuri de TVA dintr-un alt stat membru decât cel în care se încheie expedierea sau transportul bunurilor, se aplică rețeaua de siguranță, respectiv achiziția intracomunitară se consideră că are loc și în statul membru care a furnizat codul de înregistrare în scopuri de TVA și în statul membru în care se încheie expedierea sau transportul bunurilor.”
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 13 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 13 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Restituirea taxei aferente achiziției intracomunitare se realizează astfel: a) în cazul persoanelor înregistrate în scopuri de TVA conform art. 316 din Codul fiscal, prin înregistrarea cu semnul minus în decontul de taxă prevăzut la art. 323 din Codul fiscal a achiziției intracomunitare și a taxei aferente”
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 13 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 13 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt, cum funcționează regula:

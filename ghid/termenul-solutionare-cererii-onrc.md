@@ -14,7 +14,7 @@ Când un antreprenor depune o cerere la Oficiul Registrului Comerțului (ONRC) �
 
 ::: ghid-temei
 „La societățile pe acțiuni, dacă există aporturi în natură, avantaje rezervate oricărei persoane care a participat la constituirea societății sau la tranzacții conducând la acordarea autorizației, operațiuni încheiate de fondatori pe seama societății ce se constituie și pe care aceasta urmează să le ia asupra sa, registratorul numește, **în termen de 5 zile de la înregistrarea cererii**, unul sau mai mulți experți din lista experților autorizați."
-— Legea nr. 31/1990 privind societățile, art. 38 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 38 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Această normă nu este termenul general de soluționare a unei cereri de înmatriculare, ci exemplul concret pe care legea societăților îl mai conține pentru un pas al procedurii aflat efectiv în sarcina registratorului. Câteva precizări utile:

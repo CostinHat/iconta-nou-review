@@ -14,13 +14,13 @@ Nu. Valoarea mijlocului fix rămâne fixă, la cursul de schimb din data înregi
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „319. - O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014, pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul complet, din cele trei texte:
@@ -39,7 +39,7 @@ Practic: costul mijlocului fix nu se „ajustează" niciodată din cauza cursulu
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs (`core/diferente_curs.py`) acceptă strict trei tipuri de element: creanță, disponibil, datorie — un apel cu „mijloc fix" sau „stoc" ridică eroare, exact conform regulii de mai sus (elementele nemonetare nu intră în acest calcul). Pentru **datoria** către furnizorul mijlocului fix, dacă plata se face în valută la un curs diferit de cel din evidență, aplicația calculează corect diferența prin operațiunea „Decontare în valută" (`decontare_valuta`), cu tip „datorie", generând automat nota contabilă cu diferența pe 665/765.
+Motorul de diferențe de curs acceptă strict trei tipuri de element: creanță, disponibil, datorie — un apel cu „mijloc fix" sau „stoc" ridică eroare, exact conform regulii de mai sus (elementele nemonetare nu intră în acest calcul). Pentru **datoria** către furnizorul mijlocului fix, dacă plata se face în valută la un curs diferit de cel din evidență, aplicația calculează corect diferența prin operațiunea „Decontare în valută" (`decontare_valuta`), cu tip „datorie", generând automat nota contabilă cu diferența pe 665/765.
 
 Valoarea propriu-zisă a mijlocului fix, la înregistrarea inițială, se stabilește separat, la cursul BNR din data tranzacției — acest pas nu ține de motorul de diferențe de curs, ci de fluxul obișnuit de înregistrare a achiziției.
 

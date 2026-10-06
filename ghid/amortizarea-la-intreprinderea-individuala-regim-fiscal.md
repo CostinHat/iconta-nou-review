@@ -35,6 +35,6 @@ Singurul element specific formei de organizare este identificarea contribuabilul
 
 ## Ce face iConta.eu
 
-Motorul de calcul din `core/rip_api.py` — inclusiv `registru_inventar(conn, schema, an)`, care calculează amortizarea liniară a mijloacelor fixe pe baza `dnf_luni`, `data_pif` și `valoare` din tabela `mijloace_fixe` — nu face nicio distincție de cod între PFA, întreprindere individuală sau întreprindere familială: toate rulează prin aceeași logică de validare, amortizare și calcul al Registrului-inventar, coerent cu faptul că sursele legale nu prevăd un regim distinct pentru II.
+Motorul de calcul din aplicație — inclusiv `registru_inventar(conn, schema, an)`, care calculează amortizarea liniară a mijloacelor fixe pe baza `dnf_luni`, `data_pif` și `valoare` din tabela `mijloace_fixe` — nu face nicio distincție de cod între PFA, întreprindere individuală sau întreprindere familială: toate rulează prin aceeași logică de validare, amortizare și calcul al Registrului-inventar, coerent cu faptul că sursele legale nu prevăd un regim distinct pentru II.
 
 [iConta.eu](/)

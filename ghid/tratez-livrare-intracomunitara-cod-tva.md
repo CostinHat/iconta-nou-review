@@ -13,7 +13,7 @@ Vinzi bunuri unui client din alt stat membru, dar codul lui de TVA nu e valid �
 ## Temeiul legal
 
 ::: ghid-temei
-„`valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport)` — validează condițiile scutirii LIC (art. 294 alin. 2 lit. a): client non-RO + cod valid VIES + dovadă transport; fără oricare din ele → eroare explicită «facturează cu TVA».” — cod sursă `core/intracomunitar.py`, verificat în dosarul F050; temei: CF art. 294 alin. (2) lit. a).
+„`valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport)` — validează condițiile scutirii LIC (art. 294 alin. 2 lit. a): client non-RO + cod valid VIES + dovadă transport; fără oricare din ele → eroare explicită «facturează cu TVA».” — codul aplicației, verificat în dosarul F050; temei: CF art. 294 alin. (2) lit. a).
 :::
 
 Cele două condiții ale scutirii — cod valid comunicat de client + dovada transportului — sunt cumulative. Codul nevalid rupe scutirea de unul singur, indiferent dacă ai și dovada transportului.

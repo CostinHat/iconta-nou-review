@@ -14,7 +14,7 @@ Regimul de impozitare al unei firme (impozit pe profit sau impozit pe veniturile
 
 ::: ghid-temei
 „(1) Organul fiscal central organizează evidența contribuabililor/plătitorilor în cadrul registrului contribuabililor/plătitorilor, care conține: a) datele de identificare a contribuabilului/plătitorului; b) date privind vectorul fiscal; c) alte informații necesare administrării creanțelor fiscale. [...] (4) Tipurile de obligații fiscale pentru care, potrivit legii, contribuabilul/plătitorul are obligația declarării lor și care formează vectorul fiscal sunt stabilite prin ordin al președintelui A.N.A.F."
-— Cod de procedură fiscală (Legea nr. 207/2015), art. 91 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Cod de procedură fiscală (Legea nr. 207/2015), art. 91 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic:

@@ -14,10 +14,10 @@ Oferirea gratuită de mostre pentru degustare sau testare (de exemplu, la un pun
 
 ::: ghid-temei
 „Nu constituie livrare de bunuri, în sensul alin. (1): [...] b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 privind Codul fiscal, art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „bunurile acordate în scop de reclamă cuprind, fără a se limita la acestea, bunurile oferite în mod gratuit în cadrul campaniilor promoționale, mostre acordate pentru încercarea produselor sau pentru demonstrații la punctele de vânzare."
-— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii 227/2015, pct. 7 alin. (10) lit. b), Secțiunea 1, Cap. IV, Titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii 227/2015, pct. 7 alin. (10) lit. b), Secțiunea 1, Cap. IV, Titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Din normele metodologice rezultă condițiile concrete pentru ca gratuitățile acordate la degustare/testare să nu fie tratate ca livrare impozabilă:

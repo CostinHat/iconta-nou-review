@@ -16,7 +16,7 @@ O firmă nou-înființată nu e obligată automat la depunerea lunară a D112 �
 „(4) Prin excepție de la prevederile alin. (1), plătitorii de venituri din salarii și asimilate salariilor prevăzuți la art. 80 alin. (2), în calitate de angajatori sau de persoane asimilate angajatorului, depun trimestrial Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate aferentă fiecărei luni a trimestrului, până la data de 25 inclusiv a lunii următoare trimestrului.
 [...]
 (10) Persoanele și entitățile prevăzute la art. 80 alin. (2) lit. b) și c) care se înființează în cursul anului aplică regimul trimestrial de declarare începând cu anul înființării dacă, odată cu declarația de înregistrare fiscală, declară că în cursul anului estimează un număr mediu de până la 3 salariați exclusiv și, după caz, urmează să realizeze un venit total de până la 100.000 euro."
-— Legea 227/2015 (Codul fiscal), art. 147 alin. (4) și (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 147 alin. (4) și (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul pentru o firmă nouă, cu primul angajat:
@@ -34,6 +34,6 @@ Mecanismul pentru o firmă nouă, cu primul angajat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează **D112** lunar, din datele salariale introduse de contabil (`core/d112.py`) — declarația se completează, ca formă, pentru fiecare lună, indiferent de periodicitatea de depunere aleasă. Nu am putut confirma din cod un mecanism care să verifice sau să semnaleze automat eligibilitatea unei firme nou-înființate pentru regimul trimestrial conform art. 147 alin. (10): alegerea periodicității, corelată cu declarația estimativă depusă la înregistrarea fiscală, rămâne o decizie pe care contabilul o ia și o urmărește separat.
+La data acestui ghid, iConta.eu generează **D112** lunar, din datele salariale introduse de contabil — declarația se completează, ca formă, pentru fiecare lună, indiferent de periodicitatea de depunere aleasă. Nu am putut confirma din cod un mecanism care să verifice sau să semnaleze automat eligibilitatea unei firme nou-înființate pentru regimul trimestrial conform art. 147 alin. (10): alegerea periodicității, corelată cu declarația estimativă depusă la înregistrarea fiscală, rămâne o decizie pe care contabilul o ia și o urmărește separat.
 
 [iConta.eu](/)

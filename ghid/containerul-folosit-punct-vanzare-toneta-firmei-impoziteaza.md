@@ -16,15 +16,15 @@ Nu materialul contează și nici faptul că obiectul poate fi mutat tehnic. Cont
 
 ::: ghid-temei
 „clădire - orice construcție situată deasupra solului și/sau sub nivelul acestuia, indiferent de denumirea ori de folosința sa, și care are una sau mai multe încăperi ce pot servi la adăpostirea de oameni, animale, obiecte, produse, materiale, instalații, echipamente și altele asemenea, iar elementele structurale de bază ale acesteia sunt pereții și acoperișul, indiferent de materialele din care sunt construite"
-— Legea 227/2015 (Codul fiscal), art. 453 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 453 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) În vederea încadrării unei construcții în categoria clădirilor, conform definiției de la art. 453 lit. b) din Codul fiscal, aceasta trebuie să fie fixată în pământ cu caracter permanent, respectiv trebuie să existe intenția de a fi păstrat pe același amplasament cel puțin pe durata unui an calendaristic."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IX, pct. 2 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IX, pct. 2 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(2) De exemplu, sunt considerate clădiri, în înțelesul alin. (1) [...] un container folosit ca punct de vânzare, o tonetă de ziare, o toaletă publică instalată într-un parc, care sunt menținute în același loc mai mult de un an calendaristic."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IX, pct. 2 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IX, pct. 2 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum aplici regula:

@@ -14,7 +14,7 @@ Nu e o declarație separată depusă la ANAF, ci o obligație de prezentare în 
 
 ::: ghid-temei
 „(1) Dacă o entitate a avut tranzacții cu părțile legate pe parcursul perioadelor acoperite de situațiile financiare, aceasta trebuie să prezinte natura relației cu părțile legate, precum și informațiile cu privire la respectivele tranzacții și soldurile scadente, inclusiv angajamentele, necesare pentru ca utilizatorii să înțeleagă efectul potențial al relației asupra situațiilor financiare. [...] Prezentarea informațiilor trebuie să includă cel puțin: a) valoarea tranzacțiilor; b) valoarea soldurilor scadente, inclusiv a angajamentelor, și: (i) termenii și condițiile acestora, inclusiv dacă sunt garantate, și natura contraprestației de decontat; și (ii) detalii privind garanțiile date sau primite; c) provizioanele privind creanțele îndoielnice aferente valorii soldurilor scadente; și d) cheltuiala recunoscută în timpul perioadei cu privire la creanțele nerecuperabile sau îndoielnice datorate de părțile legate."
-— OMFP nr. 1802/2014, Reglementări contabile, pct. 482 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, Reglementări contabile, pct. 482 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Câteva elemente de care depinde aplicarea corectă a obligației:

@@ -19,7 +19,7 @@ Certificatul de atestare fiscală e documentul care arată, la o dată fixă, ce
 ART. 159 Certificatul de atestare fiscală emis de organul fiscal local
 [...]
 (3) Certificatul de atestare fiscală se emite în termen de cel mult două zile lucrătoare de la data solicitării și este valabil 30 de zile de la data emiterii."
-— Legea 207/2015, art. 158 alin. (5) și art. 159 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 158 alin. (5) și art. 159 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Deci „rapid" are deja un termen legal, nu unul de negociat:

@@ -16,10 +16,10 @@ Pentru un vânzător care trăiește din platformă, măsura e mai dură decât 
 
 ::: ghid-temei
 „(6) În cazul în care un Vânzător nu comunică informațiile prevăzute în secțiunea II din anexa nr. 5 nici după primirea a două atenționări transmise ulterior solicitării inițiale din partea Operatorului de platformă care are obligația de raportare, dar nu înainte de expirarea unui termen de 60 de zile de la solicitarea inițială, Operatorul de platformă care are obligația de raportare închide contul Vânzătorului și nu îi permite acestuia să se înregistreze din nou pe platformă sau reține plata Contraprestației către Vânzător atât timp cât Vânzătorul nu comunică informațiile solicitate."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „dd) nerespectarea de către Operatorii de platformă care au obligația de raportare a obligației prevăzute la art. 291 5 alin. (6);"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. dd) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. dd) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se desfășoară procedura:

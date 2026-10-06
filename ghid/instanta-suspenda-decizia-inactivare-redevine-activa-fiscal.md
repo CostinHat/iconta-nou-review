@@ -16,12 +16,12 @@ Diferența practică este mare. Contestația administrativă nu suspendă execut
 
 ::: ghid-temei
 „în cazul suspendării executării deciziei de declarare în inactivitate, dispusă de instanțele de judecată [...], toate efectele deciziei de inactivare sunt suspendate până la încetarea acesteia și contribuabilul/plătitorul se reactivează pe perioada suspendării."
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (9^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (9^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Introducerea contestației pe calea administrativă de atac nu suspendă executarea actului administrativ fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă „toate efectele" pentru o firmă inactivă:

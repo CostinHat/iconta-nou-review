@@ -14,7 +14,7 @@ Nu ANAF „trimite" codul de identificare al fiecărui asociat pentru completare
 
 ::: ghid-temei
 „<benef> 1-n aparitii [...] 4. cifR 4.CNP/NIF din Romania N(13) DA Verificare cifR — cifR= CNP/NIF — ERR - campul '4.CNP/NIF din Romania' invalid / necompletat"
-— OPANAF nr. 102/2025, structura declarației 205, câmpul `cifR` (codul de identificare fiscală — CNP/NIF din România — al beneficiarului) (sursă: anaf_surse/d205_struct_anaf.txt)
+— OPANAF nr. 102/2025, structura declarației 205, câmpul `cifR` (codul de identificare fiscală — CNP/NIF din România — al beneficiarului) (sursă: [Structura fișierului XML pentru declarația 205, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D205_2025_120226.pdf))
 :::
 
 Ce spune structura, practic:
@@ -31,6 +31,6 @@ Ce spune structura, practic:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu obține automat** codul de identificare al asociaților de la ANAF sau de la alte registre publice — declarația D205 (`core/d205.py`) citește aceste date direct din modulul propriu de asociați al firmei (`select_asociati`), unde CNP-ul fiecărui asociat trebuie introdus și menținut de utilizator. Aplicația validează structural codul introdus (lungime, format numeric) pentru a deriva corect rezidența, dar corectitudinea și completitudinea datelor despre asociați rămân responsabilitatea contabilului sau a administratorului firmei.
+iConta.eu **nu obține automat** codul de identificare al asociaților de la ANAF sau de la alte registre publice — declarația D205 citește aceste date direct din modulul propriu de asociați al firmei (`select_asociati`), unde CNP-ul fiecărui asociat trebuie introdus și menținut de utilizator. Aplicația validează structural codul introdus (lungime, format numeric) pentru a deriva corect rezidența, dar corectitudinea și completitudinea datelor despre asociați rămân responsabilitatea contabilului sau a administratorului firmei.
 
 [iConta.eu](/)

@@ -13,7 +13,7 @@ O diferență de numerar la inventariere nu apare niciodată izolat — ea e mer
 ## Temeiul legal
 
 ::: ghid-temei
-„Disponibilitățile în lei și în valută din casieria entității se inventariază în ultima zi lucrătoare a exercițiului financiar, după înregistrarea tuturor operațiunilor de încasări și plăți privind exercițiul respectiv, confruntându-se soldurile din registrul de casă cu monetarul și cu cele din contabilitate." — OMFP 2861/2009, Anexa 1, pct. 29 alin. (3) (sursă: anaf_surse/omfp_2861_2009.txt)
+„Disponibilitățile în lei și în valută din casieria entității se inventariază în ultima zi lucrătoare a exercițiului financiar, după înregistrarea tuturor operațiunilor de încasări și plăți privind exercițiul respectiv, confruntându-se soldurile din registrul de casă cu monetarul și cu cele din contabilitate." — OMFP 2861/2009, Anexa 1, pct. 29 alin. (3) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Legea cere explicit o confruntare **în trei**, nu doar între două surse — de aici și cea mai frecventă cauză reală a unei „diferențe": nu neapărat un plus sau un minus fizic de bani, ci faptul că una din cele trei surse n-a fost actualizată corect înainte de numărătoare.

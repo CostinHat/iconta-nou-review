@@ -17,7 +17,7 @@ Estimarea nu este o sancțiune, ci un mecanism de rezervă: atunci când organul
 (1) Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă.
 (2) Stabilirea prin estimare a bazei de impozitare se efectuează în situații cum ar fi: a) în situația prevăzută la art. 107 alin. (1)-(4); b) în situația în care organul fiscal nu poate determina situația fiscală corectă și constată că evidențele contabile sau fiscale ori declarațiile fiscale sau documentele și informațiile prezentate în cursul controlului fiscal sunt incorecte, incomplete, precum și în situația în care acestea nu există ori nu sunt puse la dispoziția organelor fiscale.
 (3) [...] organul fiscal identifică acele elemente care sunt cele mai apropiate situației de fapt fiscale. Organul fiscal are obligația menționării în actul de impunere a motivelor de fapt și a temeiului de drept care au determinat folosirea estimării, precum și a criteriilor de estimare."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 106 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 106 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Estimarea se declanșează, tipic, în două situații: **nedepunerea declarației de impunere** (art. 107) sau **existența unor evidențe incorecte/incomplete/lipsă** constatate în cadrul unui control fiscal (art. 106 alin. (2) lit. b)).

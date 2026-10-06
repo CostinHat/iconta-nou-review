@@ -14,7 +14,7 @@ Poprirea bancară nu se ridică „automat" în ziua în care firma plătește �
 
 ::: ghid-temei
 „Executarea silită încetează dacă: a) s-au stins integral obligațiile fiscale prevăzute în titlul executoriu, inclusiv obligațiile de plată accesorii, cheltuielile de executare și orice alte sume stabilite în sarcina debitorului, potrivit legii; b) a fost desființat titlul executoriu; c) în alte cazuri prevăzute de lege."
-— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condiția de bază e stingerea **integrală** — nu doar suma principală, ci și accesoriile (dobânzi, penalități) și cheltuielile de executare. O plată parțială, chiar dacă acoperă „datoria de bază", nu declanșează încetarea popririi dacă mai rămân accesorii neachitate.
@@ -23,7 +23,7 @@ Condiția de bază e stingerea **integrală** — nu doar suma principală, ci �
 
 ::: ghid-temei
 „Măsurile de executare silită aplicate în condițiile prezentului cod se ridică prin decizie întocmită în cel mult două zile de la data la care a încetat executarea silită, de către organul de executare silită."
-— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Organul fiscal are obligația legală de a emite decizia de ridicare a popririi în cel mult două zile de la data încetării executării silite — nu de la data plății neapărat, ci de la data la care se confirmă stingerea integrală. Practic, între momentul plății și confirmarea ei în evidența fiscală (mai ales dacă plata a mers pe un cont sau buget greșit) pot trece zile suplimentare, ceea ce prelungește indisponibilizarea sumelor din cont.
@@ -32,12 +32,12 @@ Organul fiscal are obligația legală de a emite decizia de ridicare a popririi 
 
 ::: ghid-temei
 „Organul de executare silită ridică poprirea bancară pentru sumele care depășesc cuantumul creanțelor înscrise în adresa de înființare a popririi în situația în care, din informațiile comunicate de bănci, rezultă că sumele indisponibilizate în favoarea organului de executare silită acoperă creanțele fiscale înscrise în adresa de înființare a popririi și sunt îndeplinite condițiile pentru realizarea creanței."
-— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Poprirea bancară se ridică și în situația în care organul de executare silită constată că poprirea a rămas fără obiect."
-— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 234 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Dacă banca a indisponibilizat mai mult decât suma din adresa de poprire (de exemplu pentru că a poprit sumele viitoare din încasările zilnice până la acoperirea integrală), organul fiscal e obligat să ridice poprirea pentru surplus, de îndată ce constată acoperirea integrală a creanței.

@@ -14,7 +14,7 @@ Nu. Pro-rata de TVA compară doar operațiuni aflate în sfera taxei — livrăr
 
 ::: ghid-temei
 „Pro rata prevăzută la alin. (5) se determină ca raport între: a) suma totală, fără taxă, dar cuprinzând subvențiile legate direct de preț, a operațiunilor constând în livrări de bunuri și prestări de servicii care permit exercitarea dreptului de deducere, la numărător; și b) suma totală, fără taxă, a operațiunilor prevăzute la lit. a) și a operațiunilor constând în livrări de bunuri și prestări de servicii care nu permit exercitarea dreptului de deducere, la numitor."
-— Legea 227/2015 (Codul fiscal), art. 300 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 300 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din definiția strictă a formulei:

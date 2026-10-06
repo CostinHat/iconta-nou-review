@@ -14,10 +14,10 @@ Impozitul pe profit al unei firme agricole se calculează exact ca la orice alt�
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015, art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Următorii contribuabili au obligația de a declara și plăti impozitul pe profit, astfel: [...] b) contribuabilii care obțin venituri majoritare din cultura cerealelor, a plantelor tehnice și a cartofului, pomicultură și viticultură au obligația de a declara și de a plăti impozitul pe profit anual, până la termenele prevăzute la art. 42."
-— Legea 227/2015, art. 41 alin. (5) lit. b), astfel cum a fost modificat prin OUG nr. 8/2026, art. 6 pct. 10, aplicabil de la anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 41 alin. (5) lit. b), astfel cum a fost modificat prin OUG nr. 8/2026, art. 6 pct. 10, aplicabil de la anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Deci calculul propriu-zis nu diferă: rezultatul fiscal (venituri minus cheltuieli deductibile, plus/minus ajustări) se impozitează cu 16%, la fel ca la orice contribuabil plătitor de impozit pe profit. Diferența e doar de **ritm**: o firmă cu venituri majoritare din cultura cerealelor, a plantelor tehnice, a cartofului, pomicultură sau viticultură declară și plătește impozitul o singură dată pe an, la termenul declarației anuale (art. 42, de regulă 25 martie anul următor), și nu trimestrial (art. 41 alin. 1), evitându-se astfel plățile intermediare într-un domeniu cu venituri concentrate sezonier, la recoltă.

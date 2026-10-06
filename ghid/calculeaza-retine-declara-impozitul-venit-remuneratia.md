@@ -16,21 +16,21 @@ Obligația are cea mai mare amendă din Legea 52/2011: **20.000 de lei**, plus *
 
 ::: ghid-temei
 „(1) Remunerația primită de zilier pentru activitatea prestată este supusă impozitului pe venit, conform prevederilor Legii nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare. (2) Calculul, plata și declararea impozitului pe venit datorat pentru veniturile realizate din activitatea prestată de zilier sunt în sarcina beneficiarului sau unui împuternicit al acestuia."
-— Legea 52/2011, art. 7 alin. (1)-(2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 7 alin. (1)-(2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „d) încălcarea prevederilor art. 7 , cu amendă de 20.000 lei și interzicerea utilizării zilierilor pe toată durata de existență a beneficiarului sau unui împuternicit al acestuia;"
-— Legea 52/2011, art. 14 alin. (1) lit. d) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. d) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „remunerația brută primită pentru activitatea prestată de zilieri, potrivit legii;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. r) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. r) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „pentru veniturile obținute în celelalte cazuri, prin aplicarea cotei de 10% asupra bazei de calcul determinate ca diferență între venitul brut și contribuțiile sociale obligatorii aferente unei luni"
-— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația de a calcula și de a reține impozitul aferent veniturilor fiecărei luni la data efectuării plății acestor venituri, precum și de a-l plăti la bugetul de stat până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc aceste venituri."
-— Codul fiscal (Legea 227/2015), art. 80 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 80 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se calculează:

@@ -14,7 +14,7 @@ Da — norma de venit aplicabilă unei activități independente impozitate în 
 
 ::: ghid-temei
 „(2) Ministerul Finanțelor Publice elaborează nomenclatorul activităților pentru care venitul net se poate determina pe baza normelor anuale de venit [...] Direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București au următoarele obligații: a) stabilirea nivelului normelor de venit; b) publicarea acestora, anual, în cursul trimestrului IV al anului anterior celui în care urmează a se aplica, precum și a coeficienților de corecție stabiliți prin consultarea consiliilor județene/Consiliului General al Municipiului București, după caz."
-— Legea 227/2015, art. 69 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 69 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se explică, practic, diferența dintre județe:

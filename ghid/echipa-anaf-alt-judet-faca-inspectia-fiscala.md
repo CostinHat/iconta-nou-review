@@ -16,10 +16,10 @@ Da. Pentru impozitele și contribuțiile administrate de ANAF, inspecția fiscal
 
 ::: ghid-temei
 „(1) Inspecția fiscală se exercită exclusiv, nemijlocit și neîngrădit de organul fiscal central competent potrivit art. 29 sau organul fiscal local competent potrivit art. 37 și 38. Organele fiscale care sunt competente să efectueze inspecția fiscală sunt denumite, în sensul prezentului capitol, organe de inspecție fiscală. (2) Prin excepție de la prevederile art. 30, în cazul creanțelor administrate de organul fiscal central, organele de inspecție fiscală au competență de efectuare a inspecției fiscale pe întreg teritoriul țării. (3) Dispozițiile prezentului articol sunt aplicabile în mod corespunzător și în cazul verificării documentare efectuate de către structurile de inspecție fiscală din cadrul organului fiscal central."
-— Codul de procedură fiscală (Legea 207/2015), art. 119 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 119 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Pentru administrarea creanțelor fiscale și a altor creanțe datorate bugetelor prevăzute la art. 29 alin. (1) și (2), competența revine acelui organ fiscal teritorial din cadrul A.N.A.F., stabilit prin ordin al președintelui A.N.A.F., în a cărui rază teritorială se află domiciliul fiscal al contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă în practică:

@@ -14,7 +14,7 @@ Regula generală pentru servicii B2B spune că TVA se taxează unde e stabilit c
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (2) și (3), pentru următoarele prestări de servicii, locul prestării este considerat a fi: a) locul unde sunt situate bunurile imobile, pentru prestările de servicii efectuate în legătură cu bunurile imobile, inclusiv serviciile prestate de experți și agenți imobiliari, de cazare în sectorul hotelier sau în sectoare cu funcție similară, precum tabere de vacanță sau locuri amenajate pentru camping [...]."
-— Legea 227/2015 (Codul fiscal), art. 278 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 278 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru un hotel sau o pensiune din România care cazează o firmă dintr-un alt stat membru UE:

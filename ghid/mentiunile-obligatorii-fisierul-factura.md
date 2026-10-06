@@ -28,7 +28,7 @@ k) informații privind creditări sau debitări;
 l) informații privind pozițiile de pe factură;
 m) defalcarea TVA;
 n) totalul facturii."
-— OUG 120/2021, art. 4 alin. (2) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (2) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce trebuie reținut din această listă pentru o firmă mică:

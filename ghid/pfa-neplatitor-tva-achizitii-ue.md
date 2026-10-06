@@ -14,7 +14,7 @@ Un PFA care nu e înregistrat în scopuri de TVA nu scapă automat de obligații
 
 ::: ghid-temei
 „nu sunt considerate operațiuni impozabile în România achizițiile intracomunitare de bunuri care îndeplinesc următoarele condiții: [...] valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice."
-— Legea 227/2015 (Codul fiscal), art. 268 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 268 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cât timp achizițiile intracomunitare de bunuri (altele decât mijloace de transport noi sau produse accizabile) rămân sub acest plafon calculat cumulat pe an calendaristic, ele nu sunt operațiuni impozabile în România — PFA-ul plătește TVA-ul din statul membru al furnizorului, ca orice cumpărător final, și nu are obligații suplimentare de TVA în România pentru acele achiziții.
@@ -25,7 +25,7 @@ Depășirea plafonului de 10.000 euro schimbă regimul: achiziția intracomunita
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: a) persoana impozabilă care are sediul activității economice în România, [...] neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...], care efectuează o achiziție intracomunitară taxabilă în România, înainte de efectuarea achiziției intracomunitare, dacă valoarea achiziției intracomunitare respective depășește plafonul pentru achiziții intracomunitare în anul calendaristic în care are loc achiziția intracomunitară;"
-— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic: PFA-ul rămâne neplătitor de TVA pentru activitatea curentă din România (nu colectează TVA pe facturile emise), dar obține un cod special de TVA valabil doar pentru achizițiile/prestările intracomunitare care intră sub incidența acestui articol. Codul se solicită **înainte** de achiziția care depășește plafonul, nu retroactiv.
@@ -36,7 +36,7 @@ Legea permite și înregistrarea voluntară sub plafon, pentru cine vrea codul s
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România, dacă nu este înregistrată și nu este obligată să se înregistreze conform art. 316, [...] poate solicita să se înregistreze, conform prezentului articol, în cazul în care realizează achiziții intracomunitare, conform art. 268 alin. (6) sau art. 315^1 alin. (10)."
-— Legea 227/2015 (Codul fiscal), art. 317 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 317 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ### Ce se greșește în practică

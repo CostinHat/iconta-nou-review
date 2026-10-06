@@ -16,7 +16,7 @@ poarta: v1
 „(2) Următoarele operațiuni sunt, de asemenea, scutite de taxă: [...]
 e) arendarea, concesionarea, închirierea și leasingul de bunuri imobile, acordarea unor drepturi reale asupra unui bun imobil, precum dreptul de uzufruct și superficia, cu plată, pe o anumită perioadă. Fac excepție următoarele operațiuni: 1. operațiunile de cazare care sunt efectuate în cadrul sectorului hotelier sau al sectoarelor cu funcție similară, inclusiv închirierea terenurilor amenajate pentru camping; 2. închirierea de spații sau locații pentru parcarea autovehiculelor; 3. închirierea utilajelor și a mașinilor fixate definitiv în bunuri imobile; 4. închirierea seifurilor; [...]
 (3) Orice persoană impozabilă poate opta pentru taxarea operațiunilor prevăzute la alin. (2) lit. e) și f), în condițiile stabilite prin normele metodologice."
-— Legea 227/2015 (Codul fiscal), art. 292 alin. (2) lit. e) și alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 292 alin. (2) lit. e) și alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, așa cum rezultă din lege:

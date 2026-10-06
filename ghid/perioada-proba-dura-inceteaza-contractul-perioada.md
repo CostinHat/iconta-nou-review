@@ -16,12 +16,12 @@ La un contract pe durată nedeterminată, perioada de probă poate fi de cel mul
 
 ::: ghid-temei
 „Pentru verificarea aptitudinilor salariatului, la încheierea contractului individual de muncă se poate stabili o perioadă de probă de cel mult 90 de zile calendaristice pentru funcțiile de execuție și de cel mult 120 de zile calendaristice pentru funcțiile de conducere.(2) Verificarea aptitudinilor profesionale la încadrarea persoanelor cu handicap se realizează exclusiv prin modalitatea perioadei de probă de maximum 30 de zile calendaristice.(3) Pe durata sau la sfârșitul perioadei de probă, contractul individual de muncă poate înceta exclusiv printr-o notificare scrisă, fără preaviz, la inițiativa oricăreia dintre părți, fără a fi necesară motivarea acesteia."
-— Codul muncii (Legea 53/2003), art. 31 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 31 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Salariatul încadrat cu contract individual de muncă pe durată determinată poate fi supus unei perioade de probă, care nu va depăși:a) 5 zile lucrătoare pentru o durată a contractului individual de muncă mai mică de 3 luni; ... b) 15 zile lucrătoare pentru o durată a contractului individual de muncă cuprinsă între 3 și 6 luni; ... c) 30 de zile lucrătoare pentru o durată a contractului individual de muncă mai mare de 6 luni; ... d) 45 de zile lucrătoare în cazul salariaților încadrați în funcții de conducere, pentru o durată a contractului individual de muncă mai mare de 6 luni."
-— Codul muncii (Legea 53/2003), art. 85 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 85 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Limitele, pe tipuri de contract:

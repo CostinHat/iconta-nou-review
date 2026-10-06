@@ -14,7 +14,7 @@ O firmă românească vinde un abonament software, un curs online sau alt servic
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (3), locul următoarelor servicii este considerat a fi: [...] h) locul unde beneficiarul este stabilit, își are domiciliul stabil sau reședința obișnuită, în cazul următoarelor servicii prestate către o persoană neimpozabilă: 1. serviciile de telecomunicații; 2. serviciile de radiodifuziune și televiziune; 3. serviciile furnizate pe cale electronică."
-— Codul fiscal (Legea 227/2015), art. 278 alin. (5) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (5) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula generală pentru servicii B2C (art. 278 alin. (3): locul e la sediul prestatorului) nu se aplică serviciilor electronice, de telecomunicații și de radiodifuziune/televiziune — pentru ele, legea inversează regula:

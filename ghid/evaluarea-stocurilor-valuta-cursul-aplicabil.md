@@ -32,6 +32,6 @@ Regula reevaluării lunare la cursul BNR (pct. 325) se aplică elementelor **mon
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit la intrarea în gestiune a unei mărfi achiziționate în valută se determină pentru data operațiunii, prin motorul de curs (`core/curs_bnr.py`), aceeași sursă folosită pentru orice altă operațiune valutară din aplicație. Ca regulă contabilă (pct. 315 alin. (3), pct. 325), stocurile — element nemonetar — nu se reevaluează lunar precum disponibilitățile, creanțele sau datoriile în valută; ele rămân la costul lor de intrare, stabilit o singură dată prin cursul BNR al operațiunii.
+Cursul BNR folosit la intrarea în gestiune a unei mărfi achiziționate în valută se determină pentru data operațiunii, prin motorul de curs, aceeași sursă folosită pentru orice altă operațiune valutară din aplicație. Ca regulă contabilă (pct. 315 alin. (3), pct. 325), stocurile — element nemonetar — nu se reevaluează lunar precum disponibilitățile, creanțele sau datoriile în valută; ele rămân la costul lor de intrare, stabilit o singură dată prin cursul BNR al operațiunii.
 
 [iConta.eu](/)

@@ -14,10 +14,10 @@ Obligația de a transmite facturile prin sistemul național RO e-Factura pentru 
 
 ::: ghid-temei
 „Operatorii economici - persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, indiferent dacă sunt sau nu înregistrați în scopuri de TVA conform art. 316 din Legea nr. 227/2015, cu modificările și completările ulterioare, pentru livrările de bunuri și prestările de servicii care au locul livrării/prestării în România [...] efectuate în relația B2B [...] au obligația în perioada 1 ianuarie 2024-30 iunie 2024 să transmită facturile emise în sistemul național privind factura electronică RO e-Factura [...], indiferent dacă destinatarii sunt sau nu înregistrați în Registrul RO e-Factura."
-— Legea nr. 296/2023, art. LIX alin. (1) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea nr. 296/2023, art. LIX alin. (1) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 **Notă de precizie:** citatul din art. LIX alin. (1) a fost o regulă tranzitorie, valabilă strict pentru perioada 1 ianuarie–30 iunie 2024. Începând cu 1 iulie 2024, obligația generală de transmitere B2B a fost preluată de forma permanentă a art. 10 alin. (1) din OUG 120/2021 (reprodusă mai sus) — care nu mai repetă expres formularea „indiferent dacă sunt sau nu înregistrați în scopuri de TVA", dar se aplică oricărei „persoane impozabile stabilite în România conform art. 266 alin. (2) din Codul fiscal", categorie care, prin definiția din Codul fiscal, nu presupune înregistrarea în scopuri de TVA.
@@ -34,6 +34,6 @@ Obligația de a transmite facturile prin sistemul național RO e-Factura pentru 
 
 ## Ce face iConta.eu
 
-Modulele de e-Factura din iConta.eu (`core/efactura_send.py`, `core/efactura_trimitere.py`, `core/spv_conector.py`) transmit facturile emise în sistemul RO e-Factura indiferent de statutul de plătitor de TVA al firmei, pe baza obligației generale B2B de la art. 10 alin. (1) din OUG 120/2021 (forma actuală, modificată prin Legea nr. 296/2023) — aplicația nu condiționează trimiterea de existența unui cod de TVA activ al emitentului.
+Modulele de e-Factura din iConta.eu transmit facturile emise în sistemul RO e-Factura indiferent de statutul de plătitor de TVA al firmei, pe baza obligației generale B2B de la art. 10 alin. (1) din OUG 120/2021 (forma actuală, modificată prin Legea nr. 296/2023) — aplicația nu condiționează trimiterea de existența unui cod de TVA activ al emitentului.
 
 [iConta.eu](/)

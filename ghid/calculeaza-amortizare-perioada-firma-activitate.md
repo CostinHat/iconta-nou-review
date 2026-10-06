@@ -14,7 +14,7 @@ Un mijloc fix scos temporar din uz (de exemplu, în perioada în care firma nu a
 
 ::: ghid-temei
 „5. Pentru perioada în care mijloacele fixe nu sunt utilizate, recuperarea amortizării aferente acesteia se va face prin recalcularea cotei de amortizare pe durata normala de utilizare rămasa, începând cu luna următoare repunerii în funcțiune a acestora sau se diminuează capitalurile proprii la data scoaterii din funcțiune."
-— Hotărârea Guvernului nr. 2.139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe, pct. 5, secțiunea „Alte precizări" (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— Hotărârea Guvernului nr. 2.139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe, pct. 5, secțiunea „Alte precizări" (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Textul oferă două variante posibile pentru perioada de neutilizare a unui mijloc fix (de exemplu, o firmă fără activitate temporară care își suspendă utilizarea echipamentelor sau clădirilor): fie amortizarea rămasă aferentă acelei perioade se **recuperează ulterior**, prin recalcularea cotei de amortizare pe durata normală de utilizare rămasă, începând cu luna următoare repunerii efective în funcțiune, fie, dacă mijlocul fix este scos definitiv din funcțiune, valoarea rămasă neamortizată se **diminuează din capitalurile proprii** la data scoaterii din funcțiune. Ceea ce catalogul nu permite este continuarea amortizării fiscale „normale" pe durata neutilizării, ca și cum activitatea nu s-ar fi întrerupt.

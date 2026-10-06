@@ -16,12 +16,12 @@ Pentru administrator, consecința este personală: cazierul lui fiscal arată in
 
 ::: ghid-temei
 „(5) Inactivitatea fiscală prevăzută la alin. (4) lit. c) se înscrie atât în cazierul fiscal al persoanei juridice sau entității fără personalitate juridică declarate inactivă, cât și al reprezentanților legali sau reprezentanților desemnați ai acestora. (6) Înscrierea inactivității fiscale se face în cazierul fiscal al reprezentanților legali ai persoanei juridice, precum și al reprezentanților legali sau desemnați ai entităților fără personalitate juridică existenți în perioada în care au intervenit situațiile de declarare a inactivității fiscale."
-— OG 39/2015, art. 4 alin. (5)-(6) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 4 alin. (5)-(6) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „inactivitatea fiscală se înscrie atât în cazierul fiscal al contribuabilului declarat inactiv, cât și al reprezentanților legali sau reprezentanților desemnați ai acestuia, cu excepția inactivității fiscale declarate ca urmare a înscrierii inactivității temporare la registrul comerțului"
-— OPANAF 3846/2015, Anexa nr. 5a) (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, Anexa nr. 5a) (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 Regulile, pe situații:

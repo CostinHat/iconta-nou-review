@@ -16,13 +16,13 @@ Suspendarea nu înseamnă scutire. Transportul făcut în perioada de nefuncțio
 
 ::: ghid-temei
 „(1^2) În situația în care, la prezentarea în punctul rutier de trecere a frontierei la intrarea în România, la locul de import, la punerea în mișcare a vehiculului de transport încărcat cu bunuri cu risc fiscal ridicat sau pe parcursul desfășurării transportului, Sistemul RO e-Transport nu este funcțional, obligația de declarare prevăzută la alin. (1) , respectiv de actualizare prevăzută la alin. (1^1) se suspendă până la repunerea în funcțiune a sistemului."
-— OUG 41/2022, art. 8 alin. (1^2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (1^2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(1^3) Pentru situațiile prevăzute la alin. (1^2) , obligațiile prevăzute la alin. (1) și/sau la alin. (1^1) se îndeplinesc până la sfârșitul următoarei zile lucrătoare repunerii în funcțiune a sistemului, inclusiv pentru transporturile încheiate."
-— OUG 41/2022, art. 8 alin. (1^3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (1^3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(1^4) Perioadele de nefuncționare a Sistemului RO eTransport vor fi publicate pe paginile de internet ale Agenției Naționale de Administrare Fiscală și Ministerului Finanțelor."
-— OUG 41/2022, art. 8 alin. (1^4) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (1^4) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce se face concret:

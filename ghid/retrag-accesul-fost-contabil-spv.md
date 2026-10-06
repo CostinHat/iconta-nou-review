@@ -18,7 +18,7 @@ Retragerea accesului unui fost contabil la Spațiul Privat Virtual (SPV) se face
 a) împuternicit al său pentru utilizarea serviciilor de comunicare electronică prin SPV;
 b) reprezentant desemnat al său pentru utilizarea serviciilor de comunicare electronică prin SPV.
 (2) Pentru completarea cererii de revocare se utilizează aplicaţia informatică specifică oferită de SPV."
-— OMFP 660/2017 (procedura de utilizare și funcționare a SPV), art. 18 alin. (1)-(2) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017 (procedura de utilizare și funcționare a SPV), art. 18 alin. (1)-(2) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Procedura completă, conform ordinului:

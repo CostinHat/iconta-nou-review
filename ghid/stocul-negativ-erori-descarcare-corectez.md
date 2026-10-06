@@ -14,7 +14,7 @@ Un stoc negativ (cantitate sau valoare sub zero pe o gestiune) nu e o stare econ
 
 ::: ghid-temei
 „Registrul-inventar se completează pe baza inventarierii faptice a fiecărui cont de activ și de pasiv. [...] În cazul în care inventarierea are loc pe parcursul anului, în Registrul-inventar se înregistrează soldurile existente la data inventarierii, la care se adaugă rulajele intrărilor și se scad rulajele ieșirilor de la data inventarierii până la data încheierii exercițiului financiar."
-— OMFP 2634/2015, Norme generale privind documentele financiar-contabile (sursă: anaf_surse/omfp_2634_2015.txt)
+— OMFP 2634/2015, Norme generale privind documentele financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Pașii de corectare a unui stoc negativ:
@@ -32,6 +32,6 @@ Pașii de corectare a unui stoc negativ:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu (`core/stocuri.py`, `core/inventariere.py`) ține evidența cantitativ-valorică pe gestiuni și articole, cu note contabile dedicate pentru plusuri de inventar (`nota_plus`) și minusuri de inventar (`nota_minus`), inclusiv pentru mijloace fixe. Reconcilierea automată dintre facturi și mișcările de stoc este acoperită de teste dedicate (`test_reconciliere_factura_stoc.py`). La data acestui ghid, aplicația **nu previne automat introducerea unei ieșiri care ar duce stocul pe negativ** dacă documentele nu sunt introduse în ordine cronologică — depistarea și corectarea cauzei rămân în sarcina contabilului, pe baza rapoartelor de stoc.
+Modulul de stocuri din iConta.eu ține evidența cantitativ-valorică pe gestiuni și articole, cu note contabile dedicate pentru plusuri de inventar (`nota_plus`) și minusuri de inventar (`nota_minus`), inclusiv pentru mijloace fixe. Reconcilierea automată dintre facturi și mișcările de stoc este acoperită de teste dedicate (`test_reconciliere_factura_stoc.py`). La data acestui ghid, aplicația **nu previne automat introducerea unei ieșiri care ar duce stocul pe negativ** dacă documentele nu sunt introduse în ordine cronologică — depistarea și corectarea cauzei rămân în sarcina contabilului, pe baza rapoartelor de stoc.
 
 [iConta.eu](/)

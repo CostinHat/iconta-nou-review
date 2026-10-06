@@ -16,10 +16,10 @@ Diferența față de concediul medical obișnuit e sursa banilor. Indemnizația 
 
 ::: ghid-temei
 „(6) Indemnizațiile se calculează și se plătesc de către angajatori și se recuperează de la casele teritoriale de pensii pe baza actelor justificative din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale în bugetul asigurărilor sociale de stat."
-— Legea 346/2002, art. 19 alin. (6) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (6) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(2) Persoanele prevăzute la art. 19 alin (6) sunt obligate să depună la casele teritoriale de pensii, din raza administrativ-teritorială în care își au sediul social, exemplarul 2 al certificatului de concediu medical, în vederea recuperării sumelor reprezentând indemnizații plătite asiguraților."
-— Legea 346/2002, art. 37 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 37 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Pașii, în practică:

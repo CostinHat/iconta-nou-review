@@ -14,7 +14,7 @@ Defectarea aparatului de marcat electronic fiscal nu oprește activitatea și nu
 
 ::: ghid-temei
 „(8) În cazul defectării aparatelor de marcat electronice fiscale, până la repunerea în funcțiune a acestora, operatorii economici utilizatori sunt obligați să înregistreze într-un registru special, întocmit în acest sens, toate operațiunile efectuate și să emită chitanțe, în condițiile legii, pentru respectivele operațiuni și facturi, la cererea clientului. [...] (8^1) În cazul prevăzut la alin. (8), operatorii economici utilizatori au obligația să notifice imediat distribuitorul autorizat sau unitatea de service acreditată, astfel încât utilizatorul să poată să facă dovada comunicării notificării la distribuitorul autorizat sau unitatea de service acreditată, în fața organelor de control."
-— OUG 28/1999, art. 1 alin. (8) și (8^1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (8) și (8^1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Procedura, în ordine:
@@ -33,6 +33,6 @@ Procedura, în ordine:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat registrului special pentru perioada de defectare a aparatului de marcat — aplicația oferă `core/chitante.py` (`pdf_chitanta()`) pentru emiterea chitanțelor, care poate fi folosită și în această situație, dar înregistrarea operațiunilor în registrul special propriu-zis și notificarea documentată a distribuitorului rămân, azi, în afara funcționalității aplicației.
+La data acestui ghid, iConta.eu nu are un modul dedicat registrului special pentru perioada de defectare a aparatului de marcat — aplicația oferă aplicația (`pdf_chitanta()`) pentru emiterea chitanțelor, care poate fi folosită și în această situație, dar înregistrarea operațiunilor în registrul special propriu-zis și notificarea documentată a distribuitorului rămân, azi, în afara funcționalității aplicației.
 
 [iConta.eu](/)

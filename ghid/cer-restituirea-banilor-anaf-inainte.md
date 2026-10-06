@@ -16,11 +16,11 @@ O firmă care se pregătește de închidere are dreptul să ceară înapoi orice
 „(1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată.
 (2) În situația în care s-a făcut o plată fără a fi datorată, cel pentru care s-a făcut astfel plata are dreptul la restituirea sumei respective. [...]
 (8) În cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod."
-— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (2) și (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 168 alin. (1), (2) și (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) Prevederile alin. (1) nu se aplică deconturilor cu sume negative de TVA cu opțiune de rambursare, depuse de contribuabilii mari și mijlocii [...] care se soluționează după efectuarea inspecției fiscale anticipate, în cazul în care: [...]
 c) pentru contribuabilul/plătitorul respectiv a fost declanșată procedura de lichidare voluntară sau a fost deschisă procedura de insolvență, cu excepția celor pentru care s-a confirmat un plan de reorganizare, în condițiile Legii nr. 85/2014 [...]."
-— Legea 207/2015, art. 169 alin. (2) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 169 alin. (2) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru o firmă în curs de lichidare, mecanismul de restituire funcționează astfel:

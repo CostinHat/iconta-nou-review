@@ -16,15 +16,15 @@ Diferența e mică în bani, dar arată bine logica taxelor locale pe suprafaț�
 
 ::: ghid-temei
 „(2) În cazul în care prin cerere se indică numai adresa, potrivit nomenclaturii stradale, suprafața de teren la care se raportează calculul taxei este suprafața întregii parcele, iar în cazul în care printr-un plan topografic sau de situație solicitantul individualizează o anumită suprafață din parcelă, taxa se aplică doar la aceasta.”
-— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 139 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 139 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Taxa pentru eliberarea certificatului de urbanism, în mediul urban, este egală cu suma stabilită conform tabelului următor:”
-— Codul fiscal (Legea 227/2015), art. 474 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Taxa pentru eliberarea certificatului de urbanism pentru o zonă rurală este egală cu 50% din taxa stabilită conform alin. (1)”
-— Codul fiscal (Legea 227/2015), art. 474 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Tabelul din art. 474 alin. (1) are tranșe de suprafață: până la 150 mp, 151-250 mp, 251-500 mp, 501-750 mp, 751-1.000 mp și peste 1.000 mp. Peste 1.000 mp, taxa este 14 lei plus 0,01 lei pentru fiecare mp care depășește 1.000 mp. Câteva precizări:

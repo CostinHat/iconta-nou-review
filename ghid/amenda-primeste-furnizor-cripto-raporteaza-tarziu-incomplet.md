@@ -14,13 +14,13 @@ Furnizorul de servicii de criptoactive raportor care transmite informațiile DAC
 
 ::: ghid-temei
 „kk) raportarea cu întârziere sau raportarea incorectă ori incompletă de către Furnizorii de Servicii de Criptoactive Raportori a informațiilor prevăzute la art. 291"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. kk) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. kk) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „u) cu amendă de la 50.000 lei la 150.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. kk), ll) și oo); v) cu amendă de la 20.000 lei la 100.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. mm) și nn);"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. u) și v) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. u) și v) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „se aplică prin derogare de la art. 10 alin. (2) prima teză referitoare la dublul maximului amenzii prevăzut pentru contravenția cea mai gravă din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor"
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Faptele și amenzile, pe scurt:

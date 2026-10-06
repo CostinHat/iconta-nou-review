@@ -16,13 +16,13 @@ Spre deosebire de multe alte amenzi din Codul de procedură fiscală, aceste lim
 
 ::: ghid-temei
 „w) neraportarea ori raportarea cu întârziere de către intermediarii sau contribuabilii relevanți, după caz, a aranjamentelor transfrontaliere care fac obiectul raportării; x) neîndeplinirea de către intermediar a obligației de notificare a altui intermediar sau a contribuabilului relevant, astfel cum este prevăzută la art. 291"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. w) și x) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. w) și x) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „n) cu amendă de la 20.000 lei la 100.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. w); o) cu amendă de la 5.000 lei la 30.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. x)."
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. n) și o) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. n) și o) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „aplicarea sancțiunii amenzii pentru contravențiile prevăzute în prezentul titlu se prescrie în termen de 5 ani de la data săvârșirii faptei."
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

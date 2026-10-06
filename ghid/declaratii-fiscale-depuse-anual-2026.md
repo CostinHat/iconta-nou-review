@@ -14,10 +14,10 @@ Spre deosebire de declarațiile lunare sau trimestriale, unde periodicitatea dep
 
 ::: ghid-temei
 „Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor..."
-— Codul fiscal, art. 42 alin. (1) — D101 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 42 alin. (1) — D101 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „...până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat."
-— OPANAF 179/2022, cap. I, pct. 5.1 lit. a) — D205 (sursă: anaf_surse/opanaf_179_2022_d205_d207_baza.txt)
+— OPANAF 179/2022, cap. I, pct. 5.1 lit. a) — D205 (sursă: [OPANAF nr. 179/2022 pentru aprobarea formularelor 205 și 207](https://legislatie.just.ro/Public/DetaliiDocument/251562))
 :::
 
 Descompus pe declarație:

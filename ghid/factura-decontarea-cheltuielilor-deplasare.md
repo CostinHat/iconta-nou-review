@@ -14,7 +14,7 @@ Titlul acesta amestecă, de fapt, două fluxuri fiscale distincte. Un decont de 
 
 ::: ghid-temei
 „k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit [...]"
-— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie separat clar:
@@ -31,7 +31,7 @@ Ce trebuie separat clar:
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: nu există nicio integrare între modulul de deconturi de deplasare (`core/deconturi.py` și fluxul lui din `core/uc_tenants.py`) și modulul de e-Factura/SPV al aplicației — nicio referință încrucișată între cele două, la nicio căutare exhaustivă în cod. Decontul de deplasare se înregistrează exclusiv ca notă contabilă internă (avans, cheltuială, diferență de restituit sau de plătit), independent de circuitul de facturare electronică.
+Verificat direct în cod: nu există nicio integrare între modulul de deconturi de deplasare (aplicația și fluxul lui din aplicație) și modulul de e-Factura/SPV al aplicației — nicio referință încrucișată între cele două, la nicio căutare exhaustivă în cod. Decontul de deplasare se înregistrează exclusiv ca notă contabilă internă (avans, cheltuială, diferență de restituit sau de plătit), independent de circuitul de facturare electronică.
 
 Cu alte cuvinte, iConta.eu **nu leagă** astăzi decontul de deplasare de fluxul e-Factura — și, dată fiind natura diferită a celor două documente (decontul intern vs. factura de la furnizor), o asemenea legătură automată nu ar avea, oricum, o justificare fiscală directă în forma sugerată de titlu. Facturile de cazare/transport primite de la furnizori urmează circuitul obișnuit de e-Factura al aplicației, separat de ecranul „Decont deplasare / diurnă".
 

@@ -16,12 +16,12 @@ Pentru firmă, comparația contează. Taxa pentru autorizația de construire a u
 
 ::: ghid-temei
 „(12) Taxa pentru eliberarea autorizației necesare pentru lucrările de organizare de șantier în vederea realizării unei construcții, care nu sunt incluse în altă autorizație de construire, este egală cu 3% din valoarea autorizată a lucrărilor de organizare de șantier."
-— Codul fiscal (Legea 227/2015), art. 474 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(5) Taxa pentru eliberarea unei autorizații de construire pentru o clădire rezidențială sau clădire-anexă este egală cu 0,5% din valoarea autorizată a lucrărilor de construcții. (6) Taxa pentru eliberarea autorizației de construire pentru alte construcții decât cele menționate la alin. (5) este egală cu 1% din valoarea autorizată a lucrărilor de construcție, inclusiv valoarea instalațiilor aferente. (7) Pentru taxele prevăzute la alin. (5) și (6) stabilite pe baza valorii autorizate a lucrărilor de construcție se aplică următoarele reguli:"
-— Codul fiscal (Legea 227/2015), art. 474 alin. (5)-(7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (5)-(7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se calculează:

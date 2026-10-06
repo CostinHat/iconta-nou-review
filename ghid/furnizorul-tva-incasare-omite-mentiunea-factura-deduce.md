@@ -16,12 +16,12 @@ Contează la control: un beneficiar care a dedus integral la primirea facturii, 
 
 ::: ghid-temei
 „În situația în care furnizorul/prestatorul este înscris în Registrul persoanelor impozabile care aplică sistemul TVA la încasare la data emiterii unei facturi, dar omite să înscrie mențiunea "TVA la încasare", operațiunea respectivă nefiind exclusă de la aplicarea sistemului TVA la încasare conform prevederilor art. 282 alin. (6) din Codul fiscal, beneficiarul își exercită dreptul de deducere în conformitate cu prevederile art. 297 alin. (2) din Codul fiscal, cu excepția situației în care sunt aplicabile prevederile art. 324 alin. (13) din Codul fiscal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare conform prevederilor art. 282 alin. (3)-(8) este amânat până la data la care taxa aferentă bunurilor și serviciilor care i-au fost livrate/prestate a fost plătită furnizorului/prestatorului său."
-— Codul fiscal (Legea 227/2015), art. 297 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 297 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum verifici, pe o factură fără mențiune:

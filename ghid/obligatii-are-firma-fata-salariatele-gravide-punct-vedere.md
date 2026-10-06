@@ -16,13 +16,13 @@ Nerespectarea obligației de amenajare se sancționează cu amendă de la 2.000 
 
 ::: ghid-temei
 „Grupurile sensibile la riscuri specifice, cum ar fi: femeile gravide, lehuzele sau femeile care alăptează, ținerii, precum și persoanele cu dizabilitati, trebuie protejate împotriva pericolelor care le afectează în mod specific."
-— Legea 319/2006, art. 35 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 35 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „Angajatorii au obligația sa amenajeze locurile de muncă ținând seama de prezenta grupurilor sensibile la riscuri specifice."
-— Legea 319/2006, art. 36 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 36 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(8) Constituie contravenții și se sancționează cu amendă de la 2.000 lei la 4.000 lei următoarele fapte: a) încălcarea dispozițiilor art. 12 alin. (1) lit. c) și d), art. 13 lit. g) , art. 18 alin. (5) și (6) și ale art. 36"
-— Legea 319/2006, art. 39 alin. (8) lit. a) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (8) lit. a) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

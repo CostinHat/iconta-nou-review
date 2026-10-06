@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) În temeiul prevederilor Legii contabilității nr. 82/1991, republicată, entitățile au obligația să efectueze inventarierea elementelor de natura activelor, datoriilor și capitalurilor proprii deținute [...] precum și în următoarele situații: [...] c) ori de câte ori intervine o predare-primire de gestiune; d) cu prilejul reorganizării gestiunilor [...]"
-— OMFP nr. 2.861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 2 (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2.861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, pct. 2 (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Ce rezultă din surse pentru schimbarea gestionarului:

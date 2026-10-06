@@ -16,10 +16,10 @@ Răspunsul ajută la o decizie concretă: dacă mai livrați, ce ajustări sunt 
 
 ::: ghid-temei
 „(3) În termen de 30 de zile de la solicitarea oricărei persoane interesate, ordonatorul principal de credite al unității administrativ-teritoriale are obligația furnizării situației economico-financiare și a concluziei de încadrare sau neîncadrare în prevederile alin. (1) ."
-— Legea 273/2006 privind finanțele publice locale, art. 74 alin. (3) (criza financiară) și art. 75 alin. (3) (insolvența), text identic (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 74 alin. (3) (criza financiară) și art. 75 alin. (3) (insolvența), text identic (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „Ordonatorul principal de credite al unității administrativ-teritoriale are obligația de a notifica deschiderea procedurii de insolvență creditorilor și oricăror persoane interesate."
-— Legea 273/2006, art. 75 alin. (4) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 75 alin. (4) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

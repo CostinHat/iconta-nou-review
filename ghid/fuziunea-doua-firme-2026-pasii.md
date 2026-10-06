@@ -14,7 +14,7 @@ Fuziunea nu e o simplă decizie a asociaților consemnată într-un proces-verba
 
 ::: ghid-temei
 „Administratorii societăților care urmează a participa la fuziune sau la divizare vor întocmi un proiect de fuziune sau de divizare, care va cuprinde: a) forma, denumirea și sediul social ale tuturor societăților implicate în fuziune sau divizare; [...] fundamentarea și condițiile fuziunii sau ale divizării; [...] cuantumul primei de fuziune sau de divizare; [...] și membrilor organelor administrative sau de control ale societăților implicate în fuziune sau în divizare; data situațiilor financiare ale societăților participante, care au fost folosite pentru a se stabili condițiile fuziunii sau ale divizării."
-— Legea nr. 31/1990 (Legea societăților), art. 241 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (Legea societăților), art. 241 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pașii care rezultă din lege pentru o fuziune:

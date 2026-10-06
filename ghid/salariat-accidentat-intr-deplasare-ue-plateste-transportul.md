@@ -16,7 +16,7 @@ Costul nu se decontează din bugetul asigurărilor pentru accidente de muncă. F
 
 ::: ghid-temei
 „(17) Cheltuielile de transport, respectiv transportul medical asistat până la o instituție spitalicească din România sau până la domiciliul victimei unui accident de muncă sau a unei boli profesionale, petrecute pe teritoriul unui alt stat membru al Uniunii Europene/Spațiului Economic European și Confederației Elvețiene sau al unui stat cu care România are încheiat un acord bilateral, vor fi suportate de angajatorul care a dispus deplasarea asiguratului, victimă a unui accident de muncă sau a unei boli profesionale, în afara granițelor țării."
-— Legea 346/2002, art. 110 alin. (17) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 110 alin. (17) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Condițiile, pe scurt:
@@ -30,14 +30,14 @@ Regula e diferită în caz de deces. Atunci, cheltuielile de transport pentru re
 
 ::: ghid-temei
 „(12) Cheltuielile de transport necesare pentru repatriere în cazul decesului unui lucrător asigurat conform prevederilor legale române în vigoare, ca urmare a unui accident de muncă sau boală profesională, se suportă din sumele prevăzute cu această destinație pentru accidente de muncă și boli profesionale din bugetul asigurărilor sociale de stat."
-— Legea 346/2002, art. 110 alin. (12) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 110 alin. (12) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Fiscal, cheltuiala e impusă de lege angajatorului și ține de activitatea pentru care s-a făcut deplasarea. Se încadrează, așadar, în regula generală de deductibilitate:
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-exemplu

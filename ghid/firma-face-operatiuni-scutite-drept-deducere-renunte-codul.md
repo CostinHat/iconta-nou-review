@@ -16,17 +16,17 @@ Nu e o opțiune, e o obligație. Dacă firma o ignoră, rămâne cu un cod care 
 
 ::: ghid-temei
 „În cazul încetării desfășurării de operațiuni care dau drept de deducere a taxei sau în cazul încetării activității sale economice, orice persoană înregistrată conform prezentului articol va anunța în scris organele fiscale competente în termen de 15 zile de la producerea oricăruia dintre aceste evenimente în scopul scoaterii din evidența persoanelor înregistrate în scopuri de TVA. Prin norme procedurale se stabilesc data de la care are loc scoaterea din evidență și procedura aplicabilă.”
-— Codul fiscal (Legea 227/2015), art. 316 alin. (20) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (20) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Conform prevederilor art. 316 alin. (20) din Codul fiscal, orice persoană impozabilă înregistrată în scopuri de TVA și care, ulterior înregistrării respective, desfășoară exclusiv operațiuni ce nu dau dreptul la deducere solicită anularea înregistrării în termen de 15 zile de la încheierea lunii în care se desfășoară exclusiv operațiuni fără drept de deducere. Dovada faptului că persoana nu mai realizează operațiuni cu drept de deducere trebuie să rezulte din obiectul de activitate și, după caz, din declarația pe propria răspundere dată de împuternicitul legal al persoanei impozabile în cazul operațiunilor scutite pentru care persoana impozabilă poate opta pentru taxare conform art. 292 alin. (3) din Codul fiscal.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (10) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (10) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul persoanelor care au solicitat anularea înregistrării conform prevederilor art. 316 alin. (20) din Codul fiscal, anularea înregistrării în scopuri de TVA se efectuează în prima zi a lunii următoare celei în care persoana impozabilă a solicitat anularea.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce reiese din texte:

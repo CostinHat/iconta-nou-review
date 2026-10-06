@@ -15,7 +15,7 @@ O pierdere fiscală înregistrată într-un an nu se „pierde" definitiv — da
 ::: ghid-temei
 „(1) Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, începând cu anul 2024/anul fiscal modificat care începe în anul 2024, după caz, se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi. Recuperarea pierderilor se va efectua în ordinea înregistrării acestora, la fiecare termen de plată a impozitului pe profit.
 (7) Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, aferente anilor precedenți anului 2024/anului care începe în 2024, rămase de recuperat la data de 31 decembrie 2023, se recuperează din profiturile impozabile realizate începând cu anul 2024, în limita a 70% din profiturile impozabile respective, pe perioada rămasă de recuperat din cei 7 ani consecutivi ulteriori anului înregistrării pierderilor respective."
-— Legea nr. 227/2015 (Codul fiscal), art. 31 alin. (1), (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 31 alin. (1), (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Verificarea corectă a unei pierderi fiscale reportate trebuie să distingă între două regimuri:
@@ -33,6 +33,6 @@ Verificarea corectă a unei pierderi fiscale reportate trebuie să distingă în
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează profitul/pierderea fiecărui trimestru cumulat prin D101 (`core/d101.py`), pe baza formulei venituri minus cheltuieli, cu impozitarea corectă a unui trimestru cu profit care urmează unui trimestru cu pierdere. Aplicația **nu ține un registru dedicat de urmărire multianuală** a pierderii fiscale reportate — care să calculeze automat, an de an, cât a mai rămas de recuperat din fiecare tranșă de pierdere și orizontul (5 sau 7 ani) aplicabil fiecăreia. Verificarea pierderii fiscale reportate din anii anteriori rămâne, la acest moment, o reconstituire manuală a contabilului, pe baza declarațiilor D101 depuse succesiv.
+La data acestui ghid, iConta.eu calculează profitul/pierderea fiecărui trimestru cumulat prin D101, pe baza formulei venituri minus cheltuieli, cu impozitarea corectă a unui trimestru cu profit care urmează unui trimestru cu pierdere. Aplicația **nu ține un registru dedicat de urmărire multianuală** a pierderii fiscale reportate — care să calculeze automat, an de an, cât a mai rămas de recuperat din fiecare tranșă de pierdere și orizontul (5 sau 7 ani) aplicabil fiecăreia. Verificarea pierderii fiscale reportate din anii anteriori rămâne, la acest moment, o reconstituire manuală a contabilului, pe baza declarațiilor D101 depuse succesiv.
 
 [iConta.eu](/)

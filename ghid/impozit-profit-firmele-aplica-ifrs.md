@@ -14,7 +14,7 @@ Firmele care țin contabilitatea după Standardele Internaționale de Raportare 
 
 ::: ghid-temei
 „Contribuabilii care aplică reglementările contabile conforme cu Standardele internaționale de raportare financiară pentru determinarea rezultatului fiscal vor avea în vedere și următoarele reguli: a) pentru sumele înregistrate în rezultatul reportat provenit din actualizarea cu rata inflației, ca urmare a implementării reglementărilor contabile conforme cu Standardele internaționale de raportare financiară ca bază a contabilității, se aplică următorul tratament fiscal [...]."
-— Legea 227/2015 (Codul fiscal), art. 21 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 21 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Principalele diferențe pe care le introduce art. 21 pentru contribuabilii IFRS:

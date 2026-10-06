@@ -14,7 +14,7 @@ O sumă intrată în contul bancar cu descrierea "rambursare" de la Trezorerie s
 
 ::: ghid-temei
 „442. Taxa pe valoarea adăugată 4423. TVA de plată (P) 4424. TVA de recuperat (A) 4426. TVA deductibilă (A) 4427. TVA colectată (P) 4428. TVA neexigibilă (A/P) [...] 448. Alte datorii și creanțe cu bugetul statului 4481. Alte datorii față de bugetul statului (P) 4482. Alte creanțe privind bugetul statului (A)"
-— OMFP 1802/2014, planul de conturi general, clasa 4 „Conturi de terți" (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, planul de conturi general, clasa 4 „Conturi de terți" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul aplicabil, în funcție de natura sumei rambursate:
@@ -31,6 +31,6 @@ Mecanismul aplicabil, în funcție de natura sumei rambursate:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/banca.py` clasifică automat liniile din extrasul bancar pe baza unor cuvinte-cheie din descriere: cuvântul „rambursare" e încadrat în categoria **„credit"** (alături de „împrumut", „rata credit"), cu contrapartida contul **5191** (împrumuturi pe termen scurt) — nu contul 4424/4481 specific unei rambursări fiscale de la ANAF. Pentru o rambursare de TVA sau de impozit intrată în cont, această clasificare automată e **greșită** și trebuie corectată manual de contabil, reclasificând linia pe contul potrivit (4424 sau 4482, după caz) — aplicația nu distinge azi între o rambursare de credit și o rambursare de la bugetul de stat.
+La data acestui ghid, aplicația clasifică automat liniile din extrasul bancar pe baza unor cuvinte-cheie din descriere: cuvântul „rambursare" e încadrat în categoria **„credit"** (alături de „împrumut", „rata credit"), cu contrapartida contul **5191** (împrumuturi pe termen scurt) — nu contul 4424/4481 specific unei rambursări fiscale de la ANAF. Pentru o rambursare de TVA sau de impozit intrată în cont, această clasificare automată e **greșită** și trebuie corectată manual de contabil, reclasificând linia pe contul potrivit (4424 sau 4482, după caz) — aplicația nu distinge azi între o rambursare de credit și o rambursare de la bugetul de stat.
 
 [iConta.eu](/)

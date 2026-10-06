@@ -16,12 +16,12 @@ Scutirea privește numai impozitul pe venit. CAS, CASS și CAM se calculează ca
 
 ::: ghid-temei
 „persoanele fizice cu handicap grav sau accentuat, pentru veniturile realizate din: a) activități independente, realizate în mod individual și/sau într-o formă de asociere; [...] b) salarii și asimilate salariilor, prevăzute la art. 76 alin. (1)-(3)"
-— Codul fiscal (Legea 227/2015), art. 60 pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 60 pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „1. În înțelesul art. 60 pct. 1 din Codul fiscal, scutirea de la plata impozitului pe venit se aplică pentru veniturile realizate începând cu data încadrării contribuabilului în gradul de handicap grav sau accentuat, conform documentelor justificative. Pentru a beneficia de prevederile art. 60 pct. 1 lit. a)-c) din Codul fiscal, în cazul veniturilor pentru care angajatorul/plătitorul de venituri are obligația reținerii la sursă a impozitului pe venit, contribuabilii au obligația de a depune la angajatorul/plătitorul de venituri documentele care atestă încadrarea în gradul de handicap grav sau accentuat. Documentele vor fi prezentate în original și în copie, angajatorul/plătitorul de venituri păstrând copia după ce verifică conformitatea cu originalul."
-— HG 1/2016, norme metodologice, titlul IV, pct. 1 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul IV, pct. 1 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Norma este în acord cu forma actuală a art. 60 pct. 1 din Codul fiscal, care menține scutirea pentru salarii.

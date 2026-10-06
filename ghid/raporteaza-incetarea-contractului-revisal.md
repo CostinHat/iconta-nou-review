@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „datele prevăzute la art. 4 alin. (2) lit. q) [data și temeiul legal al încetării] se transmit cel târziu la data încetării contractului individual de muncă/la data luării la cunoștință a evenimentului ce a determinat [...] încetarea [...]"
-— HG 295/2025, art. 5 alin. (1) lit. f) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 5 alin. (1) lit. f) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Termenul e strict: data și temeiul legal al încetării contractului se transmit **cel târziu la data încetării** — sau, dacă angajatorul nu are cunoștință imediat de eveniment, la data la care ia cunoștință de el. Nerespectarea acestei obligații e sancționabilă contravențional: art. 9 alin. (3) lit. d) prevede amendă de la 5.000 la 8.000 lei pentru „netransmiterea modificărilor aduse datelor prevăzute la [...] lit. p) și q) [suspendare/încetare], în termenul prevăzut la art. 5 alin. (1) lit. e) și f)".

@@ -14,7 +14,7 @@ O reducere de preț acordată după ce vânzarea a fost deja declarată prin OSS
 
 ::: ghid-temei
 „Baza de impozitare se reduce în următoarele situații: [...] c) în cazul în care se acordă reduceri de preț după livrarea bunurilor sau prestarea serviciilor."
-— Legea nr. 227/2015 (Codul fiscal), art. 287 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 287 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, concret, corectarea:

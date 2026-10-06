@@ -16,10 +16,10 @@ Pentru persoana verificată contează două lucruri. Primul este data exactă a 
 
 ::: ghid-temei
 „(6) Durata efectuării verificării situației fiscale personale este stabilită de organul fiscal central și nu poate fi mai mare de 270 de zile calculate de la data începerii verificării fiscale. (6 1 ) Data începerii verificării situației fiscale personale se înscrie într-un proces-verbal de constatare. Procesul-verbal se semnează de către organul fiscal competent și persoana fizică supusă verificării și se înregistrează la registratura organului fiscal. (7) Perioadele prevăzute de lege sau stabilite de organul fiscal central pentru prezentarea documentelor și/sau a informațiilor solicitate nu sunt incluse în calculul duratei verificării fiscale."
-— Codul de procedură fiscală (Legea 207/2015), art. 140 alin. (6)–(7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 140 alin. (6)–(7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „f) emiterea raportului de inspecție fiscală și a deciziei de impunere sau a deciziei de nemodificare a bazei de impunere de către organul de inspecție fiscală după încetarea inspecției fiscale potrivit art. 126 alin. (2), respectiv emiterea raportului de verificare și a deciziei de impunere de către organul fiscal după încetarea verificării situației fiscale personale potrivit art. 140 alin. (6) coroborat cu art. 147 și art. 126 alin. (2), fără ca acestea să fie reluate, potrivit legii;"
-— Codul de procedură fiscală (Legea 207/2015), art. 49 alin. (1) lit. f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 49 alin. (1) lit. f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se calculează durata:

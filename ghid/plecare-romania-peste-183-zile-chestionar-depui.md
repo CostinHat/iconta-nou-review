@@ -16,12 +16,12 @@ Chestionarul declanșează analiza organului fiscal: persoana rămâne cu obliga
 
 ::: ghid-temei
 „În vederea scoaterii/menținerii din/în evidență de către organul fiscal central competent, persoana fizică rezidentă în România, respectiv persoana nerezidentă are obligația să înregistreze cu 30 de zile înaintea plecării din România formularul prevăzut la art. 1 lit. b) la organul fiscal central competent unde își are domiciliul fiscal, respectiv unde a înregistrat formularul prevăzut la art. 1 lit. a) , dacă persoana în cauză nu a informat cu privire la schimbarea domiciliului/ locuinței permanente, după caz."
-— OMFP 1099/2016, art. 19 (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 19 (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 ::: ghid-temei
 „Are obligația completării formularului "Chestionar pentru stabilirea rezidenței fiscale a persoanei fizice la plecarea din România" persoana fizică rezidentă în România, precum și persoana fizică nerezidentă care a avut obligația completării formularului prevăzut la art. 1 lit. a) , care pleacă din țară pentru o perioadă sau mai multe perioade de ședere în străinătate care depășesc în total 183 de zile, pe parcursul oricărui interval de 12 luni consecutive."
-— OMFP 1099/2016, art. 3 (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 3 (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 Detaliile care contează:
@@ -35,7 +35,7 @@ Detaliile care contează:
 
 ::: ghid-temei
 „Această persoană are obligația completării și depunerii la autoritatea competentă din România a formularului prevăzut la art. 230 alin. (7) , cu 30 de zile înaintea plecării din România pentru o perioadă sau mai multe perioade de ședere în străinătate care depășesc în total 183 de zile, pe parcursul oricărui interval de 12 luni consecutive, și va face dovada schimbării rezidenței fiscale într-un alt stat."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal preia același termen de 30 de zile. Pentru rezidentul cu domiciliul în România care se mută într-un stat cu convenție, codul adaugă că trebuie să dovedească schimbarea rezidenței fiscale.

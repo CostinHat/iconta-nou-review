@@ -14,7 +14,7 @@ Reflexul multor contabili, la scoaterea din gestiune a unor stocuri distruse sau
 
 ::: ghid-temei
 „(2) Nu se ajustează deducerea inițială a taxei în cazul: a) bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă. În cazul bunurilor furate, persoana impozabilă demonstrează furtul bunurilor pe baza actelor doveditoare emise de organele judiciare."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta în practică:
@@ -32,6 +32,6 @@ Ce înseamnă asta în practică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat casării/degradării stocurilor cu aplicarea automată a art. 304 alin. (2). Aplicația oferă evidența generală de stocuri (`core/stocuri_cv.py`, `core/stocuri_api.py`), în care ieșirea unui stoc distrus se poate înregistra ca orice altă ieșire de gestiune, dar decizia de neajustare a TVA — și documentarea ei corespunzătoare — rămân, azi, integral în sarcina contabilului.
+La data acestui ghid, iConta.eu nu are un modul dedicat casării/degradării stocurilor cu aplicarea automată a art. 304 alin. (2). Aplicația oferă evidența generală de stocuri, în care ieșirea unui stoc distrus se poate înregistra ca orice altă ieșire de gestiune, dar decizia de neajustare a TVA — și documentarea ei corespunzătoare — rămân, azi, integral în sarcina contabilului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ SAF-T (declarația D406) nu e o declarație pe care contabilul o completează c�
 
 ::: ghid-temei
 „ORDIN Nr. 1783/2021 din 4 noiembrie 2021 privind natura informațiilor pe care contribuabilul/plătitorul trebuie să le declare prin fișierul standard de control fiscal, modelul de raportare, procedura și condițiile de transmitere, precum și termenele de transmitere și data/datele de la care categoriile de contribuabili/plătitori sunt obligate să transmită fișierul standard de control fiscal"
-— OPANAF 1783/2021 (titlul ordinului), anexa nr. 5 modificată prin OPANAF 407/2025 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt, anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF 1783/2021 (titlul ordinului), anexa nr. 5 modificată prin OPANAF 407/2025 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326), [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ce revine concret contabilului, în fluxul de generare a SAF-T:
@@ -32,6 +32,6 @@ Ce revine concret contabilului, în fluxul de generare a SAF-T:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează efectiv fișierul SAF-T (D406) din datele contabile deja înregistrate în aplicație — jurnal, parteneri, active, stocuri (`core/d406.py` și modulele conexe: `d406_active.py`, `d406_stocuri.py`, `d406_reconciliere.py`). Aplicația construiește structura XML conform cerințelor OPANAF, inclusiv identificarea corectă a partenerilor pe fiecare linie de tranzacție și generarea fișierului „pe zero" pentru lunile fără mișcări — dar corectitudinea datelor sursă (facturi introduse complet și corect) rămâne responsabilitatea contabilului care le introduce.
+La data acestui ghid, iConta.eu generează efectiv fișierul SAF-T (D406) din datele contabile deja înregistrate în aplicație — jurnal, parteneri, active, stocuri (aplicația și modulele conexe: `d406_active.py`, `d406_stocuri.py`, `d406_reconciliere.py`). Aplicația construiește structura XML conform cerințelor OPANAF, inclusiv identificarea corectă a partenerilor pe fiecare linie de tranzacție și generarea fișierului „pe zero" pentru lunile fără mișcări — dar corectitudinea datelor sursă (facturi introduse complet și corect) rămâne responsabilitatea contabilului care le introduce.
 
 [iConta.eu](/)

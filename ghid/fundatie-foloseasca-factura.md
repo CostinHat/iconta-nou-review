@@ -14,10 +14,10 @@ Fundațiile și celelalte entități fără scop lucrativ sunt uneori considerat
 
 ::: ghid-temei
 „Operatorii economici - persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 privind Codul fiscal [...], indiferent dacă sunt sau nu înregistrați în scopuri de TVA conform art. 316 din Legea nr. 227/2015 [...], pentru livrările de bunuri și prestările de servicii care au locul livrării/prestării în România [...], efectuate în relația B2B [...], au obligația în perioada 1 ianuarie 2024-30 iunie 2024 să transmită facturile emise în sistemul național privind factura electronică RO e-Factura [...], indiferent dacă destinatarii sunt sau nu înregistrați în Registrul RO e-Factura."
-— Legea nr. 296/2023, art. LIX alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt, notă la art. 266 din Codul fiscal)
+— Legea nr. 296/2023, art. LIX alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), notă la art. 266 din Codul fiscal)
 
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 **Notă de precizie:** primul citat (art. LIX alin. (1)) a fost o regulă tranzitorie, valabilă strict pentru perioada 1 ianuarie–30 iunie 2024. Obligația generală B2B, aplicabilă și azi, e preluată de forma permanentă a art. 10 alin. (1) din OUG 120/2021 (al doilea citat), care păstrează același criteriu — persoană impozabilă stabilită în România conform art. 266 alin. (2) Cod fiscal, indiferent de forma juridică sau de scopul lucrativ/nonprofit al entității.

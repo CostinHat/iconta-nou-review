@@ -14,7 +14,7 @@ Când un salariat cu contract part-time realizează un venit sub salariul minim 
 
 ::: ghid-temei
 „În cazul în care contribuția de asigurări sociale calculată potrivit alin. (5) este mai mică decât contribuția de asigurări sociale stabilită potrivit alin. (5^6), diferența se suportă de către angajator/plătitorul de venit în numele angajatului/beneficiarului de venit."
-— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Salariatul e reținut, prin definiție, doar pe venitul lui real — nu i se poate opri din salariu o sumă calculată pe o bază minimă pe care nu a câștigat-o efectiv.

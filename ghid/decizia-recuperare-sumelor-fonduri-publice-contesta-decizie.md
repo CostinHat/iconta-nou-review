@@ -16,10 +16,10 @@ Situația apare când o firmă a primit bani publici: o subvenție, o finanțare
 
 ::: ghid-temei
 „(1) Creanțele bugetare reprezentând prejudicii/plăți nelegale din fonduri publice ce trebuie recuperate potrivit legii se stabilesc prin decizie, de către autoritățile competente, în măsura în care legea specială nu prevede altfel. (2) Decizia prevăzută la alin. (1) este titlu de creanță bugetară potrivit art. 1 pct. 38 și poate fi contestată potrivit prezentului cod. Contestația se soluționează de către autoritatea emitentă. Dispozițiile titlului VIII sunt aplicabile în mod corespunzător."
-— Codul de procedură fiscală (Legea 207/2015), art. 100 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 100 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „titlu de creanță bugetară - actul prin care, potrivit legii, se stabilește și se individualizează creanța bugetară;"
-— Codul de procedură fiscală (Legea 207/2015), art. 1 pct. 38 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 1 pct. 38 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din aceste texte:

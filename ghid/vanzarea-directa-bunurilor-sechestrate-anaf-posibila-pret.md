@@ -16,13 +16,13 @@ Pentru un cumpărător interesat, vânzarea directă e o cale mai simplă: art. 
 
 ::: ghid-temei
 „Valorificarea bunurilor prin vânzare directă se poate realiza în următoarele cazuri: a) pentru bunurile prevăzute la art. 247 alin. (4); b) înaintea începerii procedurii de valorificare prin licitație, dacă se recuperează integral creanța fiscală sau dacă pentru bunurile sechestrate se oferă cel puțin prețul de evaluare, după caz; c) după finalizarea unei licitații, dacă bunul/bunurile sechestrat/e nu a/au fost vândute și se oferă cel puțin prețul de evaluare."
-— Codul de procedură fiscală (Legea 207/2015), art. 249 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 249 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Vânzarea directă se realizează prin încheierea unui proces-verbal care constituie titlu de proprietate."
-— Codul de procedură fiscală (Legea 207/2015), art. 249 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 249 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă au fost sechestrate bunuri perisabile sau supuse degradării, acestea pot fi vândute în regim de urgență. Evaluarea și valorificarea acestor bunuri se efectuează de către organele fiscale, la prețul pieței."
-— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe scurt, regulile:

@@ -16,15 +16,15 @@ Regula are trei condiții cumulative, și toate trei trebuie verificate: statul 
 
 ::: ghid-temei
 „persoanele fizice care desfășoară activitate dependentă într-un stat care nu intră sub incidența legislației europene aplicabile în domeniul securității sociale și a acordurilor privind sistemele de securitate socială la care România este parte, la angajatori din aceste state, care nu au sediu social, sediu permanent sau reprezentanță în România, nu au calitatea de contribuabili/plătitori de venit la sistemul public de pensii din România."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul V, pct. 2 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul V, pct. 2 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(6) În sensul art. 153 alin. (1) lit. a)-d) din Codul fiscal, persoanele fizice care desfășoară activitate dependentă într-un stat care nu intră sub incidența legislației europene aplicabile în domeniul securității sociale și a acordurilor privind sistemele de securitate socială la care România este parte, la angajatori din aceste state, care nu au sediu social, sediu permanent sau reprezentanță în România, nu au calitatea de contribuabili/plătitori de venit la sistemul de asigurări sociale de sănătate din România."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul V, pct. 9 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul V, pct. 9 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Următoarele persoane au calitatea de contribuabili/plătitori de venit la sistemul public de pensii, cu respectarea legislației europene aplicabile în domeniul securității sociale, precum și a acordurilor privind sistemele de securitate socială la care România este parte, după caz:"
-— Legea 227/2015 (Codul fiscal), art. 136 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 136 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

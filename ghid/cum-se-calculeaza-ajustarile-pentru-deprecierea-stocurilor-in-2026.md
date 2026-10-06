@@ -43,6 +43,6 @@ Un lot de marfă are valoarea contabilă (cost de achiziție) de 40.000 lei. La 
 
 ## Ce face iConta.eu
 
-Funcția `nota_ajustare_stoc(suma, cont_ajustare, actiune)` din `core/provizioane.py` generează nota contabilă de constituire (6814 = 39x) și de reluare (39x = 7814), validând doar că `cont_ajustare` începe cu prefixul "39" (grupa de conturi "Ajustări pentru deprecierea stocurilor și producției în curs de execuție"). Aplicația marchează necondiționat `deductibil: False` pentru orice ajustare de stoc, în acord cu lipsa unui temei de deducere la art. 26. Calculul propriu-zis al valorii realizabile nete (preț estimat minus costuri de finalizare și de vânzare) e o estimare de gestiune, făcută în afara motorului, pe baza datelor de inventariere.
+Funcția `nota_ajustare_stoc(suma, cont_ajustare, actiune)` din aplicație generează nota contabilă de constituire (6814 = 39x) și de reluare (39x = 7814), validând doar că `cont_ajustare` începe cu prefixul "39" (grupa de conturi "Ajustări pentru deprecierea stocurilor și producției în curs de execuție"). Aplicația marchează necondiționat `deductibil: False` pentru orice ajustare de stoc, în acord cu lipsa unui temei de deducere la art. 26. Calculul propriu-zis al valorii realizabile nete (preț estimat minus costuri de finalizare și de vânzare) e o estimare de gestiune, făcută în afara motorului, pe baza datelor de inventariere.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Din punct de vedere fiscal, nu există o categorie de „plată prin aplicarea d
 
 ::: ghid-temei
 „dividend - o distribuire în bani sau în natură, efectuată de o persoană juridică unui participant, drept consecință a deținerii unor titluri de participare la acea persoană juridică, exceptând următoarele: [...]"
-— Codul fiscal (Legea 227/2015), art. 7 pct. 11 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 11 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Definiția fiscală a dividendului include explicit distribuirea „în natură", alături de cea „în bani" — un transfer de activ către asociat, drept consecință a deținerii de titluri de participare, se supune acelorași reguli fiscale ca un dividend plătit cash sau prin bancă.

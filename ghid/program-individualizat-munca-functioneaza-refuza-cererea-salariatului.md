@@ -16,15 +16,15 @@ Termenul de 5 zile lucrătoare e scurt și se pierde ușor. O cerere lăsată f�
 
 ::: ghid-temei
 „Angajatorul poate stabili programe individualizate de muncă pentru toți salariații, inclusiv pentru cei care beneficiază de concediul de îngrijitor, cu acordul sau la solicitarea acestora, care pot avea o durată limitată în timp."
-— Codul muncii (Legea 53/2003), art. 118 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Durata zilnică a timpului de muncă este împărțită în două perioade: o perioadă fixă în care personalul se află simultan la locul de muncă și o perioadă variabilă, mobilă, în care salariatul își alege orele de sosire și de plecare, cu respectarea timpului de muncă zilnic.(4) Programul individualizat de muncă poate funcționa numai cu respectarea dispozițiilor art. 112 și 114.(5) Orice refuz al solicitării prevăzute la alin. (1) trebuie motivat, în scris, de către angajator, în termen de 5 zile lucrătoare de la primirea solicitării."
-— Codul muncii (Legea 53/2003), art. 118 alin. (3)-(5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118 alin. (3)-(5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Atunci când programul individualizat de muncă are o durată limitată, salariatul are dreptul de a reveni la programul de muncă inițial la sfârșitul perioadei convenite. Salariatul are dreptul să revină la programul inițial anterior încheierii perioadei convenite, în cazul schimbării circumstanțelor care au condus la stabilirea programului individualizat."
-— Codul muncii (Legea 53/2003), art. 118 alin. (6) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118 alin. (6) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cum funcționează:

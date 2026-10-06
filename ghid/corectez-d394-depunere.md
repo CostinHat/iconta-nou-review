@@ -14,7 +14,7 @@ D394 nu are un formular separat de „rectificativă". Când se descoperă o ero
 
 ::: ghid-temei
 „persoana impozabilă constată existenţa unor omisiuni/erori... trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial. Nu vor face obiectul redepunerii declaraţiei facturile primite de persoana impozabilă în altă perioadă de raportare faţă de data emiterii acestora de către furnizori."
-— OPANAF 2194/2025, Anexa 2 pct.3 (sursă: anaf_surse/opanaf_2194_2025_d394.txt:756-760)
+— OPANAF 2194/2025, Anexa 2 pct.3 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - Corectarea nu se face prin adăugarea unor rânduri la declarația veche, ci prin depunerea unei **declarații complet noi**, pentru aceeași perioadă, care înlocuiește integral declarația greșită.
@@ -30,7 +30,7 @@ D394 nu are un formular separat de „rectificativă". Când se descoperă o ero
 
 ## Ce face iConta.eu
 
-Fișierul D394 generat de iConta trece printr-o validare locală, pe validatorul oficial ANAF instalat (`core/duk.py`, funcția `valideaza()`), înainte de a fi considerat gata de depus — deci erorile de structură sunt prinse înainte de trimitere, nu după. În plus, generatorul rulează o a doua cale de calcul, independentă (`core/d394_reconciliere.py`), care recalculează totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — semnalând divergența înainte ca fișierul greșit să ajungă la depunere.
+Fișierul D394 generat de iConta trece printr-o validare locală, pe validatorul oficial ANAF instalat (funcția `valideaza()`), înainte de a fi considerat gata de depus — deci erorile de structură sunt prinse înainte de trimitere, nu după. În plus, generatorul rulează o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — semnalând divergența înainte ca fișierul greșit să ajungă la depunere.
 
 Ce nu face iConta: nu depune automat la ANAF (nici declarația inițială, nici o eventuală redepunere) — depunerea rămâne manuală, prin portalul SPV, cu fișierul deja validat local. Regenerarea unei declarații complete pentru o perioadă deja depusă se face din nou, din datele curente ale firmei pentru acea lună/trimestru — aplicația nu ține o evidență separată de „ce s-a schimbat față de depunerea anterioară", așa că verificarea diferențelor rămâne responsabilitatea contabilului.
 

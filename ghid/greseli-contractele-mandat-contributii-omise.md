@@ -37,6 +37,6 @@ CAM (contribuția asiguratorie pentru muncă) se datorează diferit, după tipul
 
 ## Ce face iConta.eu
 
-Funcția `calcul_mandat(brut)` din modulul F021 (`core/contracte_speciale.py`) calculează întotdeauna CAS 25% și CASS 10% pentru mandat și cenzor, alături de impozitul de 10% pe rest — nu există în cod o variantă „fără contribuții" pentru aceste categorii. Nota contabilă generată (`nota(fel="mandat"/"cenzor")`) include automat pasul `421 = 4315` (CAS) și, dacă suma rezultă pozitivă, `421 = 4316` (CASS) — omiterea lor ar necesita o abatere manuală de la fluxul standard al aplicației, nu un comportament implicit.
+Funcția `calcul_mandat(brut)` din modulul F021 calculează întotdeauna CAS 25% și CASS 10% pentru mandat și cenzor, alături de impozitul de 10% pe rest — nu există în cod o variantă „fără contribuții" pentru aceste categorii. Nota contabilă generată (`nota(fel="mandat"/"cenzor")`) include automat pasul `421 = 4315` (CAS) și, dacă suma rezultă pozitivă, `421 = 4316` (CASS) — omiterea lor ar necesita o abatere manuală de la fluxul standard al aplicației, nu un comportament implicit.
 
 [iConta.eu](/)

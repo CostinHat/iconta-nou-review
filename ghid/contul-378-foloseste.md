@@ -38,6 +38,6 @@ Contul 378 nu se folosește izolat — el intră, împreună cu 371 (mărfuri, l
 
 ## Ce face iConta.eu
 
-Motorul de gestiune global-valorică, `core/stocuri.py`, folosește explicit contul 378 în ambele funcții relevante: la recepție (`nir_gv`), nota propusă include linia `371=378` pentru adaosul stabilit pe fiecare articol; la descărcarea lunară (`descarcare_gv`), soldul și rulajul contului 378 (`Si378`, `Rc378`) intră direct în formula coeficientului K, iar nota de descărcare produce linia `378=371` pentru adaosul aferent vânzărilor lunii. Rulajele contului 378 sunt citite din notele **validate** (`status='validata'`), cumulat de la 1 ianuarie, exact cum cere calculul legal al coeficientului de repartizare.
+Motorul de gestiune global-valorică, aplicația, folosește explicit contul 378 în ambele funcții relevante: la recepție (`nir_gv`), nota propusă include linia `371=378` pentru adaosul stabilit pe fiecare articol; la descărcarea lunară (`descarcare_gv`), soldul și rulajul contului 378 (`Si378`, `Rc378`) intră direct în formula coeficientului K, iar nota de descărcare produce linia `378=371` pentru adaosul aferent vânzărilor lunii. Rulajele contului 378 sunt citite din notele **validate** (`status='validata'`), cumulat de la 1 ianuarie, exact cum cere calculul legal al coeficientului de repartizare.
 
 [iConta.eu](/)

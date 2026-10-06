@@ -16,10 +16,10 @@ Pentru clientul din România, consecința practică este simplă: factura primit
 
 ::: ghid-temei
 „(6) Persoana impozabilă prevăzută la alin. (1) care aplică regimul de scutire în România: a) nu are dreptul la deducerea taxei aferente achizițiilor, în condițiile prevăzute la art. 297 și 299 ; ... b) nu are voie să menționeze taxa pe factură sau pe alt document."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(10) Persoana impozabilă care aplică regimul special de scutire: a) nu are dreptul la deducerea taxei aferente achizițiilor, în condițiile prevăzute la art. 297 și 299 ; ... b) nu are voie să menționeze taxa pe factură sau pe alt document."
-— Codul fiscal (Legea 227/2015), art. 310 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

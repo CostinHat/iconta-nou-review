@@ -30,6 +30,6 @@ D100 însăși nu are un mecanism intern de auto-rectificare — nu există, pen
 
 ## Ce face iConta.eu
 
-D100 nu are, în cod, niciun atribut de rectificare proprie — verificat direct: `core/d100.py` nu implementează un mecanism echivalent celui folosit la alte declarații (D300, D390), unde există un flag explicit de „declarație rectificativă". Corectarea se face prin ecranul dedicat formularului 710 (`core/d710.py`), cu selector de cod de obligație limitat la 121 (impozit micro) și 103 (impozit pe profit) — cele două coduri pe care aplicația le tratează prin acest flux de corecție.
+D100 nu are, în cod, niciun atribut de rectificare proprie — verificat direct: Aplicația nu implementează un mecanism echivalent celui folosit la alte declarații (D300, D390), unde există un flag explicit de „declarație rectificativă". Corectarea se face prin ecranul dedicat formularului 710, cu selector de cod de obligație limitat la 121 (impozit micro) și 103 (impozit pe profit) — cele două coduri pe care aplicația le tratează prin acest flux de corecție.
 
 [iConta.eu](/)

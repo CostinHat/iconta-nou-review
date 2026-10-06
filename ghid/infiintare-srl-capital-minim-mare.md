@@ -16,7 +16,7 @@ Până de curând, un SRL se putea înființa cu un capital social simbolic de 1
 „(1) De la data intrării în vigoare a prezentei legi, valoarea minimă a capitalului social al societăților cu răspundere limitată se stabilește în funcție de nivelul cifrei de afaceri nete raportate prin situațiile financiare anuale aferente exercițiului financiar precedent, respectiv, în cazul societăților care au înregistrat o cifră de afaceri netă peste 400.000 lei, valoarea minimă a capitalului social este de 5.000 lei.
 (2) În cazul societăților cu răspundere limitată nou-înființate, valoarea minimă a capitalului social este de 500 lei. [...]
 (8) În cazul în care societatea cu răspundere limitată nu și-a completat capitalul social în termenul prevăzut la alin. (6), la cererea oricărei persoane interesate, precum și a Oficiului Național al Registrului Comerțului, tribunalul va pronunța dizolvarea societății."
-— Legea nr. 239/2025, art. VI alin. (1), (2) și (8), notă la art. 11 din Legea societăților nr. 31/1990 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 239/2025, art. VI alin. (1), (2) și (8), notă la art. 11 din Legea societăților nr. 31/1990 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Pentru un **SRL nou-înființat**, minimul legal e acum **500 lei** (nu mai e posibil, ca înainte, capitalul de 1 leu).

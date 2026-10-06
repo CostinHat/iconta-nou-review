@@ -16,7 +16,7 @@ Pentru o firmă nou-înființată, obligația de a folosi un certificat digital 
 „ART. 80 Identificarea contribuabilului/plătitorului în mediul electronic
 (1) Contribuabilul/Plătitorul care depune cereri, înscrisuri sau documente la organul fiscal, prin mijloace electronice de transmitere la distanță, se identifică în relația cu organul fiscal astfel:
 a) persoanele juridice, asocierile și alte entități fără personalitate juridică, precum și persoanele fizice care desfășoară activități economice în mod independent ori exercită profesii libere se identifică numai cu certificate calificate."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru o firmă nouă:
@@ -34,6 +34,6 @@ Ce rezultă din text pentru o firmă nouă:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/spv_conector.py` și modulele `core/spv_*` gestionează conectarea firmei la Spațiul Privat Virtual al ANAF prin token OAuth, care presupune, la înrolarea inițială, autentificarea cu certificat calificat conform art. 80; iConta.eu nu emite și nu intermediază obținerea certificatului digital în sine — aplicația folosește conexiunea deja stabilită de firmă cu SPV pentru a trimite și primi declarații/facturi electronice.
+Verificat în cod: Aplicația gestionează conectarea firmei la Spațiul Privat Virtual al ANAF prin token OAuth, care presupune, la înrolarea inițială, autentificarea cu certificat calificat conform art. 80; iConta.eu nu emite și nu intermediază obținerea certificatului digital în sine — aplicația folosește conexiunea deja stabilită de firmă cu SPV pentru a trimite și primi declarații/facturi electronice.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Când o firmă valorifică deșeuri rezultate din activitatea proprie (metal, h�
 ::: ghid-temei
 „Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.
 (2) Operațiunile pentru care se aplică taxarea inversă sunt: a) livrarea următoarelor categorii de bunuri: 1. deșeuri feroase și neferoase, de rebuturi feroase și neferoase, inclusiv produse semifinite rezultate din prelucrarea, fabricarea sau topirea acestora; [...] 3. deșeuri de materiale reciclabile și materiale reciclabile uzate constând în hârtie, carton, material textil, cabluri, cauciuc, plastic, cioburi de sticlă și sticlă."
-— Legea nr. 227/2015 privind Codul fiscal, art. 331 alin. (1), (2) lit. a) pct. 1 și 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 331 alin. (1), (2) lit. a) pct. 1 și 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Taxarea inversă se aplică **doar** dacă atât furnizorul cât și beneficiarul sunt înregistrați în scopuri de TVA conform art. 316 — dacă oricare din cei doi nu e înregistrat, se aplică regimul normal.

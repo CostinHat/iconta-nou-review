@@ -16,15 +16,15 @@ Regula se aplică și când veniturile sunt obținute printr-un contract de asoc
 
 ::: ghid-temei
 „Contribuabilii care desfășoară activități de natura barurilor de noapte, cluburilor de noapte, discotecilor sau cazinourilor, inclusiv persoanele juridice care realizează aceste venituri în baza unui contract de asociere, și în cazul cărora impozitul pe profit datorat pentru activitățile prevăzute în acest articol este mai mic decât 5% din veniturile respective, sunt obligați la plata impozitului în cotă de 5% aplicat acestor venituri înregistrate.”
-— Codul fiscal (Legea 227/2015), art. 18 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „La determinarea profitului aferent acestor activități se iau în calcul și cheltuielile de conducere și administrare, precum și alte cheltuieli comune ale contribuabilului, proporțional cu veniturile obținute din activitățile vizate în veniturile totale realizate de contribuabil. În cazul în care impozitul pe profit datorat este mai mic decât 5% din veniturile înregistrate în conformitate cu reglementările contabile aplicabile, aferente activităților vizate, contribuabilul este obligat la plata unui impozit de 5% din aceste venituri. Acest impozit se adaugă la valoarea impozitului pe profit aferent celorlalte activități, impozit calculat potrivit prevederilor titlului II din Codul fiscal.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 4 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 4 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Rândul 41.2 - se completează cu suma reprezentând impozitul de 5% aplicat asupra veniturilor din activităţi de natura barurilor de noapte, cluburilor de noapte, discotecilor sau cazinourilor, în condiţiile reglementate de art. 18 din Legea nr. 227/2015”
-— OPANAF 206/2025, instrucțiunile D101 (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— OPANAF 206/2025, instrucțiunile D101 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 :::
 
 Pașii de calcul:

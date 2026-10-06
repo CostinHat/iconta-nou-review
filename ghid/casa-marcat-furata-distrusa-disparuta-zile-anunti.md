@@ -16,20 +16,20 @@ Pentru etapa anterioară operaționalizării, același ordin prevede o notificar
 
 ::: ghid-temei
 „Utilizatorii informează organul fiscal competent în termen de 3 zile lucrătoare de la data la care a intervenit una dintre situațiile prevăzute la pct. 6 subpct. 6.1 sau la pct. 10 subpct. 10.2 lit. b) și c) din anexa nr. 1 la ordin prin completarea „Formularului utilizatorilor de aparate de marcat electronice fiscale“, prevăzut în anexa nr. 3B ."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „6. Datele referitoare la starea aparatului de marcat electronic fiscal sunt următoarele: 6.1. furat/dispărut/distrus/dezmembrat pentru piese de schimb;"
-— OPANAF 4156/2017, Anexa nr. 1, pct. 6 subpct. 6.1 (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 1, pct. 6 subpct. 6.1 (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „Prevederile acestei anexe se aplică cu data operaționalizării în totalitate a Registrului."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 1 (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 1 (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „Notificarea prevăzută la pct. 6 alin. (1) se transmite organului fiscal competent în termen de maximum 5 zile lucrătoare de la data la care a intervenit situația."
-— OPANAF 4156/2017, Anexa nr. 2, pct. 8 alin. (4) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 2, pct. 8 alin. (4) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 Ce trebuie știut:

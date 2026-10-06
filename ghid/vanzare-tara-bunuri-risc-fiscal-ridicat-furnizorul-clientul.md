@@ -16,10 +16,10 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul bunurilor cu risc fiscal ridicat revine următorilor utilizatori: [...] c) furnizorului din România, în cazul tranzacțiilor interne sau al livrărilor intracomunitare de bunuri cu risc fiscal ridicat, după caz;"
-— OUG 41/2022, art. 8 alin. (1) lit. c) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (1) lit. c) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Utilizatorii prevăzuți la alin. (1) sunt obligați să pună la dispoziția operatorului de transport rutier codul UIT aferent bunurilor transportate, direct sau prin intermediul organizatorului transportului, după caz, până cel târziu la prezentarea vehiculului în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv la punerea efectivă în mișcare a vehiculului, după caz."
-— OUG 41/2022, art. 8 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce face furnizorul, pas cu pas:

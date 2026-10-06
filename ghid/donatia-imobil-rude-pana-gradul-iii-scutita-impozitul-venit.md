@@ -16,15 +16,15 @@ Dincolo de gradul III, donația se impozitează. În acest caz, impozitul îl da
 
 ::: ghid-temei
 „la dobândirea dreptului de proprietate cu titlul de donație între rude și afini până la gradul al III-lea inclusiv, precum și între soți;"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Este exceptată de la plata impozitului transmiterea dreptului de proprietate prin donație între rude ori afini până la gradul al III-lea inclusiv, precum și între soți. Dovada calității de soț, rudă sau afin se face cu acte de stare civilă."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul transferului dreptului de proprietate prin donație, calitatea de contribuabil revine donatarului, în situația în care acesta este contribuabil potrivit prevederilor titlului IV"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce intră în scutire:

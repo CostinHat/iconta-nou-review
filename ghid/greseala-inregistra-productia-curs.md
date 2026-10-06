@@ -14,7 +14,7 @@ Una dintre cele mai frecvente greșeli la închiderea lunii, în firmele cu acti
 
 ::: ghid-temei
 „Contul 331 „Produse în curs de execuție" [...] este un cont de activ. În debitul contului 331 [...] se înregistrează: – valoarea la cost de producție a stocului de produse în curs de execuție la sfârșitul perioadei, stabilită pe bază de inventar (711). [...] Soldul contului reprezintă valoarea la cost de producție a produselor aflate în curs de execuție la sfârșitul perioadei."
-— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 331 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 331 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 De ce omisiunea are un impact real, nu doar formal:

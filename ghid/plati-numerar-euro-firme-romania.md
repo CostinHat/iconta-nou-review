@@ -14,7 +14,7 @@ Da, plățile în euro (sau altă valută) în numerar între firme sunt permise
 
 ::: ghid-temei
 „(3) Prevederile prezentului capitol se aplică și operațiunilor de încasări și plăți în valută efectuate pe teritoriul României. Încadrarea în plafoanele prevăzute de prezentul capitol se efectuează în funcție de cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunilor de încasări sau plăți."
-— Legea 70/2015, art. 1 alin. (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 1 alin. (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă concret pentru o plată în euro între două firme din România:
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru o plată în euro între două firme din România:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu convertește automat operațiunile în valută la cursul BNR al zilei** pentru a verifica încadrarea în plafoanele de numerar — modulul de casierie (`core/casa.py`) aplică plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025) pe operațiunile introduse, dar verificarea specifică a unei plăți în euro raportate la cursul zilei rămâne, la data acestui ghid, o încadrare pe care contabilul o face manual.
+La data acestui ghid, iConta.eu **nu convertește automat operațiunile în valută la cursul BNR al zilei** pentru a verifica încadrarea în plafoanele de numerar — modulul de casierie aplică plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025) pe operațiunile introduse, dar verificarea specifică a unei plăți în euro raportate la cursul zilei rămâne, la data acestui ghid, o încadrare pe care contabilul o face manual.
 
 [iConta.eu](/)

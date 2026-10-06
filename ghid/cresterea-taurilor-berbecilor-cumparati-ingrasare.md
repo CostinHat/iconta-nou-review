@@ -16,15 +16,15 @@ Norma de venit acoperă animalele din grupele pentru care legea stabilește norm
 
 ::: ghid-temei
 „Veniturile din activități agricole realizate din creșterea și exploatarea exemplarelor masculine din speciile taurine, bubaline, ovine, caprine, indiferent de vârstă, se supun impunerii potrivit prevederilor cap. II [...] al titlului IV din Codul fiscal, venitul net anual fiind determinat în sistem real, pe baza datelor din contabilitate, numai în cazul în care acestea au fost achiziționate în scopul creșterii și valorificării lor sub orice formă.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 28 alin. (6), paragraful final, titlul IV (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 28 alin. (6), paragraful final, titlul IV (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „b) exemplarele masculine din speciile respective reprezentând animale provenite din propriile fătări și cele achiziționate numai în scop de reproducție pentru animalele deținute de contribuabili și supuse impunerii potrivit prevederilor art. 106 din Codul fiscal (de exemplu: viței, tauri, bivoli, miei, berbeci, purcei).”
-— HG 1/2016, pct. 28 alin. (6) lit. b), titlul IV (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 28 alin. (6) lit. b), titlul IV (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Veniturile definite la art. 103 alin. (1) pentru care nu există obligația stabilirii normelor de venit sunt venituri impozabile și se supun impunerii potrivit prevederilor cap. II [...] venitul net anual fiind determinat în sistem real, pe baza datelor din contabilitate, potrivit prevederilor art. 68”
-— Codul fiscal (Legea 227/2015), art. 104 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 104 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

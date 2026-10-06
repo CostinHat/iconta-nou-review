@@ -14,12 +14,12 @@ Spre deosebire de o societate comercială, unde o donație primită e un caz mai
 
 ::: ghid-temei
 „733 Venituri din donaţii, sume sau bunuri primite prin sponsorizare şi ajutoare [...]"
-— OMFP 3103/2017, planul de conturi, grupa 73 (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, planul de conturi, grupa 73 (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 ::: ghid-temei
 „(2) În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, la calculul rezultatului fiscal, următoarele tipuri de venituri sunt venituri neimpozabile: [...] e) donațiile, precum și banii sau bunurile primite prin sponsorizare/mecenat; [...]"
-— art. 15 alin. (2) lit. e) din Legea 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 15 alin. (2) lit. e) din Legea 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - O donație primită (în bani sau în natură) se înregistrează pe contul **733** din grupa 73 „Venituri din activitățile fără scop patrimonial", nu pe conturile generale de venituri (70x-76x) folosite pentru activitatea economică.

@@ -16,12 +16,12 @@ Preluarea contează pentru că, fără ea, dispariția provizionului sau a rezer
 
 ::: ghid-temei
 „În cazul în care provizioanele sau rezervele constituite au fost anterior deduse la calculul rezultatului fiscal de către societatea cedentă și nu provin de la sediile permanente din străinătate, aceste provizioane sau rezerve pot fi preluate, în aceleași condiții de deducere, de către sediul permanent al societății beneficiare situat în România, societatea beneficiară asumându-și astfel drepturile și obligațiile societății cedente."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv. Prevederile prezentului alineat nu se aplică dacă un alt contribuabil preia un provizion sau o rezervă în legătură cu o divizare sau fuziune, sub orice formă, reglementările acestui articol aplicându-se în continuare acelui provizion sau rezervă."
-— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile și efectele:

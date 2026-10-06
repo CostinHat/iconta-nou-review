@@ -14,12 +14,12 @@ O întrebare frecventă la persoanele care au atât un contract de muncă, cât 
 
 ::: ghid-temei
 „Persoanele fizice care în anul fiscal pentru care se depune declarația prevăzută la art. 122 au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut sau normei anuale de venit, respectiv a normei anuale de venit ajustate, după caz, stabilite potrivit art. 68, 68^1, 68^3 și 69, după caz, care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."
-— Cod fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025, aplicabil veniturilor aferente anului 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025, aplicabil veniturilor aferente anului 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) Următoarele categorii de persoane fizice sunt exceptate de la plata contribuției de asigurări sociale de sănătate: [...]"
-— Cod fiscal, art. 154 alin. (1) — lista exhaustivă a categoriilor exceptate de la CASS (copii, elevi/studenți până la 26 ani, persoane cu handicap, gravide, pensionari cu venituri mici din pensie etc.) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 154 alin. (1) — lista exhaustivă a categoriilor exceptate de la CASS (copii, elevi/studenți până la 26 ani, persoane cu handicap, gravide, pensionari cu venituri mici din pensie etc.) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Interpretarea corectă, pornind de la aceste texte:

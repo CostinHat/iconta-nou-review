@@ -15,7 +15,7 @@ Cesiunea de părți sociale este actul prin care un asociat al unui SRL își tr
 ::: ghid-temei
 „(1) Părțile sociale pot fi transmise între asociați.
 (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social."
-— Legea nr. 31/1990 privind societățile, art. 202 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 202 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă direct câteva clauze care nu pot lipsi dintr-un contract de cesiune bine redactat:
@@ -32,7 +32,7 @@ Un element de formă obligatoriu: transmiterea produce efecte depline abia după
 ::: ghid-temei
 „(1) Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății.
 (2) Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea nr. 31/1990 privind societățile, art. 203 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 203 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Legea reglementează separat și cazul special al dobândirii unei părți sociale prin succesiune: condiția aprobării de trei pătrimi nu se aplică dacă actul constitutiv nu dispune altfel, caz în care societatea e obligată la plata contravalorii părții sociale către succesori, conform ultimului bilanț contabil aprobat (art. 202 alin. 3).

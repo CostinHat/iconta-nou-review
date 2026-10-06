@@ -14,10 +14,10 @@ O cheltuială nedeductibilă fiscal poate fi complet corectă contabil și, totu
 
 ::: ghid-temei
 „dacă soldul debitor al contului 691 (cheltuiala cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat."
-— sursă: `core/d101.py`, liniile 502–529, dosar de cercetare F027.
+— sursă: Aplicația, dosar de cercetare F027.
 
 „Sponsorizare (P43) — dublă limită V5 (20% impozit, DUK) + V5-bis (0,75% cifră de afaceri, adăugat manual în cod fiindcă DUK verifică doar 20%), temei CF art.25 alin.(4) lit.i)"
-— sursă: `core/d101.py`, liniile 179–188, dosar de cercetare F027.
+— sursă: Aplicația, dosar de cercetare F027.
 :::
 
 Practic, două reguli distincte se aplică simultan:

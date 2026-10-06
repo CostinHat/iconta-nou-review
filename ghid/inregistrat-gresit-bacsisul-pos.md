@@ -37,6 +37,6 @@ Cel mai des, bacșișul încasat cu cardul e contabilizat împreună cu restul �
 
 ## Ce face iConta.eu
 
-Modulul F010 (`core/bacsis.py`) separă explicit cele două operațiuni: `nota_incasare(bacsis, sursa="card")` generează întotdeauna `461=462` + `5121=461`, niciodată o notă care amestecă bacșișul cu venitul din vânzare. Funcția respinge orice sumă mai mică sau egală cu zero, cu un mesaj dedicat, ca să nu ajungă „bacșiș fantomă" în evidență. Pentru corectarea unei înregistrări greșite deja introduse, stornarea rămâne un pas manual — aplicația nu detectează automat o încasare de bacșiș trecută anterior prin alt cont.
+Modulul F010 separă explicit cele două operațiuni: `nota_incasare(bacsis, sursa="card")` generează întotdeauna `461=462` + `5121=461`, niciodată o notă care amestecă bacșișul cu venitul din vânzare. Funcția respinge orice sumă mai mică sau egală cu zero, cu un mesaj dedicat, ca să nu ajungă „bacșiș fantomă" în evidență. Pentru corectarea unei înregistrări greșite deja introduse, stornarea rămâne un pas manual — aplicația nu detectează automat o încasare de bacșiș trecută anterior prin alt cont.
 
 [iConta.eu](/)

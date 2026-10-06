@@ -16,12 +16,12 @@ Declarația are însă două limite. Nu șterge trecutul, pentru că scăderea o
 
 ::: ghid-temei
 „(2) Pentru mijlocul de transport pentru care contribuabilul nu mai poate face dovada existenței fizice, scăderea de la plata impozitului pe mijloacele de transport se face prin prezentarea unui certificat de distrugere emis în conformitate cu prevederile [...] (3) În lipsa documentului prevăzut la alin. (2) , contribuabilul care nu mai poate face dovada existenței fizice a mijlocului de transport cu care figurează înregistrat în evidențele organelor fiscale locale prezintă o declarație pe propria răspundere din care să rezulte elementele de identificare a contribuabilului și a mijlocului de transport respectiv, documentul prin care a dobândit acel mijloc de transport, împrejurările care au condus la pierderea acestuia și operează, în ceea ce privește scăderea de la plata obligațiilor fiscale datorate, începând cu data de 1 ianuarie a anului următor celui în care depune această declarație la organul fiscal la care figurează înregistrat, numai dacă are achitate integral orice obligații fiscale datorate de natura impozitului asupra mijloacelor de transport stabilite până la data de 31 decembrie a anului fiscal în care depune declarația.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 126 alin. (2)-(3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 126 alin. (2)-(3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul pe mijlocul de transport este datorat pentru întregul an fiscal de persoana care deține dreptul de proprietate asupra unui mijloc de transport înmatriculat sau înregistrat în România la data de 31 decembrie a anului fiscal anterior.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie să cuprindă declarația pe propria răspundere:

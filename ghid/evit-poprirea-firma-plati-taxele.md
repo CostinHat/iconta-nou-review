@@ -14,7 +14,7 @@ Când firma nu poate achita integral obligațiile fiscale la termen, legea ofer�
 
 ::: ghid-temei
 „(1) Pentru sumele care fac obiectul eșalonării la plată a obligațiilor fiscale, precum și pentru obligațiile prevăzute la art. 194 alin. (1) lit. a) - c), e) - j) și n) nu începe sau se suspendă, după caz, procedura de executare silită, de la data comunicării deciziei de eșalonare la plată. În cazul obligațiilor prevăzute la art. 194 alin. (1) lit. f), executarea silită se suspendă după comunicarea somației."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 203 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 203 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru o firmă aflată în dificultate de plată:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru o firmă aflată în dificultate de plată:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/control_fiscal_api.py` și `core/alerte_control_fiscal.py` semnalează, pentru fiecare firmă, verificatorii aflați în „roșu" (de exemplu TVA sau D112 neconcordante cu evidența contabilă) și trimit notificări agregate contabililor cabinetului atunci când apare un risc nou; aplicația nu are, la acest moment, un flux de generare sau depunere a cererii de eșalonare la plată — inițierea și urmărirea eșalonării rămân, deocamdată, în sarcina contabilului/angajatorului, în afara aplicației.
+Verificat în cod: Aplicația semnalează, pentru fiecare firmă, verificatorii aflați în „roșu" (de exemplu TVA sau D112 neconcordante cu evidența contabilă) și trimit notificări agregate contabililor cabinetului atunci când apare un risc nou; aplicația nu are, la acest moment, un flux de generare sau depunere a cererii de eșalonare la plată — inițierea și urmărirea eșalonării rămân, deocamdată, în sarcina contabilului/angajatorului, în afara aplicației.
 
 [iConta.eu](/)

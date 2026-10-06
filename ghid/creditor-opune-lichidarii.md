@@ -15,12 +15,12 @@ poarta: v1
 ::: ghid-temei
 „(1) Lichidatorii nu pot plăti asociaților nici o sumă în contul părților ce li s-ar cuveni din lichidare, înaintea achitării creditorilor societății. [...]
 (3) Împotriva deciziilor lichidatorilor creditorii societății pot face opoziție în condițiile art. 62."
-— Legea 31/1990, art. 256 alin. (1) și (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 256 alin. (1) și (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Opoziția se face în termen de 30 de zile de la data publicării hotărârii asociaților sau a actului adițional modificator în Monitorul Oficial al României, Partea a IV-a, dacă prezenta lege nu prevede un alt termen. Ea se depune la oficiul registrului comerțului care, în termen de 3 zile de la data depunerii, o va menționa în registru și o va înainta instanței judecătorești competente.
 (2) Opoziția se judecă în camera de consiliu, cu citarea părților [...].
 (3) Hotărârea pronunțată asupra opoziției este supusă numai apelului."
-— Legea 31/1990, art. 62 alin. (1)-(3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 62 alin. (1)-(3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Combinând cele două articole, rezultă mecanismul aplicabil când un creditor contestă o decizie luată în procedura de lichidare:

@@ -14,7 +14,7 @@ O eroare în D112 — un salariat omis, o bază de calcul greșită, o zi de con
 
 ::: ghid-temei
 „Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate poate fi corectată de contribuabili din proprie inițiativă, prin depunerea unei declarații rectificative. [...] Declarația rectificativă se întocmește pe același model de formular ca și declarația care se corectează, bifându-se cu X căsuța aflată pe prima pagină a formularului. Declarația rectificativă se completează integral, înscriindu-se toate datele și informațiile prevăzute de formular, inclusiv cele care nu diferă față de declarația inițială."
-— OPANAF 605/95/928/2314/2026, pct. 2.1, 2.3, 2.4 (sursă: anaf_surse/opanaf_605_2026_d112.txt)
+— OPANAF 605/95/928/2314/2026, pct. 2.1, 2.3, 2.4 (sursă: [Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026 pentru aprobarea formularului 112](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_605_2026.pdf))
 :::
 
 Ce trebuie reținut din procedura oficială:
@@ -32,8 +32,8 @@ Ce trebuie reținut din procedura oficială:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Declarația D112** (`core/d112.py`) generează și validează declarația cu DUKIntegrator, validatorul oficial ANAF rulat local — inclusiv concediile medicale, tichetele și facilitatea fiscală, pe aceeași sursă de date ca statul de plată, ca să nu diverge de fluturaș. Contabilul poate corecta datele salariatului (brut, zile, concediu medical etc.) în aplicație și regenera declarația cu cifrele actualizate.
+Funcționalitatea **Declarația D112** generează și validează declarația cu DUKIntegrator, validatorul oficial ANAF rulat local — inclusiv concediile medicale, tichetele și facilitatea fiscală, pe aceeași sursă de date ca statul de plată, ca să nu diverge de fluturaș. Contabilul poate corecta datele salariatului (brut, zile, concediu medical etc.) în aplicație și regenera declarația cu cifrele actualizate.
 
-Spre deosebire de alte declarații din ecranul **Declarații** al iConta (D311, D307, D107, D177, D207), care au fiecare o casetă „Declarație rectificativă" bifabilă direct în interfață, **D112 nu are încă acest câmp** — verificat la sursă: nu apare nicio referință la rectificativă în `core/d112.py` sau în panoul D112 din interfață, deși structura oficială XML a formularului conține câmpul `d_rec` pentru exact acest scop. Practic: iConta regenerează corect XML-ul cu datele corectate, dar bifarea căsuței „Declarație rectificativă" pe formular trebuie făcută în afara aplicației — la depunerea efectivă în SPV/portalul ANAF.
+Spre deosebire de alte declarații din ecranul **Declarații** al iConta (D311, D307, D107, D177, D207), care au fiecare o casetă „Declarație rectificativă" bifabilă direct în interfață, **D112 nu are încă acest câmp** — verificat la sursă: nu apare nicio referință la rectificativă în aplicație sau în panoul D112 din interfață, deși structura oficială XML a formularului conține câmpul `d_rec` pentru exact acest scop. Practic: iConta regenerează corect XML-ul cu datele corectate, dar bifarea căsuței „Declarație rectificativă" pe formular trebuie făcută în afara aplicației — la depunerea efectivă în SPV/portalul ANAF.
 
 [iConta.eu](/)

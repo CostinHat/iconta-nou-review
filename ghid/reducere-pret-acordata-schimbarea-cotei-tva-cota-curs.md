@@ -16,15 +16,15 @@ Numai când operațiunea de bază nu poate fi identificată se aplică cota, reg
 
 ::: ghid-temei
 „În cazul evenimentelor menționate la art. 287 , taxa este exigibilă la data la care intervine oricare dintre evenimente, iar regimul de impozitare, cotele aplicabile și cursul de schimb valutar sunt aceleași ca și ale operațiunii de bază care a generat aceste evenimente."
-— Codul fiscal (Legea 227/2015), art. 282 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „în cazul în care se acordă reduceri de preț după livrarea bunurilor sau prestarea serviciilor;"
-— Codul fiscal (Legea 227/2015), art. 287 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 287 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) În aplicarea art. 282 alin. (9) din Codul fiscal, în cazul în care intervin evenimentele prevăzute la art. 287 din Codul fiscal, ulterior datei la care se modifică cota de TVA și/sau regimul de impozitare, pentru ajustarea bazei de impozitare sunt aplicabile cota și regimul de impozitare ale operațiunii de bază care a generat aceste evenimente. Pentru operațiunile a căror bază impozabilă este determinată în valută, cursul de schimb valutar utilizat pentru ajustarea bazei de impozitare este același ca al operațiunii de bază care a generat aceste evenimente, respectiv cursul de schimb valutar utilizat pentru determinarea bazei de impozitare a taxei pe valoarea adăugată pentru operațiunea de bază. Totuși, în cazul în care nu se poate determina operațiunea de bază care a generat aceste evenimente, se vor aplica cota de TVA și regimul de impozitare în vigoare la data la care a intervenit evenimentul și, corespunzător, și cursul de schimb valutar de la această dată, în cazul operațiunilor pentru care baza de impozitare este determinată în valută."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 25 alin. (2) (norme art. 282 alin. (9) CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VII, pct. 25 alin. (2) (norme art. 282 alin. (9) CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

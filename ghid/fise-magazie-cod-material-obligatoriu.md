@@ -14,7 +14,7 @@ Fișa de magazie este unul dintre documentele financiar-contabile cu regim regle
 
 ::: ghid-temei
 „FIȘĂ DE MAGAZIE (Cod 14-3-8) Fișa de magazie servește ca document de evidență a intrărilor, ieșirilor și stocurilor de bunuri materiale. Fișele de magazie se țin pe fiecare loc de depozitare a valorilor materiale, pe feluri de materiale, ordonate pe conturi, grupe, eventual subgrupe, sau în ordine alfabetică. Pentru valori materiale primite spre prelucrare de la terți sau în custodie se întocmesc fișe distincte, care se țin separat de cele aferente propriilor valori materiale. Înregistrările în fișele de magazie se fac document cu document."
-— OMFP nr. 2.634/2015 (Norme specifice de utilizare a documentelor financiar-contabile, Anexa nr. 2) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015 (Norme specifice de utilizare a documentelor financiar-contabile, Anexa nr. 2) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă din text pentru gestiunea de stocuri:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru gestiunea de stocuri:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/stocuri.py` și `core/repo_stocuri.py` țin evidența mișcărilor de stoc pe fiecare articol (cod de material), cu mișcări de intrare/ieșire distincte, iar `core/d406_stocuri.py` calculează soldurile de deschidere/închidere per articol pentru raportarea SAF-T la cerere ANAF — structura urmează, la nivel de aplicație, principiul „pe fel de material" din normă, deși aplicația nu generează formularul tipizat „Fișă de magazie" (cod 14-3-8) ca document separat.
+Verificat în cod: Aplicația țin evidența mișcărilor de stoc pe fiecare articol (cod de material), cu mișcări de intrare/ieșire distincte, iar aplicația calculează soldurile de deschidere/închidere per articol pentru raportarea SAF-T la cerere ANAF — structura urmează, la nivel de aplicație, principiul „pe fel de material" din normă, deși aplicația nu generează formularul tipizat „Fișă de magazie" (cod 14-3-8) ca document separat.
 
 [iConta.eu](/)

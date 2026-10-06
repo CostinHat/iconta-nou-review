@@ -34,6 +34,6 @@ Dacă brunch-ul se vinde la un preț fix care include și băuturi alcoolice/NC 
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` tratează categoria `restaurant_catering` la 11%, cu excepțiile din `EXCEPTII_21` pentru băuturi alcoolice și băuturi NC 2202, potrivite pe fiecare linie a facturii sau a bonului. Pentru un pachet cu preț unic care combină componente la cote diferite (mâncare + alcool inclus), defalcarea pe linii separate, cu cota corectă pentru fiecare, rămâne o decizie a emitentului la structurarea facturii — aplicația nu presupune automat o singură cotă pentru tot pachetul.
+Aplicația tratează categoria `restaurant_catering` la 11%, cu excepțiile din `EXCEPTII_21` pentru băuturi alcoolice și băuturi NC 2202, potrivite pe fiecare linie a facturii sau a bonului. Pentru un pachet cu preț unic care combină componente la cote diferite (mâncare + alcool inclus), defalcarea pe linii separate, cu cota corectă pentru fiecare, rămâne o decizie a emitentului la structurarea facturii — aplicația nu presupune automat o singură cotă pentru tot pachetul.
 
 [iConta.eu](/)

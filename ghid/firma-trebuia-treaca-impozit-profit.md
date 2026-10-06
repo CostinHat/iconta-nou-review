@@ -13,7 +13,7 @@ Dacă firma a depășit plafonul de venituri pentru microîntreprindere și a co
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 52 alin. (1) CF** „Reguli de ieșire din sistemul de impunere pe veniturile microîntreprinderilor în cursul anului": „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit **începând cu trimestrul în care s-a depășit această limită**." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6414 (modificat de OUG 8/2026, art. 6 pct. 20).
+**Art. 52 alin. (1) CF** „Reguli de ieșire din sistemul de impunere pe veniturile microîntreprinderilor în cursul anului": „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit **începând cu trimestrul în care s-a depășit această limită**." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282) (modificat de OUG 8/2026, art. 6 pct. 20).
 :::
 
 Obligația de trecere la impozit pe profit nu e opțională și nu așteaptă finalul anului — curge de la trimestrul concret în care veniturile cumulate au depășit 100.000 euro (calculat la cursul de schimb valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile, conform art. 47 alin. 1 lit. c). Dacă firma a continuat să depună D100 (micro) în loc de D101 (profit) după acel moment, declarațiile depuse pentru trimestrele ulterioare depășirii au fost pe regimul greșit.
@@ -30,6 +30,6 @@ Corectarea declarațiilor deja depuse la ANAF (rectificative D100/D101) e un pas
 
 ## Ce face iConta.eu
 
-Motorul (`core/control_fiscal_api.py`) confirmă explicit, în comentariu de cod: „Aplicația NU cunoaște plafonul de ieșire din micro [...], deci nu există fapt care să contrazică bifa; atunci blocajul rămâne, dar spune UNDE se corectează." Nu există nicio constantă de plafon micro (100.000 €) în motorul de calcul — verificarea depășirii e integral responsabilitatea contabilului. Schimbarea efectivă a `regim_fiscal` e o editare manuală în Vector fiscal, supusă regulii care blochează modificarea peste perioade fiscale deja închise (trebuie redeschisă perioada, schimbat vectorul, apoi închisă la loc).
+Motorul confirmă explicit, în comentariu de cod: „Aplicația NU cunoaște plafonul de ieșire din micro [...], deci nu există fapt care să contrazică bifa; atunci blocajul rămâne, dar spune UNDE se corectează." Nu există nicio constantă de plafon micro (100.000 €) în motorul de calcul — verificarea depășirii e integral responsabilitatea contabilului. Schimbarea efectivă a `regim_fiscal` e o editare manuală în Vector fiscal, supusă regulii care blochează modificarea peste perioade fiscale deja închise (trebuie redeschisă perioada, schimbat vectorul, apoi închisă la loc).
 
 [iConta.eu](/)

@@ -16,7 +16,7 @@ PFA și SRL nu sunt impozitate după aceeași logică: PFA plătește impozit pe
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]
 Cota de impozit pe profit [...] este de 16%.
 [...] Veniturile sub formă de dividende [...] se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final."
-— Legea nr. 227/2015 (Codul fiscal), art. 68 (venit net PFA), art. 17 (cota impozit profit) și art. 97 (impozit dividende persoane fizice) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 68 (venit net PFA), art. 17 (cota impozit profit) și art. 97 (impozit dividende persoane fizice) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Comparația reală, pe baza textelor citate mai sus:

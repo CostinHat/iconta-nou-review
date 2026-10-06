@@ -14,7 +14,7 @@ Când o firmă renovează sau amenajează un spațiu pe care îl are cu chirie, 
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: a) investițiile efectuate la mijloacele fixe care fac obiectul unor contracte de închiriere, concesiune, locație de gestiune, asociere în participațiune și altele asemenea."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Amenajarea sau investiția făcută de chiriaș într-un spațiu închiriat este **mijloc fix amortizabil de sine stătător**, separat de clădirea proprietarului.
@@ -30,6 +30,6 @@ Când o firmă renovează sau amenajează un spațiu pe care îl are cu chirie, 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de mijloace fixe din iConta.eu (`core/repo_mijloace_fixe.py`) permite înregistrarea oricărui mijloc fix cu cont de imobilizare, cont de amortizare, valoare și durată normală de funcționare, deci o amenajare la un spațiu închiriat poate fi introdusă ca mijloc fix distinct și amortizată normal, ca orice altă imobilizare. Aplicația nu are însă o categorie sau un flux dedicat special „investiție în activ închiriat" care să sugereze automat durata sau tratamentul — încadrarea corectă (mijloc fix separat, la chiriaș) rămâne o decizie a contabilului la introducerea datelor.
+La data acestui ghid, modulul de mijloace fixe din iConta.eu permite înregistrarea oricărui mijloc fix cu cont de imobilizare, cont de amortizare, valoare și durată normală de funcționare, deci o amenajare la un spațiu închiriat poate fi introdusă ca mijloc fix distinct și amortizată normal, ca orice altă imobilizare. Aplicația nu are însă o categorie sau un flux dedicat special „investiție în activ închiriat" care să sugereze automat durata sau tratamentul — încadrarea corectă (mijloc fix separat, la chiriaș) rămâne o decizie a contabilului la introducerea datelor.
 
 [iConta.eu](/)

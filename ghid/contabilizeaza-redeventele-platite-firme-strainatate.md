@@ -14,7 +14,7 @@ O redevență plătită unei firme din străinătate (pentru folosirea unui brev
 
 ::: ghid-temei
 „Impozitul datorat se calculează prin aplicarea următoarelor cote asupra veniturilor brute: [...] d) 16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt enumerate la art. 223 alin. (1)."
-— Legea nr. 227/2015 (Codul fiscal), art. 224 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 224 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Redevențele plătite unei firme nerezidente intră explicit în categoria veniturilor impozabile obținute din România (art. 223 alin. (1) lit. d)-e)), cu următoarele consecințe:

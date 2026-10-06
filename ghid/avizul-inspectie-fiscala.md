@@ -18,7 +18,7 @@ Avizul de inspecție fiscală e actul prin care organul de inspecție fiscală �
 a) cu 30 de zile pentru marii contribuabili;
 b) cu 15 zile pentru ceilalți contribuabili/plătitori.
 (3) Contribuabilul/Plătitorul poate renunța la beneficiul perioadei de comunicare a avizului de inspecție fiscală prevăzut la alin. (2)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 122 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 122 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce mai prevede legea, pe lângă termenele de comunicare:

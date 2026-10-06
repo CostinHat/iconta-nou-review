@@ -14,7 +14,7 @@ O firmă de închirieri auto întâlnește, de regulă, două probleme distincte
 
 ::: ghid-temei
 „Articolul 298 Limitări speciale ale dreptului de deducere (1) Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate și a taxei aferente cheltuielilor legate de vehiculele aflate în proprietatea sau în folosința persoanei impozabile, în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice. [...] (3) Prevederile alin. (1) nu se aplică următoarelor categorii de vehicule rutiere motorizate: [...] e) vehiculele utilizate pentru închiriere sau a căror folosință este transmisă în cadrul unui contract de leasing financiar ori operațional;"
-— Codul fiscal (Legea 227/2015), art. 298 alin. (1) și alin. (3) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 298 alin. (1) și alin. (3) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

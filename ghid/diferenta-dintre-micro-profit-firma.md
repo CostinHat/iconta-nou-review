@@ -14,10 +14,10 @@ O firmă mică nou-înființată alege, de regulă din start, între regimul de 
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea 227/2015 (Codul fiscal), art. 51 alin. (1), în forma aplicabilă de la 1 ianuarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 51 alin. (1), în forma aplicabilă de la 1 ianuarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015 (Codul fiscal), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe lângă cotă, condițiile de încadrare la microîntreprindere sunt cumulative și se verifică la 31 decembrie a anului precedent (art. 47): venituri sub echivalentul a 100.000 euro, capital social deținut de alte persoane decât statul, firma să nu fie în dizolvare/lichidare, să aibă cel puțin un salariat, asociații să dețină o singură firmă cu acest regim peste pragul de 25% din capital și să fi depus la timp situațiile financiare anuale. O firmă care nu îndeplinește toate condițiile trece automat la impozit pe profit.

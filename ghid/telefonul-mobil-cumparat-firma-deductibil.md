@@ -14,7 +14,7 @@ Nu există o regulă specială pentru telefoane mobile în Codul fiscal — dedu
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la un telefon mobil cumpărat de firmă:
@@ -31,6 +31,6 @@ Aplicat la un telefon mobil cumpărat de firmă:
 
 ## Ce face iConta.eu
 
-Clasificarea și înregistrarea unui activ ca mijloc fix sau ca obiect de inventar, în funcție de valoarea lui de achiziție, e un motor real în aplicație (`core/obiecte_inventar.py`), care aplică pragul legal curent din registrul de cote al firmei și generează notele contabile corespunzătoare — atât pentru achiziție, cât și pentru darea în folosință. Acest motor nu e specific telefoanelor mobile, ci se aplică oricărui activ de valoare mică introdus în evidență; deductibilitatea propriu-zisă la impozitul pe profit/venit rezultă din felul în care cheltuiala e clasificată și înregistrată, nu dintr-un calcul separat, dedicat unei categorii de bunuri.
+Clasificarea și înregistrarea unui activ ca mijloc fix sau ca obiect de inventar, în funcție de valoarea lui de achiziție, e un motor real în aplicație, care aplică pragul legal curent din registrul de cote al firmei și generează notele contabile corespunzătoare — atât pentru achiziție, cât și pentru darea în folosință. Acest motor nu e specific telefoanelor mobile, ci se aplică oricărui activ de valoare mică introdus în evidență; deductibilitatea propriu-zisă la impozitul pe profit/venit rezultă din felul în care cheltuiala e clasificată și înregistrată, nu dintr-un calcul separat, dedicat unei categorii de bunuri.
 
 [iConta.eu](/)

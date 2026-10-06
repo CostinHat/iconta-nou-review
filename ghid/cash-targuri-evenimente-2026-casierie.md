@@ -14,13 +14,13 @@ Caracterul temporar sau ocazional al unui stand de târg nu scutește, de regul�
 
 ::: ghid-temei
 „(1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— OUG 28/1999 (republicată), art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999 (republicată), art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „Se exceptează de la prevederile art. 1 alin. (1) încasările efectuate din următoarele activități: a) comerțul ocazional cu produse agricole din producție proprie efectuat de către producătorii agricoli individuali, autorizați în condițiile legii, în piețe, târguri, oboare sau în alte locuri publice autorizate; [...] d) activitățile pentru care încasările se realizează pe bază de bonuri cu valoare fixă tipărite conform legii - bilete de acces la spectacole, muzee, expoziții, târguri și oboare, grădini zoologice și grădini botanice, biblioteci, locuri de parcare pentru autovehicule, bilete de participare la jocuri de noroc și altele similare;"
-— OUG 28/1999 (republicată), art. 2 lit. a) și d) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999 (republicată), art. 2 lit. a) și d) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, [...] precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană."
-— Legea 70/2015 (consolidată), art. 4 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (consolidată), art. 4 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - Regula de bază: orice vânzare cu numerar către o persoană fizică, la un stand de târg sau eveniment, cere bon fiscal emis cu un aparat de marcat electronic fiscal — caracterul ocazional al vânzării nu contează.
@@ -36,6 +36,6 @@ Caracterul temporar sau ocazional al unui stand de târg nu scutește, de regul�
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) urmărește plafoanele de numerar din Legea 70/2015, printre care plafonul zilnic de încasare de la o persoană fizică (10.000 lei), aplicat generic prin funcția `verifica_plafon()`, indiferent de contextul concret al vânzării — magazin, birou sau stand de eveniment/târg. Depășirea plafonului generează un avertisment (nivel „avertisment", nu o blocare a înregistrării), cu suma găsită și cea așteptată, pe fiecare zi și partener. Aplicația nu are însă nicio logică specifică pentru „vânzare la eveniment/târg" — nu distinge, de exemplu, un producător agricol individual exceptat de la obligația de AMEF (art. 2 lit. a)) de un comerciant obișnuit, și nu ține evidența biletelor tipărite cu valoare fixă de la art. 2 lit. d). Încadrarea corectă în aceste excepții rămâne integral responsabilitatea contabilului sau a firmei.
+Modulul de casierie al iConta.eu urmărește plafoanele de numerar din Legea 70/2015, printre care plafonul zilnic de încasare de la o persoană fizică (10.000 lei), aplicat generic prin funcția `verifica_plafon()`, indiferent de contextul concret al vânzării — magazin, birou sau stand de eveniment/târg. Depășirea plafonului generează un avertisment (nivel „avertisment", nu o blocare a înregistrării), cu suma găsită și cea așteptată, pe fiecare zi și partener. Aplicația nu are însă nicio logică specifică pentru „vânzare la eveniment/târg" — nu distinge, de exemplu, un producător agricol individual exceptat de la obligația de AMEF (art. 2 lit. a)) de un comerciant obișnuit, și nu ține evidența biletelor tipărite cu valoare fixă de la art. 2 lit. d). Încadrarea corectă în aceste excepții rămâne integral responsabilitatea contabilului sau a firmei.
 
 [iConta.eu](/)

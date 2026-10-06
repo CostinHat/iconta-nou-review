@@ -48,6 +48,6 @@ O firmă constituie un provizion de 50.000 lei pentru un litigiu în curs (cont 
 
 ## Ce face iConta.eu
 
-Motorul de calcul din `core/provizioane.py` mapează fiecare tip de provizion pe contul sintetic din grupa 151 corespunzător (litigii → 1511, garanții → 1512, dezafectare → 1513, restructurare → 1514, impozite → 1516, altele → 1518) și generează nota contabilă corectă la constituire (6812=15xx) și la reluare (15xx=7812). Deductibilitatea fiscală e semnalată explicit doar pentru garanții (`deductibil = (tip == "garantii")`); pentru celelalte tipuri, aplicația nu marchează automat caracterul nedeductibil în declarația D101 — rândurile de cheltuieli nedeductibile (P23-P33) se completează manual, pe baza analizei de mai sus.
+Motorul de calcul din aplicație mapează fiecare tip de provizion pe contul sintetic din grupa 151 corespunzător (litigii → 1511, garanții → 1512, dezafectare → 1513, restructurare → 1514, impozite → 1516, altele → 1518) și generează nota contabilă corectă la constituire (6812=15xx) și la reluare (15xx=7812). Deductibilitatea fiscală e semnalată explicit doar pentru garanții (`deductibil = (tip == "garantii")`); pentru celelalte tipuri, aplicația nu marchează automat caracterul nedeductibil în declarația D101 — rândurile de cheltuieli nedeductibile (P23-P33) se completează manual, pe baza analizei de mai sus.
 
 [iConta.eu](/)

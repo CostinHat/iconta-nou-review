@@ -16,7 +16,7 @@ poarta: v1
 Radierea unei societăți urmează procedura legală de lichidare/dizolvare (OMFP 897/2015, Legea 31/1990 — art. 227 și următoarele, Legea 85/2014 pentru insolvență), depusă la ONRC/ANAF — un proces complet separat de evidența internă a vectorului fiscal din iConta, care nu are un temei legal propriu de „închidere".
 :::
 
-Cercetarea la sursă confirmă direct absența funcționalității: `core/vector_fiscal_api.py` are doar două funcții — `citeste` și `salveaza` — fără nicio noțiune de „închis" sau „radiat". Nici motorul de lichidare (`core/lichidare.py`, care implementează monografiile de valorificare active, încasare creanțe, plată datorii, rezultat pe cont 121, partaj) nu atinge deloc `firma_profil` sau vectorul fiscal.
+Cercetarea la sursă confirmă direct absența funcționalității: Aplicația are doar două funcții — `citeste` și `salveaza` — fără nicio noțiune de „închis" sau „radiat". Nici motorul de lichidare (care implementează monografiile de valorificare active, încasare creanțe, plată datorii, rezultat pe cont 121, partaj) nu atinge deloc `firma_profil` sau vectorul fiscal.
 
 Practic, asta înseamnă: radierea societății se face integral prin procedura legală externă (ONRC pentru dizolvare/lichidare, ANAF pentru scoaterea din evidențele fiscale) — nu printr-un pas din iConta. În aplicație, contul firmei rămâne, după radiere, cu ultimul vector fiscal valabil salvat; nu apare niciun câmp sau status distinct care să marcheze firma drept „radiată".
 

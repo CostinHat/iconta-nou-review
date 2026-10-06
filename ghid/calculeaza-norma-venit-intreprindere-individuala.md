@@ -15,7 +15,7 @@ Pentru anumite activități independente — inclusiv cele desfășurate printr-
 ::: ghid-temei
 „(1) În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității. [...]
 (3) Norma de venit pentru fiecare activitate desfășurată de contribuabil nu poate fi mai mică decât nivelul a 12 salarii de bază minime brute pe țară garantate în plată, în vigoare la data de 1 ianuarie a anului de realizare a venitului. Prevederile prezentului alineat se aplică și în cazul în care activitatea se desfășoară în cadrul unei asocieri fără personalitate juridică, norma de venit fiind stabilită pentru fiecare membru asociat."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) și (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Norma de venit se aplică veniturilor din activități independente, altele decât profesiile liberale (avocați, notari, medici cu cabinet propriu etc., care au regim distinct) — inclusiv activităților desfășurate printr-o întreprindere individuală atunci când legea permite acest sistem pentru CAEN-ul respectiv.

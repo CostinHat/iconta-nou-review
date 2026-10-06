@@ -15,7 +15,7 @@ Nu există, la data acestui ghid, un document oficial intitulat „puncte de ved
 ::: ghid-temei
 „Art. I - În anexa nr. 1 la Ordinul preşedintelui Agenţiei Naţionale de Administrare Fiscală nr. 179/2022 pentru aprobarea modelului şi conţinutului formularelor 205 «Declaraţie informativă privind impozitul reţinut la sursă şi câştigurile/pierderile din investiţii, pe beneficiari de venit» şi 207 [...], instrucţiunile privind completarea formularului 205 [...] se modifică şi se completează după cum urmează:
 1. La capitolul I «Depunerea declaraţiei» punctul 1, după litera k) se introduce o nouă literă, litera l), cu următorul cuprins: «l) venituri din transferul dezmembrămintelor dreptului de proprietate sub condiţie suspensivă, plătite de persoane juridice sau alte entităţi care au obligaţia de a conduce evidenţă contabilă.»"
-— OPANAF nr. 303/2026 din 5 martie 2026, art. I pct. 1 (sursă: anaf_surse/opanaf_303_2026_d205.txt)
+— OPANAF nr. 303/2026 din 5 martie 2026, art. I pct. 1 (sursă: [OPANAF nr. 303/2026 privind modificarea anexei nr. 1 la OPANAF nr. 179/2022 (formularul 205)](https://legislatie.just.ro/Public/DetaliiDocument/308166))
 :::
 
 Ce schimbă concret OPANAF 303/2026 față de forma anterioară a instrucțiunilor (OPANAF 179/2022):

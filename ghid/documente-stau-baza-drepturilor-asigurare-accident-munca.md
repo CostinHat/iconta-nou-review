@@ -16,16 +16,16 @@ Documentul-cheie este **procesul-verbal de cercetare a evenimentului**, întocmi
 
 ::: ghid-temei
 „Articolul 53 Drepturile de asigurare prevăzute de prezenta lege se acordă astfel: a) pentru accidente de muncă, în baza procesului-verbal de cercetare a evenimentului întocmit și/sau avizat potrivit Legii securității și sănătății în muncă nr. 319/2006, cu modificările ulterioare;"
-— Legea 346/2002, art. 53 lit. a) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 53 lit. a) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „Articolul 52 (1) Pentru stabilirea drepturilor de asigurare, asigurătorul are acces și recurge la procesul-verbal de cercetare și a formularului de înregistrare a accidentului de muncă - FIAM, întocmite, potrivit legii."
-— Legea 346/2002, art. 52 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 52 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Articolul 37 (1) Indemnizația pentru incapacitate temporară de muncă datorată accidentelor de muncă și bolilor profesionale se acordă pe baza certificatului medical eliberat conform dispozițiilor legale și completat sau modificat, după caz, cu codurile de indemnizație corespunzătoare și care constituie document justificativ de plată."
-— Legea 346/2002, art. 37 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 37 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(7) Recuperarea de către angajator a indemnizațiilor prevăzute la alin. (6) se poate realiza după confirmarea caracterului de muncă al accidentului sau declararea bolii profesionale."
-— Legea 346/2002, art. 19 alin. (7) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (7) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Setul de documente, pe roluri:

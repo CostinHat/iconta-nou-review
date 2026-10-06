@@ -37,7 +37,7 @@ Important de precizat onest: ordinea FIFO (facturile cele mai vechi întâi) est
 
 ## Ce face iConta.eu
 
-Motorul de matching (`core/reconciliere.py`) parcurge, pentru fiecare linie de extras cu CUI identificat, în ordine: potrivire exactă pe o singură factură (toleranță 0,01 lei), apoi potrivire exactă pe o combinație de 2-4 facturi (`MAX_COMBO = 4`, căutare limitată la primele 12 facturi FIFO ale partenerului), apoi alocare parțială FIFO pe soldurile rămase. Facturile eligibile sunt filtrate strict pe CUI-ul normalizat al partenerului și pe direcția corespunzătoare tipului liniei (încasare → facturi emise; plată → facturi primite) și sortate FIFO după data emiterii.
+Motorul de matching parcurge, pentru fiecare linie de extras cu CUI identificat, în ordine: potrivire exactă pe o singură factură (toleranță 0,01 lei), apoi potrivire exactă pe o combinație de 2-4 facturi (`MAX_COMBO = 4`, căutare limitată la primele 12 facturi FIFO ale partenerului), apoi alocare parțială FIFO pe soldurile rămase. Facturile eligibile sunt filtrate strict pe CUI-ul normalizat al partenerului și pe direcția corespunzătoare tipului liniei (încasare → facturi emise; plată → facturi primite) și sortate FIFO după data emiterii.
 
 Rezultatul unei potriviri exacte (una sau combo) primește status verde; alocarea parțială FIFO primește status galben și necesită confirmare manuală înainte de contare. La contare (`conteaza`), utilizatorul poate suprascrie alocările sugerate de motor prin parametrul `alocari`, dacă vrea o altă repartizare decât cea propusă automat.
 

@@ -16,10 +16,10 @@ Pentru contabil, diferența se vede în salarizare. Accidentul de muncă intră 
 
 ::: ghid-temei
 „g) accident de muncă - vătămarea violenta a organismului, precum și intoxicatia acuta profesională, care au loc în timpul procesului de muncă sau în îndeplinirea îndatoririlor de serviciu și care provoacă incapacitate temporară de muncă de cel puțin 3 zile calendaristice, invaliditate ori deces"
-— Legea 319/2006, art. 5 lit. g) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 5 lit. g) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „q) accident ușor - eveniment care are drept consecința leziuni superficiale care necesita numai acordarea primelor îngrijiri medicale și a antrenat incapacitate de muncă cu o durată mai mica de 3 zile"
-— Legea 319/2006, art. 5 lit. q) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 5 lit. q) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Comparația, punct cu punct:

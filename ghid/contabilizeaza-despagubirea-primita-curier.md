@@ -14,7 +14,7 @@ Când un colet se pierde sau ajunge deteriorat la client, firma de curierat plă
 
 ::: ghid-temei
 „Baza de impozitare nu cuprinde următoarele: [...] b) sumele reprezentând daune-interese, stabilite prin hotărâre judecătorească definitivă/definitivă și irevocabilă, după caz, penalizările și orice alte sume solicitate pentru neîndeplinirea totală sau parțială a obligațiilor contractuale, dacă sunt percepute peste prețurile și/sau tarifele negociate."
-— Legea nr. 227/2015 (Codul fiscal), art. 286 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 286 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru despăgubirea primită de la curier:

@@ -15,7 +15,7 @@ Majoritatea obligațiilor fiscale se plătesc azi prin ordine de plată date onl
 ::: ghid-temei
 „(11) În cazul stingerii prin plată a obligațiilor fiscale, bugetare sau a altor sume colectate de instituții publice, în condițiile legii, momentul plății este: [...]
 d) în cazul plăților efectuate prin decontare bancară, inclusiv internet banking, home banking, mobile banking sau alte mijloace de plată la distanță puse la dispoziția debitorilor de instituțiile de credit, inclusiv tranzacțiile efectuate prin intermediul contului tranzitoriu, data la care băncile debitează contul persoanei care efectuează plata pe baza instrumentelor de decontare specifice, astfel cum această informație este transmisă prin mesajul electronic de plată de către instituția bancară inițiatoare, potrivit reglementărilor specifice în vigoare, cu excepția situației prevăzute la art. 177."
-— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva consecințe practice decurg direct din text:

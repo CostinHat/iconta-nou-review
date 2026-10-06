@@ -14,7 +14,7 @@ Nu există în Codul fiscal un regim special de impozit pe profit pentru firmele
 
 ::: ghid-temei
 „Următoarele venituri sunt neimpozabile la calculul rezultatului fiscal: [...] f) veniturile reprezentând modificarea valorii juste a investițiilor imobiliare/activelor biologice, ca urmare a evaluării ulterioare utilizând modelul bazat pe valoarea justă de către contribuabilii care aplică reglementările contabile conforme cu Standardele internaționale de raportare financiară. Aceste sume sunt impozabile concomitent cu deducerea amortizării fiscale, respectiv la momentul scăderii din gestiune a acestor investiții imobiliare/active biologice, după caz."
-— Legea nr. 227/2015 (Codul fiscal), art. 23 lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 23 lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Reperele fiscale reale pentru o firmă din imobiliare:

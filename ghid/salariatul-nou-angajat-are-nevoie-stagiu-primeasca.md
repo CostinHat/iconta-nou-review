@@ -16,16 +16,16 @@ Stagiul scurt contează doar pentru felul în care se calculează baza. Dacă sa
 
 ::: ghid-temei
 „(2) Calitatea de asigurat se dobândește, iar raporturile de asigurare se stabilesc la data: încheierii contractului individual de muncă, stabilirii raporturilor de serviciu în cazul funcționarilor publici, validării mandatului pentru persoanele care desfășoară activități în funcții elective, numirii în cadrul autorității executive, legislative ori judecătorești, depunerii adeziunii în cazul membrilor cooperatori, începerii practicii profesionale pentru șomeri, ucenici, elevi și studenți, după caz."
-— Legea 346/2002, art. 9 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 9 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „Articolul 12 Dreptul la prestațiile și serviciile de asigurare pentru accidente de muncă și boli profesionale se naște de la data stabilirii raporturilor de asigurare și încetează odată cu aceste raporturi."
-— Legea 346/2002, art. 12 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 12 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(2) În cazul în care stagiul de cotizare este mai mic de 6 luni, baza de calcul al indemnizațiilor pentru incapacitate temporară de muncă, pentru reducerea timpului de muncă sau pentru trecerea temporară în alt loc de muncă o constituie media câștigurilor brute realizate lunar de către asigurat din salarii sau venituri asimilate salariilor."
-— Legea 346/2002, art. 19 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(3) În cazul în care stagiul de cotizare este mai mic de o lună, baza de calcul a indemnizațiilor o constituie câștigul lunar brut realizat de asigurat în prima lună de activitate."
-— Legea 346/2002, art. 19 alin. (3) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

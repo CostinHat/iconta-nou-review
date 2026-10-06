@@ -31,6 +31,6 @@ Greșeala tipică e compararea contului 444 cu impozitul teoretic calculat manua
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din `core/control_incrucisat.py` compară direct codul 602 cu rulajul creditor al contului 444, folosind suma parsată din XML-ul D112 (depus sau regenerat), nu o reagregare separată a salariaților — pentru a evita exact acest risc de "a treia cifră" divergentă.
+Maparea `COD_CONT_D112` din aplicație compară direct codul 602 cu rulajul creditor al contului 444, folosind suma parsată din XML-ul D112 (depus sau regenerat), nu o reagregare separată a salariaților — pentru a evita exact acest risc de "a treia cifră" divergentă.
 
 [iConta.eu](/)

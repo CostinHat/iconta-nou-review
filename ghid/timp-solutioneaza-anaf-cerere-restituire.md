@@ -16,7 +16,7 @@ Când o firmă sau un PFA a plătit o sumă către bugetul de stat fără să o 
 ::: ghid-temei
 „ART. 77 Termenul de soluționare a cererilor contribuabilului/plătitorului
 (1) Cererile depuse de către contribuabil/plătitor la organul fiscal se soluționează de către acesta în termen de 45 de zile de la înregistrare."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 77 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 77 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 

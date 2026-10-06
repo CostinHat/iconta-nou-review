@@ -16,7 +16,7 @@ Reglementările contabile prevăd un cont dedicat exact acestei situații: chelt
 „CLASA 2 - CONTURI DE IMOBILIZĂRI
 GRUPA 20 - IMOBILIZĂRI NECORPORALE
 201 Cheltuieli de constituire"
-— OMFP 1802/2014 (reglementări contabile), planul de conturi general, clasa 2, grupa 20 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), planul de conturi general, clasa 2, grupa 20 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din încadrarea acestor costuri ca imobilizare necorporală, nu ca o cheltuială curentă:

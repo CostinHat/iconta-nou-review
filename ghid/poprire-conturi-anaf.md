@@ -61,4 +61,4 @@ Iar cererea de eșalonare depusă la timp e calea prin care se evită ajungerea 
 
 ## Legături
 
-Cât costă întârzierea: [dobânzi și penalități la datoriile către ANAF](/ghid/dobanzi-penalitati-anaf). Cum se evită executarea: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf).
+Cât costă întârzierea: [dobânzi și penalități la datoriile către ANAF](/ghid/dobanzi-penalitati-anaf). Cum se evită executarea: [eșalonarea la plată](/ghid/esalonare-la-plata-anaf-2026).

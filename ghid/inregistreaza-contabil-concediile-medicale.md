@@ -18,7 +18,7 @@ Pentru salarizarea obișnuită, monografia contabilă e clar confirmată în cod
 
 ## Ce e confirmat pentru salarizarea obișnuită
 
-`monografie_salariu()` (`core/salarizare.py`, linia 390) generează notele contabile standard pentru un stat de plată obișnuit: 641/421 (cheltuiala cu salariile), 421/4315 (reținere CAS), 421/4316 (reținere CASS), 421/444 (reținere impozit), 646/436 (cheltuiala CAM a angajatorului), opțional 642/5328 (tichete de masă) și, la part-time sub salariul minim, 6451/4315 și 6453/4316 (cheltuiala de suprataxare a angajatorului).
+`monografie_salariu()` (linia 390) generează notele contabile standard pentru un stat de plată obișnuit: 641/421 (cheltuiala cu salariile), 421/4315 (reținere CAS), 421/4316 (reținere CASS), 421/444 (reținere impozit), 646/436 (cheltuiala CAM a angajatorului), opțional 642/5328 (tichete de masă) și, la part-time sub salariul minim, 6451/4315 și 6453/4316 (cheltuiala de suprataxare a angajatorului).
 
 ## Ce nu confirmă acest dosar
 

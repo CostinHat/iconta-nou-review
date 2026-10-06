@@ -16,12 +16,12 @@ Este perechea pozitivă a listei debitorilor. Pentru o firmă, prezența pe list
 
 ::: ghid-temei
 „(1) Organul fiscal central, precum și organul fiscal local au obligația de a publica pe pagina de internet proprie lista contribuabililor persoane juridice care au declarat și au achitat la scadență obligațiile fiscale de plată și care nu au obligații restante. (2) Lista se publică trimestrial până în ultima zi a primei luni din trimestrul următor celui de raportare."
-— Codul de procedură fiscală (Legea 207/2015), art. 162^1 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 162^1 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Prin obligații fiscale restante se înțelege: a) obligații fiscale pentru care s-a împlinit scadența sau termenul de plată;"
-— Codul de procedură fiscală (Legea 207/2015), art. 157 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 157 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cine intră, criteriu cu criteriu:

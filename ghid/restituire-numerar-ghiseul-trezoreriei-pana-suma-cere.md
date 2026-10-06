@@ -16,17 +16,17 @@ Plafonul se raportează la suma rămasă de restituit după compensarea restanț
 
 ::: ghid-temei
 „4. Se utilizează pentru înștiințarea contribuabilului persoană fizică, în situația în care s-a solicitat restituirea în numerar și suma de restituit nu depășește plafonul de 500 lei."
-— OPANAF 187/2018, Anexa nr. 4, Caracteristici, pct. 4 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 4, Caracteristici, pct. 4 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „Ca urmare a Cererii dumneavoastră de restituire nr. ................ din data de ............. depusă la ............ ^3) și a compensării sumei de ............ lei cu obligațiile fiscale restante, a rezultat de restituit suma de ......... lei. În vederea restituirii în numerar a acestei sume este necesar să vă prezentați la Trezoreria ..............., cu sediul în str. ............... nr. ......, județul/sectorul ................., pentru ridicarea sumei cuvenite, prezentând la ghișeu această înștiințare și buletinul/cartea dumneavoastră de identitate."
-— OPANAF 187/2018, Anexa nr. 4 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 4 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „Se va bifa modalitatea agreată pentru restituire de către contribuabilul persoană fizică, iar în cazul contribuabilului persoană juridică se va bifa în mod obligatoriu contul bancar în care dorește restituirea."
-— OPANAF 187/2018, Anexa nr. 2, nota ^9) (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 2, nota ^9) (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 Cum funcționează:

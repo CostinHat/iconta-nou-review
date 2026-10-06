@@ -14,10 +14,10 @@ D212 se depune la organul fiscal central competent pentru contribuabilul persoan
 
 ::: ghid-temei
 „Declarația fiscală se depune la registratura organului fiscal competent sau se comunică prin poștă, cu confirmare de primire, ori prin mijloace electronice sau prin sisteme electronice de transmitere la distanță."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. În cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic."
-— Legea 207/2015, art. 103 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 103 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce contează de reținut din text:
@@ -35,6 +35,6 @@ Ce contează de reținut din text:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`): aplicația produce fișierul XML conform structurii validate de ANAF (D212Validator), pregătit pentru depunere. Aplicația nu are integrare directă cu portalul ANAF pentru transmiterea automată a D212 — depunerea efectivă, prin Spațiul Privat Virtual sau alt canal electronic, rămâne un pas separat, făcut de contabil sau contribuabil în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil: aplicația produce fișierul XML conform structurii validate de ANAF (D212Validator), pregătit pentru depunere. Aplicația nu are integrare directă cu portalul ANAF pentru transmiterea automată a D212 — depunerea efectivă, prin Spațiul Privat Virtual sau alt canal electronic, rămâne un pas separat, făcut de contabil sau contribuabil în afara aplicației.
 
 [iConta.eu](/)

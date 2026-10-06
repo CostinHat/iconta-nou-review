@@ -14,7 +14,7 @@ Un serviciu SaaS vândut internațional încasează frecvent în mai multe valut
 
 ::: ghid-temei
 „(1) Contabilitatea se ține în limba română și în moneda națională. (2) Contabilitatea operațiunilor efectuate în valută se ține atât în moneda națională, cât și în valută, potrivit reglementărilor elaborate în acest sens."
-— Legea 82/1991 (Legea contabilității), art. 3 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 3 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Din această regulă rezultă tratamentul practic pentru încasările SaaS multi-valută:

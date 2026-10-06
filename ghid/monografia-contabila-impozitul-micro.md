@@ -14,10 +14,10 @@ Impozitul pe veniturile microîntreprinderilor nu se înregistrează prin contul
 
 ::: ghid-temei
 „Contul 698 «Cheltuieli cu impozitul pe venit și cu alte impozite care nu apar în elementele de mai sus» [...] Cu ajutorul acestui cont se ține evidența cheltuielilor cu impozitul pe venit plătit de microîntreprinderi și a altor impozite, conform reglementărilor emise în acest scop. În debitul contului 698 [...] se înregistrează: – valoarea impozitului pe venitul microîntreprinderilor (441)."
-— OMFP 1802/2014 (reglementări contabile), funcțiunea contului 698 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), funcțiunea contului 698 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Monografia standard, în doi pași:

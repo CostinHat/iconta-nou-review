@@ -13,7 +13,7 @@ O livrare de bunuri către un client dintr-un alt stat membru UE (LIC) este scut
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring; text complet `cod_fiscal_227_2015_consolidat.txt`, L18397+)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring; text complet `cod_fiscal_227_2015_consolidat.txt`, L18397)
 :::
 
 Cele două condiții cumulative sunt:

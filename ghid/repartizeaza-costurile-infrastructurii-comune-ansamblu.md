@@ -14,7 +14,7 @@ Drumurile interioare, rețelele de utilități sau spațiile verzi comune ale un
 
 ::: ghid-temei
 „(3) Cheltuielile pentru întreținerea și conservarea bunului comun se suportă în mod proporțional cu cota-parte din drept a fiecărui coproprietar. Când bunul comun are caracter accesoriu, în absența unei convenții contrare, cota-parte din drept a fiecărui coproprietar se stabilește în funcție de întinderea bunului principal."
-— Legea 287/2009 (Codul civil), art. 647 alin. (3) (sursă: anaf_surse/legea_287_2009.html)
+— Legea 287/2009 (Codul civil), art. 647 alin. (3) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 **Notă de onestitate:** întrebarea, așa cum e formulată, nu are un temei dedicat în legislația fiscală (Codul fiscal, Codul de procedură fiscală sau reglementările contabile consultate nu conțin o regulă specifică pentru infrastructura comună a unui ansamblu rezidențial). Cel mai apropiat temei real disponibil e regula generală din Codul civil despre coproprietatea forțată asupra bunurilor accesorii — situație în care se încadrează, de regulă, infrastructura comună a unui ansamblu rezidențial (drumuri interioare, rețele, spații verzi comune), accesorie loturilor/locuințelor individuale:

@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(4) Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. în cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic.
 (5) Prin excepție de la prevederile alin. (4), în situația în care declarația fiscală a fost depusă până la termenul legal, iar din mesajul electronic transmis de sistemul de tranzacționare a informațiilor rezultă că aceasta nu a fost validată ca urmare a detectării unor erori în completarea declarației, data depunerii declarației este data din mesajul transmis inițial în cazul în care contribuabilul/plătitorul depune o declarație validă până în ultima zi a lunii în care se împlinește termenul legal de depunere."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 103 alin. (4), (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 103 alin. (4), (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă două situații complet diferite, în funcție de ce arată recipisa:
@@ -32,6 +32,6 @@ Din text rezultă două situații complet diferite, în funcție de ce arată re
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează și pregătește declarațiile fiscale pentru depunere (module dedicate pe fiecare tip de declarație, de exemplu `core/d100.py`, `core/d300.py`, `core/d112.py`), dar transmiterea efectivă și recepția confirmării de la portalul ANAF/SPV se fac prin canalele oficiale ale statului, în afara aplicației. iConta.eu **nu interpretează automat conținutul unei recipise** pentru a stabili dacă declarația a fost validată sau respinsă — verificarea mesajului electronic primit de la ANAF și, dacă e cazul, redepunerea unei variante corectate rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu generează și pregătește declarațiile fiscale pentru depunere (module dedicate pe fiecare tip de declarație, de exemplu aplicația), dar transmiterea efectivă și recepția confirmării de la portalul ANAF/SPV se fac prin canalele oficiale ale statului, în afara aplicației. iConta.eu **nu interpretează automat conținutul unei recipise** pentru a stabili dacă declarația a fost validată sau respinsă — verificarea mesajului electronic primit de la ANAF și, dacă e cazul, redepunerea unei variante corectate rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

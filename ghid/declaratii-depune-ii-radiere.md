@@ -14,10 +14,10 @@ O întreprindere individuală (II) e tratată fiscal, din perspectiva impozitulu
 
 ::: ghid-temei
 „Prevederile alin. (1), precum și cele ale art. 148 sunt aplicabile și în cazul contribuabililor care în cursul anului fiscal încep o activitate independentă și/sau încep să realizeze venituri din drepturi de proprietate intelectuală, precum și în cazul celor care intră în suspendare temporară a activității... ori își încetează activitatea."
-— Codul fiscal, art. 151 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 151 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri, cu excepția situațiilor în care sunt aplicabile prevederile art. 68^1, 68^3 și 69."
-— Codul fiscal, art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **O singură declarație, nu o „declarație de radiere" separată**: art. 151 alin. (2) tratează încetarea activității în cursul anului sub aceleași reguli generale de declarare ca orice altă situație fiscală obișnuită — nu creează o obligație declarativă distinctă.

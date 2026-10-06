@@ -32,6 +32,6 @@ Diferența dintre „medicament" și „supliment alimentar" nu ține de raftul 
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` clasifică fiecare linie vândută separat: categoria „medicamente" intră în `CATEGORII_11` (litera a), iar suplimentele alimentare apar explicit în `EXCEPTII_21`, pentru a nu fi confundate cu medicamentele la potrivirea automată. Pentru vânzările pe bon fiscal, fără articol identificat individual la fiecare tranzacție, farmaciile pot ține gestiune global-valoric cu descărcare lunară — dar cota de TVA rămâne cea a fiecărei categorii de produs vândute, nu una singură pentru tot rulajul lunii. Când motorul de potrivire nu poate stabili cu certitudine categoria unui produs, aplicația nu presupune tăcut o cotă — semnalează cota ca nedeterminată, până la o clasificare manuală.
+Aplicația clasifică fiecare linie vândută separat: categoria „medicamente" intră în `CATEGORII_11` (litera a), iar suplimentele alimentare apar explicit în `EXCEPTII_21`, pentru a nu fi confundate cu medicamentele la potrivirea automată. Pentru vânzările pe bon fiscal, fără articol identificat individual la fiecare tranzacție, farmaciile pot ține gestiune global-valoric cu descărcare lunară — dar cota de TVA rămâne cea a fiecărei categorii de produs vândute, nu una singură pentru tot rulajul lunii. Când motorul de potrivire nu poate stabili cu certitudine categoria unui produs, aplicația nu presupune tăcut o cotă — semnalează cota ca nedeterminată, până la o clasificare manuală.
 
 [iConta.eu](/)

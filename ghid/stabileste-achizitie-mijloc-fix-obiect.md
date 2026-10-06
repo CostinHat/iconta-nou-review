@@ -14,7 +14,7 @@ La fiecare achiziție de imobilizare corporală, contabilul trebuie să răspund
 
 ::: ghid-temei
 „7. La articolul 28 alineatul (2), litera b) se modifică și va avea următorul cuprins: b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului;"
-— OUG 8/2026, art. 6 pct. 7 (sursă: anaf_surse/oug_8_2026.html)
+— OUG 8/2026, art. 6 pct. 7 (sursă: [OUG nr. 8/2026 privind instituirea unor măsuri de relansare economică](https://legislatie.just.ro/Public/DetaliiDocument/307580))
 :::
 
 Pașii pe care îi cere legea:

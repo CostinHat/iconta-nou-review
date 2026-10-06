@@ -16,7 +16,7 @@ Pentru fostul angajator și pentru contabilul lui, asta înseamnă că evidențe
 
 ::: ghid-temei
 „(2) În cazul bolilor profesionale, declarate în condițiile legii, ulterior încetării raporturilor de muncă, dreptul la prestațiile și serviciile de asigurare se acordă și ulterior încetării raporturilor de muncă dacă persoana face dovada, cu acte medicale eliberate conform legii, că boala a fost cauzată de factori profesionali specifici locului de muncă și dacă a fost asigurată în condițiile prezentei legi."
-— Legea 346/2002, art. 14 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 14 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Condițiile sunt cumulative:

@@ -14,7 +14,7 @@ Magazinele duty-free din aeroporturi și porturi nu aplică TVA românesc pe pro
 
 ::: ghid-temei
 „Sunt scutite de la plata accizelor produsele accizabile furnizate de magazinele duty-free, transportate în bagajul personal al călătorilor care se deplasează pe cale aeriană sau maritimă către un teritoriu terț ori către o țară terță. [...] se aplică și produselor accizabile furnizate de magazinele duty-free autorizate în România situate în afara incintei aeroporturilor sau porturilor, transportate în bagajul personal al călătorilor către un teritoriu terț ori către o țară terță."
-— Codul fiscal (Legea 227/2015), art. 396 alin. (1) și (3), Titlul VIII (accize) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 396 alin. (1) și (3), Titlul VIII (accize) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Atenție: textul de mai sus scutește **exclusiv accizele**, nu TVA — în Codul fiscal nu există o normă separată, dedicată explicit vânzărilor duty-free, care să scutească de TVA. Ce trebuie reținut din text și din structura Codului fiscal:

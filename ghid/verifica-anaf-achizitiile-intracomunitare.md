@@ -14,7 +14,7 @@ O achiziție intracomunitară de bunuri sau servicii lasă urme în trei locuri 
 
 ::: ghid-temei
 „(1) Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...] d) achizițiile intracomunitare de bunuri taxabile, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă; [...] e) achizițiile de servicii prevăzute la art. 278 alin. (2), efectuate de persoane impozabile din România care au obligația plății taxei conform art. 307 alin. (2), pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă, de la persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană."
-— Codul fiscal, art. 325 alin. (1) lit. d) și e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 325 alin. (1) lit. d) și e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Trei confruntări concrete, pe care se bazează controlul:

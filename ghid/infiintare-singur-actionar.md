@@ -14,7 +14,7 @@ Nu, nu poate fi înființată o societate pe acțiuni cu un singur acționar —
 
 ::: ghid-temei
 „(3) Numărul acționarilor în societatea pe acțiuni nu poate fi mai mic de 2. În cazul în care societatea are mai puțin de 2 acționari pe o perioadă mai lungă de 9 luni, orice persoană interesată poate solicita instanței dizolvarea societății. Societatea nu va fi dizolvată dacă, până la rămânerea definitivă a hotărârii judecătorești de dizolvare, numărul minim de acționari prevăzut de prezenta lege este reconstituit."
-— Legea nr. 31/1990, art. 10 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 10 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă concret din text:

@@ -16,7 +16,7 @@ Pentru cabinet contează mai ales primul punct. La fiecare angajare nouă pe car
 
 ::: ghid-temei
 „(1) Angajatorul trebuie să asigure condiții pentru ca fiecare lucrator sa primească o instruire suficienta și adecvată în domeniul securității și sănătății în munca, în special sub forma de informații și instrucțiuni de lucru, specifice locului de muncă și postului sau: a) la angajare; ... b) la schimbarea locului de muncă sau la transfer; ... c) la introducerea unui nou echipament de muncă sau a unor modificări ale echipamentului existent; ... d) la introducerea oricărei noi tehnologii sau proceduri de lucru; ... e) la executarea unor lucrări speciale. ... (2) Instruirea prevăzută la alin. (1) trebuie să fie: a) adaptată evoluției riscurilor sau apariției unor noi riscuri; ... b) periodică și ori de câte ori este necesar."
-— Legea 319/2006, art. 20 alin. (1) și (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 20 alin. (1) și (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Pe scurt, situațiile sunt:

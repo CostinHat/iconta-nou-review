@@ -14,7 +14,7 @@ Un avans plătit sau încasat în euro nu se „decontează la un curs" în sens
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Cursul relevant e cel BNR din data plății/încasării efective a avansului (pct. 319) — un singur curs, fixat o singură dată.
@@ -30,6 +30,6 @@ Un avans plătit sau încasat în euro nu se „decontează la un curs" în sens
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs valutar din iConta.eu (`core/diferente_curs.py`) respectă corect limita elementelor monetare: funcția `diferenta()` acceptă doar `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „avans" ridică o eroare de validare. Aplicația **nu automatizează** o funcție de „diferențe de curs pentru avansuri" — pentru că, legal, o asemenea funcție n-ar avea temei. Ce calculează F041 este diferența de curs pe soldul rămas după regularizarea avansului cu factura finală, dacă acel sold e o creanță sau o datorie efectivă, nedecontată integral.
+Motorul de diferențe de curs valutar din iConta.eu respectă corect limita elementelor monetare: funcția `diferenta()` acceptă doar `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „avans" ridică o eroare de validare. Aplicația **nu automatizează** o funcție de „diferențe de curs pentru avansuri" — pentru că, legal, o asemenea funcție n-ar avea temei. Ce calculează F041 este diferența de curs pe soldul rămas după regularizarea avansului cu factura finală, dacă acel sold e o creanță sau o datorie efectivă, nedecontată integral.
 
 [iConta.eu](/)

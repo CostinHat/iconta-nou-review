@@ -16,15 +16,15 @@ Ordinea contează. Dacă creditul fiscal extern s-ar scădea înainte de compara
 
 ::: ghid-temei
 „e) în cazul în care contribuabilii datorează impozit pe profit la nivelul impozitului minim pe cifra de afaceri, creditul fiscal extern care se scade din acesta este cel determinat potrivit dispozițiilor art. 39 din Codul fiscal;"
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. e) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. e) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „h) în situația în care, în urma comparației efectuate între impozitul pe profit și impozitul minim pe cifra de afaceri, potrivit dispozițiilor art. 18^1 alin. (1) din Codul fiscal, contribuabilul este obligat la plata impozitului minim pe cifra de afaceri, acesta se datorează și în cazul în care, după scăderea sumelor reprezentând credit fiscal extern, sponsorizări/mecenat, potrivit dispozițiilor art. 18^1 alin. (10) din Codul fiscal, și a sumelor determinate potrivit dispozițiilor art. 18^1 alin. (11^1) din Codul fiscal, valoarea redusă a impozitului minim pe cifra de afaceri scade sub valoarea impozitului pe profit."
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. h) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. h) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „din acest impozit pe profit se scad sumele reprezentând sponsorizare/mecenat, alte sume care se scad din impozitul pe profit, potrivit legilor speciale, după caz, și nu se scad sumele reprezentând creditul fiscal extern"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică, pe etape:

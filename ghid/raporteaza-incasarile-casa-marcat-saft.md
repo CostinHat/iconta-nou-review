@@ -14,7 +14,7 @@ SAF-T nu are o secțiune separată, dedicată strict aparatelor de marcat electr
 
 ::: ghid-temei
 „Entitățile pot utiliza jurnale auxiliare pe feluri de operațiuni, cum sunt: operațiuni de casă și bancă, operațiuni privind decontările cu furnizorii, situația încasării-achitării facturilor, operațiuni privind salariile și contribuția pentru asigurări sociale, protecția socială a șomerilor și asigurările de sănătate, alte operațiuni."
-— OMFP nr. 2634/2015, Anexa 1 pct. 52 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2634/2015, Anexa 1 pct. 52 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Coroborat cu structura SAF-T (secțiunea „Payments" din fișierul D406, care conține „detalii despre plăţi, precum perioada, ID-ul tranzacţiei, data tranzacţiei, descriere, liniile de plăţi"), rezultă practic:
@@ -31,6 +31,6 @@ Coroborat cu structura SAF-T (secțiunea „Payments" din fișierul D406, care c
 
 ## Ce face iConta.eu
 
-iConta.eu mapează explicit sursele de numerar din contabilitate — inclusiv cele descrise ca „numerar", „casa" sau „chitanță" — pe codul de metodă de plată corespunzător din nomenclatorul SAF-T, în generatorul `core/d406.py`. Jurnalul de casă este tratat ca jurnal auxiliar distinct (identificat „CASA" în structura internă), conform categoriilor din OMFP 2634/2015. Aplicația **nu importă însă automat datele brute din aparatele de marcat electronice fiscale** direct în D406 — ea are un modul separat de import din casa de marcat (`core/amef_import.py`), iar SAF-T se generează din ceea ce a fost efectiv înregistrat în evidența contabilă, nu direct din rapoartele Z ale AMEF.
+iConta.eu mapează explicit sursele de numerar din contabilitate — inclusiv cele descrise ca „numerar", „casa" sau „chitanță" — pe codul de metodă de plată corespunzător din nomenclatorul SAF-T, în generatorul aplicația. Jurnalul de casă este tratat ca jurnal auxiliar distinct (identificat „CASA" în structura internă), conform categoriilor din OMFP 2634/2015. Aplicația **nu importă însă automat datele brute din aparatele de marcat electronice fiscale** direct în D406 — ea are un modul separat de import din casa de marcat, iar SAF-T se generează din ceea ce a fost efectiv înregistrat în evidența contabilă, nu direct din rapoartele Z ale AMEF.
 
 [iConta.eu](/)

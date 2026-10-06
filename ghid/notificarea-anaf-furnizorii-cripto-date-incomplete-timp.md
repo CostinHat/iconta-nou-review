@@ -16,13 +16,13 @@ Pentru un furnizor de servicii de criptoactive raportor, notificarea este moment
 
 ::: ghid-temei
 „(4) În cazul în care un Furnizor de Servicii de Criptoactive Raportor comunică informații incorecte sau incomplete în ceea ce privește Utilizatorul său de Criptoactive, autoritatea competentă din România îi transmite o notificare acestuia pentru a-i furniza toate informațiile necesare, în termen de 30 de zile de la comunicarea notificării, astfel încât să-și poată îndeplini obligația prevăzută la alin. (3)."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^6 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „vă solicităm să luați toate măsurile necesare pentru corectarea și completarea informațiilor și să ne transmiteți situația corectă/completă în termen de 30 de zile de la comunicarea prezentei, potrivit prevederilor legale."
-— OPANAF 608/2026, anexa nr. 3 (formularul de notificare) (sursă: anaf_surse/ordin_608_2026.html)
+— OPANAF 608/2026, anexa nr. 3 (formularul de notificare) (sursă: [OPANAF nr. 608/2026 privind aplicarea art. 291^6 alin. (8) și (9) din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/310981))
 
 „u) cu amendă de la 50.000 lei la 150.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. kk), ll) și oo);"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. u) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. u) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează notificarea:

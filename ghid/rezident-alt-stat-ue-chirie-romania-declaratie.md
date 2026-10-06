@@ -16,10 +16,10 @@ Obligația îi aparține proprietarului nerezident, nu chiriașului. Contabilul 
 
 ::: ghid-temei
 „(2) Contribuabilii rezidenți ai altor state membre ale Uniunii Europene care obțin venituri din proprietăți imobiliare situate în România au obligația să depună la organul fiscal central o declarație privind veniturile realizate până în data de 25 mai a anului curent, pentru anul expirat. (3) Modelul și conținutul declarațiilor prevăzute la alin. (1) și (2) se aprobă prin ordin al președintelui A.N.A.F."
-— Codul de procedură fiscală (Legea 207/2015), art. 60 alin. (2) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 60 alin. (2) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „e) proprietatea asupra bunurilor imobile și venituri din bunuri imobile;"
-— Codul de procedură fiscală (Legea 207/2015), art. 291 alin. (1) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291 alin. (1) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut:

@@ -16,18 +16,18 @@ Pe partea fiscală, asociația care obține astfel de venituri intră sub incide
 
 ::: ghid-temei
 „(1) Toate veniturile obținute din exploatarea proprietății comune, inclusiv veniturile din dobânzi bancare, aparțin asociației de proprietari. (2) Veniturile prevăzute la alin. (1) alimentează numai fondul de reparații al asociației de proprietari și nu se plătesc proprietarilor. Lista acestor venituri, precum și cheltuielile aferente lor sunt prezentate semestrial, într-un raport afișat la avizierul asociației, și se evidențiază în registrul unic de venituri și cheltuieli al asociației de proprietari.”
-— Legea 196/2018, art. 70 alin. (1)-(2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 70 alin. (1)-(2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „Nu intră sub incidența prezentului titlu următoarele persoane juridice române:”
-— Codul fiscal (Legea 227/2015), art. 13 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 13 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „asociațiile de proprietari constituite ca persoane juridice și asociațiile de locatari recunoscute ca asociații de proprietari, cu excepția celor care obțin venituri din exploatarea proprietății comune, potrivit legii.”
-— Codul fiscal (Legea 227/2015), art. 13 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 13 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „pentru asociațiile de proprietari constituite ca persoane juridice și asociațiile de locatari recunoscute ca asociații de proprietari, veniturile obținute și utilizate, în anul curent sau în anii următori, pentru îmbunătățirea utilităților și a eficienței clădirii, pentru întreținerea și repararea proprietății comune, potrivit legii;”
-— Codul fiscal (Legea 227/2015), art. 15 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 15 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt:

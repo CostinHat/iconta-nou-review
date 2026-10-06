@@ -15,7 +15,7 @@ Pentru un asociat nerezident, cota de impozit pe dividende nu este automat cea d
 ::: ghid-temei
 „(4) Impozitul datorat de nerezidenţi pentru veniturile impozabile obţinute din România se calculează, se reţine, se declară şi se plăteşte la bugetul de stat de către plătitorii de venituri, astfel: [...]
 b) 16% pentru veniturile din dividende prevăzute la art. 223 alin. (1) lit. a)."
-— Legea nr. 227/2015 (Codul fiscal), art. 224 alin. (4) lit. b), astfel cum a fost modificat prin Legea nr. 141/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 224 alin. (4) lit. b), astfel cum a fost modificat prin Legea nr. 141/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cota de 16% este cea de drept intern, dar nu este obligatoriu ultimul cuvânt:
@@ -33,6 +33,6 @@ Cota de 16% este cea de drept intern, dar nu este obligatoriu ultimul cuvânt:
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu (`core/d205.py`) **respinge explicit** înregistrarea unui beneficiar nerezident: rezidența este derivată automat din tipul codului de identificare (CNP românesc de rezident versus NIF străin, pașaport sau cod invalid), iar un asociat identificat ca nerezident nu poate fi inclus într-o declarație D205 — potrivit regulilor validatorului oficial ANAF, dividendele către nerezidenți se declară pe D207. Declarația D207 (`core/d207.py`) este implementată în aplicație, dar la acest moment este o declarație **manuală**: lista beneficiarilor nerezidenți și sumele plătite se introduc de contabil, aplicația neavând încă un registru propriu al plăților către nerezidenți din care să genereze automat aceste date.
+Generatorul D205 din iConta.eu **respinge explicit** înregistrarea unui beneficiar nerezident: rezidența este derivată automat din tipul codului de identificare (CNP românesc de rezident versus NIF străin, pașaport sau cod invalid), iar un asociat identificat ca nerezident nu poate fi inclus într-o declarație D205 — potrivit regulilor validatorului oficial ANAF, dividendele către nerezidenți se declară pe D207. Declarația D207 este implementată în aplicație, dar la acest moment este o declarație **manuală**: lista beneficiarilor nerezidenți și sumele plătite se introduc de contabil, aplicația neavând încă un registru propriu al plăților către nerezidenți din care să genereze automat aceste date.
 
 [iConta.eu](/)

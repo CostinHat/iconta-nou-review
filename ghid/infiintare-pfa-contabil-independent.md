@@ -15,7 +15,7 @@ Un contabil care alege să lucreze ca persoană fizică autorizată, nu prin pro
 ::: ghid-temei
 „(1) Contribuabilii prevăzuți la titlul IV din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, denumită în continuare Codul fiscal, pentru care venitul net anual se stabilește în sistem real, în baza datelor din contabilitate, au obligația să completeze Registrul de evidență fiscală în conformitate cu prevederile prezentului ordin. [...]
 (2) Contribuabilii care realizează venituri din activități independente pentru care venitul net anual se stabilește pe baza normelor de venit au obligația să completeze în Registrul de evidență fiscală numai partea referitoare la venituri."
-— OMFP nr. 3.254 din 19 decembrie 2017 privind Registrul de evidență fiscală pentru persoanele fizice, art. 1 alin. (1), (2) (sursă: anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt)
+— OMFP nr. 3.254 din 19 decembrie 2017 privind Registrul de evidență fiscală pentru persoanele fizice, art. 1 alin. (1), (2) (sursă: [OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice](https://legislatie.just.ro/Public/DetaliiDocument/196396))
 :::
 
 Pentru un contabil independent, care de regulă optează pentru determinarea venitului net anual **în sistem real** (nu pe bază de norme de venit, care nu reflectă corect veniturile unei activități de consultanță), obligațiile principale sunt:
@@ -33,6 +33,6 @@ Pentru un contabil independent, care de regulă optează pentru determinarea ven
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat persoanelor fizice care determină venitul net anual în sistem real (`core/registru_evidenta_fiscala.py`), cu funcții pentru validarea datelor de intrare, calculul venitului net (`venit_net`) și generarea registrului pe an (`registru_pf`, `registru_profit`). Aplicația nu gestionează însă pașii de înființare efectivă a PFA la registrul comerțului sau alegerea formei de impozitare (normă de venit vs. sistem real) — acestea rămân decizii luate înainte de a introduce datele în aplicație, iar iConta.eu preia de aici înainte evidența fiscală curentă a activității.
+La data acestui ghid, iConta.eu are un modul dedicat persoanelor fizice care determină venitul net anual în sistem real, cu funcții pentru validarea datelor de intrare, calculul venitului net (`venit_net`) și generarea registrului pe an (`registru_pf`, `registru_profit`). Aplicația nu gestionează însă pașii de înființare efectivă a PFA la registrul comerțului sau alegerea formei de impozitare (normă de venit vs. sistem real) — acestea rămân decizii luate înainte de a introduce datele în aplicație, iar iConta.eu preia de aici înainte evidența fiscală curentă a activității.
 
 [iConta.eu](/)

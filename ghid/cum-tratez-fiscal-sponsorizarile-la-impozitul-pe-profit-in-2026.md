@@ -60,7 +60,7 @@ O firmă plătitoare de impozit pe profit are, în 2026, cifra de afaceri 8.000.
 
 ## Ce face iConta.eu
 
-Motorul `core/sponsorizari.py` implementează regula actuală prin `plafon_credit()` (calculul `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`) și `credit_sponsorizare()` (aplică plafonul, verifică `beneficiar_in_registru` și calculează `redirectionabil_d177`). Pentru un an fiscal precum 2026, această regulă corespunde legii în vigoare. Ramura `tip_impozit="micro"` este dezactivată în afara intervalului 01.04.2019–31.12.2023, deci pentru 2026 returnează corect credit 0 pentru orice sponsorizare a unei microîntreprinderi.
+Aplicația implementează regula actuală prin `plafon_credit()` (calculul `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`) și `credit_sponsorizare()` (aplică plafonul, verifică `beneficiar_in_registru` și calculează `redirectionabil_d177`). Pentru un an fiscal precum 2026, această regulă corespunde legii în vigoare. Ramura `tip_impozit="micro"` este dezactivată în afara intervalului 01.04.2019–31.12.2023, deci pentru 2026 returnează corect credit 0 pentru orice sponsorizare a unei microîntreprinderi.
 
 Notele contabile se generează prin `nota_sponsorizare(suma, mod)`, dar doar pentru modurile `"contract"` și `"plata"` — sponsorizarea în natură nu are un mod dedicat și trebuie tratată manual, inclusiv sub aspectul TVA.
 

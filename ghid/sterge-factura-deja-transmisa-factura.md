@@ -14,7 +14,7 @@ O factură emisă greșit și deja transmisă prin sistemul RO e-Factura nu poat
 
 ::: ghid-temei
 „(8) Factura electronică comunicată destinatarului nu se poate returna în sistemul naţional privind factura electronică RO e-Factura. (9) În situaţia unei facturi electronice asupra căreia destinatarul are obiecţii, acesta înştiinţează emitentul facturii electronice, inclusiv în sistemul naţional privind factura electronică RO e-Factura, prin înscrierea unui mesaj în acest sens."
-— OUG nr. 120/2021, art. 4 alin. (8)-(9) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (8)-(9) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce înseamnă concret această regulă:
@@ -32,6 +32,6 @@ Ce înseamnă concret această regulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu transmite facturile către sistemul RO e-Factura prin motorul propriu (`core/efactura_send.py`, `core/efactura_trimitere.py`) și nu oferă o opțiune de „ștergere" a unei facturi deja transmise — corectarea unei facturi comunicate se face prin emiterea unei facturi noi/de stornare, conform mecanismului legal, nu prin eliminarea celei inițiale.
+La data acestui ghid, iConta.eu transmite facturile către sistemul RO e-Factura prin motorul propriu și nu oferă o opțiune de „ștergere" a unei facturi deja transmise — corectarea unei facturi comunicate se face prin emiterea unei facturi noi/de stornare, conform mecanismului legal, nu prin eliminarea celei inițiale.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Când o firmă se apropie de plafonul de venituri al microîntreprinderilor, ten
 
 ::: ghid-temei
 „(1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta [...]. În sensul prezentului titlu, persoana juridică română este legată cu o altă persoană dacă există oricare dintre următoarele raporturi: a) persoana juridică română care verifică condiția deține la o altă persoană juridică română, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot [...]; b) persoana juridică română care verifică condiția este deținută de o altă persoană juridică română, direct și/sau indirect, cu peste 25% [...]; c) persoana juridică română care verifică condiția este legată cu o altă persoană juridică română dacă o persoană deține, în mod direct și/sau indirect, peste 25% [...] atât la prima persoană juridică, cât și la cea de-a doua persoană juridică."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul e simplu, dar rareori intuit corect:

@@ -14,10 +14,10 @@ Da — mai mult, depunerea de rectificative e exact răspunsul pe care legea îl
 
 ::: ghid-temei
 „(2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale. (3) Depunerea sau corectarea declarațiilor fiscale de către contribuabil/plătitor nu împiedică selectarea pentru efectuarea inspecției fiscale, însă numai după împlinirea termenului prevăzut la alin. (2)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (2)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (2)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din cele două texte rezultă:

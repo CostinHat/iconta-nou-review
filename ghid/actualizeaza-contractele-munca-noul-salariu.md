@@ -14,7 +14,7 @@ Când salariul de bază minim brut pe țară crește prin hotărâre de guvern, 
 
 ::: ghid-temei
 „Începând cu data de 1 iulie 2026, salariul de bază minim brut pe țară garantat în plată, prevăzut la art. 164 alin. (1) din Legea nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare, se stabilește în bani, fără a include sporuri și alte adaosuri, la suma de 4.325 lei lunar, pentru un program normal de lucru în medie de 166,667 ore pe lună, reprezentând 25,949 lei/oră."
-— HG 146/2026 (sursă: anaf_surse/hg_146_2026_salariu_minim.txt)
+— HG 146/2026 (sursă: [HG nr. 146/2026 pentru stabilirea salariului de bază minim brut pe țară garantat în plată](https://legislatie.just.ro/Public/DetaliiDocument/308231))
 :::
 
 Pașii de actualizare, o dată ce noul plafon intră în vigoare:
@@ -32,6 +32,6 @@ Pașii de actualizare, o dată ce noul plafon intră în vigoare:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează salariul și contribuțiile aferente (`core/salarizare.py`, funcția `calcul_salariu`) pe baza salariului brut introdus pentru fiecare salariat, iar pentru raportarea modificărilor contractuale către REGES-ONLINE există un client dedicat (`core/reges_client.py`, funcția `mesaj_adaugare_contract`), care generează mesajul XML de modificare a contractului. La data acestui ghid, aplicația **nu identifică automat, la fiecare actualizare a plafonului legal, contractele cu salariu de bază sub noul minim** — verificarea fiecărui contract și inițierea actului adițional rămân un pas manual, pe care contabilul îl parcurge folosind datele de salarizare deja introduse în aplicație.
+iConta.eu calculează salariul și contribuțiile aferente (funcția `calcul_salariu`) pe baza salariului brut introdus pentru fiecare salariat, iar pentru raportarea modificărilor contractuale către REGES-ONLINE există un client dedicat (funcția `mesaj_adaugare_contract`), care generează mesajul XML de modificare a contractului. La data acestui ghid, aplicația **nu identifică automat, la fiecare actualizare a plafonului legal, contractele cu salariu de bază sub noul minim** — verificarea fiecărui contract și inițierea actului adițional rămân un pas manual, pe care contabilul îl parcurge folosind datele de salarizare deja introduse în aplicație.
 
 [iConta.eu](/)

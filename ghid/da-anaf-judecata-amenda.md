@@ -16,7 +16,7 @@ Răspunsul depinde de tipul actului. Împotriva unei amenzi contravenționale ap
 „TITLUL VIII - Soluționarea contestațiilor formulate împotriva actelor administrative fiscale (art. 268 - 281)
 CAPITOLUL I - Dreptul la contestație (art. 268 - 271)
 ART. 281 Comunicarea deciziei și calea de atac"
-— Legea 207/2015 (Codul de procedură fiscală), art. 268-271 și art. 281 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 268-271 și art. 281 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, calea are două trepte obligatorii:

@@ -16,15 +16,15 @@ Confuzia apare des: firma executată nu mai încasează banii și crede că nu m
 
 ::: ghid-temei
 „Persoanele impozabile care se află în situațiile prevăzute la art. 11 alin. (6) și (8) din Codul fiscal, care efectuează livrări de bunuri prin organele de executare silită, depun declarația prevăzută la art. 324 alin. (10) din Codul fiscal, dar plata taxei se efectuează de organul de executare silită sau, după caz, de cumpărător, conform prevederilor pct. 96 ."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul VII, pct. 104 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul VII, pct. 104 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul în care la data livrării debitorul executat silit nu este înregistrat în scopuri de TVA conform art. 316 din Codul fiscal ca urmare a anulării codului său de înregistrare în scopuri de TVA în condițiile prevăzute la art. 316 alin. (11) lit. a)-e) și h) din Codul fiscal, organul de executare silită are obligația să emită factura cu TVA dacă livrarea bunurilor ar fi fost taxabilă în situația în care respectivul debitor executat silit ar fi fost înregistrat în scopuri de TVA conform art. 316 din Codul fiscal."
-— HG 1/2016, titlul VII, pct. 96 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016, titlul VII, pct. 96 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „până la data de 25 inclusiv a lunii următoare celei în care a intervenit exigibilitatea taxei pentru livrările de bunuri efectuate prin organele de executare silită"
-— OPANAF nr. 188/2018, anexa nr. 2 (instrucțiunile de completare a D311) (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2 (instrucțiunile de completare a D311) (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 Cum se împart obligațiile:

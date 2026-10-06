@@ -28,8 +28,8 @@ Bilanțul trebuie să reflecte fidel patrimoniul firmei la data raportării — 
 
 Cele două paliere sunt tratate de funcționalități separate, dar conectate:
 
-- **Proveniența soldului** — operațiunile de casă validate în cursul anului (funcționalitatea de registru de casă și plafoane, `core/casa.py`) formează, prin rulaje, soldul final al conturilor 531/532 din balanța de verificare.
-- **Raportarea în bilanț** — motorul de generare a bilanțului (`core/bilant.py`, `f10_din_balanta`) preia soldurile finale ale conturilor 5112, 512, **531, 532**, 541, 542 și le cumulează pe rândul de disponibilități al formularului F10.
+- **Proveniența soldului** — operațiunile de casă validate în cursul anului (funcționalitatea de registru de casă și plafoane, aplicația) formează, prin rulaje, soldul final al conturilor 531/532 din balanța de verificare.
+- **Raportarea în bilanț** — motorul de generare a bilanțului (`f10_din_balanta`) preia soldurile finale ale conturilor 5112, 512, **531, 532**, 541, 542 și le cumulează pe rândul de disponibilități al formularului F10.
 
 Practic, dacă soldul de casă de la sfârșitul anului nu e cel așteptat în bilanț, cauza aproape sigur se află în operațiunile de casă validate în cursul anului, nu în motorul de mapare al bilanțului — verificarea corectă începe din registrul de casă, nu din ecranul de bilanț.
 

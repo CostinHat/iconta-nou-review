@@ -14,7 +14,7 @@ Studiul geotehnic, proiectul tehnic, autorizația de construire — toate aceste
 
 ::: ghid-temei
 „Exemple de costuri care se efectuează în legătură cu construcția unei imobilizări corporale, direct atribuibile acesteia, sunt: [...] f) cheltuieli de proiectare și pentru obținerea autorizațiilor, în baza documentelor justificative care atestă efectuarea lor în legătură cu activul în cauză."
-— OMFP 1802/2014, reglementări contabile, pct. 226 alin. (2) lit. f) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementări contabile, pct. 226 alin. (2) lit. f) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din text pentru studiile geotehnice și proiectare:

@@ -14,7 +14,7 @@ Dropshipping-ul nu e un regim de TVA distinct în Codul fiscal — tratamentul d
 
 ::: ghid-temei
 „Prezentul regim special poate fi utilizat de către orice persoană impozabilă care are sediul activității economice în România sau, în cazul în care nu are sediul activității economice în Uniunea Europeană, dispune de un sediu fix în România. [...] Regimul special poate fi utilizat în următoarele cazuri: a) de către orice persoană impozabilă care efectuează vânzări intracomunitare de bunuri la distanță. Regimul special poate fi utilizat și de către orice persoană impozabilă care nu are sediul activității economice în Uniunea Europeană și nici nu dispune de un sediu fix în România, dar efectuează vânzări intracomunitare la distanță care au locul de începere a expedierii sau transportului bunurilor în România."
-— Legea nr. 227/2015 (Codul fiscal), art. 315 alin. (2) lit. a) — regimul special pentru vânzările intracomunitare de bunuri la distanță (OSS UE); nu se confundă cu art. 315^1, care reglementează regimul special pentru agricultori (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315 alin. (2) lit. a) — regimul special pentru vânzările intracomunitare de bunuri la distanță (OSS UE); nu se confundă cu art. 315^1, care reglementează regimul special pentru agricultori (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, cu limitele reale ale acestui temei:
@@ -31,6 +31,6 @@ Ce rezultă, cu limitele reale ale acestui temei:
 
 ## Ce face iConta.eu
 
-iConta.eu emite facturile aferente vânzărilor online și ține evidența operațiunilor introduse de utilizator, dar **nu determină automat** dacă o vânzare concretă de tip dropshipping se încadrează la vânzare intracomunitară la distanță, la import de bunuri de mică valoare sau la o operațiune triunghiulară — încadrarea corectă, în funcție de fluxul real de marfă, rămâne o decizie a utilizatorului/contabilului la momentul facturării. Pentru firmele deja înregistrate în regimul OSS, aplicația are un modul de generare a declarației D398 (`core/d398.py`), dar aceasta se completează manual, pe valori introduse de contabil per stat membru de consum — aplicația nu deduce automat aceste valori din operațiunile de dropshipping înregistrate.
+iConta.eu emite facturile aferente vânzărilor online și ține evidența operațiunilor introduse de utilizator, dar **nu determină automat** dacă o vânzare concretă de tip dropshipping se încadrează la vânzare intracomunitară la distanță, la import de bunuri de mică valoare sau la o operațiune triunghiulară — încadrarea corectă, în funcție de fluxul real de marfă, rămâne o decizie a utilizatorului/contabilului la momentul facturării. Pentru firmele deja înregistrate în regimul OSS, aplicația are un modul de generare a declarației D398, dar aceasta se completează manual, pe valori introduse de contabil per stat membru de consum — aplicația nu deduce automat aceste valori din operațiunile de dropshipping înregistrate.
 
 [iConta.eu](/)

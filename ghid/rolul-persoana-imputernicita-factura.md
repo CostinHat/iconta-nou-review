@@ -16,7 +16,7 @@ Sursele verificate nu conțin procedura specifică de înrolare a unui împutern
 „ART. 18 Împuterniciții
 (1) în relațiile cu organul fiscal contribuabilul/plătitorul poate fi reprezentat printr-un împuternicit. Conținutul și limitele reprezentării sunt cele cuprinse în împuternicire sau stabilite de lege, după caz. Desemnarea unui împuternicit nu îl împiedică pe contribuabil/plătitor să își îndeplinească personal obligațiile prevăzute de legislația fiscală, chiar dacă nu a procedat la revocarea împuternicirii potrivit alin. (2).
 (2) împuternicitul este obligat să depună la organul fiscal actul de împuternicire, în original sau în copie legalizată. Revocarea împuternicirii operează față de organul fiscal de la data depunerii actului de revocare, în original sau în copie legalizată."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate confirma, onest, din acest temei pentru e-Factura:
@@ -34,6 +34,6 @@ Ce se poate confirma, onest, din acest temei pentru e-Factura:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/spv_conector.py`, `core/spv_poll.py`, `core/spv_receive.py`, `core/spv_refresh.py` și `core/efactura_send.py` gestionează conectarea firmei la SPV (token OAuth) și trimiterea/primirea facturilor prin RO e-Factura; nu am găsit (grep pe „imputernicit"/„reprezentant") un model separat de „persoană împuternicită" în aceste module — aplicația operează pe baza unui singur token de conectare la SPV per firmă, fără o distincție internă între contribuabil și un eventual împuternicit desemnat oficial la ANAF.
+Verificat în cod: Aplicația gestionează conectarea firmei la SPV (token OAuth) și trimiterea/primirea facturilor prin RO e-Factura; nu am găsit (grep pe „imputernicit"/„reprezentant") un model separat de „persoană împuternicită" în aceste module — aplicația operează pe baza unui singur token de conectare la SPV per firmă, fără o distincție internă între contribuabil și un eventual împuternicit desemnat oficial la ANAF.
 
 [iConta.eu](/)

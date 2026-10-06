@@ -16,13 +16,13 @@ Pentru firmă, consecința practică e că încasările transfrontaliere ajung l
 
 ::: ghid-temei
 „(2) Prestatorii de servicii de plată sunt obligați să păstreze evidențe ale beneficiarilor plăților și ale plăților în legătură cu serviciile de plată pe care le prestează pentru fiecare trimestru calendaristic, pentru a permite organelor fiscale competente să efectueze controale privind livrările de bunuri și prestările de servicii care, în conformitate cu prevederile capitolului V din prezentul titlu, se consideră că au loc în România, în vederea atingerii obiectivului de combatere a fraudei în domeniul TVA."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „b) numele sau denumirea comercială a beneficiarului plății, astfel cum figurează în evidențele prestatorului de servicii de plată; ... c) dacă este disponibil, orice cod de înregistrare în scopuri de TVA sau alt cod fiscal național al beneficiarului plății; ... d) codul IBAN sau, în absența codului IBAN, orice alt identificator care identifică fără echivoc și furnizează locația beneficiarului plății;"
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a) data și ora efectuării plății sau a restituirii plății; ... b) valoarea și moneda plății sau a restituirii plății; ... c) statul membru de origine al plății primite de sau în numele beneficiarului plății"
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce conține evidența (art. 321^2 alin. (11)):

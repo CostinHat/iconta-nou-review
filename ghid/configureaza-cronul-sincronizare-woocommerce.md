@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Pentru alte operațiuni decât cele prevăzute la alin. (15), persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă."
-— Codul fiscal (Legea nr. 227/2015), art. 319 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Legea stabilește un termen-limită de emitere a facturii, nu o metodă sau o frecvență obligatorie de generare a ei — modul în care o firmă își organizează facturarea (manual, automat, zilnic, la cerere) e o alegere operațională, nu o cerință legală.

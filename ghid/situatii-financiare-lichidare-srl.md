@@ -38,6 +38,6 @@ Lichidarea unui SRL nu se încheie cu un singur bilanț, ci presupune cel puțin
 
 ## Ce face iConta.eu
 
-Modulul general de bilanț al aplicației (`core/bilant.py` / `core/bilant_api.py`) nu conține nicio adaptare pentru lichidare, radiere sau dizolvare — nu există un generator dedicat, nici pentru bilanțul de deschidere, nici pentru situația financiară finală de lichidare. iConta.eu oferă doar notele contabile punctuale ale operațiunilor din lichidare — vânzarea unui activ și partajul final către asociați — care alimentează soldurile din care contabilul trebuie să întocmească manual, în afara aplicației, cele două situații financiare cerute de lege.
+Modulul general de bilanț al aplicației (aplicația / aplicația) nu conține nicio adaptare pentru lichidare, radiere sau dizolvare — nu există un generator dedicat, nici pentru bilanțul de deschidere, nici pentru situația financiară finală de lichidare. iConta.eu oferă doar notele contabile punctuale ale operațiunilor din lichidare — vânzarea unui activ și partajul final către asociați — care alimentează soldurile din care contabilul trebuie să întocmească manual, în afara aplicației, cele două situații financiare cerute de lege.
 
 [iConta.eu](/)

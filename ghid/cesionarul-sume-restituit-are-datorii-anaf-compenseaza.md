@@ -16,15 +16,15 @@ Data contează din cauza accesoriilor. Până la data stingerii, restanța cesio
 
 ::: ghid-temei
 „După efectuarea eventualelor compensări, organul fiscal central competent în administrarea cedentului solicită în scris organului fiscal central competent în administrarea cesionarului situația obligațiilor fiscale restante înregistrate de către cesionar și întocmește Decizia privind compensarea obligațiilor fiscale. Data stingerii prin compensare a obligațiilor fiscale restante ale cesionarului este data notificării cesiunii."
-— OPANAF 3357/2017, Anexa nr. 1, pct. 8 (sursă: anaf_surse/ordin_3357_2017.html)
+— OPANAF 3357/2017, Anexa nr. 1, pct. 8 (sursă: [OPANAF nr. 3357/2017 privind cesiunea dreptului de restituire/rambursare a creanțelor fiscale](https://legislatie.just.ro/Public/DetaliiDocument/195031))
 
 „În situația în care cesiunea a fost notificată înaintea emiterii Deciziei de restituire a sumelor de la buget sau de acordare a dobânzilor în cazul sumelor de restituit sau de rambursat de la buget, data stingerii prin compensare a obligațiilor fiscale restante înregistrate de cesionar este data comunicării deciziei de rambursare/restituire."
-— OPANAF 3357/2017, Anexa nr. 1, pct. 9.2 (sursă: anaf_surse/ordin_3357_2017.html)
+— OPANAF 3357/2017, Anexa nr. 1, pct. 9.2 (sursă: [OPANAF nr. 3357/2017 privind cesiunea dreptului de restituire/rambursare a creanțelor fiscale](https://legislatie.just.ro/Public/DetaliiDocument/195031))
 :::
 
 ::: ghid-temei
 „Creanțele fiscale rezultate din cesiunea notificată potrivit prevederilor art. 28 se sting prin compensare cu obligațiile cesionarului la data notificării cesiunii."
-— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul are două trepte de compensare:

@@ -14,12 +14,12 @@ poarta: v1
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: [...] f) amenajările de terenuri;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contabilitatea terenurilor se ține pe două categorii: terenuri și amenajări de terenuri."
-— OMFP 1802/2014 (reglementări contabile), pct. 193 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 193 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Amenajările de terenuri (împrejmuiri, drumuri de acces, sisteme de irigații, spații verzi amenajate) se evidențiază distinct de terenul propriu-zis și, spre deosebire de teren (care nu se amortizează), sunt mijloace fixe amortizabile, cu durată normală de utilizare proprie.
@@ -28,7 +28,7 @@ Amenajările de terenuri (împrejmuiri, drumuri de acces, sisteme de irigații, 
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: [...] d) investițiile efectuate la mijloacele fixe existente, sub forma cheltuielilor ulterioare realizate în scopul îmbunătățirii parametrilor tehnici inițiali și care conduc la obținerea de beneficii economice viitoare, prin majorarea valorii mijlocului fix;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 O lucrare de finisaj care doar întreține sau repară (zugrăvit de întreținere, înlocuirea unei pardoseli uzate cu una echivalentă) e cheltuială curentă, deductibilă imediat. O lucrare care majorează valoarea sau prelungește durata de viață a clădirii (finisaje superioare care schimbă parametrii tehnici, termosistem nou, pardoseli de altă clasă) e investiție care majorează valoarea mijlocului fix și se amortizează, nu se cheltuiește direct.
@@ -37,7 +37,7 @@ O lucrare de finisaj care doar întreține sau repară (zugrăvit de întreține
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: a) investițiile efectuate la mijloacele fixe care fac obiectul unor contracte de închiriere, concesiune, locație de gestiune, asociere în participațiune și altele asemenea;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Finisajele și amenajările făcute de chiriaș într-un spațiu închiriat (compartimentări, instalații, finisaje de fond) nu sunt cheltuială curentă — sunt mijloc fix amortizabil distinct în contabilitatea chiriașului, chiar dacă la finalul contractului rămân în beneficiul proprietarului. Amortizarea se face, de regulă, pe durata contractului de închiriere sau pe durata normală de utilizare, după caz, potrivit politicii contabile a firmei.

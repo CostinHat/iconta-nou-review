@@ -14,7 +14,7 @@ Spre deosebire de alte categorii de cheltuieli sociale sau de protocol, care au 
 
 ::: ghid-temei
 „cheltuielile efectuate de angajatori/plătitori pentru pregătirea profesională și perfecționarea angajaților, administratorilor stabiliți potrivit actului constitutiv, contractului de administrare/mandat și directorilor care își desfășoară activitatea în baza contractului de mandat potrivit legii, astfel cum este prevăzut în raporturile juridice respective, pregătire legată de activitatea desfășurată de persoanele respective pentru angajator/plătitor"
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (4) lit. p) — venituri neimpozabile, categorie folosită și ca reper pentru deductibilitatea integrală a acestor cheltuieli la angajator (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (4) lit. p) — venituri neimpozabile, categorie folosită și ca reper pentru deductibilitatea integrală a acestor cheltuieli la angajator (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele care condiționează, în practică, integralitatea deducerii:

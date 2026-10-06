@@ -14,7 +14,7 @@ Când o firmă capitalizează costurile unui proiect de dezvoltare (de exemplu, 
 
 ::: ghid-temei
 „182. - (1) Cheltuielile de dezvoltare se amortizează pe durata de utilizare sau pe perioada contractului, după caz. (2) În cazul în care durata contractului sau durata de utilizare depășește 5 ani, durata de amortizare a cheltuielilor de dezvoltare nu poate depăși 10 ani."
-— OMFP nr. 1.802/2014, pct. 182 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 182 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Regula de bază este amortizarea pe durata de utilizare estimată sau pe durata contractului legat de proiectul de dezvoltare — nu există un plafon fix universal, ci un plafon condiționat.

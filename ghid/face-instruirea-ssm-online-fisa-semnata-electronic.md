@@ -16,13 +16,13 @@ Pentru instruirea propriu-zisă, legea menționează expres varianta **online** 
 
 ::: ghid-temei
 „(3) Instruirea prevăzută la art. 20 alin. (4) trebuie să se efectueze în timpul programului de lucru, fie în interiorul, fie în afara întreprinderii și/sau unității, fie online."
-— Legea 319/2006, art. 21 alin. (3) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 21 alin. (3) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(4) Dovada instruirii prevăzută la art. 20 poate fi realizată în format electronic sau pe suport hârtie în funcție de modalitatea aleasă de către angajator, stabilită prin regulamentul intern."
-— Legea 319/2006, art. 21 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 21 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(5) În cazul folosirii variantei în format electronic prevăzute la alin. (4) , dovada instruirii trebuie să fie semnată cu semnătură electronică, semnătură electronică avansată sau semnătură electronică calificată."
-— Legea 319/2006, art. 21 alin. (5) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 21 alin. (5) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

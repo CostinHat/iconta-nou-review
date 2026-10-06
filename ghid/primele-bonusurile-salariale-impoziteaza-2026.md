@@ -14,7 +14,7 @@ O greșeală frecventă este tratarea primelor sau bonusurilor ca pe un venit �
 
 ::: ghid-temei
 „Sunt considerate venituri din salarii toate veniturile în bani și/sau în natură obținute de o persoană fizică rezidentă ori nerezidentă ce desfășoară o activitate în baza unui contract individual de muncă, a unui raport de serviciu, act de detașare sau a unui statut special prevăzut de lege, indiferent de perioada la care se referă, de denumirea veniturilor ori de forma sub care ele se acordă, inclusiv indemnizațiile pentru incapacitate temporară de muncă acordate persoanelor care obțin venituri din salarii și asimilate salariilor."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formularea „indiferent de... denumirea veniturilor" e cheia: legea nu enumeră tipuri de prime cu regimuri diferite, ci pune un singur criteriu — dacă suma vine din raportul de muncă, e venit din salarii. Consecințele practice:

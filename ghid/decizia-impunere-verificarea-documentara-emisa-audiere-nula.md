@@ -16,10 +16,10 @@ Pentru firmă contează și ce înseamnă „audiere” în sens legal. Legea co
 
 ::: ghid-temei
 „(4) Decizia de impunere emisă în condițiile prezentului articol fără audierea contribuabilului/plătitorului este nulă, cu excepția cazului în care contribuabilul/plătitorul notifică organul fiscal, în scris, că renunță la audiere. (5) Audierea contribuabilului/plătitorului se efectuează potrivit art. 9 alin. (1) și (3) - (5). Persoana are dreptul să își prezinte în scris punctul de vedere, în termen de 5 zile lucrătoare de la data audierii. Termenul poate fi prelungit cu cel mult 5 zile lucrătoare, pentru motive justificate, cu acordul conducătorului organului de control fiscal. (6) Decizia prevăzută la alin. (2) se emite în termen de cel mult 25 de zile lucrătoare de la data audierii contribuabilului/plătitorului și se comunică în condițiile art. 47."
-— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (4)–(6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (4)–(6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(3) Audierea se consideră îndeplinită în următoarele situații: a) contribuabilul/plătitorul refuză explicit să se prezinte la termenul stabilit de organul fiscal în vederea audierii; b) contribuabilul/plătitorul nu se prezintă, din orice motiv, la două termene consecutive stabilite de organul fiscal în vederea audierii."
-— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică regula:

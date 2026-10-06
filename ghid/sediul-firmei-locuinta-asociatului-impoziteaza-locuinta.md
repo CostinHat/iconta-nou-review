@@ -16,13 +16,13 @@ Situația se schimbă când firma chiar lucrează acolo. Clădirea devine cu des
 
 ::: ghid-temei
 „În cazul în care la adresa clădirii este înregistrat un domiciliu fiscal la care nu se desfășoară nicio activitate economică, impozitul se calculează conform art. 457"
-— Codul fiscal (Legea 227/2015), art. 459 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 459 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „impozitului determinat pentru suprafața folosită în scop nerezidențial, indicată prin declarație pe propria răspundere, prin aplicarea cotei menționate la art. 458 asupra valorii impozabile determinate potrivit art. 457"
-— Codul fiscal (Legea 227/2015), art. 459 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 459 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul clădirilor cu destinație mixtă, când proprietarul nu declară la organul fiscal suprafața folosită în scop nerezidențial, potrivit alin. (1) lit. b) [...] impozitul pe clădiri se calculează prin aplicarea cotei de 0.3% asupra valorii impozabile determinate conform art. 457"
-— Codul fiscal (Legea 227/2015), art. 459 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 459 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, sunt trei situații:
@@ -35,7 +35,7 @@ Pe scurt, sunt trei situații:
 
 ::: ghid-temei
 „impozitul se calculează conform art. 458 din Codul fiscal dacă există cheltuieli cu utilitățile înregistrate în sarcina persoanei care desfășoară activitatea economică. În cazul în care nu există cheltuieli cu utilitățile înregistrate în sarcina persoanei care desfășoară activitatea economică, impozitul se calculează conform prevederilor art. 457 din Codul fiscal."
-— HG 1/2016 (Normele Codului fiscal), Titlul IX, pct. 46^1 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IX, pct. 46^1 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pct. 46^1 din norme a fost introdus în 2016 pentru o formă mai veche a art. 459 alin. (3). După acel criteriu, decisiv era cine plătește utilitățile. Textul în vigoare al art. 459 alin. (3), în forma dată de Legea 296/2020, nu mai folosește criteriul utilităților. Regula actuală depinde de declararea suprafeței nerezidențiale, iar dacă aceasta lipsește se aplică 0,3%. Codul fiscal prevalează asupra normelor.

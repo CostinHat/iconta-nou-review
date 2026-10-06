@@ -14,7 +14,7 @@ O firmă din domeniul medical trece prin două paliere distincte de conformare, 
 
 ::: ghid-temei
 „Următoarele operațiuni de interes general sunt scutite de taxă: a) spitalizarea, îngrijirile medicale și operațiunile strâns legate de acestea, desfășurate de unități autorizate pentru astfel de activități, indiferent de forma de organizare, precum: spitale, sanatorii, centre de sănătate rurale sau urbane, dispensare, cabinete și laboratoare medicale, centre de îngrijire medicală și de diagnostic, baze de tratament și recuperare, stații de salvare și alte unități autorizate să desfășoare astfel de activități."
-— Legea nr. 227/2015 (Codul fiscal), art. 292 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 292 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formularea legii e revelatoare pentru miza autorizării: scutirea de TVA pentru îngrijirile medicale se aplică doar **unităților autorizate** pentru astfel de activități. Autorizarea nu e, deci, un detaliu administrativ — condiționează chiar regimul fiscal al activității:

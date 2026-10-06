@@ -15,7 +15,7 @@ Răspunsul scurt: **anual**, nu lunar — spre deosebire de restul declarației 
 ::: ghid-temei
 „Declaraţia informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare, respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind secţiunile «Stocuri» şi «Active»; - la termenul de depunere a situaţiilor financiare aferente exerciţiului financiar, în cazul secţiunii «Active»; - la termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării, în cazul secţiunii «Stocuri».
 Informaţiile privind «Activele» din cadrul Declaraţiei informative D406 sunt întocmite la nivelul anului financiar aplicat de către contribuabili şi transmise printr-o singură depunere, respectiv o singură raportare a Declaraţiei informative D406, până la data depunerii situaţiilor financiare aferente exerciţiului financiar la care se referă."
-— OPANAF 1783/2021 (SAF-T D406), Anexa 4, pct. 1 și pct. 7 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 (SAF-T D406), Anexa 4, pct. 1 și pct. 7 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 D406 nu are un singur regim de depunere — are **trei**, pe secțiuni:
@@ -34,6 +34,6 @@ Deci întrebarea „lunar sau anual" nu are un răspuns unic pentru tot D406 —
 
 ## Ce face iConta.eu
 
-Motorul secțiunii Active (`core/d406_active.py`) calculează amortizarea pe cele patru metode fiscale și generează fragmentul XML `<Assets>` din registrul de mijloace fixe, la cererea unui an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. Ruta care întoarce acest calcul (`GET /tenants/{id}/d406-active`) e funcțională, dar la data acestui ghid întoarce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare, și nu are încă un ecran dedicat în interfață — comentariul din cod marchează explicit acest lucru („fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor, probat valid pe validatorul oficial DUK, dar nu e conectat azi la nicio rută accesibilă din aplicație.
+Motorul secțiunii Active calculează amortizarea pe cele patru metode fiscale și generează fragmentul XML `<Assets>` din registrul de mijloace fixe, la cererea unui an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. Ruta care întoarce acest calcul (`GET /tenants/{id}/d406-active`) e funcțională, dar la data acestui ghid întoarce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare, și nu are încă un ecran dedicat în interfață — comentariul din cod marchează explicit acest lucru („fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor, probat valid pe validatorul oficial DUK, dar nu e conectat azi la nicio rută accesibilă din aplicație.
 
 [iConta.eu](/)

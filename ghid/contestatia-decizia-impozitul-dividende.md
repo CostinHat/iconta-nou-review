@@ -14,12 +14,12 @@ Când ANAF emite o decizie de impunere suplimentară pe impozitul pe dividende (
 
 ::: ghid-temei
 „ART. 268 Posibilitatea de contestare (1) împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal. [...] (3) Baza de impozitare și creanța fiscală stabilite prin decizie de impunere se contestă numai împreună."
-— Legea 207/2015 (Codul de procedură fiscală), art. 268 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 268 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „ART. 270 Termenul de depunere a contestației (1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Elementele esențiale ale contestației:

@@ -14,7 +14,7 @@ Dacă un bun care îndeplinea toate cele trei condiții din Codul fiscal (destin
 
 ::: ghid-temei
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor."
-— OMFP 1802/2014, reglementări contabile, pct. 65 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.html)
+— OMFP 1802/2014, reglementări contabile, pct. 65 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce impune procedura, în funcție de momentul descoperirii erorii:
@@ -34,6 +34,6 @@ Ce impune procedura, în funcție de momentul descoperirii erorii:
 
 ## Ce face iConta.eu
 
-Modulul de obiecte de inventar din iConta.eu (`core/obiecte_inventar.py`) acceptă exact trei operații: achiziție, dare în folosință și scoatere din uz. Aplicația **nu are** o funcție dedicată de reclasificare sau corectare care să treacă automat un bun deja înregistrat ca obiect de inventar în categoria mijloc fix. Corectarea unei asemenea erori — stornarea notei inițiale, recunoașterea bunului ca imobilizare corporală, pornirea amortizării — rămâne, azi, un proces manual, făcut de contabil prin notele contabile generale ale aplicației, nu printr-un ecran dedicat de corecție.
+Modulul de obiecte de inventar din iConta.eu acceptă exact trei operații: achiziție, dare în folosință și scoatere din uz. Aplicația **nu are** o funcție dedicată de reclasificare sau corectare care să treacă automat un bun deja înregistrat ca obiect de inventar în categoria mijloc fix. Corectarea unei asemenea erori — stornarea notei inițiale, recunoașterea bunului ca imobilizare corporală, pornirea amortizării — rămâne, azi, un proces manual, făcut de contabil prin notele contabile generale ale aplicației, nu printr-un ecran dedicat de corecție.
 
 [iConta.eu](/)

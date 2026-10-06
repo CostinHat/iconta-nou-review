@@ -26,7 +26,7 @@ Greșeala principală este aplicarea unui singur cod de TVA "curent" tuturor fac
 
 ## Ce face iConta.eu
 
-Conform docstring-ului generatorului (`core/d406.py`, actualizat 03.08.2026): „TaxCode livrari PERIOD-AWARE pe data facturii (03.08: coduri pre/post 01.08.2025, Legea 141/2025)" — adică iConta.eu aplică automat codul de TVA corect în funcție de data facturii, nu de data la care se generează declarația, ținând cont explicit de schimbarea din Legea 141/2025.
+Conform docstring-ului generatorului (actualizat 03.08.2026): „TaxCode livrari PERIOD-AWARE pe data facturii (03.08: coduri pre/post 01.08.2025, Legea 141/2025)" — adică iConta.eu aplică automat codul de TVA corect în funcție de data facturii, nu de data la care se generează declarația, ținând cont explicit de schimbarea din Legea 141/2025.
 
 Nomenclatorul de coduri (TaxCode) folosit la generare provine din nomenclatoarele tehnice ale aplicației (`d406_nomenclatoare_anaf.properties`, `d406_schema_anaf.xlsx`), care descriu structura acceptată de ANAF pentru acest câmp.
 

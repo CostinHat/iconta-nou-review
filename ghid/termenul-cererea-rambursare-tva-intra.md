@@ -14,7 +14,7 @@ Recuperarea TVA plătit într-un alt stat membru UE nu se poate cere oricând �
 
 ::: ghid-temei
 „Cererea de rambursare este transmisă electronic organului fiscal competent din România prin intermediul portalului electronic pus la dispoziție de acesta, cel târziu până la data de 30 septembrie a anului calendaristic care urmează perioadei de rambursare. [...] Perioada de rambursare este de maximum un an calendaristic și de minimum 3 luni calendaristice. Cererile de rambursare pot însă viza o perioadă mai mică de 3 luni, în cazul în care aceasta reprezintă perioada rămasă până la sfârșitul anului calendaristic."
-— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 73 alin. (11)-(12) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 73 alin. (11)-(12) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Termenul se combină cu praguri valorice minime, care condiționează admisibilitatea cererii, nu doar data ei:

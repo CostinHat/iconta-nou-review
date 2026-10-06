@@ -14,7 +14,7 @@ Cele mai multe conflicte între asociați nu apar din reaua-credință, ci din f
 
 ::: ghid-temei
 „Adunarea generală decide prin votul reprezentând majoritatea absolută a asociaților și a părților sociale, în afară de cazul când în actul constitutiv se prevede altfel."
-— Legea 31/1990, art. 192 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 192 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă asta pentru actul constitutiv al unui SRL cu doi sau mai mulți asociați:

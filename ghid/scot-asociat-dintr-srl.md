@@ -14,12 +14,12 @@ poarta: v1
 
 ::: ghid-temei
 „Poate fi exclus din societatea în nume colectiv, în comandită simplă sau cu răspundere limitată: a) asociatul care, pus în întârziere, nu aduce aportul la care s-a obligat; [...] d) asociatul administrator care comite fraudă în dauna societății sau se servește de semnătura socială sau de capitalul social în folosul lui sau al altora."
-— Legea 31/1990, art. 222 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 222 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Asociatul [...] în societatea cu răspundere limitată se poate retrage din societate: a) în cazurile prevăzute în actul constitutiv; [...] b) cu acordul tuturor celorlalți asociați; c) în lipsa unor prevederi în actul constitutiv sau când nu se realizează acordul unanim asociatul se poate retrage pentru motive temeinice, în baza unei hotărâri a tribunalului, supusă numai apelului."
-— Legea 31/1990, art. 226 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 226 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - **Excluderea** (art. 222-225) se cere doar pentru motivele limitativ enumerate de lege — neaducerea aportului, frauda administratorului, incapacitate legală etc. — și se pronunță **prin hotărâre judecătorească**, la cererea societății sau a oricărui asociat (art. 223 alin. 1). Nu poate fi decisă printr-o simplă hotărâre a adunării generale.

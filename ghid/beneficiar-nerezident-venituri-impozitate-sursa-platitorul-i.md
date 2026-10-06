@@ -16,15 +16,15 @@ Textul spune „se poate face": este o posibilitate, nu o obligație impusă pl�
 
 ::: ghid-temei
 „(3) Prin excepție de la dispozițiile art. 18 alin. (1), pentru persoanele fizice prevăzute la alin. (1) lit. e), precum și pentru persoanele juridice nerezidente, care realizează numai venituri supuse regulilor de impunere la sursă, iar impozitul reținut este final, atribuirea codului de identificare fiscală se poate face de organul fiscal, la solicitarea plătitorului de venit."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(9) în cazurile prevăzute la alin. (3) și (7), atribuirea codului de identificare fiscală se face pe baza cererii depuse de solicitant, cu excepția cazului în care înregistrarea fiscală se efectuează din oficiu."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „e) pentru persoanele fizice care nu dețin cod numeric personal, numărul de identificare fiscală atribuit de organul fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, citite din text:

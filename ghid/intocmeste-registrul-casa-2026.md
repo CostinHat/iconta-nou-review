@@ -14,14 +14,14 @@ Registrul de casă rămâne, și în 2026, documentul obligatoriu prin care o fi
 
 ::: ghid-temei
 „REGISTRUL DE CASĂ [...] servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 2, Norme specifice de întocmire și utilizare a formularelor (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, Anexa 2, Norme specifice de întocmire și utilizare a formularelor (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Registrul de casă se completează **zilnic**, nu periodic sau la sfârșit de lună — fiecare încasare și plată în numerar trebuie înregistrată pe baza documentului justificativ corespunzător (chitanță, dispoziție de plată/încasare către casierie, bon fiscal etc.).
 - La finalul fiecărei zile, registrul trebuie să stabilească **soldul de casă** — diferența dintre report/sold ziua precedentă, încasările și plățile zilei.
 - Documentul justificativ de bază pentru înregistrarea sumelor în registru este, de regulă, **chitanța**; pentru cazul unităților cu aparate de marcat electronice fiscale, veniturile din încasările zilnice se înregistrează pe baza **Raportului fiscal de închidere zilnică**, nu a chitanțelor individuale.
 - Pentru operațiuni în valută, se ține un registru de casă separat, cu o structură care include și cursul valutar aplicat.
-- Plafoanele de operare cu numerar rămân cele stabilite de Legea nr. 70/2015, art. 4 alin. (1): încasările în numerar de la persoane fizice, reprezentând contravaloarea unor livrări de bunuri sau prestări de servicii, se efectuează „în limita unui plafon zilnic de 10.000 lei de la o persoană", cu interdicția expresă a fragmentării încasărilor pentru a evita acest plafon, potrivit alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt).
+- Plafoanele de operare cu numerar rămân cele stabilite de Legea nr. 70/2015, art. 4 alin. (1): încasările în numerar de la persoane fizice, reprezentând contravaloarea unor livrări de bunuri sau prestări de servicii, se efectuează „în limita unui plafon zilnic de 10.000 lei de la o persoană", cu interdicția expresă a fragmentării încasărilor pentru a evita acest plafon, potrivit alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088)).
 
 ## Ce se greșește în practică
 
@@ -32,6 +32,6 @@ Registrul de casă rămâne, și în 2026, documentul obligatoriu prin care o fi
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcție dedicată registrului de casă (`registru_casa` în `core/casa.py`), care generează automat registrul pe baza operațiunilor de încasare/plată introduse în aplicație, calculează soldul final zilnic (`sold_final`) și verifică depășirea plafoanelor legale de numerar, inclusiv regimul special pentru comerțul cash and carry (`verifica_plafon`). Contabilul nu mai trebuie să calculeze manual soldul de casă sau să verifice singur plafoanele — aplicația semnalează automat orice operațiune care ar depăși limita zilnică legală.
+iConta.eu are o funcție dedicată registrului de casă (`registru_casa` în aplicație), care generează automat registrul pe baza operațiunilor de încasare/plată introduse în aplicație, calculează soldul final zilnic (`sold_final`) și verifică depășirea plafoanelor legale de numerar, inclusiv regimul special pentru comerțul cash and carry (`verifica_plafon`). Contabilul nu mai trebuie să calculeze manual soldul de casă sau să verifice singur plafoanele — aplicația semnalează automat orice operațiune care ar depăși limita zilnică legală.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Prezenta hotărâre stabilește condițiile de întocmire și accesare a Registrului general de evidență a salariaților, denumit în continuare Registru, de completare și transmitere în acesta a elementelor contractului individual de muncă, privind încheierea, modificarea, suspendarea și încetarea acestuia, de către următoarele categorii de angajatori: a) persoane fizice sau juridice de drept privat; ... b) instituții/autorități publice/alte entități juridice care angajează personal în baza unui contract individual de muncă [...]"
-— HG 295/2025, art. 1 (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 1 (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Vechea Hotărâre de Guvern nr. 905/2017, cea care a dat naștere numelui „REVISAL", este abrogată: art. 15 din HG 295/2025 prevede expres abrogarea ei, cu termenul prelungit ulterior până la 31 decembrie 2025 prin OUG 46/2025. Practic, de la acea dată, obligația de „înregistrare a contractului individual de muncă" se împlinește prin transmiterea datelor în REGES-ONLINE, conform HG 295/2025.
@@ -23,7 +23,7 @@ Ce anume se transmite este stabilit tot prin HG 295/2025:
 
 ::: ghid-temei
 „Angajatorii [...] completează și transmit în Registru următoarele date, fără a avea caracter limitativ: [...] d) data încheierii contractului individual de muncă, numărul acestuia și data începerii activității; ... e) funcția/ocupația, conform specificației Clasificării ocupațiilor din România [...]; ... g) durata contractului individual de muncă, respectiv nedeterminată/determinată; ... j) salariul de bază lunar brut, indemnizațiile, sporurile, precum și alte adaosuri [...]"
-— HG 295/2025, art. 4 alin. (2) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 4 alin. (2) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Termenul pentru transmiterea inițială, la angajare, este stabilit de art. 3 alin. (1): datele se completează și se transmit „cel târziu în ziua anterioară începerii activității" de către persoana angajată.

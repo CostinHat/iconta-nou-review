@@ -14,12 +14,12 @@ Din luna următoare celei în care s-a încheiat contractul individual de muncă
 
 ::: ghid-temei
 „Corectarea normelor de venit pentru contribuabilii care au și calitatea de salariat sau își pierd această calitate se face începând cu luna următoare încheierii/desfacerii contractului individual de muncă. Contribuabilii care beneficiază de mai mulți coeficienți de corecție, în sensul reducerii/majorării normelor de venit anuale, iau în calcul coeficientul cel mai mare."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (7), paragraful final (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (7), paragraful final (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Contribuabilii pot ajusta normele anuale de venit de la alin. (4) în declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice. Ajustarea normelor anuale de venit se realizează de către contribuabil prin aplicarea coeficienților de corecție publicați de către Direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București, asupra normelor anuale de venit."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut:

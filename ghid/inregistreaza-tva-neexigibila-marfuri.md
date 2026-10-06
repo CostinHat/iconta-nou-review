@@ -34,7 +34,7 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Motorul `core/stocuri.py`, funcția `nir_gv`, generează la recepție linia `371=4428` pentru TVA neexigibilă, alături de `371=401` (cost), `4426=401` (TVA deductibilă) și `371=378` (adaos) — cota de TVA e obligatorie explicit pe fiecare linie sau ca parametru, aplicația refuzând să presupună tacit o cotă implicită. La descărcarea lunară, funcția `descarcare_gv` calculează TVA aferentă vânzărilor lunii (`tva_vanzari`) proporțional din stocul curent (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`, o cotă medie din stoc, cu avertisment explicit în cod că „proporțional din 4427 e riscant”) și generează nota de descărcare cu linia `4428=371`.
+Aplicația, funcția `nir_gv`, generează la recepție linia `371=4428` pentru TVA neexigibilă, alături de `371=401` (cost), `4426=401` (TVA deductibilă) și `371=378` (adaos) — cota de TVA e obligatorie explicit pe fiecare linie sau ca parametru, aplicația refuzând să presupună tacit o cotă implicită. La descărcarea lunară, funcția `descarcare_gv` calculează TVA aferentă vânzărilor lunii (`tva_vanzari`) proporțional din stocul curent (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`, o cotă medie din stoc, cu avertisment explicit în cod că „proporțional din 4427 e riscant”) și generează nota de descărcare cu linia `4428=371`.
 
 Atenție: `descarca_luna` citește rulajul contului 4428 **fără filtrare pe sursă** de operațiune — dacă firma folosește și ecranul separat de „TVA la încasare (art. 282)”, care produce note manuale tot pe 4428, acele mișcări se adună la cele din gestiunea global-valorică, denaturând calculul. Dacă firma combină ambele mecanisme, verificați separat sursa fiecărei mișcări pe contul 4428 înainte de a valida descărcarea lunară.
 

@@ -16,15 +16,15 @@ Condițiile se dovedesc cu trei documente. Fără ele, dividendul intră în rez
 
 ::: ghid-temei
 „dividende primite de la o persoană juridică străină plătitoare de impozit pe profit sau a unui impozit similar impozitului pe profit, situată într-un stat terț, astfel cum acesta este definit la art. 24 alin. (5) lit. c) [...] cu care România are încheiată o convenție de evitare a dublei impuneri, dacă persoana juridică română care primește dividendele deține la persoana juridică străină din statul terț, la data înregistrării acestora potrivit reglementărilor contabile aplicabile, pe o perioadă neîntreruptă de un an, minimum 10% din capitalul social al persoanei juridice care distribuie dividende;"
-— Codul fiscal (Legea 227/2015), art. 23 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 23 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „stat terț - oricare alt stat care nu este stat membru al Uniunii Europene."
-— Codul fiscal (Legea 227/2015), art. 24 alin. (5) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 24 alin. (5) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „persoana juridică română care primește dividendele trebuie să dețină: [...] a) certificatul de atestare a rezidenței fiscale a persoanei juridice străine, emis de autoritatea competentă din statul terț al cărui rezident fiscal este; [...] b) declarația pe propria răspundere a persoanei juridice străine din care să rezulte că aceasta este plătitoare de impozit pe profit sau a unui impozit similar impozitului pe profit în statul terț respectiv; [...] c) documente prin care să facă dovada îndeplinirii condiției de deținere, pe o perioadă neîntreruptă de 1 an, a minimum 10% din capitalul social al persoanei juridice care distribuie dividende."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 12 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Dosarul, pe scurt:

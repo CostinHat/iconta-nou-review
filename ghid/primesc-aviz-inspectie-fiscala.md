@@ -17,7 +17,7 @@ Avizul de inspecție fiscală este documentul prin care ANAF anunță formal dec
 (2) Avizul de inspecție fiscală se comunică contribuabilului/plătitorului, înainte de începerea inspecției fiscale, astfel: [...]
 (4) Avizul de inspecție fiscală se comunică la începerea inspecției fiscale în următoarele situații: [...] c) pentru extinderea inspecției fiscale la perioade sau creanțe fiscale, altele decât cele cuprinse în avizul de inspecție fiscală inițial;
 (7) Avizul de inspecție fiscală cuprinde: [...]"
-— Legea 207/2015, art. 122 alin. (2), (4), (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 122 alin. (2), (4), (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să faci concret, din momentul primirii avizului:
@@ -36,6 +36,6 @@ Ce trebuie să faci concret, din momentul primirii avizului:
 
 ## Ce face iConta.eu
 
-iConta.eu urmărește obligațiile declarative curente ale firmei (termene de depunere, scadențe, coerența între declarații) prin modulul de control fiscal (`core/control_fiscal_api.py`, `core/alerte_control_fiscal.py`), care generează alerte pentru riscuri de neconformitate curentă. La data acestui ghid, aplicația **nu are o funcționalitate dedicată pentru gestionarea unei inspecții fiscale în curs** — nu înregistrează primirea unui aviz de inspecție, nu urmărește termenele acestuia și nu organizează documentele solicitate de echipa de inspecție. Pregătirea pentru control rămâne un proces manual, sprijinit doar de evidența contabilă generală ținută corect în aplicație.
+iConta.eu urmărește obligațiile declarative curente ale firmei (termene de depunere, scadențe, coerența între declarații) prin modulul de control fiscal, care generează alerte pentru riscuri de neconformitate curentă. La data acestui ghid, aplicația **nu are o funcționalitate dedicată pentru gestionarea unei inspecții fiscale în curs** — nu înregistrează primirea unui aviz de inspecție, nu urmărește termenele acestuia și nu organizează documentele solicitate de echipa de inspecție. Pregătirea pentru control rămâne un proces manual, sprijinit doar de evidența contabilă generală ținută corect în aplicație.
 
 [iConta.eu](/)

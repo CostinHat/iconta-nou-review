@@ -14,14 +14,14 @@ O firmă din România care nu este înregistrată „normal" în scopuri de TVA 
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: a) persoana impozabilă care are sediul activității economice în România, [...] neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...], care efectuează o achiziție intracomunitară taxabilă în România, înainte de efectuarea achiziției intracomunitare, dacă valoarea achiziției intracomunitare respective depășește plafonul pentru achiziții intracomunitare în anul calendaristic în care are loc achiziția intracomunitară."
-— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementul-cheie al textului este momentul: legea impune expres solicitarea codului special **„înainte de efectuarea achiziției intracomunitare"**, nu după. Dacă firma nu solicită la timp acest cod, deși are obligația, organul fiscal poate să o înregistreze din oficiu:
 
 ::: ghid-temei
 „Dacă persoana obligată să se înregistreze în scopuri de TVA, în condițiile prevăzute la alin. (1), nu solicită înregistrarea, organele fiscale competente vor înregistra persoana respectivă din oficiu."
-— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula se aplică nu doar la achiziții de bunuri, ci și la anumite prestări/primiri de servicii transfrontaliere: art. 317 alin. (1) lit. b) și c) prevăd aceeași obligație de înregistrare prealabilă și pentru persoana impozabilă care prestează servicii cu locul în alt stat membru (unde beneficiarul e obligat la plata TVA), respectiv care primește servicii de la un prestator stabilit în alt stat membru, pentru care e obligată la plata taxei în România.
@@ -30,7 +30,7 @@ Legea permite și înregistrarea **opțională**, chiar dacă plafonul nu a fost
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România, dacă nu este înregistrată și nu este obligată să se înregistreze conform art. 316, [...] pot solicita să se înregistreze, conform prezentului articol, în cazul în care realizează achiziții intracomunitare, conform art. 268 alin. (6) sau art. 315^1 alin. (10)."
-— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 317 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce se greșește în practică

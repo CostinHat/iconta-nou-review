@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(2) Organul de inspecție fiscal comunică contribuabilului/plătitorului proiectul de raport de inspecție fiscală, în format electronic sau pe suport hârtie, acordându-i acestuia posibilitatea de a-și exprima punctul de vedere. În acest scop, odată cu comunicarea proiectului de raport, organul de inspecție fiscală comunică și data, ora și locul la care va avea loc discuția finală, însă nu mai devreme de 3 zile lucrătoare de la data comunicării proiectului de raport de inspecție fiscală, respectiv 5 zile lucrătoare în cazul marilor contribuabili."
-— Legea 207/2015 (Codul de procedură fiscală), art. 130 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 130 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret, pentru un contribuabil aflat sub inspecție:
@@ -33,6 +33,6 @@ Ce înseamnă concret, pentru un contribuabil aflat sub inspecție:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are niciun modul legat de gestionarea unei inspecții fiscale ANAF — aplicația nu generează, nu urmărește și nu răspunde la proiecte de raport de inspecție fiscală. Modulul `core/control_fiscal_api.py` din aplicație vizează exclusiv conformarea declarativă proprie a firmei (ce declarații sunt datorate și dacă au fost depuse), nu procedura de inspecție fiscală derulată de organele ANAF.
+iConta.eu nu are niciun modul legat de gestionarea unei inspecții fiscale ANAF — aplicația nu generează, nu urmărește și nu răspunde la proiecte de raport de inspecție fiscală. Aplicația din aplicație vizează exclusiv conformarea declarativă proprie a firmei (ce declarații sunt datorate și dacă au fost depuse), nu procedura de inspecție fiscală derulată de organele ANAF.
 
 [iConta.eu](/)

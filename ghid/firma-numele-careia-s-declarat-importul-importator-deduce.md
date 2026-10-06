@@ -14,15 +14,15 @@ Nu, cu o singură excepție. Dacă bunurile au fost declarate în vamă pe numel
 
 ::: ghid-temei
 „(2) Orice persoană care nu este obligată la plata taxei pentru un import conform alin. (1) , dar pe numele căreia au fost declarate bunurile în momentul în care taxa devine exigibilă conform art. 285 din Codul fiscal, nu are dreptul de deducere a taxei pe valoarea adăugată aferente importului respectiv decât în situația în care va aplica structura de comisionar, respectiv va refactura valoarea bunurilor importate și taxa pe valoarea adăugată aferentă către persoana care ar fi avut calitatea de importator conform alin. (1) . Refacturarea întregii valori a bunurilor se realizează doar în scopul taxei pe valoarea adăugată, neimplicând existența unei tranzacții."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 82 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 82 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Plata taxei pentru importul de bunuri supus taxării, conform prezentului titlu, este obligația importatorului."
-— Codul fiscal (Legea 227/2015), art. 309 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 309 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a) cumpărătorul către care se expediază bunurile la data la care taxa devine exigibilă la import sau, în absența acestui cumpărător, proprietarul bunurilor la această dată."
-— HG 1/2016, Titlul VII, pct. 82 alin. (1) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 82 alin. (1) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se aplică:

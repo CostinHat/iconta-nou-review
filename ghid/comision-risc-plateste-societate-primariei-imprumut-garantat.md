@@ -16,16 +16,16 @@ Pentru contabilul societății, cifra exactă vine din hotărârea consiliului �
 
 ::: ghid-temei
 „(1) Împrumuturile contractate de unitățile administrativ-teritoriale, precum și cele contractate de operatorii economici și de serviciile publice din subordinea acestora pot fi garantate de către acestea prin veniturile proprii prevăzute la art. 5 alin. (1) lit. a) ."
-— Legea 273/2006 privind finanțele publice locale, art. 63 alin. (1) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 63 alin. (1) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(1) Pentru acoperirea riscurilor financiare care decurg din garantarea de către unitățile administrativ-teritoriale a împrumuturilor contractate de operatorii economici și serviciile publice de subordonare locală se constituie fondul de risc în afara bugetului local."
-— Legea 273/2006, art. 64 alin. (1) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 64 alin. (1) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(4) Nivelul comisionului de risc se determină de către ordonatorul principal de credite și se aprobă de către autoritățile deliberative. Acest comision se aplică asupra valorii împrumutului garantat."
-— Legea 273/2006, art. 64 alin. (4) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 64 alin. (4) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(3) Fondul de risc se constituie din: sumele încasate sub forma de comisioane de la beneficiarii împrumuturilor garantate [...]"
-— Legea 273/2006, art. 64 alin. (3) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 64 alin. (3) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

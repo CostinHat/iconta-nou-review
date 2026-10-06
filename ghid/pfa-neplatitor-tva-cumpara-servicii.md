@@ -14,7 +14,7 @@ Da, poate — dar cu o obligație pe care mulți PFA-uri neplătitoare de TVA o 
 
 ::: ghid-temei
 „(1) Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...] c) persoana impozabilă care își are stabilit sediul activității economice în România și persoana impozabilă care aplică regimul special de scutire prevăzut la art. 310^2, care nu sunt înregistrate și nu au obligația să se înregistreze conform art. 316 și care nu sunt deja înregistrate conform lit. a), b) sau d) ori alin. (2) sau (2^1), dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective."
-— Codul fiscal (Legea 227/2015), art. 317 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 317 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 În practică:

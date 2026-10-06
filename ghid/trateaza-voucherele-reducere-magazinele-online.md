@@ -14,7 +14,7 @@ Un voucher de reducere folosit la un magazin online (cod promoțional, cupon de 
 
 ::: ghid-temei
 „Baza de impozitare se reduce în următoarele situații: [...] c) în cazul în care se acordă reduceri de preț după livrarea bunurilor sau prestarea serviciilor."
-— Codul fiscal (Legea 227/2015), art. 287 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 287 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Dacă voucherul de reducere se aplică **înainte sau la momentul emiterii facturii** (de exemplu, la finalizarea comenzii online), reducerea se înscrie direct pe factură, iar baza de impozitare a TVA se calculează deja la prețul redus — nu e nevoie de o ajustare ulterioară.

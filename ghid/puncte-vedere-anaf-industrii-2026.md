@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „ART. 7 Rolul activ și alte reguli de conduită pentru organul fiscal
 [...] (2) Organul fiscal are obligația să examineze starea de fapt în mod obiectiv și în limitele stabilite de lege, precum și să îndrume contribuabilul/plătitorul în aplicarea prevederilor legislației fiscale, în îndeplinirea obligațiilor și exercitarea drepturilor sale, ca urmare a solicitării contribuabilului/plătitorului sau din inițiativa organului fiscal, după caz."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 7 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 7 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Notă onestă: acest citat este principiul general al „rolului activ" al ANAF (obligația de a îndruma contribuabilii, inclusiv din proprie inițiativă), care stă la baza practicii de a publica ghiduri și clarificări pe sectoare de activitate — nu există în corpusul verificat un articol care să reglementeze expres „punctele de vedere pe industrii" ca instrument distinct, cu procedură și efecte juridice proprii.

@@ -16,10 +16,10 @@ Diferența contează la facturare. În primele două situații, regimul se schim
 
 ::: ghid-temei
 „(3) Persoana impozabilă prevăzută la alin. (1) încetează să aplice regimul special de scutire în România în următoarele situații: a) depășește plafonul de scutire prevăzut alin. (1) lit. a) , de la data depășirii acestuia; ... b) depășește plafonul de scutire prevăzut la art. 310 alin. (1) , de la data depășirii acestuia; ... c) a informat în prealabil statul membru de stabilire printr-o actualizare a unei notificări prealabile cu privire la decizia de a înceta aplicarea regimului de scutire în România. Încetarea devine efectivă începând cu prima zi a următorului trimestru calendaristic celui în care a fost transmisă informarea sau, în situația în care informarea a fost transmisă în cursul ultimei luni a unui trimestru calendaristic, din prima zi a celei de-a doua luni a trimestrului calendaristic următor."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(4) Persoana impozabilă prevăzută la alin. (1) nu mai poate beneficia în România de regimul special de scutire pe o perioadă de un an calendaristic dacă în anul calendaristic precedent a depășit plafonul de scutire prevăzut la alin. (1) lit. a) sau la art. 310 alin. (1) ."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei situații:

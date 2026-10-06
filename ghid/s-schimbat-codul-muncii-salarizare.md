@@ -14,10 +14,10 @@ Cadrul de salarizare din Codul muncii nu s-a schimbat radical în 2026, dar dou�
 
 ::: ghid-temei
 „La articolul 260, alineatul (1) din Legea nr. 53/2003 - Codul muncii [...] litera e) se modifică și va avea următorul cuprins: e) prin derogare de la prevederile art. 8 alin. (2) lit. a) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor [...], primirea la muncă a uneia sau a mai multor persoane fără încheierea unui contract individual de muncă, potrivit art. 16 alin. (1), se sancționează cu amendă de 40.000 lei pentru fiecare persoană astfel identificată, fără a depăși valoarea cumulată de 1.000.000 lei."
-— Legea nr. 239/2025, art. XXXIV (sursă: anaf_surse/legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt)
+— Legea nr. 239/2025, art. XXXIV (sursă: [Legea nr. 239/2025 privind stabilirea unor măsuri de redresare și eficientizare a resurselor publice](https://legislatie.just.ro/Public/DetaliiDocument/305208))
 
 „Începând cu data de 1 iulie 2026, salariul de bază minim brut pe țară garantat în plată, prevăzut la art. 164 alin. (1) din Legea nr. 53/2003 - Codul muncii [...], se stabilește în bani, fără a include sporuri și alte adaosuri, la suma de 4.325 lei lunar, pentru un program normal de lucru în medie de 166,667 ore pe lună, reprezentând 25,949 lei/oră."
-— HG nr. 146/2026 (sursă: anaf_surse/hg_146_2026_salariu_minim.txt)
+— HG nr. 146/2026 (sursă: [HG nr. 146/2026 pentru stabilirea salariului de bază minim brut pe țară garantat în plată](https://legislatie.just.ro/Public/DetaliiDocument/308231))
 :::
 
 Cele două schimbări concrete:

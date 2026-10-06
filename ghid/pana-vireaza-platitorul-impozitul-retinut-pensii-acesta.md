@@ -16,12 +16,12 @@ Pentru pensionar, asta înseamnă că nu mai regularizează nimic la sfârșitul
 
 ::: ghid-temei
 „Orice plătitor de venituri din pensii are obligația de a calcula lunar impozitul, potrivit prevederilor prezentului articol, la data efectuării plății pensiei, de a-l reține și de a-l plăti la bugetul de stat până la data de 25 inclusiv a lunii următoare celei pentru care se face plata pensiei. Impozitul reținut este impozit final."
-— Codul fiscal (Legea 227/2015), art. 101 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuția de asigurări sociale de sănătate calculată și reținută potrivit alin. (1) și (1^3) se plătește până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile"
-— Codul fiscal (Legea 227/2015), art. 168 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

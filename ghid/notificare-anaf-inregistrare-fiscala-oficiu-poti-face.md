@@ -16,15 +16,15 @@ Procedura e reglementată de OPANAF 2430/2025, emis în aplicarea art. 82 alin. 
 
 ::: ghid-temei
 „În cazul în care considerați că nu aveți obligația înregistrării fiscale, vă rugăm ca, în temeiul prevederilor art. 9 din Codul de procedură fiscală , în termen de 5 zile de la data primirii prezentei notificări, să vă prezentați la sediul nostru în vederea exercitării dreptului de a fi ascultat. În cazul în care nu depuneți declarația de înregistrare fiscală sau nu prezentați organului fiscal documentele care să justifice că nu aveți obligația de înregistrare fiscală, organul fiscal va aplica procedura de înregistrare fiscală din oficiu/la cererea altei autorități care administrează creanțe fiscale, potrivit art. 82 alin. (7) din Codul de procedură fiscală ."
-— OPANAF 2430/2025, Anexa nr. 3 (sursă: anaf_surse/ordin_2430_2025.html)
+— OPANAF 2430/2025, Anexa nr. 3 (sursă: [OPANAF nr. 2430/2025 privind procedura de înregistrare fiscală din oficiu](https://legislatie.just.ro/Public/DetaliiDocument/303981))
 :::
 
 ::: ghid-temei
 „vă invităm să vă prezentați la sediul unității fiscale, în termen de 5 zile de la data primirii prezentei invitații, în vederea audierii, acesta fiind cel de-al doilea termen consecutiv stabilit conform prevederilor art. 9 alin. (3) lit. b) din Codul de procedură fiscală ."
-— OPANAF 2430/2025, Anexa nr. 4 (sursă: anaf_surse/ordin_2430_2025.html)
+— OPANAF 2430/2025, Anexa nr. 4 (sursă: [OPANAF nr. 2430/2025 privind procedura de înregistrare fiscală din oficiu](https://legislatie.just.ro/Public/DetaliiDocument/303981))
 
 „(3) Audierea se consideră îndeplinită în următoarele situații: a) contribuabilul/plătitorul refuză explicit să se prezinte la termenul stabilit de organul fiscal în vederea audierii; b) contribuabilul/plătitorul nu se prezintă, din orice motiv, la două termene consecutive stabilite de organul fiscal în vederea audierii."
-— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 9 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Opțiunile în cele 5 zile:

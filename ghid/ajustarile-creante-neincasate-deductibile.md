@@ -33,6 +33,6 @@ Condițiile de negarantare și neafiliere sunt cumulative cu celelalte, la ambel
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din `core/provizioane.py` calculează procentul deductibil exact în această ordine: creanță garantată sau afiliată → 0%, indiferent de alți parametri; faliment declarat/insolvență PF → 100%; peste 270 de zile (altfel) → 30%; sub 270 de zile → 0%. Aplicația nu preia automat rezultatul în declarația de impozit pe profit — valoarea nedeductibilă se introduce manual la rândurile corespunzătoare.
+Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație calculează procentul deductibil exact în această ordine: creanță garantată sau afiliată → 0%, indiferent de alți parametri; faliment declarat/insolvență PF → 100%; peste 270 de zile (altfel) → 30%; sub 270 de zile → 0%. Aplicația nu preia automat rezultatul în declarația de impozit pe profit — valoarea nedeductibilă se introduce manual la rândurile corespunzătoare.
 
 [iConta.eu](/)

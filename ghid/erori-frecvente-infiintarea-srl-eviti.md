@@ -23,10 +23,10 @@ d) capitalul social subscris, cu menționarea aportului fiecărui asociat, în n
 e) asociații care reprezintă și administrează societatea sau administratorii neasociați, datele lor de identificare, durata mandatului, puterile ce li s-au conferit și dacă ei urmează să le exercite împreună sau separat;
 [...]
 f) partea fiecărui asociat la beneficii și la pierderi;"
-— Legea 31/1990 (Legea societăților), art. 7 lit. a)-f) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 7 lit. a)-f) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Articolul 36 (1) În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori [...] vor cere înmatricularea societății în registrul comerțului [...]. Ei răspund în mod solidar pentru orice prejudiciu pe care îl cauzează prin neîndeplinirea acestei obligații."
-— Legea 31/1990, art. 36 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 36 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Erori concrete, legate direct de elementele obligatorii de mai sus:
@@ -45,6 +45,6 @@ Erori concrete, legate direct de elementele obligatorii de mai sus:
 
 ## Ce face iConta.eu
 
-iConta.eu intervine după înființarea firmei, la momentul configurării ei în aplicație (`core/tenant_provisioning.py`) — verifică validitatea cifrei de control a CUI-ului (`cui_valid`) și poate precompleta datele firmei direct din ANAF (`precompleteaza_din_anaf`), reducând riscul unei erori de transcriere a CUI-ului sau a denumirii. Aplicația **nu intervine în redactarea actului constitutiv sau în procedura de înmatriculare** la registrul comerțului — acestea au loc înainte de configurarea firmei în iConta.eu, deci elementele obligatorii ale actului constitutiv (art. 7) rămân responsabilitatea celor implicați în constituirea firmei, de regulă cu asistență juridică sau notarială.
+iConta.eu intervine după înființarea firmei, la momentul configurării ei în aplicație — verifică validitatea cifrei de control a CUI-ului (`cui_valid`) și poate precompleta datele firmei direct din ANAF (`precompleteaza_din_anaf`), reducând riscul unei erori de transcriere a CUI-ului sau a denumirii. Aplicația **nu intervine în redactarea actului constitutiv sau în procedura de înmatriculare** la registrul comerțului — acestea au loc înainte de configurarea firmei în iConta.eu, deci elementele obligatorii ale actului constitutiv (art. 7) rămân responsabilitatea celor implicați în constituirea firmei, de regulă cu asistență juridică sau notarială.
 
 [iConta.eu](/)

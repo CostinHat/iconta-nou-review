@@ -14,7 +14,7 @@ Da. Obligativitatea sistemului RO e-Factura nu are legătură cu regimul de impo
 
 ::: ghid-temei
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015."
-— OUG nr. 120/2021, art. 10 alin. (1), introdus prin OUG nr. 115/2023 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— OUG nr. 120/2021, art. 10 alin. (1), introdus prin OUG nr. 115/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Criteriul legal pentru obligativitate este, deci, altul decât regimul de impozitare:

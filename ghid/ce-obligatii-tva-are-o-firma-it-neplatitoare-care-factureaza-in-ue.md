@@ -43,6 +43,6 @@ Această situație implică totuși o obligație de înregistrare: conform dosar
 
 ## Ce face iConta.eu
 
-Motorul D301 din iConta.eu (`core/d301.py`, `core/d301_operatiuni_api.py`) tratează exclusiv achiziții intracomunitare — nu există niciun cod în acest motor pentru operațiuni de ieșire (facturare către clienți din UE). Pentru o firmă IT neplătitoare care facturează servicii către clienți din UE, D301 nu este declarația relevantă și nu trebuie completată pentru aceste facturi de vânzare; obligațiile fiscale legate de aceste vânzări (inclusiv înregistrarea specială art. 317) se gestionează prin alte fluxuri decât cel de introducere a operațiunilor D301.
+Motorul D301 din iConta.eu tratează exclusiv achiziții intracomunitare — nu există niciun cod în acest motor pentru operațiuni de ieșire (facturare către clienți din UE). Pentru o firmă IT neplătitoare care facturează servicii către clienți din UE, D301 nu este declarația relevantă și nu trebuie completată pentru aceste facturi de vânzare; obligațiile fiscale legate de aceste vânzări (inclusiv înregistrarea specială art. 317) se gestionează prin alte fluxuri decât cel de introducere a operațiunilor D301.
 
 [iConta.eu](/)

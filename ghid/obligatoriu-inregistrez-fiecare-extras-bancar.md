@@ -14,7 +14,7 @@ Legea nu cere o notă contabilă separată pentru fiecare document în parte, da
 
 ::: ghid-temei
 „Înregistrările în contabilitatea sintetică și analitică se fac pe bază de documente justificative, fie document cu document, fie pe baza unui centralizator în care sunt înscrise mai multe documente justificative al căror conținut se referă la operațiuni de aceeași natură și din aceeași perioadă. [...] Înregistrările în contabilitate se fac cronologic, prin respectarea succesiunii documentelor după data de întocmire sau de intrare a acestora în entitate și sistematic, în conturi sintetice și analitice, în conformitate cu regulile stabilite pentru fiecare formă de înregistrare în contabilitate."
-— OMFP nr. 2.634/2015, Norme generale, pct. 20-21 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Norme generale, pct. 20-21 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Legea permite explicit **două moduri de înregistrare**: document cu document, sau pe bază de centralizator pentru documente de aceeași natură din aceeași perioadă — extrasul bancar poate fi tratat oricare din cele două moduri.

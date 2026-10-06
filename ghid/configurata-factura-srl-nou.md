@@ -15,7 +15,7 @@ Legea nu prevede o perioadă de grație legată de vechimea firmei pentru obliga
 ::: ghid-temei
 „Furnizorii prevăzuți la alin. (1)-(3) sunt obligați să transmită facturile emise către destinatari conform prevederilor art. 319 din Legea nr. 227/2015, cu modificările și completările ulterioare, cu excepția situației în care atât furnizorul/prestatorul, cât și destinatarul sunt înregistrați în Registrul RO e-Factura.
 (6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Legea nr. 296/2023, art. LIX alin. (5) și (6) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea nr. 296/2023, art. LIX alin. (5) și (6) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 - **Obligația se leagă de calitatea de "persoană impozabilă stabilită în România"**, dobândită de la înființare, nu de o vechime minimă a firmei — deci un SRL nou trebuie să fie pregătit din prima factură emisă în relație B2B.

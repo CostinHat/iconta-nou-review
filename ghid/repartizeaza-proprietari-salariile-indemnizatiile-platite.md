@@ -16,11 +16,11 @@ Contează în practică pentru că e una dintre cele mai frecvente surse de cont
 
 ::: ghid-temei
 „Cheltuielile pe cota-parte indiviză de proprietate reprezintă cheltuielile asociației cu privire la proprietatea comună, cu privire la: […] personalul angajat sau contractat al asociației: salarii sau remunerații pentru administrator, contabil, instalator, electrician, portar, îngrijitor, personalul care asigură curățenia etc.; indemnizații acordate membrilor asociației de proprietari ori persoanelor alese: președintele, membrii comitetului executiv și cenzorului/comisiei de cenzori; prime;"
-— Legea 196/2018, art. 85 (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 85 (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „Aceste cheltuieli se repartizează proporțional cu cota-parte din proprietatea comună a fiecărui proprietar."
-— Legea 196/2018, art. 84 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 84 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(1) Suprafața utilă a proprietăților individuale și cota-parte indiviză de proprietate sunt cele înscrise în cartea funciară în baza unei documentații cadastrale sau, în lipsă, cele din actul de proprietate."
-— Legea 196/2018, art. 86 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 86 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Un cabinet de contabilitate nu are, din perspectiva TVA, un regim diferit față
 
 ::: ghid-temei
 „(7) Prestările de servicii care determină decontări sau plăți succesive, cum sunt serviciile de construcții-montaj, consultanță, cercetare, expertiză și alte servicii similare, sunt considerate efectuate la data la care sunt emise situații de lucrări, rapoarte de lucru, alte documente similare pe baza cărora se stabilesc serviciile efectuate sau, după caz, în funcție de prevederile contractuale, la data acceptării acestora de către beneficiari."
-— Codul fiscal (Legea 227/2015), art. 281 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 281 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Serviciile de contabilitate, facturate lunar sau periodic pe bază de contract, se încadrează la „servicii similare" celor de consultanță — faptul generator intervine la data documentului pe baza căruia se stabilesc serviciile prestate (de regulă, factura sau raportul de activitate), nu la o dată fixă din contract, dacă nu există o asemenea clauză.
@@ -30,6 +30,6 @@ Un cabinet de contabilitate nu are, din perspectiva TVA, un regim diferit față
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: nu există în iConta.eu nicio funcționalitate specifică pentru „TVA la propriile servicii ale unui cabinet de contabilitate" — subiectul nu apare nici în lista de funcționalități a aplicației, nici în motorul de control încrucișat **F169** (`core/control_incrucisat.py`), care compară D300 cu rulajele contabile pe conturile de TVA (4426/4427/4423/4424/4428) generic, pentru orice firmă, fără nicio ramură dedicată cabinetelor de contabilitate sau facturării serviciilor proprii. Un cabinet care își emite facturi de onorariu către clienți folosește, ca orice altă firmă prestatoare de servicii, modulul general de facturare al aplicației — cota, faptul generator și exigibilitatea se calculează după regulile standard descrise mai sus, nu printr-un mecanism separat.
+Verificat direct în cod: nu există în iConta.eu nicio funcționalitate specifică pentru „TVA la propriile servicii ale unui cabinet de contabilitate" — subiectul nu apare nici în lista de funcționalități a aplicației, nici în motorul de control încrucișat **F169**, care compară D300 cu rulajele contabile pe conturile de TVA (4426/4427/4423/4424/4428) generic, pentru orice firmă, fără nicio ramură dedicată cabinetelor de contabilitate sau facturării serviciilor proprii. Un cabinet care își emite facturi de onorariu către clienți folosește, ca orice altă firmă prestatoare de servicii, modulul general de facturare al aplicației — cota, faptul generator și exigibilitatea se calculează după regulile standard descrise mai sus, nu printr-un mecanism separat.
 
 [iConta.eu](/)

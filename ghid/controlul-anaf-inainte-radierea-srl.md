@@ -15,7 +15,7 @@ Radierea unui SRL nu e doar o formalitate la registrul comerțului — implică 
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. [...]
 (6) Prin excepție de la prevederile alin. (5), în situația contribuabilului/plătitorului supus unei inspecții fiscale și care solicită eliberarea unui certificat de atestare fiscală în scopul radierii din registrele în care a fost înregistrat, certificatul de atestare fiscală se emite în termen de 5 zile lucrătoare de la data emiterii deciziei de impunere sau a deciziei de nemodificare a bazei de impozitare, după caz."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) și art. 158 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) și art. 158 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Nu există un control fiscal "automat" la radiere** — selecția pentru inspecție fiscală se face, ca și în orice altă situație, pe bază de analiză de risc (art. 121), nu obligatoriu pentru fiecare radiere.
@@ -30,6 +30,6 @@ Radierea unui SRL nu e doar o formalitate la registrul comerțului — implică 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat procesului de radiere sau de lichidare care să genereze automat declarația de radiere fiscală sau să verifice eligibilitatea pentru certificatul de atestare fiscală — există un modul de lichidare (`core/lichidare.py`) în cod, dar procesul de radiere propriu-zis, inclusiv interacțiunea cu ANAF pentru certificatul de atestare fiscală, rămâne în sarcina contabilului sau a consultantului care gestionează dosarul de radiere.
+La data acestui ghid, iConta.eu nu are un modul dedicat procesului de radiere sau de lichidare care să genereze automat declarația de radiere fiscală sau să verifice eligibilitatea pentru certificatul de atestare fiscală — există un modul de lichidare în cod, dar procesul de radiere propriu-zis, inclusiv interacțiunea cu ANAF pentru certificatul de atestare fiscală, rămâne în sarcina contabilului sau a consultantului care gestionează dosarul de radiere.
 
 [iConta.eu](/)

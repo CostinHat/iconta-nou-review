@@ -16,7 +16,7 @@ Declarația informativă D406 (SAF-T) raportează periodic date contabile și fi
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 D406 este, prin natura ei, o declarație informativă (raportează date, nu stabilește direct o obligație de plată), astfel încât i se aplică regula mai permisivă de la alin. (2): poate fi corectată „indiferent de perioada la care se referă" — spre deosebire de declarațiile de impunere, limitate la termenul de prescripție. Corectarea se face, potrivit alin. (3), prin depunerea unei noi declarații rectificative pentru perioada respectivă, care înlocuiește fișierul XML depus inițial cu unul complet, incluzând și factura omisă.

@@ -14,7 +14,7 @@ Nu există o listă separată, în Codul fiscal, cu „cheltuieli cu energia ele
 
 ::: ghid-temei
 „(1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă acest principiu general aplicat facturii de curent:
@@ -33,6 +33,6 @@ Ce înseamnă acest principiu general aplicat facturii de curent:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat pentru refacturarea utilităților în relația comodat/chirie (`core/comodat_chirii.py`, funcția `nota_refacturare()`), care generează nota contabilă pentru partea din factura furnizorului de utilități refacturată către chiriaș/comodatar. Aplicația nu are însă o funcție care să calculeze automat proporția deductibilă a unei facturi de energie electrică pentru un spațiu cu folosință mixtă (locuință + sediu) — determinarea cheii de repartizare (suprafață, timp de utilizare) și justificarea ei documentată rămân, la acest moment, în sarcina contabilului.
+La data acestui ghid, iConta.eu are un modul dedicat pentru refacturarea utilităților în relația comodat/chirie (funcția `nota_refacturare()`), care generează nota contabilă pentru partea din factura furnizorului de utilități refacturată către chiriaș/comodatar. Aplicația nu are însă o funcție care să calculeze automat proporția deductibilă a unei facturi de energie electrică pentru un spațiu cu folosință mixtă (locuință + sediu) — determinarea cheii de repartizare (suprafață, timp de utilizare) și justificarea ei documentată rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

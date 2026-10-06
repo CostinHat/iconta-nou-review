@@ -14,10 +14,10 @@ O eroare de calcul la stat de plată, un spor acordat din greșeală de două or
 
 ::: ghid-temei
 „Salariatul care a încasat de la angajator o sumă nedatorată este obligat sa o restituie."
-— Legea 53/2003 (Codul muncii), art. 272 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 272 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Nici o reținere din salariu nu poate fi operata, în afară cazurilor și condițiilor prevăzute de lege. [...] Retinerile din salariu cumulate nu pot depăși în fiecare luna jumătate din salariul net."
-— Legea 53/2003 (Codul muncii), art. 164 alin. (1) și (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 164 alin. (1) și (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă din combinarea celor două articole:

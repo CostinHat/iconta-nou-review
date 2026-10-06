@@ -15,7 +15,7 @@ Când mai multe persoane sau firme desfășoară activitate în comun printr-o a
 ::: ghid-temei
 „(1) Într-o asociere fără personalitate juridică între două sau mai multe persoane juridice române, veniturile și cheltuielile înregistrate se atribuie fiecărui asociat, conform prevederilor contractului de asociere.
 (2) Veniturile și cheltuielile determinate de operațiunile asocierii, transmise pe bază de decont fiecărui asociat, potrivit reglementărilor contabile aplicabile, se iau în calcul pentru determinarea profitului impozabil al fiecărui asociat. Documentele justificative aferente operațiunilor asocierii sunt cele care au stat la baza înregistrării în evidența contabilă de către persoana desemnată de asociați, conform prevederilor contractului de asociere."
-— Codul fiscal (Legea 227/2015), art. 34 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 34 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune, în esență, D104:
@@ -33,6 +33,6 @@ Ce presupune, în esență, D104:
 
 ## Ce face iConta.eu
 
-D104 are motorul de generare construit în iConta.eu (core/d104.py): calculează totalurile pe asociați, diferențele de plată/recuperare și suma de control, cu structura verificată pe validatorul oficial. La data acestui ghid, funcționalitatea este **amânată** în interfață — motorul de calcul și validarea există, dar declarația nu are încă un ecran dedicat în selectorul de declarații al firmei, ci apare doar în dispecerul intern; identitatea asocierii, precum și profitul/pierderea de repartizat (calculul căruia poate implica ajustări fiscale, inclusiv pentru cedarea de drepturi de proprietate intelectuală) rămân date introduse manual.
+D104 are motorul de generare construit în iConta.eu (aplicația): calculează totalurile pe asociați, diferențele de plată/recuperare și suma de control, cu structura verificată pe validatorul oficial. La data acestui ghid, funcționalitatea este **amânată** în interfață — motorul de calcul și validarea există, dar declarația nu are încă un ecran dedicat în selectorul de declarații al firmei, ci apare doar în dispecerul intern; identitatea asocierii, precum și profitul/pierderea de repartizat (calculul căruia poate implica ajustări fiscale, inclusiv pentru cedarea de drepturi de proprietate intelectuală) rămân date introduse manual.
 
 [iConta.eu](/)

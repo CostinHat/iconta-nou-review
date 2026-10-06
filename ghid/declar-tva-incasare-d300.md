@@ -17,7 +17,7 @@ Mulți contabili caută în formularul D300 un rând dedicat „TVA la încasare
 
 **Art. 297 alin. (2) CF**: *„Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare... este amânat până la data la care taxa aferentă... a fost plătită furnizorului."*
 
-Verificat direct în codul sursă (`static/js/ecrane/facturi_ecran.js`): `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
+Verificat direct în codul sursă: `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
 :::
 
 ## Ce înseamnă practic

@@ -14,7 +14,7 @@ Vânzarea printr-un marketplace introduce un decalaj natural: curierul livrează
 
 ::: ghid-temei
 „283. - (1) Înregistrarea în contabilitate a intrării stocurilor se efectuează la data transferului riscurilor și beneficiilor. (2) În general, datele de transfer al controlului, de transfer al proprietății și de livrare coincid. Totuși, pot exista decalaje de timp, de exemplu, pentru: [...] – bunuri livrate și nefacturate, care trebuie scoase din evidență, transferul de proprietate având loc [...]"
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 283 alin. (1), (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 283 alin. (1), (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o vânzare prin marketplace:
@@ -32,6 +32,6 @@ Aplicat la o vânzare prin marketplace:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu descarcă gestiunea pe baza facturilor emise, folosind coeficientul de repartizare a diferențelor de preț pentru metoda global-valorică (`core/stocuri.py`, funcția `descarcare_gv`). Pentru magazinele conectate prin WooCommerce, comenzile importate automat (`core/woocommerce.py`) generează facturi pe baza cărora se face descărcarea de gestiune — dar pentru vânzările prin alte marketplace-uri (Amazon, eMAG și altele, fără conector dedicat), introducerea comenzii și, implicit, momentul descărcării de gestiune depind de data la care utilizatorul introduce manual factura, nu de data reală a livrării confirmate de platformă.
+La data acestui ghid, iConta.eu descarcă gestiunea pe baza facturilor emise, folosind coeficientul de repartizare a diferențelor de preț pentru metoda global-valorică (funcția `descarcare_gv`). Pentru magazinele conectate prin WooCommerce, comenzile importate automat generează facturi pe baza cărora se face descărcarea de gestiune — dar pentru vânzările prin alte marketplace-uri (Amazon, eMAG și altele, fără conector dedicat), introducerea comenzii și, implicit, momentul descărcării de gestiune depind de data la care utilizatorul introduce manual factura, nu de data reală a livrării confirmate de platformă.
 
 [iConta.eu](/)

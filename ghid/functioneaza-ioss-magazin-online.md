@@ -14,7 +14,7 @@ IOSS (Import One Stop Shop) rezolvă o problemă specifică magazinelor online c
 
 ::: ghid-temei
 „În sensul prezentului articol vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe acoperă numai bunurile, cu excepția produselor care fac obiectul accizelor, în loturi cu o valoare intrinsecă de maximum 150 euro."
-— Legea 227/2015, art. 315^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 315^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează, pas cu pas:

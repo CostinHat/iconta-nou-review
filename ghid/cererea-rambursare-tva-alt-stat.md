@@ -14,7 +14,7 @@ Firmele românești care au plătit TVA în alt stat membru UE nu depun cererea 
 
 ::: ghid-temei
 „Conform art. 302 alin. (2) din Codul fiscal, persoana impozabilă stabilită în România poate beneficia de rambursarea taxei pe valoarea adăugată aferente importurilor și achizițiilor de bunuri/servicii, efectuate în alt stat membru, denumit în continuare stat membru de rambursare, în condițiile și conform procedurilor stabilite de legislația statului respectiv, care transpune prevederile Directivei 2008/9/CE și ale Directivei 2010/66/UE. [...] Cererea de rambursare este transmisă electronic organului fiscal competent din România prin intermediul portalului electronic pus la dispoziție de acesta, cel târziu până la data de 30 septembrie a anului calendaristic care urmează perioadei de rambursare. Organul fiscal competent din România va trimite solicitantului, de îndată, o confirmare electronică de primire a cererii."
-— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 73 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 pentru aprobarea Normelor metodologice de aplicare a Codului fiscal, pct. 73 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Din text rezultă un flux în doi pași, nu o cerere depusă direct la autoritatea străină:

@@ -14,7 +14,7 @@ RO e-Factura și declarația D394 nu sunt, din punct de vedere legal, același l
 
 ::: ghid-temei
 „ART. 1 Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF nr. 3.769/2015 privind declararea livrărilor/prestărilor și achizițiilor efectuate pe teritoriul național de persoanele înregistrate în scopuri de TVA, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF nr. 3.769/2015 privind declararea livrărilor/prestărilor și achizițiilor efectuate pe teritoriul național de persoanele înregistrate în scopuri de TVA, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 Din text rezultă că D394 are un obiect de raportare distinct de RO e-Factura:
@@ -32,6 +32,6 @@ Din text rezultă că D394 are un obiect de raportare distinct de RO e-Factura:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează atât declarația D394 (`core/d394.py`), cu module de reconciliere dedicate (`core/d394_reconciliere.py`), cât și fluxul de transmitere prin RO e-Factura (`core/efactura_send.py`). Aplicația are și un modul de control încrucișat (`core/control_incrucisat.py`), care compară rulajele contabile cu datele raportate în declarații, pentru a semnala neconcordanțe interne înainte de depunere. Aplicația **nu primește și nu interpretează automat** mesajele de discrepanță transmise direct de ANAF între e-Factura și D394 — investigarea sursei exacte a diferenței semnalate de organul fiscal rămâne o verificare manuală a contabilului.
+La data acestui ghid, iConta.eu generează atât declarația D394, cu module de reconciliere dedicate, cât și fluxul de transmitere prin RO e-Factura. Aplicația are și un modul de control încrucișat, care compară rulajele contabile cu datele raportate în declarații, pentru a semnala neconcordanțe interne înainte de depunere. Aplicația **nu primește și nu interpretează automat** mesajele de discrepanță transmise direct de ANAF între e-Factura și D394 — investigarea sursei exacte a diferenței semnalate de organul fiscal rămâne o verificare manuală a contabilului.
 
 [iConta.eu](/)

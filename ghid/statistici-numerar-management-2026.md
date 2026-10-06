@@ -14,7 +14,7 @@ Legea nu cere firmelor o „statistică de numerar pentru management" ca documen
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015, Anexa 2 – Norme specifice de întocmire și utilizare a formularelor, Registrul de casă (cod 14-4-7/a) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 – Norme specifice de întocmire și utilizare a formularelor, Registrul de casă (cod 14-4-7/a) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă din text pentru evidența numerarului:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru evidența numerarului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține un registru de casă cu sold rulant, calculat operațiune cu operațiune (`core/casa.py`, funcția `registru_casa`), care poate fi folosit ca bază atât pentru evidența legală, cât și pentru o privire de ansamblu asupra fluxului de numerar. Aplicația nu are însă un modul dedicat de „statistici de numerar pentru management" (grafice, tendințe, comparații pe perioade) — dincolo de registrul de casă și de verificarea plafoanelor legale (`verifica_plafon`), orice analiză suplimentară a numerarului rămâne de făcut manual, pe baza datelor exportate din aplicație.
+La data acestui ghid, iConta.eu ține un registru de casă cu sold rulant, calculat operațiune cu operațiune (funcția `registru_casa`), care poate fi folosit ca bază atât pentru evidența legală, cât și pentru o privire de ansamblu asupra fluxului de numerar. Aplicația nu are însă un modul dedicat de „statistici de numerar pentru management" (grafice, tendințe, comparații pe perioade) — dincolo de registrul de casă și de verificarea plafoanelor legale (`verifica_plafon`), orice analiză suplimentară a numerarului rămâne de făcut manual, pe baza datelor exportate din aplicație.
 
 [iConta.eu](/)

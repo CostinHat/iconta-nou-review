@@ -15,7 +15,7 @@ O despăgubire plătită unui client, ca urmare a neîndeplinirii unei obligați
 ::: ghid-temei
 „(1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare [...]
 (4) Următoarele cheltuieli nu sunt deductibile: [...] b) dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) și alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) și alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structura articolului lămurește exact unde e granița:

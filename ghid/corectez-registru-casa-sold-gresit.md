@@ -14,7 +14,7 @@ Un sold de casă greșit e aproape întotdeauna un simptom, nu problema în sine
 
 ::: ghid-temei
 „În documentele financiar-contabile nu sunt admise ștersături, modificări sau alte asemenea procedee [...] Erorile se corectează prin tăierea cu o linie a textului sau a cifrei greșite, concomitent înscriindu-se alături textul sau cifra corectă. Corectarea se face în toate exemplarele documentului și se confirmă prin semnătura persoanei care a întocmit/corectat documentul, menționându-se și data efectuării corecturii."
-— OMFP nr. 2634/2015, anexa 1, pct. 14 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2634/2015, anexa 1, pct. 14 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Regula de bază e **tăierea vizibilă**, nu ștergerea: cifra greșită rămâne lizibilă, alături apare cea corectă, iar corectura se semnează și se datează. Un sold care „arată corect" pentru că a fost rescris, fără urma erorii, contrazice explicit norma.

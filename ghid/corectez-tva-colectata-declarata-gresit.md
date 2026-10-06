@@ -14,7 +14,7 @@ O sumă de TVA colectată trecută greșit într-un decont deja depus (D300) nu 
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative. (4) în cazul taxei pe valoarea adăugată, corectarea erorilor din deconturile de taxă se realizează potrivit prevederilor Codului fiscal. Erorile materiale din decontul de taxă pe valoarea adăugată se corectează potrivit procedurii aprobate prin ordin al președintelui A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie distins, ca să se aleagă mecanismul corect:

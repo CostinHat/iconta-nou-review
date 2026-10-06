@@ -14,10 +14,10 @@ Trecerea de la norma de venit la sistemul real nu e o simplă bifă administrati
 
 ::: ghid-temei
 „Contribuabilii care obțin venituri din activități independente, impuși pe bază de norme de venit, au dreptul să opteze pentru determinarea venitului net în sistem real, potrivit art. 68."
-— Codul fiscal (Legea 227/2015), art. 69^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Opțiunea pentru determinarea venitului net anual în sistem real, inclusiv în cazul contribuabililor care încep activitatea în cursul anului fiscal, se exercită prin completarea Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice cu informații privind determinarea venitului net anual în sistem real și depunerea formularului la organul fiscal competent în termenul legal de depunere prevăzut la art. 122 alin. (3). În acest caz, perioada de 2 ani fiscali cuprinde anul fiscal de realizare a veniturilor pentru care se depune Declarația unică [...] prin care se exercită opțiunea și anul fiscal următor acestuia."
-— Codul fiscal (Legea 227/2015), art. 69^1 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69^1 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, așa cum rezultă din text:

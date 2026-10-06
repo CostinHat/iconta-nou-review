@@ -13,9 +13,9 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 52 alin. (1) CF**: „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit **începând cu trimestrul în care s-a depășit această limită**." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6414.
+**Art. 52 alin. (1) CF**: „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit **începând cu trimestrul în care s-a depășit această limită**." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 
-**Art. 47 alin. (1) lit. c) CF**: „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6095.
+**Art. 47 alin. (1) lit. c) CF**: „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Calculul e cumulativ, de la 1 ianuarie: aduni veniturile firmei (conturile 70x, la data facturării, nu a încasării) trimestru după trimestru, și compari totalul cu echivalentul în lei a 100.000 euro. Data exactă a trecerii la profit e prima zi a trimestrului calendaristic în care acest total a depășit pragul — nu ziua exactă a depășirii în interiorul trimestrului, ci întregul trimestru respectiv.
@@ -32,6 +32,6 @@ Odată identificat trimestrul, data de aplicare a regimului „profit" în Vecto
 
 ## Ce face iConta.eu
 
-iConta nu calculează automat momentul depășirii plafonului micro — nu există nicio constantă de plafon (100.000 €) în motorul de calcul (`core/control_fiscal_api.py`), confirmat explicit prin comentariul de cod și prin căutare directă în sursă. Determinarea trimestrului corect rămâne un calcul manual al contabilului, pe baza rulajelor conturilor de venituri; aplicația doar reține data introdusă la salvarea Vectorului fiscal, fără s-o valideze împotriva pragului legal.
+iConta nu calculează automat momentul depășirii plafonului micro — nu există nicio constantă de plafon (100.000 €) în motorul de calcul, confirmat explicit prin comentariul de cod și prin căutare directă în sursă. Determinarea trimestrului corect rămâne un calcul manual al contabilului, pe baza rulajelor conturilor de venituri; aplicația doar reține data introdusă la salvarea Vectorului fiscal, fără s-o valideze împotriva pragului legal.
 
 [iConta.eu](/)

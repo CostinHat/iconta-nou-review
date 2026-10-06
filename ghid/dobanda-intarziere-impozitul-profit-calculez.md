@@ -14,7 +14,7 @@ Impozitul pe profit neachitat la termenul legal generează dobândă de întârz
 
 ::: ghid-temei
 „(5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se calculează, concret:

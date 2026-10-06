@@ -16,15 +16,15 @@ Plata este voluntară. Legea nu obligă pe nimeni să achite o datorie prescris�
 
 ::: ghid-temei
 „Orice persoană poate efectua, pentru sine sau pentru altă persoană, plata unor obligații fiscale pentru care s-a împlinit termenul de prescripție a dreptului de a stabili obligații fiscale sau termenul de prescripție a dreptului de a cere executarea silită ori obligațiile fiscale erau datorate de o persoană juridică care și-a încetat existența. Persoana care efectuează plata trebuie să depună la organul fiscal o declarație pe propria răspundere cu privire la opțiunea efectuării unei asemenea plăți."
-— Codul de procedură fiscală (Legea 207/2015), art. 161 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 161 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Plata obligațiilor fiscale se efectuează de debitor. Plata poate fi efectuată în numele debitorului și de către o altă persoană decât acesta."
-— Codul de procedură fiscală (Legea 207/2015), art. 163 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 163 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Sumele achitate de debitor în contul unor creanțe fiscale, după împlinirea termenului de prescripție, nu se restituie."
-— Codul de procedură fiscală (Legea 207/2015), art. 218 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 218 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

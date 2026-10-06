@@ -14,7 +14,7 @@ Nedepunerea decontului de TVA la termenul legal (art. 323 CF) e o contravenție 
 
 ::: ghid-temei
 „Constituie contravenții următoarele fapte, dacă nu au fost săvârșite în astfel de condiții încât să fie considerate, potrivit legii, infracțiuni: [...] b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume, precum și orice informații în legătură cu impozitele, taxele, contribuțiile, bunurile și veniturile impozabile, dacă legea prevede declararea acestora [...] (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: [...] d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m);"
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Nedepunerea D300 la termen (25 ale lunii următoare perioadei fiscale, art. 323 CF) se încadrează la fapta generică de la art. 336 alin. (1) lit. b) — neîndeplinirea la termen a unei obligații de declarare.

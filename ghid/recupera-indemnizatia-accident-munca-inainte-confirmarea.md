@@ -16,10 +16,10 @@ Nu. Recuperarea de la casa teritorială de pensii se poate face numai după ce s
 
 ::: ghid-temei
 „(7) Recuperarea de către angajator a indemnizațiilor prevăzute la alin. (6) se poate realiza după confirmarea caracterului de muncă al accidentului sau declararea bolii profesionale."
-— Legea 346/2002, art. 19 alin. (7) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (7) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(5) Sumele care reprezintă diferențe la indemnizațiile de incapacitate temporară de muncă, ca urmare a confirmării unui accident de muncă sau unei boli profesionale, se recuperează de către angajatori de la casele teritoriale de pensii, indiferent de codul de indemnizație înscris pe certificatul medical."
-— Legea 346/2002, art. 33 alin. (5) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 33 alin. (5) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

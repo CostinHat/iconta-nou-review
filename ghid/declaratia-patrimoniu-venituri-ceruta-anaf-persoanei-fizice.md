@@ -16,10 +16,10 @@ Efectul nedepunerii este concret. Verificarea nu se oprește. Ea continuă pe ba
 
 ::: ghid-temei
 „(6) Organul fiscal central solicită persoanei fizice prezentarea, în termen de cel mult 60 de zile de la comunicarea avizului de verificare, sub sancțiunea decăderii, de documente justificative sau alte clarificări relevante pentru situația sa fiscală. Termenul se poate prelungi cu 30 de zile, o singură dată, la solicitarea justificată a persoanei fizice, cu acordul organului fiscal central. (7) Persoana supusă verificării are obligația de a depune în termenul prevăzut la alin. (6) o declarație de patrimoniu și de venituri la solicitarea organului fiscal central. Solicitarea se face prin avizul de verificare."
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (6)–(7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (6)–(7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(10) În cazul în care persoana fizică supusă verificării nu îndeplinește obligațiile prevăzute la alin. (6) și (7) verificarea situației fiscale personale se face pe baza informațiilor și documentelor deținute sau obținute de organul fiscal central în condițiile prezentului cod."
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut:

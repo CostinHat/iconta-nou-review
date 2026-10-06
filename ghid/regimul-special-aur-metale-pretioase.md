@@ -14,7 +14,7 @@ Legea scutește explicit de TVA achizițiile intracomunitare de aur de investiț
 
 ::: ghid-temei
 „a) livrările, achizițiile intracomunitare și importul de aur de investiții, inclusiv investițiile în hârtii de valoare, pentru aurul nominalizat sau nenominalizat ori negociat în conturi de aur și cuprinzând mai ales împrumuturile și schimburile cu aur care conferă un drept de proprietate sau de creanță asupra aurului de investiții, precum și operațiunile referitoare la aurul de investiții care constau în contracte la termen futures și forward, care dau naștere unui transfer al dreptului de proprietate sau de creanță asupra aurului de investiții;"
-— Codul fiscal (Legea 227/2015), art. 313 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 313 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul e clar: **achizițiile intracomunitare de aur de investiții sunt scutite de taxă**, alături de livrări și import. Aceeași definiție a aurului de investiții (art. 313 alin. (1) lit. a) și b) — lingouri/plachete ≥995‰ peste 1 gram, respectiv monede care îndeplinesc cele patru condiții cumulative) se aplică și aici: scutirea la achiziția intracomunitară nu e un regim separat, ci extinderea firească a aceleiași definiții și a aceluiași temei.

@@ -14,7 +14,7 @@ Orice firmă care are cel puțin un angajat trebuie să depună lunar Declarați
 
 ::: ghid-temei
 „Persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate."
-— Codul fiscal (Legea 227/2015), art. 147 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 147 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Termenul e **25 inclusiv al lunii următoare** celei pentru care se plătesc veniturile salariale — nu al lunii în care se face plata efectivă a contribuțiilor, ci al lunii de raportare a salariilor.

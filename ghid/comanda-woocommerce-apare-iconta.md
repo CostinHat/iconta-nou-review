@@ -14,7 +14,7 @@ Când o comandă din magazinul online nu se transformă în factură în iConta,
 
 ::: ghid-temei
 „Pentru alte operațiuni decât cele prevăzute la alin. (15), persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă."
-— Codul fiscal (Legea nr. 227/2015), art. 319 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Termenul de emitere a facturii nu depinde de faptul că firma folosește sau nu un conector automat pentru magazinul online — el curge de la faptul generator (livrarea/prestarea), indiferent de canalul de vânzare.
@@ -30,7 +30,7 @@ Când o comandă din magazinul online nu se transformă în factură în iConta,
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce (ecranul „Magazin online", cu config URL + chei API și butonul „Sincronizează acum") citește comenzile prin API-ul magazinului și le transformă în facturi, cu patru verificări reale, confirmate direct în cod (`core/woocommerce.py`):
+Conectorul WooCommerce (ecranul „Magazin online", cu config URL + chei API și butonul „Sincronizează acum") citește comenzile prin API-ul magazinului și le transformă în facturi, cu patru verificări reale, confirmate direct în cod:
 
 - **Configurare lipsă sau incompletă.** Dacă URL-ul sau cheile API nu sunt completate (ori au fost golite între timp), sincronizarea se oprește cu mesajul „WooCommerce neconfigurat" — nicio comandă nu poate fi citită.
 - **Statusul comenzii.** Conectorul citește implicit doar comenzile aflate în stare `completed` sau `processing`. O comandă `pending`, `on-hold`, `cancelled` sau `refunded` nu e citită niciodată de sincronizare, oricât de multe ori se apasă butonul.

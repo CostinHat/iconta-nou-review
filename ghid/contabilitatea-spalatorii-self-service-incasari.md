@@ -14,7 +14,7 @@ O spălătorie auto sau de rufe self-service încasează de la persoane fizice, 
 
 ::: ghid-temei
 „Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— Ordonanța de urgență a Guvernului nr. 28/1999, art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— Ordonanța de urgență a Guvernului nr. 28/1999, art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă pentru o spălătorie self-service:

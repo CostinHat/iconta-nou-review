@@ -14,10 +14,10 @@ Regula generală e simplă — D212 se depune până la 25 mai inclusiv a anului
 
 ::: ghid-temei
 „Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor."
-— Codul fiscal (Legea 227/2015), art. 122 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 122 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin derogare de la dispozițiile art. 121 din Legea nr. 227/2015, contribuabilii persoane fizice beneficiază de o bonificație de 3% din impozitul pe venit datorat pentru veniturile realizate în anul 2025 [...] Bonificația [...] se acordă dacă [...] impozitul pe venit, contribuția de asigurări sociale și contribuția de asigurări sociale de sănătate datorate [...] se sting prin plată și/sau compensare, integral până la data 15 aprilie 2026 inclusiv; [...] declarația unică [...] se depune până la 15 aprilie 2026 inclusiv."
-— OUG 8/2026, art. 8 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt, notă la art. 122)
+— OUG 8/2026, art. 8 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), notă la art. 122)
 :::
 
 Ce înseamnă concret pentru 2026:
@@ -35,6 +35,6 @@ Ce înseamnă concret pentru 2026:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu urmărește automat calendarul de scadență și nu emite notificări proprii pentru termenul de 25 mai sau pentru fereastra de bonificație de 15 aprilie. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) determină corect CAS, CASS și impozitul pe baza plafoanelor verificate pentru veniturile 2025 și 2026, dar decizia de a depune până la 15 aprilie pentru bonificație sau calculul valorii bonificației rămân în sarcina contabilului.
+D212 se generează în iConta.eu din datele introduse de contabil — aplicația nu urmărește automat calendarul de scadență și nu emite notificări proprii pentru termenul de 25 mai sau pentru fereastra de bonificație de 15 aprilie. Motorul de calcul determină corect CAS, CASS și impozitul pe baza plafoanelor verificate pentru veniturile 2025 și 2026, dar decizia de a depune până la 15 aprilie pentru bonificație sau calculul valorii bonificației rămân în sarcina contabilului.
 
 [iConta.eu](/)

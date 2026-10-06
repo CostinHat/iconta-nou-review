@@ -16,18 +16,18 @@ Diferența contează când impozitul grupului nu ajunge pentru toate scutirile. 
 
 ::: ghid-temei
 „persoana juridică responsabilă care efectuează scăderea sumei aferente impozitului pe profit scutit din impozitul pe profit datorat de grupul fiscal comunică fiecărui membru care a transmis astfel de sume partea ce îi revine acestuia din suma scăzută la nivelul grupului fiscal;"
-— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „partea care se comunică fiecărui membru, potrivit lit. a) , se determină înmulțind suma scăzută la nivelul grupului fiscal cu raportul dintre sumele transmise de fiecare membru și totalul sumelor primite de persoana responsabilă de la membrii grupului fiscal;"
-— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „suma care se repartizează de către membrul grupului fiscal pentru constituirea rezervei, potrivit art. 22 alin. (5) , este cea comunicată de persoana juridică responsabilă"
-— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4^2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Aceste sume se scad în limita impozitului pe profit datorat de grupul fiscal."
-— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^5 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii:

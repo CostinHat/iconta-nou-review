@@ -14,7 +14,7 @@ Răspunsul depinde de forma juridică a societății. La societățile pe acțiu
 
 ::: ghid-temei
 „(1) Societatea este administrată de unul sau mai mulți administratori, asociați sau neasociați, numiți prin actul constitutiv sau de adunarea generală. [...] (4) Dispozițiile privitoare la administrarea societăților pe acțiuni nu sunt aplicabile societăților cu răspundere limitată, indiferent dacă sunt sau nu supuse obligației de auditare."
-— Legea nr. 31/1990, art. 197 alin. (1) și (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 197 alin. (1) și (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Pentru **SRL**, durata mandatului administratorului nu are un plafon legal maxim — poate fi stabilită pe o perioadă determinată sau chiar pe durată nedeterminată, prin actul constitutiv sau printr-o hotărâre ulterioară a asociaților.

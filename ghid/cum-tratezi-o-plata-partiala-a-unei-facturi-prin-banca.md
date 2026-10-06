@@ -37,6 +37,6 @@ Dacă firma aplică sistemul TVA la încasare, fiecare sumă alocată printr-o p
 
 ## Ce face iConta.eu
 
-`_alocare_fifo` din `core/reconciliere.py` distribuie suma liniei pe facturile deschise ale partenerului, în ordine FIFO, marcând rezultatul galben. La contare (`conteaza` din `core/reconciliere_api.py`), fiecare alocare parțială generează o înregistrare separată legată de `factura_id`; dacă firma are activ profilul `tva_la_incasare`, TVA-ul exigibil pentru acea alocare se calculează separat, prin `core.tva_incasare.tva_din_incasare`, folosind cota de pe liniile facturii — lipsa cotei declanșează o eroare explicită la contare.
+`_alocare_fifo` din aplicație distribuie suma liniei pe facturile deschise ale partenerului, în ordine FIFO, marcând rezultatul galben. La contare (`conteaza` din aplicație), fiecare alocare parțială generează o înregistrare separată legată de `factura_id`; dacă firma are activ profilul `tva_la_incasare`, TVA-ul exigibil pentru acea alocare se calculează separat, prin `core.tva_incasare.tva_din_incasare`, folosind cota de pe liniile facturii — lipsa cotei declanșează o eroare explicită la contare.
 
 [iConta.eu](/)

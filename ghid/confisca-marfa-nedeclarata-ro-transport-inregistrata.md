@@ -16,10 +16,10 @@ Pentru cabinet, regula are o consecință directă: o contabilitate ținută la 
 
 ::: ghid-temei
 „(2^1) Prin excepție de la prevederile alin. (2) , pentru contravenția prevăzută la alin. (1) lit. a) , în ceea ce privește nerespectarea prevederilor art. 9 alin. (2) și (3) , sancțiunea complementară a confiscării nu se aplică în cazul constatărilor rezultate din verificări ulterioare încheierii transportului rutier de bunuri, când acestea au fost înregistrate în documentele justificative care stau la baza înregistrărilor contabile, precum și în contabilitatea utilizatorilor, după caz, în perioada la care se referă operațiunile respective."
-— OUG 41/2022, art. 13^1 alin. (2^1) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2^1) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate."
-— OUG 41/2022, art. 13^1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Condițiile, toate obligatorii:

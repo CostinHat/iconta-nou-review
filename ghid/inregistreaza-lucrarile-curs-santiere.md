@@ -14,7 +14,7 @@ O firmă de construcții care lucrează pe un șantier la finalul lunii, fără 
 
 ::: ghid-temei
 „h) producția în curs de execuție, reprezentând producția care nu a trecut prin toate fazele (stadiile) de prelucrare, prevăzute în procesul tehnologic, precum și produsele nesupuse probelor și recepției tehnice sau necompletate în întregime. În cadrul producției în curs de execuție se cuprind, de asemenea, serviciile și studiile în curs de execuție sau neterminate."
-— OMFP 1802/2014, pct. 276 alin. (1) lit. h) (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 276 alin. (1) lit. h) (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din text pentru lucrările pe șantier:
@@ -33,6 +33,6 @@ Ce rezultă din text pentru lucrările pe șantier:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor dedicat producției în curs de execuție, în `core/productie.py`: funcția `nota_productie_in_curs(suma, moment)` generează nota contabilă de constatare la sfârșitul lunii (331 = 711, pentru suma introdusă) și, simetric, nota de reluare la începutul lunii următoare (711 = 331), pe baza aceleiași sume. Motorul nu evaluează el însuși stadiul lucrării pe șantier și nu declanșează automat reluarea din luna următoare — suma constatată se introduce de contabil, pe baza situației de lucrări sau a devizului actualizat, iar generarea notei de reluare rămâne o acțiune separată, la momentul potrivit.
+La data acestui ghid, iConta.eu are un motor dedicat producției în curs de execuție, în aplicație: funcția `nota_productie_in_curs(suma, moment)` generează nota contabilă de constatare la sfârșitul lunii (331 = 711, pentru suma introdusă) și, simetric, nota de reluare la începutul lunii următoare (711 = 331), pe baza aceleiași sume. Motorul nu evaluează el însuși stadiul lucrării pe șantier și nu declanșează automat reluarea din luna următoare — suma constatată se introduce de contabil, pe baza situației de lucrări sau a devizului actualizat, iar generarea notei de reluare rămâne o acțiune separată, la momentul potrivit.
 
 [iConta.eu](/)

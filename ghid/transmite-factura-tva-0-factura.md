@@ -15,7 +15,7 @@ O factură cu „TVA 0" nu înseamnă că taxa a fost omisă, ci că operațiune
 ::: ghid-temei
 „Articolul 294 [...] (1) Sunt scutite de taxă: a) livrările de bunuri expediate sau transportate în afara Uniunii Europene de către furnizor sau de altă persoană în contul său; [...]
 (2) Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]"
-— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. a) și alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 294 alin. (1) lit. a) și alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se leagă temeiul legal de clasificarea pe factură și de XML-ul e-Factura:
@@ -33,7 +33,7 @@ Cum se leagă temeiul legal de clasificarea pe factură și de XML-ul e-Factura:
 
 ## Ce face iConta.eu
 
-Clasificarea operațiunii se face la introducerea facturii, din câmpurile „țara terțului" și tipul de operațiune intracomunitară (`core/facturi_api.py`), aceleași câmpuri care rutează corect rândul din D300 (livrări IC, export). La generarea XML-ului pentru RO e-Factura (`core/efactura_send.py`), categoria de TVA a fiecărei linii se stabilește automat din cota facturii: cotă peste zero → categoria „S" (standard), cotă zero → categoria „Z" — deci o factură cu TVA 0% (export sau livrare intracomunitară) se transmite corect, cu categoria potrivită, fără intervenție suplimentară.
+Clasificarea operațiunii se face la introducerea facturii, din câmpurile „țara terțului" și tipul de operațiune intracomunitară, aceleași câmpuri care rutează corect rândul din D300 (livrări IC, export). La generarea XML-ului pentru RO e-Factura, categoria de TVA a fiecărei linii se stabilește automat din cota facturii: cotă peste zero → categoria „S" (standard), cotă zero → categoria „Z" — deci o factură cu TVA 0% (export sau livrare intracomunitară) se transmite corect, cu categoria potrivită, fără intervenție suplimentară.
 
 O limită reală, de reținut: generatorul actual **nu emite categoria „E" (scutit, cu motiv explicit/VATEX)** și nu are un câmp dedicat pentru codul de motiv al scutirii — doar distincția standard (S) / cotă zero (Z). Pentru operațiunile la care e nevoie strict de mențiunea „scutit conform art. X", nu doar de cota zero, acest detaliu nu e susținut încă în XML-ul generat.
 

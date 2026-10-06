@@ -16,15 +16,15 @@ Da. Impozitul pe clădire și impozitul pe teren sunt două impozite locale dist
 
 ::: ghid-temei
 „70. (1) Pentru suprafețele de teren acoperite de o clădire se datorează impozit/taxa pe teren. […] (2) Prin sintagma suprafața de teren care este acoperită de o clădire se înțelege suprafața construită la sol a clădirilor."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IX, pct. 70 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul IX, pct. 70 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Orice persoană care are în proprietate teren situat în România datorează pentru acesta un impozit anual, exceptând cazurile în care în prezentul titlu se prevede altfel."
-— Codul fiscal (Legea 227/2015), art. 463 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 463 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul/Taxa pe teren se stabilește luând în calcul suprafața terenului, rangul localității în care este amplasat terenul, zona și categoria de folosință a terenului, conform încadrării făcute de consiliul local."
-— Codul fiscal (Legea 227/2015), art. 465 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 465 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

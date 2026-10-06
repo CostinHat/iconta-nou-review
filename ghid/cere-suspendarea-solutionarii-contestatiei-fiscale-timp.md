@@ -16,15 +16,15 @@ Da. Codul de procedură fiscală (Legea 207/2015) permite contestatorului să ce
 
 ::: ghid-temei
 „La cererea contestatorului, organul de soluționare competent suspendă procedura și stabilește termenul până la care aceasta se suspendă. Termenul de suspendare nu poate fi mai mare de 6 luni de la data acordării. Suspendarea poate fi solicitată o singură dată."
-— Codul de procedură fiscală (Legea 207/2015), art. 277 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 277 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Procedura administrativă este reluată la încetarea motivului care a determinat suspendarea sau, după caz, la expirarea termenului stabilit de organul de soluționare competent potrivit alin. (2), indiferent dacă motivul care a determinat suspendarea a încetat ori nu."
-— Codul de procedură fiscală (Legea 207/2015), art. 277 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 277 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „În situația nesoluționării contestației în termen de 6 luni de la data depunerii contestației, contestatorul se poate adresa, pentru anularea actului, instanței de contencios administrativ competente [...]. La calculul termenului de 6 luni nu se iau în considerare perioadele prevăzute la art. 77"
-— Codul de procedură fiscală (Legea 207/2015), art. 281 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 281 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut:

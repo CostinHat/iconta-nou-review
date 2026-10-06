@@ -16,15 +16,15 @@ Contează din două motive. Transportul rutier pe teritoriul național se declar
 
 ::: ghid-temei
 „transportul rutier pe teritoriul național al bunurilor cu risc fiscal ridicat - transportul rutier pe drumurile publice, având punct de plecare și punct de sosire pe teritoriul României, al bunurilor stabilite ca fiind din categoria celor cu risc fiscal ridicat prin ordin al președintelui Agenției Naționale de Administrare Fiscală, indiferent de modul de organizare a transportului;"
-— OUG 41/2022, art. 2 pct. 2 (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 2 (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Prin ordin al președintelui Agenției Naționale de Administrare Fiscală emis în termen de 15 zile de la data intrării în vigoare a prezentei ordonanțe de urgență se stabilesc bunurile cu risc fiscal ridicat transportate rutier care fac obiectul monitorizării prin Sistemul RO e-Transport."
-— OUG 41/2022, art. 15 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 15 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ::: ghid-temei
 „Se stabilesc bunurile cu risc fiscal ridicat transportate rutier care fac obiectul monitorizării prin Sistemul RO e-Transport, astfel cum sunt prevăzute în anexa care face parte integrantă din prezentul ordin."
-— Ordinul ANAF nr. 802/2022, art. 1 (sursă: anaf_surse/ordin_802_2022.html)
+— Ordinul ANAF nr. 802/2022, art. 1 (sursă: [OPANAF nr. 802/2022 privind bunurile cu risc fiscal ridicat monitorizate prin RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/254608))
 :::
 
 Categoriile din anexa Ordinului ANAF nr. 802/2022, în forma publicată:

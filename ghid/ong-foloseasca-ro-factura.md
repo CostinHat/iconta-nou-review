@@ -14,7 +14,7 @@ Legea RO e-Factura nu face nicio excepție pe forma juridică a emitentului. Ce 
 
 ::: ghid-temei
 „(1) În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— art. 10 alin. (1) din OUG 120/2021, astfel cum a fost modificat prin Legea 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— art. 10 alin. (1) din OUG 120/2021, astfel cum a fost modificat prin Legea 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 - Obligația de transmitere prin RO e-Factura privește relația **B2B**, între „persoane impozabile stabilite în România" — indiferent dacă sunt sau nu înregistrate în scopuri de TVA.
@@ -29,6 +29,6 @@ Legea RO e-Factura nu face nicio excepție pe forma juridică a emitentului. Ce 
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) nu emite facturi și nu are nicio legătură cu modulul de facturare sau cu RO e-Factura al aplicației — se ocupă exclusiv de înregistrarea veniturilor fără scop patrimonial pe conturile din grupa 73 și de calculul scutirii de impozit pe profit pentru veniturile economice, potrivit art. 15 Cod fiscal. Dacă ONG-ul desfășoară activitate economică și emite facturi, acestea se gestionează prin modulele generale de facturare ale iConta.eu, la fel ca la orice altă entitate — subiectul RO e-Factura nu ține de această funcționalitate dedicată contabilității ONG.
+Funcționalitatea de contabilitate ONG din iConta.eu nu emite facturi și nu are nicio legătură cu modulul de facturare sau cu RO e-Factura al aplicației — se ocupă exclusiv de înregistrarea veniturilor fără scop patrimonial pe conturile din grupa 73 și de calculul scutirii de impozit pe profit pentru veniturile economice, potrivit art. 15 Cod fiscal. Dacă ONG-ul desfășoară activitate economică și emite facturi, acestea se gestionează prin modulele generale de facturare ale iConta.eu, la fel ca la orice altă entitate — subiectul RO e-Factura nu ține de această funcționalitate dedicată contabilității ONG.
 
 [iConta.eu](/)

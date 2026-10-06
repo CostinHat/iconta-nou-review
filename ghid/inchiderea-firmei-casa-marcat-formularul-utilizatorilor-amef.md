@@ -16,18 +16,18 @@ Formularul e o piesă din dosarul de închidere ușor de uitat. Cum aparatul se 
 
 ::: ghid-temei
 „V. Datele privind schimbările intervenite în situația aparatului de marcat electronic fiscal A. Factorul generator Confiscare conform legii sau preluare spre valorificare de către societățile bancare ca urmare a neachitării împrumutului contractat pentru achiziționarea acestor aparate Încetare activitate utilizator Se selectează o singură variantă."
-— OPANAF 4156/2017, Anexa nr. 3B, secțiunea V lit. A (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3B, secțiunea V lit. A (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „B. Documentul întocmit Proces-verbal Factura Altele* Seria Numărul Data [...] C. Entitatea în patrimoniul căreia intră aparatul de marcat electronic fiscal Cod de identificare fiscală Denumire"
-— OPANAF 4156/2017, Anexa nr. 3B, secțiunea V lit. B și C (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3B, secțiunea V lit. B și C (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 ::: ghid-temei
 „Utilizatorii informează organul fiscal competent în termen de 3 zile lucrătoare de la data la care a intervenit una dintre situațiile prevăzute la pct. 6 subpct. 6.1 sau la pct. 10 subpct. 10.2 lit. b) și c) din anexa nr. 1 la ordin"
-— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 6 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 
 „c) încetarea activității distribuitorului autorizat/utilizatorului;"
-— OPANAF 4156/2017, Anexa nr. 1, pct. 10 subpct. 10.2 lit. c) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 1, pct. 10 subpct. 10.2 lit. c) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 Cum se completează formularul la închidere:

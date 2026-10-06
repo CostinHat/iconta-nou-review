@@ -20,7 +20,7 @@ Corectarea unei declarații D101 depuse greșit — fie cu o bază de calcul inc
 [...]
 ART. 156 Termenele de plată [...]
 (4) În cazul creanțelor fiscale administrate de organul fiscal central, pentru diferențele de obligații fiscale principale stabilite de contribuabil/plătitor prin declarații fiscale rectificative, termenul de plată al diferențelor este data depunerii declarației rectificative la organul fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3), art. 156 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3), art. 156 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă acest temei pentru o D101 rectificativă în 2026:
@@ -37,6 +37,6 @@ Ce înseamnă acest temei pentru o D101 rectificativă în 2026:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/d101.py` generează Declarația 101 conform structurii P1-P53 confirmate din validatorul oficial, iar `core/d101_reconciliere.py` verifică independent baza contabilă a rezultatului; aplicația nu are, la acest moment, un asistent dedicat pentru generarea automată a unei D101 rectificative pornind de la o eroare identificată ulterior — o astfel de corecție presupune recalcularea manuală a formularului pentru perioada afectată și redepunerea lui cu bifa de rectificativă.
+Verificat în cod: Aplicația generează Declarația 101 conform structurii P1-P53 confirmate din validatorul oficial, iar aplicația verifică independent baza contabilă a rezultatului; aplicația nu are, la acest moment, un asistent dedicat pentru generarea automată a unei D101 rectificative pornind de la o eroare identificată ulterior — o astfel de corecție presupune recalcularea manuală a formularului pentru perioada afectată și redepunerea lui cu bifa de rectificativă.
 
 [iConta.eu](/)

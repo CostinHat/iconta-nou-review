@@ -14,7 +14,7 @@ Un mijloc fix primit cu titlu gratuit — prin donație, sponsorizare sau ca apo
 
 ::: ghid-temei
 „valoarea fiscală reprezintă: [...] c) costul de achiziție, de producție sau valoarea de piață a mijloacelor fixe dobândite cu titlu gratuit ori constituite ca aport, la data intrării în patrimoniul contribuabilului, utilizată pentru calculul amortizării fiscale, după caz - pentru mijloace fixe amortizabile și terenuri. În valoarea fiscală se includ și reevaluările contabile efectuate potrivit legii."
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 44 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 44 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret din text:
@@ -32,6 +32,6 @@ Ce rezultă concret din text:
 
 ## Ce face iConta.eu
 
-iConta.eu are teste dedicate metodei de amortizare pe ecran (`core/test_amortizare_ecran_metoda.py`) și confruntă amortizarea cu structura oficială a SAF-T (`core/test_r191_amortizare_confruntata.py`), ceea ce arată un motor de amortizare funcțional pentru mijloacele fixe introduse normal. Nu am identificat însă în cod o rută sau un câmp specific pentru introducerea unui mijloc fix „primit gratuit" cu valoare de piață la intrare, distinctă de introducerea unui activ achiziționat — dacă acest caz apare, valoarea de intrare trebuie stabilită și introdusă manual de contabil, conform art. 7 pct. 44 lit. c).
+iConta.eu are teste dedicate metodei de amortizare pe ecran și confruntă amortizarea cu structura oficială a SAF-T, ceea ce arată un motor de amortizare funcțional pentru mijloacele fixe introduse normal. Nu am identificat însă în cod o rută sau un câmp specific pentru introducerea unui mijloc fix „primit gratuit" cu valoare de piață la intrare, distinctă de introducerea unui activ achiziționat — dacă acest caz apare, valoarea de intrare trebuie stabilită și introdusă manual de contabil, conform art. 7 pct. 44 lit. c).
 
 [iConta.eu](/)

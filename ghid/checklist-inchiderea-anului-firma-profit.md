@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor, cu excepția contribuabililor prevăzuți la art. 41 alin. (16) și (17) care depun declarația anuală privind impozitul pe profit până la termenele prevăzute în cadrul acestor alineate."
-— Legea 227/2015 (Codul fiscal), art. 42 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 42 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele prevăzute la art. 1 alin. (1)-(3) depun un exemplar al situațiilor financiare anuale la organul fiscal competent... a) societățile reglementate de Legea nr. 31/1990... până la data de 31 mai inclusiv a exercițiului financiar următor celui de raportare; ... b) celelalte persoane juridice, până la data de 30 aprilie inclusiv a exercițiului financiar următor celui de raportare."
-— Legea 82/1991 (Legea contabilității), art. 36 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 36 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Punctele obligatorii ale unui exercițiu financiar calendaristic (1 ianuarie – 31 decembrie), pentru o firmă pe profit:

@@ -14,7 +14,7 @@ Controlul inopinat nu e o „inspecție fiscală mai scurtă" — e o formă dis
 
 ::: ghid-temei
 „Organul fiscal poate efectua un control fără înștiințarea prealabilă a contribuabilului/plătitorului, denumit în continuare control inopinat. [...] Durata efectuării controlului inopinat este stabilită de conducătorul organului de control, în funcție de obiectivele controlului, și nu poate fi mai mare de 30 de zile."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 134 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 134 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce diferențiază controlul inopinat de o inspecție fiscală obișnuită:

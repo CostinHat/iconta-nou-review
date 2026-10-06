@@ -18,11 +18,11 @@ d) obiectul actului administrativ fiscal;
 e) motivele de fapt;
 f) temeiul de drept; [...]
 i) posibilitatea de a fi contestat, termenul de depunere a contestației și organul fiscal la care se depune contestația."
-— Legea 207/2015 (Codul de procedură fiscală), art. 46 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 46 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii. [...]
 (4) Dacă actul administrativ fiscal nu conține elementele prevăzute la art. 46 alin. (2) lit. i), contestația poate fi depusă, în termen de 3 luni de la data comunicării actului administrativ fiscal."
-— Legea 207/2015, art. 270 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 270 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru a verifica o decizie ANAF suspectată de erori de calcul, pașii care rezultă direct din lege sunt:

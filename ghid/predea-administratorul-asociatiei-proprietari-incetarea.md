@@ -16,10 +16,10 @@ Miza e mare pentru ambele părți. Administratorul care nu predă complet și la
 
 ::: ghid-temei
 „(1) În cazul schimbării administratorului, vechiul administrator este obligat să transmită noului administrator, în baza unui proces-verbal de predare-primire vizat de președintele asociației și de către cenzor/comisia de cenzori, într-un termen de 5 zile de la încetarea contractului său, totalitatea documentelor, bunurilor și valorilor aflate în administrarea sa, situația financiar-contabilă a asociației și a fiecărui proprietar în raport cu asociația, situația soldurilor elementelor de activ și de pasiv la data predării. Procesul-verbal cuprinde și chitanța de plată cu care s-a făcut ultima încasare, numele proprietarilor restanțieri, sumele restante, contractele în derulare, plățile ce urmează a fi făcute după data predării. (2) În caz de neîndeplinire a prevederilor prevăzute la alin. (1) , administratorul nu este descărcat de gestiune și poate fi acționat în instanță de asociația de proprietari.”
-— Legea 196/2018, art. 69 alin. (1)-(2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 69 alin. (1)-(2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(5) În termen de 5 zile de la încetarea contractului de administrare, administratorul este obligat să prezinte, în condițiile prevăzute la art. 69 alin. (1) , președintelui asociației de proprietari și cenzorului/comisiei de cenzori contabilitatea fondului de reparații, a fondului de rulment și să o transfere noului administrator.”
-— Legea 196/2018, art. 71 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 71 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Lista de predare, după textul legii:

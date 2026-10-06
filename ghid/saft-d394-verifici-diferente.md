@@ -14,10 +14,10 @@ SAF-T (D406) și D394 nu ar trebui comparate cifră cu cifră, pentru că raport
 
 ::: ghid-temei
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF 3769/2015, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF 3769/2015, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025, Anexa 2 pct. 1 lit. b) (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 pct. 1 lit. b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Din aceste texte reiese exact perimetrul D394, cel care explică diferențele față de D406:
@@ -36,7 +36,7 @@ Ce merită verificat concret, când apar diferențe: dacă o operațiune apare �
 
 ## Ce face iConta.eu
 
-iConta.eu generează atât D406, cât și D394, fiecare validat local prin validatorul oficial ANAF (DUK) înainte de a fi considerat gata de depus. Generatorul D394 (`core/d394.py`) exclude explicit din calcul achizițiile de la parteneri din UE/non-UE (comentariu în cod: „ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390"), exact regula citată mai sus.
+iConta.eu generează atât D406, cât și D394, fiecare validat local prin validatorul oficial ANAF (DUK) înainte de a fi considerat gata de depus. Generatorul D394 exclude explicit din calcul achizițiile de la parteneri din UE/non-UE (comentariu în cod: „ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390"), exact regula citată mai sus.
 
 La data acestui ghid, **iConta.eu nu are o funcție dedicată de comparare automată între D406 și D394** — nu există în cod un modul care confrunte cele două declarații între ele. O eventuală divergență trebuie interpretată manual, pe baza regulilor de scop de mai sus, nu presupusă automat ca eroare.
 

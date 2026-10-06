@@ -16,12 +16,12 @@ Contează pentru că altfel ies două greșeli simetrice: salariatul apare în D
 
 ::: ghid-temei
 „(2) Declarațiile privind calcularea și reținerea impozitului pentru fiecare beneficiar de venit pentru angajații care au fost detașați la o altă entitate se completează de către angajator sau de către plătitorul de venituri din salarii în cazul în care angajatul detașat este plătit de entitatea la care a fost detașat. (3) În situația în care plata venitului salarial se face de entitatea la care angajații au fost detașați, angajatorul care a detașat comunică plătitorului de venituri din salarii la care aceștia sunt detașați date referitoare la deducerea personală la care este îndreptățit fiecare angajat."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IV, pct. 17 alin. (2)-(3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul IV, pct. 17 alin. (2)-(3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația să completeze și să depună Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate pentru fiecare beneficiar de venit, până la termenul de plată a impozitului, inclusiv."
-— Legea 227/2015 (Codul fiscal), art. 81 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 81 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Normele vorbesc despre „declarațiile privind calcularea și reținerea impozitului". În forma în vigoare a Codului fiscal, obligația apare la art. 81 alin. (1) și se îndeplinește prin declarația unică pentru contribuții și impozit, adică D112. Concret:

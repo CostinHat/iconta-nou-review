@@ -14,7 +14,7 @@ Nu orice cheltuială legată de dezvoltarea unui produs, unei tehnologii sau a u
 
 ::: ghid-temei
 „182. - (1) Cheltuielile de dezvoltare se amortizează pe durata de utilizare sau pe perioada contractului, după caz. (2) În cazul în care durata contractului sau durata de utilizare depășește 5 ani, durata de amortizare a cheltuielilor de dezvoltare nu poate depăși 10 ani."
-— OMFP nr. 1802/2014, Reglementări contabile, pct. 182 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, Reglementări contabile, pct. 182 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din reglementări rezultă întregul mecanism, nu doar durata de amortizare:

@@ -16,10 +16,10 @@ Declarația nu înlocuiește D112, prin care se declară lunar impozitul și con
 
 ::: ghid-temei
 „(1) Plătitorii de venituri de natura celor prevăzute la art. 291 alin. (1) lit. a) - d) au obligația să depună la organul fiscal central o declarație privind veniturile plătite fiecărui beneficiar care este rezident al altor state membre ale Uniunii Europene, până în ultima zi a lunii februarie a anului curent, pentru anul expirat."
-— Codul de procedură fiscală (Legea 207/2015), art. 60 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 60 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „a) venituri din muncă; b) remunerații plătite administratorilor și altor persoane asimilate acestora; c) venituri din produse de asigurări de viață neacoperite de alte instrumente juridice ale Uniunii Europene privind schimbul de informații și de alte măsuri similare; d) pensii;"
-— Codul de procedură fiscală (Legea 207/2015), art. 291 alin. (1) lit. a)-d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291 alin. (1) lit. a)-d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut:

@@ -16,11 +16,11 @@ Legea obligă agentul constatator să stabilească cine este proprietarul. Dacă
 
 ::: ghid-temei
 „(3) Agentul constatator are obligația să stabilească cine este proprietarul bunurilor confiscate și, dacă acestea aparțin unei alte persoane decât contravenientul, în procesul-verbal se vor menționa, dacă este posibil, datele de identificare a proprietarului sau se vor preciza motivele pentru care identificarea nu a fost posibilă."
-— OG 2/2001, art. 24 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 24 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(2) Partea vătămată poate face plângere numai în ceea ce privește despăgubirea, iar cel căruia îi aparțin bunurile confiscate, altul decât contravenientul, numai în ceea ce privește măsura confiscării."
-— OG 2/2001, art. 31 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(3) Plângerea suspendă executarea. Plângerea persoanelor prevăzute la art. 31 alin. (2) suspendă executarea numai în ceea ce privește despăgubirea sau, după caz, măsura confiscării."
-— OG 2/2001, art. 32 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 32 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

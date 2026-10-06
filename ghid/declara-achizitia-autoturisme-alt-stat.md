@@ -14,10 +14,10 @@ Regimul TVA al unui autoturism adus din alt stat membru depinde decisiv de un si
 
 ::: ghid-temei
 „Sunt, de asemenea, operațiuni impozabile [...] următoarele operațiuni efectuate cu plată, pentru care locul este considerat a fi în România [...]: b) o achiziție intracomunitară de mijloace de transport noi, efectuată de orice persoană."
-— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Decontul special de taxă se depune la organele fiscale competente de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316, astfel: [...] b) pentru achiziții intracomunitare de mijloace de transport noi, de către orice persoană, indiferent dacă este sau nu înregistrată conform art. 317 [...] Prin excepție, persoanele care nu sunt înregistrate în scopuri de TVA, conform art. 316, indiferent dacă sunt sau nu înregistrate conform art. 317, sunt obligate să depună decontul special de taxă pentru achizițiile intracomunitare de mijloace de transport noi, înainte de înmatricularea acestora în România, dar nu mai târziu de data de 25 a lunii următoare celei în care ia naștere exigibilitatea taxei aferente respectivei achiziții intracomunitare."
-— Codul fiscal, art. 324 alin. (1) lit. b) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 324 alin. (1) lit. b) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:
@@ -35,7 +35,7 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-`core/d301.py`, modulul de decont special de TVA al iConta.eu, susține explicit tipul de operațiune 2 („achiziții intracomunitare de mijloace de transport noi"), inclusiv marcajul dedicat pe numărul de evidență al declarației (`mij_transp`), care semnalează prezența unei asemenea achiziții în perioada declarată. Calculul bazei (`calc_baza`) și al declarației urmează structura validată de ANAF pentru D301.
+Aplicația, modulul de decont special de TVA al iConta.eu, susține explicit tipul de operațiune 2 („achiziții intracomunitare de mijloace de transport noi"), inclusiv marcajul dedicat pe numărul de evidență al declarației (`mij_transp`), care semnalează prezența unei asemenea achiziții în perioada declarată. Calculul bazei (`calc_baza`) și al declarației urmează structura validată de ANAF pentru D301.
 
 Aplicația nu determină ea însăși dacă un autoturism concret se încadrează în definiția fiscală de „mijloc de transport nou" (criteriile de kilometraj și vechime de la art. 266 alin. (3)) — încadrarea tipului de operațiune (2, pentru transport nou, sau 1, pentru achiziție obișnuită) rămâne o alegere manuală a contabilului la introducerea datelor.
 

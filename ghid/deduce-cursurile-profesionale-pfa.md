@@ -14,7 +14,7 @@ O întrebare frecventă printre persoanele fizice autorizate care investesc în 
 
 ::: ghid-temei
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]."
-— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici, onest, fără să inventăm o regulă specifică pentru cursuri care nu există în lege:

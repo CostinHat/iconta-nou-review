@@ -14,10 +14,10 @@ Cheltuielile efective de transport internațional (bilete, combustibil, taxe de 
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cele efectuate în scopul desfășurării activității economice [...]."
-— Legea 227/2015, art. 25 alin. (1), Titlul II (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (1), Titlul II (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[Nu sunt venituri impozabile la salariat, în limita plafonului neimpozabil] indemnizația de delegare, indemnizația de detașare, inclusiv indemnizația specifică detașării transnaționale [...], altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați [...], pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: [...] (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Legea 227/2015, art. 76 alin. (2) lit. k), Titlul IV (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 76 alin. (2) lit. k), Titlul IV (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două regimuri, deseori confundate, sunt independente:
@@ -35,6 +35,6 @@ Cu alte cuvinte: firma poate deconta și deduce integral cheltuielile reale de t
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor dedicat de deconturi de deplasare și diurnă (`core/deconturi.py`), care separă automat, pe decont, cele trei componente — diurnă, transport, cazare — și calculează plafonul de neimpozitare a diurnei conform art. 76 alin. (2) lit. k) și alin. (4^1): minimul dintre 2,5 ori diurna bugetară și 3 salarii de bază raportate la zilele lucrătoare din lună, cu partea care depășește plafonul tratată ca venit salarial impozabil. Funcția acoperă și deplasările externe, cu diurna bugetară și cursul valutar introduse pentru țara respectivă (HG 518/1995), nu doar cele interne (HG 714/2018, actualizat prin Ordinul MF 1235/2023). Transportul și cazarea decontate pe bază de documente (625 = 542) rămân integral deductibile la firmă, separat de diurnă, exact distincția descrisă mai sus — contabilul introduce sumele din decont, iar aplicația face împărțirea neimpozabil/impozabil, nu invers.
+iConta.eu are un motor dedicat de deconturi de deplasare și diurnă, care separă automat, pe decont, cele trei componente — diurnă, transport, cazare — și calculează plafonul de neimpozitare a diurnei conform art. 76 alin. (2) lit. k) și alin. (4^1): minimul dintre 2,5 ori diurna bugetară și 3 salarii de bază raportate la zilele lucrătoare din lună, cu partea care depășește plafonul tratată ca venit salarial impozabil. Funcția acoperă și deplasările externe, cu diurna bugetară și cursul valutar introduse pentru țara respectivă (HG 518/1995), nu doar cele interne (HG 714/2018, actualizat prin Ordinul MF 1235/2023). Transportul și cazarea decontate pe bază de documente (625 = 542) rămân integral deductibile la firmă, separat de diurnă, exact distincția descrisă mai sus — contabilul introduce sumele din decont, iar aplicația face împărțirea neimpozabil/impozabil, nu invers.
 
 [iConta.eu](/)

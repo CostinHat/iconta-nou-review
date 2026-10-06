@@ -16,15 +16,15 @@ Practic, transferul în fiducie nu e un prilej de reevaluare fiscală, de schimb
 
 ::: ghid-temei
 „valoarea fiscală a activelor cuprinse în masa patrimonială fiduciară, preluată de fiduciar, este egală cu valoarea fiscală pe care acestea au avut-o la constituitor"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „amortizarea fiscală pentru orice activ amortizabil prevăzut în masa patrimonială fiduciară se determină în continuare în conformitate cu regulile prevăzute la art. 28 , care s-ar fi aplicat la persoana care a transferat activul, dacă transferul nu ar fi avut loc."
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „fiduciarul va conduce o evidență contabilă separată pentru masa patrimonială fiduciară și va transmite trimestrial către constituitor, pe bază de decont, veniturile și cheltuielile rezultate din administrarea patrimoniului conform contractului"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru fiduciar și pentru constituitor:

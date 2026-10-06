@@ -16,9 +16,9 @@ Odată aleasă, data de raportare nu se mai poate schimba de la un an la altul, 
 
 ::: ghid-temei
 „Persoanele care optează pentru un exercițiu financiar diferit de anul calendaristic, potrivit alin. (3) și (5) , au următoarele obligații: a) să întocmească și să depună raportări contabile anuale la Agenția Națională de Administrare Fiscală, în condițiile prevăzute la art. 37 ;"
-— Legea contabilității nr. 82/1991, art. 27 alin. (6) lit. a) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 27 alin. (6) lit. a) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „b) să înștiințeze în scris unitatea teritorială a Ministerului Finanțelor Publice despre exercițiul financiar ales, cu cel puțin 30 de zile calendaristice înainte de începutul exercițiului financiar ales. Persoanele nou-înființate depun înștiințarea respectivă în termen de 30 de zile calendaristice de la data înființării."
-— Legea contabilității nr. 82/1991, art. 27 alin. (6) lit. b) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 27 alin. (6) lit. b) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

@@ -24,7 +24,7 @@ Nu. Întreprinderea individuală (II) se numără printre categoriile de contrib
 - cabinetele medicale individuale (CMI);
 - societăţile profesionale practicieni în insolvenţă (SPI);
 - întreprinderile profesionale unipersonale cu răspundere limitată (URL); [...]"
-— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, pct. 4 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, pct. 4 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Concluzia e directă și nu lasă loc de interpretare:

@@ -16,12 +16,12 @@ Legea 273/2006 nu fixează o cotă proprie și trimite la nivelul majorărilor p
 
 ::: ghid-temei
 „(3) Fondul de risc se constituie din: sumele încasate sub forma de comisioane de la beneficiarii împrumuturilor garantate; dobânzile acordate de unitățile Trezoreriei Statului la disponibilitățile fondului; majorări de întârziere la nivelul celor existente pentru veniturile bugetare, aplicate pentru neplata în termen de către beneficiarii împrumuturilor garantate a comisioanelor și, respectiv, a ratelor scadente, dobânzilor și comisioanelor aferente și, în completare, din bugetul local."
-— Legea 273/2006 privind finanțele publice locale, art. 64 alin. (3) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 64 alin. (3) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 ::: ghid-temei
 „(2) Nivelul majorării de întârziere este de 1% din cuantumul obligațiilor fiscale principale neachitate în termen, calculată pentru fiecare lună sau fracțiune de lună, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 183 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 183 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

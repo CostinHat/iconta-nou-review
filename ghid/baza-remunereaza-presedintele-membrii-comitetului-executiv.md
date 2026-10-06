@@ -16,14 +16,14 @@ Fiscal, sumele primite nu sunt venituri din activități independente: Codul fis
 
 ::: ghid-temei
 „(1) Președintele asociației de proprietari și membrii comitetului executiv pot fi remunerați pe baza unui contract de mandat, conform hotărârii adunării generale a proprietarilor, consemnată în procesul-verbal."
-— Legea 196/2018, art. 58 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 58 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(8) Cenzorul/Membrii comisiei de cenzori, angajat/angajați al/ai asociației de proprietari, este/sunt remunerat/remunerați pe baza unui contract de mandat, conform hotărârii adunării generale a asociației de proprietari, consemnată în procesul-verbal."
-— Legea 196/2018, art. 60 alin. (8) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (8) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „Regulile de impunere proprii veniturilor din salarii se aplică și următoarelor tipuri de venituri, considerate asimilate salariilor: […] remunerația primită de președintele asociației de proprietari sau de alte persoane, în baza contractului de mandat, potrivit […] sumele primite de membrii comisiei de cenzori sau comitetului de audit, după caz, precum și sumele primite pentru participarea în consilii, comisii, comitete și altele asemenea;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. g) și i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. g) și i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

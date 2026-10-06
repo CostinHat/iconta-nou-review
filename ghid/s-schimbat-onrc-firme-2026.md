@@ -14,7 +14,7 @@ Legea 239/2025, în vigoare de la 18 decembrie 2025, a modificat mai multe artic
 
 ::: ghid-temei
 „(2) Lista societăților pentru care Oficiul Național al Registrului Comerțului urmează să constate, din oficiu, întrunirea condițiilor pentru dizolvare [...] se menționează în registrul comerțului și se comunică societăților dizolvate. [...] (3) În cazul societăților care nu figurează cu obligații fiscale restante, precum și alte creanțe bugetare individualizate în titluri executorii emise potrivit legii și existente în evidența organului fiscal central în vederea recuperării, dacă în termen de 20 de zile de la data înscrierii mențiunii de dizolvare în registrul comerțului nicio persoană interesată nu a formulat cerere de numire a lichidatorului, Oficiul Național al Registrului Comerțului, prin registrator, radiază, din oficiu, societatea din registrul comerțului."
-— Legea 239/2025, art. VIII alin. (2)-(3) — provizie specială pentru societățile dizolvate ca urmare a inactivității fiscale (art. 92 alin. (4) din Legea 207/2015), distinctă de regula generală de radiere din art. 237 din Legea 31/1990 (sursă: anaf_surse/legea_31_1990_modif_L239_2025.txt)
+— Legea 239/2025, art. VIII alin. (2)-(3) — provizie specială pentru societățile dizolvate ca urmare a inactivității fiscale (art. 92 alin. (4) din Legea 207/2015), distinctă de regula generală de radiere din art. 237 din Legea 31/1990 (sursă: [Material informativ ANAF (DGRFP Brașov): modificări aduse Legii nr. 31/1990 prin Legea nr. 239/2025](https://static.anaf.ro/static/10/Brasov/Brasov/modificari_L31_1990_prin_L_239_2025.pdf))
 :::
 
 Principalele schimbări relevante pentru firme, aplicabile din 2026:

@@ -15,10 +15,10 @@ O investiție ulterioară care îmbunătățește parametrii tehnici ai unui mij
 ::: ghid-temei
 „ART. 59^1 Obligația de depunere a fișierului standard de control fiscal
 (1) Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Amortizarea fiscală se calculează după cum urmează: [...] d) pentru investițiile efectuate la mijloacele fixe existente, sub forma cheltuielilor ulterioare realizate în scopul îmbunătățirii parametrilor tehnici inițiali și care conduc la obținerea de beneficii economice viitoare, amortizarea fiscală se calculează pe baza valorii rămase majorate cu investițiile efectuate, a metodei de amortizare utilizată pentru mijlocul fix îmbunătățit, pe durata normală de utilizare rămasă."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (12) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (12) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Limitare declarată:** cele două texte dau, împreună, principiul — orice modernizare afectează amortizarea fiscală (valoare rămasă majorată, pe durata rămasă) și, ca element din evidența contabilă și fiscală, intră sub obligația generală de raportare SAF-T. Sursele verificate **nu conțin însă un articol distinct, tehnic, al ordinelor ANAF care reglementează structura fișierului D406 (OPANAF nr. 1783/2021 și modificările lui), care să detalieze exact cum se marchează o modernizare** (ca element separat sau ca majorare a valorii activului existent) în secțiunea de active fixe a SAF-T. Ce rezultă cert din principiile de mai sus:
@@ -34,6 +34,6 @@ O investiție ulterioară care îmbunătățește parametrii tehnici ai unui mij
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/d406_active.py` calculează amortizarea mijloacelor fixe pentru raportarea în D406/SAF-T, cu tratament explicit pentru reevaluare (recalculare de la zero, pe durata rămasă, cu temei OMFP 1802/2014 pct. 111-116). Aplicația **nu conține, la acest moment, un tratament separat pentru investițiile ulterioare/modernizările** care majorează valoarea rămasă a unui mijloc fix existent (nu am găsit în cod nicio referire la „investiție", „îmbunătățire" sau „modernizare" în acest modul) — recalcularea amortizării ca urmare a unei modernizări, conform art. 28 alin. (12) lit. d) din Codul fiscal, rămâne, deocamdată, o operațiune realizată manual de contabil.
+Verificat în cod: Aplicația calculează amortizarea mijloacelor fixe pentru raportarea în D406/SAF-T, cu tratament explicit pentru reevaluare (recalculare de la zero, pe durata rămasă, cu temei OMFP 1802/2014 pct. 111-116). Aplicația **nu conține, la acest moment, un tratament separat pentru investițiile ulterioare/modernizările** care majorează valoarea rămasă a unui mijloc fix existent (nu am găsit în cod nicio referire la „investiție", „îmbunătățire" sau „modernizare" în acest modul) — recalcularea amortizării ca urmare a unei modernizări, conform art. 28 alin. (12) lit. d) din Codul fiscal, rămâne, deocamdată, o operațiune realizată manual de contabil.
 
 [iConta.eu](/)

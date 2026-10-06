@@ -14,7 +14,7 @@ Un avans încasat sau plătit înainte de livrarea bunului sau prestarea servici
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), exigibilitatea taxei intervine: [...] b) la data la care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator. Avansurile reprezintă plata parțială sau integrală a contravalorii bunurilor și serviciilor, efectuată înainte de data livrării ori prestării acestora;"
-— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula generală (art. 282 alin. (1) CF) e că TVA devine exigibilă la faptul generator (livrare/prestare). **Excepția avansului** mută exigibilitatea la data încasării.

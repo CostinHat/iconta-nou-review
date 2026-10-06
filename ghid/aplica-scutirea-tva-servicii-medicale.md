@@ -14,7 +14,7 @@ Serviciile medicale beneficiază de o scutire de TVA de interes general, dar apl
 
 ::: ghid-temei
 „spitalizarea, îngrijirile medicale și operațiunile strâns legate de acestea, desfășurate de unități autorizate pentru astfel de activități, indiferent de forma de organizare, precum: spitale, sanatorii, centre de sănătate rurale sau urbane, dispensare, cabinete și laboratoare medicale, centre de îngrijire medicală și de diagnostic, baze de tratament și recuperare, stații de salvare și alte unități autorizate să desfășoare astfel de activități."
-— Legea nr. 227/2015 (Codul fiscal), art. 292 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 292 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text pentru aplicarea corectă a scutirii:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru aplicarea corectă a scutirii:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/cote_tva.py` și modulele de gestiune a cotelor TVA permit configurarea operațiunilor scutite pe firmă, dar iConta.eu nu are, la acest moment, o listă automată de validare a codurilor CAEN/autorizărilor care condiționează aplicarea scutirii pentru servicii medicale potrivit art. 292 — încadrarea corectă a unei operațiuni ca scutită rămâne o decizie a contabilului, aplicația doar reflectând tratamentul TVA ales.
+Verificat în cod: Aplicația și modulele de gestiune a cotelor TVA permit configurarea operațiunilor scutite pe firmă, dar iConta.eu nu are, la acest moment, o listă automată de validare a codurilor CAEN/autorizărilor care condiționează aplicarea scutirii pentru servicii medicale potrivit art. 292 — încadrarea corectă a unei operațiuni ca scutită rămâne o decizie a contabilului, aplicația doar reflectând tratamentul TVA ales.
 
 [iConta.eu](/)

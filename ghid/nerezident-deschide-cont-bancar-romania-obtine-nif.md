@@ -16,15 +16,15 @@ Același mecanism funcționează și pentru persoanele juridice care nu au cod d
 
 ::: ghid-temei
 „(4) Odată cu solicitarea deschiderii unui cont bancar sau închirierea unei casete de valori, instituțiile de credit transmit organului fiscal central solicitarea de atribuire a numărului de identificare fiscală sau, după caz, a codului de înregistrare fiscală, pentru persoanele fizice nerezidente sau pentru persoanele juridice care nu dețin cod de identificare fiscală. Pe baza datelor transmise, Ministerul Finanțelor atribuie numărul de identificare fiscală sau, după caz, codul de înregistrare fiscală, înregistrează fiscal persoana respectivă și comunică instituției de credit informația referitoare la înregistrarea fiscală în termen de 5 zile de la data solicitării atribuirii numărului de identificare fiscală sau, după caz, a codului de înregistrare fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Totodată se emite certificatul de înregistrare fiscală, care se păstrează de către organul fiscal până la data ridicării de către contribuabil sau împuternicitul acestuia. În cazul în care solicitarea de atribuire a numărului de identificare fiscală sau, după caz, a codului de înregistrare fiscală se realizează prin intermediul aplicației online a A.N.A.F., numărul de identificare fiscală sau, după caz, codul de înregistrare fiscală se comunică instituției de credit prin aplicația online spre a fi înregistrat în evidențele informatice ale acesteia."
-— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 83 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „e) pentru persoanele fizice care nu dețin cod numeric personal, numărul de identificare fiscală atribuit de organul fiscal. În cazul obținerii ulterioare a codului numeric personal, numărul de identificare fiscală atribuit anterior se înlocuiește de către organul fiscal, cu preluarea informațiilor fiscale înregistrate în perioada deținerii numărului de identificare fiscală pe codul numeric personal."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. e) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. e) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut:

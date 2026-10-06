@@ -14,7 +14,7 @@ Când un procesator de plăți precum Stripe reține comisionul înainte de a vi
 
 ::: ghid-temei
 „56. - (1) Principiul necompensării. Orice compensare între elementele de active și datorii sau între elementele de venituri și cheltuieli este interzisă."
-— OMFP 1802/2014, pct. 56 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 56 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un flux de tip Stripe/PayPal/alt procesator de plăți, principiul necompensării înseamnă:

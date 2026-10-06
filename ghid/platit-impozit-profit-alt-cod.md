@@ -16,7 +16,7 @@ O plată efectuată în contul bugetar greșit (de exemplu, suma pentru impozitu
 „(1) Plata obligațiilor fiscale efectuată într-un cont bugetar eronat este valabilă, de la momentul efectuării acesteia, în condițiile prezentului articol. La cererea debitorului, organul fiscal competent efectuează îndreptarea erorilor din documentele de plată întocmite de debitor, în suma și din contul debitorului înscrise în documentul de plată, cu condiția debitării contului acestuia și a creditării unui cont bugetar.
 (2) Dispozițiile alin. (1) se aplică și în cazul în care plata s-a efectuat în alt buget decât cel al cărui venit este creanța fiscală plătită, cu condiția ca plata să nu fi stins creanțele datorate bugetului în care s-a încasat suma plătită eronat, cu excepția cazului în care în evidența fiscală debitorul înregistrează sume plătite în plus cel puțin la nivelul plății eronate.
 (5) Cererea de îndreptare a erorilor din documentele de plată poate fi depusă în termen de 5 ani, sub sancțiunea decăderii. Termenul începe să curgă de la data de 1 ianuarie a anului următor celui în care s-a efectuat plata."
-— Legea 207/2015, art. 164 alin. (1), (2) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 164 alin. (1), (2) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să știe firma care a plătit la codul bugetar greșit:

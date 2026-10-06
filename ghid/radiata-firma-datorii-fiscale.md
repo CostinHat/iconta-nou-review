@@ -14,7 +14,7 @@ Răspunsul scurt e contraintuitiv pentru mulți: datoriile fiscale restante nu d
 
 ::: ghid-temei
 „Lista societăților pentru care Oficiul Național al Registrului Comerțului urmează să formuleze acțiuni de dizolvare se afișează în Buletinul electronic al registrului comerțului, cu cel puțin 60 de zile calendaristice înainte, și se transmite Agenției Naționale de Administrare Fiscală. În termen de 45 de zile calendaristice de la data afișării/primirii listei, Agenția Națională de Administrare Fiscală, precum și orice alt creditor comunică Oficiului Național al Registrului Comerțului societățile care înregistrează obligații bugetare restante și/sau la care este în curs de desfășurare o acțiune de control fiscal ori alte creanțe neachitate, caz în care se amână inițierea acțiunii de dizolvare, până la stingerea acestora, după caz, respectiv până la finalizarea acțiunii de control fiscal."
-— Legea 31/1990 (a societăților), art. 237 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (a societăților), art. 237 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă concret din text:

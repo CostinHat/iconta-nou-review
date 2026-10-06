@@ -16,10 +16,10 @@ Pentru contabil, distincția evită o eroare frecventă. Dacă suma din raportar
 
 ::: ghid-temei
 „10. Contraprestație înseamnă orice formă de compensație, după scăderea tuturor onorariilor, comisioanelor sau taxelor reținute sau percepute de Operatorul de platformă care are obligația de raportare, care este plătită sau creditată în contul unui Vânzător în legătură cu Activitatea Relevantă și a cărei valoare este cunoscută sau ar putea fi, în mod rezonabil, cunoscută de Operatorul de platformă."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 10 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 10 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „e)Contraprestația totală plătită sau creditată în fiecare trimestru al Perioadei de Raportare și numărul de Activități Relevante pentru care aceasta a fost plătită sau creditată; f)orice onorarii, comisioane sau taxe reținute sau percepute de Operatorul de platformă care are obligația de raportare în fiecare trimestru al Perioadei de Raportare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. B pct. 2 lit. e) și f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. B pct. 2 lit. e) și f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă:

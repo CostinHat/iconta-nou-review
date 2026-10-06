@@ -14,7 +14,7 @@ Generarea tehnică a fișierului SAF-T (D406) poate fi făcută de orice softwar
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal."
-— Legea 207/2015, art. 59^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 59^1 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru relația cu un furnizor de software:
@@ -31,6 +31,6 @@ Ce rezultă din text pentru relația cu un furnizor de software:
 
 ## Ce face iConta.eu
 
-iConta.eu generează fișierul SAF-T (D406) intern, din propriile evidențe contabile ale firmei (`core/d406.py`), fără să depindă de un furnizor extern de software pentru acest pas. Aplicația nu oferă o funcție de „delegare" sau export către un alt generator SAF-T terț — fluxul e integrat: facturile, amortizarea și stocurile din iConta.eu alimentează direct declarația. Persoanele fizice autorizate, întreprinderile individuale și cele familiale (PFA/II/IF) sunt excluse necondiționat din obligația SAF-T, conform OPANAF 407/2025, Anexa 5 pct. 4 lit. a)-c) — cod care nu le generează declarația pentru că legea nu o cere.
+iConta.eu generează fișierul SAF-T (D406) intern, din propriile evidențe contabile ale firmei, fără să depindă de un furnizor extern de software pentru acest pas. Aplicația nu oferă o funcție de „delegare" sau export către un alt generator SAF-T terț — fluxul e integrat: facturile, amortizarea și stocurile din iConta.eu alimentează direct declarația. Persoanele fizice autorizate, întreprinderile individuale și cele familiale (PFA/II/IF) sunt excluse necondiționat din obligația SAF-T, conform OPANAF 407/2025, Anexa 5 pct. 4 lit. a)-c) — cod care nu le generează declarația pentru că legea nu o cere.
 
 [iConta.eu](/)

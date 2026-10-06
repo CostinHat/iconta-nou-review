@@ -16,14 +16,14 @@ Ce limitează folosirea zilierilor este **domeniul de activitate** și **durata*
 
 ::: ghid-temei
 „b) beneficiar de lucrări, denumit în continuare beneficiar - unitățile administrativ-teritoriale, persoana juridică, persoana fizică autorizată, întreprinderea individuală, întreprinderea familială, pentru care zilierul desfășoară activități necalificate cu caracter ocazional;"
-— Legea 52/2011, art. 1 alin. (1) lit. b) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (1) lit. b) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „Articolul 13 (1) Munca necalificată cu caracter ocazional se poate presta în următoarele domenii prevăzute în Clasificarea activităților din economia națională, actualizată: a) agricultură, vânătoare și servicii anexe - diviziunea 01; ... b) silvicultură, cu excepția exploatări forestiere - diviziunea 02; ... c) pescuit și acvacultură - diviziunea 03;"
-— Legea 52/2011, art. 13 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(4) Niciun zilier nu poate presta activități pentru același beneficiar sau un împuternicit al acestuia pe o perioadă mai lungă de 90 de zile cumulate pe durata unui an calendaristic, cu excepția zilierilor care prestează activități în domeniile agricol, silvic, viticol, pomicol, legumicol, floricol, piscicol, creșterii animalelor în sistem extensiv [...] în cazul acestora, perioada nu poate depăși 180 de zile cumulate pe durata unui an calendaristic."
-— Legea 52/2011, art. 4 alin. (4) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (4) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

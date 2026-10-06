@@ -14,7 +14,7 @@ Când o comandă e anulată în magazinul online după ce a fost deja transforma
 
 ::: ghid-temei
 „Corectarea informațiilor înscrise în facturi [...] se efectuează astfel: a) în cazul în care factura nu a fost transmisă către beneficiar, aceasta se anulează și se emite o nouă factură; [...] b) în cazul în care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă [...] valorile cu semnul minus [...], iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus [...], în care se înscriu numărul și data facturii corectate."
-— Codul fiscal (Legea nr. 227/2015), art. 330 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), art. 330 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula depinde de un singur criteriu: dacă factura a ajuns sau nu la cumpărător (a fost transmisă). O comandă WooCommerce anulată după ce factura a fost deja emisă și trimisă cade aproape întotdeauna în situația de la lit. b) — trebuie stornată, nu ștearsă.

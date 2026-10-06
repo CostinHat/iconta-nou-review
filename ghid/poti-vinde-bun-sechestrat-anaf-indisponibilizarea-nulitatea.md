@@ -16,14 +16,14 @@ Această cale poate aduce un preț mai bun decât licitația și poate închide 
 
 ::: ghid-temei
 „De la data întocmirii procesului-verbal de sechestru, bunurile sechestrate sunt indisponibilizate. Cât timp durează executarea silită debitorul nu poate dispune de aceste bunuri decât cu aprobarea dată, potrivit legii, de organul competent. Nerespectarea acestei interdicții atrage răspunderea, potrivit legii, a celui în culpă."
-— Codul de procedură fiscală (Legea 207/2015), art. 238 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 238 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Actele de dispoziție care ar interveni ulterior indisponibilizării prevăzute la alin. (9) sunt lovite de nulitate absolută."
-— Codul de procedură fiscală (Legea 207/2015), art. 238 alin. (10) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 238 alin. (10) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Valorificarea bunurilor potrivit înțelegerii părților se realizează de debitorul însuși, cu acordul organului de executare silită, astfel încât să se asigure o recuperare corespunzătoare a creanței fiscale. Debitorul este obligat să prezinte în scris organului de executare silită propunerile ce i s-au făcut și nivelul de acoperire a creanțelor fiscale, indicând numele și adresa potențialului cumpărător, precum și termenul în care acesta din urmă va achita prețul propus."
-— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 248 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă indisponibilizarea:

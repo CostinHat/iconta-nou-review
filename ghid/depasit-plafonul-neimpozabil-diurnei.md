@@ -14,7 +14,7 @@ Angajatorii din mediul privat pot acorda o diurnă mai mare decât nivelul stabi
 
 ::: ghid-temei
 „...indemnizația de delegare, indemnizația de detașare, inclusiv indemnizația specifică detașării transnaționale, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel..."
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Plafonul neimpozabil al diurnei interne se calculează ca **multiplu (2,5x) al nivelului legal stabilit pentru personalul din instituțiile publice** prin hotărâre de Guvern — nivel care s-a schimbat de-a lungul timpului (de la 20 lei/zi conform HG nr. 714/2018, la 23 lei/zi de la 1 aprilie 2023, prin Ordinul nr. 1235/2023).
@@ -30,6 +30,6 @@ Angajatorii din mediul privat pot acorda o diurnă mai mare decât nivelul stabi
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de decontări din iConta.eu (`core/deconturi.py`, funcția `plafon_diurna`) calculează automat plafonul neimpozabil ca minimul dintre 2,5x diurna bugetară internă și 3x salariul de bază raportat la zilele lucrătoare din lună, exact formula de la art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal, și separă automat suma neimpozabilă de partea impozabilă a diurnei acordate. Nivelul diurnei bugetare folosit ca bază e sensibil la perioadă — 20 lei/zi până la 31.03.2023 (HG nr. 714/2018), 23 lei/zi de la 1 aprilie 2023 (Ordinul MF nr. 1235/2023) — astfel încât calculul nu aplică retroactiv valoarea actuală unor deplasări din trecut.
+La data acestui ghid, modulul de decontări din iConta.eu (funcția `plafon_diurna`) calculează automat plafonul neimpozabil ca minimul dintre 2,5x diurna bugetară internă și 3x salariul de bază raportat la zilele lucrătoare din lună, exact formula de la art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal, și separă automat suma neimpozabilă de partea impozabilă a diurnei acordate. Nivelul diurnei bugetare folosit ca bază e sensibil la perioadă — 20 lei/zi până la 31.03.2023 (HG nr. 714/2018), 23 lei/zi de la 1 aprilie 2023 (Ordinul MF nr. 1235/2023) — astfel încât calculul nu aplică retroactiv valoarea actuală unor deplasări din trecut.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T, depus prin D406) are o secțiune de
 
 ::: ghid-temei
 „[Sub-secțiunea] Payments (Plăți) — Conţine detalii despre plăţi, precum perioada, ID-ul tranzacţiei, data tranzacţiei, descriere, liniile de plăţi etc."
-— OPANAF 1783/2021, Instrucțiuni SAF-T/D406, secțiunea SourceDocuments (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Instrucțiuni SAF-T/D406, secțiunea SourceDocuments (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce se poate confirma, cu onestitate, din structura oficială:
@@ -31,6 +31,6 @@ Ce se poate confirma, cu onestitate, din structura oficială:
 
 ## Ce face iConta.eu
 
-Motorul D406 al iConta.eu (`core/d406.py`) mapează metoda de plată a fiecărei tranzacții la codul ANAF corespunzător prin funcția `payment_method_anaf` — termenii interni „vir", „virament", „transfer", „op", „banca" sunt recunoscuți și mapați la codul „03" (plată fără numerar), folosit implicit pentru majoritatea plăților prin bancă; o metodă necunoscută primește codul implicit „03", cu semnalarea explicită a valorii înlocuite, nu tacit. Secțiunea `<Payments>` a fișierului XML se generează doar dacă există plăți înregistrate pentru perioada raportată. Rămâne responsabilitatea contabilului să se asigure că metoda de plată e introdusă corect la nivelul fiecărei tranzacții din aplicație, pentru ca maparea la codul ANAF să reflecte realitatea.
+Motorul D406 al iConta.eu mapează metoda de plată a fiecărei tranzacții la codul ANAF corespunzător prin funcția `payment_method_anaf` — termenii interni „vir", „virament", „transfer", „op", „banca" sunt recunoscuți și mapați la codul „03" (plată fără numerar), folosit implicit pentru majoritatea plăților prin bancă; o metodă necunoscută primește codul implicit „03", cu semnalarea explicită a valorii înlocuite, nu tacit. Secțiunea `<Payments>` a fișierului XML se generează doar dacă există plăți înregistrate pentru perioada raportată. Rămâne responsabilitatea contabilului să se asigure că metoda de plată e introdusă corect la nivelul fiecărei tranzacții din aplicație, pentru ca maparea la codul ANAF să reflecte realitatea.
 
 [iConta.eu](/)

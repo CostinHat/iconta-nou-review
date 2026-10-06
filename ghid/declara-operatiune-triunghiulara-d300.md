@@ -14,7 +14,7 @@ O operațiune triunghiulară implică trei firme din state membre diferite, dar 
 
 ::: ghid-temei
 „Rândul 1 - se înscriu informaţiile preluate din jurnalul de vânzări privind baza de impozitare pentru livrările intracomunitare de bunuri, scutite conform art. 294 alin. (2) lit. a) şi d) din Codul fiscal, şi pentru livrările intracomunitare de bunuri cu cod T, efectuate în cadrul unei operaţiuni triunghiulare de cumpărătorul revânzător, prevăzute la art. 276 alin. (5) din Codul fiscal... Rândul 5 - se înscriu informaţiile preluate din jurnalul de cumpărări privind baza de impozitare pentru achiziţiile intracomunitare de bunuri taxabile în România, precum şi baza de impozitare pentru achiziţiile de bunuri efectuate de către beneficiarul unei livrări ulterioare efectuate în cadrul unei operaţiuni triunghiulare, pentru care acesta este obligat la plata taxei conform art. 307 alin. (4) din Codul fiscal..."
-— Instrucțiunile de completare a decontului de TVA (formular 300), aprobate prin OPANAF 174/2026 (sursă: anaf_surse/opanaf_174_2026_d300.txt)
+— Instrucțiunile de completare a decontului de TVA (formular 300), aprobate prin OPANAF 174/2026 (sursă: [OPANAF nr. 174/2026 pentru aprobarea formularului 300 (Decont de TVA)](https://legislatie.just.ro/Public/DetaliiDocument/307258))
 :::
 
 Cum se poziționează firma românească, în funcție de rolul din lanțul triunghiular:

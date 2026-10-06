@@ -14,7 +14,7 @@ Da — reglementările contabile românești nu au eliminat metoda LIFO (ultimul
 
 ::: ghid-temei
 „Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; [...] b) metoda primul intrat-primul ieșit - FIFO; [...] c) metoda ultimul intrat-primul ieșit - LIFO. [...] Potrivit metodei «ultimul intrat-primul ieșit» (LIFO), bunurile ieșite din gestiune se evaluează la costul de achiziție sau de producție al ultimei intrări (lot). Pe măsura epuizării lotului, bunurile ieșite din gestiune se evaluează la costul de achiziție sau costul de producție al lotului anterior, în ordine cronologică."
-— OMFP 1802/2014, pct. 96 alin. (1) și (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (1) și (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce trebuie reținut despre alegerea metodei:
@@ -31,6 +31,6 @@ Ce trebuie reținut despre alegerea metodei:
 
 ## Ce face iConta.eu
 
-La acest moment, iConta.eu susține două dintre metodele acceptate: `core/stocuri.py` implementează metoda global-valorică (preț cu amănuntul), iar `core/stocuri_cv.py` implementează metoda cantitativ-valorică la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96 alin. (2)). Aplicația nu oferă, la acest moment, evaluare pe loturi cronologice de tip FIFO sau LIFO; o firmă care aplică specific FIFO sau LIFO pe loturi va trebui să verifice dacă modulul de stocuri actual acoperă acest tip de evaluare pentru situația ei concretă.
+La acest moment, iConta.eu susține două dintre metodele acceptate: Aplicația implementează metoda global-valorică (preț cu amănuntul), iar aplicația implementează metoda cantitativ-valorică la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96 alin. (2)). Aplicația nu oferă, la acest moment, evaluare pe loturi cronologice de tip FIFO sau LIFO; o firmă care aplică specific FIFO sau LIFO pe loturi va trebui să verifice dacă modulul de stocuri actual acoperă acest tip de evaluare pentru situația ei concretă.
 
 [iConta.eu](/)

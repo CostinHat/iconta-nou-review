@@ -13,10 +13,10 @@ D101 este declarația ANUALĂ de definitivare a impozitului pe profit — nu dec
 ## Temeiul legal
 
 ::: ghid-temei
-"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza `anaf_surse/cod_fiscal_227_2015_consolidat.txt`.
+"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
-Pașii, așa cum funcționează motorul din `core/d101.py`:
+Pașii, așa cum funcționează motorul din aplicație:
 
 1. **Cine datorează** — persoanele juridice enumerate la art.13 alin.(1); Trezoreria Statului, instituțiile publice și alte entități enumerate la art.13 alin.(2) sunt exceptate.
 2. **Balanța** — `pull()` citește profilul firmei și balanța, cu conturile 76/66 tratate ca financiar și restul 7x/6x ca exploatare, plus 1012/1061/691 pentru rezerva legală.

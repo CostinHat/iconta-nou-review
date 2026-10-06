@@ -35,7 +35,7 @@ Adaos descărcat (378) = K × Rc707
 
 unde `Si` = sold inițial, `Rc`/`Rd` = rulaj credit/debit, calculate cumulat de la 1 ianuarie. Scăderea 4428 din numitor corespunde matematic excluderii TVA neexigibile cerute de nota *2).
 
-**Exemplu confirmat prin testare** (`core/test_stocuri.py`): stoc 371 = 1.785 lei (cost 1.000 + adaos 500 + TVA neexigibilă 285), se vinde toată marfa (Rc707 = 1.500, TVA colectată = 285). Coeficientul K = 500/1.500 = 0,3333, adaosul descărcat = 500,00 lei, costul mărfii vândute (607) = 1.000,00 lei, TVA descărcată (4428) = 285,00 lei — contul 371 se golește complet (1.785,00).
+**Exemplu confirmat prin testare**: stoc 371 = 1.785 lei (cost 1.000 + adaos 500 + TVA neexigibilă 285), se vinde toată marfa (Rc707 = 1.500, TVA colectată = 285). Coeficientul K = 500/1.500 = 0,3333, adaosul descărcat = 500,00 lei, costul mărfii vândute (607) = 1.000,00 lei, TVA descărcată (4428) = 285,00 lei — contul 371 se golește complet (1.785,00).
 
 ## Ce se greșește în practică
 
@@ -45,7 +45,7 @@ unde `Si` = sold inițial, `Rc`/`Rd` = rulaj credit/debit, calculate cumulat de 
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/stocuri.py`) implementează exact formula de mai sus prin funcția `descarcare_gv`, care se bazează la rândul ei pe `coeficient_k`. Dacă numitorul `(Si371 + Rd371) - (Si4428 + Rc4428)` este mai mic sau egal cu zero, aplicația **refuză să calculeze** și afișează o eroare explicită către contabil, în loc să întoarcă 0 sau o valoare implicită. Dacă rezultă un cost al mărfii vândute negativ (adaos peste 100%), aplicația generează de asemenea o eroare explicită.
+Motorul de calcul implementează exact formula de mai sus prin funcția `descarcare_gv`, care se bazează la rândul ei pe `coeficient_k`. Dacă numitorul `(Si371 + Rd371) - (Si4428 + Rc4428)` este mai mic sau egal cu zero, aplicația **refuză să calculeze** și afișează o eroare explicită către contabil, în loc să întoarcă 0 sau o valoare implicită. Dacă rezultă un cost al mărfii vândute negativ (adaos peste 100%), aplicația generează de asemenea o eroare explicită.
 
 Nota de descărcare (607 = 371, 378 = 371, 4428 = 371) este propusă automat de aplicație ca **ciornă**; ea trebuie validată manual de contabil în jurnal — aplicația nu validează singură notele contabile.
 

@@ -14,10 +14,10 @@ Sectorul construcțiilor beneficiază de facilități fiscale cunoscute — scut
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Codul fiscal (Legea 227/2015), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii, alții decât cei prevăzuți la art. 15, care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit [...] mai mic decât impozitul minim pe cifra de afaceri stabilit potrivit prevederilor alin. (3), sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste texte rezultă cadrul de calcul aplicabil oricărei firme, inclusiv celor din construcții:

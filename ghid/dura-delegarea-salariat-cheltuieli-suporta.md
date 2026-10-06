@@ -16,15 +16,15 @@ Limita de 60 de zile se socotește pe 12 luni, nu pe o singură deplasare. Mai m
 
 ::: ghid-temei
 „Delegarea reprezintă exercitarea temporară, din dispoziția angajatorului, de către salariat, a unor lucrări sau sarcini corespunzătoare atribuțiilor de serviciu în afara locului său de muncă."
-— Codul muncii (Legea 53/2003), art. 43 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 43 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Delegarea poate fi dispusă pentru o perioadă de cel mult 60 de zile calendaristice în 12 luni și se poate prelungi pentru perioade succesive de maximum 60 de zile calendaristice, numai cu acordul salariatului. Refuzul salariatului de prelungire a delegării nu poate constitui motiv pentru sancționarea disciplinară a acestuia.(2) Salariatul delegat are dreptul la plata cheltuielilor de transport și cazare, precum și la o indemnizație de delegare, în condițiile prevăzute de lege sau de contractul colectiv de muncă aplicabil."
-— Codul muncii (Legea 53/2003), art. 44 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 44 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Pe durata delegării, respectiv a detașării, salariatul își păstrează funcția și toate celelalte drepturi prevăzute în contractul individual de muncă."
-— Codul muncii (Legea 53/2003), art. 42 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 42 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Regulile, punct cu punct:

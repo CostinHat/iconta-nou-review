@@ -16,18 +16,18 @@ Totul depinde de o singură întrebare: are persoana de la firmă venituri din s
 
 ::: ghid-temei
 „a) pentru beneficiarii care obțin venituri salariale și asimilate salariilor de la suportatorul primelor de asigurare acestea sunt impuse prin cumularea cu veniturile de această natură ale lunii în care sunt plătite primele de asigurare; [...] b) pentru alți beneficiari care nu au o relație generatoare de venituri salariale și asimilate salariilor cu suportatorul primelor de asigurare, acestea sunt impuse în conformitate cu prevederile art. 114 din Codul fiscal;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (3) lit. h) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (3) lit. h) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „prime de asigurări suportate de o persoană fizică independentă sau de orice altă entitate, în cadrul unei activități pentru o persoană fizică în legătură cu care suportatorul nu are o relație generatoare de venituri din salarii și asimilate salariilor”
-— Codul fiscal (Legea 227/2015), art. 114 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 114 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe venit se calculează prin reținere la sursă la momentul acordării veniturilor de către plătitorii de venituri, prin aplicarea asupra venitului brut a unei cote de: a) 10% pentru veniturile prevăzute la art. 114 alin. (2) lit. a)-g)”
-— Codul fiscal (Legea 227/2015), art. 115 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul calculat și reținut reprezintă impozit final.”
-— Codul fiscal (Legea 227/2015), art. 115 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

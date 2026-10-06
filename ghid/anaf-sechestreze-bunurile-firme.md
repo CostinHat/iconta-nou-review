@@ -14,7 +14,7 @@ Sechestrul asigurător nu este o măsură automată, aplicată oricărei datorii
 
 ::: ghid-temei
 „(2) Se dispun măsuri asigurătorii sub forma popririi asigurătorii și sechestrului asigurător asupra bunurilor mobile și/sau imobile proprietate a debitorului, precum și asupra veniturilor acestuia, în cazuri excepționale, respectiv în situația în care există pericolul ca acesta să se sustragă, să își ascundă ori să își risipească patrimoniul, periclitând sau îngreunând în mod considerabil colectarea. [...] Măsurile asigurătorii devin măsuri executorii la împlinirea termenului prevăzut la art. 230 alin. (1) sau art. 236 alin. (12), după caz, ori la expirarea perioadei de suspendare a executării silite."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 213 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 213 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă mecanismul concret:

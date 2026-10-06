@@ -19,13 +19,13 @@ Pierderea fiscală nu dispare atunci când un exercițiu se închide pe minus �
 381 Profit impozabil/pierdere fiscală, înainte de reportarea pierderii din anii precedenţi (rd. 35 + rd. 36 + rd. 37 - rd. 38)
 39 Pierdere fiscală de recuperat din anii precedenţi
 391 Pierdere fiscală de recuperat în anul curent"
-— Structura formularului 101, conform Ordinului președintelui A.N.A.F. nr. 206/2025 (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— Structura formularului 101, conform Ordinului președintelui A.N.A.F. nr. 206/2025 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 :::
 
 - **Rândul 35** arată profitul impozabil sau pierderea fiscală a anului de raportare, calculate **înainte** de ajustarea cu pierderile curente (rd. 22 + rd. 34) — practic rezultatul fiscal „brut" al perioadei curente.
 - Dacă rezultatul de la rândul 35 e negativ, suma respectivă merge la **rândul 36** — pierderea fiscală curentă, cea care urmează să fie reportată pentru anii următori. Rândul **381** cumulează rd. 35+36+37-38 și arată rezultatul **înainte** de a aplica reportul din anii precedenți.
 - **Rândul 39** conține stocul de pierdere fiscală acumulat din anii precedenți și încă nerecuperat, iar **rândul 391** izolează partea din acest stoc care se recuperează efectiv în anul curent.
-- Legal, recuperarea se face în limita a 70% din profiturile impozabile viitoare, pe o perioadă de 5 ani consecutivi, în ordinea înregistrării pierderilor: „Pierderile fiscale anuale [...] se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi. Recuperarea pierderilor se va efectua în ordinea înregistrării acestora" (Legea nr. 227/2015, art. 31 alin. (1), sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt).
+- Legal, recuperarea se face în limita a 70% din profiturile impozabile viitoare, pe o perioadă de 5 ani consecutivi, în ordinea înregistrării pierderilor: „Pierderile fiscale anuale [...] se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi. Recuperarea pierderilor se va efectua în ordinea înregistrării acestora" (Legea nr. 227/2015, art. 31 alin. (1), sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)).
 
 ## Ce se greșește în practică
 

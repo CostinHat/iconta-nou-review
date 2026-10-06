@@ -15,7 +15,7 @@ SAF-T nu e reglementat printr-un „ghid" unic, ci prin două acte care se compl
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal.
 (2) Fișierul standard de control fiscal se depune în format electronic, la termenul stabilit prin ordin al președintelui A.N.A.F."
-— Legea 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru un contabil care vrea să înțeleagă exact ce se cere, ordinea de citire recomandată e:

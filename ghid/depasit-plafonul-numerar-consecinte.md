@@ -16,7 +16,7 @@ Disciplina financiară privind numerarul nu e o recomandare, ci o obligație leg
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi.
 (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei.
 ART. 12 (2) Nerespectarea prevederilor art. 6 și art. 11 alin. (1)-(4) constituie contravenție și se sancționează cu amendă de la 3.000 lei la 4.500 lei."
-— Legea 70/2015, art. 3 alin. (1) lit. a), c), art. 3 alin. (2) și art. 12 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. a), c), art. 3 alin. (2) și art. 12 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Plafoanele zilnice esențiale pentru operațiuni între persoane juridice/PFA/liber profesioniști:

@@ -18,7 +18,7 @@ Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16
 Articolul 19 Reguli generale
 (1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. La stabilirea rezultatului fiscal se iau în calcul și elemente similare veniturilor și cheltuielilor, potrivit normelor metodologice, precum și pierderile fiscale care se recuperează în conformitate cu prevederile art. 31. Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală.
 (2) Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
-— Legea 227/2015 (Codul fiscal), art. 17 și art. 19 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 17 și art. 19 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formula de calcul, pas cu pas, care rezultă din text:
@@ -40,6 +40,6 @@ Important: acest calcul e complet diferit de impozitul pe veniturile microîntre
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe profit prin `core/d101.py`, funcția `calcul_d101()`, reconstruită după formularul oficial D101 (OPANAF 206/2025, structura D101_A600 v10). Aplicația preia intrările contabile (P1, P2, P4, P5 — corespunzătoare rândurilor oficiale ale formularului) și calculează automat câmpurile derivate, inclusiv impozitul minim pe cifra de afaceri, atunci când e cazul (`impozit_minim_cifra_afaceri()`). Cota de 16% și structura de calcul urmează direct formularul oficial ANAF, nu o formulă simplificată proprie.
+La data acestui ghid, iConta.eu calculează impozitul pe profit prin aplicație, funcția `calcul_d101()`, reconstruită după formularul oficial D101 (OPANAF 206/2025, structura D101_A600 v10). Aplicația preia intrările contabile (P1, P2, P4, P5 — corespunzătoare rândurilor oficiale ale formularului) și calculează automat câmpurile derivate, inclusiv impozitul minim pe cifra de afaceri, atunci când e cazul (`impozit_minim_cifra_afaceri()`). Cota de 16% și structura de calcul urmează direct formularul oficial ANAF, nu o formulă simplificată proprie.
 
 [iConta.eu](/)

@@ -16,10 +16,10 @@ Distincția importantă este între eroarea tehnică și diferența de date. O r
 
 ::: ghid-temei
 „(1) Pentru gestionarea și operaționalizarea decontului precompletat RO e-TVA, persoanele impozabile înregistrate în scopuri de TVA au următoarele obligații: a) să verifice datele și informațiile din decontul precompletat RO e-TVA transmis prin mijloace electronice;"
-— OUG 70/2024, art. 12 alin. (1) lit. a) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 12 alin. (1) lit. a) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 
 „c) să sesizeze orice erori tehnice care rezultă din implementarea decontului precompletat RO e-TVA."
-— OUG 70/2024, art. 12 alin. (1) lit. c) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 12 alin. (1) lit. c) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Ce rezultă din text, în forma în vigoare:

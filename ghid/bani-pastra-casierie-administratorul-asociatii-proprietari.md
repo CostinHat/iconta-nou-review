@@ -16,10 +16,10 @@ Pentru contabilul obișnuit cu firmele, aici e o capcană. Asociația de proprie
 
 ::: ghid-temei
 „(5) Prin excepție de la prevederile alin. (2) , cu acordul adunării generale a asociației de proprietari, exclusiv în vederea efectuării operațiunilor de plăți pentru cheltuieli neprevăzute, administratorul poate păstra în casierie numerar, în limita unui plafon lunar de 1.000 lei.”
-— Legea 196/2018, art. 67 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 67 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „În acest cont sunt vărsate, în termen de 24 de ore de la primirea acestora, toate sumele sau valorile primite în numele sau în contul asociației.”
-— Legea 196/2018, art. 67 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 67 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Condițiile, pe rând:

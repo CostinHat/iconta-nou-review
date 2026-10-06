@@ -17,13 +17,13 @@ O farmacie care aplică metoda global-valorică respectă exact aceleași reguli
 > aplică asupra bazei de impozitare pentru [...] livrarea de medicamente de uz uman [...]
 > alimente, inclusiv băuturi, destinate consumului uman și animal [...]"
 >
-> — sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, art. 291 alin. (1)-(2), formă în
+> — sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), art. 291 alin. (1)-(2), formă în
 > vigoare de la 01-08-2025 (Legea nr. 141/2025).
 
 > "(5) Inventarul intermitent **nu se utilizează în comerțul cu amănuntul** în situația în care se
 > aplică metoda global-valorică."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 291 alin. (5).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 291 alin. (5).
 :::
 
 ## Ce înseamnă sortimentul mixt pentru o farmacie

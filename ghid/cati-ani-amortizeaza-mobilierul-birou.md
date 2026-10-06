@@ -14,7 +14,7 @@ Mobilierul de birou nu are o durată de amortizare fixă, ci un interval din car
 
 ::: ghid-temei
 „GRUPA 3. MOBILIER, APARATURĂ BIROTICĂ, SISTEME DE PROTECȚIE A VALORILOR UMANE ȘI MATERIALE ȘI ALTE ACTIVE CORPORALE — 3.1. Mobilier. 3.1.1. Mobilier (inclusiv mobilierul comercial și hotelier), în afară de: 9-15 [ani] [...] 3.1.6. Alt mobilier neregăsit în cadrul grupei 3.1. 6-10 [ani]."
-— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), grupa 3.1 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), grupa 3.1 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Cum se aplică practic:

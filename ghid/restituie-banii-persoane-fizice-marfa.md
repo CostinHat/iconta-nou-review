@@ -14,7 +14,7 @@ Un client persoană fizică aduce înapoi un produs și cere banii înapoi, în 
 
 ::: ghid-temei
 „(2) În cazul returnării de bunuri de către persoanele fizice și, respectiv, neprestării de servicii către persoanele fizice, restituirea sumelor aferente poate fi efectuată în numerar în limita a 10.000 lei, sumele care depășesc acest plafon putând fi restituite numai prin instrumente de plată fără numerar. Prin excepție, în cazul în care, la data restituirii, persoanele fizice declară pe propria răspundere că nu mai dețin cont bancar, restituirea se poate face integral în numerar, indiferent de nivelul sumei care trebuie restituită."
-— Legea 70/2015, art. 9 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 9 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă concret:
@@ -31,6 +31,6 @@ Ce înseamnă concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/casa.py` nu are o funcție dedicată „restituire marfă către persoană fizică". Motorul de calcul (`verifica_plafon()`) distinge, la nivel de parametru (`partener_tip`), o plată către persoană fizică și o verifică față de plafonul `PLAFON_PF` de 10.000 lei — dar API-ul expus, `core/casa_api.py`, are doar cinci categorii fixe de operațiuni (`incasare_client`, `plata_furnizor`, `ridicare_banca`, `depunere_banca`, `avans_decontare`), niciuna dedicată unei restituiri către o persoană fizică, iar tabela `casa_operatiuni` nu reține deloc tipul de partener (pf/pj). În fluxul curent al registrului de casă, o astfel de restituire nu are deci o categorie proprie, iar verificarea automată a plafonului de 10.000 lei nu se declanșează pe această cale. Excepția pentru clientul fără cont bancar, cu declarația pe propria răspundere aferentă, nu e tratată deloc de aplicație — rămâne, azi, o decizie și o documentare integral manuală a comerciantului.
+La data acestui ghid, aplicația nu are o funcție dedicată „restituire marfă către persoană fizică". Motorul de calcul (`verifica_plafon()`) distinge, la nivel de parametru (`partener_tip`), o plată către persoană fizică și o verifică față de plafonul `PLAFON_PF` de 10.000 lei — dar API-ul expus, aplicația, are doar cinci categorii fixe de operațiuni (`incasare_client`, `plata_furnizor`, `ridicare_banca`, `depunere_banca`, `avans_decontare`), niciuna dedicată unei restituiri către o persoană fizică, iar tabela `casa_operatiuni` nu reține deloc tipul de partener (pf/pj). În fluxul curent al registrului de casă, o astfel de restituire nu are deci o categorie proprie, iar verificarea automată a plafonului de 10.000 lei nu se declanșează pe această cale. Excepția pentru clientul fără cont bancar, cu declarația pe propria răspundere aferentă, nu e tratată deloc de aplicație — rămâne, azi, o decizie și o documentare integral manuală a comerciantului.
 
 [iConta.eu](/)

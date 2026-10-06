@@ -16,7 +16,7 @@ Nu, dacă operațiunea de compensare se referă la creanțe care erau deja certe
 „(4) Dacă legea nu prevede altfel, compensarea operează de drept la data la care creanțele există deodată, fiind deopotrivă certe, lichide și exigibile.
 (7) Compensarea se constată de către organul fiscal competent, la cererea debitorului sau din oficiu. [...]
 (8) Organul fiscal competent comunică debitorului decizia cu privire la efectuarea compensării, în termen de 7 zile de la data efectuării operațiunii."
-— Legea 207/2015, art. 167 alin. (4), (7) și (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 167 alin. (4), (7) și (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă pentru firma care așteaptă o compensare:

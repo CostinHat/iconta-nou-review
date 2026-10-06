@@ -14,7 +14,7 @@ Dacă o firmă a dedus TVA la achiziția unor bunuri de natura stocurilor și, �
 
 ::: ghid-temei
 „În condițiile în care regulile privind livrarea către sine sau prestarea către sine nu se aplică, deducerea inițială se ajustează în următoarele cazuri: [...] c) persoana impozabilă își pierde sau câștiga dreptul de deducere a taxei pentru bunurile mobile nelivrate și serviciile neutilizate."
-— Legea nr. 227/2015 (Codul fiscal), art. 304 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 304 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Stocurile intră sub art. 304**, nu sub art. 305 — acesta din urmă privește doar bunurile de capital (imobilizări), nu bunurile mobile de natura stocurilor, care au propria regulă de ajustare.
@@ -29,6 +29,6 @@ Dacă o firmă a dedus TVA la achiziția unor bunuri de natura stocurilor și, �
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu calculează automat ajustarea TVA la stocuri în cazul trecerii firmei de la statutul de plătitor la neplătitor de TVA — modulele de TVA (`core/tva_incasare.py` și altele din familia `tva_*`) gestionează regimuri speciale de TVA existente, dar identificarea stocurilor rămase nevândute la data ieșirii din regim și calculul ajustării aferente rămân o operațiune manuală a contabilului.
+La data acestui ghid, iConta.eu nu calculează automat ajustarea TVA la stocuri în cazul trecerii firmei de la statutul de plătitor la neplătitor de TVA — modulele de TVA (aplicația și altele din familia `tva_*`) gestionează regimuri speciale de TVA existente, dar identificarea stocurilor rămase nevândute la data ieșirii din regim și calculul ajustării aferente rămân o operațiune manuală a contabilului.
 
 [iConta.eu](/)

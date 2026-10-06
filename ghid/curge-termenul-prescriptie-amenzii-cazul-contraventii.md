@@ -16,18 +16,18 @@ Diferența se simte în practică. La o contravenție instantanee, cele 6 luni a
 
 ::: ghid-temei
 „În cazul contravențiilor continue, termenul prevăzut la alin. (1) curge de la data încetării săvârșirii faptei. Contravenția este continuă în situația în care încălcarea obligației legale durează în timp."
-— OG 2/2001, art. 13 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Aplicarea sancțiunii amenzii contravenționale se prescrie în termen de 6 luni de la data săvârșirii faptei."
-— OG 2/2001, art. 13 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „aplicarea sancțiunii amenzii pentru contravențiile prevăzute în prezentul titlu se prescrie în termen de 5 ani de la data săvârșirii faptei."
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dispozițiile prezentului titlu se completează cu prevederile Ordonanței Guvernului nr. 2/2001 privind regimul juridic al contravențiilor"
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

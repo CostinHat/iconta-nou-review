@@ -14,7 +14,7 @@ Nu. Indemnizația de concediu medical e o prestație de asigurări sociale de s�
 
 ::: ghid-temei
 „Contribuția asiguratorie pentru muncă nu se datorează pentru prestațiile suportate din bugetul asigurărilor sociale de stat, bugetul asigurărilor pentru șomaj, precum și din Fondul național unic de asigurări sociale de sănătate."
-— Legea nr. 227/2015, art. 220^5 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^5 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic pentru o lună cu concediu medical:

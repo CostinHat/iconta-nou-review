@@ -14,7 +14,7 @@ Una dintre cele mai frecvente nedumeriri din Spațiul Privat Virtual: contribuab
 
 ::: ghid-temei
 „Dacă un debitor datorează mai multe tipuri de obligații fiscale, iar suma plătită nu este suficientă pentru a stinge toate obligațiile, atunci se stinge obligația fiscală pe care o indică debitorul, potrivit legii, sau care este distribuită potrivit prevederilor art. 163, după caz, stingerea efectuându-se, de drept, în următoarea ordine: a) toate obligațiile fiscale principale, în ordinea vechimii, și apoi obligațiile fiscale accesorii, în ordinea vechimii; b) obligațiile cu scadențe viitoare, la solicitarea debitorului."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 165 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 165 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Dacă la momentul plății contribuabilul avea și alte obligații restante (de exemplu o dobândă sau o penalitate de întârziere de la o declarație anterioară), legea impune ANAF să stingă **mai întâi** acele obligații mai vechi, **înainte** de a considera stinsă obligația curentă pentru care s-a făcut plata — indiferent ce a „intenționat" contribuabilul să plătească.

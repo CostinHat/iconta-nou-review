@@ -17,10 +17,10 @@ Costul înregistrării unei firme la Oficiul Național al Registrului Comerțulu
 — Legea 31/1990, art. 7 lit. i) (SNC/SCS/SRL)
 
 „p) modul de dizolvare și de lichidare a societății."
-— Legea 31/1990, art. 8 lit. p) (SA/SCA) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 8 lit. p) (SA/SCA) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
-Limitare clară: sursele disponibile (Legea 31/1990 și actele fiscale din `anaf_surse/`) stabilesc **ce** trebuie să conțină actul constitutiv și **procedura** de înființare a unei societăți, dar **nu** stabilesc cuantumul tarifelor ONRC — acestea sunt aprobate periodic prin hotărâre a Adunării generale a Camerelor de Comerț și Industrie/ordin al ministrului justiției, acte care nu se regăsesc printre sursele fiscale verificate pentru acest ghid. Pentru suma exactă valabilă la data înființării, singura sursă corectă e tariful publicat oficial pe portalul ONRC (onrc.ro), nu o cifră reținută din memorie sau din presa fiscală.
+Limitare clară: sursele disponibile (Legea 31/1990 și actele fiscale) stabilesc **ce** trebuie să conțină actul constitutiv și **procedura** de înființare a unei societăți, dar **nu** stabilesc cuantumul tarifelor ONRC — acestea sunt aprobate periodic prin hotărâre a Adunării generale a Camerelor de Comerț și Industrie/ordin al ministrului justiției, acte care nu se regăsesc printre sursele fiscale verificate pentru acest ghid. Pentru suma exactă valabilă la data înființării, singura sursă corectă e tariful publicat oficial pe portalul ONRC (onrc.ro), nu o cifră reținută din memorie sau din presa fiscală.
 
 Ce se poate spune cu certitudine, pe baza Legii 31/1990:
 

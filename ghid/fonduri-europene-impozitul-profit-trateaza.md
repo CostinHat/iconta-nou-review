@@ -14,7 +14,7 @@ O firmă care primește o finanțare europeană nerambursabilă se întreabă fr
 
 ::: ghid-temei
 „(3) Impozitul minim pe cifra de afaceri se determină astfel: IMCA = 1% x (VT – Vs – I – A), unde indicatorii au următoarea semnificație: [...] V_s - venituri care se scad din veniturile totale [...] reprezentând: [...] (v) veniturile din subvenții; [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 18^1 alin. (3) pct. (v) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 18^1 alin. (3) pct. (v) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări importante despre acest text și despre ce nu spune:

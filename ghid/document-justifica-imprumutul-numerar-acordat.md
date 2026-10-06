@@ -15,7 +15,7 @@ Asociații care „injectează" bani în firmă rapid, în numerar, pentru o urg
 ::: ghid-temei
 „Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană.
 Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la alin. (1), cu o valoare mai mare de 10.000 lei, precum și fragmentarea tranzacțiilor reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări [...]"
-— Legea nr. 70/2015, art. 4 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 4 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din text rezultă atât plafonul, cât și logica documentului justificativ:
@@ -32,6 +32,6 @@ Din text rezultă atât plafonul, cât și logica documentului justificativ:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/decontari_asociati.py` generează notele contabile pentru împrumutul de la asociat (contul 4551) — atât la primire (5121=4551), cât și la restituire, inclusiv cu dobânda și impozitul reținut, dacă e cazul. Funcția `nota_imprumut_asociat` din aplicație presupune însă mișcarea prin cont bancar (contul 5121), nu prin casierie — aplicația **nu verifică automat plafonul de 10.000 lei/zi pentru încasările în numerar** de la asociat și nu generează documentul de casă asociat unei astfel de operațiuni; pentru un împrumut acordat efectiv în numerar, respectarea plafonului și emiterea documentului justificativ rămân în sarcina contabilului.
+Verificat în cod: Aplicația generează notele contabile pentru împrumutul de la asociat (contul 4551) — atât la primire (5121=4551), cât și la restituire, inclusiv cu dobânda și impozitul reținut, dacă e cazul. Funcția `nota_imprumut_asociat` din aplicație presupune însă mișcarea prin cont bancar (contul 5121), nu prin casierie — aplicația **nu verifică automat plafonul de 10.000 lei/zi pentru încasările în numerar** de la asociat și nu generează documentul de casă asociat unei astfel de operațiuni; pentru un împrumut acordat efectiv în numerar, respectarea plafonului și emiterea documentului justificativ rămân în sarcina contabilului.
 
 [iConta.eu](/)

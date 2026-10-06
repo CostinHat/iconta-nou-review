@@ -16,15 +16,15 @@ Consecința practică: garanția nu mai acoperă doar accizele. O restanță la 
 
 ::: ghid-temei
 „(2) În situația în care antrepozitarul autorizat, destinatarul înregistrat, expeditorul înregistrat sau importatorul autorizat înregistrează obligații fiscale restante administrate de A.N.A.F. cu mai mult de 30 de zile față de termenul legal de plată, garanția se extinde și asupra acestor obligații de drept și fără nicio altă formalitate."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1^6) Prin excepție de la prevederile alin. (2) , în situația în care antrepozitarul autorizat care prezintă risc fiscal ridicat înregistrează obligații fiscale restante administrate de Agenția Națională de Administrare Fiscală cu mai mult de 5 zile față de termenul legal de plată, garanția se extinde și asupra acestor obligații de drept și fără nicio altă formalitate."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (1^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (1^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(8) Valoarea garanției se analizează anual sau, ori de câte ori este necesar, de către autoritatea competentă, în vederea actualizării în funcție de schimbările intervenite în volumul afacerii sau asupra nivelului accizelor."
-— Codul fiscal (Legea 227/2015), art. 348 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 348 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

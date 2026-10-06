@@ -39,6 +39,6 @@ Semaforul nu marchează nicio declarație ca restantă pentru perioada dinainte 
 
 ## Ce face iConta.eu
 
-Motorul F022 (`core/control_fiscal_api.py`) construiește verdictul pentru fiecare firmă pornind de la profilul ei fiscal (regim, statut de TVA, existența de salariați) și de la data reală a existenței/activității — o firmă nou-înființată nu apare cu restanțe pentru perioada anterioară înființării. Pentru ca semaforul să poată evalua corect primele obligații, profilul firmei (regim fiscal, statut de TVA) trebuie completat încă din prima lună — necompletat, declarațiile care depind de el (D100/D101, D394) apar gri, nu verzi.
+Motorul F022 construiește verdictul pentru fiecare firmă pornind de la profilul ei fiscal (regim, statut de TVA, existența de salariați) și de la data reală a existenței/activității — o firmă nou-înființată nu apare cu restanțe pentru perioada anterioară înființării. Pentru ca semaforul să poată evalua corect primele obligații, profilul firmei (regim fiscal, statut de TVA) trebuie completat încă din prima lună — necompletat, declarațiile care depind de el (D100/D101, D394) apar gri, nu verzi.
 
 [iConta.eu](/)

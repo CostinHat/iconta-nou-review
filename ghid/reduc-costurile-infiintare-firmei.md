@@ -16,7 +16,7 @@ Costul de înființare a unui SRL are mai multe componente (taxe ONRC, eventual 
 ::: ghid-temei
 „(1) De la data intrării în vigoare a prezentei legi, valoarea minimă a capitalului social al societăților cu răspundere limitată se stabilește în funcție de nivelul cifrei de afaceri nete raportate prin situațiile financiare anuale aferente exercițiului financiar precedent, respectiv, în cazul societăților care au înregistrat o cifră de afaceri netă peste 400.000 lei, valoarea minimă a capitalului social este de 5.000 lei.
 (2) În cazul societăților cu răspundere limitată nou-înființate, valoarea minimă a capitalului social este de 500 lei."
-— Legea nr. 239/2025 pentru modificarea Legii societăților nr. 31/1990, art. VI alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 239/2025 pentru modificarea Legii societăților nr. 31/1990, art. VI alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 ```
 
@@ -35,6 +35,6 @@ Ce înseamnă asta concret pentru cineva care vrea să reducă efectiv costul de
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu intervine în procesul de înființare** a firmei (constituire, capital social, înmatriculare la ONRC) — nu a fost găsită nicio funcționalitate dedicată acestui pas în `core/`. Aplicația preia evidența contabilă odată ce firma e deja constituită, inclusiv înregistrarea capitalului social subscris și vărsat; deciziile privind structura de capital la înființare rămân, la acest moment, în sarcina asociaților și a consultantului juridic/notarial.
+La data acestui ghid, iConta.eu **nu intervine în procesul de înființare** a firmei (constituire, capital social, înmatriculare la ONRC) — nu a fost găsită nicio funcționalitate dedicată acestui pas în aplicație. Aplicația preia evidența contabilă odată ce firma e deja constituită, inclusiv înregistrarea capitalului social subscris și vărsat; deciziile privind structura de capital la înființare rămân, la acest moment, în sarcina asociaților și a consultantului juridic/notarial.
 
 [iConta.eu](/)

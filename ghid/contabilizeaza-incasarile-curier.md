@@ -40,6 +40,6 @@ La data acestui ghid, iConta.eu nu are un modul dedicat de import al borderouril
 
 ## Ce face iConta.eu
 
-Reconcilierea bancară automată (`core/reconciliere.py`) potrivește linii de extras pe facturi deschise ale unui partener, pe baza CUI-ului din descrierea liniei — mecanism care nu se aplică la o decontare cumulată de la curier, fără CUI de client individual. Pentru acest canal, iConta.eu nu oferă azi un import dedicat de borderouri de curier; încasarea prin ramburs se înregistrează manual, ca notă de jurnal, pe baza documentului de decontare al curierului (borderou/situație de decontare), cu separarea explicită a comisionului reținut de curier ca cheltuială.
+Reconcilierea bancară automată potrivește linii de extras pe facturi deschise ale unui partener, pe baza CUI-ului din descrierea liniei — mecanism care nu se aplică la o decontare cumulată de la curier, fără CUI de client individual. Pentru acest canal, iConta.eu nu oferă azi un import dedicat de borderouri de curier; încasarea prin ramburs se înregistrează manual, ca notă de jurnal, pe baza documentului de decontare al curierului (borderou/situație de decontare), cu separarea explicită a comisionului reținut de curier ca cheltuială.
 
 [iConta.eu](/)

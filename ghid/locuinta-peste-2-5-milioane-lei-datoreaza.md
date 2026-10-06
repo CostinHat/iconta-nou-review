@@ -16,17 +16,17 @@ Firmele nu intră sub această regulă pentru clădiri. Pentru imobile, impozitu
 
 ::: ghid-temei
 „persoanele fizice care, la data de 31 decembrie a anului fiscal anterior, au în proprietate/proprietate comună clădiri rezidențiale situate în România, dacă valoarea impozabilă a clădirii, calculată potrivit art. 457 din Legea nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare, depășește 2.500.000 lei;"
-— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 1 lit. a) (sursă: anaf_surse/ordin_3738_2024.html)
+— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 1 lit. a) (sursă: [OPANAF nr. 3738/2024 pentru aprobarea formularului 216](https://legislatie.just.ro/Public/DetaliiDocument/285515))
 :::
 
 ::: ghid-temei
 „în cazul contribuabililor prevăzuți la pct. 1 lit. a) declarația se depune la organul fiscal central competent până la data de 30 septembrie inclusiv a anului fiscal curent;"
-— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 2 lit. a) (sursă: anaf_surse/ordin_3738_2024.html)
+— OPANAF 3738/2024, Anexa nr. 1, Instrucțiuni, pct. 2 lit. a) (sursă: [OPANAF nr. 3738/2024 pentru aprobarea formularului 216](https://legislatie.just.ro/Public/DetaliiDocument/285515))
 :::
 
 ::: ghid-temei
 „în cazul proprietăților reprezentând clădiri rezidențiale, prin aplicarea unei cote de 0,9% asupra diferenței dintre valoarea impozabilă a clădirii comunicată de către organul fiscal local și plafonul de 2.500.000 lei;"
-— Codul fiscal (Legea 227/2015), art. 500^2 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 500^2 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele obligației:

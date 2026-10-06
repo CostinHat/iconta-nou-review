@@ -14,10 +14,10 @@ D301 e declarația specifică persoanelor care nu sunt înregistrate normal în 
 
 ::: ghid-temei
 „decontul special de taxă reprezintă decontul care se întocmește și se depune conform art. 324."
-— Legea nr. 227/2015 privind Codul fiscal, definiție conexă art. 324 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, definiție conexă art. 324 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Decontul special de taxă se depune la organele fiscale competente de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316, astfel: a) pentru achiziții intracomunitare de bunuri taxabile, altele decât cele prevăzute la lit. b) și c), de către persoanele impozabile înregistrate conform art. 317; [...] d) pentru operațiunile și de către persoanele obligate la plata taxei, conform art. 307 alin. (2)-(4) și (6); [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 324 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 324 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru contabilizare:

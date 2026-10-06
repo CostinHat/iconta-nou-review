@@ -14,10 +14,10 @@ Una dintre condițiile obligatorii pentru regimul micro e existența a cel puți
 
 ::: ghid-temei
 „g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3);"
-— Legea 227/2015, art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(3^1) În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile și situația este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispozițiile art. 52 alin. (3)."
-— Legea 227/2015, art. 48 alin. (3^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (3^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice:

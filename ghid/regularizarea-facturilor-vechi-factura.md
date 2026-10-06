@@ -14,7 +14,7 @@ Când o factură emisă anterior trebuie corectată — pentru că a fost greși
 
 ::: ghid-temei
 „(1) Corectarea informațiilor înscrise în facturi sau în alte documente care țin loc de factură se efectuează astfel: [...] b) în cazul în care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă, pe de o parte, informațiile din factura inițială, numărul și data facturii corectate, valorile cu semnul minus sau, după caz, o mențiune din care să rezulte că valorile respective sunt negative, iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus sau, după caz, cu o mențiune din care să rezulte că valorile respective sunt negative, în care se înscriu numărul și data facturii corectate."
-— Codul fiscal (Legea 227/2015), art. 330 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 330 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regularizarea unei facturi deja transmise beneficiarului se face printr-una din cele două variante permise: fie o singură factură nouă care cuprinde atât stornarea (valorile vechi, cu semnul minus) cât și valorile corecte, fie două facturi separate — una cu valorile corecte, una de stornare a facturii inițiale (cu referire explicită la numărul și data acesteia).

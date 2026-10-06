@@ -14,7 +14,7 @@ Naționalitatea firmei-client nu contează pentru obligația de e-Factura — co
 
 ::: ghid-temei
 „O persoană impozabilă care are sediul activității economice în România este considerată a fi stabilită în România; [...] o persoană impozabilă care are sediul activității economice în afara României se consideră că este stabilită în România dacă are un sediu fix în România, respectiv dacă dispune în România de suficiente resurse tehnice și umane pentru a efectua regulat livrări de bunuri și/sau prestări de servicii impozabile."
-— Cod fiscal (Legea 227/2015), art. 266 alin. (2) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 266 alin. (2) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru factura către o firmă străină cu sediu în România:

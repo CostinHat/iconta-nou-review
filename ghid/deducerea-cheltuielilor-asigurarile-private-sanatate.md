@@ -14,7 +14,7 @@ O persoană care desfășoară activitate independentă (PFA sau formă de asoci
 
 ::: ghid-temei
 „h) primele de asigurare voluntară de sănătate, precum și serviciile medicale furnizate sub formă de abonament, plătite în scopul personal al contribuabilului, indiferent dacă activitatea se desfășoară individual sau într-o formă de asociere, în limita echivalentului în lei a 400 euro anual pentru fiecare persoană."
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (5) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (5) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele-cheie ale regulii:

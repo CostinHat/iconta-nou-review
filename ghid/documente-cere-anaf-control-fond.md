@@ -16,7 +16,7 @@ Un control de fond (inspecție fiscală) nu începe fără preaviz și nu se des
 „Avizul de inspecție fiscală cuprinde: a) temeiul juridic al inspecției fiscale; b) data de începere a inspecției fiscale; c) obligațiile fiscale, alte obligații prevăzute de legislația fiscală și contabilă, precum și perioadele ce urmează a fi supuse inspecției fiscale; d) posibilitatea de a solicita amânarea datei de începere a inspecției fiscale."
 
 „Contribuabilul/Plătitorul are obligația să colaboreze la constatarea stărilor de fapt fiscale. Acesta este obligat să dea informații, să prezinte la locul de desfășurare a inspecției fiscale toate documentele, precum și orice alte date necesare clarificării situațiilor de fapt relevante din punct de vedere fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 122 alin. (7) și art. 124 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 122 alin. (7) și art. 124 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă practic pentru contribuabil:

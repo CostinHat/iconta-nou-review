@@ -14,10 +14,10 @@ Când cumperi bunuri sau servicii dintr-un alt stat membru și furnizorul nu î�
 
 ::: ghid-temei
 „[...] trebuie să autofactureze operațiunile respective până cel mai târziu în a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator."
-— Legea nr. 227/2015 privind Codul fiscal, art. 320 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 320 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[...] trebuie să autofactureze suma avansurilor plătite în legătură cu operațiunile respective cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a plătit avansurile, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator, cu excepția situației în care faptul generator de taxă a intervenit în aceeași lună [...]"
-— Legea nr. 227/2015, art. 320 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 320 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta practic:

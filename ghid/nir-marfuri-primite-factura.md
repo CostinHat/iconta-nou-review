@@ -14,7 +14,7 @@ Da, se poate — și nu doar se poate, ci e chiar situația pentru care NIR-ul e
 
 ::: ghid-temei
 „Nota de recepție și constatare de diferențe (NIR) servește ca: - document pentru recepția bunurilor aprovizionate; - document justificativ pentru încărcare în gestiune; - document justificativ de înregistrare în contabilitate. Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare. În cazurile în care nu este obligatorie întocmirea NIR-ului, recepția și încărcarea în gestiune, după caz, și înregistrarea în contabilitate se fac pe baza documentului de livrare care însoțește transportul (factura, avizul de însoțire a mărfii etc.)."
-— OMFP 2634/2015 (norme specifice privind întocmirea și utilizarea documentelor financiar-contabile), Anexa 2, cod 14-3-1A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015 (norme specifice privind întocmirea și utilizarea documentelor financiar-contabile), Anexa 2, cod 14-3-1A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă concret:
@@ -32,6 +32,6 @@ Ce rezultă concret:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu (`core/stocuri_api.py`, funcția `adauga_nir`) acceptă introducerea unui NIR cu referință de factură **opțională** (`factura_ref?`) — confirmând că fluxul e pregătit exact pentru cazul mărfii primite fără factură: contabilul poate înregistra recepția pe baza NIR-ului, cu datele de furnizor și valoare disponibile la momentul respectiv, și poate completa ulterior referința facturii când aceasta sosește. Regularizarea automată a eventualelor diferențe de valoare între NIR-ul provizoriu și factura sosită ulterior rămâne o operațiune pe care contabilul o introduce manual, ca notă contabilă separată.
+Modulul de stocuri din iConta.eu (funcția `adauga_nir`) acceptă introducerea unui NIR cu referință de factură **opțională** (`factura_ref?`) — confirmând că fluxul e pregătit exact pentru cazul mărfii primite fără factură: contabilul poate înregistra recepția pe baza NIR-ului, cu datele de furnizor și valoare disponibile la momentul respectiv, și poate completa ulterior referința facturii când aceasta sosește. Regularizarea automată a eventualelor diferențe de valoare între NIR-ul provizoriu și factura sosită ulterior rămâne o operațiune pe care contabilul o introduce manual, ca notă contabilă separată.
 
 [iConta.eu](/)

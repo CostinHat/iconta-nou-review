@@ -14,7 +14,7 @@ Obligativitatea RO e-Factura pentru relația B2B nu se aplică tuturor facturilo
 
 ::: ghid-temei
 „Operatorii economici - persoane impozabile stabilite în România [...], pentru livrările de bunuri și prestările de servicii care au locul livrării/prestării în România conform art. 275 și art. 278-279 din Legea nr. 227/2015 [...], efectuate în relația B2B [...] au obligația [...] să transmită facturile emise în sistemul național privind factura electronică RO e-Factura [...]"
-— Legea 296/2023, art. LIX alin. (1) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (1) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 - Criteriul care decide sfera obligației RO e-Factura B2B e **locul livrării/prestării în România**, stabilit conform art. 275 (bunuri) și art. 278-279 (servicii) din Codul fiscal — nu simplul fapt că furnizorul e stabilit în România.

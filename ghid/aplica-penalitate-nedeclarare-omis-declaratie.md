@@ -14,7 +14,7 @@ Da — dar cu o precizare care contează pentru buzunarul firmei: dacă obligaț
 
 ::: ghid-temei
 „(9) în situația în care obligațiile fiscale principale sunt stabilite de organul de inspecție fiscală ca urmare a nedepunerii declarației de impunere, se aplică numai penalitatea de nedeclarare, fără a se aplica sancțiunea contravențională pentru nedepunerea declarației."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 181 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 181 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic această regulă de „o singură sancțiune":

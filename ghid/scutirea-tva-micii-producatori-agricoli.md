@@ -14,7 +14,7 @@ Codul fiscal nu prevede o „scutire de TVA pentru micii producători agricoli" 
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România conform art. 266 alin. (2) lit. a), a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— Codul fiscal, art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Acest regim de scutire nu e specific agriculturii — se aplică oricărei persoane impozabile stabilite în România, cu cifra de afaceri anuală sub plafonul de 395.000 lei, indiferent de domeniul de activitate.
@@ -23,7 +23,7 @@ Codul fiscal nu prevede o „scutire de TVA pentru micii producători agricoli" 
 
 ::: ghid-temei
 „Agricultorul care aplică regimul special prevăzut de prezentul articol: [...] c) prin excepție de la art. 310 nu aplică regimul special de scutire pentru întreprinderile mici pentru operațiunile prevăzute la alin. (1) lit. c) [...]"
-— Codul fiscal, art. 315^1 alin. (4) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 315^1 alin. (4) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce se greșește în practică

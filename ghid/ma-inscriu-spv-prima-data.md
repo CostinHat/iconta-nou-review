@@ -17,7 +17,7 @@ Spațiul Privat Virtual (SPV) este canalul prin care contribuabilii comunică el
 „(1) Contribuabilul/Plătitorul care depune cereri, înscrisuri sau documente la organul fiscal, prin mijloace electronice de transmitere la distanță, se identifică în relația cu organul fiscal astfel:
 a) persoanele juridice, asocierile și alte entități fără personalitate juridică, precum și persoanele fizice care desfășoară activități economice în mod independent ori exercită profesii libere se identifică numai cu certificate calificate;
 b) persoanele fizice, altele decât cele prevăzute la lit. a), se identifică prin intermediul furnizorilor de servicii publice de autentificare electronică autorizați potrivit legii sau prin diverse dispozitive, cum ar fi certificat calificat, credențiale de tip utilizator/parolă însoțite de liste de coduri de autentificare de unică folosință, telefon mobil, digipass ori alte dispozitive stabilite prin ordin al președintelui A.N.A.F."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 80 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 80 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 ```
 
@@ -35,6 +35,6 @@ Ce rezultă practic din text pentru înscrierea în SPV:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/spv_conector.py` implementează conectorul OAuth2 dintre iConta.eu și ANAF pentru accesul la SPV, cu stocare criptată a token-urilor de acces și reîmprospătare automată a acestora — confirmat direct din cod. Acest conector presupune însă că firma (sau cabinetul contabil) are deja un cont SPV funcțional, autorizat cu certificatul digital calificat descris mai sus: iConta.eu preia și folosește accesul deja acordat de ANAF, dar **nu înlocuiește** pasul inițial de obținere a certificatului și de înregistrare a contribuabilului în SPV, care rămâne o procedură realizată direct pe portalul ANAF.
+La data acestui ghid, aplicația implementează conectorul OAuth2 dintre iConta.eu și ANAF pentru accesul la SPV, cu stocare criptată a token-urilor de acces și reîmprospătare automată a acestora — confirmat direct din cod. Acest conector presupune însă că firma (sau cabinetul contabil) are deja un cont SPV funcțional, autorizat cu certificatul digital calificat descris mai sus: iConta.eu preia și folosește accesul deja acordat de ANAF, dar **nu înlocuiește** pasul inițial de obținere a certificatului și de înregistrare a contribuabilului în SPV, care rămâne o procedură realizată direct pe portalul ANAF.
 
 [iConta.eu](/)

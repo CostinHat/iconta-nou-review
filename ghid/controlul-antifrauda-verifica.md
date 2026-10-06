@@ -14,7 +14,7 @@ Controlul antifraudă nu e o formă de inspecție fiscală clasică — e o proc
 
 ::: ghid-temei
 „(1) Controlul antifraudă se efectuează de către funcționarii publici din cadrul Direcției generale antifraudă fiscală pe întreg teritoriul țării, în baza analizei de risc. Aceștia sunt denumiți, în sensul prezentului capitol, organe de control antifraudă fiscală. (2) Controlul antifraudă are ca obiect prevenirea și combaterea fraudei și evaziunii fiscale. Organele de control antifraudă fiscală exercită activități de control operativ, fără informarea prealabilă a contribuabilului/plătitorului cu privire la efectuarea controlului."
-— Legea 207/2015 (Codul de procedură fiscală), art. 136 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 136 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva elemente esențiale pentru un contribuabil vizat:
@@ -32,6 +32,6 @@ Câteva elemente esențiale pentru un contribuabil vizat:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un modul dedicat controlului antifraudă sau inspecției fiscale ANAF — verificarea `core/control_fiscal_api.py` din aplicație este un „semafor de conformare fiscală" intern, care compară declarațiile datorate cu cele efectiv depuse de firmă, pentru a semnala lipsurile din propriile obligații declarative. Nu are nicio legătură cu analiza de risc a ANAF și nu poate anticipa sau simula un control antifraudă real.
+iConta.eu nu are un modul dedicat controlului antifraudă sau inspecției fiscale ANAF — verificarea aplicația din aplicație este un „semafor de conformare fiscală" intern, care compară declarațiile datorate cu cele efectiv depuse de firmă, pentru a semnala lipsurile din propriile obligații declarative. Nu are nicio legătură cu analiza de risc a ANAF și nu poate anticipa sau simula un control antifraudă real.
 
 [iConta.eu](/)

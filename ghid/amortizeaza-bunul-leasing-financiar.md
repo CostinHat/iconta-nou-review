@@ -14,10 +14,10 @@ Răspunsul e direct din lege: la leasingul financiar, amortizarea bunului se ți
 
 ::: ghid-temei
 „214. ‐ (1) Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator, iar în cazul leasingului operațional, de către locator/finanțator."
-— OMFP 1802/2014, pct. 214 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 214 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „(1) În cazul leasingului financiar utilizatorul este tratat din punct de vedere fiscal ca proprietar, în timp ce, în cazul leasingului operațional, locatorul are această calitate."
-— Legea 227/2015, art. 29 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 29 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cine amortizează depinde exclusiv de **tipul de leasing**, nu de cine deține titlul juridic de proprietate — la financiar, titlul poate rămâne formal al finanțatorului până la ultima rată, dar amortizarea tot la locatar se ține.

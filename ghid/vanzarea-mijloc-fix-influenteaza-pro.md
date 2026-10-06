@@ -14,7 +14,7 @@ Nu, de regulă. Legea exclude expres, din calculul pro-ratei, valoarea livrăril
 
 ::: ghid-temei
 „(7) Se exclud din calculul pro rata următoarele: a) valoarea oricărei livrări de bunuri de capital care au fost utilizate de persoana impozabilă în activitatea sa economică, cu excepția operațiunilor prevăzute la lit. c); [...] c) valoarea operațiunilor prevăzute la art. 292 alin. (2) lit. a), precum și a operațiunilor imobiliare, în măsura în care acestea sunt accesorii activității principale."
-— Cod fiscal, art. 300 alin. (7) lit. a) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 300 alin. (7) lit. a) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, pentru vânzarea unui mijloc fix:

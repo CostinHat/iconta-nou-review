@@ -14,7 +14,7 @@ Schimbarea casierului sau a persoanei responsabile de gestiunea numerarului nu e
 
 ::: ghid-temei
 „[Entitățile au] obligația să efectueze inventarierea elementelor de natura activelor, datoriilor și capitalurilor proprii deținute, la începutul activității, cel puțin o dată în cursul exercițiului financiar pe parcursul funcționării lor, în cazul fuziunii sau încetării activității, precum și în următoarele situații: [...] c) ori de câte ori intervine o predare-primire de gestiune."
-— OMFP nr. 2861/2009, pct. 2 alin. (1) lit. c) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2861/2009, pct. 2 alin. (1) lit. c) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Din text rezultă obligația de fond, independentă de suma aflată în casă:

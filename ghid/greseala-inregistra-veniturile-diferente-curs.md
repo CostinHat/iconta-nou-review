@@ -14,7 +14,7 @@ O greșeală frecventă, mai des decât omisiunea pierderilor: se înregistreaz�
 
 ::: ghid-temei
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Textul legii nu face nicio distincție între venituri și cheltuieli din curs valutar — ambele „trebuie recunoscute", fără excepție pentru câștiguri.
@@ -30,6 +30,6 @@ O greșeală frecventă, mai des decât omisiunea pierderilor: se înregistreaz�
 
 ## Ce face iConta.eu
 
-Motorul `core/diferente_curs.py` nu face nicio distincție de tratament între câștig și pierdere — funcția `diferenta()` aplică aceeași regulă de semn indiferent de rezultat și generează nota cu linia pe 765 (venit) la fel de automat ca pe 665 (cheltuială), fie la decontare, fie la reevaluarea lunară. Riscul de omisiune descris mai sus nu vine din motorul de calcul, ci din faptul că operațiunile trebuie inițiate manual de contabil, din ecranul „Operațiuni speciale" — dacă o decontare sau o reevaluare nu e introdusă deloc în aplicație, niciun venit din 765 nu se generează, indiferent dacă era favorabil sau nu.
+Aplicația nu face nicio distincție de tratament între câștig și pierdere — funcția `diferenta()` aplică aceeași regulă de semn indiferent de rezultat și generează nota cu linia pe 765 (venit) la fel de automat ca pe 665 (cheltuială), fie la decontare, fie la reevaluarea lunară. Riscul de omisiune descris mai sus nu vine din motorul de calcul, ci din faptul că operațiunile trebuie inițiate manual de contabil, din ecranul „Operațiuni speciale" — dacă o decontare sau o reevaluare nu e introdusă deloc în aplicație, niciun venit din 765 nu se generează, indiferent dacă era favorabil sau nu.
 
 [iConta.eu](/)

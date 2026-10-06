@@ -16,17 +16,17 @@ Practic, sediul permanent funcționează ca un PFA cu un perimetru strict delimi
 
 ::: ghid-temei
 „Persoanele fizice nerezidente, care desfășoară o activitate independentă, prin intermediul unui sediu permanent în România, sunt impozitate, potrivit prezentului titlu, la venitul net anual impozabil din activitatea independentă, ce este atribuibil sediului permanent."
-— Codul fiscal (Legea 227/2015), art. 126 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 126 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul net dintr-o activitate independentă care este atribuibil unui sediu permanent se determină conform art. 68 , în următoarele condiții: a) în veniturile impozabile se includ numai veniturile ce sunt atribuibile sediului permanent; ... b) în cheltuielile deductibile se includ numai cheltuielile aferente realizării acestor venituri."
-— Codul fiscal (Legea 227/2015), art. 126 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 126 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii de determinare:

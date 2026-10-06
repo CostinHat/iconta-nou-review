@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „(4^1) Entitățile înregistrate în registrul comerțului, pentru care există înscrise mențiuni privind inactivitatea temporară, nu au obligația depunerii declarațiilor fiscale pentru perioada în care se află în inactivitate temporară, începând cu data de 1 a lunii următoare înscrierii mențiunii privind inactivitatea temporară în registrul comerțului. [...] (4^3) Aplicarea prevederilor alin. (4^1) și (4^2) încetează la data reluării activității sau la împlinirea unui termen de 3 ani de la data înregistrării în registrul comerțului a mențiunii privind inactivitatea temporară sau a mențiunii privind suspendarea activității în registrul contribuabililor. (4^4) Obligațiile de declarare, aferente activității desfășurate anterior înregistrării inactivității temporare/suspendării, se mențin."
-— Legea 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^1), (4^3), (4^4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^1), (4^3), (4^4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „d) inactivitatea temporară înscrisă la registrul comerțului;"
-— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă două reguli distincte:

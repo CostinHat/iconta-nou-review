@@ -15,7 +15,7 @@ Obligația de a folosi un aparat de marcat electronic fiscal (AMEF) nu depinde d
 ::: ghid-temei
 „(1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale.
 (2) [...] au obligația să emită bonuri fiscale cu aparate de marcat electronice fiscale și să le înmâneze clienților. La solicitarea clienților, utilizatorii vor elibera acestora și factură."
-— OUG nr. 28/1999 (republicată), art. 1 alin. (1), (2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 (republicată), art. 1 alin. (1), (2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Din text rezultă obligațiile-cheie pentru 2026:
@@ -32,6 +32,6 @@ Din text rezultă obligațiile-cheie pentru 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu poate importa Raportul Z (raportul fiscal de închidere zilnică) generat de aparatele de marcat electronice fiscale, în format p7b sau XML, conform structurii publicate de ANAF prin OPANAF 146/2018 (`core/amef_import.py`). Modulul extrage totalurile de vânzări pe modalități de plată (card, numerar, tichete, vouchere etc.) și pe cote de TVA, pentru a fi preluate în contabilitate. Aplicația nu gestionează însă înregistrarea/conectarea propriu-zisă a aparatului la sistemul ANAF de supraveghere și nici achiziția sau configurarea fizică a dispozitivului — acestea rămân proceduri realizate direct de operatorul economic, prin distribuitorul autorizat al AMEF.
+La data acestui ghid, iConta.eu poate importa Raportul Z (raportul fiscal de închidere zilnică) generat de aparatele de marcat electronice fiscale, în format p7b sau XML, conform structurii publicate de ANAF prin OPANAF 146/2018. Modulul extrage totalurile de vânzări pe modalități de plată (card, numerar, tichete, vouchere etc.) și pe cote de TVA, pentru a fi preluate în contabilitate. Aplicația nu gestionează însă înregistrarea/conectarea propriu-zisă a aparatului la sistemul ANAF de supraveghere și nici achiziția sau configurarea fizică a dispozitivului — acestea rămân proceduri realizate direct de operatorul economic, prin distribuitorul autorizat al AMEF.
 
 [iConta.eu](/)

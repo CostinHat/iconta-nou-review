@@ -16,13 +16,13 @@ Motivul practic este schimbul automat de informații. ANAF transmite rezumatul a
 
 ::: ghid-temei
 „II.5. Descrierea aranjamentului transfrontalier - se va descrie aranjamentul transfrontalier care face obiectul raportării în mod obligatoriu în limba română și în limba engleză."
-— OPANAF 1029/2020, anexa nr. 1, pct. II.5 (sursă: anaf_surse/ordin_1029_2020.html)
+— OPANAF 1029/2020, anexa nr. 1, pct. II.5 (sursă: [OPANAF nr. 1029/2020 privind formularul de raportare a aranjamentelor transfrontaliere](https://legislatie.just.ro/Public/DetaliiDocument/225866))
 
 „II.6. Prevederi naționale - se completează cu prevederile legale naționale care constituie baza aranjamentului transfrontalier care face obiectul raportării în mod obligatoriu în limba română și în limba engleză."
-— OPANAF 1029/2020, anexa nr. 1, pct. II.6 (sursă: anaf_surse/ordin_1029_2020.html)
+— OPANAF 1029/2020, anexa nr. 1, pct. II.6 (sursă: [OPANAF nr. 1029/2020 privind formularul de raportare a aranjamentelor transfrontaliere](https://legislatie.just.ro/Public/DetaliiDocument/225866))
 
 „c) un rezumat al conținutului aranjamentului transfrontalier care face obiectul raportării, inclusiv o trimitere la denumirea sub care este cunoscut de regulă, dacă aceasta există, și o descriere generală a aranjamentelor relevante și a oricăror alte informații care ar putea ajuta autoritatea competentă să evalueze un posibil risc fiscal, fără a duce la dezvăluirea unui secret comercial, industrial sau profesional ori a unui proces comercial ori a unor informații a căror dezvăluire ar fi contrară politicilor publice;"
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (19) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (19) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să conțină cele două rubrici:

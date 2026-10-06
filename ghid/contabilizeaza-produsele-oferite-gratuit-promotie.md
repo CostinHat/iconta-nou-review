@@ -14,7 +14,7 @@ O firmă care oferă produse gratuit în cadrul unei promoții (mostre, „cumpe
 
 ::: ghid-temei
 „Nu constituie livrare de bunuri, în sensul alin. (1): [...] b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice; c) acordarea de bunuri de mică valoare, în mod gratuit, în cadrul acțiunilor de sponsorizare, de mecenat, de protocol/reprezentare, în condițiile stabilite prin normele metodologice."
-— Legea 227/2015, art. 270 alin. (8) lit. b) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 270 alin. (8) lit. b) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică într-o promoție tipică:

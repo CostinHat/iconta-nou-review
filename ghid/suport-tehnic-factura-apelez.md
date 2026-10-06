@@ -14,7 +14,7 @@ Sistemul RO e-Factura e administrat de Ministerul Finanțelor prin Centrul Nați
 
 ::: ghid-temei
 „(2) Organul fiscal are obligația să examineze starea de fapt în mod obiectiv și în limitele stabilite de lege, precum și să îndrume contribuabilul/plătitorul în aplicarea prevederilor legislației fiscale, în îndeplinirea obligațiilor și exercitarea drepturilor sale, ca urmare a solicitării contribuabilului/plătitorului sau din inițiativa organului fiscal, după caz."
-— Legea 207/2015, art. 7 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 7 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Canalele reale prin care se solicită sprijin pentru probleme tehnice cu e-Factura:
@@ -33,6 +33,6 @@ Canalele reale prin care se solicită sprijin pentru probleme tehnice cu e-Factu
 
 ## Ce face iConta.eu
 
-iConta.eu generează și validează factura electronică înainte de trimitere (`core/efactura_send.py`, funcția `valideaza`), încarcă fișierul UBL în sistemul RO e-Factura și urmărește starea mesajului trimis (`stare_mesaj`, `descarca`, `lista_mesaje`). Multe dintre erorile de structură XML sunt astfel prinse și semnalate contabilului înainte de trimitere, reducând nevoia de a mai apela suportul ANAF pentru probleme de format. La data acestui ghid, iConta.eu **nu oferă suport tehnic direct pentru infrastructura RO e-Factura administrată de ANAF** — pentru indisponibilitatea sistemului sau probleme de cont/certificat, contribuabilul rămâne dependent de canalele oficiale (SPV, portalul ANAF).
+iConta.eu generează și validează factura electronică înainte de trimitere (funcția `valideaza`), încarcă fișierul UBL în sistemul RO e-Factura și urmărește starea mesajului trimis (`stare_mesaj`, `descarca`, `lista_mesaje`). Multe dintre erorile de structură XML sunt astfel prinse și semnalate contabilului înainte de trimitere, reducând nevoia de a mai apela suportul ANAF pentru probleme de format. La data acestui ghid, iConta.eu **nu oferă suport tehnic direct pentru infrastructura RO e-Factura administrată de ANAF** — pentru indisponibilitatea sistemului sau probleme de cont/certificat, contribuabilul rămâne dependent de canalele oficiale (SPV, portalul ANAF).
 
 [iConta.eu](/)

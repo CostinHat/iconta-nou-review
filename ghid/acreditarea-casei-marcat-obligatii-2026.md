@@ -16,7 +16,7 @@ poarta: v1
 „(3) Aparatele de marcat electronice fiscale sunt livrate prin distribuitori autorizați. În sensul prezentei ordonanțe de urgență, prin distribuitor autorizat se înțelege operatorul economic pe numele căruia a fost eliberată autorizația prevăzută la art. 5 alin. (2).
 (4) În baza autorizației de distribuție, distribuitorul are dreptul de a comercializa, direct sau prin intermediul operatorilor economici prevăzuți în autorizație, denumiți în continuare unități acreditate pentru comercializare, aparatele de marcat electronice fiscale [...].
 (5) Distribuitorul autorizat are obligația să asigure service-ul, direct sau prin intermediul operatorilor economici prevăzuți în autorizație, denumiți în continuare unități acreditate pentru service, atât pentru aparatele comercializate în mod direct, cât și pentru cele comercializate prin intermediul unităților acreditate pentru comercializare."
-— OUG nr. 28/1999 (republicată), art. 1 alin. (3)-(5) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 (republicată), art. 1 alin. (3)-(5) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Structura pieței AMEF, așa cum rezultă din lege:
@@ -34,6 +34,6 @@ Structura pieței AMEF, așa cum rezultă din lege:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are legătură cu procesul de acreditare a distribuitorilor sau unităților de comercializare/service pentru AMEF — acesta este un raport contractual/administrativ între operatorul economic, distribuitor și ANAF, exterior aplicației. iConta.eu poate importa, pentru evidența contabilă, Raportul Z generat de un aparat deja instalat și fiscalizat (`core/amef_import.py`), indiferent de distribuitorul sau unitatea acreditată prin care a fost achiziționat.
+La data acestui ghid, iConta.eu nu are legătură cu procesul de acreditare a distribuitorilor sau unităților de comercializare/service pentru AMEF — acesta este un raport contractual/administrativ între operatorul economic, distribuitor și ANAF, exterior aplicației. iConta.eu poate importa, pentru evidența contabilă, Raportul Z generat de un aparat deja instalat și fiscalizat, indiferent de distribuitorul sau unitatea acreditată prin care a fost achiziționat.
 
 [iConta.eu](/)

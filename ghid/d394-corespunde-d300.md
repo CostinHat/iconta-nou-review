@@ -14,10 +14,10 @@ Dacă observi, înainte de depunere, că totalurile din D394 nu se potrivesc cu 
 
 ::: ghid-temei
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: anaf_surse/opanaf_2194_2025_d394.txt:741-742)
+— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 
 „[...] se înscrie perioada fiscală declarată pentru depunerea decontului de taxă pe valoarea adăugată (formularul 300) [...] L - luna, T - trimestrul, S - semestrul, A - anul."
-— OPANAF 2194/2025, Anexa 2, secțiunea 1 lit. a) (sursă: anaf_surse/opanaf_2194_2025_d394.txt:781-783)
+— OPANAF 2194/2025, Anexa 2, secțiunea 1 lit. a) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Punctele de verificat, în ordine:
@@ -34,7 +34,7 @@ Punctele de verificat, în ordine:
 
 ## Ce face iConta.eu
 
-Cele două declarații se generează prin module separate în aplicație, fiecare cu propria validare pe validatorul oficial ANAF (DUK) — nu există, la generarea efectivă, un mecanism care compară automat sumele din D300 cu cele din D394. Există, doar la nivel de dezvoltare (nu în fluxul folosit de contabil), un gard intern (`core/test_d300_d394_paritate.py`) care confruntă cele două calcule pe cotă — dar chiar acest gard e documentat în cod ca tautologic, fiindcă ambele generatoare citesc aceleași linii de factură și deduc cota identic, deci prinde doar o divergență între generatoare, nu o eroare reală de conținut. Singura verificare internă care rulează la generarea D394 e propria ei consistență: a doua cale de calcul (`core/d394_reconciliere.py`) recalculează totalurile pe cotă direct din liniile de factură și oprește generarea la divergență față de generatorul principal, dar nu confruntă rezultatul cu D300.
+Cele două declarații se generează prin module separate în aplicație, fiecare cu propria validare pe validatorul oficial ANAF (DUK) — nu există, la generarea efectivă, un mecanism care compară automat sumele din D300 cu cele din D394. Există, doar la nivel de dezvoltare (nu în fluxul folosit de contabil), un gard intern care confruntă cele două calcule pe cotă — dar chiar acest gard e documentat în cod ca tautologic, fiindcă ambele generatoare citesc aceleași linii de factură și deduc cota identic, deci prinde doar o divergență între generatoare, nu o eroare reală de conținut. Singura verificare internă care rulează la generarea D394 e propria ei consistență: a doua cale de calcul recalculează totalurile pe cotă direct din liniile de factură și oprește generarea la divergență față de generatorul principal, dar nu confruntă rezultatul cu D300.
 
 Practic, dacă observi o diferență înainte de depunere, verificarea rămâne manuală: separi din D300 operațiunile intracomunitare și importurile (absente din D394 prin lege), apoi compari doar restul cu ce a generat aplicația pentru D394 în aceeași perioadă.
 

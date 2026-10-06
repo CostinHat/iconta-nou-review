@@ -14,7 +14,7 @@ Un asociat care deține și un SRL la micro, și un PFA activ, nu poate trata ce
 
 ::: ghid-temei
 „Persoana juridică română care verifică condiția [dacă] are unul sau mai mulți acționari/asociați care dețin, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot ale acestei persoane juridice române, acționari/asociați care desfășoară și activitate economică prin intermediul unei persoane fizice autorizate/întreprinderi individuale/întreprinderi familiale/altei forme de organizare a unei activități economice, fără personalitate juridică, autorizată potrivit legilor în vigoare. În această situație, veniturile înregistrate potrivit reglementărilor contabile aplicabile sau norma anuală de venit [...] ale/a persoanei fizice autorizate [...] se cumulează cu cele realizate de persoana juridică română."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, această legătură:

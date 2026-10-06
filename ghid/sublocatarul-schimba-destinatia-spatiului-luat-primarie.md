@@ -16,15 +16,15 @@ Regula decurge din modul în care e construită taxa pe clădiri: pentru clădir
 
 ::: ghid-temei
 „În declarația privind taxa pe clădiri, contribuabilul va menționa destinația finală a clădirii. În cazul în care un contribuabil (A) transmite ulterior dreptul de administrare, închiriere, folosință sau concesiune asupra clădirii unui contribuabil (B), contribuabilul (B) îi va comunica contribuabilului (A) modificarea destinației clădirii, pentru a fi declarată de contribuabilul (A) la organul fiscal competent."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 60 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 60 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul transmiterii ulterioare altor entități a dreptului de concesiune, închiriere, administrare sau folosință asupra clădirii, taxa se datorează de persoana care are relația contractuală cu persoana de drept public."
-— Codul fiscal (Legea 227/2015), art. 455 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 455 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul unei situații care determină modificarea taxei pe clădiri datorate, persoana care datorează taxa pe clădiri are obligația să depună o declarație la organul fiscal local în a cărui rază teritorială de competență se află clădirea, până la data de 25 a lunii următoare celei în care s-a înregistrat situația respectivă."
-— Codul fiscal (Legea 227/2015), art. 461 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se leagă textele:

@@ -15,11 +15,11 @@ O mașină electrică cumpărată de firmă e, din punct de vedere fiscal, un mi
 ::: ghid-temei
 „1. Catalogul cuprinde clasificarea mijloacelor fixe utilizate în economie și duratele normale de funcționare ale acestora, care corespund cu duratele de amortizare în ani, aferente regimului de amortizare liniar. [...]
 2. Durata normala de funcționare reprezintă durata de utilizare în care se recuperează, din punct de vedere fiscal valoarea de intrare a mijloacelor fixe pe calea amortizării."
-— HG 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Dispoziții generale, pct. 1-2 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Dispoziții generale, pct. 1-2 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 
 „2.3.2.1. Mijloace de transport pentru persoane.
 2.3.2.1.1. - autoturisme, în afară de: 4-6"
-— HG 2139/2004, subclasa 2.3.2.1.1 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004, subclasa 2.3.2.1.1 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Din structura catalogului rezultă cum se încadrează un autoturism electric al firmei:

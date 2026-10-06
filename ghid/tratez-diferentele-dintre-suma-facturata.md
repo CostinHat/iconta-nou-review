@@ -14,7 +14,7 @@ Când un procesator de plăți (card, marketplace, platformă de încasare onlin
 
 ::: ghid-temei
 „Principiul necompensării. Orice compensare între elementele de active și datorii sau între elementele de venituri și cheltuieli este interzisă. Toate creanțele și datoriile trebuie înregistrate distinct în contabilitate, pe bază de documente justificative."
-— OMFP 1802/2014, reglementări contabile, pct. 56 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, reglementări contabile, pct. 56 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o diferență generată de un procesator de plăți:

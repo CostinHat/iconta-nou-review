@@ -18,7 +18,7 @@ Peste un anumit prag de cifră de afaceri, impozitul pe profit standard de 16% n
 
 Regulile de bază: dacă cifra de afaceri a anului precedent (VT − Vs, la cursul de închidere a exercițiului) depășește pragul de 50.000.000 EUR (art.18^1 alin.(1)), firma poate datora IMCA, calculat după formula IMCA = cotă × (VT − Vs − I − A) (art.18^1 alin.(3)). Cota generală e 1%, dar pentru anul fiscal 2026 legea stabilește explicit 0,5% (art.18^1 alin.(16)); regimul IMCA e temporar, aplicabil până la 31 decembrie 2026 inclusiv (art.18^1 alin.(17)).
 
-**Discrepanță critică de semnalat:** motorul D101 din iConta (`core/d101.py`, funcția `impozit_minim_cifra_afaceri`) calculează în prezent IMCA fix la 1% (`Decimal("0.01") * baza`), fără actualizarea la 0,5% cerută de lege pentru anul fiscal 2026 — practic dublează valoarea IMCA pentru firmele eligibile în 2026.
+**Discrepanță critică de semnalat:** motorul D101 din iConta (funcția `impozit_minim_cifra_afaceri`) calculează în prezent IMCA fix la 1% (`Decimal("0.01") * baza`), fără actualizarea la 0,5% cerută de lege pentru anul fiscal 2026 — practic dublează valoarea IMCA pentru firmele eligibile în 2026.
 
 ## Ce se greșește în practică
 

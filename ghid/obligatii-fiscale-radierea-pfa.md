@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală [...] trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. [...]
 (4) Codul de identificare fiscală retras ca urmare a radierii înregistrării fiscale poate fi utilizat ulterior radierii numai pentru îndeplinirea, de către succesorii persoanelor/entităților care și-au încetat existența, a obligațiilor fiscale aferente perioadelor în care persoana/entitatea a avut calitatea de subiect de drept fiscal."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, radierea unui PFA presupune două paliere de obligații:

@@ -16,17 +16,17 @@ Contează pentru că, fără această excepție, alimentele cumpărate cu TVA de
 
 ::: ghid-temei
 „transferul alimentelor destinate consumului uman, aflate aproape de expirarea datei durabilității minimale, în situația în care acesta este efectuat potrivit prevederilor legale privind diminuarea risipei alimentare."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (8) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (8) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În aplicarea prevederilor art. 270 alin. (8) lit. d) din Codul fiscal: […] b) alimentele pot face obiectul transferului prevăzut la lit. a) oricând în ultimele 10 zile de valabilitate până la data durabilității minimale"
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (12^1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (12^1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Nu se ajustează deducerea inițială a taxei în cazul: […] situațiilor prevăzute la art. 270 alin. (8)"
-— Codul fiscal (Legea 227/2015), art. 304 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

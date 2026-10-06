@@ -16,11 +16,11 @@ Când firma este contravenientul, i se pot aplica avertismentul și amenda. Pres
 
 ::: ghid-temei
 „(2) Persoana juridică răspunde contravențional în cazurile și în condițiile prevăzute de actele normative prin care se stabilesc și se sancționează contravenții."
-— OG 2/2001, art. 3 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 3 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(1) Avertismentul și amenda contravențională se pot aplica oricărui contravenient persoana fizica sau juridică. (2) Prestarea unei activități în folosul comunității se poate aplica numai contravenienților persoane fizice."
-— OG 2/2001, art. 6 alin. (1)-(2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 6 alin. (1)-(2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(3) În cazul în care la săvârșirea unei contravenții au participat mai multe persoane, sancțiunea se va aplica fiecăreia separat."
-— OG 2/2001, art. 10 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 10 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Cum se citește actul care sancționează fapta:

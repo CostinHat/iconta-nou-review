@@ -14,7 +14,7 @@ Da — este o situație frecventă, mai ales la firmele nou-înființate sau cu 
 
 ::: ghid-temei
 „(2) Veniturile sub formă de dobânzi pentru depozitele la termen constituite, instrumentele de economisire dobândite, contractele civile încheiate se impun cu o cotă de 10% din suma acestora, impozitul fiind final, indiferent de data constituirii raportului juridic. [...] În situația sumelor primite sub formă de dobândă pentru împrumuturile acordate pe baza contractelor civile, calculul impozitului datorat de către plătitorii de venit se efectuează la momentul plății dobânzii."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, situația se descompune astfel:

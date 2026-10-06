@@ -14,7 +14,7 @@ Da, dacă depui D212 ca persoană fizică ce desfășoară o activitate economic
 
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul care depune cereri, înscrisuri sau documente la organul fiscal, prin mijloace electronice de transmitere la distanță, se identifică în relația cu organul fiscal astfel: a) persoanele juridice, asocierile și alte entități fără personalitate juridică, precum și persoanele fizice care desfășoară activități economice în mod independent ori exercită profesii libere se identifică numai cu certificate calificate; b) persoanele fizice, altele decât cele prevăzute la lit. a), se identifică prin intermediul furnizorilor de servicii publice de autentificare electronică autorizați potrivit legii sau prin diverse dispozitive, cum ar fi certificat calificat, credențiale de tip utilizator/parolă însoțite de liste de coduri de autentificare de unică folosință, telefon mobil, digipass ori alte dispozitive [...]."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă de aici:
@@ -31,6 +31,6 @@ Ce rezultă de aici:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212) pe baza datelor introduse de contabil (`core/d212.py`), dar nu gestionează certificate digitale calificate și nu efectuează el însuși autentificarea în SPV. Obținerea certificatului calificat și autentificarea/transmiterea în Spațiul Privat Virtual rămân proceduri realizate direct de contribuabil sau de contabil, în afara aplicației.
+La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212) pe baza datelor introduse de contabil, dar nu gestionează certificate digitale calificate și nu efectuează el însuși autentificarea în SPV. Obținerea certificatului calificat și autentificarea/transmiterea în Spațiul Privat Virtual rămân proceduri realizate direct de contribuabil sau de contabil, în afara aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Multe firme care manipulează numerar (comerț cu amănuntul, HoReCa) încheie o
 
 ::: ghid-temei
 „(4) Următoarele cheltuieli nu sunt deductibile: [...] g) cheltuielile cu primele de asigurare care nu privesc activele și riscurile asociate activității contribuabilului, cu excepția celor care privesc bunurile reprezentând garanție bancară pentru creditele utilizate în desfășurarea activității pentru care este autorizat contribuabilul sau utilizate în cadrul unor contracte de închiriere sau de leasing, potrivit clauzelor contractuale."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Textul este formulat ca o interdicție ("nu sunt deductibile... care NU privesc activele și riscurile activității"), ceea ce înseamnă, per a contrario:

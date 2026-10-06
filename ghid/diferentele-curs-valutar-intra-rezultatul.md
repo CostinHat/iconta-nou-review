@@ -14,7 +14,7 @@ Da. La impozitul pe profit, rezultatul fiscal pornește de la ce ai înregistrat
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Formula legală pleacă de la rezultatul contabil (venituri minus cheltuieli, conform OMFP 1802/2014) și aplică doar două tipuri de corecții: scăderea veniturilor neimpozabile (art. 23) și adăugarea cheltuielilor nedeductibile (art. 25).
@@ -30,6 +30,6 @@ Da. La impozitul pe profit, rezultatul fiscal pornește de la ce ai înregistrat
 
 ## Ce face iConta.eu
 
-`core/diferente_curs.py` calculează și contabilizează diferențele de curs (665/765), dar aplicația **nu calculează rezultatul fiscal** și nu aplică art. 19-40^2 asupra acestor sume — modulul e, cum spune el însuși, un „motor pur", fără nicio legătură de cod cu declarația de impozit pe profit. Sumele generate automat de F041 alimentează balanța de verificare, de unde contabilul le preia manual în calculul rezultatului fiscal.
+Aplicația calculează și contabilizează diferențele de curs (665/765), dar aplicația **nu calculează rezultatul fiscal** și nu aplică art. 19-40^2 asupra acestor sume — modulul e, cum spune el însuși, un „motor pur", fără nicio legătură de cod cu declarația de impozit pe profit. Sumele generate automat de F041 alimentează balanța de verificare, de unde contabilul le preia manual în calculul rezultatului fiscal.
 
 [iConta.eu](/)

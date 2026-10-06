@@ -104,7 +104,12 @@ BASELINE = {
     "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
     "salariati_import_api.py": 2, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
-    "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1
+    "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1,
+    # [lot 06.10, 06.10.2026] +2, DELIBERAT si cu motivul — aceeasi clasa OPERATIONALA numita mai sus (nu exista inca o clasa
+    # pentru ea): `ghid_teme.py` l.108 `n=6` = cate ghiduri inrudite arata o pagina publica (navigare); `repo_firma_profil.py`
+    # l.122 `limita=200` = cate randuri din jurnalul Date firma intoarce ecranul. Niciuna nu e valoare fiscala; amandoua
+    # fisierele intra in domeniu fiindca vorbesc despre fiscal (temele ghidurilor; campurile firmei).
+    "ghid_teme.py": 1, "repo_firma_profil.py": 1,
 }
 
 

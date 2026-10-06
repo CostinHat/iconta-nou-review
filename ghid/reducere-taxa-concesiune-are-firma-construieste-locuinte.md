@@ -16,12 +16,12 @@ Pentru firmă, reducerea e un element de negociat și de documentat la încheier
 
 ::: ghid-temei
 „Locuințele care se realizează prin investiții din profit de către persoane juridice române, precum și în condițiile art. 7 și 20 din prezenta lege se pot amplasa pe terenurile aparținând persoanelor fizice beneficiare de locuințe, ale persoanelor juridice investitoare sau pe terenuri concesionate în acest scop de consiliile locale persoanelor juridice sau fizice, cu o reducere de până la 95% din taxa de concesiune."
-— Legea 114/1996 (Legea locuinței), art. 5 alin. (2) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 5 alin. (2) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Beneficiarul/investitorul trebuie să dețină și să probeze un drept real asupra terenului destinat amplasării construcțiilor de locuințe, cu actele de proprietate și extrasul de carte funciară pentru informare."
-— Legea 114/1996 (Legea locuinței), art. 5 alin. (6) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 5 alin. (6) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 Condițiile care rezultă din text:

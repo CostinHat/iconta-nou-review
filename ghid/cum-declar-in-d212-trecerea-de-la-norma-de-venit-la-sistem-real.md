@@ -33,6 +33,6 @@ Trecerea de la normă de venit la sistem real înseamnă că, pentru anul de ven
 
 ## Ce face iConta.eu
 
-Fișa D212 (`core/d212_engine.py`) calculează sistemul real. Capitolul de normă de venit (capitolul 12 din D212) se calculează în generatorul declarației (`core/d212.py`): contabilul introduce norma și datele de început/încetare, iar aplicația calculează venitul net proporțional cu zilele de activitate și impozitul (art. 69 și 69^2) — așa se pot declara în același an și perioada pe normă, și cea în sistem real. Pentru anul curent de tranziție la sistem real, aplicația completează automat capitolul de sistem real pe baza încasărilor și plăților validate din contabilitate.
+Fișa D212 calculează sistemul real. Capitolul de normă de venit (capitolul 12 din D212) se calculează în generatorul declarației: contabilul introduce norma și datele de început/încetare, iar aplicația calculează venitul net proporțional cu zilele de activitate și impozitul (art. 69 și 69^2) — așa se pot declara în același an și perioada pe normă, și cea în sistem real. Pentru anul curent de tranziție la sistem real, aplicația completează automat capitolul de sistem real pe baza încasărilor și plăților validate din contabilitate.
 
 [iConta.eu](/)

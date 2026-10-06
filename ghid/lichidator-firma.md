@@ -14,7 +14,7 @@ Odată ce o societate intră în lichidare, administratorii nu mai pot conduce s
 
 ::: ghid-temei
 „(1) Lichidatorii vor putea fi persoane fizice sau persoane juridice. Lichidatorii persoane fizice sau reprezentanții permanenți - persoane fizice ale societății lichidatoare - trebuie să fie lichidatori autorizați, în condițiile legii. (2) Lichidatorii au aceeași răspundere ca și administratorii, respectiv membrii directoratului."
-— Legea 31/1990, art. 253 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 253 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă trei reguli practice:

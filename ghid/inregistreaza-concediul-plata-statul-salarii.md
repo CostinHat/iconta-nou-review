@@ -32,6 +32,6 @@ Concediul fără plată nu are o înregistrare contabilă separată — nu exist
 
 ## Ce face iConta.eu
 
-Statul de plată se generează cu funcția `monografie_salariu()` din `core/salarizare.py`, care produce notele contabile standard (641/421 — salarii datorate, 421/4315 — CAS reținut, 421/4316 — CASS reținut, 421/444 — impozit reținut, 646/436 — CAM datorat de angajator) pornind de la brutul calculat pentru luna respectivă. Codul verificat pentru acest dosar nu conține o notă contabilă distinctă pentru concediul fără plată — brutul introdus în calcul e cel proporțional, iar restul fluxului (rețineri, notă contabilă) e identic cu al oricărei alte luni.
+Statul de plată se generează cu funcția `monografie_salariu()` din aplicație, care produce notele contabile standard (641/421 — salarii datorate, 421/4315 — CAS reținut, 421/4316 — CASS reținut, 421/444 — impozit reținut, 646/436 — CAM datorat de angajator) pornind de la brutul calculat pentru luna respectivă. Codul verificat pentru acest dosar nu conține o notă contabilă distinctă pentru concediul fără plată — brutul introdus în calcul e cel proporțional, iar restul fluxului (rețineri, notă contabilă) e identic cu al oricărei alte luni.
 
 [iConta.eu](/)

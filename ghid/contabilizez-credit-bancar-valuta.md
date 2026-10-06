@@ -43,8 +43,8 @@ Un credit de 10.000 EUR e primit la curs BNR 5,00 lei/EUR → se înregistrează
 
 ## Ce face iConta.eu
 
-`core/credite.py` produce nota de bază (`nota_primire`, `nota_plata` etc.) exact ca pentru un credit în lei — motorul nu are un câmp dedicat de „monedă” în ecranul „Credite bancare” (`static/js/ecrane/operatiuni_ecran.js`, cheia `"credit"`), deci suma introdusă trebuie să fie deja convertită în lei, la cursul BNR din ziua operațiunii.
+Aplicația produce nota de bază (`nota_primire`, `nota_plata` etc.) exact ca pentru un credit în lei — motorul nu are un câmp dedicat de „monedă” în ecranul „Credite bancare” (cheia `"credit"`), deci suma introdusă trebuie să fie deja convertită în lei, la cursul BNR din ziua operațiunii.
 
-Reevaluarea periodică a soldurilor în valută (inclusiv pentru conturile de credit, 1621/1682/5191/5198) e tratată **separat**, printr-un motor dedicat: `core/diferente_curs.py`, funcția `reevaluare_sold(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip, cont_sold)`, apelată din use-case-ul `reevaluare_valuta()` (`core/uc_tenants.py`) pe ruta `/tenants/{tenant_id}/reevaluare-valuta`. Pentru un credit (tip `"datorie"`), motorul generează automat linia `665=cont` sau `cont=765`, după caz. Practic: primirea și ratele creditului se introduc manual, convertite în lei, iar reevaluarea periodică a soldului se face separat, prin ecranul de reevaluare valută, nu prin ecranul „Credite bancare”.
+Reevaluarea periodică a soldurilor în valută (inclusiv pentru conturile de credit, 1621/1682/5191/5198) e tratată **separat**, printr-un motor dedicat: Aplicația, funcția `reevaluare_sold(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip, cont_sold)`, apelată din use-case-ul `reevaluare_valuta()` pe ruta `/tenants/{tenant_id}/reevaluare-valuta`. Pentru un credit (tip `"datorie"`), motorul generează automat linia `665=cont` sau `cont=765`, după caz. Practic: primirea și ratele creditului se introduc manual, convertite în lei, iar reevaluarea periodică a soldului se face separat, prin ecranul de reevaluare valută, nu prin ecranul „Credite bancare”.
 
 [iConta.eu](/)

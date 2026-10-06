@@ -14,7 +14,7 @@ O livrare intracomunitară deja facturată și raportată în D390 poate primi u
 
 ::: ghid-temei
 „Baza de impozitare se reduce în următoarele situații: [...] c) în cazul în care se acordă reduceri de preț după livrarea bunurilor sau prestarea serviciilor;"
-— Legea 227/2015 (Codul fiscal), art. 287 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 287 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul pentru o livrare intracomunitară cu discount acordat ulterior:

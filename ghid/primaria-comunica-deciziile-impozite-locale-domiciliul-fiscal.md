@@ -16,15 +16,15 @@ Pentru o firmă cu imobile în mai multe localități, regula contează: decizii
 
 ::: ghid-temei
 „în cazul creanțelor fiscale administrate de organul fiscal local, prin domiciliu fiscal se înțelege domiciliul reglementat potrivit dreptului comun sau sediul social înregistrat potrivit legii."
-— Codul de procedură fiscală (Legea 207/2015), art. 39 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 39 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care contribuabilul/plătitorul are înregistrat un domiciliu fiscal potrivit art. 32 , în scopul comunicării actelor administrative fiscale emise de organul fiscal local se utilizează acest domiciliu fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 39 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 39 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Domiciliul fiscal definit potrivit art. 31 se înregistrează/modifică la/de organul fiscal central în toate cazurile în care acesta este diferit de domiciliul sau de sediul social prin depunerea de către contribuabil/plătitor a unei cereri de înregistrare/modificare a domiciliului fiscal, însoțită de acte doveditoare ale informațiilor cuprinse în aceasta."
-— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 32 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se combină regulile:

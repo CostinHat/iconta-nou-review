@@ -14,7 +14,7 @@ O factură de cheltuială care ajunge la firmă după ce D101 a fost deja depus�
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal, erorile înregistrate în contabilitate se corectează astfel: a) erorile care se corectează potrivit reglementărilor contabile pe seama rezultatului reportat, prin ajustarea rezultatului fiscal al anului la care se referă acestea și depunerea unei declarații rectificative în condițiile prevăzute de Codul de procedură fiscală; b) erorile care se corectează potrivit reglementărilor contabile pe seama contului de profit și pierdere sunt luate în calcul pentru determinarea rezultatului fiscal în anul în care se efectuează corectarea acestora."
-— Legea 227/2015, art. 19 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 19 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de decizie, pas cu pas:

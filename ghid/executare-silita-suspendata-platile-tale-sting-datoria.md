@@ -16,15 +16,15 @@ Altfel stau lucrurile când suspendarea vine dintr-o **scrisoare de garanție sa
 
 ::: ghid-temei
 „Obligațiile fiscale înscrise în titluri executorii pentru care executarea silită este suspendată în condițiile art. 233 alin. (1) lit. a) și d) se sting prin orice modalitate prevăzută de prezentul cod, cu excepția celei prin executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 166 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 166 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(2^2) Pe toată perioada suspendării executării silite potrivit alin. (2^1) , creanțele fiscale ce fac obiectul suspendării nu se sting, cu excepția situației în care debitorul optează pentru stingerea acestora potrivit art. 165 alin. (8) ."
-— Codul de procedură fiscală (Legea 207/2015), art. 233 alin. (2^2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 233 alin. (2^2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Pe toată perioada suspendării executării silite potrivit prezentului articol, creanțele fiscale ce fac obiectul suspendării nu se sting, cu excepția situației în care debitorul optează pentru stingerea acestora potrivit art. 165 alin. (8) ."
-— Codul de procedură fiscală (Legea 207/2015), art. 235 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 235 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe cazuri:

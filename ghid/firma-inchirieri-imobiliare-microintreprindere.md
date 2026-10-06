@@ -18,7 +18,7 @@ f) persoana juridică română care desfășoară activități în domeniul banc
 g) persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital, precum și persoana juridică română care desfășoară activități de intermediere/distribuție în aceste domenii, cu excepția intermediarilor secundari de asigurări și/sau reasigurări [...] care au realizat venituri din activitatea de distribuție de asigurări/reasigurări în proporție de până la 15% inclusiv din veniturile totale;
 h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc;
 i) persoana juridică română care desfășoară activități de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lista de la art. 47 alin. (3) este exhaustivă și cuprinde doar patru domenii: bancar, asigurări/reasigurări/piață de capital, jocuri de noroc și explorare/exploatare petrol și gaze. Închirierea de imobile nu apare printre ele, deci o firmă din acest domeniu trebuie doar să verifice condițiile generale de la art. 47 alin. (1):
@@ -38,6 +38,6 @@ Lista de la art. 47 alin. (3) este exhaustivă și cuprinde doar patru domenii: 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, în funcție de codul CAEN al firmei, dacă activitatea desfășurată se încadrează în excluderile de la art. 47 alin. (3). Aplicația permite setarea manuală a regimului fiscal al firmei (`regim_fiscal` = „micro" sau „profit", în `core/vector_fiscal_api.py`), pe baza căreia stabilește declarațiile datorate (D100 trimestrial pentru micro, D101 anual pentru profit, via `core/d100.py` și `core/d101.py`). Evaluarea eligibilității propriu-zise, inclusiv verificarea că activitatea de închiriere nu intră în vreo excludere, rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, în funcție de codul CAEN al firmei, dacă activitatea desfășurată se încadrează în excluderile de la art. 47 alin. (3). Aplicația permite setarea manuală a regimului fiscal al firmei (`regim_fiscal` = „micro" sau „profit", în aplicație), pe baza căreia stabilește declarațiile datorate (D100 trimestrial pentru micro, D101 anual pentru profit, via aplicația). Evaluarea eligibilității propriu-zise, inclusiv verificarea că activitatea de închiriere nu intră în vreo excludere, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

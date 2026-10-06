@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Persoana fizică care desfășoară o profesie liberală sau exercită o activitate economică în mod independent într-una din formele prevăzute de Ordonanța de urgență a Guvernului nr. 44/2008 [...] răspunde pentru obligațiile fiscale datorate ca urmare a exercitării profesiei sau activității cu bunurile din patrimoniul de afectațiune. Dacă acestea nu sunt suficiente pentru recuperarea creanțelor fiscale, pot fi urmărite și celelalte bunuri ale debitorului."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 23 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 23 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce diferență face acest text în alegerea formei juridice:

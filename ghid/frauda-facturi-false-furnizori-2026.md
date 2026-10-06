@@ -14,7 +14,7 @@ Facturile de la furnizori care „acoperă" cheltuieli fără operațiune reală
 
 ::: ghid-temei
 „(1) Constituie infracțiuni de evaziune fiscală și se pedepsesc cu închisoare de la 3 la 10 ani și interzicerea unor drepturi sau cu amendă următoarele fapte săvârșite în scopul sustragerii de la îndeplinirea obligațiilor fiscale: [...] c) evidențierea, în actele contabile, în factura electronică sau în alte documente legale, a cheltuielilor care nu au la bază operațiuni reale ori evidențierea altor operațiuni fictive;"
-— Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale, art. 9 alin. (1) lit. c) (sursă: anaf_surse/legea_241_2005.html)
+— Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale, art. 9 alin. (1) lit. c) (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 :::
 
 Câteva precizări relevante pentru o firmă care descoperă facturi false primite de la un furnizor:
@@ -31,6 +31,6 @@ Câteva precizări relevante pentru o firmă care descoperă facturi false primi
 
 ## Ce face iConta.eu
 
-Pentru acest subiect nu am identificat în cod o funcție de detectare automată a facturilor false sau a furnizorilor fictivi (de exemplu, verificare încrucișată cu ANAF privind existența/statutul furnizorului). Aplicația are un modul de alerte pentru control fiscal (`core/alerte_control_fiscal.py`), dar acesta compară date deja introduse între declarații (TVA, salarii) pentru a semnala inconsistențe interne, nu verifică realitatea operațiunilor din spatele facturilor primite — depistarea unei fraude cu facturi false rămâne, la acest moment, în sarcina contabilului și a verificărilor sale de bună-credință.
+Pentru acest subiect nu am identificat în cod o funcție de detectare automată a facturilor false sau a furnizorilor fictivi (de exemplu, verificare încrucișată cu ANAF privind existența/statutul furnizorului). Aplicația are un modul de alerte pentru control fiscal, dar acesta compară date deja introduse între declarații (TVA, salarii) pentru a semnala inconsistențe interne, nu verifică realitatea operațiunilor din spatele facturilor primite — depistarea unei fraude cu facturi false rămâne, la acest moment, în sarcina contabilului și a verificărilor sale de bună-credință.
 
 [iConta.eu](/)

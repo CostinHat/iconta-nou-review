@@ -14,7 +14,7 @@ Plafonul de diurnă neimpozabilă are două praguri, iar cel de „2,5 ori diurn
 
 ::: ghid-temei
 „în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat. [...] Plafonul aferent valorii a 3 salarii de bază corespunzătoare locului de muncă ocupat se calculează distinct pentru fiecare lună în parte, prin raportarea celor 3 salarii la numărul de zile lucrătoare din luna respectivă, iar rezultatul se multiplică cu numărul de zile corespunzător fiecărei luni din perioada de delegare/detașare/desfășurare a activității în altă localitate, în țară sau în străinătate."
-— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanica exactă a celui de-al doilea prag:
@@ -33,7 +33,7 @@ Mecanica exactă a celui de-al doilea prag:
 
 ## Ce face iConta.eu
 
-Formula celor „3 salarii de bază/zile lucrătoare" este implementată în funcția `plafon_diurna` (`core/deconturi.py`), ca al doilea termen al comparației care determină plafonul final (minimul dintre cele două praguri). Există însă o particularitate de proiectare verificată în cod: funcția **nu calculează singură** numărul de zile lucrătoare din calendar — îl primește ca parametru de la apelant. Restul aplicației are o funcție dedicată pentru acest calcul (`core.scadente.zile_lucratoare_luna`, folosită la salarizare și la declarația D112), dar fluxul curent al deconturilor **nu o apelează** — cere numărul de zile lucrătoare direct de la utilizator, dacă și când calculul e invocat.
+Formula celor „3 salarii de bază/zile lucrătoare" este implementată în funcția `plafon_diurna`, ca al doilea termen al comparației care determină plafonul final (minimul dintre cele două praguri). Există însă o particularitate de proiectare verificată în cod: funcția **nu calculează singură** numărul de zile lucrătoare din calendar — îl primește ca parametru de la apelant. Restul aplicației are o funcție dedicată pentru acest calcul (`core.scadente.zile_lucratoare_luna`, folosită la salarizare și la declarația D112), dar fluxul curent al deconturilor **nu o apelează** — cere numărul de zile lucrătoare direct de la utilizator, dacă și când calculul e invocat.
 
 Ca și celelalte componente ale plafonului, acest calcul **nu apare în interfața iConta** — nu există un ecran care să ceară salariul de bază și numărul de zile lucrătoare pentru a afișa plafonul rezultat. Formula există corect la nivel de motor de calcul (API), dar rămâne, astăzi, un calcul pe care contabilul trebuie să-l facă manual, cu propriile date despre salariul angajatului și zilele lucrătoare din luna deplasării.
 

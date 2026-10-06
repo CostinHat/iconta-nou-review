@@ -13,12 +13,12 @@ Regularizarea de final de an a impozitului pe profit este exact rolul declarați
 ## Temeiul legal
 
 ::: ghid-temei
-"D101 [...] e exclusiv declarația ANUALĂ de definitivare." — dosarul de cercetare F027, pe baza `core/d100.py` și `core/d101.py`.
+"D101 [...] e exclusiv declarația ANUALĂ de definitivare." — dosarul de cercetare F027, pe baza aplicația.
 :::
 
 Definitivarea aplică cota de 16% (CF art.17) pe profitul impozabil final (P40 → P411), după parcurgerea deducerilor (amortizare fiscală, P11), add-back-urilor (amortizare contabilă și alte cheltuieli nedeductibile, P34) și a rezervei legale (P13). Dacă cifra de afaceri a anului precedent depășește pragul de 50.000.000 EUR, funcția `genereaza()` cere explicit completarea manuală a P47 (dacă nu a fost deja furnizat), tocmai pentru a nu subevalua tacit impozitul unei firme mari eligibile la IMCA.
 
-La generare, aplicația rulează și o reconciliere independentă a bazei contabile (`core/d101_reconciliere.py`) și verifică `totalPlata_A` emis (`core/reconciliere_emis.py`).
+La generare, aplicația rulează și o reconciliere independentă a bazei contabile și verifică `totalPlata_A` emis.
 
 ## Ce se greșește în practică
 

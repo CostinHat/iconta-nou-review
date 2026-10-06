@@ -14,7 +14,7 @@ Un proiect de dezvoltare software cu preț fix, derulat pe mai multe luni sau ch
 
 ::: ghid-temei
 „(1) Veniturile din prestări de servicii se înregistrează în contabilitate pe măsura efectuării acestora. Prestarea de servicii cuprinde inclusiv executarea de lucrări și orice alte operațiuni care nu pot fi considerate livrări de bunuri. (2) Stadiul de execuție al lucrării se determină pe bază de situații de lucrări care însoțesc facturile, procese-verbale de recepție sau alte documente care atestă stadiul realizării și recepția serviciilor prestate. [...] (4) Contravaloarea lucrărilor nerecepționate de beneficiar până la sfârșitul perioadei se evidențiază la cost, în contul 332 «Servicii în curs de execuție», pe seama contului 712 «Venituri aferente costurilor serviciilor în curs de execuție»."
-— OMFP nr. 1.802/2014, Reglementările contabile privind situațiile financiare anuale individuale, pct. 446 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementările contabile privind situațiile financiare anuale individuale, pct. 446 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Un proiect IT cu preț fix, facturat pe etape (avans, jaloane/milestones, livrare finală), trebuie să aibă venitul contabil recunoscut în funcție de stadiul real de execuție, nu automat la momentul emiterii fiecărei facturi.

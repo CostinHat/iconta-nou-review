@@ -16,12 +16,12 @@ Consecința practică: pe factura către client, deplasarea se taxează cu cota 
 
 ::: ghid-temei
 „(5) În sensul art. 286 alin. (3) lit. b) din Codul fiscal, orice cheltuieli accesorii efectuate de persoana care realizează o livrare de bunuri sau o prestare de servicii se includ în baza de impozitare a taxei pe valoarea adăugată, chiar dacă fac obiectul unui contract separat. Există o singură livrare/prestare în cazul în care unul sau mai multe elemente trebuie considerate ca reprezentând tranzacția principală, în timp ce unul sau mai multe elemente trebuie considerate cheltuieli accesorii care beneficiază de tratamentul fiscal al tranzacției principale referitoare, printre altele, la locul livrării/prestării, cotele, scutirile ca și livrarea/prestarea de care sunt legate. [...] Exemplul nr. 1: Pentru prestarea unor servicii de consultanță, prestatorul stabilește cu beneficiarul său că acesta va suporta și cheltuielile cu deplasările consultanților, respectiv transport, cazare, diurnă, alte cheltuieli. Toate aceste cheltuieli sunt accesorii serviciului principal, respectiv cel de consultanță și se includ în baza de impozitare a acestuia.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30 alin. (5), titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30 alin. (5), titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „b) cheltuielile accesorii, cum sunt: comisioanele, cheltuielile de ambalare, transport și asigurare, solicitate de către furnizor/prestator cumpărătorului sau beneficiarului. Cheltuielile facturate de furnizorul de bunuri sau de prestatorul de servicii cumpărătorului, care fac obiectul unui contract separat și care sunt legate de livrările de bunuri sau de prestările de servicii în cauză, se consideră cheltuieli accesorii.”
-— Codul fiscal (Legea 227/2015), art. 286 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 286 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

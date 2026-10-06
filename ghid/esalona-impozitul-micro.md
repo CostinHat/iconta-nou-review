@@ -14,7 +14,7 @@ Codul de procedură fiscală nu tratează separat impozitul pe veniturile micro�
 
 ::: ghid-temei
 „(1) Organul fiscal central acordă la cererea debitorilor eșalonări la plată pe o perioadă de cel mult 5 ani, dacă sunt îndeplinite condițiile de acordare a acestora. Pentru debitorii care nu au în proprietate bunuri în vederea constituirii de garanții [...] și nici nu pot constitui niciun fel de garanție ori cuantumul garanțiilor constituite este mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată, eșalonarea se acordă pe cel mult 6 luni."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 184 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 184 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Impozitul pe veniturile microîntreprinderilor este o obligație fiscală administrată de organul fiscal central (ANAF), deci intră sub incidența Capitolului IV — „Înlesniri la plată" — din Codul de procedură fiscală, alături de TVA, impozitul pe profit sau contribuțiile sociale. Eșalonarea se acordă la cerere, pe o perioadă de până la 5 ani (redusă la 6 luni dacă debitorul nu poate constitui garanții suficiente), cu condiția respectării cerințelor de la art. 186 și cu excepțiile de la art. 184 alin. (6) — de exemplu, eșalonarea nu se acordă pentru sume totale sub 500 lei (persoane fizice), 2.000 lei (asocieri fără personalitate juridică) sau 5.000 lei (persoane juridice).

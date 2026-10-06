@@ -16,7 +16,7 @@ poarta: v1
 „[...] importator reprezintă persoana pe numele căreia sunt declarate bunurile, în momentul în care taxa la import devine exigibilă, conform art. 285 și care în cazul importurilor taxabile este obligată la plata taxei conform art. 309[.]
 [...]
 Plata taxei pentru importul de bunuri supus taxării, conform prezentului titlu, este obligația importatorului."
-— Legea 227/2015 (Codul fiscal), art. 266 (definiții) și art. 309 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 266 (definiții) și art. 309 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din aceste dispoziții:

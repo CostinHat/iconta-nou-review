@@ -14,7 +14,7 @@ Când dosarul de înființare nu îndeplinește cerințele legale, registratorul
 
 ::: ghid-temei
 „În cazul în care cerințele legale sunt îndeplinite, registratorul, prin încheiere, va dispune înmatricularea societății în registrul comerțului, în condițiile prevăzute de legea privind acest registru."
-— Legea nr. 31/1990, art. 40 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 40 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Textul disponibil confirmă mecanismul de bază: înmatricularea se dispune printr-o încheiere a registratorului, numai dacă cerințele legale sunt îndeplinite. Din formularea legii rezultă, per a contrario, că neîndeplinirea cerințelor duce la o încheiere de respingere, comunicată solicitantului cu motivele concrete (act constitutiv incomplet, denumire indisponibilă, sediu neconfirmat, documente lipsă etc.).

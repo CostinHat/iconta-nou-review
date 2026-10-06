@@ -16,15 +16,15 @@ Miza e practică. Dacă transferi o ramură întreagă, plusvaloarea nu se impoz
 
 ::: ghid-temei
 „ramură de activitate - totalitatea activului și pasivului unei diviziuni dintr-o societate care, din punct de vedere organizatoric, constituie o activitate independentă, adică o entitate capabilă să funcționeze prin propriile mijloace;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 11 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 11 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „transfer de active - operațiunea prin care o societate transferă, fără a fi dizolvată, totalitatea sau una ori mai multe ramuri ale activității sale către altă societate, în schimbul transferării titlurilor de participare reprezentând capitalul societății beneficiare;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 5 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 5 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Operațiunile de fuziune, divizare sub orice formă nu sunt transferuri impozabile pentru diferența dintre prețul de piață al elementelor din activ și pasiv transferate și valoarea lor fiscală."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Art. 33 alin. (9) extinde regulile de la alin. (3)-(8) și la transferul de active. Ce rezultă:

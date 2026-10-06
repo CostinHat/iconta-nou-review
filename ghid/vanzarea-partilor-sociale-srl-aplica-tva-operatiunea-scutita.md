@@ -16,14 +16,14 @@ Când vânzătorul este o persoană fizică asociată, care nu desfășoară o a
 
 ::: ghid-temei
 „tranzacții, inclusiv negocierea, dar exceptând administrarea sau păstrarea în siguranță, cu acțiuni, părți sociale în societăți comerciale sau asociații, obligațiuni garantate și alte instrumente financiare, cu excepția documentelor care stabilesc drepturi asupra bunurilor;"
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 5 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 5 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Se cuprind în sfera operațiunilor scutite conform art. 292 alin. (2) lit. a) pct. 5 din Codul fiscal, printre altele, și transferul și/sau orice alte operațiuni cu părți sociale și acțiuni necotate la bursă."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (19) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (19) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „În sfera operațiunilor scutite conform art. 292 alin. (2) lit. a) pct. 5 din Codul fiscal nu se cuprind operațiuni precum: depozitarea activelor fondurilor speciale de investiții, așa cum rezultă și din Decizia Curții Europene de Justiție nr. C-169/04 Abbey Național, administrarea și depozitarea titlurilor de valoare."
-— HG 1/2016, Titlul VII, pct. 52 alin. (20) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 52 alin. (20) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Pentru un PFA, activarea SPV nu ține de comoditate — este obligație de comun
 
 ::: ghid-temei
 „Prin excepţie de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri şi alte entităţi fără personalitate juridică, precum şi persoane fizice care desfăşoară o profesie liberală sau exercită o activitate economică în mod independent în una dintre formele prevăzute de Ordonanţa de urgenţă a Guvernului nr. 44/2008 [...] sunt obligaţi să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanţă în condiţiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanţelor/A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru activarea propriu-zisă, doi pași sunt esențiali, conform legii:
@@ -31,6 +31,6 @@ Pentru activarea propriu-zisă, doi pași sunt esențiali, conform legii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu activează contul SPV al PFA-ului** — acest pas rămâne al titularului, direct pe portalul ANAF, cu certificatul digital calificat. După activare, aplicația oferă conectorul OAuth2 (`core/spv_conector.py`) prin care contul SPV deja activ poate fi legat de iConta.eu, pentru trimiterea și primirea facturilor electronice din interfața de facturare a aplicației.
+La data acestui ghid, iConta.eu **nu activează contul SPV al PFA-ului** — acest pas rămâne al titularului, direct pe portalul ANAF, cu certificatul digital calificat. După activare, aplicația oferă conectorul OAuth2 prin care contul SPV deja activ poate fi legat de iConta.eu, pentru trimiterea și primirea facturilor electronice din interfața de facturare a aplicației.
 
 [iConta.eu](/)

@@ -16,7 +16,7 @@ Un abonament SaaS facturat anual anticipat pune o întrebare contabilă clasică
 „446. - (1) Veniturile din prestări de servicii se înregistrează în contabilitate pe măsura efectuării acestora. Prestarea de servicii cuprinde inclusiv executarea de lucrări și orice alte operațiuni care nu pot fi considerate livrări de bunuri.
 [...]
 447. - În cazul în care prețul de vânzare include o valoare distinctă, specificată contractual, destinată prestării ulterioare de servicii (de exemplu, asistența tehnică și perfecționarea produsului după vânzarea unui program informatic), acea sumă este amânată (contul 472 «Venituri înregistrate în avans») și recunoscută ca venit pe parcursul perioadei în care se prestează serviciile, dar nu mai târziu de încheierea perioadei pentru care a fost contractată prestarea ulterioară de servicii."
-— OMFP 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 446 alin. (1), pct. 447 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 446 alin. (1), pct. 447 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un abonament SaaS anual, facturat integral la începutul perioadei:

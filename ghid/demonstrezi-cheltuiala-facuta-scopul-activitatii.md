@@ -14,7 +14,7 @@ Codul fiscal nu dă o listă exhaustivă de cheltuieli deductibile — foloseșt
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale."
-— art. 25 alin. (1) din Legea 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 25 alin. (1) din Legea 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Criteriul legal e funcțional, nu formal: contează dacă cheltuiala servește efectiv activității economice, nu dacă apare pe o listă predefinită.
@@ -29,6 +29,6 @@ Codul fiscal nu dă o listă exhaustivă de cheltuieli deductibile — foloseșt
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) tratează exclusiv latura de **venituri**: clasificarea veniturilor fără scop patrimonial pe conturile din grupa 73 și calculul plafonului de scutire pentru veniturile economice (art. 15 alin. 2-3 Cod fiscal). **Aplicația nu are nicio funcție dedicată** de analiză sau alocare a cheltuielilor între cele două activități ale unui ONG, nici de verificare a scopului economic al unei cheltuieli — demonstrarea și documentarea rămân integral în sarcina contabilului, pe baza documentelor justificative.
+Funcționalitatea de contabilitate ONG din iConta.eu tratează exclusiv latura de **venituri**: clasificarea veniturilor fără scop patrimonial pe conturile din grupa 73 și calculul plafonului de scutire pentru veniturile economice (art. 15 alin. 2-3 Cod fiscal). **Aplicația nu are nicio funcție dedicată** de analiză sau alocare a cheltuielilor între cele două activități ale unui ONG, nici de verificare a scopului economic al unei cheltuieli — demonstrarea și documentarea rămân integral în sarcina contabilului, pe baza documentelor justificative.
 
 [iConta.eu](/)

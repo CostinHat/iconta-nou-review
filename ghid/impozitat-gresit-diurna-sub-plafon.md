@@ -14,7 +14,7 @@ Diurna nu se compară direct cu un singur plafon fix. Plafonul neimpozabil e cel
 
 ::: ghid-temei
 „indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat; [...] Plafonul aferent valorii a 3 salarii de bază corespunzătoare locului de muncă ocupat se calculează distinct pentru fiecare lună în parte, prin raportarea celor 3 salarii la numărul de zile lucrătoare din luna respectivă."
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Concret, plafonul zilnic neimpozabil e minimul dintre:
@@ -32,6 +32,6 @@ Concret, plafonul zilnic neimpozabil e minimul dintre:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcție separată care calculează plafonul neimpozabil al diurnei ca minimul dintre 2,5× diurna bugetară internă (versionată — 23 lei/zi din 1 aprilie 2023, 20 lei/zi anterior) și 3× salariul de bază raportat la zilele lucrătoare din lună (`core/deconturi.py`, funcția `plafon_diurna`), returnând distinct suma neimpozabilă și suma impozabilă. Nota contabilă de decont generată de aplicație (625 = 542, cu TVA pe cazare/transport dacă e cazul, prin funcția `nota_decont`) nu preia însă automat această împărțire — postează integral diurna, transportul și cazarea pe cheltuială (625), fără să separe și să treacă prin statul de plată partea de diurnă care depășește plafonul neimpozabil. Verificarea plafonului rămâne, la acest moment, un calcul separat pe care contabilul trebuie să-l coreleze manual cu nota de decont, pentru a evita atât impozitarea unei sume sub plafon, cât și omiterea impozitării excedentului.
+iConta.eu are o funcție separată care calculează plafonul neimpozabil al diurnei ca minimul dintre 2,5× diurna bugetară internă (versionată — 23 lei/zi din 1 aprilie 2023, 20 lei/zi anterior) și 3× salariul de bază raportat la zilele lucrătoare din lună (funcția `plafon_diurna`), returnând distinct suma neimpozabilă și suma impozabilă. Nota contabilă de decont generată de aplicație (625 = 542, cu TVA pe cazare/transport dacă e cazul, prin funcția `nota_decont`) nu preia însă automat această împărțire — postează integral diurna, transportul și cazarea pe cheltuială (625), fără să separe și să treacă prin statul de plată partea de diurnă care depășește plafonul neimpozabil. Verificarea plafonului rămâne, la acest moment, un calcul separat pe care contabilul trebuie să-l coreleze manual cu nota de decont, pentru a evita atât impozitarea unei sume sub plafon, cât și omiterea impozitării excedentului.
 
 [iConta.eu](/)

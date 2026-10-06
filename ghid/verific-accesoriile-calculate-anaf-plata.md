@@ -14,10 +14,10 @@ Când primești un extras de cont sau o decizie referitoare la obligații fiscal
 
 ::: ghid-temei
 „(1) Dobânzile se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. [...] (5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (1) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (1) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 176 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 176 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să verifici, punctual, pe o sumă calculată de ANAF pentru o plată întârziată:

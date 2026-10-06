@@ -10243,7 +10243,7 @@ Categoriile **3. Evidență contabilă** (descărcarea gestiunii) și **11. Inte
 
 | gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
 |---|---|---|---|---|
-| marfa facturată nu se descarcă a doua oară lunar | `core/test_flux_factura_f1_d.py::test_descarcarea_lunii_nu_include_vanzarea_facturata` | sursa `facturi` intrată în baza descărcării lunare | `facturi` adăugat în sursele vânzărilor -> roșu | nu acoperă factura FĂRĂ articol pe o firmă global-valorică (nedescărcată deloc — decizie cerută) |
+| marfa facturată nu se descarcă a doua oară lunar [citare-istorica: testul înlocuit pe 06.10.2026 de `test_marfa_facturata_se_descarca_o_singura_data_dupa_metoda` — PIVOT, DECIZII 06.10 consecința 3] | `core/test_flux_factura_f1_d.py::test_descarcarea_lunii_nu_include_vanzarea_facturata` | sursa `facturi` intrată în baza descărcării lunare | `facturi` adăugat în sursele vânzărilor -> roșu | nu acoperă factura FĂRĂ articol pe o firmă global-valorică (nedescărcată deloc — decizie cerută) |
 | a doua descărcare a lunii refuzată | `::test_a_doua_descarcare_a_aceleiasi_luni_se_refuza` | al doilea set de ciorne 607/378/4428=371 pe aceeași lună | garda scoasă -> roșu | refacerea cere ștergerea ciornelor; o descărcare validată se corectează prin altă notă |
 | factura nu se descarcă de două ori | `::test_descarcarea_din_factura_nu_se_face_de_doua_ori` | două ieșiri de stoc pentru aceeași factură | garda scoasă -> roșu | — |
 | HoReCa după CAEN din CF | `::test_horeca_dupa_codul_caen_din_codul_fiscal`, `::test_situatia_stocului_spune_daca_retetele_se_arata` | Rețete la o firmă care nu e HoReCa și n-are rețete | un cod scos / vizibilitate constantă -> roșu | lista e cea din CF art.48 alin.(2^2) + art.54 alin.(4); o altă definiție a sectorului nu e acoperită |
@@ -10262,3 +10262,18 @@ Categoriile **2. Documente fiscale** (seria facturii), **3. Evidență contabil�
 | o ieșire = o descărcare | `::test_metoda_nedeclarata…`, `::test_global_valoric…`, `::test_cantitativ_valoric…`, `::test_factura_cu_marfa…`, `::test_retetele…`, `core/test_flux_factura_f1_d.py::test_marfa_facturata_se_descarca_o_singura_data…` | ieșire fără metodă declarată; descărcare globală la CV (Z de două ori); factura fără articol nedescărcată la GV; linie de marfă fără articol la CV | `cere` care trece pe NULL / `facturi` scos / verificarea scoasă / lista goală -> roșu | o factură de marfă clasificată greșit (cont de venit ≠ 707) scapă regulii |
 | jurnalul Date firmă | `::test_orice_camp_din_date_firma_se_jurnalizeaza…` | o schimbare fără rând de jurnal; o salvare fără autor | jurnalizarea scoasă -> roșu | doar câmpurile ecranului Date firmă (CAMPURI_JURNAL); numerotarea și modelul facturii au ecranele lor |
 
+
+## 06.10.2026 — Lotul 06.10, partea 2: /ghid pentru indexare (redirecționări, teme, înrudite, surse oficiale)
+
+Categoria **11. Interfață** (paginile publice: navigarea și sursa citată). Deciziile: DECIZII 06.10.2026,
+consecințele 5–10.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| legături interne | `core/test_lot0610_p2.py::test_nicio_legatura_interna_spre_un_ghid_inexistent` | un link spre un ghid care nu există și nu e redirecționat | link spre `/ghid/ghid-care-nu-exista-deloc` -> roșu | vede doar linkurile din `ghid/*.md`, nu pe cele din alte site-uri |
+| harta 301 | `::test_harta_301_trimite_numai_spre_ghiduri_existente` | o redirecționare spre un ghid inexistent | ținta schimbată -> roșu | — |
+| adresele vechi | `::test_adresele_care_au_existat_raspund_301` (5 cazuri) | `.md`, `GH-#####`, `proba-ghid`, slug vechi -> 404 | regula `.md` scoasă -> 404 -> roșu | lista celor 17 din Search Console nu e pe server |
+| cuprinsul temelor | `::test_ghid_e_cuprinsul_temelor…`, `::test_nicio_pagina_de_tema_nu_reface_lista_plata` | lista plată pe `/ghid` sau pe o temă (> 800, „Alte teme” >= 10%) | link de ghid pe cuprins -> roșu; excepția „altele” scoasă -> 1.514 -> roșu | gruparea e de navigare, nu fiscală |
+| ghiduri înrudite | `::test_ghidul_are_tema_si_ghiduri_inrudite` | un ghid fără temă / fără înrudite | `_ghid_legaturi` scos -> roșu | — |
+| căi interne | `::test_ghidurile_nu_arata_cai_interne_de_fisier` | `anaf_surse/`, `core/…`, `scripts/…`, căi de server pe o pagină publică | „(sursă: anaf_surse/og_2_2001.html)” repus -> roșu | vede numai `ghid/*.md` |
+| sursa oficială | `::test_sursa_citata_trimite_la_sursa_oficiala` | „sursă: [..](..)” spre alt domeniu decât cele oficiale | domeniu schimbat -> roșu | verifică domeniul, nu dacă adresa mai răspunde |

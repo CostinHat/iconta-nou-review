@@ -16,7 +16,7 @@ Când o firmă deține un activ în coproprietate — de exemplu un utilaj cump�
 
 ::: ghid-temei
 „(2) Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului; c) are o durată normală de utilizare mai mare de un an."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce se poate desprinde, cu prudență, din text și din structura generală a Codului fiscal:
@@ -34,6 +34,6 @@ Ce se poate desprinde, cu prudență, din text și din structura generală a Cod
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează mijloacele fixe și amortizarea lor prin `core/repo_mijloace_fixe.py` și modulele conexe (`reevaluare.py`, `d406_active.py`), dar nu are un câmp dedicat cotei de coproprietate a unui activ — fiecare mijloc fix e înregistrat cu o valoare de intrare unică, amortizată integral pentru firma care îl are în evidență. Determinarea și documentarea cotei-părți pentru un activ deținut în coproprietate cu un alt operator economic rămân, la acest moment, în afara aplicației.
+La data acestui ghid, iConta.eu gestionează mijloacele fixe și amortizarea lor prin aplicație și modulele conexe (`reevaluare.py`, `d406_active.py`), dar nu are un câmp dedicat cotei de coproprietate a unui activ — fiecare mijloc fix e înregistrat cu o valoare de intrare unică, amortizată integral pentru firma care îl are în evidență. Determinarea și documentarea cotei-părți pentru un activ deținut în coproprietate cu un alt operator economic rămân, la acest moment, în afara aplicației.
 
 [iConta.eu](/)

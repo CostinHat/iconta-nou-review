@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Răspunsul, direct din literă: **un asociat/acționar care deține peste 25% din titlurile de participare sau drepturile de vot poate avea o singură microîntreprindere** — condiția cere explicit ca firma respectivă să fie „singura persoană juridică stabilită de către asociați/acționari să aplice" regimul de microîntreprindere.

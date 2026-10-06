@@ -33,7 +33,7 @@ Standardul tehnic UBL/EN16931, pe care se bazează factura electronică european
 
 ## Ce face iConta.eu
 
-Modulul de trimitere e-Factura (`core/efactura_send.py`, linia 211) generează necondiționat `<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>` pentru orice factură trimisă — inclusiv pentru facturile de avans emise prin `nota_avans_incasat`. Nu există în cod nicio ramificație care să seteze codul `386` pentru facturile de avans.
+Modulul de trimitere e-Factura (linia 211) generează necondiționat `<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>` pentru orice factură trimisă — inclusiv pentru facturile de avans emise prin `nota_avans_incasat`. Nu există în cod nicio ramificație care să seteze codul `386` pentru facturile de avans.
 
 Onest spus: nu putem confirma, pe baza surselor legale disponibile, dacă acest lucru reprezintă o eroare sau este o practică acceptabilă în profilul RO_CIUS — documentul tehnic care ar clarifica exact acest punct nu a fost identificat în sursele verificate. Dacă lucrați cu volume mari de facturi de avans transmise prin RO e-Factura, recomandăm verificarea explicită a specificației RO_CIUS curente la ANAF/Ministerul Finanțelor înainte de a considera codul `380` corect sau greșit pentru acest tip de document.
 

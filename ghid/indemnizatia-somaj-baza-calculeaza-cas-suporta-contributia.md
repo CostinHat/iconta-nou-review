@@ -16,12 +16,12 @@ Pentru șomerii care primesc indemnizație, baza lunară a contribuției de asig
 
 ::: ghid-temei
 „Pentru persoanele fizice care beneficiază de drepturi bănești lunare ce se suportă din bugetul asigurărilor pentru șomaj prevăzute la art. 136 lit. d) , baza lunară de calcul al contribuției de asigurări sociale datorate bugetului asigurărilor sociale de stat o reprezintă cuantumul drepturilor bănești lunare ce se suportă din bugetul asigurărilor pentru șomaj, potrivit legii, respectiv indemnizația de șomaj, cu excepția situațiilor în care potrivit dispozițiilor legale se prevede altfel."
-— Codul fiscal (Legea 227/2015), art. 143 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 143 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuția de asigurări sociale pentru șomerii care beneficiază de indemnizație de șomaj se suportă integral din bugetul asigurărilor pentru șomaj la nivelul cotei stabilite pentru condiții normale de muncă."
-— Codul fiscal (Legea 227/2015), art. 143 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 143 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile, punct cu punct:

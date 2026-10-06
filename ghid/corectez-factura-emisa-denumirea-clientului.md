@@ -14,7 +14,7 @@ O factură emisă pe numele greșit — firmă confundată, denumire scrisă inc
 
 ::: ghid-temei
 „(1) Corectarea informațiilor înscrise în facturi sau în alte documente care țin loc de factură se efectuează astfel: a) în cazul în care factura nu a fost transmisă către beneficiar, aceasta se anulează și se emite o nouă factură; b) în cazul în care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă, pe de o parte, informațiile din factura inițială, numărul și data facturii corectate, valorile cu semnul minus sau, după caz, o mențiune din care să rezulte că valorile respective sunt negative, iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus sau, după caz, cu o mențiune din care să rezulte că valorile respective sunt negative, în care se înscriu numărul și data facturii corectate."
-— Legea nr. 227/2015 (Codul fiscal), art. 330 alin. (1) lit. a), b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 330 alin. (1) lit. a), b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Concret, procedura corectă depinde de stadiul facturii:
@@ -32,6 +32,6 @@ Concret, procedura corectă depinde de stadiul facturii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție dedicată de stornare a facturilor (`core/facturi_api.py`, funcția `storneaza`), care creează o factură de stornare — copie a originalului, cu cantități negative, cu numă nou din aceeași serie și referință la factura originală (`storno_din_id`) — exact mecanismul prevăzut la art. 330 alin. (1) lit. b). Aplicația impune ca orice corecție a unei facturi deja contabilizate să treacă prin acest flux de stornare, nu prin editare directă. Decizia dacă factura a fost deja transmisă beneficiarului (și, deci, dacă e nevoie de anulare simplă sau de stornare) rămâne o verificare pe care o face utilizatorul înainte de a alege calea corectă.
+La data acestui ghid, iConta.eu are o funcție dedicată de stornare a facturilor (funcția `storneaza`), care creează o factură de stornare — copie a originalului, cu cantități negative, cu numă nou din aceeași serie și referință la factura originală (`storno_din_id`) — exact mecanismul prevăzut la art. 330 alin. (1) lit. b). Aplicația impune ca orice corecție a unei facturi deja contabilizate să treacă prin acest flux de stornare, nu prin editare directă. Decizia dacă factura a fost deja transmisă beneficiarului (și, deci, dacă e nevoie de anulare simplă sau de stornare) rămâne o verificare pe care o face utilizatorul înainte de a alege calea corectă.
 
 [iConta.eu](/)

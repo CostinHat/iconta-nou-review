@@ -14,7 +14,7 @@ Regula generală din Codul fiscal este scutirea de TVA pentru livrarea de constr
 
 ::: ghid-temei
 „Livrarea de construcții/părți de construcții și a terenurilor pe care sunt construite, precum și a oricăror altor terenuri. Prin excepție, scutirea nu se aplică pentru livrarea de construcții noi, de părți de construcții noi sau de terenuri construibile."
-— Legea nr. 227/2015 privind Codul fiscal, art. 292 alin. (2) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 292 alin. (2) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aceeași literă f) definește exact termenii-cheie folosiți pentru a stabili dacă o tranzacție e scutită sau taxabilă:
@@ -28,7 +28,7 @@ Important pentru firme: chiar și atunci când operațiunea ar fi scutită prin 
 
 ::: ghid-temei
 „Orice persoană impozabilă poate opta pentru taxarea operațiunilor prevăzute la alin. (2) lit. e) și f), în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 privind Codul fiscal, art. 292 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 292 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Opțiunea pentru taxare are sens mai ales atunci când vânzătorul are TVA de dedus în amonte (de exemplu, a construit clădirea și a dedus TVA la construcție) — scutirea l-ar obliga altfel la ajustarea deducerii inițiale.

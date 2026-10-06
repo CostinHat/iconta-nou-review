@@ -15,7 +15,7 @@ Declarația privind datele de identificare ale beneficiarului real nu e o formal
 ::: ghid-temei
 „Articolul 57 (1) Nerespectarea de către reprezentantul legal al persoanelor juridice prevăzute la art. 56 alin. (1) a obligației de depunere a declarației privind datele de identificare ale beneficiarului real constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei. Procesul-verbal de constatare a contravenției se comunică oficiului registrului comerțului, în acesta fiind consemnat că nedepunerea declarației atrage dizolvarea societății, în condițiile art. 237 din Legea nr. 31/1990, republicată.
 (2) Dacă în termen de 30 de zile de la data aplicării sancțiunii contravenționale reprezentantul persoanei juridice prevăzute la art. 56 alin. (1) nu a depus declarația privind datele de identificare ale beneficiarului real, la cererea Oficiului Național al Registrului Comerțului, tribunalul sau, după caz, tribunalul specializat va putea pronunța dizolvarea societății."
-— Legea nr. 129/2019, art. 57 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 129/2019, art. 57 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă concret din acest text:

@@ -14,7 +14,7 @@ Când o firmă are mai multe tipuri de obligații fiscale (TVA, impozit pe profi
 
 ::: ghid-temei
 „(1) Dacă un debitor datorează mai multe tipuri de obligații fiscale, iar suma plătită nu este suficientă pentru a stinge toate obligațiile, atunci se stinge obligația fiscală pe care o indică debitorul, potrivit legii, sau care este distribuită potrivit prevederilor art. 163, după caz, stingerea efectuându-se, de drept, în următoarea ordine: [...]"
-— Legea 207/2015, art. 165 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 165 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum verifici, concret, dacă o plată a fost alocată corect:
@@ -33,6 +33,6 @@ Cum verifici, concret, dacă o plată a fost alocată corect:
 
 ## Ce face iConta.eu
 
-iConta.eu ține evidența contabilă a obligațiilor fiscale calculate în aplicație (impozite, TVA, contribuții) și a plăților înregistrate prin modulul de bancă (`core/banca.py`, tipul „impozit_profit", „tva" etc., recunoscut din descrierea extrasului). La data acestui ghid, aplicația **nu are o conexiune directă cu fișa pe plătitor din SPV** pentru a compara automat alocarea reală făcută de ANAF cu obligațiile calculate intern — verificarea alocării plăților rămâne un proces manual, prin consultarea certificatului de atestare fiscală sau a fișei pe plătitor din Spațiul Privat Virtual.
+iConta.eu ține evidența contabilă a obligațiilor fiscale calculate în aplicație (impozite, TVA, contribuții) și a plăților înregistrate prin modulul de bancă (tipul „impozit_profit", „tva" etc., recunoscut din descrierea extrasului). La data acestui ghid, aplicația **nu are o conexiune directă cu fișa pe plătitor din SPV** pentru a compara automat alocarea reală făcută de ANAF cu obligațiile calculate intern — verificarea alocării plăților rămâne un proces manual, prin consultarea certificatului de atestare fiscală sau a fișei pe plătitor din Spațiul Privat Virtual.
 
 [iConta.eu](/)

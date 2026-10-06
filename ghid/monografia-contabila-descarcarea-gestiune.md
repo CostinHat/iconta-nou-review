@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În cazul unor decalaje între vânzarea și livrarea bunurilor, acestea se înregistrează ca ieșiri din entitate, nemaifiind considerate proprietatea acesteia, astfel: – bunurile vândute și nelivrate se înregistrează distinct în gestiune, iar în contabilitate în conturi în afara bilanțului; – bunurile livrate, dar nefacturate se înregistrează ca ieșiri din gestiune atât la locurile de depozitare, cât și în contabilitate, pe baza documentelor care confirmă ieșirea din gestiune potrivit legii [...]."
-— OMFP nr. 1.802/2014, pct. 284 alin. (2) lit. c) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 284 alin. (2) lit. c) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Cum se traduce principiul în monografia uzuală pentru vânzarea de marfă/produse:

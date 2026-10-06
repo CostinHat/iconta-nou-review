@@ -14,7 +14,7 @@ Da, veniturile din diferențe de curs valutar (cont 765) sunt impozabile la impo
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula de bază: veniturile din 765 intră în calculul rezultatului fiscal, la fel ca orice alt venit înregistrat conform reglementărilor contabile — nu apar pe lista veniturilor neimpozabile aplicabilă societăților comerciale obișnuite (art. 23 Cod fiscal).
@@ -30,6 +30,6 @@ Da, veniturile din diferențe de curs valutar (cont 765) sunt impozabile la impo
 
 ## Ce face iConta.eu
 
-Motorul `core/diferente_curs.py` generează corect venitul din 765 la fiecare câștig de curs valutar, fie la decontare, fie la reevaluarea lunară. Aplicația **nu calculează impozitul pe profit** și nu decide dacă acel venit e sau nu impozabil — nu există în cod nicio verificare a regimului fiscal al firmei (societate comercială obișnuită, organizație nonprofit sau instituție de credit) care să aplice vreuna dintre excepțiile de mai sus. Contabilul preia venitul din balanța generată de iConta.eu și îl încadrează fiscal, corect, în funcție de tipul entității și de regimul ei de impozitare.
+Aplicația generează corect venitul din 765 la fiecare câștig de curs valutar, fie la decontare, fie la reevaluarea lunară. Aplicația **nu calculează impozitul pe profit** și nu decide dacă acel venit e sau nu impozabil — nu există în cod nicio verificare a regimului fiscal al firmei (societate comercială obișnuită, organizație nonprofit sau instituție de credit) care să aplice vreuna dintre excepțiile de mai sus. Contabilul preia venitul din balanța generată de iConta.eu și îl încadrează fiscal, corect, în funcție de tipul entității și de regimul ei de impozitare.
 
 [iConta.eu](/)

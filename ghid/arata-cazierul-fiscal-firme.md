@@ -14,17 +14,17 @@ Certificatul de cazier fiscal e documentul eliberat de ANAF care atestă situaț
 
 ::: ghid-temei
 „Cererea de eliberare a certificatului de cazier fiscal, în cazul contribuabililor persoane fizice, se depune la orice organ fiscal competent în eliberarea certificatului de cazier fiscal, personal, de reprezentantul legal sau prin împuternicitul acestuia în baza actului de împuternicire conform prevederilor Codului de procedură fiscală, indiferent de domiciliul fiscal al contribuabilului."
-— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (1), în forma modificată prin Legea 30/2019, art. II (sursă: anaf_surse/og_39_2015.html)
+— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (1), în forma modificată prin Legea 30/2019, art. II (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „Cererea de eliberare a certificatului de cazier fiscal în cazul contribuabililor persoane juridice sau entități fără personalitate juridică se depune la orice organ fiscal competent în eliberarea certificatului de cazier fiscal, indiferent de domiciliul contribuabilului, de către reprezentantul legal al acestora sau prin reprezentant pe bază de mandat întocmit conform legii."
-— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (2) (sursă: anaf_surse/og_39_2015.html)
+— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (2) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „În cazierul fiscal al persoanelor fizice, juridice și al entităților fără personalitate juridică se înscriu informații privind faptele sancționate contravențional sau penal de legile fiscale, contabile, vamale, precum și cele care privesc disciplina financiară."
-— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 4 alin. (1) (sursă: anaf_surse/og_39_2015.html)
+— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 4 alin. (1) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Ce rezultă din corpusul cercetat despre certificatul de cazier fiscal:

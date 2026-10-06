@@ -16,13 +16,13 @@ Pentru un client care trăiește din munca sezonieră, de exemplu o fermă sau o
 
 ::: ghid-temei
 „(1) Remunerația primită de zilier pentru activitatea prestată este supusă impozitului pe venit, conform prevederilor Legii nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare. (2) Calculul, plata și declararea impozitului pe venit datorat pentru veniturile realizate din activitatea prestată de zilier sunt în sarcina beneficiarului sau unui împuternicit al acestuia."
-— Legea 52/2011, art. 7 alin. (1)-(2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 7 alin. (1)-(2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „d) încălcarea prevederilor art. 7 , cu amendă de 20.000 lei și interzicerea utilizării zilierilor pe toată durata de existență a beneficiarului sau unui împuternicit al acestuia;"
-— Legea 52/2011, art. 14 alin. (1) lit. d) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. d) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(2) Constatarea contravenției și aplicarea sancțiunii prevăzute la art. 14 alin. (1) lit. d) se realizează de către Agenția Națională de Administrare Fiscală."
-— Legea 52/2011, art. 15 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 15 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „r) remunerația brută primită pentru activitatea prestată de zilieri, potrivit legii;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. r) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. r) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

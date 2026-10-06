@@ -14,7 +14,7 @@ Data de 25 a lunii revine ca termen la majoritatea declarațiilor fiscale curent
 
 ::: ghid-temei
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III."
-— Legea 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Data de 25 nu e o coincidență — e termenul standard folosit de legislația fiscală românească pentru majoritatea obligațiilor declarative curente:

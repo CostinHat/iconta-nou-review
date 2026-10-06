@@ -14,10 +14,10 @@ O microîntreprindere emite o factură într-un trimestru, iar clientul returnea
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...]"
-— Legea 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (2) (principiu aplicabil prin analogie perioadelor de calcul) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (2) (principiu aplicabil prin analogie perioadelor de calcul) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din modul în care legea definește baza impozabilă a micro:

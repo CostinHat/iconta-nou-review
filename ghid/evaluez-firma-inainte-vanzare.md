@@ -14,7 +14,7 @@ Evaluarea unei firme înainte de vânzare nu e doar un exercițiu financiar — 
 
 ::: ghid-temei
 „(1) Câștigul/pierderea din transferul titlurilor de valoare, altele decât instrumentele financiare derivate și cele reglementate la alin. (2)-(6), reprezintă diferența pozitivă/negativă realizată între valoarea de înstrăinare/prețul de vânzare și valoarea lor fiscală, după caz, pe tipuri de titluri de valori, care include costurile aferente tranzacției și costuri legate de transferul de proprietate aferente împrumutului de valori mobiliare, dovedite cu documente justificative."
-— Legea 227/2015 (Codul fiscal), art. 94 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 94 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă direct din text, pentru un proprietar persoană fizică ce vinde titlurile de participare (părțile sociale/acțiunile) ale firmei:

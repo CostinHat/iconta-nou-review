@@ -18,7 +18,7 @@ D205 nu este un simplu total de impozit reținut — este o declarație pe benef
 <benef tip_venit1=\"08\" den1=\"...\" Rezid=\"1\" cifR=\"...\" tip_plata=\"2\" divid_D=\"...\" divid_P=\"...\" baza1=\"...\" imp1=\"...\"/>
 </sect_II>
 </declaratie205>"
-— OPANAF nr. 102/2025, structura declarației 205 (sursă: anaf_surse/d205_struct_anaf.txt) — notație reconstituită pe baza denumirilor exacte de câmpuri din documentul de structură (secțiunea I: `cui`, `nume_declar`; secțiunea II: `tip_venit`, `nrben`, `Tbaza`, `Timp`; secțiunea beneficiari: `tip_venit1`, `den1`, `Rezid`, `cifR`, `tip_plata`, `divid_D`, `divid_P`, `baza1`, `imp1`), documentul sursă fiind un tabel de câmpuri, nu un exemplu XML redat ca atare
+— OPANAF nr. 102/2025, structura declarației 205 (sursă: [Structura fișierului XML pentru declarația 205, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D205_2025_120226.pdf)) — notație reconstituită pe baza denumirilor exacte de câmpuri din documentul de structură (secțiunea I: `cui`, `nume_declar`; secțiunea II: `tip_venit`, `nrben`, `Tbaza`, `Timp`; secțiunea beneficiari: `tip_venit1`, `den1`, `Rezid`, `cifR`, `tip_plata`, `divid_D`, `divid_P`, `baza1`, `imp1`), documentul sursă fiind un tabel de câmpuri, nu un exemplu XML redat ca atare
 :::
 
 Pentru fiecare beneficiar de dividende trecut în D205, structura cere, în esență:
@@ -36,6 +36,6 @@ Pentru fiecare beneficiar de dividende trecut în D205, structura cere, în esen
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu (`core/d205.py`) construiește automat structura de mai sus din registrele proprii ale aplicației: citește mișcările contului 457 („Dividende de plată") pentru a distinge distribuirea (creditul contului) de plata efectivă (debitul contului), derivă rezidența fiecărui beneficiar din formatul codului de identificare introdus în modulul de asociați, și calculează baza și impozitul pe fiecare beneficiar, ponderat pe cota aplicabilă datei fiecărei distribuiri. Aplicația a fost verificată pe validatorul oficial ANAF (DUK), atât cu profiluri minime construite manual, cât și pe date reale.
+Generatorul D205 din iConta.eu construiește automat structura de mai sus din registrele proprii ale aplicației: citește mișcările contului 457 („Dividende de plată") pentru a distinge distribuirea (creditul contului) de plata efectivă (debitul contului), derivă rezidența fiecărui beneficiar din formatul codului de identificare introdus în modulul de asociați, și calculează baza și impozitul pe fiecare beneficiar, ponderat pe cota aplicabilă datei fiecărei distribuiri. Aplicația a fost verificată pe validatorul oficial ANAF (DUK), atât cu profiluri minime construite manual, cât și pe date reale.
 
 [iConta.eu](/)

@@ -16,13 +16,13 @@ Situația e frecventă la firmele care închiriază, împrumută sau dau în cus
 
 ::: ghid-temei
 „Contestația prin care o terță persoană pretinde că are un drept de proprietate sau un alt drept real asupra bunului urmărit poate fi introdusă cel mai târziu în termen de 15 zile după efectuarea executării."
-— Codul de procedură fiscală (Legea 207/2015), art. 261 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 261 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Neintroducerea contestației în termenul prevăzut la alin. (2) nu îl împiedică pe cel de-al treilea să își realizeze dreptul pe calea unei cereri separate, potrivit dreptului comun."
-— Codul de procedură fiscală (Legea 207/2015), art. 261 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 261 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Persoanele interesate pot face contestație împotriva oricărui act de executare efectuat cu încălcarea prevederilor prezentului cod de către organele de executare silită"
-— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii și condițiile:

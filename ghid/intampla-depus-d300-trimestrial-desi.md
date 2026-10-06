@@ -16,14 +16,14 @@ Periodicitatea decontului de TVA (D300) nu e o alegere a contribuabilului — e 
 „Articolul 322 Perioada fiscală
 (1) Perioada fiscală este luna calendaristică.
 (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri din operațiuni taxabile și/sau scutite cu drept de deducere și/sau neimpozabile în România [...] care nu a depășit plafonul de 100.000 euro [...], cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri."
-— Codul fiscal (Legea 227/2015), art. 322 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 322 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Constituie contravenții următoarele fapte [...]: b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume [...]
 (2) Contravențiile [...] se sancționează astfel: [...] d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i)-m)."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 336 alin. (1) lit. b) și alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Datele înscrise incorect într-un decont de taxă se pot corecta prin decontul unei perioade fiscale ulterioare și se vor înscrie la rândurile de regularizări."
-— Codul fiscal, art. 323 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 323 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din textul de mai sus rezultă mecanismul complet:
@@ -41,6 +41,6 @@ Din textul de mai sus rezultă mecanismul complet:
 
 ## Ce face iConta.eu
 
-Fereastra de TVA (lunar sau trimestrial) folosită la generarea D300 vine din profilul firmei (`tip_decont`), citit de modulul de dispecerizare a declarațiilor (`core/declaratii_api.py`, funcția `periodicitate_firma`) — deci, dacă profilul e setat corect, aplicația construiește deja decontul pe fereastra potrivită, lună de lună sau trimestru de trimestru. Aplicația **nu verifică retroactiv** dacă periodicitatea aplicată în trecut a fost cea corectă și **nu generează automat** declarațiile lunare lipsă atunci când se descoperă că firma ar fi trebuit să treacă la lunar mai devreme — depistarea situației și depunerea declarațiilor de regularizare rămân în sarcina contabilului.
+Fereastra de TVA (lunar sau trimestrial) folosită la generarea D300 vine din profilul firmei (`tip_decont`), citit de modulul de dispecerizare a declarațiilor (funcția `periodicitate_firma`) — deci, dacă profilul e setat corect, aplicația construiește deja decontul pe fereastra potrivită, lună de lună sau trimestru de trimestru. Aplicația **nu verifică retroactiv** dacă periodicitatea aplicată în trecut a fost cea corectă și **nu generează automat** declarațiile lunare lipsă atunci când se descoperă că firma ar fi trebuit să treacă la lunar mai devreme — depistarea situației și depunerea declarațiilor de regularizare rămân în sarcina contabilului.
 
 [iConta.eu](/)

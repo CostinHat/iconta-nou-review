@@ -21,17 +21,17 @@ Dacă firma depune declarația doar la noua primărie, riscă să primească dec
 
 ::: ghid-temei
 „În cazul oricărei situații care conduce la modificarea impozitului pe mijloacele de transport, inclusiv schimbarea domiciliului, sediului sau punctului de lucru, contribuabilul are obligația depunerii declarației fiscale cu privire la mijlocul de transport la organul fiscal local pe a cărei rază teritorială își are domiciliul/sediul/punctul de lucru, în termen de 30 de zile, inclusiv, de la modificarea survenită, și datorează impozitul pe mijloacele de transport stabilit în noile condiții începând cu data de 1 ianuarie a anului următor.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „d) schimbarea domiciliului fiscal al contribuabilului într-o altă unitate administrativ-teritorială, caz în care acesta are obligația să depună declarație fiscală în acest sens, atât la organul fiscal unde a avut domiciliul fiscal, cât și la organul fiscal unde își stabilește noul domiciliu fiscal, în termen de 30 de zile de la apariția acestei situații.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 124 alin. (1) lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 124 alin. (1) lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „134. (1) În aplicarea prevederilor art. 471 alin. (5) din Codul fiscal, organul fiscal local în ale cărui evidențe era înregistrat mijlocul de transport transmite dosarul, cu confirmare de primire, în vederea impunerii, în termen de 15 zile, organului fiscal local de la noul domiciliu, sediu sau punct de lucru.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 134 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 134 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii, pe scurt:

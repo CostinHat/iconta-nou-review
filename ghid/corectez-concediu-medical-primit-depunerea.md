@@ -14,10 +14,10 @@ Situația e frecventă: salariatul aduce certificatul de concediu medical abia d
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru situațiile în care perioada de incapacitate temporară de muncă [...] se prelungește în luna următoare [...], diferențele de indemnizații [...] rezultate ca urmare a recalculării și aferente lunii anterioare celei în care are loc această operațiune, se includ în veniturile lunii în care sunt determinate și se declară în [D112] [...] aferentă aceleiași luni."
-— OUG 158/2005, art. 17 alin. (1^2), introdus prin OUG 89/2025 art. VII, în vigoare de la 1 iulie 2026 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 158/2005, art. 17 alin. (1^2), introdus prin OUG 89/2025 art. VII, în vigoare de la 1 iulie 2026 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Cele două situații se rezolvă diferit:
@@ -34,6 +34,6 @@ Cele două situații se rezolvă diferit:
 
 ## Ce face iConta.eu
 
-D112 se generează, în `core/d112.py`, din concediile medicale salvate în fișa fiecărui salariat. Când un certificat sosește după depunere, contabilul îl introduce (sau îl corectează) în fișa salariatului, iar aplicația regenerează declarația lunii cu datele actualizate. Aplicația nu decide singură dacă regenerarea trebuie depusă ca declarație rectificativă a lunii vechi sau inclusă în luna curentă — distincția de mai sus, între cele două regimuri, rămâne verificarea și decizia contabilului la fiecare caz concret.
+D112 se generează, în aplicație, din concediile medicale salvate în fișa fiecărui salariat. Când un certificat sosește după depunere, contabilul îl introduce (sau îl corectează) în fișa salariatului, iar aplicația regenerează declarația lunii cu datele actualizate. Aplicația nu decide singură dacă regenerarea trebuie depusă ca declarație rectificativă a lunii vechi sau inclusă în luna curentă — distincția de mai sus, între cele două regimuri, rămâne verificarea și decizia contabilului la fiecare caz concret.
 
 [iConta.eu](/)

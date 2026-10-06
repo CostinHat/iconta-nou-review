@@ -14,7 +14,7 @@ Când o firmă nu poate achita integral o datorie fiscală, ANAF poate acorda o 
 
 ::: ghid-temei
 „Organul fiscal central acordă la cererea debitorilor eșalonări la plată pe o perioadă de cel mult 5 ani, dacă sunt îndeplinite condițiile de acordare a acestora. Pentru debitorii care nu au în proprietate bunuri în vederea constituirii de garanții în cuantumul prevăzut la art. 193 alin. (13) - (15) și nici nu pot constitui niciun fel de garanție ori cuantumul garanțiilor constituite este mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată, eșalonarea se acordă pe cel mult 6 luni."
-— Legea 207/2015 (Codul de procedură fiscală), art. 184 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 184 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă, în practică, aceste durate:
@@ -32,6 +32,6 @@ Ce înseamnă, în practică, aceste durate:
 
 ## Ce face iConta.eu
 
-iConta.eu nu depune și nu gestionează cereri de eșalonare la plată către ANAF — aceasta este o procedură administrativă separată, în afara aplicației. Modulul propriu de scadențar (`core/scadentar.py`) urmărește facturile **emise** de firmă și neîncasate de la clienți, nu obligațiile fiscale eșalonate la bugetul de stat, așa că nu poate fi folosit pentru a urmări un grafic de eșalonare ANAF.
+iConta.eu nu depune și nu gestionează cereri de eșalonare la plată către ANAF — aceasta este o procedură administrativă separată, în afara aplicației. Modulul propriu de scadențar urmărește facturile **emise** de firmă și neîncasate de la clienți, nu obligațiile fiscale eșalonate la bugetul de stat, așa că nu poate fi folosit pentru a urmări un grafic de eșalonare ANAF.
 
 [iConta.eu](/)

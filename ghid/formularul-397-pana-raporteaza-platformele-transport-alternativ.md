@@ -16,10 +16,10 @@ Formularul e o declarație informativă. Platforma nu plătește nimic prin ea, 
 
 ::: ghid-temei
 „1.1. Pentru activitățile de transport alternativ cu autoturism și conducător auto, operatorii platformelor digitale definiți [...] au obligația transmiterii informațiilor prevăzute în anexa nr. 1 la ordin lunar, până în ultima zi calendaristică a lunii următoare perioadei de raportare."
-— OPANAF 382/2025, Anexa nr. 2, pct. 1.1 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, pct. 1.1 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 
 „2.1. Declarația se depune în format electronic sub forma unui fișier PDF, cu fișier xml atașat, semnat electronic, al cărei model este prevăzut în anexa nr. 1 la ordin."
-— OPANAF 382/2025, Anexa nr. 2, pct. 2.1 (sursă: anaf_surse/ordin_382_2025.html)
+— OPANAF 382/2025, Anexa nr. 2, pct. 2.1 (sursă: [OPANAF nr. 382/2025 privind formularul 397](https://legislatie.just.ro/Public/DetaliiDocument/295690))
 :::
 
 Regulile de depunere:

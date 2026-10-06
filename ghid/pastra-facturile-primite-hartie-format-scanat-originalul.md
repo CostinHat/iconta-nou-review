@@ -16,17 +16,17 @@ Condiția esențială este ca firma să poată dovedi, pe toată perioada de sto
 
 ::: ghid-temei
 „Facturile pot fi stocate pe suport hârtie sau în format electronic, indiferent de forma originală în care au fost trimise ori puse la dispoziție. În cazul stocării electronice a facturilor, inclusiv a celor care au fost convertite din format hârtie în format electronic, nu este obligatorie aplicarea prevederilor […]"
-— Codul fiscal (Legea 227/2015), art. 319 alin. (35) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (35) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Persoanele impozabile pot stoca facturile emise/primite pe suport hârtie sau în format electronic, indiferent de forma originală în care au fost trimise ori puse la dispoziție, cu condiția să asigure autenticitatea originii, integritatea conținutului și lizibilitatea acestora, conform art. 319 alin. (25) din Codul fiscal, de la momentul emiterii/primirii până la sfârșitul perioadei de stocare. Facturile emise/primite pe suport hârtie pot fi convertite în formă electronică în vederea stocării. […] Indiferent de forma în care este emisă/primită factura, și factura stocată în forma pentru care a optat persoana impozabilă se consideră exemplar original, în sensul pct. 69 alin. (2) . Persoanele impozabile care optează pentru stocarea electronică a facturilor au obligația să stocheze prin mijloace electronice și datele ce garantează autenticitatea originii și integritatea conținutului facturilor."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 99 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 99 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Păstrarea documentelor justificative, a registrelor de contabilitate și a celorlalte documente financiar-contabile se face, după caz, la domiciliul fiscal, la sediul social sau la sediile secundare, pe hârtie sau pe suport electronic."
-— OMFP 2634/2015, Anexa 1, pct. 36 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1, pct. 36 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Condițiile, pe scurt:

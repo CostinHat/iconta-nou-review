@@ -18,7 +18,7 @@ Inspecția fiscală nu poate dura la nesfârșit — legea îi impune organului 
 a) 180 de zile pentru contribuabilii mari, pentru contribuabilii/plătitorii care au sedii secundare, indiferent de mărime, precum și pentru contribuabilii nerezidenți;
 b) 90 de zile pentru contribuabilii mijlocii;
 c) 45 de zile pentru ceilalți contribuabili."
-— Legea 207/2015 (Codul de procedură fiscală), art. 126 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 126 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva precizări care rezultă din textul legal și din articolele conexe:
@@ -36,6 +36,6 @@ Câteva precizări care rezultă din textul legal și din articolele conexe:
 
 ## Ce face iConta.eu
 
-Am verificat în `core/control_fiscal_api.py` și modulele conexe (`core/alerte_control_fiscal.py`, `core/control_incrucisat.py`): aplicația construiește un semafor de conformare fiscală care compară declarațiile datorate cu cele depuse, dar **nu urmărește durata unei inspecții fiscale în curs** — nu există în cod o funcție care să calculeze sau să alerteze la apropierea termenului maxim de 180/90/45 de zile prevăzut de art. 126 din Codul de procedură fiscală. Urmărirea acestui termen, inclusiv verificarea eventualelor suspendări, rămâne responsabilitatea contribuabilului sau a consultantului fiscal implicat în control.
+Am verificat în aplicație și modulele conexe: aplicația construiește un semafor de conformare fiscală care compară declarațiile datorate cu cele depuse, dar **nu urmărește durata unei inspecții fiscale în curs** — nu există în cod o funcție care să calculeze sau să alerteze la apropierea termenului maxim de 180/90/45 de zile prevăzut de art. 126 din Codul de procedură fiscală. Urmărirea acestui termen, inclusiv verificarea eventualelor suspendări, rămâne responsabilitatea contribuabilului sau a consultantului fiscal implicat în control.
 
 [iConta.eu](/)

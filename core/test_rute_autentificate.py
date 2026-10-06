@@ -40,6 +40,7 @@ PUBLICE = {
     ("post", "/public/confirma-email"),         # R62: dovada e tokenul de pe adresa NOUA, nu sesiunea
     ("get",  "/public/verifica-cui/{cui}"),     # verificare CUI la inregistrare (rate-limited)
     ("get",  "/ghid/{slug}"),                   # continut public (SEO)
+    ("get",  "/ghid/tema/{tema}"),              # continut public (SEO): pagina unei teme (lotul 06.10 pct.6)
     ("get",  "/ghid"),                          # index ghid
     ("post", "/api/eveniment-public"),          # analytics public: eveniment anonim (ce/de unde/cand), fara date personale
     ("get",  "/ajutor/{fid}"),                 # ajutor contextual: text de FOLOSIRE, nu date de firma

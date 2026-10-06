@@ -14,7 +14,7 @@ Răspunsul depinde în întregime de natura lucrării: o reparație care doar me
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: [...] d) investițiile efectuate la mijloacele fixe existente, sub forma cheltuielilor ulterioare realizate în scopul îmbunătățirii parametrilor tehnici inițiali și care conduc la obținerea de beneficii economice viitoare, prin majorarea valorii mijlocului fix."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Criteriul din lege e clar: o cheltuială ulterioară efectuată la un mijloc fix existent devine **investiție amortizabilă**, nu cheltuială deductibilă directă, dacă întrunește cumulativ două condiții:

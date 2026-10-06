@@ -14,7 +14,7 @@ Dobânda pe care banca o creditează pentru disponibilul din cont pare o operaț
 
 ::: ghid-temei
 „Principiul contabilității de angajamente se aplică inclusiv la recunoașterea dobânzii aferente perioadei, indiferent de scadența acesteia."
-— OMFP 1802/2014, Reglementări contabile, pct. 53 alin. (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 53 alin. (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă concret această regulă:

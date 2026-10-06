@@ -39,6 +39,6 @@ Lichidarea unei firme este delimitată de două momente contabile obligatorii: b
 
 ## Ce face iConta.eu
 
-Modulul general de bilanț al aplicației (`core/bilant.py` / `core/bilant_api.py`) nu conține nicio mențiune legată de lichidare, radiere sau dizolvare — nu există un generator dedicat, nici pentru bilanțul de deschidere, nici pentru situația financiară finală a lichidării. iConta.eu produce doar notele contabile individuale ale operațiunilor din lichidare — vânzarea unui activ și partajul final către asociați — care alimentează soldurile din care contabilul trebuie să întocmească manual, în afara aplicației, cele două situații financiare cerute de lege, respectând și termenul legal de finalizare.
+Modulul general de bilanț al aplicației (aplicația / aplicația) nu conține nicio mențiune legată de lichidare, radiere sau dizolvare — nu există un generator dedicat, nici pentru bilanțul de deschidere, nici pentru situația financiară finală a lichidării. iConta.eu produce doar notele contabile individuale ale operațiunilor din lichidare — vânzarea unui activ și partajul final către asociați — care alimentează soldurile din care contabilul trebuie să întocmească manual, în afara aplicației, cele două situații financiare cerute de lege, respectând și termenul legal de finalizare.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Un abonament de cloud, la fel ca orice alt serviciu digital cumpărat de la un f
 ::: ghid-temei
 „CF art. 308-309 — Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” — `cod_fiscal_227_2015_consolidat.txt` L19405, L19418, dosarul F050.
 
-„`tva_taxare_inversa(baza, cota=None)` — TVA prin taxare inversă la AIC/servicii primite; cota nu are valoare implicită...” — `core/intracomunitar.py`, dosarul F050.
+„`tva_taxare_inversa(baza, cota=None)` — TVA prin taxare inversă la AIC/servicii primite; cota nu are valoare implicită...” — aplicația, dosarul F050.
 :::
 
 Firma din România, ca beneficiar al serviciului, e cea care datorează taxa — prin taxare inversă, nu prin plata unei sume suplimentare către furnizor. Operațiunea se declară în D390, la codul de achiziții de servicii intracomunitare, iar codul de TVA al furnizorului se verifică în VIES.

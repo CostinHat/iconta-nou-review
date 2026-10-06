@@ -16,15 +16,15 @@ Când un singur contract cu o firmă nerezidentă acoperă și dreptul de a folo
 
 ::: ghid-temei
 „(12) În cazul unui contract care implică folosirea sau dreptul de a folosi orice proprietate sau drept prevăzut la art. 7 pct. 36 din Codul fiscal, precum și transferul unei alte proprietăți sau altui serviciu, suma care trebuie plătită conform contractului trebuie să fie împărțită, conform diverselor porțiuni de contract, pe baza condițiilor contractului sau pe baza unei împărțiri rezonabile, fiecărei porțiuni aplicându-i-se tratamentul fiscal corespunzător. Dacă totuși o anumită parte din ceea ce urmează a se asigura prin contract constituie de departe scopul principal al contractului, cealaltă porțiune fiind auxiliară, tratamentul aplicat porțiunii principale de contract se aplică întregii sume care trebuie plătită conform contractului."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (12) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (12) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „venituri din prestarea de servicii de management sau de consultanță din orice domeniu, dacă aceste venituri sunt obținute de la un rezident sau dacă veniturile respective sunt cheltuieli ale unui sediu permanent în România;"
-— Legea 227/2015 (Codul fiscal), art. 223 alin. (1) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 223 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „venituri din servicii prestate în România, exclusiv transportul internațional și prestările de servicii accesorii acestui transport;"
-— Legea 227/2015 (Codul fiscal), art. 223 alin. (1) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 223 alin. (1) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordine:

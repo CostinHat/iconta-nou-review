@@ -14,12 +14,12 @@ Un avans acordat administratorului nu rămâne „bani ai firmei ieșiți din ca
 
 ::: ghid-temei
 „2. Documentele justificative trebuie să cuprindă următoarele elemente principale: [...] conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia; [...] datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz; [...]"
-— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 (Norme generale), pct. 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.
 [...]
 La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea 70/2015, art. 3 alin. (1) lit. e) și alin. (4) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. e) și alin. (4) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Mecanismul de justificare, pas cu pas:
@@ -37,6 +37,6 @@ Mecanismul de justificare, pas cu pas:
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) tratează explicit acest flux: `avans_acordare` înregistrează nota de acordare (cont 542), `avans_deconteaza` generează notele de decontare pe baza liniilor introduse (cu TVA aferent, dacă e cazul) și calculează suma rămasă de restituit, iar `reclasificare_bilant` mută soldurile de avansuri nedecontate la contul corespunzător (4282 pentru avansuri personale, 461 pentru altele), cu temeiul citat explicit în cod (OMFP 1802/2014 pct. 302/306). Funcția `verifica_plafon` din același modul semnalează, ca avertisment, depășirea plafonului zilnic de 5.000 lei per persoană la avansurile din ziua respectivă. Documentele justificative propriu-zise pentru fiecare cheltuială decontată rămân, evident, în afara aplicației — introduse și păstrate de contabil.
+Modulul de casierie al iConta.eu tratează explicit acest flux: `avans_acordare` înregistrează nota de acordare (cont 542), `avans_deconteaza` generează notele de decontare pe baza liniilor introduse (cu TVA aferent, dacă e cazul) și calculează suma rămasă de restituit, iar `reclasificare_bilant` mută soldurile de avansuri nedecontate la contul corespunzător (4282 pentru avansuri personale, 461 pentru altele), cu temeiul citat explicit în cod (OMFP 1802/2014 pct. 302/306). Funcția `verifica_plafon` din același modul semnalează, ca avertisment, depășirea plafonului zilnic de 5.000 lei per persoană la avansurile din ziua respectivă. Documentele justificative propriu-zise pentru fiecare cheltuială decontată rămân, evident, în afara aplicației — introduse și păstrate de contabil.
 
 [iConta.eu](/)

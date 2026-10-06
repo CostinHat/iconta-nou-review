@@ -14,7 +14,7 @@ Regimul depinde de statutul importatorului: majoritatea plătesc TVA-ul la impor
 
 ::: ghid-temei
 „(3) Taxa pentru importuri de bunuri, cu excepția importurilor scutite de taxă, se plătește la organul vamal în conformitate cu reglementările în vigoare privind plata drepturilor de import. [...] (4) Prin excepție de la prevederile alin. (3), nu se face plata efectivă la organele vamale pentru: a) importurile efectuate de persoanele impozabile înregistrate în scopuri de TVA conform art. 316, care îndeplinesc cumulativ condițiile prevăzute la alin. (4^1) și care au obținut certificat de amânare de la plată, conform procedurii stabilite prin ordin al ministrului finanțelor publice; [...]"
-— Cod fiscal (Legea 227/2015), art. 326 alin. (3)-(4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 326 alin. (3)-(4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă practic două trasee:
@@ -30,7 +30,7 @@ Din text rezultă practic două trasee:
 
 ## Ce face iConta.eu
 
-Pentru bunurile importate din afara UE, generatorul D300 (`core/d300.py`) tratează azi livrarea/achiziția de bunuri fără taxare inversă (regimul obișnuit, TVA plătit în vamă) astfel: operațiunea rămâne pe rândul de operațiuni scutite/neimpozabile (rd. 26), **nu pe un rând dedicat de TVA achitat la import** — comentariul din cod marchează explicit acest caz ca „axă nedeclarată": *„BUNURILE importate non-UE au TVA in vama (rd.21, TVA achitat la import) — NU e modelat aici; raman pe rd.26 [...]"*. E o limită cunoscută și înregistrată intern (nu o funcționalitate ascunsă), a cărei reparare depinde de o clarificare separată privind structura oficială a rândului corespunzător.
+Pentru bunurile importate din afara UE, generatorul D300 tratează azi livrarea/achiziția de bunuri fără taxare inversă (regimul obișnuit, TVA plătit în vamă) astfel: operațiunea rămâne pe rândul de operațiuni scutite/neimpozabile (rd. 26), **nu pe un rând dedicat de TVA achitat la import** — comentariul din cod marchează explicit acest caz ca „axă nedeclarată": *„BUNURILE importate non-UE au TVA in vama (rd.21, TVA achitat la import) — NU e modelat aici; raman pe rd.26 [...]"*. E o limită cunoscută și înregistrată intern (nu o funcționalitate ascunsă), a cărei reparare depinde de o clarificare separată privind structura oficială a rândului corespunzător.
 
 Servicii primite de la parteneri non-UE, pentru care beneficiarul din România e obligat la plata taxei, se autolichidează corect, automat, ca taxare inversă (rd.7 colectat + rd.20 dedus, oglindă). Limitarea de mai sus privește strict **bunurile** importate, nu serviciile.
 

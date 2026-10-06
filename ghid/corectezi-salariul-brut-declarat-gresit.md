@@ -14,7 +14,7 @@ O eroare de salariu brut în D112 (Declarația unică privind obligațiile de pl
 
 ::: ghid-temei
 „Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune, concret, corectarea:
@@ -31,6 +31,6 @@ Ce presupune, concret, corectarea:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul D112 din iConta.eu (`core/d112.py`) construiește declarația din datele curente ale statelor de plată, dar marchează în XML explicit `d_rec="0"` — adică declarația inițială. Aplicația nu are momentan un flux dedicat de generare a unei declarații **rectificative** (cu `d_rec="1"`). Practic, dacă salariul brut se corectează în statul de plată, iConta.eu regenerează un D112 corect pentru acea lună, dar depunerea lui la ANAF ca declarație rectificativă (cu bifa aferentă) rămâne o operațiune pe care contabilul o face separat, în portalul ANAF.
+La data acestui ghid, generatorul D112 din iConta.eu construiește declarația din datele curente ale statelor de plată, dar marchează în XML explicit `d_rec="0"` — adică declarația inițială. Aplicația nu are momentan un flux dedicat de generare a unei declarații **rectificative** (cu `d_rec="1"`). Practic, dacă salariul brut se corectează în statul de plată, iConta.eu regenerează un D112 corect pentru acea lună, dar depunerea lui la ANAF ca declarație rectificativă (cu bifa aferentă) rămâne o operațiune pe care contabilul o face separat, în portalul ANAF.
 
 [iConta.eu](/)

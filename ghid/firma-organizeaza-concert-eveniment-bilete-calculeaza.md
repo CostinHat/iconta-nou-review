@@ -16,18 +16,18 @@ Impozitul se plătește lunar la bugetul local unde a avut loc spectacolul, nu n
 
 ::: ghid-temei
 „Impozitul pe spectacole se calculează prin aplicarea cotei de impozit la suma încasată din vânzarea biletelor de intrare și a abonamentelor, exclusiv taxa pe valoarea adăugată."
-— Codul fiscal (Legea 227/2015), art. 481 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 481 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „până la 2% pentru spectacolul de teatru, balet, operă, operetă, concert filarmonic sau altă manifestare muzicală, prezentarea unui film la cinematograf, un spectacol de circ sau orice competiție sportivă internă sau internațională;"
-— Codul fiscal (Legea 227/2015), art. 481 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 481 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe spectacole se plătește lunar până la data de 10, inclusiv, a lunii următoare celei în care a avut loc spectacolul."
-— Codul fiscal (Legea 227/2015), art. 483 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 483 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 481 din Codul fiscal, persoanele fizice și persoanele juridice care organizează manifestări artistice, competiții sportive sau orice altă activitate distractivă, cu caracter permanent sau ocazional, datorează impozitul pe spectacole, calculat în cote procentuale asupra încasărilor din vânzarea abonamentelor și biletelor de intrare."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 155 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 155 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii de calcul:

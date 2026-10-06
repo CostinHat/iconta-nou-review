@@ -14,7 +14,7 @@ Obligația de a folosi aparat de marcat electronic fiscal (AMEF) și plafonul le
 
 ::: ghid-temei
 „(1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] b) încasări efectuate de către magazinele de tipul cash and carry [...] în limita unui plafon zilnic de 10.000 lei de la o persoană."
-— Legea nr. 70/2015, art. 3 alin. (1) lit. a)-b) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. a)-b) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Câteva distincții importante pentru interpretarea unei diferențe:

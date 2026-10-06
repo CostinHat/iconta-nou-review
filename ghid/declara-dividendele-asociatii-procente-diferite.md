@@ -24,6 +24,6 @@ O greșeală frecventă este împărțirea dividendului în părți egale între
 
 ## Ce face iConta.eu
 
-Repository-ul D205 (`core/repo_d205.py`) citește cota fiecărui asociat direct din datele firmei și calculează automat, pentru fiecare, partea proporțională din dividendul înregistrat pe contul 457. Sumele rezultate (bază de impozitare și impozit) sunt cele efectiv aferente cotei fiecărui asociat, nu împărțite egal. Este responsabilitatea contabilului să se asigure că datele privind cotele de participare ale asociaților sunt actualizate la zi în aplicație înainte de generarea declarației, întrucât o cotă neactualizată produce o defalcare greșită între beneficiari.
+Repository-ul D205 citește cota fiecărui asociat direct din datele firmei și calculează automat, pentru fiecare, partea proporțională din dividendul înregistrat pe contul 457. Sumele rezultate (bază de impozitare și impozit) sunt cele efectiv aferente cotei fiecărui asociat, nu împărțite egal. Este responsabilitatea contabilului să se asigure că datele privind cotele de participare ale asociaților sunt actualizate la zi în aplicație înainte de generarea declarației, întrucât o cotă neactualizată produce o defalcare greșită între beneficiari.
 
 [iConta.eu](/)

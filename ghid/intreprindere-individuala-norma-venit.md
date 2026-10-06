@@ -14,10 +14,10 @@ Da. Din perspectiva impozitului pe venit, Codul fiscal tratează la fel PFA, în
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal, art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru o II:
@@ -35,7 +35,7 @@ Ce rezultă de aici pentru o II:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) emite capitolul de normă de venit (`cap12`) cu câmpul `norma_forma_org`, care înregistrează forma de organizare a titularului — inclusiv II — exact cum cere structura validată de ANAF (D212Validator). Registrul de evidență fiscală pentru persoane fizice (varianta „venituri_pf", conform OMFP 3254/2017, `core/registru_evidenta_fiscala.py`) susține de asemenea modul „normă de venit" (`mod_venit_net = 3`) ca opțiune de completare a evidenței, fără să facă vreo distincție între PFA și II la validarea înregistrării.
+Generatorul D212 al iConta.eu emite capitolul de normă de venit (`cap12`) cu câmpul `norma_forma_org`, care înregistrează forma de organizare a titularului — inclusiv II — exact cum cere structura validată de ANAF (D212Validator). Registrul de evidență fiscală pentru persoane fizice (varianta „venituri_pf", conform OMFP 3254/2017, aplicația) susține de asemenea modul „normă de venit" (`mod_venit_net = 3`) ca opțiune de completare a evidenței, fără să facă vreo distincție între PFA și II la validarea înregistrării.
 
 Ce nu face aplicația: nu verifică dacă activitatea CAEN concretă e inclusă în nomenclatorul de normă de venit publicat de DGRFP pentru anul de raportare — nomenclatorul nu e un cod fiscal fix, ci un document regional actualizat anual, iar verificarea eligibilității rămâne responsabilitatea contabilului.
 

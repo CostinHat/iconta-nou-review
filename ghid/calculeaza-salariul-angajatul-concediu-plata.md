@@ -38,6 +38,6 @@ Pornind de la acest brut redus, restul calculului (CAS 25%, CASS 10%, deducere p
 
 ## Ce face iConta.eu
 
-Formula de calcul brut→net (`core/salarizare.py`, `_calcul_salariu_2018()`) e aceeași indiferent de motivul reducerii brutului contractual — fie normă parțială, fie zile de concediu fără plată într-o lună. Cotele și salariul minim aplicabil vin din registrul „period-aware" `core.common.COTE`, potrivit lunii calculate, iar verificarea podelei de contribuții se aplică automat oricând brutul introdus e sub pragul corespunzător.
+Formula de calcul brut→net (`_calcul_salariu_2018()`) e aceeași indiferent de motivul reducerii brutului contractual — fie normă parțială, fie zile de concediu fără plată într-o lună. Cotele și salariul minim aplicabil vin din registrul „period-aware" `core.common.COTE`, potrivit lunii calculate, iar verificarea podelei de contribuții se aplică automat oricând brutul introdus e sub pragul corespunzător.
 
 [iConta.eu](/)

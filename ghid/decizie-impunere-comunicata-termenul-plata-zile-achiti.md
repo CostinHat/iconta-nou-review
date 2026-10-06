@@ -16,12 +16,12 @@ Regula te protejează de situația în care ai fi „în întârziere" la plata 
 
 ::: ghid-temei
 „Obligațiile fiscale stabilite de organul fiscal prin decizie de impunere emisă în baza unei declarații de impunere în sensul art. 1 pct. 18 lit. c), comunicată după expirarea termenelor de plată prevăzute de Codul fiscal sau alte legi speciale care reglementează respectivele obligații fiscale, sunt scadente în termen de 5 zile de la data comunicării deciziei de impunere, cu condiția depunerii de către contribuabil/plătitor a declarațiilor fiscale în termenul prevăzut de lege."
-— Codul de procedură fiscală (Legea 207/2015), art. 155 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 155 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „c) bunurile și veniturile impozabile, precum și alte elemente ale bazei de impozitare, dacă legea prevede declararea acestora;"
-— Codul de procedură fiscală (Legea 207/2015), art. 1 pct. 18 lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 1 pct. 18 lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, pe rând:

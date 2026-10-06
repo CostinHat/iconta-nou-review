@@ -14,7 +14,7 @@ Reevaluarea lunară a soldurilor valutare nu e opțională — legea o cere expl
 
 ::: ghid-temei
 „325. - (1) La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. Diferențele de curs înregistrate se recunosc în contabilitate la venituri sau cheltuieli din diferențe de curs valutar, după caz. (2) Pentru ultima zi a lunii se efectuează atât contabilizarea tranzacțiilor în valută, cât și evaluarea lunară la cursul Băncii Naționale a României [...]"
-— OMFP 1802/2014, pct. 325 alin. (1) și (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 325 alin. (1) și (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Obligația vizează **toate** soldurile monetare în valută încă deschise la finalul lunii: creanțe, datorii și disponibilități (conturi bancare, casierie în valută) — nu doar unele dintre ele.
@@ -30,6 +30,6 @@ Reevaluarea lunară a soldurilor valutare nu e opțională — legea o cere expl
 
 ## Ce face iConta.eu
 
-Din ecranul **Operațiuni speciale → Reevaluare valuta**, introduci lista soldurilor (cont, valoare în valută, monedă, curs de evidență, tip), iar aplicația ia automat cursul BNR pentru fiecare monedă la data cerută și generează, prin `core/uc_tenants.py` (`reevaluare_valuta`), o singură notă contabilă cu toate diferențele calculate corect pe 665/765. Dacă ai uitat operațiunea și luna respectivă e **încă deschisă**, poți rula reevaluarea retroactiv, cu data de la finalul acelei luni — aplicația o acceptă. Dacă luna e deja **închisă**, ruta refuză nota nouă (constrângerea `_cere_luna_deschisa`) și returnează un mesaj de eroare clar, nu o eroare tehnică — în acest caz, corectarea se face pe altă cale contabilă (notă de corecție în luna curentă), decizie care rămâne a contabilului, nu automatizată de aplicație.
+Din ecranul **Operațiuni speciale → Reevaluare valuta**, introduci lista soldurilor (cont, valoare în valută, monedă, curs de evidență, tip), iar aplicația ia automat cursul BNR pentru fiecare monedă la data cerută și generează, prin aplicație (`reevaluare_valuta`), o singură notă contabilă cu toate diferențele calculate corect pe 665/765. Dacă ai uitat operațiunea și luna respectivă e **încă deschisă**, poți rula reevaluarea retroactiv, cu data de la finalul acelei luni — aplicația o acceptă. Dacă luna e deja **închisă**, ruta refuză nota nouă (constrângerea `_cere_luna_deschisa`) și returnează un mesaj de eroare clar, nu o eroare tehnică — în acest caz, corectarea se face pe altă cale contabilă (notă de corecție în luna curentă), decizie care rămâne a contabilului, nu automatizată de aplicație.
 
 [iConta.eu](/)

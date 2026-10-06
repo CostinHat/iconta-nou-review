@@ -36,6 +36,6 @@ Ce **nu** se schimbă de la o rată la alta e cota aplicabilă. Art. 291 alin. (
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/tva_incasare.py`) extrage TVA exigibil din fiecare sumă încasată prin sută mărită (`suma × cotă/(100+cotă)`) și agregă rezultatele pe cotă pentru mai multe încasări/alocări (`tva_exigibil_alocari`). Alegerea între cota de la faptul generator și cota de la factură/avans (ramura din art. 291 alin. (5)) **nu e dedusă automat** — contabilul o selectează manual, pentru fiecare operațiune, în ecranul dedicat.
+Motorul de calcul extrage TVA exigibil din fiecare sumă încasată prin sută mărită (`suma × cotă/(100+cotă)`) și agregă rezultatele pe cotă pentru mai multe încasări/alocări (`tva_exigibil_alocari`). Alegerea între cota de la faptul generator și cota de la factură/avans (ramura din art. 291 alin. (5)) **nu e dedusă automat** — contabilul o selectează manual, pentru fiecare operațiune, în ecranul dedicat.
 
 [iConta.eu](/)

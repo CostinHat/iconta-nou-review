@@ -16,12 +16,12 @@ Decizia de concediere este frecvent contestată în instanță. Iar în fața in
 
 ::: ghid-temei
 „În cazul în care concedierea intervine pentru unul dintre motivele prevăzute la art. 61 lit. b)-d), angajatorul are obligația de a emite decizia de concediere în termen de 30 de zile calendaristice de la data constatării cauzei concedierii.(2) În cazul în care concedierea intervine pentru motivul prevăzut la art. 61 lit. a), angajatorul poate emite decizia de concediere numai cu respectarea dispozițiilor art. 247-252.(3) Decizia se emite în scris și, sub sancțiunea nulității absolute, trebuie să fie motivată în fapt și în drept și să cuprindă precizări cu privire la termenul în care poate fi contestată și la instanța judecătorească la care se contestă."
-— Codul muncii (Legea 53/2003), art. 62 alin. (1)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 62 alin. (1)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Decizia de concediere se comunică salariatului în scris și trebuie să conțină în mod obligatoriu:a) motivele care determină concedierea; ... b) durata preavizului; ... c) criteriile de stabilire a ordinii de priorități, conform art. 69 alin. (2) lit. d), numai în cazul concedierilor colective; ... d) lista tuturor locurilor de muncă disponibile în unitate și termenul în care salariații urmează să opteze pentru a ocupa un loc de muncă vacant, în condițiile art. 64."
-— Codul muncii (Legea 53/2003), art. 76 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 76 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Termenele, pe motive:

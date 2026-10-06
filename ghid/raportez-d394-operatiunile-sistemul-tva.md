@@ -22,7 +22,7 @@ TVA la încasare (art. 282 alin. (3)) modifică exclusiv **momentul** la care ta
 
 ## Ce nu am putut confirma
 
-Cercetarea de temei pentru acest ghid a acoperit modulele `core/tva_incasare.py`, `core/cota_tva_incasare.py`, `core/d300.py`, `core/avansuri.py` și ecranele de facturare/operațiuni speciale — **nu a inclus o citire a modulului de generare D394** (`core/d394.py` nu a fost consultat). Nu putem confirma din acest dosar:
+Cercetarea de temei pentru acest ghid a acoperit aplicația și ecranele de facturare/operațiuni speciale — **nu a inclus o citire a modulului de generare D394** (aplicația nu a fost consultat). Nu putem confirma din acest dosar:
 
 - dacă aplicația marchează distinct, în fișierul D394, operațiunile efectuate de o firmă înscrisă la TVA la încasare;
 - dacă valoarea/perioada raportată în D394 urmează data facturii sau data încasării;

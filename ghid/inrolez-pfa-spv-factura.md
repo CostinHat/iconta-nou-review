@@ -14,7 +14,7 @@ Un PFA nu este scutit de obligația de comunicare electronică cu ANAF doar pent
 
 ::: ghid-temei
 „Prin excepţie de la alin. (1), contribuabilii/plătitorii persoane juridice, asocieri şi alte entităţi fără personalitate juridică, precum şi persoane fizice care desfăşoară o profesie liberală sau exercită o activitate economică în mod independent în una dintre formele prevăzute de Ordonanţa de urgenţă a Guvernului nr. 44/2008 privind desfăşurarea activităţilor economice de către persoanele fizice autorizate, întreprinderile individuale şi întreprinderile familiale [...] sunt obligaţi să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanţă în condiţiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanţelor/A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea numește explicit PFA-urile (prin trimiterea la OUG 44/2008) printre categoriile obligate:
@@ -31,6 +31,6 @@ Legea numește explicit PFA-urile (prin trimiterea la OUG 44/2008) printre categ
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu realizează înrolarea inițială a PFA-ului în SPV** — acest pas se face de titular, direct pe portalul ANAF, cu certificatul digital calificat propriu. Ulterior, aplicația pune la dispoziție conectorul OAuth2 (`core/spv_conector.py`), prin care contul SPV al PFA-ului poate fi legat de iConta.eu pentru trimiterea și primirea facturilor electronice. Obținerea certificatului și crearea contului SPV rămân, la acest moment, pași din afara aplicației.
+La data acestui ghid, iConta.eu **nu realizează înrolarea inițială a PFA-ului în SPV** — acest pas se face de titular, direct pe portalul ANAF, cu certificatul digital calificat propriu. Ulterior, aplicația pune la dispoziție conectorul OAuth2, prin care contul SPV al PFA-ului poate fi legat de iConta.eu pentru trimiterea și primirea facturilor electronice. Obținerea certificatului și crearea contului SPV rămân, la acest moment, pași din afara aplicației.
 
 [iConta.eu](/)

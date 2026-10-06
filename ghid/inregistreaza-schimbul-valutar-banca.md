@@ -14,7 +14,7 @@ Un schimb valutar prin bancă (de exemplu, conversia unei încasări în euro pe
 
 ::: ghid-temei
 „O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014 (reglementări contabile), pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula de bază e simplă — cursul folosit e cursul BNR din ziua operațiunii, nu cursul băncii comerciale la care s-a făcut efectiv schimbul (acesta din urmă generează, dacă diferă de cursul BNR, o diferență de curs sau un cost de schimb, tratat separat, nu ca eroare de înregistrare). Pentru operațiunea de schimb valutar propriu-zisă:

@@ -14,7 +14,7 @@ Regula generală limitează restituirile în numerar către persoane fizice la 1
 
 ::: ghid-temei
 „În cazul returnării de bunuri de către persoanele fizice și, respectiv, neprestării de servicii către persoanele fizice, restituirea sumelor aferente poate fi efectuată în numerar în limita a 10.000 lei, sumele care depășesc acest plafon putând fi restituite numai prin instrumente de plată fără numerar. Prin excepție, în cazul în care, la data restituirii, persoanele fizice declară pe propria răspundere că nu mai dețin cont bancar, restituirea se poate face integral în numerar, indiferent de nivelul sumei care trebuie restituită."
-— Legea nr. 70/2015, art. 9 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 9 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă concret:
@@ -32,6 +32,6 @@ Ce rezultă concret:
 
 ## Ce face iConta.eu
 
-iConta.eu semnalează în modulul de casierie (`core/casa.py`, funcția `verifica_plafon`) depășirile plafoanelor de numerar ca avertismente, cu temeiul legal atașat fiecărei probleme — dar aplicația nu are, la data acestui ghid, un câmp dedicat pentru „declarație pe propria răspundere fără cont bancar" care să marcheze automat o restituire ca exceptată de la plafon. Excepția din art. 9 alin. (2) rămâne, deocamdată, o verificare manuală a contabilului, documentată în afara aplicației.
+iConta.eu semnalează în modulul de casierie (funcția `verifica_plafon`) depășirile plafoanelor de numerar ca avertismente, cu temeiul legal atașat fiecărei probleme — dar aplicația nu are, la data acestui ghid, un câmp dedicat pentru „declarație pe propria răspundere fără cont bancar" care să marcheze automat o restituire ca exceptată de la plafon. Excepția din art. 9 alin. (2) rămâne, deocamdată, o verificare manuală a contabilului, documentată în afara aplicației.
 
 [iConta.eu](/)

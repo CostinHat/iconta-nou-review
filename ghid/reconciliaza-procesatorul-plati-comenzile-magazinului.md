@@ -40,6 +40,6 @@ La data acestui ghid, iConta.eu nu are un modul dedicat care să importe rapoart
 
 ## Ce face iConta.eu
 
-Reconcilierea bancară automată (`core/reconciliere.py`) potrivește linii de extras cu facturi deschise, pe baza CUI-ului unui singur partener pe linie — mecanism care nu se aplică unei decontări cumulate de la un procesator de plăți, aferentă mai multor comenzi de la clienți diferiți. iConta.eu nu importă azi rapoartele de decontare (payout) ale procesatorilor de plăți și nu le leagă automat de comenzile magazinului online. Verificarea rămâne manuală: se compară raportul de tranzacții/decontare al procesatorului cu lista comenzilor din perioadă, iar suma netă decontată se înregistrează contabil cu separarea comisionului reținut ca cheltuială.
+Reconcilierea bancară automată potrivește linii de extras cu facturi deschise, pe baza CUI-ului unui singur partener pe linie — mecanism care nu se aplică unei decontări cumulate de la un procesator de plăți, aferentă mai multor comenzi de la clienți diferiți. iConta.eu nu importă azi rapoartele de decontare (payout) ale procesatorilor de plăți și nu le leagă automat de comenzile magazinului online. Verificarea rămâne manuală: se compară raportul de tranzacții/decontare al procesatorului cu lista comenzilor din perioadă, iar suma netă decontată se înregistrează contabil cu separarea comisionului reținut ca cheltuială.
 
 [iConta.eu](/)

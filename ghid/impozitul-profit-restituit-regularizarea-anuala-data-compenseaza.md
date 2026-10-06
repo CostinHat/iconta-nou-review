@@ -16,12 +16,12 @@ Data contează pentru ambele părți ale compensării. Dacă firma are restanțe
 
 ::: ghid-temei
 „h) la data nașterii dreptului la restituire pentru sumele de restituit potrivit art. 168 , astfel: [...] 2. la data prevăzută de lege pentru depunerea declarației anuale de impozit pe profit, în cazul impozitului pe profit de restituit rezultat din regularizarea anuală, potrivit legii. Restituirea se face în limita sumei rămase după regularizarea impozitului anual cu plățile anticipate neachitate;"
-— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (5) lit. h) pct. 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (5) lit. h) pct. 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor"
-— Codul fiscal (Legea 227/2015), art. 42 alin. (1), în forma dată de OUG 8/2026, aplicabilă începând cu anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42 alin. (1), în forma dată de OUG 8/2026, aplicabilă începând cu anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

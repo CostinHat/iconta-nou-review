@@ -15,7 +15,7 @@ Dacă vrei ca o altă persoană (contabil extern, angajat) să acceseze SPV-ul f
 ::: ghid-temei
 „(1) În relaţiile cu organul fiscal contribuabilul/plătitorul poate fi reprezentat printr-un împuternicit. Conţinutul şi limitele reprezentării sunt cele cuprinse în împuternicire sau stabilite de lege, după caz. Desemnarea unui împuternicit nu îl împiedică pe contribuabil/plătitor să îşi îndeplinească personal obligaţiile prevăzute de legislaţia fiscală, chiar dacă nu a procedat la revocarea împuternicirii potrivit alin. (2).
 (2) Împuternicitul este obligat să depună la organul fiscal actul de împuternicire, în original sau în copie legalizată. Revocarea împuternicirii operează faţă de organul fiscal de la data depunerii actului de revocare, în original sau în copie legalizată."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă de aici pentru accesul suplimentar la SPV:
@@ -33,6 +33,6 @@ Ce rezultă de aici pentru accesul suplimentar la SPV:
 
 ## Ce face iConta.eu
 
-iConta.eu nu gestionează utilizatorii contului SPV al ANAF — acest lucru se face direct în portalul ANAF, cu certificatele digitale ale persoanelor autorizate. Ce oferă aplicația este propriul sistem de conturi și drepturi de acces la datele firmei din iConta.eu, separat de contul SPV: mai mulți utilizatori pot avea acces la aplicație, dar autorizarea tehnică pentru trimiterea facturilor prin RO e-Factura (conectorul OAuth2 din `core/spv_conector.py`) se face o singură dată, pe baza certificatului calificat al reprezentantului sau împuternicitului firmei.
+iConta.eu nu gestionează utilizatorii contului SPV al ANAF — acest lucru se face direct în portalul ANAF, cu certificatele digitale ale persoanelor autorizate. Ce oferă aplicația este propriul sistem de conturi și drepturi de acces la datele firmei din iConta.eu, separat de contul SPV: mai mulți utilizatori pot avea acces la aplicație, dar autorizarea tehnică pentru trimiterea facturilor prin RO e-Factura (conectorul OAuth2 din aplicație) se face o singură dată, pe baza certificatului calificat al reprezentantului sau împuternicitului firmei.
 
 [iConta.eu](/)

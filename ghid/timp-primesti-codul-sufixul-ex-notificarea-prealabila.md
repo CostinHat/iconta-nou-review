@@ -16,13 +16,13 @@ Termenul contează pentru că scutirea în celălalt stat nu începe la depunere
 
 ::: ghid-temei
 „(11) Organul fiscal competent comunică persoanei impozabile codul individual de identificare menționat la alin. (6) , cel târziu în cea de-a 35-a zi lucrătoare de la primirea notificării prealabile sau a actualizării notificării prealabile."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(12) Termenul prevăzut la alin. (11) se prelungește în cazurile specifice în care, pentru a preveni frauda sau evaziunea fiscală, statul membru în care persoana impozabilă intenționează să beneficieze de scutire solicită un termen suplimentar pentru a efectua verificările necesare."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a) de la data la care organul fiscal competent i-a comunicat codul individual de identificare menționat la alin. (6) , în cazul notificării prealabile; ... b) de la data la care organul fiscal competent i-a confirmat persoanei impozabile că aceasta poate utiliza, ca urmare a actualizării notificării prealabile, codul individual de identificare deja atribuit potrivit alin. (6) ."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie știut:

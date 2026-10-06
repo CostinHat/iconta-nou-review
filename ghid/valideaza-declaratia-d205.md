@@ -14,7 +14,7 @@ D205 e o declarație informativă privind impozitul reținut la sursă, iar „v
 
 ::: ghid-temei
 „(3) Contribuabilul/Plătitorul are obligația de a completa declarația fiscală înscriind corect, complet și cu bună-credință informațiile prevăzute de formular, corespunzătoare situației sale fiscale. Declarația fiscală se semnează de către contribuabil/plătitor sau, după caz, reprezentantul legal ori împuternicitul acestuia."
-— Legea 207/2015 (Codul de procedură fiscală), art. 102 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 102 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Răspunderea pentru corectitudinea datelor din D205 (CNP-uri, cote, sume distribuite/plătite) e a plătitorului de dividende, nu a instrumentului folosit pentru generare — indiferent dacă declarația se completează manual sau se generează automat dintr-un program.

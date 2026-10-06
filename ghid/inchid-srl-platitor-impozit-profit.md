@@ -14,7 +14,7 @@ Lichidarea unui SRL nu înseamnă doar radierea de la Registrul Comerțului — 
 
 ::: ghid-temei
 „Venitul impozabil obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice sau din reducerea capitalului social, potrivit legii, care nu reprezintă distribuții în bani sau în natură ca urmare a restituirii cotei-părți din aporturi se impun cu o cotă de 10%, impozitul fiind final. Obligația calculării, reținerii și plății impozitului revine persoanei juridice."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Etapele fiscale pe care le presupune, în esență, o lichidare:
@@ -31,6 +31,6 @@ Etapele fiscale pe care le presupune, în esență, o lichidare:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de lichidare (`core/lichidare.py`) care generează notele contabile pentru valorificarea activelor (vânzare cu TVA, descărcare din gestiune) și calculează partajul final — separă corect capitalul social (neimpozabil) de rezerve și profituri (impozabile cu cota fixă de 10%, conform art. 97 alin. 5), aplicând cota valabilă la data operațiunii. Aplicația nu depune însă cererea de radiere la Registrul Comerțului și nu automatizează declarațiile fiscale finale (ultimul D101/D100) — acestea rămân proceduri separate, făcute de contabil.
+iConta.eu are un modul de lichidare care generează notele contabile pentru valorificarea activelor (vânzare cu TVA, descărcare din gestiune) și calculează partajul final — separă corect capitalul social (neimpozabil) de rezerve și profituri (impozabile cu cota fixă de 10%, conform art. 97 alin. 5), aplicând cota valabilă la data operațiunii. Aplicația nu depune însă cererea de radiere la Registrul Comerțului și nu automatizează declarațiile fiscale finale (ultimul D101/D100) — acestea rămân proceduri separate, făcute de contabil.
 
 [iConta.eu](/)

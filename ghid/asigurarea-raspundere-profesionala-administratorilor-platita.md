@@ -16,17 +16,17 @@ Motivul este că asigurarea acoperă riscul pe care îl creează funcția de con
 
 ::: ghid-temei
 „e) primele de asigurare aferente contractelor de asigurare civilă profesională pentru administratori/directori, încheiate și suportate de societate pentru care desfășoară activitatea, potrivit prevederilor Legii societăților nr. 31/1990, republicată, cu modificările și completările ulterioare;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (7) lit. e) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (7) lit. e) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana numită în una dintre funcțiile prevăzute la alin. (3) trebuie să fie asigurată pentru răspundere profesională.”
-— Legea societăților (Legea 31/1990), art. 153^12 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților (Legea 31/1990), art. 153^12 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „primele de asigurare, precum și serviciile medicale furnizate sub formă de abonament plătite de către suportator pentru angajații proprii sau alt beneficiar de venituri din salarii și asimilate salariilor, la momentul plății acestora, altele decât cele obligatorii”
-— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se leagă cele trei texte:

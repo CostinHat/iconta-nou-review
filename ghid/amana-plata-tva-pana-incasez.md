@@ -30,6 +30,6 @@ O confuzie frecventă e amestecarea exigibilității (CÂND se datorează TVA, a
 
 ## Ce face iConta.eu
 
-Motorul (`core/tva_incasare.py`) calculează TVA exigibilă din suma încasată prin sută mărită, exact conform art. 282 alin. (8). În decont (`core/d300.py`), pentru firmele cu flagul `tva_la_incasare` activ, sumele calculate ajung în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11) — nu există un rând D300 separat pentru „TVA la încasare". Codul aplică explicit excepția pentru taxare inversă, care „rămâne pe calea de emitere" chiar și pentru o firmă înscrisă în sistem. Contul 4428 (TVA neexigibilă) rămâne intern, în afara decontului, până la încasarea efectivă.
+Motorul calculează TVA exigibilă din suma încasată prin sută mărită, exact conform art. 282 alin. (8). În decont, pentru firmele cu flagul `tva_la_incasare` activ, sumele calculate ajung în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11) — nu există un rând D300 separat pentru „TVA la încasare". Codul aplică explicit excepția pentru taxare inversă, care „rămâne pe calea de emitere" chiar și pentru o firmă înscrisă în sistem. Contul 4428 (TVA neexigibilă) rămâne intern, în afara decontului, până la încasarea efectivă.
 
 [iConta.eu](/)

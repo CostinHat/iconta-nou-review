@@ -14,7 +14,7 @@ Produsele finite obținute din producție proprie se evaluează la cost de produ
 
 ::: ghid-temei
 „Contul 345 «Produse finite» Cu ajutorul acestui cont se ține evidența existenței și mișcării stocurilor de produse finite. Contul 345 «Produse finite» este un cont de activ. În debitul contului 345 «Produse finite» se înregistrează: – valoarea la preț de înregistrare a produselor finite intrate în gestiune și plusurile de inventar (711); [...] În creditul contului 345 «Produse finite» se înregistrează: – valoarea la preț de înregistrare a produselor finite vândute și lipsurile de inventar (711); [...]"
-— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 345 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, Cap. 16, funcțiunea contului 345 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Când „prețul de înregistrare" folosit este un cost standard, diferența dintre acesta și costul efectiv se urmărește separat, prin contul 348 „Diferențe de preț la produse":

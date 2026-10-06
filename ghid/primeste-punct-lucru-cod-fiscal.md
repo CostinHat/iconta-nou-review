@@ -14,19 +14,19 @@ Un punct de lucru fără salariați funcționează sub codul fiscal al firmei. D
 
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul care are organizate mai multe sedii secundare ca plătitoare de salarii și de venituri asimilate salariilor, potrivit Legii nr. 273/2006, cu modificările și completările ulterioare, pe raza teritorială a aceleiași unități/subdiviziuni administrativ-teritoriale, are obligația să desemneze unul dintre aceste sedii secundare ca sediu secundar desemnat, în termen de 30 de zile de la înființarea primului sediu secundar."
-— Legea 207/2015 (Codul de procedură fiscală), art. 85^1 alin. (1) (în vigoare de la 02.02.2026) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 85^1 alin. (1) (în vigoare de la 02.02.2026) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul care are organizate unul sau mai multe sedii secundare ca plătitoare de salarii și de venituri asimilate salariilor potrivit Legii nr. 273/2006, cu modificările și completările ulterioare, pe raza teritorială a aceleiași unități/subdiviziuni administrativ-teritoriale cu domiciliul fiscal al contribuabilului/ plătitorului, nu are obligația să solicite înregistrarea fiscală a acestora. Contribuabilul/Plătitorul are obligația declarării și plății impozitului pe veniturile din salarii și asimilate salariilor datorat pentru salariații acestor sedii secundare utilizând codul de identificare fiscală propriu."
-— Legea 207/2015 (Codul de procedură fiscală), art. 85^1 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 85^1 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regula de bază a înregistrării vine din **Legea nr. 273/2006, art. 32 alin. (7)**, în forma în vigoare de la 1 ianuarie 2026:
 
 ::: ghid-temei
 „Orice persoană subiect al unui raport juridic fiscal, inclusiv operatorul economic, instituția publică și instituția publică locală, care are organizată o entitate, cu sau fără personalitate juridică, la altă adresă decât sediul social al subiectului respectiv, cu cel puțin o persoană care realizează venituri din salarii, are obligația să solicite înregistrarea fiscală a entității respective, ca plătitoare de salarii și de venituri asimilate salariilor, la organul fiscal din subordinea Agenției Naționale de Administrare Fiscală în a cărui rază teritorială se află adresa unde se desfășoară efectiv activitatea acelei entități. Solicitarea se face în termen de 30 de zile de la data înființării, pentru entitățile nou-înființate."
-— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (7) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 32 alin. (7) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Criteriul nu e „punctul de lucru" în sine, ci prezența a cel puțin unui salariat la o adresă diferită de sediul social.

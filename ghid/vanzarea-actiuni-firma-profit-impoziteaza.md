@@ -16,7 +16,7 @@ Regimul fiscal al firmei vândute (micro sau impozit pe profit) nu influențeaz�
 „Articolul 92
 Definirea veniturilor din România din transferul titlurilor de valoare
 Sunt considerate ca fiind obținute din România, indiferent dacă sunt primite în România sau în străinătate, următoarele: a) venituri din transferul titlurilor de valoare, altele decât instrumentele financiare derivate, astfel cum sunt definite la art. 7 pct. 41, emise de rezidenți români."
-— Legea 227/2015, art. 92 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 92 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de impozitare, pentru o persoană fizică ce vinde acțiuni/părți sociale la o firmă românească:

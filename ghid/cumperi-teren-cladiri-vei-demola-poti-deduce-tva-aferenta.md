@@ -16,12 +16,12 @@ Contează pentru că, în tranzacțiile imobiliare, TVA aferentă clădirilor po
 
 ::: ghid-temei
 „În cazul achiziției unei suprafețe de teren împreună cu construcții edificate pe aceasta, persoana impozabilă are dreptul de a deduce taxa pe valoarea adăugată aferentă acestei achiziții, inclusiv taxa aferentă construcțiilor care urmează a fi demolate, dacă face dovada intenției, confirmată cu elemente obiective, că suprafața de teren pe care erau edificate construcțiile continuă să fie utilizată în scopul operațiunilor sale taxabile, cum ar fi, de exemplu, edificarea altor construcții destinate unor operațiuni taxabile"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (18) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (18) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „construcțiile, astfel cum sunt definite la art. 292 alin. (2) lit. f) pct. 2 , părțile de construcție și terenurile de orice fel, pentru a căror livrare se aplică regimul de taxare prin efectul legii sau prin opțiune;"
-— Codul fiscal (Legea 227/2015), art. 331 alin. (2) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 331 alin. (2) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii de verificare:

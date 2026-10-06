@@ -16,12 +16,12 @@ Pentru cabinet, întrebarea practică e alta: se impozitează sau nu? Dacă se a
 
 ::: ghid-temei
 „Alimentația de protecție se acordă în mod obligatoriu și gratuit de către angajatori persoanelor care lucrează în condiții de muncă ce impun acest lucru și se stabilește prin contractul colectiv de muncă și/sau contractul individual de muncă."
-— Legea 319/2006, art. 14 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 14 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „contravaloarea echipamentelor tehnice, a echipamentului individual de protecție și de lucru, a alimentației de protecție, a medicamentelor și materialelor igienico-sanitare, a altor drepturi privind sănătatea și securitatea în muncă, precum și a uniformelor obligatorii și a drepturilor de echipament, ce se acordă potrivit legislației în vigoare"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

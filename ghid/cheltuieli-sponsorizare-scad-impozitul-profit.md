@@ -38,6 +38,6 @@ Firmă cu cifra de afaceri 1.500.000 lei, impozit pe profit datorat 40.000 lei, 
 
 ## Ce face iConta.eu
 
-`core/sponsorizari.py`, funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)`, implementează ambele verificări: respinge creditul (0) dacă `beneficiar_in_registru=False`, altfel calculează `credit = min(sponsorizari_efectuate, plafon_credit(cifra_afaceri, impozit_profit))`. Spațiul neconsumat din plafon, `redirectionabil_d177 = plafon - credit`, e disponibil pentru redirecționare separată prin D177, până la termenul de depunere a D101.
+Aplicația, funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)`, implementează ambele verificări: respinge creditul (0) dacă `beneficiar_in_registru=False`, altfel calculează `credit = min(sponsorizari_efectuate, plafon_credit(cifra_afaceri, impozit_profit))`. Spațiul neconsumat din plafon, `redirectionabil_d177 = plafon - credit`, e disponibil pentru redirecționare separată prin D177, până la termenul de depunere a D101.
 
 [iConta.eu](/)

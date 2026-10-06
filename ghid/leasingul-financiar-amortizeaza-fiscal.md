@@ -16,7 +16,7 @@ Da, dar cu o distincție importantă între recunoașterea bunului și deductibi
 **Legea 227/2015 (Codul fiscal), art. 29 alin. (2)-(3)**: „Amortizarea bunului care face obiectul unui contract de leasing se face de către utilizator, în cazul leasingului financiar, și de către locator, în cazul leasingului operațional, cheltuielile fiind deductibile, potrivit art. 28. În cazul leasingului financiar utilizatorul deduce dobânda, iar în cazul leasingului operațional locatarul deduce chiria (rata de leasing), potrivit prevederilor prezentului titlu."
 
 **OMFP 1802/2014, pct. 214 alin. (2)**: „În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile şi mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
-— (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt; anaf_surse/omfp_1802_2014.txt)
+— (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282); [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Amortizarea bunului e deductibilă „potrivit art. 28" — adică urmează regulile generale de amortizare fiscală (durata normală de utilizare din catalog, metoda aleasă, eventualele plafoane speciale — de exemplu 1.500 lei/lună la autoturismele M1).

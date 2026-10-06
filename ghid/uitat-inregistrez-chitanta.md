@@ -14,7 +14,7 @@ Găsești în sertar o chitanță — poate primită de la un furnizor, poate un
 
 ::: ghid-temei
 „Persoanele prevăzute la art. 1 alin. (1)-(4) din Legea contabilității nr. 82/1991 [...] consemnează operațiunile economico-financiare, în momentul efectuării lor, în documente justificative care stau la baza înregistrărilor în contabilitate [...] Înregistrările în contabilitate se fac cronologic, prin respectarea succesiunii documentelor după data de întocmire sau de intrare a acestora în entitate [...]"
-— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 1 și pct. 21 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 1 și pct. 21 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Regula de bază e consemnarea „în momentul efectuării" operațiunii — o chitanță uitată e, prin definiție, o abatere de la această regulă, care trebuie remediată cât mai curând, nu ignorată.

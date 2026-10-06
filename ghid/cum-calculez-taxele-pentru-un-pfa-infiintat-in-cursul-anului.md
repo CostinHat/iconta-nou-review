@@ -35,6 +35,6 @@ Un PFA înființat în septembrie 2025 realizează, în cele 4 luni rămase din 
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d212_engine.py`) nu ajustează pragurile de 12/24 salarii minime (CAS) sau de 6 salarii minime (CASS) în funcție de câte luni a funcționat PFA în anul respectiv — le aplică integral, la valoarea anuală. Acest comportament e conform art. 151 alin. (2): excepția de proratare din alin. (3) se aplică doar situației specifice a persoanelor care devin exceptate de la CAS în cursul anului, nu simplului început de activitate. Venitul brut folosit în calcul e suma tuturor încasărilor validate din anul fiscal, indiferent de luna în care au avut loc.
+Motorul de calcul nu ajustează pragurile de 12/24 salarii minime (CAS) sau de 6 salarii minime (CASS) în funcție de câte luni a funcționat PFA în anul respectiv — le aplică integral, la valoarea anuală. Acest comportament e conform art. 151 alin. (2): excepția de proratare din alin. (3) se aplică doar situației specifice a persoanelor care devin exceptate de la CAS în cursul anului, nu simplului început de activitate. Venitul brut folosit în calcul e suma tuturor încasărilor validate din anul fiscal, indiferent de luna în care au avut loc.
 
 [iConta.eu](/)

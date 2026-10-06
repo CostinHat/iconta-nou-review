@@ -16,14 +16,14 @@ Pentru administrator, regula contează în două momente: când executorul apare
 
 ::: ghid-temei
 „Accesul executorului fiscal în locuință, în incinta de afaceri sau în orice altă încăpere a debitorului, persoană fizică sau juridică, se poate efectua între orele 6,00 - 20,00, în orice zi lucrătoare. Executarea începută poate continua în aceeași zi sau în zilele următoare. în cazuri temeinic justificate de pericolul înstrăinării unor bunuri, accesul în încăperile debitorului poate avea loc și la alte ore decât cele menționate, precum și în zilele nelucrătoare, în baza autorizației prevăzute la alin. (4)."
-— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „în absența debitorului sau dacă acesta refuză accesul în oricare dintre încăperile prevăzute la alin. (3), executorul fiscal poate să pătrundă în acestea în prezența unui reprezentant al poliției ori al jandarmeriei sau a altui agent al forței publice și a doi martori majori, fiind aplicabile prevederile alin. (4) și (5)."
-— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Executorul fiscal este împuternicit în fața debitorului și a terților prin legitimația de executor fiscal și delegație emisă de organul de executare silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie verificat când vine executorul:

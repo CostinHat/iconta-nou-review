@@ -16,15 +16,15 @@ Contează la utilaje și clădiri, unde taxa e mare: fără ajustare, raportezi 
 
 ::: ghid-temei
 „nu beneficiază, în perioada respectivă, de dreptul de deducere a taxei pe valoarea adăugată aferente achizițiilor efectuate, dar sunt supuse obligației de plată a TVA colectate […] persoana impozabilă își exercită dreptul de deducere pentru achizițiile de bunuri și/sau servicii efectuate în perioada în care a avut codul de înregistrare în scopuri de TVA anulat, prin înscrierea în primul decont de taxă prevăzut la art. 323 depus după înregistrare sau, după caz, într-un decont ulterior, chiar dacă factura nu cuprinde codul de înregistrare în scopuri de TVA al persoanei impozabile."
-— Codul fiscal (Legea 227/2015), art. 11 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 11 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „se consideră că bunurile de capital nu sunt alocate unei activități economice pe perioada în care nu au avut un cod valabil de TVA, fiind obligatorie ajustarea taxei conform art. 305 alin. (4) lit. a) pct. 1 din Codul fiscal."
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (14) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (14) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „c) persoanele impozabile care se reînregistrează în scopuri de TVA după data de 1 ianuarie 2017, indiferent dacă înregistrarea în scopuri de TVA le-a fost anulată înainte sau după data de 1 ianuarie 2017, își pot exercita dreptul de deducere pentru achizițiile de bunuri de capital efectuate în perioada în care au avut codul de înregistrare în scopuri de TVA anulat […] prin înscrierea taxei în primul decont de taxă prevăzut la art. 323 din Codul fiscal depus după înregistrare sau, după caz, într-un decont ulterior. În același decont de taxă, persoana impozabilă are obligația de a ajusta taxa pe valoarea adăugată dedusă, corespunzător perioadei în care a avut codul de înregistrare în scopuri de TVA anulat;"
-— HG 1/2016, Titlul VII, pct. 79 alin. (14) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 79 alin. (14) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

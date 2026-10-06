@@ -17,7 +17,7 @@ O notificare de conformare nu e un act de sancționare, ci o invitație explicit
 (2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale.
 (3) Depunerea sau corectarea declarațiilor fiscale de către contribuabil/plătitor nu împiedică selectarea pentru efectuarea inspecției fiscale, însă numai după împlinirea termenului prevăzut la alin. (2).
 (4) După împlinirea termenului prevăzut la alin. (2) contribuabilii/plătitorii cu risc fiscal ridicat care nu au remediat riscurile fiscale pentru care au fost notificați sunt supuși obligatoriu unei inspecții fiscale sau unei verificări documentare."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121^1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121^1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Ai la dispoziție 30 de zile de la comunicare** pentru a depune sau corecta declarațiile fiscale legate de riscurile semnalate — până la expirarea acestui termen, organul fiscal nu te poate selecta pentru inspecție pe baza acelui risc.

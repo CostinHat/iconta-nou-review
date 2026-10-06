@@ -14,7 +14,7 @@ Da, legea prevede explicit această opțiune — util mai ales pentru cine vrea 
 
 ::: ghid-temei
 „Persoanele fizice prevăzute la alin. (1) care nu se încadrează în plafonul de cel puțin 12 salarii prevăzut la alin. (3) pot opta pentru plata contribuției de asigurări sociale pentru anul de realizare a venitului la un venit ales, care nu poate fi mai mic decât nivelul prevăzut la alin. (2) lit. a). Exercitarea opțiunii se efectuează anual prin depunerea Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de personale fizice prevăzute la art. 122, până la termenul prevăzut la art. 122 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 148 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 148 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce presupune concret opțiunea:
@@ -32,7 +32,7 @@ Ce presupune concret opțiunea:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_cas`) acceptă parametrul `optiune_cas`: dacă venitul net e sub pragul de 12 salarii minime brute, dar contribuabilul optează explicit, funcția calculează CAS pe baza minimă de 12 salarii minime brute, exact cum cere legea. Opțiunea e disponibilă și în fișa de calcul automată (`fisa_d212`, `core/rip_api.py`) pentru contribuabilii la sistem real, pentru veniturile anilor 2025 și 2026.
+Aplicația (funcția `calculeaza_cas`) acceptă parametrul `optiune_cas`: dacă venitul net e sub pragul de 12 salarii minime brute, dar contribuabilul optează explicit, funcția calculează CAS pe baza minimă de 12 salarii minime brute, exact cum cere legea. Opțiunea e disponibilă și în fișa de calcul automată (`fisa_d212`, aplicația) pentru contribuabilii la sistem real, pentru veniturile anilor 2025 și 2026.
 
 Aplicația nu decide ea însăși dacă opțiunea e avantajoasă. În Declarația unică (D212), opțiunea pentru CAS sub 12 salarii minime nu se poate încă emite din aplicație: formularul validatorului ANAF instalat n-are căsuța ei (lit. B), iar aplicația refuză cu explicația — opțiunea se declară pe formularul ANAF.
 

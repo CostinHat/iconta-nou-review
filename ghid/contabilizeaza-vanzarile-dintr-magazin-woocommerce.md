@@ -14,7 +14,7 @@ O vânzare printr-un magazin online nu are un regim contabil separat față de o
 
 ::: ghid-temei
 „Venituri din vânzări de bunuri [...] În contabilitate, veniturile din vânzări de bunuri se înregistrează în momentul predării bunurilor către cumpărători, al livrării lor pe baza facturii sau în alte condiții prevăzute în contract, care atestă transferul dreptului de proprietate asupra bunurilor respective, către clienți."
-— OMFP 1802/2014, Reglementări contabile, pct. 440 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 440 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Venitul se recunoaște atunci când bunul e predat/livrat cumpărătorului, pe baza facturii sau a altor condiții contractuale care atestă transferul dreptului de proprietate — nu la momentul plasării comenzii și nu la momentul încasării banilor.

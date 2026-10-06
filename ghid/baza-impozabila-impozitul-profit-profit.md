@@ -13,10 +13,10 @@ Baza impozabilă (P40 în D101) nu este profitul contabil — este rezultatul un
 ## Temeiul legal
 
 ::: ghid-temei
-"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza `anaf_surse/cod_fiscal_227_2015_consolidat.txt`.
+"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
-Traseul, confirmat în motorul D101 (`core/d101.py`):
+Traseul, confirmat în motorul D101:
 
 - **Deduceri** — amortizarea fiscală (P11) se scade din baza impozabilă, intrând în totalul deducerilor (P16).
 - **Add-back-uri** — cheltuiala cu amortizarea contabilă (P2x/P28) și alte cheltuieli nedeductibile se adaugă înapoi, în rollup-ul P34; inclusiv cheltuiala cu impozitul pe profit (cont 691), dacă are sold debitor pozitiv (CF art.25 alin.(4) lit.a)).

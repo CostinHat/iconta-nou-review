@@ -16,7 +16,7 @@ Balanța pentru primul calcul de impozit pe profit, după depășirea plafonului
 "Art.53 alin.(2) lit.b): tratează elementele de curs valutar la trecere ca «elemente similare veniturilor în primul trimestru pentru care datorează impozit pe profit» — confirmă aceeași logică pe trimestru, nu retroactiv." — Legea 227/2015, citată în dosarul de cercetare F027.
 :::
 
-Balanța citită de aplicație (`pull()`, `core/d101.py` liniile 448–467) păstrează separarea clasică: conturile din clasele 76/66 ca financiar, restul din 7x/6x ca exploatare. Pentru firma aflată la primul calcul după ieșirea din regimul micro, elementele de curs valutar trebuie tratate explicit ca venituri similare în acel prim trimestru pentru care se datorează deja impozit pe profit — nu ignorate sau reportate ca și cum firma ar fi rămas la impozit micro.
+Balanța citită de aplicație (`pull()`, aplicația liniile 448–467) păstrează separarea clasică: conturile din clasele 76/66 ca financiar, restul din 7x/6x ca exploatare. Pentru firma aflată la primul calcul după ieșirea din regimul micro, elementele de curs valutar trebuie tratate explicit ca venituri similare în acel prim trimestru pentru care se datorează deja impozit pe profit — nu ignorate sau reportate ca și cum firma ar fi rămas la impozit micro.
 
 ## Ce se greșește în practică
 

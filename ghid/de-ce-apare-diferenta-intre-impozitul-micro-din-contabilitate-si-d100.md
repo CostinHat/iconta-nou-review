@@ -18,11 +18,11 @@ Când suma pe care ați estimat-o „din contabilitate" nu se potrivește cu ce 
 > sursă**, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile
 > aferente costurilor serviciilor în curs de execuție; ... j) valoarea reducerilor comerciale acordate
 > ulterior facturării, înregistrate în contul «709»..."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:6480-6519`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 51 alin. (1):**
 > „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.html`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 ## De unde vin, de fapt, diferențele

@@ -16,10 +16,10 @@ Locația plătitorului decide dacă o plată este transfrontalieră. Transfronta
 
 ::: ghid-temei
 „(9) În aplicarea alin. (3) și fără a aduce atingere prevederilor capitolului V din prezentul titlu, locația plătitorului se consideră a fi în statul membru care corespunde: a) codului IBAN al contului de plăți al plătitorului sau oricărui alt identificator care identifică fără echivoc și furnizează locația plătitorului sau în absența unor astfel de identificatori; ... b) codului BIC sau oricărui alt cod de identificare comercială care identifică fără echivoc și furnizează locația prestatorului de servicii de plată care acționează în numele plătitorului."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(10) În aplicarea alin. (3) , locația beneficiarului plății se consideră a fi în statul membru, în teritoriul terț sau în țara terță care corespunde: a) codului IBAN al contului de plăți al beneficiarului plății sau oricărui alt identificator care identifică fără echivoc și furnizează locația beneficiarului plății sau în absența unor astfel de identificatori; ... b) codului BIC sau oricărui alt cod de identificare comercială care identifică fără echivoc și furnizează locația prestatorului de servicii de plată care acționează în numele beneficiarului plății."
-— Codul fiscal (Legea 227/2015), art. 321^2 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^2 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

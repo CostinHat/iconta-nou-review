@@ -14,7 +14,7 @@ Un mijloc fix nu stă mereu în folosința proprietarului: poate fi închiriat, 
 
 ::: ghid-temei
 „Amortizarea mijloacelor fixe se calculează începând cu luna următoare punerii în funcțiune, până la recuperarea integrală a valorii de intrare, conform duratelor normale de funcționare. Amortizarea mijloacelor fixe concesionate, închiriate sau date în locație de gestiune se calculează de către agentul economic care le are în proprietate. Amortizarea investițiilor efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune se recuperează de agentul economic care a efectuat investiția, pe perioada contractului."
-— Legea 15/1994, art. 11 (sursă: anaf_surse/legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.txt)
+— Legea 15/1994, art. 11 (sursă: [Legea nr. 15/1994 privind amortizarea capitalului imobilizat în active corporale și necorporale](https://legislatie.just.ro/Public/DetaliiDocument/3915))
 :::
 
 Din text rezultă o regulă clară, cu o singură excepție bine delimitată:

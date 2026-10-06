@@ -16,14 +16,14 @@ Excepția este **grupul fiscal** din Codul fiscal, adică sistemul de consolidar
 
 ::: ghid-temei
 „În cazul persoanelor juridice române care dețin participații în capitalul altor societăți și care întocmesc situații financiare consolidate, calculul și plata impozitului pe profit se fac la nivelul fiecărei persoane juridice din grup."
-— HG 1/2016, norme metodologice, titlul II, pct. 1 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul II, pct. 1 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Perioada de aplicare a sistemului de consolidare fiscală în domeniul impozitului pe profit este de 5 ani fiscali, calculați începând cu primul an al aplicării sistemului de consolidare fiscală și până la desființarea grupului fiscal, iar sistemul este opțional."
-— Codul fiscal (Legea 227/2015), art. 42^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „Prin excepție de la prevederile alin. (1) al art. 13 și art. 19 , rezultatul fiscal consolidat al grupului fiscal se determină prin însumarea algebrică a rezultatelor fiscale determinate în mod individual de fiecare membru al grupului fiscal."
-— Codul fiscal (Legea 227/2015), art. 42^5 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42^5 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma este mai veche decât capitolul despre grupul fiscal, introdus ulterior în Codul fiscal. Nu îl contrazice. Regula generală rămâne impozitarea pe fiecare societate, iar grupul fiscal este o excepție expresă, pe bază de opțiune.

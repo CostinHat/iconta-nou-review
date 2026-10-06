@@ -18,7 +18,7 @@ Da, primirea unei somații de plată nu exclude, prin ea însăși, dreptul de a
 (3) Eșalonarea la plată se acordă pentru toate obligațiile fiscale înscrise în certificatul de atestare fiscală, dacă sunt îndeplinite condițiile prevăzute de prezentul capitol.
 (6) Eșalonarea la plată nu se acordă pentru: a) obligațiile fiscale care au făcut obiectul unei eșalonări acordate în temeiul prezentului capitol, care și-a pierdut valabilitatea; b) obligațiile fiscale care au scadența și/sau termenul de plată după data eliberării certificatului de atestare fiscală; c) obligațiile fiscale care, la data eliberării certificatului de atestare fiscală, intră sub incidența art. 167 [...]; d) obligațiile fiscale stabilite prin acte administrative fiscale care [...] sunt suspendate [...]; e) obligațiile fiscale/bugetare care reprezintă ajutor de stat sau de minimis de recuperat [...]; f) obligațiile fiscale care reprezintă accize.
 (7) Eșalonarea la plată nu se acordă nici pentru obligațiile fiscale în sumă totală mai mică de 500 lei în cazul persoanelor fizice, 2.000 lei în cazul asocierilor fără personalitate juridică și 5.000 lei în cazul persoanelor juridice."
-— Legea 207/2015 (Codul de procedură fiscală), art. 184 alin. (1), (3), (6)-(7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 184 alin. (1), (3), (6)-(7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce arată, punctual, lista de excepții de la alin. (6):

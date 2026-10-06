@@ -17,7 +17,7 @@ poarta: v1
 (3) Audierea se consideră îndeplinită în următoarele situații:
 a) contribuabilul/plătitorul refuză explicit să se prezinte la termenul stabilit de organul fiscal în vederea audierii;
 b) contribuabilul/plătitorul nu se prezintă, din orice motiv, la două termene consecutive stabilite de organul fiscal în vederea audierii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 9 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 9 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce prevede, concret, mecanismul dreptului de a fi ascultat:

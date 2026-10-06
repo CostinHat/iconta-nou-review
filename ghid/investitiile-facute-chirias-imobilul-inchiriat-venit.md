@@ -16,15 +16,15 @@ Contează în practică pentru firma-chiriaș, care are o obligație proprie: s�
 
 ::: ghid-temei
 „(2) Reprezintă venit brut și valoarea investițiilor la bunurile mobile și imobile ale proprietarului, uzufructuarului sau ale altui deținător legal, care fac obiectul unor contracte de cedare a folosinței bunurilor, inclusiv al contractelor de comodat, și care sunt efectuate de cealaltă parte contractantă. În termen de 30 de zile de la finalizarea investițiilor, partea care a efectuat investiția este obligată să comunice proprietarului, uzufructuarului sau altui deținător legal valoarea investiției. Proprietarul, uzufructuarul sau alt deținător legal are obligația să declare la organul fiscal competent valoarea investiției, în declarația privind venitul realizat."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 20 alin. (2) (norme art. 84 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 20 alin. (2) (norme art. 84 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Venitul brut se majorează cu valoarea cheltuielilor ce cad, conform dispozițiilor legale, în sarcina proprietarului, uzufructuarului sau a altui deținător legal, dacă sunt efectuate de cealaltă parte contractantă."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se stabilește prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra venitului brut."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

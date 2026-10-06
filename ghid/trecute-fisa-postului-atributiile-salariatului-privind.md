@@ -16,10 +16,10 @@ Obligația contează în două momente: la control ITM, unde fișele postului se
 
 ::: ghid-temei
 „d) sa stabilească pentru lucrători, prin fișa postului, atribuțiile și răspunderile ce le revin în domeniul securității și sănătății în munca, corespunzător funcțiilor exercitate;"
-— Legea 319/2006, art. 13 lit. d) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 13 lit. d) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(4) Constituie contravenție și se sancționează cu amendă de la 4.000 lei la 8.000 lei încălcarea dispozițiilor art. 12 alin. (1) lit. a) și b) , art. 13 lit. a) , d)-f) , h)-m) și o) , art. 20 , art. 29 alin. (1) lit. a) și ale art. 32 alin. (2) ."
-— Legea 319/2006, art. 39 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ O sumă plătită în plus la impozitul pe profit nu se pierde și nu trebuie ne
 
 ::: ghid-temei
 „(1) Prin compensare se sting creanțele statului sau unităților administrativ-teritoriale ori subdiviziunilor acestora reprezentând impozite, taxe, contribuții și alte sume datorate bugetului general consolidat cu creanțele debitorului reprezentând sume de rambursat, de restituit sau de plată de la buget, până la concurența celei mai mici sume, când ambele părți dobândesc reciproc atât calitatea de creditor, cât și pe cea de debitor, cu condiția ca respectivele creanțe să fie administrate de aceeași autoritate publică, inclusiv unitățile subordonate acesteia."
-— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 167 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Aplicat la impozitul pe profit plătit în plus, mecanismul funcționează astfel:

@@ -14,12 +14,12 @@ Da. Dacă PFA-ul a fost impus în sistem real, a amortizat un bun și apoi a tre
 
 ::: ghid-temei
 „(12) În sensul art. 69 din Codul fiscal, pentru contribuabilul care optează să fie impus pe bază de normă de venit și care anterior a fost impus în sistem real, având investiții în curs de amortizare, valoarea amortizării nu diminuează norma de venit. Veniturile realizate din valorificarea investițiilor respective sau trecerea lor în patrimoniul personal în cursul perioadei de desfășurare a activității sau în caz de încetare a activității majorează norma de venit proporțional cu valoarea amortizată în perioada impunerii în sistem real. În cazul contribuabilului impus pe bază de normă de venit, care pe perioada anterioară a avut impunere în sistem real și a efectuat investiții care au fost amortizate integral, veniturile din valorificarea sau trecerea acestora în patrimoniul personal ca urmare a încetării activității vor majora norma de venit."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (12) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 8 alin. (12) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2) , venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma descrie trei situații:

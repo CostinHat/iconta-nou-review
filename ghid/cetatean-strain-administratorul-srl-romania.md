@@ -15,7 +15,7 @@ Da — legea românească nu leagă funcția de administrator al unui SRL de cet
 ::: ghid-temei
 „Nu pot fi fondatori persoanele care, potrivit legii, sunt incapabile ori cărora li s-a interzis prin hotărâre judecătorească definitivă dreptul de a exercita calitatea de fondator ca pedeapsă complementară a condamnării pentru infracțiuni contra patrimoniului prin nesocotirea încrederii, infracțiuni de corupție, delapidare, infracțiuni de fals în înscrisuri, evaziune fiscală, infracțiuni prevăzute de Legea nr. 129/2019 pentru prevenirea și combaterea spălării banilor și finanțării terorismului [...], sau pentru infracțiunile prevăzute de prezenta lege.
 [Art. 73^1 alin. (1)] Persoanele care, potrivit art. 6 alin. (2), nu pot fi fondatori nu pot fi nici administratori, directori, membri ai consiliului de supraveghere și ai directoratului, cenzori sau auditori financiari, iar dacă au fost alese, sunt decăzute din drepturi."
-— Legea nr. 31/1990 (legea societăților), art. 6 alin. (2) și art. 73^1 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 (legea societăților), art. 6 alin. (2) și art. 73^1 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din text pentru un administrator cetățean străin:

@@ -15,7 +15,7 @@ Un magazin online românesc care vinde bunuri unor persoane fizice din alte stat
 ::: ghid-temei
 „Regimul special pentru vânzările intracomunitare de bunuri la distanță, pentru livrările de bunuri interne efectuate de interfețele electronice care facilitează aceste livrări și pentru serviciile prestate de persoane impozabile stabilite în Uniunea Europeană, dar nu în statul membru de consum
 (1) În sensul prezentului articol: a) persoană impozabilă nestabilită în statul membru de consum înseamnă o persoană impozabilă care are sediul activității economice sau un sediu fix pe teritoriul Uniunii Europene, dar nu are sediul activității economice și nu dispune de un sediu fix pe teritoriul statului membru de consum[.]"
-— Legea nr. 227/2015 (Codul fiscal), art. 315 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Art. 315 reglementează regimul special OSS (One Stop Shop) pentru exact situația unui magazin online stabilit în România care vinde bunuri unor persoane fizice din alte state membre: în loc să se înregistreze în scopuri de TVA separat în fiecare stat de consum, comerciantul se poate înregistra o singură dată, prin ANAF, în regimul special, și declară/plătește TVA-ul datorat tuturor statelor membre printr-o singură declarație trimestrială OSS. Regimul este opțional, dar odată ales, se aplică pentru toate vânzările la distanță intracomunitare care se încadrează în el.

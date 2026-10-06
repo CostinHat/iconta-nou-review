@@ -14,7 +14,7 @@ Inactivitatea temporară (suspendarea activității) înscrisă la Registrul Com
 
 ::: ghid-temei
 „(1) Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății în următoarele cazuri, la cererea oricărei persoane interesate sau din oficiu, în cazurile în care: [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului;"
-— Legea 31/1990, art. 237^2 alin. (1) lit. b) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret pentru o firmă cu activitate suspendată:

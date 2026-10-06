@@ -16,18 +16,18 @@ Diferența față de intermediarul român este mare. Acolo, fiecare câștig se 
 
 ::: ghid-temei
 „Câștigul/Pierderea din operațiuni cu instrumentele financiare derivate care nu sunt efectuate printr-un intermediar definit potrivit legislației în materie, rezident fiscal român sau nerezident care are în România un sediu permanent ce are calitatea de intermediar, se determină potrivit prevederilor art. 95 alin. (1) , pentru pozițiile închise începând din prima zi de tranzacționare a anului fiscal și până în ultima zi de tranzacționare a acestuia, inclusiv."
-— Codul fiscal (Legea 227/2015), art. 95^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 95^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Determinarea câștigului/pierderii se efectuează anual, cumulat, la sfârșitul anului fiscal, de către beneficiarul de venit, pe bază de documente justificative."
-— Codul fiscal (Legea 227/2015), art. 95^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 95^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Impozitul anual datorat se stabilește de contribuabili în Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice, pentru veniturile realizate în anul fiscal anterior, prin aplicarea cotei de 16% asupra câștigului net anual impozabil determinat potrivit prevederilor art. 119 ."
-— Codul fiscal (Legea 227/2015), art. 123 alin. (1^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 123 alin. (1^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pierderea netă anuală din operațiuni prevăzute la art. 91 lit. c) și d) stabilită prin declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se recuperează în limita a 70% din câștigurile nete anuale obținute în următorii 5 ani fiscali consecutivi."
-— Codul fiscal (Legea 227/2015), art. 119 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 119 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lanțul de calcul:

@@ -32,6 +32,6 @@ Un aspect conex, confirmat: dacă ultimul decont iese cu sumă negativă de TVA,
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 (`core/d300.py`) calculează TVA de plată/recuperat pentru orice perioadă fiscală selectată, inclusiv una parțială, pe baza operațiunilor înregistrate. Aplicația nu are un flux dedicat, separat, pentru „ultimul decont la lichidare" — perioada finală se tratează ca orice altă perioadă fiscală, cu atenția suplimentară, la sold negativ, că rambursarea rămâne singura opțiune practică, nu reportarea.
+Decontul de TVA v12 calculează TVA de plată/recuperat pentru orice perioadă fiscală selectată, inclusiv una parțială, pe baza operațiunilor înregistrate. Aplicația nu are un flux dedicat, separat, pentru „ultimul decont la lichidare" — perioada finală se tratează ca orice altă perioadă fiscală, cu atenția suplimentară, la sold negativ, că rambursarea rămâne singura opțiune practică, nu reportarea.
 
 [iConta.eu](/)

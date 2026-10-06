@@ -14,7 +14,7 @@ La recepția mărfii cumpărate din UE, în valută, folosești cursul de schimb
 
 ::: ghid-temei
 „319. - O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014, pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - „Data efectuării operațiunii" e, în practică, data recepției mărfii (sau data facturii, dacă factura precedă recepția și marchează transferul de proprietate) — nu data plății către furnizorul din UE.
@@ -30,6 +30,6 @@ La recepția mărfii cumpărate din UE, în valută, folosești cursul de schimb
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit la înregistrarea inițială a unei tranzacții în valută — inclusiv la recepția unei mărfi din UE — vine din `core/curs_bnr.py`, folosit în fluxul de facturare/achiziții, nu prin funcționalitatea de diferențe de curs valutar (F041). F041 (`core/diferente_curs.py`) intervine abia **după** înregistrarea inițială: la decontarea datoriei către furnizorul extern sau la reevaluarea ei lunară, calculând diferența 665/765 pe soldul rămas. Alegerea cursului la recepție nu e, deci, o funcție a F041, ci ține de ecranul de achiziții/facturare.
+Cursul BNR folosit la înregistrarea inițială a unei tranzacții în valută — inclusiv la recepția unei mărfi din UE — vine din aplicație, folosit în fluxul de facturare/achiziții, nu prin funcționalitatea de diferențe de curs valutar (F041). F041 intervine abia **după** înregistrarea inițială: la decontarea datoriei către furnizorul extern sau la reevaluarea ei lunară, calculând diferența 665/765 pe soldul rămas. Alegerea cursului la recepție nu e, deci, o funcție a F041, ci ține de ecranul de achiziții/facturare.
 
 [iConta.eu](/)

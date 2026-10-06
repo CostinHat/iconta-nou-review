@@ -13,10 +13,10 @@ Un lucru trebuie clarificat de la început: D101 nu este instrumentul pentru ver
 ## Temeiul legal
 
 ::: ghid-temei
-"Art.41 alin.(1): calcul/declarare/plată trimestrială, «până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III», cu definitivare la termenul art.42." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza `anaf_surse/cod_fiscal_227_2015_consolidat.txt`.
+"Art.41 alin.(1): calcul/declarare/plată trimestrială, «până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III», cu definitivare la termenul art.42." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
-Plățile trimestriale/anticipate de impozit pe profit (cod de obligație 103) se depun prin D100, nu prin D101 — confirmat de nomenclatorul `COD_BUGETAR` din `core/d100.py`. D101 este, în toate cazurile, exclusiv declarația ANUALĂ de definitivare.
+Plățile trimestriale/anticipate de impozit pe profit (cod de obligație 103) se depun prin D100, nu prin D101 — confirmat de nomenclatorul `COD_BUGETAR` din aplicație. D101 este, în toate cazurile, exclusiv declarația ANUALĂ de definitivare.
 
 Dacă firma a optat pentru sistemul anual cu plăți anticipate trimestriale (art.41 alin.(2)), plățile anticipate reprezintă 1/4 din impozitul anului precedent, actualizat cu indicele prețurilor de consum (art.41 alin.(8)) — nu un calcul recalculat de la zero în fiecare trimestru.
 

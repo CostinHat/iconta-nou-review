@@ -16,7 +16,7 @@ Reglementările contabile românești tratează explicit, articol cu articol, ca
 „75. - (1) La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: a) la cost de achiziție - pentru bunurile procurate cu titlu oneros; [...]
 76. - (1) Reducerile comerciale acordate de furnizor și înscrise pe factura de achiziție ajustează în sensul reducerii costul de achiziție al bunurilor. [...]
 (2) Reducerile comerciale primite ulterior facturării corectează costul stocurilor la care se referă, dacă acestea mai sunt în gestiune."
-— OMFP 1802/2014, pct. 75 alin. (1) și pct. 76 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 75 alin. (1) și pct. 76 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicând principiul simetric la o majorare de preț:

@@ -13,7 +13,7 @@ Dacă vectorul fiscal al unei firme nou create arată greșit, primul lucru de v
 ## Temeiul legal
 
 ::: ghid-temei
-Nu există un temei legal unic pentru precompletarea vectorului fiscal la înființarea firmei — regula tehnică de mai jos e o **regulă de produs a iConta**, documentată direct în cod: „NU scrie tip_decont (periodicitatea TVA): ANAF v9 nu o întoarce -> rămâne alegerea contabilului (necunoscut declarat explicit, nu fabricat)." Sursă: `core/tenant_provisioning.py`, funcția `precompleteaza_din_anaf`.
+Nu există un temei legal unic pentru precompletarea vectorului fiscal la înființarea firmei — regula tehnică de mai jos e o **regulă de produs a iConta**, documentată direct în cod: „NU scrie tip_decont (periodicitatea TVA): ANAF v9 nu o întoarce -> rămâne alegerea contabilului (necunoscut declarat explicit, nu fabricat)." Sursă: Aplicația, funcția `precompleteaza_din_anaf`.
 :::
 
 La crearea unei firme (indiferent de cale — cabinet propriu, adăugare manuală, import în masă), aplicația interoghează live ANAF și precompletează automat doar `platitor_tva` (dacă firma e înregistrată TVA), `tva_la_incasare`, un snapshot pentru comparația ulterioară cu ANAF, plus date generale (CAEN, adresă, reg. com.).
@@ -30,6 +30,6 @@ Corectarea, în acest caz, e de obicei simplă: fiind o firmă nouă, în majori
 
 ## Ce face iConta.eu
 
-Funcția `precompleteaza_din_anaf` (`core/tenant_provisioning.py`) e sursa unică pentru toate căile de creare a unei firme; docstring-ul ei afirmă explicit alegerea de produs de a nu „ghici" periodicitatea TVA, regimul fiscal sau operațiunile intracomunitare — acestea rămân „necunoscut declarat explicit, nu fabricat". Vectorul a fost adus pe ecranul individual „Date firmă" tocmai pentru a evita situația anterioară, în care o firmă adăugată direct rămânea pe valorile implicite din șablon (micro, neplătitor TVA, fără intracom) — adică pe presupuneri, nu pe date reale.
+Funcția `precompleteaza_din_anaf` e sursa unică pentru toate căile de creare a unei firme; docstring-ul ei afirmă explicit alegerea de produs de a nu „ghici" periodicitatea TVA, regimul fiscal sau operațiunile intracomunitare — acestea rămân „necunoscut declarat explicit, nu fabricat". Vectorul a fost adus pe ecranul individual „Date firmă" tocmai pentru a evita situația anterioară, în care o firmă adăugată direct rămânea pe valorile implicite din șablon (micro, neplătitor TVA, fără intracom) — adică pe presupuneri, nu pe date reale.
 
 [iConta.eu](/)

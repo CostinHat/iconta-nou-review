@@ -14,7 +14,7 @@ D100 și D205 pot avea o legătură economică — de exemplu, impozitul pe divi
 
 ::: ghid-temei
 „5.2. Declarația rectificativă se întocmește pe tipuri de venit și va cuprinde numai pozițiile corectate, declarate eronat în declarația inițială, sau pozițiile care, în mod eronat, nu au fost cuprinse în declarația inițială."
-— instrucțiuni de completare a formularului 205 (sursă: anaf_surse/opanaf_179_2022_d205_d207_baza.txt)
+— instrucțiuni de completare a formularului 205 (sursă: [OPANAF nr. 179/2022 pentru aprobarea formularelor 205 și 207](https://legislatie.just.ro/Public/DetaliiDocument/251562))
 :::
 
 - Corecția D205 nu e o „retransmitere" a întregii declarații, ci se limitează la pozițiile efectiv greșite sau lipsă — util de reținut dacă diferența față de D100 vine dintr-o singură poziție omisă, nu din tot formularul.

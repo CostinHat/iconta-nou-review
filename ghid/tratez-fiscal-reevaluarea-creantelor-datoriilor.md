@@ -14,7 +14,7 @@ Aici sunt de fapt două întrebări distincte, ușor de confundat: dacă trebuie
 
 ::: ghid-temei
 „325. - (1) La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. Diferențele de curs înregistrate se recunosc în contabilitate la venituri sau cheltuieli din diferențe de curs valutar, după caz."
-— OMFP 1802/2014, pct. 325 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 325 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Reevaluarea lunară e o obligație contabilă generală, aplicabilă tuturor firmelor care conduc contabilitate potrivit OMFP 1802/2014, indiferent de regimul de impozitare (profit sau micro) — nu e o opțiune fiscală de exercitat sau nu.
@@ -30,6 +30,6 @@ Aici sunt de fapt două întrebări distincte, ușor de confundat: dacă trebuie
 
 ## Ce face iConta.eu
 
-Reevaluarea lunară e automatizată prin ecranul „Operațiuni speciale → Reevaluare valuta": aplicația ia cursul BNR pentru fiecare monedă din listă și generează, prin `core/diferente_curs.py` (`reevaluare_sold`), o singură notă contabilă cu toate diferențele pe 665/765. Partea fiscală **nu e automatizată**: aplicația nu calculează impozitul pe profit și nu aplică regula de scădere din baza impozabilă micro — sumele generate de reevaluare rămân în balanța contabilă, de unde contabilul le preia manual în calculul fiscal, în funcție de regimul de impozitare al firmei.
+Reevaluarea lunară e automatizată prin ecranul „Operațiuni speciale → Reevaluare valuta": aplicația ia cursul BNR pentru fiecare monedă din listă și generează, prin aplicație (`reevaluare_sold`), o singură notă contabilă cu toate diferențele pe 665/765. Partea fiscală **nu e automatizată**: aplicația nu calculează impozitul pe profit și nu aplică regula de scădere din baza impozabilă micro — sumele generate de reevaluare rămân în balanța contabilă, de unde contabilul le preia manual în calculul fiscal, în funcție de regimul de impozitare al firmei.
 
 [iConta.eu](/)

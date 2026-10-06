@@ -16,13 +16,13 @@ Legea asociațiilor de proprietari numește două registre: **registrul unic de 
 
 ::: ghid-temei
 „(1) Hotărârea proprietarilor privind constituirea asociației de proprietari se consemnează prin proces-verbal, înregistrat în registrul unic al asociației de proprietari care cuprinde procesele-verbale ale adunării generale, comitetului executiv și cenzorului/comisiei de cenzori, semnate de toți proprietarii care și-au dat consimțământul."
-— Legea 196/2018, art. 16 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 16 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(5) Hotărârile adunărilor generale se consemnează, numai în timpul ședinței, în registrul unic de procese-verbale al asociației de proprietari, se semnează de către toți membrii prezenți ai adunării generale, de cenzor/comisia de cenzori și se afișează la avizier."
-— Legea 196/2018, art. 49 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 49 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(2) Veniturile prevăzute la alin. (1) alimentează numai fondul de reparații al asociației de proprietari și nu se plătesc proprietarilor. Lista acestor venituri, precum și cheltuielile aferente lor sunt prezentate semestrial, într-un raport afișat la avizierul asociației, și se evidențiază în registrul unic de venituri și cheltuieli al asociației de proprietari."
-— Legea 196/2018, art. 70 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 70 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „f) organizează și conduce contabilitatea în partidă simplă și activitatea de casierie; […]"
-— Legea 196/2018, art. 66 alin. (1) lit. f) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. f) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 **1. Registrul unic de procese-verbale** cuprinde:

@@ -16,15 +16,15 @@ Notificarea este ultima fereastră înainte de decizie. După inactivare, firma 
 
 ::: ghid-temei
 „Pentru a nu fi declarat inactiv, potrivit prevederilor art. 92 alin. (1) lit. a) din Codul de procedură fiscală, aveți obligația îndeplinirii cel puțin a unei obligații declarative înscrise în vectorul fiscal, din perioada de referință, în termen de 15 zile de la data primirii prezentei notificări."
-— OPANAF 3846/2015, Anexa nr. 5e) (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, Anexa nr. 5e) (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 
 „Pentru a nu fi declarat inactiv, potrivit prevederilor art. 92 alin. (1) lit. f)/g) din Codul de procedură fiscală , aveți obligația clarificării situației în care vă aflați, în termen de 30 de zile de la data primirii prezentei notificări."
-— OPANAF 3846/2015, Anexa nr. 5e) (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, Anexa nr. 5e) (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 ::: ghid-temei
 „în cazul prevăzut la alin. (1) lit. a), declararea în inactivitate nu se poate face înainte de împlinirea termenului de 15 zile prevăzut la art. 107 alin. (1)."
-— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce faci concret după primirea notificării:

@@ -14,7 +14,7 @@ Când banca execută o poprire înființată de ANAF și din contul firmei se re
 
 ::: ghid-temei
 „ART. 168 Restituiri de sume (1) Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată. [...] (4) Prin excepție de la prevederile alin. (1), se restituie din oficiu următoarele sume: [...] b) cele încasate prin poprire, în plus față de creanțele fiscale pentru care s-a înființat poprirea, care se restituie în termen de cel mult 5 zile lucrătoare de la data încasării."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 168 alin. (1) și alin. (4) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 168 alin. (1) și alin. (4) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea distinge două mecanisme de recuperare, cu regimuri diferite:

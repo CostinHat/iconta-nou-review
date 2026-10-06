@@ -16,17 +16,17 @@ Contează în practică pentru că regula generală merge invers. Un bun cumpăr
 
 ::: ghid-temei
 „acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice;"
-— Codul fiscal (Legea 227/2015), art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „nu constituie livrare de bunuri conform prevederilor art. 270 alin. (8) lit. b) din Codul fiscal bunurile acordate în mod gratuit pentru scopuri legate de desfășurarea activității economice a persoanei impozabile. […] bunurile pe care persoana impozabilă le acordă gratuit angajaților săi și care sunt legate de desfășurarea în condiții optime a activității economice, cum sunt, de exemplu: echipamentul de protecție și uniformele de lucru, pentru contravaloarea care nu este suportată de angajați, materiale igienico-sanitare în vederea prevenirii îmbolnăvirilor."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Nu se ajustează deducerea inițială a taxei în cazul: […] situațiilor prevăzute la art. 270 alin. (8)"
-— Codul fiscal (Legea 227/2015), art. 304 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

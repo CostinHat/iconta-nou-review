@@ -14,7 +14,7 @@ Distincția nu e una de bun-simț sau de sumă cheltuită — legea contabilă d
 
 ::: ghid-temei
 „227. - (1) Cheltuielile ulterioare efectuate în legătură cu o imobilizare corporală sunt cheltuieli ale perioadei în care sunt efectuate sau majorează valoarea imobilizării respective, în funcție de beneficiile economice aferente acestor cheltuieli (de exemplu, influența asupra duratei de viață rămase a imobilizărilor), potrivit criteriilor generale de recunoaștere."
-— OMFP nr. 1802/2014 (Reglementări contabile), pct. 227 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 (Reglementări contabile), pct. 227 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Criteriul de decizie, aplicat practic:
@@ -31,6 +31,6 @@ Criteriul de decizie, aplicat practic:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează amortizarea pentru mijloacele fixe înregistrate ca atare, cu metodele permise (liniară, degresivă, accelerată) pe durata normală de funcționare introdusă (`core/d406_active.py`). Aplicația **nu decide automat** dacă o cheltuială ulterioară asupra unui mijloc fix trebuie capitalizată sau trecută pe cheltuieli — această clasificare, pe baza criteriilor de la pct. 227 din OMFP 1802/2014, rămâne o evaluare a contabilului, care apoi introduce corect fie o cheltuială curentă, fie o majorare a valorii activului.
+La data acestui ghid, iConta.eu calculează amortizarea pentru mijloacele fixe înregistrate ca atare, cu metodele permise (liniară, degresivă, accelerată) pe durata normală de funcționare introdusă. Aplicația **nu decide automat** dacă o cheltuială ulterioară asupra unui mijloc fix trebuie capitalizată sau trecută pe cheltuieli — această clasificare, pe baza criteriilor de la pct. 227 din OMFP 1802/2014, rămâne o evaluare a contabilului, care apoi introduce corect fie o cheltuială curentă, fie o majorare a valorii activului.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Un ordin de plată către bugetul de stat greșit completat — cont bugetar ero
 ::: ghid-temei
 „(1) Plata obligațiilor fiscale efectuată într-un cont bugetar eronat este valabilă, de la momentul efectuării acesteia, în condițiile prezentului articol. La cererea debitorului, organul fiscal competent efectuează îndreptarea erorilor din documentele de plată întocmite de debitor, în suma și din contul debitorului înscrise în documentul de plată, cu condiția debitării contului acestuia și a creditării unui cont bugetar.
 (5) Cererea de îndreptare a erorilor din documentele de plată poate fi depusă în termen de 5 ani, sub sancțiunea decăderii. Termenul începe să curgă de la data de 1 ianuarie a anului următor celui în care s-a efectuat plata."
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (1) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (1) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret din text:

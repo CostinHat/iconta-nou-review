@@ -16,10 +16,10 @@ Cele 30 de zile sunt doar primul termen dintr-un șir scurt. După răspuns urme
 
 ::: ghid-temei
 „(2) În cazul în care documentele solicitate potrivit alin. (1) nu au fost prezentate de contribuabil/plătitor în termen de 30 de zile de la comunicarea înștiințării sau documentele prezentate confirmă diferențele identificate de organul fiscal și/sau sunt incorecte sau incomplete, organul fiscal stabilește diferențele de creanțe fiscale datorate prin emiterea unei decizii de impunere sau dispune măsurile necesare respectării prevederilor legale, după caz. La solicitarea contribuabilului/plătitorului, pentru motive temeinic justificate, organul fiscal poate aproba prelungirea termenului pentru prezentarea documentelor."
-— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Persoana are dreptul să își prezinte în scris punctul de vedere, în termen de 5 zile lucrătoare de la data audierii. Termenul poate fi prelungit cu cel mult 5 zile lucrătoare, pentru motive justificate, cu acordul conducătorului organului de control fiscal. (6) Decizia prevăzută la alin. (2) se emite în termen de cel mult 25 de zile lucrătoare de la data audierii contribuabilului/plătitorului și se comunică în condițiile art. 47."
-— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (5)–(6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 149 alin. (5)–(6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Calendarul complet:

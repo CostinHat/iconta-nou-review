@@ -16,15 +16,15 @@ Regula contează în practică pentru că multe firme își finanțează investi
 
 ::: ghid-temei
 „Profitul investit în echipamente tehnologice, active utilizate în activitatea de producție și procesare, activele reprezentând retehnologizare, calculatoare electronice și echipamente periferice, mașini și aparate de casă, de control și de facturare, în programe informatice, precum și pentru dreptul de utilizare a programelor informatice, produse și/sau achiziționate, inclusiv în baza contractelor de leasing financiar, și puse în funcțiune, folosite în scopul desfășurării activității economice, este scutit de impozit."
-— Codul fiscal (Legea 227/2015), art. 22 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 22 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii care beneficiază de prevederile alin. (1) [...] au obligația de a păstra în patrimoniu activele respective cel puțin o perioadă egală cu jumătate din durata de utilizare economică, stabilită potrivit reglementărilor contabile aplicabile, dar nu mai mult de 5 ani."
-— Codul fiscal (Legea 227/2015), art. 22 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 22 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru activele menționate la art. 22 alin. (1) din Codul fiscal, achiziționate în baza contractelor de leasing financiar, scutirea de impozit pe profit se aplică de către utilizator, cu condiția respectării prevederilor art. 22 alin. (8) din Codul fiscal."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 11 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 11 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

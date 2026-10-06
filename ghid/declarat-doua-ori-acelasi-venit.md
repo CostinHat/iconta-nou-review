@@ -14,10 +14,10 @@ Dacă aceeași încasare a ajuns de două ori în calculul venitului brut, cauza
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]"
-— Cod fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, venitul brut pentru D212 se stabilește prin însumarea încasărilor din activitate, pe an fiscal. Dacă aceeași sumă a fost înregistrată de două ori (fie ca două operațiuni identice, fie ca o operațiune corectată greșit, prin adăugare în loc de editare), venitul brut rezultă mai mare decât cel real, cu efect direct asupra venitului net, CAS, CASS și impozitului calculat. Corecția reală se face la sursă — în evidența din care se calculează venitul, nu direct în declarație — iar dacă declarația a fost deja depusă cu cifra greșită, se aplică mecanismul general de rectificare de mai sus.
@@ -30,7 +30,7 @@ Practic, venitul brut pentru D212 se stabilește prin însumarea încasărilor d
 
 ## Ce face iConta.eu
 
-Motorul D212 din iConta.eu (`core/d212_engine.py`, accesat prin funcția `fisa_d212` din `core/rip_api.py`) calculează venitul brut ca sumă a încasărilor cu categoria „activitate", **doar din operațiunile cu status „validată"** din registrul de încasări și plăți — ciornele nevalidate sunt excluse automat și semnalate separat, nu intră în calcul. Dacă însă aceeași încasare a fost introdusă și validată de două ori ca operațiuni distincte, motorul le însumează pe amândouă: **nu există în cod o detecție de duplicate** — validarea unei operațiuni certifică doar corectitudinea ei individuală, nu unicitatea față de restul registrului.
+Motorul D212 din iConta.eu (accesat prin funcția `fisa_d212` din aplicație) calculează venitul brut ca sumă a încasărilor cu categoria „activitate", **doar din operațiunile cu status „validată"** din registrul de încasări și plăți — ciornele nevalidate sunt excluse automat și semnalate separat, nu intră în calcul. Dacă însă aceeași încasare a fost introdusă și validată de două ori ca operațiuni distincte, motorul le însumează pe amândouă: **nu există în cod o detecție de duplicate** — validarea unei operațiuni certifică doar corectitudinea ei individuală, nu unicitatea față de restul registrului.
 
 Corectarea reală înseamnă ștergerea sau anularea operațiunii duplicate din registrul de încasări și plăți, urmată de regenerarea fișei D212 — cifra nouă va reflecta corect venitul. Dacă declarația a fost deja depusă la ANAF cu venitul dublat, corectarea registrului în iConta.eu nu retrimite automat nimic la ANAF: e nevoie, separat, de o declarație rectificativă, prin mecanismul general descris mai sus.
 

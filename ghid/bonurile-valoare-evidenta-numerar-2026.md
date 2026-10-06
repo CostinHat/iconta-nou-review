@@ -16,7 +16,7 @@ Tichetele de masă, tichetele cadou, tichetele de creșă, tichetele culturale �
 „(4) Suportul electronic al biletelor de valoare nu permite efectuarea de operațiuni de retragere de numerar sau de preschimbare în numerar.
 [...]
 Articolul 28 (1) Constituie contravenție următoarele fapte, dacă nu sunt săvârșite în astfel de condiții încât, potrivit legii penale, să fie considerate infracțiuni: a) utilizarea biletelor de valoare în alt scop decât cel prevăzut de prezenta lege; [...] b) solicitarea și/sau furnizarea de numerar în schimbul biletelor de valoare sau pentru fracțiuni din acestea."
-— Legea nr. 165/2018 privind acordarea biletelor de valoare, art. 8 alin. (4) și art. 28 alin. (1) lit. a)-b) (sursă: anaf_surse/legea_165_2018_consolidat.txt)
+— Legea nr. 165/2018 privind acordarea biletelor de valoare, art. 8 alin. (4) și art. 28 alin. (1) lit. a)-b) (sursă: [Legea nr. 165/2018 privind acordarea biletelor de valoare](https://legislatie.just.ro/Public/DetaliiDocument/202623))
 :::
 
 Ce înseamnă concret pentru evidența și gestiunea acestor instrumente:

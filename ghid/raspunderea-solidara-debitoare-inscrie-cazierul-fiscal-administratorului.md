@@ -16,20 +16,20 @@ Efectul practic e important pentru administrator. Cât timp figurează în cazie
 
 ::: ghid-temei
 „(4) În cazierul fiscal se înscriu și informații din documentele întocmite pentru atragerea răspunderii solidare, patrimoniale sau a inactivității fiscale, după cum urmează: a) atragerea răspunderii solidare cu debitorul, stabilită prin decizie a organului fiscal competent, emisă în condițiile Codului de procedură fiscală, rămasă definitivă prin neexercitarea căilor de atac prevăzute de lege sau prin hotărâre judecătorească definitivă, în situația în care decizia organului fiscal a fost atacată în justiție;"
-— OG 39/2015, art. 4 alin. (4) lit. a) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 4 alin. (4) lit. a) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „g) au fost stinse creanțele administrate de Agenția Națională de Administrare Fiscală datorate ca urmare a atragerii răspunderii solidare prevăzute la art. 4 alin. (4) lit. a) sau a răspunderii patrimoniale prevăzute la art. 4 alin. (4) lit. b) . Data scoaterii din evidență este data stingerii creanțelor, însă nu mai devreme de o lună de la data înscrierii informațiilor în cazierul fiscal. În situația în care creanțele administrate de Agenția Națională de Administrare Fiscală nu au fost stinse în această perioadă, scoaterea din evidență se realizează la data stingerii acestora sau la data împlinirii unui termen de 5 ani de la data înscrierii informațiilor în cazierul fiscal, în situația în care creanțele nu au fost stinse în acest termen;"
-— OG 39/2015, art. 6 alin. (1) lit. g) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 6 alin. (1) lit. g) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „8. Fișele de înscriere completate se transmit compartimentului de specialitate în a cărui sferă de competență intră gestionarea cazierului fiscal al persoanei în sarcina căreia s-a atras răspunderea solidară. [...] 9. Dispozițiile pct. 1-8 sunt aplicabile chiar dacă obligațiile fiscale pentru care s-a aplicat procedura de atragere a răspunderii solidare au fost stinse înainte ca decizia de atragere a răspunderii solidare să rămână definitivă, potrivit legii."
-— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. I lit. C1 pct. 8-9 (sursă: anaf_surse/ordin_2594_2015__anexa_269686.html)
+— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. I lit. C1 pct. 8-9 (sursă: [OPANAF nr. 2594/2015 privind cazierul fiscal (anexa-procedură de înscriere, scoatere și rectificare)](https://legislatie.just.ro/Public/DetaliiDocument/171984))
 
 „(5) Se interzice autorizarea operațiunilor prevăzute la alin. (1) , în cazul în care în cazierul fiscal există înscrise informații privind faptele și situațiile prevăzute la art. 4 ."
-— OG 39/2015, art. 8 alin. (5) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 8 alin. (5) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Ce trebuie știut:

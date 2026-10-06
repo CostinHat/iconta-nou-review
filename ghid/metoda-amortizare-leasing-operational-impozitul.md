@@ -16,7 +16,7 @@ poarta: v1
 **OMFP 1802/2014, pct. 214 alin. (1) și (3)**: „Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator, iar în cazul leasingului operațional, de către locator/finanțator. [...] În cazul leasingului operațional, bunurile sunt supuse amortizării de către locator, pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale acestuia."
 
 **Legea 227/2015 (Codul fiscal), art. 29 alin. (2)-(3)**: „Amortizarea bunului care face obiectul unui contract de leasing se face de către utilizator, în cazul leasingului financiar, și de către locator, în cazul leasingului operațional, cheltuielile fiind deductibile, potrivit art. 28. În cazul leasingului financiar utilizatorul deduce dobânda, iar în cazul leasingului operațional locatarul deduce chiria (rata de leasing), potrivit prevederilor prezentului titlu."
-— (sursă: anaf_surse/omfp_1802_2014.txt; anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320); [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - La leasingul operațional, **locatorul** (societatea de leasing) amortizează bunul, folosind propria politică de amortizare — firma utilizatoare nu are nicio decizie de luat aici.

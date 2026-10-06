@@ -14,7 +14,7 @@ Pentru un magazin online care vinde către persoane fizice din alte state membre
 
 ::: ghid-temei
 „(3) În cazul în care România este statul membru de înregistrare, persoana impozabilă respectivă trebuie să depună în format electronic o declarație de începere a activității sale supuse regimului special la organul fiscal competent. Persoana impozabilă trebuie să notifice, prin mijloace electronice, organul fiscal competent, în caz de încetare a activității sau în caz de modificări ulterioare, care o exclud de la regimul special."
-— Legea 227/2015 (Codul fiscal), art. 315 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 315 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pași practici care rezultă din text și din contextul art. 315:

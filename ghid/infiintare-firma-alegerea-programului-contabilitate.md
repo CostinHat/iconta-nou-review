@@ -14,7 +14,7 @@ La înființarea unei firme, alegerea programului de contabilitate nu este o dec
 
 ::: ghid-temei
 „Sistemul informatic de prelucrare automată a datelor la nivelul fiecărei entități trebuie să asigure prelucrarea datelor înregistrate în contabilitate în conformitate cu reglementările contabile aplicabile, controlul și păstrarea acestora pe suporturi tehnice. [...] Programele informatice utilizate în activitatea financiar-contabilă trebuie să asigure listarea în orice moment a documentelor financiar-contabile solicitate de organele de control."
-— OMFP nr. 2.634/2015 (Normele generale privind documentele financiar-contabile, Anexa 1), Litera F — Criteriile minimale privind programele informatice, pct. 55-56 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015 (Normele generale privind documentele financiar-contabile, Anexa 1), Litera F — Criteriile minimale privind programele informatice, pct. 55-56 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Câteva criterii minimale relevante pentru alegerea unui program de contabilitate, potrivit normelor citate:

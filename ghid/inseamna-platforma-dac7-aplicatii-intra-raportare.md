@@ -16,10 +16,10 @@ Distincția are consecințe practice. Doar operatorul unei platforme are obliga�
 
 ::: ghid-temei
 „1. Platformă înseamnă orice software, inclusiv un site web sau o parte a unui site web, și aplicații, inclusiv aplicații mobile, care sunt accesibile utilizatorilor și care permit Vânzătorilor să fie conectați cu alți utilizatori în scopul realizării unei Activități Relevante, în mod direct sau indirect, pentru acești utilizatori. Termenul include, de asemenea, orice aranjament pentru colectarea și plata unei Contraprestații pentru realizarea Activității Relevante.Termenul Platformă nu include software care, fără nicio intervenție suplimentară în cadrul realizării unei Activități Relevante, permite exclusiv oricare dintre următoarele: a)procesarea plăților în legătură cu Activitatea Relevantă; b)listarea sau promovarea de către utilizatori a unei Activități Relevante; c)redirecționarea sau transferarea utilizatorilor către o Platformă."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „2. Operator de platformă înseamnă o Entitate care pune la dispoziția Vânzătorilor, în temeiul unor contracte, o întreagă Platformă sau o parte a acesteia."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. A pct. 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din definiție:

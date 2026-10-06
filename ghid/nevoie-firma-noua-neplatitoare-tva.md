@@ -14,7 +14,7 @@ O firmă neplătitoare de TVA (de exemplu la regimul de scutire pentru întrepri
 
 ::: ghid-temei
 „Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: a) persoana impozabilă care are sediul activității economice în România, [...] neînregistrate și care nu au obligația să se înregistreze conform art. 316 [...], care efectuează o achiziție intracomunitară taxabilă în România, înainte de efectuarea achiziției intracomunitare, dacă valoarea achiziției intracomunitare respective depășește plafonul pentru achiziții intracomunitare în anul calendaristic în care are loc achiziția intracomunitară; [...] b) persoana impozabilă care are sediul activității economice în România [...], dacă prestează servicii care au locul în alt stat membru, pentru care beneficiarul serviciului este persoana obligată la plata taxei conform echivalentului din legislația altui stat membru al art. 307 alin. (2), înainte de prestarea serviciului; [...] c) persoana impozabilă care își are stabilit sediul activității economice în România [...], dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective."
-— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 317 alin. (1) lit. a)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei situații de bază pentru o firmă neplătitoare de TVA:

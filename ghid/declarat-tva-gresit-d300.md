@@ -36,6 +36,6 @@ Prima reacție, la o greșeală în decontul de TVA, e de obicei „depun o rect
 
 ## Ce face iConta.eu
 
-Panoul manual dedicat regularizărilor TVA (`core/d300_manual_api.py`) permite introducerea corecțiilor direct în decontul curent, cu recalculare automată la fiecare modificare. Aplicația nu automatizează încadrarea greșelii (regularizare de fond vs. eroare materială) și nu verifică dacă rezerva verificării ulterioare a fost anulată pentru perioada respectivă — aceste decizii rămân ale contabilului.
+Panoul manual dedicat regularizărilor TVA permite introducerea corecțiilor direct în decontul curent, cu recalculare automată la fiecare modificare. Aplicația nu automatizează încadrarea greșelii (regularizare de fond vs. eroare materială) și nu verifică dacă rezerva verificării ulterioare a fost anulată pentru perioada respectivă — aceste decizii rămân ale contabilului.
 
 [iConta.eu](/)

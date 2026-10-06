@@ -14,7 +14,7 @@ Mulți antreprenori cred că, dacă firma lor îndeplinește condițiile de micr
 
 ::: ghid-temei
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1)."
-— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din formularea „pot opta" rezultă câteva concluzii practice:

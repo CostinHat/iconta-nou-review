@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— OUG 28/1999, art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce presupune, concret, reconcilierea HoReCa:

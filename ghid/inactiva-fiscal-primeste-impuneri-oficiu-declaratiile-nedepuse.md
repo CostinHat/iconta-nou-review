@@ -16,12 +16,12 @@ Mulți administratori interpretează tăcerea ANAF ca semn că situația „s-a 
 
 ::: ghid-temei
 „Pentru creanțele fiscale administrate de organul fiscal central, înștiințarea pentru nedepunerea declarațiilor și stabilirea din oficiu a creanțelor fiscale nu se face în cazul contribuabilului/plătitorului inactiv, atât timp cât se găsește în această situație."
-— Codul de procedură fiscală (Legea 207/2015), art. 107 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 107 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(1) Pe perioada cât contribuabilii/plătitorii sunt declarați inactivi, le sunt aplicabile procedurile de administrare referitoare la declararea, stabilirea, verificarea și colectarea impozitelor, taxelor, contribuțiilor și a altor sume datorate bugetului general consolidat. (2) Prin excepție de la prevederile alin. (1) , contribuabilii/plătitorii declarați inactivi nu vor fi supuși procedurilor curente de notificare și de impunere din oficiu pentru nedepunerea declarațiilor."
-— OPANAF 3846/2015, art. 7 (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, art. 7 (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 Ce rămâne valabil pentru firma inactivă:

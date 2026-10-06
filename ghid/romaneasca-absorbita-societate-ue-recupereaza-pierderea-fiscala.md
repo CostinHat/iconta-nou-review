@@ -16,12 +16,12 @@ Pentru contabilul firmei absorbite, asta înseamnă că istoricul pierderilor ne
 
 ::: ghid-temei
 „Referitor la operațiunile menționate la alin. (1) lit. a) , în situația în care societatea cedentă înregistrează pierdere fiscală, determinată potrivit prezentului titlu, aceasta se recuperează de către sediul permanent al societății beneficiare situat în România."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, începând cu anul 2024/anul fiscal modificat care începe în anul 2024, după caz, se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi."
-— Codul fiscal (Legea 227/2015), art. 31 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 31 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele regulii:

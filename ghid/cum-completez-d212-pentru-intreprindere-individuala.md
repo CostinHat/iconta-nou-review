@@ -37,6 +37,6 @@ Anul de venit contează: structura de plafoane (salariul minim de referință, p
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d212_engine.py`) tratează II identic cu PFA: ia venitul brut din încasările validate legate de activitate și cheltuielile deductibile din plățile validate, calculează venitul net, apoi CAS, CASS și impozitul pe cele 10% cotă. Generatorul XML (`core/d212.py`) populează capitolul 11 (sistem real) cu aceste cifre; capitolul 12 (normă de venit) se completează din norma introdusă de contabil — venitul net, impozitul și contribuțiile le calculează generatorul. Motorul acceptă doar venituri din 2025 sau 2026; pentru orice alt an, verifică manual sursele oficiale înainte de a declara.
+Motorul de calcul tratează II identic cu PFA: ia venitul brut din încasările validate legate de activitate și cheltuielile deductibile din plățile validate, calculează venitul net, apoi CAS, CASS și impozitul pe cele 10% cotă. Generatorul XML populează capitolul 11 (sistem real) cu aceste cifre; capitolul 12 (normă de venit) se completează din norma introdusă de contabil — venitul net, impozitul și contribuțiile le calculează generatorul. Motorul acceptă doar venituri din 2025 sau 2026; pentru orice alt an, verifică manual sursele oficiale înainte de a declara.
 
 [iConta.eu](/)

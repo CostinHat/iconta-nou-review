@@ -14,7 +14,7 @@ API-ul RO e-Factura nu este un canal separat, cu reguli proprii — este pur și
 
 ::: ghid-temei
 „Sistemul naţional privind factura electronică RO e-Factura asigură interoperabilitatea cu sistemele de facturare ale operatorilor economici."
-— OUG nr. 120/2021, art. 16 (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 16 (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Din întregul capitol I al ordonanței rezultă ce anume „permite" acest API, în esență:
@@ -32,6 +32,6 @@ Din întregul capitol I al ordonanței rezultă ce anume „permite" acest API, 
 
 ## Ce face iConta.eu
 
-iConta.eu folosește API-ul RO e-Factura pentru trei funcții concrete: trimiterea facturilor emise (`core/efactura_send.py`), interogarea periodică a stării trimiterilor (`core/spv_poll.py`) și descărcarea automată a facturilor primite de la furnizori (`core/spv_receive.py`). Datele preluate din facturi sunt folosite exclusiv pentru evidența contabilă a firmei conectate — aplicația nu partajează sau reutilizează aceste date în alte scopuri, iar accesul token-ului OAuth2 este limitat la firma care l-a autorizat, fără posibilitate de acces încrucișat între firme diferite.
+iConta.eu folosește API-ul RO e-Factura pentru trei funcții concrete: trimiterea facturilor emise, interogarea periodică a stării trimiterilor și descărcarea automată a facturilor primite de la furnizori. Datele preluate din facturi sunt folosite exclusiv pentru evidența contabilă a firmei conectate — aplicația nu partajează sau reutilizează aceste date în alte scopuri, iar accesul token-ului OAuth2 este limitat la firma care l-a autorizat, fără posibilitate de acces încrucișat între firme diferite.
 
 [iConta.eu](/)

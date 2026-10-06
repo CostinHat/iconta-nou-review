@@ -40,7 +40,7 @@ Dacă banca oferă, în schimb, o linie de credit pe un cont separat de contul c
 
 ## Ce face iConta.eu
 
-Formularul „Credite bancare” (`static/js/ecrane/operatiuni_ecran.js`, cheia `"credit"`) oferă doar distincția `tip: scurt (519) | lung (162)` — nu există o a treia opțiune „overdraft” sau „linie de credit” separată. Tratamentul pentru overdraft e descris explicit doar în comentariul de sursă al motorului, `core/credite.py`: „OVERDRAFT (descoperire de cont): nu se înregistrează primirea, doar 666=5121”. Practic, pentru un overdraft/linie de credit fără tragere separată, folosiți doar operația „dobândă” din ecranul „Credite bancare”, fără „primire”; pentru o linie de credit cu tragere efectivă pe un subcont dedicat, folosiți fluxul standard de credit pe termen scurt.
+Formularul „Credite bancare” (cheia `"credit"`) oferă doar distincția `tip: scurt (519) | lung (162)` — nu există o a treia opțiune „overdraft” sau „linie de credit” separată. Tratamentul pentru overdraft e descris explicit doar în comentariul de sursă al motorului, aplicația: „OVERDRAFT (descoperire de cont): nu se înregistrează primirea, doar 666=5121”. Practic, pentru un overdraft/linie de credit fără tragere separată, folosiți doar operația „dobândă” din ecranul „Credite bancare”, fără „primire”; pentru o linie de credit cu tragere efectivă pe un subcont dedicat, folosiți fluxul standard de credit pe termen scurt.
 
 Alegerea concretă dintre ofertele bancare de overdraft și de linie de credit rămâne o decizie financiară a firmei — aplicația nu compară costuri sau condiții de creditare, doar înregistrează corect operațiunile odată decise.
 

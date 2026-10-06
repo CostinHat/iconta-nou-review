@@ -16,13 +16,13 @@ Pentru firmă, distincția decide ce argumente poate aduce în fața instanței.
 
 ::: ghid-temei
 „Contestația poate fi făcută și împotriva titlului executoriu în temeiul căruia a fost pornită executarea, în cazul în care acest titlu nu este o hotărâre dată de o instanță judecătorească sau de alt organ jurisdicțional și dacă pentru contestarea lui nu există o altă procedură prevăzută de lege."
-— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 260 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 268 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 268 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă admite contestația la executare, instanța, după caz, poate dispune anularea actului de executare contestat sau îndreptarea acestuia, anularea ori încetarea executării înseși, anularea sau lămurirea titlului executoriu ori efectuarea actului de executare a cărui îndeplinire a fost refuzată."
-— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se citește regula:

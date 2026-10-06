@@ -2455,6 +2455,14 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ghid-wrap blockquote { border-left: 3px solid var(--linie); margin: 16px 0; padding: 4px 0 4px 16px; color: var(--gri-clar); }
 .ghid-wrap hr { border: none; border-top: 1px solid var(--linie); margin: 28px 0; }
 .ghid-subsol { font-size: var(--text-desc); color: var(--gri); margin-top: 28px; }
+/* [06.10.2026, comanda Costin pct.6–7] DS cap.22 v2.72: cuprinsul temelor, pagina temei, legăturile de la finalul ghidului */
+.ghid-teme, .ghid-lista { list-style: none; padding: 0; margin: 16px 0; }
+.ghid-teme li, .ghid-lista li { border-bottom: 1px solid var(--linie); padding: 12px 0; }
+.ghid-teme li p, .ghid-lista li p { margin: 4px 0 0; }
+.ghid-numar { font-size: var(--text-desc); color: var(--gri); margin-left: 6px; }
+.ghid-legaturi { border-top: 1px solid var(--linie); margin-top: 32px; padding-top: 8px; }
+.ghid-legaturi ul { padding-left: 18px; }
+.ghid-tema { font-size: var(--text-desc); color: var(--gri); }
 
 /* .ghid-temei — temei legal: bordura laterala, fara fundal propriu */
 .ghid-temei { border-left: 3px solid var(--albastru); padding: 4px 0 4px 16px; margin: 20px 0; }

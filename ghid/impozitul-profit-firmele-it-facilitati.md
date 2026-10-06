@@ -14,10 +14,10 @@ O confuzie frecventă: „facilitatea IT" cunoscută din presă și din discuți
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Codul fiscal (Legea 227/2015), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „2. Abrogat."
-— Legea nr. 227/2015 (Codul fiscal), art. 60 pct. 2, prevedere abrogată de la 1 ianuarie 2025 prin art. LXIV pct. 7 din Ordonanța de urgență nr. 156/2024, publicată în Monitorul Oficial nr. 1334 din 31 decembrie 2024 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 60 pct. 2, prevedere abrogată de la 1 ianuarie 2025 prin art. LXIV pct. 7 din Ordonanța de urgență nr. 156/2024, publicată în Monitorul Oficial nr. 1334 din 31 decembrie 2024 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Rezultă clar separarea celor două planuri, plus statutul actual (2026) al facilității salariale:

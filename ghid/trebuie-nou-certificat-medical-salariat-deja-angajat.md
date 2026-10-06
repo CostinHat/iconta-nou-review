@@ -16,15 +16,15 @@ Certificatul medical de la angajare nu e valabil pentru totdeauna. Codul muncii 
 
 ::: ghid-temei
 „Certificatul medical este obligatoriu și în următoarele situații:a) la reînceperea activității după o întrerupere mai mare de 6 luni, pentru locurile de muncă având expunere la factori nocivi profesionali, și de un an, în celelalte situații; ... b) în cazul detașării sau trecerii în alt loc de muncă ori în altă activitate, dacă se schimbă condițiile de muncă; ... c) la începerea misiunii, în cazul salariaților încadrați cu contract de muncă temporară;"
-— Codul muncii (Legea 53/2003), art. 28 lit. a)-c) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 28 lit. a)-c) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „e) periodic, în cazul celor care lucrează în condiții de expunere la factori nocivi profesionali, potrivit reglementărilor Ministerului Sănătății; [...] g) periodic, în cazul celor care lucrează în unități fără factori de risc, prin examene medicale diferențiate în funcție de vârstă, sex și stare de sănătate, potrivit reglementărilor din contractele colective de muncă."
-— Codul muncii (Legea 53/2003), art. 28 lit. e) și g) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 28 lit. e) și g) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Salariații care urmează să desfășoare muncă de noapte în condițiile art. 125 alin. (2) sunt supuși unui examen medical gratuit înainte de începerea activității și, după aceea, periodic."
-— Codul muncii (Legea 53/2003), art. 127 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 127 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Situațiile, pe rând:

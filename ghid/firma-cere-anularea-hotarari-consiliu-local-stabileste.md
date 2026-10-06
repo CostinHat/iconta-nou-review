@@ -16,9 +16,9 @@ Da. OG 2/2001 spune că hotărârile consiliilor locale sau județene care stabi
 
 ::: ghid-temei
 „(2) Prin hotărâri ale autorităților administrației publice locale sau județene se stabilesc și se sancționează contravenții în toate domeniile de activitate pentru care acestora le sunt stabilite atribuții prin lege, în măsura în care în domeniile respective nu sunt stabilite contravenții prin legi, ordonanțe sau hotărâri ale Guvernului."
-— OG 2/2001, art. 2 alin. (2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 2 alin. (2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(5) Hotărârile consiliilor locale sau județene ori, după caz, ale sectoarelor municipiului București, prin care s-au stabilit contravenții cu nesocotirea principiilor prevăzute la alin. (2)-(4) , sunt nule de drept. Nulitatea se constată de instanța de contencios administrativ competentă, la cererea oricărei persoane interesate."
-— OG 2/2001, art. 2 alin. (5) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 2 alin. (5) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 O hotărâre locală poate stabili contravenții doar dacă sunt îndeplinite două condiții cumulative:

@@ -16,10 +16,10 @@ Pentru o firmă românească, întrebarea practică este alta: unde se încheie 
 
 ::: ghid-temei
 „(1) Locul importului de bunuri se consideră pe teritoriul statului membru în care se află bunurile când intră pe teritoriul european. (2) Prin excepție de la prevederile alin. (1) , atunci când bunurile la care se face referire la art. 274 lit. a) , care nu se află în liberă circulație, sunt plasate, la intrarea în Uniunea Europeană, în unul dintre regimurile sau situațiile la care se face referire la art. 295 alin. (1) lit. a) pct. 1-7 , locul importului pentru aceste bunuri se consideră a fi pe teritoriul statului membru în care bunurile încetează să mai fie plasate în astfel de regimuri sau situații."
-— Codul fiscal (Legea 227/2015), art. 277 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 277 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Plata taxei pentru importul de bunuri supus taxării, conform prezentului titlu, este obligația importatorului."
-— Codul fiscal (Legea 227/2015), art. 309 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 309 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile, pe rând:

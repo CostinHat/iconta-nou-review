@@ -14,7 +14,7 @@ D390 (declarația recapitulativă pentru operațiuni intracomunitare) și D406 (
 
 ::: ghid-temei
 „Se completează cu tranzacţiile intracomunitare efectuate [...]"
-— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 - D390 se depune numai pentru lunile în care ia naștere exigibilitatea taxei pentru operațiuni intracomunitare — nu se depune pe zero.

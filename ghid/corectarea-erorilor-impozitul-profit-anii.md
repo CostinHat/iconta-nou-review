@@ -14,14 +14,14 @@ O eroare descoperită într-o declarație de impozit pe profit depusă cu ani î
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative. [...] (5) Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1), (3) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1), (3) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Termenul de prescripție la care face trimitere art. 105 este cel general, de 5 ani:
 
 ::: ghid-temei
 „(1) Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel. (2) Termenul de prescripție a dreptului prevăzut la alin. (1) începe să curgă de la data de 1 iulie a anului următor celui pentru care se datorează obligația fiscală, dacă legea nu dispune altfel."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 110 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 110 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Coroborând cele două texte, rezultă regula practică: declarația D101 (impozit pe profit) pentru un an fiscal poate fi rectificată **până la împlinirea a 5 ani** de la data de 1 iulie a anului următor celui pentru care se datorează impozitul — de exemplu, o eroare din D101 aferentă anului 2023 poate fi corectată, în principiu, până la 1 iulie 2029.

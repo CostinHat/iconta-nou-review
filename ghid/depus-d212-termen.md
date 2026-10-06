@@ -14,10 +14,10 @@ Depunerea cu întârziere nu anulează obligația — dimpotrivă, declanșează
 
 ::: ghid-temei
 „În cazul persoanelor fizice nedepunerea la termenele prevăzute de lege a declarațiilor de venit, precum și a declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice constituie contravenție și se sancționează cu amendă de la 50 lei la 500 lei."
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Organul fiscal stabilește baza de impozitare și creanța fiscală aferentă, prin estimarea rezonabilă a bazei de impozitare, folosind orice probă și mijloc de probă prevăzute de lege, ori de câte ori acesta nu poate determina situația fiscală corectă."
-— Legea 207/2015, art. 106 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt), coroborat cu art. 107 (stabilirea din oficiu ca urmare a nedepunerii declarației de impunere)
+— Legea 207/2015, art. 106 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007)), coroborat cu art. 107 (stabilirea din oficiu ca urmare a nedepunerii declarației de impunere)
 :::
 
 Pașii recomandați odată ce termenul a fost depășit:
@@ -35,6 +35,6 @@ Pașii recomandați odată ce termenul a fost depășit:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu urmărește calendarul de scadență și nu semnalează contribuabilului că termenul de 25 mai a fost depășit. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) poate produce oricând fișa de calcul CAS/CASS/impozit pentru veniturile anilor verificați (2025, 2026), inclusiv pentru o depunere tardivă, dar nu calculează dobânzile sau penalitățile de întârziere aferente plății cu întârziere — acestea rămân în sarcina evidenței fiscale ținute de contabil.
+D212 se generează în iConta.eu din datele introduse de contabil — aplicația nu urmărește calendarul de scadență și nu semnalează contribuabilului că termenul de 25 mai a fost depășit. Motorul de calcul poate produce oricând fișa de calcul CAS/CASS/impozit pentru veniturile anilor verificați (2025, 2026), inclusiv pentru o depunere tardivă, dar nu calculează dobânzile sau penalitățile de întârziere aferente plății cu întârziere — acestea rămân în sarcina evidenței fiscale ținute de contabil.
 
 [iConta.eu](/)

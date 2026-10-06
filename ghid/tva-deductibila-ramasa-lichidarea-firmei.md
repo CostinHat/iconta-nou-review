@@ -14,7 +14,7 @@ La lichidarea unei firme, activele rămase (stocuri, mijloace fixe, disponibilit
 
 ::: ghid-temei
 „(5) Orice distribuire de bunuri din activele unei persoane impozabile către asociații sau acționarii săi, inclusiv o distribuire de bunuri legată de lichidarea sau de dizolvarea fără lichidare a persoanei impozabile, cu excepția transferului prevăzut la alin. (7), constituie livrare de bunuri efectuată cu plată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din acest text rezultă tratamentul aplicabil:

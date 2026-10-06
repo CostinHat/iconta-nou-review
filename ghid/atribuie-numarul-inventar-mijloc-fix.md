@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „85. - (1) Evaluarea imobilizărilor corporale și necorporale, cu ocazia inventarierii, se face la valoarea de inventar, stabilită de comisia de inventariere sau de evaluatori autorizați, potrivit legii. Fac obiectul evaluării și imobilizările în curs de execuție."
-— OMFP 1802/2014, reglementări contabile, pct. 85 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.html)
+— OMFP 1802/2014, reglementări contabile, pct. 85 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din text și din contextul lui legal, fără a depăși ce spune efectiv:

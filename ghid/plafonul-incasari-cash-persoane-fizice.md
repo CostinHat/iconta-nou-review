@@ -15,7 +15,7 @@ Firma poate încasa numerar de la o persoană fizică, dar nu nelimitat: legea s
 ::: ghid-temei
 „(1) Operațiunile de încasări în numerar efectuate de persoanele prevăzute la art. 1 alin. (1), de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană.
 (2) Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la alin. (1), cu o valoare mai mare de 10.000 lei [...]"
-— Legea nr. 70/2015, art. 4 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 4 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - **Plafon: 10.000 lei/zi, de la aceeași persoană fizică** — indiferent dacă suma vine dintr-o singură tranzacție sau din mai multe operațiuni în aceeași zi.

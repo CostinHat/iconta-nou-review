@@ -14,7 +14,7 @@ Momentul de la care curge dobânda de întârziere e fixat de lege la scadență
 
 ::: ghid-temei
 „Dobânzile se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv."
-— Legea 207/2015, art. 174 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 174 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Nuanțele care schimbă practic momentul de start, din același articol:
@@ -33,6 +33,6 @@ Nuanțele care schimbă practic momentul de start, din același articol:
 
 ## Ce face iConta.eu
 
-iConta.eu urmărește termenele de depunere a declarațiilor (scadențarul din `core/scadente.py`) și semnalează declarațiile nedepuse la termen prin semaforul de conformare fiscală (`core/control_fiscal_api.py`). Nu am identificat însă în cod un calculator al dobânzii de întârziere propriu-zise (0,02%/zi, conform art. 174) pentru sumele neplătite — calculul accesoriilor fiscale rămâne, la această dată, o operațiune făcută direct de organul fiscal, pe fișa pe plătitor, nu în aplicație.
+iConta.eu urmărește termenele de depunere a declarațiilor (scadențarul din aplicație) și semnalează declarațiile nedepuse la termen prin semaforul de conformare fiscală. Nu am identificat însă în cod un calculator al dobânzii de întârziere propriu-zise (0,02%/zi, conform art. 174) pentru sumele neplătite — calculul accesoriilor fiscale rămâne, la această dată, o operațiune făcută direct de organul fiscal, pe fișa pe plătitor, nu în aplicație.
 
 [iConta.eu](/)

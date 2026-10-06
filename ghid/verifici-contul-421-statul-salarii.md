@@ -14,7 +14,7 @@ Contul 421 e „nodul" contabil prin care trece practic orice element al salariz
 
 ::: ghid-temei
 „Din grupa 42 «Personal și conturi asimilate» fac parte: Contul 421 «Personal - salarii datorate» Cu ajutorul acestui cont se ține evidența decontărilor cu personalul pentru drepturile salariale cuvenite acestuia în bani sau în natură, inclusiv a sporurilor, adaosurilor, premiilor din fondul de salarii etc. Contul 421 «Personal - salarii datorate» este un cont de pasiv. [...] Soldul contului reprezintă drepturile salariale datorate."
-— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, funcțiunea contului 421 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, funcțiunea contului 421 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - În **credit**, contul 421 se alimentează cu „salariile și alte drepturi cuvenite personalului" (din contul 641 — cheltuieli cu salariile) și cu „contravaloarea avantajelor în natură acordate salariaților" (din 642) — deci creditul contului reflectă întreaga datorie brută a firmei față de angajați pentru luna respectivă.

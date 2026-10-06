@@ -14,7 +14,7 @@ D406 (SAF-T) nu e o declarație inventată separat de contabilitate — secțiun
 
 ::: ghid-temei
 „Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare."
-— Legea nr. 82/1991 a contabilității, art. 22 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 a contabilității, art. 22 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Iar structura oficială a fișierului SAF-T confirmă legătura directă: secțiunea obligatorie „Înregistrări Contabile - Registrul Jurnal" (`GeneralLedgerEntries`) corespunde exact Registrului-jurnal cerut de art. 20 din aceeași lege, iar art. 21 cere ca registrele contabile să fie „complet astfel completate încât să permită, în orice moment, identificarea și controlul operațiunilor contabile efectuate".
@@ -33,7 +33,7 @@ Practic, verificarea D406 vs. balanță înseamnă:
 
 ## Ce face iConta.eu
 
-iConta.eu generează D406 din `core/d406.py`, dar verificarea nu se oprește la emisie: aplicația construiește o **a doua cale de calcul, independentă**, în `core/d406_reconciliere.py`. Aceasta reface balanța de rulaje per cont direct din `inregistrari_linii` (notele contabile validate din perioada de raportare), fără să reutilizeze codul generatorului D406, și o compară cu rulajele extrase din fișierul SAF-T efectiv emis. Dacă cele două nu coincid pe un cont, sau dacă suma debitelor și creditelor unei note nu e egală, aplicația oprește depunerea și arată exact contul și valorile divergente — nu corectează tacit.
+iConta.eu generează D406 din aplicație, dar verificarea nu se oprește la emisie: aplicația construiește o **a doua cale de calcul, independentă**, în aplicație. Aceasta reface balanța de rulaje per cont direct din `inregistrari_linii` (notele contabile validate din perioada de raportare), fără să reutilizeze codul generatorului D406, și o compară cu rulajele extrase din fișierul SAF-T efectiv emis. Dacă cele două nu coincid pe un cont, sau dacă suma debitelor și creditelor unei note nu e egală, aplicația oprește depunerea și arată exact contul și valorile divergente — nu corectează tacit.
 
 Limita declarată în cod: reconcilierea acoperă secțiunea `GeneralLedgerEntries` (dubla partidă a notelor contabile); nu acoperă încă, în aceeași verificare automată, sub-secțiunile de facturi de vânzare/achiziție, plăți sau mișcări de active din D406 — acestea au verificări separate, parțiale, de reconciliere linii-antet.
 

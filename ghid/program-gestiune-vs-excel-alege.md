@@ -14,7 +14,7 @@ Firmele mici care vând produse — nu doar servicii — trebuie să țină evid
 
 ::: ghid-temei
 „Persoanele prevăzute la art. 1 au obligația să efectueze inventarierea generală a elementelor de natura activelor, datoriilor și capitalurilor proprii deținute la începutul activității, cel puțin o dată în cursul exercițiului financiar, precum și în cazul fuziunii, divizării ori transformării sau al lichidării și în alte situații prevăzute de lege."
-— Legea 82/1991, art. 7 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991, art. 7 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă asta în practică pentru alegerea între Excel și un program de gestiune:

@@ -38,7 +38,7 @@ Fereastra e strict de 60 de zile, strict viitoare — o firmă cu SAF-T restant 
 
 ## Ce face iConta.eu
 
-Motorul (`core/termene_api.py`) refolosește exact maparea „cine ce declarație datorează" din motorul unic de control fiscal (`core/control_fiscal_api.py`), cu fereastra restrânsă la [azi, azi+60 zile]. Rezultatele per firmă sunt agregate pe (dată, tip) în `portofoliu()`, cu numărul de firme la fiecare grup. Datele nu sunt recalculate live la fiecare afișare — provin dintr-un model precalculat de un proces de fundal, actualizat la fiecare schimbare relevantă (vector fiscal, salariați, facturi).
+Motorul refolosește exact maparea „cine ce declarație datorează" din motorul unic de control fiscal, cu fereastra restrânsă la [azi, azi+60 zile]. Rezultatele per firmă sunt agregate pe (dată, tip) în `portofoliu()`, cu numărul de firme la fiecare grup. Datele nu sunt recalculate live la fiecare afișare — provin dintr-un model precalculat de un proces de fundal, actualizat la fiecare schimbare relevantă (vector fiscal, salariați, facturi).
 
 Perioada de grație de la prima raportare SAF-T NU e implementată — nu există niciun calcul al ei în motorul de scadențe. Ecranul arată termenul nominal pentru toate firmele, indiferent dacă sunt la prima raportare sau nu; aplicarea grației rămâne, deocamdată, în sarcina contabilului.
 

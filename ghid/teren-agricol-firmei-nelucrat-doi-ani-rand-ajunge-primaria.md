@@ -16,18 +16,18 @@ Pentru contabilul firmei asta înseamnă că impozitul pe teren poate crește de
 
 ::: ghid-temei
 „Pentru terenul agricol nelucrat timp de 2 ani consecutiv, consiliul local poate majora impozitul pe teren cu până la 500%, începând cu al treilea an, în condițiile stabilite prin hotărâre a consiliului local."
-— Codul fiscal (Legea 227/2015), art. 489 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 489 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) terenul agricol corespunde încadrării ca nelucrat dacă, în fapt, nu este utilizat/exploatat/lucrat/întreținut potrivit categoriei de folosință cu care figurează înregistrat în registrul agricol."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (1) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (1) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(5) La propunerea primarului, prin hotărâre a consiliului local, cu caracter individual, se majorează impozitul pe teren pentru contribuabilii cărora pe parcursul a doi ani consecutivi li s-au transmis procesele-verbale prevăzute la alin. (3) și (4) ."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(6) Majorarea impozitului pe teren în cazul terenului agricol nelucrat timp de 2 ani consecutiv, se aplică pentru anul fiscal următor celui în care se adoptă hotărârea consiliului local prevăzută la alin. (5) ."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 167 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii procedurii (pct. 167 din norme):

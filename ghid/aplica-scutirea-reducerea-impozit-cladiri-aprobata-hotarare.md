@@ -19,12 +19,12 @@ O hotărâre adoptată în cursul anului nu reduce impozitul pe anul în curs. I
 
 ::: ghid-temei
 „Prin hotărârea prin care s-a stabilit să se acorde scutirea sau reducerea impozitului/taxei pe clădiri, potrivit alin. (2) , se dispune și cu privire la documentele justificative pentru fiecare situație în parte, după caz. Scutirea sau reducerea se aplică persoanelor care dețin documente justificative ce sunt depuse la organul fiscal local în termenul stabilit prin hotărârea consiliului local/Consiliului General al Municipiului București și care și-au îndeplinit obligația de plată a impozitului/taxei pentru anul fiscal anterior în termenele prevăzute de lege, începând cu data de 1 ianuarie a anului fiscal următor celui în care a fost emisă hotărârea consiliului local/Consiliului General al Municipiului București."
-— Codul fiscal (Legea 227/2015), art. 456 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) Scutirea sau reducerea de impozit/taxă pe clădiri se aplică începând cu data de 1 ianuarie a anului următor celui în care contribuabilul depune actele care atestă încadrarea clădirii în una din situațiile de la art. 456 alin. (2) din Codul fiscal."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IX, pct. 24 alin. (2) (norme art. 456 alin. (2) CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IX, pct. 24 alin. (2) (norme art. 456 alin. (2) CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Normele leagă momentul aplicării de **anul depunerii actelor** de către contribuabil. Codul fiscal în vigoare îl leagă de **anul emiterii hotărârii** și adaugă condițiile privind termenul de depunere stabilit prin hotărâre și plata la termen a impozitului pe anul anterior. Când cele două texte duc la rezultate diferite, se aplică art. 456 alin. (4) din Codul fiscal.

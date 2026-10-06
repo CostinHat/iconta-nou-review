@@ -14,7 +14,7 @@ O firmă românească trimite un utilaj sau un eșantion unui potențial client 
 
 ::: ghid-temei
 „În sensul prezentului titlu, nontransferul reprezintă expedierea sau transportul unui bun din România în alt stat membru, de persoana impozabilă sau de altă persoană în contul său, pentru a fi utilizat în scopul uneia dintre următoarele operațiuni: [...] g) utilizarea temporară a bunului respectiv pe teritoriul statului membru de destinație a bunului expediat sau transportat, în scopul prestării de servicii în statul membru de destinație, de către persoana impozabilă stabilită în România."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma de aplicare a Codului fiscal (HG 1/2016, la art. 321) cere explicit un registru pentru astfel de mișcări de bunuri, tocmai pentru că nu există o factură de vânzare care să le documenteze:

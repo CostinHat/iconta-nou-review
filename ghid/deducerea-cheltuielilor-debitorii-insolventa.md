@@ -31,6 +31,6 @@ Un debitor aflat în faliment declarat sau insolvență generează, pentru credi
 
 ## Ce face iConta.eu
 
-`deductibilitate_creanta(..., faliment_declarat=True)` din `core/provizioane.py` întoarce 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment — pierderea finală rămasă neacoperită, condiționată de hotărârea judecătorească de închidere, se tratează separat, manual.
+`deductibilitate_creanta(..., faliment_declarat=True)` din aplicație întoarce 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment — pierderea finală rămasă neacoperită, condiționată de hotărârea judecătorească de închidere, se tratează separat, manual.
 
 [iConta.eu](/)

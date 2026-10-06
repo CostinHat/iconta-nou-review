@@ -14,12 +14,12 @@ Nu. O transformare sau modernizare devine bun de capital separat, cu perioadă d
 
 ::: ghid-temei
 „cu condiția ca valoarea fiecărei transformări sau modernizări să fie de cel puțin 20% din valoarea bunului imobil/părții de bun imobil după transformare/modernizare."
-— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În situația în care valoarea fiecărei transformări sau modernizări nu depășește 20% din valoarea totală după transformarea ori modernizarea bunului imobil sau a părții de bun imobil, nu se efectuează ajustări privind taxa pe valoarea adăugată conform art. 304 sau 305 din Codul fiscal. În sensul prezentelor norme metodologice sunt luate în considerare operațiunile de transformare sau modernizare care conduc la majorarea valorii bunului imobil. În scopul calculării acestei depășiri se vor avea în vedere valorile reevaluate ale bunurilor respective, așa cum sunt înregistrate în contabilitate"
-— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul VII, pct. 79 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se calculează pragul:

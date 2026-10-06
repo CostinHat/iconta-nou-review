@@ -14,7 +14,7 @@ O firmă din România primește o factură de la un furnizor din alt stat membru
 
 ::: ghid-temei
 „Sunt, de asemenea, operațiuni impozabile și următoarele operațiuni efectuate cu plată, pentru care locul este considerat a fi în România, potrivit art. 276: a) o achiziție intracomunitară de bunuri, altele decât mijloace de transport noi sau produse accizabile, efectuată de o persoană impozabilă ce acționează ca atare [...] care urmează unei livrări intracomunitare efectuate în afara României de către o persoană impozabilă ce acționează ca atare și care nu este considerată întreprindere mică în statul membru în care are loc livrarea [...]."
-— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Comunicarea codului de TVA nu e o formalitate — e condiția pe care se sprijină scutirea furnizorului la livrarea intracomunitară, potrivit art. 294 alin. (2) lit. a):

@@ -22,15 +22,15 @@ La ele **nu** se aplică cheltuiala forfetară de 40%. Din venitul brut se scad 
 
 ::: ghid-temei
 „În cazul exploatării de către moștenitori a drepturilor de proprietate intelectuală, precum și în cazul remunerației reprezentând dreptul de suită și al remunerației compensatorii pentru copia privată, venitul net se determină prin scăderea din venitul brut a sumelor ce revin organismelor de gestiune colectivă sau altor plătitori de asemenea venituri, potrivit legii, fără aplicarea cotei forfetare de cheltuieli prevăzute la alin. (2)"
-— Codul fiscal (Legea 227/2015), art. 72 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 72 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul se calculează prin aplicarea cotei de 10% asupra venitului net și se reține la sursă, de către plătitorii de venituri prevăzuți la alin. (2) [...] la momentul plății veniturilor."
-— Codul fiscal (Legea 227/2015), art. 72 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 72 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Venitul net din drepturi de proprietate intelectuală se determină ca diferență între venitul brut și comisionul cuvenit organismelor de gestiune colectivă sau altor plătitori care, conform legii, au atribuții de colectare și de repartizare a veniturilor către titularii de drepturi, în următoarele situații: a) venituri din drepturi de proprietate intelectuală transmise prin succesiune; [...] b) venituri din exercitarea dreptului de suită; [...] c) venituri reprezentând remunerația compensatorie pentru copia privată."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

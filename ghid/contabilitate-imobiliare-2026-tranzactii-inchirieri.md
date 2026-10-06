@@ -14,7 +14,7 @@ Contabilitatea imobiliară pentru majoritatea firmelor din România nu înseamn�
 
 ::: ghid-temei
 „Atunci când o persoană impozabilă care acționează în nume propriu, dar în contul altei persoane, ia parte la o prestare de servicii, se consideră că a primit și a prestat ea însăși serviciile respective."
-— Legea 227/2015, art. 271 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 271 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru chirii și refacturarea utilităților:

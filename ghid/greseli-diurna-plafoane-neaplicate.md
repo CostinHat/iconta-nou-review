@@ -14,7 +14,7 @@ Cea mai comună greșeală la decontarea diurnei nu e o eroare de calcul, ci o e
 
 ::: ghid-temei
 „pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat [...]"
-— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 De ce plafonul „neaplicat" e o greșeală cu consecințe reale, nu doar formale:
@@ -33,7 +33,7 @@ De ce plafonul „neaplicat" e o greșeală cu consecințe reale, nu doar formal
 
 ## Ce face iConta.eu
 
-Acest ghid descrie exact un risc confirmat prin verificarea codului sursă al aplicației, nu doar o recomandare generică: funcția care generează nota contabilă a unui decont (`nota_decont`, din `core/deconturi.py`) **nu apelează niciodată** funcția de calcul al plafonului (`plafon_diurna`) și postează întreaga sumă de diurnă introdusă ca o singură cheltuială, oricât de mare ar fi ea. Cu alte cuvinte, aplicația însăși nu aplică automat plafonul la momentul înregistrării decontului — exact greșeala descrisă de titlul acestui ghid se poate produce dacă operatorul nu calculează manual plafonul înainte de a introduce suma.
+Acest ghid descrie exact un risc confirmat prin verificarea codului sursă al aplicației, nu doar o recomandare generică: funcția care generează nota contabilă a unui decont (`nota_decont`, din aplicație) **nu apelează niciodată** funcția de calcul al plafonului (`plafon_diurna`) și postează întreaga sumă de diurnă introdusă ca o singură cheltuială, oricât de mare ar fi ea. Cu alte cuvinte, aplicația însăși nu aplică automat plafonul la momentul înregistrării decontului — exact greșeala descrisă de titlul acestui ghid se poate produce dacă operatorul nu calculează manual plafonul înainte de a introduce suma.
 
 E important să se știe clar acest lucru, pentru că se poate crede greșit — pe baza unor descrieri mai vechi ale funcționalității — că „aplicația calculează automat plafonul de diurnă și generează notele corect". Nu este cazul astăzi: calculul de plafon există ca funcție separată, accesibilă doar prin API, fără niciun ecran dedicat, iar decontul propriu-zis se înregistrează integral, fără split automat neimpozabil/impozabil. Contabilul rămâne responsabil să calculeze plafonul manual, înainte de a introduce diurna în ecranul „Decont deplasare / diurnă", pentru a evita exact greșeala descrisă mai sus.
 

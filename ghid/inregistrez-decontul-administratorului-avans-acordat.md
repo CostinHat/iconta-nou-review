@@ -15,7 +15,7 @@ Situația e frecventă la firmele mici: administratorul plătește din buzunarul
 ```
 ::: ghid-temei
 „DISPOZIȚIE DE PLATĂ/ÎNCASARE CĂTRE CASIERIE (Cod 14-4-4) Dispoziția de plată/încasare către casierie servește ca: - dispoziție pentru casierie, în vederea achitării în numerar a unor sume, potrivit dispozițiilor legale, inclusiv a avansurilor aprobate pentru cheltuieli de deplasare, precum și a diferenței de încasat de către titularul de avans în cazul justificării unor sume mai mari decât avansul primit, pentru procurare de materiale etc. [...] document justificativ de înregistrare în Registrul de casă și în contabilitate, în cazul plăților în numerar efectuate fără alt document justificativ."
-— OMFP nr. 2.634/2015 privind documentele financiar-contabile, anexa 2 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015 privind documentele financiar-contabile, anexa 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 ```
 
@@ -33,6 +33,6 @@ Ce rezultă din text pentru cazul administratorului fără avans prealabil:
 
 ## Ce face iConta.eu
 
-Modulul `core/casa.py` are funcțiile `avans_acordare`, `avans_deconteaza` și `avans_sold`, care calculează soldul rămas la decontarea unui avans (inclusiv, matematic, cazul în care suma justificată depășește avansul primit — rezultatul `rest_de_restituit` devine negativ, semn că firma datorează administratorului diferența). Din verificarea codului, funcția `avans_deconteaza` **presupune totuși un avans de plecare** (chiar și zero) și **nu generează automat** nota contabilă de rambursare efectivă a diferenței către administrator — acest ultim pas rămâne, la acest moment, o notă pe care contabilul o adaugă manual, folosind exact documentul „Dispoziție de plată către casierie" descris mai sus.
+Aplicația are funcțiile `avans_acordare`, `avans_deconteaza` și `avans_sold`, care calculează soldul rămas la decontarea unui avans (inclusiv, matematic, cazul în care suma justificată depășește avansul primit — rezultatul `rest_de_restituit` devine negativ, semn că firma datorează administratorului diferența). Din verificarea codului, funcția `avans_deconteaza` **presupune totuși un avans de plecare** (chiar și zero) și **nu generează automat** nota contabilă de rambursare efectivă a diferenței către administrator — acest ultim pas rămâne, la acest moment, o notă pe care contabilul o adaugă manual, folosind exact documentul „Dispoziție de plată către casierie" descris mai sus.
 
 [iConta.eu](/)

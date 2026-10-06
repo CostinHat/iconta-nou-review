@@ -14,7 +14,7 @@ Un mijloc fix adus ca aport în natură la capitalul social nu se amortizează p
 
 ::: ghid-temei
 „costul de achiziție, de producție sau valoarea de piață a mijloacelor fixe dobândite cu titlu gratuit ori constituite ca aport, la data intrării în patrimoniul contribuabilului, utilizată pentru calculul amortizării fiscale, după caz - pentru mijloace fixe amortizabile și terenuri."
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 44 lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 44 lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din definiția valorii fiscale rezultă mecanismul de amortizare pentru un aport în natură:
@@ -32,6 +32,6 @@ Din definiția valorii fiscale rezultă mecanismul de amortizare pentru un aport
 
 ## Ce face iConta.eu
 
-Am verificat în `core/repo_mijloace_fixe.py` (funcția `urca_valoarea`) și `core/reevaluare.py`: aplicația reține valoarea de intrare a unui mijloc fix (`valoare`) și permite reevaluări ulterioare, dar **nu diferențiază explicit „valoarea de aport" ca sursă de proveniență** a valorii de intrare, conform art. 7 pct. 44 lit. c) din Codul fiscal — stabilirea corectă a valorii de piață la data aportului (prin evaluare) și introducerea ei ca valoare inițială rămân, la acest moment, în sarcina contabilului.
+Am verificat în aplicație (funcția `urca_valoarea`) și aplicația: aplicația reține valoarea de intrare a unui mijloc fix (`valoare`) și permite reevaluări ulterioare, dar **nu diferențiază explicit „valoarea de aport" ca sursă de proveniență** a valorii de intrare, conform art. 7 pct. 44 lit. c) din Codul fiscal — stabilirea corectă a valorii de piață la data aportului (prin evaluare) și introducerea ei ca valoare inițială rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

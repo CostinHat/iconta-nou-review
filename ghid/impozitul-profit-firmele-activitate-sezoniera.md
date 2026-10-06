@@ -14,7 +14,7 @@ O firmă cu activitate sezonieră (de exemplu turism de vară sau de iarnă) are
 
 ::: ghid-temei
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— Legea nr. 227/2015 privind Codul fiscal, art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Impozitul pe profit nu se calculează separat, izolat, pentru fiecare trimestru — el se calculează **cumulat de la 1 ianuarie**, iar plata trimestrială reprezintă diferența față de ce a fost deja impozitat în trimestrele anterioare ale aceluiași an.

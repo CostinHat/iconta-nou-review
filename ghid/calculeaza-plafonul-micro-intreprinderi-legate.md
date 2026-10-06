@@ -17,7 +17,7 @@ Plafonul de venituri pentru microîntreprinderi nu se verifică izolat, firmă c
 a) persoana juridică română care verifică condiția deține la o altă persoană juridică română, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot, sau aceasta are dreptul de a numi sau de a revoca administratorul/majoritatea membrilor consiliului de administrație, de conducere ori de supraveghere al acelei alte persoane juridice române;
 [...]
 d) persoana juridică română care verifică condiția dacă are unul sau mai mulți acționari/asociați care dețin, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot ale acestei persoane juridice române, acționari/asociați care desfășoară și activitate economică prin intermediul unei persoane fizice autorizate/întreprinderi individuale/întreprinderi familiale/altei forme de organizare a unei activități economice, fără personalitate juridică [...]"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1^1), astfel cum a fost modificat de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1^1), astfel cum a fost modificat de Ordonanța de urgență nr. 8 din 24 februarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de legătură acoperă mai multe situații, nu doar deținerea directă simplă:

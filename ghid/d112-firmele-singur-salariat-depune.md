@@ -14,11 +14,11 @@ O firmă cu un singur salariat nu depune o versiune simplificată a D112, ci ace
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), impozitul aferent veniturilor fiecărei luni, calculat și reținut la data efectuării plății acestor venituri, se plătește, până la data de 25 inclusiv a lunii următoare trimestrului pentru care se datorează, de către următorii plătitori de venituri din salarii și venituri asimilate salariilor: [...] b) persoanele juridice plătitoare de impozit pe profit care, în anul anterior, au înregistrat venituri totale de până la 100.000 euro și au avut un număr mediu de până la 3 salariați exclusiv; c) persoanele juridice plătitoare de impozit pe veniturile microîntreprinderilor care, în anul anterior, au avut un număr mediu de până la 3 salariați exclusiv [...]"
-— Legea 227/2015, art. 80 alin. (2) lit. b) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 80 alin. (2) lit. b) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la prevederile alin. (1), plătitorii de venituri din salarii și asimilate salariilor prevăzuți la art. 80 alin. (2), în calitate de angajatori sau de persoane asimilate angajatorului, depun trimestrial Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate aferentă fiecărei luni a trimestrului, până la data de 25 inclusiv a lunii următoare trimestrului.
 (5) Depunerea trimestrială a declarației prevăzute la alin. (1) constă în completarea și depunerea a câte unei declarații pentru fiecare lună din trimestru."
-— Legea 227/2015, art. 147 alin. (4) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 147 alin. (4) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru un angajator cu un singur salariat:
@@ -35,6 +35,6 @@ Ce rezultă concret pentru un angajator cu un singur salariat:
 
 ## Ce face iConta.eu
 
-iConta.eu generează D112 din datele statului de plată emis pentru fiecare lună (vezi `core/d112.py`), completând obligațiile fiscale (`ObligatieD112`, cu `cod_oblig` și `cod_bugetar`) conform structurii oficiale ANAF. Aplicația nu determină însă automat, la nivelul firmei, eligibilitatea pentru depunerea trimestrială de la art. 80 alin. (2) — adică nu verifică singură dacă numărul mediu de salariați din anul anterior s-a încadrat sub pragul de 3 și nu comută automat ritmul de depunere. Alegerea și aplicarea corectă a regimului lunar sau trimestrial de depunere a D112 rămân, la acest moment, decizii ale contabilului.
+iConta.eu generează D112 din datele statului de plată emis pentru fiecare lună (vezi aplicația), completând obligațiile fiscale (`ObligatieD112`, cu `cod_oblig` și `cod_bugetar`) conform structurii oficiale ANAF. Aplicația nu determină însă automat, la nivelul firmei, eligibilitatea pentru depunerea trimestrială de la art. 80 alin. (2) — adică nu verifică singură dacă numărul mediu de salariați din anul anterior s-a încadrat sub pragul de 3 și nu comută automat ritmul de depunere. Alegerea și aplicarea corectă a regimului lunar sau trimestrial de depunere a D112 rămân, la acest moment, decizii ale contabilului.
 
 [iConta.eu](/)

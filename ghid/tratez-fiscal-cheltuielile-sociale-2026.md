@@ -14,7 +14,7 @@ Cheltuielile sociale (ajutoare de înmormântare, cadouri pentru copiii salaria�
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: [...] b) cheltuielile sociale, în limita unei cote de până la 5%, aplicată asupra valorii cheltuielilor cu salariile personalului, potrivit Codului muncii. Intră sub incidența acestei limite următoarele: 1. ajutoarele de înmormântare, ajutoarele pentru bolile grave și incurabile, ajutoarele pentru naștere, ajutoarele pentru proteze, ajutoarele pentru pierderi produse în gospodăriile proprii, ajutorarea copiilor din școli și centre de plasament; 2. cheltuielile pentru funcționarea corespunzătoare a unor unități aflate în administrarea contribuabililor, precum: creșe, grădinițe, școli, muzee, biblioteci, cantine, baze sportive, cluburi, cămine de nefamiliști și altele asemenea; 3. cheltuielile reprezentând: cadouri în bani sau în natură, inclusiv tichete cadou oferite salariaților și copiilor minori ai acestora, servicii de sănătate acordate în cazul bolilor profesionale și al accidentelor de muncă până la internarea într-o unitate sanitară, tichete culturale și tichete de creșă acordate de angajator [...]; 4. alte cheltuieli cu caracter social efectuate în baza contractului colectiv de muncă sau a unui regulament intern."
-— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică plafonul de 5% în 2026:
@@ -32,6 +32,6 @@ Cum se aplică plafonul de 5% în 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu are contul dedicat cheltuielilor sociale în planul de conturi și calculează cheltuielile cu salariile personalului prin modulul de salarizare (`core/salarizare.py`), date care ar constitui baza de calcul a plafonului de 5%. La data acestui ghid, aplicația **nu calculează automat, în cadrul declarației de impozit pe profit, încadrarea cumulată a cheltuielilor sociale în plafonul de 5%** din fondul de salarii — verificarea depășirii plafonului și ajustarea rezultatului fiscal rămân în sarcina contabilului, la momentul întocmirii declarației.
+iConta.eu are contul dedicat cheltuielilor sociale în planul de conturi și calculează cheltuielile cu salariile personalului prin modulul de salarizare, date care ar constitui baza de calcul a plafonului de 5%. La data acestui ghid, aplicația **nu calculează automat, în cadrul declarației de impozit pe profit, încadrarea cumulată a cheltuielilor sociale în plafonul de 5%** din fondul de salarii — verificarea depășirii plafonului și ajustarea rezultatului fiscal rămân în sarcina contabilului, la momentul întocmirii declarației.
 
 [iConta.eu](/)

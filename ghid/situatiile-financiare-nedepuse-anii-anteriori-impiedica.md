@@ -16,19 +16,19 @@ Mai există o verificare, în cursul anului. Dacă situațiile financiare ale an
 
 ::: ghid-temei
 „a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(5) Pentru aplicarea în anul fiscal N a sistemului de impozitare pe veniturile microîntreprinderilor, în ceea ce privește îndeplinirea condiției prevăzute la art. 47 alin. (1) lit. i) din Codul fiscal, referirea la situațiile financiare anuale vizează doar persoana juridică română care nu a depus situațiile financiare corespunzătoare exercițiului financiar al anului N – 2 și/sau cele corespunzătoare anilor anteriori anului N – 2 din perioada de existență a persoanei juridice române respective."
-— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Pentru aplicarea sistemului de impunere pe veniturile microîntreprinderii în anul fiscal 2026, condiția prevăzută la art. 47 alin. (1) lit. i) se consideră îndeplinită dacă situațiile financiare anuale sunt depuse până la data de 31 martie 2026 inclusiv."
-— Codul fiscal (Legea 227/2015), art. 48 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 48 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „(2) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma a fost modificată în 2024 și precizează ce ani intră în verificarea de la 31 decembrie N-1. Codul fiscal cere depunerea **în termen**. O depunere întârziată nu este deci același lucru cu o depunere la timp și poate fi contestată la control. Excepția este regula specială pentru 2026, care acceptă depunerea până la 31 martie 2026.

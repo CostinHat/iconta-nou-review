@@ -14,7 +14,7 @@ Da. Legea nu rezervă calitatea de angajator doar persoanelor juridice — o per
 
 ::: ghid-temei
 „În sensul prezentului cod, prin angajator se înţelege persoana fizica sau juridică ce poate, potrivit legii, sa angajeze forta de muncă pe bază de contract individual de muncă."
-— Legea 53/2003 (Codul muncii), art. 14 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 14 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Art. 14 alin. (3) precizează momentul de la care persoana fizică poate încheia contracte individuale de muncă în calitate de angajator: „din momentul dobândirii capacităţii de exerciţiu."

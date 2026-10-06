@@ -14,10 +14,10 @@ Mulți angajatori presupun că munca „în ture" are, ca atare, un spor fixat d
 
 ::: ghid-temei
 „Când munca se efectuează în schimburi, durata timpului de muncă va putea fi prelungită peste 8 ore pe zi şi peste 48 de ore pe săptămâna, cu condiţia ca media orelor de muncă, calculată pe o perioadă maxima de 3 săptămâni, sa nu depăşească 8 ore pe zi sau 48 de ore pe săptămâna."
-— Legea nr. 53/2003, art. 111 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003, art. 111 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Salariaţii care efectuează cel puţin 3 ore de muncă de noapte beneficiază fie de program de lucru redus cu o ora faţă de durata normală a zilei de muncă, fără ca aceasta sa ducă la scăderea salariului de baza, fie de un spor la salariu de minimum 15% din salariul de baza pentru fiecare ora de muncă de noapte prestată."
-— Legea nr. 53/2003, art. 123 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003, art. 123 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Distincția importantă:

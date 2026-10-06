@@ -15,7 +15,7 @@ Nu există, în Codul de procedură fiscală, o „ștergere pentru bună-credin
 ::: ghid-temei
 „(2) Penalitatea de nedeclarare stabilită potrivit alin. (1) se reduce cu 75%, dacă obligațiile fiscale principale stabilite prin decizie: a) se sting prin plată sau compensare până la termenul prevăzut la art. 156 alin. (1); b) sunt eșalonate la plată, în condițiile legii. În acest caz, reducerea se acordă la finalizarea eșalonării la plată. [...]
 (7) Penalitatea de nedeclarare nu se aplică dacă obligațiile fiscale principale nedeclarate sau declarate incorect de contribuabil/plătitor și stabilite de organul fiscal prin decizii de impunere rezultă din aplicarea unor prevederi ale legislației fiscale de către contribuabil/plătitor, potrivit interpretării organului fiscal cuprinse în norme, instrucțiuni, circulare sau opinii comunicate contribuabilului/plătitorului de către organul fiscal central."
-— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (2), (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (2), (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie desprins din text:

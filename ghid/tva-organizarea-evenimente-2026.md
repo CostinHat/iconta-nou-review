@@ -14,10 +14,10 @@ Pentru cele mai multe servicii B2B, TVA se impozitează unde e stabilit clientul
 
 ::: ghid-temei
 „locul în care activitățile se desfășoară efectiv, în cazul serviciilor principale și auxiliare legate de activități culturale, artistice, sportive, științifice, educaționale, de divertisment sau de activități similare, cum ar fi târgurile și expozițiile, inclusiv în cazul serviciilor prestate de organizatorii acestor activități, altele decât cele transmise pe internet sau puse la dispoziție printr-o altă modalitate virtuală, prestate către persoane neimpozabile;"
-— Codul fiscal (Legea 227/2015), art. 278 alin. (5) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (5) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „locul în care evenimentele se desfășoară efectiv, pentru serviciile legate de acordarea accesului la evenimente culturale, artistice, sportive, științifice, educaționale, de divertisment sau alte evenimente similare, cum ar fi târgurile și expozițiile, precum și pentru serviciile auxiliare legate de acordarea acestui acces, altele decât cele la care prezența este virtuală, prestate unei persoane impozabile."
-— Codul fiscal, art. 278 alin. (6) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 278 alin. (6) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru clienți persoane neimpozabile (B2C — participanți persoane fizice), toate serviciile principale și auxiliare legate de eveniment se impozitează unde are loc efectiv evenimentul (art. 278 alin. (5) lit. f)).
@@ -32,6 +32,6 @@ Pentru cele mai multe servicii B2B, TVA se impozitează unde e stabilit clientul
 
 ## Ce face iConta.eu
 
-Pentru servicii intracomunitare B2B, iConta.eu clasifică prestările către persoane impozabile din UE conform regulii generale a locului prestării (art. 278 alin. (2) — sediul beneficiarului), reflectată în motorul de raportare D300/D390 (`core/d300.py`), care reclasifică automat astfel de prestări ca servicii, declarate la rândurile 3 și 3.1 din D390, cu observația explicită „locul prestării în afară României, 0%". Aplicația nu are însă nicio logică dedicată excepției de la art. 278 alin. (5) lit. f) și alin. (6) lit. b) pentru serviciile legate de evenimente — nu există în cod niciun marcaj de tipul „acces la eveniment" sau „loc de desfășurare a evenimentului" care să direcționeze automat aceste operațiuni spre regula specială. O firmă care vinde acces la un eveniment din România unei firme din alt stat membru trebuie să aplice manual regula corectă (loc = România, TVA românească), fără niciun sprijin din partea aplicației la acest pas de clasificare.
+Pentru servicii intracomunitare B2B, iConta.eu clasifică prestările către persoane impozabile din UE conform regulii generale a locului prestării (art. 278 alin. (2) — sediul beneficiarului), reflectată în motorul de raportare D300/D390, care reclasifică automat astfel de prestări ca servicii, declarate la rândurile 3 și 3.1 din D390, cu observația explicită „locul prestării în afară României, 0%". Aplicația nu are însă nicio logică dedicată excepției de la art. 278 alin. (5) lit. f) și alin. (6) lit. b) pentru serviciile legate de evenimente — nu există în cod niciun marcaj de tipul „acces la eveniment" sau „loc de desfășurare a evenimentului" care să direcționeze automat aceste operațiuni spre regula specială. O firmă care vinde acces la un eveniment din România unei firme din alt stat membru trebuie să aplice manual regula corectă (loc = România, TVA românească), fără niciun sprijin din partea aplicației la acest pas de clasificare.
 
 [iConta.eu](/)

@@ -16,12 +16,12 @@ Nu, dacă firma doar aprobă sistarea și trece valoarea investiției pe cheltui
 
 ::: ghid-temei
 „30. Valoarea imobilizărilor necorporale/corporale în curs de execuție care nu se mai finalizează și se scot din evidență pe seama conturilor de cheltuieli, în baza aprobării/deciziei de sistare, precum și valoarea rămasă a investițiilor efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune, în situația în care contractele se reziliază înainte de termen, reprezintă cheltuieli nedeductibile, dacă nu au fost valorificate prin vânzare sau casare.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30, titlul II (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30, titlul II (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare”
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

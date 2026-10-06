@@ -14,7 +14,7 @@ Contabilizarea dividendelor presupune trei momente distincte: aprobarea/distribu
 
 ::: ghid-temei
 "(7) Veniturile sub formă de dividende [...] se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor [...] către acționari/asociați/investitori."
-— Codul fiscal, art. 97 alin. (7), formă în vigoare de la distribuirile din 2026 (`anaf_surse/cod_fiscal_227_2015_consolidat.txt:9470-9474`), modificată de Legea 141/2025 art. II pct. 5
+— Codul fiscal, art. 97 alin. (7), formă în vigoare de la distribuirile din 2026 ([Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)), modificată de Legea 141/2025 art. II pct. 5
 :::
 
 Pentru dividende **anuale** (aprobate pe baza situațiilor financiare anuale), fluxul de note contabile documentat în aplicație este: 1171 → 457 (distribuire din profit), 457 → 446 (reținere impozit), 457 → 5121 (plată efectivă către asociat).
@@ -29,6 +29,6 @@ Cele mai frecvente greșeli sunt: aplicarea cotei de la data plății în loc de
 
 ## Ce face iConta.eu
 
-Motorul de generare a notelor contabile pentru decontări cu asociații (`core/decontari_asociati.py`) generează automat notele descrise mai sus, pentru fluxul anual și pentru cel interimar, inclusiv regularizarea și restituirea de exces. Acest modul nu face parte din funcționalitatea D205 propriu-zisă, dar alimentează contul 457 din care D205 își preia ulterior baza de calcul. Notă de onestitate: temeiul citat intern pentru aceste note include și OMFP 3067/2018, a cărui text nu a putut fi verificat direct în sursele locale — dacă vă bazați pe acest ghid pentru o dispută punctuală de reglementare contabilă, verificați separat acel ordin.
+Motorul de generare a notelor contabile pentru decontări cu asociații generează automat notele descrise mai sus, pentru fluxul anual și pentru cel interimar, inclusiv regularizarea și restituirea de exces. Acest modul nu face parte din funcționalitatea D205 propriu-zisă, dar alimentează contul 457 din care D205 își preia ulterior baza de calcul. Notă de onestitate: temeiul citat intern pentru aceste note include și OMFP 3067/2018, a cărui text nu a putut fi verificat direct în sursele locale — dacă vă bazați pe acest ghid pentru o dispută punctuală de reglementare contabilă, verificați separat acel ordin.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Suspendarea temporară a activității la Registrul Comerțului nu suspendă aut
 
 ::: ghid-temei
 „(4^1) Entitățile înregistrate în registrul comerțului, pentru care există înscrise mențiuni privind inactivitatea temporară, nu au obligația depunerii declarațiilor fiscale pentru perioada în care se află în inactivitate temporară, începând cu data de 1 a lunii următoare înscrierii mențiunii privind inactivitatea temporară în registrul comerțului. [...] (4^3) Aplicarea prevederilor alin. (4^1) și (4^2) încetează la data reluării activității sau la împlinirea unui termen de 3 ani [...]. (4^4) Obligațiile de declarare, aferente activității desfășurate anterior înregistrării inactivității temporare/suspendării, se mențin."
-— Legea 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^1), (4^3), (4^4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^1), (4^3), (4^4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Aplicat la D112 (declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate):
@@ -33,6 +33,6 @@ Aplicat la D112 (declarația privind obligațiile de plată a contribuțiilor so
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu detectează automat** mențiunea de inactivitate temporară a firmei și nu suspendă generarea sau scadențarea D112 pe baza acestui statut — nu există în cod nicio verificare de acest tip în modulul D112 (`core/d112.py`). Declarația se generează pe baza datelor din statul de plată introduse de utilizator, indiferent de statutul firmei la registrul comerțului; decizia de a opri sau nu depunerea rămâne, pentru moment, în responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu detectează automat** mențiunea de inactivitate temporară a firmei și nu suspendă generarea sau scadențarea D112 pe baza acestui statut — nu există în cod nicio verificare de acest tip în modulul D112. Declarația se generează pe baza datelor din statul de plată introduse de utilizator, indiferent de statutul firmei la registrul comerțului; decizia de a opri sau nu depunerea rămâne, pentru moment, în responsabilitatea contabilului.
 
 [iConta.eu](/)

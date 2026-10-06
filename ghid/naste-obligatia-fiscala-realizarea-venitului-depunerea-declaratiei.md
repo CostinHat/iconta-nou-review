@@ -16,18 +16,18 @@ Distincția are efecte practice concrete: de când poate organul fiscal stabili 
 
 ::: ghid-temei
 „(1) Dacă legea nu prevede altfel, dreptul de creanță fiscală și obligația fiscală corelativă se nasc în momentul în care, potrivit legii, se constituie baza de impozitare care le generează sau în momentul la care contribuabilul/plătitorul este îndreptățit, potrivit legii, să ceară restituirea. (2) Potrivit alin. (1), se naște dreptul organului fiscal de a stabili și a determina obligația fiscală datorată sau dreptul contribuabilului/plătitorului de a solicita restituirea."
-— Codul de procedură fiscală (Legea 207/2015), art. 21 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 21 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(2) Creanțele fiscale se stabilesc astfel: a) prin declarație de impunere, în condițiile art. 95 alin. (4) și art. 102 alin. (2); b) prin decizie de impunere emisă de organul fiscal, în celelalte cazuri."
-— Codul de procedură fiscală (Legea 207/2015), art. 93 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 93 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Nedepunerea declarației de impunere dă dreptul organului fiscal să procedeze la stabilirea din oficiu a creanțelor fiscale prin decizie de impunere."
-— Codul de procedură fiscală (Legea 207/2015), art. 107 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 107 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Creanțele fiscale sunt scadente la expirarea termenelor prevăzute de Codul fiscal sau de alte legi care le reglementează."
-— Codul de procedură fiscală (Legea 207/2015), art. 154 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 154 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Trei momente distincte:

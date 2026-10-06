@@ -16,12 +16,12 @@ Mecanismul face ca rezultatul economic al bunurilor din fiducie să ajungă fisc
 
 ::: ghid-temei
 „fiduciarul va conduce o evidență contabilă separată pentru masa patrimonială fiduciară și va transmite trimestrial către constituitor, pe bază de decont, veniturile și cheltuielile rezultate din administrarea patrimoniului conform contractului"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul contractelor de fiducie, încheiate conform dispozițiilor Codului civil, în care constituitorul are și calitatea de beneficiar, se aplică următoarele reguli:"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează:

@@ -15,7 +15,7 @@ Ordinea normală — livrare, apoi factură — nu schimbă regula de bază a TV
 ::: ghid-temei
 „(1) Exigibilitatea taxei intervine la data la care are loc faptul generator.
 (2) Prin excepție de la prevederile alin. (1), exigibilitatea taxei intervine: a) la data emiterii unei facturi, înainte de data la care intervine faptul generator;"
-— Legea nr. 227/2015 (Codul fiscal), art. 282 alin. (1), (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 282 alin. (1), (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text pentru cazul unei facturi emise după livrare:
@@ -33,6 +33,6 @@ Ce rezultă din text pentru cazul unei facturi emise după livrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează TVA colectată pe baza datelor introduse la emiterea facturii (`core/facturi.py`, `core/facturi_api.py`) și gestionează separat regimul TVA la încasare, acolo unde e aplicabil, prin modulele `core/cota_tva_incasare.py` și `core/tva_incasare.py` (funcția `tva_exigibil_alocari`). Pentru firmele care nu aplică TVA la încasare, corectitudinea raportării TVA în luna faptului generator — și nu în luna facturii, dacă acestea diferă — depinde de data introdusă manual ca dată a livrării/prestării la fiecare factură; aplicația nu deduce automat data faptului generator dintr-un alt document (aviz de expediție, proces-verbal de recepție) decât dacă aceasta e introdusă explicit de utilizator.
+La data acestui ghid, iConta.eu calculează TVA colectată pe baza datelor introduse la emiterea facturii și gestionează separat regimul TVA la încasare, acolo unde e aplicabil, prin aplicație (funcția `tva_exigibil_alocari`). Pentru firmele care nu aplică TVA la încasare, corectitudinea raportării TVA în luna faptului generator — și nu în luna facturii, dacă acestea diferă — depinde de data introdusă manual ca dată a livrării/prestării la fiecare factură; aplicația nu deduce automat data faptului generator dintr-un alt document (aviz de expediție, proces-verbal de recepție) decât dacă aceasta e introdusă explicit de utilizator.
 
 [iConta.eu](/)

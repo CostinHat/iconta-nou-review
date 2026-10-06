@@ -16,18 +16,18 @@ Contează și termenul. Notificarea de conformare îți dă 30 de zile de la com
 
 ::: ghid-temei
 „Declarația depusă inițial se rectifică prin depunerea unei noi declarații, pe același format, bifând căsuța corespunzătoare de pe formular. În declarația rectificativă se completează toate rubricile formularului cu datele valabile la momentul declarării, indiferent dacă acestea au mai fost declarate."
-— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 
 „Se completează câte o declarație rectificativă pentru fiecare perioadă de raportare pentru care se operează rectificări."
-— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 
 „Căsuța «Declarație rectificativă ca urmare a unei notificări de conformare» se bifează în situația în care rectificarea datelor declarate anterior se efectuează ca urmare a unei notificări de conformare"
-— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2, cap. I „Felul declarației" (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 ::: ghid-temei
 „(2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale."
-— Codul de procedură fiscală (Legea 207/2015), art. 121^1 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 121^1 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii:

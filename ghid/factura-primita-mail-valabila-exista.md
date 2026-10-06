@@ -14,7 +14,7 @@ Multe firme încă primesc, în paralel cu factura din RO e-Factura, o copie pe 
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura și factura electronică în România [...]."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (1^1), introdus prin Legea 296/2023 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Răspunsul e clar din text: în relația B2B dintre firme stabilite în România, **doar factura transmisă prin sistemul RO e-Factura are calitatea de „factură"** din punct de vedere fiscal.
@@ -32,6 +32,6 @@ Răspunsul e clar din text: în relația B2B dintre firme stabilite în România
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are integrare completă cu sistemul RO e-Factura — trimitere, primire și descărcare automată prin conectorul SPV (`core/spv_conector.py`, `core/spv_receive.py`, `core/efactura_import.py`, `core/efactura_send.py`). Facturile procesate de aplicație provin din acest canal, tocmai facturile cu valoare fiscală potrivit art. 319 alin. (1^1) din Codul fiscal — nu din copiile trimise pe e-mail, care rămân în afara fluxului aplicației.
+La data acestui ghid, iConta.eu are integrare completă cu sistemul RO e-Factura — trimitere, primire și descărcare automată prin conectorul SPV. Facturile procesate de aplicație provin din acest canal, tocmai facturile cu valoare fiscală potrivit art. 319 alin. (1^1) din Codul fiscal — nu din copiile trimise pe e-mail, care rămân în afara fluxului aplicației.
 
 [iConta.eu](/)

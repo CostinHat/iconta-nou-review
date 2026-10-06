@@ -40,6 +40,6 @@ Un PFA încasează pe 20 decembrie 2026 un avans de 6.000 lei pentru un proiect 
 
 ## Ce face iConta.eu
 
-În `core/rip_api.py`, orice sumă încasată se înregistrează ca operațiune de tip `incasare`, cu categoria `activitate` din lista validă `CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}`. Validarea (`_valideaza`) cere obligatoriu tip, metodă (numerar/bancă), sumă pozitivă, dată și explicație pentru fiecare operațiune — inclusiv pentru un avans, care se înregistrează la data efectivă a încasării, exact așa cum cere regula cash-basis. Când plata vine prin bancă, `import_banca` generează automat o ciornă din extrasul bancar (categorie propusă implicit `activitate`), pe care contabilul o validează, confirmând astfel data și suma exactă a avansului.
+În aplicația, orice sumă încasată se înregistrează ca operațiune de tip `incasare`, cu categoria `activitate` din lista validă `CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}`. Validarea (`_valideaza`) cere obligatoriu tip, metodă (numerar/bancă), sumă pozitivă, dată și explicație pentru fiecare operațiune — inclusiv pentru un avans, care se înregistrează la data efectivă a încasării, exact așa cum cere regula cash-basis. Când plata vine prin bancă, `import_banca` generează automat o ciornă din extrasul bancar (categorie propusă implicit `activitate`), pe care contabilul o validează, confirmând astfel data și suma exactă a avansului.
 
 [iConta.eu](/)

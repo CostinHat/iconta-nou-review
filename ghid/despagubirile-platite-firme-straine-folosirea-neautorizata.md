@@ -16,20 +16,20 @@ Consecința practică: pe suma plătită se reține impozit la sursă, ca la ori
 
 ::: ghid-temei
 „(1) Termenul redevență cuprinde orice sumă care trebuie plătită în bani sau în natură pentru folosirea sau dreptul de a folosi orice proprietate sau drept prevăzut la art. 7 pct. 36 din Codul fiscal, indiferent dacă suma trebuie plătită conform unui contract sau ca urmare a copierii ilegale sau a încălcării drepturilor legale ale unei alte persoane."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Se consideră redevență plățile de orice natură primite pentru folosirea ori dreptul de folosință al oricăruia dintre următoarele"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „orice brevet, invenție, inovație, licență, marcă de comerț sau de fabrică, franciză, proiect, desen, model, plan, schiță, formulă secretă sau procedeu de fabricație ori software;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt enumerate la art. 223 alin. (1)"
-— Legea 227/2015 (Codul fiscal), art. 224 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 224 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal în vigoare vorbește despre „plățile de orice natură" pentru folosirea drepturilor enumerate: drepturi de autor, mărci, brevete, software, know-how și altele. Normele precizează că în această definiție intră și plățile care decurg dintr-o încălcare a drepturilor. Ce înseamnă concret:

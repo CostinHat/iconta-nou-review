@@ -15,7 +15,7 @@ O solicitare de informații venită de la ANAF nu e o simplă formalitate de ign
 ::: ghid-temei
 „(1) Constituie contravenții următoarele fapte [...]: h) nefurnizarea la termen de către contribuabil/plătitor a informațiilor periodice solicitate de organul fiscal potrivit art. 59; [...]
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: [...] c) cu amendă de la 12.000 lei la 14.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 2.000 lei la 3.500 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. e) - h)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. h) și alin. (2) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. h) și alin. (2) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text:
@@ -33,6 +33,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcționalitate care să urmărească solicitările de informații primite de la ANAF** sau termenele de răspuns la acestea, conform art. 59. Aplicația generează și urmărește termenele declarațiilor fiscale periodice standard (D100, D112, D300 etc., prin `core/control_fiscal_api.py`), dar o solicitare punctuală venită direct de la organul fiscal, în afara acestor declarații standard, nu e captată sau semnalată de aplicație. Urmărirea și respectarea termenului de răspuns rămân, la acest moment, în sarcina contribuabilului.
+La data acestui ghid, iConta.eu **nu are o funcționalitate care să urmărească solicitările de informații primite de la ANAF** sau termenele de răspuns la acestea, conform art. 59. Aplicația generează și urmărește termenele declarațiilor fiscale periodice standard (D100, D112, D300 etc., prin aplicație), dar o solicitare punctuală venită direct de la organul fiscal, în afara acestor declarații standard, nu e captată sau semnalată de aplicație. Urmărirea și respectarea termenului de răspuns rămân, la acest moment, în sarcina contribuabilului.
 
 [iConta.eu](/)

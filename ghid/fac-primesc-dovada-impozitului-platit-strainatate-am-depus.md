@@ -16,12 +16,12 @@ Până la sosirea dovezii, D101 se depune la termen fără credit fiscal extern,
 
 ::: ghid-temei
 „Documentul pe baza căruia se calculează deducerea din impozitul pe profit datorat în România, potrivit dispozițiilor acestui articol, este cel care atestă plata, confirmat de autoritatea fiscală străină. În cazul în care documentul pe baza căruia se calculează deducerea din impozitul pe profit datorat în România este prezentat după depunerea la autoritățile fiscale a declarației privind impozitul pe profit, creditul fiscal se acordă pentru anul la care se referă, prin depunerea, în acest sens, a unei declarații rectificative.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 39 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Creditul se acordă din impozitul pe profit calculat pentru anul în care impozitul a fost plătit statului străin. Plata impozitului în străinătate se dovedește printr-un document justificativ, eliberat de autoritatea competentă a statului străin sau de către plătitorul de venit/agentul care reține la sursă impozitul în situația în care autoritatea competentă a statului străin nu eliberează un astfel de document.”
-— Codul fiscal (Legea 227/2015), art. 39 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 39 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, pe scurt:

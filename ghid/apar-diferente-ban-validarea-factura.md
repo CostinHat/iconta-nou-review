@@ -14,7 +14,7 @@ O factură pare corectă — totalul, cota de TVA, sumele adunate manual dau bin
 
 ::: ghid-temei
 „Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%."; regula generală de determinare a bazei de impozitare a TVA rezultă din art. 286-290 din Codul fiscal, fără ca legea sau normele metodologice să stabilească explicit o toleranță de rotunjire pentru facturile electronice. Standardul tehnic de rotunjire (calcul pe linie vs. calcul pe total document) e o regulă de structură a facturii electronice (EN 16931 / RO_CIUS), nu o normă fiscală de sine stătătoare.
-— Legea 227/2015 (Codul fiscal), art. 291 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt); structura tehnică a facturii electronice, OUG 120/2021
+— Legea 227/2015 (Codul fiscal), art. 291 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)); structura tehnică a facturii electronice, OUG 120/2021
 :::
 
 De ce apare, tehnic, diferența de un ban:

@@ -40,6 +40,6 @@ Alocarea automată (verde, potrivire exactă) nu contabilizează singură nota �
 
 ## Ce face iConta.eu
 
-Motorul de reconciliere (`core/reconciliere.py`) caută automat potrivirea exactă sau pe combinație de facturi ale clientului identificat pe linia de extras, iar contabilizarea efectivă (`core/reconciliere_api.py`) se face la confirmarea „Contează", cu formula debit 5121/5124, credit 4111. Dacă firma aplică TVA la încasare, TVA-ul exigibil se calculează automat, separat pentru fiecare alocare.
+Motorul de reconciliere caută automat potrivirea exactă sau pe combinație de facturi ale clientului identificat pe linia de extras, iar contabilizarea efectivă se face la confirmarea „Contează", cu formula debit 5121/5124, credit 4111. Dacă firma aplică TVA la încasare, TVA-ul exigibil se calculează automat, separat pentru fiecare alocare.
 
 [iConta.eu](/)

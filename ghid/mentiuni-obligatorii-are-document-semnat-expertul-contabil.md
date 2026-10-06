@@ -16,10 +16,10 @@ Contează pentru că organul fiscal trebuie să poată identifica fără echivoc
 
 ::: ghid-temei
 „Ori de câte ori contribuabilul/plătitorul depune la organul fiscal un document semnat de către o persoană fizică sau juridică care exercită activități specifice unor profesii reglementate cum ar fi consultanță fiscală, audit financiar, expertiză contabilă, evaluare, documentul trebuie să conțină în mod obligatoriu și numele și prenumele sau denumirea persoanei în cauză, precum și codul de identificare fiscală al acesteia atribuit de organul fiscal competent."
-— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în cazul în care legea prevede depunerea de către contribuabil/plătitor de copii ale unor documente, acestea trebuie certificate de contribuabil/plătitor pentru conformitate cu originalul."
-— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

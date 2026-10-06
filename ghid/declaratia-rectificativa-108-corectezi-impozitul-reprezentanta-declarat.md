@@ -16,20 +16,20 @@ Rectificativa trebuie să conțină suma corectă, nu doar diferența. Pentru di
 
 ::: ghid-temei
 „În cazul în care se corectează declarația depusă inițial, declarația rectificativă se întocmește pe același model de formular, înscriind „X“ în rubrica „Declarație rectificativă“. În situația în care se corectează declarația depusă în cazul înființării sau desființării reprezentanței se bifează atât rubrica „Declarație rectificativă“, cât și rubrica „Declarație privind impozitul datorat pentru anul în care se înființează reprezentanța“ sau rubrica „Declarație privind impozitul datorat pentru anul în care se desființează reprezentanța“, după caz."
-— OPANAF 3391/2017, Anexa nr. 2, pct. 4 (sursă: anaf_surse/ordin_3391_2017.html)
+— OPANAF 3391/2017, Anexa nr. 2, pct. 4 (sursă: [OPANAF nr. 3391/2017 pentru aprobarea formularului 108](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_3391_2017.pdf))
 :::
 
 ::: ghid-temei
 „Impozitul pe reprezentanță pentru un an fiscal este de 18.000 lei."
-— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale."
-— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru diferențele suplimentare de creanțe fiscale rezultate din corectarea declarațiilor sau modificarea unei decizii de impunere, dobânzile se datorează începând cu ziua imediat următoare scadenței creanței fiscale pentru care s-a stabilit diferența și până la data stingerii acesteia, inclusiv."
-— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 174 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum procedezi:

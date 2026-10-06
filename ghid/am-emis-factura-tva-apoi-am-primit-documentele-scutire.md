@@ -16,12 +16,12 @@ Contează în practică pentru că TVA-ul colectat în plus nu se pierde. Prin c
 
 ::: ghid-temei
 „În situația în care o persoană impozabilă a emis facturi aplicând regimul de taxare și ulterior intră în posesia documentelor justificative care îi dau dreptul la aplicarea unei scutiri de taxă pe valoarea adăugată prevăzute la art. 294, 295 sau 296 din Codul fiscal, aceasta poate corecta facturile emise, potrivit art. 330 alin. (1) lit. b) din Codul fiscal, aplicând regimul de scutire corespunzător operațiunilor realizate."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „în cazul în care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă, pe de o parte, informațiile din factura inițială, numărul și data facturii corectate, valorile cu semnul minus sau, după caz, o mențiune din care să rezulte că valorile respective sunt negative, iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus"
-— Codul fiscal (Legea 227/2015), art. 330 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 330 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

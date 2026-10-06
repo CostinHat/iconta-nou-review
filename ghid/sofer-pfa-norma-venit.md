@@ -14,10 +14,10 @@ Activitățile de transport prestate de un șofer PFA (transport de persoane sau
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dacă un contribuabil desfășoară două sau mai multe activități care generează venituri din activități independente, altele decât venituri din profesii liberale, definite la art. 67 alin. (2), venitul net din aceste activități se stabilește de către contribuabil prin însumarea nivelului normelor de venit corespunzătoare fiecărei activități."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aspecte relevante pentru un șofer PFA:

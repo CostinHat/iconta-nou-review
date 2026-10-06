@@ -32,6 +32,6 @@ Se recalculează baza corectă pentru trimestrul afectat (venituri conform 70x+7
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: baza impozabilă micro calculată de aplicație (`core/repo_d100.py`) include întreaga clasă de conturi 76x (venituri financiare), fără o excludere explicită a conturilor 765/766 pentru diferențele de curs valutar cerute de art. 53 alin. (1) lit. h)/i). Dacă firma are astfel de venituri semnificative în 76x, verificați manual dacă au fost corect excluse din baza declarată — dacă nu, corecția se face prin ecranul formularului 710 (`core/d710.py`), cu suma recalculată corect.
+Verificat direct în cod: baza impozabilă micro calculată de aplicație include întreaga clasă de conturi 76x (venituri financiare), fără o excludere explicită a conturilor 765/766 pentru diferențele de curs valutar cerute de art. 53 alin. (1) lit. h)/i). Dacă firma are astfel de venituri semnificative în 76x, verificați manual dacă au fost corect excluse din baza declarată — dacă nu, corecția se face prin ecranul formularului 710, cu suma recalculată corect.
 
 [iConta.eu](/)

@@ -16,7 +16,7 @@ Formula legii, „după caz", înseamnă că actualizarea e necesară când noua
 
 ::: ghid-temei
 „(1) În termen de 30 de zile calendaristice de la aprobarea bugetelor prevăzute la art. 1 alin. (2) , precum și de la aprobarea rectificărilor bugetare, ordonatorii de credite au obligația de a notifica prestatorilor, executanților și furnizorilor cu care au încheiate contracte valoarea maximă în limita căreia se pot executa lucrări, presta servicii și livra bunuri, valoare calculată ca diferență dintre creditele bugetare și sumele aferente plăților restante. (2) Ordonatorii de credite au obligația de a întocmi și de a actualiza, după caz, împreună cu prestatorii, executanții și furnizorii, graficele de execuție/livrare atât fizice, cât și valorice, anexe la contracte, aferente anului bugetar, în funcție de valoarea maximă calculată conform alin. (1) ."
-— Legea 273/2006 privind finanțele publice locale, art. 4^1 alin. (1)-(2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 4^1 alin. (1)-(2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

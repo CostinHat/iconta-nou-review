@@ -14,10 +14,10 @@ Asociațiile și fundațiile sunt ambele persoane juridice de drept privat făr�
 
 ::: ghid-temei
 „Asociația este subiectul de drept privat constituit de trei sau mai multe persoane care, pe baza unei înțelegeri, pun în comun și fără drept de restituire contribuția materială, cunoștințele sau aportul lor în muncă pentru realizarea unor activități în interes general, al unor colectivități sau, după caz, în interesul lor personal nepatrimonial."
-— Ordonanța Guvernului nr. 26/2000 cu privire la asociații și fundații, art. 4 alin. (1) (sursă: anaf_surse/og_26_2000_asociatii_fundatii.txt)
+— Ordonanța Guvernului nr. 26/2000 cu privire la asociații și fundații, art. 4 alin. (1) (sursă: [OG nr. 26/2000 cu privire la asociații și fundații](https://legislatie.just.ro/Public/DetaliiDocument/20740))
 
 „Fundația este subiectul de drept înființat de una sau mai multe persoane care, pe baza unui act juridic între vii ori pentru cauză de moarte, constituie un patrimoniu afectat, în mod permanent și irevocabil, realizării unui scop de interes general sau, după caz, al unor colectivități. Activul patrimonial inițial al fundației trebuie să includă bunuri în natură sau în numerar, a căror valoare totală să fie de cel puțin de 10 ori salariul de bază minim brut pe țară garantat în plată, la data constituirii fundației."
-— Ordonanța Guvernului nr. 26/2000, art. 15 alin. (1)-(2) (sursă: anaf_surse/og_26_2000_asociatii_fundatii.txt)
+— Ordonanța Guvernului nr. 26/2000, art. 15 alin. (1)-(2) (sursă: [OG nr. 26/2000 cu privire la asociații și fundații](https://legislatie.just.ro/Public/DetaliiDocument/20740))
 :::
 
 Diferențele principale rezultate direct din text:
@@ -37,6 +37,6 @@ Diferențele principale rezultate direct din text:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat contabilității organizațiilor non-profit (`core/ong.py`, construit pe OMFP 3103/2017 și art. 15 alin. (2)-(3) din Codul fiscal), care separă evidența veniturilor fără scop patrimonial (cotizații, donații, sponsorizări) de cea a eventualelor activități economice, și calculează scutirea de impozit pe profit pentru veniturile economice sub pragul legal. Aplicația nu are însă un „asistent de înființare" care să ajute la alegerea între asociație și fundație — decizia rămâne una juridică, luată înainte de înregistrarea entității, iar iConta.eu intervine ulterior, în gestiunea contabilă curentă a organizației deja înființate.
+iConta.eu are un modul dedicat contabilității organizațiilor non-profit (construit pe OMFP 3103/2017 și art. 15 alin. (2)-(3) din Codul fiscal), care separă evidența veniturilor fără scop patrimonial (cotizații, donații, sponsorizări) de cea a eventualelor activități economice, și calculează scutirea de impozit pe profit pentru veniturile economice sub pragul legal. Aplicația nu are însă un „asistent de înființare" care să ajute la alegerea între asociație și fundație — decizia rămâne una juridică, luată înainte de înregistrarea entității, iar iConta.eu intervine ulterior, în gestiunea contabilă curentă a organizației deja înființate.
 
 [iConta.eu](/)

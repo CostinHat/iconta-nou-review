@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Articolul 22 Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare."
-— Legea contabilității nr. 82/1991, art. 22 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 22 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Balanța de verificare lunară e instrumentul legal prin care o firmă confirmă că înregistrările contabile sunt corecte — și, implicit, baza pe care se calculează sumele declarate ulterior la ANAF.

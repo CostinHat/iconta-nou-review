@@ -30,6 +30,6 @@ Stornarea (corecția prin sume negative, în același exercițiu financiar) nu r
 
 ## Ce face iConta.eu
 
-Validarea cotei (`core/common.py`, funcția `cota_ceruta`) cere obligatoriu data operațiunii și verifică cota introdusă față de cotele legale valabile **la acea dată**, nu la data curentă — o cotă existentă doar în altă perioadă e respinsă explicit, cu mesaj care citează art. 291. Testele interne confirmă mecanic acest comportament: 19% e acceptat pe o operațiune din iunie 2024, dar respins dacă e declarat pe o operațiune de azi. Funcția de stornare (`core/facturi.py`, `storno()`) inversează doar semnul sumelor de pe notele contabile originale, fără să recalculeze cota.
+Validarea cotei (funcția `cota_ceruta`) cere obligatoriu data operațiunii și verifică cota introdusă față de cotele legale valabile **la acea dată**, nu la data curentă — o cotă existentă doar în altă perioadă e respinsă explicit, cu mesaj care citează art. 291. Testele interne confirmă mecanic acest comportament: 19% e acceptat pe o operațiune din iunie 2024, dar respins dacă e declarat pe o operațiune de azi. Funcția de stornare (`storno()`) inversează doar semnul sumelor de pe notele contabile originale, fără să recalculeze cota.
 
 [iConta.eu](/)

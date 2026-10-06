@@ -14,10 +14,10 @@ Un SRL nou-înființat poate alege, în anumite condiții, între impozitul pe v
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Codul fiscal (Legea 227/2015), art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce contează într-o simulare corectă:

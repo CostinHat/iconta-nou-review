@@ -14,7 +14,7 @@ Când veniturile cumulate ale unei microîntreprinderi depășesc, în cursul an
 
 ::: ghid-temei
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea nr. 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Trecerea la impozit pe profit e obligatorie și imediată**, din trimestrul depășirii — nu e o opțiune și nu se poate amâna la finalul anului.
@@ -29,6 +29,6 @@ Când veniturile cumulate ale unei microîntreprinderi depășesc, în cursul an
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro în cursul anului. Modulul `core/control_fiscal_api.py` tratează regimul fiscal (`regim_fiscal`) ca pe un câmp declarat manual de utilizator, la Date firmă, și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate detecta singură momentul depășirii și nici trimestrul din care ar trebui calculat impozitul pe profit. Comutarea efectivă a regimului de calcul, inclusiv separarea veniturilor și cheltuielilor pe trimestrul depășirii, rămâne integral responsabilitatea contabilului, care actualizează manual regimul fiscal declarat.
+La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro în cursul anului. Aplicația tratează regimul fiscal (`regim_fiscal`) ca pe un câmp declarat manual de utilizator, la Date firmă, și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate detecta singură momentul depășirii și nici trimestrul din care ar trebui calculat impozitul pe profit. Comutarea efectivă a regimului de calcul, inclusiv separarea veniturilor și cheltuielilor pe trimestrul depășirii, rămâne integral responsabilitatea contabilului, care actualizează manual regimul fiscal declarat.
 
 [iConta.eu](/)

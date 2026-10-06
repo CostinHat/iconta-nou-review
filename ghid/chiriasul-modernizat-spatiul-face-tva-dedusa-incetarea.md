@@ -17,15 +17,15 @@ Chiriașul a făcut în spațiul închiriat o modernizare de cel puțin 20% din 
 
 ::: ghid-temei
 „Operațiunile de transformare sau modernizare a bunurilor imobile/părților de bunuri imobile care sunt considerate bunuri de capital conform lit. a) […] efectuate de beneficiarul unui astfel de contract, aparțin beneficiarului până la sfârșitul contractului respectiv;"
-— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „ajustarea se efectuează în perioada fiscală în care intervine evenimentul care generează ajustarea și se realizează pentru toată taxa aferentă perioadei rămase din perioada de ajustare, incluzând anul în care apare obligația ajustării;"
-— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 305 alin. (5) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(13) În situația în care în cursul perioadei de ajustare prevăzute la art. 305 alin. (2) din Codul fiscal expiră contractul de închiriere, leasing, concesionare sau orice alt tip de contract prin care bunul imobil ori o parte a acestuia a fost pus/pusă la dispoziția altei persoane și bunul de capital este restituit proprietarului sau persoanei care a pus bunul la dispoziție, se consideră că bunul de capital constând în modernizările/ transformările efectuate conform alin. (7) își încetează existența în cadrul activității economice a persoanei impozabile care a utilizat bunul respectiv, conform art. 305 alin. (4) lit. d) din Codul fiscal. Ajustarea deducerii aferente operațiunilor de transformare sau modernizare se realizează pentru toată taxa aferentă perioadei rămase din perioada de ajustare, incluzând anul în care bunul este restituit proprietarului, în conformitate cu prevederile art. 305 alin. (5) lit. c) din Codul fiscal. Dacă lucrările de modernizare/transformare sunt transferate cu titlu oneros proprietarului sau persoanei care a pus bunul la dispoziție, se aplică prevederile art. 305 alin. (4) lit. d) pct. 1 din Codul fiscal, respectiv nu se mai efectuează ajustarea taxei."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 79 alin. (13) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 79 alin. (13) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pașii de verificat:

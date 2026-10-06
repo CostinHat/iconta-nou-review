@@ -23,11 +23,11 @@ Aceste limite sunt cadrul general. Fiecare act sancționator își stabilește p
 
 ::: ghid-temei
 „(2) Limita minimă a amenzii contravenționale este de 25 lei […] iar limita maximă nu poate depăși: a) 100.000 lei […] în cazul contravențiilor stabilite prin lege și ordonanța; […] b) 50.000 […] lei, în cazul contravențiilor stabilite prin hotărâri ale Guvernului; […] c) 10.000 lei, în cazul contravențiilor stabilite prin hotărâri ale consiliilor județene ori ale Consiliului General al Municipiului București;"
-— OG 2/2001, art. 8 alin. (2) lit. a)-c) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 8 alin. (2) lit. a)-c) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „d) 5.000 lei, în cazul contravențiilor stabilite prin hotărâri ale consiliilor locale ale comunelor, orașelor, municipiilor și ale sectoarelor municipiului București."
-— OG 2/2001, art. 8 alin. (2) lit. d) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 8 alin. (2) lit. d) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(1) Actele normative prin care se stabilesc contravenții vor cuprinde descrierea faptelor ce constituie contravenții și sancțiunea ce urmează să se aplice pentru fiecare dintre acestea; în cazul sancțiunii cu amendă se vor stabili limita minimă și maximă a acesteia sau, după caz, cote procentuale din anumite valori;"
-— OG 2/2001, art. 3 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 3 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

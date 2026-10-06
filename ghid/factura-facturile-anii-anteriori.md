@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(2) Sistemul naţional privind factura electronică RO e-Factura reprezintă ansamblul de principii, reguli şi aplicaţii informatice având drept scop primirea facturii electronice de la emitent [...], stocarea prin mijloace electronice a facturilor şi transmiterea către destinatar.
 (3) Sistemul naţional privind factura electronică RO e-Factura devine operaţional în termen de maximum 30 de zile de la data intrării în vigoare a prezentei ordonanţe de urgenţă."
-— OUG 120/2021, art. 3 alin. (2)-(3) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 3 alin. (2)-(3) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce rezultă, chiar dacă textul exact al momentelor de operaționalizare pentru fiecare categorie de contribuabili nu e reprodus integral aici:
@@ -34,6 +34,6 @@ Ce rezultă, chiar dacă textul exact al momentelor de operaționalizare pentru 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **transmite prin RO e-Factura facturile emise curent din aplicație** (module `core/efactura_send.py`, `core/efactura_trimitere.py`), potrivit obligației aplicabile la data emiterii. Aplicația **nu retransmite prin sistem facturi vechi**, emise înainte de introducerea fluxului de e-Factura în iConta — acestea rămân în evidența contabilă, în forma în care au fost emise atunci.
+La data acestui ghid, iConta.eu **transmite prin RO e-Factura facturile emise curent din aplicație** (module aplicația), potrivit obligației aplicabile la data emiterii. Aplicația **nu retransmite prin sistem facturi vechi**, emise înainte de introducerea fluxului de e-Factura în iConta — acestea rămân în evidența contabilă, în forma în care au fost emise atunci.
 
 [iConta.eu](/)

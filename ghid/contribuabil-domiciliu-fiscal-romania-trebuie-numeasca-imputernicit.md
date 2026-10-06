@@ -16,18 +16,18 @@ Consecința nerespectării nu e doar o neregulă formală. Dacă nu există împ
 
 ::: ghid-temei
 „(4) Contribuabilul/Plătitorul fără domiciliu fiscal în România, care are obligația de a depune declarații la organul fiscal, trebuie să desemneze un împuternicit, cu domiciliul fiscal în România, care să îndeplinească, în numele și din patrimoniul contribuabilului/plătitorului, obligațiile acestuia din urmă față de organul fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 18 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 18 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Dispozițiile alin. (4) nu se aplică: a) contribuabilului/plătitorului care are rezidența într-un stat membru al Uniunii Europene, respectiv al Spațiului Economic European; b) contribuabilului/plătitorului care are rezidența într-un stat care este parte a unui instrument juridic internațional semnat de România și care cuprinde prevederi privind cooperarea administrativă în domeniul fiscal și recuperarea creanțelor fiscale. c) contribuabilului/plătitorului care comunică cu organele fiscale prin mijloace electronice de transmitere la distanță potrivit art. 79."
-— Codul de procedură fiscală (Legea 207/2015), art. 18 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 18 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „a) contribuabilul/plătitorul fără domiciliu fiscal în România, care nu și-a îndeplinit obligația de desemnare a unui împuternicit potrivit art. 18 alin. (4);"
-— Codul de procedură fiscală (Legea 207/2015), art. 19 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 19 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) Pentru activitatea sa, curatorul fiscal este remunerat potrivit hotărârii judecătorești, toate cheltuielile legate de această reprezentare fiind suportate de cel reprezentat."
-— Codul de procedură fiscală (Legea 207/2015), art. 19 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 19 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Când apare obligația:

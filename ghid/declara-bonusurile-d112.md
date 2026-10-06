@@ -14,7 +14,7 @@ Un bonus plătit unui angajat nu e o categorie unică în declarația D112 — s
 
 ::: ghid-temei
 „20.Prima/Bonus de natura ocazionala [...] 40.Prima/Bonus prev.prin Contract Colectiv de Munca"
-— Structura declarației D112, nomenclatorul elementelor de venit (sursă: anaf_surse/d112_struct_anaf.txt)
+— Structura declarației D112, nomenclatorul elementelor de venit (sursă: [Structura fișierului XML pentru declarația D112, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D112_0126_300326.pdf))
 :::
 
 Ce trebuie reținut din structura oficială:

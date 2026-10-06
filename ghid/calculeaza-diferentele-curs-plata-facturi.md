@@ -14,7 +14,7 @@ Când plătești o factură în valută la un curs diferit de cel la care ai în
 
 ::: ghid-temei
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Formula de calcul: diferența = valoarea în valută × (cursul de la decontare − cursul de la înregistrare, sau ultimul curs de evidență, dacă factura a mai fost reevaluată între timp).
@@ -30,6 +30,6 @@ Când plătești o factură în valută la un curs diferit de cel la care ai în
 
 ## Ce face iConta.eu
 
-Această operațiune corespunde exact rutei de decontare din iConta.eu: din ecranul **Operațiuni speciale → Decontare în valută**, completezi tipul (creanță sau datorie), valoarea în valută, moneda și cursul de evidență; aplicația ia automat cursul BNR al zilei din `core/curs_bnr.py` și, prin `core/diferente_curs.py`, calculează diferența cu regula de semn corectă pe tip (creanță/disponibil câștigă la curs în creștere, datorie pierde), generând o notă-ciornă cu linia principală și linia de diferență pe 665 sau 765. Motorul e testat unitar (`test_diferente_curs.py`, 11 teste). O limită de reținut: ecranul de decontare nu are câmp pentru contul de bancă/casierie — toate decontările se înregistrează implicit pe contul 5124, indiferent prin ce cont a avut loc efectiv plata.
+Această operațiune corespunde exact rutei de decontare din iConta.eu: din ecranul **Operațiuni speciale → Decontare în valută**, completezi tipul (creanță sau datorie), valoarea în valută, moneda și cursul de evidență; aplicația ia automat cursul BNR al zilei din aplicație și, prin aplicație, calculează diferența cu regula de semn corectă pe tip (creanță/disponibil câștigă la curs în creștere, datorie pierde), generând o notă-ciornă cu linia principală și linia de diferență pe 665 sau 765. Motorul e testat unitar (`test_diferente_curs.py`, 11 teste). O limită de reținut: ecranul de decontare nu are câmp pentru contul de bancă/casierie — toate decontările se înregistrează implicit pe contul 5124, indiferent prin ce cont a avut loc efectiv plata.
 
 [iConta.eu](/)

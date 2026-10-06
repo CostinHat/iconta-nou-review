@@ -16,7 +16,7 @@ Ceea ce în piață se numește „control de fond" este, în termeni legali, **
 „ART. 115 Formele și întinderea inspecției fiscale
 (1) Formele de inspecție fiscală sunt: a) inspecția fiscală generală, care reprezintă activitatea de verificare a modului de îndeplinire a tuturor obligațiilor fiscale și a altor obligații prevăzute de legislația fiscală și contabilă ce revin unui contribuabil/plătitor, pentru o perioadă de timp determinată; b) inspecția fiscală parțială, care reprezintă activitatea de verificare a modului de îndeplinire a uneia sau mai multor obligații fiscale [...]
 (2) Organul de inspecție fiscală decide asupra efectuării unei inspecții fiscale generale sau parțiale, pe baza analizei de risc."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 115 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 115 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce presupune, concret, pregătirea pentru o astfel de verificare, potrivit obiectului inspecției fiscale (art. 113):

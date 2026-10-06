@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(2) Sumele virate sau depuse la bănci ori prin mandat poștal, pe bază de documente prezentate entității și neapărute încă în extrasele de cont, se înregistrează distinct în contabilitate (contul 5125 «Sume în curs de decontare»)."
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 302 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 302 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la un transfer din PayPal către contul bancar al firmei:
@@ -32,6 +32,6 @@ Aplicat la un transfer din PayPal către contul bancar al firmei:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează operațiunile bancare prin modulul `core/banca.py` și importul extraselor de cont prin `core/banca_parser.py`, dar **nu are un conector dedicat pentru PayPal** sau alte instituții de plată electronică. Înregistrarea sumelor aflate „în tranzit" între retragerea din PayPal și apariția lor în extrasul bancar — inclusiv folosirea contului 5125 și calculul eventualelor diferențe de curs — se face manual, prin notele contabile introduse de utilizator, pe baza documentelor de confirmare emise de platformă.
+La data acestui ghid, iConta.eu gestionează operațiunile bancare prin aplicație și importul extraselor de cont prin aplicație, dar **nu are un conector dedicat pentru PayPal** sau alte instituții de plată electronică. Înregistrarea sumelor aflate „în tranzit" între retragerea din PayPal și apariția lor în extrasul bancar — inclusiv folosirea contului 5125 și calculul eventualelor diferențe de curs — se face manual, prin notele contabile introduse de utilizator, pe baza documentelor de confirmare emise de platformă.
 
 [iConta.eu](/)

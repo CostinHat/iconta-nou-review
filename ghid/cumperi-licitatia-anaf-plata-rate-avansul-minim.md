@@ -16,13 +16,13 @@ Pentru o firmă care cumpără un imobil sau un utilaj scump, ratele pot face ac
 
 ::: ghid-temei
 „În cazul vânzării la licitație a bunurilor, cumpărătorii pot solicita plata prețului în rate, cu un avans de minimum 50% din prețul de adjudecare a bunului și cu plata unei dobânzi sau majorări de [...] întârziere, după caz, stabilite conform prezentului cod. Organul de executare silită stabilește printr-un proces-verbal condițiile și termenele de plată a diferenței de preț."
-— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la alin. (1), în cazul creanțelor administrate de organul fiscal central, contribuabilii nu pot solicita plata în rate a prețului, în situația în care diferența de preț aferentă bunului valorificat are o valoare mai mică de 5.000 lei."
-— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Diferența de preț se poate plăti, în condițiile prezentului articol, de cumpărător pe o perioadă de: a) cel mult 12 luni, în cazul vânzării la licitație a bunurilor mobile; b) cel mult 24 de luni, în cazul vânzării la licitație a bunurilor imobile."
-— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 253 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile, punct cu punct:

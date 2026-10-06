@@ -14,7 +14,7 @@ Registrul de evidență fiscală e unul dintre documentele pe care organul de in
 
 ::: ghid-temei
 „În scopul determinării rezultatului fiscal, contribuabilii sunt obligați să evidențieze în registrul de evidență fiscală veniturile impozabile înregistrate într-un an fiscal, potrivit alin. (1), precum și cheltuielile efectuate în scopul desfășurării activității economice, în același an fiscal, inclusiv cele reglementate prin acte normative în vigoare, potrivit art. 25."
-— Legea nr. 227/2015 privind Codul fiscal, art. 19 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 19 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru **contribuabilii plătitori de impozit pe profit**, registrul se completează pe baza art. 19 din Codul fiscal, cu conținutul detaliat integral în normele de aplicare (HG nr. 1/2016), fără a fi nevoie de un formular separat aprobat prin ordin.

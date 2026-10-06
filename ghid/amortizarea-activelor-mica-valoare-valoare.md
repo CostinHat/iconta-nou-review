@@ -14,7 +14,7 @@ Plafonul sub care un bun nu mai e tratat ca mijloc fix amortizabil, ci ca obiect
 
 ::: ghid-temei
 „Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: [...] b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului; [...] c) are o durată normală de utilizare mai mare de un an."
-— Legea 227/2015, art. 28 alin. (2) lit. b)-c), astfel cum a fost modificată de OUG nr. 8/2026, art. 6 pct. 7, în vigoare de la 25.02.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (2) lit. b)-c), astfel cum a fost modificată de OUG nr. 8/2026, art. 6 pct. 7, în vigoare de la 25.02.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de încadrare: dacă valoarea de achiziție a bunului e sub pragul în vigoare la data intrării în patrimoniu, sau dacă durata normală de utilizare e sub un an, bunul nu se amortizează, ci se înregistrează ca obiect de inventar — cheltuiala se recunoaște integral la darea în folosință (contul 603), cu evidență extracontabilă separată (D8035) până la scoaterea din uz. Pragul e valabil doar pentru bunurile intrate în patrimoniu **de la data modificării**: bunurile intrate anterior, la vechiul plafon de 2.500 lei, rămân mijloace fixe amortizabile și continuă amortizarea pe durata rămasă — pragul nou nu le reclasifică retroactiv.

@@ -16,14 +16,14 @@ Contează în practică pentru că o amendă aplicată spre maxim, fără nicio 
 
 ::: ghid-temei
 „(3) Sancțiunea se aplică în limitele prevăzute de actul normativ și trebuie să fie proporțională cu gradul de pericol social al faptei săvârșite, ținându-se seama de împrejurările în care a fost săvârșită fapta, de modul și mijloacele de săvârșire a acesteia, de scopul urmărit, de urmarea produsă, precum și de circumstanțele personale ale contravenientului și de celelalte date înscrise în procesul-verbal."
-— OG 2/2001, art. 21 alin. (3) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 21 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(5) Sancțiunea stabilită trebuie să fie proporțională cu gradul de pericol social al faptei săvârșite."
-— OG 2/2001, art. 5 alin. (5) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 5 alin. (5) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „(1) Instanța competentă să soluționeze plângerea, după ce verifică dacă aceasta a fost introdusă în termen, ascultă pe cel care a făcut-o și pe celelalte persoane citate, dacă aceștia s-au prezentat, administrează orice alte probe prevăzute de lege, necesare în vederea verificării legalității și temeiniciei procesului-verbal, și hotărăște asupra sancțiunii, despăgubirii stabilite, precum și asupra măsurii confiscării."
-— OG 2/2001, art. 34 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 34 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Criteriile pe care agentul trebuie să le aibă în vedere:

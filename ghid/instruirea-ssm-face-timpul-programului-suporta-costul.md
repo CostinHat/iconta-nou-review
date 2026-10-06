@@ -16,10 +16,10 @@ Pentru contabil, consecințele sunt concrete. Timpul de instruire este timp de m
 
 ::: ghid-temei
 „(1) Instruirea prevăzută la art. 20 alin. (1) , (2) și (4) nu poate fi realizată pe cheltuiala lucrătorilor și/sau a reprezentanților acestora. (2) Instruirea prevăzută la art. 20 alin. (1) și (2) trebuie să se realizeze în timpul programului de lucru."
-— Legea 319/2006, art. 21 alin. (1) și (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 21 alin. (1) și (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(6) Măsurile privind securitatea, sănătatea și igiena în munca nu trebuie să comporte în nicio situație obligații financiare pentru lucrători."
-— Legea 319/2006, art. 7 alin. (6) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 7 alin. (6) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

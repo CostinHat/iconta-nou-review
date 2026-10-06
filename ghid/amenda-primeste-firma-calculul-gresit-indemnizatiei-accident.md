@@ -16,18 +16,18 @@ Riscul e real, pentru că indemnizația se calculează de angajator și apoi se 
 
 ::: ghid-temei
 „Articolul 99 (1) Constituie contravenții următoarele fapte săvârșite prin încălcarea obligațiilor prevăzute la art. 19 alin. (6) : a) refuzul nejustificat de plată a indemnizațiilor; ... b) calculul și plata eronată a indemnizațiilor. ... (2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 2.500 lei la 5.000 lei."
-— Legea 346/2002, art. 99 alin. (1)–(2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 99 alin. (1)–(2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 „(1) Constatarea contravențiilor prevăzute la art. 99 alin. (1) și aplicarea amenzilor corespunzătoare se fac de către personalul împuternicit/organelor de control din cadrul CNPP și ale caselor județene de pensii."
-— Legea 346/2002, art. 100 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 100 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(1) Contravenientul poate achita, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, jumătate din minimul amenzii prevăzute de actul normativ, agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— OG 2/2001, art. 28 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „Împotriva procesului-verbal de constatare a contravenției și de aplicare a sancțiunii se poate face plângere în termen de 15 zile de la data înmânării sau comunicării acestuia."
-— OG 2/2001, art. 31 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 31 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 „(1) Aplicarea sancțiunii amenzii contravenționale se prescrie în termen de 6 luni de la data săvârșirii faptei."
-— OG 2/2001, art. 13 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

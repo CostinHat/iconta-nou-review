@@ -16,18 +16,18 @@ Dacă se cedează doar o parte din încasări, scutirea privește doar acea part
 
 ::: ghid-temei
 „Spectacolele organizate în scopuri umanitare sunt scutite de la plata impozitului pe spectacole."
-— Codul fiscal (Legea 227/2015), art. 482 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 482 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Suma primită din vânzarea biletelor de intrare sau a abonamentelor nu cuprinde sumele plătite de organizatorul spectacolului în scopuri caritabile, conform contractului scris intrat în vigoare înaintea vânzării biletelor de intrare sau a abonamentelor."
-— Codul fiscal (Legea 227/2015), art. 481 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 481 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 482 din Codul fiscal, contractele încheiate între organizatorii spectacolelor și beneficiarii sumelor cedate în scopuri umanitare se vor înregistra la compartimentele de specialitate ale autorităților administrației publice locale în a căror rază teritorială se desfășoară aceste manifestări, prealabil organizării acestora. Pentru aceste sume nu se datorează impozit pe spectacol."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 159 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 159 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Contractele care intră sub incidența prevederilor art. 482 din Codul fiscal sunt cele ce fac obiectul prevederilor Legii nr. 32/1994 privind sponsorizarea, cu modificările și completările ulterioare."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 160 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 160 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Condițiile, toate cumulative:

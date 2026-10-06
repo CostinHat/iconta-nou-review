@@ -15,7 +15,7 @@ O sumă blocată (indisponibilizată) în contul bancar al firmei, în urma unei
 ::: ghid-temei
 „(4) Suspendarea executării silite prin poprire bancară are ca efect încetarea indisponibilizării sumelor viitoare provenite din încasările zilnice în conturile în lei și în valută, începând cu data și ora comunicării către instituțiile de credit a adresei de suspendare a executării silite prin poprire.
 (5) Sumele existente în cont la data și ora comunicării adresei de suspendare a executării silite prin poprire înființată de organul fiscal rămân indisponibilizate, debitorul putând dispune de acestea numai pentru efectuarea de plăți în scopul [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 233 alin. (4) și (5), suspendarea executării silite (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 233 alin. (4) și (5), suspendarea executării silite (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Distincția pe care textul o face e esențială pentru contabilizare:

@@ -14,7 +14,7 @@ Stocurile cumpărate în valută nu au „diferențe de curs" propriu-zise. Sunt
 
 ::: ghid-temei
 „315. - (1) Prin elemente monetare se înțelege disponibilitățile bănești și activele/datoriile de primit/de plătit în sume fixe sau determinabile. [...] (3) Caracteristica esențială a unui element nemonetar este absența unui drept de a primi (sau a unei obligații de a furniza) un număr fix sau determinabil de unități monetare. Exemplele includ: sumele plătite în avans pentru bunuri și servicii; imobilizări necorporale; stocuri; imobilizări corporale; și provizioanele care urmează a fi decontate prin furnizarea unui activ nemonetar."
-— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 315 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Stocul intră în contabilitate la cursul BNR din data recepției/facturii (pct. 319) — un singur curs, fixat o singură dată, pentru toată durata de viață a stocului până la vânzare/consum.
@@ -30,6 +30,6 @@ Stocurile cumpărate în valută nu au „diferențe de curs" propriu-zise. Sunt
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs din iConta.eu (`core/diferente_curs.py`) respectă corect această regulă: funcția `diferenta()` acceptă exclusiv `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „stoc" ridică o eroare de validare — aplicația **nu generează și nu poate genera** o notă de diferență de curs pe un cont de stoc. Ce calculează F041, dacă marfa din stoc a fost cumpărată pe credit comercial neplătit, este diferența de curs pe datoria față de furnizor (401), prin ecranele de decontare sau reevaluare valutară — nu pe stocul propriu-zis.
+Motorul de diferențe de curs din iConta.eu respectă corect această regulă: funcția `diferenta()` acceptă exclusiv `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „stoc" ridică o eroare de validare — aplicația **nu generează și nu poate genera** o notă de diferență de curs pe un cont de stoc. Ce calculează F041, dacă marfa din stoc a fost cumpărată pe credit comercial neplătit, este diferența de curs pe datoria față de furnizor (401), prin ecranele de decontare sau reevaluare valutară — nu pe stocul propriu-zis.
 
 [iConta.eu](/)

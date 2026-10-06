@@ -16,7 +16,7 @@ Când un PFA își încetează activitatea, înregistrarea fiscală — inclusiv
 „(1) Radierea înregistrării fiscale reprezintă activitatea de retragere a codului de identificare fiscală și a certificatului de înregistrare fiscală.
 [...]
 (3) Radierea înregistrării fiscale se efectuează din oficiu, de către organul fiscal central, în cazul decesului persoanei fizice sau, după caz, încetării existenței persoanei juridice potrivit legii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 90 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pentru un PFA care se închide, procedura combină mai mulți pași distincți:

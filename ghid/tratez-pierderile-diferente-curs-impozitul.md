@@ -14,7 +14,7 @@ Pierderile din diferențe de curs valutar (cheltuiala înregistrată în contul 
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. La stabilirea rezultatului fiscal se iau în calcul și elemente similare veniturilor și cheltuielilor, potrivit normelor metodologice, precum și pierderile fiscale care se recuperează în conformitate cu prevederile art. 31. Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Punctul de plecare e cheltuiala din 665, așa cum a fost înregistrată contabil, conform OMFP 1802/2014 pct. 322 (decontare) sau pct. 325 (reevaluare lunară).
@@ -30,6 +30,6 @@ Pierderile din diferențe de curs valutar (cheltuiala înregistrată în contul 
 
 ## Ce face iConta.eu
 
-`core/diferente_curs.py` este un motor contabil pur: calculează diferența (câștig sau pierdere) și generează nota pe 665/765, la decontare sau la reevaluarea lunară. Aplicația **nu calculează impozitul pe profit** și nu aplică regulile de la art. 19-40^2 asupra acestor sume — nu există nicio legătură de cod între modulul de diferențe de curs și motorul declarației de impozit pe profit. Tratamentul fiscal descris mai sus se aplică manual, pe baza rulajului conturilor 665/765 din balanța generată de iConta.eu, nu automat, în aplicație.
+Aplicația este un motor contabil pur: calculează diferența (câștig sau pierdere) și generează nota pe 665/765, la decontare sau la reevaluarea lunară. Aplicația **nu calculează impozitul pe profit** și nu aplică regulile de la art. 19-40^2 asupra acestor sume — nu există nicio legătură de cod între modulul de diferențe de curs și motorul declarației de impozit pe profit. Tratamentul fiscal descris mai sus se aplică manual, pe baza rulajului conturilor 665/765 din balanța generată de iConta.eu, nu automat, în aplicație.
 
 [iConta.eu](/)

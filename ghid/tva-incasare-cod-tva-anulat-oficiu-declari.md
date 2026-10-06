@@ -16,10 +16,10 @@ Mai contează un detaliu: D311 acoperă doar încasările făcute în perioada �
 
 ::: ghid-temei
 „b) taxa colectată care trebuie plătită pentru livrări de bunuri/prestări de servicii efectuate înainte de anularea înregistrării în scopuri de TVA a persoanelor impozabile care au aplicat sistemul TVA la încasare, dar a căror exigibilitate de taxă potrivit art. 282 alin. (3)-(8) intervine în perioada în care persoana impozabilă nu are un cod valabil de TVA."
-— Codul fiscal (Legea 227/2015), art. 324 alin. (10) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 324 alin. (10) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „până la 25 inclusiv a lunii următoare celei în care a intervenit exigibilitatea taxei pentru livrări de bunuri/prestări de servicii, efectuate înainte de anularea înregistrării în scopuri de TVA, potrivit prevederilor art. 316 alin. (11) lit. a)-e) , g) sau h) din Codul fiscal , în situația în care exigibilitatea taxei pentru aceste operațiuni intervine, potrivit sistemului TVA la încasare, în perioada în care persoanele impozabile nu au cod valabil de TVA;"
-— OPANAF 188/2018, anexa nr. 2 (termene de depunere) (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF 188/2018, anexa nr. 2 (termene de depunere) (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 Cum se aplică pas cu pas:

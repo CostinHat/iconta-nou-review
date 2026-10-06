@@ -15,7 +15,7 @@ Un magazin online acumulează, în timp, diferențe între stocul „scriptic" (
 ::: ghid-temei
 „2. - (1) [În temeiul prevederilor Legii contabilității nr. 82/1991, republicată,] entitățile au obligația să efectueze inventarierea elementelor de natura activelor, datoriilor și capitalurilor proprii deținute, la începutul activității, cel puțin o dată în cursul exercițiului financiar pe parcursul funcționării lor [...]
 4. - (1) Inventarierea anuală a elementelor de natura activelor, datoriilor și capitalurilor proprii se face, de regulă, cu ocazia încheierii exercițiului financiar, avându-se în vedere și specificul activității fiecărei entități."
-— OMFP nr. 2861/2009, pct. 2 alin. (1) și pct. 4 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2861/2009, pct. 2 alin. (1) și pct. 4 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Ce înseamnă concret pentru un magazin online:
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru un magazin online:
 
 ## Ce face iConta.eu
 
-Verificat în cod: iConta.eu are o funcționalitate de inventariere (`core/stocuri_cv_api.py`, funcția `inventar`) care compară, articol cu articol, cantitatea faptică introdusă cu fișa de magazie construită din mișcările înregistrate, la cost mediu ponderat (CMP), și generează automat notele contabile de regularizare pentru plusuri (371=607) sau minusuri (607=371), cu temei citat din OMFP 1802/2014. Aplicația conține chiar un gard explicit împotriva „inventarierii fără linii" — un inventar fără articole numărate nu e acceptat ca „fără diferențe", pentru că absența numărătorii nu e același lucru cu un rezultat de zero diferențe. Recepția cantitativă a facturilor de marfă primite e de asemenea automatizată, printr-un modul de reconciliere factură-stoc.
+Verificat în cod: iConta.eu are o funcționalitate de inventariere (funcția `inventar`) care compară, articol cu articol, cantitatea faptică introdusă cu fișa de magazie construită din mișcările înregistrate, la cost mediu ponderat (CMP), și generează automat notele contabile de regularizare pentru plusuri (371=607) sau minusuri (607=371), cu temei citat din OMFP 1802/2014. Aplicația conține chiar un gard explicit împotriva „inventarierii fără linii" — un inventar fără articole numărate nu e acceptat ca „fără diferențe", pentru că absența numărătorii nu e același lucru cu un rezultat de zero diferențe. Recepția cantitativă a facturilor de marfă primite e de asemenea automatizată, printr-un modul de reconciliere factură-stoc.
 
 [iConta.eu](/)

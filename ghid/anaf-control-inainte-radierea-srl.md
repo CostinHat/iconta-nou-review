@@ -17,7 +17,7 @@ Legea nu impune un control fiscal obligatoriu, automat, înainte de fiecare radi
 (1) Radierea înregistrării fiscale reprezintă activitatea de retragere a codului de identificare fiscală și a certificatului de înregistrare fiscală.
 (2) La încetarea calității de subiect de drept fiscal, persoanele sau entitățile înregistrate fiscal prin declarație de înregistrare fiscală potrivit art. 81 și 82 trebuie să solicite radierea înregistrării fiscale, prin depunerea unei declarații de radiere. Declarația se depune în termen de 30 de zile de la încetarea calității de subiect de drept fiscal și trebuie însoțită de certificatul de înregistrare fiscală în vederea anulării acestuia. Radierea înregistrării fiscale se poate efectua și din oficiu, de către organul fiscal, ori de câte ori acesta constată îndeplinirea condițiilor de radiere a înregistrării și nu s-a depus declarație de radiere.
 (3) Radierea înregistrării fiscale se efectuează din oficiu, de către organul fiscal central, în cazul decesului persoanei fizice sau, după caz, încetării existenței persoanei juridice potrivit legii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 90 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 90 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă, fără să depășim ce spune textul:

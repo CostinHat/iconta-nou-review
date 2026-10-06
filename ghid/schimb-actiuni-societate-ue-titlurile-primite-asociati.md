@@ -16,18 +16,18 @@ Impozitul nu dispare, doar se amână. Câștigul se impozitează când asociatu
 
 ::: ghid-temei
 „atribuirea, în cazul fuziunii, divizării totale sau al unui schimb de acțiuni, a titlurilor de participare reprezentând capitalul societății beneficiare ori achizitoare unui participant al societății cedente sau achiziționate, în schimbul unor titluri reprezentând capitalul acestei societăți, nu reprezintă transferuri impozabile potrivit prezentului titlu și titlului IV"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „dispozițiile lit. a) se aplică numai dacă acționarul nu atribuie titlurilor de participare primite o valoare fiscală mai mare decât valoarea pe care acestea o aveau înainte de fuziune, divizare totală sau schimb de acțiuni;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „profitul sau venitul provenit din cesionarea ulterioară a titlurilor de participare se impozitează potrivit prevederilor prezentului titlu sau ale titlului IV"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (8) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „schimb de acțiuni - operațiunea prin care o societate dobândește o participație în capitalul altei societăți în așa fel încât dobândește majoritatea drepturilor de vot sau majoritatea titlurilor de participare în societatea respectivă sau, deținând această majoritate, achiziționează încă o participație"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 6 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (2) pct. 6 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

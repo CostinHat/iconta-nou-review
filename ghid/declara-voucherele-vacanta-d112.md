@@ -30,6 +30,6 @@ Dacă suma acordată în cursul anului depășește plafonul legal de 6 salarii 
 
 ## Ce face iConta.eu
 
-Generarea D112 (`core/d112.py`) populează automat rândul E3_75 cu valoarea nominală a voucherelor de vacanță din luna respectivă, distinct de tichetele de masă și de cadouri, și include această sumă în baza de calcul a CASS împreună cu tichetele de masă — fără să o adauge la baza CAS. Excedentul peste plafonul anual, calculat incremental pe cumulat, este preluat automat în venitul brut declarat, fără a mai fi tratat ca voucher scutit de CAS/CAM. Pentru fluturaș și D112 pe tichete de masă, generarea depinde de confirmarea prealabilă a pontajului lunii respective — dacă pontajul nu e confirmat, aplicația respinge explicit generarea, ca să nu se declare pe date neconfirmate.
+Generarea D112 populează automat rândul E3_75 cu valoarea nominală a voucherelor de vacanță din luna respectivă, distinct de tichetele de masă și de cadouri, și include această sumă în baza de calcul a CASS împreună cu tichetele de masă — fără să o adauge la baza CAS. Excedentul peste plafonul anual, calculat incremental pe cumulat, este preluat automat în venitul brut declarat, fără a mai fi tratat ca voucher scutit de CAS/CAM. Pentru fluturaș și D112 pe tichete de masă, generarea depinde de confirmarea prealabilă a pontajului lunii respective — dacă pontajul nu e confirmat, aplicația respinge explicit generarea, ca să nu se declare pe date neconfirmate.
 
 [iConta.eu](/)

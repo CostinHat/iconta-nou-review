@@ -17,7 +17,7 @@ Ideea că mutarea sediului social în același oraș ar avea „formalități re
 Capitolul I - Dispoziții generale
 Articolul 204
 (1) Actul constitutiv poate fi modificat prin hotărâre a adunării generale ori a Consiliului de administrație, respectiv directoratului, adoptată în temeiul art. 114 alin. (1), sau prin hotărârea instanței judecătorești, în condițiile art. 223 alin. (3) și ale art. 226 alin. (2)."
-— Legea 31/1990 privind societățile, art. 204 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 204 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din text, fără să adăugăm o excepție care nu există:

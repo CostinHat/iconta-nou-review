@@ -17,7 +17,7 @@ Nu, sistemul național RO e-Factura nu are un buton de „refuz" care să anulez
 (8) Factura electronică comunicată destinatarului nu se poate returna în sistemul național privind factura electronică RO e-Factura.
 (9) În situația unei facturi electronice asupra căreia destinatarul are obiecții, acesta înștiințează emitentul facturii electronice, inclusiv în sistemul național privind factura electronică RO e-Factura, prin înscrierea unui mesaj în acest sens.
 (10) Corecția facturii electronice comunicată destinatarului în sistemul RO e-Factura se efectuează conform art. 330 din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare. Factura electronică corectată se transmite în cadrul aceluiași sistem național privind factura electronică RO e-Factura."
-— OUG 120/2021, art. 4 alin. (8)-(10) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (8)-(10) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Mecanismul real, așa cum rezultă din text:

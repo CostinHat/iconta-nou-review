@@ -16,15 +16,15 @@ Pentru firma debitoare, momentul contează pentru că o poprire „emisă" într
 
 ::: ghid-temei
 „2.3. Sistemul informatic e-Popriri preia și prelucrează de la U.I.R. adresele de înființare a popririi asupra disponibilităților bănești și le încarcă pe platforma e-Popriri, pentru fiecare instituție de credit, până la ora 24.00. Acestea se consideră a fi comunicate în prima zi bancară următoare zilei încărcării acestora, la ora de începere a zilei bancare."
-— Procedura aprobată prin OPANAF 878/2022, cap. II pct. 2.3 (sursă: anaf_surse/ordin_878_2022__anexa_267018.html)
+— Procedura aprobată prin OPANAF 878/2022, cap. II pct. 2.3 (sursă: [OPANAF nr. 878/2022 privind stabilirea mijloacelor electronice de transmitere la distanță a actelor de executare și a procedurii de comunicare a acestora (anexa-procedură, e-Popriri)](https://legislatie.just.ro/Public/DetaliiDocument/254993))
 
 „l) platforma e-Popriri - spațiul privat de pe portalul A.N.A.F., pus la dispoziția instituțiilor de credit, prin intermediul căruia sunt comunicate actele de executare silită prin mijloace electronice de transmitere la distanță."
-— Procedura aprobată prin OPANAF 878/2022, cap. I pct. 1.2 lit. l) (sursă: anaf_surse/ordin_878_2022__anexa_267018.html)
+— Procedura aprobată prin OPANAF 878/2022, cap. I pct. 1.2 lit. l) (sursă: [OPANAF nr. 878/2022 privind stabilirea mijloacelor electronice de transmitere la distanță a actelor de executare și a procedurii de comunicare a acestora (anexa-procedură, e-Popriri)](https://legislatie.just.ro/Public/DetaliiDocument/254993))
 :::
 
 ::: ghid-temei
 „3.4. Din momentul transmiterii de către instituțiile de credit a mesajului cu informațiile privind suma ce poate fi plătită, acestea nu procedează la decontarea documentelor de plată primite, respectiv la debitarea conturilor debitorilor, și nu acceptă alte plăți din conturile acestora până la realizarea plății efective."
-— Procedura aprobată prin OPANAF 878/2022, cap. III pct. 3.4 (sursă: anaf_surse/ordin_878_2022__anexa_267018.html)
+— Procedura aprobată prin OPANAF 878/2022, cap. III pct. 3.4 (sursă: [OPANAF nr. 878/2022 privind stabilirea mijloacelor electronice de transmitere la distanță a actelor de executare și a procedurii de comunicare a acestora (anexa-procedură, e-Popriri)](https://legislatie.just.ro/Public/DetaliiDocument/254993))
 :::
 
 Elementele regulii:

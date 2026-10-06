@@ -14,10 +14,10 @@ Nu. Legea tratează diferit, de la bază, veniturile din profesii liberale faț�
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Constituie venituri din profesii liberale veniturile obținute din prestarea de servicii cu caracter profesional, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formularea de la art. 69 alin. (1) e directă — condiția pentru normă de venit e explicit „altele decât venituri din profesii liberale". Ca să știi dacă o activitate e „profesie liberală" în sensul acesta, criteriul din art. 67 alin. (2) e unul singur: să existe un **act normativ special** care reglementează organizarea și exercitarea profesiei respective (de exemplu, legi de organizare a unor profesii precum medic, avocat, notar, expert contabil, psiholog).

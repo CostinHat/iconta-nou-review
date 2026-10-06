@@ -16,17 +16,17 @@ Firma datorează diferența dintre TVA care trebuia colectată și cea deductibi
 
 ::: ghid-temei
 „În cazul în care persoana impozabilă a solicitat în mod eronat scoaterea din evidența persoanelor înregistrate în scopuri de TVA […], organele fiscale competente procedează după cum urmează: a) în cazul în care persoana impozabilă, ulterior scoaterii din evidență, nu s-a înregistrat în scopuri de TVA conform art. 316 din Codul fiscal până la data identificării acestei erori de către organele de inspecție fiscală, acestea aplică prevederile alin. (2) lit. a) și b) pe perioada cuprinsă între data anulării codului de înregistrare în scopuri de TVA conform art. 316 din Codul fiscal și data identificării acestei erori. Totodată, organele fiscale competente înregistrează din oficiu aceste persoane în scopuri de taxă.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (4) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (4) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoanele impozabile care au solicitat în mod eronat scoaterea din evidența persoanelor înregistrate în scopuri de TVA conform art. 316 din Codul fiscal, în vederea aplicării regimului special de scutire pentru întreprinderile mici, indiferent dacă au făcut sau nu obiectul inspecției fiscale, au dreptul să anuleze ajustările de taxă corespunzătoare scoaterii din evidență.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 84 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana impozabilă înregistrată în scopuri de TVA conform art. 316 care în cursul anului calendaristic precedent nu depășește plafonul de scutire prevăzut la alin. (1) poate solicita scoaterea din evidența persoanelor înregistrate în scopuri de TVA conform art. 316 , în vederea aplicării regimului special de scutire, cu condiția ca la data solicitării să nu fi depășit plafonul de scutire pentru anul în curs.”
-— Codul fiscal (Legea 227/2015), art. 310 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Normele disting două situații:

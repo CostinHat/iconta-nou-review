@@ -14,7 +14,7 @@ Legea definește destul de precis ce înseamnă „factură anulată" și „fac
 
 ::: ghid-temei
 „2.2.1. seria şi numărul facturilor stornate; factura stornată reprezintă factura emisă de persoana impozabilă, a cărei valoare totală este negativă; 2.2.2. seria şi numărul facturilor anulate; factura anulată reprezintă factura emisă de persoana impozabilă, netransmisă beneficiarului, operaţiunile înscrise în aceasta nefiind înregistrate în contabilitatea persoanei impozabile."
-— OPANAF 2194/2025, Anexa 2 (sursă: anaf_surse/opanaf_2194_2025_d394.txt:1030-1033)
+— OPANAF 2194/2025, Anexa 2 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - **Factura anulată**, în sensul legii, e cea care nu a ajuns niciodată la beneficiar și nu are efect în contabilitate — nu se raportează cu bază și TVA, pentru că operațiunea, practic, nu a avut loc.
@@ -29,7 +29,7 @@ Legea definește destul de precis ce înseamnă „factură anulată" și „fac
 
 ## Ce face iConta.eu
 
-Din 17.09.2026, generatorul D394 (`core/repo_d394.py`) filtrează facturile după status folosind același nomenclator ca decontul de TVA (D300): facturile aflate în starea ciornă, de_preluat, descărcată, anulată sau stornată sunt excluse din calculul bazei și al TVA-ului. Comentariul din cod e explicit despre problema reparată: „D394 filtra doar TIPUL (proformă/aviz), NU statusul: o factură anulată sau stornată intra în D394 cu bază/TVA — deși D300 le exclude", cu efect măsurat de supra-declarare a operațiunilor și a rezumatului față de decont.
+Din 17.09.2026, generatorul D394 filtrează facturile după status folosind același nomenclator ca decontul de TVA (D300): facturile aflate în starea ciornă, de_preluat, descărcată, anulată sau stornată sunt excluse din calculul bazei și al TVA-ului. Comentariul din cod e explicit despre problema reparată: „D394 filtra doar TIPUL (proformă/aviz), NU statusul: o factură anulată sau stornată intra în D394 cu bază/TVA — deși D300 le exclude", cu efect măsurat de supra-declarare a operațiunilor și a rezumatului față de decont.
 
 O limită onestă: iConta.eu **nu completează** azi câmpurile de identificare a seriilor și numerelor facturilor stornate/anulate cerute distinct de instrucțiunile ANAF (secțiunea „seria şi numărul facturilor stornate/anulate") — generatorul construiește doar seriile facturilor emise și alocate (`<serieFacturi>`), nu și lista separată de storno/anulate. Dacă acest câmp e relevant pentru firma ta, verifică manual completarea lui înainte de depunere.
 

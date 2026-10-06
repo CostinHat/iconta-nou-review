@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Societățile comerciale, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare, societățile cooperatiste și celelalte persoane juridice au obligația să organizeze și să conducă contabilitatea financiară, potrivit prezentei legi."
-— Legea contabilității nr. 82/1991, art. 1 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 1 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Din text și din regulile corelate privind exercițiul financiar rezultă:
@@ -32,6 +32,6 @@ Din text și din regulile corelate privind exercițiul financiar rezultă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu permite crearea profilului unei firme noi și organizarea evidenței contabile din prima zi de existență legală a acesteia, cu module pentru jurnal contabil, balanță și situații financiare (`core/jurnal_api.py`, `core/bilant_api.py`). Aplicația nu decide însă și nu verifică automat data reală a înmatriculării comparativ cu data de la care se introduc primele înregistrări — corectitudinea perioadei acoperite de evidența contabilă, de la data efectivă a înființării, rămâne o verificare a contabilului la configurarea firmei în aplicație.
+La data acestui ghid, iConta.eu permite crearea profilului unei firme noi și organizarea evidenței contabile din prima zi de existență legală a acesteia, cu module pentru jurnal contabil, balanță și situații financiare. Aplicația nu decide însă și nu verifică automat data reală a înmatriculării comparativ cu data de la care se introduc primele înregistrări — corectitudinea perioadei acoperite de evidența contabilă, de la data efectivă a înființării, rămâne o verificare a contabilului la configurarea firmei în aplicație.
 
 [iConta.eu](/)

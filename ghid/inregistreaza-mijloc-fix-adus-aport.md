@@ -15,7 +15,7 @@ Un asociat poate aduce, în locul unei sume de bani, un bun (un utilaj, un mijlo
 ```
 ::: ghid-temei
 „(2) Aporturile în natură trebuie să fie evaluabile din punct de vedere economic. Ele sunt admise la toate formele de societate și sunt vărsate prin transferarea drepturilor corespunzătoare și prin predarea efectivă către societate a bunurilor aflate în stare de utilizare."
-— Legea nr. 31/1990 a societăților, art. 16 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 a societăților, art. 16 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 ```
 
@@ -24,7 +24,7 @@ Iar din perspectiva evaluării contabile a bunului odată intrat în firmă:
 ```
 ::: ghid-temei
 „La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: [...] c) la valoarea de aport, stabilită în urma evaluării - pentru bunurile reprezentând aport la capitalul social [...]"
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 75 alin. (1) lit. c) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 75 alin. (1) lit. c) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 ```
 
@@ -43,6 +43,6 @@ Ce rezultă, punând cele două texte cap la cap:
 
 ## Ce face iConta.eu
 
-Modulele de mijloace fixe din `core/` (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor odată introduse în contabilitate, la valoarea comunicată; introducerea specifică a unui bun la „valoarea de aport" stabilită prin evaluare, ca modalitate distinctă de intrare (față de achiziție sau producție proprie), rămâne o alegere pe care contabilul o face la înregistrarea inițială, aplicația nefiind identificată cu o rutină dedicată exclusiv acestui scenariu de intrare.
+Modulele de mijloace fixe din aplicație (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor odată introduse în contabilitate, la valoarea comunicată; introducerea specifică a unui bun la „valoarea de aport" stabilită prin evaluare, ca modalitate distinctă de intrare (față de achiziție sau producție proprie), rămâne o alegere pe care contabilul o face la înregistrarea inițială, aplicația nefiind identificată cu o rutină dedicată exclusiv acestui scenariu de intrare.
 
 [iConta.eu](/)

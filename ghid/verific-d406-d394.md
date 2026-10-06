@@ -14,7 +14,7 @@ D406 (SAF-T) și D394 provin, în bună măsură, din aceleași documente — fa
 
 ::: ghid-temei
 „Fişierul standard de control fiscal (SAF-T) se transmite de către contribuabili/plătitori prin intermediul Declaraţiei informative privind fişierul standard de control fiscal, denumită în continuare Declaraţia informativă D406."
-— OPANAF 1783/2021, art.2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt:23-26)
+— OPANAF 1783/2021, art.2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - D406 raportează date extrase din evidența contabilă și fiscală a firmei (SAF-T — standard internațional OECD), pentru testarea substanțială a controalelor și datelor de către organele fiscale — o evidență de ansamblu, nu doar TVA.
@@ -29,7 +29,7 @@ D406 (SAF-T) și D394 provin, în bună măsură, din aceleași documente — fa
 
 ## Ce face iConta.eu
 
-Fiecare declarație are propriul „gard de conținut" — o a doua cale de calcul, independentă, care recalculează valorile din datele brute și oprește generarea la divergență: `core/d394_reconciliere.py` pentru D394 și `core/d406_reconciliere.py` pentru D406 (aceasta din urmă verifică dubla partidă a notelor contabile, Σdebit = Σcredit, față de o balanță de rulaje calculată separat). **Nu există însă un modul care compară D406 cu D394 între ele** — fiecare declarație e verificată doar față de propriile date sursă, nu una față de cealaltă.
+Fiecare declarație are propriul „gard de conținut" — o a doua cale de calcul, independentă, care recalculează valorile din datele brute și oprește generarea la divergență: Aplicația pentru D394 și aplicația pentru D406 (aceasta din urmă verifică dubla partidă a notelor contabile, Σdebit = Σcredit, față de o balanță de rulaje calculată separat). **Nu există însă un modul care compară D406 cu D394 între ele** — fiecare declarație e verificată doar față de propriile date sursă, nu una față de cealaltă.
 
 Un detaliu de fond, relevant pentru firmele trimestriale: până la o reparație recentă din cod, fereastra de date a D406 pentru o firmă cu perioadă fiscală trimestrială acoperea o singură lună din trei, în timp ce D300 și D394 pe același trimestru le conțineau pe toate — inconsecvență acum corectată, astfel încât fereastra D406 urmează aceeași perioadă fiscală de TVA ca D300/D394. Chiar și așa, nicio funcție din aplicație nu pune cele două declarații una lângă alta pentru comparație — dacă vrei să verifici coerența lor, rămâne un pas manual.
 

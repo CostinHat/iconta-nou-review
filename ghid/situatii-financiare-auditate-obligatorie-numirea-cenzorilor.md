@@ -16,11 +16,11 @@ Pentru societățile al căror audit nu e obligatoriu, legea pune problema inver
 
 ::: ghid-temei
 „Societățile pe acțiuni ale căror situații financiare sunt supuse auditului financiar, potrivit legii sau opțiunii, în acest sens, a acționarilor pot să nu aplice prevederile art. 159 alin. (1) [...] hotărârea în acest sens fiind luată de adunarea generală a acționarilor."
-— Legea societăților nr. 31/1990, art. 160 alin. (1^2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 160 alin. (1^2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Societatea pe acțiuni va avea 3 cenzori și un supleant, dacă prin actul constitutiv nu se prevede un număr mai mare. În toate cazurile, numărul cenzorilor trebuie să fie impar."
-— Legea societăților nr. 31/1990, art. 159 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 159 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „La societățile ale căror situații financiare anuale nu sunt supuse, potrivit legii, auditului financiar, adunarea generală ordinară a acționarilor va hotărî contractarea auditului financiar sau numirea cenzorilor, după caz."
-— Legea societăților nr. 31/1990, art. 160 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 160 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Un chiriaș care a făcut investiții (amenajări, modernizări) într-un spați
 
 ::: ghid-temei
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: [...] b) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi puse la dispoziția altor persoane în mod gratuit, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Limitare declarată:** textul de mai sus tratează explicit doar **bunurile mobile** puse gratuit la dispoziția altei persoane, cu condiția ca TVA aferentă lor să fi fost dedusă. Investițiile efectuate de un chiriaș într-un spațiu închiriat (amenajări, modernizări ale unui bun imobil) sunt, de regulă, cheltuieli capitalizate asupra unui bun imobil aflat în proprietatea altcuiva — o situație diferită structural de „bunurile mobile" vizate direct de acest articol. Sursele verificate **nu conțin un text explicit care să trateze punctual regimul de TVA al investițiilor imobiliare lăsate gratuit proprietarului la încetarea unui contract de închiriere**; regimul aplicabil în acest caz depinde de calificarea exactă a operațiunii (transfer de bun/parte de construcție, sau simplă renunțare la o creanță de despăgubire) și trebuie stabilit, în lipsa unui text specific, prin normele metodologice și practica ANAF în vigoare la momentul operațiunii — nu prin analogie directă cu art. 270 alin. (4) lit. b).

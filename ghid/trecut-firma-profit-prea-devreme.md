@@ -13,9 +13,9 @@ Dacă ai schimbat regimul fiscal la profit înainte ca firma să fi depășit ef
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 47 alin. (1) lit. c) CF** (condiție de eligibilitate micro): „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile." Sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, linia 6095 (modificat de OUG 8/2026, art. 6 pct. 15).
+**Art. 47 alin. (1) lit. c) CF** (condiție de eligibilitate micro): „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282) (modificat de OUG 8/2026, art. 6 pct. 15).
 
-Alte condiții de eligibilitate micro, din același articol: nedepunerea în termen a situațiilor financiare anuale (linia 6422), pierderea condiției salariatului — art. 47 alin. 1 lit. g) (liniile 6427-6429), condiția „o singură microîntreprindere" la asociați care dețin peste 25% la firme legate (linia 6471).
+Alte condiții de eligibilitate micro, din același articol: nedepunerea în termen a situațiilor financiare anuale (linia 6422), pierderea condiției salariatului — art. 47 alin. 1 lit. g), condiția „o singură microîntreprindere" la asociați care dețin peste 25% la firme legate (linia 6471).
 :::
 
 Dacă firma a fost trecută la profit din eroare (de exemplu, o estimare greșită a veniturilor, sau o confuzie cu o altă condiție de eligibilitate), și la verificare se dovedește că îndeplinea toate condițiile de la art. 47 (venituri sub 100.000 euro, situații financiare depuse la timp, condiția salariatului, „o singură microîntreprindere" la asociați cu participații peste 25% la firme legate), regimul poate fi corectat înapoi la micro.

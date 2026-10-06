@@ -16,16 +16,16 @@ Regula diferă de cea a concediului medical obișnuit. Cine aplică din reflex m
 
 ::: ghid-temei
 „(1) Baza de calcul al indemnizațiilor pentru incapacitate temporară de muncă, pentru reducerea timpului de muncă sau pentru trecerea temporară în alt loc de muncă se determină ca medie a veniturilor brute din salarii sau asimilate salariilor definite conform Legii nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare, realizate lunar de către asigurat la angajator, în ultimele 6 luni anterioare lunii pentru care se acordă concediul medical, fără a lua în calcul veniturile obținute și la alți angajatori."
-— Legea 346/2002, art. 19 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(2) În cazul în care stagiul de cotizare este mai mic de 6 luni, baza de calcul al indemnizațiilor pentru incapacitate temporară de muncă, pentru reducerea timpului de muncă sau pentru trecerea temporară în alt loc de muncă o constituie media câștigurilor brute realizate lunar de către asigurat din salarii sau venituri asimilate salariilor."
-— Legea 346/2002, art. 19 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(3) În cazul în care stagiul de cotizare este mai mic de o lună, baza de calcul a indemnizațiilor o constituie câștigul lunar brut realizat de asigurat în prima lună de activitate."
-— Legea 346/2002, art. 19 alin. (3) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(4) Pentru calculul indemnizațiilor pentru incapacitate temporară de muncă, pentru reducerea timpului de muncă sau pentru trecerea temporară în alt loc de muncă se utilizează numărul de zile lucrătoare din luna în care se acordă concediul medical"
-— Legea 346/2002, art. 19 alin. (4) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (4) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Pașii calculului:

@@ -14,7 +14,7 @@ Când un cumpărător achiziționează bunuri sau servicii de la un furnizor al 
 
 ::: ghid-temei
 „Beneficiarii care achiziționează bunuri și/sau servicii de la persoane impozabile stabilite în România, cărora li s-a anulat înregistrarea în scopuri de TVA conform prevederilor art. 316 alin. (11) lit. c)-e) și lit. h) și au fost înscriși în Registrul persoanelor impozabile a căror înregistrare în scopuri de TVA conform art. 316 a fost anulată, nu beneficiază de dreptul de deducere a taxei pe valoarea adăugată aferente achizițiilor respective, cu excepția achizițiilor de bunuri efectuate în cadrul procedurii de executare silită și/sau a achizițiilor de bunuri de la persoane impozabile aflate în procedura falimentului potrivit Legii nr. 85/2014, cu modificările și completările ulterioare."
-— Legea 227/2015 (Codul fiscal), art. 11 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 11 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce verifică, în esență, regula:

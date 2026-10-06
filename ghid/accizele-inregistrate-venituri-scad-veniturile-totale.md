@@ -16,10 +16,10 @@ Diferența e importantă pentru producători și importatori de carburanți, alc
 
 ::: ghid-temei
 „veniturile reprezentând accizele care au fost reflectate concomitent în conturile de cheltuieli;"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul Vs, pct. (vii) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul Vs, pct. (vii) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „d) scăderea veniturilor reprezentând accizele care au fost reflectate concomitent în conturile de cheltuieli se efectuează de către plătitorii de accize, potrivit dispozițiilor titlului VIII «Accize și alte taxe speciale» din Codul fiscal, după cum urmează: 1. antrepozitarul autorizat, destinatarul înregistrat sau orice altă persoană care eliberează produsele accizabile din regimul suspensiv de accize sau în numele căreia se efectuează această eliberare, astfel cum este prevăzut la art. 341 alin. (1) lit. a) pct. 1 din Codul fiscal; ... 2. importatorul, astfel cum este prevăzut la art. 341 alin. (1) lit. d) din Codul fiscal; ... 3. destinatarul certificat, astfel cum este prevăzut la art. 341 alin. (1) lit. f) din Codul fiscal;"
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (1) lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cine poate scădea accizele din VT:

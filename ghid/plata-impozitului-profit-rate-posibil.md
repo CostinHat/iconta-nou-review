@@ -14,7 +14,7 @@ Când o firmă are dificultăți de trezorerie și nu poate achita integral impo
 
 ::: ghid-temei
 „(1) în cazul debitorilor cu risc fiscal mic, organul fiscal competent poate aproba eșalonarea la plată a obligațiilor fiscale restante, pe o perioadă de cel mult 12 luni. (2) Pentru a beneficia de eșalonarea la plată prevăzută la alin. (1), debitorul trebuie să îndeplinească cumulativ următoarele condiții: a) debitorul depune o cerere la organul fiscal competent. La cerere, debitorul poate anexa graficul de eșalonare cuprinzând cuantumul propus al ratelor de eșalonare; [...] (3) În sensul prezentului articol este considerat cu risc fiscal mic debitorul care, la data depunerii cererii, îndeplinește, cumulativ, următoarele condiții: [...] b) administratorii [...] și asociații majoritari sau, după caz, asociatul unic și/sau administratorii [...] nu au fapte înscrise în cazierul fiscal; c) nu se află în inactivitate temporară înscrisă la registrul comerțului [...]; d) nu are obligații fiscale restante mai mari de 12 luni; e) nu a înregistrat, conform reglementărilor contabile, pierderi din exploatare în ultimul exercițiu financiar închis; f) în cazul persoanelor juridice, să fi fost înființate cu minimum 12 luni anterior depunerii cererii."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 206 alin. (1), (2) lit. a) și alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 206 alin. (1), (2) lit. a) și alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut din procedură:

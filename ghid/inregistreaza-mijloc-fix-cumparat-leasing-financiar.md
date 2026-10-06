@@ -14,7 +14,7 @@ La leasingul financiar, mijlocul fix intră în contabilitatea firmei utilizatoa
 
 ::: ghid-temei
 „215. ‐ (1) Reflectarea în contabilitatea locatarilor a activelor aferente operațiunilor de leasing financiar se efectuează cu ajutorul conturilor de imobilizări necorporale şi imobilizări corporale. (2) Dobânzile de plătit corespunzătoare datoriilor din operațiuni de leasing financiar se înregistrează în contabilitatea locatarilor periodic, conform contabilității de angajamente, în contrapartida contului de cheltuieli. Dobânda de plătit, aferentă perioadelor viitoare, se evidențiază în conturi în afara bilanțului (contul 8051 «Dobânzi de plătit»)."
-— OMFP 1802/2014, pct. 215 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 215 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **Primirea bunului**: se recunoaște la valoarea capitalului din contract (avans + rate de capital + valoare reziduală), pe conturile de imobilizări — 2133=167. Dobânda totală a contractului nu e încă o cheltuială: se ține extracontabil, pe 8051, până se facturează.

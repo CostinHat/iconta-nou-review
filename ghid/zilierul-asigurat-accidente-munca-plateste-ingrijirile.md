@@ -16,10 +16,10 @@ Pentru beneficiar, asta e un risc financiar real, pe care îl preia prin simpla 
 
 ::: ghid-temei
 „(4) Activitatea desfășurată în condițiile prezentei legi nu conferă zilierului calitatea de asigurat în sistemul de asigurare pentru accidente de muncă și boli profesionale. (5) În situația producerii unui accident de muncă sau boală profesională beneficiarul sau un împuternicit al acestuia este obligat să asigure plata cheltuielilor aferente îngrijirilor medicale necesare."
-— Legea 52/2011, art. 9 alin. (4)-(5) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 9 alin. (4)-(5) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „În situația producerii unui eveniment care are ca urmare accidentarea/decesul zilierului, beneficiarul sau un împuternicit al acestuia este obligat să asigure cheltuielile necesare îngrijirilor medicale/ înmormântării din fonduri proprii, în cazul în care evenimentul s-a produs din vina beneficiarului sau unui împuternicit al acestuia."
-— Legea 52/2011, art. 10 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 10 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Cum se combină cele două articole:

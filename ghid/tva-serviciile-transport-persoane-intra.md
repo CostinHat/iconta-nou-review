@@ -14,7 +14,7 @@ Spre deosebire de majoritatea serviciilor, unde locul prestării se stabilește 
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (2) și (3), pentru următoarele prestări de servicii, locul prestării este considerat a fi: [...] b) locul unde se efectuează transportul, în funcție de distanțele parcurse, în cazul serviciilor de transport de călători;"
-— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret această excepție:

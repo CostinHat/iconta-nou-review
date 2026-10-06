@@ -43,6 +43,6 @@ Ambele componente se calculează întotdeauna, nu se alege una „reprezentativ�
 
 ## Ce face iConta.eu
 
-`plafon_credit(cifra_afaceri, impozit_profit, la_data=None)`, din `core/sponsorizari.py`, calculează exact formula de mai sus: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, rezultatul fiind `min(p1, p2)`. Singura variantă de calcul înregistrată în motor e activă din 01.01.2018, cu procentul de 0,75% — corect pentru orice `la_data` din 2026, dar de folosit cu atenție dacă recalculați o sponsorizare din perioada 2015–02.02.2022, unde procentul legal era 0,5%, nu 0,75% (motorul nu face această distincție istorică).
+`plafon_credit(cifra_afaceri, impozit_profit, la_data=None)`, din aplicație, calculează exact formula de mai sus: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, rezultatul fiind `min(p1, p2)`. Singura variantă de calcul înregistrată în motor e activă din 01.01.2018, cu procentul de 0,75% — corect pentru orice `la_data` din 2026, dar de folosit cu atenție dacă recalculați o sponsorizare din perioada 2015–02.02.2022, unde procentul legal era 0,5%, nu 0,75% (motorul nu face această distincție istorică).
 
 [iConta.eu](/)

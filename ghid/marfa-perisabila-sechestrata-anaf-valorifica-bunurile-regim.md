@@ -16,15 +16,15 @@ Pentru firmă, varianta aleasă contează. O vânzare negociată de debitor poat
 
 ::: ghid-temei
 „(4) Dacă au fost sechestrate bunuri perisabile sau supuse degradării, acestea pot fi vândute în regim de urgență. Evaluarea și valorificarea acestor bunuri se efectuează de către organele fiscale, la prețul pieței."
-— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(9) Bunurile perisabile și/sau degradabile sechestrate asigurător pot fi valorificate: a) de către debitor cu acordul organului de executare silită, sumele obținute consemnându-se la dispoziția organului de executare silită; b) prin vânzare în regim de urgență în condițiile art. 247 alin. (4)."
-— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Se aprobă Procedura de evaluare şi valorificare, în regim de urgenţă, a bunurilor perisabile sau supuse degradării, prevăzută în anexa nr. 1."
-— OPANAF 1517/2017, art. 1 (sursă: anaf_surse/ordin_1517_2017.html)
+— OPANAF 1517/2017, art. 1 (sursă: [OPANAF nr. 1517/2017 privind evaluarea și valorificarea bunurilor perisabile](https://legislatie.just.ro/Public/DetaliiDocument/189547))
 :::
 
 Cum decurge vânzarea de urgență, după formularele aprobate prin OPANAF 1517/2017 (anexele 2–5):

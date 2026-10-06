@@ -16,7 +16,7 @@ Un salariat poate avea, legal, mai multe contracte individuale de muncă simulta
 „(1) Orice salariat are dreptul de a cumula mai multe funcții, în baza unor contracte individuale de muncă, beneficiind de salariul corespunzător pentru fiecare dintre acestea.
 (2) Fac excepție de la prevederile alin. (1) situațiile în care prin lege sunt prevăzute incompatibilități pentru cumulul unor funcții.
 (3) Salariații care cumulează mai multe funcții sunt obligați sa declare fiecărui angajator locul unde exercita funcția pe care o considera de baza."
-— Legea nr. 53/2003 (Codul muncii), art. 35 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 35 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Mecanismul rezultă direct din text:
@@ -33,6 +33,6 @@ Mecanismul rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulele `core/contracte_api.py`, `core/salariu_istoric.py` și `core/stat_plata_api.py` gestionează contractele individuale de muncă și calculul statelor de plată pe fiecare contract. Nu am găsit în aceste module o logică explicită legată de declarația „loc de muncă de bază" în cazul cumulului de funcții pe mai multe contracte — aplicația calculează salariul pe fiecare contract introdus, dar aplicarea corectă a facilităților care depind de statutul de loc de muncă de bază, în cazul unui salariat cu contracte multiple, rămâne o verificare a contabilului.
+Verificat în cod: Aplicația gestionează contractele individuale de muncă și calculul statelor de plată pe fiecare contract. Nu am găsit în aceste module o logică explicită legată de declarația „loc de muncă de bază" în cazul cumulului de funcții pe mai multe contracte — aplicația calculează salariul pe fiecare contract introdus, dar aplicarea corectă a facilităților care depind de statutul de loc de muncă de bază, în cazul unui salariat cu contracte multiple, rămâne o verificare a contabilului.
 
 [iConta.eu](/)

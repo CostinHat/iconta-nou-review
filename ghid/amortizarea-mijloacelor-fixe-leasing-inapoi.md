@@ -14,7 +14,7 @@ O operațiune de leaseback — vinzi un activ pe termen lung și îl iei imediat
 
 ::: ghid-temei
 „O tranzacție de vânzare a unui activ pe termen lung și de închiriere a aceluiași activ în regim de leasing (leaseback) se contabilizează în funcție de clauzele contractului de leasing, astfel: a) dacă tranzacția de vânzare și închiriere a aceluiași activ are ca rezultat un leasing financiar, tranzacția reprezintă un mijloc prin care locatorul acordă o finanțare locatarului, activul având rol de garanție. Entitatea beneficiară a finanțării (locatarul) nu va recunoaște în contabilitate operațiunea de vânzare a activului, nefiind îndeplinite condițiile de recunoaștere a veniturilor. Activul rămâne înregistrat în continuare la valoarea existentă anterior operațiunii de leasing, cu regimul de amortizare aferent. [...] b) dacă tranzacția de vânzare și închiriere a aceluiași activ are ca rezultat un leasing operațional, entitatea vânzătoare contabilizează o tranzacție de vânzare, cu înregistrarea scoaterii din evidență a activului și a sumelor încasate sau de încasat și a taxei pe valoarea adăugată pentru operațiunile taxabile [...]"
-— OMFP 1802/2014, Reglementări contabile, pct. 219 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 219 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Concret, tratamentul amortizării se împarte în două scenarii, exact ca la orice contract de leasing:
@@ -31,6 +31,6 @@ Concret, tratamentul amortizării se împarte în două scenarii, exact ca la or
 
 ## Ce face iConta.eu
 
-Motorul de amortizare al iConta.eu (`core/d406_active.py`) calculează amortizarea unui mijloc fix pe baza metodei și duratei setate pentru activ, indiferent de proveniența acestuia. La data acestui ghid, iConta.eu **nu distinge automat** o operațiune de leaseback de o achiziție sau o vânzare obișnuită de mijloc fix și nu determină singură dacă rezultatul contractului e leasing financiar sau operațional — încadrarea corectă a tranzacției (păstrarea activului la vânzător cu amortizare continuată, sau scoaterea lui din evidență cu recunoașterea vânzării), conform pct. 219 din OMFP 1802/2014, rămâne o decizie manuală a contabilului.
+Motorul de amortizare al iConta.eu calculează amortizarea unui mijloc fix pe baza metodei și duratei setate pentru activ, indiferent de proveniența acestuia. La data acestui ghid, iConta.eu **nu distinge automat** o operațiune de leaseback de o achiziție sau o vânzare obișnuită de mijloc fix și nu determină singură dacă rezultatul contractului e leasing financiar sau operațional — încadrarea corectă a tranzacției (păstrarea activului la vânzător cu amortizare continuată, sau scoaterea lui din evidență cu recunoașterea vânzării), conform pct. 219 din OMFP 1802/2014, rămâne o decizie manuală a contabilului.
 
 [iConta.eu](/)

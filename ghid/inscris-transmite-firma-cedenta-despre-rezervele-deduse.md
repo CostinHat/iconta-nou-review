@@ -16,12 +16,12 @@ Fără acest înscris, beneficiarul nu știe ce parte din rezervele primite va d
 
 ::: ghid-temei
 „21. În aplicarea prevederilor art. 26 alin. (5) din Codul fiscal, în cazul operațiunilor de reorganizare, contribuabilul cedent și contribuabilul beneficiar efectuează și următoarele operațiuni: a) contribuabilul cedent transmite contribuabilului beneficiar un înscris care trebuie să cuprindă informații fiscale referitoare la rezervele/provizioanele transferate, care au fost deduse și neimpozitate; [...] b) contribuabilul beneficiar înregistrează în registrul de evidență fiscală, distinct, rezervele/provizioanele preluate în baza înscrisului transmis de contribuabilul cedent."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul II, pct. 21 (norme art. 26 alin. (5) CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul II, pct. 21 (norme art. 26 alin. (5) CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Prevederile prezentului alineat nu se aplică dacă un alt contribuabil preia un provizion sau o rezervă în legătură cu o divizare sau fuziune, sub orice formă, reglementările acestui articol aplicându-se în continuare acelui provizion sau rezervă."
-— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

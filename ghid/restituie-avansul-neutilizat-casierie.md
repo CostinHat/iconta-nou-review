@@ -14,7 +14,7 @@ Când un angajat primește un avans pentru deplasare sau pentru procurarea unor 
 
 ::: ghid-temei
 „ORDIN DE DEPLASARE (DELEGAȚIE) [...] se întocmește pentru fiecare deplasare, de către persoana care urmează a efectua deplasarea, precum și pentru justificarea avansurilor acordate în vederea procurării de valori materiale cu plata în numerar. În cazul în care la decontarea avansului suma cheltuielilor efectuate este mai mare decât avansul primit, pentru diferența de primit de către titularul de avans se întocmește Dispoziție de plată către casierie (cod 14-4-4). În cazul în care, la decontare, sumele privind cheltuielile efective sunt mai mici decât avansul primit, diferența de restituit de către titularul de avans se depune la casierie pe bază de Dispoziție de încasare către casierie (cod 14-4-4)."
-— OMFP 2634/2015, anexa 2, cod 14-5-4 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2, cod 14-5-4 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Procedura, pas cu pas:

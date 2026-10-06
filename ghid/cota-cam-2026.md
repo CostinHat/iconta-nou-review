@@ -14,7 +14,7 @@ Contribuția asiguratorie pentru muncă (CAM) este o contribuție socială dator
 
 ::: ghid-temei
 „Articolul 220^3 alin. (1) Cota contribuției asiguratorii pentru muncă este de 2,25%."
-— Legea nr. 227/2015 (Codul fiscal), Titlul V — Contribuții sociale obligatorii, Capitolul IX, art. 220^3 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), Titlul V — Contribuții sociale obligatorii, Capitolul IX, art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - CAM se calculează la **fondul de salarii brute lunare**, nu la valoarea unei tranzacții sau a unui produs vândut.

@@ -16,18 +16,18 @@ Contează mai ales la controale: dacă furnizorul nu mai poate cere taxa de la c
 
 ::: ghid-temei
 „b) contrapartida unei livrări de bunuri/prestări de servicii trebuie considerată ca incluzând deja taxa pe valoarea adăugată, taxa determinându-se prin aplicarea procedeului sutei mărite, respectiv 21 x 100/121 în cazul cotei standard și 11 x 100/111 în cazul cotei reduse, în următoarele situații:"
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „3. în orice situație în care contrapartida nu este stabilită de părți, ci este stabilită prin lege, prin licitație, printr-o hotărâre a instanței, sau alte situații similare, și include taxa sau nu există nicio mențiune cu privire la taxa pe valoarea adăugată;"
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) pct. 3 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) pct. 3 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „4. atunci când prețul unui bun/serviciu a fost stabilit de părți fără nicio mențiune cu privire la taxa pe valoarea adăugată, iar furnizorul/prestatorul bunului/serviciului respectiv este persoana obligată la plata taxei pe valoarea adăugată colectate pentru operațiunea supusă taxei, și furnizorul/prestatorul nu are posibilitatea de a recupera de la beneficiar taxa pe valoarea adăugată care ar fi trebuit colectată pentru operațiunea respectivă. Poate fi acceptată ca mijloc de probă a faptului că furnizorul/prestatorul nu are posibilitatea de a recupera de la beneficiar taxa pe valoarea adăugată, inclusiv o declarație pe propria răspundere a furnizorului."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) pct. 4 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 36 lit. b) pct. 4 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%."
-— Codul fiscal (Legea 227/2015), art. 291 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 291 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile pentru prețul stabilit de părți (pct. 4), toate îndeplinite:

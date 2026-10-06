@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T, declarația D406) nu are un regim s
 
 ::: ghid-temei
 „Obligaţia de transmitere a fişierului standard de control fiscal prin intermediul Declaraţiei informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: [...] pentru contribuabilii încadraţi în categoria contribuabili mijlocii la data de 31 decembrie 2021, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1 ianuarie 2023 [...]; pentru contribuabilii încadraţi în categoria de contribuabili mici la data de 31 decembrie 2021, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1 ianuarie 2025 [...]; pentru contribuabilii nou-înregistraţi/încadraţi după data de referinţă pentru fiecare categorie în parte, obligaţia de depunere a Declaraţiei informative D406 începe de la data efectivă a înregistrării [...]"
-— OPANAF 1783/2021, Anexa 5 pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 5 pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă pentru o firmă din HoReCa (CAEN 5610 „Restaurante", 5630 „Baruri"):
@@ -31,6 +31,6 @@ Ce rezultă pentru o firmă din HoReCa (CAEN 5610 „Restaurante", 5630 „Barur
 
 ## Ce face iConta.eu
 
-Generatorul D406/SAF-T (`core/d406.py`) e generic — nu conține nicio ramură specifică pentru CAEN-urile HoReCa și nu tratează diferit o firmă de restaurant sau bar față de oricare alta. Secțiunea GeneralLedgerEntries se construiește din **toate** notele contabile validate ale perioadei, indiferent de operațiune: dacă firma folosește și modulul de Bacșiș HoReCa (notele 461=462 la încasare, 462=446/5121/5311 la distribuire către salariați), acele note intră în raportare exact ca oricare altă notă validată, fără tratament special. La fel funcționează și secțiunile pentru mijloace fixe (D406 Active) și stocuri la cerere (D406 Stocuri) — generice, alimentate din registrele proprii ale firmei, nu adaptate pe domeniul de activitate.
+Generatorul D406/SAF-T e generic — nu conține nicio ramură specifică pentru CAEN-urile HoReCa și nu tratează diferit o firmă de restaurant sau bar față de oricare alta. Secțiunea GeneralLedgerEntries se construiește din **toate** notele contabile validate ale perioadei, indiferent de operațiune: dacă firma folosește și modulul de Bacșiș HoReCa (notele 461=462 la încasare, 462=446/5121/5311 la distribuire către salariați), acele note intră în raportare exact ca oricare altă notă validată, fără tratament special. La fel funcționează și secțiunile pentru mijloace fixe (D406 Active) și stocuri la cerere (D406 Stocuri) — generice, alimentate din registrele proprii ale firmei, nu adaptate pe domeniul de activitate.
 
 [iConta.eu](/)

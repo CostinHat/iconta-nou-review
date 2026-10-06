@@ -14,7 +14,7 @@ Situația e frecventă: un angajat plătește pe loc, din banii proprii, o factu
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare."
-— Legea 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. e), astfel cum a fost modificat prin OUG 115/2023 (sursă: anaf_surse/legea_70_2015_consolidat.html)
+— Legea 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. e), astfel cum a fost modificat prin OUG 115/2023 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă practic pentru contabilizare:
@@ -31,6 +31,6 @@ Ce înseamnă practic pentru contabilizare:
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) gestionează avansurile de trezorerie și verifică automat plafonul zilnic de 5.000 lei pentru plățile efectuate din avansuri spre decontare, pe fiecare persoană, semnalând ca avertisment orice depășire constatată, cu temeiul legal atașat.
+Modulul de casierie al iConta.eu gestionează avansurile de trezorerie și verifică automat plafonul zilnic de 5.000 lei pentru plățile efectuate din avansuri spre decontare, pe fiecare persoană, semnalând ca avertisment orice depășire constatată, cu temeiul legal atașat.
 
 [iConta.eu](/)

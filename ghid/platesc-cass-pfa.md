@@ -14,7 +14,7 @@ Contribuția de asigurări sociale de sănătate pentru un PFA nu se plătește 
 
 ::: ghid-temei
 „Persoanele fizice care realizează venituri din cele prevăzute la art. 155 alin. (1) lit. b) stabilesc și declară contribuția, depun Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice la termenele și în condițiile prevăzute la titlul IV - Impozitul pe venit, pentru persoanele fizice care realizează venituri din activități independente."
-— Codul fiscal (Legea 227/2015), art. 174 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 174 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din trimiterea la titlul IV:
@@ -32,7 +32,7 @@ Ce rezultă din trimiterea la titlul IV:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_cass`) calculează CASS liniar pe venitul net, cu baza minimă de 6 salarii minime brute (art. 174 alin. (6), cu excepțiile de la alin. (7)-(8)) și plafonul maxim de 72 de salarii minime brute pentru veniturile din 2026 (60 pentru 2025), citite din registrul de cote al aplicației, nu hardcodate. Funcția `fisa_d212` (`core/rip_api.py`) produce calculul complet — CASS, CAS și impozit — pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți, pentru un PFA la sistem real, doar pentru anii 2025 și 2026.
+Aplicația (funcția `calculeaza_cass`) calculează CASS liniar pe venitul net, cu baza minimă de 6 salarii minime brute (art. 174 alin. (6), cu excepțiile de la alin. (7)-(8)) și plafonul maxim de 72 de salarii minime brute pentru veniturile din 2026 (60 pentru 2025), citite din registrul de cote al aplicației, nu hardcodate. Funcția `fisa_d212` produce calculul complet — CASS, CAS și impozit — pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți, pentru un PFA la sistem real, doar pentru anii 2025 și 2026.
 
 Aplicația nu emite instrucțiuni de plată sau nu inițiază transferul sumei către bugetul de stat — calculul se oprește la fișa de calcul, iar plata efectivă se face separat, prin canalele obișnuite (ghiseul.ro, ordin de plată).
 

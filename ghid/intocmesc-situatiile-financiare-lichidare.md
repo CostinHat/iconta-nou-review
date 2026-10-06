@@ -14,10 +14,10 @@ Perioada de lichidare a unei firme e, din punct de vedere contabil, un exerciți
 
 ::: ghid-temei
 „(9) Exercițiul financiar al unei persoane juridice care se lichidează începe în ziua următoare încheierii exercițiului financiar anterior și se încheie în ziua precedentă datei când începe lichidarea. Perioada de lichidare este considerată un exercițiu financiar distinct față de cel precedent, indiferent de durata sa."
-— Legea 82/1991 (Legea contabilității), art. 27 alin. (9) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 27 alin. (9) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „Prevederile alin. (1) se aplică și în cazul fuziunii, divizării și transformării, precum și în situația lichidării, în condițiile legii, caz în care situațiile financiare au aceleași componente cu situațiile financiare anuale."
-— Legea 82/1991 (Legea contabilității), art. 28 alin. (1^1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 28 alin. (1^1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce presupune, concret, întocmirea acestor situații:

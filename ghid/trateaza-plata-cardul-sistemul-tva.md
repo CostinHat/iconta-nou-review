@@ -13,7 +13,7 @@ La plata cu cardul, între momentul tranzacției la POS și cel în care banii a
 ## Temeiul legal
 
 ::: ghid-temei
-**Pct. 26 alin. (12) din Normele metodologice de aplicare a Codului fiscal (HG 1/2016)**: „Data încasării în situația în care plata s-a efectuat prin carduri de debit sau de credit de către cumpărător este data înscrisă în extrasul de cont ori în alt document asimilat acestuia." Sursă: `anaf_surse/hg_1_2016_norme_cod_fiscal.txt`, linia 6591.
+**Pct. 26 alin. (12) din Normele metodologice de aplicare a Codului fiscal (HG 1/2016)**: „Data încasării în situația în care plata s-a efectuat prin carduri de debit sau de credit de către cumpărător este data înscrisă în extrasul de cont ori în alt document asimilat acestuia." Sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822).
 :::
 
 Norma e directă: pentru plata cu cardul (debit sau credit), data exigibilității TVA e data din extrasul de cont al furnizorului/prestatorului — nu data tranzacției la POS și nu data la care banca procesatoare virează efectiv suma. În practică, aceasta poate fi la 1-2 zile după momentul plății fizice, în funcție de bancă și procesator.

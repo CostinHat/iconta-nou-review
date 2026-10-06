@@ -16,7 +16,7 @@ Tratamentul fiscal corect depinde de scopul documentat al gratuității: dacă m
 „(8) Nu constituie livrare de bunuri, în sensul alin. (1): [...]
 b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice;
 c) acordarea de bunuri de mică valoare, în mod gratuit, în cadrul acțiunilor de sponsorizare, de mecenat, de protocol/reprezentare, în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b), c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b), c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două căi posibile de tratament, cu consecințele lor:
@@ -33,6 +33,6 @@ Cele două căi posibile de tratament, cu consecințele lor:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are, în planul de conturi, contul 623 „Cheltuieli de protocol, reclamă și publicitate" (`core/plan_omfp.py`), pe care contabilul îl poate folosi pentru înregistrarea unor astfel de cheltuieli. Aplicația nu clasifică automat o cheltuială ca fiind „protocol" sau „reclamă/publicitate" în sensul art. 25 și art. 270 din Codul fiscal și nu calculează limita de deductibilitate de 2% pentru protocol — încadrarea corectă, pe baza documentelor justificative disponibile, rămâne o decizie a contabilului.
+La data acestui ghid, iConta.eu are, în planul de conturi, contul 623 „Cheltuieli de protocol, reclamă și publicitate", pe care contabilul îl poate folosi pentru înregistrarea unor astfel de cheltuieli. Aplicația nu clasifică automat o cheltuială ca fiind „protocol" sau „reclamă/publicitate" în sensul art. 25 și art. 270 din Codul fiscal și nu calculează limita de deductibilitate de 2% pentru protocol — încadrarea corectă, pe baza documentelor justificative disponibile, rămâne o decizie a contabilului.
 
 [iConta.eu](/)

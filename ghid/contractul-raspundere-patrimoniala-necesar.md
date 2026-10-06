@@ -14,7 +14,7 @@ Mulți angajatori încă mai caută un „contract de răspundere patrimonială"
 
 ::: ghid-temei
 „Angajatorul este obligat, în temeiul normelor și principiilor răspunderii civile contractuale, să îl despăgubească pe salariat în situația în care acesta a suferit un prejudiciu material sau moral din culpa angajatorului în timpul îndeplinirii obligațiilor de serviciu sau în legătură cu serviciul. [...] Salariații răspund patrimonial, în temeiul normelor și principiilor răspunderii civile contractuale, pentru pagubele materiale produse angajatorului din vina și în legătură cu munca lor."
-— Legea 53/2003 (Codul muncii), art. 253 alin. (1) și art. 254 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 253 alin. (1) și art. 254 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Din text rezultă că răspunderea patrimonială e **bilaterală și legală**, nu condiționată de un contract separat:

@@ -14,7 +14,7 @@ Obligativitatea SAF-T (fișierul standard de control fiscal, depus prin Declara�
 
 ::: ghid-temei
 „Pentru contribuabilii nou-înregistrați/încadrați după data de referință pentru fiecare categorie în parte, obligația de depunere a Declarației informative D406 începe de la data efectivă a înregistrării, prima depunere a Declarației informative D406 urmând să se facă în ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de referință pentru categoria în care au fost înregistrați/încadrați."
-— OPANAF 407/2025 (modificarea anexei nr. 5 la OPANAF 1783/2021), pct. 1.1 lit. g) (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF 407/2025 (modificarea anexei nr. 5 la OPANAF 1783/2021), pct. 1.1 lit. g) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ce înseamnă concret pentru o firmă nou-înființată:

@@ -16,13 +16,13 @@ Pentru contabil, o rechemare înseamnă trei lucruri concrete: un document care 
 
 ::: ghid-temei
 „(1) Concediul de odihnă poate fi întrerupt, la cererea salariatului, pentru motive obiective. [...] (2) Angajatorul poate rechema salariatul din concediul de odihnă în caz de forță majoră sau pentru interese urgente care impun prezența salariatului la locul de muncă. În acest caz angajatorul are obligația de a suporta toate cheltuielile salariatului și ale familiei sale, necesare în vederea revenirii la locul de muncă, precum și eventualele prejudicii suferite de acesta ca urmare a întreruperii concediului de odihnă."
-— Codul muncii (Legea 53/2003), art. 151 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 151 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Dreptul la concediu de odihnă anual nu poate forma obiectul vreunei cesiuni, renunțări sau limitări."
-— Codul muncii (Legea 53/2003), art. 144 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 144 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(2) În cazul în care salariatul, din motive justificate, nu poate efectua, integral sau parțial, concediul de odihnă anual la care avea dreptul în anul calendaristic respectiv, cu acordul persoanei în cauză, angajatorul este obligat să acorde concediul de odihnă neefectuat într-o perioadă de 18 luni începând cu anul următor celui în care s-a născut dreptul la concediul de odihnă anual. [...] (3) Compensarea în bani a concediului de odihnă neefectuat este permisă numai în cazul încetării contractului individual de muncă."
-— Codul muncii (Legea 53/2003), art. 146 alin. (2)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 146 alin. (2)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

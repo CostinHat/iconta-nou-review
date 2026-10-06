@@ -16,10 +16,10 @@ Pentru contabil, reținerea originalelor nu suspendă obligațiile curente ale f
 
 ::: ghid-temei
 „Organul fiscal are dreptul să rețină, în scopul protejării împotriva înstrăinării sau distrugerii, indiferent de mediul în care sunt stocate, documente, acte, înscrisuri, registre și documente financiar-contabile în original sau orice element material care face dovada stabilirii, înregistrării și achitării obligațiilor fiscale de către contribuabil/plătitor, pe o perioadă de cel mult 30 de zile. în cazuri excepționale, cu aprobarea conducătorului organului fiscal, perioada de reținere poate fi prelungită cu cel mult 90 de zile. Contribuabilul/plătitorul are dreptul să solicite copii ale documentelor reținute atât timp cât acestea sunt în posesia organului fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dovada reținerii documentelor prevăzute la alin. (3) o constituie actul întocmit de organul fiscal, în care sunt specificate toate elementele necesare individualizării probei sau dovezii respective, precum și mențiunea că aceasta a fost reținută, potrivit dispozițiilor legale, de către organul fiscal. Actul se întocmește în două exemplare și se semnează de organul fiscal și de contribuabil/plătitor, un exemplar comunicându-i-se contribuabilului/plătitorului."
-— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 64 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce reiese din text:

@@ -16,13 +16,13 @@ Amenzile se aplică operatorului, nu vânzătorilor. Pentru o firmă româneasc�
 
 ::: ghid-temei
 „y) neraportarea, raportarea cu întârziere sau raportarea incorectă ori incompletă de către Operatorii de platformă care au obligația de raportare, în sensul pct. 4 lit. a) din subsecțiunea A a secțiunii I din anexa nr. 5, a informațiilor prevăzute la art. 291 5 ;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. y) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. y) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „bb) nerespectarea de către Operatorii de platformă care au obligația de raportare a procedurilor de diligență fiscală și a procedurilor de raportare prevăzute în secțiunile II și III din anexa nr. 5;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. bb) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. bb) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „p)cu amendă de la 20.000 lei la 100.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. y), aa), bb) și dd)-hh); q)cu amendă de la 20.000 lei la 100.000 lei și revocarea înregistrării Operatorului de platformă care are obligația de raportare în cazul săvârșirii faptelor prevăzute la alin. (1) lit. z);"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. p) și q) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. p) și q) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Faptele sancționate și amenzile:

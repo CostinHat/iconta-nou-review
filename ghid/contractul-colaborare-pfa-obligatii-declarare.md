@@ -14,7 +14,7 @@ O firmă care încheie un contract de colaborare cu un PFA (nu un contract de mu
 
 ::: ghid-temei
 „activitate independentă - orice activitate desfășurată de către o persoană fizică în scopul obținerii de venituri, care îndeplinește cel puțin 4 dintre următoarele criterii: 3.1. persoana fizică dispune de libertatea de alegere a locului și a modului de desfășurare a activității, precum și a programului de lucru; 3.2. persoana fizică dispune de libertatea de a desfășura activitatea pentru mai mulți clienți; 3.3. riscurile inerente activității sunt asumate de către persoana fizică ce desfășoară activitatea; 3.4. activitatea se realizează prin utilizarea patrimoniului persoanei fizice care o desfășoară; 3.5. activitatea se realizează de persoana fizică prin utilizarea capacității intelectuale și/sau a prestației fizice a acesteia, în funcție de specificul activității; 3.6. persoana fizică face parte dintr-un corp/ordin profesional [...]; 3.7. persoana fizică dispune de libertatea de a desfășura activitatea direct, cu personal angajat sau prin colaborare cu terțe persoane în condițiile legii."
-— Codul fiscal (Legea 227/2015), art. 7 pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru contractul cu un PFA:

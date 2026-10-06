@@ -53,7 +53,7 @@ Dacă ați observat, după depunerea declarației 101, că ați scăzut din impo
 
 ## Ce face iConta.eu
 
-Motorul din `core/sponsorizari.py` (`plafon_credit()`, `credit_sponsorizare()`) are o singură regulă înregistrată, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, indiferent de parametrul `la_data` transmis. Niciun test din suita existentă nu verifică un `la_data` anterior lui 2022, iar acest comportament nu este garantat corect pentru astfel de date.
+Motorul din aplicație (`plafon_credit()`, `credit_sponsorizare()`) are o singură regulă înregistrată, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, indiferent de parametrul `la_data` transmis. Niciun test din suita existentă nu verifică un `la_data` anterior lui 2022, iar acest comportament nu este garantat corect pentru astfel de date.
 
 Dacă recalculați în iConta.eu o corecție pentru un an anterior lui 03.02.2022, aplicația va folosi tot 0,75%/D177, nu 0,5%/reportare 7 ani. Pentru aceste corecții, calculați manual plafonul cu procentul valabil în anul respectiv și nu vă bazați pe rezultatul automat al motorului.
 

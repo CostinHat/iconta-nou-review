@@ -14,10 +14,10 @@ Amortizarea fiscală omisă acum trei ani nu poate fi pur și simplu „adunată
 
 ::: ghid-temei
 „Cheltuielile aferente achiziționării, producerii, construirii mijloacelor fixe amortizabile, precum și investițiile efectuate la acestea se recuperează din punct de vedere fiscal prin deducerea amortizării potrivit prevederilor prezentului articol."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel. (2) Termenul de prescripție a dreptului prevăzut la alin. (1) începe să curgă de la data de 1 iulie a anului următor celui pentru care se datorează obligația fiscală, dacă legea nu dispune altfel."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 110 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 110 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din coroborarea celor două texte rezultă limitele reale ale corecției:
@@ -34,6 +34,6 @@ Din coroborarea celor două texte rezultă limitele reale ale corecției:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează amortizarea curentă a mijloacelor fixe, pe baza valorii de intrare, metodei și duratei normale de funcționare introduse (`core/d406_active.py`), dar **nu recalculează retroactiv** amortizarea omisă din anii anteriori și nu generează automat declarațiile rectificative aferente. Identificarea sumelor neînregistrate în trecut și corectarea lor, cu respectarea termenului de prescripție, rămân în sarcina contabilului.
+La data acestui ghid, iConta.eu calculează amortizarea curentă a mijloacelor fixe, pe baza valorii de intrare, metodei și duratei normale de funcționare introduse, dar **nu recalculează retroactiv** amortizarea omisă din anii anteriori și nu generează automat declarațiile rectificative aferente. Identificarea sumelor neînregistrate în trecut și corectarea lor, cu respectarea termenului de prescripție, rămân în sarcina contabilului.
 
 [iConta.eu](/)

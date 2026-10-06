@@ -16,12 +16,12 @@ Regula decide câte declarații depui și de la ce dată curg accesoriile. Dacă
 
 ::: ghid-temei
 „Perioada de raportare - se completează cu anul și luna în care a intervenit exigibilitatea taxei pe valoarea adăugată pentru livrările de bunuri/prestările de servicii și/sau achizițiile de bunuri și/sau servicii pentru care persoana impozabilă este obligată la plata taxei. În situațiile prevăzute la pct. 5^1 alin. (2) lit. c) și d) din titlul I al Normelor metodologice se completează cu anul și luna în care a intervenit exigibilitatea taxei pe care persoana impozabilă ar fi trebuit să o colecteze în perioada în care a avut codul de înregistrare în scopuri de TVA anulat."
-— OPANAF nr. 188/2018, anexa nr. 2, „Perioada de raportare" (sursă: anaf_surse/ordin_188_2018.html)
+— OPANAF nr. 188/2018, anexa nr. 2, „Perioada de raportare" (sursă: [OPANAF nr. 188/2018 pentru aprobarea formularului 311](https://legislatie.just.ro/Public/DetaliiDocument/197537))
 :::
 
 ::: ghid-temei
 „(1) Exigibilitatea taxei intervine la data la care are loc faptul generator. (2) Prin excepție de la prevederile alin. (1) , exigibilitatea taxei intervine: a) la data emiterii unei facturi, înainte de data la care intervine faptul generator; ... b) la data la care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator."
-— Codul fiscal (Legea 227/2015), art. 282 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 282 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum stabilești luna:
@@ -36,7 +36,7 @@ Data emiterii facturii de după reînregistrare nu schimbă luna de exigibilitat
 
 ::: ghid-temei
 „Persoana impozabilă datorează obligații fiscale accesorii conform art. 173 și 181 din Legea nr. 207/2015, cu modificările și completările ulterioare, de la data la care avea obligația să plătească TVA aferentă livrărilor de bunuri/prestărilor de servicii taxabile, efectuate în perioada în care a avut codul de înregistrare în scopuri de TVA anulat, și până la data plății taxei"
-— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.html)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), titlul I, pct. 5^1 alin. (2) lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Luna de raportare corectă fixează și începutul calculului de accesorii, potrivit Codului de procedură fiscală (Legea 207/2015).

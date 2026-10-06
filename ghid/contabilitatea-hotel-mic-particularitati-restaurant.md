@@ -14,7 +14,7 @@ Diferența contabilă dintre un hotel mic și un restaurant nu vine din cota de 
 
 ::: ghid-temei
 „Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: [...] m) cazarea în cadrul sectorului hotelier sau al sectoarelor cu funcție similară, inclusiv închirierea terenurilor amenajate pentru camping; [...] n) serviciile de restaurant și de catering, cu excepția băuturilor alcoolice, precum și a băuturilor nealcoolice care se încadrează la codul NC 2202."
-— Legea nr. 227/2015 privind Codul fiscal, art. 291 alin. (2) lit. m) și n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 291 alin. (2) lit. m) și n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru cele două tipuri de afaceri:
@@ -31,6 +31,6 @@ Ce rezultă concret pentru cele două tipuri de afaceri:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de clasificare a operațiunilor pe cote de TVA, în `core/cote_tva.py`, cu chei distincte de nomenclator pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară), „restaurant_catering" (servicii de restaurant și catering) și băuturile alcoolice (taxate separat, chiar și în restaurant/catering) — exact distincția din art. 291 alin. (2) lit. m) și n). Aplicația oferă evidența contabilă generală pe aceste categorii; separarea liniilor de venit ale unui hotel (cazare, restaurant, minibar, alte servicii) pe facturile emise rămâne, la această dată, o decizie de structurare pe care contabilul o face la configurarea articolelor/serviciilor firmei.
+iConta.eu are o funcționalitate reală de clasificare a operațiunilor pe cote de TVA, în aplicație, cu chei distincte de nomenclator pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară), „restaurant_catering" (servicii de restaurant și catering) și băuturile alcoolice (taxate separat, chiar și în restaurant/catering) — exact distincția din art. 291 alin. (2) lit. m) și n). Aplicația oferă evidența contabilă generală pe aceste categorii; separarea liniilor de venit ale unui hotel (cazare, restaurant, minibar, alte servicii) pe facturile emise rămâne, la această dată, o decizie de structurare pe care contabilul o face la configurarea articolelor/serviciilor firmei.
 
 [iConta.eu](/)

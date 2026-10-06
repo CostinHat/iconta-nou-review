@@ -16,18 +16,18 @@ Asta nu înseamnă că arenda e scutită. Ea este venit din cedarea folosinței 
 
 ::: ghid-temei
 „În aplicarea prevederilor art. 105 nu au obligații de declarare și nu datorează impozit potrivit prevederilor cap. VII al titlului IV din Codul fiscal: [...] c) contribuabilii arendatori, care realizează venituri din cedarea folosinței bunurilor supuse impunerii potrivit prevederilor cap. IV al titlului IV din Codul fiscal;”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 29 alin. (1) lit. c), titlul IV (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 29 alin. (1) lit. c), titlul IV (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Venitul net din arendă se stabilește la fiecare plată prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra venitului brut.”
-— Codul fiscal (Legea 227/2015), art. 84 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe veniturile din arendă se calculează prin reținere la sursă de către plătitorii de venit la momentul plății venitului, prin aplicarea cotei de 10% asupra venitului net, impozitul fiind final.”
-— Codul fiscal, art. 84 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 84 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care arenda se exprimă în natură, evaluarea în lei se face pe baza prețurilor medii ale produselor agricole, stabilite prin hotărâri ale consiliilor județene”
-— Codul fiscal, art. 84 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 84 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ O cofetărie nu vinde marfă cumpărată și revândută ca atare (cont 371 „M
 
 ::: ghid-temei
 „Contul 345 «Produse finite» ... Cu ajutorul acestui cont se ține evidența existenței și mișcării stocurilor de produse finite. Contul 345 «Produse finite» este un cont de activ. În debitul contului 345 «Produse finite» se înregistrează: - valoarea la preț de înregistrare a produselor finite intrate în gestiune și plusurile la inventar (711) ... În creditul contului 345 «Produse finite» se înregistrează: - valoarea la preț de înregistrare a produselor finite vândute și lipsurile la inventar (711)."
-— OMFP 1802/2014, funcțiunea contului 345 „Produse finite" (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, funcțiunea contului 345 „Produse finite" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pentru o cofetărie, fluxul contabil standard este:

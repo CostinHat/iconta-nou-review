@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Cererile depuse de către contribuabil/plătitor la organul fiscal se soluționează de către acesta în termen de 45 de zile de la înregistrare. (2) în situațiile în care, pentru soluționarea cererii, este necesară administrarea de probe suplimentare relevante pentru luarea deciziei, acest termen se prelungește cu perioada cuprinsă între data solicitării probei și data obținerii acesteia, dar nu mai mult de: a) două luni, în cazul în care sunt solicitate probe suplimentare de la contribuabilul/plătitorul solicitant."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 77 alin. (1) și (2) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 77 alin. (1) și (2) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret pentru verificarea stadiului unei cereri:

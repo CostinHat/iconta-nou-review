@@ -37,6 +37,6 @@ Un PFA vinde printr-un marketplace care reține automat 12% comision din fiecare
 
 ## Ce face iConta.eu
 
-`core/rip_api.py` nu tratează diferit, la nivel de cod, comisionul unei platforme online față de alt tip de cheltuială: orice plată introdusă cu categoria `cheltuiala_deductibila` trece prin aceeași validare (`_valideaza`) — sumă pozitivă, dată, explicație, deductibilitate marcată. Decizia de a încadra comisionul de platformă ca deductibil, pe baza documentului emis de platformă, rămâne integral a contabilului. Spre deosebire de operațiunile importate automat din extrasul bancar (`import_banca`, unde categoria e propusă implicit), comisioanele reținute direct de o platformă (fără să treacă prin extrasul bancar ca linie separată) se introduc și se justifică manual în registru.
+Aplicația nu tratează diferit, la nivel de cod, comisionul unei platforme online față de alt tip de cheltuială: orice plată introdusă cu categoria `cheltuiala_deductibila` trece prin aceeași validare (`_valideaza`) — sumă pozitivă, dată, explicație, deductibilitate marcată. Decizia de a încadra comisionul de platformă ca deductibil, pe baza documentului emis de platformă, rămâne integral a contabilului. Spre deosebire de operațiunile importate automat din extrasul bancar (`import_banca`, unde categoria e propusă implicit), comisioanele reținute direct de o platformă (fără să treacă prin extrasul bancar ca linie separată) se introduc și se justifică manual în registru.
 
 [iConta.eu](/)

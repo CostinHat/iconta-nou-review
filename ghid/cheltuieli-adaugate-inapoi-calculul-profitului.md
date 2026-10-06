@@ -14,7 +14,7 @@ Profitul contabil nu este niciodată identic cu profitul impozabil. Rezultatul f
 
 ::: ghid-temei
 „d) cheltuielile făcute în favoarea acționarilor sau asociaților, altele decât cele generate de plăți pentru bunurile livrate sau serviciile prestate contribuabilului, la prețul de piață pentru aceste bunuri sau servicii;"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Această literă este un bun exemplu al logicii generale a art. 25: unele cheltuieli, deși înregistrate contabil, nu sunt considerate legate de activitatea economică a firmei, ci de interesul personal al asociaților, și se adaugă înapoi la calculul profitului impozabil:

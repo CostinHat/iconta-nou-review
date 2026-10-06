@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „La articolul 28 alineatul (2), litera b) se modifică și va avea următorul cuprins: b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului;"
-— OUG nr. 8/2026, art. 6 pct. 7 (modifică art. 28 alin. (2) lit. b) din Codul fiscal; potrivit art. 10 alin. (1)-(2) din aceeași OUG, art. 6 pct. 1-14 a intrat în vigoare la data publicării — 25 februarie 2026 — și se aplică începând cu anul fiscal 2026) (sursă: anaf_surse/oug_8_2026.txt)
+— OUG nr. 8/2026, art. 6 pct. 7 (modifică art. 28 alin. (2) lit. b) din Codul fiscal; potrivit art. 10 alin. (1)-(2) din aceeași OUG, art. 6 pct. 1-14 a intrat în vigoare la data publicării — 25 februarie 2026 — și se aplică începând cu anul fiscal 2026) (sursă: [OUG nr. 8/2026 privind instituirea unor măsuri de relansare economică](https://legislatie.just.ro/Public/DetaliiDocument/307580))
 :::
 
 Din același act, cele mai relevante schimbări pentru 2026 sunt:

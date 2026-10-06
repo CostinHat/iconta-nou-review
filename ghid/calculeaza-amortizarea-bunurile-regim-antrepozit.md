@@ -15,11 +15,11 @@ poarta: v1
 ::: ghid-temei
 „(1) Cheltuielile aferente achiziționării, producerii, construirii mijloacelor fixe amortizabile, precum și investițiile efectuate la acestea se recuperează din punct de vedere fiscal prin deducerea amortizării potrivit prevederilor prezentului articol.
 (2) Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; [...] b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei [...]; c) are o durată normală de utilizare mai mare de un an."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Amortizarea fiscală se aplică exclusiv **mijloacelor fixe** — active folosite în activitatea proprie (producție, livrare de bunuri, prestare de servicii, închiriere sau scop administrativ), cu valoare de minimum 5.000 lei și durată de utilizare peste un an.
-- „Antrepozitul fiscal" e definit separat, în Titlul VIII al Codului fiscal (accize): „antrepozit fiscal reprezintă un loc în care produsele accizabile sunt produse, transformate, deținute, depozitate, primite sau expediate în regim suspensiv de accize de către un antrepozitar autorizat" — art. 336 pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt, linia 22802). E o categorie de **suspendare a exigibilității accizei**, complet independentă de art. 28.
+- „Antrepozitul fiscal" e definit separat, în Titlul VIII al Codului fiscal (accize): „antrepozit fiscal reprezintă un loc în care produsele accizabile sunt produse, transformate, deținute, depozitate, primite sau expediate în regim suspensiv de accize de către un antrepozitar autorizat" — art. 336 pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)). E o categorie de **suspendare a exigibilității accizei**, complet independentă de art. 28.
 - Metoda de amortizare (liniară, degresivă, accelerată sau superaccelerată din 2026) depinde de **categoria mijlocului fix** — construcții, echipamente tehnologice, alte active — conform art. 28 alin. (5), niciodată de locul fizic în care se află bunul.
 
 ## Ce se greșește în practică

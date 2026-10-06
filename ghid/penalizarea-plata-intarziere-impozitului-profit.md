@@ -20,7 +20,7 @@ ART. 176 Penalități de întârziere
 (1) Penalitățile de întârziere se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. [...]
 (2) Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere.
 (3) Penalitatea de întârziere nu înlătură obligația de plată a dobânzilor."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 174 alin. (1), (5) și art. 176 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 174 alin. (1), (5) și art. 176 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Dobânda**: 0,02% pe zi de întârziere, calculată din ziua următoare scadenței (25 ale lunii, pentru trimestrul aferent, la impozitul pe profit) și până la data plății efective, inclusiv.

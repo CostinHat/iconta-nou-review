@@ -14,7 +14,7 @@ Avansul spre decontare — sumă dată unui salariat pentru cheltuieli viitoare,
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare. [...] (4) La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea nr. 70/2015, art. 3 alin. (1) lit. e) și alin. (4), modificat prin OUG nr. 115/2023 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. e) și alin. (4), modificat prin OUG nr. 115/2023 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din text rezultă mecanica plafonului pentru avansurile spre decontare:

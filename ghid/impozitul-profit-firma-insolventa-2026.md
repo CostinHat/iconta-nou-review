@@ -15,7 +15,7 @@ O firmă intrată în insolvență nu trece automat, doar prin acest fapt, la im
 ::: ghid-temei
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...]
 e) nu se află în dizolvare, urmată de lichidare, înregistrată în registrul comerțului sau la instanțele judecătorești, potrivit legii."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Notă de onestitate:** nu am găsit, în sursele consultate, o prevedere a Codului fiscal care să lege explicit intrarea în **insolvență** (perioadă de observație, reorganizare judiciară, sub Legea 85/2014) de o schimbare automată a regimului de impozitare a profitului. Textul găsit vizează o situație juridică diferită și mai târzie — **dizolvarea urmată de lichidare**. Redirecționez, așadar, spre acest temei real, cu mențiunea clară a limitării:

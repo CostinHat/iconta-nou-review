@@ -18,7 +18,7 @@ O decizie de impunere, un act de control sau orice alt act administrativ fiscal 
 (2) în cazul în care contestația nu este depusă la organul fiscal emitent, aceasta se înaintează, în termen de cel mult 5 zile de la data primirii, organului fiscal emitent al actului administrativ atacat.
 [...]
 (4) Dacă actul administrativ fiscal nu conține elementele prevăzute la art. 46 alin. (2) lit. i), contestația poate fi depusă, în termen de 3 luni de la data comunicării actului administrativ fiscal, la organul fiscal emitent al actului administrativ atacat."
-— Legea 207/2015, art. 270 alin. (1), (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 270 alin. (1), (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regula de bază și excepția ei:

@@ -14,10 +14,10 @@ Există două căi complet diferite de trecere la impozitul pe profit: una invol
 
 ::: ghid-temei
 „Microîntreprinderile nu pot opta pentru plata impozitului pe profit în cursul anului fiscal, opțiunea putând fi exercitată începând cu anul fiscal următor, cu excepțiile prevăzute la art. 52. Opțiunea se comunică organelor fiscale competente, potrivit prevederilor Legii nr. 207/2015 privind Codul de procedură fiscală [...]."
-— Legea 227/2015, art. 48 alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea 227/2015, art. 52 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două rute:

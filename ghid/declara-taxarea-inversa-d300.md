@@ -15,7 +15,7 @@ La taxarea inversă, TVA nu circulă între furnizor și beneficiar — furnizor
 ::: ghid-temei
 **Art. 323 alin. (1) Cod fiscal (Legea 227/2015):** *„... trebuie să depună ... un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."*
 
-Mecanismul de taxare inversă pentru operațiunile prevăzute la art. 331 Cod fiscal e cel implementat de aplicație (`core/d300.py`, liniile 312-321, 423-433, 435-453) — textul integral al art. 331 nu face parte din citatele verificate ale acestui ghid, dar structura de raportare (rânduri R13/R12/R25) e verificată direct din codul modulului de decont.
+Mecanismul de taxare inversă pentru operațiunile prevăzute la art. 331 Cod fiscal e cel implementat de aplicație (liniile 312-321, 423-433, 435-453) — textul integral al art. 331 nu face parte din citatele verificate ale acestui ghid, dar structura de raportare (rânduri R13/R12/R25) e verificată direct din codul modulului de decont.
 :::
 
 ## Cum apare taxarea inversă în decont
@@ -35,6 +35,6 @@ Efectul „net zero" nu înseamnă că operațiunea nu se declară — înseamn�
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 (`core/d300.py`) rutează automat operațiunile de taxare inversă pe rândurile corecte — R13 pentru furnizor, R12+R25 pentru beneficiar — pe baza clasificării operațiunii introduse în aplicație. Rândurile manuale pentru taxare inversă, intracomunitar și regularizări se introduc și se editează dintr-un panou dedicat (`core/d300_manual_api.py`), cu buton „Regenerează D300" după fiecare modificare.
+Decontul de TVA v12 rutează automat operațiunile de taxare inversă pe rândurile corecte — R13 pentru furnizor, R12+R25 pentru beneficiar — pe baza clasificării operațiunii introduse în aplicație. Rândurile manuale pentru taxare inversă, intracomunitar și regularizări se introduc și se editează dintr-un panou dedicat, cu buton „Regenerează D300" după fiecare modificare.
 
 [iConta.eu](/)

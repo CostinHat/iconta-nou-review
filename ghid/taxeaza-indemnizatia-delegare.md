@@ -14,7 +14,7 @@ Indemnizația de delegare (diurna) nu e nici integral neimpozabilă, nici integr
 
 ::: ghid-temei
 „k) indemnizația de delegare, indemnizația de detașare, inclusiv indemnizația specifică detașării transnaționale, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) pct. (i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) pct. (i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de taxare, pas cu pas:
@@ -32,6 +32,6 @@ Mecanismul de taxare, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează automat, din modulul `core/deconturi.py`, partea neimpozabilă și partea impozabilă a diurnei acordate, aplicând regula legală (minimul dintre 2,5× diurna bugetară și 3× salariul de bază raportat la zilele lucrătoare din lună), separat de transport și cazare, decontate pe justificative. Nota contabilă generată separă corect diurna neimpozabilă (contul 625) de cea impozabilă, care trece prin statul de plată (contul 641), astfel încât suma corectă ajunge în baza de calcul a impozitului și contribuțiilor.
+La data acestui ghid, iConta.eu calculează automat, din aplicație, partea neimpozabilă și partea impozabilă a diurnei acordate, aplicând regula legală (minimul dintre 2,5× diurna bugetară și 3× salariul de bază raportat la zilele lucrătoare din lună), separat de transport și cazare, decontate pe justificative. Nota contabilă generată separă corect diurna neimpozabilă (contul 625) de cea impozabilă, care trece prin statul de plată (contul 641), astfel încât suma corectă ajunge în baza de calcul a impozitului și contribuțiilor.
 
 [iConta.eu](/)

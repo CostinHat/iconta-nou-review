@@ -14,7 +14,7 @@ Firmele care organizează sau exploatează jocuri de noroc nu au de ales între 
 
 ::: ghid-temei
 „(3) Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc;"
-— Legea 227/2015, art. 47 alin. (3) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (3) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele pentru o firmă din acest domeniu:

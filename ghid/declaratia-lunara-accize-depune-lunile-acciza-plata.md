@@ -16,18 +16,18 @@ Regula privește accizele armonizate: alcool, tutun, produse energetice, energie
 
 ::: ghid-temei
 „(1) Orice plătitor de accize, cu excepția importatorului autorizat, are obligația de a depune lunar la autoritatea competentă o declarație de accize, indiferent dacă se datorează sau nu plata accizei pentru luna respectivă. (2) Declarațiile de accize se depun la autoritatea competentă de către plătitorii de accize până pe data de 25 inclusiv a lunii următoare celei la care se referă declarația."
-— Codul fiscal (Legea 227/2015), art. 346 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 346 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) Orice plătitor de accize poartă răspunderea pentru calcularea corectă și plata la termenul legal a accizelor către bugetul de stat și pentru depunerea la termenul legal a declarațiilor de accize la autoritatea competentă, conform prevederilor prezentului capitol."
-— Codul fiscal (Legea 227/2015), art. 344 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 344 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) neîndeplinirea de către contribuabil/plătitor la termen a obligațiilor de declarare prevăzute de lege, a bunurilor și veniturilor impozabile sau, după caz, a impozitelor, taxelor, contribuțiilor și a altor sume, precum și orice informații în legătură cu impozitele, taxele, contribuțiile, bunurile și veniturile impozabile, dacă legea prevede declararea acestora;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „d) cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii și mari și cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice, în cazul săvârșirii faptei prevăzute la alin. (1) lit. a), b) și i) - m);"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

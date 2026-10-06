@@ -14,7 +14,7 @@ Nu există un „termen general" în legislația fiscală care să organizeze au
 
 ::: ghid-temei
 „(1) Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 110 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 110 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Al doilea reper, cu impact direct asupra planificării unui control:

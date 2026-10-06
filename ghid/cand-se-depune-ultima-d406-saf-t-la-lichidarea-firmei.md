@@ -42,6 +42,6 @@ Ce **nu** este confirmat, pentru cazul specific al lichidării:
 
 ## Ce face iConta.eu
 
-Codul motorului D406 (`core/d406.py`) și modulul de lichidare al aplicației (`core/lichidare.py`) nu conțin, în verificarea efectuată, nicio logică specifică pentru generarea sau blocarea D406 la lichidarea firmei — subiectul nu este cablat separat în cod. Recomandarea, până la clarificarea temeiului legal exact: contabilul verifică direct la ANAF sau la un consultant fiscal termenul aplicabil ultimei D406 în contextul specific al lichidării firmei sale, înainte de a se baza pe o presupunere.
+Codul motorului D406 și modulul de lichidare al aplicației nu conțin, în verificarea efectuată, nicio logică specifică pentru generarea sau blocarea D406 la lichidarea firmei — subiectul nu este cablat separat în cod. Recomandarea, până la clarificarea temeiului legal exact: contabilul verifică direct la ANAF sau la un consultant fiscal termenul aplicabil ultimei D406 în contextul specific al lichidării firmei sale, înainte de a se baza pe o presupunere.
 
 [iConta.eu](/)

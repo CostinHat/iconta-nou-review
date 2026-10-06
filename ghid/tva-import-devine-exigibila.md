@@ -30,6 +30,6 @@ Pe scurt: dacă bunul e supus taxelor vamale, exigibilitatea TVA "urmează" exig
 
 ## Ce face iConta.eu
 
-Motorul de calcul al importului (`core/import_export.py`) determină baza de TVA (valoare vamală + taxe + accesorii) și taxa datorată pe baza sumelor și a cotei introduse de contabil, dar **nu are niciun câmp sau logică legată de dată sau de exigibilitate** — funcția de calcul primește doar sume și o cotă, nu o dată a operațiunii. Stabilirea momentului exigibilității, conform art. 285, rămâne integral în sarcina contabilului, pe baza documentelor vamale ale operațiunii concrete; aplicația nu calculează și nu afișează această dată.
+Motorul de calcul al importului determină baza de TVA (valoare vamală + taxe + accesorii) și taxa datorată pe baza sumelor și a cotei introduse de contabil, dar **nu are niciun câmp sau logică legată de dată sau de exigibilitate** — funcția de calcul primește doar sume și o cotă, nu o dată a operațiunii. Stabilirea momentului exigibilității, conform art. 285, rămâne integral în sarcina contabilului, pe baza documentelor vamale ale operațiunii concrete; aplicația nu calculează și nu afișează această dată.
 
 [iConta.eu](/)

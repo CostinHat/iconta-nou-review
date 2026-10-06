@@ -16,13 +16,13 @@ Termenul e scurt, iar hotărârile privind taxele speciale se aprobă de regulă
 
 ::: ghid-temei
 „(4) Hotărârile luate de autoritățile deliberative, în legătură cu perceperea taxelor speciale de la persoanele fizice și juridice plătitoare, vor fi afișate la sediul acestora și publicate pe pagina de internet sau în presa."
-— Legea 273/2006 privind finanțele publice locale, art. 30 alin. (4) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 30 alin. (4) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(5) Împotriva acestor hotărâri persoanele interesate pot face contestație în termen de 15 zile de la afișarea sau publicarea acestora. După expirarea acestui termen, autoritatea deliberativă care a adoptat hotărârea se întrunește și deliberează asupra contestațiilor primite."
-— Legea 273/2006, art. 30 alin. (5) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 30 alin. (5) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(2) Cuantumul taxelor speciale se stabilește anual [...]"
-— Legea 273/2006, art. 30 alin. (2) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 30 alin. (2) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

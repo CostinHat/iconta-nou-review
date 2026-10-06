@@ -14,7 +14,7 @@ Orice plată sau încasare în valută făcută la un curs diferit de cel din ev
 
 ::: ghid-temei
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Tratamentul depinde de tipul soldului decontat: **datorie** plătită (401, 462...) — curs în creștere înseamnă pierdere (665), curs în scădere înseamnă câștig (765).
@@ -30,6 +30,6 @@ Orice plată sau încasare în valută făcută la un curs diferit de cel din ev
 
 ## Ce face iConta.eu
 
-Ecranul **Operațiuni speciale → Decontare în valută** din iConta.eu acoperă exact acest scenariu, pentru încasarea unei creanțe sau plata unei datorii. Motorul (`core/diferente_curs.py`, funcția `nota_decontare`) primește tipul soldului, valoarea în valută și cursul de evidență, ia automat cursul BNR al zilei (`core/curs_bnr.py`) și aplică regula de semn corectă pe tip, generând nota-ciornă cu linia principală și diferența pe 665/765. Ruta cere ca luna să fie deschisă (`_cere_luna_deschisa`) — dacă e închisă, aplicația refuză nota și returnează o eroare clară, nu un mesaj tehnic. Limita cunoscută: contul de bancă folosit la decontare e mereu 5124 (implicit hardcodat), fiindcă ecranul nu are câmp pentru contul efectiv — dacă plata/încasarea a avut loc prin casieria în valută (5314) sau alt cont bancar în valută, contabilul trebuie să corecteze manual nota generată.
+Ecranul **Operațiuni speciale → Decontare în valută** din iConta.eu acoperă exact acest scenariu, pentru încasarea unei creanțe sau plata unei datorii. Motorul (funcția `nota_decontare`) primește tipul soldului, valoarea în valută și cursul de evidență, ia automat cursul BNR al zilei și aplică regula de semn corectă pe tip, generând nota-ciornă cu linia principală și diferența pe 665/765. Ruta cere ca luna să fie deschisă (`_cere_luna_deschisa`) — dacă e închisă, aplicația refuză nota și returnează o eroare clară, nu un mesaj tehnic. Limita cunoscută: contul de bancă folosit la decontare e mereu 5124 (implicit hardcodat), fiindcă ecranul nu are câmp pentru contul efectiv — dacă plata/încasarea a avut loc prin casieria în valută (5314) sau alt cont bancar în valută, contabilul trebuie să corecteze manual nota generată.
 
 [iConta.eu](/)

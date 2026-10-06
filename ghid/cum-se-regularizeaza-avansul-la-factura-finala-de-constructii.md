@@ -41,7 +41,7 @@ Un contract de construcții are trei plăți anterioare recepției: avans iniți
 
 ## Ce face iConta.eu
 
-Regularizarea tehnică se face prin `nota_regularizare_avans_platit(...)` (pentru avansuri plătite constructorului) sau `nota_regularizare_avans_incasat(...)` (pentru avansuri încasate de firma de construcții), care inversează liniile de avans: `401 = 409x` + `401 = 4426`, respectiv `419 = 4111` + `4427 = 4111`. Orchestrarea din `core/uc_tenants.py::nota_avans` cere explicit `data_livrare` pentru orice operație de tip "regularizare" și calculează cota pe baza acestei date, exact conform art. 291 alin. (6).
+Regularizarea tehnică se face prin `nota_regularizare_avans_platit(...)` (pentru avansuri plătite constructorului) sau `nota_regularizare_avans_incasat(...)` (pentru avansuri încasate de firma de construcții), care inversează liniile de avans: `401 = 409x` + `401 = 4426`, respectiv `419 = 4111` + `4427 = 4111`. Orchestrarea din aplicație cere explicit `data_livrare` pentru orice operație de tip "regularizare" și calculează cota pe baza acestei date, exact conform art. 291 alin. (6).
 
 **Limitarea de reținut pentru contracte cu plăți eșalonate**: `avansuri.py` nu urmărește câte avansuri/situații de plată s-au emis pentru un contract și nu le agregă automat. La regularizare, suma trebuie să fie exact suma cumulată a tuturor plăților anterioare aferente facturii finale — această cumulare e responsabilitatea utilizatorului/aplicației care apelează motorul (UI, contabil), nu a modulului `avansuri.py` însuși, care nu are context despre facturile/plățile anterioare pentru a detecta o sumă greșită.
 

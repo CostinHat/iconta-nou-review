@@ -14,7 +14,7 @@ Nu orice bon fiscal are aceeași valoare din punct de vedere al TVA. Un bon fisc
 
 ::: ghid-temei
 „(12) Persoana impozabilă care are obligația de a emite facturi conform prezentului articol, precum și persoana impozabilă care optează pentru emiterea facturii potrivit alin. (11) pot emite facturi simplificate în oricare dintre următoarele situații: a) atunci când valoarea facturilor, inclusiv TVA, nu este mai mare de 100 euro. Cursul de schimb utilizat pentru determinarea în euro a valorii facturii este cursul prevăzut la art. 290."
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Distincția esențială pentru deducerea TVA:

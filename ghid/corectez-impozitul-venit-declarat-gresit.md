@@ -14,13 +14,13 @@ Pentru un PFA la **sistem real**, o eroare de impozit în D212 aproape întotdea
 
 ::: ghid-temei
 „Impozitul anual datorat se stabilește de contribuabili în declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice pentru veniturile realizate în anul fiscal anterior, prin aplicarea cotei de 10% asupra venitului net anual impozabil determinat potrivit art. 118."
-— Codul fiscal (Legea 227/2015), art. 123 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 123 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii care realizează venituri din activități independente pentru care venitul net anual se stabilește pe baza normelor de venit au obligația stabilirii impozitului anual datorat, pe baza Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice prin aplicarea cotei de 10% asupra normei anuale de venit ajustate, după caz."
-— Codul fiscal, art. 69^2 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69^2 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie verificat la recalculare:
@@ -38,7 +38,7 @@ Ce trebuie verificat la recalculare:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_d212`) calculează impozitul exact în ordinea cerută de lege pentru **sistem real** (art. 118 alin. (2) lit. b) CF): venit net, apoi CAS și CASS pe bazele lor proprii, apoi impozitul de 10% pe venitul net rămas după scăderea celor două contribuții — nu pe venitul net brut. Calculul e disponibil integral prin `fisa_d212` (`core/rip_api.py`) pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, doar pentru veniturile anilor 2025 și 2026.
+Aplicația (funcția `calculeaza_d212`) calculează impozitul exact în ordinea cerută de lege pentru **sistem real** (art. 118 alin. (2) lit. b) CF): venit net, apoi CAS și CASS pe bazele lor proprii, apoi impozitul de 10% pe venitul net rămas după scăderea celor două contribuții — nu pe venitul net brut. Calculul e disponibil integral prin `fisa_d212` pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, doar pentru veniturile anilor 2025 și 2026.
 
 Pentru venituri din normă de venit sau din alte surse (chirii, străinătate), Declarația unică (D212) din aplicație calculează și ea impozitul, după regula fiecărei categorii — la normă, 10% asupra normei ajustate (art. 69^2 alin. (1) CF); corecția înseamnă regenerarea declarației, ca rectificativă, cu datele corecte.
 

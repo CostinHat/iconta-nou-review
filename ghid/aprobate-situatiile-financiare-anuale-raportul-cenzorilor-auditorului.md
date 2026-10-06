@@ -16,11 +16,11 @@ Practic, raportul trebuie să existe înainte de adunare, nu după. Legea fixeaz
 
 ::: ghid-temei
 „Adunarea generală poate aproba situațiile financiare anuale numai dacă acestea sunt însoțite de raportul cenzorilor sau, după caz, al auditorilor financiari."
-— Legea societăților nr. 31/1990, art. 163 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 163 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Consiliul de administrație, respectiv directoratul, trebuie să prezinte cenzorilor, respectiv auditorilor interni și auditorilor financiari, cu cel puțin 30 de zile înainte de ziua stabilită pentru ședința adunării generale situația financiară anuală pentru exercițiul financiar precedent, însoțită de raportul lor și de documentele justificative."
-— Legea societăților nr. 31/1990, art. 181 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 181 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Raportul cenzorilor sau, după caz, al auditorului financiar rămâne depus la sediul societății și la cel al sucursalelor în cele 15 zile care preced întrunirea adunării generale, pentru a fi consultate de acționari."
-— Legea societăților nr. 31/1990, art. 184 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 184 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

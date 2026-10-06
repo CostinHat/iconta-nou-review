@@ -15,7 +15,7 @@ Legea nu prevede un regim contabil distinct pentru vânzările printr-un marketp
 ::: ghid-temei
 „440. - În contabilitate, veniturile din vânzări de bunuri se înregistrează în momentul predării bunurilor către cumpărători, al livrării lor pe baza facturii sau în alte condiții prevăzute în contract, care atestă transferul dreptului de proprietate asupra bunurilor respective, către clienți.
 441. - (1) Veniturile din vânzarea bunurilor se recunosc în momentul în care sunt îndeplinite următoarele condiții: a) entitatea a transferat cumpărătorului riscurile și avantajele semnificative care decurg din proprietatea asupra bunurilor [...]"
-— OMFP nr. 1802/2014, Reglementări contabile, pct. 440 și pct. 441 alin. (1) lit. a) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, Reglementări contabile, pct. 440 și pct. 441 alin. (1) lit. a) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 **Limitare de temei:** sursele disponibile nu conțin un act normativ specific privind vânzările prin marketplace-uri de comerț electronic (comision, model de facturare al platformei, decontarea încasărilor). Acest ghid citează, așadar, regula generală de recunoaștere a veniturilor din vânzarea bunurilor, aplicabilă indiferent de canalul de vânzare, ea fiind sursa reală disponibilă cea mai apropiată de întrebare.

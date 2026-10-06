@@ -16,10 +16,10 @@ Da. Contractul cu un serviciu extern de prevenire și protecție este un mod de 
 
 ::: ghid-temei
 „(1) Angajatorul are obligația de a asigura securitatea și sănătatea lucrătorilor în toate aspectele legate de muncă. (2) În cazul în care un angajator apelează la servicii externe, acesta nu este exonerat de responsabilitățile sale în acest domeniu."
-— Legea 319/2006, art. 6 alin. (1) și (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 6 alin. (1) și (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(3) Obligațiile lucrătorilor în domeniul securității și sănătății în munca nu aduc atingere principiului responsabilității angajatorului."
-— Legea 319/2006, art. 6 alin. (3) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 6 alin. (3) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce înseamnă concret:

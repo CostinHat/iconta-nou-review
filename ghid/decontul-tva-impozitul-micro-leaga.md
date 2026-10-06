@@ -14,7 +14,7 @@ Statutul de microîntreprindere (impozit pe veniturile microîntreprinderilor, T
 
 ::: ghid-temei
 „o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro [...] d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale [...] g) are cel puțin un salariat [...] i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile pentru micro (art. 47) nu menționează, nicăieri, statutul de plătitor de TVA — sunt condiții separate de cele ale art. 310 (plafonul de scutire de TVA de 395.000 lei). Ce rezultă de aici:

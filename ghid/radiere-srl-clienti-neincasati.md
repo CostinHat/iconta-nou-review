@@ -37,6 +37,6 @@ Cât timp societatea își păstrează personalitatea juridică pentru operațiu
 
 ## Ce face iConta.eu
 
-La fel ca la încasarea altor creanțe vechi pe parcursul lichidării, motorul dedicat de lichidare al aplicației nu are o funcție specifică pentru gestionarea creanțelor neîncasate — se folosește motorul general de facturare/încasări. Modulul de lichidare (`core/lichidare.py`) nu conține nicio validare care să blocheze sau să semnaleze existența unor creanțe neîncasate înainte de a rula partajul — este strict un calculator ("zero SQL, zero db"), fără acces la evidența creanțelor. Confirmarea că situația creanțelor este corect prezentată în dosarul de radiere rămâne responsabilitatea contabilului.
+La fel ca la încasarea altor creanțe vechi pe parcursul lichidării, motorul dedicat de lichidare al aplicației nu are o funcție specifică pentru gestionarea creanțelor neîncasate — se folosește motorul general de facturare/încasări. Modulul de lichidare nu conține nicio validare care să blocheze sau să semnaleze existența unor creanțe neîncasate înainte de a rula partajul — este strict un calculator ("zero SQL, zero db"), fără acces la evidența creanțelor. Confirmarea că situația creanțelor este corect prezentată în dosarul de radiere rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

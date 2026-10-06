@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Articolul 25 Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la art. 1 timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii."
-— Legea contabilității nr. 82/1991, art. 25 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 25 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă din această obligație, aplicat la nevoia de probă pentru instanță:
@@ -31,6 +31,6 @@ Ce rezultă din această obligație, aplicat la nevoia de probă pentru instanț
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/repo_banca.py` păstrează evidența importurilor de extrase bancare (`inregistreaza_import()`, cu hash-ul fișierului sursă) și liniile contabilizate din ele, iar aplicația poate afișa/lista aceste linii importate. Aplicația nu emite însă ea însăși un extras de cont certificat, opozabil în instanță — acel document rămâne, prin natura lui, unul care se obține direct de la banca emitentă.
+La data acestui ghid, aplicația păstrează evidența importurilor de extrase bancare (`inregistreaza_import()`, cu hash-ul fișierului sursă) și liniile contabilizate din ele, iar aplicația poate afișa/lista aceste linii importate. Aplicația nu emite însă ea însăși un extras de cont certificat, opozabil în instanță — acel document rămâne, prin natura lui, unul care se obține direct de la banca emitentă.
 
 [iConta.eu](/)

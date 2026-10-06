@@ -33,6 +33,6 @@ Dacă un client a intrat în faliment declarat sau insolvență și ajustarea pe
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat=True)` din `core/provizioane.py` întoarce direct 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu detectează singură intrarea unui client în insolvență — introducerea corectă a stării debitorului (`faliment_declarat`) rămâne o verificare a contabilului, pe baza hotărârii judecătorești.
+Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat=True)` din aplicație întoarce direct 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu detectează singură intrarea unui client în insolvență — introducerea corectă a stării debitorului (`faliment_declarat`) rămâne o verificare a contabilului, pe baza hotărârii judecătorești.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ D390 se completează exclusiv în lei. O factură emisă sau primită într-o op
 
 ::: ghid-temei
 „(2) Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operaţiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Naţională a României sau ultimul curs de schimb publicat de Banca Centrală Europeană ori cursul de schimb utilizat de banca prin care se efectuează decontările, valabil la data la care intervine exigibilitatea taxei pentru operaţiunea în cauză [...]. În contractele încheiate între părţi trebuie menţionat dacă pentru decontări va fi utilizat cursul de schimb al unei bănci comerciale, în caz contrar aplicându-se cursul de schimb comunicat de Banca Naţională a României sau cursul de schimb publicat de Banca Centrală Europeană."
-— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă practic trei reguli:

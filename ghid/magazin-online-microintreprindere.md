@@ -21,7 +21,7 @@ g) are cel puțin un salariat [...];
 h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu;
 i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii.
 (3) Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] persoana juridică română care desfășoară activități în domeniul bancar [...] în domeniul asigurărilor și reasigurărilor [...] în domeniul jocurilor de noroc [...] de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), d), e), g), h), i) și alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), d), e), g), h), i) și alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Un magazin online e o persoană juridică română obișnuită (de regulă SRL); intră sub incidența Titlului III „Impozitul pe veniturile microîntreprinderilor" ca orice altă firmă, dacă îndeplinește condițiile de mai sus.

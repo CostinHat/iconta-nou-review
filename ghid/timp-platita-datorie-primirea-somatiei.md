@@ -16,7 +16,7 @@ Somația este actul cu care începe, oficial, executarea silită a unei creanțe
 „ART. 230 Somația
 (1) Executarea silită începe prin comunicarea somației. Dacă în termen de 15 zile de la comunicarea somației nu se stinge debitul sau nu se notifică organul fiscal cu privire la intenția de a demara procedura de mediere, se continuă măsurile de executare silită. Somația este însoțită de un exemplar al titlului executoriu emis de organul de executare silită.
 (2) Somația cuprinde, pe lângă elementele prevăzute la art. 46, următoarele: numărul dosarului de executare, suma pentru care se începe executarea silită, termenul în care cel somat urmează să plătească suma prevăzută în titlul executoriu, indicarea consecințelor nerespectării acesteia, precum și posibilitatea de a intra într-o procedură de mediere."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 230 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 230 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Termenul legal este de **15 zile de la comunicarea somației**. În acest interval, debitorul poate fie stinge integral datoria, fie notifica organul fiscal cu privire la intenția de a intra într-o procedură de mediere.

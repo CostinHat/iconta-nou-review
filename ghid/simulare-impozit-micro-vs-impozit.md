@@ -14,13 +14,13 @@ O simulare corectă micro vs. profit pentru 2026 nu se rezumă la compararea a �
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea 227/2015, art. 51 alin. (1), astfel cum a fost modificat prin OUG nr. 89/2025, art. I pct. 4, în vigoare de la 01.01.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 51 alin. (1), astfel cum a fost modificat prin OUG nr. 89/2025, art. I pct. 4, în vigoare de la 01.01.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită."
-— Legea 227/2015, art. 52 alin. (1), astfel cum a fost modificat prin OUG nr. 8/2026, art. 6 pct. 20, în vigoare de la 25.02.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 52 alin. (1), astfel cum a fost modificat prin OUG nr. 8/2026, art. 6 pct. 20, în vigoare de la 25.02.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015, art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele pe care simularea trebuie să le țină cont, toate confirmate pentru anul fiscal 2026:

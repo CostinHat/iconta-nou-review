@@ -14,7 +14,7 @@ O mențiune greșit înregistrată nu se „șterge" pur și simplu — ea a fos
 
 ::: ghid-temei
 „După fiecare modificare a actului constitutiv, administratorii, respectiv directoratul vor depune la registrul comerțului actul modificator și textul complet al actului constitutiv, actualizat cu toate modificările, care vor fi înregistrate în registrul comerțului în temeiul încheierii registratorului de registrul comerțului."
-— Legea 31/1990 (Legea societăților), art. 204 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 204 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă, onest, din sursele verificate pentru acest ghid:

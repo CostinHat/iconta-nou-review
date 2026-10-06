@@ -31,6 +31,6 @@ Indiferent de sector (inclusiv HoReCa), voucherele de vacanță sunt taxate cu C
 
 ## Ce face iConta.eu
 
-Plafonul anual al voucherelor de vacanță se calculează dinamic pe baza salariului minim brut valabil la data fiecărei perioade (`core/stat_plata_api.py`), astfel încât cele două praguri din 2026 (24.300 lei / 25.950 lei) sunt aplicate automat, fără să depindă de domeniul de activitate al firmei. Taxarea propriu-zisă (CASS 10% + impozit 10%, fără CAS/CAM) se calculează la fel pentru orice firmă, inclusiv cele din HoReCa, iar excedentul peste plafon e adăugat automat la venitul salarial obișnuit.
+Plafonul anual al voucherelor de vacanță se calculează dinamic pe baza salariului minim brut valabil la data fiecărei perioade, astfel încât cele două praguri din 2026 (24.300 lei / 25.950 lei) sunt aplicate automat, fără să depindă de domeniul de activitate al firmei. Taxarea propriu-zisă (CASS 10% + impozit 10%, fără CAS/CAM) se calculează la fel pentru orice firmă, inclusiv cele din HoReCa, iar excedentul peste plafon e adăugat automat la venitul salarial obișnuit.
 
 [iConta.eu](/)

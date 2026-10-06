@@ -16,12 +16,12 @@ Situația apare de obicei la executarea unei popriri. Banca virează la ANAF și
 
 ::: ghid-temei
 „În cazul în care din eroare instituțiile de credit virează organului fiscal sume reprezentând credite nerambursabile sau finanțări primite de la instituții sau organizații naționale ori internaționale pentru derularea unor programe ori proiecte, [...] prin excepție de la prevederile alin. (8), sumele respective se restituie la cererea instituției de credit sau a contribuabilului/plătitorului, chiar dacă acesta înregistrează obligații restante."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „în cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condițiile excepției:

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(16) Pentru alte operațiuni decât cele prevăzute la alin. (15), persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă. De asemenea, persoana impozabilă trebuie să emită o factură pentru suma avansurilor încasate în legătură cu o livrare de bunuri/prestare de servicii cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a încasat avansurile, cu excepția cazului în care factura a fost deja emisă."
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut din regulă:
@@ -32,6 +32,6 @@ Ce trebuie reținut din regulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu permite emiterea facturilor din aplicație (`core/facturi.py`, `core/facturi_api.py`), cu numerotare secvențială și calcul automat al TVA pe baza datei introduse. Aplicația **nu blochează și nu atenționează automat** atunci când o factură e emisă cu întârziere față de termenul legal de 15 zile de la faptul generator — data faptului generator, comparată cu termenul legal de emitere, rămâne o verificare pe care contabilul trebuie să o facă manual, la fiecare emitere.
+La data acestui ghid, iConta.eu permite emiterea facturilor din aplicație, cu numerotare secvențială și calcul automat al TVA pe baza datei introduse. Aplicația **nu blochează și nu atenționează automat** atunci când o factură e emisă cu întârziere față de termenul legal de 15 zile de la faptul generator — data faptului generator, comparată cu termenul legal de emitere, rămâne o verificare pe care contabilul trebuie să o facă manual, la fiecare emitere.
 
 [iConta.eu](/)

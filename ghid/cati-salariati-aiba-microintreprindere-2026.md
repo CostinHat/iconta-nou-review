@@ -16,7 +16,7 @@ Cel puțin un salariat. Este una dintre condițiile cumulative pe care o persoan
 „Articolul 47 - Definiția microîntreprinderii
 (1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...]
 g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3);"
-— Cod fiscal, art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici, pentru 2026:

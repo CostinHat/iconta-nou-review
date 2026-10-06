@@ -15,7 +15,7 @@ Impozitul pe veniturile microîntreprinderilor, ca și celelalte obligații fisc
 ::: ghid-temei
 „Plățile către organul fiscal se efectuează prin intermediul băncilor, trezoreriilor și al altor instituții autorizate să deruleze operațiuni de plată.
 (2) În cazul creanțelor fiscale administrate de organul fiscal central și organul fiscal local, debitorii efectuează plata acestora într-un cont unic, prin utilizarea unui ordin de plată pentru Trezoreria Statului pentru obligațiile fiscale datorate."
-— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, pentru o microîntreprindere:

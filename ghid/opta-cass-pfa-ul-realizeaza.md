@@ -14,7 +14,7 @@ Da. Un PFA care încheie anul cu pierdere fiscală sau cu venit net anual egal c
 
 ::: ghid-temei
 „(2) Persoanele fizice care au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), altele decât cele prevăzute la art. 68^1, și au înregistrat pierdere fiscală sau un venit net anual egal cu zero nu datorează contribuția de asigurări sociale de sănătate potrivit art. 170 alin. (1). Acestea pot opta pentru plata contribuției de asigurări sociale de sănătate potrivit art. 180 alin. (1)."
-— Legea nr. 227/2015 (Codul fiscal), art. 174 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 174 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru un PFA fără venituri sau cu pierdere:

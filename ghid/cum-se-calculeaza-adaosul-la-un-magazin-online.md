@@ -23,14 +23,14 @@ Un magazin online care aplică metoda global-valorică are o particularitate fa�
 > Cheltuielile de transport sunt incluse în costul de achiziție și atunci când funcția de
 > aprovizionare este externalizată."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 8, definiții, poziția 6
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 8, definiții, poziția 6
 > ("cost de achiziție").
 
 > "(8) [...] costul bunurilor vândute se calculează prin deducerea valorii marjei brute din prețul
 > de vânzare al stocurilor. Orice modificare a prețului de vânzare presupune recalcularea marjei
 > brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (8).
 :::
 
 ## Transport la intrare vs. transport la ieșire

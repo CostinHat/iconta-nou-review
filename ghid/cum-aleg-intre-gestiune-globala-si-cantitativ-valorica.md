@@ -23,7 +23,7 @@ Legea permite ambele metode, dar pentru scopuri diferite. Metoda global-valoric�
 > vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor**.
 > Orice modificare a prețului de vânzare presupune recalcularea marjei brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (1) și (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (1) și (8).
 
 > "96. - (1) Costul stocurilor din aceeași categorie și al tuturor elementelor fungibile se
 > calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP;
@@ -34,7 +34,7 @@ Legea permite ambele metode, dar pentru scopuri diferite. Metoda global-valoric�
 > metodei «primul intrat-primul ieșit» (FIFO), bunurile ieșite din gestiune se evaluează la costul
 > de achiziție sau de producție al primei intrări (lot). [...]"
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 96 alin. (1)-(3).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 96 alin. (1)-(3).
 :::
 
 ## Criteriile care decid alegerea
@@ -52,7 +52,7 @@ Legea folosește termenii „pot fi folosite” și „poate fi utilizată” �
 
 ## Ce face iConta.eu
 
-Cele două metode sunt module separate, alese explicit de utilizator, nu selectate automat de sistem. Modulul global-valoric (`core/stocuri.py`) ține mărfurile la preț de vânzare cu amănuntul, cu adaosul comercial separat în 378 și TVA neexigibilă în 4428, folosind coeficientul de repartizare K calculat lunar din rulaje cumulate. Modulul cantitativ-valoric (`core/stocuri_cv.py`) evaluează la cost mediu ponderat (CMP), recalculat după fiecare intrare, cu fișă de magazie proprie pentru fiecare articol — nota de ieșire e direct 607=371 la valoarea CMP × cantitate, fără conturile 378/4428 și fără coeficient de repartizare.
+Cele două metode sunt module separate, alese explicit de utilizator, nu selectate automat de sistem. Modulul global-valoric ține mărfurile la preț de vânzare cu amănuntul, cu adaosul comercial separat în 378 și TVA neexigibilă în 4428, folosind coeficientul de repartizare K calculat lunar din rulaje cumulate. Modulul cantitativ-valoric evaluează la cost mediu ponderat (CMP), recalculat după fiecare intrare, cu fișă de magazie proprie pentru fiecare articol — nota de ieșire e direct 607=371 la valoarea CMP × cantitate, fără conturile 378/4428 și fără coeficient de repartizare.
 
 Diferența practică cea mai vizibilă la finalul lunii: la global-valoric, descărcarea TVA din 4428 se face printr-o aproximare (cotă medie ponderată dedusă din structura stocului cumulat), nu din mixul real de cote vândute în lună — un cost administrativ suplimentar pe care CMP nu îl are, pentru că nu operează deloc cu 4428.
 

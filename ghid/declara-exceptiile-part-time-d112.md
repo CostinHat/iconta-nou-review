@@ -14,7 +14,7 @@ Nu orice salariat cu contract part-time și venit sub salariul minim e supus baz
 
 ::: ghid-temei
 „Prevederile alin. (5^6) nu se aplică în cazul persoanelor fizice aflate în una dintre următoarele situații: a) sunt elevi sau studenți, cu vârsta până la 26 de ani, aflați într-o formă de școlarizare; [...] b) sunt ucenici, potrivit legii, în vârstă de până la 18 ani; [...] c) sunt persoane cu dizabilități sau alte categorii de persoane cărora prin lege li se recunoaște posibilitatea de a lucra mai puțin de 8 ore pe zi; [...] d) au calitatea de pensionari pentru limită de vârstă în sistemul public de pensii [...]; [...] e) realizează în cursul aceleiași luni venituri din salarii sau asimilate salariilor în baza a două sau mai multe contracte individuale de muncă, iar baza lunară de calcul cumulată aferentă acestora este cel puțin egală cu salariul de bază minim brut pe țară."
-— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Sunt exact cinci categorii de excepție, nu o listă deschisă — un contabil nu poate scuti un salariat de baza minimă pe alt motiv decât unul dintre cele cinci.

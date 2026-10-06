@@ -14,7 +14,7 @@ Serviciile de design prestate unei firme dintr-un alt stat membru urmează regul
 
 ::: ghid-temei
 „Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) şi care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]"
-— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula generală de la art. 278 alin. (2) CF stabilește locul prestării serviciilor B2B la sediul beneficiarului — pentru un serviciu de design prestat de o firmă română unei firme dintr-un alt stat membru, locul prestării e la beneficiar, nu în România.

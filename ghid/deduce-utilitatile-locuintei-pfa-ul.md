@@ -17,7 +17,7 @@ Un PFA care își stabilește sediul activității în propria locuință (sau �
 r) cheltuielile cu funcționarea și întreținerea aferente bunurilor imobile care fac obiectul unui contract de comodat, potrivit înțelegerii din contract, pentru partea aferentă utilizării în scopul afacerii;
 [...]
 w) alte cheltuieli efectuate în scopul realizării veniturilor. Sunt cheltuieli deductibile și cele efectuate pentru întreținerea și funcționarea spațiilor folosite pentru desfășurarea afacerilor chiar dacă documentele sunt emise pe numele proprietarului, și nu pe numele contribuabilului."
-— HG nr. 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii nr. 227/2015 privind Codul fiscal, pct. 7 alin. (5) lit. r) și w), date în aplicarea art. 68 din Codul fiscal (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG nr. 1/2016 pentru aprobarea Normelor metodologice de aplicare a Legii nr. 227/2015 privind Codul fiscal, pct. 7 alin. (5) lit. r) și w), date în aplicarea art. 68 din Codul fiscal (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce rezultă concret din acest text (normele de aplicare a art. 68 din Codul fiscal, privind veniturile din activități independente — nu normele de la art. 25, aplicabile impozitului pe profit al persoanelor juridice, care folosesc o formulă similară de suprafață pentru sediile din locuințe ale companiilor):

@@ -14,10 +14,10 @@ Nu există o singură cifră "corectă" pentru durata de amortizare a unei clăd
 
 ::: ghid-temei
 „1.6.4. Clădiri administrative. 40-60"
-— HG nr. 2.139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe, subgrupa 1.6.4 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2.139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe, subgrupa 1.6.4 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 
 „4. În prezentul catalog pentru fiecare mijloc fix nou achiziționat se utilizează sistemul unor plaje de ani cuprinse între o valoare minima și una maxima, existând astfel posibilitatea alegerii duratei normale de funcționare cuprinsa între aceste limite. Astfel stabilita, durata normala de funcționare a mijlocului fix rămâne neschimbata până la recuperarea integrală a valorii de intrare a acestuia sau scoaterea sa din funcțiune."
-— HG nr. 2.139/2004, Dispoziții generale, pct. 4 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2.139/2004, Dispoziții generale, pct. 4 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Ce rezultă concret din catalog:

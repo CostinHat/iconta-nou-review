@@ -14,7 +14,7 @@ Nu automat. Codul fiscal definește „întreprinderile legate", în scopul veri
 
 ::: ghid-temei
 „[...] limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta [...] persoana juridică română este legată cu o altă persoană dacă există oricare dintre următoarele raporturi: a) persoana juridică română care verifică condiția deține la o altă persoană juridică română, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot, sau aceasta are dreptul de a numi sau de a revoca administratorul/majoritatea membrilor consiliului de administrație [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

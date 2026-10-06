@@ -16,15 +16,15 @@ Cele două noțiuni nu se suprapun automat. „Sediul fix" ține de TVA și se d
 
 ::: ghid-temei
 „În situația în care sediul fix care îndeplinește obligațiile fiscale potrivit titlului VII constituie și sediu permanent în sensul art. 8 [...] sediul fix este și sediul permanent desemnat pentru îndeplinirea obligațiilor care revin potrivit prezentului titlu."
-— Codul fiscal (Legea 227/2015), art. 37 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 37 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „o persoană impozabilă care are sediul activității economice în afara României se consideră că este stabilită în România dacă are un sediu fix în România, respectiv dacă dispune în România de suficiente resurse tehnice și umane pentru a efectua regulat livrări de bunuri și/sau prestări de servicii impozabile;"
-— Codul fiscal (Legea 227/2015), art. 266 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 266 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În înțelesul prezentului cod, sediul permanent este un loc prin care se desfășoară integral sau parțial activitatea unui nerezident, fie direct, fie printr-un agent dependent."
-— Codul fiscal (Legea 227/2015), art. 8 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 8 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică regula:

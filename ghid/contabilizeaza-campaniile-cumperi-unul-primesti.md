@@ -14,13 +14,13 @@ Campaniile de tip „2 la preț de 1” sau „cumperi unul, primești unul grat
 
 ::: ghid-temei
 „Nu constituie livrare de bunuri, în sensul alin. (1): [...] b) acordarea în mod gratuit de bunuri în scop de reclamă sau în scopul stimulării vânzărilor sau, mai general, în scopuri legate de desfășurarea activității economice, în condițiile stabilite prin normele metodologice."
-— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 270 alin. (8) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Explicat pe pași:
 
 - Atâta timp cât al doilea produs este acordat **cu scopul stimulării vânzărilor** (adică e o practică comercială legată de activitatea economică, nu un cadou întâmplător), acordarea lui **nu este asimilată unei livrări de bunuri cu titlu gratuit** — deci nu se colectează TVA suplimentar pentru el, separat de TVA aferentă prețului efectiv încasat.
-- Normele metodologice (HG 1/2016, pct. 37 alin. (11), sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt) dau chiar un exemplu apropiat: la vânzarea unui aragaz cu un pachet de spaghete oferit gratuit, se consideră că pachetul e acordat gratuit în scopul stimulării vânzărilor, iar TVA se aplică doar la produsul vândut efectiv, la cota lui.
+- Normele metodologice (HG 1/2016, pct. 37 alin. (11), sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822)) dau chiar un exemplu apropiat: la vânzarea unui aragaz cu un pachet de spaghete oferit gratuit, se consideră că pachetul e acordat gratuit în scopul stimulării vânzărilor, iar TVA se aplică doar la produsul vândut efectiv, la cota lui.
 - Practic, contabil, suma încasată (prețul unui singur produs) se defalcă pe cele două bunuri livrate: fie se înregistrează ca o **reducere comercială** (discount) care duce prețul mediu unitar în jos, fie produsul „gratuit" iese din gestiune fără venit asociat, cu justificarea că acordarea lui intră sub art. 270 alin. (8) lit. b) — nu ca livrare separată impozabilă.
 - Documentul care justifică regimul (pentru control) este politica comercială/regulamentul campaniei, care trebuie să arate clar legătura cu stimularea vânzărilor — fără acest document, ANAF poate recalifica produsul „gratuit" ca livrare separată, cu TVA colectată suplimentar.
 

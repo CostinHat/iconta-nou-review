@@ -14,7 +14,7 @@ Comisioanele reținute de bancă pentru operațiuni curente (administrare cont, 
 
 ::: ghid-temei
 „Contul 627 «Cheltuieli cu serviciile bancare și asimilate». Cu ajutorul acestui cont se ține evidența cheltuielilor cu serviciile bancare și asimilate. În debitul contului 627 «Cheltuieli cu serviciile bancare și asimilate» se înregistrează: – valoarea serviciilor bancare și asimilate plătite (471, 512); – sume clarificate trecute pe cheltuieli (473)."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, monografia standard pentru un comision bancar plătit direct din contul curent este:

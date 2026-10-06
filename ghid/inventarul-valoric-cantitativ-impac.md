@@ -31,9 +31,9 @@ Practic, cele două metode nu se „amestecă" pe același stoc: fiecare categor
 
 iConta.eu are două motoare de calcul separate pentru cele două metode:
 
-- **Gestiune global-valorică** (`core/stocuri.py`, `core/stocuri_api.py`): calculează coeficientul de repartizare (K) și generează lunar nota de descărcare (607/378/4428), pe baza rulajelor cumulate de la 1 ianuarie.
-- **Gestiune cantitativ-valorică — CMP** (`core/stocuri_cv.py`, `core/stocuri_cv_api.py`): recalculează costul mediu ponderat după fiecare intrare, ține o fișă de magazie cronologică per articol și validează cronologic ieșirile, astfel încât o ieșire nu poate depăși stocul existent la data ei (note 607 = 371 pentru marfă, 601 = 301 pentru materii prime).
+- **Gestiune global-valorică**: calculează coeficientul de repartizare (K) și generează lunar nota de descărcare (607/378/4428), pe baza rulajelor cumulate de la 1 ianuarie.
+- **Gestiune cantitativ-valorică — CMP**: recalculează costul mediu ponderat după fiecare intrare, ține o fișă de magazie cronologică per articol și validează cronologic ieșirile, astfel încât o ieșire nu poate depăși stocul existent la data ei (note 607 = 371 pentru marfă, 601 = 301 pentru materii prime).
 
-Cele două mecanisme funcționează independent, pe categorii de stocuri diferite din aceeași firmă, fără cod comun între ele: conform cercetării care stă la baza acestui ghid, nu există în `core/stocuri.py` sau `core/stocuri_cv.py` nicio referință una către cealaltă. Alegerea metodei, pentru fiecare gestiune în parte, rămâne o decizie a contabilului, aplicată consecvent.
+Cele două mecanisme funcționează independent, pe categorii de stocuri diferite din aceeași firmă, fără cod comun între ele: conform cercetării care stă la baza acestui ghid, nu există în aplicație sau aplicația nicio referință una către cealaltă. Alegerea metodei, pentru fiecare gestiune în parte, rămâne o decizie a contabilului, aplicată consecvent.
 
 [iConta.eu](/)

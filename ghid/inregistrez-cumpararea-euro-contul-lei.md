@@ -14,7 +14,7 @@ Cumpărarea de valută printr-o bancă comercială are o particularitate contabi
 
 ::: ghid-temei
 „Operațiunile de vânzare-cumpărare de valută, inclusiv cele derulate în cadrul contractelor cu decontare la termen, se înregistrează în contabilitate la cursul utilizat de banca comercială la care se efectuează licitația cu valută, fără ca acestea să genereze în contabilitate diferențe de curs valutar."
-— OMFP 1802/2014, pct. 304 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 304 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Diferența față de tratamentul obișnuit al operațiunilor în valută este esențială:
@@ -32,6 +32,6 @@ Diferența față de tratamentul obișnuit al operațiunilor în valută este es
 
 ## Ce face iConta.eu
 
-Am verificat rapid modulele legate de bancă (`core/banca.py`, `core/banca_parser.py`, `core/curs_bnr.py`): nu am găsit o funcție dedicată care să identifice o operațiune de schimb valutar (cumpărare/vânzare de valută) din extrasul bancar și să o înregistreze la cursul comercial al băncii, fără diferență de curs, conform pct. 304 alin. (2) din OMFP 1802/2014. Tranzacțiile de schimb valutar se procesează, la acest moment, ca orice altă mișcare bancară, iar încadrarea lor corectă rămâne în sarcina contabilului.
+Am verificat rapid modulele legate de bancă: nu am găsit o funcție dedicată care să identifice o operațiune de schimb valutar (cumpărare/vânzare de valută) din extrasul bancar și să o înregistreze la cursul comercial al băncii, fără diferență de curs, conform pct. 304 alin. (2) din OMFP 1802/2014. Tranzacțiile de schimb valutar se procesează, la acest moment, ca orice altă mișcare bancară, iar încadrarea lor corectă rămâne în sarcina contabilului.
 
 [iConta.eu](/)

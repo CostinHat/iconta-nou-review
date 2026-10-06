@@ -16,13 +16,13 @@ Contul 4428 „Taxa pe valoarea adăugată neexigibilă” e un cont bifuncțion
 > "Contul 4428 «Taxa pe valoarea adăugată neexigibilă» [...] este un cont bifuncțional. Soldul
 > contului reprezintă taxa pe valoarea adăugată neexigibilă."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt` — funcțiunile conturilor 371,
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320) — funcțiunile conturilor 371,
 > 378, 4428 (grupa 37 "Mărfuri" și grupa 44).
 
 > "*2) La calcularea procentului mediu de adaos comercial, soldul inițial al contului de mărfuri și
 > valoarea intrărilor de mărfuri nu vor include TVA neexigibilă."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (4), nota *2).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (4), nota *2).
 
 > "Articolul 281 Faptul generator pentru livrări de bunuri și prestări de servicii (1) Faptul
 > generator intervine **la data livrării bunurilor** sau la data prestării serviciilor, în
@@ -31,7 +31,7 @@ Contul 4428 „Taxa pe valoarea adăugată neexigibilă” e un cont bifuncțion
 > "Articolul 282 Exigibilitatea pentru livrări de bunuri și prestări de servicii (1) **Exigibilitatea
 > taxei intervine la data la care are loc faptul generator.**"
 >
-> — sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, art. 281 alin. (1) și art. 282 alin. (1).
+> — sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), art. 281 alin. (1) și art. 282 alin. (1).
 :::
 
 ## De ce descărcarea din 4428 e o aproximare

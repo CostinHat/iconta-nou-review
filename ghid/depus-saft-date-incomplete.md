@@ -14,7 +14,7 @@ Dacă îți dai seama, după validare, că fișierul SAF-T (D406) transmis pentr
 
 ::: ghid-temei
 „18. Prima Declarație informativă D406 validată, depusă pentru o lună sau un trimestru de către un contribuabil/plătitor este considerată declarație inițială. Declarațiile ulterioare depuse pentru aceeași perioadă (lună/trimestru) sunt automat considerate declarații rectificative. [...] 21. Declarațiile rectificative care se depun pentru corectarea unei erori materiale, omisiuni etc. trebuie să cuprindă toate informațiile din declarația inițială, plus cele asupra cărora s-au efectuat corecții."
-— OPANAF nr. 1.783/2021, instrucțiuni de completare D406 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, instrucțiuni de completare D406 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Orice declarație D406 depusă a doua oară pentru **aceeași perioadă** (lună sau trimestru) e considerată **automat rectificativă** — nu trebuie marcată manual ca atare, procesul ANAF o recunoaște după perioadă.
@@ -30,6 +30,6 @@ Dacă îți dai seama, după validare, că fișierul SAF-T (D406) transmis pentr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul D406/SAF-T din iConta.eu (`core/d406.py`) construiește fișierul integral din evidența contabilă a lunii/trimestrului respectiv (jurnal, active, stocuri, mișcări), inclusiv o poartă explicită care oprește generarea cu un mesaj clar dacă profilul firmei e incomplet, în loc să trimită un XML respins de ANAF (`erori_generare`, în `core/d406.py`). Regenerarea declarației pentru aceeași perioadă, după completarea datelor lipsă, produce automat un fișier complet — corespunzător cerinței ca rectificativa să conțină toate informațiile, nu doar diferența. Depunerea efectivă și confirmarea recipisei rămân un pas separat, în afara aplicației.
+La data acestui ghid, generatorul D406/SAF-T din iConta.eu construiește fișierul integral din evidența contabilă a lunii/trimestrului respectiv (jurnal, active, stocuri, mișcări), inclusiv o poartă explicită care oprește generarea cu un mesaj clar dacă profilul firmei e incomplet, în loc să trimită un XML respins de ANAF (`erori_generare`, în aplicație). Regenerarea declarației pentru aceeași perioadă, după completarea datelor lipsă, produce automat un fișier complet — corespunzător cerinței ca rectificativa să conțină toate informațiile, nu doar diferența. Depunerea efectivă și confirmarea recipisei rămân un pas separat, în afara aplicației.
 
 [iConta.eu](/)

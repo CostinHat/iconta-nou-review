@@ -14,13 +14,13 @@ Pentru salariile sub nivelul salariului minim brut pe țară, legea impune un �
 
 ::: ghid-temei
 „(5^6) Contribuția de asigurări sociale datorată de către persoanele fizice care obțin venituri din salarii sau asimilate salariilor, în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial, calculată potrivit alin. (5), nu poate fi mai mică decât nivelul contribuției de asigurări sociale calculate prin aplicarea cotei prevăzute la art. 138 lit. a) asupra salariului de bază minim brut pe țară în vigoare în luna pentru care se datorează contribuția de asigurări sociale, corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ."
-— Codul fiscal (Legea 227/2015), art. 146 alin. (5^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 146 alin. (5^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(5^7) Prevederile alin. (5^6) nu se aplică în cazul persoanelor fizice aflate în una dintre următoarele situații: [...] e) realizează în cursul aceleiași luni venituri din salarii sau asimilate salariilor în baza a două sau mai multe contracte individuale de muncă, iar baza lunară de calcul cumulată aferentă acestora este cel puțin egală cu salariul de bază minim brut pe țară."
-— Codul fiscal, art. 146 alin. (5^7) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 146 alin. (5^7) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(6^1) Prevederile art. 146 alin. (5^6)-(5^9) se aplică în mod corespunzător."
-— Codul fiscal, art. 168 alin. (6^1) (CASS — sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 168 alin. (6^1) (CASS — sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează, pas cu pas:
@@ -39,6 +39,6 @@ Cum funcționează, pas cu pas:
 
 ## Ce face iConta.eu
 
-Motorul de salarizare (`core/salarizare.py`) calculează automat, pentru fiecare salariat, „suprataxarea sub salariul minim" descrisă mai sus: dacă baza de contribuții e sub salariul minim din luna respectivă, CAS și CASS se recalculează la nivelul podelei legale, proporțional cu zilele lucrate din contract. Excepția pentru cumul de contracte există în cod ca parametru dedicat (`exceptat_suprataxare`, populat din câmpul `scutit_contrib_minim` al salariatului), dar aplicarea lui rămâne **manuală**: contabilul bifează excepția pe baza declarației salariatului, fiindcă aplicația unei singure firme nu are acces la veniturile plătite de ceilalți angajatori și nu poate calcula singură cumulul real.
+Motorul de salarizare calculează automat, pentru fiecare salariat, „suprataxarea sub salariul minim" descrisă mai sus: dacă baza de contribuții e sub salariul minim din luna respectivă, CAS și CASS se recalculează la nivelul podelei legale, proporțional cu zilele lucrate din contract. Excepția pentru cumul de contracte există în cod ca parametru dedicat (`exceptat_suprataxare`, populat din câmpul `scutit_contrib_minim` al salariatului), dar aplicarea lui rămâne **manuală**: contabilul bifează excepția pe baza declarației salariatului, fiindcă aplicația unei singure firme nu are acces la veniturile plătite de ceilalți angajatori și nu poate calcula singură cumulul real.
 
 [iConta.eu](/)

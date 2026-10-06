@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea nr. 227/2015 privind Codul fiscal, art. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea nr. 227/2015, art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 **Limitarea acestui ghid**: aceste două articole fixează cotele, dar nu conțin niciun "prag de rentabilitate" din care rezultă la ce marjă devine unul mai avantajos decât celălalt — asta pentru că baza de calcul e complet diferită (profit impozabil, la art. 17, versus venituri brute, la art. 51). Ce se poate calcula, pornind exact de la aceste texte:

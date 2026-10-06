@@ -14,7 +14,7 @@ Când o societate intră în dizolvare (fie prin hotărâre a asociaților, fie 
 
 ::: ghid-temei
 „După rămânerea definitivă a hotărârii judecătorești de dizolvare, Oficiul Național al Registrului Comerțului, prin registrator, la cererea societății, a oricărei persoane interesate sau din oficiu, numește, prin încheiere, un lichidator înscris în Tabloul practicienilor în insolvență. Remunerarea lichidatorului se face din averea societății dizolvate sau, în lipsă, din fondul de lichidare, constituit potrivit legii. Remunerația lichidatorului este în cuantum fix de 1.500 lei [...]"
-— Legea 31/1990, art. 237 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 237 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Cum funcționează, concret, numirea:
@@ -34,6 +34,6 @@ Cum funcționează, concret, numirea:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de calcul pentru operațiunile de lichidare (`core/lichidare.py`) — cota de lichidare aplicabilă, nota contabilă pentru vânzarea unui activ în cadrul lichidării și partajul capitalului social, rezervelor și profiturilor între asociați. La data acestui ghid, aplicația **nu are integrare cu ONRC** — nu depune cereri de numire a lichidatorului, nu urmărește termenul de 3 luni și nu interacționează cu Buletinul electronic al registrului comerțului. Procedura de numire a lichidatorului, cu depunerea cererii la ONRC, rămâne un demers separat, în afara aplicației.
+iConta.eu are un modul de calcul pentru operațiunile de lichidare — cota de lichidare aplicabilă, nota contabilă pentru vânzarea unui activ în cadrul lichidării și partajul capitalului social, rezervelor și profiturilor între asociați. La data acestui ghid, aplicația **nu are integrare cu ONRC** — nu depune cereri de numire a lichidatorului, nu urmărește termenul de 3 luni și nu interacționează cu Buletinul electronic al registrului comerțului. Procedura de numire a lichidatorului, cu depunerea cererii la ONRC, rămâne un demers separat, în afara aplicației.
 
 [iConta.eu](/)

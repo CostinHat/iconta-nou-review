@@ -16,9 +16,9 @@ Pentru contabil, ritmul acesta înseamnă că documentele lunare (lista de plat�
 
 ::: ghid-temei
 „(6) Rapoartele de verificare a gestiunii asociației de proprietari se întocmesc de către cenzor/comisia de cenzori trimestrial și se prezintă comitetului executiv în cadrul ședințelor comitetului executiv, pentru luare de măsuri în cazul în care se constată nereguli financiar-contabile, și anual, în cadrul adunărilor generale."
-— Legea 196/2018, art. 60 alin. (6) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (6) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „c) verifică lunar execuția bugetului de venituri și cheltuieli conform documentelor, registrelor și situației soldurilor elementelor de activ și pasiv întocmite de către administrator; […] d) cel puțin o dată pe an întocmește și prezintă adunării generale rapoarte asupra activității sale și asupra gestiunii asociației de proprietari, propunând măsuri; […] e) execută controale inopinate, împreună cu 2 membri ai comitetului executiv pentru verificarea contabilității și a activității de casierie, și consemnează rezultatele controalelor în registrul unic de procese-verbale al asociației de proprietari;"
-— Legea 196/2018, art. 61 lit. c)-e) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 61 lit. c)-e) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Calendarul cenzorului, pe scurt:

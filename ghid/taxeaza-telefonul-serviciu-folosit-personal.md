@@ -15,7 +15,7 @@ Un telefon de serviciu folosit strict pentru sarcini de serviciu nu generează n
 ::: ghid-temei
 „(7) Nu sunt considerate avantaje: [...] c) costul abonamentelor telefonice și al convorbirilor telefonice efectuate, precum și utilizarea autoturismului de serviciu pentru îndeplinirea sarcinilor de serviciu; [...]
 (8) Angajatorul stabilește partea corespunzătoare din convorbirile telefonice reprezentând folosința în scop personal, care reprezintă avantaj impozabil, în condițiile art. 76 alin. (3) din Codul fiscal, și se va impozita prin cumulare cu veniturile salariale ale lunii în care salariatul primește acest avantaj. În acest scop angajatorul stabilește limita convorbirilor telefonice aferente sarcinilor de serviciu pentru fiecare post telefonic, urmând ca ceea ce depășește această limită să fie considerat avantaj în natură, în situația în care salariatului în cauză nu i s-a imputat costul convorbirilor respective."
-— HG 1/2016, pct. 12 alin. (7) lit. c) și alin. (8) (norme de aplicare a art. 76 din Codul fiscal) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 12 alin. (7) lit. c) și alin. (8) (norme de aplicare a art. 76 din Codul fiscal) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Din text rezultă un mecanism în trei pași, în sarcina angajatorului:
@@ -34,6 +34,6 @@ Din text rezultă un mecanism în trei pași, în sarcina angajatorului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează în `core/beneficii_api.py` beneficii tipizate acordate salariaților — cadouri, vouchere de vacanță — cu praguri și tratament fiscal specific fiecărui tip. Nu există în cod un tip de beneficiu dedicat convorbirilor telefonice personale și nicio funcție care să calculeze automat depășirea limitei de convorbiri de serviciu stabilite intern de angajator. Stabilirea limitei per post telefonic și calculul avantajului rămân, la acest moment, o operațiune manuală a angajatorului/contabilului, introdusă apoi ca venit asimilat salariului, dacă e cazul.
+La data acestui ghid, iConta.eu gestionează în aplicație beneficii tipizate acordate salariaților — cadouri, vouchere de vacanță — cu praguri și tratament fiscal specific fiecărui tip. Nu există în cod un tip de beneficiu dedicat convorbirilor telefonice personale și nicio funcție care să calculeze automat depășirea limitei de convorbiri de serviciu stabilite intern de angajator. Stabilirea limitei per post telefonic și calculul avantajului rămân, la acest moment, o operațiune manuală a angajatorului/contabilului, introdusă apoi ca venit asimilat salariului, dacă e cazul.
 
 [iConta.eu](/)

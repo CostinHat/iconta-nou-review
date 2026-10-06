@@ -14,10 +14,10 @@ Pașii concreți de înființare a unui PFA — dosarul depus la oficiul registr
 
 ::: ghid-temei
 „(1) Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri, cu excepția situațiilor în care sunt aplicabile prevederile art. 68^1, 68^3 și 69."
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 O activitate de electrician autorizat (montaj, întreținere, reparații instalații electrice) se încadrează fiscal la categoria „prestări de servicii" din art. 67 alin. (1) — deci, ca PFA, generează venituri din activități independente:
@@ -34,6 +34,6 @@ O activitate de electrician autorizat (montaj, întreținere, reparații instala
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de înființare a PFA la registrul comerțului — aceasta ține de OUG 44/2008, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat și activ fiscal: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), pentru evidența anuală a venitului brut și a cheltuielilor deductibile pe sursă de venit, și generarea declarației D212 (`core/d212.py`) din datele furnizate de contabil, cu contribuțiile și impozitul calculate.
+La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de înființare a PFA la registrul comerțului — aceasta ține de OUG 44/2008, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat și activ fiscal: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din aplicație, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), pentru evidența anuală a venitului brut și a cheltuielilor deductibile pe sursă de venit, și generarea declarației D212 din datele furnizate de contabil, cu contribuțiile și impozitul calculate.
 
 [iConta.eu](/)

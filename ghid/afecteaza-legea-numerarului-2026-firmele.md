@@ -14,7 +14,7 @@ Deși titlul sugerează un tratament diferit pentru firmele mari, forma consolid
 
 ::: ghid-temei
 „Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii."
-— Legea 70/2015, art. 1 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 1 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - Regula de bază, valabilă și pentru 2026 (forma consolidată a legii include modificările în vigoare la 1 ianuarie 2026), e că plățile și încasările între entitățile enumerate la art. 1 alin. (1) se fac **numai prin instrumente de plată fără numerar** — legea nu introduce niciun prag de cifră de afaceri sau de mărime a firmei pentru a defini cui i se aplică această regulă.

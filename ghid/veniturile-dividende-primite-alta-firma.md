@@ -14,7 +14,7 @@ Când o firmă românească primește dividende de la o altă firmă româneasc�
 
 ::: ghid-temei
 „Articolul 23 Venituri neimpozabile. La calculul rezultatului fiscal, următoarele venituri sunt neimpozabile: a) dividendele primite de la o persoană juridică română."
-— Legea 227/2015 (Codul fiscal), art. 23 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 23 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări importante din context:

@@ -16,10 +16,10 @@ Același procent poate schimba amenda de 2,5 ori. De aceea, contează ce vânză
 
 ::: ghid-temei
 „c) neemiterea bonului fiscal pentru toate bunurile livrate sau serviciile prestate, emiterea de bonuri cu o valoare inferioară prețului de vânzare a bunului sau tarifului de prestare a serviciului ori nerespectarea prevederilor art. 1 alin. (8) , care determină existența unei sume nejustificate."
-— OUG 28/1999, art. 10 lit. c) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 10 lit. c) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „(i) cu amendă în cuantum de 2.000 lei, în situația în care suma nejustificată rezultată din săvârșirea contravenției este de până la 300 lei inclusiv, dar mai mică de 3% inclusiv din valoarea totală a bunurilor livrate sau a serviciilor prestate, înregistrată de aparatul de marcat electronic fiscal și/sau în registrul special la data și ora efectuării controlului ori la sfârșitul zilei, dacă fapta a fost săvârșită anterior datei controlului, precum și confiscarea sumei nejustificate;"
-— OUG 28/1999, art. 11 alin. (1) lit. e) pct. (i) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 11 alin. (1) lit. e) pct. (i) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 **Suma nejustificată** este, potrivit art. 10 lit. c), contravaloarea bunurilor sau serviciilor pentru care nu s-au emis bonuri. Dacă bonul s-a emis cu o valoare mai mică, este diferența până la prețul real. Dacă aparatul era defect și operațiunea nu a fost trecută în registrul special, este valoarea acelei operațiuni.

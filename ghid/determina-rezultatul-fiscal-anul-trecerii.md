@@ -17,7 +17,7 @@ Trecerea de la microîntreprindere la impozit pe profit nu așteaptă întotdeau
 (1) Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.
 (2) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție.
 (3) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu mai îndeplinește condiția prevăzută la art. 47 alin. (1) lit. g) [are cel puțin un salariat], microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă. [...] În cazul în care, în acest termen [30 de zile] nu se angajează un nou salariat, microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă."
-— Legea 227/2015 (Codul fiscal), art. 52 alin. (1), (2), (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 52 alin. (1), (2), (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta pentru rezultatul fiscal:

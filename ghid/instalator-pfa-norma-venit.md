@@ -14,10 +14,10 @@ Activitatea de instalator (instalații sanitare, de încălzire și aer condiți
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii, pentru care venitul net se determină pe bază de norme de venit și care în anul fiscal anterior au înregistrat un venit brut anual mai mare decât echivalentul în lei al sumei de 25.000 euro, începând cu anul fiscal următor au obligația determinării venitului net anual în sistem real."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un instalator PFA, dincolo de verificarea nomenclatorului, cel mai des ignorat prag e cel din alin. (9):

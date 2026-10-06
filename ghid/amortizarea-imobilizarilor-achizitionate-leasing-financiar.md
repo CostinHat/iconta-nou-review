@@ -14,7 +14,7 @@ La leasingul financiar, bunul intră în contabilitatea locatarului (firma care 
 
 ::: ghid-temei
 „214. ‐ (1) Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator, iar în cazul leasingului operațional, de către locator/finanțator. (2) În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile şi mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
-— OMFP 1802/2014, pct. 214 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 214 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Amortizarea unui bun preluat prin leasing financiar se face **la locatar**, nu la finanțator — indiferent la cine rămâne, prin contract, titlul juridic de proprietate.
@@ -29,6 +29,6 @@ La leasingul financiar, bunul intră în contabilitatea locatarului (firma care 
 
 ## Ce face iConta.eu
 
-Funcționalitatea „Leasing financiar și operațional" (`core/leasing.py`) înregistrează recunoașterea bunului la primire (2133=167, la valoarea capitalului, cu dobânda totală ținută extracontabil pe 8051) și, separat, fiecare rată și valoarea reziduală — dar **nu calculează amortizarea propriu-zisă**. Nicio funcție din acest modul nu produce o notă de amortizare. Odată intrat 2133=167 prin nota de leasing, bunul trece în registrul general de Mijloace fixe, unde e amortizat exact ca orice alt mijloc fix al firmei, fără nicio diferențiere pentru că a venit prin leasing.
+Funcționalitatea „Leasing financiar și operațional" înregistrează recunoașterea bunului la primire (2133=167, la valoarea capitalului, cu dobânda totală ținută extracontabil pe 8051) și, separat, fiecare rată și valoarea reziduală — dar **nu calculează amortizarea propriu-zisă**. Nicio funcție din acest modul nu produce o notă de amortizare. Odată intrat 2133=167 prin nota de leasing, bunul trece în registrul general de Mijloace fixe, unde e amortizat exact ca orice alt mijloc fix al firmei, fără nicio diferențiere pentru că a venit prin leasing.
 
 [iConta.eu](/)

@@ -15,7 +15,7 @@ Nu există în lege o listă de „trucuri” care garantează evitarea unui con
 ::: ghid-temei
 „În cazul creanțelor fiscale administrate de organul fiscal central, procedurile de administrare se realizează în funcție de clasa/subclasa de risc fiscal în care sunt încadrați contribuabilii ca urmare a analizei de risc efectuate de organul fiscal. [...]
 (7) Criteriile generale în funcție de care se stabilește clasa/subclasa de risc fiscal sunt următoarele: a) criterii cu privire la înregistrarea fiscală; b) criterii cu privire la depunerea declarațiilor fiscale; c) criterii cu privire la nivelul de declarare; d) criterii cu privire la realizarea obligațiilor de plată către bugetul general consolidat și către alți creditori; e) criterii cu privire la utilizarea mijloacelor moderne de plată; f) criterii de avertizare timpurie cu privire la capacitatea financiară de a achita obligațiile fiscale; g) criterii cu privire la informațiile/faptele înscrise în cazierul fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 7 alin. (5) și (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 7 alin. (5) și (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă, cu temei legal real, din aceste criterii:

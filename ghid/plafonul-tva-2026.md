@@ -14,7 +14,7 @@ Plafonul de scutire de TVA aplicabil întreprinderilor mici a fost modificat în
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România conform art. 266 alin. (2) lit. a), a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— Legea nr. 227/2015 (Codul fiscal), art. 310 alin. (1), modificat prin Ordonanța nr. 22/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 310 alin. (1), modificat prin Ordonanța nr. 22/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret plafonul pentru 2026:
@@ -31,6 +31,6 @@ Ce înseamnă concret plafonul pentru 2026:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulele `core/cota_tva_incasare.py`, `core/perioada_fiscala_tva.py` și `core/migrare_platitor_tva_anaf.py` gestionează perioada fiscală, cota TVA la încasare și statutul de plătitor de TVA confirmat de la ANAF (snapshot separat de valoarea introdusă manual), dar aplicația nu are, la acest moment, o alertă automată de monitorizare a apropierii cifrei de afaceri de plafonul de 395.000 lei — urmărirea plafonului rămâne, deocamdată, în responsabilitatea contabilului.
+Verificat în cod: Aplicația gestionează perioada fiscală, cota TVA la încasare și statutul de plătitor de TVA confirmat de la ANAF (snapshot separat de valoarea introdusă manual), dar aplicația nu are, la acest moment, o alertă automată de monitorizare a apropierii cifrei de afaceri de plafonul de 395.000 lei — urmărirea plafonului rămâne, deocamdată, în responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Se întâmplă: fluturașul lunii a fost deja generat și predat salariatului, i
 
 ::: ghid-temei
 „Acceptarea fără rezerve a unei părţi din drepturile salariale sau semnarea actelor de plată în astfel de situaţii nu poate avea semnificatia unei renunţări din partea salariatului la drepturile salariale ce i se cuvin în integralitatea lor, potrivit dispoziţiilor legale sau contractuale."
-— Legea 53/2003 (Codul muncii), art. 165 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 165 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Chiar dacă salariatul a semnat statul de plată sau a primit fluturașul cu o cifră greșită, semnătura lui nu înseamnă că a renunțat la diferența care i se cuvine legal sau contractual — dreptul rămâne integral, indiferent de acceptarea aparentă.

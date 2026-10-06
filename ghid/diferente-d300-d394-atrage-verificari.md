@@ -14,7 +14,7 @@ D300 și D394 nu trebuie să fie identice — au sfere diferite prin definiție.
 
 ::: ghid-temei
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025 (care modifică Anexa 2 a OPANAF 3769/2015), aplicabil operațiunilor derulate de la 1.08.2025 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025 (care modifică Anexa 2 a OPANAF 3769/2015), aplicabil operațiunilor derulate de la 1.08.2025 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Din regula de excludere de mai sus, aplicată corect, rezultă exact ce nu ar trebui să difere „nejustificat" între cele două declarații:

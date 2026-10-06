@@ -16,17 +16,17 @@ Decizia de a trece la regimul normal trebuie cântărită pe cel puțin doi ani.
 
 ::: ghid-temei
 „Agricultorul care aplică regimul special poate opta oricând pentru aplicarea regimului normal de taxă, în condițiile prevăzute prin norme, prin depunerea la organul fiscal competent a unei notificări în acest sens, caz în care organul fiscal competent operează radierea agricultorului din Registrul agricultorilor care aplică regimul special până la data de 1 a lunii următoare celei în care a fost depusă notificarea. După exercitarea opțiunii de aplicare a regimului normal de taxă, agricultorul nu mai poate aplica din nou regimul special pentru o perioadă de cel puțin 2 ani de la data înregistrării în scopuri de TVA.”
-— Codul fiscal (Legea 227/2015), art. 315^1 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 315^1 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În vederea aplicării regimului normal de taxă, agricultorul trebuie să depună la organul fiscal competent o notificare în acest sens, însoțită de solicitarea de înregistrare în scopuri de TVA conform art. 316 din Codul fiscal, între data de 1 și 10 ale oricărei luni.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 87^1 alin. (14) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 87^1 alin. (14) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul în care, după expirarea perioadei prevăzute la alin. (15) , agricultorul optează din nou pentru aplicarea regimului special pentru agricultori, acesta trebuie să depună la organele fiscale competente o notificare în acest sens. Persoanele impozabile înregistrate în scopuri de TVA care optează pentru aplicarea regimului special pentru agricultori pot solicita scoaterea din evidența persoanelor înregistrate în scopuri de TVA în vederea aplicării regimului special.”
-— Codul fiscal (Legea 227/2015), art. 315^1 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 315^1 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordine:

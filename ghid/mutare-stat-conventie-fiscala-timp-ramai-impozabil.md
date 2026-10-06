@@ -16,12 +16,12 @@ Diferența față de mutarea într-un stat cu convenție e mare. Acolo, obligaț
 
 ::: ghid-temei
 „Persoana fizică rezidentă română, cu domiciliul în România, care dovedește schimbarea rezidenței într-un stat cu care România nu are încheiată convenție de evitare a dublei impuneri completează formularul prevăzut la art. 1 lit. b) și este obligată în continuare la plata impozitului pe veniturile obținute din orice sursă, atât din România, cât și din afara României, pentru anul calendaristic în care are loc schimbarea rezidenței, precum și în următorii 3 ani calendaristici."
-— OMFP 1099/2016, art. 21 alin. (2) (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 21 alin. (2) (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 ::: ghid-temei
 „Persoana fizică rezidentă română, cu domiciliul în România, care dovedește schimbarea rezidenței într-un stat cu care România nu are încheiată convenție de evitare a dublei impuneri este obligată în continuare la plata impozitului pe veniturile obținute din orice sursă, atât din România, cât și din afara României, pentru anul calendaristic în care are loc schimbarea rezidenței, precum și în următorii 3 ani calendaristici."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut:
@@ -35,7 +35,7 @@ Ce trebuie reținut:
 
 ::: ghid-temei
 „Persoana fizică rezidentă română, cu domiciliul în România, care dovedește schimbarea rezidenței într-un stat cu care România are încheiată convenție de evitare a dublei impuneri, este obligată în continuare la plata impozitului pe veniturile obținute din orice sursă, atât din România, cât și din afara României, până la data schimbării rezidenței."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-exemplu

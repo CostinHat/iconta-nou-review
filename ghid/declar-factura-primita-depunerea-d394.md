@@ -14,7 +14,7 @@ D394 raportează facturile de achiziție în funcție de perioada în care au fo
 
 ::: ghid-temei
 „Declaraţia trebuie să conţină facturile care au fost primite în perioada de raportare, inclusiv cele care au înscrisă menţiunea «taxare inversă» sau «TVA la încasare», precum şi borderourile de achiziţii de bunuri şi filele din carnetele de comercializare a produselor din sectorul agricol în cazul achiziţiilor efectuate de la persoane fizice. [...] 3. În cazul în care, după depunerea declaraţiei, persoana impozabilă constată existenţa unor omisiuni/erori în datele declarate, aceasta trebuie să depună o nouă declaraţie corect completată, cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial."
-— OPANAF 3.769/2015, Anexa nr. 2 - Instrucțiuni de completare a formularului 394 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF 3.769/2015, Anexa nr. 2 - Instrucțiuni de completare a formularului 394 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 Rezultă două situații distincte:
@@ -32,6 +32,6 @@ Important: declarația nouă **nu adaugă** doar factura lipsă — ea trebuie s
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează D394 din facturile de achiziție înregistrate pe perioada de raportare selectată (`core/d394.py` construiește declarația din datele curente ale bazei), dar **nu automatizează** detectarea unei facturi înregistrate ulterior pentru o perioadă deja declarată și nici generarea automată a unei declarații rectificative care să înlocuiască declarația inițială cu factura adăugată. Identificarea facturilor „întârziate" și depunerea rectificativei corespunzătoare rămân, la această dată, o verificare și o acțiune manuală a contabilului.
+La data acestui ghid, iConta.eu generează D394 din facturile de achiziție înregistrate pe perioada de raportare selectată (aplicația construiește declarația din datele curente ale bazei), dar **nu automatizează** detectarea unei facturi înregistrate ulterior pentru o perioadă deja declarată și nici generarea automată a unei declarații rectificative care să înlocuiască declarația inițială cu factura adăugată. Identificarea facturilor „întârziate" și depunerea rectificativei corespunzătoare rămân, la această dată, o verificare și o acțiune manuală a contabilului.
 
 [iConta.eu](/)

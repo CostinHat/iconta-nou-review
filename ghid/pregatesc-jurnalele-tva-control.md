@@ -15,7 +15,7 @@ La un control de TVA, primul lucru cerut de organul fiscal e, aproape întotdeau
 ::: ghid-temei
 „(1) Persoanele impozabile stabilite în România trebuie să țină evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice. [...]
 (2) Persoanele obligate la plata taxei pentru orice operațiune sau care se identifică drept persoane înregistrate în scopuri de TVA, conform prezentului titlu, în scopul desfășurării oricărei operațiuni, trebuie să țină evidențe pentru orice operațiune reglementată de prezentul titlu."
-— Legea 227/2015 (Codul fiscal), art. 321 alin. (1) și (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 321 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Detaliile de conținut ale acestor evidențe sunt date de normele metodologice, care numesc explicit jurnalul de vânzări și jurnalul de cumpărări:

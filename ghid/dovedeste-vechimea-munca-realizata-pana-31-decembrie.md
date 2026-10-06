@@ -16,16 +16,16 @@ Pentru angajator și contabil, data de 31 decembrie 2010 împarte cariera unui s
 
 ::: ghid-temei
 „(1) Vechimea în muncă stabilită până la data de 31 decembrie 2010 se probează cu carnetul de muncă. [...] (2) După data abrogării Decretului nr. 92/1976 privind carnetul de muncă, cu modificările ulterioare, vechimea în muncă stabilită până la data de 31 decembrie 2010 se reconstituie, la cererea persoanei care nu posedă carnet de muncă, de către instanța judecătorească competentă să soluționeze conflictele de muncă, pe baza înscrisurilor sau a altor probe din care să rezulte existența raporturilor de muncă."
-— Codul muncii (Legea 53/2003), art. 279 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 279 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Angajatorii care păstrează și completează carnetele de muncă le vor elibera titularilor în mod eșalonat, până la data de 30 iunie 2011, pe bază de proces-verbal individual de predareprimire. [...] (5) Anunțul privind pierderea carnetelor de muncă emise în temeiul Decretului nr. 92/1976, cu modificările ulterioare, se publică în Monitorul Oficial al României, Partea a III-a."
-— Codul muncii (Legea 53/2003), art. 279 alin. (3) și (5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 279 alin. (3) și (5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(5) La solicitarea salariatului sau a unui fost salariat, angajatorul este obligat să elibereze un document care să ateste activitatea desfășurată de acesta, durata activității, salariul, vechimea în muncă, în meserie și în specialitate."
-— Codul muncii (Legea 53/2003), art. 34 alin. (5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 34 alin. (5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(5^2) Vechimea în muncă și/sau în specialitate poate fi dovedită și cu extrasul prevăzut la alin. (5^1), în condițiile stabilite prin hotărâre a Guvernului."
-— Codul muncii (Legea 53/2003), art. 34 alin. (5^2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 34 alin. (5^2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

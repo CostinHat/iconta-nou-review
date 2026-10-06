@@ -16,12 +16,12 @@ Excepția privește doar tipărirea și înmânarea. **Obligația de a folosi ca
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (2) , pentru încasările realizate prin utilizarea cardurilor de credit/debit, utilizatorii nu au obligația să imprime/să înmâneze bonuri fiscale cu aparate de marcat electronice fiscale clienților. La solicitarea clienților, utilizatorii pot imprima și înmâna acestora bonul fiscal. Lipsa bonului fiscal tipărit nu afectează drepturile consumatorilor prevăzute de [...] extrasul de cont bancar ținând locul bonului fiscal drept mijloc de probă al achiziției."
-— OUG 28/1999, art. 1 alin. (2^1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (2^1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 ::: ghid-temei
 „Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale."
-— OUG 28/1999, art. 1 alin. (1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă din text:

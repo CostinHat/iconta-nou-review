@@ -16,12 +16,12 @@ Taxa e anuală și se datorează primăriei unde se desfășoară activitatea, n
 
 ::: ghid-temei
 „(3) Persoanele a căror activitate este înregistrată în grupele CAEN 561 - Restaurante, 563 - Baruri și alte activități de servire a băuturilor și 932 - Alte activități recreative și distractive, potrivit Clasificării activităților din economia națională - CAEN, [...] datorează bugetului local al comunei, orașului sau municipiului, după caz, în a cărui rază administrativ-teritorială se desfășoară activitatea, o taxă pentru eliberarea/vizarea anuală a autorizației privind desfășurarea acestor activități, în funcție de suprafața aferentă activităților respective, în sumă de: a) până la 4.000 lei, pentru o suprafață de până la 500 mp, inclusiv; [...] b) până la 8.000 lei pentru o suprafață mai mare de 500 mp."
-— Codul fiscal (Legea 227/2015), art. 475 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 475 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(4) Nivelul taxei prevăzute la alin. (3) se stabilește prin hotărâre a consiliului local. La nivelul municipiului București, această taxă se stabilește de către Consiliul General al Municipiului București și se face venit la bugetul local al sectorului în a cărui rază teritorială se desfășoară activitatea. (5) Autorizația privind desfășurarea activităților prevăzute la alin. (3) , în cazul în care persoana îndeplinește condițiile prevăzute de lege, se emite de către primarul în a cărui rază de competență se află sediul sau punctul de lucru."
-— Codul fiscal (Legea 227/2015), art. 475 alin. (4)-(5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 475 alin. (4)-(5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

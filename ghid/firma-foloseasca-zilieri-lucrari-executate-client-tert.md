@@ -16,10 +16,10 @@ Pentru contabil, asta înseamnă două verificări înainte de a înregistra rem
 
 ::: ghid-temei
 „(5) Beneficiarul sau un împuternicit al acestuia nu poate utiliza zilieri pentru desfășurarea unor activități în beneficiul unui terț, cu excepția activităților pentru care beneficiarul sau un împuternicit al acestuia are încheiate contracte de prestări servicii cu terții, prestări servicii pentru care pot fi utilizați zilieri conform prevederilor art. 13 din prezenta lege."
-— Legea 52/2011, art. 4 alin. (5) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (5) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „(2) Activitățile de manipulare mărfuri și activitățile de curățenie și întreținere se prestează numai în domeniile de activitate prevăzute la alin. (1) ."
-— Legea 52/2011, art. 13 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Condițiile excepției, cumulative:

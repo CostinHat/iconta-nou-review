@@ -16,10 +16,10 @@ Termenul este foarte scurt, iar punctul de vedere trebuie să fie concret. Un te
 
 ::: ghid-temei
 „(4) Data, ora și locul prezentării concluziilor se comunică, în scris, persoanei fizice, în timp util. (5) Persoana fizică are dreptul să prezinte, în scris, în termen de cel mult 5 zile lucrătoare de la data prezentării concluziilor, punctul de vedere cu privire la constatările verificării situației fiscale personale, punct de vedere ce se anexează la raportul de verificare și asupra căruia organul fiscal central se pronunță în cuprinsul raportului."
-— Codul de procedură fiscală (Legea 207/2015), art. 145 alin. (4)–(5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 145 alin. (4)–(5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „La finalizarea verificării situației fiscale personale, organul fiscal central prezintă persoanei fizice constatările și consecințele lor fiscale, acordându-i acesteia posibilitatea de a-și exprima punctul de vedere potrivit art. 9, cu excepția cazului în care bazele de impozitare nu au suferit nicio modificare în urma verificării sau a cazului în care persoana fizică renunță la acest drept și notifică, în scris, acest fapt organului fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 145 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 145 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, în ordine:

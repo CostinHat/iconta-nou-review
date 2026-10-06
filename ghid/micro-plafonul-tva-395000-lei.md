@@ -14,10 +14,10 @@ O microîntreprindere și o „întreprindere mică" din perspectiva TVA nu sunt
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1) [...]."
-— Legea 227/2015, art. 310 alin. (1), Titlul VII (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 310 alin. (1), Titlul VII (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1^1) [...] limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română [...] iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]."
-— Legea 227/2015, art. 47 alin. (1^1), Titlul III (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1^1), Titlul III (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două plafoane sunt reglementate în titluri diferite ale Codului fiscal, cu logici distincte:

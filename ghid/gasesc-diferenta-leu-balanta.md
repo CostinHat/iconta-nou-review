@@ -14,7 +14,7 @@ O balanță care nu se închide cu o diferență de câțiva lei e una dintre ce
 
 ::: ghid-temei
 „Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare."
-— Legea 82/1991 (legea contabilității), art. 22 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (legea contabilității), art. 22 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Rolul balanței de verificare, așa cum reiese din text, este tocmai verificarea corectitudinii înregistrărilor — adică ea trebuie să confirme, prin egalitatea totalurilor de rulaje și solduri debitoare/creditoare, că fiecare operațiune a fost înregistrată corect, o singură dată, cu dublă înregistrare. O diferență, oricât de mică, înseamnă că această egalitate nu e respectată undeva în lanțul de note contabile.

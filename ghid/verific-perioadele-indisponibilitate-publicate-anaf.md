@@ -14,7 +14,7 @@ Sistemele informatice ale ANAF (Spațiul Privat Virtual, portalul de depunere a 
 
 ::: ghid-temei
 „(7) În cazul în care actul administrativ fiscal se comunică prin publicitate, acesta se consideră comunicat în termen de 15 zile de la data afișării anunțului."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 47 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 47 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Acest text nu vizează direct indisponibilitatea tehnică a SPV, ci arată principiul general al Codului de procedură fiscală: termenele legate de comunicarea actelor și, prin extensie, de îndeplinirea obligațiilor declarative sunt reglementate explicit, cu reguli proprii de calcul, indiferent de canalul folosit (publicitate, mijloace electronice etc.). De aici rezultă practic:
@@ -31,6 +31,6 @@ Acest text nu vizează direct indisponibilitatea tehnică a SPV, ci arată princ
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu monitorizează și nu afișează** perioadele de indisponibilitate publicate de ANAF pentru SPV sau portalul de depunere. Aplicația urmărește termenele de declarare pe baza calendarului fiscal (`core/scadente.py`, `core/control_fiscal_api.py`), dar verificarea stării de funcționare a sistemelor ANAF în ziua depunerii rămâne responsabilitatea contabilului, direct pe canalele oficiale ANAF.
+La data acestui ghid, iConta.eu **nu monitorizează și nu afișează** perioadele de indisponibilitate publicate de ANAF pentru SPV sau portalul de depunere. Aplicația urmărește termenele de declarare pe baza calendarului fiscal, dar verificarea stării de funcționare a sistemelor ANAF în ziua depunerii rămâne responsabilitatea contabilului, direct pe canalele oficiale ANAF.
 
 [iConta.eu](/)

@@ -13,7 +13,7 @@ Sistemul TVA la încasare pare simplu — „plătesc TVA când sunt plătit" �
 ## Temeiul legal
 
 ::: ghid-temei
-Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (`cod_fiscal_227_2015_consolidat.txt`, liniile 18151-18159)
+Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (`cod_fiscal_227_2015_consolidat.txt`)
 :::
 
 **1. Confuzia dintre exigibilitate și cota aplicabilă.** Art. 282 stabilește CÂND devine exigibilă TVA (la încasare), iar art. 291 alin. (5) stabilește CE COTĂ se aplică — două reguli distincte. Cota nu e neapărat cea de la data încasării, ci cea de la faptul generator, cu excepție pentru facturi/avansuri emise anterior livrării.
@@ -30,6 +30,6 @@ Pe lângă cele de mai sus, o greșeală practică frecventă la introducerea un
 
 ## Ce face iConta.eu
 
-Modulul `core/cota_tva_incasare.py` **nu deduce automat** care document (factură/avans sau livrare) a fost primul — contabilul trebuie să aleagă manual ramura (`ramura_291_5`), decizie de produs explicită pentru că „a ghici ar produce o cifră validă și falsă". Modulul refuză explicit patru situații: lipsă dată fapt generator, ramură nealeasă, lipsă dată document pe ramura excepție, document ulterior livrării. Ecranul „TVA la încasare (art. 282)" afișează un text de ajutor care citează direct art. 291 alin. (5). Pe factura de achiziție, bifa „furnizor TVA la încasare" e însă complet manuală — aplicația nu verifică live Registrul public ANAF, bifa fiind pe răspunderea contabilului.
+Aplicația **nu deduce automat** care document (factură/avans sau livrare) a fost primul — contabilul trebuie să aleagă manual ramura (`ramura_291_5`), decizie de produs explicită pentru că „a ghici ar produce o cifră validă și falsă". Modulul refuză explicit patru situații: lipsă dată fapt generator, ramură nealeasă, lipsă dată document pe ramura excepție, document ulterior livrării. Ecranul „TVA la încasare (art. 282)" afișează un text de ajutor care citează direct art. 291 alin. (5). Pe factura de achiziție, bifa „furnizor TVA la încasare" e însă complet manuală — aplicația nu verifică live Registrul public ANAF, bifa fiind pe răspunderea contabilului.
 
 [iConta.eu](/)

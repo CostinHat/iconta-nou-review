@@ -16,7 +16,7 @@ O agenție de turism se poate încadra la impozitul pe veniturile microîntrepri
 „(1) În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...]
 c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...]
 (1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta, iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) și alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c) și alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pragul de 100.000 euro se verifică pe **cifra de afaceri definită contabil**, nu pe marja de profit din regimul special de TVA — cele două noțiuni ("venituri" la impozitul pe micro vs. "marjă" la TVA art. 311) au baze de calcul complet diferite și nu trebuie amestecate.
@@ -31,6 +31,6 @@ c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro.
 
 ## Ce face iConta.eu
 
-Pentru o firmă de turism, iConta.eu tratează separat cele două regimuri: regimul de TVA (normal, special art. 311 sau intermediar, calculat prin motorul dedicat din `core/tva_marja_turism.py`) și regimul de impozit pe venit (micro sau profit), setat ca un câmp propriu al firmei, care determină generarea D100 (micro) sau D101 (profit). Aplicația nu unifică sau nu condiționează un regim de celălalt și nu verifică automat, pe baza cifrei de afaceri sau a codului CAEN, dacă agenția îndeplinește condițiile de la art. 47 pentru încadrarea la micro — alegerea și verificarea condițiilor rămân, ca pentru orice firmă, responsabilitatea contabilului.
+Pentru o firmă de turism, iConta.eu tratează separat cele două regimuri: regimul de TVA (normal, special art. 311 sau intermediar, calculat prin motorul dedicat din aplicație) și regimul de impozit pe venit (micro sau profit), setat ca un câmp propriu al firmei, care determină generarea D100 (micro) sau D101 (profit). Aplicația nu unifică sau nu condiționează un regim de celălalt și nu verifică automat, pe baza cifrei de afaceri sau a codului CAEN, dacă agenția îndeplinește condițiile de la art. 47 pentru încadrarea la micro — alegerea și verificarea condițiilor rămân, ca pentru orice firmă, responsabilitatea contabilului.
 
 [iConta.eu](/)

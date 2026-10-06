@@ -14,7 +14,7 @@ O firmă care depune deconturi trimestrial poate fi obligată, brusc, să treac�
 
 ::: ghid-temei
 „(7) Prin excepție de la prevederile alin. (2)-(6), pentru persoana impozabilă care utilizează trimestrul calendaristic ca perioadă fiscală și care efectuează o achiziție intracomunitară de bunuri taxabilă în România, perioada fiscală devine luna calendaristică începând cu: a) prima lună a unui trimestru calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în această primă lună a respectivului trimestru; b) a treia lună a trimestrului calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a doua lună a respectivului trimestru. Primele două luni ale trimestrului respectiv vor constitui o perioadă fiscală distinctă [...]; c) prima lună a trimestrului calendaristic următor, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a treia lună a unui trimestru calendaristic."
-— Cod fiscal, art. 322 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 322 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula are trei variante, în funcție de luna trimestrului în care apare exigibilitatea TVA pentru achiziția intracomunitară:

@@ -14,7 +14,7 @@ O firmă poate primi o garanție de la un client, chiriaș sau partener contract
 
 ::: ghid-temei
 „Contul 802 «Angajamente primite» [...] Cu ajutorul acestui cont se ține evidența angajamentelor primite de către entitate (giruri, cauțiuni, garanții, alte angajamente primite), reflectând eventuala creanță a entității față de terți, generată de angajamentele primite. În debitul contului 802 «Angajamente primite» se înregistrează valoarea angajamentelor în momentul primirii lor de către entitate, iar în credit, valoarea angajamentelor în momentul încetării lor."
-— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 8 „Conturi speciale", Grupa 80 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 8 „Conturi speciale", Grupa 80 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text rezultă distincția-cheie:
@@ -30,7 +30,7 @@ Din text rezultă distincția-cheie:
 
 ## Ce face iConta.eu
 
-iConta.eu are, în ecranul de operațiuni **Credite bancare** (operațiunea „Garanție"; funcționalitate separată de SGR, verificată în `core/credite.py`), o funcție dedicată de înregistrare a unei garanții primite, care generează nota extracontabilă `8021=891` (valoarea implicită a operațiunii, singura pe care formularul o poate trimite azi). Această funcție acoperă exact cazul „angajament" descris mai sus — o evidență în partidă simplă, fără mișcare de bani.
+iConta.eu are, în ecranul de operațiuni **Credite bancare** (operațiunea „Garanție"; funcționalitate separată de SGR, verificată în aplicație), o funcție dedicată de înregistrare a unei garanții primite, care generează nota extracontabilă `8021=891` (valoarea implicită a operațiunii, singura pe care formularul o poate trimite azi). Această funcție acoperă exact cazul „angajament" descris mai sus — o evidență în partidă simplă, fără mișcare de bani.
 
 Important de precizat onest: pentru cazul concret din titlul acestui ghid — o garanție care **chiar intră ca sumă de bani** în contul bancar al firmei — iConta.eu **nu are** o funcție dedicată separată care să genereze automat nota de trezorerie corespunzătoare (încasare + datorie de restituit). Acea operațiune, fiind un caz de bilanț și nu extrabilanțier, trebuie înregistrată manual, printr-o notă contabilă obișnuită de încasare, cu contrapartida potrivită situației concrete.
 

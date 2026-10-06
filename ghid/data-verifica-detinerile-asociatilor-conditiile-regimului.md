@@ -16,17 +16,17 @@ Regula are două completări practice. Firma nou-înființată verifică deține
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent:"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru asociații/acționarii persoanei juridice respective, procentul de deținere din valoarea/numărul titlurilor de participare sau a/al drepturilor de vot se calculează pe baza deținerilor existente la data de 31 decembrie a anului fiscal precedent."
-— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul III, pct. 1 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În situația în care, în cursul anului fiscal, oricare dintre asociații/acționarii unei microîntreprinderi deține, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și la alte microîntreprinderi, asociații/acționarii trebuie să stabilească microîntreprinderea/ microîntreprinderile care iese/ies de sub incidența prezentului titlu și care urmează să aplice prevederile titlului II începând cu trimestrul în care se înregistrează situația respectivă, astfel încât condiția de deținere a unei singure microîntreprinderi să fie îndeplinită."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma a fost actualizată în 2024 și este în acord cu art. 47 în forma actuală.

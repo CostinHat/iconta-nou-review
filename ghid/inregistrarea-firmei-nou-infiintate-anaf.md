@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la: a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică; [...]"
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 82 alin. (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 82 alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Declarația de înregistrare fiscală cuprinde datele de identificare ale firmei, dar și **datele privind vectorul fiscal** — adică tipurile de obligații fiscale pentru care firma va avea de acum înainte obligații de declarare (impozit pe profit/micro, TVA, contribuții salariale etc.).

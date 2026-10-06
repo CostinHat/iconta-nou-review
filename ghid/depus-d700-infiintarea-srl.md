@@ -15,10 +15,10 @@ Confuzia vine din faptul că un SRL nou primește codul unic de înregistrare (C
 ::: ghid-temei
 „(1) Orice persoană sau entitate care este subiect într-un raport juridic fiscal se înregistrează fiscal primind un cod de identificare fiscală. Codul de identificare fiscală este: [...] b) pentru persoanele fizice și juridice, precum și pentru alte entități care se înregistrează potrivit legii speciale la registrul comerțului, codul unic de înregistrare atribuit potrivit legii speciale; [...]
 (6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la: a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică; [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 82 alin. (1) lit. b) și alin. (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 82 alin. (1) lit. b) și alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „ORDIN nr.2372/2017 pentru aprobarea modelului, conținutului, precum și a instrucțiunilor de completare a formularului (700) «Declarație pentru înregistrarea/modificarea categoriilor de obligații fiscale declarative înscrise în vectorul fiscal», cod 14.13.01.10.01"
-— referință la art. 86, Legea 207/2015 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— referință la art. 86, Legea 207/2015 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din aceste texte pentru un SRL nou-înființat:
@@ -36,6 +36,6 @@ Ce rezultă din aceste texte pentru un SRL nou-înființat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu generează și nu depune declarația D700**. Din nota internă de dezvoltare a proiectului (`anaf_surse/d010_d020_d070_d700_status.md`) rezultă că structura declarației a fost recuperată din validatorul oficial DUK, dar acesta nu validează D700 ca XML de sine stătător (răspunde cu cod de eroare -5 pe toate versiunile testate) — D700 fiind, în fapt, o declarație de tip SmartPDF, nu XML standalone ca alte formulare (ex. D230). În absența unei căi de validare confirmate și a mapării complete operație → câmpuri din instrucțiunile oficiale ANAF, generarea D700 rămâne neconstruită în aplicație; înregistrarea sau modificarea vectorului fiscal se face, la acest moment, direct prin SPV sau la ghișeu.
+La data acestui ghid, iConta.eu **nu generează și nu depune declarația D700**. Din nota internă de dezvoltare a proiectului () rezultă că structura declarației a fost recuperată din validatorul oficial DUK, dar acesta nu validează D700 ca XML de sine stătător (răspunde cu cod de eroare -5 pe toate versiunile testate) — D700 fiind, în fapt, o declarație de tip SmartPDF, nu XML standalone ca alte formulare (ex. D230). În absența unei căi de validare confirmate și a mapării complete operație → câmpuri din instrucțiunile oficiale ANAF, generarea D700 rămâne neconstruită în aplicație; înregistrarea sau modificarea vectorului fiscal se face, la acest moment, direct prin SPV sau la ghișeu.
 
 [iConta.eu](/)

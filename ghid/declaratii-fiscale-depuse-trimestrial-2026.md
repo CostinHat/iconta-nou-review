@@ -14,19 +14,19 @@ O singură declarație e trimestrială necondiționat: D100, impozitul pe venitu
 
 ::: ghid-temei
 „Calculul și plata impozitului pe veniturile microîntreprinderilor se efectuează trimestrial, până la data de 25 inclusiv a lunii următoare trimestrului pentru care se calculează impozitul."
-— Codul fiscal, art. 56 alin. (1) — D100 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 56 alin. (1) — D100 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri... care nu a depășit plafonul de 100.000 euro... cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri."
-— Codul fiscal, art. 322 alin. (2) — condiția pentru decontul de TVA trimestrial, care determină și D300 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 322 alin. (2) — condiția pentru decontul de TVA trimestrial, care determină și D300 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „...la tip plătitor se înscrie perioada fiscală declarată pentru depunerea decontului de taxă pe valoarea adăugată (formularul 300), prevăzută la art. 322 din Codul fiscal, respectiv L - luna, T - trimestrul, S - semestrul, A - anul."
-— OPANAF 2194/2025, instrucțiuni de completare, Secțiunea 1 lit. a) — D394 urmează periodicitatea decontului de TVA (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, instrucțiuni de completare, Secțiunea 1 lit. a) — D394 urmează periodicitatea decontului de TVA (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 
 „Contribuabilii/Plătitorii transmit Declarația informativă D406 lunar sau trimestrial, urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată (TVA). Contribuabilii care au ca perioadă fiscală aplicabilă pentru taxa pe valoarea adăugată semestrul sau anul transmit Declarația informativă D406 trimestrial."
-— OPANAF 1783/2021, Anexa 4, pct. 2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
 „Contribuabilii care nu sunt înregistrați în scopuri de TVA transmit Declarația informativă D406 trimestrial."
-— OPANAF 1783/2021, Anexa 4, pct. 3 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 3 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Descompus pe declarație:

@@ -14,7 +14,7 @@ Când o firmă decide să distribuie asociaților rezerve constituite anterior (
 
 ::: ghid-temei
 „Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv."
-— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă un tratament în două trepte:

@@ -16,12 +16,12 @@ Așa se închide o „gaură" în care nimeni nu impozitează venitul. România 
 
 ::: ghid-temei
 „În cazul în care una sau mai multe entități nerezidente asociate care dețin în total o participare directă sau indirectă de minimum 50% privind drepturile de vot, capitalul sau cota de profit într-o entitate hibridă înregistrată sau stabilită în România, sunt situate într-o jurisdicție sau în jurisdicții care tratează respectiva entitate hibridă ca pe un contribuabil, entitatea hibridă este considerată rezident fiscal în România și i se percepe impozit pe profit, potrivit prevederilor prezentului titlu, în măsura în care venitul entității hibride nu este impozitat într-un alt mod în temeiul legislației din oricare altă jurisdicție implicată."
-— Codul fiscal (Legea 227/2015), art. 40^7 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 40^7 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „entitate hibridă - orice entitate sau acord care este considerată/considerat ca fiind o entitate impozabilă în temeiul legislației existente dintr-o jurisdicție și ale cărei/cărui venituri sau cheltuieli sunt tratate ca venituri sau cheltuieli ale uneia sau mai multor altor persoane în temeiul legislației dintr-o altă jurisdicție;"
-— Codul fiscal (Legea 227/2015), art. 40^1 pct. 11 lit. e) subpct. (x) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 40^1 pct. 11 lit. e) subpct. (x) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe rând:

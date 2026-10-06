@@ -15,7 +15,7 @@ O firmă care își livrează propriile comenzi cu flotă proprie (curierat rapi
 ::: ghid-temei
 „Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate [...], în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice.
 [...] (3) Prevederile alin. (1) nu se aplică următoarelor categorii de vehicule rutiere motorizate: a) vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat; [...] f) vehiculele utilizate ca mărfuri în scop comercial."
-— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (1) și alin. (3) lit. a) și f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (1) și alin. (3) lit. a) și f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, pentru flota unei firme de livrări rapide:

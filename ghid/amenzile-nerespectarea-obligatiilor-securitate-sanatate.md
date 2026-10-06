@@ -16,15 +16,15 @@ Pentru contabil contează și ce urmează după proces-verbal. Amenda se poate p
 
 ::: ghid-temei
 „(2) Constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei încălcarea dispozițiilor art. 13 lit. b) , c) , p) și r) ."
-— Legea 319/2006, art. 39 alin. (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „Sancțiunile contravenționale prevăzute la art. 39 alin. (2)-(9) și la art. 40 se aplică angajatorilor."
-— Legea 319/2006, art. 41 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 41 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „b) dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Treptele de amendă din art. 39 și 40:

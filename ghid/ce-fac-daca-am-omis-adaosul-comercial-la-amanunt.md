@@ -20,7 +20,7 @@ La metoda global-valorică, adaosul comercial nu e un câmp separat pe care cont
 > vânzare al stocurilor**. Orice modificare a prețului de vânzare presupune recalcularea marjei
 > brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (8).
 
 > "Contul 378 «Diferențe de preț la mărfuri» [se ține pentru] evidența **adaosului comercial (marja
 > comerciantului)** aferent mărfurilor din unitățile comerciale. Contul 378 [...] este un **cont
@@ -30,7 +30,7 @@ La metoda global-valorică, adaosul comercial nu e un câmp separat pe care cont
 > ieșite din gestiune (371). Soldul contului reprezintă valoarea adaosului comercial aferent
 > mărfurilor existente în stoc la sfârșitul perioadei."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt` — funcțiunea contului 378
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320) — funcțiunea contului 378
 > (grupa 37 "Mărfuri").
 :::
 

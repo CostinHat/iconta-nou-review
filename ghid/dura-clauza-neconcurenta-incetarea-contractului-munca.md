@@ -16,12 +16,12 @@ Durata are deci un cost direct. Fiecare lună de neconcurență înseamnă înc�
 
 ::: ghid-temei
 „(1) Clauza de neconcurență își poate produce efectele pentru o perioadă de maximum 2 ani de la data încetării contractului individual de muncă.(2) Prevederile alin. (1) nu sunt aplicabile în cazurile în care încetarea contractului individual de muncă s-a produs de drept, cu excepția cazurilor prevăzute la art. 56 alin. (1) lit. c), e), f), g) și i), ori a intervenit din inițiativa angajatorului pentru motive care nu țin de persoana salariatului."
-— Codul muncii (Legea 53/2003), art. 22 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 22 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Indemnizația de neconcurență lunară datorată salariatului nu este de natură salarială, se negociază și este de cel puțin 50% din media veniturilor salariale brute ale salariatului din ultimele 6 luni anterioare datei încetării contractului individual de muncă sau, în cazul în care durata contractului individual de muncă a fost mai mică de 6 luni, din media veniturilor salariale lunare brute cuvenite acestuia pe durata contractului."
-— Codul muncii (Legea 53/2003), art. 21 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 21 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce trebuie reținut despre durată:

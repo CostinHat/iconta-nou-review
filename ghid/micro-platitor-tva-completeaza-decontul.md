@@ -15,7 +15,7 @@ O firmă poate fi, simultan, microîntreprindere (din perspectiva impozitului pe
 ::: ghid-temei
 „(1) Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă.
 (2) Decontul de taxă întocmit de persoanele înregistrate conform art. 316 va cuprinde suma taxei deductibile pentru care ia naștere dreptul de deducere în perioada fiscală de raportare și, după caz, suma taxei pentru care se exercită dreptul de deducere, [...] suma taxei colectate a cărei exigibilitate ia naștere în perioada fiscală de raportare [...], precum și alte informații prevăzute în modelul stabilit de Ministerul Finanțelor Publice."
-— Legea nr. 227/2015 privind Codul fiscal, art. 323 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 323 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Primul lucru de stabilit, înainte de completarea propriu-zisă a decontului, este **perioada fiscală** aplicabilă firmei — lunară sau trimestrială:
@@ -23,7 +23,7 @@ Primul lucru de stabilit, înainte de completarea propriu-zisă a decontului, es
 ::: ghid-temei
 „(1) Perioada fiscală este luna calendaristică.
 (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri [...] care nu a depășit plafonul de 100.000 euro [...], cu excepția situației în care persoana impozabilă a efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de bunuri."
-— Legea nr. 227/2015 privind Codul fiscal, art. 322 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 322 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru majoritatea microîntreprinderilor (care, prin definiție, au venituri sub echivalentul a 100.000 euro), perioada fiscală implicită pentru TVA este **trimestrul**, cu excepția cazului în care firma a făcut achiziții intracomunitare de bunuri — situație care poate schimba perioada fiscală în lună calendaristică, conform regulilor detaliate la art. 322 alin. (7).

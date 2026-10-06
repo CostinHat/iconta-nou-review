@@ -14,7 +14,7 @@ O dată de încetare a contractului introdusă greșit — prea devreme, la o pe
 
 ::: ghid-temei
 „Orice corecție a erorilor survenite în completarea Registrului se face la data la care angajatorul a luat cunoștință de acestea."
-— HG 295/2025 privind Registrul general de evidență a salariaților (REGES-ONLINE), art. 5 alin. (8) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025 privind Registrul general de evidență a salariaților (REGES-ONLINE), art. 5 alin. (8) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 - Legea distinge clar: data reală a încetării contractului e diferită de data la care angajatorul **corectează** o eroare — corecția se raportează la momentul în care eroarea a fost observată, nu se rescrie retroactiv ca și cum nu ar fi existat.

@@ -16,15 +16,15 @@ Consecința e că pragul se urmărește din timp. Depășirea lui aduce un impoz
 
 ::: ghid-temei
 „(6) Contribuabilii plătiți din străinătate de un angajator nerezident care își prelungesc perioada de ședere în România, precum și cei care, prin prezențe repetate în România, depășesc 183 de zile sau perioada prevăzută în convențiile de evitare a dublei impuneri datorează impozit din prima zi pentru veniturile realizate ca urmare a desfășurării activității în România."
-— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În acest caz, contribuabilul depune la organul fiscal competent declarații lunare de impunere, care vor cuprinde veniturile lunare realizate în perioada anterioară prelungirii șederii în România"
-— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 43 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Orice contribuabil prevăzut la alin. (1) care își prelungește perioada de ședere în România, peste perioada menționată în convenția de evitare a dublei impuneri, este obligat să declare și să plătească impozit pentru întreaga perioadă de desfășurare a activității în România, până la data de 25 inclusiv a lunii următoare împlinirii termenului prevăzut de respectiva convenție."
-— Codul fiscal (Legea 227/2015), art. 82 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 82 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

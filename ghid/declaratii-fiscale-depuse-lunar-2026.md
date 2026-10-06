@@ -14,22 +14,22 @@ Nu există un răspuns unic „aceste declarații se depun mereu lunar" — peri
 
 ::: ghid-temei
 „...sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate."
-— Codul fiscal, art. 147 alin. (1) — D112 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 147 alin. (1) — D112 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Perioada fiscală este luna calendaristică."
-— Codul fiscal, art. 322 alin. (1) — regula generală pentru decontul de TVA, D300 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 322 alin. (1) — regula generală pentru decontul de TVA, D300 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Decontul special de taxă [...] se depune până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea operațiunilor menționate la alin. (1). Decontul special de taxă trebuie depus numai pentru perioadele în care ia naștere exigibilitatea taxei."
-— Codul fiscal, art. 324 alin. (2) — D301, decontul special de TVA (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 324 alin. (2) — D301, decontul special de TVA (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele impozabile înregistrate în scopuri de TVA depun declarația recapitulativă numai pentru lunile calendaristice în care ia naștere exigibilitatea taxei..."
-— OPANAF 705/2020, anexa 2, pct. 1.2 — D390 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, anexa 2, pct. 1.2 — D390 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 
 „Declarația se depune la organul fiscal competent până în data de 30 inclusiv a lunii următoare încheierii perioadei de raportare, declarate pentru depunerea decontului (luna, trimestrul etc.)..."
-— OPANAF 2194/2025, pct. 2 — D394 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, pct. 2 — D394 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 
 „Declarația informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare..."
-— OPANAF 1783/2021, Anexa 4, pct. 1 — D406/SAF-T (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 1 — D406/SAF-T (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Descompus pe declarație:

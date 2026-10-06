@@ -14,11 +14,11 @@ Tot mai multe firme au un cont Revolut Business pe lângă (sau în locul) unui 
 
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea 82/1991 (Legea contabilității), art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „2. Documentele justificative trebuie să cuprindă următoarele elemente principale: denumirea documentului; denumirea/numele și prenumele și, după caz, sediul persoanei juridice/adresa persoanei fizice care întocmește documentul; numărul documentului și data întocmirii acestuia; menționarea părților care participă la efectuarea operațiunii economico-financiare (când este cazul); conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia; datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz; numele și prenumele, precum și semnăturile persoanelor care răspund de efectuarea operațiunii economico-financiare.
 4. Documentele care stau la baza înregistrărilor în contabilitate pot dobândi calitatea de document justificativ numai în condițiile în care furnizează toate informațiile prevăzute de normele legale în vigoare."
-— OMFP 2634/2015, Anexa 1 (Norme generale de întocmire și utilizare a documentelor financiar-contabile), pct. 2 și 4 (sursă: anaf_surse/omfp_2634_2015.txt)
+— OMFP 2634/2015, Anexa 1 (Norme generale de întocmire și utilizare a documentelor financiar-contabile), pct. 2 și 4 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din text rezultă principiul care răspunde de fapt la întrebare:

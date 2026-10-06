@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Regimul special pentru agențiile de turism. În sensul aplicării prezentului articol, prin agenție de turism se înțelege orice persoană care în nume propriu sau în calitate de agent intermediază, oferă informații sau se angajează să furnizeze persoanelor care călătoresc individual sau în grup servicii de călătorie, care includ cazarea la hotel, case de oaspeți, cămine, locuințe de vacanță și alte spații folosite pentru cazare, transportul aerian, terestru sau maritim, excursii organizate și alte servicii turistice. Agențiile de turism includ și touroperatorii."
-— Legea 227/2015 (Codul fiscal), art. 311 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 311 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă acest regim special, aplicabil din prima operațiune a firmei nou-înființate care intermediază servicii de călătorie:

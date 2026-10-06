@@ -16,11 +16,11 @@ Pentru a-și dovedi dreptul, fiecare asociat primește de la registrul comerțul
 
 ::: ghid-temei
 „Transmiterea către asociați/acționari a dreptului de proprietate asupra bunurilor rămase după plata creditorilor are loc la data radierii societății din registrul comerțului."
-— Legea societăților nr. 31/1990, art. 260 alin. (6^1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 260 alin. (6^1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Registrul comerțului va elibera fiecărui asociat/acționar un certificat constatator al dreptului de proprietate asupra activelor distribuite, în baza căruia asociatul/acționarul poate proceda la înscrierea bunurilor imobile în cartea funciară."
-— Legea societăților nr. 31/1990, art. 260 alin. (6^2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 260 alin. (6^2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Bunurile rămase din patrimoniul societății radiate din registrul comerțului, în condițiile prezentului articol, revin acționarilor/asociaților, în condițiile legii."
-— Legea societăților nr. 31/1990, art. 260 alin. (11) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 260 alin. (11) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

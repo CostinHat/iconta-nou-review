@@ -15,7 +15,7 @@ Dacă ați dedus TVA pe baza unei pro-rate provizorii greșite sau nu ați efect
 ::: ghid-temei
 „(12) Taxa de dedus pentru un an calendaristic se calculează definitiv prin înmulțirea sumei totale a taxei deductibile din anul calendaristic respectiv, prevăzută la alin. (5), cu pro rata definitivă prevăzută la alin. (8), determinată pentru anul respectiv. [...]
 (14) La sfârșitul anului, persoanele impozabile cu regim mixt trebuie să ajusteze taxa dedusă provizoriu [...] astfel: a) din taxa de dedus determinată definitiv, conform alin. (12), se scade taxa dedusă într-un an, determinată pe bază de pro rata provizorie; b) rezultatul diferenței de la lit. a), în plus sau în minus după caz, se înscrie în rândul de regularizări din decontul de taxă [...] aferent ultimei perioade fiscale a anului."
-— Cod fiscal, art. 300 alin. (12) și (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 300 alin. (12) și (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Refacerea corectă a calculului urmează pașii din articol:

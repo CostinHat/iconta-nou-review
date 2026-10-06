@@ -16,13 +16,13 @@ Separat de această regulă, există o restituire care nu depinde de buna sau re
 
 ::: ghid-temei
 „(3) Nu se vor putea distribui dividende decât din profituri determinate potrivit legii. (4) Dividendele plătite contrar dispozițiilor alin. (2) , (2^1) , (2^2) și (3) se restituie, dacă societatea dovedește că asociații au cunoscut neregularitatea distribuirii sau, în împrejurările existente, trebuia să o cunoască."
-— Legea 31/1990, art. 67 alin. (3)-(4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (3)-(4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(5) Dreptul la acțiunea de restituire a dividendelor, plătite contrar prevederilor alin. (2) și (3) , se prescrie în termen de 3 ani de la data distribuirii lor."
-— Legea 31/1990, art. 67 alin. (5) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (5) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „În cazul în care asociații sau acționarii datorează restituiri de dividende, în urma regularizării operate în situațiile financiare anuale, acestea se achită societății în termen de 60 de zile de la data aprobării situațiilor financiare anuale. În caz contrar, asociații sau acționarii datorează, după acest termen, dobândă penalizatoare calculată conform art. 3 din Ordonanța Guvernului nr. 13/2011"
-— Legea 31/1990, art. 67 alin. (2^2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (2^2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

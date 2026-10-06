@@ -14,7 +14,7 @@ Impozitul pe dividende plătite unei persoane fizice rezidente este final, se re
 
 ::: ghid-temei
 „Veniturile sub formă de dividende, inclusiv câştigul obţinut ca urmare a deţinerii de titluri de participare definite de legislaţia în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligaţia calculării şi reţinerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor/sumelor reprezentând câştigul obţinut ca urmare a deţinerii de titluri de participare de către acţionari/asociaţi/investitori. Termenul de virare a impozitului este până la data de 25 inclusiv a lunii următoare celei în care se face plata."
-— Legea nr. 227/2015 (Codul fiscal), art. 97 alin. (7), astfel cum a fost modificat prin Legea nr. 141/2025, aplicabil dividendelor distribuite începând cu 1 ianuarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 97 alin. (7), astfel cum a fost modificat prin Legea nr. 141/2025, aplicabil dividendelor distribuite începând cu 1 ianuarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru o distribuire către o persoană fizică rezidentă, pașii legali sunt:
@@ -32,6 +32,6 @@ Pentru o distribuire către o persoană fizică rezidentă, pașii legali sunt:
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu (`core/d205.py`) calculează impozitul pe dividende plătit pe fiecare asociat, aplicând cota corespunzătoare **datei distribuirii** dividendului (nu datei plății), potrivit regulii tranzitorii din Legea 141/2025 pentru dividendele interimare distribuite în 2025 dar plătite ulterior. Aplicația distinge explicit între dividendul distribuit (creditul contului 457) și dividendul efectiv plătit (debitul contului 457), atribuind plățile pe distribuiri în ordine cronologică (FIFO), pentru a calcula corect impozitul atunci când cota s-a schimbat între cele două momente. Declarația D205 este generată direct din aceste înregistrări, fără reintroducere manuală a datelor.
+Generatorul D205 din iConta.eu calculează impozitul pe dividende plătit pe fiecare asociat, aplicând cota corespunzătoare **datei distribuirii** dividendului (nu datei plății), potrivit regulii tranzitorii din Legea 141/2025 pentru dividendele interimare distribuite în 2025 dar plătite ulterior. Aplicația distinge explicit între dividendul distribuit (creditul contului 457) și dividendul efectiv plătit (debitul contului 457), atribuind plățile pe distribuiri în ordine cronologică (FIFO), pentru a calcula corect impozitul atunci când cota s-a schimbat între cele două momente. Declarația D205 este generată direct din aceste înregistrări, fără reintroducere manuală a datelor.
 
 [iConta.eu](/)

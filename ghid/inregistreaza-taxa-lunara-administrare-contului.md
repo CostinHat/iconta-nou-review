@@ -14,7 +14,7 @@ Comisionul lunar perceput de bancă pentru administrarea contului curent nu se a
 
 ::: ghid-temei
 „Conturile curente la bănci se dezvoltă în analitic pe fiecare bancă. [...] – valoarea serviciilor bancare plătite (627)."
-— OMFP 1802/2014, pct. 302 alin. (4) coroborat cu funcțiunea contului 512, secțiunea privind înregistrările în creditul contului 512 „Conturi curente la bănci" (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 302 alin. (4) coroborat cu funcțiunea contului 512, secțiunea privind înregistrările în creditul contului 512 „Conturi curente la bănci" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă pentru înregistrarea practică a comisionului lunar:

@@ -16,10 +16,10 @@ Declarația nu scutește firma de transmiterea datelor fiscale. Schimbă doar fe
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1) , operatorii economici care utilizează aparate de marcat electronice fiscale instalate în zone nedeservite de rețele de comunicații electronice au obligația completării și transmiterii declarației prevăzute în anexa nr. 2 la prezentul ordin, cu respectarea următoarelor termene: [...] c) operatorii economici prevăzuți la alin. (1) lit. c) , în termen de două zile lucrătoare de la data instalării aparatului de marcat electronic fiscal."
-— OPANAF 435/2021, art. 3 alin. (2) lit. c) (sursă: anaf_surse/ordin_435_2021.html)
+— OPANAF 435/2021, art. 3 alin. (2) lit. c) (sursă: [OPANAF nr. 435/2021 privind procedura de conectare a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/240150))
 
 „Operatorii economici care depun declarația prevăzută la alin. (2) își vor îndeplini obligațiile declarative privind datele fiscale înregistrate de aparatele de marcat electronice fiscale, cu respectarea prevederilor [...]"
-— OPANAF 435/2021, art. 3 alin. (5) (sursă: anaf_surse/ordin_435_2021.html)
+— OPANAF 435/2021, art. 3 alin. (5) (sursă: [OPANAF nr. 435/2021 privind procedura de conectare a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/240150))
 :::
 
 Ce conține declarația și cum se depune:
@@ -34,7 +34,7 @@ Punctul de lucru fără internet are și o consecință la punerea în funcțiun
 
 ::: ghid-temei
 „Procedura prevăzută la alin. (1) se efectuează la sediul distribuitorului/unității de service acreditată, pentru aparatele de marcat electronice fiscale utilizate în puncte de lucru care nu dispun de niciun mijloc de conexiune la internet, la solicitarea utilizatorului exprimată prin „Declarația pe propria răspundere“, prevăzută în anexa nr. 3A."
-— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (2) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (2) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 Declarația 3A rămâne în arhiva distribuitorului sau a unității de service (pct. 4 alin. (3)). Declarația din anexa 2 la OPANAF 435/2021 o depune însă firma, la ANAF. Sunt două documente diferite, cu destinatari diferiți.

@@ -14,7 +14,7 @@ Când furnizorul dintr-un alt stat membru nu are cod valabil de TVA pentru că a
 
 ::: ghid-temei
 „Sunt, de asemenea, operațiuni impozabile și următoarele operațiuni efectuate cu plată, pentru care locul este considerat a fi în România [...]: a) o achiziție intracomunitară de bunuri, altele decât mijloace de transport noi sau produse accizabile, efectuată de o persoană impozabilă [...], care urmează unei livrări intracomunitare efectuate în afara României de către o persoană impozabilă ce acționează ca atare și care nu este considerată întreprindere mică în statul membru în care are loc livrarea [...]."
-— Legea 227/2015 (Codul fiscal), art. 268 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 268 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret din formulare:
@@ -31,6 +31,6 @@ Ce rezultă concret din formulare:
 
 ## Ce face iConta.eu
 
-iConta.eu clasifică partenerii de achiziție intracomunitară după codul de TVA comunicat, distingând între „RO_TVA", „NEINREG" și „STRAIN" în motorul de reconciliere D394 (`core/d394_reconciliere.py`). Nu am identificat însă o verificare automată care să determine, pentru un furnizor UE fără cod de TVA, dacă absența codului se datorează statutului de întreprindere mică în statul lui de origine (condiția din art. 268 alin. 3 lit. a) — această distincție, esențială pentru tratamentul corect al operațiunii, rămâne o verificare pe care contabilul o face manual, la nivelul fiecărei tranzacții.
+iConta.eu clasifică partenerii de achiziție intracomunitară după codul de TVA comunicat, distingând între „RO_TVA", „NEINREG" și „STRAIN" în motorul de reconciliere D394. Nu am identificat însă o verificare automată care să determine, pentru un furnizor UE fără cod de TVA, dacă absența codului se datorează statutului de întreprindere mică în statul lui de origine (condiția din art. 268 alin. 3 lit. a) — această distincție, esențială pentru tratamentul corect al operațiunii, rămâne o verificare pe care contabilul o face manual, la nivelul fiecărei tranzacții.
 
 [iConta.eu](/)

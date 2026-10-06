@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „4. În prezentul catalog pentru fiecare mijloc fix nou achiziționat se utilizează sistemul unor plaje de ani cuprinse între o valoare minima și una maxima, existând astfel posibilitatea alegerii duratei normale de funcționare cuprinsa între aceste limite. Astfel stabilita, durata normala de funcționare a mijlocului fix rămâne neschimbata până la recuperarea integrală a valorii de intrare a acestuia sau scoaterea sa din funcțiune."
-— HG nr. 2139/2004, Anexă, Cap. I pct. 4 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2139/2004, Anexă, Cap. I pct. 4 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Din text rezultă un răspuns în două părți, nu unul singur:
@@ -32,6 +32,6 @@ Din text rezultă un răspuns în două părți, nu unul singur:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/d406_active.py` calculează amortizarea (liniară sau degresivă) pe baza duratei normale de funcționare introduse pentru fiecare mijloc fix și tratează separat cazul reevaluării, care „taie" durata în etape pe baza duratei rămase reestimate de evaluator (cu temei OMFP 1802/2014). Aplicația **nu validează automat** dacă durata introdusă se încadrează în plaja minimă-maximă din Catalogul HG 2139/2004 pentru categoria respectivă de mijloc fix — alegerea duratei, la punerea în funcțiune, rămâne responsabilitatea contabilului.
+Verificat în cod: Aplicația calculează amortizarea (liniară sau degresivă) pe baza duratei normale de funcționare introduse pentru fiecare mijloc fix și tratează separat cazul reevaluării, care „taie" durata în etape pe baza duratei rămase reestimate de evaluator (cu temei OMFP 1802/2014). Aplicația **nu validează automat** dacă durata introdusă se încadrează în plaja minimă-maximă din Catalogul HG 2139/2004 pentru categoria respectivă de mijloc fix — alegerea duratei, la punerea în funcțiune, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Declarația 101 (impozitul pe profit) nu se completează direct din balanța con
 
 ::: ghid-temei
 „(7) În scopul determinării rezultatului fiscal, contribuabilii sunt obligați să evidențieze în registrul de evidență fiscală veniturile impozabile înregistrate într-un an fiscal, potrivit alin. (1), precum și cheltuielile efectuate în scopul desfășurării activității economice, în același an fiscal, inclusiv cele reglementate prin acte normative în vigoare, potrivit art. 25."
-— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă acest temei pentru verificarea D101:
@@ -31,6 +31,6 @@ Ce înseamnă acest temei pentru verificarea D101:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/d101_reconciliere.py` recalculează independent, direct din balanța contabilă (`inregistrari_linii`), baza contabilă a rezultatului (veniturile și cheltuielile de exploatare și financiare) și o confruntă cu ce a produs generatorul declarației D101, semnalând orice divergență — conform docstringului modulului, acest mecanism acoperă baza **contabilă**, nu ajustările fiscale ulterioare (deduceri, cheltuieli nedeductibile), care rămân intrări manuale ale contabilului; aplicația nu are, la acest moment, un „registru de evidență fiscală" separat, generat automat, potrivit art. 19 alin. (7).
+Verificat în cod: Aplicația recalculează independent, direct din balanța contabilă (`inregistrari_linii`), baza contabilă a rezultatului (veniturile și cheltuielile de exploatare și financiare) și o confruntă cu ce a produs generatorul declarației D101, semnalând orice divergență — conform docstringului modulului, acest mecanism acoperă baza **contabilă**, nu ajustările fiscale ulterioare (deduceri, cheltuieli nedeductibile), care rămân intrări manuale ale contabilului; aplicația nu are, la acest moment, un „registru de evidență fiscală" separat, generat automat, potrivit art. 19 alin. (7).
 
 [iConta.eu](/)

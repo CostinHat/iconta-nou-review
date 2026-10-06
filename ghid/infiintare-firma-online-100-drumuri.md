@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori sau, dacă este cazul, primii membri ai directoratului și ai consiliului de supraveghere ori un împuternicit al acestora vor cere înmatricularea societății în registrul comerțului în a cărui rază teritorială își va avea sediul societatea. Ei răspund în mod solidar pentru orice prejudiciu pe care îl cauzează prin neîndeplinirea acestei obligații."
-— Legea 31/1990 (societăților), art. 36 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (societăților), art. 36 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Documentele care însoțesc cererea au fost simplificate succesiv, ultima modificare majoră venind prin Legea 265/2022 privind registrul comerțului, care a eliminat sau înlocuit o parte din anexele clasice ale dosarului (art. 36 alin. (2), unde mai multe litere au fost abrogate expres de această lege). Legea 265/2022 e actul care a modernizat și digitalizat procedura la Registrul Comerțului, inclusiv posibilitatea depunerii integral electronice a dosarului de înființare, dar textul ei detaliat (procedura portalului online, semnătura electronică, plata taxelor online) nu se regăsește în sursele verificate pentru acest ghid — pentru procedura pas cu pas curentă, verifică direct instrucțiunile publicate de ONRC.

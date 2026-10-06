@@ -27,12 +27,12 @@ Un restaurant care aplică metoda global-valorică înregistrează vânzările �
 > cu valoarea bunurilor ieșite din gestiune la preț de înregistrare, iar suma rezultată se
 > înregistrează în conturile corespunzătoare în care au fost înregistrate bunurile ieșite."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (4) și nota *2).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (4) și nota *2).
 
 > "(5) Inventarul intermitent **nu se utilizează în comerțul cu amănuntul** în situația în care se
 > aplică metoda global-valorică."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 291 alin. (5).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 291 alin. (5).
 :::
 
 ## Ce se întâmplă zilnic și ce se întâmplă lunar

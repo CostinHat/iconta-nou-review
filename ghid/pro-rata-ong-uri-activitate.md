@@ -14,7 +14,7 @@ Un ONG cu activitate economică nu ține de regulă conturi complet separate pen
 
 ::: ghid-temei
 „e) determinarea valorii deductibile a cheltuielilor corespunzătoare veniturilor impozabile de la lit. d), avându-se în vedere următoarele: (i) stabilirea cheltuielilor corespunzătoare veniturilor impozabile de la lit. d) prin scăderea din totalul cheltuielilor a celor aferente activității nonprofit și a unei părți din cheltuielile comune, determinată prin utilizarea unei metode raționale de alocare, potrivit reglementărilor contabile aplicabile; (ii) ajustarea cheltuielilor determinate conform regulilor de la pct. i), luându-se în considerare prevederile art. 25 din Codul fiscal;"
-— HG 1/2016, norma la art. 15 pct. 3 lit. e) din Codul fiscal (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norma la art. 15 pct. 3 lit. e) din Codul fiscal (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 - Cheltuielile direct identificabile pe fiecare activitate (statutară vs. economică) se alocă direct — nu se pune problema unei „pro-rata" pentru ele.
@@ -32,6 +32,6 @@ Atenție: acest calcul nu trebuie confundat cu **pro-rata de TVA** (art. 300 din
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) tratează exclusiv **veniturile**: clasificarea veniturilor fără scop patrimonial pe conturile din grupa 73 și calculul plafonului de scutire de la art. 15 alin. (3). **Aplicația nu are nicio funcție de alocare a cheltuielilor comune** între activitatea fără scop patrimonial și cea economică — stabilirea metodei raționale de alocare și aplicarea ei rămân integral în sarcina contabilului, în afara acestei funcționalități.
+Funcționalitatea de contabilitate ONG din iConta.eu tratează exclusiv **veniturile**: clasificarea veniturilor fără scop patrimonial pe conturile din grupa 73 și calculul plafonului de scutire de la art. 15 alin. (3). **Aplicația nu are nicio funcție de alocare a cheltuielilor comune** între activitatea fără scop patrimonial și cea economică — stabilirea metodei raționale de alocare și aplicarea ei rămân integral în sarcina contabilului, în afara acestei funcționalități.
 
 [iConta.eu](/)

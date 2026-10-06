@@ -14,7 +14,7 @@ Spre deosebire de restul secțiunilor SAF-T (tranzacții, jurnale, parteneri), c
 
 ::: ghid-temei
 „9. Informaţiile privind «stocurile de produse» şi «producţie în curs» sunt transmise pe baza unei solicitări specifice din partea organelor fiscale centrale. În funcţie de perioada pentru care se solicită furnizarea informaţiilor privind stocurile prin fişierul standard de control fiscal (SAF-T), contribuabilii furnizează una sau mai multe declaraţii informative cuprinzând subsecţiunile din fişierul SAF-T relevante pentru «Stocuri», separate pentru fiecare dintre lunile/trimestrele calendaristice cuprinse în perioada pentru care a fost trimisă solicitarea din partea organelor fiscale centrale."
-— OPANAF 1783/2021, Anexa 4, pct. 9 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 4, pct. 9 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Consecința tehnică a acestui text: fișierul de Stocuri nu e „o secțiune în plus" adăugată la fișierul lunar, ci o **declarație informativă separată**, generată câte una pentru fiecare perioadă calendaristică din intervalul solicitat — dacă ANAF cere stocurile pe ultimele trei luni, contribuabilul depune (cel puțin) trei fișiere distincte, nu unul singur cu toate cele trei luni cumulate.

@@ -16,13 +16,13 @@ Pentru contabil, termenul de plată contează la documente: ce dată are plata, 
 
 ::: ghid-temei
 „e) să plătească zilierului remunerația cuvenită, prin orice mijloc de plată admis de lege, la sfârșitul fiecărei zile; plata remunerației se poate realiza cel mai târziu la sfârșitul săptămânii sau al perioadei de desfășurare a activității, respectiv lunar, în situația în care perioada de desfășurare a activității depășește 30 de zile, numai cu acordul exprimat în scris de către zilier și beneficiar sau un împuternicit al acestuia;"
-— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „(2) Cuantumul remunerației brute orare stabilite de părți nu poate fi mai mic decât valoarea/oră a salariului de bază minim brut pe țară garantat în plată și se acordă la sfârșitul fiecărei zile de lucru sau la sfârșitul săptămânii."
-— Legea 52/2011, art. 11 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 11 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „(3) Dovada plății remunerației se face prin semnătura zilierului în Registru."
-— Legea 52/2011, art. 11 alin. (3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 11 alin. (3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Cum se citesc cele două articole împreună:

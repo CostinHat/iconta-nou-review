@@ -14,17 +14,17 @@ Cazierul fiscal apare, ca noțiune, în Codul de procedură fiscală — de exem
 
 ::: ghid-temei
 „administratorii, în cazul societăților pe acțiuni sau în comandită pe acțiuni, și asociații majoritari sau, după caz, asociatul unic și/sau administratorii, în cazul celorlalte societăți, altele decât societățile pe acțiuni sau în comandită pe acțiuni, nu au fapte înscrise în cazierul fiscal;"
-— Legea 207/2015 (Codul de procedură fiscală), art. 206 alin. (3) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 206 alin. (3) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Cererea de eliberare a certificatului de cazier fiscal în cazul contribuabililor persoane juridice sau entități fără personalitate juridică se depune la orice organ fiscal competent în eliberarea certificatului de cazier fiscal, indiferent de domiciliul contribuabilului, de către reprezentantul legal al acestora sau prin reprezentant pe bază de mandat întocmit conform legii."
-— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (2) (sursă: anaf_surse/og_39_2015.html)
+— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (2) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „Certificatul de cazier fiscal este valabil 30 de zile de la data emiterii și numai în scopul în care a fost eliberat."
-— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (7) (sursă: anaf_surse/og_39_2015.html)
+— Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, art. 9 alin. (7) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Citatul din Codul de procedură fiscală arată doar că noțiunea de „cazier fiscal" e folosită drept criteriu (aici, pentru încadrarea unui debitor cu risc fiscal mic, la o cerere de eșalonare la plată). Eliberarea certificatului ține de OG 39/2015:

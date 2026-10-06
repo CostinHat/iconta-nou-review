@@ -15,7 +15,7 @@ Circulă ideea că firmele ar avea voie să țină în casierie cel mult o anumi
 ::: ghid-temei
 „Articolul 3 (1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi; [...]
 Articolul 10 Operațiunile de încasări și plăți în numerar între persoanele fizice [...] se pot efectua în limita unui plafon zilnic de 50.000 lei/tranzacție."
-— Legea nr. 70/2015, art. 3 alin. (1) lit. a) și c), art. 10 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. a) și c), art. 10 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Din text rezultă exact ce este și ce nu este reglementat:

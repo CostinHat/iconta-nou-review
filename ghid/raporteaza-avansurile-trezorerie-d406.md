@@ -14,7 +14,7 @@ O întrebare firească pentru cei care pregătesc pentru prima dată fișierul S
 
 ::: ghid-temei
 „GeneralLedgerEntries (Înregistrări contabile - Registrul-jurnal): Conține informații despre înregistrările contabile efectuate în perioada de raportare așa cum sunt înregistrate în sistemul contabil al contribuabilului/plătitor. Se vor raporta înregistrările contabile, la nivel de tranzacție, incluzând conturile contabile analitice stabilite conform planului de conturi românesc (AccountID)."
-— OPANAF nr. 1.783/2021, Anexa 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă de aici pentru avansurile de trezorerie:
@@ -32,6 +32,6 @@ Ce rezultă de aici pentru avansurile de trezorerie:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de generare D406 din iConta.eu (`core/d406.py`) construiește fișierul din notele contabile existente ale firmei, la nivel de tranzacție — avansurile de trezorerie (cont 542) sunt incluse automat, ca orice altă mișcare contabilă, fără o mapare specială separată de restul înregistrărilor.
+La data acestui ghid, motorul de generare D406 din iConta.eu construiește fișierul din notele contabile existente ale firmei, la nivel de tranzacție — avansurile de trezorerie (cont 542) sunt incluse automat, ca orice altă mișcare contabilă, fără o mapare specială separată de restul înregistrărilor.
 
 [iConta.eu](/)

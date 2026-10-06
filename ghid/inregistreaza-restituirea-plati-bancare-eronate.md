@@ -14,7 +14,7 @@ O plată bancară efectuată din greșeală — către un partener greșit, cu o
 
 ::: ghid-temei
 „(1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. [...] (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»)."
-— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, pct. 65 alin. (1)-(2) și pct. 67 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, pct. 65 alin. (1)-(2) și pct. 67 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o plată bancară eronată, regimul depinde de momentul descoperirii și restituirii:

@@ -16,12 +16,12 @@ Taxa pentru autorizația de construire se plătește înainte de emiterea actulu
 
 ::: ghid-temei
 „d) În cazul în care beneficiarul autorizației de construire nu efectuează începerea lucrărilor pentru care autorizația de construire s-a emis în termenul stabilit și nu solicită prelungirea acesteia, organul fiscal local are obligația de a restitui suma reprezentând taxă pentru eliberarea autorizației de construire. În acest scop, beneficiarul are obligația de a depune o cerere de restituire a taxei pentru eliberarea autorizației de construire, în termen de 30 de zile de la data expirării autorizației de construire, la autoritatea publică locală competentă. Compartimentul de specialitate al autorității administrației publice locale are obligația de a constata neînceperea lucrărilor în baza unui proces-verbal de constatare."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 141 lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 141 lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „taxa datorată se stabilește pe baza valorii lucrărilor de construcție declarate de persoana care solicită autorizația și se plătește înainte de emiterea acesteia;"
-— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (7) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru restituire trebuie îndeplinite trei condiții, toate:

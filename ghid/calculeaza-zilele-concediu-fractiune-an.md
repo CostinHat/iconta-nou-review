@@ -14,7 +14,7 @@ Un salariat angajat în cursul anului, sau al cărui contract încetează înain
 
 ::: ghid-temei
 „Durata minima a concediului de odihnă anual este de 20 de zile lucrătoare. [...] Durata efectivă a concediului de odihnă anual se stabileşte prin contractul colectiv de muncă aplicabil, este prevăzută în contractul individual de muncă şi se acordă proporţional cu activitatea prestată într-un an calendaristic. [...] Durata concediului de odihnă anual pentru salariaţii cu contract individual de muncă cu timp parţial se acordă proporţional cu timpul efectiv lucrat."
-— Legea 53/2003 (Codul muncii), art. 140 alin. (1), (2) și (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 140 alin. (1), (2) și (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Practic, legea prevede două proporționalizări diferite, care se pot combina:

@@ -16,7 +16,7 @@ poarta: v1
 „Articolul 51
 Cotele de impozitare
 (1) Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Legea 227/2015, art. 51 alin. (1), modificat de OUG 89/2025, art. I pct. 4, în vigoare de la 01.01.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 51 alin. (1), modificat de OUG 89/2025, art. I pct. 4, în vigoare de la 01.01.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce s-a schimbat, exact, de la 1 ianuarie 2026:

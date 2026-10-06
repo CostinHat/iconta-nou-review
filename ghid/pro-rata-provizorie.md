@@ -14,7 +14,7 @@ O firmă cu regim mixt de TVA (are atât operațiuni cu drept de deducere, cât 
 
 ::: ghid-temei
 „Pro rata aplicabilă provizoriu pentru un an este pro rata definitivă, prevăzută la alin. (8), determinată pentru anul precedent, sau pro rata estimată pe baza operațiunilor prevăzute a fi realizate în anul calendaristic curent, în cazul persoanelor impozabile pentru care ponderea operațiunilor cu drept de deducere în totalul operațiunilor se modifică în anul curent față de anul precedent. Persoanele impozabile trebuie să comunice organului fiscal competent, la începutul fiecărui an fiscal, cel mai târziu până la data de 25 ianuarie inclusiv, pro rata provizorie care va fi aplicată în anul respectiv, precum și modul de determinare a acesteia."
-— Legea nr. 227/2015 privind Codul fiscal, art. 300 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 300 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pro-rata provizorie e cea folosită efectiv, lunar sau trimestrial, pe parcursul anului fiscal curent.

@@ -14,7 +14,7 @@ Da. Legea societăților permite oricărei persoane fizice să se asocieze pentr
 
 ::: ghid-temei
 „În vederea desfășurării de activități cu scop lucrativ, persoanele fizice și persoanele juridice se pot asocia și pot constitui societăți cu personalitate juridică, cu respectarea dispozițiilor prezentei legi."
-— Legea nr. 31/1990, art. 1 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 1 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din text și din contextul legii:

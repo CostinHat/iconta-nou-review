@@ -14,7 +14,7 @@ Pentru dividendele distribuite persoanelor fizice începând cu 1 ianuarie 2026,
 
 ::: ghid-temei
 "(7) Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final."
-— Codul fiscal, art. 97 alin. (7) (`anaf_surse/cod_fiscal_227_2015_consolidat.txt:9470-9474`), modificat de Legea 141/2025 art. II pct. 5, aplicabil dividendelor distribuite începând cu 1 ianuarie 2026 (Legea 141/2025 art. VII lit. c, `anaf_surse/legea_141_2025.txt:653-661`)
+— Codul fiscal, art. 97 alin. (7) ([Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)), modificat de Legea 141/2025 art. II pct. 5, aplicabil dividendelor distribuite începând cu 1 ianuarie 2026 (Legea 141/2025 art. VII lit. c, [Legea nr. 141/2025 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/300022))
 :::
 
 Ceea ce contează pentru determinarea cotei aplicabile este **data distribuirii** dividendului (nu data plății și nu 31 decembrie al anului declarației). Istoricul cotelor, pentru context:
@@ -32,6 +32,6 @@ Cea mai frecventă eroare apare când un dividend a fost distribuit într-un an,
 
 ## Ce face iConta.eu
 
-Cota aplicabilă este ținută într-un registru central (`core/common.py`, cheia "impozit_dividend"), sensibil la perioadă, aplicat după data distribuirii. Pentru cazul dividendului distribuit într-un an și plătit eșalonat sau în anul următor, iConta folosește un algoritm dedicat (`core/dividende_curs.py`) care potrivește FIFO fiecare tranșă de plată cu distribuirea corespunzătoare și aplică cota de la data acelei distribuiri, nu o cotă unică la finalul anului — comportament confirmat prin teste dedicate (de exemplu un dividend distribuit în decembrie 2025 la cota 10%, plătit în ianuarie 2026, este impozitat corect la 10%, nu la 16%).
+Cota aplicabilă este ținută într-un registru central (cheia "impozit_dividend"), sensibil la perioadă, aplicat după data distribuirii. Pentru cazul dividendului distribuit într-un an și plătit eșalonat sau în anul următor, iConta folosește un algoritm dedicat care potrivește FIFO fiecare tranșă de plată cu distribuirea corespunzătoare și aplică cota de la data acelei distribuiri, nu o cotă unică la finalul anului — comportament confirmat prin teste dedicate (de exemplu un dividend distribuit în decembrie 2025 la cota 10%, plătit în ianuarie 2026, este impozitat corect la 10%, nu la 16%).
 
 [iConta.eu](/)

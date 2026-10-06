@@ -14,7 +14,7 @@ Nota de recepție și constatare de diferențe (NIR) rămâne documentul de baz�
 
 ::: ghid-temei
 „NOTĂ DE RECEPȚIE ȘI CONSTATARE DE DIFERENȚE (Cod 14-3-1A) [...] Servește ca: document pentru recepția bunurilor aprovizionate; document justificativ pentru încărcare în gestiune; document justificativ de înregistrare în contabilitate."
-— OMFP 2634/2015, anexa 2 (Norme specifice de întocmire și utilizare a documentelor financiar-contabile) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2 (Norme specifice de întocmire și utilizare a documentelor financiar-contabile) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce presupune, concret, NIR-ul la o achiziție intracomunitară:

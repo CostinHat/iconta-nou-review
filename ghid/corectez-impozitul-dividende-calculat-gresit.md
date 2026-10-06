@@ -14,7 +14,7 @@ Impozitul pe dividende afișat greșit în D205 are aproape întotdeauna cauza �
 
 ::: ghid-temei
 "[...] recalculează INDEPENDENT (SQL propriu, aceeași formulă) baza și impozitul per beneficiar din contul 457 și compară cu ce a produs generatorul; orice divergență blochează generarea (`ReconciliereD205`)."
-— descriere a modulului `core/d205_reconciliere.py`, verificată în sursă
+— descriere a modulului aplicația, verificată în sursă
 :::
 
 ## Ce se greșește în practică
@@ -23,6 +23,6 @@ Se încearcă adesea modificarea directă a sumei impozitului în ecranul declar
 
 ## Ce face iConta.eu
 
-Pentru beneficiarii preluați automat din contul 457, iConta rulează o verificare independentă (`core/d205_reconciliere.py`): baza și impozitul sunt recalculate separat, direct din notele contabile validate, și comparate cu rezultatul generatorului; orice diferență blochează generarea declarației, ceea ce înseamnă că o valoare corectă la nivel de bază de date nu poate produce automat o declarație greșită. Rezultă că singura cale corectă de corecție este verificarea și, dacă e cazul, corectarea notei contabile pe contul 457 (sau a cotei asociatului) și regenerarea D205. Pentru beneficiarii introduși manual (nu din contul 457), reconcilierea completă nu se aplică — se verifică doar consistența internă impozit = cotă × bază, deci corectitudinea datelor introduse manual rămâne în răspunderea contabilului. Important: dacă declarația a fost deja depusă la ANAF cu o valoare greșită, rețineți că iConta nu generează în acest moment declarație D205 rectificativă (vezi ghidul dedicat acestui subiect).
+Pentru beneficiarii preluați automat din contul 457, iConta rulează o verificare independentă: baza și impozitul sunt recalculate separat, direct din notele contabile validate, și comparate cu rezultatul generatorului; orice diferență blochează generarea declarației, ceea ce înseamnă că o valoare corectă la nivel de bază de date nu poate produce automat o declarație greșită. Rezultă că singura cale corectă de corecție este verificarea și, dacă e cazul, corectarea notei contabile pe contul 457 (sau a cotei asociatului) și regenerarea D205. Pentru beneficiarii introduși manual (nu din contul 457), reconcilierea completă nu se aplică — se verifică doar consistența internă impozit = cotă × bază, deci corectitudinea datelor introduse manual rămâne în răspunderea contabilului. Important: dacă declarația a fost deja depusă la ANAF cu o valoare greșită, rețineți că iConta nu generează în acest moment declarație D205 rectificativă (vezi ghidul dedicat acestui subiect).
 
 [iConta.eu](/)

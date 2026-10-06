@@ -14,7 +14,7 @@ Dacă ai primit dividende ca persoană fizică și firma ți-a reținut deja imp
 
 ::: ghid-temei
 „Veniturile sub formă de dividende, inclusiv câştigul obţinut ca urmare a deţinerii de titluri de participare definite de legislaţia în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligaţia calculării şi reţinerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința directă a caracterului „final" al impozitului:
@@ -31,6 +31,6 @@ Consecința directă a caracterului „final" al impozitului:
 
 ## Ce face iConta.eu
 
-Pentru firmă, iConta.eu generează Declarația D205 direct din evidența plăților de dividende (`core/d205.py`), pe fiecare asociat, cu impozitul calculat conform cotei aplicabile la data distribuirii. Declarația unică a persoanei fizice e o declarație separată, a contribuabilului: aplicația o poate genera (Declarații → D212), cu dividendele nete scrise de contabil pentru treapta CASS, dar nu o leagă automat de D205.
+Pentru firmă, iConta.eu generează Declarația D205 direct din evidența plăților de dividende, pe fiecare asociat, cu impozitul calculat conform cotei aplicabile la data distribuirii. Declarația unică a persoanei fizice e o declarație separată, a contribuabilului: aplicația o poate genera (Declarații → D212), cu dividendele nete scrise de contabil pentru treapta CASS, dar nu o leagă automat de D205.
 
 [iConta.eu](/)

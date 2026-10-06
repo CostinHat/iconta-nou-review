@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „214. - (1) Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator, iar în cazul leasingului operațional, de către locator/finanțator. (2) În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile și mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
-— OMFP 1802/2014, pct. 214 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 214 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „[...] pentru mijloacele de transport de persoane care au cel mult 9 scaune de pasageri, incluzând și scaunul șoferului, din categoria M1 [...] cheltuielile cu amortizarea sunt deductibile, pentru fiecare, în limita a 1.500 lei/lună."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (14) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (14) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din cele două texte:
@@ -34,6 +34,6 @@ Ce rezultă din cele două texte:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor dedicat leasingului financiar și operațional (`core/leasing.py`), care generează notele contabile pentru primirea bunului, ratele de leasing și valoarea reziduală, potrivit OMFP 1802/2014 pct. 212-217 — inclusiv separarea capitalului de dobândă și evidența extracontabilă a dobânzii (contul 8051). Aplicația **nu calculează însă automat** plafonul fiscal de 1.500 lei/lună pentru amortizarea autoturismelor M1, nici plafonul de 50% pentru cheltuielile de funcționare și TVA — verificarea acestor limite, la calculul impozitului pe profit, rămâne în sarcina contabilului.
+La data acestui ghid, iConta.eu are un motor dedicat leasingului financiar și operațional, care generează notele contabile pentru primirea bunului, ratele de leasing și valoarea reziduală, potrivit OMFP 1802/2014 pct. 212-217 — inclusiv separarea capitalului de dobândă și evidența extracontabilă a dobânzii (contul 8051). Aplicația **nu calculează însă automat** plafonul fiscal de 1.500 lei/lună pentru amortizarea autoturismelor M1, nici plafonul de 50% pentru cheltuielile de funcționare și TVA — verificarea acestor limite, la calculul impozitului pe profit, rămâne în sarcina contabilului.
 
 [iConta.eu](/)

@@ -30,6 +30,6 @@ Se caută în ecranul de declarații D100 o opțiune legată de facturarea cătr
 
 ## Ce face iConta.eu
 
-Emiterea facturilor electronice prin RO e-Factura — inclusiv către o autoritate contractantă, în relația B2G — se face prin modulul de facturare/e-Factura al aplicației, distinct de motorul D100 (`core/d100.py`). Verificat direct în cod: `core/d100.py` și `core/d710.py` nu conțin nicio referire la e-Factura, iar nomenclatorul D100 (OPANAF 587/2016) nu are nicio poziție legată de facturarea electronică. Cele două funcționalități rămân separate în aplicație, la fel ca în lege.
+Emiterea facturilor electronice prin RO e-Factura — inclusiv către o autoritate contractantă, în relația B2G — se face prin modulul de facturare/e-Factura al aplicației, distinct de motorul D100. Verificat direct în cod: Aplicația nu conțin nicio referire la e-Factura, iar nomenclatorul D100 (OPANAF 587/2016) nu are nicio poziție legată de facturarea electronică. Cele două funcționalități rămân separate în aplicație, la fel ca în lege.
 
 [iConta.eu](/)

@@ -33,6 +33,6 @@ Semaforul de conformare fiscală (F022) nu se conectează la SPV pentru a citi c
 
 ## Ce face iConta.eu
 
-Motorul F022 (`core/control_fiscal_api.py`) marchează roșu orice declarație pentru care termenul a trecut și nu există o confirmare de depunere înregistrată în aplicație — dar acea confirmare vine din marcarea manuală (cu indexul SPV al recipisei), nu dintr-o citire automată a SPV. Fluxul de validare al declarațiilor din iConta.eu (F019, „Coada de validare patru-ochi") duce fiecare declarație prin stări controlate — pregătită, aprobată sau respinsă cu motiv, apoi depusă, cu indexul de recipisă SPV înregistrat manual la acest ultim pas — dar aplicația nu interoghează SPV pentru a confirma independent depunerea. Pentru certitudinea absolută a ce a fost efectiv transmis la ANAF, verificarea directă în SPV rămâne pasul de referință.
+Motorul F022 marchează roșu orice declarație pentru care termenul a trecut și nu există o confirmare de depunere înregistrată în aplicație — dar acea confirmare vine din marcarea manuală (cu indexul SPV al recipisei), nu dintr-o citire automată a SPV. Fluxul de validare al declarațiilor din iConta.eu (F019, „Coada de validare patru-ochi") duce fiecare declarație prin stări controlate — pregătită, aprobată sau respinsă cu motiv, apoi depusă, cu indexul de recipisă SPV înregistrat manual la acest ultim pas — dar aplicația nu interoghează SPV pentru a confirma independent depunerea. Pentru certitudinea absolută a ce a fost efectiv transmis la ANAF, verificarea directă în SPV rămâne pasul de referință.
 
 [iConta.eu](/)

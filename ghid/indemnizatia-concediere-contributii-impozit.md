@@ -14,10 +14,10 @@ Sumele plătite unui salariat la încetarea contractului — cunoscute în pract
 
 ::: ghid-temei
 „(1) Baza lunară de calcul al contribuției de asigurări sociale, în cazul persoanelor fizice care realizează venituri din salarii sau asimilate salariilor, o reprezintă câștigul brut realizat din salarii și venituri asimilate salariilor, în țară și în alte state, [...] care include: [...] q) veniturile reprezentând plăți compensatorii suportate de angajator potrivit contractului colectiv sau individual de muncă."
-— Codul fiscal (Legea 227/2015), art. 139 alin. (1) lit. q) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 139 alin. (1) lit. q) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Baza lunară de calcul al contribuției de asigurări sociale de sănătate, în cazul persoanelor fizice care realizează venituri din salarii sau asimilate salariilor, în țară și în străinătate, [...] o reprezintă câștigul brut care include: [...] ș) veniturile reprezentând plăți compensatorii suportate de angajator potrivit contractului colectiv sau individual de muncă."
-— Codul fiscal (Legea 227/2015), art. 157 alin. (1) lit. ș) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 157 alin. (1) lit. ș) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Atenție la formularea exactă a textului: art. 139 alin. (1) și art. 157 alin. (1) **nu** sunt liste de venituri scutite — sunt liste de venituri care **intră** în baza lunară de calcul a CAS, respectiv a CASS. Plățile compensatorii suportate de angajator potrivit contractului colectiv sau individual de muncă apar explicit în ambele liste, la lit. q), respectiv lit. ș).

@@ -16,12 +16,12 @@ Da. Persoana fizică rezidentă într-un stat membru al Uniunii Europene sau al 
 
 ::: ghid-temei
 „Persoana fizică rezidentă într-unul din statele membre ale Uniunii Europene sau într-unul din statele Spațiului Economic European beneficiază de aceleași deduceri ca și persoanele fizice rezidente, la stabilirea bazei de calcul pentru veniturile impozabile obținute din România. Baza de calcul se determină după regulile proprii fiecărei categorii de venit, în funcție de natura acestuia, potrivit titlului IV."
-— Codul fiscal (Legea 227/2015), art. 128 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 128 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Deducerile prevăzute la alin. (1) se acordă în limita stabilită prin legislația română în vigoare pentru persoana fizică rezidentă, dacă persoana fizică rezidentă într-unul dintre statele membre ale Uniunii Europene sau într-unul dintre statele Spațiului Economic European prezintă documente justificative și dacă acestea nu sunt deduse în statul de rezidență al persoanei fizice."
-— Codul fiscal (Legea 227/2015), art. 128 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 128 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, una câte una:

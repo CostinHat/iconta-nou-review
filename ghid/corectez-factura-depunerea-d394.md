@@ -14,7 +14,7 @@ D394 nu are un formular separat de „rectificativă" în sensul în care îl ar
 
 ::: ghid-temei
 „persoana impozabilă constată existenţa unor omisiuni/erori... trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial. Nu vor face obiectul redepunerii declaraţiei facturile primite de persoana impozabilă în altă perioadă de raportare faţă de data emiterii acestora de către furnizori."
-— OPANAF 2194/2025 (care modifică Anexa 2 a OPANAF 3769/2015), Anexa 2 pct. 3 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025 (care modifică Anexa 2 a OPANAF 3769/2015), Anexa 2 pct. 3 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Două lucruri esențiale de reținut din text:
@@ -31,9 +31,9 @@ Două lucruri esențiale de reținut din text:
 
 ## Ce face iConta.eu
 
-D394 se generează în iConta.eu din aceeași tabelă de facturi (`facturi`/`factura_linii`) folosită și de restul aplicației, prin `core/d394.py` + `core/repo_d394.py`. Când o factură se corectează sau se adaugă ulterior depunerii inițiale, regenerarea D394 pentru acea perioadă produce automat **declarația completă**, cu toate operațiunile perioadei — exact forma cerută de lege pentru o redepunere (nu o declarație parțială), fiindcă generatorul nu are un mod „doar diferența".
+D394 se generează în iConta.eu din aceeași tabelă de facturi (`facturi`/`factura_linii`) folosită și de restul aplicației, prin aplicație. Când o factură se corectează sau se adaugă ulterior depunerii inițiale, regenerarea D394 pentru acea perioadă produce automat **declarația completă**, cu toate operațiunile perioadei — exact forma cerută de lege pentru o redepunere (nu o declarație parțială), fiindcă generatorul nu are un mod „doar diferența".
 
-Înainte ca fișierul regenerat să fie considerat gata de redepus, aplicația rulează aceleași două garduri ca la depunerea inițială: validarea cu **DUKIntegrator** (validatorul oficial ANAF, local) și **a doua cale de calcul independentă** (`core/d394_reconciliere.py`), care recalculează totalurile pe cotă direct din liniile brute și oprește generarea dacă diferă de rezultatul generatorului. Depunerea efectivă a declarației redepuse rămâne, ca și la depunerea inițială, manuală, prin portalul SPV — iConta nu are o funcție de transmitere automată la ANAF.
+Înainte ca fișierul regenerat să fie considerat gata de redepus, aplicația rulează aceleași două garduri ca la depunerea inițială: validarea cu **DUKIntegrator** (validatorul oficial ANAF, local) și **a doua cale de calcul independentă**, care recalculează totalurile pe cotă direct din liniile brute și oprește generarea dacă diferă de rezultatul generatorului. Depunerea efectivă a declarației redepuse rămâne, ca și la depunerea inițială, manuală, prin portalul SPV — iConta nu are o funcție de transmitere automată la ANAF.
 
 Aplicația **nu are** o funcționalitate care să aplice automat excepția facturilor primite cu întârziere (nu marchează sau exclude singură din redepunere o factură primită într-o altă perioadă decât cea de emitere) — decizia de a include sau nu o astfel de factură într-o redepunere rămâne a contabilului, pe baza excepției citate mai sus.
 

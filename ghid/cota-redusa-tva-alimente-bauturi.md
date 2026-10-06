@@ -35,6 +35,6 @@ Legea 141/2025 a modificat această listă de la 1 august 2025 (Codul fiscal, ar
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` include categoria de alimente/băuturi la 11% în `CATEGORII_11`, cu cele patru excepții din `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, alimente cu zahăr ≥10g/100g, suplimente alimentare Legea 56/2021) potrivite pe linia de factură. Dacă motorul de potrivire nu poate determina cu certitudine categoria unui produs, aplicația nu presupune tăcut 21% — răspunde cu un statut de cotă nedeterminată, care blochează emiterea până la o clasificare manuală, exact pentru a evita o cotă greșită pe o factură deja emisă.
+Aplicația include categoria de alimente/băuturi la 11% în `CATEGORII_11`, cu cele patru excepții din `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, alimente cu zahăr ≥10g/100g, suplimente alimentare Legea 56/2021) potrivite pe linia de factură. Dacă motorul de potrivire nu poate determina cu certitudine categoria unui produs, aplicația nu presupune tăcut 21% — răspunde cu un statut de cotă nedeterminată, care blochează emiterea până la o clasificare manuală, exact pentru a evita o cotă greșită pe o factură deja emisă.
 
 [iConta.eu](/)

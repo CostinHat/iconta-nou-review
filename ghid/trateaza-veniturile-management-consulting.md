@@ -14,7 +14,7 @@ Serviciile de management sau consultanță plătite de o firmă românească unu
 
 ::: ghid-temei
 „Sunt considerate ca fiind obținute din România, indiferent dacă sunt primite în România sau în străinătate, în special următoarele venituri: [...] k) veniturile din servicii prestate în România, exclusiv transportul internațional și prestările de servicii accesorii acestui transport; [...] l) venituri din prestarea de servicii de management sau de consultanță din orice domeniu, dacă aceste venituri sunt obținute de la un rezident sau dacă veniturile respective sunt cheltuieli ale unui sediu permanent în România;"
-— Legea nr. 227/2015 (Codul fiscal), art. 12 lit. k), l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 12 lit. k), l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența dintre cele două litere este exact esența problemei:
@@ -32,6 +32,6 @@ Diferența dintre cele două litere este exact esența problemei:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu poate genera declarația D207 (declarație informativă privind impozitul reținut la sursă pe beneficiari nerezidenți), prin modulul `core/d207.py`, pe baza datelor introduse manual de contabil pentru fiecare beneficiar nerezident. Aplicația nu clasifică automat un serviciu ca fiind „de management sau consultanță" în sensul art. 12 lit. l) și nu calculează ea însăși cota de impozit aplicabilă (16%, 10% sau cota din convenția de evitare a dublei impuneri) — încadrarea juridică a serviciului și cota corectă de reținere rămân o determinare făcută de contabil, pe baza contractului și a documentelor de rezidență fiscală prezentate de furnizor.
+La data acestui ghid, iConta.eu poate genera declarația D207 (declarație informativă privind impozitul reținut la sursă pe beneficiari nerezidenți), prin aplicație, pe baza datelor introduse manual de contabil pentru fiecare beneficiar nerezident. Aplicația nu clasifică automat un serviciu ca fiind „de management sau consultanță" în sensul art. 12 lit. l) și nu calculează ea însăși cota de impozit aplicabilă (16%, 10% sau cota din convenția de evitare a dublei impuneri) — încadrarea juridică a serviciului și cota corectă de reținere rămân o determinare făcută de contabil, pe baza contractului și a documentelor de rezidență fiscală prezentate de furnizor.
 
 [iConta.eu](/)

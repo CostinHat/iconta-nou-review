@@ -14,10 +14,10 @@ O întreprindere individuală (II) cu angajați se află, fiscal, în două pozi
 
 ::: ghid-temei
 „Beneficiarii de venituri din salarii și asimilate salariilor datorează un impozit lunar, final, care se calculează și se reține la sursă de către plătitorii de venituri [...]"
-— Codul fiscal (Legea 227/2015), art. 78 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 78 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele fizice care în anul fiscal pentru care se depune Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de personale fizice [...] au realizat venituri din activitățile prevăzute la art. 137 alin. (1) lit. b) și b^1), din una sau mai multe surse și/sau categorii de venituri, a căror valoare anuală cumulată este cel puțin egală cu 12 salarii minime brute pe țară, datorează contribuția de asigurări sociale la o bază de calcul stabilită potrivit alin. (2)."
-— Codul fiscal, art. 148 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 148 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două seturi de obligații, separate:
@@ -35,6 +35,6 @@ Cele două seturi de obligații, separate:
 
 ## Ce face iConta.eu
 
-Cele două fluxuri sunt implementate ca funcționalități separate și reale în aplicație, exact pe granița descrisă mai sus: **D112** (`core/d112.py`) se construiește automat din statul de plată (`core/stat_plata_api.py`, alimentat din fișa fiecărui salariat — `core/salariati_api.py`), cu contribuțiile și impozitul pe salarii pe fiecare asigurat. **Motorul D212** (`core/d212_engine.py`) calculează separat, în sistem real, venitul net și contribuțiile CAS/CASS pe plafoanele de salarii minime, pornind din registrul de încasări și plăți al II (`core/rip_api.py`). Aplicația nu unește cele două module într-un singur ecran sau declarație — fiecare urmează sursa lui de date, așa cum cere și legea.
+Cele două fluxuri sunt implementate ca funcționalități separate și reale în aplicație, exact pe granița descrisă mai sus: **D112** se construiește automat din statul de plată (alimentat din fișa fiecărui salariat — aplicația), cu contribuțiile și impozitul pe salarii pe fiecare asigurat. **Motorul D212** calculează separat, în sistem real, venitul net și contribuțiile CAS/CASS pe plafoanele de salarii minime, pornind din registrul de încasări și plăți al II. Aplicația nu unește cele două module într-un singur ecran sau declarație — fiecare urmează sursa lui de date, așa cum cere și legea.
 
 [iConta.eu](/)

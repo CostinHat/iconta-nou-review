@@ -14,7 +14,7 @@ Un PFA nu are contabilitate în partidă dublă ca un SRL, dar asta nu înseamn�
 
 ::: ghid-temei
 „(1) Contribuabilii prevăzuți la titlul IV din Legea nr. 227/2015 privind Codul fiscal [...], pentru care venitul net anual se stabilește în sistem real, în baza datelor din contabilitate, au obligația să completeze Registrul de evidență fiscală în conformitate cu prevederile prezentului ordin."
-— OMFP nr. 3.254/2017, art. 1 alin. (1) (sursă: anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt)
+— OMFP nr. 3.254/2017, art. 1 alin. (1) (sursă: [OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice](https://legislatie.just.ro/Public/DetaliiDocument/196396))
 :::
 
 Ce verifică, în esență, un organ fiscal la controlul unui PFA:

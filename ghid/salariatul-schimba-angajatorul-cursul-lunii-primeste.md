@@ -16,15 +16,15 @@ Contează la noile angajări de la mijlocul lunii. Programele de salarizare acor
 
 ::: ghid-temei
 „(4) În cazul în care un angajat care obține venituri din salarii la funcția de bază se mută în cursul unei luni la un alt angajator, calculul impozitului se face pentru fiecare sursă de venit (loc de realizare a venitului). Deducerea personală se acordă numai de primul angajator, în limita veniturilor realizate în luna respectivă, până la data lichidării. Dacă reangajarea are loc în aceeași lună cu lichidarea, la stabilirea bazei de calcul pentru determinarea impozitului lunar aferent veniturilor realizate în această lună de la angajatorul următor nu se va lua în calcul deducerea personală."
-— HG 1/2016, Normele metodologice, titlul IV, pct. 16 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IV, pct. 16 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „au dreptul la deducerea din venitul net lunar din salarii a unei sume sub formă de deducere personală, acordată pentru fiecare lună a perioadei impozabile numai pentru veniturile din salarii la locul unde se află funcția de bază."
-— Codul fiscal (Legea 227/2015), art. 77 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Deducerea personală cuprinde deducerea personală de bază și deducerea personală suplimentară și se acordă în limita venitului impozabil lunar realizat."
-— Codul fiscal (Legea 227/2015), art. 77 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula din norme se potrivește cu textul actual al Codului fiscal: deducerea se acordă **pentru fiecare lună**, o singură dată, la locul funcției de bază, și **în limita venitului impozabil al lunii**. În luna mutării:

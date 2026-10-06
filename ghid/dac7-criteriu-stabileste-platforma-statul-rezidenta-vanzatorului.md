@@ -16,10 +16,10 @@ Rezidența stabilită de platformă decide unde ajung datele. ANAF le transmite 
 
 ::: ghid-temei
 „1. Un Operator de platformă care are obligația de raportare consideră că un Vânzător este rezident în România sau într-un stat membru dacă Adresa Principală a Vânzătorului se află în România sau în statul membru respectiv. 2. În cazul în care Adresa principală a Vânzătorului se află într-un alt stat membru, un Operator de platformă care are obligația de raportare consideră că Vânzătorul este rezident și în România în cazul în care NIF-ul i-a fost emis în România în conformitate cu normele legale în vigoare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. D pct. 1 și 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. D pct. 1 și 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „5. Adresă Principală înseamnă adresa la care se află reședința principală a Vânzătorului care este o persoană fizică, respectiv adresa la care se află sediul social al Vânzătorului care este o Entitate."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. C pct. 5 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. C pct. 5 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele patru reguli, în ordinea din lege:

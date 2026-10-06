@@ -16,10 +16,10 @@ Pentru contabilul care ține salarizarea unei societăți sau a unui cabinet de 
 
 ::: ghid-temei
 „veniturile din salarii și asimilate salariilor realizate de către persoanele fizice asigurate în sisteme proprii de asigurări sociale, din activități pentru care există obligația asigurării în aceste sisteme potrivit legii;"
-— Codul fiscal (Legea 227/2015), art. 141 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 141 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) În aplicarea prevederilor art. 141 lit. b) din Codul fiscal nu se datorează contribuția de asigurări sociale pentru veniturile din salarii și asimilate salariilor realizate de persoane fizice care sunt asigurate în sisteme proprii de asigurări sociale, potrivit legii. În această categorie intră, spre exemplu, avocații salarizați în cadrul profesiei."
-— HG 1/2016 (Normele Codului fiscal), Titlul V, pct. 4^1 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul V, pct. 4^1 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

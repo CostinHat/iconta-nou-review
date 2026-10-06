@@ -31,7 +31,7 @@ Formula folosită de motorul de calcul al iConta.eu (marcată ca interpretare cu
 K = (Si378 + Rc378) / [(Si371 + Rd371) - (Si4428 + Rc4428)]
 ```
 
-**Exemplu simplu, confirmat prin testare** (`core/test_stocuri.py`, `test_k_simplu`): Si378 = 0, Rc378 = 500, Si371 = 0, Rd371 = 1.785, Si4428 = 0, Rc4428 = 285 → K = 500 / (1.785 − 285) = 500 / 1.500 = 0,3333...
+**Exemplu simplu, confirmat prin testare** (`test_k_simplu`): Si378 = 0, Rc378 = 500, Si371 = 0, Rd371 = 1.785, Si4428 = 0, Rc4428 = 285 → K = 500 / (1.785 − 285) = 500 / 1.500 = 0,3333...
 
 **Exemplu cu solduri inițiale** (`test_descarcare_cu_solduri_initiale`): Si378 = 200, Rc378 = 300, Si371 = 1.000, Rd371 = 1.420, Si4428 = 190, Rc4428 = 230 → numitor = (1.000 + 1.420) − (190 + 230) = 2.000, K = 500 / 2.000 = 0,25.
 
@@ -43,6 +43,6 @@ K = (Si378 + Rc378) / [(Si371 + Rd371) - (Si4428 + Rc4428)]
 
 ## Ce face iConta.eu
 
-Funcția `coeficient_k` din `core/stocuri.py` calculează exact raportul de mai sus. Dacă numitorul rezultă mai mic sau egal cu zero, funcția **refuză să calculeze** și aruncă o eroare explicită către contabil — nu întoarce niciodată 0 sau o valoare implicită. Coeficientul astfel obținut este folosit apoi de nota lunară de descărcare de gestiune, generată automat ca ciornă și validată manual de contabil.
+Funcția `coeficient_k` din aplicație calculează exact raportul de mai sus. Dacă numitorul rezultă mai mic sau egal cu zero, funcția **refuză să calculeze** și aruncă o eroare explicită către contabil — nu întoarce niciodată 0 sau o valoare implicită. Coeficientul astfel obținut este folosit apoi de nota lunară de descărcare de gestiune, generată automat ca ciornă și validată manual de contabil.
 
 [iConta.eu](/)

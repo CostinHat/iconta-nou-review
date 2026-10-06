@@ -14,13 +14,13 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Pentru neachitarea la termenul de scadență de către debitor a obligațiilor fiscale principale, se datorează după acest termen dobânzi și penalități de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Dobânzile se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. [...] (5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015, art. 174 alin. (1) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 174 alin. (1) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Penalitățile de întârziere se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv. [...] (2) Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Legea 207/2015, art. 176 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 176 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva precizări importante din text:

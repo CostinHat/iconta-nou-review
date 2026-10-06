@@ -14,7 +14,7 @@ O firmă nou-înființată nu se „înregistrează" separat în registrul gener
 
 ::: ghid-temei
 „Angajatorii au obligația de a completa și de a transmite datele în Registru cel târziu în ziua anterioară începerii activității de către primul salariat."
-— HG 295/2025, art. 7 (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 7 (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Această obligație e, de fapt, aceeași regulă generală de la art. 3 alin. (1) — transmiterea datelor cel târziu în ziua anterioară începerii activității —, aplicată explicit la situația firmei fără istoric de angajări. Nu există în HG 295/2025 un pas distinct de „înregistrare a firmei"; există doar momentul în care firma, prin angajarea primului salariat, intră sub incidența obligațiilor generale ale registrului.

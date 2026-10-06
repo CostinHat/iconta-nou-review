@@ -14,14 +14,14 @@ Un schimb valutar făcut printr-un cont Wise (de exemplu conversia unor euro în
 
 ::: ghid-temei
 „O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP 1802/2014, pct. 319 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Diferența care apare la momentul conversiei efective se tratează astfel:
 
 ::: ghid-temei
 „(1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanic, un schimb valutar (de exemplu conversia soldului unui cont în valută, 5124, în lei, 5121, sau invers) se înregistrează astfel:
@@ -38,7 +38,7 @@ Mecanic, un schimb valutar (de exemplu conversia soldului unui cont în valută,
 
 ## Ce face iConta.eu
 
-Motorul de curs valutar (F025, `core/curs_bnr.py`) preia și aplică automat cursul BNR pentru facturile în valută, conform regulii legale a ultimului curs comunicat, valabil la data operațiunii — sursă unică de conversie folosită de TVA, D300, D390, D394, D406 și de contarea facturilor din aplicație. Acesta e reperul legal de curs pe care contabilul îl poate folosi ca punct de plecare și pentru operațiunile de trezorerie, inclusiv un schimb valutar făcut printr-un cont Wise.
+Motorul de curs valutar (F025, aplicația) preia și aplică automat cursul BNR pentru facturile în valută, conform regulii legale a ultimului curs comunicat, valabil la data operațiunii — sursă unică de conversie folosită de TVA, D300, D390, D394, D406 și de contarea facturilor din aplicație. Acesta e reperul legal de curs pe care contabilul îl poate folosi ca punct de plecare și pentru operațiunile de trezorerie, inclusiv un schimb valutar făcut printr-un cont Wise.
 
 iConta.eu nu are însă un modul dedicat de „schimb valutar" sau de conectare la platforme de tip Wise — o astfel de operațiune se înregistrează ca **notă contabilă manuală** (ieșire din contul sursă, intrare în contul destinație, diferența de curs pe 665/765), folosind cursul de referință afișat de aplicație doar ca sprijin de verificare, nu ca sursă automată a operațiunii de schimb.
 

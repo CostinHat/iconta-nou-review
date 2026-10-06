@@ -14,7 +14,7 @@ Există o presupunere larg răspândită că legea ar limita suma maximă pe car
 
 ::: ghid-temei
 „(1) Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii."
-— Legea nr. 70/2015, art. 1 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 1 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Legea 70/2015 pornește de la o regulă generală strictă — plățile/încasările între firme se fac prin instrumente fără numerar — și permite excepții punctuale, toate exprimate ca plafoane pe tranzacție/zi, nu ca sold maxim de casă:

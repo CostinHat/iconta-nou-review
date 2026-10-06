@@ -14,7 +14,7 @@ Fie că e emisă pe hârtie sau electronic prin RO e-Factura, o factură trebuie
 
 ::: ghid-temei
 „Factura cuprinde în mod obligatoriu următoarele informații: a) numărul de ordine, în baza uneia sau a mai multor serii, care identifică factura în mod unic; [...] b) data emiterii facturii; [...] d) denumirea/numele, adresa și codul de înregistrare în scopuri de TVA sau, după caz, codul de identificare fiscală ale persoanei impozabile care a livrat bunurile sau a prestat serviciile; [...] f) denumirea/numele și adresa beneficiarului bunurilor sau serviciilor, precum și codul de înregistrare în scopuri de TVA sau codul de identificare fiscală al beneficiarului [...]; h) denumirea și cantitatea bunurilor livrate, denumirea serviciilor prestate [...]; i) baza de impozitare a bunurilor și serviciilor [...], pentru fiecare cotă, scutire sau operațiune netaxabilă, prețul unitar, exclusiv taxa, precum și rabaturile, remizele, risturnele și alte reduceri de preț [...]; j) indicarea cotei de taxă aplicate și a sumei taxei colectate, exprimate în lei [...]."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (20) lit. a), b), d), f), h), i), j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (20) lit. a), b), d), f), h), i), j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut, dincolo de lista propriu-zisă:

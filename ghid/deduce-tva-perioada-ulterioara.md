@@ -14,7 +14,7 @@ Da — dreptul de deducere a TVA nu se pierde automat dacă nu e exercitat exact
 
 ::: ghid-temei
 „În situația în care nu sunt îndeplinite condițiile și formalitățile de exercitare a dreptului de deducere în perioada fiscală de declarare sau în cazul în care nu s-au primit documentele de justificare a taxei prevăzute la art. 299, persoana impozabilă își poate exercita dreptul de deducere prin decontul perioadei fiscale în care sunt îndeplinite aceste condiții și formalități sau printr-un decont ulterior, dar în cadrul termenului de prescripție prevăzut în Codul de procedură fiscală, inclusiv în cazul anulării rezervei verificării ulterioare ca urmare a inspecției fiscale."
-— Codul fiscal, art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

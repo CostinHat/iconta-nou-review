@@ -14,7 +14,7 @@ O firmă care plătește un comision de schimb valutar băncii sale se întreab�
 
 ::: ghid-temei
 „(2) Următoarele operațiuni sunt, de asemenea, scutite de taxă: a) prestările următoarelor servicii de natură financiar-bancară: [...] 4. tranzacții, inclusiv negocierea, privind valuta, bancnotele și monedele utilizate ca mijloc legal de plată, cu excepția obiectelor de colecție, și anume monede de aur, argint sau din alt metal ori bancnote care nu sunt utilizate în mod normal ca mijloc legal de plată sau monede de interes numismatic."
-— Codul fiscal, art. 292 alin. (2) lit. a) pct. 4 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 292 alin. (2) lit. a) pct. 4 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința practică:

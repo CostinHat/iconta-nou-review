@@ -14,7 +14,7 @@ Un șantier evocă imediat regula bunurilor imobile de la TVA — dar închirier
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice."
-— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la închirierea unui utilaj de la un furnizor dintr-un alt stat UE:

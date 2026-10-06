@@ -16,13 +16,13 @@ Lista e în forma în vigoare de la 13 mai 2025, când anexa la OPANAF 90/2016 a
 
 ::: ghid-temei
 „În cazul debitorilor, alții decât persoanele fizice, la cererea de acordare a eșalonărilor la plată ale obligațiilor fiscale se anexează și următoarele documente: a) copia ultimei balanțe de verificare sau registrul-jurnal de încasări și plăți, după caz; [...] b) programul de restructurare sau de redresare financiară semnat de reprezentantul legal al debitorului, care va conține și capacitatea financiară de plată, respectiv argumentarea posibilității plăților pe perioada solicitată la eșalonare."
-— OPANAF 90/2016, Anexa nr. 1, art. 2 alin. (2) (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, art. 2 alin. (2) (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 
 „La cererea de acordare a eșalonărilor la plată ale obligațiilor fiscale nu se anexează documentul prevăzut la alin. (2) lit. b) în cazul: a) debitorilor care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege; [...] b) debitorilor care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată; [...] c) debitorilor cu risc fiscal mic."
-— OPANAF 90/2016, Anexa nr. 1, art. 2 alin. (2^1) (sursă: anaf_surse/ordin_90_2016.html)
+— OPANAF 90/2016, Anexa nr. 1, art. 2 alin. (2^1) (sursă: [OPANAF nr. 90/2016 privind eșalonarea la plată de către organul fiscal central](https://legislatie.just.ro/Public/DetaliiDocument/175182))
 
 „situația de dificultate generată de lipsa temporară de disponibilități bănești și capacitatea financiară de plată pe perioada de eșalonare la plată se menționează de debitor în cererea depusă potrivit art. 187."
-— Codul de procedură fiscală (Legea 207/2015), art. 186 alin. (3^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 186 alin. (3^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cine ce anexează:

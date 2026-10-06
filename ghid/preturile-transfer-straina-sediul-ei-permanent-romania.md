@@ -16,12 +16,12 @@ Consecința practică: nu poți muta profit din România în străinătate prin 
 
 ::: ghid-temei
 „Rezultatul fiscal al sediului permanent se determină prin tratarea acestuia ca persoană separată și independentă și prin utilizarea regulilor prețurilor de transfer la stabilirea valorii de piață a unui transfer efectuat între persoana juridică străină și sediul său permanent. La stabilirea valorii de piață a transferului efectuat între persoana juridică străină și sediul său permanent se au în vedere prevederile din Raportul 2010 privind alocarea profiturilor către sediile permanente, emis de Organizația pentru Cooperare și Dezvoltare Economică"
-— Codul fiscal (Legea 227/2015), art. 36 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 36 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „numai veniturile ce sunt atribuibile sediului permanent se iau în calcul pentru determinarea rezultatului fiscal; [...] numai cheltuielile efectuate în scopul obținerii acestor venituri se iau în calcul pentru determinarea rezultatului fiscal."
-— Codul fiscal (Legea 227/2015), art. 36 alin. (2) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 36 alin. (2) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru contabil:

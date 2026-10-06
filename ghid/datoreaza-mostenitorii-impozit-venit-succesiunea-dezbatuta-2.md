@@ -16,21 +16,21 @@ Contează data încheierii de finalizare, nu data deschiderii procedurii. O succ
 
 ::: ghid-temei
 „Pentru transmisiunea dreptului de proprietate și a dezmembrămintelor acestuia cu titlul de moștenire nu se datorează impozitul prevăzut la alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „dacă succesiunea este dezbătută și finalizată în termen de 2 ani de la data decesului autorului succesiunii. În cazul nefinalizării procedurii succesorale în termenul prevăzut mai sus, moștenitorii datorează un impozit de 1% calculat la valoarea masei succesorale."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „a) finalizarea procedurii succesorale are loc la data întocmirii încheierii de finalizare a succesiunii; [...] b) impozitul datorat va fi achitat de către contribuabil la data întocmirii încheierii finale de către notarul public;"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „e) în cazul în care succesiunea a fost finalizată prin întocmirea încheierii de finalizare înainte de expirarea termenului de 2 ani și se solicită certificat de moștenitor suplimentar după expirarea termenului de 2 ani, calculat de la data decesului autorului succesiunii, moștenitorii datorează impozit în condițiile art. 111 alin. (3) din Codul fiscal numai pentru proprietățile imobiliare ce se vor declara și menționa în încheierea finală suplimentară;"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Masa succesorală, din punct de vedere fiscal și în condițiile art. 111 alin. (3) din Codul fiscal, cuprinde numai activul net imobiliar declarat de succesibili."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) lit. g) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (3) lit. g) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Situațiile, pe scurt:

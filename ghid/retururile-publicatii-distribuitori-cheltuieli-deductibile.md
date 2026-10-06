@@ -19,12 +19,12 @@ Pentru o editură de presă sau de carte, retururile sunt un cost normal al dist
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare”
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „g) cheltuielile efectuate cu editarea publicațiilor care sunt înregistrate ca retururi în perioada de determinare a profitului impozabil pe baza documentelor justificative și în limita cotelor prevăzute în contractele de distribuție;”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. g) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul II, pct. 13 alin. (1) lit. g) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce trebuie verificat:

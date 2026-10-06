@@ -14,10 +14,10 @@ Momentul la care o eroare fiscală e corectată contează la fel de mult ca eroa
 
 ::: ghid-temei
 „Pentru contribuabilii/plătitorii prezumtivi a fi selectați pentru efectuarea inspecției fiscale, organul de inspecție fiscală transmite acestora, în scris, o notificare de conformare [...] Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale."
-— Legea 207/2015, art. 121^1 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 121^1 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(4) în situația în care contribuabilul/plătitorul corectează declarațiile de impunere în condițiile art. 105 alin. (6), se redeschide rezerva verificării ulterioare [...]"
-— Legea 207/2015, art. 94 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 94 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce beneficii reale confirmă textele citate pentru corectarea din proprie inițiativă, înainte de orice notificare sau control:

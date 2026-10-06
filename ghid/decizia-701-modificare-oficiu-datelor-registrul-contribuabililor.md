@@ -16,12 +16,12 @@ Decizia nu stabilește sume, dar efectele ei pot fi mai mari decât ale unei imp
 
 ::: ghid-temei
 „Modificările din oficiu ale datelor înscrise în Registrul contribuabililor/plătitorilor produc efecte începând cu data de .......... Împotriva prezentei decizii se poate formula contestație la organul fiscal emitent, în conformitate cu dispozițiile art. 272 alin. (1) din Codul de procedură fiscală, în termen de 45 de zile de la data comunicării, potrivit art. 270 alin. (1) din același act normativ."
-— OPANAF 3792/2024, Anexa nr. 5 (sursă: anaf_surse/ordin_3792_2024.html)
+— OPANAF 3792/2024, Anexa nr. 5 (sursă: [OPANAF nr. 3792/2024 privind modificarea din oficiu a datelor din Registrul contribuabililor](https://legislatie.just.ro/Public/DetaliiDocument/286607))
 :::
 
 ::: ghid-temei
 „Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce verifici în decizie înainte de a contesta:

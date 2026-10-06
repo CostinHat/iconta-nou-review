@@ -14,7 +14,7 @@ O firmă românească mută marfă într-un depozit din alt stat membru și, ult
 
 ::: ghid-temei
 „Se consideră a fi locul livrării de bunuri: a) locul unde se găsesc bunurile în momentul când începe expedierea sau transportul, în cazul bunurilor care sunt expediate sau transportate de furnizor, de cumpărător sau de un terț. [...] c) locul unde se găsesc bunurile atunci când sunt puse la dispoziția cumpărătorului, în cazul bunurilor care nu sunt expediate sau transportate."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. a) și c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. a) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Dacă marfa se află deja în depozitul din alt stat membru la momentul vânzării către clientul local, iar de acolo ajunge direct la client (fără să mai treacă granița), locul livrării e în acel stat, nu în România:

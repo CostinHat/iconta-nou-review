@@ -16,15 +16,15 @@ Contează mult în practică. Dacă o firmă românească renovează un apartame
 
 ::: ghid-temei
 „locul unde sunt situate bunurile imobile, pentru prestările de servicii efectuate în legătură cu bunurile imobile, inclusiv serviciile prestate de experți și agenți imobiliari, de cazare în sectorul hotelier sau în sectoare cu funcție similară, precum tabere de vacanță sau locuri amenajate pentru camping, de acordare de drepturi de utilizare a bunurilor imobile, pentru servicii de pregătire și coordonare a lucrărilor de construcții, precum serviciile prestate de arhitecți și de societățile care asigură supravegherea pe șantier;"
-— Codul fiscal (Legea 227/2015), art. 278 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 278 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) Serviciile legate de bunuri imobile prevăzute la art. 278 alin. (4) lit. a) din Codul fiscal includ numai acele servicii care au o legătură suficient de directă cu bunul imobil în cauză. Serviciile sunt considerate ca având o legătură suficient de directă cu bunul imobil în următoarele cazuri: a) sunt derivate dintr-un bun imobil, iar respectivul bun imobil este un element constitutiv al serviciului și este central și esențial pentru serviciile prestate;"
-— HG 1/2016, Normele metodologice, titlul VII, pct. 16 alin. (2) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul VII, pct. 16 alin. (2) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „b) sunt furnizate în beneficiul unui bun imobil sau vizează un bun imobil și au drept obiectiv modificarea caracteristicilor fizice sau a statutului juridic al respectivului bun."
-— HG 1/2016, Normele metodologice, titlul VII, pct. 16 alin. (2) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul VII, pct. 16 alin. (2) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 **Sunt legate de imobil** (pct. 16 alin. (3)), printre altele:

@@ -15,7 +15,7 @@ Una dintre confuziile care apar constant la finalul anului este verificarea plaf
 ```
 ::: ghid-temei
 „Pentru încadrarea în condițiile privind nivelul veniturilor prevăzute la art. 47 alin. (1) lit. c) și la art. 52 alin. (1) se iau în calcul veniturile care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile."
-— Legea nr. 227/2015 privind Codul fiscal, art. 54 alin. (1), astfel cum a fost modificat prin OUG nr. 8/2026, coroborat cu art. 47 alin. (1) lit. c) (sursă: anaf_surse/oug_8_2026.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 54 alin. (1), astfel cum a fost modificat prin OUG nr. 8/2026, coroborat cu art. 47 alin. (1) lit. c) (sursă: [OUG nr. 8/2026 privind instituirea unor măsuri de relansare economică](https://legislatie.just.ro/Public/DetaliiDocument/307580))
 :::
 ```
 
@@ -24,7 +24,7 @@ Iar condiția de bază, la care se raportează acest calcul:
 ```
 ::: ghid-temei
 „c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile."
-— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -42,6 +42,6 @@ Ce rezultă din coroborarea celor două texte:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează baza impozitului micro de 1% din veniturile din conturile 70x, 75x și 76x, minus reducerile comerciale 709 (`core/repo_d100.py`, motorul A8) — o bază conform art. 53, dar mai largă decât „cifra de afaceri" (doar grupa 70x) cerută de art. 54 alin. (1) pentru verificarea plafonului. La data acestui ghid, aplicația nu are un modul separat care să calculeze strict cifra de afaceri (grupa 70x, fără 75x/76x) și să verifice automat plafonul de 100.000 euro de la art. 47 alin. (1) lit. c) și art. 52 alin. (1) — folosirea bazei impozitului micro (70x+75x+76x) ca substitut pentru cifra de afaceri ar supraestima veniturile relevante pentru plafon; verificarea corectă, pe cifra de afaceri strictă, rămâne o operațiune manuală a contabilului.
+iConta.eu calculează baza impozitului micro de 1% din veniturile din conturile 70x, 75x și 76x, minus reducerile comerciale 709 (motorul A8) — o bază conform art. 53, dar mai largă decât „cifra de afaceri" (doar grupa 70x) cerută de art. 54 alin. (1) pentru verificarea plafonului. La data acestui ghid, aplicația nu are un modul separat care să calculeze strict cifra de afaceri (grupa 70x, fără 75x/76x) și să verifice automat plafonul de 100.000 euro de la art. 47 alin. (1) lit. c) și art. 52 alin. (1) — folosirea bazei impozitului micro (70x+75x+76x) ca substitut pentru cifra de afaceri ar supraestima veniturile relevante pentru plafon; verificarea corectă, pe cifra de afaceri strictă, rămâne o operațiune manuală a contabilului.
 
 [iConta.eu](/)

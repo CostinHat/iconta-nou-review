@@ -16,13 +16,13 @@ Distincția contează când pregătești garanția. Un contract de ipotecă pe i
 
 ::: ghid-temei
 „a) consemnarea de mijloace bănești la o unitate a Trezoreriei Statului; b) scrisoare de garanție emisă de o instituție de credit sau poliță de asigurare de garanție emisă de o societate de asigurare."
-— Codul de procedură fiscală (Legea 207/2015), art. 211 lit. a)-b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 211 lit. a)-b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „c) ipotecă asupra unor bunuri imobile sau mobile din țară; d) gaj asupra bunurilor mobile."
-— Codul de procedură fiscală (Legea 207/2015), art. 211 lit. c)-d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 211 lit. c)-d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „c) instituirea sechestrului asigurător asupra bunurilor proprietate a debitorului; d) încheierea unui contract de ipotecă sau gaj în favoarea organului fiscal competent pentru executarea obligațiilor fiscale ale debitorului pentru care există un acord de eșalonare la plată, având ca obiect bunuri proprietate a unei terțe persoane."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (6) lit. c)-d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (6) lit. c)-d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cele două liste, comparate:

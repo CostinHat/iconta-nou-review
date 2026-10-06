@@ -16,7 +16,7 @@ Divizarea unei societăți — totală sau parțială — nu generează, prin ea
 „Articolul 32 Regimul fiscal care se aplică fuziunilor, divizărilor totale, divizărilor parțiale, transferurilor de active și achizițiilor de titluri de participare între persoane juridice române
 (1) Prevederile prezentului articol se aplică următoarelor operațiuni de fuziune, divizare totală, divizare parțială, transferurilor de active și operațiunilor de achiziție de titluri de participare, efectuate între persoane juridice române potrivit legii [...].
 Operațiunile de fuziune, divizare sub orice formă nu sunt transferuri impozabile pentru diferența dintre prețul de piață al elementelor din activ și pasiv transferate și valoarea lor fiscală."
-— Legea 227/2015 (Codul fiscal), art. 32 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 32 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Principiile de bază ale acestui regim de neutralitate, aplicabil divizărilor între persoane juridice române:
@@ -35,6 +35,6 @@ Principiile de bază ale acestui regim de neutralitate, aplicabil divizărilor �
 
 ## Ce face iConta.eu
 
-Am verificat în `core/lichidare.py` și modulele fiscale conexe (`core/d101.py`): aplicația **nu are un flux dedicat operațiunilor de divizare** — nu am găsit o funcție care să aplice automat regimul de neutralitate fiscală de la art. 32 (transfer de valori fiscale, alocare proporțională a pierderii fiscale între societățile beneficiare). O astfel de reorganizare se tratează, la acest moment, în afara aplicației, cu asistență de specialitate.
+Am verificat în aplicație și modulele fiscale conexe: aplicația **nu are un flux dedicat operațiunilor de divizare** — nu am găsit o funcție care să aplice automat regimul de neutralitate fiscală de la art. 32 (transfer de valori fiscale, alocare proporțională a pierderii fiscale între societățile beneficiare). O astfel de reorganizare se tratează, la acest moment, în afara aplicației, cu asistență de specialitate.
 
 [iConta.eu](/)

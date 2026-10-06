@@ -16,7 +16,7 @@ Trebuie spus onest: Codul de procedură fiscală nu conține o listă fixă a do
 „(1) Taxa pe valoarea adăugată, denumită în continuare TVA, solicitată la rambursare prin deconturile cu sumă negativă de TVA cu opțiune de rambursare, depuse în cadrul termenului legal de depunere, se rambursează de organul fiscal central, cu efectuarea, ulterior, a inspecției fiscale.
 [...]
 (4) în sensul prezentului articol, se consideră că persoanele impozabile prezintă un risc de rambursare necuvenită a TVA dacă se regăsesc în oricare dintre următoarele situații: a) organele fiscale primesc documente oficiale de la alte instituții, care vizează aspecte de natură fiscală și se constată că au incidență în acordarea unei rambursări necuvenite de TVA; b) în cadrul acțiunilor de control fiscal s-au constatat fapte care pot întruni elementele constitutive ale unor infracțiuni cu implicații de natură fiscală; c) cu ocazia inspecției fiscale ulterioare au fost stabilite diferențe mai mari de 10% din suma rambursată, dar nu mai puțin de 50.000 lei pentru fiecare decont de TVA care a făcut obiectul inspecției fiscale ulterioare; d) alte situații stabilite prin ordin al președintelui A.N.A.F., din care să rezulte că persoanele impozabile prezintă un risc de rambursare necuvenită a TVA."
-— Cod de procedură fiscală (Legea nr. 207/2015), art. 169 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Cod de procedură fiscală (Legea nr. 207/2015), art. 169 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cadrul general, așa cum rezultă din lege:

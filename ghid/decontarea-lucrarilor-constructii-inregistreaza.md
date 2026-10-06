@@ -17,7 +17,7 @@ Reglementările contabile tratează explicit veniturile din lucrări de construc
 (2) Stadiul de execuție al lucrării se determină pe bază de situații de lucrări care însoțesc facturile, procese-verbale de recepție sau alte documente care atestă stadiul realizării și recepția serviciilor prestate.
 (3) În cazul lucrărilor de construcții, recunoașterea veniturilor se face pe baza actului de recepție semnat de beneficiar, prin care se certifică faptul că executantul și-a îndeplinit obligațiile în conformitate cu prevederile contractului și ale documentației de execuție.
 (4) Contravaloarea lucrărilor nerecepționate de beneficiar până la sfârșitul perioadei se evidențiază la cost, în contul 332 «Servicii în curs de execuție», pe seama contului 712 «Venituri aferente costurilor serviciilor în curs de execuție»."
-— OMFP 1802/2014 (reglementări contabile), pct. 446 alin. (1)-(4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 446 alin. (1)-(4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Mecanismul complet, aplicabil unui executant de lucrări de construcții:

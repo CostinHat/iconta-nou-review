@@ -15,7 +15,7 @@ Trecerea de la un program de gestiune la altul, sau simpla preluare a soldurilor
 ::: ghid-temei
 „Articolul 22 Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare.
 Articolul 23 (1) Persoanele prevăzute la art. 1 care utilizează sisteme informatice de prelucrare automată a datelor au obligația să asigure prelucrarea datelor înregistrate în contabilitate în conformitate cu reglementările contabile aplicabile, controlul și păstrarea acestora pe suporturi tehnice timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite."
-— Legea contabilității nr. 82/1991, art. 22 și art. 23 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 22 și art. 23 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă pentru un import de date de stoc:
@@ -32,6 +32,6 @@ Ce rezultă pentru un import de date de stoc:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă un importator de articole și stoc inițial expus utilizatorului: `core/articole_import_api.py` citește un export .xlsx/.csv (denumire, UM, cantitate, preț unitar, cont de stoc) și creează articolele plus intrarea inițială pentru cele cu stoc, la data soldului declarată; funcția refuză explicit un articol cu stoc dar preț zero/lipsă, ca să nu subraporteze tăcut valoarea stocului. Fluxul e expus prin ruta `/tenants/{tenant_id}/articole-import` (`core/uc_tenants.py`), deci nu e un instrument doar intern de onboarding. `core/migrare_punte_stoc.py` și `core/migrare_stoc_lot4.py` sunt migrări de schemă (ALTER TABLE, coloane noi), nu importatoare de date de stoc, și nu trebuie confundate cu funcția de import de mai sus.
+La data acestui ghid, iConta.eu oferă un importator de articole și stoc inițial expus utilizatorului: Aplicația citește un export .xlsx/.csv (denumire, UM, cantitate, preț unitar, cont de stoc) și creează articolele plus intrarea inițială pentru cele cu stoc, la data soldului declarată; funcția refuză explicit un articol cu stoc dar preț zero/lipsă, ca să nu subraporteze tăcut valoarea stocului. Fluxul e expus prin ruta `/tenants/{tenant_id}/articole-import`, deci nu e un instrument doar intern de onboarding. Aplicația sunt migrări de schemă (ALTER TABLE, coloane noi), nu importatoare de date de stoc, și nu trebuie confundate cu funcția de import de mai sus.
 
 [iConta.eu](/)

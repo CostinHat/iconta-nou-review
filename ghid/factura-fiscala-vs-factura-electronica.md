@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(2) Sistemul naţional privind factura electronică RO e-Factura reprezintă ansamblul de [...]
 Articolul 319 Facturarea"
-— OUG 120/2021, art. 3 alin. (2), și Codul fiscal (Legea 227/2015), art. 319, titlu (sursă: anaf_surse/oug_120_2021.txt și anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— OUG 120/2021, art. 3 alin. (2), și Codul fiscal (Legea 227/2015), art. 319, titlu (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243) și [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din structura legislativă actuală:
@@ -32,6 +32,6 @@ Ce rezultă din structura legislativă actuală:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **emite facturi conform art. 319 din Codul fiscal** și le transmite, acolo unde e obligatoriu, prin sistemul RO e-Factura (module `core/efactura_send.py`, `core/efactura_trimitere.py`), validate pe schema RO_CIUS curentă. Aplicația nu tratează „factura fiscală" ca o categorie separată, ci urmează terminologia actuală a legii: factură, transmisă sau nu prin canalul electronic.
+La data acestui ghid, iConta.eu **emite facturi conform art. 319 din Codul fiscal** și le transmite, acolo unde e obligatoriu, prin sistemul RO e-Factura (module aplicația), validate pe schema RO_CIUS curentă. Aplicația nu tratează „factura fiscală" ca o categorie separată, ci urmează terminologia actuală a legii: factură, transmisă sau nu prin canalul electronic.
 
 [iConta.eu](/)

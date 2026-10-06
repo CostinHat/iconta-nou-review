@@ -15,7 +15,7 @@ Dacă, în urma unei inspecții fiscale, ANAF emite o decizie de impunere prin c
 ::: ghid-temei
 „(1) Împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal. [...]
 (3) Baza de impozitare și creanța fiscală stabilite prin decizie de impunere se contestă numai împreună."
-— Legea 207/2015, art. 268 alin. (1), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 268 alin. (1), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii concreți, potrivit Codului de procedură fiscală:
@@ -34,6 +34,6 @@ Pașii concreți, potrivit Codului de procedură fiscală:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un modul de gestionare a contestațiilor fiscale** — aplicația nu generează formularul de contestație, nu urmărește termenul de 45 de zile și nu ține un dosar al corespondenței cu structura de soluționare a contestațiilor. Modulul de control fiscal (`core/control_fiscal_api.py`) urmărește obligațiile declarative curente ale firmei, nu litigiile ulterioare unei inspecții. Redactarea și depunerea contestației, cu respectarea formei și termenului legal, rămân în sarcina contribuabilului sau a consultantului fiscal.
+La data acestui ghid, iConta.eu **nu are un modul de gestionare a contestațiilor fiscale** — aplicația nu generează formularul de contestație, nu urmărește termenul de 45 de zile și nu ține un dosar al corespondenței cu structura de soluționare a contestațiilor. Modulul de control fiscal urmărește obligațiile declarative curente ale firmei, nu litigiile ulterioare unei inspecții. Redactarea și depunerea contestației, cu respectarea formei și termenului legal, rămân în sarcina contribuabilului sau a consultantului fiscal.
 
 [iConta.eu](/)

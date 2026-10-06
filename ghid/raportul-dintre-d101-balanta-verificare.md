@@ -13,11 +13,11 @@ D101 nu e doar un formular completat cu cifre din balanță — motorul de gener
 ## Temeiul legal
 
 ::: ghid-temei
-La generare, aplicația „rulează reconciliere independentă a bazei contabile (`core/d101_reconciliere.py`) și verifică `totalPlata_A` emis (`core/reconciliere_emis.py`)"
-— sursă: `core/d101.py`, funcția `genereaza()`, liniile 470–538, dosar de cercetare F027.
+La generare, aplicația „rulează reconciliere independentă a bazei contabile și verifică `totalPlata_A` emis"
+— sursă: Aplicația, funcția `genereaza()`, dosar de cercetare F027.
 
 Tot funcția `genereaza()` „cere explicit P47 dacă `ca_an_precedent_eur` transmis depășește pragul IMCA și P47 nu a fost furnizat manual — nu subevaluează tacit impozitul unei firme mari"
-— sursă: `core/d101.py`, liniile 484–489, dosar de cercetare F027.
+— sursă: Aplicația, dosar de cercetare F027.
 :::
 
 Legea impune ca declarația D101 să reflecte corect rezultatul fiscal calculat din evidența contabilă (balanță), fără o procedură normativă separată de „reconciliere" tehnică — aceasta din urmă e un control intern al aplicației, nu o cerință legală distinctă. Ceea ce contează legal este ca baza de calcul (venituri, cheltuieli, deduceri, add-back-uri) să corespundă exact înregistrărilor contabile din balanța de verificare la data generării declarației.

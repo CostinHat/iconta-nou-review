@@ -35,6 +35,6 @@ Normele privind limitele admisibile de perisabilitate vizează explicit mărfuri
 
 ## Ce face iConta.eu
 
-Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" primește procentul de limită ca și câmp numeric liber, completat de contabil — aplicația nu are o listă de grupe de mărfuri legată de anexele HG 831/2004 și nu selectează automat coeficientul. Motorul (`core/perisabilitati.py`) calculează apoi limita, separarea deductibil/nedeductibil și eventuala ajustare de TVA, pe baza procentului astfel introdus.
+Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" primește procentul de limită ca și câmp numeric liber, completat de contabil — aplicația nu are o listă de grupe de mărfuri legată de anexele HG 831/2004 și nu selectează automat coeficientul. Motorul calculează apoi limita, separarea deductibil/nedeductibil și eventuala ajustare de TVA, pe baza procentului astfel introdus.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În vederea stabilirii stării de fapt fiscale și a obligațiilor fiscale datorate, contribuabilul/plătitorul are obligația să conducă evidențe fiscale, potrivit actelor normative în vigoare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 108 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 108 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate spune cu certitudine, pornind de la acest cadru general:

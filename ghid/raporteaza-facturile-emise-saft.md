@@ -24,7 +24,7 @@ O greșeală comună este tratarea secțiunii SourceDocuments ca pe un rezumat c
 
 ## Ce face iConta.eu
 
-Conform docstring-ului generatorului (`core/d406.py`, actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Concret, pentru facturile emise, fiecare linie de produs din factura reală (cantitate, unitate de măsură, preț, descriere, cotă) este preluată direct din datele facturii și reconciliată automat cu totalurile din antetul documentului, iar rezultatul e verificat structural cu validatorul DUK.
+Conform docstring-ului generatorului (actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Concret, pentru facturile emise, fiecare linie de produs din factura reală (cantitate, unitate de măsură, preț, descriere, cotă) este preluată direct din datele facturii și reconciliată automat cu totalurile din antetul documentului, iar rezultatul e verificat structural cu validatorul DUK.
 
 O limită de reținut, valabilă la nivelul întregii secțiuni SourceDocuments, nu doar pentru facturile emise: subsecțiunea **Payments** nu este încă populată în fișierul generat — codul de emitere există, dar procesul de extragere a datelor (`pull()`) nu preia încă plățile, din lipsa unei surse de mapare a trezoreriei (decizie de business în așteptare). Facturile emise în sine sunt raportate complet; ceea ce lipsește este corelarea lor cu plățile efective, ca secțiune separată.
 

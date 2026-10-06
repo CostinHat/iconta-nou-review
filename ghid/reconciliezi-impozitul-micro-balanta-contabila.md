@@ -14,7 +14,7 @@ Impozitul pe veniturile microîntreprinderilor se calculează pe bază trimestri
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile aferente costurilor serviciilor în curs de execuție; c) veniturile din producția de imobilizări corporale și necorporale; d) veniturile din subvenții; e) veniturile din provizioane, ajustări pentru depreciere sau pentru pierdere de valoare, care au fost cheltuieli nedeductibile la calculul profitului impozabil sau au fost constituite în perioada în care persoana juridică română era supusă impozitului pe veniturile microîntreprinderilor."
-— Codul fiscal (Legea 227/2015), art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, reconcilierea pornește de la rulajul creditor al conturilor de venituri (clasa 7) din balanța de verificare pe trimestrul respectiv și îl ajustează astfel:

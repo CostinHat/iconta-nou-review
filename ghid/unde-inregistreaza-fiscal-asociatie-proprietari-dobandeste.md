@@ -16,15 +16,15 @@ Practic, asociația are două relații fiscale distincte: cu primăria, pentru i
 
 ::: ghid-temei
 „(1) După dobândirea personalității juridice, asociația de proprietari se înregistrează la organul fiscal local în a cărui rază teritorială se află condominiul. (2) După înființarea asociației de proprietari, aceasta se identifică prin denumire, adresa condominiului, încheierea președintelui judecătoriei în a cărei circumscripție teritorială se află condominiul sau orice alt document emis la înființare în baza legii și prin codul de identificare fiscală al asociației. Actele emise de către asociațiile de proprietari cuprind obligatoriu datele de identificare."
-— Legea 196/2018, art. 19 alin. (1)-(2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 19 alin. (1)-(2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „(2) Cu excepția cazului în care prin lege se prevede altfel, atribuirea codului de identificare fiscală se face exclusiv de către organul fiscal central, pe baza declarației de înregistrare fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 81 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 81 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „(6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la:
 a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică;"
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, în ordine:

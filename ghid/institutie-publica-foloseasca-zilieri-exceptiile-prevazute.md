@@ -16,15 +16,15 @@ Contează pentru contabilii care lucrează cu instituții publice sau cu entită
 
 ::: ghid-temei
 „(3) Instituțiile publice nu au calitatea de beneficiari sau împuterniciți ai acestora în sensul prevăzut de prezenta lege, cu excepția: a) grădinilor botanice din subordinea universităților, pentru activitățile prevăzute la art. 13 alin. (1) lit. g) și i) ;"
-— Legea 52/2011, art. 1 alin. (3) lit. a) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (3) lit. a) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „c) Academiei de Științe Agricole și Silvice «Gheorghe Ionescu-Șișești» și institutelor, centrelor și stațiunilor de cercetare-dezvoltare aflate în subordinea sa, a Institutului de Stat pentru Testarea și Înregistrarea Soiurilor aflat în subordinea Ministerului Agriculturii și Dezvoltării Rurale, precum și a oficiilor de studii pedologice și agrochimice județene, a institutelor naționale, stațiunilor didactico-experimentale ale universităților aflate în coordonarea Ministerului Educației Naționale și liceelor de profil aflate în subordinea Ministerului Educației Naționale, pentru domeniile prevăzute la art. 13 alin. (1) lit. a)-d) , e^2) și g) ."
-— Legea 52/2011, art. 1 alin. (3) lit. c) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (3) lit. c) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „e) unităților din subordinea Ministerului Tineretului și Sportului pentru domeniile prevăzute la art. 13 alin. (1) lit. m)-p) ."
-— Legea 52/2011, art. 1 alin. (3) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (3) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „e) instituțiilor publice autorizate să efectueze cercetări arheologice, conform normelor existente în domeniu, respectiv universități, institute de cercetare, instituții cu profil muzeal, pentru domeniul prevăzut la art. 13 alin. (1) lit. e^1) ."
-— Legea 52/2011, art. 1 alin. (3) lit. e), a doua literă cu această notare (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (3) lit. e), a doua literă cu această notare (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „f) unităților administrativ-teritoriale."
-— Legea 52/2011, art. 1 alin. (3) lit. f) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (3) lit. f) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Excepțiile în vigoare, cu domeniile permise:

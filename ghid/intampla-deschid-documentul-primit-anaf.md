@@ -14,7 +14,7 @@ Nimic favorabil. Legea nu leagă momentul comunicării de fapta contribuabilului
 
 ::: ghid-temei
 „Actul administrativ fiscal emis în formă electronică se comunică prin mijloace electronice de transmitere la distanță potrivit alin. (16) sau (17), după caz, iar acesta se consideră comunicat la data punerii la dispoziția contribuabilului/plătitorului prin aceste mijloace."
-— Legea 207/2015 (Codul de procedură fiscală), art. 47 alin. (15) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 47 alin. (15) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce implică, concret, această regulă:

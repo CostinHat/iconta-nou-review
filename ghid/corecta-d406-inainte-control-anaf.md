@@ -14,7 +14,7 @@ Da — D406 (Fișierul standard de control fiscal, SAF-T) poate fi corectat oric
 
 ::: ghid-temei
 „18. Prima Declarație informativă D406 validată, depusă pentru o lună sau un trimestru de către un contribuabil/plătitor este considerată declarație inițială. Declarațiile ulterioare depuse pentru aceeași perioadă (lună/trimestru) sunt automat considerate declarații rectificative. [...] 21. Declarațiile rectificative care se depun pentru corectarea unei erori materiale, omisiuni etc. trebuie să cuprindă toate informațiile din declarația inițială, plus cele asupra cărora s-au efectuat corecții."
-— OPANAF nr. 1.783/2021, Instrucțiuni de completare a Declarației informative D406, pct. 18 și pct. 21 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Instrucțiuni de completare a Declarației informative D406, pct. 18 și pct. 21 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Mecanismul practic, conform sursei:

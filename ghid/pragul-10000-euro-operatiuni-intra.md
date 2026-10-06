@@ -15,7 +15,7 @@ Nu orice achiziție de bunuri dintr-un alt stat membru UE e automat „achiziți
 ::: ghid-temei
 „(4) Prin excepție de la prevederile alin. (3) lit. a), nu sunt considerate operațiuni impozabile în România achizițiile intracomunitare de bunuri care îndeplinesc următoarele condiții: a) sunt efectuate de o persoană impozabilă care efectuează numai livrări de bunuri sau prestări de servicii pentru care taxa nu este deductibilă sau de o persoană juridică neimpozabilă; b) valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice.
 (5) Plafonul pentru achiziții intracomunitare prevăzut la alin. (4) lit. b) este constituit din valoarea totală, exclusiv taxa pe valoarea adăugată, datorată sau achitată în statul membru din care se expediază ori se transportă bunurile, a achizițiilor intracomunitare de bunuri, altele decât mijloace de transport noi sau bunuri supuse accizelor."
-— Legea 227/2015 (Codul fiscal), art. 268 alin. (4), (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 268 alin. (4), (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se calculează, concret, plafonul de 10.000 euro:

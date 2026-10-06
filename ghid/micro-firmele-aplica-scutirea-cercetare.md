@@ -14,7 +14,7 @@ Scutirea de impozit pe profit pentru firmele care fac exclusiv cercetare-dezvolt
 
 ::: ghid-temei
 „Contribuabilii care desfășoară exclusiv activitate de inovare, cercetare-dezvoltare, definită potrivit Ordonanței Guvernului nr. 57/2002 privind cercetarea științifică și dezvoltarea tehnologică, cu modificările și completările ulterioare, precum și activități conexe acesteia sunt scutiți de impozit pe profit în primii 10 ani de activitate."
-— Legea 227/2015 (Codul fiscal), art. 22^1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 22^1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din structura Codului fiscal, verificată pentru acest ghid:

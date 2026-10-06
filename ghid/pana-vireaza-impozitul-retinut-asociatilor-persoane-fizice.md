@@ -16,12 +16,12 @@ Obligația de a calcula, reține și plăti impozitul revine persoanei juridice 
 
 ::: ghid-temei
 „(5) Venitul impozabil obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice sau din reducerea capitalului social, potrivit legii, care nu reprezintă distribuții în bani sau în natură ca urmare a restituirii cotei-părți din aporturi se impun cu o cotă de 10%, impozitul fiind final. Obligația calculării, reținerii și plății impozitului revine persoanei juridice. Impozitul calculat și reținut la sursă în cazul lichidării persoanei juridice se plătește până la data depunerii situației financiare finale la oficiul registrului comerțului, întocmită de lichidatori, respectiv până la data de 25 a lunii următoare celei în care a fost distribuit venitul reprezentând reducerea capitalului social."
-— Codul fiscal (Legea 227/2015), art. 97 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 97 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „25. În aplicarea art. 97 alin. (5), în cazul lichidării unei persoane juridice obligația calculării, reținerii și virării impozitului revine reprezentantului legal al persoanei juridice. Impozitul calculat și reținut la sursă se virează până la data depunerii situației financiare finale la oficiul registrului comerțului, întocmită de reprezentantul legal al persoanei juridice."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 25 (norme art. 97 alin. (5) CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IV, pct. 25 (norme art. 97 alin. (5) CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Normele vorbesc despre „reprezentantul legal", iar Codul fiscal în vigoare spune că obligația revine persoanei juridice și că situația financiară finală este întocmită de lichidatori. Termenul este același în ambele texte. Pentru cine semnează și cine răspunde, se aplică formularea din Codul fiscal.

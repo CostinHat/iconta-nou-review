@@ -14,7 +14,7 @@ O simplă cesiune de părți sociale — vânzarea firmei către un alt asociat 
 
 ::: ghid-temei
 „În situația în care, în cursul anului fiscal, oricare dintre asociații/acționarii unei microîntreprinderi deține, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și la alte microîntreprinderi, asociații/acționarii trebuie să stabilească microîntreprinderea/microîntreprinderile care iese/ies de sub incidența prezentului titlu și care urmează să aplice prevederile titlului II începând cu trimestrul în care se înregistrează situația respectivă, astfel încât condiția de deținere a unei singure microîntreprinderi să fie îndeplinită. Ieșirea din sistemul de impunere pe veniturile microîntreprinderilor se comunică organului fiscal competent, potrivit prevederilor Legii nr. 207/2015, cu modificările și completările ulterioare."
-— Codul fiscal (Legea nr. 227/2015), Titlul III, art. 52 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea nr. 227/2015), Titlul III, art. 52 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Regula nu se aplică cesiunii în sine, ci **structurii de deținere rezultate**: dacă după cesiune noul asociat/acționar are peste 25% în mai multe firme cu impozit micro, asociații trebuie să aleagă care dintre firme rămâne pe micro și care trece la impozit pe profit.

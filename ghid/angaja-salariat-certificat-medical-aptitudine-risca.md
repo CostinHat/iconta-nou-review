@@ -16,18 +16,18 @@ Riscul real nu e doar amenda. Un contract nul poate fi desființat, iar într-un
 
 ::: ghid-temei
 „O persoană poate fi angajată în muncă numai în baza unui certificat medical, care constată faptul că cel în cauză este apt pentru prestarea acelei munci.(2) Nerespectarea prevederilor alin. (1) atrage nulitatea contractului individual de muncă."
-— Codul muncii (Legea 53/2003), art. 27 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 27 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Prin excepție de la prevederile alin. (1) și (5), salariatul străin poate fi angajat fără prezentarea certificatului medical care să constate faptul că acesta este apt pentru prestarea acelei munci. [...] (7) Certificatul medical prevăzut la alin. (6) trebuie obținut de salariatul străin până cel târziu la data începerii activității străinului."
-— Codul muncii (Legea 53/2003), art. 27 alin. (6)-(7) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 27 alin. (6)-(7) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „m) încălcarea de către angajator a obligației prevăzute la art. 27 și 119, cu amendă de la 1.500 lei la 3.000 lei"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. m) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. m) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(4) Constituie contravenție și se sancționează cu amendă de la 4.000 lei la 8.000 lei încălcarea dispozițiilor art. 12 alin. (1) lit. a) și b) , art. 13 lit. a) , d)-f) , h)-m) și o)"
-— Legea 319/2006, art. 39 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce riscă firma, concret:

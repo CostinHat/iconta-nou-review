@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Persoanele juridice sau alte entităţi fără personalitate juridică se identifică electronic cu certificate calificate. (2) Persoanele fizice care au calitatea de reprezentant sau de împuternicit al unei persoane fizice, persoane juridice sau al altei entităţi fără personalitate juridică se identifică electronic cu certificate calificate."
-— OMFP 660/2017, art. 6 alin. (1)-(2) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 6 alin. (1)-(2) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Ce rezultă de aici pentru o firmă:

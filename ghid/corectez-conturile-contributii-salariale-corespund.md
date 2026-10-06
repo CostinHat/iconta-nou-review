@@ -24,7 +24,7 @@ O greșeală frecventă este ignorarea codurilor 458 și 459 — suprataxa dator
 
 ## Ce face iConta.eu
 
-Pentru fiecare din cele trei conturi, funcția `compara_d112` (`core/control_incrucisat.py`) compară suma declarată (coduri D112 relevante, incluzând suprataxa 458/459 unde e cazul) cu rulajul creditor al contului, citit doar din notele validate, și aplică toleranța de rotunjire (0,5 lei per salariat, minim 1 leu). În funcție de rezultat:
+Pentru fiecare din cele trei conturi, funcția `compara_d112` compară suma declarată (coduri D112 relevante, incluzând suprataxa 458/459 unde e cazul) cu rulajul creditor al contului, citit doar din notele validate, și aplică toleranța de rotunjire (0,5 lei per salariat, minim 1 leu). În funcție de rezultat:
 
 - Cont la zero, fără nicio notă → remediu executabil, „contabilizează statul de plată" pentru contribuția respectivă.
 - Cont la zero, dar cu notă de salarii în ciornă → remediu sugerat, „validează nota".

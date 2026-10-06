@@ -16,7 +16,7 @@ Un cabinet stomatologic nu aplică TVA la serviciile lui curente nu pentru că e
 „Următoarele operațiuni de interes general sunt scutite de taxă: a) spitalizarea, îngrijirile medicale și operațiunile strâns legate de acestea, desfășurate de unități autorizate pentru astfel de activități, indiferent de forma de organizare, precum: spitale, sanatorii, centre de sănătate rurale sau urbane, dispensare, cabinete și laboratoare medicale, centre de îngrijire medicală și de diagnostic, baze de tratament și recuperare, stații de salvare și alte unități autorizate să desfășoare astfel de activități;
 [...]
 b) prestările de servicii efectuate în cadrul profesiunii lor de către stomatologi și tehnicieni dentari, precum și livrarea de proteze dentare efectuată de stomatologi și de tehnicieni dentari."
-— Cod fiscal, art. 292 alin. (1) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 292 alin. (1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru un cabinet stomatologic:

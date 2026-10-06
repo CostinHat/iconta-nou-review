@@ -14,12 +14,12 @@ Când o firmă ia un utilaj sau un mijloc de transport în leasing financiar, ap
 
 ::: ghid-temei
 „d) valoarea totală a ratelor de leasing, mai puțin cheltuielile accesorii, este mai mare sau egală cu valoarea de intrare a bunului, reprezentată de valoarea la care a fost achiziționat bunul de către finanțator, respectiv costul de achiziție."
-— OMFP 1.802/2014, Reglementările contabile, pct. 213 alin. (2) lit. d) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1.802/2014, Reglementările contabile, pct. 213 alin. (2) lit. d) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 ::: ghid-temei
 „(1) Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator [...]. (2) În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile și mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
-— OMFP 1.802/2014, Reglementările contabile, pct. 214 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1.802/2014, Reglementările contabile, pct. 214 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din aceste prevederi rezultă regula practică:

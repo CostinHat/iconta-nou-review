@@ -14,7 +14,7 @@ D100 declară, trimestrial, plățile anticipate sau impozitul pe profit curent;
 
 ::: ghid-temei
 „3. În cazul în care persoana juridică responsabilă corectează declarația depusă, declarația rectificativă se întocmește pe același model de formular, înscriind «X» în spațiul special prevăzut în acest scop. [...] Declarația nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare, cu excepțiile prevăzute la art. 105 alin. (6) din Legea nr. 207/2015 privind Codul de procedură fiscală."
-— OPANAF 206/2025 (instrucțiuni de completare a formularului 101) (sursă: anaf_surse/opanaf_206_2025_d101.txt)
+— OPANAF 206/2025 (instrucțiuni de completare a formularului 101) (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
 :::
 
 - Corecția D101 se face **prin D101 însuși**, bifând căsuța „Declarație rectificativă" de pe formular — nu printr-o declarație separată de tip 710.

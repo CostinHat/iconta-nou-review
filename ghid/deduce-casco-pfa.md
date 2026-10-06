@@ -18,7 +18,7 @@ Da, dacă vehiculul e afectat activității independente — dar deducerea urmea
 „Cheltuielile de funcționare, întreținere și reparații, aferente autoturismelor folosite de contribuabil sau membru asociat sunt deductibile limitat potrivit alin. (7) lit. k) la cel mult un singur autoturism aferent fiecărei persoane."
 
 „Cheltuielile efectuate pentru activitatea independentă, cât și în scopul personal al contribuabilului sau asociaților sunt deductibile numai pentru partea de cheltuială care este aferentă activității independente."
-— Codul fiscal, art. 68 alin. (4) lit. f) pct. 1, alin. (5) lit. j) și alin. (5) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (4) lit. f) pct. 1, alin. (5) lit. j) și alin. (5) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru CASCO:

@@ -14,7 +14,7 @@ Termenul de solicitare a înregistrării în scopuri de TVA nu e unic — depind
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: [...] b) dacă în cursul unui an calendaristic depășește plafonul de scutire prevăzut la art. 310 alin. (1), cel târziu la data depășirii plafonului."
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Situațiile și termenele diferă astfel:

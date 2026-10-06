@@ -18,7 +18,7 @@ Nu e o eroare de sistem, de cele mai multe ori — e mecanismul legal de încadr
 (2) Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1).
 [...]
 (3) O persoană juridică română care este nou-înființată poate opta să plătească impozit pe veniturile microîntreprinderilor începând cu primul an fiscal, dacă condițiile prevăzute la art. 47 alin. (1) lit. d) și h) sunt îndeplinite la data înregistrării în registrul comerțului, iar cea prevăzută la lit. g) în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice respective."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (1)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (1)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce explică asta pentru rezultatul interogării ANAF:
@@ -36,6 +36,6 @@ Ce explică asta pentru rezultatul interogării ANAF:
 
 ## Ce face iConta.eu
 
-Vectorul fiscal din iConta.eu (`core/vector_fiscal_api.py`) tratează distinct regimul fiscal (micro sau profit) pentru firmele cu contabilitate în partidă dublă (SRL) — regim pe care contabilul îl setează explicit la nivel de firmă, separat de categoria de mărime contabilă (micro-entitate/entitate mică, folosită pentru simplificarea situațiilor financiare, calculată în `core/categorie_marime.py` pe baza pragurilor din OMFP 1802/2014). Aplicația nu interoghează automat ANAF pentru a confirma regimul fiscal real al firmei — contabilul verifică direct pe portalul ANAF ce regim apare înregistrat și configurează corespunzător firma în iConta.eu.
+Vectorul fiscal din iConta.eu tratează distinct regimul fiscal (micro sau profit) pentru firmele cu contabilitate în partidă dublă (SRL) — regim pe care contabilul îl setează explicit la nivel de firmă, separat de categoria de mărime contabilă (micro-entitate/entitate mică, folosită pentru simplificarea situațiilor financiare, calculată în aplicație pe baza pragurilor din OMFP 1802/2014). Aplicația nu interoghează automat ANAF pentru a confirma regimul fiscal real al firmei — contabilul verifică direct pe portalul ANAF ce regim apare înregistrat și configurează corespunzător firma în iConta.eu.
 
 [iConta.eu](/)

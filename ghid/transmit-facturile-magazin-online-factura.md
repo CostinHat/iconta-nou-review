@@ -14,7 +14,7 @@ O factură emisă din comenzile unui magazin online nu urmează un traseu separa
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor în sistemul naţional privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015 [...] Calculul termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71 al Consiliului din 3 iunie 1971 [...]"
-— OUG 89/2025 (sursă: anaf_surse/oug_89_2025.txt, linia 917)
+— OUG 89/2025 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 - Termenul de transmitere e legat de **data emiterii facturii**, nu de data la care a fost plasată comanda în magazinul online — cele două date pot diferi cu zile bune, mai ales dacă emiterea nu e imediată.
@@ -29,7 +29,7 @@ O factură emisă din comenzile unui magazin online nu urmează un traseu separa
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce din iConta.eu (ecranul „Magazin online") produce facturi interne din comenzile magazinului, dar **nu conține nicio logică de transmitere către e-Factura/SPV** — verificat direct în cod, `core/woocommerce.py` nu are nicio referință la e-Factura, SPV sau UBL. Facturile rezultate dintr-o comandă WooCommerce ajung în evidența firmei exact ca o factură introdusă manual, cu aceeași stare inițială de „de preluat".
+Conectorul WooCommerce din iConta.eu (ecranul „Magazin online") produce facturi interne din comenzile magazinului, dar **nu conține nicio logică de transmitere către e-Factura/SPV** — verificat direct în cod, aplicația nu are nicio referință la e-Factura, SPV sau UBL. Facturile rezultate dintr-o comandă WooCommerce ajung în evidența firmei exact ca o factură introdusă manual, cu aceeași stare inițială de „de preluat".
 
 Transmiterea propriu-zisă la ANAF rămâne, pentru orice factură din iConta.eu — inclusiv cele provenite din WooCommerce — o funcționalitate separată de conector, cu propriile verificări (validare de structură, evitarea unei duble trimiteri). Conectorul WooCommerce nu inițiază și nu automatizează acest pas.
 

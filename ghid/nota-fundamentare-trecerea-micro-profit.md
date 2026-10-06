@@ -16,7 +16,7 @@ Trecerea de la impozitul pe veniturile microîntreprinderilor la impozitul pe pr
 „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.
 (...) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție.
 (...) nu mai este îndeplinită, microîntreprinderea comunică organelor fiscale competente ieșirea din sistemul de impunere pe veniturile microîntreprinderilor, până la data de 31 martie inclusiv a anului fiscal următor."
-— Legea 227/2015, art. 52 alin. (1), (2) și art. 55 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 52 alin. (1), (2) și art. 55 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 O notă de fundamentare corectă pentru trecerea de la micro la profit trebuie să identifice, punctual, care dintre condițiile art. 47 nu mai e îndeplinită:

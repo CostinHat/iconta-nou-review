@@ -16,13 +16,13 @@ Trebuie spus de la început că, în ordinea de preferință a Codului de proced
 
 ::: ghid-temei
 „Creditorii care nu au participat la executarea silită pot depune titlurile lor în vederea participării la distribuirea sumelor realizate prin executare silită, numai până la data întocmirii de către organele de executare silită a procesului-verbal privind eliberarea sau distribuirea acestor sume."
-— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Eliberarea sau distribuirea sumei rezultate din executarea silită se efectuează numai după trecerea unui termen de 15 zile de la data depunerii sumei, când organul de executare silită procedează, după caz, la eliberarea ori distribuirea sumei, cu înștiințarea părților și a creditorilor care și-au depus titlurile."
-— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „După întocmirea procesului-verbal prevăzut la alin. (6) niciun creditor nu mai este în drept să ceară să participe la distribuirea sumelor rezultate din executarea silită."
-— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să știe furnizorul:

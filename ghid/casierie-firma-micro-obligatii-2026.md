@@ -14,7 +14,7 @@ Regimul fiscal de micro nu schimbă regulile de casierie — plafoanele pentru n
 
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi."
-— Legea nr. 70/2015, art. 3 alin. (1) lit. a) și c) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015, art. 3 alin. (1) lit. a) și c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Pentru o firmă mică, plafoanele-cheie de reținut sunt:
@@ -31,6 +31,6 @@ Pentru o firmă mică, plafoanele-cheie de reținut sunt:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat de casierie (`core/casa.py`) care verifică automat operațiunile în numerar față de plafoanele legale în vigoare pentru 2026 (Legea 70/2015, actualizată prin Legea 239/2025): plafonul de încasare de la persoane juridice, plafonul de plată, plafonul pentru avansuri spre decontare și soldul maxim de casă, semnalând avertismente atunci când o operațiune sau soldul zilei le depășește. Fiecare plafon aplicat este însoțit, în cod, de temeiul legal exact pe care se bazează.
+La data acestui ghid, iConta.eu are un modul dedicat de casierie care verifică automat operațiunile în numerar față de plafoanele legale în vigoare pentru 2026 (Legea 70/2015, actualizată prin Legea 239/2025): plafonul de încasare de la persoane juridice, plafonul de plată, plafonul pentru avansuri spre decontare și soldul maxim de casă, semnalând avertismente atunci când o operațiune sau soldul zilei le depășește. Fiecare plafon aplicat este însoțit, în cod, de temeiul legal exact pe care se bazează.
 
 [iConta.eu](/)

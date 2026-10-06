@@ -14,7 +14,7 @@ O comandă plasată printr-un magazin online (WooCommerce sau orice altă platfo
 
 ::: ghid-temei
 „În relaţia comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, [...] emitentul facturii electronice are obligaţia de transmitere a acesteia către destinatar utilizând sistemul naţional privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepţie facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015."
-— OUG 120/2021, art. 10 alin. (1), forma modificată prin Legea 296/2023 (sursă: anaf_surse/oug_115_2023_consolidat.html)
+— OUG 120/2021, art. 10 alin. (1), forma modificată prin Legea 296/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 - Obligația de transmitere prin RO e-Factura, în forma actuală (de la Legea 296/2023), vizează relația **B2B** — între persoane impozabile stabilite în România.
@@ -29,7 +29,7 @@ O comandă plasată printr-un magazin online (WooCommerce sau orice altă platfo
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce din iConta.eu (ecranul „Magazin online", configurare URL + chei API și buton „Sincronizează acum") produce **facturi interne** din comenzile magazinului. Verificat direct în codul sursă: modulul care face conversia comandă → factură (`core/woocommerce.py`) nu conține nicio linie legată de e-Factura, SPV sau UBL. Conectorul tratează, prin decizie de produs asumată explicit în cod, orice comandă preluată ca venind de la o persoană fizică fără cod fiscal.
+Conectorul WooCommerce din iConta.eu (ecranul „Magazin online", configurare URL + chei API și buton „Sincronizează acum") produce **facturi interne** din comenzile magazinului. Verificat direct în codul sursă: modulul care face conversia comandă → factură nu conține nicio linie legată de e-Factura, SPV sau UBL. Conectorul tratează, prin decizie de produs asumată explicit în cod, orice comandă preluată ca venind de la o persoană fizică fără cod fiscal.
 
 Odată create, facturile din comenzile WooCommerce intră în același flux general de facturare ca oricare altă factură din aplicație — inclusiv, unde e cazul, transmiterea către RO e-Factura, care rămâne însă o funcționalitate separată, cu propriile verificări. Conectorul WooCommerce **nu declanșează** automat nicio transmitere la SPV: el doar alimentează fluxul de facturare cu documentele rezultate din comenzi.
 

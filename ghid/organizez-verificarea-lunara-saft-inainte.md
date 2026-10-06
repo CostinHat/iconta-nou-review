@@ -14,7 +14,7 @@ SAF-T (Declarația D406) se depune lunar sau trimestrial, în funcție de catego
 
 ::: ghid-temei
 „Pentru contribuabilii nou-înregistraţi/încadraţi după data de referinţă pentru fiecare categorie în parte, obligaţia de depunere a Declaraţiei informative D406 începe de la data efectivă a înregistrării, prima depunere a Declaraţiei informative D406 urmând să se facă în ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de referinţă pentru categoria în care au fost înregistraţi/încadraţi."
-— OPANAF nr. 407/2025 privind Declarația informativă D406 (SAF-T), pct. 1.1 lit. g) (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF nr. 407/2025 privind Declarația informativă D406 (SAF-T), pct. 1.1 lit. g) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ce implică acest termen pentru organizarea verificării:

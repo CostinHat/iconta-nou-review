@@ -14,10 +14,10 @@ ANAF are dreptul legal de a cere firmei orice informație necesară pentru a sta
 
 ::: ghid-temei
 „ART. 58 Obligația de a furniza informații (1) Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. [...] (2) Cererea de furnizare a informațiilor se formulează în scris. În cerere, organul fiscal trebuie să specifice natura informațiilor solicitate pentru determinarea stării de fapt fiscale și documentele care susțin informațiile furnizate, atunci când acestea nu sunt deținute de organul fiscal."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 58 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 58 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(1) Pentru exercitarea dreptului de deducere a taxei, persoana impozabilă trebuie să îndeplinească următoarele condiții: a) pentru taxa datorată sau achitată, aferentă bunurilor care i-au fost ori urmează să îi fie livrate ori serviciilor care i-au fost ori urmează să îi fie prestate în beneficiul său de către o persoană impozabilă, să dețină o factură emisă în conformitate cu prevederile art. 319, precum și dovada plății în cazul achizițiilor efectuate de către persoanele impozabile care aplică sistemul TVA la încasare [...]"
-— Legea nr. 227/2015 privind Codul fiscal, art. 299 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 299 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din cele două articole rezultă practic:

@@ -15,7 +15,7 @@ Când o firmă vinde propriile produse prin propriul magazin online, regulile de
 ::: ghid-temei
 „În cazul în care o persoană impozabilă, prin utilizarea unei interfețe electronice cum ar fi o piață online, o platformă, un portal sau alte mijloace similare, facilitează vânzarea la distanță de bunuri importate din teritorii terțe sau țări terțe în loturi cu o valoare intrinsecă de maximum 150 euro, se consideră că această persoană impozabilă a primit și a livrat ea însăși bunurile respective. [...]
 În cazul în care o persoană impozabilă, prin utilizarea unei interfețe electronice cum ar fi o piață online, o platformă, un portal sau alte mijloace similare, facilitează livrarea de bunuri în Uniunea Europeană de către o persoană impozabilă nestabilită în Uniunea Europeană către o persoană neimpozabilă, se consideră că persoana impozabilă care a facilitat livrarea a primit și a livrat ea însăși bunurile respective."
-— Legea 227/2015, art. 270 alin. (15) și (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 270 alin. (15) și (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, strict din text:
@@ -33,6 +33,6 @@ Ce rezultă, strict din text:
 
 ## Ce face iConta.eu
 
-iConta.eu are un conector pentru importul comenzilor dintr-un magazin propriu WooCommerce (`core/woocommerce.py`), care transformă comenzile în facturi în aplicație. Acest conector vizează magazinul propriu al firmei, nu o platformă de tip marketplace care intermediază vânzări pentru mai mulți comercianți terți. La data acestui ghid, iConta.eu **nu implementează regimul special de TVA pentru interfețe electronice** de la art. 270 alin. (15)-(16) (recunoașterea platformei ca furnizor considerat) și art. 321^1 (ținerea registrelor speciale aferente) — pentru firmele care vând efectiv prin marketplace-uri terțe, încadrarea corectă a TVA-ului rămâne o analiză manuală.
+iConta.eu are un conector pentru importul comenzilor dintr-un magazin propriu WooCommerce, care transformă comenzile în facturi în aplicație. Acest conector vizează magazinul propriu al firmei, nu o platformă de tip marketplace care intermediază vânzări pentru mai mulți comercianți terți. La data acestui ghid, iConta.eu **nu implementează regimul special de TVA pentru interfețe electronice** de la art. 270 alin. (15)-(16) (recunoașterea platformei ca furnizor considerat) și art. 321^1 (ținerea registrelor speciale aferente) — pentru firmele care vând efectiv prin marketplace-uri terțe, încadrarea corectă a TVA-ului rămâne o analiză manuală.
 
 [iConta.eu](/)

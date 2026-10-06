@@ -14,7 +14,7 @@ Când un dezvoltator construiește un bloc de locuințe pe un teren cumpărat ca
 
 ::: ghid-temei
 „7. cost de producție înseamnă prețul de achiziție al materiilor prime și al materialelor consumabile și alte cheltuieli care pot fi atribuite direct bunului în cauză. Costul de producție sau de prelucrare al stocurilor, precum și costul de producție al imobilizărilor cuprind cheltuielile directe aferente producției [...], precum și cota cheltuielilor indirecte de producție alocată în mod rațional ca fiind legată de fabricația acestora."
-— OMFP 1802/2014, pct. 3, definiția 7 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 3, definiția 7 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Notă onestă: nu am găsit în corpus un articol care să dea explicit o formulă de repartizare a costului terenului pe apartamente — citatul de mai sus este principiul general al costului de producție (alocarea rațională a cheltuielilor indirecte), aplicat prin analogie la această situație, nu un text specific pe subiect.

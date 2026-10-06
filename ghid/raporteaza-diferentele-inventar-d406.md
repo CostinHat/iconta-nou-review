@@ -14,7 +14,7 @@ Răspunsul scurt, care corectează premisa întrebării: D406 **nu are** un câm
 
 ::: ghid-temei
 „PhysicalStock (Stocuri) — Conţine detalii cu privire la stocuri, precum ID-ul depozitului unde se găsesc bunurile, codul de identificare al produsului, detalii despre proprietarul stocurilor, codul de încadrare tarifară (codul NC), detalii privind cantitatea la început şi la final de perioadă de raportare, valoarea stocului la început şi la final de perioadă de raportare etc."
-— OPANAF 1783/2021 (SAF-T D406), Anexa 1, descrierea secțiunii PhysicalStock (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 (SAF-T D406), Anexa 1, descrierea secțiunii PhysicalStock (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce înseamnă practic:

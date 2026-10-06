@@ -16,10 +16,10 @@ Distincția nu e doar de vocabular. Ordonatorii de credite care înregistrează 
 
 ::: ghid-temei
 „4^1. arierate - plăți restante cu o vechime mai mare de 90 de zile, calculată de la data scadenței;"
-— Legea 273/2006 privind finanțele publice locale, art. 2 alin. (1) pct. 4^1 (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 2 alin. (1) pct. 4^1 (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „44^1. plăți restante - sume datorate și neachitate care au depășit termenul de plată prevăzut de actele normative sau de contract/factură. Pentru sumele datorate și neachitate, reeșalonate la plată, cu acordul părților, se modifică termenul de plată în mod corespunzător;"
-— Legea 273/2006, art. 2 alin. (1) pct. 44^1 (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 2 alin. (1) pct. 44^1 (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

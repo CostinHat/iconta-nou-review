@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „[...] persoana juridică română care verifică condiția dacă are unul sau mai mulți acționari/asociați care dețin, direct și/sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot ale acestei persoane juridice române, acționari/asociați care desfășoară și activitate economică prin intermediul unei persoane fizice autorizate/întreprinderi individuale/întreprinderii familiale/altei forme de organizare a unei activități economice, fără personalitate juridică, autorizată potrivit legilor în vigoare. În această situație, veniturile înregistrate [...] ale/a persoanei fizice autorizate/ întreprinderii individuale/întreprinderii familiale/altei forme de organizare a unei activități economice fără personalitate juridică, autorizată potrivit legilor în vigoare, se cumulează cu cele realizate de persoana juridică română/alte întreprinderi legate."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1^1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce se poate confirma din acest text: legea fiscală tratează în continuare întreprinderea familială ca pe o formă validă, autorizată potrivit legilor în vigoare, de organizare a unei activități economice — și îi cumulează veniturile cu cele ale firmelor deținute de aceiași asociați, atunci când se verifică plafonul de microîntreprindere.

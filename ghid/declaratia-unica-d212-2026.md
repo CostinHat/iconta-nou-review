@@ -14,7 +14,7 @@ Declarația unică privind impozitul pe venit și contribuțiile sociale datorat
 
 ::: ghid-temei
 „Contribuabilii au obligația depunerii Declarației unice privind impozitul pe venit și contribuțiile sociale la organul fiscal competent, pentru fiecare an fiscal, în cazul în care realizează, individual sau într-o formă de asociere, venituri/pierderi, după caz, din următoarele categorii de venit: a) activități independente; b) drepturi de proprietate intelectuală; c) cedarea folosinței bunurilor; d) investiții; e) activități agricole, silvicultură și piscicultură; f) alte surse."
-— Codul fiscal (Legea 227/2015), art. 122 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 122 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce anume face D212:
@@ -32,8 +32,8 @@ Ce anume face D212:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu (`core/d212.py`) din datele persoanei fizice: venitul din registrul de încasări și plăți al PFA, normele de venit, celelalte venituri din România și veniturile din străinătate se introduc pe formular, iar aplicația calculează rândurile, CAS, CASS, impozitul și suma de plată, respectând structura validată de ANAF (D212Validator, namespace v11). Veniturile persoanei din afara firmei (alte activități, investiții) nu le cunoaște singură — le scrie contabilul.
+D212 se generează în iConta.eu din datele persoanei fizice: venitul din registrul de încasări și plăți al PFA, normele de venit, celelalte venituri din România și veniturile din străinătate se introduc pe formular, iar aplicația calculează rândurile, CAS, CASS, impozitul și suma de plată, respectând structura validată de ANAF (D212Validator, namespace v11). Veniturile persoanei din afara firmei (alte activități, investiții) nu le cunoaște singură — le scrie contabilul.
 
-Pentru contribuabilii care își țin evidența financiară în iConta.eu prin Registrul-jurnal de încasări și plăți (OMFP 170/2015), funcția `fisa_d212` din `core/rip_api.py` calculează automat venitul net, CAS și CASS pe baza operațiunilor validate — dar numai pentru veniturile anilor 2025 și 2026, singurii ale căror plafoane sunt verificate la sursă în aplicație.
+Pentru contribuabilii care își țin evidența financiară în iConta.eu prin Registrul-jurnal de încasări și plăți (OMFP 170/2015), funcția `fisa_d212` din aplicație calculează automat venitul net, CAS și CASS pe baza operațiunilor validate — dar numai pentru veniturile anilor 2025 și 2026, singurii ale căror plafoane sunt verificate la sursă în aplicație.
 
 [iConta.eu](/)

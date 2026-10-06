@@ -14,7 +14,7 @@ Forma juridică nu scutește de obligația de facturare electronică. Legea RO e
 
 ::: ghid-temei
 „operator economic - orice entitate care desfăşoară o activitate economică constând în executarea de lucrări, livrarea de bunuri/produse şi/sau prestarea de servicii."
-— OUG 120/2021, art. 2 lit. b) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 2 lit. b) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce rezultă concret pentru o II în 2026:
@@ -31,6 +31,6 @@ Ce rezultă concret pentru o II în 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu trimite și primește facturi prin sistemul RO e-Factura (`core/efactura_send.py`) fără o ramificare de cod pe forma juridică a firmei — fluxul e identic pentru II, PFA sau SRL. Pentru SAF-T, aplicația respectă corect excluderea legală: PFA/II/PFL sunt excluse necondiționat din obligația D406, conform OPANAF 407/2025, Anexa 5 pct. 4 lit. a) și b), citat explicit în codul care determină declarațiile datorate (`core/control_fiscal_api.py`).
+iConta.eu trimite și primește facturi prin sistemul RO e-Factura fără o ramificare de cod pe forma juridică a firmei — fluxul e identic pentru II, PFA sau SRL. Pentru SAF-T, aplicația respectă corect excluderea legală: PFA/II/PFL sunt excluse necondiționat din obligația D406, conform OPANAF 407/2025, Anexa 5 pct. 4 lit. a) și b), citat explicit în codul care determină declarațiile datorate.
 
 [iConta.eu](/)

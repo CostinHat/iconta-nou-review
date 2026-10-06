@@ -15,7 +15,7 @@ Fiind înscris în sistemul TVA la încasare nu înseamnă că absolut toate ope
 ::: ghid-temei
 **Art. 282 alin. (6) CF** (rezumat din dosarul de cercetare): operațiunile supuse taxării inverse (art. 307 alin. (2)-(6) sau art. 331), livrările scutite, operațiunile din regimurile speciale (art. 311-313) și livrările către persoane afiliate (art. 7 pct. 26) sunt excluse din sistemul TVA la încasare, chiar dacă firma e înscrisă.
 
-Comentariu verificat direct în codul sursă (`core/d300.py`), atașat exact acestei reguli: *„taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare: ramane pe calea de emitere ... chiar sub tva_la_incasare"*.
+Comentariu verificat direct în codul sursă, atașat exact acestei reguli: *„taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare: ramane pe calea de emitere ... chiar sub tva_la_incasare"*.
 :::
 
 ## Ce înseamnă practic
@@ -32,6 +32,6 @@ Aceeași excludere se aplică livrărilor scutite de TVA, operațiunilor din reg
 
 ## Ce face iConta.eu
 
-`core/d300.py` tratează explicit taxarea inversă ca excepție de la mecanismul TVA la încasare: sumele aferente acestor operațiuni nu trec prin funcția de calcul al exigibilității la încasare (`tva_din_incasare()`), nici pentru firmele care au flag-ul `tva_la_incasare` activ pe profil — rămân pe calea normală de raportare, la faptul generator.
+Aplicația tratează explicit taxarea inversă ca excepție de la mecanismul TVA la încasare: sumele aferente acestor operațiuni nu trec prin funcția de calcul al exigibilității la încasare (`tva_din_incasare()`), nici pentru firmele care au flag-ul `tva_la_incasare` activ pe profil — rămân pe calea normală de raportare, la faptul generator.
 
 [iConta.eu](/)

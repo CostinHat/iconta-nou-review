@@ -15,7 +15,7 @@ Firmele cu mai multe conturi bancare — în lei și în valută, la bănci dife
 ::: ghid-temei
 „317. (1) În înțelesul prezentelor reglementări, o tranzacție în valută este o tranzacție care este exprimată sau necesită decontarea într-o altă monedă decât moneda națională (leu) [...] c) achiziționează sau cedează într-o altă manieră active, contractează sau achită datorii exprimate în valută. [...] (3) Diferența de curs valutar este diferența ce rezultă din conversia unui anumit număr de unități ale unei monede într-o altă monedă la cursuri de schimb diferite.
 325. (1) La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. Diferențele de curs înregistrate se recunosc în contabilitate la venituri sau cheltuieli din diferențe de curs valutar, după caz. (2) [...] b) cursul de schimb al pieței valutare comunicat de Banca Națională a României, din ultima zi bancară a lunii în cauză, pentru evaluarea creanțelor și datoriilor în valută, a disponibilităților în valută și a altor valori de trezorerie [...] existente în sold la sfârșitul lunii."
-— OMFP nr. 1802/2014, pct. 317 alin. (1) lit. c) și alin. (3), pct. 325 alin. (1)-(2) lit. b) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014, pct. 317 alin. (1) lit. c) și alin. (3), pct. 325 alin. (1)-(2) lit. b) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text rezultă distincția care contează în practică:

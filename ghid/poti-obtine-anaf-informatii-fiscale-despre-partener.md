@@ -16,15 +16,15 @@ Contează înainte de un contract mare, de o livrare cu plată amânată sau de 
 
 ::: ghid-temei
 „(2) În categoria informațiilor de natura celor considerate a fi secret fiscal intră datele referitoare la contribuabil/plătitor, cum ar fi: plăți, conturi, rulaje, transferuri de numerar, solduri, încasări, deduceri, credite, datorii, valoarea patrimoniului net sau orice fel de informații obținute din declarații ori documente prezentate de către contribuabil/plătitor sau terți."
-— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „d) oricărui solicitant, cu consimțământul expres și neechivoc al contribuabilului/plătitorului despre care au fost solicitate informații. Responsabilitatea privind modalitatea de utilizare a informațiilor astfel obținute revine solicitantului;"
-— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (3) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (3) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(6 1 ) în scopul aplicării prevederilor alin. (3) lit. d), solicitantul care prin natura activității solicită frecvent informații de natura secretului fiscal despre clienții/partenerii săi poate încheia un protocol privind schimbul de informații cu organul fiscal deținător al informației ce se transmite, utilizând sistemul informatic în conformitate cu art. 70 1 ."
-— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (6^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 11 alin. (6^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe scurt:

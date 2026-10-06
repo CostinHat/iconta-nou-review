@@ -14,7 +14,7 @@ Cele mai multe imprimante de birou costă mult sub pragul legal, ceea ce le face
 
 ::: ghid-temei
 „b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului;"
-— Codul fiscal (Legea 227/2015), art. 28 alin. (2) lit. b), astfel cum a fost modificat prin OUG 8/2026 art. 6 pct. 7 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (2) lit. b), astfel cum a fost modificat prin OUG 8/2026 art. 6 pct. 7 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în cazul unei imprimante:

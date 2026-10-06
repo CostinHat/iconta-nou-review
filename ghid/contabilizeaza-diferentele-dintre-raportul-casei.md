@@ -14,7 +14,7 @@ Raportul Z al casei de marcat arată ce a fost vândut și încasat pe fiecare t
 
 ::: ghid-temei
 „În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primește, se eliberează sau se justifică numerarul, ori al altor documente pentru care normele de utilizare prevăd asemenea restricții, documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv."
-— OMFP nr. 2.634/2015, Norme generale, pct. 15 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Norme generale, pct. 15 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Practic, o diferență între raportul casei de marcat și decontul POS/bancar are, de regulă, una dintre aceste cauze:

@@ -16,13 +16,13 @@ Situația apare des la firmele în eșalonare care au și deconturi de rambursar
 
 ::: ghid-temei
 „(1) Pentru rata de eșalonare la plată achitată cu întârziere până la următorul termen de plată din graficul de eșalonare, potrivit art. 194 alin. (1) lit. d), precum și pentru diferențele de obligații fiscale marcate și rămase nestinse după soluționarea deconturilor cu sumă negativă de TVA cu opțiune de rambursare, potrivit art. 190 alin. (5), se percepe o penalitate, care i se comunică debitorului prin decizie referitoare la obligațiile de plată accesorii și se achită potrivit prevederilor art. 156 alin. (1). (2) Nivelul penalității este de 5% din: [...] b) diferențele de obligații fiscale marcate și rămase nestinse după soluționarea deconturilor cu sumă negativă de TVA cu opțiune de rambursare."
-— Codul de procedură fiscală (Legea 207/2015), art. 198 alin. (1) și (2) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 198 alin. (1) și (2) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Diferențele de obligații fiscale rămase nestinse în urma soluționării deconturilor cu sumă negativă de TVA cu opțiune de rambursare se comunică debitorului printr-o înștiințare de plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 190 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 190 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „g) să achite obligațiile fiscale rămase nestinse după soluționarea deconturilor potrivit art. 190 alin. (5), în cel mult 30 de zile de la data comunicării înștiințării de plată, cu excepția situației în care debitorul a solicitat eșalonarea la plată potrivit art. 195 ;"
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. g) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. g) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii, în ordinea din lege:

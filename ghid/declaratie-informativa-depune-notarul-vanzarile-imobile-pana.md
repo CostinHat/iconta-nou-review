@@ -16,12 +16,12 @@ Declarația e distinctă de plata impozitului pe transfer. Notarul calculează �
 
 ::: ghid-temei
 „Notarii publici au obligația să depună lunar, până la data de 25 inclusiv a lunii următoare celei în care a avut loc autentificarea actelor privind transferul proprietăților imobiliare din patrimoniul personal, la organul fiscal teritorial, o declarație informativă privind transferurile de proprietăți imobiliare, cuprinzând cel puțin următoarele elemente pentru fiecare tranzacție:"
-— Codul fiscal (Legea 227/2015), art. 113 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 113 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „a) părțile contractante; ... b) valoarea înscrisă în documentul de transfer; ... c) impozitul pe venitul din transferul proprietăților imobiliare din patrimoniul personal; ... d) taxele notariale aferente transferului. ... e) numărul cadastral al proprietății imobiliare."
-— Codul fiscal (Legea 227/2015), art. 113 lit. a)-e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 113 lit. a)-e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele obligației:

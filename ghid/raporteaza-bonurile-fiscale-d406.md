@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T), depus prin declarația informativ�
 
 ::: ghid-temei
 „1. Fişierul standard de control fiscal (SAF-T), prevăzut la art. 59^1 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, reprezintă un standard internaţional utilizat pentru transferul electronic de date din evidenţa contabilă şi fiscală, de la contribuabili/plătitori către autorităţile fiscale şi auditori."
-— OPANAF 1783/2021, anexa 1, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, anexa 1, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ordinul stabilește obligația generală de raportare a evidenței contabile și fiscale prin D406, dar structura tehnică exactă a fișierului (ce secțiune XML primește bonurile fiscale — de regulă agregate pe zi, prin raportul Z, nu bon cu bon) este dată de schema XSD oficială a SAF-T, un document tehnic separat de textul ordinului, la care nu am acces într-o formă verbatim în sursele disponibile aici. Ce se poate confirma din text:

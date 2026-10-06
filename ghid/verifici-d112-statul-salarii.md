@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora, instituțiile prevăzute la art. 136 lit. d)-f), precum și persoanele fizice care realizează în România venituri din salarii sau asimilate salariilor de la angajatori din state care nu intră sub incidența legislației europene aplicabile în domeniul securității sociale [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate."
-— Legea 227/2015 (Codul fiscal), art. 147 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 147 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Obligația legală e ca declarația să reflecte corect veniturile **plătite** (sau datorate, după caz) în luna la care se referă — nu există o cerință legală explicită de „reconciliere D112 vs. stat de plată" ca pas separat.

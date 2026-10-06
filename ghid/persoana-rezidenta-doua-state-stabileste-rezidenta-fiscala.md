@@ -16,10 +16,10 @@ Rezultatul contează mult: statul de rezidență impozitează veniturile mondial
 
 ::: ghid-temei
 „dacă aceasta deține o locuință permanentă aflată la dispoziția sa în ambele state, persoana este considerată rezidentă numai a statului în care își are centrul intereselor vitale, respectiv în statul cu care relațiile sale personale și economice sunt mai apropiate."
-— OMFP 1099/2016, art. 9 lit. b) (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 9 lit. b) (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 
 „persoana fizică este considerată rezidentă numai a statului în care are domiciliul, respectiv locuința permanentă aflată la dispoziția sa. O locuință se consideră permanentă dacă este proprietatea personală a persoanei fizice, dacă aceasta este închiriată de persoana respectivă sau dacă rămâne disponibilă oricând pentru această persoană și/sau familia sa"
-— OMFP 1099/2016, art. 9 lit. a) (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 9 lit. a) (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 Ordinea criteriilor (art. 9):

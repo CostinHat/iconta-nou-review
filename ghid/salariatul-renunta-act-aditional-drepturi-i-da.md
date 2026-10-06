@@ -16,15 +16,15 @@ Pentru angajator, riscul e dublu. Clauza nulă nu produce efecte, iar salariatul
 
 ::: ghid-temei
 „Salariații nu pot renunța la drepturile ce le sunt recunoscute prin lege. Orice tranzacție prin care se urmărește renunțarea la drepturile recunoscute de lege salariaților sau limitarea acestor drepturi este lovită de nulitate."
-— Codul muncii (Legea 53/2003), art. 38 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 38 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „În situația în care o clauză este afectată de nulitate, întrucât stabilește drepturi sau obligații pentru salariați, care contravin unor norme legale imperative sau contractelor colective de muncă aplicabile, aceasta este înlocuită de drept cu dispozițiile legale sau convenționale aplicabile, salariatul având dreptul la despăgubiri."
-— Codul muncii (Legea 53/2003), art. 57 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 57 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „d) stipularea în contractul individual de muncă a unor clauze contrare dispozițiilor legale, cu amendă de la 2.000 lei la 5.000 lei"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. d) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. d) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

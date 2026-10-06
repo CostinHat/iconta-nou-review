@@ -15,7 +15,7 @@ Regimul de TVA (normal, adică exigibilitate la facturare, sau la încasare) nu 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. La stabilirea rezultatului fiscal se iau în calcul și elemente similare veniturilor și cheltuielilor, potrivit normelor metodologice, precum și pierderile fiscale care se recuperează în conformitate cu prevederile art. 31. Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală.
 (2) Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
-— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (1), (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 19 alin. (1), (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru o firmă cu TVA în regim normal:
@@ -32,6 +32,6 @@ Ce rezultă de aici pentru o firmă cu TVA în regim normal:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează rezultatul fiscal pe baza înregistrărilor contabile ale firmei, prin modulele de impozit pe profit (`core/d101.py`, `core/d101_reconciliere.py`) sau de impozit micro (`core/d100.py`), în funcție de `regim_fiscal` setat în profilul firmei. Regimul de TVA (`platitor_tva`, `tip_decont`) este o setare separată, folosită de motorul fiscal doar pentru a determina declarațiile de TVA datorate (D300, D390 etc., via `core/vector_fiscal_api.py`), nu pentru a modifica baza de calcul a impozitului pe profit sau a impozitului micro.
+La data acestui ghid, iConta.eu calculează rezultatul fiscal pe baza înregistrărilor contabile ale firmei, prin modulele de impozit pe profit sau de impozit micro, în funcție de `regim_fiscal` setat în profilul firmei. Regimul de TVA (`platitor_tva`, `tip_decont`) este o setare separată, folosită de motorul fiscal doar pentru a determina declarațiile de TVA datorate (D300, D390 etc., via aplicația), nu pentru a modifica baza de calcul a impozitului pe profit sau a impozitului micro.
 
 [iConta.eu](/)

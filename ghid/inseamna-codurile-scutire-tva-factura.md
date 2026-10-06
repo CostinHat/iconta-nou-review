@@ -14,7 +14,7 @@ O linie de factură scutită de TVA — export, livrare intracomunitară, presta
 
 ::: ghid-temei
 „(20) Factura cuprinde în mod obligatoriu următoarele informații: [...] l) în cazul în care este aplicabilă o scutire de taxă, trimiterea la dispozițiile aplicabile din prezentul titlu ori din Directiva 112 sau orice altă mențiune din care să rezulte că livrarea de bunuri ori prestarea de servicii face obiectul unei scutiri;"
-— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (20) lit. l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 319 alin. (20) lit. l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă asta, aplicat la factura electronică:
@@ -32,6 +32,6 @@ Ce înseamnă asta, aplicat la factura electronică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează cotele de TVA aplicabile fiecărei operațiuni prin `core/cote_tva.py` și transmite facturile prin RO e-Factura via `core/efactura_send.py` / `core/efactura_trimitere.py`. Aplicația **nu alege automat codul de motiv al scutirii** pentru fiecare linie de factură fără TVA — utilizatorul trebuie să indice manual temeiul scutirii (articolul din Codul fiscal sau mențiunea echivalentă) la introducerea facturii, iar corectitudinea acestei alegeri, cu efectele ei asupra deducerii TVA, rămâne o responsabilitate a contabilului.
+La data acestui ghid, iConta.eu gestionează cotele de TVA aplicabile fiecărei operațiuni prin aplicație și transmite facturile prin RO e-Factura via aplicația / aplicația. Aplicația **nu alege automat codul de motiv al scutirii** pentru fiecare linie de factură fără TVA — utilizatorul trebuie să indice manual temeiul scutirii (articolul din Codul fiscal sau mențiunea echivalentă) la introducerea facturii, iar corectitudinea acestei alegeri, cu efectele ei asupra deducerii TVA, rămâne o responsabilitate a contabilului.
 
 [iConta.eu](/)

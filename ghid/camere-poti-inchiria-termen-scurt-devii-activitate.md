@@ -16,15 +16,15 @@ Regula se aplică de la veniturile anului 2026. Trecerea pragului nu schimbă co
 
 ::: ghid-temei
 „Sunt considerate venituri din cedarea folosinței bunurilor și veniturile obținute de către proprietar, uzufructuar sau alt deținător legal din închirierea pe termen scurt a unui număr cuprins între 1 și 7 camere inclusiv, situate în locuințe proprietate personală, indiferent de numărul de locuințe în care sunt situate acestea, în cursul unui an fiscal."
-— Codul fiscal (Legea 227/2015), art. 83 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Începând cu anul fiscal în care numărul camerelor închiriate pe termen scurt, situate în locuințe proprietate personală, este de peste 7 camere, veniturile realizate reprezintă venituri din activități independente și se supun impunerii potrivit prevederilor art. 68^3 ."
-— Codul fiscal (Legea 227/2015), art. 83 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 83 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prevederile prezentului articol se aplică și în situația prevăzută la art. 83 alin. (4)"
-— Codul fiscal (Legea 227/2015), art. 68^3 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68^3 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

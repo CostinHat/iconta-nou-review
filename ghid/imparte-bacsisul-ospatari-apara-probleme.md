@@ -33,6 +33,6 @@ Legea 376/2022 nu impune o formulă anume de împărțire a bacșișului între 
 
 ## Ce face iConta.eu
 
-Funcția `nota_distribuire(bacsis_brut, sursa)` din modulul F010 (`core/bacsis.py`) calculează impozitul de 10% și netul pentru fiecare distribuire introdusă, cu rotunjire aritmetică la 2 zecimale, generând nota `462=446` + `462=5121/5311`. Aplicația nu stochează însă evidența nominală pe salariat (cine a primit exact cât din bacșișul distribuit) și nu generează regulamentul intern — acestea rămân documente și evidențe separate, ținute de operator, pe care controlul le cere alături de notele contabile.
+Funcția `nota_distribuire(bacsis_brut, sursa)` din modulul F010 calculează impozitul de 10% și netul pentru fiecare distribuire introdusă, cu rotunjire aritmetică la 2 zecimale, generând nota `462=446` + `462=5121/5311`. Aplicația nu stochează însă evidența nominală pe salariat (cine a primit exact cât din bacșișul distribuit) și nu generează regulamentul intern — acestea rămân documente și evidențe separate, ținute de operator, pe care controlul le cere alături de notele contabile.
 
 [iConta.eu](/)

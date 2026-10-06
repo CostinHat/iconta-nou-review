@@ -16,18 +16,18 @@ Diferența are și o consecință fiscală. Reprezentanța nu plătește impozit
 
 ::: ghid-temei
 „24. În scopul aplicării art. 235 din Codul fiscal: (1) Persoanele juridice străine, prin reprezentanțe înființate în România, nu sunt abilitate să desfășoare activități de producție, comerț sau prestări de servicii, aceste reprezentanțe neavând calitatea de persoană juridică."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 24 alin. (1) (norme art. 235 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 24 alin. (1) (norme art. 235 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Reprezentanța unei/unor persoane juridice străine, autorizată să funcționeze în România, potrivit legii, are obligația de a plăti un impozit anual, conform prezentului capitol."
-— Codul fiscal (Legea 227/2015), art. 235 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 235 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe reprezentanță pentru un an fiscal este de 18.000 lei."
-— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Reprezentanțele sunt obligate să conducă evidența contabilă prevăzută de legislația în vigoare din România."
-— Codul fiscal (Legea 227/2015), art. 237 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 237 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

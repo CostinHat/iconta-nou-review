@@ -16,12 +16,12 @@ Pentru firmă, un răspuns complet și corect are și un avantaj. Poate orienta 
 
 ::: ghid-temei
 „în vederea începerii executării silite, organul de executare silită competent se poate folosi de mijloacele de probă prevăzute la art. 55 , în vederea determinării averii și a venitului debitorului. La cererea organului fiscal, debitorul este obligat să furnizeze în scris, pe propria răspundere, informațiile solicitate."
-— Codul de procedură fiscală (Legea 207/2015), art. 228 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 228 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Pentru determinarea stării de fapt fiscale, organul fiscal, în condițiile legii, administrează mijloace de probă, putând proceda la: a) solicitarea informațiilor, de orice fel, din partea contribuabilului/plătitorului și a altor persoane; b) solicitarea de expertize; c) folosirea înscrisurilor; d) efectuarea de constatări la fața locului;"
-— Codul de procedură fiscală (Legea 207/2015), art. 55 alin. (2) lit. a)–d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 55 alin. (2) lit. a)–d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

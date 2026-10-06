@@ -14,7 +14,7 @@ Trebuie spus de la început, onest: **procedura propriu-zisă de înființare a 
 
 ::: ghid-temei
 „Veniturile din activități independente cuprind veniturile din activități de producție, comerț, prestări de servicii și veniturile din profesii liberale, realizate în mod individual și/sau într-o formă de asociere, inclusiv din activități adiacente."
-— Cod fiscal, art. 67 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 67 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru o întreprindere individuală (formă de organizare fără personalitate juridică, prin care o persoană fizică desfășoară o activitate economică "în mod individual"):

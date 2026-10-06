@@ -21,7 +21,7 @@ Articolul 150
 (2) Angajatorul poate respinge solicitarea salariatului numai cu acordul sindicatului sau, după caz, cu acordul reprezentanţilor salariaţilor şi numai dacă absenta salariatului ar prejudicia grav desfăşurarea activităţii.
 Articolul 152
 (1) În cazul în care în cursul unui an calendaristic, pentru salariaţii în vârsta de până la 25 de ani, şi, respectiv, în cursul a 2 ani calendaristici consecutivi, pentru salariaţii în vârsta de peste 25 de ani, nu a fost asigurata participarea la o formare profesională pe cheltuiala angajatorului, salariatul în cauza are dreptul la un concediu pentru formare profesională, plătit de angajator, de până la 10 zile lucrătoare."
-— Legea nr. 53/2003 (Codul muncii), art. 149 alin. (1), (2), art. 150 alin. (1), (2), art. 152 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 149 alin. (1), (2), art. 150 alin. (1), (2), art. 152 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Practic, în 2026 rămân valabile două trasee complet diferite:
@@ -38,6 +38,6 @@ Practic, în 2026 rămân valabile două trasee complet diferite:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un cod de concediu dedicat pentru formarea profesională** în ecranul de pontaj/stat de plată. Aplicația gestionează concediile medicale pe coduri specifice (de exemplu risc maternal, cod 15, urmărit în `core/nomenclator_cm.py` și `core/d112.py`), dar concediul pentru formare profesională — cu sau fără plată — nu are un flux automatizat propriu; înregistrarea lui în pontaj și, dacă e plătit, calculul indemnizației conform art. 145, rămân o operațiune manuală a contabilului sau a persoanei responsabile de salarizare.
+La data acestui ghid, iConta.eu **nu are un cod de concediu dedicat pentru formarea profesională** în ecranul de pontaj/stat de plată. Aplicația gestionează concediile medicale pe coduri specifice (de exemplu risc maternal, cod 15, urmărit în aplicație), dar concediul pentru formare profesională — cu sau fără plată — nu are un flux automatizat propriu; înregistrarea lui în pontaj și, dacă e plătit, calculul indemnizației conform art. 145, rămân o operațiune manuală a contabilului sau a persoanei responsabile de salarizare.
 
 [iConta.eu](/)

@@ -16,15 +16,15 @@ Regula contează pentru că definiția generală din Codul fiscal include transf
 
 ::: ghid-temei
 „Transferul de la constituitor la fiduciar al masei patrimoniale fiduciare nu generează venituri impozabile, în înțelesul prezentului titlu, la momentul transferului, pentru părțile implicate, respectiv constituitor și fiduciar, în cazul în care părțile respective sunt contribuabili potrivit prezentului titlu."
-— Codul fiscal (Legea 227/2015), art. 63 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 63 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Tratamentul fiscal al veniturilor realizate din administrarea masei patrimoniale de către fiduciar, altele decât remunerația fiduciarului, se stabilește în funcție de natura venitului respectiv și se supune impunerii potrivit regulilor proprii fiecărei categorii de venituri. La determinarea venitului impozabil nu se deduc pierderile fiscale ale constituitorului, acestea reprezentând pierderi definitive."
-— Codul fiscal (Legea 227/2015), art. 63 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 63 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „transferul masei patrimoniale fiduciare de la constituitor către fiduciar nu este transfer impozabil în înțelesul prezentului titlu;"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a), impozitul pe profit (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a), impozitul pe profit (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reiese din text:

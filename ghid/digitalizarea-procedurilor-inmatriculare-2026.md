@@ -14,7 +14,7 @@ Digitalizarea înmatriculării societăților la registrul comerțului nu este u
 
 ::: ghid-temei
 „A se vedea ORDINUL nr. 5.307/C din 21 noiembrie 2022, pentru aprobarea formatului formularului-tip de act constitutiv, a formatului cererii de înregistrare, a formatului, a elementelor de siguranță și a structurii certificatului de înregistrare, în formă letrică și electronică, a modelului declarației-tip pe propria răspundere cu privire la îndeplinirea condițiilor de funcționare/desfășurare a activității, a modelului certificatului constatator privind înregistrarea declarației pe propria răspundere cu privire la îndeplinirea condițiilor de funcționare/desfășurare a activității și a structurii identificatorului unic la nivel european - EUID, publicat în MONITORUL OFICIAL nr. 1131 din 24 noiembrie 2022."
-— notă la Legea nr. 31/1990 (Legea societăților), referitoare la art. 5 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— notă la Legea nr. 31/1990 (Legea societăților), referitoare la art. 5 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Limitare onestă: sursele disponibile conțin doar această notă de trimitere la Ordinul nr. 5.307/C din 2022, nu textul integral al ordinului — conținutul concret al procedurii electronice (pași, portal, semnătură) nu poate fi citat verbatim de aici. Ce se poate confirma din notă:

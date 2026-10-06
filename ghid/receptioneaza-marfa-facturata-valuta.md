@@ -31,6 +31,6 @@ Diferența dintre valoarea recepționată (la cursul de la data recepției) și 
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit pentru orice operațiune valutară introdusă în aplicație se determină pentru data operațiunii, prin motorul de curs (`core/curs_bnr.py`), cu regula „ultimul curs BNR comunicat, valabil cel târziu la data cerută". Aplicația nu presupune tăcut un curs dacă acesta nu poate fi determinat pentru data respectivă (curs indisponibil, prea vechi sau monedă necotată) — semnalează explicit situația, în loc să folosească implicit cursul altei date apropiate.
+Cursul BNR folosit pentru orice operațiune valutară introdusă în aplicație se determină pentru data operațiunii, prin motorul de curs, cu regula „ultimul curs BNR comunicat, valabil cel târziu la data cerută". Aplicația nu presupune tăcut un curs dacă acesta nu poate fi determinat pentru data respectivă (curs indisponibil, prea vechi sau monedă necotată) — semnalează explicit situația, în loc să folosească implicit cursul altei date apropiate.
 
 [iConta.eu](/)

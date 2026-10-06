@@ -41,6 +41,6 @@ Diferența dintre cele două, dacă există, se explică de regulă prin: linii 
 
 ## Ce face iConta.eu
 
-Reconcilierea bancară din iConta.eu (`core/reconciliere.py` + `core/reconciliere_api.py`) potrivește linii de extras cu facturi deschise, ceea ce ajută să nu rămână facturi neînchise sau linii necontabilizate — dar nu calculează și nu afișează o comparație automată a soldului contului 5121 cu soldul din extrasul bancar. Această verificare rămâne manuală, pe baza fișei de cont 5121 și a balanței de verificare, comparată cu extrasul sau cu soldul curent pus la dispoziție de bancă.
+Reconcilierea bancară din iConta.eu potrivește linii de extras cu facturi deschise, ceea ce ajută să nu rămână facturi neînchise sau linii necontabilizate — dar nu calculează și nu afișează o comparație automată a soldului contului 5121 cu soldul din extrasul bancar. Această verificare rămâne manuală, pe baza fișei de cont 5121 și a balanței de verificare, comparată cu extrasul sau cu soldul curent pus la dispoziție de bancă.
 
 [iConta.eu](/)

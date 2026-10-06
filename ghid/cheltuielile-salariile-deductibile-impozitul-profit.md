@@ -16,7 +16,7 @@ Da, ca regulă generală — cheltuielile cu salariile și cele asimilate salari
 „Articolul 25 - Cheltuieli
 (1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale.
 (2) Cheltuielile cu salariile și cele asimilate salariilor astfel cum sunt definite potrivit titlului IV sunt cheltuieli deductibile pentru determinarea rezultatului fiscal, cu excepția celor reglementate la alin. (3) și (4)."
-— Cod fiscal, art. 25 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 25 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic:

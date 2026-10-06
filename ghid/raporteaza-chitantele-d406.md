@@ -14,12 +14,12 @@ Declarația informativă D406 (fișierul standard de control fiscal, SAF-T) nu a
 
 ::: ghid-temei
 „SD.P.10 | PaymentMethod | Cheque, Bank, Giro, Cash etc | Cec, Bancă, Giro, Numerar etc. [...] Mandatory | Mandatory | Validation according to the codes defiend in the nomenclature Nom_Mecanisme_plati"
-— OPANAF 1.783/2021 (modificat prin OPANAF 407/2025), Anexa privind structura fișierului standard de control fiscal, foaia „4. SourceDocuments", element SD.P.10 (sursă: anaf_surse/d406_schema_anaf.xlsx)
+— OPANAF 1.783/2021 (modificat prin OPANAF 407/2025), Anexa privind structura fișierului standard de control fiscal, foaia „4. SourceDocuments", element SD.P.10 (sursă: [Schema SAF-T (D406) publicată de ANAF, format xlsx](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/RO_SAFT_SchemaDefCod_05.02.2026.xlsx))
 :::
 
 ::: ghid-temei
 „Pentru completarea PaymentMethod se vor selecta codurile asociate de mai jos: [...] codul 01 - pentru Numerar [...] codul 03 - pentru Fără numerar [...] Pentru completarea câmpului PaymentMechanism se vor selecta, cu prioritate, coduri din cele de mai jos: [...] codul 10 - pentru plata în numerar, inclusiv pentru plățile efectuate la casieriile trezoreriei"
-— Nomenclatorul „Mecanisme de plată/încasare" (Nom_Mecanisme_plati), parte integrantă a structurii SAF-T aprobate prin OPANAF 1.783/2021 (sursă: anaf_surse/d406_schema_anaf.xlsx)
+— Nomenclatorul „Mecanisme de plată/încasare" (Nom_Mecanisme_plati), parte integrantă a structurii SAF-T aprobate prin OPANAF 1.783/2021 (sursă: [Schema SAF-T (D406) publicată de ANAF, format xlsx](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/RO_SAFT_SchemaDefCod_05.02.2026.xlsx))
 :::
 
 Din aceste elemente rezultă practic regula de raportare:

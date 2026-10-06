@@ -27,6 +27,6 @@ Textul de lege vorbește de "suma" dividendului, fără nicio mențiune despre m
 
 ## Ce face iConta.eu
 
-Motorul de generare D205 din iConta.eu (`core/d205.py`) preia direct sumele deja înregistrate în lei din contul 457 (distribuit/plătit), pe notele contabile validate — nu efectuează el însuși nicio conversie valutară și nu conține o regulă de curs specifică dividendelor. Dacă un dividend a fost plătit în valută, conversia la lei trebuie făcută corect la momentul înregistrării notei contabile de plată; D205 preia, ca pentru orice altă operațiune, suma deja exprimată în lei din acea notă.
+Motorul de generare D205 din iConta.eu preia direct sumele deja înregistrate în lei din contul 457 (distribuit/plătit), pe notele contabile validate — nu efectuează el însuși nicio conversie valutară și nu conține o regulă de curs specifică dividendelor. Dacă un dividend a fost plătit în valută, conversia la lei trebuie făcută corect la momentul înregistrării notei contabile de plată; D205 preia, ca pentru orice altă operațiune, suma deja exprimată în lei din acea notă.
 
 [iConta.eu](/)

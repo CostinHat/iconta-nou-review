@@ -34,6 +34,6 @@ Dacă clientul e doar în întârziere de plată — oricât de veche — dar nu
 
 ## Ce face iConta.eu
 
-Motorul de decont (`core/d300.py`) nu introduce în decont sumele neîncasate atât timp cât factura rămâne pe TVA la încasare — indiferent de vechime, ele rămân în 4428 până la momentul încasării. Pentru evenimentul de ajustare la faliment/reorganizare judiciară a clientului (art. 287 lit. d)), tratamentul rămâne, conform cercetării de față, o operațiune manuală a contabilului, pe baza hotărârii judecătorești — nu am confirmat în cod o ramură automată dedicată acestui eveniment.
+Motorul de decont nu introduce în decont sumele neîncasate atât timp cât factura rămâne pe TVA la încasare — indiferent de vechime, ele rămân în 4428 până la momentul încasării. Pentru evenimentul de ajustare la faliment/reorganizare judiciară a clientului (art. 287 lit. d)), tratamentul rămâne, conform cercetării de față, o operațiune manuală a contabilului, pe baza hotărârii judecătorești — nu am confirmat în cod o ramură automată dedicată acestui eveniment.
 
 [iConta.eu](/)

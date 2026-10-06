@@ -14,7 +14,7 @@ Spre deosebire de sporul de noapte (minimum 15%) sau de cel pentru ore supliment
 
 ::: ghid-temei
 „Salariul cuprinde salariul de baza, indemnizaţiile, sporurile, precum şi alte adaosuri."
-— Legea 53/2003 (Codul muncii), art. 155 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 155 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă, onest, din sursele verificate pentru acest ghid:

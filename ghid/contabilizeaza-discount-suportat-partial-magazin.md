@@ -15,7 +15,7 @@ Pe platformele de tip marketplace apare frecvent situația în care o promoție 
 ```
 ::: ghid-temei
 „76. - (1) Reducerile comerciale acordate de furnizor și înscrise pe factura de achiziție ajustează în sensul reducerii costul de achiziție al bunurilor. Atunci când achiziția de produse și primirea reducerii comerciale sunt tratate împreună, reducerile comerciale primite ulterior facturării ajustează, de asemenea, costul de achiziție al bunurilor."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 76 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 76 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 ```
 
@@ -34,6 +34,6 @@ Ce rezultă, aplicat la un discount împărțit între magazin și marketplace:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu a fost găsită în `core/` nicio funcționalitate dedicată specific tranzacțiilor de tip marketplace sau împărțirii automate a unui discount între vânzător și platformă — aplicația oferă evidența contabilă generală (facturare, note contabile, TVA), pe baza căreia contabilul înregistrează manual, separat, partea de discount a magazinului și suma de compensare primită de la marketplace, conform documentelor emise de fiecare parte.
+La data acestui ghid, nu a fost găsită în aplicație nicio funcționalitate dedicată specific tranzacțiilor de tip marketplace sau împărțirii automate a unui discount între vânzător și platformă — aplicația oferă evidența contabilă generală (facturare, note contabile, TVA), pe baza căreia contabilul înregistrează manual, separat, partea de discount a magazinului și suma de compensare primită de la marketplace, conform documentelor emise de fiecare parte.
 
 [iConta.eu](/)

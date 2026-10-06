@@ -14,7 +14,7 @@ Prima reacție când rulajul contului 421 „Personal — salarii datorate" nu s
 
 ::: ghid-temei
 „Nu se cuprind în baza lunară de calcul al contribuțiilor de asigurări sociale următoarele: [...] veniturile reprezentând cadouri în bani și/sau în natură, inclusiv tichete cadou, oferite salariaților [...]. În cazul cadourilor în bani și/sau în natură, inclusiv tichetele cadou, oferite de angajatori, veniturile nu sunt cuprinse în baza de calcul al contribuției în măsura în care valoarea acestora pentru fiecare persoană în parte, cu fiecare ocazie dintre cele de mai jos, nu depășește 300 lei."
-— Codul fiscal (Legea 227/2015), art. 142 lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 142 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cadourile sub pragul de 300 lei/eveniment sunt, prin lege, excluse din baza de calcul a contribuțiilor sociale, dar pot fi înregistrate contabil ca parte a costurilor cu personalul — o sursă legitimă de diferență între ce apare în baza declarată (D112) și ce apare în evidența contabilă.

@@ -14,10 +14,10 @@ Când un furnizor livrează, pe lângă cantitatea comandată, câteva unități
 
 ::: ghid-temei
 „57. - (1) Contabilizarea și prezentarea elementelor din bilanț și din contul de profit și pierdere ținând seama de fondul economic al tranzacției sau al angajamentului în cauză. [...] (4) Exemple de situații când se aplică acest principiu pot fi considerate: [...] încadrarea reducerilor acordate, respectiv primite, la reduceri comerciale sau financiare."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 57 alin. (1) și (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 57 alin. (1) și (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „433. - Suma veniturilor rezultate dintr-o tranzacție este determinată, de obicei, printr-un acord între vânzătorul și cumpărătorul/utilizatorul activului, ținând cont de suma oricăror reduceri comerciale."
-— OMFP nr. 1.802/2014, pct. 433 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 433 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din principiul prevalenței economicului rezultă tratamentul corect:

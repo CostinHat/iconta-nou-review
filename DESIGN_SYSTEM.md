@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.71 · 5 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.72 · 6 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -298,6 +298,13 @@ Două coloane. Stânga descrie procedura manuală, complet și onest. Dreapta de
 Procedura manuală, pas cu pas, utilizabilă și fără produs. Aceasta este partea care aduce trafic și încredere.
 
 ---
+
+**Componente de navigare (v2.72, 06.10.2026, comanda Costin — structură pentru indexare):**
+- **`.ghid-teme`** — cuprinsul temelor de pe `/ghid`: o listă, câte un rând pe temă (titlu legat spre `/ghid/tema/{tema}`, numărul de ghiduri
+  în `.ghid-numar`, descrierea temei). `/ghid` NU mai listează ghidurile — doar temele. Temele vin din `core/ghid_teme.TEME`, sursa unică.
+- **`.ghid-lista`** — pagina unei teme: ghidurile ei, cu descrierea, ordonate după titlu, sub calea `.ghid-tema` („Ghiduri › Tema”).
+- **`.ghid-legaturi`** — la finalul fiecărui ghid, după structura de la pct.5: „Ghiduri înrudite” (până la șase, din aceeași temă) și
+  `.ghid-tema` („Tema: … · Toate temele”). Se generează, nu se scrie de mână în pagină.
 
 ### 4. Regula variației
 
@@ -681,6 +688,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.72 (06.10.2026)** — **cap.22: navigarea ghidurilor pe teme** (`.ghid-teme`, `.ghid-lista`, `.ghid-legaturi`, `.ghid-tema`, `.ghid-numar`). Comanda Costin, lotul 06.10 partea 2: `/ghid` avea 2,3 MB și 6.559 de linkuri; acum e cuprinsul celor 16 teme, fiecare temă cu pagina ei, iar fiecare ghid duce la tema lui și la ghidurile înrudite. Gard: `core/test_lot0610_p2.py`.
+
 **v2.71 (05.10.2026)** — **cap.18: grupuri în fereastra firmei, dintr-o singură sursă.** Comanda Costin (pct.11): cele 32 de carduri sub cinci titluri (Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma), fără arbore, titlul fără card vizibil nu apare. Pe drum: cardul Produse fără culoare (cap.12), cardul Solicitări deschis inline (cap.2a). Gard: `GRUP_FIRMA`.
 
 **v2.70 (05.10.2026)** — **cap.8: culorile de semafor nu colorează text.** Găsită de axe pe Registrul jurnal („● Ciornă”) și la Bancă („Parțial”, „Contat ✓”) la proba pasului C din comanda „fluxul de factură pe F1”. Clasa avea 16 apariții directe + 6 indirecte (e-Transport, cifrele din Capacitate și Cabinet, procentele din Sănătate, starea SPV a facturii). Gard: `CULOARE_SEMAFOR_TEXT`.

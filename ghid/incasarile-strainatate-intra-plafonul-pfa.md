@@ -14,10 +14,10 @@ Un PFA la normă de venit care prestează servicii și pentru clienți din afara
 
 ::: ghid-temei
 „Impozitul prevăzut în prezentul titlu, denumit în continuare impozit pe venit, se aplică următoarelor venituri: a) în cazul persoanelor fizice rezidente române, cu domiciliul în România, veniturilor obținute din orice sursă, atât din România, cât și din afara României."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii, pentru care venitul net se determină pe bază de norme de venit și care în anul fiscal anterior au înregistrat un venit brut anual mai mare decât echivalentul în lei al sumei de 25.000 euro, începând cu anul fiscal următor au obligația determinării venitului net anual în sistem real."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din combinarea celor două texte:

@@ -14,14 +14,14 @@ Multe firme cred că PDF-ul pe care îl primesc sau îl descarcă e „factura",
 
 ::: ghid-temei
 „Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Legea numește explicit **XML-ul** ca exemplar original al facturii electronice — nu vorbește deloc despre eventualele PDF-uri generate de aplicații terțe, cum e cel produs de iConta.eu.
 - Pentru operațiunile dintre persoane impozabile stabilite în România, doar factura care respectă condițiile RO e-Factura are, legal, calitatea de „factură":
 
 > „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 [...]"
-> — Codul fiscal, art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+> — Codul fiscal, art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 ## Ce se greșește în practică
 
@@ -31,7 +31,7 @@ Multe firme cred că PDF-ul pe care îl primesc sau îl descarcă e „factura",
 
 ## Ce face iConta.eu
 
-iConta.eu generează cele două documente prin module de cod complet independente. PDF-ul (funcționalitatea descrisă aici) e produs de `core/factura_pdf.py`, folosind reportlab: e randat la cerere, de fiecare dată din datele curente ale facturii, personalizabil cu logo, culoare accent și font ale firmei — nu e stocat separat și nu e trimis niciodată către SPV. XML-ul e generat de un modul diferit (`core/efactura_send.py`), în structura UBL/CIUS-RO cerută de RO e-Factura, și e cel transmis, validat și semnat electronic.
+iConta.eu generează cele două documente prin module de cod complet independente. PDF-ul (funcționalitatea descrisă aici) e produs de aplicația, folosind reportlab: e randat la cerere, de fiecare dată din datele curente ale facturii, personalizabil cu logo, culoare accent și font ale firmei — nu e stocat separat și nu e trimis niciodată către SPV. XML-ul e generat de un modul diferit, în structura UBL/CIUS-RO cerută de RO e-Factura, și e cel transmis, validat și semnat electronic.
 
 Cele două module nu comunică între ele în cod — PDF-ul nu importă și nu citește nimic din generatorul XML, și invers. Practic, asta înseamnă că, deși cele două documente descriu aceeași factură din baza de date, ele sunt calculate separat, iar sumele afișate pot ajunge, în cazuri rare, să difere cu un bănuț (vezi ghidul dedicat comparării sumelor dintre PDF și XML).
 

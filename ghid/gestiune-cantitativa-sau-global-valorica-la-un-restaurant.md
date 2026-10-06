@@ -23,7 +23,7 @@ Un restaurant are, de regulă, exact profilul pentru care legea permite metoda p
 > vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor**.
 > Orice modificare a prețului de vânzare presupune recalcularea marjei brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (1) și (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (1) și (8).
 
 > "96. - (1) Costul stocurilor din aceeași categorie și al tuturor elementelor fungibile se
 > calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP;
@@ -32,7 +32,7 @@ Un restaurant are, de regulă, exact profilul pentru care legea permite metoda p
 > mediei ponderate a costurilor elementelor similare aflate în stoc la începutul perioadei și a
 > costului elementelor similare produse sau cumpărate în timpul perioadei."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 96 alin. (1)-(2).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 96 alin. (1)-(2).
 :::
 
 ## Diferența practică pentru un restaurant
@@ -50,7 +50,7 @@ La cantitativ-valoric (CMP), fiecare produs/materie primă are propria fișă de
 
 ## Ce face iConta.eu
 
-Cele două module sunt separate și alese explicit. La global-valoric, `nir_gv` calculează costul, adaosul și TVA la fiecare recepție, iar `descarcare_gv`/`descarca_luna` descarcă lunar costul mărfii vândute (607), adaosul (378) și TVA neexigibilă (4428) folosind coeficientul K calculat din rulaje cumulate de la 1 ianuarie. La cantitativ-valoric (`core/stocuri_cv.py`), fiecare articol are o fișă de magazie proprie, cu costul mediu ponderat recalculat după fiecare intrare (`fisa_magazie`), iar ieșirea se înregistrează direct 607=371 la valoarea CMP × cantitate — fără conturile 378/4428 și fără coeficient de repartizare.
+Cele două module sunt separate și alese explicit. La global-valoric, `nir_gv` calculează costul, adaosul și TVA la fiecare recepție, iar `descarcare_gv`/`descarca_luna` descarcă lunar costul mărfii vândute (607), adaosul (378) și TVA neexigibilă (4428) folosind coeficientul K calculat din rulaje cumulate de la 1 ianuarie. La cantitativ-valoric, fiecare articol are o fișă de magazie proprie, cu costul mediu ponderat recalculat după fiecare intrare (`fisa_magazie`), iar ieșirea se înregistrează direct 607=371 la valoarea CMP × cantitate — fără conturile 378/4428 și fără coeficient de repartizare.
 
 Dacă restaurantul optează pentru global-valoric, trebuie știut că TVA-ul descărcat lunar din 4428 e o aproximare calculată dintr-o cotă medie ponderată a stocului cumulat, nu din mixul real de cote al bonurilor emise în lună — un cost suplimentar de verificare pe care evidența cantitativ-valorică, neavând deloc contul 4428, nu îl are.
 

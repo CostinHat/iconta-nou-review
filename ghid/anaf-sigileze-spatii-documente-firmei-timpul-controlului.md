@@ -16,12 +16,12 @@ Pentru firmă, sigilarea înseamnă că o parte din spații sau din arhivă nu m
 
 ::: ghid-temei
 „în scopul efectuării inspecției fiscale, organul de inspecție fiscală procedează la: [...] l) aplicarea de sigilii asupra bunurilor, întocmind în acest sens proces-verbal."
-— Codul de procedură fiscală (Legea 207/2015), art. 113 alin. (2) lit. l) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 113 alin. (2) lit. l) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Se întocmește de către organele de inspecție fiscală în cadrul unei/unui inspecții fiscale/control inopinat/încrucișat/ constatări la fața locului, în situațiile în care există indicii că în locurile de producție, depozitare, comercializare se găsesc bunuri sau produse a căror proveniență nu este legală sau a căror fabricație este interzisă de lege sau se produce fără autorizație, iar acțiunea de inspecție fiscală/control nu poate fi finalizată, urmând a fi continuată în ziua lucrătoare următoare, în vederea conservării probelor constatate. Se poate utiliza și în situația în care există posibilitatea ca documentele și actele necesare inspecției fiscale să fie sustrase, distruse ori nu se poate face un inventar al documentelor în vederea reținerii acestora."
-— OPANAF 3711/2015, Anexa nr. 7.b (sursă: anaf_surse/ordin_3711_2015.html)
+— OPANAF 3711/2015, Anexa nr. 7.b (sursă: [OPANAF nr. 3711/2015 privind formularele utilizate în activitatea de inspecție fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174332))
 :::
 
 Regulile procedurii, din instrucțiunile formularului:

@@ -14,7 +14,7 @@ Când o firmă acumulează datorii la buget și nu le achită, întrebarea inevi
 
 ::: ghid-temei
 „(1) Executarea silită se poate întinde asupra veniturilor și bunurilor proprietate a debitorului, urmăribile potrivit legii, iar valorificarea acestora se efectuează numai în măsura necesară pentru realizarea creanțelor fiscale și a cheltuielilor de executare. Executarea silită a bunurilor proprietate a debitorului, urmăribile potrivit legii, se efectuează, de regulă, în limita a 150% din valoarea creanțelor fiscale, inclusiv a cheltuielilor de executare, cu excepția cazului în care din motive obiective în legătură cu situația patrimonială a debitorului acest nivel nu poate fi respectat."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 227 alin. (1) — Reguli privind executarea silită (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 227 alin. (1) — Reguli privind executarea silită (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul executării silite pentru creanțe fiscale, în linii esențiale:

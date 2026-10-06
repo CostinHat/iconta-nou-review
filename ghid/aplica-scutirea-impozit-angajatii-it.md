@@ -18,7 +18,7 @@ Funcționalitatea de calcul salarial (cod F080) declară, printre temeiurile ei,
 
 ## Ce arată, concret, verificarea
 
-Registrul de cote și facilități (`core/common.py`, dict `COTE`) e „period-aware" — fiecare cotă sau facilitate activă are o fereastră de valabilitate explicită și un temei legal atașat, exact ca la salariul minim sau la facilitatea generică „salariul minim neimpozabil". Pentru 2026, registrul conține doar: cotele standard (CAS, CASS, impozit, CAM), cele două valori ale salariului minim, facilitatea generică „salariul minim neimpozabil" și plafonul tichetelor de masă — **nicio intrare pentru o scutire IT**.
+Registrul de cote și facilități (dict `COTE`) e „period-aware" — fiecare cotă sau facilitate activă are o fereastră de valabilitate explicită și un temei legal atașat, exact ca la salariul minim sau la facilitatea generică „salariul minim neimpozabil". Pentru 2026, registrul conține doar: cotele standard (CAS, CASS, impozit, CAM), cele două valori ale salariului minim, facilitatea generică „salariul minim neimpozabil" și plafonul tichetelor de masă — **nicio intrare pentru o scutire IT**.
 
 Absența acestei facilități din registrul verificat e un indiciu solid că, la data mirror-ului folosit pentru acest dosar (17.09.2026), aplicația nu mai calculează o asemenea scutire — consecventă cu reforma declarată prin OUG 34/2024. Dar dosarul nu conține citatul exact din acel act, deci nu putem preciza condițiile, data exactă sau mecanismul restrângerii — nu inventăm acest detaliu.
 

@@ -17,7 +17,7 @@ O firmă plătitoare de TVA cu perioadă fiscală trimestrială poate crede că 
 a) prima lună a unui trimestru calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în această primă lună a respectivului trimestru;
 b) a treia lună a trimestrului calendaristic, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a doua lună a respectivului trimestru. Primele două luni ale trimestrului respectiv vor constitui o perioadă fiscală distinctă [...];
 c) prima lună a trimestrului calendaristic următor, dacă exigibilitatea taxei aferente achiziției intracomunitare de bunuri intervine în a treia lună a unui trimestru calendaristic."
-— Legea 227/2015 (Codul fiscal), art. 322 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 322 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Efectele practice ale acestei reguli sunt directe:

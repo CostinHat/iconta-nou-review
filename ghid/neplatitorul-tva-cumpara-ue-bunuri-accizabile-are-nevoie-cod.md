@@ -16,17 +16,17 @@ Diferența față de alte bunuri e importantă. La bunurile obișnuite, un nepl�
 
 ::: ghid-temei
 „Persoana impozabilă sau persoana juridică neimpozabilă care nu este înregistrată conform art. 316 din Codul fiscal și care efectuează achiziții intracomunitare de bunuri accizabile nu are obligația să se înregistreze conform art. 317 din Codul fiscal pentru plata taxei aferente respectivei achiziții intracomunitare.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 90 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 90 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „o achiziție intracomunitară de produse accizabile, efectuată de o persoană impozabilă, care acționează ca atare, sau de o persoană juridică neimpozabilă.”
-— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Decontul special de taxă se depune la organele fiscale competente de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316 , astfel: […] c) pentru achiziții intracomunitare de produse accizabile, de către persoanele impozabile și persoanele juridice neimpozabile, indiferent dacă sunt sau nu înregistrate conform art. 317;”
-— Codul fiscal (Legea 227/2015), art. 324 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 324 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reiese din cele trei texte:

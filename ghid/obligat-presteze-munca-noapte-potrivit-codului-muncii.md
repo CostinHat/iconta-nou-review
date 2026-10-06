@@ -16,15 +16,15 @@ Practic, pentru a doua categorie angajatorul nu poate impune tura de noapte prin
 
 ::: ghid-temei
 „Tinerii care nu au împlinit vârsta de 18 ani nu pot presta muncă de noapte.(2) Femeile gravide, lăuzele și cele care alăptează, precum și persoana singură din familia monoparentală nu pot fi obligate să presteze muncă de noapte."
-— Codul muncii (Legea 53/2003), art. 128 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 128 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Munca prestată între orele 22,00-6,00 este considerată muncă de noapte.(2) Salariatul de noapte reprezintă, după caz:a) salariatul care efectuează muncă de noapte cel puțin 3 ore din timpul său zilnic de lucru; ... b) salariatul care efectuează muncă de noapte în proporție de cel puțin 30% din timpul său lunar de lucru."
-— Codul muncii (Legea 53/2003), art. 125 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 125 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „l) încălcarea prevederilor legale referitoare la munca de noapte, cu amendă de la 1.500 lei la 3.000 lei"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. l) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. l) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cele două regimuri:

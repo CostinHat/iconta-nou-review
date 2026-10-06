@@ -14,10 +14,10 @@ O firmă neînregistrată în scopuri de TVA nu are voie să treacă pur și sim
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire [...]"
-— Legea 227/2015, art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă [...] trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent, după cum urmează: [...] b) dacă în cursul unui an calendaristic depășește plafonul de scutire prevăzut la art. 310 alin. (1), cel târziu la data depășirii plafonului."
-— Legea 227/2015, art. 316 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 316 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din aceste texte rezultă mecanismul concret:
@@ -34,6 +34,6 @@ Din aceste texte rezultă mecanismul concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu monitorizează automat** cifra de afaceri cumulată a firmei față de plafonul de 395.000 lei de scutire TVA. Aplicația urmărește intern doar un alt plafon, cel al TVA la încasare (`plafon_tva_incasare`, folosit de motorul din `core/tva_incasare.py`), care este un prag diferit, cu regim fiscal diferit. Verificarea depășirii plafonului de scutire pentru întreprinderile mici și inițierea la timp a înregistrării în scopuri de TVA rămân, la acest moment, responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu calculează și nu monitorizează automat** cifra de afaceri cumulată a firmei față de plafonul de 395.000 lei de scutire TVA. Aplicația urmărește intern doar un alt plafon, cel al TVA la încasare (`plafon_tva_incasare`, folosit de motorul din aplicație), care este un prag diferit, cu regim fiscal diferit. Verificarea depășirii plafonului de scutire pentru întreprinderile mici și inițierea la timp a înregistrării în scopuri de TVA rămân, la acest moment, responsabilitatea contabilului.
 
 [iConta.eu](/)

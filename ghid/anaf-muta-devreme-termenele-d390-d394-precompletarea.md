@@ -16,10 +16,10 @@ Pentru contabil, consecința practică este că termenele de 25, pentru D390, ș
 
 ::: ghid-temei
 „Pentru implementarea și operaționalizarea decontului precompletat RO e-TVA, prin ordin al președintelui Agenției Naționale de Administrare Fiscală pot fi stabilite termene de depunere pentru declarațiile fiscale, respectiv declarația recapitulativă privind livrările/achizițiile/prestările intracomunitare și declarația informativă privind livrările/prestările și achizițiile efectuate pe teritoriul național, ale căror date și informații sunt necesare precompletării, înainte de data transmiterii prevăzută la art. 3 alin. (2) către persoanele impozabile înregistrate în scopuri de TVA a decontului precompletat RO e-TVA."
-— OUG 70/2024, art. 15 (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 15 (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 
 „(2) Decontul precompletat RO e-TVA se transmite, pentru fiecare perioadă fiscală de raportare, persoanelor impozabile înregistrate în scopuri de TVA, prin mijloace electronice, până la data de 5 inclusiv a lunii următoare termenului legal de depunere a decontului de taxă pe valoarea adăugată."
-— OUG 70/2024, art. 3 alin. (2) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 3 alin. (2) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Cum se leagă termenele:

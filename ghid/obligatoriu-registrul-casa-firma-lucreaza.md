@@ -14,7 +14,7 @@ Registrul de casă este documentul reglementat prin care se înregistrează ziln
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2.634/2015, Anexa 2 (Norme specifice), secțiunea „Registrul de casă" (cod 14-4-7A) (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 (Norme specifice), secțiunea „Registrul de casă" (cod 14-4-7A) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Norma leagă explicit întocmirea registrului de existența unor „documente justificative de încasări și plăți" — adică de operațiuni de casă efectiv realizate. O firmă care nu efectuează nicio încasare sau plată în numerar (toate operațiunile trecând exclusiv prin cont bancar) nu generează documente justificative de casă, deci nu are, practic, ce să înregistreze într-un registru de casă. Registrul rămâne însă documentul obligatoriu de completat **din momentul în care apare prima operațiune cu numerar** (chiar și una singură, ocazională) — de aceea majoritatea firmelor păstrează formularul pregătit, pentru a-l putea folosi corect dacă apare o astfel de situație.

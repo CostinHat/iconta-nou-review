@@ -14,7 +14,7 @@ Când o firmă românească prestează servicii de publicitate către o platform
 
 ::: ghid-temei
 „(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice."
-— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru serviciile prestate către o **persoană impozabilă** (regula B2B), locul prestării e considerat a fi **acolo unde beneficiarul își are sediul activității economice** — nu unde e stabilit prestatorul.
@@ -30,6 +30,6 @@ Când o firmă românească prestează servicii de publicitate către o platform
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de facturare din iConta.eu permite emiterea facturilor către parteneri externi, iar declarația D390 (`core/d390.py`) preia operațiunile intracomunitare din evidența facturilor pentru raportare. Nu am găsit însă o regulă automată care să clasifice o factură de publicitate emisă către o platformă străină drept operațiune cu locul prestării în afara României și să o direcționeze corect spre D390, fără TVA colectată — încadrarea corectă a fiecărei operațiuni (locul prestării, regimul TVA aplicabil) rămâne o decizie a contabilului la emiterea facturii.
+La data acestui ghid, modulul de facturare din iConta.eu permite emiterea facturilor către parteneri externi, iar declarația D390 preia operațiunile intracomunitare din evidența facturilor pentru raportare. Nu am găsit însă o regulă automată care să clasifice o factură de publicitate emisă către o platformă străină drept operațiune cu locul prestării în afara României și să o direcționeze corect spre D390, fără TVA colectată — încadrarea corectă a fiecărei operațiuni (locul prestării, regimul TVA aplicabil) rămâne o decizie a contabilului la emiterea facturii.
 
 [iConta.eu](/)

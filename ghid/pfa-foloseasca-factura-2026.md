@@ -15,7 +15,7 @@ Obligația de a folosi sistemul național RO e-Factura nu depinde de forma jurid
 ::: ghid-temei
 „b) operator economic - orice entitate care desfășoară o activitate economică constând în executarea de lucrări, livrarea de bunuri/produse şi/sau prestarea de servicii;
 c) emitent al facturii electronice - operatorul economic care emite factura electronică către destinatar şi o transmite în sistemul naţional privind factura electronică RO e-Factura[.]"
-— OUG nr. 120/2021 privind sistemul național privind factura electronică RO e-Factura, art. 2 alin. (1) lit. b) și c) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021 privind sistemul național privind factura electronică RO e-Factura, art. 2 alin. (1) lit. b) și c) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Un PFA care desfășoară o activitate economică și emite facturi se încadrează în definiția de „operator economic" de mai sus, exact ca orice altă formă de organizare. Obligația de transmitere a facturilor prin RO e-Factura a fost extinsă treptat la toate operațiunile B2B (relații între persoane impozabile stabilite în România) prin modificările succesive ale Codului fiscal, indiferent dacă emitentul este sau nu înregistrat în scopuri de TVA — condiția fiind doar calitatea de persoană impozabilă stabilită în România conform art. 266 alin. (2) din Codul fiscal, la care se raportează definiția „operatorului economic" pentru aplicarea sistemului.

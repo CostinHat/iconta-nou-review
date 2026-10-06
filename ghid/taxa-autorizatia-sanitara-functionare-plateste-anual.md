@@ -16,18 +16,18 @@ Contează pentru firmele din alimentație publică, comerț alimentar, servicii 
 
 ::: ghid-temei
 „c) taxa este anuală;"
-— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „d) taxa se achită integral, anticipat eliberării sale, indiferent de perioada rămasă până la sfârșitul anului fiscal respectiv;"
-— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „f) taxa nu se restituie dacă autorizația a fost suspendată temporar sau definitiv;"
-— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. f) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 146 lit. f) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Taxa pentru eliberarea autorizațiilor sanitare de funcționare se stabilește de consiliul local și este de până la 20 lei, inclusiv."
-— Codul fiscal (Legea 227/2015), art. 475 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 475 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile din norme, pe scurt:

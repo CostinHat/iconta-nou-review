@@ -14,7 +14,7 @@ Obligația de transmitere a fișierului standard de control fiscal (SAF-T), prin
 
 ::: ghid-temei
 „1.1. Obligaţia de transmitere a fişierului standard de control fiscal prin intermediul Declaraţiei informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: a) pentru contribuabilii încadraţi în categoria mari contribuabili la data de 1 ianuarie 2022, care au făcut parte din această categorie şi în anul 2021, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1 ianuarie 2022, care reprezintă data de referinţă pentru marii contribuabili; b) pentru contribuabilii încadraţi în categoria mari contribuabili la data de 1 ianuarie 2022, care nu au făcut parte din această categorie în anul 2021, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1 iulie 2022, care reprezintă data de referinţă pentru noii mari contribuabili."
-— OPANAF nr. 407/2025 (care modifică și înlocuiește Anexa nr. 5 la OPANAF nr. 1783/2021), Anexa, pct. 1.1 lit. a)-b) (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF nr. 407/2025 (care modifică și înlocuiește Anexa nr. 5 la OPANAF nr. 1783/2021), Anexa, pct. 1.1 lit. a)-b) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ce înseamnă concret aceste termene speciale pentru contribuabilii mari:

@@ -14,7 +14,7 @@ Când o firmă investește în amenajarea unui spațiu pe care nu îl deține, c
 
 ::: ghid-temei
 „Sunt, de asemenea, considerate mijloace fixe amortizabile: a) investițiile efectuate la mijloacele fixe care fac obiectul unor contracte de închiriere, concesiune, locație de gestiune, asociere în participațiune și altele asemenea;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele practice ale acestei încadrări:

@@ -17,7 +17,7 @@ Penalitatea de nedeclarare (0,08% pe zi, aplicată de organul fiscal pentru obli
 a) se sting prin plată sau compensare până la termenul prevăzut la art. 156 alin. (1);
 b) sunt eșalonate la plată, în condițiile legii. În acest caz, reducerea se acordă la finalizarea eșalonării la plată.
 (2^1) Ori de câte ori organul fiscal constată incidența prevederilor art. 181 alin. (2), acesta comunică decizia referitoare la obligațiile fiscale accesorii reprezentând penalități de nedeclarare prin evidențierea reducerii de 75% aplicate."
-— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (2) și (2^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 181 alin. (2) și (2^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva precizări utile despre mecanismul reducerii:

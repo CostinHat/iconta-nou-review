@@ -16,12 +16,12 @@ Pentru contabil contează regimul fiscal: acordate potrivit legii, materialele n
 
 ::: ghid-temei
 „(1) Materialele igienico-sanitare se acordă în mod obligatoriu și gratuit de către angajatori. (2) Categoriile de materiale igienico-sanitare, precum și locurile de muncă ce impun acordarea acestora se stabilesc prin contractul colectiv de muncă și/sau contractul individual de muncă."
-— Legea 319/2006, art. 15 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 15 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „contravaloarea echipamentelor tehnice, a echipamentului individual de protecție și de lucru, a alimentației de protecție, a medicamentelor și materialelor igienico-sanitare, a altor drepturi privind sănătatea și securitatea în muncă, precum și a uniformelor obligatorii și a drepturilor de echipament, ce se acordă potrivit legislației în vigoare"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

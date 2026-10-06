@@ -14,7 +14,7 @@ Firmele care gestionează stocuri se întreabă adesea dacă trebuie neapărat s
 
 ::: ghid-temei
 „(1) Contabilitatea imobilizărilor se ține pe categorii și pe fiecare obiect de evidență. (2) Contabilitatea stocurilor se ține cantitativ și valoric sau numai valoric, în condițiile stabilite de reglementările legale."
-— Legea nr. 82/1991 (Legea contabilității), art. 12 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea nr. 82/1991 (Legea contabilității), art. 12 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce completează reglementările contabile aplicabile (OMFP 1802/2014):

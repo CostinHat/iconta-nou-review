@@ -14,7 +14,7 @@ Orele suplimentare nu sunt tratate fiscal ca o categorie separată de venit — 
 
 ::: ghid-temei
 „Sunt considerate venituri din salarii toate veniturile în bani și/sau în natură obținute de o persoană fizică rezidentă ori nerezidentă ce desfășoară o activitate în baza unui contract individual de muncă, a unui raport de serviciu, act de detașare sau a unui statut special prevăzut de lege, indiferent de perioada la care se referă, de denumirea veniturilor ori de forma sub care ele se acordă [...]."
-— Codul fiscal (Legea 227/2015), art. 76 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru că definiția veniturilor din salarii e formulată „indiferent de denumire", munca suplimentară plătită prin spor la salariu intră automat în această categorie și se supune acelorași reguli de impozitare și contribuții (impozit pe venit, CAS, CASS) ca salariul de bază.

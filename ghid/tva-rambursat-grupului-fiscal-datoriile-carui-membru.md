@@ -16,12 +16,12 @@ Suma negativă de TVA cerută la rambursare de reprezentantul unui grup fiscal s
 
 ::: ghid-temei
 „Se compensează, în condițiile prezentului articol, suma negativă a taxei pe valoarea adăugată din decontul de taxă cu opțiune de rambursare depus de reprezentantul unui grup fiscal constituit potrivit Codului fiscal cu obligațiile fiscale ale membrilor grupului fiscal, în următoarea ordine: a) obligațiile fiscale ale reprezentantului grupului fiscal; b) obligațiile fiscale ale celorlalți membri ai grupului fiscal, la alegerea organului fiscal central."
-— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Dispozițiile alin. (9) privind ordinea de stingere prin compensare se aplică în mod corespunzător și în cazul grupului fiscal constituit în domeniul impozitului pe profit, dacă drept urmare a depunerii declarației anuale consolidate privind impozitul pe profit rezultă o sumă de restituit."
-— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (9^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 167 alin. (9^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează:

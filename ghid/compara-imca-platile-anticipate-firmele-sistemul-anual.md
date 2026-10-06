@@ -16,18 +16,18 @@ La firmele pe sistemul anual cu plăți anticipate, impozitul minim pe cifra de 
 
 ::: ghid-temei
 „În cazul contribuabililor care aplică sistemul anual de plată cu efectuarea de plăți anticipate, prevederile alin. (1)-(5) se aplică pentru trimestrele I, II și III ale fiecărui an fiscal/an fiscal modificat, prin compararea impozitului minim pe cifra de afaceri, determinat potrivit alin. (3) [...] cu plățile anticipate, urmând ca definitivarea impozitului pe profit anual să se efectueze până la termenul de depunere a declarației anuale de impozit pe profit."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se compară cu suma plăților anticipate aferente trimestrului I și II;"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se compară cu suma plăților anticipate aferente trimestrului I, II și III."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (6) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru trimestrul IV se efectuează plata anticipată, potrivit dispozițiilor art. 41 din Codul fiscal, fără efectuarea comparației cu impozitul minim pe cifra de afaceri, urmând ca definitivarea impozitului pe profit anual să se efectueze până la termenul de depunere a declarației anuale de impozit pe profit."
-— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (2), Exemplul 3 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul II, pct. 4^1 alin. (2), Exemplul 3 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Mecanismul, trimestru cu trimestru:

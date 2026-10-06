@@ -15,7 +15,7 @@ O achiziție intracomunitară de bunuri neraportată în D390 din luna în care 
 ::: ghid-temei
 „(2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (2) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (2) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Codul de procedură fiscală prevede și un regim de nesancționare pentru corectările din proprie inițiativă ale declarațiilor recapitulative, aplicabil direct și situației D390:

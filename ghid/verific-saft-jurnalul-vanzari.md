@@ -17,7 +17,7 @@ Declarația D406 (SAF-T) trebuie să reflecte fidel evidența contabilă a firme
 (1) Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală, denumită în continuare fișierul standard de control fiscal.
 
 (2) În scopul efectuării inspecției fiscale, organul de inspecție fiscală procedează la: [...] b) verificarea concordanței dintre datele din declarațiile fiscale cu cele din evidența contabilă și fiscală a contribuabilului/plătitorului, inclusiv din fișierul standard de control fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) și art. 113 alin. (2) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 59^1 alin. (1) și art. 113 alin. (2) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Principiul e simplu: SAF-T nu e o declarație independentă de evidența contabilă, ci o **reflectare** a ei. De aceea legea prevede explicit, printre atribuțiile organului fiscal, verificarea concordanței dintre declarațiile fiscale (inclusiv D406) și evidența contabilă din care provin. Practic, pentru firmă asta înseamnă:
@@ -34,6 +34,6 @@ Principiul e simplu: SAF-T nu e o declarație independentă de evidența contabi
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/d406_reconciliere.py` implementează o a doua cale de verificare pentru D406 — construiește independent o balanță de rulaje per cont, direct din înregistrările contabile, și o compară cu totalurile per cont din SAF-T-ul deja emis, blocând declarația (nu o corectează tăcut) dacă apare o divergență. Acest gard acoperă secțiunea de note contabile (`GeneralLedgerEntries`), cu dubla partidă verificată. **Limita declarată explicit în cod**: gardul „NU acoperă sub-secțiunile SalesInvoices/PurchaseInvoices/Payments/Assets/MovementOfGoods" — reconcilierea linie cu antet pentru facturi există doar **parțial**. Verificarea completă a concordanței dintre secțiunea de facturi de vânzare din SAF-T și jurnalul de vânzări rămâne, în acest moment, o zonă de acoperire parțială, care merită atenție suplimentară din partea contabilului.
+Verificat în cod: Aplicația implementează o a doua cale de verificare pentru D406 — construiește independent o balanță de rulaje per cont, direct din înregistrările contabile, și o compară cu totalurile per cont din SAF-T-ul deja emis, blocând declarația (nu o corectează tăcut) dacă apare o divergență. Acest gard acoperă secțiunea de note contabile (`GeneralLedgerEntries`), cu dubla partidă verificată. **Limita declarată explicit în cod**: gardul „NU acoperă sub-secțiunile SalesInvoices/PurchaseInvoices/Payments/Assets/MovementOfGoods" — reconcilierea linie cu antet pentru facturi există doar **parțial**. Verificarea completă a concordanței dintre secțiunea de facturi de vânzare din SAF-T și jurnalul de vânzări rămâne, în acest moment, o zonă de acoperire parțială, care merită atenție suplimentară din partea contabilului.
 
 [iConta.eu](/)

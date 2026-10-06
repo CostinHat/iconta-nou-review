@@ -14,12 +14,12 @@ O microîntreprindere care încasează dividende de la o altă firmă (de exempl
 
 ::: ghid-temei
 „(1) Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...] n) dividendele primite de la o persoană juridică română."
-— Codul fiscal, art. 53 alin. (1) lit. n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 53 alin. (1) lit. n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „o) dividendele primite de la o filială a microîntreprinderii, persoană juridică situată într-un alt stat membru al Uniunii Europene, în măsura în care atât microîntreprinderea, cât și filiala îndeplinesc condițiile prevăzute la art. 24; dispozițiile prezentei litere prevalează față de cele ale lit. m)."
-— Codul fiscal, art. 53 alin. (1) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 53 alin. (1) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

@@ -16,13 +16,13 @@ Obligația privește **orice bunuri**, nu doar pe cele cu risc fiscal ridicat, p
 
 ::: ghid-temei
 „Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: [...] c) furnizorului din România, în cazul livrărilor intracomunitare de bunuri;"
-— OUG 41/2022, art. 8^1 lit. c) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^1 lit. c) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „b) transportul bunurilor care fac obiectul livrărilor intracomunitare de la locul de încărcare situat pe teritoriul național până la punctul rutier de trecere a frontierei la ieșirea din România;"
-— OUG 41/2022, art. 2 pct. 9 lit. b) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 2 pct. 9 lit. b) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Termenul de valabilitate a codului UIT este de 5 zile calendaristice, respectiv de 15 zile calendaristice în cazul achizițiilor intracomunitare de bunuri, precum și în cazul operațiunilor comerciale prevăzute la art. 2 pct. 9 lit. g) și j) , începând cu data declarată pentru începerea transportului."
-— OUG 41/2022, art. 11 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 11 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce reține contabilul:

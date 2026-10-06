@@ -16,14 +16,14 @@ Nu există un răspuns unic pentru toate rezervele. Ce contează este dacă reze
 
 ::: ghid-temei
 „Microîntreprinderile care își încetează existența în urma unei operațiuni de reorganizare sau de lichidare, potrivit legii, și care pe parcursul perioadei de funcționare au fost și plătitoare de impozit pe profit, la calculul impozitului pe veniturile microîntreprinderilor, nu includ în baza impozabilă: rezervele constituite din profitul net, rezervele constituite din diferențe de curs favorabil aferente capitalului social în devize sau disponibilului în devize, precum și sumele aferente unor reduceri ale cotei de impozit pe profit sau ale unor scutiri de impozit, repartizate ca rezerve, potrivit legii, care au fost constituite în perioada în care au fost plătitoare de impozit pe profit."
-— Normele metodologice (HG 1/2016), Titlul III, pct. 5 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul III, pct. 5 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „rezervele, cu excepția celor reprezentând facilități fiscale, reduse sau anulate, reprezentând rezerva legală, rezerve din reevaluarea mijloacelor fixe, inclusiv a terenurilor, care au fost deduse la calculul profitului impozabil și nu au fost impozitate în perioada în care microîntreprinderile au fost și plătitoare de impozit pe profit, indiferent dacă reducerea sau anularea este datorată modificării destinației rezervei, distribuirii acesteia către participanți sub orice formă, lichidării, divizării, fuziunii contribuabilului sau oricărui altui motiv;"
-— Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „În situația în care rezervele fiscale sunt menținute până la lichidare, acestea nu sunt luate în calcul pentru determinarea bazei impozabile ca urmare a lichidării."
-— Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se împart rezervele la lichidarea unei micro care a fost pe profit:

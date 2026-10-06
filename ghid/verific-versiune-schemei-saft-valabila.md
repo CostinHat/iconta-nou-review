@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T, raportat prin declarația D406) are
 
 ::: ghid-temei
 „Art. I - Anexa nr. 5 la Ordinul preşedintelui Agenţiei Naţionale de Administrare Fiscală nr. 1.783/2021 privind natura informaţiilor pe care contribuabilul/plătitorul trebuie să le declare prin fişierul standard de control fiscal, modelul de raportare, procedura şi condiţiile de transmitere, precum şi termenele de transmitere şi data/datele de la care categoriile de contribuabili/plătitori sunt obligate să transmită fişierul standard de control fiscal, publicat în Monitorul Oficial al României, Partea I, nr. 1073 din 9 noiembrie 2021, cu modificările ulterioare, se modifică şi se înlocuieşte cu anexa care face parte integrantă din prezentul ordin."
-— OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la Ordinul preşedintelui ANAF nr. 1.783/2021, art. I (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la Ordinul preşedintelui ANAF nr. 1.783/2021, art. I (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ce arată acest text despre cum se verifică versiunea corectă:

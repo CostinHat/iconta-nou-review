@@ -16,7 +16,7 @@ Declarația recapitulativă D390 (livrări/achiziții/prestări intracomunitare)
 „ART. 337 Contravenții în cazul declarațiilor recapitulative
 (1) Constituie contravenții următoarele fapte: a) nedepunerea la termenele prevăzute de lege a declarațiilor recapitulative reglementate de normele din Codul fiscal privind taxa pe valoarea adăugată; b) depunerea de declarații recapitulative incorecte ori incomplete.
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: a) cu amendă de la 1.000 lei la 5.000 lei în cazul săvârșirii faptei prevăzute la lit. a); b) cu amendă de la 500 lei la 1.500 lei în cazul săvârșirii faptei prevăzute la lit. b)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 337 alin. (1), (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 337 alin. (1), (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă câteva precizări utile:
@@ -34,6 +34,6 @@ Din text rezultă câteva precizări utile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează declarația D390 pe baza operațiunilor intracomunitare înregistrate (`core/d390.py`), cu module de clasificare și reconciliere (`core/d390_clasificare_api.py`, `core/d390_reconciliere.py`) care ajută la identificarea erorilor înainte de depunere. Aplicația **nu calculează și nu afișează amenzi contravenționale** și nu depune automat declarația la ANAF — urmărirea termenului de depunere și evitarea sancțiunilor de la art. 337, inclusiv corectarea din timp a eventualelor erori, rămân responsabilitatea contabilului.
+La data acestui ghid, iConta.eu generează declarația D390 pe baza operațiunilor intracomunitare înregistrate, cu module de clasificare și reconciliere care ajută la identificarea erorilor înainte de depunere. Aplicația **nu calculează și nu afișează amenzi contravenționale** și nu depune automat declarația la ANAF — urmărirea termenului de depunere și evitarea sancțiunilor de la art. 337, inclusiv corectarea din timp a eventualelor erori, rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Un angajator care plătește abonamente la sală sau la alte facilități sporti
 
 ::: ghid-temei
 „contravaloarea abonamentelor suportate de angajator pentru angajații proprii, în limita echivalentului în lei a 100 euro anual pentru fiecare persoană, oferite de furnizori ale căror activități sunt încadrate la codurile CAEN 9311, 9312 sau 9313, care acționează în nume propriu în cazul abonamentelor care includ dreptul de a utiliza facilitățile sportive, în vederea practicării sportului și educației fizice cu scop de întreținere, profilactic sau terapeutic, ori în calitate de intermediari pentru serviciile medicale, în cazul în care abonamentele respective includ și servicii medicale;"
-— Legea nr. 227/2015 privind Codul fiscal, art. 76 alin. (4^1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 76 alin. (4^1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă trei condiții cumulative pentru ca abonamentul sportiv să nu fie impozitat ca venit salarial:

@@ -16,20 +16,20 @@ Cererea fără cont bancar riscă să întârzie restituirea. Iar contul indicat
 
 ::: ghid-temei
 „Se va bifa modalitatea agreată pentru restituire de către contribuabilul persoană fizică, iar în cazul contribuabilului persoană juridică se va bifa în mod obligatoriu contul bancar în care dorește restituirea."
-— OPANAF 187/2018, Anexa nr. 2, nota ^9) (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 2, nota ^9) (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 
 „Solicit/Solicităm ca restituirea efectivă a sumelor cuvenite în continuare să se efectueze^9): ( ) în contul bancar nr. ........., cod IBAN......................., deschis la .........................; ( ) în numerar, la ghișeul unității Trezoreriei Statului."
-— OPANAF 187/2018, Anexa nr. 2 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 2 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „4. Se utilizează pentru înștiințarea contribuabilului persoană fizică, în situația în care s-a solicitat restituirea în numerar și suma de restituit nu depășește plafonul de 500 lei."
-— OPANAF 187/2018, Anexa nr. 4, Caracteristici, pct. 4 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 4, Caracteristici, pct. 4 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „(8) în cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

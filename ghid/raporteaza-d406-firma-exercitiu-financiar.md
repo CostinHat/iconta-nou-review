@@ -14,7 +14,7 @@ Puține firme din România au un exercițiu financiar diferit de anul calendaris
 
 ::: ghid-temei
 „(1) Exercițiul financiar reprezintă perioada pentru care trebuie întocmite situațiile financiare anuale și, de regulă, coincide cu anul calendaristic. (2) Durata exercițiului financiar este de 12 luni. (3) Exercițiul financiar poate fi diferit de anul calendaristic pentru sucursalele cu sediul în România, care aparțin unei persoane juridice cu sediul în străinătate, precum și pentru persoanele juridice cu sediul în România."
-— Legea 82/1991 (Legea contabilității), art. 27 alin. (1)-(3) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 27 alin. (1)-(3) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce rezultă din articolul complet:

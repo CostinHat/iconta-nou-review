@@ -16,20 +16,20 @@ Regula are efecte practice, pentru că certificatul se emite gratuit și imediat
 
 ::: ghid-temei
 „(7) Certificatul de cazier fiscal este valabil 30 de zile de la data emiterii și numai în scopul în care a fost eliberat. (8) Eliberarea certificatului de cazier fiscal se face de îndată de către organul fiscal competent în eliberarea certificatului de cazier fiscal, indiferent de domiciliul fiscal al contribuabilului."
-— OG 39/2015, art. 9 alin. (7)-(8) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 9 alin. (7)-(8) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 
 „(5) Certificatul de cazier fiscal se emite în scris, pe suport hârtie sau în formă electronică, fără perceperea de taxe."
-— OG 39/2015, art. 9 alin. (5) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 9 alin. (5) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „3. Cererea de eliberare a certificatului de cazier fiscal se depune la orice organ fiscal competent în eliberarea certificatului de cazier fiscal, indiferent de domiciliul fiscal al contribuabilului, în condițiile prevăzute de art. 9 din Ordonanța Guvernului nr. 39/2015 . [...] 9. Certificatul de cazier fiscal este valabil 30 de zile de la data emiterii și numai în scopul în care a fost eliberat."
-— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. III pct. 3 și 9 (sursă: anaf_surse/ordin_2594_2015__anexa_269686.html)
+— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. III pct. 3 și 9 (sursă: [OPANAF nr. 2594/2015 privind cazierul fiscal (anexa-procedură de înscriere, scoatere și rectificare)](https://legislatie.just.ro/Public/DetaliiDocument/171984))
 :::
 
 ::: ghid-temei
 „(2) Obligația prevăzută la alin. (1) este îndeplinită în situațiile prevăzute la lit. a) și c)-e) pentru persoanele care se înscriu în registrul comerțului prin transmiterea, în format electronic, a informațiilor din cazierul fiscal al contribuabililor de către Agenția Națională de Administrare Fiscală Oficiului Național al Registrului Comerțului, la solicitarea acestuia, în termen de maximum 2 ore."
-— OG 39/2015, art. 8 alin. (2) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 8 alin. (2) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 Ce trebuie reținut:

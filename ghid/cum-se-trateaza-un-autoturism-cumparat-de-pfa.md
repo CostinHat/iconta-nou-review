@@ -42,6 +42,6 @@ Dacă PFA-ul întocmește foaie de parcurs și poate dovedi utilizarea exclusiv�
 
 ## Ce face iConta.eu
 
-Amortizarea autoturismului se calculează prin `registru_inventar(conn, schema, an)` din `core/rip_api.py`, pe baza datelor din tabela `mijloace_fixe` (valoare, dată PIF, durata normală de funcționare în luni) — amortizare liniară pe lunile scurse, conform formulei `amortizabil * luni / dnf_luni`. Partea de cheltuieli de funcționare supusă plafonului de 50% se înregistrează separat, ca plată, în categoria `cheltuiala_limitata` din `CATEGORII_PLATA`; fișa de calcul D212 (`fisa_d212`) exclude automat aceste sume din calcul, raportându-le distinct, iar aplicarea plafonului de 50% (sau a deducerii integrale, pe baza foii de parcurs) rămâne decizia contabilului.
+Amortizarea autoturismului se calculează prin `registru_inventar(conn, schema, an)` din aplicație, pe baza datelor din tabela `mijloace_fixe` (valoare, dată PIF, durata normală de funcționare în luni) — amortizare liniară pe lunile scurse, conform formulei `amortizabil * luni / dnf_luni`. Partea de cheltuieli de funcționare supusă plafonului de 50% se înregistrează separat, ca plată, în categoria `cheltuiala_limitata` din `CATEGORII_PLATA`; fișa de calcul D212 (`fisa_d212`) exclude automat aceste sume din calcul, raportându-le distinct, iar aplicarea plafonului de 50% (sau a deducerii integrale, pe baza foii de parcurs) rămâne decizia contabilului.
 
 [iConta.eu](/)

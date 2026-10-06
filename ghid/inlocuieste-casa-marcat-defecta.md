@@ -14,7 +14,7 @@ Odată notificat, distribuitorul autorizat nu are libertate nelimitată de a sta
 
 ::: ghid-temei
 „(5) Distribuitorii autorizați, precum și unitățile din rețeaua acestora acreditate pentru service, după caz, au obligația să asigure, în termen de maximum 72 de ore de la solicitarea utilizatorului, instalarea aparatului nou, precum și înlocuirea memoriei fiscale sau a dispozitivului de memorare a jurnalului electronic în cazul în care sunt defecte sau capacitatea de stocare a fost epuizată."
-— OUG 28/1999, art. 5 alin. (5) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 5 alin. (5) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce garantează norma:
@@ -32,6 +32,6 @@ Ce garantează norma:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul care să urmărească termenul de 72 de ore al distribuitorului sau să gestioneze comunicarea cu unitatea de service acreditată — aceasta rămâne o relație contractuală directă între utilizator și distribuitorul autorizat al aparatului. Ce oferă aplicația e evidența contabilă generală care continuă să funcționeze indiferent de starea AMEF, prin `core/chitante.py` pentru documentele emise pe perioada de indisponibilitate.
+La data acestui ghid, iConta.eu nu are un modul care să urmărească termenul de 72 de ore al distribuitorului sau să gestioneze comunicarea cu unitatea de service acreditată — aceasta rămâne o relație contractuală directă între utilizator și distribuitorul autorizat al aparatului. Ce oferă aplicația e evidența contabilă generală care continuă să funcționeze indiferent de starea AMEF, prin aplicație pentru documentele emise pe perioada de indisponibilitate.
 
 [iConta.eu](/)

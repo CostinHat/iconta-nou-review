@@ -14,7 +14,7 @@ Verificarea se face pe un registru public al ANAF, în afara oricărei aplicați
 
 ::: ghid-temei
 „A.N.A.F. organizează Registrul persoanelor impozabile înregistrate în scopuri de TVA conform art. 316 și Registrul persoanelor impozabile a căror înregistrare în scopuri de TVA conform art. 316 a fost anulată. Registrele sunt publice și se afișează pe site-ul A.N.A.F."
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

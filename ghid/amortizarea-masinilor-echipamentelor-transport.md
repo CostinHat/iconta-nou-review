@@ -14,7 +14,7 @@ Autoturismele și autovehiculele de marfă au durate de amortizare distincte în
 
 ::: ghid-temei
 „2.3. MIJLOACE DE TRANSPORT [...] 2.3.2. Mijloace de transport auto [...] 2.3.2.1.1. - autoturisme, în afară de: 4-6 [ani] [...] 2.3.2.2. Mijloace de transport auto, pentru mărfuri. 2.3.2.2.1. - autocamioane și autocamionete cu platformă fixă, autofurgonete, autofurgoane și autodube de capacitate până la 4,5t exclusiv. 4-6 [ani] [...] 2.3.2.2.2. - autocamioane, autodube și autofurgoane cu platformă fixă, cu capacitatea de și peste 4,5 t; 4-8 [ani]."
-— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), grupa 2.3 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), grupa 2.3 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Ce rezultă, concret, pentru parcul auto al firmei:

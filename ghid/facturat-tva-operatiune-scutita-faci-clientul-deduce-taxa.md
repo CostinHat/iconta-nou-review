@@ -16,12 +16,12 @@ Contează pentru ambele părți. Furnizorul colectează o taxă pe care nu o dat
 
 ::: ghid-temei
 „Cu excepția situațiilor prevăzute la art. 292 alin. (3) din Codul fiscal, persoanele impozabile nu pot aplica taxarea pentru operațiunile scutite prevăzute de art. 292 din Codul fiscal. Dacă o persoană impozabilă a facturat în mod eronat cu taxă livrări de bunuri și sau prestări de servicii scutite conform art. 292 din Codul fiscal, este obligată să storneze facturile emise în conformitate cu prevederile art. 330 din Codul fiscal. Beneficiarii unor astfel de operațiuni nu au dreptul de deducere sau de rambursare a taxei aplicate în mod eronat pentru o astfel de operațiune scutită. Aceștia trebuie să solicite furnizorului/ prestatorului stornarea facturii cu taxă și emiterea unei noi facturi fără taxă."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 59 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 59 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Orice persoană impozabilă poate opta pentru taxarea operațiunilor prevăzute la alin. (2) lit. e) și f) [...] în condițiile stabilite prin normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 292 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, pe scurt:

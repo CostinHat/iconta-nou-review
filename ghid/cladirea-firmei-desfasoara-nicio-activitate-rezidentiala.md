@@ -16,16 +16,16 @@ Pentru o firmă, încadrarea decide cota. La persoanele juridice, cota pentru cl
 
 ::: ghid-temei
 „Clădirile în care nu se desfășoară nicio activitate sunt considerate rezidențiale sau nerezidențiale în funcție de destinația care reiese din autorizația de construire. De exemplu, sunt clădiri nerezidențiale: o clădire de birouri, un magazin, o fabrică, o clădire unde se desfășoară activitate de asigurare, un spital, o școală, un hotel."
-— Normele metodologice (HG 1/2016), Titlul IX, pct. 5 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul IX, pct. 5 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „Clădirile în care nu se desfășoară nicio activitate sunt considerate rezidențiale dacă aceasta este destinația care reiese din autorizația de construire."
-— HG 1/2016, Titlul IX, pct. 6 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul IX, pct. 6 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „clădire nerezidențială - orice clădire care nu este rezidențială;"
-— Codul fiscal (Legea 227/2015), art. 453 lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 453 lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „clădire rezidențială - construcție alcătuită din una sau mai multe camere folosite pentru locuit, cu dependințele, dotările și utilitățile necesare, care satisface cerințele de locuit ale unei persoane sau familii;"
-— Codul fiscal (Legea 227/2015), art. 453 lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 453 lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

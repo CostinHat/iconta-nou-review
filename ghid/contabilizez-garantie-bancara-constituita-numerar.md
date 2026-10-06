@@ -14,7 +14,7 @@ Uneori banca nu emite o scrisoare de garanție „pe încrederea" clientului, ci
 
 ::: ghid-temei
 „Contul 267 «Creanțe imobilizate» [...] Cu ajutorul acestui cont se ține evidența creanțelor imobilizate sub forma împrumuturilor acordate pe termen lung altor entități, a altor creanțe imobilizate, cum sunt depozite, garanții și cauțiuni depuse de entitate la terți, precum și a obligațiunilor achiziționate cu ocazia emisiunilor de obligațiuni efectuate de terți, care urmează a fi deținute pe o perioadă mai mare de un an. Contul 267 «Creanțe imobilizate» este un cont de activ."
-— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 2 „Conturi de imobilizări", Contul 267 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, Clasa 2 „Conturi de imobilizări", Contul 267 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Banii depuși de firmă drept colateral pentru o garanție bancară nu ies din patrimoniul ei — devin o **creanță** (un activ), pentru că firma are dreptul să-i recupereze la eliberarea garanției. Contabil, asta e complet diferit de o simplă evidență extrabilanțieră (801/802) folosită pentru garanțiile-angajament, fără mutare de bani.
@@ -29,6 +29,6 @@ Uneori banca nu emite o scrisoare de garanție „pe încrederea" clientului, ci
 
 ## Ce face iConta.eu
 
-Verificat în cod: funcția de garanții existentă în iConta.eu (`core/credite.py`, `nota_garantie`) tratează exclusiv cazul angajamentului extrabilanțier (8011/8021=891), fără mutare efectivă de numerar. Pentru cazul concret din acest ghid — bani chiar depuși de firmă drept colateral, care devin o creanță imobilizată — iConta.eu **nu are** o funcție dedicată care să genereze automat nota corespunzătoare (ieșire de trezorerie + creanță). Operațiunea trebuie înregistrată manual, printr-o notă contabilă obișnuită, cu contul de creanță potrivit termenului garanției.
+Verificat în cod: funcția de garanții existentă în iConta.eu (`nota_garantie`) tratează exclusiv cazul angajamentului extrabilanțier (8011/8021=891), fără mutare efectivă de numerar. Pentru cazul concret din acest ghid — bani chiar depuși de firmă drept colateral, care devin o creanță imobilizată — iConta.eu **nu are** o funcție dedicată care să genereze automat nota corespunzătoare (ieșire de trezorerie + creanță). Operațiunea trebuie înregistrată manual, printr-o notă contabilă obișnuită, cu contul de creanță potrivit termenului garanției.
 
 [iConta.eu](/)

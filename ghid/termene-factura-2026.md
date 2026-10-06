@@ -14,7 +14,7 @@ Emiterea unei facturi în relația B2B nu e suficientă — factura trebuie și 
 
 ::: ghid-temei
 „Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1) în sistemul național privind factura electronică RO e-Factura este de 5 zile calendaristice de la data emiterii facturii, dar nu mai târziu de 5 zile calendaristice de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— OUG 120/2021, art. 10 alin. (7), introdus prin OUG 115/2023 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— OUG 120/2021, art. 10 alin. (7), introdus prin OUG 115/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 :::
 
 Ce rezultă din text pentru practica zilnică:

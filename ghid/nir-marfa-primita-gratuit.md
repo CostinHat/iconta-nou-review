@@ -14,7 +14,7 @@ Marfa primită fără plată — mostre de la furnizor, bunuri cedate cu titlu g
 
 ::: ghid-temei
 „Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare. [...] Avizul de însoțire a mărfii servește ca: [...] - document de descărcare din gestiune a bunurilor cedate cu titlu gratuit."
-— OMFP 2634/2015, Anexa 2, Cod 14-3-1A și Cod 14-3-6A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-3-1A și Cod 14-3-6A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Rezultă:
@@ -31,6 +31,6 @@ Rezultă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/stocuri_cv_api.py` oferă funcția generală `intrare()` pentru încărcarea cantitativă în gestiune, indiferent de sursa documentului (factură, aviz sau NIR). Aplicația nu are un câmp sau flux dedicat „marfă primită gratuit" care să aplice automat criteriile de mai sus și să decidă dacă NIR e sau nu obligatoriu — alegerea documentului de recepție și verificarea diferențelor rămân, azi, în sarcina contabilului.
+La data acestui ghid, aplicația oferă funcția generală `intrare()` pentru încărcarea cantitativă în gestiune, indiferent de sursa documentului (factură, aviz sau NIR). Aplicația nu are un câmp sau flux dedicat „marfă primită gratuit" care să aplice automat criteriile de mai sus și să decidă dacă NIR e sau nu obligatoriu — alegerea documentului de recepție și verificarea diferențelor rămân, azi, în sarcina contabilului.
 
 [iConta.eu](/)

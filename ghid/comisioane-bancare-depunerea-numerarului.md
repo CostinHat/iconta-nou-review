@@ -14,7 +14,7 @@ Comisionul reținut de bancă atunci când o firmă depune numerar în cont nu e
 
 ::: ghid-temei
 „Contabilitatea cheltuielilor se ține pe feluri de cheltuieli, după natura lor, astfel: a) cheltuieli de exploatare, care cuprind: [...] cheltuieli cu serviciile executate de terți, redevențe, locații de gestiune și chirii; prime de asigurare; studii și cercetări; cheltuieli cu alte servicii executate de terți (colaboratori); comisioane și onorarii; [...] cheltuieli poștale și taxe de telecomunicații, servicii bancare și altele."
-— OMFP 1802/2014, pct. 450 alin. (1) lit. a) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 450 alin. (1) lit. a) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă concret pentru comisionul de depunere numerar:
@@ -31,6 +31,6 @@ Ce rezultă concret pentru comisionul de depunere numerar:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/banca.py` (`regula_cont()`, `detecteaza_tip()`), expus prin ruta `/tenants/{tenant_id}/banca/parse-extras` (`core/uc_tenants.py: banca_parse_extras()`), clasifică automat liniile din extrasul bancar după cuvinte-cheie din descriere — inclusiv „comision", „taxa adm", „speze" și „serviciu bancar", încadrate direct pe contul **627** „Cheltuieli cu serviciile bancare și asimilate". O linie de comision de depunere numerar, dacă descrierea din extras conține unul dintre aceste cuvinte, e deci recunoscută și contată automat, nu doar manual. Separat, `core/reconciliere.py` alocă liniile de extras care corespund unor facturi deschise ale partenerilor — comisionul, nefiind o factură, nu trece prin acest motor, ci prin clasificarea pe cuvinte-cheie de mai sus.
+La data acestui ghid, aplicația (`regula_cont()`, `detecteaza_tip()`), expus prin ruta `/tenants/{tenant_id}/banca/parse-extras`, clasifică automat liniile din extrasul bancar după cuvinte-cheie din descriere — inclusiv „comision", „taxa adm", „speze" și „serviciu bancar", încadrate direct pe contul **627** „Cheltuieli cu serviciile bancare și asimilate". O linie de comision de depunere numerar, dacă descrierea din extras conține unul dintre aceste cuvinte, e deci recunoscută și contată automat, nu doar manual. Separat, aplicația alocă liniile de extras care corespund unor facturi deschise ale partenerilor — comisionul, nefiind o factură, nu trece prin acest motor, ci prin clasificarea pe cuvinte-cheie de mai sus.
 
 [iConta.eu](/)

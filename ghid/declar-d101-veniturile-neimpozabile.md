@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 Art.15 CF: reguli speciale de venituri neimpozabile, pe categorii, pentru culte, învățământ particular acreditat, asociații de proprietari, Crucea Roșie, ONG-uri/sindicate/patronate — nu sunt scutiri totale de impozit pe profit, ci venituri neimpozabile enumerate expres.
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 :::
 
 Codul fiscal nu prevede scutiri totale de impozit pe profit pentru anumite entități, ci categorii precise de venituri neimpozabile (art.15): pentru culte, învățământ particular acreditat, asociații de proprietari, Crucea Roșie, respectiv ONG-uri/sindicate/patronate, doar veniturile enumerate expres de lege sunt scoase din baza impozabilă — restul veniturilor rămân, în principiu, impozabile după regulile obișnuite.

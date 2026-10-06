@@ -14,7 +14,7 @@ Radierea unei firme din registrul comerțului nu înseamnă că documentele ei c
 
 ::: ghid-temei
 „În caz de încetare a activității persoanelor prevăzute la art. 1, situațiile financiare anuale, precum și registrele și celelalte documente la care se referă art. 25 se predau la arhivele statului, în conformitate cu prevederile legale în materie."
-— Legea 82/1991 (Legea contabilității), art. 35 alin. (4) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 35 alin. (4) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Corelat cu regula generală de păstrare a documentelor (aplicabilă cât timp firma e activă, dar relevantă și pentru perioada premergătoare radierii):

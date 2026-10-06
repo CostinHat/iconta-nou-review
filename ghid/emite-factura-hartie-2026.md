@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „În relația comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015, cu modificările și completările ulterioare, emitentul facturii electronice are obligația de transmitere a acesteia către destinatar utilizând sistemul național privind factura electronică RO e-Factura, cu respectarea prevederilor art. 4 alin. (1). Fac excepție facturile simplificate emise conform art. 319 alin. (12) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Ordonanța de urgență nr. 120/2021, art. 10 alin. (1), astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 
 „În cazul în care emitentul facturii electronice a optat pentru utilizarea sistemului național privind factura electronică RO e-Factura, utilizarea facturii electronice este considerată acceptată la data comunicării în acest sistem."
-— Ordonanța de urgență nr. 120/2021, art. 11, astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Ordonanța de urgență nr. 120/2021, art. 11, astfel cum a fost modificat prin Legea nr. 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 **Notă de precizie:** o formă anterioară a acestei reguli (art. LIX alin. (1) din Legea 296/2023) a fost o regulă tranzitorie, valabilă strict 1 ianuarie–30 iunie 2024; citatele de mai sus sunt forma permanentă, în vigoare din 1 iulie 2024.
@@ -37,6 +37,6 @@ Ce înseamnă, concret, pentru „factura pe hârtie":
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu emite și transmite facturile prin sistemul RO e-Factura (`core/efactura_send.py`, `core/efactura_trimitere.py`) pentru operațiunile care intră sub această obligație — aplicația nu oferă o opțiune de emitere „doar pe hârtie", în afara sistemului național, pentru operațiunile B2B supuse obligației de facturare electronică.
+La data acestui ghid, iConta.eu emite și transmite facturile prin sistemul RO e-Factura pentru operațiunile care intră sub această obligație — aplicația nu oferă o opțiune de emitere „doar pe hârtie", în afara sistemului național, pentru operațiunile B2B supuse obligației de facturare electronică.
 
 [iConta.eu](/)

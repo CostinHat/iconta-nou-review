@@ -16,7 +16,7 @@ Da — dar nu prin câmpurile speciale de rezumat pentru persoane fizice. Struct
 „bazaL_PF — Valoare bază impozabilă facturi emise tip L către persoane fizice, cu valoare individuala/persoana mai mică sau egală cu 10000 lei [...] Obligatoriu 0 începând cu 01.01.2017."
 „nrFacturiL_PF — Numar facturi emise tip L către persoane fizice, cu valoare individuala/persoana mai mică sau egală cu 10000 lei [...] Obligatoriu 0 începând cu 01.01.2017."
 „nrFacturiLS_PF [...] val_LS_PF — Valoare livrari tip LS către persoane fizice, cu valoare individuala/persoana mai mică sau egală cu 10000 lei [...] Obligatoriu 0 începând cu 01.01.2017."
-— Structura oficială D394, pozițiile 109, 132, 133, 134 (sursă: anaf_surse/d394_struct_anaf.txt)
+— Structura oficială D394, pozițiile 109, 132, 133, 134 (sursă: [Structura fișierului XML pentru declarația D394 (versiunea 2020), publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf))
 :::
 
 Ce rezultă de aici pentru o firmă care vinde către persoane fizice:
@@ -33,6 +33,6 @@ Ce rezultă de aici pentru o firmă care vinde către persoane fizice:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu clasifică automat partenerii fără CUI valid de pe facturile emise ca „persoană neînregistrată în scopuri de TVA" și le declară individual, ca operațiuni obișnuite (tip L/LS) în secțiunea de operațiuni a **D394**, agregate pe tip de partener și cotă alături de restul operațiunilor de același fel (`core/d394.py`). Câmpurile vechi de rezumat pentru persoane fizice (`bazaL_PF`, `tvaL_PF`, `nrFacturiL_PF`, `nrFacturiLS_PF`, `val_LS_PF`) sunt scrise mereu cu 0, conform regulii oficiale în vigoare din 01.01.2017, fără să existe vreo cale în aplicație de a le completa altfel.
+La data acestui ghid, iConta.eu clasifică automat partenerii fără CUI valid de pe facturile emise ca „persoană neînregistrată în scopuri de TVA" și le declară individual, ca operațiuni obișnuite (tip L/LS) în secțiunea de operațiuni a **D394**, agregate pe tip de partener și cotă alături de restul operațiunilor de același fel. Câmpurile vechi de rezumat pentru persoane fizice (`bazaL_PF`, `tvaL_PF`, `nrFacturiL_PF`, `nrFacturiLS_PF`, `val_LS_PF`) sunt scrise mereu cu 0, conform regulii oficiale în vigoare din 01.01.2017, fără să existe vreo cale în aplicație de a le completa altfel.
 
 [iConta.eu](/)

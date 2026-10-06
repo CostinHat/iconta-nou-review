@@ -20,7 +20,7 @@ Executarea silită nu poate continua la nesfârșit pentru aceeași creanță fi
 ART. 218 Efecte ale împlinirii termenului de prescripție
 (1) Dacă organul de executare silită constată împlinirea termenului de prescripție a dreptului de a cere executarea silită a creanțelor fiscale, acesta va proceda la încetarea măsurilor de realizare și la scăderea acestora din evidența creanțelor fiscale.
 (2) Sumele achitate de debitor în contul unor creanțe fiscale, după împlinirea termenului de prescripție, nu se restituie."
-— Cod de procedură fiscală (Legea nr. 207/2015), art. 215 alin. (1)-(2) și art. 218 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Cod de procedură fiscală (Legea nr. 207/2015), art. 215 alin. (1)-(2) și art. 218 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din aceste reguli pentru o datorie despre care se susține că e prescrisă:

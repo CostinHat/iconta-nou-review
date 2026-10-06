@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Prin hotărârea judecătorească de declarare a nulității se vor numi și lichidatorii societății."
-— Legea 31/1990, art. 58 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 58 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 **Limitare onestă, spusă direct:** citatul de mai sus e cel mai apropiat text din Legea 31/1990 legat de „oprirea" activității unei societăți, dar el vizează **nulitatea societății** (o cauză de desființare, nu o pauză temporară de activitate), nu întreruperea temporară a activității. Am căutat explicit în textul Legii 31/1990 disponibil aici un mecanism de „suspendare a activității" în sensul de pauză reversibilă (continuarea existenței firmei, fără activitate curentă) — **nu există** un asemenea mecanism reglementat în acest act normativ.

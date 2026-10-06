@@ -14,10 +14,10 @@ Când TVA dedusă într-o lună depășește TVA colectată, rezultă o sumă ne
 
 ::: ghid-temei
 „Persoanele impozabile, înregistrate conform art. 316, pot solicita rambursarea soldului sumei negative a taxei din perioada fiscală de raportare, prin bifarea casetei corespunzătoare din decontul de taxă din perioada fiscală de raportare, decontul fiind și cerere de rambursare, sau pot reporta soldul sumei negative în decontul perioadei fiscale următoare. Dacă persoana impozabilă solicită rambursarea soldului sumei negative, acesta nu se reportează în perioada fiscală următoare. Nu poate fi solicitată rambursarea soldului sumei negative a taxei din perioada fiscală de raportare, mai mic de 5.000 lei inclusiv, acesta fiind reportat obligatoriu în decontul perioadei fiscale următoare."
-— Legea nr. 227/2015, art. 303 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 303 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele impozabile pot renunța la cererea de rambursare pe baza unei notificări depuse la autoritățile fiscale, urmând să preia soldul sumei negative solicitat la rambursare în decontul aferent perioadei fiscale următoare depunerii notificării."
-— Legea nr. 227/2015, art. 303 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 303 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanismul complet:

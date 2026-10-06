@@ -16,17 +16,17 @@ Nivelul taxei îl stabilește **consiliul local**, în limita prevăzută de Cod
 
 ::: ghid-temei
 „(2) În aplicarea art. 474 alin. (16) din Codul fiscal, taxa pentru eliberarea certificatului de nomenclatură stradală și adresă se datorează pentru fiecare certificat eliberat de către primari în condițiile [...] prin care se confirmă realitatea existenței domiciliului/reședinței persoanei fizice sau a sediului persoanei juridice la adresa respectivă, potrivit nomenclaturii stradale aprobate la nivelul localității."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 145 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 145 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Taxa pentru eliberarea certificatului de nomenclatură stradală și adresă se stabilește de către consiliile locale în sumă de până la 9 lei, inclusiv."
-— Codul fiscal (Legea 227/2015), art. 474 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 474 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pentru anul fiscal 2026, în cazul oricărui impozit sau oricărei taxe locale, care constă într-o anumită sumă în lei sau care este stabilită pe baza unei anumite sume în lei, [...] sumele respective sunt cele corespunzătoare indexării anuale, efectuate de către consiliile locale, ținând cont de rata inflației pentru anul fiscal anterior"
-— Codul fiscal (Legea 227/2015), art. 491 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 491 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reții:

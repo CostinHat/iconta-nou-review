@@ -16,15 +16,15 @@ Același principiu se aplică serviciilor. Consecința practică: o firmă care 
 
 ::: ghid-temei
 „Se consideră că o persoană impozabilă, care acționează în nume propriu, dar în contul altei persoane, în calitate de intermediar, într-o livrare de bunuri, a achiziționat și livrat bunurile respective ea însăși, în condițiile stabilite prin normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(3) În sensul art. 270 alin. (2) din Codul fiscal, persoana impozabilă care nu deține proprietatea bunurilor dar primește facturi pe numele său de la furnizor și emite facturi pe numele său către client, pentru respectivele bunuri se consideră că acționează în nume propriu. Persoana respectivă este considerată din punctul de vedere al taxei cumpărător și revânzător al bunurilor. Indiferent de natura contractului încheiat de părți, dacă o persoană impozabilă primește și/sau emite facturi pe numele său, acest fapt o transformă în cumpărător revânzător din punctul de vedere al taxei."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 7 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(6) Emiterea de către intermediar a unei facturi în numele său către cumpărător/beneficiar, pentru livrarea de bunuri/prestarea de servicii intermediată, este suficientă pentru a-l transforma în cumpărător revânzător din punctul de vedere al taxei pe valoarea adăugată. De asemenea, intermediarul devine din punctul de vedere al taxei pe valoarea adăugată un cumpărător revânzător, dacă primește de la furnizor/prestator o factură întocmită pe numele său."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 8 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 8 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

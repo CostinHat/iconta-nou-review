@@ -16,17 +16,17 @@ Situația apare des: firma românească deține deja acțiuni sau părți social
 
 ::: ghid-temei
 „Atunci când o societate beneficiară deține o participație la capitalul societății cedente, veniturile societății beneficiare provenite din anularea participației sale nu se impozitează în cazul în care participația societății beneficiare la capitalul societății cedente este mai mare de 10%."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „operațiunilor de fuziune, divizare totală, divizare parțială, transferurilor de active și schimburilor de acțiuni în care sunt implicate societăți din două sau mai multe state membre, din care una este din România;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prevederile prezentului articol nu se aplică atunci când fuziunea, divizarea sub orice formă, transferul de active sau schimbul de acțiuni: a) are drept consecință frauda și evaziunea fiscală constatată în condițiile legii;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie verificat concret:

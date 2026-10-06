@@ -14,7 +14,7 @@ Plafonul de diurnă neimpozabilă nu e o sumă fixă în lege, ci rezultatul une
 
 ::: ghid-temei
 „ART. 1 Începând cu data de 1 aprilie 2023: a) cuantumul indemnizației de delegare prevăzute la art. 1 alin. (1) și alin. (2) lit. a) din anexa la Hotărârea Guvernului nr. 714/2018 [...] se majorează la 23 lei; b) cuantumul alocației de cazare prevăzute la art. 1 alin. (2) lit. b) din anexa la Hotărârea Guvernului nr. 714/2018 se majorează la 265 lei; c) cuantumul indemnizației de detașare prevăzute la art. 4 alin. (1) din anexa la Hotărârea Guvernului nr. 714/2018 se majorează la 23 lei."
-— Ordinul MF nr. 1235/2023, art. 1 (sursă: anaf_surse/omf_1235_2023.txt)
+— Ordinul MF nr. 1235/2023, art. 1 (sursă: [OMF nr. 1235/2023 pentru actualizarea cuantumului indemnizației de delegare/detașare (HG nr. 714/2018)](https://legislatie.just.ro/Public/DetaliiDocument/266379))
 :::
 
 Ce înseamnă concret aceste 23 de lei pentru plafonul neimpozabil:
@@ -32,7 +32,7 @@ Ce înseamnă concret aceste 23 de lei pentru plafonul neimpozabil:
 
 ## Ce face iConta.eu
 
-Motorul de calcul din `core/deconturi.py` cunoaște ambele valori istorice ale diurnei bugetare interne (20 lei până la 31.03.2023, 23 lei după) și e construit să aleagă automat varianta corectă în funcție de data deplasării. Există însă o discrepanță confirmată direct în cod: la apelul efectiv din aplicație (`core/uc_tenants.py`, funcția care procesează decontul), data deplasării introdusă de utilizator **nu este transmisă** motorului de calcul — acesta cade, implicit, pe data curentă a serverului. În consecință, un decont introdus azi pentru o deplasare veche (dinainte de aprilie 2023) ar putea folosi eronat valoarea de 23 lei în loc de 20 lei.
+Motorul de calcul din aplicație cunoaște ambele valori istorice ale diurnei bugetare interne (20 lei până la 31.03.2023, 23 lei după) și e construit să aleagă automat varianta corectă în funcție de data deplasării. Există însă o discrepanță confirmată direct în cod: la apelul efectiv din aplicație (funcția care procesează decontul), data deplasării introdusă de utilizator **nu este transmisă** motorului de calcul — acesta cade, implicit, pe data curentă a serverului. În consecință, un decont introdus azi pentru o deplasare veche (dinainte de aprilie 2023) ar putea folosi eronat valoarea de 23 lei în loc de 20 lei.
 
 În plus, acest calcul de plafon (`fel="plafon"`) **nu este accesibil din interfața iConta** — ecranul „Decont deplasare / diurnă" nu are opțiunea de a cere un calcul de plafon, doar de a înregistra un avans sau un decont. Un contabil care vrea să afle plafonul aplicabil pentru 2026 trebuie, astăzi, să-l calculeze manual (57,5 lei/zi, cu plafonarea suplimentară la 3 salarii/zile lucrătoare), nu să-l obțină direct din aplicație.
 

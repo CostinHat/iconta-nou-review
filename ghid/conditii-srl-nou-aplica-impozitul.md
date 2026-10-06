@@ -14,7 +14,7 @@ Un SRL nou-înființat nu trebuie să aștepte un an fiscal întreg ca să intre
 
 ::: ghid-temei
 „O persoană juridică română care este nou-înființată poate opta să plătească impozit pe veniturile microîntreprinderilor începând cu primul an fiscal, dacă condițiile prevăzute la art. 47 alin. (1) lit. d) și h) sunt îndeplinite la data înregistrării în registrul comerțului, iar cea prevăzută la lit. g) în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice respective. În cazul în care, în acest termen, nu se îndeplinește condiția de la art. 47 alin. (1) lit. g), microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care expiră perioada de 90 de zile."
-— Codul fiscal (Legea 227/2015), art. 48 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 48 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile la care trimite acest text, din art. 47 alin. (1), sunt:
@@ -28,7 +28,7 @@ Cota de impozit aplicabilă microîntreprinderilor, inclusiv celor nou-înființ
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1), astfel cum a fost modificat de OUG 89/2025, în vigoare de la 1 ianuarie 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1), astfel cum a fost modificat de OUG 89/2025, în vigoare de la 1 ianuarie 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce se greșește în practică

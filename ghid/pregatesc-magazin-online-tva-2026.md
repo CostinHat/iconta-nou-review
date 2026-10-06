@@ -14,7 +14,7 @@ Sistemul RO e-TVA nu e un formular separat pe care îl completează magazinele o
 
 ::: ghid-temei
 „Articolul 12 (1) Pentru gestionarea și operaționalizarea decontului precompletat RO e-TVA, persoanele impozabile înregistrate în scopuri de TVA au următoarele obligații: a) să verifice datele și informațiile din decontul precompletat RO e-TVA transmis prin mijloace electronice; ... c) să sesizeze orice erori tehnice care rezultă din implementarea decontului precompletat RO e-TVA."
-— OUG 70/2024, art. 12 alin. (1) lit. a) și c) (sursă: anaf_surse/oug_70_2024_ro_etva_decont_precompletat.txt)
+— OUG 70/2024, art. 12 alin. (1) lit. a) și c) (sursă: [OUG nr. 70/2024 privind decontul precompletat RO e-TVA](https://legislatie.just.ro/Public/DetaliiDocument/284214))
 :::
 
 Obligația centrală, pentru orice persoană impozabilă înregistrată în scopuri de TVA — inclusiv un magazin online — este **verificarea** decontului precompletat, nu completarea lui de la zero. Decontul precompletat se construiește din date deja transmise de firmă către ANAF prin:

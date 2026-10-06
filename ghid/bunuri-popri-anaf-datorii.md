@@ -22,7 +22,7 @@ d) combustibilul necesar debitorului și familiei sale pentru încălzit și pen
 e) obiectele necesare persoanelor cu handicap sau destinate îngrijirii persoanelor bolnave;
 f) bunurile declarate neurmăribile prin alte dispoziții legale.
 (3) Bunurile debitorului persoană fizică necesare desfășurării activității în calitate de profesionist nu sunt exceptate de la executare silită."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 238 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 238 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe scurt, ce poate face ANAF:

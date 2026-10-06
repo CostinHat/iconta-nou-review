@@ -14,7 +14,7 @@ O chitanță apare, uitată prin hârtii, după ce luna în care s-a petrecut op
 
 ::: ghid-temei
 „Sistemele informatice de prelucrare automată a datelor în domeniul financiar-contabil trebuie să răspundă la următoarele criterii considerate minimale: [...] să nu permită inserări, modificări sau eliminări de date pentru o perioadă închisă [...]"
-— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 58 lit. h) (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 58 lit. h) (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Norma cere explicit ca programele informatice financiar-contabile să **blocheze** inserările, modificările sau eliminările de date pentru o perioadă deja închisă — nu să ofere o cale de a „forța" retroactiv o înregistrare veche.

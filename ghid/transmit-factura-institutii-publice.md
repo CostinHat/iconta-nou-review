@@ -18,7 +18,7 @@ Facturarea către o autoritate contractantă (o instituție publică, în calita
 a) să primească şi să descarce factura electronică prin intermediul sistemului naţional privind factura electronică RO e-Factura;
 b) să prelucreze factura electronică;
 c) să verifice legalitatea, conformitatea şi regularitatea facturii electronice, în conformitate cu prevederile legale în vigoare."
-— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 7 alin. (1)-(2) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 7 alin. (1)-(2) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce trebuie reținut pentru transmiterea efectivă:

@@ -16,10 +16,10 @@ Platforma nu te raportează dacă, în anul respectiv, ți-a facilitat mai puți
 
 ::: ghid-temei
 „4. Vânzător Exclus înseamnă orice Vânzător: [...] c)care este o Entitate pentru care Operatorul de platformă a facilitat peste 2.000 de Activități Relevante prin închirierea de bunuri imobile în legătură cu un Bun Imobil Listat în cursul Perioadei de raportare; sau d)pentru care Operatorul de platformă a facilitat mai puțin de 30 de Activități Relevante prin vânzarea de Bunuri și pentru care valoarea totală a Contraprestației plătite sau creditate nu a depășit echivalentul în lei a 2.000 de euro în cursul Perioadei de raportare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. B pct. 4 lit. c) și d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. B pct. 4 lit. c) și d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru a determina dacă un Vânzător se califică drept Vânzător Exclus în sensul descris la pct. 4 lit. c) și d) din subsecțiunea B din secțiunea I, un Operator de platformă care are obligația de raportare poate utiliza evidențele aflate la dispoziția sa."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. A (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. A (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează pragul:

@@ -16,15 +16,15 @@ Distincția practică este între **decontarea unor cheltuieli reale de mutare**
 
 ::: ghid-temei
 „sumele primite, potrivit dispozițiilor legale, pentru acoperirea cheltuielilor de mutare în interesul serviciului;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. m) (neimpozabile) și art. 142 lit. l) (excluse din baza CAS) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. m) (neimpozabile) și art. 142 lit. l) (excluse din baza CAS) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul prevederilor art. 76 alin. (4) lit. m), prin cheltuieli de mutare în interesul serviciului se înțelege cheltuielile cu transportul personal și al membrilor de familie ai angajatului, precum și al bunurilor din gospodărie, cu ocazia mutării salariatului într-o altă localitate decât cea de domiciliu, în situația în care, potrivit legii, se decontează de angajator."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (17) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (17) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „indemnizații sau alte drepturi acordate angajaților cu ocazia angajării sau mutării acestora într-o altă localitate, stabilite potrivit contractelor de muncă, statutelor sau altor dispoziții legale, cu excepția celor prevăzute la art. 76 alin. (4) lit. m) și n) din Codul fiscal;"
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (1) lit. j) (venituri salariale) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (1) lit. j) (venituri salariale) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Excluderea din baza CASS și CAM vine din trimiterea la art. 142 (art. 157 alin. (2) și art. 220^4 alin. (2) din Codul fiscal).

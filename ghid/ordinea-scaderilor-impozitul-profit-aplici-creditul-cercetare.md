@@ -16,12 +16,12 @@ Ordinea nu e un detaliu de formă. Dacă se scade creditul pentru cercetare prim
 
 ::: ghid-temei
 „impozitul pe profit anual reprezintă impozitul pe profit anual după scăderea, în ordinea prevăzută de prezenta literă, a sumelor reprezentând: credit fiscal extern, impozit pe profit scutit potrivit prevederilor art. 22 [...] sponsorizare/mecenat, alte sume care se scad din impozitul pe profit potrivit legilor speciale, după caz"
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Creditul fiscal, care se compensează sau se restituie, se stabilește la sfârșitul anului fiscal/anului fiscal modificat în care acesta este determinat."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ordinea, pas cu pas:

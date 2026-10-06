@@ -16,15 +16,15 @@ Detaliul contează pentru că, față de ANAF, cesiunea produce efecte numai de 
 
 ::: ghid-temei
 „Notificarea privind cesionarea dreptului de restituire/ rambursare, al cărei model este prevăzut în anexa nr. 2 la ordin, se depune de către cesionar la organul fiscal central competent în administrarea cedentului, însoțită de o copie, conform cu originalul, a contractului de cesiune."
-— OPANAF 3357/2017, Anexa nr. 1, pct. 3 (sursă: anaf_surse/ordin_3357_2017.html)
+— OPANAF 3357/2017, Anexa nr. 1, pct. 3 (sursă: [OPANAF nr. 3357/2017 privind cesiunea dreptului de restituire/rambursare a creanțelor fiscale](https://legislatie.just.ro/Public/DetaliiDocument/195031))
 
 „Cesiunea produce efecte față de organul fiscal central competent în administrarea cedentului numai de la data de la care aceasta i-a fost notificată de către cesionar"
-— OPANAF 3357/2017, Anexa nr. 1, pct. 2 (sursă: anaf_surse/ordin_3357_2017.html)
+— OPANAF 3357/2017, Anexa nr. 1, pct. 2 (sursă: [OPANAF nr. 3357/2017 privind cesiunea dreptului de restituire/rambursare a creanțelor fiscale](https://legislatie.just.ro/Public/DetaliiDocument/195031))
 :::
 
 ::: ghid-temei
 „sunt obligați să transmită organului fiscal central documente de natura celor prevăzute la alin. (1) prin mijloace electronice de transmitere la distanță în condițiile prezentului articol, respectiv prin înrolarea în sistemul de comunicare electronică dezvoltat de Ministerul Finanțelor/A.N.A.F."
-— Codul de procedură fiscală (Legea 207/2015), art. 79 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 79 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie să conțină dosarul:

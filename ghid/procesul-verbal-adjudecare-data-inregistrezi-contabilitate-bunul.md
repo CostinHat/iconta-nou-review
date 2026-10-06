@@ -16,13 +16,13 @@ Diferența dintre aceste date poate fi de câteva zile, iar la final de lună sa
 
 ::: ghid-temei
 „Organul de executare silită încheie procesul-verbal de adjudecare, în termen de cel mult 5 zile de la plata în întregime a prețului sau a avansului prevăzut la art. 253 alin. (1), dacă bunul a fost vândut cu plata în rate. Procesul-verbal de adjudecare constituie titlu de proprietate și servește la intabulare în cartea funciară, transferul dreptului de proprietate operând la data încheierii acestuia."
-— Codul de procedură fiscală (Legea 207/2015), art. 254 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 254 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea 82/1991, art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
 „Sunt reflectate distinct în contabilitate acele imobilizări corporale cumpărate, pentru care s-au transferat riscurile și beneficiile aferente, dar care sunt în curs de aprovizionare"
-— OMFP 1802/2014, Reglementări, pct. 196 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări, pct. 196 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Cum se aplică:

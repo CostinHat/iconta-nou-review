@@ -14,7 +14,7 @@ Producția în curs de execuție (semifabricatele, lucrările neterminate, servi
 
 ::: ghid-temei
 „Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate. Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere."
-— OMFP nr. 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, pct. 88 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate, pct. 88 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Producția în curs de execuție intră explicit în categoria stocurilor căreia i se aplică această regulă — reglementările contabile enumeră, printre elementele de stocuri, „semifabricatele, prin care se înțelege produsele al căror proces tehnologic a fost terminat într-o secție (fază de fabricație) și care trec în continuare în procesul tehnologic al altei secții (faze de fabricație)". Practic:
@@ -31,6 +31,6 @@ Producția în curs de execuție intră explicit în categoria stocurilor cărei
 
 ## Ce face iConta.eu
 
-Pentru acest subiect nu am găsit în cod o funcție dedicată calculării sau evaluării automate a producției în curs de execuție (modulul de inventariere al aplicației, `core/inventariere.py`, acoperă plusurile și minusurile de stocuri și mijloace fixe constatate la inventar, dar nu construiește el însuși valoarea producției neterminate — aceasta rămâne o evaluare pe care contabilul o introduce, pe baza documentelor de execuție). Corectarea unei omisiuni de acest tip rămâne, la acest moment, un proces manual în aplicație.
+Pentru acest subiect nu am găsit în cod o funcție dedicată calculării sau evaluării automate a producției în curs de execuție (modulul de inventariere al aplicației, aplicația, acoperă plusurile și minusurile de stocuri și mijloace fixe constatate la inventar, dar nu construiește el însuși valoarea producției neterminate — aceasta rămâne o evaluare pe care contabilul o introduce, pe baza documentelor de execuție). Corectarea unei omisiuni de acest tip rămâne, la acest moment, un proces manual în aplicație.
 
 [iConta.eu](/)

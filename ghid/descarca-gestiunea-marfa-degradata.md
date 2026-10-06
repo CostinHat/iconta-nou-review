@@ -14,7 +14,7 @@ Marfa degradată calitativ (expirată, deteriorată, devenită nevandabilă) nu 
 
 ::: ghid-temei
 „Următoarele cheltuieli nu sunt deductibile: [...] c) cheltuielile privind bunurile de natura stocurilor sau a mijloacelor fixe amortizabile constatate lipsă din gestiune ori degradate, neimputabile, precum și taxa pe valoarea adăugată aferentă, dacă aceasta este datorată potrivit prevederilor titlului VII. Aceste cheltuieli sunt deductibile în următoarele situații/condiții: [...] 3. bunurile/mijloacele fixe amortizabile degradate calitativ, dacă se face dovada distrugerii."
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (4) lit. c) pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (4) lit. c) pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru descărcarea gestiunii:

@@ -13,7 +13,7 @@ Profitul fiscal nu este profitul contabil — este rezultatul unor ajustări pre
 ## Temeiul legal
 
 ::: ghid-temei
-"Avertisment cont 691 [...]: dacă soldul debitor al contului 691 (cheltuială cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat." — dosarul de cercetare F027, pe baza `core/d101.py` liniile 502–529.
+"Avertisment cont 691 [...]: dacă soldul debitor al contului 691 (cheltuială cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat." — dosarul de cercetare F027, pe baza aplicația liniile 502–529.
 :::
 
 Cele trei ajustări principale confirmate în motorul D101:

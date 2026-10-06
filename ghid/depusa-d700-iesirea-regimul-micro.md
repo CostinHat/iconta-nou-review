@@ -14,7 +14,7 @@ Când o microîntreprindere nu mai îndeplinește condițiile de aplicare a impo
 
 ::: ghid-temei
 „(1) Persoanele juridice care se înființează în cursul unui an fiscal, precum și microîntreprinderile care intră sub incidența prevederilor art. 52 comunică organelor fiscale competente aplicarea/ieșirea din sistemul de impunere pe veniturile microîntreprinderilor, potrivit prevederilor Codului de procedură fiscală. [...] (3) În cazul în care, în cursul anului fiscal, una dintre condițiile impuse la art. 47 alin. (1) lit. d) și e) nu mai este îndeplinită, microîntreprinderea comunică organelor fiscale competente ieșirea din sistemul de impunere pe veniturile microîntreprinderilor, până la data de 31 martie inclusiv a anului fiscal următor."
-— Legea nr. 227/2015 (Codul fiscal), art. 55 alin. (1) și (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 55 alin. (1) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru firma care iese din regimul micro:

@@ -16,12 +16,12 @@ Recalcularea contează pentru că deducerea personală depinde de venitul brut t
 
 ::: ghid-temei
 „În situația în care în cursul unei luni se efectuează plăți de venituri cum sunt: premii, stimulente de orice fel, sume acordate potrivit legii pentru concediul de odihnă neefectuat și altele asemenea, reprezentând plăți intermediare, impozitul se calculează și se reține la fiecare plată, prin aplicarea cotei asupra plăților intermediare diminuate cu contribuțiile sociale obligatorii, după caz. La data ultimei plăți a drepturilor salariale aferente unei luni impozitul se calculează potrivit art. 78 din Codul fiscal, asupra veniturilor totale din luna respectivă, prin cumularea drepturilor salariale respective cu plățile intermediare. Impozitul de reținut la această dată reprezintă diferența dintre impozitul calculat asupra veniturilor totale și suma impozitelor reținute la plățile intermediare."
-— HG 1/2016, Normele metodologice, titlul IV, pct. 16 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IV, pct. 16 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația de a calcula și de a reține impozitul aferent veniturilor fiecărei luni la data efectuării plății acestor venituri, precum și de a-l plăti la bugetul de stat până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc aceste venituri."
-— Codul fiscal (Legea 227/2015), art. 80 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 80 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii:

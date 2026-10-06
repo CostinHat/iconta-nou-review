@@ -14,7 +14,7 @@ O parte importantă din obligațiile fiscale ale unei firme (impozit pe salarii,
 
 ::: ghid-temei
 „(2) În cazul creanțelor fiscale administrate de organul fiscal central și organul fiscal local, debitorii efectuează plata acestora într-un cont unic, prin utilizarea unui ordin de plată pentru Trezoreria Statului pentru obligațiile fiscale datorate. [...] (3) Distribuirea sumelor din contul unic se face de organul fiscal competent, distinct pe fiecare buget sau fond, după caz, proporțional cu obligațiile fiscale datorate. (4) În cazul în care suma plătită nu acoperă obligațiile fiscale datorate unui buget sau fond, distribuirea în cadrul fiecărui buget sau fond se face în următoarea ordine: a) pentru toate impozitele și contribuțiile sociale cu reținere la sursă; b) pentru toate celelalte obligații fiscale principale; c) pentru obligațiile fiscale accesorii aferente obligațiilor prevăzute la lit. a) și b)."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 163 alin. (2)-(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 163 alin. (2)-(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul contului unic înseamnă practic:

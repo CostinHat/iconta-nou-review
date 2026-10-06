@@ -39,6 +39,6 @@ Această fereastră s-a închis la 31 iulie 2026. Pentru o vânzare de apartamen
 
 ## Ce face iConta.eu
 
-`core/cote_tva.py` modelează explicit doar categoria restrânsă `locuinte_sociale` (cămine de bătrâni, case de copii) la cota de 11%. Nu există o categorie automată pentru „apartament obișnuit" sau pentru regimul tranzitoriu de 9%, care presupune verificări specifice (suprafață, plafon valoric, Registrul achizițiilor de locuințe) ce nu țin de motorul de potrivire produs-cotă — la vânzarea unui apartament, aplicația nu aplică implicit nicio reducere, iar cota corectă (de regulă 21%) se declară explicit de către utilizator.
+Aplicația modelează explicit doar categoria restrânsă `locuinte_sociale` (cămine de bătrâni, case de copii) la cota de 11%. Nu există o categorie automată pentru „apartament obișnuit" sau pentru regimul tranzitoriu de 9%, care presupune verificări specifice (suprafață, plafon valoric, Registrul achizițiilor de locuințe) ce nu țin de motorul de potrivire produs-cotă — la vânzarea unui apartament, aplicația nu aplică implicit nicio reducere, iar cota corectă (de regulă 21%) se declară explicit de către utilizator.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Dispoziția de plată/încasare către casierie este unul dintre documentele fin
 
 ::: ghid-temei
 „13. | Dispoziţie de plată/încasare către casierie | 14-4-4"
-— OMFP nr. 2634/2015 privind documentele financiar-contabile, Nomenclatorul documentelor financiar-contabile (sursă: anaf_surse/omfp_2634_2015.txt)
+— OMFP nr. 2634/2015 privind documentele financiar-contabile, Nomenclatorul documentelor financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Dispoziția de plată/încasare către casierie poartă codul de formular **14-4-4** în nomenclatorul documentelor financiar-contabile stabilit prin OMFP 2634/2015.
@@ -31,6 +31,6 @@ Dispoziția de plată/încasare către casierie este unul dintre documentele fin
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu are un modul de **registru de casă** (`core/casa.py` — motorul de plafoane — și `core/casa_api.py` — API-ul de operațiuni), care generează automat notele contabile pentru operațiuni tipice de casă (încasare de la client, plată către furnizor, ridicare/depunere la bancă, avans spre decontare), fiecare operațiune producând o notă contabilă ciornă pe care contabilul o validează. Modulul este orientat spre înregistrarea contabilă a operațiunilor de casă, nu spre tipărirea formularului 14-4-4 ca atare — generarea propriu-zisă a formularului fizic de dispoziție de plată/încasare, cu toate elementele cerute de OMFP 2634/2015, rămâne, în prezent, în afara acestui modul.
+Din verificarea codului sursă, iConta.eu are un modul de **registru de casă** (aplicația — motorul de plafoane — și aplicația — API-ul de operațiuni), care generează automat notele contabile pentru operațiuni tipice de casă (încasare de la client, plată către furnizor, ridicare/depunere la bancă, avans spre decontare), fiecare operațiune producând o notă contabilă ciornă pe care contabilul o validează. Modulul este orientat spre înregistrarea contabilă a operațiunilor de casă, nu spre tipărirea formularului 14-4-4 ca atare — generarea propriu-zisă a formularului fizic de dispoziție de plată/încasare, cu toate elementele cerute de OMFP 2634/2015, rămâne, în prezent, în afara acestui modul.
 
 [iConta.eu](/)

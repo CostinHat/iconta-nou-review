@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (3), locul următoarelor servicii este considerat a fi: [...] h) locul unde beneficiarul este stabilit, își are domiciliul stabil sau reședința obișnuită, în cazul următoarelor servicii prestate către o persoană neimpozabilă: 1. serviciile de telecomunicații; 2. serviciile de radiodifuziune și televiziune; 3. serviciile furnizate pe cale electronică."
-— Legea 227/2015 (Codul fiscal), art. 278 alin. (5) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 278 alin. (5) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru un furnizor român de produse digitale:
@@ -32,6 +32,6 @@ Ce înseamnă practic pentru un furnizor român de produse digitale:
 
 ## Ce face iConta.eu
 
-iConta.eu poate genera declarația D398 (regimurile speciale OSS — art. 314, 315 și 315^2 din Codul fiscal, `core/d398.py`), dar aceasta e o declarație strict manuală: aplicația nu ține evidența operațiunilor OSS pe stat de consum și cotă străină, iar toate valorile vin din datele introduse direct de contabil (`manual`), nu din facturile emise. Nu există, la data acestui ghid, nicio funcție care să clasifice automat o factură ca „serviciu furnizat pe cale electronică" în sensul art. 278 alin. (5) lit. h) și să determine astfel locul de taxare — calificarea corectă a serviciului și a statutului clientului, precum și alegerea sumelor raportate în D398, rămân o decizie manuală a contabilului.
+iConta.eu poate genera declarația D398 (regimurile speciale OSS — art. 314, 315 și 315^2 din Codul fiscal, aplicația), dar aceasta e o declarație strict manuală: aplicația nu ține evidența operațiunilor OSS pe stat de consum și cotă străină, iar toate valorile vin din datele introduse direct de contabil (`manual`), nu din facturile emise. Nu există, la data acestui ghid, nicio funcție care să clasifice automat o factură ca „serviciu furnizat pe cale electronică" în sensul art. 278 alin. (5) lit. h) și să determine astfel locul de taxare — calificarea corectă a serviciului și a statutului clientului, precum și alegerea sumelor raportate în D398, rămân o decizie manuală a contabilului.
 
 [iConta.eu](/)

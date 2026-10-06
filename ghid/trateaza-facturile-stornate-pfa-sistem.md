@@ -15,7 +15,7 @@ Un PFA care conduce contabilitate în sistem real (partidă simplă) nu determin
 ::: ghid-temei
 „(1) Venitul net anual din activități independente se determină în sistem real, pe baza datelor din contabilitate, ca diferență între venitul brut și cheltuielile deductibile efectuate în scopul realizării de venituri [...]
 (2) Venitul brut cuprinde: a) sumele încasate și echivalentul în lei al veniturilor în natură din desfășurarea activității; [...]"
-— Codul fiscal (Legea 227/2015), art. 68 alin. (1) și alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68 alin. (1) și alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă principiul de bază: venitul brut al unui PFA în sistem real nu e „ce s-a facturat", ci strict **sumele încasate**. Consecința directă pentru facturile stornate:
@@ -31,7 +31,7 @@ Din text rezultă principiul de bază: venitul brut al unui PFA în sistem real 
 
 ## Ce face iConta.eu
 
-Motorul de calcul al Fișei D212 pentru PFA în sistem real (F030, `core/d212_engine.py` + `core/rip_api.fisa_d212`) citește exclusiv operațiunile **validate** din registrul de încasări și plăți (RIP): venitul brut e suma încasărilor cu categoria „activitate", iar cheltuielile deductibile sunt suma plăților cu categoria corespunzătoare — coerent cu principiul de casă din art. 68 alin. (2) lit. a) de mai sus. Operațiunile lăsate ca ciornă, nevalidate, nu intră în calcul, dar sunt semnalate separat ca „ciorne nevalidate", tocmai ca să nu fie pierdute din calculul final fără ca cineva să observe.
+Motorul de calcul al Fișei D212 pentru PFA în sistem real (F030, aplicația) citește exclusiv operațiunile **validate** din registrul de încasări și plăți (RIP): venitul brut e suma încasărilor cu categoria „activitate", iar cheltuielile deductibile sunt suma plăților cu categoria corespunzătoare — coerent cu principiul de casă din art. 68 alin. (2) lit. a) de mai sus. Operațiunile lăsate ca ciornă, nevalidate, nu intră în calcul, dar sunt semnalate separat ca „ciorne nevalidate", tocmai ca să nu fie pierdute din calculul final fără ca cineva să observe.
 
 Aplicația **nu are un mecanism dedicat de „storno" al unei operațiuni din RIP** — verificat în cod, motorul citește doar suma operațiunilor validate, pe categorie, fără o funcție separată de anulare/reversare. Practic, tratamentul descris mai sus (o încasare neefectuată nu intră niciodată în calcul; o restituire efectivă se înregistrează ca operațiune de plată distinctă, la data ei reală, în categoria corespunzătoare) se aplică natural prin felul în care contabilul introduce operațiunile reale în RIP, nu printr-o funcție specială de stornare a aplicației.
 

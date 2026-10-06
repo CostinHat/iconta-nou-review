@@ -15,7 +15,7 @@ O reparație majoră a unui mijloc fix nu se contabilizează automat ca „repar
 ::: ghid-temei
 „227. – (1) Cheltuielile ulterioare efectuate în legătură cu o imobilizare corporală sunt cheltuieli ale perioadei în care sunt efectuate sau majorează valoarea imobilizării respective, în funcție de beneficiile economice aferente acestor cheltuieli (de exemplu, influența asupra duratei de viață rămase a imobilizărilor), potrivit criteriilor generale de recunoaștere.
 (2) Entitatea stabilește prin politicile contabile criteriile în funcție de care cheltuielile ulterioare efectuate în legătură cu imobilizările corporale majorează valoarea acestora sau se evidențiază în contul de profit și pierdere."
-— OMFP 1802/2014, pct. 227 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 227 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă, aplicat la o reparație capitală:

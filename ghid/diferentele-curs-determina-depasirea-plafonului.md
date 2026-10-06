@@ -14,12 +14,12 @@ Multe firme cu venituri parțial în valută se întreabă dacă fluctuațiile c
 
 ::: ghid-temei
 „(5) Limitele fiscale prevăzute la alin. (1) se verifică pe baza veniturilor înregistrate cumulat de la începutul anului fiscal. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar precedent."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile;"
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Verificarea plafonului micro în cursul anului (dacă firma rămâne microîntreprindere sau trebuie să treacă la impozit pe profit) se face cumulat de la începutul anului fiscal, dar echivalentul în euro se calculează la un **curs de schimb fix**: cel de la închiderea exercițiului financiar **precedent** (art. 52 alin. (5)). Astfel, mișcările cursului valutar din timpul anului curent nu schimbă, în sine, pragul euro-lei folosit pentru verificarea intermediară a plafonului.
@@ -34,6 +34,6 @@ Multe firme cu venituri parțial în valută se întreabă dacă fluctuațiile c
 
 ## Ce face iConta.eu
 
-La verificarea codului, iConta.eu nu are, în prezent, o constantă sau o funcție dedicată verificării automate a plafonului micro de venituri — un comentariu explicit din codul aplicației (`control_fiscal_api.py`) confirmă acest lucru: „nicio constantă de plafon micro în `core/`". Aplicația gestionează generarea declarațiilor de impozit (D100 pentru regimul micro, D101 pentru impozit pe profit) în funcție de regimul fiscal introdus de utilizator, dar nu calculează și nu alertează automat asupra apropierii sau depășirii pragului de 100.000 euro — această verificare, inclusiv efectul diferențelor de curs valutar asupra ei, rămâne în prezent responsabilitatea contabilului.
+La verificarea codului, iConta.eu nu are, în prezent, o constantă sau o funcție dedicată verificării automate a plafonului micro de venituri — un comentariu explicit din codul aplicației (`control_fiscal_api.py`) confirmă acest lucru: „nicio constantă de plafon micro în aplicație". Aplicația gestionează generarea declarațiilor de impozit (D100 pentru regimul micro, D101 pentru impozit pe profit) în funcție de regimul fiscal introdus de utilizator, dar nu calculează și nu alertează automat asupra apropierii sau depășirii pragului de 100.000 euro — această verificare, inclusiv efectul diferențelor de curs valutar asupra ei, rămâne în prezent responsabilitatea contabilului.
 
 [iConta.eu](/)

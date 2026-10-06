@@ -15,7 +15,7 @@ Depășirea plafoanelor de numerar nu e o simplă abatere formală — Legea nr.
 ::: ghid-temei
 „(1) Nerespectarea prevederilor art. 1 alin. (1), art. 3 alin. (2) și (3), art. 4 alin. (1), (2) și (4), art. 9 și 10 constituie contravenții, dacă nu au fost săvârșite în astfel de condiții încât, potrivit legii penale, să constituie infracțiuni, și se sancționează, prin derogare de la prevederile art. 8 din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor, [...], cu amendă de 10% din suma încasată/plătită care depășește plafonul stabilit de prezentul capitol pentru fiecare tip de operațiune, dar nu mai puțin de 100 lei.
 (2) Nerespectarea prevederilor art. 6 și art. 11 alin. (1)-(4) constituie contravenție și se sancționează cu amendă de la 3.000 lei la 4.500 lei."
-— Legea nr. 70/2015 (actualizată prin Legea nr. 239/2025), art. 12 alin. (1)-(2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 (actualizată prin Legea nr. 239/2025), art. 12 alin. (1)-(2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă concret din text:

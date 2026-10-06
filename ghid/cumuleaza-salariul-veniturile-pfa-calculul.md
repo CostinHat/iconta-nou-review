@@ -17,7 +17,7 @@ Nu. Legea tratează veniturile din salarii și veniturile din activități indep
 (1) Contribuabilii la sistemul de asigurări sociale de sănătate [...] datorează [...] contribuția de asigurări sociale de sănătate [...] realizate din următoarele categorii de venituri: a) venituri din salarii și asimilate salariilor, definite conform art. 76; [...] b) venituri din activități independente, definite conform art. 67; [...]
 Articolul 170 - Baza de calcul al contribuției de asigurări sociale de sănătate datorate de persoanele fizice care realizează veniturile prevăzute la art. 155 alin. (1) lit. b)-h)
 (1) Persoanele fizice care în anul fiscal pentru care se depune declarația [...] au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut [...] care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."
-— Cod fiscal, art. 155 alin. (1) lit. a)-b) și art. 170 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 155 alin. (1) lit. a)-b) și art. 170 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structura legii separă clar cele două regimuri:

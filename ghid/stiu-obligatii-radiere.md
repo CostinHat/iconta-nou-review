@@ -15,7 +15,7 @@ Radierea înregistrării fiscale retrage codul de identificare fiscală și cert
 ::: ghid-temei
 „(1) Radierea înregistrării fiscale reprezintă activitatea de retragere a codului de identificare fiscală și a certificatului de înregistrare fiscală. [...]
 (4) Codul de identificare fiscală retras ca urmare a radierii înregistrării fiscale poate fi utilizat ulterior radierii numai pentru îndeplinirea, de către succesorii persoanelor/entităților care și-au încetat existența, a obligațiilor fiscale aferente perioadelor în care persoana/entitatea a avut calitatea de subiect de drept fiscal."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 90 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Radierea e o operațiune administrativă asupra codului fiscal**, nu o "curățare" automată a istoricului de obligații — ea nu șterge datoriile fiscale existente la momentul radierii.
@@ -31,6 +31,6 @@ Radierea înregistrării fiscale retrage codul de identificare fiscală și cert
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul care să verifice sau să confirme absența obligațiilor fiscale restante ale unei firme în proces de radiere — există un modul de lichidare (`core/lichidare.py`) în cod, dar solicitarea și interpretarea certificatului de atestare fiscală de la ANAF, precum și confirmarea finală a stingerii tuturor obligațiilor, rămân un proces manual, în afara aplicației.
+La data acestui ghid, iConta.eu nu are un modul care să verifice sau să confirme absența obligațiilor fiscale restante ale unei firme în proces de radiere — există un modul de lichidare în cod, dar solicitarea și interpretarea certificatului de atestare fiscală de la ANAF, precum și confirmarea finală a stingerii tuturor obligațiilor, rămân un proces manual, în afara aplicației.
 
 [iConta.eu](/)

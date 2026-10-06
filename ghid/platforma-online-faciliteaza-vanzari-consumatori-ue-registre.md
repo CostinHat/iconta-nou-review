@@ -16,10 +16,10 @@ Obligația privește platforma ca intermediar, chiar dacă nu vinde nimic în nu
 
 ::: ghid-temei
 „(1) În cazul în care o persoană impozabilă, prin utilizarea unei interfețe electronice cum ar fi o piață online, o platformă, un portal sau alte mijloace similare, facilitează livrarea de bunuri sau prestarea de servicii către o persoană neimpozabilă din Uniunea Europeană, persoana impozabilă care facilitează livrarea sau prestarea este obligată să țină registre în acest sens. Registrele respective conțin informații care să permită autorităților fiscale să verifice dacă TVA a fost evidențiată corect, în situația în care livrările sau prestările respective sunt impozabile în România în conformitate cu art. 275-279 ."
-— Codul fiscal (Legea 227/2015), art. 321^1 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(2) Registrele prevăzute la alin. (1) trebuie puse la dispoziția organelor fiscale competente, la cerere, pe cale electronică. (3) Registrele prevăzute la alin. (1) trebuie păstrate pentru o perioadă de 10 ani de la sfârșitul anului în care s-a efectuat operațiunea. (4) Informațiile pe care trebuie să le conțină registrele prevăzute la alin. (1) sunt prevăzute la art. 54 c din Regulamentul de punere în aplicare (UE) nr. 282/2011"
-— Codul fiscal (Legea 227/2015), art. 321^1 alin. (2)-(4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 321^1 alin. (2)-(4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele obligației:

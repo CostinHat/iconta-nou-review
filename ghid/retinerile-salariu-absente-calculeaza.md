@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „Contractul individual de muncă poate fi suspendat din inițiativa salariatului, în următoarele situații: [...]
 g) absențe nemotivate."
-— Legea 53/2003 (Codul muncii), art. 51 lit. g) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 51 lit. g) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă din încadrarea absenței nemotivate ca o cauză de suspendare a contractului individual de muncă:

@@ -14,7 +14,7 @@ Spre deosebire de importuri, exporturile de bunuri **intră** în D394 — decla
 
 ::: ghid-temei
 „E. Rezumat declaraţie privind operaţiunile desfăşurate cu persoane nestabilite în România care sunt stabilite în alt stat membru, neînregistrate şi care nu sunt obligate să se înregistreze în scopuri de TVA în România [...] F. Rezumat declaraţie privind operaţiunile desfăşurate cu persoane impozabile neînregistrate şi care nu sunt obligate să se înregistreze în scopuri de TVA în România, nestabilite pe teritoriul Uniunii Europene."
-— OPANAF 3769/2015, Anexa 2 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt:975-1004)
+— OPANAF 3769/2015, Anexa 2 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 - Formularul are secțiuni dedicate exact pentru operațiunile cu parteneri din alte state membre (lit. E) și cu parteneri din afara UE (lit. F) — exporturile de bunuri se încadrează firesc aici, ca livrări.
@@ -29,6 +29,6 @@ Spre deosebire de importuri, exporturile de bunuri **intră** în D394 — decla
 
 ## Ce face iConta.eu
 
-Funcția `tip_operatiune()` din `core/d394.py` clasifică orice livrare (`emisa=True`) către un partener de tip UE sau non-UE drept tip „L", care trece apoi prin aceeași regulă de reclasificare folosită pentru orice livrare scutită: la cotă 0, tipul devine automat „LS", indiferent de categoria partenerului. Practic, exporturile sunt tratate identic cu livrările intracomunitare din perspectiva D394 — ambele apar ca livrări scutite cu drept de deducere, în secțiunile E sau F ale declarației, corespunzător țării partenerului.
+Funcția `tip_operatiune()` din aplicație clasifică orice livrare (`emisa=True`) către un partener de tip UE sau non-UE drept tip „L", care trece apoi prin aceeași regulă de reclasificare folosită pentru orice livrare scutită: la cotă 0, tipul devine automat „LS", indiferent de categoria partenerului. Practic, exporturile sunt tratate identic cu livrările intracomunitare din perspectiva D394 — ambele apar ca livrări scutite cu drept de deducere, în secțiunile E sau F ale declarației, corespunzător țării partenerului.
 
 [iConta.eu](/)

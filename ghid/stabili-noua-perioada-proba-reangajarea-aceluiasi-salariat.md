@@ -16,7 +16,7 @@ Situația e frecventă la angajatorii sezonieri și la cei care reangajează un 
 
 ::: ghid-temei
 „Pe durata executării unui contract individual de muncă nu poate fi stabilită decât o singură perioadă de probă.(2) Prin excepție, salariatul poate fi supus la o nouă perioadă de probă în situația în care acesta debutează la același angajator într-o nouă funcție sau profesie ori urmează să presteze activitatea într-un loc de muncă cu condiții grele, vătămătoare sau periculoase.(2^1) Este interzisă stabilirea unei noi perioade de probă în cazul în care, în termen de 12 luni, între aceleași părți se încheie un nou contract individual de muncă pentru aceeași funcție și cu aceleași atribuții"
-— Codul muncii (Legea 53/2003), art. 32 alin. (1)-(2^1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 32 alin. (1)-(2^1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cum se aplică:

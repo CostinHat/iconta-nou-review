@@ -14,7 +14,7 @@ Un SRL nou-înființat nu e obligat automat la impozit pe profit (16%) doar pent
 
 ::: ghid-temei
 „(3) O persoană juridică română care este nou-înființată poate opta să plătească impozit pe veniturile microîntreprinderilor începând cu primul an fiscal, dacă condițiile prevăzute la art. 47 alin. (1) lit. d) și h) sunt îndeplinite la data înregistrării în registrul comerțului, iar cea prevăzută la lit. g) în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice respective. În cazul în care, în acest termen, nu se îndeplinește condiția de la art. 47 alin. (1) lit. g), microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care expiră perioada de 90 de zile."
-— Legea nr. 227/2015 privind Codul fiscal, art. 48 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 48 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile trimise de art. 48 alin. (3) la art. 47 alin. (1) sunt:
@@ -33,6 +33,6 @@ Dacă în cele 90 de zile firma tot nu are niciun salariat, consecința nu e ret
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală pentru gestionarea vectorului fiscal al firmei (`core/vector_fiscal_api.py`), care determină ce tip de declarații generează aplicația (D100 pentru profit/microîntreprinderi etc.), pe baza regimului de impozitare configurat pentru firmă. Ce nu automatizează astăzi aplicația: verificarea condițiilor specifice firmelor nou-înființate din art. 48 alin. (3) — inclusiv urmărirea termenului de 90 de zile pentru angajarea primului salariat și trecerea automată la impozit pe profit dacă acest termen e depășit. Încadrarea inițială și verificarea condițiilor rămân, la această dată, o decizie și o verificare manuală a contabilului, introdusă apoi ca regim de impozitare în profilul firmei.
+iConta.eu are o funcționalitate reală pentru gestionarea vectorului fiscal al firmei, care determină ce tip de declarații generează aplicația (D100 pentru profit/microîntreprinderi etc.), pe baza regimului de impozitare configurat pentru firmă. Ce nu automatizează astăzi aplicația: verificarea condițiilor specifice firmelor nou-înființate din art. 48 alin. (3) — inclusiv urmărirea termenului de 90 de zile pentru angajarea primului salariat și trecerea automată la impozit pe profit dacă acest termen e depășit. Încadrarea inițială și verificarea condițiilor rămân, la această dată, o decizie și o verificare manuală a contabilului, introdusă apoi ca regim de impozitare în profilul firmei.
 
 [iConta.eu](/)

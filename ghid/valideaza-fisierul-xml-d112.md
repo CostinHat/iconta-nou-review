@@ -14,7 +14,7 @@ D112 nu e o declarație liberă la completare — modelul, conținutul și struc
 
 ::: ghid-temei
 „Art. 1 - (1) Se aprobă modelul şi conţinutul formularului 112 «Declaraţie privind obligaţiile de plată a contribuţiilor sociale, impozitului pe venit şi evidenţa nominală a persoanelor asigurate»... (4) Declaraţia prevăzută la alin. (1) este o declaraţie de impunere în sensul art. 1 pct. 18 din Legea nr. 207/2015 privind Codul de procedură fiscală. Art. 3 - Persoanele fizice şi juridice care au calitatea de angajatori sau sunt asimilate acestora... au obligaţia depunerii declaraţiei prevăzute la art. 1 prin mijloace electronice de transmitere la distanţă."
-— Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2.314/2026, art. 1 și art. 3 (sursă: anaf_surse/opanaf_605_2026_d112.txt)
+— Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2.314/2026, art. 1 și art. 3 (sursă: [Ordinul comun ANAF/CNPP/CNAS/ANOFM nr. 605/95/928/2314/2026 pentru aprobarea formularului 112](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_605_2026.pdf))
 :::
 
 Ce înseamnă, practic, „validarea" fișierului XML al D112:

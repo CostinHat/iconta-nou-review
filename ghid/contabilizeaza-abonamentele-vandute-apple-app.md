@@ -14,7 +14,7 @@ Un abonament vândut printr-un magazin de aplicații (App Store, Play Store etc.
 
 ::: ghid-temei
 „Serviciile furnizate pe cale electronică includ, în special, serviciile prevăzute în anexa II la Directiva 112 și la art. 7 alin. (1) din Regulamentul de punere în aplicare (UE) nr. 282/2011 al Consiliului din 15 martie 2011 de stabilire a măsurilor de punere în aplicare a Directivei 2006/112/CE privind sistemul comun al taxei pe valoarea adăugată[...]. În cazul în care prestatorul unui serviciu și clientul său comunică prin intermediul poștei electronice, acest lucru nu înseamnă, în sine, că serviciul furnizat este un serviciu furnizat pe cale electronică."
-— Codul fiscal (Legea 227/2015), art. 266 alin. (1) pct. 28 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 266 alin. (1) pct. 28 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Pentru serviciile furnizate pe cale electronică către o persoană neimpozabilă (utilizatorul final, persoană fizică), **locul prestării este locul unde beneficiarul este stabilit sau își are domiciliul/reședința obișnuită** — nu locul unde este stabilit prestatorul (art. 278 alin. (5) lit. h) pct. 3 din același cod).

@@ -16,7 +16,7 @@ Situația apare frecvent la regularizările de consum: apă, gaze, energie termi
 
 ::: ghid-temei
 „(2) Dacă din calculele efectuate rezultă un excedent, în sensul că sumele încasate depășesc în valoare totalul cheltuielilor, aceste sume trebuie regularizate prin lista de plată aferentă lunii următoare sau rambursate proprietarilor îndreptățiți în termen de maximum 30 de zile de la constatarea acestora. (3) În cazul în care din calculele efectuate rezultă un debit față de sumele încasate, acesta trebuie acoperit de cei în drept în termen de 30 de zile de la constatare.”
-— Legea 196/2018, art. 74 alin. (2)-(3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 74 alin. (2)-(3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Cum se aplică:

@@ -16,19 +16,19 @@ Pentru contabil, contează efectele: pe durata concediului fără plată contrac
 
 ::: ghid-temei
 „(1) Cererea de concediu fără plată pentru formare profesională trebuie să fie înaintată angajatorului cu cel puțin o lună înainte de efectuarea acestuia și trebuie să precizeze data de începere a stagiului de formare profesională, domeniul și durata acestuia, precum și denumirea instituției de formare profesională. [...] (2) Efectuarea concediului fără plată pentru formare profesională se poate realiza și fracționat în cursul unui an calendaristic, pentru susținerea examenelor de absolvire a unor forme de învățământ sau pentru susținerea examenelor de promovare în anul următor în cadrul instituțiilor de învățământ superior, cu respectarea condițiilor stabilite la alin. (1)."
-— Codul muncii (Legea 53/2003), art. 156 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 156 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Concediile fără plată pentru formare profesională se acordă la solicitarea salariatului, pe perioada formării profesionale pe care salariatul o urmează din inițiativa sa. [...] (2) Angajatorul poate respinge solicitarea salariatului numai dacă absența salariatului ar prejudicia grav desfășurarea activității."
-— Codul muncii (Legea 53/2003), art. 155 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 155 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Durata concediului pentru formare profesională nu poate fi dedusă din durata concediului de odihnă anual și este asimilată unei perioade de muncă efectivă în ceea ce privește drepturile cuvenite salariatului, altele decât salariul."
-— Codul muncii (Legea 53/2003), art. 158 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 158 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Contractul individual de muncă poate fi suspendat din inițiativa salariatului, în următoarele situații: [...] d) concediu pentru formare profesională;"
-— Codul muncii (Legea 53/2003), art. 51 alin. (1) lit. d) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 51 alin. (1) lit. d) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(2) Suspendarea contractului individual de muncă are ca efect suspendarea prestării muncii de către salariat și a plății drepturilor de natură salarială de către angajator."
-— Codul muncii (Legea 53/2003), art. 49 alin. (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 49 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Pașii, în ordine:

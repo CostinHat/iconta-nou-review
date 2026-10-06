@@ -14,7 +14,7 @@ Da. D394 rămâne o obligație de sine stătătoare, indiferent dacă facturile 
 
 ::: ghid-temei
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF 3769/2015, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF 3769/2015, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 Obligația de a depune D394 e legată exclusiv de înregistrarea în scopuri de TVA (art. 316 din Codul fiscal), nu de metoda prin care a fost emisă sau primită factura:

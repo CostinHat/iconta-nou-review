@@ -16,7 +16,7 @@ Sistemul RO e-Factura funcționează pe baza unui cadru legal care se poate modi
 „(4) Procedura de utilizare şi funcţionare a sistemului naţional privind factura electronică RO e-Factura se aprobă prin ordin al ministrului finanţelor în termen de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al României, Partea I.
 [...]
 (11) Prin ordin al ministrului finanţelor se reglementează specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional în termen de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al României, Partea I."
-— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 3 alin. (4) și art. 4 alin. (11) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 3 alin. (4) și art. 4 alin. (11) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce se poate spune cert, pornind de la acest text, despre orice schimbare a sistemului în 2026:

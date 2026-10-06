@@ -14,7 +14,7 @@ Facturarea electronică obligatorie prin RO e-Factura (OUG 120/2021) nu creează
 
 ::: ghid-temei
 „(3) Factura electronică se transmite de către emitent în sistemul naţional privind factura electronică RO e-Factura. (4) În situaţia în care factura electronică transmisă respectă structura prevăzută la alin. (1), se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea acesteia în sistemul naţional privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 4 alin. (3)-(4) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (3)-(4) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Structura tehnică a facturii electronice (SR EN 16931-1, RO_CIUS) e aceeași pentru toți emitenții — nu există un `InvoiceTypeCode` sau o schemă separată pentru facturile emise sub TVA la încasare.
@@ -31,7 +31,7 @@ Facturarea electronică obligatorie prin RO e-Factura (OUG 120/2021) nu creează
 
 ## Ce face iConta.eu
 
-iConta.eu are un flux complet de transmitere prin RO e-Factura (funcționalitatea F126, `core/efactura_send.py`): generează XML-ul UBL/CIUS-RO, îl validează pe schematronul oficial ANAF, îl încarcă în SPV printr-o conexiune OAuth per cabinet și urmărește recipisa printr-un job periodic. Acest flux e identic din punct de vedere tehnic pentru toate firmele, indiferent de regimul lor de TVA — nu există o ramură de cod separată pentru „firmă la TVA la încasare" în procesul de trimitere.
+iConta.eu are un flux complet de transmitere prin RO e-Factura (funcționalitatea F126, aplicația): generează XML-ul UBL/CIUS-RO, îl validează pe schematronul oficial ANAF, îl încarcă în SPV printr-o conexiune OAuth per cabinet și urmărește recipisa printr-un job periodic. Acest flux e identic din punct de vedere tehnic pentru toate firmele, indiferent de regimul lor de TVA — nu există o ramură de cod separată pentru „firmă la TVA la încasare" în procesul de trimitere.
 
 Onest: exact acest lucru înseamnă că mențiunea legală „TVA la încasare", cerută pe conținutul facturii, nu e adăugată automat de generator — verificat direct în cod, `genereaza_xml` din `efactura_send.py` nu scrie nicio mențiune de acest fel. Firma la TVA la încasare beneficiază de aceeași conexiune tehnică fiabilă la RO e-Factura ca oricare alta, dar rămâne responsabilitatea contabilului să se asigure, prin alt mijloc, că factura conține mențiunea obligatorie înainte de a considera obligația de facturare corect îndeplinită.
 

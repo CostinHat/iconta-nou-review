@@ -14,9 +14,9 @@ Da. HoReCa e printre domeniile în care Legea 52/2011 permite munca de zilier: r
 
 ::: ghid-temei
 „h) activități de alimentație (catering) pentru evenimente - diviziunea 5621; [...] j) restaurante - clasa 5610; [...] k) baruri și alte activități de servire a băuturilor - clasa 5630; [...] m) hoteluri și alte facilități de cazare - diviziunea 55; facilități de cazare similare - clasa 5510; facilități de cazare pentru vacanțe și perioade de scurtă durată - clasa 5520 - tabere de copii, organizate de Ministerul Tineretului și Sportului, direct sau prin unitățile din subordinea acestuia;"
-— Legea 52/2011, art. 13 alin. (1) lit. h), j), k), m) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13 alin. (1) lit. h), j), k), m) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(4) Niciun zilier nu poate presta activități pentru același beneficiar sau un împuternicit al acestuia pe o perioadă mai lungă de 90 de zile cumulate pe durata unui an calendaristic, cu excepția zilierilor care prestează activități în domeniile agricol, silvic, viticol, pomicol, legumicol, floricol, piscicol, [...]"
-— Legea 52/2011, art. 4 alin. (4) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (4) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

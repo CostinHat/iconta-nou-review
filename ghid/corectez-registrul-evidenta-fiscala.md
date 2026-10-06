@@ -14,7 +14,7 @@ Registrul de evidență fiscală nu este un document „bătut în cuie" din mom
 
 ::: ghid-temei
 „Registrul de evidență fiscală se modifică ori de câte ori se constată diferențe cu privire la veniturile și/sau cheltuielile înregistrate inițial, până la data depunerii declarației rectificative."
-— OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice, contribuabili potrivit titlului IV din Legea nr. 227/2015 privind Codul fiscal, art. 6 (sursă: anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt)
+— OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice, contribuabili potrivit titlului IV din Legea nr. 227/2015 privind Codul fiscal, art. 6 (sursă: [OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice](https://legislatie.just.ro/Public/DetaliiDocument/196396))
 :::
 
 Notă de context: acest ordin reglementează registrul de evidență fiscală al **persoanelor fizice** care determină venitul net anual în sistem real (activități independente, cedarea folosinței bunurilor etc.). Există, distinct, și obligația de registru de evidență fiscală a **persoanelor juridice** plătitoare de impozit pe profit, prevăzută de art. 19 din Codul fiscal, al cărei conținut este stabilit prin normele de aplicare (HG nr. 1/2016).
@@ -33,6 +33,6 @@ Ce rezultă din text pentru corectarea registrului:
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul dedicat (`core/registru_evidenta_fiscala.py`) care distinge explicit între cele două registre prevăzute de lege: varianta „profit" (persoane juridice, derivată din declarația D101 și contabilitate, pe temeiul art. 19 din Codul fiscal și HG nr. 1/2016) și varianta „venituri PF" (persoane fizice, pe temeiul art. 68 și al OMFP 3254/2017). Modulul construiește rândurile registrului din sursele deja existente în aplicație, astfel încât o corecție a declarației să se reflecte automat și în registru, fără o operațiune manuală separată.
+Da — iConta.eu are un modul dedicat care distinge explicit între cele două registre prevăzute de lege: varianta „profit" (persoane juridice, derivată din declarația D101 și contabilitate, pe temeiul art. 19 din Codul fiscal și HG nr. 1/2016) și varianta „venituri PF" (persoane fizice, pe temeiul art. 68 și al OMFP 3254/2017). Modulul construiește rândurile registrului din sursele deja existente în aplicație, astfel încât o corecție a declarației să se reflecte automat și în registru, fără o operațiune manuală separată.
 
 [iConta.eu](/)

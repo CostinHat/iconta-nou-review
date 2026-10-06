@@ -16,7 +16,7 @@ Decesul unui asociat nu oprește automat activitatea firmei, dar nici nu trece n
 „Articolul 229 (1) Societățile în nume colectiv sau cu răspundere limitată se dizolvă prin falimentul, incapacitatea, excluderea, retragerea sau decesul unuia dintre asociați, când, datorită acestor cauze, numărul asociaților s-a redus la unul singur.
 (2) Se exceptează cazul când în actul constitutiv există clauză de continuare cu moștenitorii sau când asociatul rămas hotărăște continuarea existenței societății sub forma societății cu răspundere limitată cu asociat unic.
 Articolul 230 (1) În societățile în nume colectiv, societățile cu răspundere limitată, dacă un asociat decedează și dacă nu există convenție contrară, societatea trebuie să plătească partea ce se cuvine moștenitorilor, după ultimul bilanț contabil aprobat, în termen de 3 luni de la notificarea decesului asociatului, dacă asociații rămași nu preferă să continue societatea cu moștenitorii care consimt la aceasta."
-— Legea 31/1990 privind societățile, art. 229 și art. 230 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 229 și art. 230 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă practic din aceste două articole:

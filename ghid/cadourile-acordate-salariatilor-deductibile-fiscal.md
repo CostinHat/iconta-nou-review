@@ -14,7 +14,7 @@ Cadourile oferite salariaților nu sunt automat neimpozabile — Codul fiscal le
 
 ::: ghid-temei
 „În cazul cadourilor în bani și/sau în natură, inclusiv tichetele cadou, oferite de angajatori, veniturile sunt neimpozabile, în măsura în care valoarea acestora pentru fiecare persoană în parte, cu fiecare ocazie din cele de mai jos, nu depășește 300 lei: (i) cadouri oferite angajaților, precum și cele oferite pentru copiii minori ai acestora, cu ocazia Paștelui, Crăciunului și a sărbătorilor similare ale altor culte religioase; (ii) cadouri oferite angajatelor cu ocazia zilei de 8 martie; (iii) cadouri oferite angajaților în beneficiul copiilor minori ai acestora cu ocazia zilei de 1 iunie."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, concret, regula plafonului de 300 lei:

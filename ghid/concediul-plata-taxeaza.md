@@ -16,7 +16,7 @@ poarta: v1
 „Articolul 148
 (1) Pentru rezolvarea unor situații personale salariații au dreptul la concedii fără plata.
 (2) Durata concediului fără plata se stabilește prin contractul colectiv de muncă aplicabil sau prin regulamentul intern."
-— Legea nr. 53/2003 (Codul muncii), art. 148 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 148 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Consecințele, coroborate cu regulile fiscale generale:

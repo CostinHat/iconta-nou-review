@@ -16,11 +16,11 @@ Riscul crește la fiecare majorare a salariului minim. În 2026, minimul a cresc
 
 ::: ghid-temei
 „(2) Cuantumul remunerației brute orare stabilite de părți nu poate fi mai mic decât valoarea/oră a salariului de bază minim brut pe țară garantat în plată și se acordă la sfârșitul fiecărei zile de lucru sau la sfârșitul săptămânii."
-— Legea 52/2011, art. 11 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 11 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „a) încălcarea prevederilor art. 11 alin. (2) , cu amendă de 10.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. a) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. a) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „(3) Contravenientul poate achita, pe loc sau în termen de cel mult 15 zile de la data înmânării procesului-verbal ori, după caz, de la data comunicării acestuia, jumătate din minimul amenzii prevăzute la alin. (1) , agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— Legea 52/2011, art. 14 alin. (3) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (3) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

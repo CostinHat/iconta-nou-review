@@ -14,7 +14,7 @@ Nota de recepție și constatare de diferențe (NIR) e exact documentul prevăzu
 
 ::: ghid-temei
 „(Cod 14-3-1A) Nota de recepție și constatare de diferențe (NIR) servește ca: - document pentru recepția bunurilor aprovizionate; - document justificativ pentru încărcare în gestiune; - document justificativ de înregistrare în contabilitate. Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: [...] bunurilor materiale care prezintă diferențe la recepție [...]. În situația în care se constată diferențe la recepție, entitățile trebuie să stabilească prin proceduri proprii informațiile care trebuie să fie înscrise în Nota de recepție și constatare de diferențe (ex: cantitatea și valoare constatate plus/minus, persoanele care au făcut recepția și alte mențiuni, în funcție de necesități)."
-— OMFP 2634/2015 (norme privind documentele financiar-contabile), anexa 2, secțiunea privind Nota de recepție și constatare de diferențe (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015 (norme privind documentele financiar-contabile), anexa 2, secțiunea privind Nota de recepție și constatare de diferențe (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce trebuie făcut, concret, când marfa primită depășește cantitatea facturată:

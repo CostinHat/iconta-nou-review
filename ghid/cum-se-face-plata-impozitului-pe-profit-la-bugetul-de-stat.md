@@ -15,18 +15,18 @@ După ce D100 e generată corect, rămâne pasul plății efective — iar aici 
 ::: ghid-temei
 **CF art. 17:**
 > „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.html`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **OPANAF 587/2016, Anexa 4, Cap. I, pct. 1.2 lit. c):**
 > „Trimestrial, pentru obligațiile de plată reprezentând: ... c) impozitul pe profit datorat de persoane
 > juridice române și persoanele juridice străine, altele decât cele prevăzute la lit. a) și b), precum și
 > de către persoanele juridice cu sediul social în România, înființate potrivit legislației europene
 > (trimestrele I-III);"
-— sursă: `anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt:927-930`
+— sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662)
 
 **Structura tehnică D100 — cont bugetar unic:**
 > „Atenție ! Se va inlocui peste tot contul bugetar 20470101 cu 5503 ! (data modificării 26.07.2018)"
-— sursă: `anaf_surse/d100_struct_anaf.txt:562`
+— sursă: 
 :::
 
 ## Contul corect și identificarea plății
@@ -44,6 +44,6 @@ Plata trebuie identificată corect prin numărul de evidență a plății (nr_ev
 
 ## Ce face iConta.eu
 
-Nomenclatorul cod→cont bugetar din `core/d100.py` (`COD_BUGETAR`, liniile 54-63) conține exclusiv cele două obligații pe care aplicația le generează — cod 103 (profit) și cod 121 (micro) — ambele mapate la contul unic 5503XXXXXX. Orice alt cod de obligație transmis ridică explicit o eroare, nu se emite tăcut fără cont bugetar asociat. Numărul de evidență a plății (nr_evid, 23 de caractere) este derivat direct din aceeași dată de scadență calculată pentru declarație, nu recalculat independent — eliminând riscul ca cele două să diveargă atunci când scadența e determinată corect de generator.
+Nomenclatorul cod→cont bugetar din aplicație (`COD_BUGETAR`) conține exclusiv cele două obligații pe care aplicația le generează — cod 103 (profit) și cod 121 (micro) — ambele mapate la contul unic 5503XXXXXX. Orice alt cod de obligație transmis ridică explicit o eroare, nu se emite tăcut fără cont bugetar asociat. Numărul de evidență a plății (nr_evid, 23 de caractere) este derivat direct din aceeași dată de scadență calculată pentru declarație, nu recalculat independent — eliminând riscul ca cele două să diveargă atunci când scadența e determinată corect de generator.
 
 [iConta.eu](/)

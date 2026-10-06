@@ -14,11 +14,11 @@ Răspunsul este identic din ambele perspective: terenurile nu se amortizează, n
 
 ::: ghid-temei
 „241. - (1) Terenurile nu se amortizează. (2) Investițiile efectuate pentru amenajarea lacurilor, bălților, iazurilor, terenurilor și pentru alte lucrări similare se recuperează pe calea amortizării, prin includerea în cheltuielile de exploatare potrivit politicilor contabile aprobate, pe baza duratelor de viață utilă ale acestora."
-— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, pct. 241 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Reglementări contabile privind situațiile financiare anuale individuale, pct. 241 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **Contabil**: terenul, ca atare, nu se amortizează niciodată — el nu își pierde valoarea prin folosire, spre deosebire de o clădire sau un utilaj.
-- **Fiscal**: Codul fiscal confirmă aceeași regulă, enumerând explicit terenurile printre activele care nu sunt amortizabile — „Nu reprezintă active amortizabile: a) terenurile, inclusiv cele împădurite" (art. 28 alin. (4) lit. a), Legea nr. 227/2015, sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt).
+- **Fiscal**: Codul fiscal confirmă aceeași regulă, enumerând explicit terenurile printre activele care nu sunt amortizabile — „Nu reprezintă active amortizabile: a) terenurile, inclusiv cele împădurite" (art. 28 alin. (4) lit. a), Legea nr. 227/2015, sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)).
 - **Excepția reală**: investițiile efectuate pe teren (amenajări, lucrări de îmbunătățire, defrișare, sistematizare) se amortizează separat, ca element distinct de teren, pe durata de viață utilă a investiției respective — nu terenul în sine crește sau scade valoarea prin amortizare, ci lucrarea adăugată pe el.
 - Practic, evidența contabilă trebuie să separe clar valoarea terenului (neamortizabilă) de valoarea eventualelor investiții/amenajări asupra lui (amortizabile), chiar dacă ambele apar în același dosar al activului imobiliar.
 
@@ -31,6 +31,6 @@ Răspunsul este identic din ambele perspective: terenurile nu se amortizează, n
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de mijloace fixe care permite introducerea și amortizarea activelor pe baza duratei normale de funcționare stabilite de utilizator, pentru fiecare mijloc fix în parte. Din verificarea codului sursă (`core/d406_active.py`), motorul de amortizare **recunoaște contul 211 „Terenuri" ca o categorie separată, neamortizabilă**: dacă un activ înregistrat pe acest cont are o metodă de amortizare setată, calculul amortizării (folosit atât pentru afișarea listei de mijloace fixe, cât și pentru generarea notei lunare de amortizare) respinge operația și afișează o eroare, în loc să calculeze o amortizare inexistentă. Separarea terenului de eventualele investiții amortizabile de pe el rămâne însă responsabilitatea contabilului la configurarea fiecărui activ — aplicația nu face automat această distincție dacă cele două valori sunt introduse împreună, pe același activ.
+iConta.eu are un modul de mijloace fixe care permite introducerea și amortizarea activelor pe baza duratei normale de funcționare stabilite de utilizator, pentru fiecare mijloc fix în parte. Din verificarea codului sursă, motorul de amortizare **recunoaște contul 211 „Terenuri" ca o categorie separată, neamortizabilă**: dacă un activ înregistrat pe acest cont are o metodă de amortizare setată, calculul amortizării (folosit atât pentru afișarea listei de mijloace fixe, cât și pentru generarea notei lunare de amortizare) respinge operația și afișează o eroare, în loc să calculeze o amortizare inexistentă. Separarea terenului de eventualele investiții amortizabile de pe el rămâne însă responsabilitatea contabilului la configurarea fiecărui activ — aplicația nu face automat această distincție dacă cele două valori sunt introduse împreună, pe același activ.
 
 [iConta.eu](/)

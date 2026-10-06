@@ -14,7 +14,7 @@ Comisioanele percepute de bancă pentru operarea conturilor firmei (mentenanță
 
 ::: ghid-temei
 „(1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale."
-— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din acest articol rezultă principiul aplicabil comisioanelor bancare:
@@ -31,6 +31,6 @@ Din acest articol rezultă principiul aplicabil comisioanelor bancare:
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă generală a operațiunilor bancare, inclusiv a comisioanelor reținute automat de bancă, pe baza extraselor bancare importate și procesate (`core/banca.py`, `core/banca_parser.py`). Aplicația nu are o regulă specială separată pentru comisioanele bancare — le tratează, corect, ca orice altă cheltuială înregistrată pe baza documentului justificativ (extrasul de cont), fără o limitare de deductibilitate suplimentară, în lipsa unei prevederi legale specifice care s-o impună.
+iConta.eu oferă evidența contabilă generală a operațiunilor bancare, inclusiv a comisioanelor reținute automat de bancă, pe baza extraselor bancare importate și procesate. Aplicația nu are o regulă specială separată pentru comisioanele bancare — le tratează, corect, ca orice altă cheltuială înregistrată pe baza documentului justificativ (extrasul de cont), fără o limitare de deductibilitate suplimentară, în lipsa unei prevederi legale specifice care s-o impună.
 
 [iConta.eu](/)

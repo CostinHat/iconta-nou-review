@@ -14,7 +14,7 @@ D406 (SAF-T) nu e o declarație „de cabinet" — e o obligație individuală a
 
 ::: ghid-temei
 „Obligația de transmitere a fișierului standard de control fiscal prin intermediul Declarației informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: [...] pentru contribuabilii încadrați în categoria de contribuabili mici la data de 31 decembrie 2021, obligația de depunere a Declarației informative D406 începe de la data de 1 ianuarie 2025 [...]; pentru contribuabilii nou-înregistrați/încadrați după data de referință pentru fiecare categorie în parte, obligația de depunere a Declarației informative D406 începe de la data efectivă a înregistrării."
-— OPANAF 1783/2021 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă pentru un cabinet cu mulți clienți:

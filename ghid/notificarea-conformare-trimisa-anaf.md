@@ -14,7 +14,7 @@ Notificarea de conformare este un instrument prin care organul de inspecție fis
 
 ::: ghid-temei
 „(1) Pentru contribuabilii/plătitorii prezumtivi a fi selectați pentru efectuarea inspecției fiscale, organul de inspecție fiscală transmite acestora, în scris, o notificare de conformare cu privire la riscurile fiscale identificate în scopul reanalizării de către aceștia a situației fiscale și, după caz, de a depune sau de a corecta declarațiile fiscale. (2) Prin notificare se comunică contribuabilului/plătitorului că în termen de 30 de zile de la data comunicării notificării are posibilitatea să depună sau să corecteze declarațiile fiscale. Până la expirarea acestui termen, organul de inspecție fiscală nu întreprinde nicio acțiune în vederea selectării pentru efectuarea inspecției fiscale."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 121^1 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Notificarea vizează contribuabilii **prezumtivi a fi selectați** pentru inspecție fiscală — deci nu înseamnă că inspecția e deja decisă, ci că profilul de risc al firmei a atras atenția organului fiscal.
@@ -31,6 +31,6 @@ Notificarea de conformare este un instrument prin care organul de inspecție fis
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu primește și nu procesează automat** notificările de conformare emise de ANAF — acestea ajung la contribuabil prin Spațiul Privat Virtual sau prin poștă, în afara aplicației. iConta.eu are însă un modul propriu de **alerte de control fiscal** (`core/alerte_control_fiscal.py`), care rulează zilnic verificări încrucișate interne (TVA, D112, D390, cotă TVA) și trimite o notificare în clopotelul aplicației atunci când o firmă are riscuri fiscale în roșu — un mecanism preventiv asemănător ca scop, dar complet distinct de notificarea oficială de conformare descrisă mai sus, care rămâne exclusiv un instrument al ANAF.
+La data acestui ghid, iConta.eu **nu primește și nu procesează automat** notificările de conformare emise de ANAF — acestea ajung la contribuabil prin Spațiul Privat Virtual sau prin poștă, în afara aplicației. iConta.eu are însă un modul propriu de **alerte de control fiscal**, care rulează zilnic verificări încrucișate interne (TVA, D112, D390, cotă TVA) și trimite o notificare în clopotelul aplicației atunci când o firmă are riscuri fiscale în roșu — un mecanism preventiv asemănător ca scop, dar complet distinct de notificarea oficială de conformare descrisă mai sus, care rămâne exclusiv un instrument al ANAF.
 
 [iConta.eu](/)

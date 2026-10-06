@@ -13,7 +13,7 @@ Dacă firma a optat pentru sistemul anual cu plăți anticipate trimestriale, pl
 ## Temeiul legal
 
 ::: ghid-temei
-"Art.41 alin.(8): plățile anticipate trimestriale = 1/4 din impozitul anului precedent, actualizat cu indicele prețurilor de consum." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza `anaf_surse/cod_fiscal_227_2015_consolidat.txt`.
+"Art.41 alin.(8): plățile anticipate trimestriale = 1/4 din impozitul anului precedent, actualizat cu indicele prețurilor de consum." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
 Există două sisteme distincte, confirmate în dosar: sistemul trimestrial „clasic" (art.41 alin.(1)), cu calcul, declarare și plată la fiecare trimestru, cu definitivare la termenul art.42; și sistemul opțional anual cu plăți anticipate trimestriale (art.41 alin.(2)), unde plata fiecărui trimestru este 1/4 din impozitul anului precedent, actualizată cu indicele prețurilor de consum — nu un recalcul cumulat pe baza rezultatelor curente ale anului. Opțiunea pentru sistemul anual se exercită la începutul anului fiscal, este obligatorie minimum 2 ani fiscali consecutivi, și trebuie comunicată organului fiscal până la 31 ianuarie inclusiv (art.41 alin.(3)).

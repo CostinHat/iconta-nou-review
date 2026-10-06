@@ -14,7 +14,7 @@ Mai multe categorii de beneficii extrasalariale — hrana, cazarea/chiria suport
 
 ::: ghid-temei
 „Următoarele venituri cumulate lunar nu reprezintă venit impozabil în înțelesul impozitului pe venit, în limita plafonului lunar de cel mult 33% din salariul de bază corespunzător locului de muncă ocupat sau din solda lunară/salariul lunar acordată/acordat potrivit legii."
-— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 76 alin. (4^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Plafonul e de **cel mult 33% din salariul de bază** al angajatului pentru luna respectivă (nu din salariul minim pe economie, nu un plafon fix în lei).
@@ -30,6 +30,6 @@ Mai multe categorii de beneficii extrasalariale — hrana, cazarea/chiria suport
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de salarizare din iConta.eu (`core/salarizare.py`) tratează diferențiat tipurile de beneficii — de exemplu marchează explicit în cod că tichetele culturale „NU intră în plafonul 33%" — și modulul de beneficii (`core/beneficii_api.py`) verifică plafoane individuale pentru anumite categorii (tichet de creșă, tichet cultural, cadouri). Nu am găsit însă o funcție dedicată care să însumeze, pentru fiecare angajat și fiecare lună, toate beneficiile care concurează la plafonul comun de 33% din salariul de bază și să semnaleze depășirea — această verificare agregată rămâne, la acest moment, în sarcina contabilului.
+La data acestui ghid, motorul de salarizare din iConta.eu tratează diferențiat tipurile de beneficii — de exemplu marchează explicit în cod că tichetele culturale „NU intră în plafonul 33%" — și modulul de beneficii verifică plafoane individuale pentru anumite categorii (tichet de creșă, tichet cultural, cadouri). Nu am găsit însă o funcție dedicată care să însumeze, pentru fiecare angajat și fiecare lună, toate beneficiile care concurează la plafonul comun de 33% din salariul de bază și să semnaleze depășirea — această verificare agregată rămâne, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

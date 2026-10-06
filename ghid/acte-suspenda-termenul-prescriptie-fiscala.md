@@ -22,7 +22,7 @@ c) pe timpul cât contribuabilul/plătitorul se sustrage de la efectuarea inspec
 d) pe perioada cuprinsă între data declarării unui contribuabil/plătitor inactiv și data reactivării acestuia.
 e) pe perioada cuprinsă între data comunicării către organele de urmărire penală a procesului-verbal de sesizare a organelor de urmărire penală sau a procesului-verbal întocmit ca urmare a solicitării organelor de urmărire penală [...] și data rămânerii definitive a soluției de rezolvare a cauzei penale.
 f) pe perioada cuprinsă între data decesului persoanei fizice la care era în curs de desfășurare o acțiune de inspecție fiscală/verificare a situației fiscale personale și data luării la cunoștință de către organul de inspecție/verificare că există sau nu succesori, după caz."
-— Legea 207/2015 (Codul de procedură fiscală), art. 111 alin. (2) lit. a)-f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 111 alin. (2) lit. a)-f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Termenul de bază, de la care pleacă toate aceste suspendări, e cel de la art. 110: **5 ani, cu începere de la 1 iulie a anului următor celui pentru care se datorează obligația fiscală** (10 ani, dacă obligația rezultă dintr-o infracțiune, de la data faptei).
@@ -44,6 +44,6 @@ Important: suspendarea diferă de **întrerupere** (art. 111 alin. 1) — între
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu urmărește termenul de prescripție a dreptului organului fiscal de a stabili creanțe fiscale** — nu există în cod o funcție dedicată acestui calcul. Aplicația are un modul de control fiscal (`core/control_fiscal_api.py`) care urmărește obligațiile declarative curente ale firmei (termene de depunere, obligații datorate pe fiecare tip de declarație), dar acesta e un calendar de conformare, diferit conceptual de termenul de prescripție discutat aici; verificarea prescripției rămâne o evaluare juridică separată, în sarcina contabilului sau a unui consultant fiscal.
+La data acestui ghid, iConta.eu **nu calculează și nu urmărește termenul de prescripție a dreptului organului fiscal de a stabili creanțe fiscale** — nu există în cod o funcție dedicată acestui calcul. Aplicația are un modul de control fiscal care urmărește obligațiile declarative curente ale firmei (termene de depunere, obligații datorate pe fiecare tip de declarație), dar acesta e un calendar de conformare, diferit conceptual de termenul de prescripție discutat aici; verificarea prescripției rămâne o evaluare juridică separată, în sarcina contabilului sau a unui consultant fiscal.
 
 [iConta.eu](/)

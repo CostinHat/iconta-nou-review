@@ -13,7 +13,7 @@ Da. Scutirea de TVA a livrării intracomunitare (art. 294 alin. (2) lit. a) din 
 ## Temeiul legal
 
 ::: ghid-temei
-„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397+, citat direct și în docstring-ul `core/intracomunitar.py`, verificat în dosarul F050).
+„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397, citat direct și în docstring-ul aplicația, verificat în dosarul F050).
 :::
 
 Textul de mai sus arată exact ce reglementează art. 294 alin. (2) lit. a): condițiile scutirii de **TVA**. Venitul din vânzare — baza pe care se facturează, cu sau fără TVA — rămâne un venit din activitatea economică a firmei. Faptul că nu poartă TVA colectat nu îl scoate din veniturile din exploatare.

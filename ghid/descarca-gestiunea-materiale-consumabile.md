@@ -19,7 +19,7 @@ Bonul de consum servește ca:
 - document justificativ de scădere din gestiune;
 - document justificativ de înregistrare în contabilitate.
 Se întocmește pe măsura eliberării materialelor din magazie pentru consum."
-— OMFP 2634/2015, Anexa 2, Grupa a III-a „Bunuri de natura stocurilor" (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Grupa a III-a „Bunuri de natura stocurilor" (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Concret, pentru materiale consumabile (spre deosebire de mărfurile din comerț, unde descărcarea de gestiune se face de regulă pe bază de factură/bon fiscal la vânzare):
@@ -37,6 +37,6 @@ Concret, pentru materiale consumabile (spre deosebire de mărfurile din comerț,
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu automatizează **descărcarea de gestiune pentru mărfuri** ținute în evidență global-valorică (metoda coeficientului K, pe baza rulajelor conturilor 371/378/4428 — vezi `core/stocuri.py` și `core/stocuri_api.py`, funcția `descarcare_gv`). Pentru **materiale consumabile**, care ies din gestiune pe bază de bon de consum și se evaluează prin metode de tip FIFO sau cost mediu ponderat, aplicația **nu are în prezent un flux dedicat** — nu există în cod o funcție care să genereze bonul de consum sau să calculeze automat descărcarea pe această cale. Emiterea bonului de consum și înregistrarea contabilă aferentă rămân, pentru acest tip de stoc, în sarcina contabilului.
+La data acestui ghid, iConta.eu automatizează **descărcarea de gestiune pentru mărfuri** ținute în evidență global-valorică (metoda coeficientului K, pe baza rulajelor conturilor 371/378/4428 — vezi aplicația, funcția `descarcare_gv`). Pentru **materiale consumabile**, care ies din gestiune pe bază de bon de consum și se evaluează prin metode de tip FIFO sau cost mediu ponderat, aplicația **nu are în prezent un flux dedicat** — nu există în cod o funcție care să genereze bonul de consum sau să calculeze automat descărcarea pe această cale. Emiterea bonului de consum și înregistrarea contabilă aferentă rămân, pentru acest tip de stoc, în sarcina contabilului.
 
 [iConta.eu](/)

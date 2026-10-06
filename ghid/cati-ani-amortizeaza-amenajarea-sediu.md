@@ -14,7 +14,7 @@ Când o firmă face amenajări (zugrăveli structurale, pereți despărțitori, 
 
 ::: ghid-temei
 „Amortizarea fiscală se calculează după cum urmează: [...] c) pentru cheltuielile cu investițiile efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune, de cel care a efectuat investiția, pe perioada contractului sau pe durata normală de utilizare, după caz [...]"
-— Legea 227/2015, art. 28 alin. (12) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (12) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă practic două variante, iar firma alege una dintre ele, aplicată consecvent:

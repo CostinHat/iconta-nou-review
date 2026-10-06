@@ -43,7 +43,7 @@ Răspunsul scurt pentru 2026: **niciuna, pentru că facilitatea nu mai există**
 
 ## Ce face iConta.eu
 
-În `core/sponsorizari.py`, ramura `tip_impozit="micro"` a funcției `credit_sponsorizare()` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval — inclusiv pentru orice dată din 2024, 2025 sau 2026 — motorul returnează credit 0, cu o notă explicită de inaplicabilitate, ceea ce reflectă corect abrogarea facilității. În interval, limita se calculează ca `20% × impozit_profit`, unde parametrul `impozit_profit` reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru — nu un impozit anual.
+În aplicația, ramura `tip_impozit="micro"` a funcției `credit_sponsorizare()` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval — inclusiv pentru orice dată din 2024, 2025 sau 2026 — motorul returnează credit 0, cu o notă explicită de inaplicabilitate, ceea ce reflectă corect abrogarea facilității. În interval, limita se calculează ca `20% × impozit_profit`, unde parametrul `impozit_profit` reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru — nu un impozit anual.
 
 Notă: fereastra 01.04.2018 – 31.03.2019 (regula inițială, mai restrânsă, din OUG 25/2018) nu este acoperită de motor — pentru o sponsorizare micro din acea perioadă, calculul trebuie făcut manual.
 

@@ -36,6 +36,6 @@ Omiterea ajustării de TVA înseamnă, practic, plata în continuare a unei taxe
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează și contabilizează exclusiv ajustarea de la impozitul pe profit (`deductibilitate_creanta`, notă 6814=491/491=7814) — aplicația nu calculează și nu generează nota de ajustare a bazei de TVA (art. 287). Verificarea condițiilor de ajustare a TVA (faliment/reorganizare, sau cei 12 luni și dovada demersurilor de recuperare la persoane fizice) și înregistrarea corespunzătoare rămân operațiuni manuale, separate de motorul F071.
+Aplicația calculează și contabilizează exclusiv ajustarea de la impozitul pe profit (`deductibilitate_creanta`, notă 6814=491/491=7814) — aplicația nu calculează și nu generează nota de ajustare a bazei de TVA (art. 287). Verificarea condițiilor de ajustare a TVA (faliment/reorganizare, sau cei 12 luni și dovada demersurilor de recuperare la persoane fizice) și înregistrarea corespunzătoare rămân operațiuni manuale, separate de motorul F071.
 
 [iConta.eu](/)

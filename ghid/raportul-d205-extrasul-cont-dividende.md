@@ -14,7 +14,7 @@ D205 nu se completează pe baza extrasului de cont — se generează din notele 
 
 ::: ghid-temei
 „(1) Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității 82/1991, art. 6 alin. (1)-(2) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității 82/1991, art. 6 alin. (1)-(2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Plata unui dividend prin bancă are drept document justificativ extrasul de cont (sau ordinul de plată confirmat) — fără el, nota contabilă „457 = 5121" nu are, formal, la ce se sprijini.

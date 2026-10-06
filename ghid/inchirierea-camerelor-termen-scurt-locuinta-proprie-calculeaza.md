@@ -16,13 +16,13 @@ Spre deosebire de chiria obișnuită, unde contează chiria din contract, aici b
 
 ::: ghid-temei
 „Venitul net anual din închirierea pe termen scurt a camerelor situate în locuințe proprietate personală se determină prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei forfetare de 30% asupra venitului brut. Venitul brut reprezintă totalitatea sumelor în bani și/sau echivalentul în lei al veniturilor în natură încasate în cursul anului fiscal."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În situația în care sumele sunt încasate în valută, echivalentul în lei al acestora se determină prin utilizarea cursului de schimb valutar comunicat de Banca Națională a României în ultima zi bancară anterioară încasării."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul anual datorat se calculează prin aplicarea cotei de 10% asupra venitului net anual, determinat potrivit alin. (2) , impozitul fiind final."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, cu regulile lor:

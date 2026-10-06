@@ -14,7 +14,7 @@ Serviciile cloud (hosting, stocare, SaaS, procesare de date) sunt „servicii fu
 
 ::: ghid-temei
 „Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...] Prin excepție de la prevederile [...] (3), locul următoarelor servicii este considerat a fi: [...] h) locul unde beneficiarul este stabilit, își are domiciliul stabil sau reședința obișnuită, în cazul următoarelor servicii prestate către o persoană neimpozabilă: [...] 3. serviciile furnizate pe cale electronică."
-— Legea 227/2015, art. 278 alin. (2) și alin. (5) lit. h) pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 278 alin. (2) și alin. (5) lit. h) pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două situații, tratate diferit:

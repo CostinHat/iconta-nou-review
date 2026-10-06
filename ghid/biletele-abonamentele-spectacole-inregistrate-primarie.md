@@ -16,18 +16,18 @@ Pe lângă înregistrare, organizatorul trebuie să afișeze tarifele și să em
 
 ::: ghid-temei
 „a înregistra biletele de intrare și/sau abonamentele la compartimentul de specialitate al autorității administrației publice locale care își exercită autoritatea asupra locului unde are loc spectacolul;"
-— Codul fiscal (Legea 227/2015), art. 481 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 481 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „a emite un bilet de intrare și/sau abonament pentru toate sumele primite de la spectatori;"
-— Codul fiscal (Legea 227/2015), art. 481 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 481 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În aplicarea art. 481 alin. (4) din Codul fiscal, persoanelor care datorează impozitul pe spectacole le revine obligația de a înregistra la compartimentele de specialitate ale autorităților administrației publice locale în a căror rază teritorială își au domiciliul sau sediul atât abonamentele, cât și biletele de intrare și de a afișa tarifele la casele de vânzare a biletelor, precum și la locul de desfășurare a spectacolelor, interzicânduli-se să încaseze sume care depășesc tarifele precizate pe biletele de intrare și/sau abonamente."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 156 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 156 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În cazul în care contribuabilii prevăzuți la pct. 156 organizează aceste spectacole în raza teritorială de competență a altor autorități ale administrației publice locale decât cele de la domiciliul sau sediul lor, după caz, acestora le revine obligația de a înregistra abonamentele și biletele de intrare la compartimentele de specialitate ale autorităților publice locale în a căror rază teritorială se desfășoară spectacolele."
-— HG 1/2016, Normele metodologice, titlul IX, pct. 157 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul IX, pct. 157 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

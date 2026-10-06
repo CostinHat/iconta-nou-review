@@ -14,7 +14,7 @@ O sumă greșită înregistrată în registrul de casă nu se șterge și nu se 
 
 ::: ghid-temei
 „Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate."
-— OMFP 2634/2015 (norme generale privind documentele financiar-contabile), pct. 5 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015 (norme generale privind documentele financiar-contabile), pct. 5 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce presupune, concret, o corectare făcută corect:
@@ -31,6 +31,6 @@ Ce presupune, concret, o corectare făcută corect:
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) calculează soldul rulant al registrului de casă pe baza operațiunilor introduse și verifică automat depășirile plafoanelor legale de numerar (sold zilnic, încasări/plăți per partener). Aplicația nu are însă, la acest moment, o funcție dedicată de „corectare a unei erori de încasare" — o sumă greșit introdusă se corectează prin introducerea unei operațiuni de stornare (inversă) urmată de operațiunea corectă, ca în orice evidență contabilă manuală; aplicația nu automatizează generarea acestei perechi de operațiuni.
+Modulul de casierie al iConta.eu calculează soldul rulant al registrului de casă pe baza operațiunilor introduse și verifică automat depășirile plafoanelor legale de numerar (sold zilnic, încasări/plăți per partener). Aplicația nu are însă, la acest moment, o funcție dedicată de „corectare a unei erori de încasare" — o sumă greșit introdusă se corectează prin introducerea unei operațiuni de stornare (inversă) urmată de operațiunea corectă, ca în orice evidență contabilă manuală; aplicația nu automatizează generarea acestei perechi de operațiuni.
 
 [iConta.eu](/)

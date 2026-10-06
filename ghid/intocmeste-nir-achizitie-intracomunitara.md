@@ -14,7 +14,7 @@ Un NIR pentru marfă cumpărată dintr-un stat membru UE se completează, tehnic
 
 ::: ghid-temei
 „6. cost de achiziție înseamnă prețul datorat şi eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție. În acest sens, costul de achiziție al bunurilor cuprinde prețul de cumpărare, taxele de import şi alte taxe (cu excepția acelora pe care persoana juridică le poate recupera de la autoritățile fiscale), cheltuielile de transport, manipulare şi alte cheltuieli care pot fi atribuibile direct achiziției bunurilor respective. [...] Cheltuielile de transport sunt incluse în costul de achiziție şi atunci când funcția de aprovizionare este externalizată."
-— OMFP 1802/2014, Reglementările contabile, Secțiunea 1.2 pct. 6 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, Reglementările contabile, Secțiunea 1.2 pct. 6 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Definiția costului de achiziție e generică — nu distinge intern, intracomunitar sau import — deci transportul unei achiziții IC intră în costul mărfii exact ca la o achiziție internă. Ce diferă e tratamentul TVA:
@@ -31,7 +31,7 @@ Definiția costului de achiziție e generică — nu distinge intern, intracomun
 
 ## Ce face iConta.eu
 
-Ecranul NIR cu **landed cost** (card Stocuri → NIR, motor `core/stocuri.py::nir_gv`) acceptă transportul și taxele ca parametri și le repartizează proporțional cu costul de bază pe fiecare linie, cu restul de rotunjire pe ultima linie — mecanismul e generic pe originea mărfii, deci funcționează identic pentru o achiziție IC. Testele aplicației confirmă repartizarea exactă (de exemplu 10 lei transport pe 3 linii egale → 3.33 + 3.33 + 3.34, sumă exact 10.00) și blocarea explicită a vânzării sub costul de achiziție cu accesoriu inclus.
+Ecranul NIR cu **landed cost** (card Stocuri → NIR, motor aplicația) acceptă transportul și taxele ca parametri și le repartizează proporțional cu costul de bază pe fiecare linie, cu restul de rotunjire pe ultima linie — mecanismul e generic pe originea mărfii, deci funcționează identic pentru o achiziție IC. Testele aplicației confirmă repartizarea exactă (de exemplu 10 lei transport pe 3 linii egale → 3.33 + 3.33 + 3.34, sumă exact 10.00) și blocarea explicită a vânzării sub costul de achiziție cu accesoriu inclus.
 
 **Limită de disponibilitate**: `nir_gv` e motorul gestiunii **global-valorice** (prețul cu amănuntul, cu adaos comercial și TVA neexigibilă) — cere pentru fiecare linie și prețul de vânzare cu TVA, nu doar costul de achiziție. Pentru firmele care țin gestiunea **cantitativ-valorică** (pe fișă de magazie, CMP), mecanismul de landed cost din acest ecran nu e disponibil; transportul trebuie adăugat manual la prețul unitar înainte de introducerea intrării.
 

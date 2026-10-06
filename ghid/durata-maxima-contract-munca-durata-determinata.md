@@ -16,10 +16,10 @@ Limitele contează pentru că un lanț de contracte care le depășește contrav
 
 ::: ghid-temei
 „Contractul individual de muncă pe durată determinată nu poate fi încheiat pe o perioadă mai mare de 36 de luni.(2) În cazul în care contractul individual de muncă pe durată determinată este încheiat pentru a înlocui un salariat al cărui contract individual de muncă este suspendat, durata contractului va expira la momentul încetării motivelor ce au determinat suspendarea contractului individual de muncă al salariatului titular."
-— Codul muncii (Legea 53/2003), art. 84 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 84 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Contractul individual de muncă pe durată determinată poate fi prelungit, în condițiile prevăzute la art. 83, și după expirarea termenului inițial, cu acordul scris al părților, pentru perioada realizării unui proiect, program sau unei lucrări.(4) Între aceleași părți se pot încheia succesiv cel mult 3 contracte individuale de muncă pe durată determinată.(5) Contractele individuale de muncă pe durată determinată încheiate în termen de 3 luni de la încetarea unui contract de muncă pe durată determinată sunt considerate contracte succesive și nu pot avea o durată mai mare de 12 luni fiecare."
-— Codul muncii (Legea 53/2003), art. 82 alin. (3)-(5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 82 alin. (3)-(5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cele trei limite, împreună:

@@ -14,10 +14,10 @@ Un autoturism preluat prin leasing financiar se amortizează la locatar, ca oric
 
 ::: ghid-temei
 **Legea 227/2015 (Codul fiscal), art. 28 alin. (14)**: „[...] pentru mijloacele de transport de persoane care au cel mult 9 scaune de pasageri, incluzând și scaunul șoferului, din categoria M1 [...], cheltuielile cu amortizarea sunt deductibile, pentru fiecare, în limita a 1.500 lei/lună. [...] Sunt exceptate situațiile în care mijloacele de transport respective se înscriu în oricare dintre următoarele categorii: a) vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat [...]."
-— (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 **OMFP 1802/2014, pct. 214 alin. (2)**: „În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile şi mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
-— (sursă: anaf_surse/omfp_1802_2014.txt)
+— (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **Contabil**: se amortizează integral valoarea de intrare (capitalul recunoscut prin 2133=167, la primire), pe durata normală de utilizare din Catalogul mijloacelor fixe.

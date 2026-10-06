@@ -32,6 +32,6 @@ Consecința practică: la vânzarea unui mijloc fix propriu, TVA se calculează 
 
 Vânzarea unui mijloc fix propriu se înregistrează ca o cesiune/vânzare de activ obișnuită, cu TVA calculat pe prețul de vânzare integral, la cota aplicabilă — nu prin motorul de calcul al marjei (art. 312), care e rezervat operațiunilor de revânzare efectivă (cumpărare cu scopul revânzării). Alegerea corectă a tipului de operațiune la introducere — vânzare de mijloc fix propriu, nu revânzare în regim de marjă — rămâne o decizie a contabilului, pe baza calității reale în care acționează firma la acea tranzacție.
 
-Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-pentru-marja-de-profit-la-bunurile-second-hand)
+Vezi și: [TVA pentru marja de profit la bunurile second-hand](/ghid/tva-marja-profit-bunurile-second)
 
 [iConta.eu](/)

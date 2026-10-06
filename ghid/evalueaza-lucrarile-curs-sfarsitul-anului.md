@@ -16,7 +16,7 @@ La 31 decembrie, orice lucrare, serviciu sau produs care nu a trecut prin toate 
 „276. - (1) În cadrul stocurilor se cuprind: [...] h) producția în curs de execuție, reprezentând producția care nu a trecut prin toate fazele (stadiile) de prelucrare, prevăzute în procesul tehnologic, precum și produsele nesupuse probelor și recepției tehnice sau necompletate în întregime. În cadrul producției în curs de execuție se cuprind, de asemenea, serviciile și studiile în curs de execuție sau neterminate.
 [...]
 88. - (1) Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate. Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere."
-— OMFP 1802/2014, Reglementări contabile, pct. 276 alin. (1) lit. h) și pct. 88 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 276 alin. (1) lit. h) și pct. 88 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pentru evaluarea de la finalul exercițiului financiar:

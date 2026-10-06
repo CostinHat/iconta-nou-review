@@ -14,7 +14,7 @@ Un mijloc fix pentru care amortizarea cumulată a ajuns la valoarea de intrare n
 
 ::: ghid-temei
 „Amortizarea fiscală se calculează după cum urmează: a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5) [...]"
-— Legea 227/2015, art. 28 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 28 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce se întâmplă, practic, la finalul duratei normale de utilizare:
@@ -33,6 +33,6 @@ Ce se întâmplă, practic, la finalul duratei normale de utilizare:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (`core/d406_active.py`, funcția `amortizat_la_data`) calculează amortizarea cumulată și oprește automat generarea de cheltuială cu amortizarea odată ce valoarea de intrare a fost integral recuperată, iar activul rămâne vizibil în evidență și în declarația D406 (secțiunea de active) chiar și cu valoare contabilă zero. Scoaterea din evidență (casare) are notă contabilă dedicată (`core/inventariere.py`, funcția `nota_casare_mf`). La data acestui ghid, aplicația **nu recalculează automat o durată nouă de amortizare** pentru investițiile ulterioare la un activ cu durata normală de utilizare expirată — stabilirea acestei durate, prin comisie tehnică internă sau expert independent, rămâne un pas manual.
+Modulul de mijloace fixe din iConta.eu (funcția `amortizat_la_data`) calculează amortizarea cumulată și oprește automat generarea de cheltuială cu amortizarea odată ce valoarea de intrare a fost integral recuperată, iar activul rămâne vizibil în evidență și în declarația D406 (secțiunea de active) chiar și cu valoare contabilă zero. Scoaterea din evidență (casare) are notă contabilă dedicată (funcția `nota_casare_mf`). La data acestui ghid, aplicația **nu recalculează automat o durată nouă de amortizare** pentru investițiile ulterioare la un activ cu durata normală de utilizare expirată — stabilirea acestei durate, prin comisie tehnică internă sau expert independent, rămâne un pas manual.
 
 [iConta.eu](/)

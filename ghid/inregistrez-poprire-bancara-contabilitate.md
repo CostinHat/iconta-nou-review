@@ -15,7 +15,7 @@ Poprirea bancară e o măsură de executare silită prin care organul fiscal ind
 ::: ghid-temei
 „(13) În măsura în care este necesar, pentru achitarea sumei datorate la data sesizării instituției de credit, [...] sumele existente, precum și cele viitoare provenite din încasările zilnice în conturile în lei și în valută sunt indisponibilizate în limita sumei necesare [...]. Instituțiile de credit au obligația să plătească sumele indisponibilizate în contul indicat de organul de executare silită în termen de 3 zile lucrătoare de la indisponibilizare.
 (14) Din momentul indisponibilizării [...], instituțiile de credit nu procedează la decontarea documentelor de plată primite, respectiv la debitarea conturilor debitorilor și nu acceptă alte plăți din conturile acestora până la achitarea integrală a obligațiilor fiscale înscrise în adresa de înființare a popririi, cu excepția: a) sumelor necesare plății drepturilor salariale, inclusiv a impozitelor și contribuțiilor aferente acestora, reținute la sursă [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (13)-(14) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (13)-(14) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Alte elemente relevante ale mecanismului, verificate în același articol:
@@ -33,7 +33,7 @@ Alte elemente relevante ale mecanismului, verificate în același articol:
 
 ## Ce face iConta.eu
 
-O poprire bancară ajunge pe extrasul de cont ca o linie de ieșire, de regulă fără CUI de partener în descriere și fără o factură deschisă asociată — exact tiparul pe care motorul de reconciliere bancară (F073, `core/reconciliere.py`) îl marchează automat cu status **roșu**: fără CUI detectat pe descrierea liniei, potrivirea automată cu o factură nu se încearcă deloc. Aplicația nu are o categorie dedicată „poprire" în lista de cuvinte-cheie a modulului de clasificare a extrasului (`core/banca.py`), care recunoaște comision, dobândă, credit, salarii, impozit pe profit, TVA sau numerar, dar nu și poprirea ca tip distinct de operațiune.
+O poprire bancară ajunge pe extrasul de cont ca o linie de ieșire, de regulă fără CUI de partener în descriere și fără o factură deschisă asociată — exact tiparul pe care motorul de reconciliere bancară (F073, aplicația) îl marchează automat cu status **roșu**: fără CUI detectat pe descrierea liniei, potrivirea automată cu o factură nu se încearcă deloc. Aplicația nu are o categorie dedicată „poprire" în lista de cuvinte-cheie a modulului de clasificare a extrasului, care recunoaște comision, dobândă, credit, salarii, impozit pe profit, TVA sau numerar, dar nu și poprirea ca tip distinct de operațiune.
 
 Practic, linia rămâne pe roșu, iar contabilul o clarifică printr-o **notă contabilă manuală** din Jurnal, stingând obligația fiscală restantă (de regulă pe contul de datorii bugetare corespunzător) din contul de trezorerie/disponibilități, folosind ca document justificativ adresa de înființare a popririi primită de la organul fiscal, nu extrasul bancar singur.
 

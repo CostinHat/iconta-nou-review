@@ -30,6 +30,6 @@ Dacă transferul implică o conversie efectivă de monedă (de exemplu, RON căt
 
 ## Ce face iConta.eu
 
-Motorul de curs (`core/curs_bnr.py`) oferă ultimul curs BNR comunicat, valabil la data operațiunii, ca sursă unică de referință pentru orice operațiune în valută introdusă în aplicație — inclusiv liniile de extras bancar. Suma efectiv contabilizată pentru o linie de extras vine din extrasul importat, nu dintr-un calcul automat de conversie RON↔valută la momentul transferului — dacă apare o diferență între suma din extras și valoarea la curs BNR, înregistrarea diferenței de curs (665/765) rămâne o operațiune separată, făcută de contabil pe baza extraselor celor două conturi.
+Motorul de curs oferă ultimul curs BNR comunicat, valabil la data operațiunii, ca sursă unică de referință pentru orice operațiune în valută introdusă în aplicație — inclusiv liniile de extras bancar. Suma efectiv contabilizată pentru o linie de extras vine din extrasul importat, nu dintr-un calcul automat de conversie RON↔valută la momentul transferului — dacă apare o diferență între suma din extras și valoarea la curs BNR, înregistrarea diferenței de curs (665/765) rămâne o operațiune separată, făcută de contabil pe baza extraselor celor două conturi.
 
 [iConta.eu](/)

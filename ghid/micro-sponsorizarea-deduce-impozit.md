@@ -35,6 +35,6 @@ Pentru o microîntreprindere, în 2026, sponsorizarea **nu se mai deduce din imp
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="micro", beneficiar_in_registru=True, la_data=None)` din `core/sponsorizari.py` calculează, doar pentru `la_data` în intervalul 01.04.2019–31.12.2023, `plafon = 20% × impozit_profit` (unde parametrul reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru, nu unul anual) și `credit = min(sponsorizari_efectuate, plafon)`. În afara acestui interval — inclusiv pentru 2026 — motorul returnează credit 0, cu o notă explicită că facilitatea nu se mai aplică. Sponsorizarea se contabilizează în continuare normal (`6582 = 401` la constituire, `6582 = 5121` la plată directă), doar că nu mai reduce impozitul datorat.
+Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="micro", beneficiar_in_registru=True, la_data=None)` din aplicație calculează, doar pentru `la_data` în intervalul 01.04.2019–31.12.2023, `plafon = 20% × impozit_profit` (unde parametrul reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru, nu unul anual) și `credit = min(sponsorizari_efectuate, plafon)`. În afara acestui interval — inclusiv pentru 2026 — motorul returnează credit 0, cu o notă explicită că facilitatea nu se mai aplică. Sponsorizarea se contabilizează în continuare normal (`6582 = 401` la constituire, `6582 = 5121` la plată directă), doar că nu mai reduce impozitul datorat.
 
 [iConta.eu](/)

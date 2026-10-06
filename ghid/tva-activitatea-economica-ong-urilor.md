@@ -14,7 +14,7 @@ Scutirea de impozit pe profit de la art. 15 din Codul fiscal e un subiect comple
 
 ::: ghid-temei
 „(1) Persoana impozabilă stabilită în România conform art. 266 alin. (2) lit. a), a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— art. 310 alin. (1) din Legea 227/2015 (Codul fiscal), regimul special de scutire pentru întreprinderile mici (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 310 alin. (1) din Legea 227/2015 (Codul fiscal), regimul special de scutire pentru întreprinderile mici (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Veniturile fără scop patrimonial (cotizații, donații, sponsorizări) **nu intră în sfera TVA**, pentru că nu reprezintă contrapartida unei livrări de bunuri sau prestări de servicii efectuate cu titlu oneros, în cadrul unei activități economice — nu sunt operațiuni impozabile, indiferent de regimul de TVA al organizației.
@@ -29,6 +29,6 @@ Scutirea de impozit pe profit de la art. 15 din Codul fiscal e un subiect comple
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) tratează exclusiv regimul de impozit pe profit de la art. 15 Cod fiscal — clasificarea veniturilor fără scop patrimonial pe grupa 73 și calculul plafonului de scutire pentru veniturile economice. **Nu conține nicio logică de TVA**: nu calculează plafonul de scutire de la art. 310, nu urmărește cifra de afaceri relevantă pentru TVA și nu se ocupă de înregistrarea în scopuri de TVA. Dacă ONG-ul desfășoară activitate economică supusă TVA, aceasta se gestionează prin modulele generale de TVA ale aplicației, independent de această funcționalitate dedicată contabilității ONG.
+Funcționalitatea de contabilitate ONG din iConta.eu tratează exclusiv regimul de impozit pe profit de la art. 15 Cod fiscal — clasificarea veniturilor fără scop patrimonial pe grupa 73 și calculul plafonului de scutire pentru veniturile economice. **Nu conține nicio logică de TVA**: nu calculează plafonul de scutire de la art. 310, nu urmărește cifra de afaceri relevantă pentru TVA și nu se ocupă de înregistrarea în scopuri de TVA. Dacă ONG-ul desfășoară activitate economică supusă TVA, aceasta se gestionează prin modulele generale de TVA ale aplicației, independent de această funcționalitate dedicată contabilității ONG.
 
 [iConta.eu](/)

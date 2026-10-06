@@ -14,18 +14,18 @@ Impozitul îl reține plătitorul venitului: clubul, asociația sau firma care p
 
 ::: ghid-temei
 „Plătitorii veniturilor, persoane juridice sau alte entități care au obligația de a conduce evidență contabilă au și obligația de a calcula, de a reține și de a plăti impozitul corespunzător sumelor plătite prin reținere la sursă."
-— Codul fiscal (Legea 227/2015), art. 68^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul se calculează prin aplicarea cotei de 10% asupra venitului brut din care se deduce contribuția de asigurări sociale de sănătate datorată și reținută la sursă potrivit prevederilor titlului V"
-— Codul fiscal, art. 68^1 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68^1 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul calculat și reținut reprezintă impozit final și se plătește la bugetul de stat până la data de 25 inclusiv a lunii următoare celei în care a fost reținut."
-— Codul fiscal, art. 68^1 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68^1 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „plătitorii de astfel de venituri care au obligația de a conduce evidență contabilă au și obligația de a calcula, de a reține și de a plăti impozitul corespunzător sumelor plătite prin reținere la sursă, impozitul fiind final."
-— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 7^1 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (normele Codului fiscal), Titlul IV, pct. 7^1 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

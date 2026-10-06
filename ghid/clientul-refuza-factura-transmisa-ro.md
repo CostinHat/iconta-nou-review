@@ -14,7 +14,7 @@ Spre deosebire de o factură trimisă pe email sau pe hârtie, unde destinatarul
 
 ::: ghid-temei
 „În cazul în care emitentul și destinatarul facturii electronice sunt înregistrați în Registrul RO e-Factura prevăzut la art. 10, utilizarea facturii electronice este considerată acceptată la data comunicării în sistemul național privind factura electronică RO e-Factura."
-— OUG 120/2021, art. 11 (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 11 (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Condiția pentru efectul de „acceptare automată" e ca **atât emitentul, cât și destinatarul** să fie înregistrați în Registrul RO e-Factura (art. 10) — dacă destinatarul nu e înscris, se aplică regulile obișnuite de facturare de la art. 319 din Codul fiscal, nu acest mecanism special.

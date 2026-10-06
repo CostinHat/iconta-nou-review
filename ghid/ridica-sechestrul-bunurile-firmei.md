@@ -14,11 +14,11 @@ Un sechestru asigurător instituit de organul fiscal nu rămâne activ la nesfâ
 
 ::: ghid-temei
 „(1) Măsurile asigurătorii instituite potrivit art. 213 se ridică, în tot sau în parte, prin decizie motivată, de către creditorul fiscal, când au încetat motivele pentru care au fost dispuse sau la constituirea garanției prevăzute la art. 211, după caz. Refuzul nejustificat de a soluționa cererea de ridicare formulată de către cel interesat sau nesoluționarea în termen pot fi atacate la instanța de contencios administrativ competentă [...] fără a fi necesară parcurgerea procedurii prealabile. Cererea se judecă de urgență și cu precădere. [...] Hotărârea prin care se dispune ridicarea măsurilor asigurătorii este executorie de drept."
-— Legea 207/2015 (Codul de procedură fiscală), art. 214 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 214 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(4) Măsurile asigurătorii se dispun prin decizie emisă de organul fiscal competent. În decizie organul fiscal precizează debitorului că prin constituirea unei garanții la nivelul creanței stabilite sau estimate, după caz, măsurile asigurătorii vor fi ridicate. [...]
 (7) [...] măsurile asigurătorii [...] încetează dacă titlul de creanță nu a fost emis și comunicat în termen de cel mult 6 luni de la data la care au fost dispuse măsurile asigurătorii. În cazuri excepționale, acest termen poate fi prelungit până la un an [...] Organul fiscal are obligația să emită decizia de ridicare a măsurilor asigurătorii în termen de cel mult două zile de la împlinirea termenului de 6 luni sau un an, după caz, iar în cazul popririi asigurătorii să elibereze garanția."
-— Legea 207/2015, art. 213 alin. (4) și (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 213 alin. (4) și (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din cele două articole rezultă trei căi de ridicare a sechestrului:

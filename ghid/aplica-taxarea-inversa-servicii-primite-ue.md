@@ -13,7 +13,7 @@ Regula generală e simplă — beneficiarul din România plătește taxa prin ta
 ## Temeiul legal
 
 ::: ghid-temei
-„`tva_taxare_inversa(baza, cota=None)` — TVA prin taxare inversă la AIC/servicii primite; **cota nu are valoare implicită** (obligă apelantul s-o declare explicit...)” — `core/intracomunitar.py`, citat în dosarul F050.
+„`tva_taxare_inversa(baza, cota=None)` — TVA prin taxare inversă la AIC/servicii primite; **cota nu are valoare implicită** (obligă apelantul s-o declare explicit...)” — aplicația, citat în dosarul F050.
 
 „CF art. 307 alin. (2) — Taxa este datorată de orice persoană impozabilă… care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2)…” — `cod_fiscal_227_2015_consolidat.txt` L19334-19342.
 :::

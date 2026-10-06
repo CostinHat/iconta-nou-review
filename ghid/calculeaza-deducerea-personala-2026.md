@@ -54,6 +54,6 @@ Aceeași persoană, cu același număr de persoane în întreținere, primește 
 
 ## Ce face iConta.eu
 
-Deducerea personală se calculează automat de `deducere_personala()` (`core/salarizare.py`), care necesită obligatoriu data la care se face calculul — codul refuză explicit ghicirea lunii curente, tocmai pentru că salariul minim (deci și deducerea) diferă pe cele două ferestre din 2026. Cotele și pragurile scării de deducere vin din registrul „period-aware" `core.common.COTE`, nu sunt scrise fix în cod.
+Deducerea personală se calculează automat de `deducere_personala()`, care necesită obligatoriu data la care se face calculul — codul refuză explicit ghicirea lunii curente, tocmai pentru că salariul minim (deci și deducerea) diferă pe cele două ferestre din 2026. Cotele și pragurile scării de deducere vin din registrul „period-aware" `core.common.COTE`, nu sunt scrise fix în cod.
 
 [iConta.eu](/)

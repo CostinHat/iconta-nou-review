@@ -877,8 +877,10 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   povestea lunii. Comandă verbatim în DECIZII 06.10.2026. Commit pe parte pe ramura `lucru/lot-06-10` (poarta scurtă,
   regula din 03.09 — PLAN_LUCRU regula 4), o singură poartă completă la commitul de închidere de pe `main`, publicare
   four-way, ZIP `~/ghid_incoming/iconta_lot_06_10.zip`.
-  - ultim: P1.1–P1.4 (commitul „Lot 06.10 partea 1 …” pe ramura de lucru)
-  - urmator: P2.5. STARE = IN LUCRU
+  - ultim: P1.1–P1.4 (14fc0cb6); P2.5–P2.10 (commitul „Lot 06.10 partea 2 …” pe ramura de lucru) — gărzi
+    `core/test_lot0610_p2.py` (13 teste: legături interne, hartă 301, adrese vechi -> 301, cuprinsul temelor, ghiduri
+    înrudite, încadrare, plafonul temelor, căi interne, sursa oficială)
+  - urmator: P3.11. STARE = IN LUCRU
   - pasi:
     P1.1 (§6.1) seria obligatorie la emitere: lipsă la deschidere + refuz numit la emitere; seria se setează din mesaj, emiterea
          continuă (factura păstrată); facturile emise neatinse.

@@ -14,10 +14,10 @@ O persoană fizică autorizată (PFA) în sistem real nu ține contabilitate în
 
 ::: ghid-temei
 „(4) Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: [...] d) să respecte regulile privind amortizarea, prevăzute în titlul II, după caz."
-— Codul fiscal, art. 68 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(7) Nu sunt cheltuieli deductibile: [...] h) cheltuielile de achiziționare sau de fabricare a bunurilor și a drepturilor amortizabile din Registrul-inventar; [...] k^1) cheltuielile cu amortizarea bunurilor din patrimoniul personal afectate exercitării activității, potrivit legii."
-— Codul fiscal, art. 68 alin. (7) lit. h) și lit. k^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (7) lit. h) și lit. k^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic pentru un PFA în sistem real:
@@ -35,7 +35,7 @@ Ce rezultă practic pentru un PFA în sistem real:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Import mijloace fixe (migrare)** din iConta.eu (`core/mijloace_fixe_import_api.py`) și registrul de mijloace fixe curent (`core/repo_mijloace_fixe.py`, cu nota lunară de amortizare 6811 = cont amortizare) sunt construite pentru firme care țin **contabilitate în partidă dublă** — lucrează cu conturi de imobilizări (21x), amortizare cumulată (28x) și note contabile în notația 371/401 etc. **Nu se aplică unui PFA în sistem real**, care nu ține aceste conturi.
+Funcționalitatea **Import mijloace fixe (migrare)** din iConta.eu și registrul de mijloace fixe curent (cu nota lunară de amortizare 6811 = cont amortizare) sunt construite pentru firme care țin **contabilitate în partidă dublă** — lucrează cu conturi de imobilizări (21x), amortizare cumulată (28x) și note contabile în notația 371/401 etc. **Nu se aplică unui PFA în sistem real**, care nu ține aceste conturi.
 
 Verificat direct în cod: aplicația recunoaște explicit categoria „partidă simplă (PFA/II/PFL)" ca regim contabil distinct — de exemplu, aceste firme sunt excluse necondiționat din obligațiile D406 și D100/D101 (declarații specifice persoanelor juridice), iar impozitul pe venit al PFA se declară prin **Declarația unică (D212)**, nu prin declarațiile de profit. Dar iConta.eu **nu are, la data acestui ghid, un modul dedicat de evidență a mijloacelor fixe și amortizării în regimul specific PFA/Registrul-inventar** — funcționalitățile existente de mijloace fixe presupun partidă dublă. Pentru un PFA în sistem real, aplicarea corectă a regulilor de amortizare de mai sus (prag valoric, metodă, durată) rămâne, azi, o evidență ținută separat de contabil, în afara acestor module.
 

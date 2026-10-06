@@ -16,12 +16,12 @@ Suspendarea nu înseamnă câștigarea procesului. E o măsură temporară, disp
 
 ::: ghid-temei
 „În cazul suspendării executării deciziei de anulare a înregistrării în scopuri de TVA, dispusă de instanțele de judecată […], toate efectele deciziei de anulare a înregistrării în scopuri de TVA sunt suspendate până la încetarea acesteia. Pe perioada suspendării, organul fiscal înregistrează în scopuri de TVA persoana impozabilă.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (22) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (22) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Organele fiscale competente anulează înregistrarea unei persoane în scopuri de TVA, conform prezentului articol: a) dacă este declarată inactivă conform prevederilor Codului de procedură fiscală, de la data declarării ca inactivă;”
-— Codul fiscal (Legea 227/2015), art. 316 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Alin. (22) a fost introdus în norme de la 1 ianuarie 2024 și se aplică oricărui caz de anulare prevăzut la art. 316 alin. (11): inactivitate, deconturi nedepuse, lipsa intenției și capacității de a desfășura activitate economică și celelalte. Concret:

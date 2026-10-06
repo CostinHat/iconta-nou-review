@@ -14,7 +14,7 @@ O firmă de contabilitate (CAEN 6920 — activități de contabilitate și audit
 
 ::: ghid-temei
 „(3) Nu intră sub incidența prezentului titlu următoarele persoane juridice române: a) Fondul de garantare a depozitelor în sistemul bancar [...]; f) persoana juridică română care desfășoară activități în domeniul bancar; g) persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital [...]; h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc; i) persoana juridică română care desfășoară activități de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă pentru o firmă de contabilitate:

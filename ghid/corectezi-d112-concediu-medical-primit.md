@@ -14,7 +14,7 @@ Un caz frecvent: un salariat are un episod de boală care începe într-o lună 
 
 ::: ghid-temei
 „Pentru situațiile în care perioada de incapacitate temporară de muncă pentru care s-au eliberat certificatele de concediu medical [...] se prelungește în luna următoare și conduce la depășirea perioadelor prevăzute la lit. a) și b) ale aceluiași alineat, diferențele de indemnizații pentru incapacitate temporară de muncă cauzată de boli obișnuite sau de accidente în afara muncii, rezultate ca urmare a recalculării și aferente lunii anterioare celei în care are loc această operațiune, se includ în veniturile lunii în care sunt determinate și se declară în Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate [...] aferentă aceleiași luni."
-— OUG 158/2005, art. 17 alin. (1^2), introdus prin OUG 89/2025 art. VII, în vigoare de la 1 iulie 2026 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG 158/2005, art. 17 alin. (1^2), introdus prin OUG 89/2025 art. VII, în vigoare de la 1 iulie 2026 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Mecanismul, explicat pas cu pas:
@@ -32,6 +32,6 @@ Mecanismul, explicat pas cu pas:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`) calculează procentul unui certificat de boală obișnuită pe baza datei episodului inițial, iar contabilul poate transmite numărul de zile deja acumulate din episod, astfel încât un certificat de continuare primește procentul corect al episodului cumulat. Aplicația nu determină însă automat „diferența" de indemnizație de recalculat pentru luna anterioară și nu marchează singură dacă acea diferență trebuie declarată ca rectificativă sau inclusă în luna curentă — regimul aplicabil (pre- sau post-1 iulie 2026, vezi mai sus) trebuie verificat și aplicat manual de contabil la depunerea D112.
+Motorul de calcul calculează procentul unui certificat de boală obișnuită pe baza datei episodului inițial, iar contabilul poate transmite numărul de zile deja acumulate din episod, astfel încât un certificat de continuare primește procentul corect al episodului cumulat. Aplicația nu determină însă automat „diferența" de indemnizație de recalculat pentru luna anterioară și nu marchează singură dacă acea diferență trebuie declarată ca rectificativă sau inclusă în luna curentă — regimul aplicabil (pre- sau post-1 iulie 2026, vezi mai sus) trebuie verificat și aplicat manual de contabil la depunerea D112.
 
 [iConta.eu](/)

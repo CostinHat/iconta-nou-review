@@ -17,12 +17,12 @@ Contează în practică pentru că de încadrare depinde cine datorează TVA. De
 ::: ghid-temei
 „c) atunci când resursele tehnice și/sau umane ale sediului fix din România al unei persoane impozabile care are sediul activității economice în afara României sunt utilizate numai pentru scopuri administrative suport, cum sunt serviciile de contabilitate, de emitere a facturilor și colectarea titlurilor de creanță, utilizarea acestor resurse nu se consideră ca participare la realizarea de livrări de bunuri sau prestări de servicii, fiind tratate doar ca servicii-suport necesare îndeplinirii obligațiilor legate de aceste operațiuni. În această situație, se consideră că persoana impozabilă nu este stabilită în România pentru aceste operațiuni;"
 „d) atunci când factura este emisă indicând codul de înregistrare în scopuri de TVA al sediului fix din România, acesta se consideră că a participat la livrarea de bunuri sau la prestarea de servicii, cu excepția situației în care persoana impozabilă poate face dovada contrariului."
-— HG 1/2016, norme metodologice, titlul VII, pct. 1 alin. (6) lit. c) și d) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 1 alin. (6) lit. c) și d) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „o persoană impozabilă care are sediul activității economice în afara României și care are un sediu fix în România conform lit. b) este considerată persoană impozabilă care nu este stabilită în România pentru livrările de bunuri sau prestările de servicii realizate la care sediul fix de pe teritoriul României nu participă."
-— Codul fiscal (Legea 227/2015), art. 266 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 266 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma se aplică împreună cu art. 266 alin. (2) din Codul fiscal în forma actuală și este în acord cu acesta.

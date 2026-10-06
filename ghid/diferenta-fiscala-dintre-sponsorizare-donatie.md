@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „cheltuielile de sponsorizare și/sau mecenat, acordate potrivit legii; contribuabilii care efectuează sponsorizări și/sau acte de mecenat, potrivit prevederilor Legii nr. 32/1994 privind sponsorizarea [...] și ale Legii bibliotecilor nr. 334/2002 [...], scad sumele aferente din impozitul pe profit datorat la nivelul valorii minime dintre următoarele: 1. valoarea calculată prin aplicarea a 0,75% la cifra de afaceri [...]; 2. valoarea reprezentând 20% din impozitul pe profit datorat."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce diferență face, concret, forma actului:
@@ -32,6 +32,6 @@ Ce diferență face, concret, forma actului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de sponsorizări din iConta.eu (`core/sponsorizari.py`) calculează plafonul de credit fiscal — minimul dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit — și marchează explicit că, pentru microîntreprinderi, facilitatea e eliminată, tratând sponsorizarea acolo ca simplă cheltuială. Pentru donații obișnuite, fără contract de sponsorizare conform Legii nr. 32/1994, aplicația nu aplică niciun credit fiscal, tratându-le ca orice altă cheltuială introdusă manual.
+La data acestui ghid, motorul de sponsorizări din iConta.eu calculează plafonul de credit fiscal — minimul dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit — și marchează explicit că, pentru microîntreprinderi, facilitatea e eliminată, tratând sponsorizarea acolo ca simplă cheltuială. Pentru donații obișnuite, fără contract de sponsorizare conform Legii nr. 32/1994, aplicația nu aplică niciun credit fiscal, tratându-le ca orice altă cheltuială introdusă manual.
 
 [iConta.eu](/)

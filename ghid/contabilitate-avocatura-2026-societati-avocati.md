@@ -14,12 +14,12 @@ Avocatura se poate organiza în mai multe forme — cabinet individual, cabinete
 
 ::: ghid-temei
 „Reglementările contabile privind contabilitatea în partidă simplă se aplică de către următoarele categorii de persoane: a) persoanele fizice și asocierile fără personalitate juridică ale căror venituri sunt supuse impozitului pe venit [...] al căror venit net anual este determinat în sistem real, pe baza datelor din contabilitate, fiind obținut din următoarele surse: - activități independente; [...]."
-— OMFP 170/2015, art. 2 lit. a) (sursă: anaf_surse/omfp_170_2015.txt)
+— OMFP 170/2015, art. 2 lit. a) (sursă: [OMFP nr. 170/2015 pentru aprobarea Reglementărilor contabile privind contabilitatea în partidă simplă](https://legislatie.just.ro/Public/DetaliiDocument/165937))
 :::
 
 ::: ghid-temei
 „Societățile comerciale, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare, societățile cooperatiste și celelalte persoane juridice au obligația să organizeze și să conducă contabilitatea financiară, potrivit prezentei legi."
-— Legea 82/1991 (Legea contabilității), art. 1 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991 (Legea contabilității), art. 1 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - Criteriul decisiv nu e denumirea „societate de avocați", ci **forma juridică efectivă**: un cabinet individual de avocat, fără personalitate juridică proprie, desfășoară activitate independentă impozitată la impozitul pe venit, deci intră sub incidența **contabilității în partidă simplă**, conform OMFP 170/2015 (art. 2 lit. a).

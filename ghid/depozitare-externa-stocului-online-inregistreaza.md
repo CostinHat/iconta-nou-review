@@ -14,7 +14,7 @@ Un magazin online care își trimite marfa spre depozitare la un operator extern
 
 ::: ghid-temei
 „GRUPA 35 «STOCURI AFLATE LA TERȚI» Din grupa 35 «Stocuri aflate la terți» fac parte: Contul 351 «Materii și materiale aflate la terți» [...] Conținutul și funcțiunea conturilor 356 «Active biologice de natura stocurilor aflate la terți», 357 «Mărfuri aflate la terți» și 358 «Ambalaje aflate la terți» sunt similare cu cele ale conturilor prezentate în această grupă."
-— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, Planul de conturi general, Grupa 35 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile, Planul de conturi general, Grupa 35 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă practic pentru un magazin online cu depozitare externă:

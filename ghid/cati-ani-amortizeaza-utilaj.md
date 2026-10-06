@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Pentru stabilirea duratei normale de funcționare a unui mijloc fix se caută succesiv în clasificare: grupa, subgrupa, clasa, subclasa și familia, după caz. [...] Pentru o moară din industria cimentului durata normală de funcționare se găsește astfel: – grupa 2. Instalații tehnice, mijloace de transport, animale și plantații; – subgrupa 2.1 Echipamente tehnologice (mașini, utilaje...); – clasa 2.1.17 Mașini, utilaje și instalații comune [...]; – subclasa 2.1.17.2 Mașini [...] pentru prelucrarea mecanică [...]; – familia 2.1.17.2.1 - morile din industria cimentului. Pentru codul 2.1.17.2.1 se citește din catalog o durată normală de funcționare cuprinsă între 12-18 ani."
-— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Dispoziții generale, pct. II.2 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG nr. 2139/2004 (Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe), Dispoziții generale, pct. II.2 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Ce trebuie făcut, concret, pentru un utilaj nou:

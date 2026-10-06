@@ -14,10 +14,10 @@ Eliminarea unui cod CAEN din obiectul de activitate al firmei nu e o operațiune
 
 ::: ghid-temei
 „Adunarea generală decide prin votul reprezentând majoritatea absolută a asociaților și a părților sociale, în afară de cazul când în actul constitutiv se prevede altfel."
-— Legea 31/1990, art. 192 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 192 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Când pe ordinea de zi figurează propuneri pentru modificarea actului constitutiv, convocarea va trebui să cuprindă textul integral al propunerilor."
-— Legea 31/1990, art. 117 alin. (7) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 117 alin. (7) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Onest, despre limita acestei surse pentru întrebarea concretă: sursele disponibile pentru acest ghid **nu conțin un text dedicat explicit procedurii de eliminare a unui cod CAEN**, ca operațiune distinctă. Ce se poate confirma cu temei legal e principiul general aplicabil oricărei modificări a obiectului de activitate:
@@ -34,6 +34,6 @@ Onest, despre limita acestei surse pentru întrebarea concretă: sursele disponi
 
 ## Ce face iConta.eu
 
-iConta.eu preia codul CAEN principal al firmei din API-ul public ANAF, la momentul configurării profilului firmei (`core/anaf_api.py`, `core/tenant_provisioning.py`), pentru completarea automată a datelor de identificare. La data acestui ghid, iConta.eu **nu gestionează modificarea actului constitutiv** și nu inițiază sau urmărește cereri de mențiuni la Registrul Comerțului pentru adăugarea sau eliminarea unor coduri CAEN din obiectul de activitate — această procedură rămâne complet în afara aplicației, la nivelul asociaților/acționarilor și al registrului comerțului.
+iConta.eu preia codul CAEN principal al firmei din API-ul public ANAF, la momentul configurării profilului firmei, pentru completarea automată a datelor de identificare. La data acestui ghid, iConta.eu **nu gestionează modificarea actului constitutiv** și nu inițiază sau urmărește cereri de mențiuni la Registrul Comerțului pentru adăugarea sau eliminarea unor coduri CAEN din obiectul de activitate — această procedură rămâne complet în afara aplicației, la nivelul asociaților/acționarilor și al registrului comerțului.
 
 [iConta.eu](/)

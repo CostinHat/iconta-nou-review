@@ -16,10 +16,10 @@ Salariatul nu rămâne fără indemnizație, iar fostul angajator nu mai plăte�
 
 ::: ghid-temei
 „(12) Prevederile alin. (10) se aplică și în situația în care a expirat termenul pentru care a fost încheiat contractul individual de muncă, contractul de administrare ori de management, a expirat termenul pentru care a fost exercitată funcția publică ori a expirat mandatul în baza căruia a desfășurat activitate în funcții elective sau în funcții numite în cadrul autorității executive, legislative ori judecătorești."
-— Legea 346/2002, art. 19 alin. (12) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (12) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „drepturile privind indemnizațiile prevăzute la alin. (1) , care s-au născut anterior ivirii acestor situații, se achită din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale în bugetul asigurărilor sociale de stat de către casele teritoriale de pensii."
-— Legea 346/2002, art. 19 alin. (10) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (10) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

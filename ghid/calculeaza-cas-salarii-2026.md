@@ -14,10 +14,10 @@ Calculul CAS pare o simplă înmulțire — 25% din brut — dar legea impune ș
 
 ::: ghid-temei
 „Calculul contribuției de asigurări sociale datorate de către persoanele fizice care obțin venituri din salarii sau asimilate salariilor [...] se realizează prin aplicarea cotei prevăzute la art. 138 lit. a) asupra bazelor lunare de calcul prevăzute la art. 139, art. 143-145, după caz, în care nu se includ veniturile prevăzute la art. 141 și 142."
-— Legea nr. 227/2015, art. 146 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 146 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuția de asigurări sociale datorată de către persoanele fizice care obțin venituri din salarii sau asimilate salariilor, în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial, calculată potrivit alin. (5), nu poate fi mai mică decât nivelul contribuției de asigurări sociale calculate prin aplicarea cotei prevăzute la art. 138 lit. a) asupra salariului de bază minim brut pe țară în vigoare în luna pentru care se datorează contribuția de asigurări sociale, corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ."
-— Legea nr. 227/2015, art. 146 alin. (5^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 146 alin. (5^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Formula, în doi pași:

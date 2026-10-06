@@ -18,7 +18,7 @@ poarta: v1
 
 „Contribuabilii care nu sunt înregistraţi în scopuri de TVA transmit Declaraţia informativă D406 trimestrial." (OPANAF 1783/2021, Anexa 4, pct. 3)
 
-Primul pas al „optimizării" e să nu generezi declarația pe periodicitatea greșită. iConta stabilește automat tipul de fereastră (`core/common.py::fereastra_d406`) după aceeași logică din Anexă: dacă firma nu e plătitoare de TVA, sau are TVA semestrial/anual, fereastra e forțată trimestrial; altfel urmează tipul perioadei de TVA a firmei. Nu există o variantă „anuală" a raportării periodice — anual se depune doar secțiunea Active (Assets), separat, la termenul situațiilor financiare.
+Primul pas al „optimizării" e să nu generezi declarația pe periodicitatea greșită. iConta stabilește automat tipul de fereastră după aceeași logică din Anexă: dacă firma nu e plătitoare de TVA, sau are TVA semestrial/anual, fereastra e forțată trimestrial; altfel urmează tipul perioadei de TVA a firmei. Nu există o variantă „anuală" a raportării periodice — anual se depune doar secțiunea Active (Assets), separat, la termenul situațiilor financiare.
 
 ## Ce se greșește în practică
 
@@ -28,7 +28,7 @@ Primul pas al „optimizării" e să nu generezi declarația pe periodicitatea g
 
 ## Ce face iConta.eu
 
-Generatorul D406 (`core/d406.py`) produce Header, MasterFiles și GeneralLedgerEntries complet din XSD, iar SourceDocuments (facturi de vânzare/achiziție) cu linii reale pe produs (cantitate, UM, preț, descriere, cotă), reconciliate obligatoriu cu antetul declarației — nu doar totaluri agregate. Identitatea partenerului urmează nomenclatorul (00/01/02+cod, 03+CNP, 04+nume). Codurile de taxă pentru livrări sunt aplicate „period-aware", pe data facturii, ținând cont de schimbarea din Legea 141/2025.
+Generatorul D406 produce Header, MasterFiles și GeneralLedgerEntries complet din XSD, iar SourceDocuments (facturi de vânzare/achiziție) cu linii reale pe produs (cantitate, UM, preț, descriere, cotă), reconciliate obligatoriu cu antetul declarației — nu doar totaluri agregate. Identitatea partenerului urmează nomenclatorul (00/01/02+cod, 03+CNP, 04+nume). Codurile de taxă pentru livrări sunt aplicate „period-aware", pe data facturii, ținând cont de schimbarea din Legea 141/2025.
 
 Validarea nu se face cu un instrument generic, ci cu `DUKIntegrator_AnLunaUI.jar` (validatorul oficial), integrat direct în aplicație — pasul de validare înainte de depunere e parte din flux, nu un instrument extern separat de gestionat manual.
 

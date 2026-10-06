@@ -14,7 +14,7 @@ Când un salariat e angajat în cursul lunii, nu la data de 1, salariul de bază
 
 ::: ghid-temei
 „(1) Salariul de baza minim brut pe ţara garantat în plata, corespunzător programului normal de muncă, se stabileşte prin hotărâre a Guvernului, după consultarea sindicatelor şi a patronatelor. În cazul în care programul normal de muncă este, potrivit legii, mai mic de 8 ore zilnic, salariul de baza minim brut orar se calculează prin raportarea salariului de baza minim brut pe ţara la numărul mediu de ore lunar potrivit programului legal de lucru aprobat."
-— Legea 53/2003 (Codul muncii), art. 159 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 159 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă din acest principiu de raportare, aplicat la o lună de angajare incompletă:

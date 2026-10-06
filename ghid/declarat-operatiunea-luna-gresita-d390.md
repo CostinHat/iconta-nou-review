@@ -16,7 +16,7 @@ D390 este o declarație informativă, iar regimul de corectare al declarațiilor
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 D390 (Declarația recapitulativă privind livrările/achizițiile/prestările intracomunitare) e o declarație informativă, nu o declarație de impunere — nu stabilește ea însăși o obligație de plată. Consecința practică a art. 105 alin. (2):
@@ -33,6 +33,6 @@ D390 (Declarația recapitulativă privind livrările/achizițiile/prestările in
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul D390 al iConta.eu (`core/d390.py`) **emite doar declarații inițiale** — codul confirmă explicit că generatorul produce numai `d_rec="0"` (fără secțiunea de corecție), deci **nu generează automat declarații rectificative**. Contabilul trebuie să identifice manual cele două luni afectate (cea în care operațiunea a fost declarată greșit și cea corectă) și să depună rectificativele corespunzătoare prin canalul obișnuit de transmitere la ANAF.
+La data acestui ghid, generatorul D390 al iConta.eu **emite doar declarații inițiale** — codul confirmă explicit că generatorul produce numai `d_rec="0"` (fără secțiunea de corecție), deci **nu generează automat declarații rectificative**. Contabilul trebuie să identifice manual cele două luni afectate (cea în care operațiunea a fost declarată greșit și cea corectă) și să depună rectificativele corespunzătoare prin canalul obișnuit de transmitere la ANAF.
 
 [iConta.eu](/)

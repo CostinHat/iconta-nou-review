@@ -39,6 +39,6 @@ Nu orice pierdere de marfă intră sub acest regim. Sunt excluse explicit: consu
 
 ## Ce face iConta.eu
 
-Motorul F066 (`core/perisabilitati.py`) calculează automat `limita`, separă deductibilul de nedeductibil (`deductibil = min(pierdere_constatată, limita)`) și nu aplică nicio ajustare de TVA cât timp toată pierderea se încadrează în limită. Procentul de limită (`procent_limita`) se introduce manual de contabil — aplicația nu conține tabelul coeficienților pe grupe de mărfuri din anexele HG 831/2004; procentul aplicabil grupei de produse trebuie verificat direct în anexa hotărârii, publicată în Monitorul Oficial.
+Motorul F066 calculează automat `limita`, separă deductibilul de nedeductibil (`deductibil = min(pierdere_constatată, limita)`) și nu aplică nicio ajustare de TVA cât timp toată pierderea se încadrează în limită. Procentul de limită (`procent_limita`) se introduce manual de contabil — aplicația nu conține tabelul coeficienților pe grupe de mărfuri din anexele HG 831/2004; procentul aplicabil grupei de produse trebuie verificat direct în anexa hotărârii, publicată în Monitorul Oficial.
 
 [iConta.eu](/)

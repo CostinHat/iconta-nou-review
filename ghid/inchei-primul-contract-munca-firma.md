@@ -14,12 +14,12 @@ poarta: v1
 
 ::: ghid-temei
 „Contractul individual de muncă se încheie în baza consimţământului părţilor, în forma scrisă, în limba română. Obligaţia de încheiere a contractului individual de muncă în forma scrisă revine angajatorului. [...] În situaţia în care contractul individual de muncă nu a fost încheiat în forma scrisă, se prezuma ca a fost încheiat pe o durată nedeterminată, iar părţile pot face dovada prevederilor contractuale şi a prestaţiilor efectuate prin orice alt mijloc de proba."
-— Legea 53/2003 (Codul Muncii), art. 16 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul Muncii), art. 16 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Anterior încheierii sau modificării contractului individual de muncă, angajatorul are obligaţia de a informa persoana care solicită angajarea ori, după caz, salariatul cu privire la clauzele generale pe care intenţionează să le înscrie în contract sau să le modifice. [...] a) identitatea părţilor; b) locul de muncă sau, în lipsa unui loc de muncă fix, posibilitatea ca salariatul sa munceasca în diverse locuri; c) sediul sau, după caz, domiciliul angajatorului; d) atribuţiile postului; e) riscurile specifice postului; f) data de la care contractul urmează să îşi producă efectele; [...]"
-— Legea 53/2003 (Codul Muncii), art. 17 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul Muncii), art. 17 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 - Forma scrisă e obligatorie și cade în sarcina angajatorului, nu a salariatului.

@@ -15,7 +15,7 @@ Schimbul de tură la casierie e punctul cel mai expus la neconcordanțe: soldul 
 ::: ghid-temei
 „Articolul 3 (1) [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi; [...]
 (2) Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei [...], precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei [...]"
-— Legea 70/2015, art. 3 alin. (1) lit. c) și alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. c) și alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă pentru un punct de vânzare cu mai multe ture pe zi:
@@ -32,6 +32,6 @@ Ce înseamnă pentru un punct de vânzare cu mai multe ture pe zi:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **calculează plafoanele de numerar la nivel de zi calendaristică**, cumulat pe toate operațiunile introduse din acea zi (modulul `core/casa.py`), nu separat pe tură — comportament aliniat cu logica legii, care nu recunoaște „tura" ca unitate de calcul al plafonului. Aplicația **nu are, la data acestui ghid, un proces dedicat de predare-primire de tură** (semnătură digitală, jurnal separat de schimb de tură) — soldul de casă rămâne o singură evidență continuă pe zi.
+La data acestui ghid, iConta.eu **calculează plafoanele de numerar la nivel de zi calendaristică**, cumulat pe toate operațiunile introduse din acea zi (aplicația), nu separat pe tură — comportament aliniat cu logica legii, care nu recunoaște „tura" ca unitate de calcul al plafonului. Aplicația **nu are, la data acestui ghid, un proces dedicat de predare-primire de tură** (semnătură digitală, jurnal separat de schimb de tură) — soldul de casă rămâne o singură evidență continuă pe zi.
 
 [iConta.eu](/)

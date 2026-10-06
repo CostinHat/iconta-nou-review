@@ -15,7 +15,7 @@ Termenul de 5 zile lucrătoare pentru transmiterea facturii în sistemul RO e-Fa
 ::: ghid-temei
 „(1) Termenele prevăzute de lege pentru îndeplinirea obligațiilor fiscale, după caz, nu încep să curgă sau se suspendă în situația în care îndeplinirea acestor obligații a fost împiedicată de ivirea unui caz de forță majoră sau a unui caz fortuit.
 (2) Obligațiile fiscale se consideră a fi îndeplinite în termen, fără perceperea de dobânzi, penalități de întârziere sau majorări de întârziere, după caz, ori aplicarea de sancțiuni prevăzute de lege, dacă acestea se execută în termen de 60 de zile de la încetarea evenimentelor prevăzute la alin. (1)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 78 alin. (1), (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 78 alin. (1), (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic, pentru transmiterea facturii în RO e-Factura:
@@ -32,6 +32,6 @@ Ce înseamnă practic, pentru transmiterea facturii în RO e-Factura:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu transmite facturile către SPV/RO e-Factura prin modulele `core/efactura_trimitere.py` și `core/spv_conector.py`, care includ o logică de reîncercare automată pentru anumite erori tranzitorii — reautentificare la eroarea 401 și așteptare exponențială („backoff") la eroarea 429 (prea multe cereri). Aplicația nu are însă o procedură specifică de gestionare a unei indisponibilități complete a sistemului ANAF (de exemplu, erori 503 prelungite) și nu documentează automat, în scopuri de probă pentru art. 78 din Codul de procedură fiscală, momentul și durata unei astfel de indisponibilități — contabilul rămâne responsabil să păstreze dovezi ale încercărilor eșuate de transmitere.
+La data acestui ghid, iConta.eu transmite facturile către SPV/RO e-Factura prin aplicație, care includ o logică de reîncercare automată pentru anumite erori tranzitorii — reautentificare la eroarea 401 și așteptare exponențială („backoff") la eroarea 429 (prea multe cereri). Aplicația nu are însă o procedură specifică de gestionare a unei indisponibilități complete a sistemului ANAF (de exemplu, erori 503 prelungite) și nu documentează automat, în scopuri de probă pentru art. 78 din Codul de procedură fiscală, momentul și durata unei astfel de indisponibilități — contabilul rămâne responsabil să păstreze dovezi ale încercărilor eșuate de transmitere.
 
 [iConta.eu](/)

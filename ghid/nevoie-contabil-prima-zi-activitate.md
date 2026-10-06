@@ -16,7 +16,7 @@ Obligația de a organiza și conduce contabilitatea nu e legată de volumul de a
 „Societățile comerciale, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare, societățile cooperatiste și celelalte persoane juridice au obligația să organizeze și să conducă contabilitatea financiară, potrivit prezentei legi.
 Articolul 10 (1) Răspunderea pentru organizarea și conducerea contabilității la persoanele prevăzute la art. 1 alin. (1)-(4) revine administratorului, ordonatorului de credite sau altei persoane care are obligația gestionării entității respective.
 (3) Contabilitatea poate fi organizată și condusă pe bază de contracte de prestări de servicii în domeniul contabilității, încheiate cu persoane fizice sau juridice, autorizate potrivit legii, membre ale Corpului Experților Contabili și Contabililor Autorizați din România."
-— Legea contabilității nr. 82/1991, art. 1 alin. (1) și art. 10 alin. (1) și (3) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 1 alin. (1) și art. 10 alin. (1) și (3) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - **Obligația de a organiza și conduce contabilitatea există de la data la care persoana juridică ia ființă**, nu de la o primă tranzacție semnificativă — legea nu prevede un prag de activitate sau o perioadă de grație.

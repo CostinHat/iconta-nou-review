@@ -16,18 +16,18 @@ Scutirea nu scoate însă firma din evidența primăriei. Clădirile și terenur
 
 ::: ghid-temei
 „Nu se datorează impozit/taxă pe clădiri pentru: a) [...] g) clădirile din parcurile industriale, parcurile științifice și tehnologice, precum și cele utilizate de incubatoarele de afaceri, cu respectarea legislației în materia ajutorului de stat;"
-— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu se datorează impozit/taxă pe teren pentru: a) [...] k) terenurile din parcurile industriale, parcurile științifice și tehnologice, precum și cele utilizate de incubatoarele de afaceri, cu respectarea legislației în materia ajutorului de stat;"
-— Codul fiscal (Legea 227/2015), art. 464 alin. (1) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 464 alin. (1) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Prevederile alin. (6) nu se aplică în cazul clădirilor care sunt scutite de plata impozitului/taxei pe clădiri potrivit art. 456 alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 460 alin. (7^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 460 alin. (7^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Declararea terenurilor în scop fiscal nu este condiționată de înregistrarea acestor terenuri la oficiile de cadastru și publicitate imobiliară. (12) Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului sau a taxei pe teren."
-— Codul fiscal (Legea 227/2015), art. 466 alin. (11)-(12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (11)-(12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

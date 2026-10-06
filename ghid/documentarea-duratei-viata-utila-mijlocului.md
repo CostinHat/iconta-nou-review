@@ -14,7 +14,7 @@ Durata normală de funcționare a unui mijloc fix nu se alege liber — Catalogu
 
 ::: ghid-temei
 „Catalogul cuprinde clasificarea mijloacelor fixe utilizate în economie și duratele normale de funcționare ale acestora, care corespund cu duratele de amortizare în ani, aferente regimului de amortizare liniar. [...] Pentru stabilirea duratei normale de funcționare a unui mijloc fix se caută succesiv în clasificare: grupa, subgrupa, clasa, subclasa și familia, după caz. [...] La punerea în funcțiune a acestui mijloc fix, se va stabili durata normală de funcționare în limitele intervalului [...]. În cazul mijloacelor fixe achiziționate cu durata normală de funcționare expirată sau pentru care nu se cunosc datele de identificare, durata normală de funcționare se stabilește de către o comisie tehnică sau expert tehnic independent."
-— HG 2139/2004, Anexă, Cap. I pct. 1 și Cap. II pct. 2 și Cap. III pct. 3 (sursă: anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt)
+— HG 2139/2004, Anexă, Cap. I pct. 1 și Cap. II pct. 2 și Cap. III pct. 3 (sursă: [HG nr. 2139/2004 pentru aprobarea Catalogului privind clasificarea și duratele normale de funcționare a mijloacelor fixe](https://legislatie.just.ro/Public/DetaliiDocument/58613))
 :::
 
 Documentarea corectă presupune parcurgerea explicită a pașilor din catalog:
@@ -32,6 +32,6 @@ Documentarea corectă presupune parcurgerea explicită a pașilor din catalog:
 
 ## Ce face iConta.eu
 
-Am verificat în `core/repo_mijloace_fixe.py` și `core/mijloace_fixe_import_api.py`: aplicația **preia durata normală de funcționare (`dnf_luni`) ca dată introdusă de contabil**, la import sau manual, fără să o verifice față de intervalele minim-maxim din Catalogul mijloacelor fixe (HG 2139/2004) și fără să solicite sau să genereze vreun document justificativ (proces-verbal de comisie tehnică, de exemplu). Corectitudinea încadrării în catalog rămâne, la acest moment, o verificare manuală a contabilului.
+Am verificat în aplicație: aplicația **preia durata normală de funcționare (`dnf_luni`) ca dată introdusă de contabil**, la import sau manual, fără să o verifice față de intervalele minim-maxim din Catalogul mijloacelor fixe (HG 2139/2004) și fără să solicite sau să genereze vreun document justificativ (proces-verbal de comisie tehnică, de exemplu). Corectitudinea încadrării în catalog rămâne, la acest moment, o verificare manuală a contabilului.
 
 [iConta.eu](/)

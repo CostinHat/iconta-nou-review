@@ -16,12 +16,12 @@ Nu. Codul de procedură fiscală exceptează expres de la poprire sumele repreze
 
 ::: ghid-temei
 „Sumele reprezentând credite nerambursabile ori finanțări primite de la instituții sau organizații naționale ori internaționale pentru derularea unor programe ori proiecte nu sunt supuse executării silite prin poprire, în cazul în care împotriva beneficiarului acestora a fost pornită procedura executării silite."
-— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Pentru stingerea creanțelor fiscale, debitorii titulari de conturi bancare pot fi urmăriți prin poprire asupra sumelor din conturile bancare, prevederile alin. (5) aplicându-se în mod corespunzător."
-— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce acoperă și ce nu acoperă excepția:

@@ -14,10 +14,10 @@ Nu există, în legislația fiscală, un capitol dedicat „costurilor primului 
 
 ::: ghid-temei
 „În cazul unei subscrieri integrale și simultane a capitalului social de către toți semnatarii actului constitutiv, capitalul social vărsat la constituire nu va putea fi mai mic de 30% din cel subscris."
-— Legea 31/1990, art. 9 alin. (2), aplicabil **societății pe acțiuni** (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 9 alin. (2), aplicabil **societății pe acțiuni** (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Societatea cu răspundere limitată trebuie să verse 30% din valoarea capitalului social subscris nu mai târziu de 3 luni de la data înmatriculării, dar înainte de a începe operațiuni în numele societății, iar diferența de capital social subscris va fi vărsată [...]"
-— Legea 31/1990, art. 9^1 alin. (2), aplicabil **societății cu răspundere limitată** (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 9^1 alin. (2), aplicabil **societății cu răspundere limitată** (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Notă: cele două articole nu se aplică aceleiași forme juridice — art. 9 reglementează constituirea societății pe acțiuni (SA), unde cei 30% trebuie vărsați chiar la momentul constituirii, fără termenul de grație de 3 luni; art. 9^1 alin. (2) reglementează SRL-ul, forma juridică cea mai frecventă la înființare, unde cei 30% pot fi vărsați oricând până la 3 luni de la înmatriculare, dar înainte de începerea operațiunilor.

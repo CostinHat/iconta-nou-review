@@ -30,6 +30,6 @@ Dacă banca aplică propriul curs comercial pentru conversia sumei (de exemplu, 
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit pentru evaluarea în lei a operațiunilor în valută provine din motorul de curs (`core/curs_bnr.py`), care preia ultimul curs BNR comunicat, valabil la data operațiunii — fără fallback tăcut la o cotă implicită dacă cursul nu poate fi determinat. Diferența de curs dintre valoarea de evidență a datoriei și suma efectiv plătită se calculează separat, prin motorul de diferențe de curs (`core/diferente_curs.py`), pe baza cursurilor introduse pentru fiecare operațiune.
+Cursul BNR folosit pentru evaluarea în lei a operațiunilor în valută provine din motorul de curs, care preia ultimul curs BNR comunicat, valabil la data operațiunii — fără fallback tăcut la o cotă implicită dacă cursul nu poate fi determinat. Diferența de curs dintre valoarea de evidență a datoriei și suma efectiv plătită se calculează separat, prin motorul de diferențe de curs, pe baza cursurilor introduse pentru fiecare operațiune.
 
 [iConta.eu](/)

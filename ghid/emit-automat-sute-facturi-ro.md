@@ -14,7 +14,7 @@ Pentru un contabil cu multe facturi recurente lunare, întrebarea reală e dubl�
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 privind administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-Factura [...]"
-— Cod fiscal (Legea 227/2015), art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - „A fi în RO e-Factura" nu e o formulare colocvială — e statutul legal al facturii pentru operațiuni B2B între persoane impozabile din România: fără transmiterea prin sistemul național, documentul nu e considerat factură validă în acest regim.

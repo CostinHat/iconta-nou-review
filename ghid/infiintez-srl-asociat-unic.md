@@ -16,7 +16,7 @@ Un SRL cu asociat unic urmează aceeași procedură generală de înmatriculare 
 „(1) În cazul în care, într-o societate cu răspundere limitată, părțile sociale sunt ale unei singure persoane, aceasta, în calitate de asociat unic, are drepturile și obligațiile ce revin, potrivit prezentei legi, adunării generale a asociaților.
 (2) Dacă asociatul unic este administrator, îi revin și obligațiile prevăzute de lege pentru această calitate.
 (3) În societatea care se înființează de către un asociat unic, valoarea aportului în natură va fi stabilită pe baza unei expertize de specialitate."
-— Legea 31/1990, art. 13 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 13 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Elementele specifice unui SRL cu asociat unic, față de un SRL cu mai mulți asociați:

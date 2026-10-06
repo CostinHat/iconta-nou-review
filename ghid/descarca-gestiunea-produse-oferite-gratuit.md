@@ -14,10 +14,10 @@ Mostrele date clienților, produsele oferite ca stimulent de vânzare sau bunuri
 
 ::: ghid-temei
 „Dispoziția de livrare servește ca: - document pentru eliberarea din magazie a produselor, mărfurilor sau a altor valori materiale destinate vânzării, a bunurilor cedate cu titlu gratuit sau acordate pentru stimularea vânzării, după caz; [...] Avizul de însoțire a mărfii servește ca: [...] - document de descărcare din gestiune a bunurilor cedate cu titlu gratuit."
-— OMFP 2634/2015, Anexa 2, Cod 14-3-5A și Cod 14-3-6A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-3-5A și Cod 14-3-6A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „Sunt asimilate livrărilor de bunuri efectuate cu plată următoarele operațiuni: [...] b) preluarea de către o persoană impozabilă a bunurilor mobile achiziționate sau produse de către aceasta pentru a fi puse la dispoziția altor persoane în mod gratuit, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul complet:
@@ -34,6 +34,6 @@ Mecanismul complet:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/stocuri_cv_api.py` oferă funcția generală `iesire()` pentru descărcarea din gestiune, folosibilă tehnic și pentru cedări gratuite. Aplicația nu are însă un flux dedicat „cedare cu titlu gratuit" care să calculeze automat TVA colectată conform art. 270 alin. (4) lit. b) sau să verifice dacă operațiunea se încadrează în vreuna dintre excepțiile de la art. 270 alin. (8) — încadrarea legală a fiecărei cedări rămâne, azi, o evaluare a contabilului.
+La data acestui ghid, aplicația oferă funcția generală `iesire()` pentru descărcarea din gestiune, folosibilă tehnic și pentru cedări gratuite. Aplicația nu are însă un flux dedicat „cedare cu titlu gratuit" care să calculeze automat TVA colectată conform art. 270 alin. (4) lit. b) sau să verifice dacă operațiunea se încadrează în vreuna dintre excepțiile de la art. 270 alin. (8) — încadrarea legală a fiecărei cedări rămâne, azi, o evaluare a contabilului.
 
 [iConta.eu](/)

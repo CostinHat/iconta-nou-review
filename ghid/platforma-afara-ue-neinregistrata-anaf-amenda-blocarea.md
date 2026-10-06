@@ -16,10 +16,10 @@ Pentru utilizatorii români, blocarea înseamnă că o aplicație folosită pent
 
 ::: ghid-temei
 „r)cu amendă de la 20.000 lei la 50.000 lei în cazul săvârșirii faptei prevăzute la alin. (1) lit. cc); s)în situația în care, în termen de 30 de zile de la ultima sancționare a faptei prevăzute la alin. (1) lit. cc), Operatorul de platformă care are obligația de raportare nu se înregistrează potrivit art. 291 5 alin. (10), cu amendă de la 20.000 lei la 100.000 lei și oprirea accesului la site-ul sau aplicația acestuia;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. r) și s) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. r) și s) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(17) Furnizorii de rețele sau servicii de comunicații electronice sunt obligați să oprească accesul la site-ul sau aplicația Operatorului de platformă care are obligația de raportare în sensul pct. 4 lit. b) din subsecțiunea A a secțiunii I din anexa nr. 5, în termen de 24 de ore de la data primirii solicitării prevăzute la alin. (16). (18) Atunci când Operatorul de platformă pentru care se aplică măsura prevăzută la alin. (16) se înregistrează în România sau în alt stat membru, autoritatea competentă din România notifică furnizorii de rețele sau servicii de comunicații electronice pentru a restabili accesul la site-ul sau aplicația Operatorului de platformă în termen de 24 de ore de la notificare."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (17) și (18) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (17) și (18) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Etapele, în ordine:

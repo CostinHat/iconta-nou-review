@@ -14,7 +14,7 @@ Un control ANAF pe TVA nu apare din senin: firma e mai întâi încadrată într
 
 ::: ghid-temei
 „În cazul creanțelor fiscale administrate de organul fiscal central, procedurile de administrare se realizează în funcție de clasa/subclasa de risc fiscal în care sunt încadrați contribuabilii ca urmare a analizei de risc efectuate de organul fiscal. [...] Contribuabilii se încadrează în 3 clase principale de risc [...]: a) contribuabili cu risc fiscal mic; b) contribuabili cu risc fiscal mediu; c) contribuabili cu risc fiscal ridicat."
-— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5)-(6) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 7 alin. (5)-(6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă, structural, un control de TVA:
@@ -31,6 +31,6 @@ Ce înseamnă, structural, un control de TVA:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu simulează** analiza de risc a ANAF și nu are acces la criteriile interne folosite de organul fiscal pentru încadrarea în clase de risc — acestea nu sunt publice. Aplicația are însă un motor propriu de urmărire a conformării (`core/control_fiscal_api.py`) care calculează, pe baza vectorului fiscal al firmei, ce declarații sunt datorate, care au fost depuse și unde există discrepanțe (declarații lipsă, depuse fără obligație, sau contradictorii) — util pentru a reduce exact genul de neconcordanțe care atrag atenția unui inspector, dar fără să fie un instrument de predicție a controalelor ANAF.
+iConta.eu **nu simulează** analiza de risc a ANAF și nu are acces la criteriile interne folosite de organul fiscal pentru încadrarea în clase de risc — acestea nu sunt publice. Aplicația are însă un motor propriu de urmărire a conformării care calculează, pe baza vectorului fiscal al firmei, ce declarații sunt datorate, care au fost depuse și unde există discrepanțe (declarații lipsă, depuse fără obligație, sau contradictorii) — util pentru a reduce exact genul de neconcordanțe care atrag atenția unui inspector, dar fără să fie un instrument de predicție a controalelor ANAF.
 
 [iConta.eu](/)

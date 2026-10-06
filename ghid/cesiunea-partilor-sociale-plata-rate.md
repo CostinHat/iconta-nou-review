@@ -15,10 +15,10 @@ Un asociat poate vinde părțile sociale altui asociat sau unui terț, iar preț
 ::: ghid-temei
 „Articolul 202 (1) Părțile sociale pot fi transmise între asociați. (2) Dacă actul constitutiv nu prevede altfel, transmiterea către persoane din afara societății este permisă numai dacă a fost aprobată de asociați reprezentând cel puțin trei pătrimi din capitalul social. [...]
 Articolul 203 (1) Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății. (2) Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea nr. 31/1990, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 202 alin. (1)-(2) și art. 203 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Câștigul/pierderea din transferul titlurilor de valoare, altele decât instrumentele financiare derivate [...], reprezintă diferența pozitivă/negativă realizată între valoarea de înstrăinare/prețul de vânzare și valoarea lor fiscală, după caz, pe tipuri de titluri de valori, care include costurile aferente tranzacției [...]"
-— Codul fiscal (Legea 227/2015), art. 94 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 94 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Coroborând cele două texte, pentru o cesiune de părți sociale cu plata eșalonată în rate:

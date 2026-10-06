@@ -16,17 +16,17 @@ Există două excepții, și ambele contează pentru cabinet. Câștigurile obț
 
 ::: ghid-temei
 „sumele încasate din asigurări de orice fel reprezentând despăgubiri, sume asigurate, precum și orice alte drepturi, cu excepția câștigurilor primite de la societățile de asigurări ca urmare a contractului de asigurare încheiat între părți, cu ocazia tragerilor de amortizare;”
-— Codul fiscal (Legea 227/2015), art. 62 lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 62 lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(4) În aplicarea prevederilor art. 62 lit. g) din Codul fiscal sunt neimpozabile despăgubirile, sumele asigurate și orice alte drepturi acordate asiguraților, beneficiarilor sau terțelor persoane păgubite, din asigurările de orice fel, potrivit legislației privind societățile de asigurare și supravegherea asigurărilor. Sumele reprezentând alte drepturi acordate asiguraților pot avea, printre altele, următoarele forme: răscumpărări parțiale în contul persoanei asigurate, plăți eșalonate, rente, venituri rezultate din fructificarea rezervelor constituite din primele plătite de asigurați, precum și orice alte sume de aceeași natură, indiferent de denumirea sau forma sub care sunt plătite, în contul persoanei asigurate. În cazul în care suportatorul primei de asigurare este o persoană fizică independentă, persoană juridică sau orice altă entitate care desfășoară o activitate, atunci contravaloarea primelor de asigurare reprezintă venituri impozabile pentru persoana fizică beneficiară.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (4), titlul IV (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (4), titlul IV (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „câștiguri primite de la societățile de asigurări, ca urmare a contractului de asigurare încheiat între părți cu ocazia tragerilor de amortizare;”
-— Codul fiscal, art. 114 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 114 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

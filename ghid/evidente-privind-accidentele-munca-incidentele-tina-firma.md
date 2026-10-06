@@ -16,10 +16,10 @@ Pentru contabil, evidențele contează dincolo de SSM: un accident de muncă în
 
 ::: ghid-temei
 „c) sa țină evidenta accidentelor de muncă ce au ca urmare o incapacitate de muncă mai mare de 3 zile de lucru, a accidentelor ușoare, a bolilor profesionale, a incidentelor periculoase, precum și a accidentelor de muncă, astfel cum sunt definite la art. 5 lit. g) ; ... d) sa elaboreze pentru autoritățile competente și în conformitate cu reglementările legale rapoarte privind accidentele de muncă suferite de lucrătorii săi."
-— Legea 319/2006, art. 12 alin. (1) lit. c)-d) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 12 alin. (1) lit. c)-d) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „a) încălcarea dispozițiilor art. 12 alin. (1) lit. c) și d), art. 13 lit. g) , art. 18 alin. (5) și (6) și ale art. 36 ;"
-— Legea 319/2006, art. 39 alin. (8) lit. a) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 39 alin. (8) lit. a) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce intră în evidență, după definițiile din art. 5:

@@ -14,7 +14,7 @@ Impozitul pe veniturile microîntreprinderilor și regimul de scutire de TVA pen
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România [...], a cărei cifră de afaceri anuală, declarată sau realizată, nu depășește plafonul de 395.000 lei, poate aplica scutirea de taxă, denumită în continuare regim special de scutire, pentru operațiunile prevăzute la art. 268 alin. (1), cu excepția livrărilor intracomunitare de mijloace de transport noi, scutite conform art. 294 alin. (2) lit. b)."
-— Legea nr. 227/2015 (Codul fiscal), art. 310 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 310 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Plafonul de **scutire de TVA** pentru 2026 este de **395.000 lei** cifră de afaceri anuală — un plafon separat de cel pentru încadrarea ca microîntreprindere la impozitul pe veniturile microîntreprinderilor.

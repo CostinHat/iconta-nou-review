@@ -14,7 +14,7 @@ Spre deosebire de declarațiile fiscale (care se depun uneori „pe zero", chiar
 
 ::: ghid-temei
 „Furnizorii prevăzuți la alin. (1)-(3) sunt obligați să transmită facturile emise către destinatari conform prevederilor art. 319 din Legea nr. 227/2015 [...] Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii [...]"
-— Legea 296/2023, art. LIX alin. (5)-(6) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (5)-(6) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Ce rezultă din text:

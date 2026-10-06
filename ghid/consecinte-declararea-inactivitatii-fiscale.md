@@ -14,7 +14,7 @@ Declararea unei firme ca „inactivă fiscal" nu înseamnă neapărat că firma 
 
 ::: ghid-temei
 „ART. 92 Registrul contribuabililor/plătitorilor inactivi/reactivați (1) Contribuabilul/Plătitorul persoană juridică sau orice entitate fără personalitate juridică este declarat inactiv și îi sunt aplicabile prevederile din Codul fiscal privind efectele inactivității dacă se află în una dintre următoarele situații: a) nu își îndeplinește, pe parcursul unui semestru calendaristic, nicio obligație declarativă prevăzută de lege; b) se sustrage controalelor efectuate de organul fiscal central prin declararea unor date de identificare a domiciliului fiscal care nu permit organului fiscal identificarea acestuia; c) organul fiscal central constatată că nu funcționează la domiciliul fiscal declarat; d) inactivitatea temporară înscrisă la registrul comerțului; e) durata de funcționare a societății este expirată; f) societatea nu mai are organe statutare; g) durata deținerii spațiului cu destinația de sediu social este expirată."
-— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cea mai frecventă cauză practică e simplă și evitabilă: lipsa oricărei declarații fiscale timp de **un semestru calendaristic întreg** (art. 92 alin. (1) lit. a)) — nu presupune rea-credință, doar omisiune.

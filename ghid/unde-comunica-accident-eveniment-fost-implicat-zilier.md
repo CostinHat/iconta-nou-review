@@ -16,15 +16,15 @@ Regula e mai strictă decât la salariați. Pentru salariați, angajatorul cerce
 
 ::: ghid-temei
 „f) să comunice de îndată, către inspectoratul teritorial de muncă pe raza căruia s-a produs, orice eveniment în care au fost implicați zilieri; ... g) să înregistreze accidentele de muncă suferite de zilieri în timpul activității;"
-— Legea 52/2011, art. 5 alin. (3) lit. f)-g) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (3) lit. f)-g) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „Cercetarea evenimentului în care au fost implicați zilieri se realizează de către inspectoratul teritorial de muncă pe raza căruia acesta s-a produs."
-— Legea 52/2011, art. 6 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 6 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 ::: ghid-temei
 „f) eveniment - accidentul care a antrenat decesul sau vătămări ale organismului, produs în timpul procesului de muncă ori în îndeplinirea îndatoririlor de serviciu, situația de persoana data disparuta sau accidentul de traseu ori de circulație, în condițiile în care au fost implicate persoane angajate, incidentul periculos, precum și cazul susceptibil de boala profesională sau legată de profesiune;"
-— Legea 319/2006, art. 5 lit. f) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 5 lit. f) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce se comunică și cum:

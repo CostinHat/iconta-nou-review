@@ -16,17 +16,17 @@ Da. Legea locuinței definește locuința de serviciu drept locuința destinată
 
 ::: ghid-temei
 „d) Locuința de serviciu Locuința destinată funcționarilor publici, angajaților unor instituții sau agenți economici, acordata în condițiile contractului de muncă, potrivit prevederilor legale."
-— Legea 114/1996 (Legea locuinței), art. 2 lit. d) (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 2 lit. d) (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „Condițiile și durata de închiriere vor fi stipulate în contractul de închiriere încheiat intre părțile contractante, accesoriu la contractul de muncă."
-— Legea 114/1996 (Legea locuinței), art. 51, teza finală (sursă: anaf_surse/legea_114_1996_locuinte_consolidat.txt)
+— Legea 114/1996 (Legea locuinței), art. 51, teza finală (sursă: [Legea locuinței nr. 114/1996](https://legislatie.just.ro/Public/DetaliiDocument/8597))
 :::
 
 ::: ghid-temei
 „contravaloarea folosinței locuinței de serviciu sau a locuinței din incinta unității ori căminului militar de garnizoană și de unitate, potrivit repartiției de serviciu, numirii conform legii sau specificității activității prin cadrul normativ specific domeniului de activitate"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă „accesoriu la contractul de muncă”:

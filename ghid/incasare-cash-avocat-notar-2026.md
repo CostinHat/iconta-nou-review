@@ -17,7 +17,7 @@ Profesiile liberale — avocați, notari — nu sunt scutite de regulile privind
 — Legea 70/2015, art. 1 alin. (1)
 
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi."
-— Legea 70/2015, art. 3 alin. (1) lit. a) și c) (sursă: anaf_surse/legea_70_2015_consolidat.txt, formă actualizată prin Legea 239/2025, în vigoare 01.01.2026)
+— Legea 70/2015, art. 3 alin. (1) lit. a) și c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088), formă actualizată prin Legea 239/2025, în vigoare 01.01.2026)
 :::
 
 Ce înseamnă concret pentru un cabinet de avocatură sau notarial:

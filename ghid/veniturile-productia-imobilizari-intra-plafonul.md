@@ -14,13 +14,13 @@ Nu. Veniturile din producția de imobilizări corporale și necorporale (contul 
 
 ::: ghid-temei
 „(1^1) În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română [...], iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]."
-— Legea 227/2015, art. 47 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: [...] c) veniturile din producția de imobilizări corporale și necorporale."
-— Legea 227/2015, art. 53 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „GRUPA 70 «CIFRA DE AFACERI NETĂ» [...]: 701, 702, 703, 704, 705, 706, 707, 708, 709. [...] 72. «Venituri din producția de imobilizări» 721. Venituri din producția de imobilizări necorporale 722. Venituri din producția de imobilizări corporale."
-— OMFP 1802/2014 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din combinarea celor trei texte rezultă dublu tratament favorabil:

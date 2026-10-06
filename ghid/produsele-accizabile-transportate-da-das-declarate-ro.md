@@ -16,12 +16,12 @@ Contează în practică pentru distribuitorii de băuturi alcoolice, bere, vin s
 
 ::: ghid-temei
 „Fac excepție de la prevederile prezentei ordonanțe de urgență următoarele transporturi: [...] b) transportul produselor accizabile care circulă în regim suspensiv de accize sau cu accize plătite în statul membru de expediție, potrivit titlului VIII „Accize și alte taxe speciale“ din Legea nr. 227/2015 , cu modificările și completările ulterioare, respectiv prin utilizarea sistemului de control al mișcărilor cu produse accizabile, denumit EMCS, pentru emiterea documentului administrativ electronic e-DA sau a documentului administrativ electronic simplificat e-DAS;"
-— OUG 41/2022, art. 16 lit. b) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 16 lit. b) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 ::: ghid-temei
 „Băuturi, lichide alcoolice și oțet […], care se încadrează la codurile NC de la 2201 la 2208 inclusiv"
-— Ordinul ANAF nr. 802/2022, anexa, pct. 3 (sursă: anaf_surse/ordin_802_2022.html)
+— Ordinul ANAF nr. 802/2022, anexa, pct. 3 (sursă: [OPANAF nr. 802/2022 privind bunurile cu risc fiscal ridicat monitorizate prin RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/254608))
 :::
 
 Ce trebuie îndeplinit ca excepția să se aplice:

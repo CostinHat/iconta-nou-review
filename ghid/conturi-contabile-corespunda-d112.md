@@ -35,6 +35,6 @@ Greșeala tipică e așteptarea ca soldul contului 421 (sau salariile nete plăt
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din `core/control_incrucisat.py` definește exact aceste patru perechi cod-cont, fără contul 421. Controlul încrucișat compară doar aceste patru conturi cu sumele declarate în D112, iar limitarea privind brutul e documentată explicit în rezultatul verificării, nu ascunsă.
+Maparea `COD_CONT_D112` din aplicație definește exact aceste patru perechi cod-cont, fără contul 421. Controlul încrucișat compară doar aceste patru conturi cu sumele declarate în D112, iar limitarea privind brutul e documentată explicit în rezultatul verificării, nu ascunsă.
 
 [iConta.eu](/)

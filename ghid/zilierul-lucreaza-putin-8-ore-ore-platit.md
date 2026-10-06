@@ -16,19 +16,19 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Durata activității ocazionale care poate fi exercitată în temeiul prevederilor prezentei legi este de minimum o zi, corespunzător cu 8 ore de muncă."
-— Legea 52/2011, art. 4 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „Chiar dacă părțile convin un număr mai mic de ore de activitate, plata zilierului se va face pentru echivalentul a cel puțin 8 ore de muncă."
-— Legea 52/2011, art. 4 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „(2) Cuantumul remunerației brute orare stabilite de părți nu poate fi mai mic decât valoarea/oră a salariului de bază minim brut pe țară garantat în plată și se acordă la sfârșitul fiecărei zile de lucru sau la sfârșitul săptămânii."
-— Legea 52/2011, art. 11 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 11 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „a) încălcarea prevederilor art. 11 alin. (2) , cu amendă de 10.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. a) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. a) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „f) beneficiarul sau un împuternicit al acestuia care folosește zilieri pentru desfășurarea de activități necalificate cu caracter ocazional fără respectarea dispozițiilor art. 4 se sancționează cu amendă de 6.000 lei."
-— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. f) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Cum se aplică:

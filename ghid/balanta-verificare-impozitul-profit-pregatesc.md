@@ -13,11 +13,11 @@ Impozitul pe profit se calculează pornind de la balanța de verificare, dar nu 
 ## Temeiul legal
 
 ::: ghid-temei
-Rezerva legală (P13) e „calculată automat când nu e dată manual (liniile 264–275), din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a)"
-— sursă: `core/d101.py`, liniile 264–275, dosar de cercetare F027.
+Rezerva legală (P13) e „calculată automat când nu e dată manual, din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a)"
+— sursă: Aplicația, dosar de cercetare F027.
 
 D101 „citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)"
-— sursă: `core/d101.py`, funcția `pull()`, liniile 448–467, dosar de cercetare F027.
+— sursă: Aplicația, funcția `pull()`, dosar de cercetare F027.
 :::
 
 Practic, balanța trebuie să conțină corect cel puțin patru repere înainte de generarea D101: soldul contului 1012 (capital social), soldul contului 1061 (rezervă legală deja constituită), soldul contului 691 (cheltuiala cu impozitul pe profit) și separarea clară între conturile de clasa 76/66 (venituri/cheltuieli financiare) și restul conturilor de clasa 7x/6x (exploatare). Rezerva legală se calculează automat din profitul contabil brut plus cheltuiala cu impozitul, plafonată la minimul dintre 5% din bază și 20% din capitalul social minus rezerva deja constituită (art.26 alin.(1) lit.a) din Codul fiscal) — dacă aceste conturi nu sunt corect încheiate, plafonul rezultă greșit.

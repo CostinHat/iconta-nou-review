@@ -14,7 +14,7 @@ O primărie nu este un „client obișnuit" din perspectiva facturării electron
 
 ::: ghid-temei
 „d) destinatar al facturii electronice - operatorul economic, autoritatea contractantă, entitatea contractantă și orice altă entitate care primește factura electronică însoțită de semnătura electronică a Ministerului Finanțelor în sistemul național privind factura electronică RO e-Factura."
-— OUG nr. 120/2021, art. 2 alin. (1) lit. d) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 2 alin. (1) lit. d) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Din definiția de mai sus rezultă cadrul aplicabil:

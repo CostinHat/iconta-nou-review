@@ -23,7 +23,7 @@ g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 ali
 h) are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu;
 [...]
 i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), d), g), h), i), lit. c) modificată prin OUG 8/2026, art. 6 pct. 15 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. c), d), g), h), i), lit. c) modificată prin OUG 8/2026, art. 6 pct. 15 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie verificat concret pentru 2026:
@@ -42,6 +42,6 @@ Ce trebuie verificat concret pentru 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu verifică automat plafonul de venituri pentru încadrarea în regimul de microîntreprindere**. Modulul `core/control_fiscal_api.py` tratează regimul fiscal (micro/profit) ca pe un câmp declarat manual de utilizator (`regim_fiscal`, la Date firmă) și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate contrazice sau semnala singură o eventuală depășire a plafonului. Dacă firma depășește plafonul de 100.000 euro sau altă condiție cumulativă, actualizarea regimului fiscal declarat rămâne responsabilitatea contabilului, verificată în afara aplicației.
+La data acestui ghid, iConta.eu **nu calculează și nu verifică automat plafonul de venituri pentru încadrarea în regimul de microîntreprindere**. Aplicația tratează regimul fiscal (micro/profit) ca pe un câmp declarat manual de utilizator (`regim_fiscal`, la Date firmă) și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate contrazice sau semnala singură o eventuală depășire a plafonului. Dacă firma depășește plafonul de 100.000 euro sau altă condiție cumulativă, actualizarea regimului fiscal declarat rămâne responsabilitatea contabilului, verificată în afara aplicației.
 
 [iConta.eu](/)

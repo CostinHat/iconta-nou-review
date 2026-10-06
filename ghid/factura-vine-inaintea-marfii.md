@@ -14,7 +14,7 @@ O factură emisă înainte ca marfa să ajungă efectiv la cumpărător nu schim
 
 ::: ghid-temei
 „Pentru livrările de bunuri corporale, inclusiv de bunuri imobile, data livrării este data la care intervine transferul dreptului de a dispune de bunuri ca un proprietar."
-— Legea 227/2015 (Codul fiscal), art. 281 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 281 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă acest principiu combinat cu regulile de exigibilitate:

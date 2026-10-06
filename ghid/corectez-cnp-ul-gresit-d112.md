@@ -14,7 +14,7 @@ Un CNP greșit introdus la un salariat se poate propaga într-o declarație 112 
 
 ::: ghid-temei
 „Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] Declarațiile [...] pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 105 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Legea nu permite „suprascrierea" tăcută a unei declarații deja depuse: corectarea unei declarații de impunere, cum e D112, se face exclusiv prin depunerea unei **declarații rectificative** distincte.

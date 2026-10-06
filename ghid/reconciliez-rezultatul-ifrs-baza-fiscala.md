@@ -14,10 +14,10 @@ Codul fiscal nu conține un capitol unic „reconciliere IFRS–fiscal" — recu
 
 ::: ghid-temei
 „În cazul contribuabililor care aplică reglementările contabile conforme cu Standardele internaționale de raportare financiară, pentru activele imobilizate deținute pentru activitatea proprie, transferate în categoria activelor imobilizate deținute în vederea vânzării și reclasificate în categoria activelor imobilizate deținute pentru activitatea proprie, valoarea fiscală rămasă neamortizată este valoarea fiscală dinaintea reclasificării ca active imobilizate deținute în vederea vânzării. Durata de amortizare este durata normală de utilizare rămasă [...]."
-— Legea nr. 227/2015, art. 28 alin. (26) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 28 alin. (26) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În aplicarea prevederilor alin. (4) lit. e), pentru determinarea ponderii veniturilor neimpozabile în totalul veniturilor, contribuabilii care aplică reglementările contabile conforme cu Standardele internaționale de raportare financiară și care înregistrează evaluarea titlurilor de participare la valoare justă prin alte elemente ale rezultatului global [...] iau în calcul și sumele reprezentând diferențe din evaluare/reevaluare care se regăsesc în creditul conturilor de rezerve ca urmare a vânzării/cesionării titlurilor de participare."
-— Legea nr. 227/2015, art. 25 alin. (12^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 25 alin. (12^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, cu limita marcată explicit:
@@ -35,6 +35,6 @@ Ce rezultă, cu limita marcată explicit:
 
 ## Ce face iConta.eu
 
-iConta.eu identifică baza contabilă a firmei prin câmpul „TaxAccountingBasis" folosit la generarea SAF-T (valorile posibile includ explicit „IFRS", alături de „A" — reglementări naționale — și celelalte baze contabile recunoscute), vizibil în modulul de raportare D406 (`core/d406.py`). Aplicația nu automatizează însă, la data acestui ghid, ajustările fiscale specifice contribuabililor IFRS prevăzute punctual în Codul fiscal (de exemplu la art. 28 alin. (26) sau art. 25 alin. (12^1)) — acestea rămân calcule pe care contabilul le face separat, în funcție de situația concretă a firmei.
+iConta.eu identifică baza contabilă a firmei prin câmpul „TaxAccountingBasis" folosit la generarea SAF-T (valorile posibile includ explicit „IFRS", alături de „A" — reglementări naționale — și celelalte baze contabile recunoscute), vizibil în modulul de raportare D406. Aplicația nu automatizează însă, la data acestui ghid, ajustările fiscale specifice contribuabililor IFRS prevăzute punctual în Codul fiscal (de exemplu la art. 28 alin. (26) sau art. 25 alin. (12^1)) — acestea rămân calcule pe care contabilul le face separat, în funcție de situația concretă a firmei.
 
 [iConta.eu](/)

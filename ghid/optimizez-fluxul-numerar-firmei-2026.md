@@ -14,7 +14,7 @@ Optimizarea fluxului de numerar înseamnă, în esență, decizii de management:
 
 ::: ghid-temei
 „Entitățile prevăzute la pct. 9 alin. (4), precum și entitățile de interes public întocmesc situații financiare anuale care cuprind: – bilanț; – cont de profit și pierdere; – situația modificărilor capitalului propriu; – situația fluxurilor de trezorerie; – notele explicative la situațiile financiare anuale."
-— OMFP 1802/2014, pct. 21 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 21 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Important de reținut din text:

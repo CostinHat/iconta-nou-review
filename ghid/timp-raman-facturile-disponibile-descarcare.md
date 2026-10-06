@@ -14,10 +14,10 @@ Actele normative din acest corpus nu conțin un termen explicit privind numărul
 
 ::: ghid-temei
 „(7) Data comunicării facturii electronice către destinatar se consideră data la care factura electronică este disponibilă acestuia pentru descărcare din sistemul naţional privind factura electronică RO e-Factura."
-— OUG 120/2021, art. 4 alin. (7) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021, art. 4 alin. (7) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 
 „Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la art. 1 timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii."
-— Legea 82/1991, art. 25 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea 82/1991, art. 25 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce se poate afirma cu certitudine, pe baza acestor două texte:

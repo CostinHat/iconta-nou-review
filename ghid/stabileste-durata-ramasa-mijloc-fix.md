@@ -32,6 +32,6 @@ Important: sintagma „durată rămasă" apare în alte contexte legale — la c
 
 Durata normală de utilizare e un câmp introdus de contabil la înregistrarea mijlocului fix, indiferent dacă activul e nou sau second-hand — aplicația nu calculează sau nu propune automat o durată, nici pe baza unei „vechimi" transmise, nici prin lookup direct în catalogul HG 2139/2004. Contabilul poartă responsabilitatea de a alege durata corectă, în plaja permisă de catalog pentru categoria activului.
 
-Vezi și: [Catalogul mijloacelor fixe: durate normale de amortizare](/ghid/catalogul-mijloacelor-fixe-durate-normale-de-amortizare)
+Vezi și: [Catalogul mijloacelor fixe: durate normale de amortizare](/ghid/catalog-mijloace-fixe-durate)
 
 [iConta.eu](/)

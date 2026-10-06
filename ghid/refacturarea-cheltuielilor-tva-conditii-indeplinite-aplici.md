@@ -16,18 +16,18 @@ Contează pentru că regimul refacturării nu e cel al activității tale princi
 
 ::: ghid-temei
 „Atunci când o persoană impozabilă care acționează în nume propriu, dar în contul altei persoane, ia parte la o prestare de servicii, se consideră că a primit și a prestat ea însăși serviciile respective."
-— Codul fiscal (Legea 227/2015), art. 271 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 271 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Se consideră că are loc o refacturare de cheltuieli, în sensul alin. (4) , atunci când sunt îndeplinite cumulativ următoarele condiții: a) persoana impozabilă urmărește doar recuperarea contravalorii unor achiziții de bunuri/servicii care au fost efectuate pe numele său, dar în contul altei persoane; [...] b) persoana impozabilă nu recuperează mai mult decât cheltuiala efectuată."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Totuși, structura de comisionar nu se aplică în situația în care se aplică prevederile pct. 30 alin. (4) și (5) , respectiv dacă sunt cheltuieli cu impozite și taxe sau sunt cheltuieli accesorii, care cad în sarcina furnizorului/prestatorului în legătură cu operațiunile pe care le-a realizat, fiind recuperate de la client."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Pentru fiecare cheltuială refacturată se va aplica regimul fiscal al operațiunii refacturate, referitoare, printre altele, la locul livrării/prestării, cotele, scutirile livrării/prestării refacturate."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce rezultă din text:

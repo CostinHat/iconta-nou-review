@@ -16,10 +16,10 @@ Greșeala frecventă este să urmărești doar vânzările din statul unde ceri 
 
 ::: ghid-temei
 „(2) Cifra de afaceri anuală la nivelul Uniunii Europene înseamnă valoarea totală anuală a livrărilor de bunuri și a prestărilor de servicii, exclusiv TVA, efectuate de o persoană impozabilă pe teritoriul Uniunii Europene în decursul unui an calendaristic."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(5) Operațiunile a căror valoare face obiectul raportării conform alin. (3) lit. c) și d) și alin. (13) sunt cele prevăzute la art. 310 alin. (2) în cazul celor realizate în România. În cazul celorlalte state membre se va declara valoarea următoarelor operațiuni, exclusiv taxa: a) valoarea livrărilor de bunuri și a prestărilor de servicii, în măsura în care ar fi impozitate dacă ar fi livrate sau prestate de o persoană impozabilă nescutită; [...] Cesiunile de active fixe corporale sau necorporale ale unei persoane impozabile nu se iau în considerare."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Componentele, pe rând.

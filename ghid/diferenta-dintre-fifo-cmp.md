@@ -15,7 +15,7 @@ FIFO și CMP sunt două dintre cele trei metode de evaluare a stocurilor recunos
 ::: ghid-temei
 „(2) Metoda «costului mediu ponderat» (CMP) presupune calcularea costului fiecărui element pe baza mediei ponderate a costurilor elementelor similare aflate în stoc la începutul perioadei și a costului elementelor similare produse sau cumpărate în timpul perioadei. Media poate fi calculată periodic sau după fiecare recepție. [...]
 (3) Potrivit metodei «primul intrat-primul ieșit» (FIFO), bunurile ieșite din gestiune se evaluează la costul de achiziție sau de producție al primei intrări (lot). [...]"
-— OMFP 1802/2014, pct. 96 alin. (2)-(3) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (2)-(3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - **CMP** amestecă valoric toate loturile aflate în stoc într-un singur cost mediu, ponderat cu cantitățile fiecărui lot; costul se recalculează periodic sau după fiecare recepție (vezi alin. 2).
@@ -31,7 +31,7 @@ FIFO și CMP sunt două dintre cele trei metode de evaluare a stocurilor recunos
 
 ## Ce face iConta.eu
 
-Pentru gestiunea cantitativ-valorică, iConta.eu aplică **exclusiv metoda CMP** (`core/stocuri_cv.py`) — motorul de calcul actualizează costul mediu ponderat la fiecare intrare și evaluează toate ieșirile la acest cost curent. Metoda FIFO **nu este implementată nicăieri în modulul de stocuri** al aplicației; termenul „FIFO" apare în cod doar în alte module de alocare a plăților/documentelor în ordinea vechimii (de exemplu `core/reconciliere.py`, la potrivirea extraselor bancare cu facturile deschise, sau `core/dividende_curs.py`, la atribuirea plăților de dividende pe distribuirile deschise) — algoritmi complet diferiți, fără nicio legătură cu evaluarea stocurilor.
+Pentru gestiunea cantitativ-valorică, iConta.eu aplică **exclusiv metoda CMP** — motorul de calcul actualizează costul mediu ponderat la fiecare intrare și evaluează toate ieșirile la acest cost curent. Metoda FIFO **nu este implementată nicăieri în modulul de stocuri** al aplicației; termenul „FIFO" apare în cod doar în alte module de alocare a plăților/documentelor în ordinea vechimii (de exemplu aplicația, la potrivirea extraselor bancare cu facturile deschise, sau aplicația, la atribuirea plăților de dividende pe distribuirile deschise) — algoritmi complet diferiți, fără nicio legătură cu evaluarea stocurilor.
 
 Așadar, dacă acest ghid explică diferența conceptuală dintre FIFO și CMP din perspectivă strict legală, precizarea onestă e că, în iConta.eu, alegerea nu există în practică: aplicația oferă doar evaluarea la CMP pentru stocurile cantitativ-valorice, nu ambele metode ca opțiuni configurabile.
 

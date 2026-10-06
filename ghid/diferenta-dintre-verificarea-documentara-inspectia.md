@@ -16,7 +16,7 @@ Sunt două proceduri distincte ale Codului de procedură fiscală, cu întindere
 „(1) Pentru stabilirea corectă a situației fiscale a contribuabilului/plătitorului, organul fiscal poate proceda la o verificare documentară.
 (2) Verificarea documentară constă în efectuarea unei analize de coerență a situației fiscale a contribuabilului/plătitorului, pe baza documentelor existente la dosarul fiscal al contribuabilului/plătitorului, precum și pe baza oricăror informații și documente transmise de terți sau deținute de organul fiscal, care au relevanță pentru determinarea situației fiscale.
 (3) Verificarea documentară se efectuează de către organele de inspecție fiscală, organele de control antifraudă fiscală și organele fiscale competente să exercite verificarea situației fiscale personale [...]."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 148 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 148 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Comparativ, inspecția fiscală:
@@ -24,7 +24,7 @@ Comparativ, inspecția fiscală:
 ::: ghid-temei
 „(5) Inspecția fiscală are în vedere examinarea tuturor stărilor de fapt și raporturile juridice care sunt relevante pentru impozitare sau verificarea modului de respectare a altor obligații prevăzute de legislația fiscală și contabilă.
 (4) La începerea inspecției fiscale, organul de inspecție fiscală trebuie să prezinte contribuabilului/plătitorului legitimația de inspecție și ordinul de serviciu semnat de conducătorul organului de inspecție fiscală [...]. Începerea inspecției fiscale trebuie consemnată în registrul unic de control [...] și inspecția fiscală se desfășoară în spațiile de lucru ale contribuabilului/plătitorului."
-— Legea 207/2015 privind Codul de procedură fiscală, art. 118 alin. (4) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 privind Codul de procedură fiscală, art. 118 alin. (4) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - **Obiectul**: verificarea documentară e o analiză de coerență pe baza documentelor deja existente la organul fiscal (dosar fiscal, informații de la terți); inspecția fiscală examinează toate stările de fapt și raporturile juridice relevante, putând implica investigații la sediul contribuabilului.

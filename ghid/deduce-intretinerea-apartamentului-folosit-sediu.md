@@ -14,7 +14,7 @@ Mulți titulari de PFA își declară domiciliul personal drept sediu al activit
 
 ::: ghid-temei
 „Cheltuielile efectuate pentru activitatea independentă, cât și în scopul personal al contribuabilului sau asociaților sunt deductibile numai pentru partea de cheltuială care este aferentă activității independente."
-— Legea nr. 227/2015 privind Codul fiscal, art. 68 alin. (5) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 68 alin. (5) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Notă onestă: legea nu prevede o formulă expresă pentru cazul specific „apartament folosit mixt ca sediu PFA" (nu există un articol care să impună, de exemplu, un calcul pe cote de suprafață). Textul de mai sus este însă regula generală, explicită, care guvernează exact acest tip de situație — cheltuieli cu dublă natură, personală și profesională — și se aplică direct și cheltuielilor de întreținere ale locuinței folosite ca sediu.

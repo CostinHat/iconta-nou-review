@@ -14,13 +14,13 @@ Concediul pentru îngrijirea copilului bolnav e un drept separat de concediul me
 
 ::: ghid-temei
 „Asigurații au dreptul la concediu și indemnizație pentru îngrijirea copilului bolnav în vârstă de până la 12 ani, iar în cazul copilului cu handicap, pentru afecțiunile intercurente, până la împlinirea vârstei de 18 ani."
-— OUG nr. 158/2005, art. 26 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005, art. 26 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 
 „Beneficiază de indemnizația pentru îngrijirea copilului bolnav, opțional, unul dintre părinți, dacă solicitantul îndeplinește condițiile de stagiu de asigurare prevăzute la art. 7."
-— OUG nr. 158/2005, art. 27 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005, art. 27 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 
 „Cuantumul brut lunar al indemnizațiilor prevăzute la art. 26 alin. (1) și (1^1) este de 85% din baza de calcul stabilită conform art. 10."
-— OUG nr. 158/2005, art. 30 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005, art. 30 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Ce rezultă din cele trei texte, combinate:
@@ -38,6 +38,6 @@ Ce rezultă din cele trei texte, combinate:
 
 ## Ce face iConta.eu
 
-Modulul de salarizare din iConta.eu urmărește episoadele de concediu medical ale angajaților, inclusiv cele legate de îngrijirea unui copil (evidența CNP-ului persoanei îngrijite, în `core/salarizare.py`), și calculează indemnizația pe baza cuantumului procentual corespunzător tipului de concediu, aplicat asupra bazei de calcul din certificatul medical introdus. Încadrarea corectă a vârstei copilului în excepțiile legale (handicap, afecțiune gravă) rămâne o verificare a contabilului, pe baza certificatului medical și a documentelor justificative primite de la angajat.
+Modulul de salarizare din iConta.eu urmărește episoadele de concediu medical ale angajaților, inclusiv cele legate de îngrijirea unui copil (evidența CNP-ului persoanei îngrijite, în aplicație), și calculează indemnizația pe baza cuantumului procentual corespunzător tipului de concediu, aplicat asupra bazei de calcul din certificatul medical introdus. Încadrarea corectă a vârstei copilului în excepțiile legale (handicap, afecțiune gravă) rămâne o verificare a contabilului, pe baza certificatului medical și a documentelor justificative primite de la angajat.
 
 [iConta.eu](/)

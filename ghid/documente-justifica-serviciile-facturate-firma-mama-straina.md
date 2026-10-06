@@ -14,15 +14,15 @@ Sediul permanent din România al unei firme străine poate deduce serviciile alo
 
 ::: ghid-temei
 „Rezultatul fiscal al sediului permanent se determină prin tratarea acestuia ca persoană separată și independentă și prin utilizarea regulilor prețurilor de transfer la stabilirea valorii de piață a unui transfer efectuat între persoana juridică străină și sediul său permanent.”
-— Codul fiscal (Legea 227/2015), art. 36 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 36 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În scopul deducerii cheltuielilor alocate unui sediu permanent de către persoana juridică străină care își desfășoară activitatea prin intermediul acestuia, precum și de către orice altă persoană afiliată acelei persoane juridice străine, pentru serviciile furnizate, trebuie îndeplinite următoarele condiții: a) serviciul furnizat să fie efectiv prestat. Pentru a justifica prestarea efectivă a serviciului, sediul permanent trebuie să prezinte autorităților fiscale orice documente justificative din care să rezulte date privitoare la: (i) natura și valoarea totală a serviciului prestat;”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (3) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (3) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(ii) părțile implicate; [...] (iii) criteriile proprii de împărțire a costurilor pe fiecare beneficiar al serviciului respectiv, dacă este cazul; acestea trebuie să fie adecvate naturii serviciului și activității desfășurate de sediul permanent; [...] (iv) prezentarea oricăror alte elemente de recunoaștere a cheltuielilor care pot să ateste prestarea serviciului respectiv. [...] Justificarea prestării efective a serviciului se efectuează cu situațiile de lucrări, procesele-verbale de recepție, rapoartele de lucru, studiile de fezabilitate, de piață sau cu orice alte asemenea documente; [...] b) serviciul prestat trebuie să fie justificat și prin natura activității desfășurate la sediul permanent.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 37 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Dosarul unei asemenea cheltuieli ar trebui să conțină:

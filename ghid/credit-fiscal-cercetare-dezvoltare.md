@@ -44,17 +44,17 @@ Aici e diferența structurală față de deducere. Deducerea suplimentară nu se
 
 ::: ghid-temei
 „deducerea suplimentară la calculul rezultatului fiscal, în proporție de 50%, a cheltuielilor eligibile pentru aceste activități; deducerea suplimentară se calculează trimestrial/anual; în cazul în care se realizează pierdere fiscală, aceasta se recuperează potrivit dispozițiilor art. 31;"
-— Codul fiscal, art. 20 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 20 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Pierderile fiscale anuale stabilite prin declarația de impozit pe profit, începând cu anul 2024/anul fiscal modificat care începe în anul 2024, după caz, se recuperează din profiturile impozabile realizate, în limita a 70% inclusiv, în următorii 5 ani consecutivi."
-— Codul fiscal, art. 31 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 31 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Diferența de credit fiscal prevăzută la alin. (3) și (4) reprezintă creanță fiscală a contribuabilului și poate fi utilizată, în următorii 4 ani fiscali/ani fiscali modificați, consecutivi, pentru stingerea, prin compensare, a obligațiilor fiscale restante reprezentând impozit pe profit/impozit minim pe cifra de afaceri sau alte taxe, impozite și contribuții, [...] sau prin restituire, în condițiile prevăzute de prevederile art. 167 și 168 din Legea nr. 207/2015, cu modificările și completările ulterioare."
-— Codul fiscal, art. 20^1 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 20^1 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Tratamentul veniturilor

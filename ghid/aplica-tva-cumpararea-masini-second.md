@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „o achiziție intracomunitară de mijloace de transport noi, efectuată de orice persoană"
-— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 268 alin. (3) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **Mijloc de transport nou** (definit de Codul fiscal după criterii de kilometraj/vechime, nu după cum arată colocvial) — achiziția lui intracomunitară e **întotdeauna** operațiune impozabilă în România, indiferent cine e cumpărătorul (persoană fizică sau juridică) și indiferent de calitatea vânzătorului. Regula e o excepție de la toate celelalte reguli de mai jos.
@@ -30,6 +30,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: motorul de TVA la marjă (`core/tva_marja.py`, funcționalitatea **F098 — Regim special marja (second-hand)**) calculează corect TVA-ul pe marja profitului — `marja = preț vânzare − preț cumpărare`, cu TVA prin procedeul sutei mărite — pentru situația în care regimul de marjă chiar se aplică, indiferent de proveniența bunului (formula primește doar prețul de achiziție, fără să facă distincție pe țara furnizorului). Ce **nu** face aplicația, verificat prin căutare directă în cod: nu clasifică o achiziție intracomunitară ca neimpozabilă atunci când vânzătorul e revânzător cu regim special (art. 268 alin. (8) lit. c)), nu verifică dacă vânzătorul e efectiv o „persoană impozabilă revânzătoare" în sensul legii, și nu distinge un „mijloc de transport nou" de unul second-hand — nu există în `core/` nicio funcționalitate de mijloace de transport noi. Decizia despre care dintre cele trei situații se aplică unei achiziții concrete rămâne, integral, o judecată a contabilului; aplicația calculează corect doar pasul final (TVA pe marjă), odată ce s-a stabilit că acest regim e cel aplicabil.
+Verificat direct în cod: motorul de TVA la marjă (funcționalitatea **F098 — Regim special marja (second-hand)**) calculează corect TVA-ul pe marja profitului — `marja = preț vânzare − preț cumpărare`, cu TVA prin procedeul sutei mărite — pentru situația în care regimul de marjă chiar se aplică, indiferent de proveniența bunului (formula primește doar prețul de achiziție, fără să facă distincție pe țara furnizorului). Ce **nu** face aplicația, verificat prin căutare directă în cod: nu clasifică o achiziție intracomunitară ca neimpozabilă atunci când vânzătorul e revânzător cu regim special (art. 268 alin. (8) lit. c)), nu verifică dacă vânzătorul e efectiv o „persoană impozabilă revânzătoare" în sensul legii, și nu distinge un „mijloc de transport nou" de unul second-hand — nu există în aplicație nicio funcționalitate de mijloace de transport noi. Decizia despre care dintre cele trei situații se aplică unei achiziții concrete rămâne, integral, o judecată a contabilului; aplicația calculează corect doar pasul final (TVA pe marjă), odată ce s-a stabilit că acest regim e cel aplicabil.
 
 [iConta.eu](/)

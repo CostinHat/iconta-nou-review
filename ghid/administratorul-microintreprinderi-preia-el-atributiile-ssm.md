@@ -16,10 +16,10 @@ Pentru cabinet contează pentru că întrebarea vine de la clienții mici — un
 
 ::: ghid-temei
 „(4) În cazul microintreprinderilor și al întreprinderilor mici, în care se desfășoară activități fără riscuri deosebite, angajatorul își poate asuma atribuțiile din domeniul securității și sănătății în munca pentru realizarea măsurilor prevăzute de prezenta lege, dacă are capacitatea necesară în domeniu."
-— Legea 319/2006, art. 9 alin. (4) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 9 alin. (4) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(5) Ministerul Muncii, Solidarității Sociale și Familiei stabilește prin norme metodologice de aplicare a prevederilor prezentei legi capacitățile și aptitudinile necesare, precum și numărul considerat suficient, prevăzute la alin. (1) și (4) ."
-— Legea 319/2006, art. 9 alin. (5) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 9 alin. (5) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Condițiile, pe rând:

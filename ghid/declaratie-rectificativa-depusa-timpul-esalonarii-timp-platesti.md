@@ -16,10 +16,10 @@ Termenul curge de la depunere, nu de la o înștiințare a ANAF. Cine corecteaz�
 
 ::: ghid-temei
 „c) să se achite diferențele de obligații fiscale rezultate din declarații rectificative sau din declarații depuse aferente obligațiilor fiscale pentru care nu există obligația de declarare în vectorul fiscal, în termen de cel mult 30 de zile de la data depunerii declarației, cu excepția situației în care debitorul a solicitat eșalonarea la plată potrivit art. 195;"
-— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. c) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 194 alin. (1) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Cererea se depune până la împlinirea termenului prevăzut la art. 194 alin. (1) lit. a)-c), e)-j) sau n), după caz, ori până la împlinirea termenului prevăzut la art. 200 alin. (2) lit. a) și se soluționează de organul fiscal competent prin decizie de modificare a deciziei de eșalonare la plată sau decizie de respingere, după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 195 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 195 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Reguli de reținut:

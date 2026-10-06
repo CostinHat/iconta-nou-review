@@ -16,18 +16,18 @@ Data contează pentru cota de impozit la vânzare. Dacă moștenitorul vinde dup
 
 ::: ghid-temei
 „(x) în cazul imobilelor dobândite prin moștenire, data dobândirii este considerată data decesului autorului succesiunii, indiferent de data la care s-a eliberat certificatul de moștenitor sau a rămas definitivă și irevocabilă/definitivă și executorie hotărârea judecătorească, în cazul procedurii finalizate prin hotărâre judecătorească;"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. h) pct. (x) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. h) pct. (x) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „g) pentru determinarea perioadei de deținere, termenul de la care aceasta începe să curgă este data dobândirii dreptului de proprietate, iar calculul termenului se face în condițiile dreptului comun."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. g) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. g) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „3% pentru construcțiile de orice fel și terenurile aferente acestora, precum și asupra terenurilor de orice fel fără construcții, deținute o perioadă de până la 3 ani inclusiv;"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „1% pentru imobilele descrise la lit. a)"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. b), pentru imobilele „deținute o perioadă mai mare de 3 ani" (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. b), pentru imobilele „deținute o perioadă mai mare de 3 ani" (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

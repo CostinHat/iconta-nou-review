@@ -16,14 +16,14 @@ Codul fiscal consideră nouă construcția livrată cel târziu până la 31 dec
 
 ::: ghid-temei
 „livrarea unei construcții noi sau a unei părți din aceasta înseamnă livrarea efectuată cel târziu până la data de 31 decembrie a anului următor anului primei ocupări ori utilizări a construcției sau a unei părți a acesteia, după caz, în urma transformării;"
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. f) pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. f) pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Se consideră a fi data primei ocupări, în cazul unei construcții sau al unei părți din construcție care nu a suferit transformări de natura celor prevăzute la art. 292 alin. (2) lit. f) pct. 4 din Codul fiscal, data semnării de către beneficiar a procesului-verbal de recepție definitivă a construcției sau a unei părți din construcție. Prin proces-verbal de recepție definitivă se înțelege procesul-verbal de recepție la terminarea lucrărilor, încheiat conform legislației în vigoare. În cazul unei construcții realizate în regie proprie, data primei ocupări este data documentului pe baza căruia construcția sau partea din construcție este înregistrată în evidențele contabile drept activ corporal fix."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 55 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 55 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „Dacă livrarea unei construcții intervine înainte de data primei ocupări, astfel cum este definită prima ocupare la alin. (3) , se consideră că are loc livrarea unei construcții noi."
-— HG 1/2016, Titlul VII, pct. 55 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul VII, pct. 55 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

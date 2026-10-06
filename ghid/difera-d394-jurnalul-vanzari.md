@@ -14,10 +14,10 @@ Jurnalul de vânzări conține toate vânzările firmei, indiferent de client sa
 
 ::: ghid-temei
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF 3769/2015, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF 3769/2015, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 
 „De asemenea, în declaraţie se înscrie valoarea totală a facturilor simplificate şi a bonurilor fiscale care îndeplinesc condiţiile unei facturi simplificate conform prevederilor art. 319 alin. (12), (13) şi (21) din Codul fiscal, dacă au înscris codul de înregistrare în scopuri de TVA al beneficiarului."
-— OPANAF 2194/2025, Anexa 2 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Principalele surse de diferență între jurnalul de vânzări (evidența completă) și D394 (declarația transmisă la ANAF):
@@ -35,8 +35,8 @@ Principalele surse de diferență între jurnalul de vânzări (evidența comple
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`) citește facturile din aceeași tabelă unică (`facturi` + `factura_linii`) folosită și pentru evidența contabilă a firmei, cu filtre proprii de tip document (exclude proforme/avize) și de status (exclude ciorne, facturi anulate/stornate). Diferențele față de jurnalul de vânzări complet apar tocmai din aceste filtre și din regulile de agregare specifice D394 descrise mai sus, nu dintr-o eroare de generare.
+Generatorul D394 citește facturile din aceeași tabelă unică (`facturi` + `factura_linii`) folosită și pentru evidența contabilă a firmei, cu filtre proprii de tip document (exclude proforme/avize) și de status (exclude ciorne, facturi anulate/stornate). Diferențele față de jurnalul de vânzări complet apar tocmai din aceste filtre și din regulile de agregare specifice D394 descrise mai sus, nu dintr-o eroare de generare.
 
-Aplicația are o a doua cale de calcul, independentă (`core/d394_reconciliere.py`), care recalculează totalurile pe cotă direct din liniile brute ale facturilor și oprește generarea dacă diferă de rezultatul generatorului principal — dar acest gard confirmă coerența internă a D394, nu o compară cu jurnalul de vânzări în ansamblu. **iConta.eu nu are o funcție dedicată care să compare automat D394 cu jurnalul de vânzări** — o eventuală divergență trebuie interpretată manual, pe baza regulilor de scop explicate mai sus.
+Aplicația are o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile brute ale facturilor și oprește generarea dacă diferă de rezultatul generatorului principal — dar acest gard confirmă coerența internă a D394, nu o compară cu jurnalul de vânzări în ansamblu. **iConta.eu nu are o funcție dedicată care să compare automat D394 cu jurnalul de vânzări** — o eventuală divergență trebuie interpretată manual, pe baza regulilor de scop explicate mai sus.
 
 [iConta.eu](/)

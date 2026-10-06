@@ -14,10 +14,10 @@ Condiția „are cel puțin un salariat", care ține o firmă în regimul de imp
 
 ::: ghid-temei
 „(3^1) În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiţia prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile şi situaţia este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispoziţiile art. 52 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), în vigoare de la 25.02.2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 48 alin. (3^1), în vigoare de la 25.02.2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(3) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu mai îndeplinește condiția prevăzută la art. 47 alin. (1) lit. g), microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă. Pentru o microîntreprindere cu un singur salariat, al cărui raport de muncă încetează, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă, în termen de 30 de zile de la încetarea raportului de muncă, este angajat un nou salariat cu contract individual de muncă pe durată nedeterminată sau pe durată determinată pe o perioadă de cel puțin 12 luni. În cazul în care, în acest termen nu se angajează un nou salariat, microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă."
-— Codul fiscal (Legea 227/2015), art. 52 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 52 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, luna (sau lunile) în care singurul salariat e în concediu fără plată se tratează astfel, în funcție de durată și de câte astfel de situații au mai fost în același an:

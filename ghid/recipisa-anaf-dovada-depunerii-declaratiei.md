@@ -16,7 +16,7 @@ Da, dar cu o condiție esențială: recipisa nu confirmă doar că ați trimis d
 „(3) Data depunerii declarației fiscale este data înregistrării acesteia la organul fiscal sau data depunerii la poștă, după caz. În situația în care declarația fiscală se depune prin mijloace electronice de transmitere la distanță, data depunerii declarației este data înregistrării acesteia pe pagina de internet a organului fiscal, astfel cum rezultă din mesajul electronic de confirmare transmis ca urmare a primirii declarației.
 (4) Data depunerii declarației fiscale prin mijloace electronice de transmitere la distanță este data înregistrării acesteia pe portal, astfel cum rezultă din mesajul electronic transmis de sistemul de tranzacționare a informațiilor, cu condiția validării conținutului declarației. În cazul în care declarația nu este validată, data depunerii declarației este data validării astfel cum rezultă din mesajul electronic.
 (5) Prin excepție de la prevederile alin. (4), în situația în care declarația fiscală a fost depusă până la termenul legal, iar din mesajul electronic transmis de sistemul de tranzacționare a informațiilor rezultă că aceasta nu a fost validată ca urmare a detectării unor erori în completarea declarației, data depunerii declarației este data din mesajul transmis inițial în cazul în care contribuabilul/plătitorul depune o declarație validă până în ultima zi a lunii în care se împlinește termenul legal de depunere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (3)-(5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 103 alin. (3)-(5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Trei situații, cu trei date de depunere diferite:
@@ -35,6 +35,6 @@ Practic, recipisa singură nu spune tot: trebuie citită împreună cu mesajul d
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației un mecanism dedicat de arhivare și urmărire automată a mesajelor de confirmare/validare primite de la ANAF pentru declarațiile transmise (dincolo de fluxul specific de e-Factura, unde aplicația gestionează separat starea încărcării — vezi modulul `core/efactura_send.py`). Pentru celelalte declarații fiscale, păstrarea recipisei și verificarea statusului de validare rămân un proces manual al contabilului, în afara aplicației.
+La data acestui ghid, nu am putut confirma din codul aplicației un mecanism dedicat de arhivare și urmărire automată a mesajelor de confirmare/validare primite de la ANAF pentru declarațiile transmise (dincolo de fluxul specific de e-Factura, unde aplicația gestionează separat starea încărcării — vezi aplicația). Pentru celelalte declarații fiscale, păstrarea recipisei și verificarea statusului de validare rămân un proces manual al contabilului, în afara aplicației.
 
 [iConta.eu](/)

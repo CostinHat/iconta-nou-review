@@ -16,12 +16,12 @@ Contează pentru că regula generală a deducerii întârziate e alta. Dreptul d
 
 ::: ghid-temei
 „Prin excepție, în cazul în care furnizorul emite facturi de corecție, fie din inițiativă proprie, fie în urma inspecției fiscale în cadrul căreia organul fiscal a stabilit TVA colectată pentru anumite operațiuni efectuate în perioada supusă inspecției fiscale, beneficiarul respectivelor operațiuni are dreptul să deducă taxa înscrisă în factura de corecție emisă de furnizor chiar dacă termenul de prescripție a dreptului de a stabili obligații fiscale s-a împlinit. În aceste situații, dreptul de deducere poate fi exercitat în cel mult un an de la data primirii facturii de corecție, sub sancțiunea decăderii."
-— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) În sensul art. 301 alin. (2) din Codul fiscal, în cazul în care, în cadrul inspecției fiscale la furnizori, organul fiscal a stabilit TVA colectată pentru anumite operațiuni efectuate în perioada supusă inspecției fiscale, furnizorii pot emite facturi de corecție până la expirarea termenului de prescripție pentru operațiunile în cauză, astfel cum a fost prelungit cu perioada supusă inspecției fiscale, beneficiarul având dreptul de deducere aferent facturilor emise în aceste condiții, chiar dacă perioada de prescripție a expirat, cu condiția ca dreptul de deducere să fie exercitat în termen de cel mult un an de la data primirii facturii de corecție."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 71 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 71 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se aplică:

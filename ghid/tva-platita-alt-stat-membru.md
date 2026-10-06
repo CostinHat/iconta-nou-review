@@ -14,7 +14,7 @@ O firmă din România plătește TVA la o achiziție sau un import făcut într-
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în România poate beneficia de rambursarea TVA aferente importurilor și achizițiilor de bunuri/servicii efectuate în alt stat membru, în condițiile prevăzute în normele metodologice."
-— Codul fiscal (Legea 227/2015), art. 302 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 302 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul e distinct de dreptul de deducere obișnuit, tocmai pentru că taxa nu e datorată bugetului de stat român:

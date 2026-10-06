@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(3) Data depunerii declarației fiscale este data înregistrării acesteia la organul fiscal sau data depunerii la poștă, după caz. în situația în care declarația fiscală se depune prin mijloace electronice de transmitere la distanță, data depunerii declarației este data înregistrării acesteia pe pagina de internet a organului fiscal, astfel cum rezultă din mesajul electronic de confirmare transmis ca urmare a primirii declarației."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 103 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 103 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă practic:
@@ -31,6 +31,6 @@ Ce înseamnă practic:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212) (`core/d212.py`), dar nu depune declarația în SPV și, prin urmare, nu primește și nu stochează mesajul electronic de confirmare (recipisa) emis de ANAF. Acesta rămâne disponibil exclusiv în contul de Spațiul Privat Virtual al contribuabilului, în urma depunerii efective a declarației pe portalul ANAF.
+La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212), dar nu depune declarația în SPV și, prin urmare, nu primește și nu stochează mesajul electronic de confirmare (recipisa) emis de ANAF. Acesta rămâne disponibil exclusiv în contul de Spațiul Privat Virtual al contribuabilului, în urma depunerii efective a declarației pe portalul ANAF.
 
 [iConta.eu](/)

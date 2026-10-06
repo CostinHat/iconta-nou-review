@@ -14,7 +14,7 @@ Aici e importantă o distincție pe care mulți contabili o amestecă: plafonul 
 
 ::: ghid-temei
 „(1) Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare, precum și taxele de înscriere, cotizațiile și contribuțiile datorate către camerele de comerț și industrie, organizațiile patronale și organizațiile sindicale."
-— Codul fiscal, art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicată la o deplasare de serviciu, regula generală înseamnă:
@@ -32,7 +32,7 @@ Aplicată la o deplasare de serviciu, regula generală înseamnă:
 
 ## Ce face iConta.eu
 
-Modulul de deconturi (`core/deconturi.py`) postează cheltuielile de deplasare — diurnă, transport, cazare — direct în contul de cheltuieli (625), fără nicio marcare de tip deductibil/nedeductibil și fără nicio verificare automată a condițiilor de la art. 25 CF. Aceasta reflectă corect regimul general al acestor cheltuieli: fiind cheltuieli de exploatare obișnuite, ele intră normal în calculul rezultatului fiscal, fără un tratament special de urmărit separat.
+Modulul de deconturi postează cheltuielile de deplasare — diurnă, transport, cazare — direct în contul de cheltuieli (625), fără nicio marcare de tip deductibil/nedeductibil și fără nicio verificare automată a condițiilor de la art. 25 CF. Aceasta reflectă corect regimul general al acestor cheltuieli: fiind cheltuieli de exploatare obișnuite, ele intră normal în calculul rezultatului fiscal, fără un tratament special de urmărit separat.
 
 iConta.eu **nu are** o funcție dedicată de „verificare a deductibilității la impozitul pe profit" pentru cheltuielile de deplasare — și, de fapt, o astfel de funcție nu ar avea sens ca regulă automată, pentru că deductibilitatea generală ține de scopul economic real al deplasării (o chestiune de fapt, verificabilă la control), nu de un calcul care poate fi automatizat mecanic din datele decontului.
 

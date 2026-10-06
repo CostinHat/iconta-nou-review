@@ -14,7 +14,7 @@ Leasingul financiar nu are un tratament special în structura SAF-T (Declarația
 
 ::: ghid-temei
 „ART. 1. Natura informațiilor pe care contribuabilul/plătitorul trebuie să le declare prin fișierul standard de control fiscal (SAF-T) este prevăzută în anexa nr. 1. ART. 2. Fișierul standard de control fiscal (SAF-T) se transmite de către contribuabili/plătitori prin intermediul Declarației informative privind fișierul standard de control fiscal, denumită în continuare Declarația informativă D406 [...]."
-— OPANAF 1783/2021, art. 1-2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, art. 1-2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - SAF-T/D406 e o raportare **generică** a tuturor înregistrărilor contabile și a activelor firmei — structura ei nu prevede o secțiune specifică pentru leasing.

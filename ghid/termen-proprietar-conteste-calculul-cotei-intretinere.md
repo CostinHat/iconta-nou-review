@@ -16,9 +16,9 @@ Pentru contabilul sau administratorul asociației, data afișării listei e mome
 
 ::: ghid-temei
 „(3) Proprietarii din condominii au dreptul să primească explicații cu privire la calculul cotei de contribuție la cheltuielile asociației de proprietari și, după caz, să o conteste în scris în termen de 10 zile de la afișarea listei de plată. Președintele asociației de proprietari este obligat să răspundă, în scris, la contestație în termen de 10 zile de la primirea acesteia."
-— Legea 196/2018, art. 28 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 28 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „m) calculează, întocmește, supune verificării cenzorilor/comisiei de cenzori, supune aprobării comitetului executiv și afișează la avizier lista lunară a cheltuielilor de întreținere, întocmită conform reglementărilor în vigoare, în termen de maximum 5 zile de la primirea ultimei facturi de la furnizorii de servicii;"
-— Legea 196/2018, art. 66 alin. (1) lit. m) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. m) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Cum funcționează, pas cu pas:

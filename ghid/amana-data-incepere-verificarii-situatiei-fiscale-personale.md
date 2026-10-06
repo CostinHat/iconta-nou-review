@@ -16,13 +16,13 @@ Amânarea este utilă când data din aviz cade într-o perioadă în care persoa
 
 ::: ghid-temei
 „d) posibilitatea de a solicita amânarea datei de începere a verificării. Amânarea se poate solicita o singură dată, pentru motive justificate;"
-— Codul de procedură fiscală (Legea 207/2015), art. 141 alin. (1) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 141 alin. (1) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(2) Cererea de amânare prevăzută la alin. (1) lit. d) se soluționează în termen de cel mult 5 zile de la data înregistrării acesteia. în situația în care organul fiscal central a aprobat amânarea datei de începere a verificării fiscale, comunică persoanei fizice data la care a fost reprogramată acțiunea de verificare fiscală. (3) Prin avizul de verificare, persoana fizică este înștiințată că are dreptul de a beneficia de asistență de specialitate sau juridică."
-— Codul de procedură fiscală (Legea 207/2015), art. 141 alin. (2)–(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 141 alin. (2)–(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „aveți posibilitatea de a solicita o singură dată, în scris, amânarea datei de începere a verificării pentru motive justificate."
-— Ordinul președintelui ANAF 2117/2018, modelul avizului de verificare (sursă: anaf_surse/ordin_2117_2018.html)
+— Ordinul președintelui ANAF 2117/2018, modelul avizului de verificare (sursă: [OPANAF nr. 2117/2018 privind formularele utilizate în verificarea situației fiscale personale](https://legislatie.just.ro/Public/DetaliiDocument/204506))
 :::
 
 Condițiile, pe scurt:

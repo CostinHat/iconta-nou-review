@@ -16,11 +16,11 @@ Cenzorul nu poate dispune de garanție, nici de dobânda ei, până când adunar
 
 ::: ghid-temei
 „(3) Cenzorul sau membrii comisiei de cenzori depun, dacă adunarea generală a asociației de proprietari hotărăște astfel, în contul bancar al asociației de proprietari o garanție, pe baza unui contract de garanție încheiat în acest sens. Cuantumul garanției nu poate fi mai mic decât media anuală a totalului cheltuielilor lunare ale asociației."
-— Legea 196/2018, art. 60 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(4) Deponenții garanției prevăzute la alin. (3) nu pot dispune în niciun mod de suma depusă drept garanție și nici de dobânda aferentă, decât după îndeplinirea cumulativă a următoarelor condiții: a) adunarea generală a asociației de proprietari a aprobat descărcarea de gestiune privind exercițiul financiar precedent; […] b) încetarea efectelor contractului încheiat între asociație și cenzor/membrii comisiei de cenzori."
-— Legea 196/2018, art. 60 alin. (4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(5) În cazul în care se constată de către reprezentanții asociației de proprietari sau de către proprietari deficit în gestiune, asociația poate dispune asupra unei sume de bani egale cu cuantumul minusului în gestiune, direct din contul bancar menționat la alin. (3) , cu aprobarea scrisă anterioară a adunării generale, fără a avea nevoie de consimțământul deponentului garanției."
-— Legea 196/2018, art. 60 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 60 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Pe scurt:

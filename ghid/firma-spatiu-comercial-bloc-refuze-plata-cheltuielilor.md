@@ -16,13 +16,13 @@ Argumentele frecvente nu schimbă obligația: „am intrare separată", „nu fo
 
 ::: ghid-temei
 „(4) Niciun proprietar din condominiu nu este exceptat de la obligația de a contribui la plata cheltuielilor comune, ca urmare a renunțării la folosirea unei părți din proprietatea comună.”
-— Legea 196/2018, art. 75 alin. (4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 75 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(5) Hotărârile luate, în conformitate cu prevederile alin. (1)-(4) , obligă toți proprietarii să participe, în proporțiile stabilite de adunarea generală, la plata lucrărilor, precum și la cheltuielile de funcționare, administrare, întreținere și de înlocuire a părților comune sau a elementelor transformate sau create.”
-— Legea 196/2018, art. 48 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 48 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „(4) Hotărârile adunării generale a asociației de proprietari sunt obligatorii de la data afișării acestora la loc vizibil, conform prevederilor prezentei legi, inclusiv pentru proprietarii din condominiu care nu au fost prezenți la adunarea generală, precum și pentru proprietarii care nu sunt membri ai asociației de proprietari.”
-— Legea 196/2018, art. 48 alin. (4) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 48 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce trebuie știut:

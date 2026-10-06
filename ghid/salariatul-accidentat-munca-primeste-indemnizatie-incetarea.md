@@ -16,15 +16,15 @@ Da. Când accidentul de muncă a fost declarat în condițiile legii și s-a pro
 
 ::: ghid-temei
 „(1) În cazul accidentelor de muncă sau bolilor profesionale, declarate în condițiile legii, în timpul activității profesionale, dreptul la prestațiile și serviciile de asigurare se menține și ulterior încetării raporturilor de muncă/serviciu."
-— Legea 346/2002, art. 14 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 14 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(12) Prevederile alin. (10) se aplică și în situația în care a expirat termenul pentru care a fost încheiat contractul individual de muncă, contractul de administrare ori de management"
-— Legea 346/2002, art. 19 alin. (12) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (12) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Concedierea salariaților nu poate fi dispusă:a) pe durata incapacității temporare de muncă, stabilită prin certificat medical conform legii;"
-— Codul muncii (Legea 53/2003), art. 60 alin. (1) lit. a) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 60 alin. (1) lit. a) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă concret:

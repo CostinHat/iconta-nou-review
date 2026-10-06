@@ -14,7 +14,7 @@ O firmă de transport (persoane sau mărfuri) nu are un regim de impozit pe prof
 
 ::: ghid-temei
 „Restricția prevăzută la alin. (1) nu se aplică vehiculelor rutiere motorizate având o masă totală maximă autorizată care depășește 3.500 kg sau mai mult de 9 scaune, inclusiv scaunul șoferului. [...] Prevederile alin. (1) nu se aplică următoarelor categorii de vehicule rutiere motorizate: [...] c) vehiculele utilizate pentru transportul de persoane cu plată, inclusiv pentru serviciile de taximetrie; d) vehiculele utilizate pentru prestarea de servicii cu plată[...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (2) și alin. (3) lit. c)-d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 298 alin. (2) și alin. (3) lit. c)-d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Reperele fiscale reale pentru o firmă de transport:

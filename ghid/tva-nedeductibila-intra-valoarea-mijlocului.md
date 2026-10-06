@@ -14,7 +14,7 @@ Da. Când TVA aferentă achiziției unui mijloc fix nu poate fi recuperată de l
 
 ::: ghid-temei
 „6. cost de achiziție înseamnă prețul datorat și eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție. În acest sens, costul de achiziție al bunurilor cuprinde prețul de cumpărare, taxele de import și alte taxe (cu excepția acelora pe care persoana juridică le poate recupera de la autoritățile fiscale), cheltuielile de transport, manipulare și alte cheltuieli care pot fi atribuibile direct achiziției bunurilor respective. În costul de achiziție se includ, de asemenea, comisioanele, taxele notariale, cheltuielile cu obținerea de autorizații și alte cheltuieli nerecuperabile, atribuibile direct bunurilor respective."
-— OMFP 1802/2014, pct. 8 subpct. 6 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 8 subpct. 6 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula, aplicată la un mijloc fix:

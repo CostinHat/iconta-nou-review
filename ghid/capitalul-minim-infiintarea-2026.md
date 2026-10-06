@@ -14,7 +14,7 @@ Spre deosebire de SRL, unde capitalul social minim este de 500 lei la înființa
 
 ::: ghid-temei
 „Capitalul social al societății pe acțiuni sau al societății în comandită pe acțiuni nu poate fi mai mic de 90.000 lei. Guvernul va putea modifica, cel mult o dată la 2 ani, valoarea minimă a capitalului social, ținând seama de rata de schimb, astfel încât acest cuantum să reprezinte echivalentul în lei al sumei de 25.000 euro."
-— Legea nr. 31/1990, art. 10 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 10 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din text rezultă atât valoarea actuală, cât și mecanismul de actualizare:

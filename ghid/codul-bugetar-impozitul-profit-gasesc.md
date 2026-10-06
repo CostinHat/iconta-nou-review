@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Coloana «Denumire creanță fiscală»: se înscrie denumirea obligației de plată, conform Nomenclatorului obligațiilor de plată la bugetul de stat, prevăzut în anexa nr. 3 la ordin, datorată în perioada de raportare."
-— OPANAF 587/2016, Anexa nr. 4 (instrucțiuni de completare a formularului 100 „Declarație privind obligațiile de plată la bugetul de stat"), Capitolul II, pct. 3 (sursă: anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt)
+— OPANAF 587/2016, Anexa nr. 4 (instrucțiuni de completare a formularului 100 „Declarație privind obligațiile de plată la bugetul de stat"), Capitolul II, pct. 3 (sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662))
 :::
 
 Ce rezultă de aici, onest:

@@ -16,13 +16,13 @@ Termenul contează și pentru firmele care dețin spații în condominii: o modi
 
 ::: ghid-temei
 „(3) Modificările suprafețelor construite sau utile se comunică președintelui asociației de proprietari și organului fiscal local în termen de 30 de zile de la încheierea lucrărilor și se introduc în cartea tehnică a construcției și în baza de date a asociației, în vederea stabilirii consumurilor corespunzătoare cu noile suprafețe utile."
-— Legea 196/2018, art. 34 alin. (3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 34 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „b) necomunicarea de către proprietar a modificării suprafeței utile către asociația de proprietari și administrația financiară locală;"
-— Legea 196/2018, art. 102 alin. (1) lit. b) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (1) lit. b) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „b) faptele prevăzute la alin. (1) lit. a) , b) , c) , r) și s) , cu amendă de la 200 lei la 1.000 lei;"
-— Legea 196/2018, art. 102 alin. (2) lit. b) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (2) lit. b) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 „(5) În cazul în care contravenientul se află la prima încălcare a obligației legale, organul constatator poate să aplice sancțiunea avertismentului, conform prevederilor legale în vigoare, numai în cazul faptelor prevăzute la alin. (1) lit. a) , b) , j) sau s) ."
-— Legea 196/2018, art. 102 alin. (5) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 102 alin. (5) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Ce înseamnă concret:

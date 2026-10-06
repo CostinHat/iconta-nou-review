@@ -14,7 +14,7 @@ După înregistrarea la Registrul Comerțului, obligațiile declarative ale unui
 
 ::: ghid-temei
 „Persoana impozabilă care are sediul activității economice în România și realizează sau intenționează să realizeze o activitate economică ce implică operațiuni taxabile, scutite de taxa pe valoarea adăugată cu drept de deducere, cu locul în România, trebuie să solicite înregistrarea în scopuri de TVA la organul fiscal competent [...]"
-— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 316 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce declarații devin, de regulă, obligatorii imediat după înființare:
@@ -31,6 +31,6 @@ Ce declarații devin, de regulă, obligatorii imediat după înființare:
 
 ## Ce face iConta.eu
 
-Pe baza vectorului fiscal completat în ecranul „Date firmă" (`core/vector_fiscal_api.py`), motorul de conformare al iConta.eu (`core/control_fiscal_api.py`, funcția `declaratii_datorate`) calculează automat ce declarații sunt datorate lunar sau trimestrial pentru firma respectivă, ținând cont de regimul fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu depune însă declarația de înregistrare fiscală inițială la ANAF — aceasta e un pas separat, făcut la înființare.
+Pe baza vectorului fiscal completat în ecranul „Date firmă", motorul de conformare al iConta.eu (funcția `declaratii_datorate`) calculează automat ce declarații sunt datorate lunar sau trimestrial pentru firma respectivă, ținând cont de regimul fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu depune însă declarația de înregistrare fiscală inițială la ANAF — aceasta e un pas separat, făcut la înființare.
 
 [iConta.eu](/)

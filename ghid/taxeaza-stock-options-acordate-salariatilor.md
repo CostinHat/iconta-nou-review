@@ -14,10 +14,10 @@ Un program de stock options nu se taxează în momentul în care salariatul prim
 
 ::: ghid-temei
 „Avantajele sub forma dreptului la stock options plan, la momentul acordării și la momentul exercitării acestora" — venituri neimpozabile din salarii.
-— Legea 227/2015, art. 76 alin. (4) lit. r) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 76 alin. (4) lit. r) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul tranzacțiilor cu titluri de participare dobândite la preț preferențial sau gratuit, în cadrul sistemului stock options plan, câștigul se determină ca diferență între prețul de vânzare și valoarea fiscală a acestora reprezentată de prețul de achiziție preferențial care include costurile aferente tranzacției. Pentru cele dobândite cu titlu gratuit valoarea fiscală este considerată egală cu zero."
-— Legea 227/2015, art. 94 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 94 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul are trei momente distincte, iar legea taxează doar ultimul:

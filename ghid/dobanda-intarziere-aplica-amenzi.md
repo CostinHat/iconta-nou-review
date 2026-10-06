@@ -15,10 +15,10 @@ E o confuzie frecventă: dacă firma întârzie plata unei amenzi, se calculeaz�
 ::: ghid-temei
 „Pentru neachitarea la termenul de scadență de către debitor a obligațiilor fiscale principale, se datorează după acest termen dobânzi și penalități de întârziere.
 (2) Nu se datorează dobânzi și penalități de întârziere pentru sumele datorate cu titlu de amenzi de orice fel, obligații fiscale accesorii stabilite potrivit legii, cheltuieli de executare silită, cheltuieli judiciare, sumele confiscate, precum și sumele reprezentând echivalentul în lei al bunurilor și sumelor confiscate care nu sunt găsite la locul faptei."
-— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1), (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1), (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(5) Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 174 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Textul legii e explicit: dobânda și penalitatea de întârziere se calculează pentru **obligațiile fiscale principale** neachitate la termen (impozite, taxe, contribuții), nu pentru amenzi. Alineatul (2) exclude expres amenzile de orice fel de la acest calcul. Ceea ce înseamnă practic:

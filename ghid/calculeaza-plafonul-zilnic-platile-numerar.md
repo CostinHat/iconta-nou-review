@@ -14,7 +14,7 @@ Legea 70/2015 nu stabilește un singur plafon zilnic, ci mai multe, în funcție
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi; [...] e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare."
-— Legea 70/2015, art. 3 alin. (1) lit. a), c), e) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 3 alin. (1) lit. a), c), e) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - Plafonul de **5.000 lei/zi** se calculează **per partener** (per persoană juridică de la care se încasează sau către care se plătește), nu per firmă emitentă — dacă o firmă face plăți către mai mulți furnizori în aceeași zi, plafonul se verifică separat pentru fiecare furnizor.

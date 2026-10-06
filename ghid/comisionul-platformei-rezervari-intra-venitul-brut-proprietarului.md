@@ -16,15 +16,15 @@ Regula contează pentru că mulți proprietari pornesc de la valoarea totală a 
 
 ::: ghid-temei
 „Nu se cuprinde în venitul brut comisionul reținut de către entitățile care facilitează închirierea pe termen scurt a camerelor situate în locuințe proprietate personală, inclusiv interfețele electronice, cum ar fi o piață online, o platformă, un portal sau alte mijloace similare."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Venitul brut reprezintă totalitatea sumelor în bani și/sau echivalentul în lei al veniturilor în natură încasate în cursul anului fiscal."
-— Codul fiscal (Legea 227/2015), art. 85 alin. (2) teza a doua (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 85 alin. (2) teza a doua (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Nu se cuprinde în venitul brut comisionul reținut de către entitățile care facilitează închirierea pe termen scurt a camerelor situate în locuințe proprietate personală"
-— Codul fiscal (Legea 227/2015), art. 68^3 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 68^3 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce reiese din text:

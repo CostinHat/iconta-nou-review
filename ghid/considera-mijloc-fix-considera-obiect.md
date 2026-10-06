@@ -14,7 +14,7 @@ Distincția dintre mijloc fix și obiect de inventar nu ține de cât de „impo
 
 ::: ghid-temei
 „(2) Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; [...] b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului; [...] c) are o durată normală de utilizare mai mare de un an."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei condiții, desfăcute:
@@ -34,7 +34,7 @@ Un bun care nu îndeplinește oricare dintre cele trei condiții — cel mai ade
 
 ## Ce face iConta.eu
 
-iConta.eu implementează în motorul obiectelor de inventar (`core/obiecte_inventar.py`) exact criteriul din lege: verifică dacă valoarea bunului e sub pragul valabil la data operațiunii **sau** dacă durata de utilizare declarată e sub un an — oricare din cele două condiții e suficientă pentru încadrarea ca obiect de inventar. Pragul e citit dintr-un registru unic de cote, sensibil la dată (5.000 lei din 25.02.2026, 2.500 lei anterior), astfel încât o achiziție veche și una recentă sunt evaluate corect, fiecare cu pragul din perioada ei.
+iConta.eu implementează în motorul obiectelor de inventar exact criteriul din lege: verifică dacă valoarea bunului e sub pragul valabil la data operațiunii **sau** dacă durata de utilizare declarată e sub un an — oricare din cele două condiții e suficientă pentru încadrarea ca obiect de inventar. Pragul e citit dintr-un registru unic de cote, sensibil la dată (5.000 lei din 25.02.2026, 2.500 lei anterior), astfel încât o achiziție veche și una recentă sunt evaluate corect, fiecare cu pragul din perioada ei.
 
 De reținut: formularul „Obiecte de inventar (303)" din ecranul „Operațiuni speciale" verifică automat doar criteriul de **valoare**. Câmpul pentru durata de utilizare sub un an există în motorul de calcul și e testat unitar, dar **nu apare încă în formularul din interfață** — deci, pentru moment, o achiziție peste prag cu durată reală sub un an nu poate fi înregistrată corect ca obiect de inventar direct din acest ecran.
 

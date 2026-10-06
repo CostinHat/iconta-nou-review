@@ -16,10 +16,10 @@ Pentru contabil, regula explică majoritatea diferențelor dintre copia primită
 
 ::: ghid-temei
 „7. Informațiile despre Contraprestație și alte sume se raportează în ceea ce privește trimestrul din Perioada de Raportare în care a fost plătită sau creditată Contraprestația."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 7 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 7 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „2. Vânzător Activ înseamnă orice Vânzător care prestează o Activitate Relevantă în timpul Perioadei de raportare sau căruia i se plătește sau i se creditează o Contraprestație în legătură cu o Activitate Relevantă în timpul Perioadei de raportare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. B pct. 2 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. I lit. B pct. 2 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

@@ -16,12 +16,12 @@ Schimbarea față de anii anteriori e importantă. Până la intrarea în vigoar
 
 ::: ghid-temei
 „(2) Consiliile locale/Consiliul General al Municipiului București pot/poate hotărî să acorde scutirea sau reducerea impozitului/taxei pe clădiri datorat/datorate pentru: a) [...] n) clădirile unităților sanitare private, cu excepția încăperilor care sunt folosite pentru activități economice care generează alte venituri decât cele din domeniul sănătății, cu respectarea legislației în materia ajutorului de stat;"
-— Codul fiscal (Legea 227/2015), art. 456 alin. (2) lit. n) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (2) lit. n) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În interpretarea dispozițiilor art. 456 alin. (1) lit. h) din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, astfel cum a fost modificat prin [...] și până la intrarea în vigoare a Legii nr. 239/2025 privind stabilirea unor măsuri de redresare și eficientizare a resurselor publice și pentru modificarea și completarea unor acte normative, cu modificările și completările ulterioare, noțiunea de „activitate economică“ din cuprinsul sintagmei „cu excepția încăperilor folosite pentru activități economice“ nu se referă la toate activitățile prestate de unitățile sanitare private, ci vizează alte activități decât furnizarea de servicii medicale către populație."
-— Decizia HP nr. 67/2026, notă la Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Decizia HP nr. 67/2026, notă la Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -15,7 +15,7 @@ Data punerii în funcțiune (PIF) a unui mijloc fix este momentul de referință
 ::: ghid-temei
 „Amortizarea fiscală se calculează după cum urmează:
 a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5)."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Codul fiscal ancorează momentul de start al amortizării de „punerea în funcțiune", dar nu numește un formular unic care să ateste acest moment — practica se sprijină pe două tipuri de documente, în funcție de situație:
@@ -33,6 +33,6 @@ Codul fiscal ancorează momentul de start al amortizării de „punerea în func
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **înregistrează data punerii în funcțiune** ca dată introdusă de contabil la fiecare mijloc fix (câmpul `data_pif` din `core/repo_mijloace_fixe.py` și `core/mijloace_fixe_import_api.py`) și o folosește pentru a determina de când începe amortizarea. Aplicația **nu generează și nu solicită** procesul-verbal de recepție/punere în funcțiune ca document justificativ — data se preia ca atare din fișierul de import sau din introducerea manuală, fără o verificare automată față de un document sursă.
+La data acestui ghid, iConta.eu **înregistrează data punerii în funcțiune** ca dată introdusă de contabil la fiecare mijloc fix (câmpul `data_pif` din aplicație) și o folosește pentru a determina de când începe amortizarea. Aplicația **nu generează și nu solicită** procesul-verbal de recepție/punere în funcțiune ca document justificativ — data se preia ca atare din fișierul de import sau din introducerea manuală, fără o verificare automată față de un document sursă.
 
 [iConta.eu](/)

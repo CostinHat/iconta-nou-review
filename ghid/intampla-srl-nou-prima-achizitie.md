@@ -15,7 +15,7 @@ Un SRL nou-înființat care face prima achiziție de bunuri dintr-un alt stat me
 ::: ghid-temei
 CF art. 268 alin. (5)/(6) — plafon 10.000 €: „…valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16639)
 
-CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160+)
+CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160)
 :::
 
 Dacă firma e deja înregistrată normal ca plătitoare de TVA (art. 316), prima achiziție intracomunitară de bunuri urmează regula obișnuită: furnizorul UE facturează fără TVA (dacă are cod de TVA valid al cumpărătorului), iar firma din România calculează TVA prin taxare inversă și declară operațiunea în D390.

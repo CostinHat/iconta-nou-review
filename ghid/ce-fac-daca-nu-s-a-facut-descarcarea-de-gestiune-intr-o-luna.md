@@ -22,7 +22,7 @@ La metoda global-valorică, descărcarea lunară nu e o simplă formalitate care
 > intrărilor în cursul perioadei la preț de înregistrare, cumulat de la începutul exercițiului
 > financiar până la finele perioadei de referință] × 100"
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (4).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (4).
 
 > "Articolul 6 (1) Orice operațiune economico-financiară efectuată se consemnează în momentul
 > efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind
@@ -35,7 +35,7 @@ La metoda global-valorică, descărcarea lunară nu e o simplă formalitate care
 > începutul activității, **cel puțin o dată în cursul exercițiului financiar**, precum și în cazul
 > fuziunii, divizării ori transformării sau al lichidării și în alte situații prevăzute de lege."
 >
-> — sursă: `anaf_surse/legea_82_1991_consolidat.txt`, art. 6 și art. 7 alin. (1).
+> — sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576), art. 6 și art. 7 alin. (1).
 :::
 
 ## Ce se recuperează automat și ce nu

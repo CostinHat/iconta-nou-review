@@ -16,7 +16,7 @@ Problema apare des după deciziile de recalculare care se aplică retroactiv. Ca
 
 ::: ghid-temei
 „Drepturile de pensie restante ca urmare a acordării/ revizuirii/recalculării/actualizării pensiei se defalcă pe lunile la care se referă, în vederea calculării/recalculării, după caz, a impozitului datorat, reținerii și plății acestuia, în conformitate cu reglementările legale în vigoare în luna pentru care se acordă drepturile. Impozitul se reține la data efectuării plății și se plătește până la data de 25 inclusiv a lunii următoare celei în care s-au plătit veniturile. Diferențele de venituri din pensii, primite de la același plătitor și stabilite pentru perioadele anterioare, se impozitează separat față de drepturile de pensie ale lunii curente."
-— Codul fiscal (Legea 227/2015), art. 101 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 101 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele patru reguli din text:

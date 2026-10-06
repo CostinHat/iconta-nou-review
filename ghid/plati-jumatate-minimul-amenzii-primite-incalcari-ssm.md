@@ -16,12 +16,12 @@ Atenție la textul legii speciale. Art. 43 alin. (2) din Legea 319/2006 vorbeșt
 
 ::: ghid-temei
 „(2) Contravenientul poate achită pe loc sau în termen de cel mult 48 de ore*) de la data încheierii procesului-verbal ori, după caz, de la data comunicării acestuia jumătate din minimul amenzii prevăzute de lege, corespunzător faptei pentru care a fost sancționat, inspectorul de muncă făcând mențiune despre aceasta posibilitate în procesul-verbal."
-— Legea 319/2006, art. 43 alin. (2) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 43 alin. (2) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 ::: ghid-temei
 „(1) Contravenientul poate achita, în termen de cel mult 15 zile de la data înmânării sau comunicării procesului-verbal, jumătate din minimul amenzii prevăzute de actul normativ, agentul constatator făcând mențiune despre această posibilitate în procesul-verbal."
-— OG 2/2001, art. 28 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 28 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 Ce înseamnă concret:

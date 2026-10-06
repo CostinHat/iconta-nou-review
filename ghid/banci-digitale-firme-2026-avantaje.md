@@ -14,7 +14,7 @@ Tot mai multe firme folosesc, pe lângă contul de la banca tradițională, un c
 
 ::: ghid-temei
 „Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 1 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 1 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 - Regula generală obligă firmele să deconteze majoritatea tranzacțiilor dintre ele **prin instrumente de plată fără numerar** — un cont deschis la o instituție de plată/emitentă de monedă electronică (virament instant, card, IBAN virtual) îndeplinește această cerință la fel de bine ca un cont bancar clasic.
@@ -30,6 +30,6 @@ Tot mai multe firme folosesc, pe lângă contul de la banca tradițională, un c
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de bancă din iConta.eu (`core/banca.py`, `core/banca_parser.py`) importă și reconciliază extrase de cont pe baza formatelor standard (inclusiv MT940), indiferent dacă provin de la o bancă tradițională sau de la o instituție de plată/emitentă de monedă electronică — aplicația nu face distincție de tratament între tipurile de instituții financiare la import. Alegerea concretă a unei „bănci digitale" ca alternativă sau complement la banca tradițională rămâne o decizie de business a firmei, în afara funcționalităților aplicației.
+La data acestui ghid, modulul de bancă din iConta.eu importă și reconciliază extrase de cont pe baza formatelor standard (inclusiv MT940), indiferent dacă provin de la o bancă tradițională sau de la o instituție de plată/emitentă de monedă electronică — aplicația nu face distincție de tratament între tipurile de instituții financiare la import. Alegerea concretă a unei „bănci digitale" ca alternativă sau complement la banca tradițională rămâne o decizie de business a firmei, în afara funcționalităților aplicației.
 
 [iConta.eu](/)

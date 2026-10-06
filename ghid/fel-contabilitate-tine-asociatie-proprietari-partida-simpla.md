@@ -16,18 +16,18 @@ Consecința practică: asociația **nu întocmește situații financiare anuale*
 
 ::: ghid-temei
 „(1) Administratorul organizează și conduce contabilitatea în partidă simplă a veniturilor și cheltuielilor asociației de proprietari cu respectarea prevederilor legale în vigoare privind legislația financiar-contabilă.”
-— Legea 196/2018, art. 74 alin. (1) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 74 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 
 „f) organizează și conduce contabilitatea în partidă simplă și activitatea de casierie”
-— Legea 196/2018, art. 66 alin. (1) lit. f) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 66 alin. (1) lit. f) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „1. Categoriile de persoane juridice fără scop patrimonial care pot organiza şi conduce contabilitatea în partidă simplă sunt următoarele: a) unităţile de cult; b) asociaţiile de proprietari.”
-— OMFP 3103/2017, anexa nr. 2, cap. 1 pct. 1 (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 2, cap. 1 pct. 1 (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 
 „7. Persoanele juridice fără scop patrimonial care conduc contabilitatea în partidă simplă nu întocmesc situaţii financiare anuale.”
-— OMFP 3103/2017, anexa nr. 2, cap. 2 lit. A pct. 7 (sursă: anaf_surse/omfp_3103_2017.txt)
+— OMFP 3103/2017, anexa nr. 2, cap. 2 lit. A pct. 7 (sursă: [OMFP nr. 3103/2017 privind Reglementările contabile pentru persoanele juridice fără scop patrimonial](https://legislatie.just.ro/Public/DetaliiDocument/195630))
 :::
 
 De reținut:

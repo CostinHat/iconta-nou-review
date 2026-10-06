@@ -14,7 +14,7 @@ La o firmă plătitoare de impozit pe profit, un control fiscal urmărește în 
 
 ::: ghid-temei
 „Organul fiscal este îndreptățit să examineze, din oficiu, starea de fapt, să obțină și să utilizeze toate informațiile și documentele necesare pentru determinarea corectă a situației fiscale a contribuabilului/plătitorului. în analiza efectuată, organul fiscal este obligat să identifice și să ia în considerare toate circumstanțele edificatoare fiecărui caz în parte."
-— Legea 207/2015, art. 7 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 7 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce verifică, concret, la o firmă pe profit:

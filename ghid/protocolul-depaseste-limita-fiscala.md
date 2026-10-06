@@ -14,7 +14,7 @@ Cheltuielile de protocol (mese de afaceri, cadouri pentru parteneri etc.) nu sun
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: a) cheltuielile de protocol în limita unei cote de 2% aplicată asupra profitului contabil la care se adaugă cheltuielile cu impozitul pe profit și cheltuielile de protocol. În cadrul cheltuielilor de protocol se includ și cheltuielile înregistrate cu taxa pe valoarea adăugată colectată potrivit prevederilor titlului VII, pentru cadourile oferite de contribuabil, cu valoare mai mare de 100 lei."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Plafonul de 2% **nu se aplică la cheltuiala de protocol în sine**, ci la o bază compusă: profitul contabil + cheltuiala cu impozitul pe profit + cheltuiala de protocol înregistrată.
@@ -30,6 +30,6 @@ Cheltuielile de protocol (mese de afaceri, cadouri pentru parteneri etc.) nu sun
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are contul 623 „Cheltuieli de protocol, reclamă și publicitate" mapat în planul de conturi (`core/plan_omfp.py`), astfel încât aceste cheltuieli pot fi înregistrate distinct în evidența contabilă. Nu am găsit însă, în modulul de impozit pe profit (`core/d101.py`), o funcție care să calculeze automat plafonul de 2% pe baza compusă (profit contabil + impozit pe profit + protocol) și să identifice partea nedeductibilă de reintrodus în calculul fiscal — acest calcul rămâne, la acest moment, în sarcina contabilului, pe baza rulajului contului 623.
+La data acestui ghid, iConta.eu are contul 623 „Cheltuieli de protocol, reclamă și publicitate" mapat în planul de conturi, astfel încât aceste cheltuieli pot fi înregistrate distinct în evidența contabilă. Nu am găsit însă, în modulul de impozit pe profit, o funcție care să calculeze automat plafonul de 2% pe baza compusă (profit contabil + impozit pe profit + protocol) și să identifice partea nedeductibilă de reintrodus în calculul fiscal — acest calcul rămâne, la acest moment, în sarcina contabilului, pe baza rulajului contului 623.
 
 [iConta.eu](/)

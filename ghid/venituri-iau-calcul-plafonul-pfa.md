@@ -14,10 +14,10 @@ Plafonul de 25.000 euro care obligă trecerea la sistem real se raportează la u
 
 ::: ghid-temei
 „Contribuabilii, pentru care venitul net se determină pe bază de norme de venit și care în anul fiscal anterior au înregistrat un venit brut anual mai mare decât echivalentul în lei al sumei de 25.000 euro, începând cu anul fiscal următor au obligația determinării venitului net anual în sistem real."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Dacă un contribuabil desfășoară două sau mai multe activități care generează venituri din activități independente, altele decât venituri din profesii liberale, definite la art. 67 alin. (2), venitul net din aceste activități se stabilește de către contribuabil prin însumarea nivelului normelor de venit corespunzătoare fiecărei activități."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text, fără a adăuga interpretări dincolo de ce spune legea:

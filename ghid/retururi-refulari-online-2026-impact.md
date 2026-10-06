@@ -14,7 +14,7 @@ Un magazin online care vinde către persoane fizice și primește retururi nu po
 
 ::: ghid-temei
 „(2) În cazul returnării de bunuri de către persoanele fizice și, respectiv, neprestării de servicii către persoanele fizice, restituirea sumelor aferente poate fi efectuată în numerar în limita a 10.000 lei, sumele care depășesc acest plafon putând fi restituite numai prin instrumente de plată fără numerar. Prin excepție, în cazul în care, la data restituirii, persoanele fizice declară pe propria răspundere că nu mai dețin cont bancar, restituirea se poate face integral în numerar, indiferent de nivelul sumei care trebuie restituită."
-— Legea 70/2015, art. 9 alin. (2) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 9 alin. (2) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Concret, pentru un retur online plătit inițial ramburs sau cash la livrare:
@@ -32,6 +32,6 @@ Concret, pentru un retur online plătit inițial ramburs sau cash la livrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un modul dedicat de gestiune a rambursurilor de comerț electronic** care să verifice automat plafonul din art. 9 alin. (2) la momentul restituirii. Aplicația oferă evidența generală de casierie (`core/casa.py`), cu plafoanele de încasare/plată în numerar prevăzute de Legea 70/2015 și verificarea lor pe operațiunile introduse (`core/casa_api.py`, `verifica_plafon`), dar restituirea specifică unui retur din vânzare online rămâne o operațiune pe care contabilul o introduce și încadrează manual, urmărind el însuși plafonul de 10.000 lei.
+La data acestui ghid, iConta.eu **nu are un modul dedicat de gestiune a rambursurilor de comerț electronic** care să verifice automat plafonul din art. 9 alin. (2) la momentul restituirii. Aplicația oferă evidența generală de casierie, cu plafoanele de încasare/plată în numerar prevăzute de Legea 70/2015 și verificarea lor pe operațiunile introduse (`verifica_plafon`), dar restituirea specifică unui retur din vânzare online rămâne o operațiune pe care contabilul o introduce și încadrează manual, urmărind el însuși plafonul de 10.000 lei.
 
 [iConta.eu](/)

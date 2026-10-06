@@ -34,6 +34,6 @@ Regula generală tratează bunurile constatate lipsă sau degradate, neimputabil
 
 ## Ce face iConta.eu
 
-Motorul F066 (`core/perisabilitati.py`) modelează exclusiv mecanismul de perisabilitate periodică din HG 831/2004 (coeficient pe grupă, aplicat la valoarea intrărilor) — nu are un flux dedicat pentru un eveniment punctual de degradare calitativă cauzat de o defecțiune tehnică. Pentru acest caz, aplicația nu calculează automat nimic; contabilul trebuie să evalueze direct, pe baza documentelor disponibile, dacă degradarea și distrugerea sunt dovedite corespunzător pentru a justifica deductibilitatea și scutirea de ajustare TVA.
+Motorul F066 modelează exclusiv mecanismul de perisabilitate periodică din HG 831/2004 (coeficient pe grupă, aplicat la valoarea intrărilor) — nu are un flux dedicat pentru un eveniment punctual de degradare calitativă cauzat de o defecțiune tehnică. Pentru acest caz, aplicația nu calculează automat nimic; contabilul trebuie să evalueze direct, pe baza documentelor disponibile, dacă degradarea și distrugerea sunt dovedite corespunzător pentru a justifica deductibilitatea și scutirea de ajustare TVA.
 
 [iConta.eu](/)

@@ -14,10 +14,10 @@ Când marfa primită gratuit cade sub una dintre situațiile care impun NIR — 
 
 ::: ghid-temei
 „În situația în care se constată diferențe la recepție, entitățile trebuie să stabilească prin proceduri proprii informațiile care trebuie să fie înscrise în Nota de recepție și constatare de diferențe (ex: cantitatea și valoare constatate plus/minus, persoanele care au făcut recepția și alte mențiuni, în funcție de necesități)."
-— OMFP 2634/2015, Anexa 2, Cod 14-3-1A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-3-1A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „75. - (1) La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: [...] d) la valoarea justă - pentru bunurile obținute cu titlu gratuit sau constatate plus la inventariere."
-— OMFP 1802/2014, pct. 75 alin. (1) lit. d) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 75 alin. (1) lit. d) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pașii, pentru cazul în care NIR-ul e necesar:
@@ -34,6 +34,6 @@ Pașii, pentru cazul în care NIR-ul e necesar:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/stocuri.py` conține motorul `nir_gv()` pentru NIR global-valoric (cu adaos comercial și TVA neexigibilă) și `core/stocuri_cv_api.py` oferă funcția `intrare()` pentru încărcarea cantitativă în gestiune. Ambele acceptă orice valoare unitară introdusă de utilizator, deci pot procesa tehnic o intrare la valoare justă — dar aplicația nu are un flux dedicat „marfă gratuită" care să sugereze automat contul de venituri 758 ca și contrapartidă sau să ceară documentarea sursei valorii juste. Determinarea valorii și alegerea contului de contrapartidă rămân, azi, decizii ale contabilului.
+La data acestui ghid, aplicația conține motorul `nir_gv()` pentru NIR global-valoric (cu adaos comercial și TVA neexigibilă) și aplicația oferă funcția `intrare()` pentru încărcarea cantitativă în gestiune. Ambele acceptă orice valoare unitară introdusă de utilizator, deci pot procesa tehnic o intrare la valoare justă — dar aplicația nu are un flux dedicat „marfă gratuită" care să sugereze automat contul de venituri 758 ca și contrapartidă sau să ceară documentarea sursei valorii juste. Determinarea valorii și alegerea contului de contrapartidă rămân, azi, decizii ale contabilului.
 
 [iConta.eu](/)

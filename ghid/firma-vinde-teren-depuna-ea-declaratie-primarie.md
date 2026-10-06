@@ -16,17 +16,17 @@ Declarația nu scutește vânzătorul de impozitul pe anul vânzării. Impozitul
 
 ::: ghid-temei
 „(1) În sensul prevederilor art. 466 alin. (2) din Codul fiscal obligația de depunere a declarației revine și contribuabililor care înstrăinează terenul. […] (2) Declarațiile se depun în termen de 30 de zile de la data dobândirii sau de la data apariției oricăreia dintre următoarele situații:”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 90 alin. (1)-(2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 90 alin. (1)-(2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul dobândirii unui teren în cursul anului, proprietarul acestuia are obligația să depună o nouă declarație de impunere la organul fiscal local în a cărui rază teritorială de competență se află terenul, în termen de 30 de zile de la data dobândirii, și datorează impozit pe teren începând cu data de 1 ianuarie a anului următor.”
-— Codul fiscal (Legea 227/2015), art. 466 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul în care dreptul de proprietate asupra unui teren este transmis în cursul unui an fiscal, impozitul este datorat de persoana care deține dreptul de proprietate asupra terenului la data de 31 decembrie a anului fiscal anterior anului în care se înstrăinează.”
-— Codul fiscal (Legea 227/2015), art. 466 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se împart obligațiile la o vânzare în cursul anului:

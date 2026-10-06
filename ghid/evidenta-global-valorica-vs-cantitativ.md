@@ -44,6 +44,6 @@ Legea permite (pct. 287) folosirea de metode diferite pentru categorii de stocur
 
 ## Ce face iConta.eu
 
-iConta implementează cele două metode ca module separate, complet independente: **F088**, gestiunea global-valorică (`core/stocuri.py` + `core/stocuri_api.py`, coeficient K, conturile 371/378/4428) și **F089**, gestiunea cantitativ-valorică (`core/stocuri_cv.py` + `core/stocuri_cv_api.py`, cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol). Nu există niciun cod care să lege cele două module — o firmă alege, la nivel de gestiune, care mecanism folosește, iar aplicația nu permite combinarea automată a lor pe aceleași articole.
+iConta implementează cele două metode ca module separate, complet independente: **F088**, gestiunea global-valorică (coeficient K, conturile 371/378/4428) și **F089**, gestiunea cantitativ-valorică (cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol). Nu există niciun cod care să lege cele două module — o firmă alege, la nivel de gestiune, care mecanism folosește, iar aplicația nu permite combinarea automată a lor pe aceleași articole.
 
 [iConta.eu](/)

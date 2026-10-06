@@ -14,7 +14,7 @@ Când un control fiscal recalculează amortizarea unui mijloc fix și stabileșt
 
 ::: ghid-temei
 „(1) Împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal. [...] (3) Baza de impozitare și creanța fiscală stabilite prin decizie de impunere se contestă numai împreună."
-— Legea 207/2015 (Codul de procedură fiscală), art. 268 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 268 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Elementele procedurale relevante, valabile și pentru o decizie de impunere rezultată dintr-o recalculare a amortizării fiscale:

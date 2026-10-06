@@ -16,7 +16,7 @@ Protecția numelui unei firme românești începe, formal, chiar înainte de în
 „Articolul 17
 (1) La autentificarea actului constitutiv în cazurile prevăzute la art. 5 sau, după caz, la darea de dată certă a acestuia se va prezenta dovada eliberată de oficiul registrului comerțului privind disponibilitatea și rezervarea firmei.
 (2) Notarul public va refuza autentificarea actului constitutiv sau, după caz, persoana care dă dată certă va refuza operațiunile solicitate, dacă din documentația prezentată rezultă că nu sunt îndeplinite condițiile prevăzute la alin. (1)."
-— Legea nr. 31/1990 privind societățile, art. 17 alin. (1)-(2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 17 alin. (1)-(2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Pasul practic dinaintea semnării actului constitutiv este verificarea disponibilității numelui și rezervarea lui la oficiul registrului comerțului — fără această dovadă, actul nu poate fi autentificat sau nu poate primi dată certă.

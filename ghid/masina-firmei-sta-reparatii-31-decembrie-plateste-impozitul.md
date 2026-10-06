@@ -16,15 +16,15 @@ Pentru firmă, asta înseamnă că impozitul pe o mașină imobilizată de luni 
 
 ::: ghid-temei
 „Impozitul pe mijlocul de transport este datorat pentru întregul an fiscal de persoana care deține dreptul de proprietate asupra unui mijloc de transport înmatriculat sau înregistrat în România la data de 31 decembrie a anului fiscal anterior.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Începând cu data de 1 ianuarie a anului următor radierii, proprietarul încetează să datoreze impozitul aferent mijlocului de transport.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „131. Impozitul pe mijloacele de transport nu se dă la scădere pentru anul fiscal următor dacă la 31 decembrie a anului fiscal în curs acestea se află în reparații curente, reparații capitale sau nu sunt utilizate din oricare alt motiv, inclusiv din lipsa unor piese de schimb din rețeaua comercială sau de la unitățile de reparații de profil.”
-— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 131 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IX, pct. 131 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

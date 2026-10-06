@@ -16,18 +16,18 @@ După o zi de muncă de 12 ore, salariatul are dreptul la un repaus de 24 de ore
 
 ::: ghid-temei
 „Pentru anumite sectoare de activitate, unități sau profesii se poate stabili prin negocieri colective sau individuale ori prin acte normative specifice o durată zilnică a timpului de muncă mai mică sau mai mare de 8 ore.(2) Durata zilnică a timpului de muncă de 12 ore va fi urmată de o perioadă de repaus de 24 de ore."
-— Codul muncii (Legea 53/2003), art. 115 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 115 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Salariații au dreptul între două zile de muncă la un repaus care nu poate fi mai mic de 12 ore consecutive.(2) Prin excepție, în cazul muncii în schimburi, acest repaus nu poate fi mai mic de 8 ore între schimburi."
-— Codul muncii (Legea 53/2003), art. 135 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 135 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Repausul săptămânal este de 48 de ore consecutive, de regulă sâmbăta și duminica."
-— Codul muncii (Legea 53/2003), art. 137 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 137 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „j) nerespectarea prevederilor legale privind acordarea repausului săptămânal, cu amendă de la 1.500 lei la 3.000 lei"
-— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. j) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 260 alin. (1) lit. j) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Regulile care se aplică împreună:

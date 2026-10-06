@@ -16,14 +16,14 @@ Pentru firmă, asta înseamnă că un bun ipotecat nu e „protejat" de executar
 
 ::: ghid-temei
 „Terțul nu se poate opune sechestrării unui bun al debitorului, invocând un drept de gaj, drept de ipotecă sau un privilegiu. Terțul participă la distribuirea sumelor rezultate din valorificarea bunului, potrivit legii."
-— Codul de procedură fiscală (Legea 207/2015), art. 231 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 231 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „Față de terți, inclusiv față de stat, o garanție reală și celelalte sarcini reale asupra bunurilor au un grad de prioritate care se stabilește de la momentul în care acestea au fost făcute publice prin oricare dintre metodele prevăzute de lege."
-— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Dacă există creditori care, asupra bunului vândut, au drepturi de gaj, ipotecă sau alte drepturi reale, despre care organul de executare silită a luat cunoștință în condițiile art. 239 alin. (6) și ale art. 242 alin. (9), la distribuirea sumei rezultate din vânzarea bunului, creanțele lor sunt plătite înaintea creanțelor prevăzute la art. 258 alin. (1) lit. b)."
-— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 259 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează în practică:

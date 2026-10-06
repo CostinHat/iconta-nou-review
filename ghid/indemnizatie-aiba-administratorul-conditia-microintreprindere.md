@@ -15,7 +15,7 @@ Una dintre condițiile cumulative pentru statutul de microîntreprindere e exist
 ::: ghid-temei
 „Articolul 47 [...] o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3).
 Articolul 52 [...] (3) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu mai îndeplinește condiția prevăzută la art. 47 alin. (1) lit. g) microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă. Pentru o microîntreprindere cu un singur salariat, al cărui raport de muncă încetează, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă, în termen de 30 de zile de la încetarea raportului de muncă, este angajat un nou salariat cu contract individual de muncă pe durată nedeterminată sau pe durată determinată pe o perioadă de cel puțin 12 luni."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) și art. 52 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) și art. 52 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru administrator și condiția de salariat:

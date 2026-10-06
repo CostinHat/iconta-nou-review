@@ -13,7 +13,7 @@ SAF-T nu are o secțiune dedicată „operațiuni intracomunitare”. Fișierul 
 ## Temeiul legal
 
 ::: ghid-temei
-„beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă” — HG 1/2016, norme de aplicare a Codului fiscal, art. 331, pct. 109 alin. (1) (sursă: `anaf_surse/hg_1_2016_norme_cod_fiscal.txt`, L242, verificat în dosarul F050).
+„beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă” — HG 1/2016, norme de aplicare a Codului fiscal, art. 331, pct. 109 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822), verificat în dosarul F050).
 :::
 
 Formula 4426 = 4427 e nota contabilă standard prin care se înregistrează taxarea inversă la achizițiile intracomunitare de bunuri și la serviciile primite din UE. Norma spune explicit că regula „e valabilă pentru orice alte situații în care se aplică taxarea inversă” — deci nu e o excepție de raportat separat, ci o operațiune contabilă obișnuită, care intră în Cartea Mare exact ca oricare alta.
@@ -26,6 +26,6 @@ Confuzia frecventă e că D390 „acoperă” și obligația SAF-T, sau invers �
 
 ## Ce face iConta.eu
 
-Motorul F050 (`core/intracomunitar.py`) calculează taxa prin taxare inversă și generează nota contabilă 4426 = 4427, cu rotunjire `Decimal` și `ROUND_HALF_UP`, exact cum cere norma citată mai sus. Această cercetare (dosarul F050) nu a acoperit însă fișierele SAF-T ale iConta.eu (`core/d406.py` și modulele conexe) — nu am verificat la sursă dacă generatorul SAF-T tratează în vreun fel distinct liniile provenite din operațiuni intracomunitare, deci nu afirmăm aici un comportament de produs pe care nu l-am confirmat în cod. Ce putem confirma e doar latura contabilă amonte: nota 4426 = 4427 există și e corect calculată, iar de acolo intră în evidența pe care orice generator SAF-T o citește.
+Motorul F050 calculează taxa prin taxare inversă și generează nota contabilă 4426 = 4427, cu rotunjire `Decimal` și `ROUND_HALF_UP`, exact cum cere norma citată mai sus. Această cercetare (dosarul F050) nu a acoperit însă fișierele SAF-T ale iConta.eu (aplicația și modulele conexe) — nu am verificat la sursă dacă generatorul SAF-T tratează în vreun fel distinct liniile provenite din operațiuni intracomunitare, deci nu afirmăm aici un comportament de produs pe care nu l-am confirmat în cod. Ce putem confirma e doar latura contabilă amonte: nota 4426 = 4427 există și e corect calculată, iar de acolo intră în evidența pe care orice generator SAF-T o citește.
 
 [iConta.eu](/)

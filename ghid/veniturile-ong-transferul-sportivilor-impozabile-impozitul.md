@@ -16,15 +16,15 @@ Diferența contează la cluburile care vând jucători. Un singur transfer poate
 
 ::: ghid-temei
 „(2) Veniturile realizate de organizațiile nonprofit din transferul sportivilor sunt venituri impozabile la determinarea rezultatului fiscal.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (2), titlul II (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (2), titlul II (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, la calculul rezultatului fiscal, următoarele tipuri de venituri sunt venituri neimpozabile: a) cotizațiile și taxele de înscriere ale membrilor; [...] d) veniturile obținute din vize, taxe și penalități sportive sau din participarea la competiții și demonstrații sportive;”
-— Codul fiscal (Legea 227/2015), art. 15 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 15 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul organizațiilor nonprofit, organizațiilor sindicale, organizațiilor patronale, pentru calculul rezultatului fiscal sunt neimpozabile și alte venituri realizate, până la nivelul echivalentului în lei a 15.000 euro, într-un an fiscal, dar nu mai mult de 10% din veniturile totale neimpozabile prevăzute la alin. (2)”
-— Codul fiscal, art. 15 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 15 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

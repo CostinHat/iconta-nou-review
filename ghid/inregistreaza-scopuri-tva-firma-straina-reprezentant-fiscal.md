@@ -16,17 +16,17 @@ Pentru o firmă din afara Uniunii Europene, calea e obligatorie. Codul fiscal o 
 
 ::: ghid-temei
 „Persoana impozabilă stabilită în Uniunea Europeană, dar nu în România, care are obligația să se înregistreze în scopuri de TVA în România, poate, în condițiile stabilite prin normele metodologice, să își îndeplinească această obligație prin desemnarea unui reprezentant fiscal. Persoana impozabilă nestabilită în Uniunea Europeană care are obligația să se înregistreze în scopuri de TVA în România este obligată, în condițiile stabilite prin normele metodologice, să se înregistreze prin desemnarea unui reprezentant fiscal.”
-— Codul fiscal (Legea 227/2015), art. 316 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 316 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În aplicarea prevederilor art. 316 alin. (7) din Codul fiscal, persoana impozabilă nestabilită care se înregistrează în România prin reprezentant fiscal, desemnează reprezentantul fiscal printr-o cerere depusă la organul fiscal competent la care reprezentantul propus este înregistrat în scopuri de TVA. […] Cererea trebuie însoțită de: […] a) declarația de începere a activității, care cuprinde: data și natura activității pe care o va desfășura în România, precum și de documentele prevăzute la pct. 88 alin. (6) ; […] b) copie de pe actul de constituire în străinătate a persoanei impozabile nestabilite în România; […] c) acceptul scris al persoanei propuse ca reprezentant fiscal, prin care aceasta se angajează să îndeplinească obligațiile ce îi revin conform legii și în care aceasta trebuie să precizeze natura operațiunilor; […] d) contractul încheiat între persoana nestabilită în România și reprezentantul fiscal propus, din care să rezulte întinderea mandatului acordat reprezentantului.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Nu se admite decât un singur reprezentant fiscal pentru ansamblul operațiunilor desfășurate în România de persoana impozabilă nestabilită în România. […] Pot fi desemnate ca reprezentanți fiscali orice persoane impozabile stabilite în România conform art. 266 alin. (2) lit. a) din Codul fiscal, înregistrate în scopuri de TVA conform art. 316 din Codul fiscal.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 89 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Procedura, pas cu pas:

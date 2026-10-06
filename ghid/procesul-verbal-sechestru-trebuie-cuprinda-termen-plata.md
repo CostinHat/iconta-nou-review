@@ -16,14 +16,14 @@ Cele 15 zile curg de la încheierea procesului-verbal, nu de la data la care fir
 
 ::: ghid-temei
 „mențiunea că, în cazul în care în termen de 15 zile de la data încheierii procesului-verbal de sechestru debitorul nu plătește obligațiile fiscale, se procedează la valorificarea bunurilor sechestrate;"
-— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (1) lit. l) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (1) lit. l) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 „în cazul în care creanța fiscală nu este stinsă în termen de 15 zile de la data încheierii procesului-verbal de sechestru, se procedează, fără efectuarea altei formalități, la valorificarea bunurilor sechestrate, cu excepția situațiilor în care, potrivit legii, s-a dispus desființarea sechestrului sau suspendarea executării silite."
-— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 247 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Câte un exemplar al procesului-verbal de sechestru se predă debitorului sub semnătură sau i se comunică la domiciliul ori sediul acestuia, precum și, atunci când este cazul, custodelui, acesta din urmă semnând cu mențiunea de primire a bunurilor în păstrare."
-— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 239 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Lista de verificare a procesului-verbal (art. 239 alin. (1)):

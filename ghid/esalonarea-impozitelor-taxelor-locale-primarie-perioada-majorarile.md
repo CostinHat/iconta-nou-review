@@ -16,13 +16,13 @@ Pentru o firmă cu impozit pe clădiri sau teren restant, eșalonarea la primăr
 
 ::: ghid-temei
 „Eșalonarea la plată se acordă pe o perioadă de cel mult 5 ani, iar amânarea la plată se acordă pe o perioadă de cel mult 6 luni, dar care nu poate depăși data de 20 decembrie a anului fiscal în care se acordă."
-— Codul de procedură fiscală (Legea 207/2015), art. 185 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 185 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pe perioada pentru care au fost acordate amânări sau eșalonări la plată, pentru obligațiile fiscale principale eșalonate sau amânate la plată, se datorează majorări de întârziere de 0,5% pe lună sau fracțiune de lună, reprezentând echivalentul prejudiciului."
-— Codul de procedură fiscală (Legea 207/2015), art. 185 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 185 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Nivelul majorării de întârziere este de 1% din cuantumul obligațiilor fiscale principale neachitate în termen, calculată pentru fiecare lună sau fracțiune de lună"
-— Codul de procedură fiscală (Legea 207/2015), art. 183 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 183 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regimul eșalonării la organul fiscal local:

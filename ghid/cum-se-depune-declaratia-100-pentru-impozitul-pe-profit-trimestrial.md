@@ -18,14 +18,14 @@ Depunerea D100 pentru impozitul pe profit ridică o capcană specifică în iCon
 > efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III.
 > Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la
 > termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4532-4534`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **OPANAF 587/2016, Anexa 4, Cap. I, pct. 1.2 lit. c):**
 > „Trimestrial, pentru obligațiile de plată reprezentând: ... c) impozitul pe profit datorat de persoane
 > juridice române și persoanele juridice străine, altele decât cele prevăzute la lit. a) și b), precum și
 > de către persoanele juridice cu sediul social în România, înființate potrivit legislației europene
 > (trimestrele I-III);"
-— sursă: `anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt:927-930`
+— sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662)
 
 **Structura tehnică D100, nomenclator poz. 2, cod 103:**
 > „2. 103 (poz.2) Impozit pe profit/plăți anticipate în contul impozitului pe profit anual datorat
@@ -34,7 +34,7 @@ Depunerea D100 pentru impozitul pe profit ridică o capcană specifică în iCon
 > nr.227/2015 privind Codul fiscal — 5503 — T ... a) pt. plăți anticipate trim.I,II,III: 25 a lunii
 > următoare per. de raportare — 25LU; b) pt. plăți anticipate trim.IV: 25 a lunii de sfârșit (LS) din
 > anul de raportare — 25LS"
-— sursă: `anaf_surse/d100_struct_anaf.txt:634-684`
+— sursă: 
 :::
 
 ## Pașii de depunere pentru trimestrele I-III
@@ -54,8 +54,8 @@ Pentru trimestrul IV, situația e mai puțin clară: legea (art. 41 alin. 1) și
 
 ## Ce face iConta.eu
 
-`core/d100.py` calculează corect obligația cod 103, cu bază cumulată de la 1 ianuarie și scadență 25 a lunii următoare pentru trimestrele I-III. Totuși, `core/control_fiscal_api.py` adaugă D100 la lista de obligații urmărite doar pe ramura `regim == "micro"` (funcția `_adauga_d100_micro`); pe ramura `regim == "profit"` se adaugă automat numai D101 — D100 nu apare niciodată în „obligații"/„restanțe" pentru o firmă pe profit, deși motorul de calcul o suportă complet. Aceasta e o neconformitate deschisă (R95) în registrul intern al proiectului: generarea D100 pentru o firmă pe profit rămâne, pentru moment, un pas manual.
+Aplicația calculează corect obligația cod 103, cu bază cumulată de la 1 ianuarie și scadență 25 a lunii următoare pentru trimestrele I-III. Totuși, aplicația adaugă D100 la lista de obligații urmărite doar pe ramura `regim == "micro"` (funcția `_adauga_d100_micro`); pe ramura `regim == "profit"` se adaugă automat numai D101 — D100 nu apare niciodată în „obligații"/„restanțe" pentru o firmă pe profit, deși motorul de calcul o suportă complet. Aceasta e o neconformitate deschisă (R95) în registrul intern al proiectului: generarea D100 pentru o firmă pe profit rămâne, pentru moment, un pas manual.
 
-În plus, modulul de scadențar folosit de semafor (`core/scadente.py`) nu are o ramură specială pentru tipul „d100" și cade pe regula generică pentru trimestrul IV, care calculează 25 ianuarie anul următor — dată diferită de cea generată efectiv în XML-ul D100 (25 iunie pentru micro, 25 decembrie pentru profit). Dacă folosiți lista de termene/scadențe din aplicație pentru trimestrul IV, verificați suplimentar data reală din declarația generată, nu doar afișajul din semafor.
+În plus, modulul de scadențar folosit de semafor nu are o ramură specială pentru tipul „d100" și cade pe regula generică pentru trimestrul IV, care calculează 25 ianuarie anul următor — dată diferită de cea generată efectiv în XML-ul D100 (25 iunie pentru micro, 25 decembrie pentru profit). Dacă folosiți lista de termene/scadențe din aplicație pentru trimestrul IV, verificați suplimentar data reală din declarația generată, nu doar afișajul din semafor.
 
 [iConta.eu](/)

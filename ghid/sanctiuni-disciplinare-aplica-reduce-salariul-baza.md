@@ -16,16 +16,16 @@ Lista e limitativă. Amenzile disciplinare sunt interzise, iar pentru aceeași a
 
 ::: ghid-temei
 „(1) Sancțiunile disciplinare pe care le poate aplica angajatorul în cazul în care salariatul săvârșește o abatere disciplinară sunt:a) avertismentul scris; ... b) retrogradarea din funcție, cu acordarea salariului corespunzător funcției în care s-a dispus retrogradarea, pentru o durată ce nu poate depăși 60 de zile; ... c) reducerea salariului de bază pe o durată de 1-3 luni cu 5-10%; ... d) reducerea salariului de bază și/sau, după caz, și a indemnizației de conducere pe o perioadă de 1-3 luni cu 5-10%; ... e) desfacerea disciplinară a contractului individual de muncă. ... (2) În cazul în care, prin statute profesionale aprobate prin lege specială, se stabilește un alt regim sancționator, va fi aplicat acesta. [...] (3) Sancțiunea disciplinară se radiază de drept în termen de 12 luni de la aplicare, dacă salariatului nu i se aplică o nouă sancțiune disciplinară în acest termen. Radierea sancțiunilor disciplinare se constată prin decizie a angajatorului emisă în formă scrisă."
-— Codul muncii (Legea 53/2003), art. 248 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 248 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Amenzile disciplinare sunt interzise. [...] (2) Pentru aceeași abatere disciplinară se poate aplica numai o singură sancțiune."
-— Codul muncii (Legea 53/2003), art. 249 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 249 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „Angajatorul stabilește sancțiunea disciplinară aplicabilă în raport cu gravitatea abaterii disciplinare săvârșite de salariat, avându-se în vedere următoarele:a) împrejurările în care fapta a fost săvârșită; ... b) gradul de vinovăție a salariatului; ... c) consecințele abaterii disciplinare; ... d) comportarea generală în serviciu a salariatului; ... e) eventualele sancțiuni disciplinare suferite anterior de către acesta."
-— Codul muncii (Legea 53/2003), art. 250 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 250 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(1) Sub sancțiunea nulității absolute, nicio măsură, cu excepția celei prevăzute la art. 248 alin. (1) lit. a), nu poate fi dispusă mai înainte de efectuarea unei cercetări disciplinare prealabile."
-— Codul muncii (Legea 53/2003), art. 251 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 251 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Sancțiunile, de la ușoară la gravă:

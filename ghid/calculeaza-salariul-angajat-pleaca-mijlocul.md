@@ -14,7 +14,7 @@ Codul muncii nu are un articol care să dea explicit o formulă de calcul pentru
 
 ::: ghid-temei
 „Salariatul încadrat cu contract de muncă cu timp parțial se bucura de drepturile salariaţilor cu norma întreaga, în condiţiile prevăzute de lege şi de contractele colective de muncă aplicabile. [...] Drepturile salariale se acordă proporţional cu timpul efectiv lucrat, raportat la drepturile stabilite pentru programul normal de lucru."
-— Legea nr. 53/2003 (Codul muncii), art. 106 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 106 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Principiul din acest articol — plata proporțională cu timpul efectiv lucrat, raportată la programul normal de lucru — e cel aplicat în practică și pentru un salariat cu normă întreagă care încetează contractul în cursul lunii: salariul lunii respective se calculează proporțional cu zilele/orele efectiv lucrate din programul normal al lunii, nu integral.

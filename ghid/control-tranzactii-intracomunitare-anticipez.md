@@ -14,7 +14,7 @@ Tranzacțiile intracomunitare sunt printre cele mai expuse la verificări încru
 
 ::: ghid-temei
 „Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: a) livrările intracomunitare scutite de taxă în condițiile prevăzute la art. 294 alin. (2) lit. a) și d), pentru care exigibilitatea taxei a luat naștere în luna calendaristică respectivă."
-— Legea nr. 227/2015 (Codul fiscal), art. 325 alin. (1) și lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 325 alin. (1) și lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce anticipează, în practică, riscul unui control pe tranzacții intracomunitare:

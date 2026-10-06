@@ -17,7 +17,7 @@ Formularul 301 „Decont special de taxă pe valoarea adăugată" este declaraț
 „Formularul se întocmeşte potrivit modelului din anexa nr. 1 la ordin şi se depune după cum urmează:
 a) până la data de 25 inclusiv a lunii următoare celei în care ia naştere exigibilitatea operaţiunilor prevăzute la secţiunile 1, 3, 4 şi 4.1 din formularul (301) «Decont special de taxă pe valoarea adăugată», cu excepţia achiziţiilor intracomunitare de mijloace de transport care nu sunt considerate noi conform art. 266 alin. (3) din Codul fiscal, pentru care se datorează taxă pe valoarea adăugată în România;
 b) înainte de înmatricularea în România a unui mijloc de transport nou sau a unui mijloc de transport care nu este considerat nou conform art. 266 alin. (3) din Codul fiscal şi pentru care se datorează taxa, dar nu mai târziu de data de 25 a lunii următoare celei în care ia naştere exigibilitatea taxei aferentă achiziţiei intracomunitare de astfel de mijloace de transport."
-— OPANAF nr. 592/2016 pentru aprobarea formularului (301), pct. II (sursă: anaf_surse/opanaf_592_2016_d301.txt)
+— OPANAF nr. 592/2016 pentru aprobarea formularului (301), pct. II (sursă: [OPANAF nr. 592/2016 pentru aprobarea formularului 301](https://legislatie.just.ro/Public/DetaliiDocument/175654))
 :::
 ```
 
@@ -36,6 +36,6 @@ Din instrucțiunile de completare rezultă două reguli practice:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/d301.py` există ca modul dedicat generării decontului special de TVA din operațiunile înregistrate, inclusiv logica de taxare inversă la achizițiile intracomunitare — confirmată prin validatorul oficial ANAF potrivit disciplinei de lucru a proiectului. Urmărirea termenului specific pentru mijloacele de transport (înainte de înmatriculare, nu neapărat la data de 25) rămâne o verificare pe care contabilul o face manual, în funcție de data reală de înmatriculare a fiecărui vehicul.
+La data acestui ghid, aplicația există ca modul dedicat generării decontului special de TVA din operațiunile înregistrate, inclusiv logica de taxare inversă la achizițiile intracomunitare — confirmată prin validatorul oficial ANAF potrivit disciplinei de lucru a proiectului. Urmărirea termenului specific pentru mijloacele de transport (înainte de înmatriculare, nu neapărat la data de 25) rămâne o verificare pe care contabilul o face manual, în funcție de data reală de înmatriculare a fiecărui vehicul.
 
 [iConta.eu](/)

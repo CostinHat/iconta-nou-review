@@ -12,10 +12,10 @@ poarta: v1
 
 ::: ghid-temei
 Art.49 + art.53 CF: baza impozabilă a impozitului pe veniturile microîntreprinderilor este VENITUL (cu ajustările de la art.53), nu profitul; conceptul de „pierdere fiscală” (art.31, Titlul II) nu apare nicăieri în art.47–56 (Titlul III, regimul micro).
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 
 Art.31 alin.(5) CF: "Contribuabilii care au fost plătitori de impozit pe veniturile microîntreprinderilor și care anterior au realizat pierdere fiscală intră sub incidența alin.(1) de la data la care au revenit la sistemul [de impozit pe profit]."
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 :::
 
 Pierderea fiscală (art.31, Titlul II) este un concept propriu regimului de impozit pe profit — nu există în regimul de impozit pe veniturile microîntreprinderilor (Titlul III, art.47–56), unde baza impozabilă e venitul, nu profitul. O firmă care a avut pierdere fiscală înainte de a trece la impozit micro și revine ulterior la impozit pe profit intră din nou sub incidența regulilor de reportare a pierderii de la data revenirii (art.31 alin.(5)).

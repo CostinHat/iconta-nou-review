@@ -16,15 +16,15 @@ Da. Pentru regimul dobânzilor și redevențelor între societăți asociate din
 
 ::: ghid-temei
 „În sensul prezentului capitol, termenul redevențe înseamnă plățile de orice fel primite pentru folosirea sau concesionarea utilizării oricărui drept de autor asupra unei opere literare, artistice sau științifice [...] ori pentru informații referitoare la experiența în domeniul industrial, comercial sau științific; plățile pentru folosirea sau dreptul de folosire a echipamentului industrial, comercial ori științific."
-— Codul fiscal (Legea 227/2015), art. 257 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 257 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Se consideră redevență plățile de orice natură primite pentru folosirea ori dreptul de folosință al oricăruia dintre următoarele: a) [...] d) orice echipament industrial, comercial sau științific, container, cablu, conductă, satelit, fibră optică sau tehnologii similare;"
-— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu se consideră redevență în sensul prezentei legi: a) plățile pentru achiziționarea integrală a oricărei proprietăți sau a oricărui drept de proprietate asupra tuturor elementelor menționate la alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 7 pct. 36 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

@@ -14,7 +14,7 @@ Concediul medical al unui salariat nu este doar o informație de resurse umane �
 
 ::: ghid-temei
 „[...] diferențele de indemnizații pentru incapacitate temporară de muncă cauzată de boli obișnuite sau de accidente în afara muncii, rezultate ca urmare a recalculării și aferente lunii anterioare celei în care are loc această operațiune, se includ în veniturile lunii în care sunt determinate și se declară în Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate prevăzută la art. 147 alin. (1) din Legea nr. 227/2015 privind Codul fiscal, aferentă aceleiași luni."
-— OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Ce rezultă, concret, pentru raportarea în D112:

@@ -17,14 +17,14 @@ Registrul are o funcție practică: dovedește că ieșirea bunurilor din țară
 ::: ghid-temei
 „e) un registru al nontransferurilor de bunuri transportate de persoana impozabilă sau de altă persoană în contul acesteia în afara României, dar în interiorul Comunității pentru operațiunile prevăzute la art. 270 alin. (12) lit. f)-h) din Codul fiscal, precum și pentru alte situații în care se aplică măsuri de simplificare aprobate prin ordin al ministrului finanțelor publice."
 „Nu trebuie completat acest registru pentru următoarele bunuri: 1. mijloacele de transport înmatriculate în România;"
-— HG 1/2016, norme metodologice, titlul VII, pct. 101 alin. (1) lit. e) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 101 alin. (1) lit. e) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „prestarea de servicii în beneficiul persoanei impozabile, care implică evaluarea bunurilor mobile corporale sau lucrări asupra bunurilor mobile corporale efectuate în statul membru în care se termină expedierea ori transportul bunului, cu condiția ca bunurile, după prelucrare, să fie reexpediate persoanei impozabile din România de la care fuseseră expediate sau transportate inițial;"
-— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „În cazul în care nu mai este îndeplinită una dintre condițiile prevăzute la alin. (12) , expedierea sau transportul bunului respectiv este considerat ca un transfer din România în alt stat membru. În acest caz, transferul se consideră efectuat în momentul în care condiția nu mai este îndeplinită."
-— Codul fiscal (Legea 227/2015), art. 270 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma trimite la art. 270 alin. (12) lit. f)-h), iar aceste litere au în Codul fiscal actual același conținut. Ele sunt:

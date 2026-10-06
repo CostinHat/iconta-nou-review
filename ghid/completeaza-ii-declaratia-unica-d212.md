@@ -14,7 +14,7 @@ O întreprindere individuală (II) nu are un formular separat de D212 — comple
 
 ::: ghid-temei
 „Contribuabilii au obligația depunerii Declarației unice privind impozitul pe venit și contribuțiile sociale la organul fiscal competent, pentru fiecare an fiscal, în cazul în care realizează, individual sau într-o formă de asociere, venituri/pierderi, după caz, din următoarele categorii de venit: a) activități independente; [...]"
-— Codul fiscal (Legea 227/2015), art. 122 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 122 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structural, D212 grupează veniturile din activități independente pe capitole distincte, selectate în funcție de modul de determinare a venitului net, nu de forma juridică a titularului:
@@ -33,8 +33,8 @@ Contribuțiile aferente (CAS și CASS) se declară separat, la capitolul `oblig_
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) pornește de la datele contabilului: venitul în sistem real se preia din registrul de încasări și plăți al II, norma de venit se introduce (cea publicată de direcția regională), iar aplicația calculează rândurile, contribuțiile și impozitul. Structura respectă întocmai câmpurile validate de ANAF (D212Validator), inclusiv `norma_forma_org` pentru declararea corectă a formei de organizare la capitolul de normă de venit.
+Generatorul D212 al iConta.eu pornește de la datele contabilului: venitul în sistem real se preia din registrul de încasări și plăți al II, norma de venit se introduce (cea publicată de direcția regională), iar aplicația calculează rândurile, contribuțiile și impozitul. Structura respectă întocmai câmpurile validate de ANAF (D212Validator), inclusiv `norma_forma_org` pentru declararea corectă a formei de organizare la capitolul de normă de venit.
 
-Pentru contribuabilii la sistem real, `core/rip_api.py` (funcția `fisa_d212`) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, valoarea normei se introduce, conform listei direcției regionale; venitul net, impozitul și contribuțiile pe normă le calculează declarația.
+Pentru contribuabilii la sistem real, aplicația (funcția `fisa_d212`) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, valoarea normei se introduce, conform listei direcției regionale; venitul net, impozitul și contribuțiile pe normă le calculează declarația.
 
 [iConta.eu](/)

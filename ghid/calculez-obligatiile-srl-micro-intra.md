@@ -14,7 +14,7 @@ Statutul de „micro" (impozit pe veniturile microîntreprinderilor, aplicat pe 
 
 ::: ghid-temei
 „Venitul impozabil obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice sau din reducerea capitalului social, potrivit legii, care nu reprezintă distribuții în bani sau în natură ca urmare a restituirii cotei-părți din aporturi se impun cu o cotă de 10%, impozitul fiind final. Obligația calculării, reținerii și plății impozitului revine persoanei juridice. Impozitul calculat și reținut la sursă în cazul lichidării persoanei juridice se plătește până la data depunerii situației financiare finale la oficiul registrului comerțului [...]."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din combinația regimului micro cu regimul de lichidare rezultă două obligații distincte, de calculat separat:
@@ -32,6 +32,6 @@ Din combinația regimului micro cu regimul de lichidare rezultă două obligați
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor de calcul dedicat lichidării (`core/lichidare.py`), care aplică explicit cota de 10%, impozit final, conform art. 97 alin. (5) din Codul fiscal — distinctă de regimul dividendelor (16%, alin. 7). Motorul acoperă etapele de valorificare a activelor, închiderea TVA/impozitelor curente și partajul între asociați (restituire capital social — neimpozabilă — vs. rezerve/profituri — impozabile cu 10%). Aplicația nu depune însă declarațiile la ANAF sau cererea de radiere la ONRC — acestea rămân pași manuali, pe baza calculelor produse.
+iConta.eu are un motor de calcul dedicat lichidării, care aplică explicit cota de 10%, impozit final, conform art. 97 alin. (5) din Codul fiscal — distinctă de regimul dividendelor (16%, alin. 7). Motorul acoperă etapele de valorificare a activelor, închiderea TVA/impozitelor curente și partajul între asociați (restituire capital social — neimpozabilă — vs. rezerve/profituri — impozabile cu 10%). Aplicația nu depune însă declarațiile la ANAF sau cererea de radiere la ONRC — acestea rămân pași manuali, pe baza calculelor produse.
 
 [iConta.eu](/)

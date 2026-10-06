@@ -18,13 +18,13 @@ Termenul „plăți anticipate" e folosit uneori impropriu pentru orice plată t
 > efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III.
 > Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la
 > termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4532-4534`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 41 alin. (2)-(3):**
 > „Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5), pot opta pentru calculul, declararea și
 > plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial... Opțiunea este
 > obligatorie pentru cel puțin 2 ani fiscali consecutivi."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4536-4544`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 41 alin. (8):**
 > „Contribuabilii care aplică sistemul de declarare și plată a impozitului pe profit anual, cu plăți
@@ -32,14 +32,14 @@ Termenul „plăți anticipate" e folosit uneori impropriu pentru orice plată t
 > impozitul pe profit datorat pentru anul precedent, actualizat cu indicele prețurilor de consum...
 > cu excepția plății anticipate aferente trimestrului IV care se declară și se plătește până la data
 > de 25 decembrie, respectiv până la data de 25 a ultimei luni din anul fiscal modificat."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4600-4602`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **OPANAF 587/2016, Anexa 4, Cap. I, pct. 1.3 lit. a):**
 > „până la data de 25 decembrie, pentru plățile anticipate aferente trimestrului IV, în cazul
 > contribuabililor care declară și plătesc impozit pe profit anual, cu plăți anticipate efectuate
 > trimestrial, și care determină plățile anticipate trimestriale în sumă de o pătrime din impozitul
 > datorat pentru anul precedent, potrivit art. 41 alin. (8)..."
-— sursă: `anaf_surse/opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt:987-990`
+— sursă: [OPANAF nr. 587/2016 pentru aprobarea modelului și conținutului formularelor utilizate pentru declararea impozitelor și taxelor cu regim de stabilire prin autoimpunere sau reținere la sursă](https://legislatie.just.ro/Public/DetaliiDocument/175662)
 :::
 
 ## Cele două regimuri, puse față în față
@@ -59,8 +59,8 @@ Cele două regimuri nu se amestecă: un contribuabil pe regim standard nu calcul
 
 ## Ce face iConta.eu
 
-Vectorul fiscal al firmei (`core/vector_fiscal_api.py`) reține doar regimurile „micro" și „profit" — nu are un atribut care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale (art. 41 alin. 2-3). Ca urmare, `core/d100.py` calculează întotdeauna, pentru o firmă pe „profit", formula regimului standard — bază cumulată de la 1 ianuarie — indiferent dacă firma a optat sau nu pentru regimul cu plăți anticipate. Dacă firma dvs. a exercitat această opțiune, formula de 1/4 din impozitul anului precedent nu este calculată automat de aplicație și trebuie determinată separat.
+Vectorul fiscal al firmei reține doar regimurile „micro" și „profit" — nu are un atribut care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale (art. 41 alin. 2-3). Ca urmare, aplicația calculează întotdeauna, pentru o firmă pe „profit", formula regimului standard — bază cumulată de la 1 ianuarie — indiferent dacă firma a optat sau nu pentru regimul cu plăți anticipate. Dacă firma dvs. a exercitat această opțiune, formula de 1/4 din impozitul anului precedent nu este calculată automat de aplicație și trebuie determinată separat.
 
-Notă suplimentară: modulul de scadențar folosit de semaforul de obligații (`core/scadente.py`) nu are o ramură dedicată pentru tipul „d100" și, pentru trimestrul IV, cade pe regula generică (25 ianuarie anul următor) — diferită atât de 25 decembrie (cod 103, regim standard cu formula cumulată aplicată la trimestrul IV), cât și de scadența specifică a regimului opțional. Pentru orice termen din trimestrul IV, verificați data din declarația efectiv generată, nu doar afișajul din semafor.
+Notă suplimentară: modulul de scadențar folosit de semaforul de obligații nu are o ramură dedicată pentru tipul „d100" și, pentru trimestrul IV, cade pe regula generică (25 ianuarie anul următor) — diferită atât de 25 decembrie (cod 103, regim standard cu formula cumulată aplicată la trimestrul IV), cât și de scadența specifică a regimului opțional. Pentru orice termen din trimestrul IV, verificați data din declarația efectiv generată, nu doar afișajul din semafor.
 
 [iConta.eu](/)

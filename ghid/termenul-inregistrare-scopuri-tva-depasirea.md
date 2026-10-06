@@ -14,7 +14,7 @@ Plafonul de scutire de TVA pentru întreprinderile mici a fost majorat în 2025,
 
 ::: ghid-temei
 „Persoana impozabilă care aplică regimul special de scutire și a cărei cifră de afaceri, prevăzută la alin. (2), depășește plafonul de scutire prevăzut la alin. (1) trebuie să solicite înregistrarea în scopuri de TVA, conform art. 316, cel târziu la data depășirii plafonului. Regimul normal de taxare se aplică din data depășirii plafonului prevăzut la alin. (1), începând cu tranzacția care conduce la depășirea plafonului."
-— Legea 227/2015 (Codul fiscal), art. 310 alin. (6), în forma aplicabilă de la 1 septembrie 2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 310 alin. (6), în forma aplicabilă de la 1 septembrie 2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aspectele importante ale regulii actuale:

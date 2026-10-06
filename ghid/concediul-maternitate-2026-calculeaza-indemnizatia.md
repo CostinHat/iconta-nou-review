@@ -16,7 +16,7 @@ Concediul de maternitate are o durată fixă prin lege, iar indemnizația se cal
 „ART. 23 (1) Asiguratele au dreptul la concedii pentru sarcină și lăuzie, pe o perioadă de 126 de zile calendaristice, perioadă în care beneficiază de indemnizație de maternitate.
 
 ART. 25 (1) Cuantumul brut lunar al indemnizației de maternitate este de 85% din baza de calcul stabilită conform art. 10."
-— OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 23 alin. (1) și art. 25 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, art. 23 alin. (1) și art. 25 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Elementele de calcul rezultă din text și din articolele conexe:
@@ -34,6 +34,6 @@ Elementele de calcul rezultă din text și din articolele conexe:
 
 ## Ce face iConta.eu
 
-Am verificat în `core/salarizare.py`: aplicația **calculează automat indemnizația de maternitate** (codul de concediu „08"), aplicând cota de 85% prevăzută de art. 25 alin. (1) din OUG 158/2005 (linia care mapează codurile „08" — maternitate — și „09" — îngrijire copil — la procentul de 0,85), tratează suma ca neimpozabilă conform art. 62 lit. c) din Codul fiscal și aplică regulile specifice de contribuții (CAS 25% uniform, CASS scutit pentru acest cod). Calculul bazei pe cele 6 luni de referință și plafonarea la 12 salarii minime se fac pe baza datelor introduse de contabil despre veniturile anterioare ale salariatei.
+Am verificat în aplicație: aplicația **calculează automat indemnizația de maternitate** (codul de concediu „08"), aplicând cota de 85% prevăzută de art. 25 alin. (1) din OUG 158/2005 (linia care mapează codurile „08" — maternitate — și „09" — îngrijire copil — la procentul de 0,85), tratează suma ca neimpozabilă conform art. 62 lit. c) din Codul fiscal și aplică regulile specifice de contribuții (CAS 25% uniform, CASS scutit pentru acest cod). Calculul bazei pe cele 6 luni de referință și plafonarea la 12 salarii minime se fac pe baza datelor introduse de contabil despre veniturile anterioare ale salariatei.
 
 [iConta.eu](/)

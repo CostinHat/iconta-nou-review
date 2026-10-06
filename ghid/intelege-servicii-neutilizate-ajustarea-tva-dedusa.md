@@ -16,12 +16,12 @@ Contează când firma își pierde dreptul de deducere, de exemplu la trecerea l
 
 ::: ghid-temei
 „persoana impozabilă își pierde sau câștiga dreptul de deducere a taxei pentru bunurile mobile nelivrate și serviciile neutilizate."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) În sensul alin. (1) , prin servicii neutilizate se înțelege imobilizările necorporale care nu sunt complet amortizate la momentul la care intervine obligația sau dreptul de ajustare a taxei. Serviciile de altă natură se consideră utilizate în perioada fiscală în care au fost achiziționate. Ajustarea se efectuează în cazul serviciilor neutilizate numai pentru taxa aferentă valorii rămase neamortizate."
-— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), Titlul VII, pct. 78 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Mutarea de bani dintr-un cont bancar al firmei în altul nu e nici venit, nici c
 
 ::: ghid-temei
 „În contul de viramente interne se înregistrează transferurile de disponibilități bănești între conturile la bănci, precum și între conturile la bănci și casieria entității."
-— OMFP 1802/2014, Reglementări contabile, pct. 307 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 307 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce spune, punctual, reglementarea:
@@ -31,6 +31,6 @@ Ce spune, punctual, reglementarea:
 
 ## Ce face iConta.eu
 
-Modulul de bancă al iConta.eu (`core/banca.py`) clasifică automat, din descrierea liniei de extras, operațiunile de tip „numerar" (retragere, alimentare ATM, depunere/ridicare numerar) și le contează prin contul **581 „Viramente interne"**, conform monografiei OMFP 1802/2014 — acesta acoperă transferurile dintre bancă și casierie. Pentru transferul de disponibilități **între două conturi bancare ale firmei** (nu bancă–casierie), aplicația nu are, la data acestui ghid, o recunoaștere automată a perechii de mișcări (ieșire dintr-un cont, intrare în altul) ca fiind unul și același transfer intern — contarea prin 581 pentru acest caz rămâne o operațiune manuală a contabilului la momentul procesării extraselor.
+Modulul de bancă al iConta.eu clasifică automat, din descrierea liniei de extras, operațiunile de tip „numerar" (retragere, alimentare ATM, depunere/ridicare numerar) și le contează prin contul **581 „Viramente interne"**, conform monografiei OMFP 1802/2014 — acesta acoperă transferurile dintre bancă și casierie. Pentru transferul de disponibilități **între două conturi bancare ale firmei** (nu bancă–casierie), aplicația nu are, la data acestui ghid, o recunoaștere automată a perechii de mișcări (ieșire dintr-un cont, intrare în altul) ca fiind unul și același transfer intern — contarea prin 581 pentru acest caz rămâne o operațiune manuală a contabilului la momentul procesării extraselor.
 
 [iConta.eu](/)

@@ -14,10 +14,10 @@ Da — cheltuielile de transport efectuate pe perioada delegării unui salariat 
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice, inclusiv cele reglementate prin acte normative în vigoare [...]"
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[Sunt cheltuieli deductibile cele] efectuate pentru salariați pe perioada delegării/detașării în altă localitate, în țară și în străinătate, în interesul serviciului, reprezentând indemnizațiile plătite acestora, precum și cheltuielile de transport și cazare."
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (7) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (7) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Notă: art. 68 alin. (7) lit. g) e o condiție de deductibilitate scrisă pentru persoanele fizice cu activități independente (PFA), la titlul IV al Codului fiscal, nu pentru persoanele juridice. Pentru o firmă (SRL) plătitoare de impozit pe profit/venitul microîntreprinderii, temeiul deductibilității cheltuielilor de delegare ale salariaților este regula generală de la art. 25 alin. (1) — nu există, la titlul II, o listă separată de condiții specifice delegării, ca la PFA. Practic însă rezultatul e același: cheltuiala e deductibilă dacă e efectuată în interesul serviciului și justificată cu documente.

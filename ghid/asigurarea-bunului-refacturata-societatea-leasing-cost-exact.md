@@ -16,15 +16,15 @@ Contează în practică la ambele capete. Locatarul nu are TVA de dedus pe asigu
 
 ::: ghid-temei
 „sumele achitate de o persoană impozabilă în numele și în contul altei persoane și care apoi se decontează acesteia, inclusiv atunci când locatorul asigură el însuși bunul care face obiectul unui contract de leasing financiar sau operațional și refacturează locatarului costul exact al asigurării, precum și sumele încasate de o persoană impozabilă în numele și în contul unei alte persoane."
-— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Refacturarea de către locator a costului exact al asigurării reprezintă o operațiune de asigurare scutită de TVA conform art. 292 alin. (2) lit. b) din Codul fiscal, distinctă și independentă de operațiunea de leasing."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 31 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „operațiunile de asigurare și/sau de reasigurare, precum și prestările de servicii în legătură cu operațiunile de asigurare și/sau de reasigurare efectuate de persoanele impozabile care intermediază astfel de operațiuni;"
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

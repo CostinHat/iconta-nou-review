@@ -16,15 +16,15 @@ Pentru persoana verificată, decizia este documentul care arată că verificarea
 
 ::: ghid-temei
 „Raportul prevăzut la art. 145 stă la baza emiterii deciziei de impunere sau, după caz, a unei decizii de încetare a procedurii de verificare, în cazul în care nu se ajustează baza de impozitare."
-— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Decizia de impunere sau de încetare a procedurii de verificare se comunică persoanei fizice verificate."
-— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 146 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Formularul „Decizie de încetare a procedurii de verificare a situației fiscale personale“ se va completa la finalizarea verificării situației fiscale personale a persoanelor fizice cu privire la impozitul pe venit, în cazul în care nu se ajustează baza de impozitare."
-— OPANAF 2117/2018, Anexa nr. 9.b (sursă: anaf_surse/ordin_2117_2018.html)
+— OPANAF 2117/2018, Anexa nr. 9.b (sursă: [OPANAF nr. 2117/2018 privind formularele utilizate în verificarea situației fiscale personale](https://legislatie.just.ro/Public/DetaliiDocument/204506))
 :::
 
 Ce conține decizia, potrivit formularului din Anexa 9.a:

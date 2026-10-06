@@ -14,7 +14,7 @@ Un PFA impus pe bază de normă anuală de venit nu poate rămâne la acest regi
 
 ::: ghid-temei
 „Contribuabilii, pentru care venitul net se determină pe bază de norme de venit și care în anul fiscal anterior au înregistrat un venit brut anual mai mare decât echivalentul în lei al sumei de 25.000 euro, începând cu anul fiscal următor au obligația determinării venitului net anual în sistem real. Cursul de schimb valutar utilizat pentru determinarea echivalentului în lei al sumei de 25.000 euro este cursul de schimb mediu anual comunicat de Banca Națională a României, pentru anul de realizare a venitului. Această categorie de contribuabili are obligația să completeze și să depună Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice până la termenul legal de depunere prevăzut la art. 122 alin. (3)."
-— Legea 227/2015 (Codul fiscal), art. 69 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 69 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări din același articol clarifică practic pragul:

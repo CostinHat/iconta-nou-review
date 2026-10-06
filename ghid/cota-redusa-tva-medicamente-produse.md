@@ -14,7 +14,7 @@ Medicamentele de uz uman beneficiază de cotă redusă de TVA, distinctă de cot
 
 ::: ghid-temei
 „Articolul 291 alin. (2) lit. a) livrarea de medicamente de uz uman"
-— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Cota redusă se aplică **medicamentelor de uz uman** — textul de lege nu extinde reducerea la medicamentele de uz veterinar și nici la alte categorii conexe (dispozitive medicale, consumabile sanitare, suplimente).

@@ -14,7 +14,7 @@ Termenul de depunere a D112 (Declarația privind obligațiile de plată a contri
 
 ::: ghid-temei
 „Plătitorii de salarii și de venituri asimilate salariilor au obligația de a calcula și de a reține impozitul aferent veniturilor fiecărei luni la data efectuării plății acestor venituri, precum și de a-l plăti la bugetul de stat până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc aceste venituri."
-— Legea nr. 227/2015 (Codul fiscal), art. 80 alin. (1), coroborat cu art. 81 alin. (1): „Plătitorii de salarii și de venituri asimilate salariilor au obligația să completeze și să depună Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate pentru fiecare beneficiar de venit, până la termenul de plată a impozitului, inclusiv." (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 80 alin. (1), coroborat cu art. 81 alin. (1): „Plătitorii de salarii și de venituri asimilate salariilor au obligația să completeze și să depună Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate pentru fiecare beneficiar de venit, până la termenul de plată a impozitului, inclusiv." (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă pentru termenul efectiv al D112 în 2026:

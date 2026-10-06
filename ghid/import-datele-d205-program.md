@@ -18,7 +18,7 @@ Pentru D205, întrebarea „cum import datele" are, într-un program de contabil
 <benef tip_venit1=\"08\" den1=\"...\" Rezid=\"1\" cifR=\"...\" tip_plata=\"2\" divid_D=\"...\" divid_P=\"...\" baza1=\"...\" imp1=\"...\"/>
 </sect_II>
 </declaratie205>"
-— OPANAF nr. 102/2025, structura declarației 205 (sursă: anaf_surse/d205_struct_anaf.txt) — notație reconstituită pe baza denumirilor exacte de câmpuri din documentul de structură (documentul sursă e un tabel de câmpuri, nu un exemplu XML redat ca atare)
+— OPANAF nr. 102/2025, structura declarației 205 (sursă: [Structura fișierului XML pentru declarația 205, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D205_2025_120226.pdf)) — notație reconstituită pe baza denumirilor exacte de câmpuri din documentul de structură (documentul sursă e un tabel de câmpuri, nu un exemplu XML redat ca atare)
 :::
 
 Structura XML impusă de ANAF nu specifică o sursă anume a datelor — cere doar rezultatul final, corect calculat: totaluri pe secțiune (`Tbaza`, `Timp`, `nrben`) și detaliu pe fiecare beneficiar (`baza1`, `imp1`, `divid_D`, `divid_P`). De unde vin aceste cifre — dintr-un import de fișier extern sau direct din contabilitatea deja ținută în program — este o decizie de implementare a fiecărui software, nu o cerință a normei.
@@ -34,6 +34,6 @@ Structura XML impusă de ANAF nu specifică o sursă anume a datelor — cere do
 
 ## Ce face iConta.eu
 
-iConta.eu **nu are un flux de „import" separat pentru D205** — declarația se generează direct din registrele proprii ale aplicației (`core/d205.py`, `core/repo_d205.py`): mișcările contului 457 pentru fiecare asociat, datele de identificare din modulul de asociați și profilul firmei. Contabilul nu introduce a doua oară sumele de dividende plătite, ele fiind preluate automat din contabilitatea deja înregistrată în aplicație; condiția este ca aceste înregistrări (plăți de dividende, date de asociați) să fie corecte și complete la momentul generării declarației.
+iConta.eu **nu are un flux de „import" separat pentru D205** — declarația se generează direct din registrele proprii ale aplicației: mișcările contului 457 pentru fiecare asociat, datele de identificare din modulul de asociați și profilul firmei. Contabilul nu introduce a doua oară sumele de dividende plătite, ele fiind preluate automat din contabilitatea deja înregistrată în aplicație; condiția este ca aceste înregistrări (plăți de dividende, date de asociați) să fie corecte și complete la momentul generării declarației.
 
 [iConta.eu](/)

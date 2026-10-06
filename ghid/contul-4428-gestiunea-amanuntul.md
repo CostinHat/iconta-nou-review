@@ -39,7 +39,7 @@ Contul 4428 e un cont bifuncțional folosit, în gestiunea la preț cu amănuntu
 
 ## Ce face iConta.eu
 
-`core/stocuri.py` folosește 4428 exact conform normei: la recepție (`nir_gv`), linia `371=4428` pentru TVA neexigibilă aferentă prețului de vânzare; la descărcarea lunară (`descarcare_gv`), linia `4428=371` pentru TVA aferentă vânzărilor lunii, calculată proporțional din stocul curent. Formula coeficientului K, implementată în `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)`, scade explicit soldul și rulajul contului 4428 din numitor — `numitor = (Si371 + Rd371) - (Si4428 + Rc4428)` — exact cum cere nota 2) de la pct. 286 alin. (4).
+Aplicația folosește 4428 exact conform normei: la recepție (`nir_gv`), linia `371=4428` pentru TVA neexigibilă aferentă prețului de vânzare; la descărcarea lunară (`descarcare_gv`), linia `4428=371` pentru TVA aferentă vânzărilor lunii, calculată proporțional din stocul curent. Formula coeficientului K, implementată în `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)`, scade explicit soldul și rulajul contului 4428 din numitor — `numitor = (Si371 + Rd371) - (Si4428 + Rc4428)` — exact cum cere nota 2) de la pct. 286 alin. (4).
 
 Risc tehnic de reținut: funcția `descarca_luna` citește rulajele 371/378/4428 **fără să filtreze pe sursa operațiunii** (spre deosebire de rulajul de vânzări, 707, care e filtrat explicit pe sursele de gestiune). Dacă firma combină gestiunea global-valorică cu ecranul manual de „TVA la încasare (art. 282)” — care produce note tot pe 4428 — rulajele celor două mecanisme se pot aduna, denaturând coeficientul K calculat automat.
 

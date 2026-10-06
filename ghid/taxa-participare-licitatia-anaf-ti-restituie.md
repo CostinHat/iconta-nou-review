@@ -16,10 +16,10 @@ Pentru o firmă care licitează, taxa nu e un cost, ci o garanție. Devine pierd
 
 ::: ghid-temei
 „Taxa de participare reprezintă 10% din prețul de pornire a licitației și se plătește în lei la unitatea teritorială a Trezoreriei Statului. în termen de 5 zile de la data întocmirii procesului-verbal de licitație, organul fiscal restituie taxa de participare participanților care au depus oferte de cumpărare și care nu au fost declarați adjudecatari, iar în cazul adjudecării, taxa se reține în contul prețului. Taxa de participare nu se restituie ofertanților care nu s-au prezentat la licitație, celui care a refuzat încheierea procesului-verbal de adjudecare, precum și adjudecatarului care nu a plătit prețul."
-— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (15) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (15) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „După adjudecarea bunului adjudecatarul este obligat să plătească prețul, diminuat cu contravaloarea taxei de participare, în lei, în numerar la o unitate a Trezoreriei Statului sau prin decontare bancară, în cel mult 5 zile de la data adjudecării."
-— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 252 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Detalii practice:

@@ -15,7 +15,7 @@ Când un asociat a împrumutat firma (de exemplu prin contul 4551 „Acționari/
 ::: ghid-temei
 „Capitalul social se poate mări prin emisiunea de acțiuni noi sau prin majorarea valorii nominale a acțiunilor existente în schimbul unor noi aporturi în numerar și/sau în natură.
 (2) De asemenea, acțiunile noi sunt liberate prin încorporarea rezervelor, cu excepția rezervelor legale, precum și a beneficiilor sau a primelor de emisiune, ori prin compensarea unor creanțe lichide și exigibile asupra societății cu acțiuni ale acesteia."
-— Legea nr. 31/1990, art. 210 alin. (1)-(2), Titlul IV „Modificarea actului constitutiv" (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 210 alin. (1)-(2), Titlul IV „Modificarea actului constitutiv" (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Articolul se află în titlul dedicat modificării actului constitutiv, aplicabil oricărei forme de societate, nu doar societăților pe acțiuni. Din text rezultă condițiile de fond ale operațiunii:

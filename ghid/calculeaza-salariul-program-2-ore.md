@@ -46,6 +46,6 @@ Greșeala frecventă e aplicarea impozitului chiar și când baza impozabilă a 
 
 ## Ce face iConta.eu
 
-`core/salarizare.py` calculează automat baza impozabilă și o plafonează la zero când deducerea personală depășește baza rămasă, evitând un impozit negativ. Brutul proporțional și verificarea podelei folosesc aceleași reguli „period-aware" din `core.common.COTE`, aplicate corect pentru fereastra din 2026 în care cade luna calculată.
+Aplicația calculează automat baza impozabilă și o plafonează la zero când deducerea personală depășește baza rămasă, evitând un impozit negativ. Brutul proporțional și verificarea podelei folosesc aceleași reguli „period-aware" din `core.common.COTE`, aplicate corect pentru fereastra din 2026 în care cade luna calculată.
 
 [iConta.eu](/)

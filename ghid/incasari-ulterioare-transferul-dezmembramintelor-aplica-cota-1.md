@@ -16,17 +16,17 @@ Regula fixează cota în trecut. Chiar dacă între autentificare și încasare 
 
 ::: ghid-temei
 „În cazul veniturilor determinate și încasate ulterior autentificării actului notarial prin care se transferă dezmembrămintele dreptului de proprietate, cota de impunere este cea utilizată la data autentificării actului notarial (1% sau 3%, după caz). În cazul veniturilor determinate și încasate ulterior transferului dezmembrămintelor dreptului de proprietate prin hotărâre judecătorească definitivă sau alt act juridic prevăzut de lege, cota de impunere este de 3%."
-— OPANAF 396/2025, Anexa nr. 2, pct. 12 (sursă: anaf_surse/ordin_396_2025.html)
+— OPANAF 396/2025, Anexa nr. 2, pct. 12 (sursă: [OPANAF nr. 396/2025 pentru aprobarea formularului 217](https://legislatie.just.ro/Public/DetaliiDocument/296042))
 :::
 
 ::: ghid-temei
 „Impozitul se calculează de către contribuabili, la momentul încasării venitului, prin aplicarea cotei prevăzute la alin. (1) , utilizată la data autentificării actului notarial, asupra bazei de calcul egală cu venitul încasat."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (6^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (6^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „3% pentru construcțiile de orice fel și terenurile aferente acestora, precum și asupra terenurilor de orice fel fără construcții, deținute o perioadă de până la 3 ani inclusiv; ... b) 1% pentru imobilele descrise la lit. a) , deținute o perioadă mai mare de 3 ani."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. a) și b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele trei situații:

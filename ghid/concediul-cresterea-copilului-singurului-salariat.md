@@ -16,7 +16,7 @@ Da, poate afecta — și pentru un motiv precis: legea leagă păstrarea regimul
 „g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3);
 [...]
 Art. 48 alin. (3^1) În sensul prezentului titlu, în cazul în care raportul de muncă este suspendat, potrivit legii, condiția prevăzută la art. 47 alin. (1) lit. g) se consideră îndeplinită dacă perioada de suspendare este mai mică de 30 de zile și situația este înregistrată pentru prima dată în anul fiscal respectiv. În caz contrar sunt aplicabile, în mod corespunzător, dispozițiile art. 52 alin. (3)."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) și art. 48 alin. (3^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) și art. 48 alin. (3^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, urmărit până la capăt prin trimiterile din text:

@@ -16,13 +16,13 @@ Atenție: unele materiale mai vechi indică 180 de zile. Textul în vigoare al L
 
 ::: ghid-temei
 „Durata de acordare a indemnizației pentru incapacitate temporară de muncă este de 183 de zile în intervalul de un an, socotită din prima zi de concediu medical."
-— Legea 346/2002, art. 35 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 35 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(1) În situații temeinic motivate de posibilitatea recuperării medicale și profesionale a asiguratului medicul specialist poate propune prelungirea concediului medical peste 183 de zile."
-— Legea 346/2002, art. 36 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 36 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(2) Medicul asigurătorului poate decide, după caz, prelungirea concediului medical pentru continuarea programului recuperator, reluarea activității în același loc de muncă sau în alt loc de muncă ori poate propune pensionarea de invaliditate. (3) Prelungirea concediului medical peste 183 de zile se face pentru cel mult 90 de zile, în funcție de evoluția cazului și de rezultatele acțiunilor de recuperare, conform procedurilor stabilite de CNPP."
-— Legea 346/2002, art. 36 alin. (2) și (3) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 36 alin. (2) și (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Pe scurt:

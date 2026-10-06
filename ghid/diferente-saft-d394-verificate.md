@@ -14,10 +14,10 @@ D394 și fișierul standard de control fiscal (SAF-T, depus prin declarația D40
 
 ::: ghid-temei
 „Natura informaţiilor pe care contribuabilul/plătitorul trebuie să le declare prin fişierul standard de control fiscal (SAF-T) este prevăzută în anexa nr. 1. [...] Fişierul standard de control fiscal (SAF-T) se transmite de către contribuabili/plătitori prin intermediul Declaraţiei informative privind fişierul standard de control fiscal, denumită în continuare Declaraţia informativă D406, al cărei model este prevăzut în anexa nr. 2."
-— OPANAF 1783/2021, art. 1-2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, art. 1-2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
 „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare."
-— OPANAF 3769/2015, art. 1 (sursă: anaf_surse/opanaf_3769_2015_d394_baza.txt)
+— OPANAF 3769/2015, art. 1 (sursă: [OPANAF nr. 3769/2015 privind declarația informativă D394](https://legislatie.just.ro/Public/DetaliiDocument/174685))
 :::
 
 Cele două declarații au baze legale, obligații și conținut diferite:

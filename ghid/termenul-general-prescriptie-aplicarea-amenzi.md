@@ -16,15 +16,15 @@ Legile speciale pot prevedea însă alte termene. Cel mai cunoscut exemplu, pent
 
 ::: ghid-temei
 „Aplicarea sancțiunii amenzii contravenționale se prescrie în termen de 6 luni de la data săvârșirii faptei."
-— OG 2/2001, art. 13 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Prin legi speciale pot fi prevăzute și alte termene de prescripție pentru aplicarea sancțiunilor contravenționale."
-— OG 2/2001, art. 13 alin. (4) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 13 alin. (4) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „Prin derogare de la prevederile art. 13 alin. (1) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin Legea nr. 180/2002, cu modificările și completările ulterioare, aplicarea sancțiunii amenzii pentru contravențiile prevăzute în prezentul titlu se prescrie în termen de 5 ani de la data săvârșirii faptei."
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

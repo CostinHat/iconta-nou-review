@@ -14,7 +14,7 @@ Când o firmă vinde cu livrare prin curier și încasare ramburs, curierul îi 
 
 ::: ghid-temei
 „Principiul necompensării. Orice compensare între elementele de active și datorii sau între elementele de venituri și cheltuieli este interzisă. [...] Toate creanțele și datoriile trebuie înregistrate distinct în contabilitate, pe bază de documente justificative."
-— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 56 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1802/2014 pentru aprobarea reglementărilor contabile privind situațiile financiare anuale individuale și consolidate, pct. 56 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 **Notă de onestitate:** legislația verificată nu conține un articol dedicat exclusiv „comisionului reținut de curier" — situația se încadrează, ca aplicație generală, sub principiul contabil al necompensării de mai sus (și, complementar, sub principiul contabilității de angajamente, care cere înregistrarea veniturilor și cheltuielilor pe măsură ce se produc, nu doar la nivelul sumei nete încasate).

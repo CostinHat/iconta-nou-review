@@ -16,13 +16,13 @@ Scăderea are însă condiții. Activele trebuie să facă parte din categoriile
 
 ::: ghid-temei
 „I - valoarea imobilizărilor în curs de execuție ocazionate de achiziția/producția de active, înregistrate în evidența contabilă începând cu data de 1 ianuarie 2024, respectiv începând cu prima zi a anului fiscal modificat care începe în anul 2024;"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul I (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul I (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „A - amortizarea contabilă la nivelul costului istoric aferentă activelor achiziționate/produse începând cu data de 1 ianuarie 2024/prima zi a anului fiscal modificat care începe în anul 2024. Nu se cuprinde în acest indicator amortizarea contabilă a activelor incluse în valoarea indicatorului I."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul A (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (3), indicatorul A (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „au obligația de a păstra în patrimoniu activele respective cel puțin o perioadă egală cu jumătate din durata de utilizare economică, stabilită potrivit reglementărilor contabile aplicabile, dar nu mai mult de 5 ani."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

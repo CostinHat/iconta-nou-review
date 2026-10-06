@@ -16,10 +16,10 @@ Practic, angajatorul recalculează indemnizația după regulile accidentului de 
 
 ::: ghid-temei
 „(5) Sumele care reprezintă diferențe la indemnizațiile de incapacitate temporară de muncă, ca urmare a confirmării unui accident de muncă sau unei boli profesionale, se recuperează de către angajatori de la casele teritoriale de pensii, indiferent de codul de indemnizație înscris pe certificatul medical."
-— Legea 346/2002, art. 33 alin. (5) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 33 alin. (5) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 
 „(4) Sumele plătite de casele de asigurări de sănătate județene pentru indemnizațiile de incapacitate temporară de muncă aferente cazurilor confirmate de accidente de muncă sau boli profesionale se recuperează de la casele teritoriale de pensii, indiferent de codul de indemnizație înscris pe certificatul medical."
-— Legea 346/2002, art. 33 alin. (4) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 33 alin. (4) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Cum se procedează:

@@ -14,13 +14,13 @@ Depunerea cu întârziere a D394 e o contravenție — cu amendă între 500 și
 
 ::: ghid-temei
 „Declaraţia se depune la organul fiscal competent până în data de 30 inclusiv a lunii următoare încheierii perioadei de raportare, declarate pentru depunerea decontului (luna, trimestrul etc.) [...] În cazul în care perioada de raportare este luna calendaristică, termenul de depunere a declaraţiei pentru luna ianuarie este până la data de 28, respectiv 29 februarie."
-— OPANAF 2194/2025, Anexa 2 pct. 2 (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025, Anexa 2 pct. 2 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 
 „neîndeplinirea de către contribuabil/plătitor la termen a obligaţiilor de declarare prevăzute de lege [...] precum şi orice informaţii în legătură cu impozitele, taxele, contribuţiile, bunurile şi veniturile impozabile, dacă legea prevede declararea acestora"
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (1) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „cu amendă de la 1.000 lei la 5.000 lei pentru persoanele juridice încadrate în categoria contribuabililor mijlocii şi mari şi cu amendă de la 500 lei la 1.000 lei, pentru celelalte persoane juridice, precum şi pentru persoanele fizice, în cazul săvârşirii faptei prevăzute la alin. (1) lit. a), b) şi i) - m)"
-— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din aceste texte rezultă:
@@ -38,7 +38,7 @@ Din aceste texte rezultă:
 
 ## Ce face iConta.eu
 
-Termenul de depunere D394 e urmărit intern la ziua 30 a lunii următoare (`core/scadente.py`), aliniat cu textul citat mai sus, și cu excepția lunii ianuarie tratată separat pentru februarie. Semaforul de conformare fiscală din aplicație verifică declarațiile datorate față de vectorul fiscal al firmei și le compară cu cele depuse, pentru a semnala termenele apropiate sau depășite.
+Termenul de depunere D394 e urmărit intern la ziua 30 a lunii următoare, aliniat cu textul citat mai sus, și cu excepția lunii ianuarie tratată separat pentru februarie. Semaforul de conformare fiscală din aplicație verifică declarațiile datorate față de vectorul fiscal al firmei și le compară cu cele depuse, pentru a semnala termenele apropiate sau depășite.
 
 Dincolo de această urmărire a termenului, **iConta.eu nu depune automat D394 la ANAF** — fișierul e validat local prin validatorul oficial (DUK) înainte de a fi considerat gata, dar transmiterea efectivă, cu respectarea sau nu a termenului, rămâne manuală, prin portalul SPV.
 

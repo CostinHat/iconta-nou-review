@@ -14,7 +14,7 @@ Punctul fix al oricărei închideri de lună de salarizare e termenul legal de d
 
 ::: ghid-temei
 „Persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate."
-— Legea 227/2015 (Codul fiscal), art. 147 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 147 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe baza acestui termen, checklist-ul minim de închidere a lunii de salarizare cuprinde:

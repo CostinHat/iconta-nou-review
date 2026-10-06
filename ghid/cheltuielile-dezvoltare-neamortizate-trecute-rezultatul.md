@@ -16,17 +16,17 @@ Contează în practică pentru că suma nu trece prin clasa 6. Dacă nu este urm
 
 ::: ghid-temei
 „La stabilirea rezultatului fiscal se iau în calcul și elemente similare veniturilor și cheltuielilor, potrivit normelor metodologice, precum și pierderile fiscale care se recuperează în conformitate cu prevederile art. 31"
-— Codul fiscal (Legea 227/2015), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „valoarea neamortizată a cheltuielilor de dezvoltare care a fost înregistrată în rezultatul reportat. În acest caz, această valoare este deductibilă fiscal pe perioada rămasă de amortizat a acestor imobilizări, respectiv durata inițială stabilită conform legii, mai puțin perioada pentru care s-a calculat amortizarea;"
-— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (3) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (3) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „precum și cheltuielile de dezvoltare care din punct de vedere contabil reprezintă imobilizări necorporale se recuperează prin intermediul deducerilor de amortizare liniară pe perioada contractului sau pe durata de utilizare, după caz."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

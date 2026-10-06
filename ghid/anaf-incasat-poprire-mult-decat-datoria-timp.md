@@ -16,12 +16,12 @@ Situația apare frecvent când poprirea este înființată simultan la mai multe
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (1), se restituie din oficiu următoarele sume: [...] b) cele încasate prin poprire, în plus față de creanțele fiscale pentru care s-a înființat poprirea, care se restituie în termen de cel mult 5 zile lucrătoare de la data încasării."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (4) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (4) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „Se restituie, la cerere, contribuabilului/plătitorului orice sumă plătită sau încasată fără a fi datorată."
-— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 168 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică:

@@ -14,7 +14,7 @@ D394 nu e o oglindă a tuturor documentelor emise sau primite de firmă: ea rapo
 
 ::: ghid-temei
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: anaf_surse/opanaf_2194_2025_d394.txt:741-742)
+— OPANAF 2194/2025, Anexa 2 pct.1 lit.b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - **Achizițiile intracomunitare** — nu intră în D394 dacă trebuie declarate în D390 (VIES). Atenție la nuanță: regula privește direcția de **achiziție**, nu și livrarea — livrările intracomunitare (mărfuri/servicii vândute către un partener UE) rămân în D394, ca operațiune de tip L, reclasificată LS la cotă 0.
@@ -29,7 +29,7 @@ D394 nu e o oglindă a tuturor documentelor emise sau primite de firmă: ea rapo
 
 ## Ce face iConta.eu
 
-Generatorul D394 (`core/d394.py`, cu accesul la date în `core/repo_d394.py`) exclude automat din calcul: achizițiile de la parteneri UE și non-UE (direcția „primită" e sărită explicit, cu comentariul din cod „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390"), documentele de tip proformă/aviz (filtrate după tipul de document) și, din 17.09.2026, facturile cu status anulat, stornat sau ciornă — aliniat cu aceeași regulă folosită la decontul D300. Înainte de acest ultim fix, o factură anulată sau stornată putea intra în D394 cu bază și TVA, deși D300 o excludea deja; corecția a unificat cele două surse.
+Generatorul D394 (cu accesul la date în aplicație) exclude automat din calcul: achizițiile de la parteneri UE și non-UE (direcția „primită" e sărită explicit, cu comentariul din cod „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390"), documentele de tip proformă/aviz (filtrate după tipul de document) și, din 17.09.2026, facturile cu status anulat, stornat sau ciornă — aliniat cu aceeași regulă folosită la decontul D300. Înainte de acest ultim fix, o factură anulată sau stornată putea intra în D394 cu bază și TVA, deși D300 o excludea deja; corecția a unificat cele două surse.
 
 Depunerea efectivă a declarației rămâne manuală, prin portalul SPV — iConta nu transmite fișierul automat la ANAF, ci doar îl generează și îl validează local.
 

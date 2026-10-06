@@ -16,18 +16,18 @@ Contează pentru că deciziile de impunere, somațiile și certificatele de ates
 
 ::: ghid-temei
 „Contribuabilii au obligația să depună declarații în termen de 30 de zile de la data apariției oricăreia dintre următoarele situații: a) intervin schimbări privind domiciliul fiscal al contribuabilului;"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 61 partea introductivă și lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 61 partea introductivă și lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „c) intervin schimbări privind numele și prenumele, în cazul contribuabilului - persoană fizică sau schimbări privind denumirea, în cazul contribuabilului - persoană juridică."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 61 lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 61 lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „(2) Declarațiile se depun în termen de 30 de zile de la data dobândirii sau de la data apariției oricăreia dintre următoarele situații: a) intervin schimbări privind domiciliul fiscal al contribuabilului;"
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 90 alin. (2) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 90 alin. (2) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „c) intervin schimbări privind situația juridică a contribuabilului, de natură să conducă la modificarea impozitului pe teren."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 90 alin. (2) lit. c) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 90 alin. (2) lit. c) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum se citesc cele două puncte:

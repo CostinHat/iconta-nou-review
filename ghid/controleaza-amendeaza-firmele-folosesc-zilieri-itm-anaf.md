@@ -20,9 +20,9 @@ Pentru contabil, împărțirea contează la pregătirea dosarului. La ITM contea
 
 ::: ghid-temei
 „(1) Constatarea contravențiilor și aplicarea sancțiunilor prevăzute la art. 14 alin. (1) lit. a) , b) , e) și f) se realizează de către inspectorii de muncă. (2) Constatarea contravenției și aplicarea sancțiunii prevăzute la art. 14 alin. (1) lit. d) se realizează de către Agenția Națională de Administrare Fiscală. (3) Constatarea și sancționarea contravențiilor prevăzute la art. 14 alin. (1) lit. g) și h) se realizează de organele de control ale agențiilor pentru ocuparea forței de muncă județene, precum și a municipiului București."
-— Legea 52/2011, art. 15 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 15 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „Cercetarea evenimentului în care au fost implicați zilieri se realizează de către inspectoratul teritorial de muncă pe raza căruia acesta s-a produs."
-— Legea 52/2011, art. 6 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 6 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Cine ce constată, pe literele art. 14 alin. (1):

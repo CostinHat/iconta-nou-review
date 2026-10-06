@@ -15,7 +15,7 @@ Firmele care transmit facturi prin RO e-Factura se lovesc, la un moment dat, de 
 ::: ghid-temei
 „(1) Ministerul Finanțelor, prin Centrul Național pentru Informații Financiare, creează, dezvoltă și administrează sistemul național privind factura electronică RO e-Factura.
 (2) Sistemul național privind factura electronică RO e-Factura reprezintă ansamblul de principii, reguli și aplicații informatice având drept scop primirea facturii electronice de la emitent [...], stocarea prin mijloace electronice a facturilor și transmiterea către destinatar."
-— OUG nr. 120/2021, art. 3 alin. (1)-(2) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 3 alin. (1)-(2) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 **Limitare declarată:** legea de mai sus stabilește *obligația* de a folosi sistemul RO e-Factura și cadrul lui general, dar **durata de valabilitate a tokenului OAuth folosit la autentificarea în Spațiul Privat Virtual (SPV) nu e stabilită printr-un act normativ publicat în Monitorul Oficial** — e o decizie tehnică de implementare a ANAF, documentată doar în specificațiile tehnice ale platformei, nu într-o lege sau ordin. Nu am găsit, în sursele verificate, un temei legal care să fixeze acest termen; redirecționăm onest către cadrul legal cel mai apropiat — obligația de utilizare a sistemului (OUG 120/2021) și dreptul contribuabilului de a transmite cereri prin mijloace electronice de transmitere la distanță, inclusiv prin SPV, prevăzut la art. 79 din Codul de procedură fiscală (Legea nr. 207/2015).
@@ -34,6 +34,6 @@ Practic, ce se știe cu certitudine este:
 
 ## Ce face iConta.eu
 
-iConta.eu automatizează reîmprospătarea tokenului SPV: un proces zilnic (`core/spv_refresh.py`) identifică toate token-urile ale căror acces expiră în curând (cu o marjă de siguranță configurabilă) și le reînnoiește automat, fără intervenție manuală. Eșecul reîmprospătării unui token nu blochează celelalte conexiuni active, iar dacă reînnoirea nu reușește, aplicația semnalează firma afectată — astfel încât deconectarea de la SPV să nu treacă neobservată.
+iConta.eu automatizează reîmprospătarea tokenului SPV: un proces zilnic identifică toate token-urile ale căror acces expiră în curând (cu o marjă de siguranță configurabilă) și le reînnoiește automat, fără intervenție manuală. Eșecul reîmprospătării unui token nu blochează celelalte conexiuni active, iar dacă reînnoirea nu reușește, aplicația semnalează firma afectată — astfel încât deconectarea de la SPV să nu treacă neobservată.
 
 [iConta.eu](/)

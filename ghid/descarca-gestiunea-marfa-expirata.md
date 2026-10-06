@@ -14,7 +14,7 @@ Marfa cu termen de valabilitate depășit nu poate fi pur și simplu „scoasă 
 
 ::: ghid-temei
 „La stabilirea valorii de inventar a bunurilor se va aplica principiul prudenței, potrivit căruia se va ține seama de toate ajustările de valoare datorate deprecierilor sau pierderilor de valoare."
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale), pct. 84 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale), pct. 84 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Pașii reali ai descărcării gestiunii pentru marfă expirată, potrivit normelor contabile:

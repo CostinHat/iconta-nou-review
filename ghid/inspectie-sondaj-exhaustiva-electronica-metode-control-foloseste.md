@@ -16,10 +16,10 @@ Metoda este altceva decât forma inspecției. Forma arată **ce** se verifică: 
 
 ::: ghid-temei
 „(1) Pentru efectuarea inspecției fiscale se pot folosi următoarele metode: a) inspecția prin sondaj care constă în activitatea de verificare selectivă a perioadelor impozabile, documentelor și operațiunilor semnificative, care stau la baza modului de calcul, de evidențiere și de plată a obligațiilor fiscale; b) inspecția exhaustivă care constă în activitatea de verificare a tuturor perioadelor impozabile, precum și a documentelor și operațiunilor semnificative, care stau la baza modului de calcul, de evidențiere și de plată a obligațiilor fiscale; c) inspecția electronică, care constă în activitatea de verificare a contabilității și a surselor acesteia, prelucrate în mediu electronic, utilizând metode de analiză, evaluare și testare asistate de instrumente informatice specializate. (2) Selectarea documentelor și a operațiunilor semnificative se apreciază de inspector."
-— Codul de procedură fiscală (Legea 207/2015), art. 116 alin. (1)–(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 116 alin. (1)–(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „b) verificarea concordanței dintre datele din declarațiile fiscale cu cele din evidența contabilă și fiscală a contribuabilului/plătitorului, inclusiv din fișierul standard de control fiscal;"
-— Codul de procedură fiscală (Legea 207/2015), art. 113 alin. (2) lit. b) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 113 alin. (2) lit. b) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe scurt, despre fiecare metodă:

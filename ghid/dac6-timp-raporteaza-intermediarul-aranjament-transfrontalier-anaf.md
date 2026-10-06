@@ -16,10 +16,10 @@ Pentru un cabinet de contabilitate sau de consultanță fiscală care proiecteaz
 
 ::: ghid-temei
 „(1) În termen de 30 de zile, intermediarii raportează A.N.A.F. informații, de care au luat cunoștință sau care se află în posesia ori sub controlul lor, cu privire la aranjamentele transfrontaliere care fac obiectul raportării. [...] (2) În funcție de momentul la care survine mai întâi oricare dintre cazurile de mai jos, termenul de 30 de zile de la alin. (1) începe să curgă: a) din ziua următoare datei la care aranjamentul transfrontalier care face obiectul raportării este pus la dispoziție în vederea implementării; sau [...] b) din ziua următoare datei la care aranjamentul transfrontalier care face obiectul raportării este pregătit pentru implementare; sau [...] c) din momentul în care a fost făcut primul pas în demersul de implementare a aranjamentului transfrontalier care face obiectul raportării."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (1) și (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (1) și (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(4) În cazul aranjamentelor comercializabile, intermediarul întocmește la fiecare 3 luni un raport prin care furnizează A.N.A.F. informațiile noi sau actualizate care fac obiectul raportării, prevăzute la alin. (19) lit. a), d), g) și h), devenite disponibile de la depunerea ultimului raport."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se aplică termenul:

@@ -14,7 +14,7 @@ O plată fiscală ajunsă din greșeală la alt buget decât cel căruia îi apa
 
 ::: ghid-temei
 „Plata obligațiilor fiscale efectuată într-un cont bugetar eronat este valabilă, de la momentul efectuării acesteia, în condițiile prezentului articol. La cererea debitorului, organul fiscal competent efectuează îndreptarea erorilor din documentele de plată întocmite de debitor, în suma și din contul debitorului înscrise în documentul de plată, cu condiția debitării contului acestuia și a creditării unui cont bugetar."
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, data plății greșite rămâne data plății, chiar și după corectare — nu se pierde prioritatea la stingerea obligației și nu se calculează dobânzi de întârziere de la data descoperirii erorii, ci se corectează destinația plății.
@@ -23,7 +23,7 @@ Practic, data plății greșite rămâne data plății, chiar și după corectar
 
 ::: ghid-temei
 „Dispozițiile alin. (1) se aplică și în cazul în care plata s-a efectuat în alt buget decât cel al cărui venit este creanța fiscală plătită, cu condiția ca plata să nu fi stins creanțele datorate bugetului în care s-a încasat suma plătită eronat, cu excepția cazului în care în evidența fiscală debitorul înregistrează sume plătite în plus cel puțin la nivelul plății eronate."
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Condiția-cheie: dacă suma plătită greșit a fost deja folosită să stingă o altă obligație existentă în bugetul unde a ajuns (din greșeală), corectarea nu mai e posibilă — cu excepția în care firma are, oricum, sume plătite în plus în acel buget, cel puțin la nivelul plății eronate, caz în care corectarea rămâne posibilă.
@@ -32,7 +32,7 @@ Condiția-cheie: dacă suma plătită greșit a fost deja folosită să stingă 
 
 ::: ghid-temei
 „în cazul plăților efectuate în alt buget, organul fiscal competent dispune unității Trezoreriei Statului transferul sumelor plătite eronat către bugetul căruia obligația fiscală este datorată."
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Corectarea nu presupune restituirea banilor către contribuabil și o nouă plată — organul fiscal dispune direct transferul între bugete, prin Trezoreria Statului.
@@ -41,7 +41,7 @@ Corectarea nu presupune restituirea banilor către contribuabil și o nouă plat
 
 ::: ghid-temei
 „în situația în care plata obligațiilor fiscale s-a efectuat utilizând un cod de identificare fiscală eronat, eroarea din documentul de plată poate fi corectată cu condiția ca plata să nu fi stins creanțele datorate bugetului în care s-a încasat suma plătită eronat [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Aceeași logică se aplică și dacă plata a fost făcută corect ca destinație (buget corect), dar cu CUI/CIF greșit trecut pe ordinul de plată — o eroare frecventă la plăți făcute pentru mai multe firme din același cont sau la introducere manuală.
@@ -50,7 +50,7 @@ Aceeași logică se aplică și dacă plata a fost făcută corect ca destinați
 
 ::: ghid-temei
 „Cererea de îndreptare a erorilor din documentele de plată poate fi depusă în termen de 5 ani, sub sancțiunea decăderii. Termenul începe să curgă de la data de 1 ianuarie a anului următor celui în care s-a efectuat plata."
-— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 164 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Termenul e generos (5 ani), dar e termen de decădere — depășit, dreptul de a cere corectarea se pierde definitiv, indiferent de motivele întârzierii.

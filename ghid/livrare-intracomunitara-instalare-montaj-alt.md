@@ -14,10 +14,10 @@ Regula de bază a livrării intracomunitare scutite (cod TVA valid + dovada tran
 
 ::: ghid-temei
 „Se consideră a fi locul livrării de bunuri: [...] b) locul unde se efectuează instalarea sau montajul, de către furnizor ori de către altă persoană în numele furnizorului, în cazul bunurilor care fac obiectul unei instalări sau unui montaj."
-— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 275 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „[...] o achiziție intracomunitară de bunuri [...] care urmează unei livrări intracomunitare efectuate în afara României de către o persoană impozabilă ce acționează ca atare și care nu este considerată întreprindere mică în statul membru în care are loc livrarea și căreia nu i se aplică prevederile art. 275 alin. (1) lit. b) cu privire la livrările de bunuri care fac obiectul unei instalări sau unui montaj sau ale art. 275 alin. (2) cu privire la vânzările la distanță."
-— Codul fiscal, art. 268 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 268 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o firmă din România care livrează bunuri cu montaj în alt stat membru:
@@ -35,7 +35,7 @@ Ce înseamnă practic pentru o firmă din România care livrează bunuri cu mont
 
 ## Ce face iConta.eu
 
-`core/intracomunitar.py`, modulul de operațiuni intracomunitare al iConta.eu, implementează validarea livrării intracomunitare scutite standard (`valideaza_lic`) — cod TVA valid în VIES plus dovada transportului — potrivit art. 294 alin. (2) lit. a) din Codul fiscal. Modulul nu tratează explicit excepția bunurilor livrate cu instalare sau montaj (art. 275 alin. (1) lit. b)): dacă o astfel de operațiune ar fi introdusă prin funcția de validare a livrării intracomunitare obișnuite, aplicația nu semnalează că regimul de scutire nu se aplică bunurilor montate de furnizor.
+Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează validarea livrării intracomunitare scutite standard (`valideaza_lic`) — cod TVA valid în VIES plus dovada transportului — potrivit art. 294 alin. (2) lit. a) din Codul fiscal. Modulul nu tratează explicit excepția bunurilor livrate cu instalare sau montaj (art. 275 alin. (1) lit. b)): dacă o astfel de operațiune ar fi introdusă prin funcția de validare a livrării intracomunitare obișnuite, aplicația nu semnalează că regimul de scutire nu se aplică bunurilor montate de furnizor.
 
 Pentru livrări cu instalare sau montaj în alt stat membru, tratamentul TVA corect — inclusiv o eventuală obligație de înregistrare în statul de montaj — trebuie stabilit manual de contabil, pe baza legislației aplicabile în acel stat.
 

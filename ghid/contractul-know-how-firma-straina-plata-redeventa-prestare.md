@@ -16,12 +16,12 @@ Titlul contractului nu decide încadrarea. Un contract numit „de know-how", î
 
 ::: ghid-temei
 „(13) Este considerată redevență și suma plătită în cadrul contractului de know-how, în baza căruia vânzătorul acceptă să împărtășească cunoștințele și experiența sa cumpărătorului, astfel încât cumpărătorul să le poată folosi în interesul său și să nu le dezvăluie publicului. În același timp vânzătorul nu joacă niciun rol în aplicarea cunoștințelor puse la dispoziție cumpărătorului și nu garantează rezultatele aplicării acestora. (14) În cazul contractului de prestări de servicii în care una dintre părți se angajează să utilizeze cunoștințele sale pentru executarea unei lucrări pentru cealaltă parte, suma plătită nu constituie redevență."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (13)-(14) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (13)-(14) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „know-how - orice informație cu privire la o experiență industrială, comercială sau științifică care este necesară pentru fabricarea unui produs sau pentru aplicarea unui proces existent și a cărei dezvăluire către alte persoane nu este permisă fără autorizația persoanei care a furnizat această informație;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 17 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Criteriile după care decizi:

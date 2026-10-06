@@ -15,7 +15,7 @@ Salariul de bază minim brut pe țară garantat în plată se stabilește prin h
 ::: ghid-temei
 „Articolul 1 Începând cu data de 1 iulie 2026, salariul de bază minim brut pe țară garantat în plată, prevăzut la art. 164 alin. (1) din Legea nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare, se stabilește în bani, fără a include sporuri și alte adaosuri, la suma de 4.325 lei lunar, pentru un program normal de lucru în medie de 166,667 ore pe lună, reprezentând 25,949 lei/oră.
 Articolul 2 La data prevăzută la art. 1, Hotărârea Guvernului nr. 1.506/2024 [...] se abrogă."
-— Hotărârea Guvernului nr. 146 din 12 martie 2026, art. 1-2 (sursă: anaf_surse/hg_146_2026_salariu_minim.html)
+— Hotărârea Guvernului nr. 146 din 12 martie 2026, art. 1-2 (sursă: [HG nr. 146/2026 pentru stabilirea salariului de bază minim brut pe țară garantat în plată](https://legislatie.just.ro/Public/DetaliiDocument/308231))
 :::
 
 Noul salariu minim brut de **4.325 lei/lună** (25,949 lei/oră) se aplică începând cu **1 iulie 2026**, dată la care se abrogă hotărârea anterioară (HG nr. 1.506/2024). Până la 30 iunie 2026 inclusiv rămâne aplicabil cuantumul stabilit prin actul abrogat.

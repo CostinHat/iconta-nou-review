@@ -16,12 +16,12 @@ Alegerea contează pentru că, oricare ar fi varianta, obligațiile de angajator
 
 ::: ghid-temei
 „Fiecare angajator are dreptul de a-și organiza activitatea de resurse umane și salarizare în următoarele moduri:a) prin asumarea de către angajator a atribuțiilor specifice; ... b) prin desemnarea unuia sau mai multor angajați cărora să le repartizeze, prin fișa postului, atribuții privind activitatea de resurse umane și salarizare; ... c) prin contractarea unor servicii externe specializate în resurse umane și salarizare. ... (2) Serviciile externe specializate în resurse umane și salarizare vor fi coordonate de către un expert în legislația muncii."
-— Codul muncii (Legea 53/2003), art. 34^1 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 34^1 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „f) să plătească toate contribuțiile și impozitele aflate în sarcina sa, precum și să rețină și să vireze contribuțiile și impozitele datorate de salariați, în condițiile legii;"
-— Codul muncii (Legea 53/2003), art. 40 alin. (2) lit. f) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 40 alin. (2) lit. f) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cele trei variante, comparate:

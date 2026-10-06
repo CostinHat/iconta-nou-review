@@ -16,11 +16,11 @@ Nerespectarea prevederilor privind întocmirea acestei declarații este o contra
 
 ::: ghid-temei
 „Situațiile financiare anuale vor fi însoțite de o declarație scrisă a persoanelor prevăzute la art. 10 alin. (1) prin care își asumă răspunderea pentru întocmirea situațiilor financiare anuale și confirmă că: a) politicile contabile utilizate la întocmirea situațiilor financiare anuale sunt în conformitate cu reglementările contabile aplicabile; [...] b) situațiile financiare anuale oferă o imagine fidelă a poziției financiare, performanței financiare și a celorlalte informații referitoare la activitatea desfășurată; [...] c) persoana juridică își desfășoară activitatea în condiții de continuitate."
-— Legea contabilității nr. 82/1991, art. 30 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 30 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „4. nerespectarea prevederilor referitoare la întocmirea declarațiilor prevăzute la art. 30 și 31 ;"
-— Legea contabilității nr. 82/1991, art. 41 pct. 4 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 41 pct. 4 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 „j) cea prevăzută la pct. 4 , cu amendă de la 2.000 lei la 10.000 lei;"
-— Legea contabilității nr. 82/1991, art. 42 alin. (1) lit. j) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 42 alin. (1) lit. j) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce înseamnă concret:

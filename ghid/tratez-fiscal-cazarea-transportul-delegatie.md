@@ -14,7 +14,7 @@ Codul fiscal tratează diferit cele trei componente ale unei deplasări în inte
 
 ::: ghid-temei
 „Indemnizația de delegare, indemnizația de detașare, inclusiv indemnizația specifică detașării transnaționale, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil [...]."
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Formularea legii este cheia: plafonul neimpozabil se aplică **doar indemnizației de delegare/detașare (diurnei) și sumelor similare**, nu și cheltuielilor de transport și cazare — acestea sunt exceptate explicit din text („altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare").

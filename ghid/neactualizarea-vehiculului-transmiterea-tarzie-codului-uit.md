@@ -16,13 +16,13 @@ Amenda rămâne însă mare: de la 20.000 la 100.000 lei pentru persoane juridic
 
 ::: ghid-temei
 „c) nerespectarea prevederilor art. 8 alin. (1^1) , (1^3) și (2) , art. 11 alin. (3) și art. 12 ;"
-— OUG 41/2022, art. 13^1 alin. (1) lit. c) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (1) lit. c) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(3) Contravențiile prevăzute la alin. (1) lit. c) și e) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice."
-— OUG 41/2022, art. 13^1 alin. (3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 13^1 alin. (3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) Utilizatorii prevăzuți la alin. (1) sunt obligați să pună la dispoziția operatorului de transport rutier codul UIT aferent bunurilor transportate, direct sau prin intermediul organizatorului transportului, după caz, până cel târziu la prezentarea vehiculului în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv la punerea efectivă în mișcare a vehiculului, după caz."
-— OUG 41/2022, art. 8 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Ce faptă intră în lit. c):

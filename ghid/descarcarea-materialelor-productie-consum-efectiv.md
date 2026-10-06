@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Contul 301 «Materii prime» [...] este un cont de activ. În situația aplicării inventarului permanent: [...] În creditul contului 301 «Materii prime» se înregistrează: – valoarea la preț de înregistrare a materiilor prime incluse pe cheltuieli, precum și a celor constatate lipsă la inventar sau distruse (601); [...] Soldul contului reprezintă valoarea materiilor prime existente în stoc."
-— OMFP 1802/2014, Cap. 16 „Funcțiunea conturilor", Grupa 30, Contul 301 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Cap. 16 „Funcțiunea conturilor", Grupa 30, Contul 301 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă din text:
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor de producție (`core/productie.py`), cu funcțiile `nota_obtinere` (obținerea produselor finite la cost standard sau efectiv) și `nota_productie_in_curs`, dar **nu am găsit** în acest modul o funcție dedicată descărcării automate a materiilor prime consumate (nota 601 = 301) pe baza unui bon de consum. Aplicația oferă evidența contabilă generală și registrul de stocuri, în care contabilul înregistrează manual consumul efectiv de materii prime pe măsură ce apar bonurile de consum.
+La data acestui ghid, iConta.eu are un motor de producție, cu funcțiile `nota_obtinere` (obținerea produselor finite la cost standard sau efectiv) și `nota_productie_in_curs`, dar **nu am găsit** în acest modul o funcție dedicată descărcării automate a materiilor prime consumate (nota 601 = 301) pe baza unui bon de consum. Aplicația oferă evidența contabilă generală și registrul de stocuri, în care contabilul înregistrează manual consumul efectiv de materii prime pe măsură ce apar bonurile de consum.
 
 [iConta.eu](/)

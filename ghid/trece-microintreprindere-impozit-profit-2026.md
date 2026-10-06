@@ -17,7 +17,7 @@ Trecerea de la impozitul pe veniturile microîntreprinderilor la impozitul pe pr
 (2) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu a depus în termen situațiile financiare anuale pentru exercițiul financiar precedent anului fiscal respectiv, dacă avea această obligație potrivit legii, microîntreprinderea datorează impozit pe profit începând cu trimestrul în care nu mai este îndeplinită această condiție.
 (3) În cazul în care, în cursul unui an fiscal, o microîntreprindere nu mai îndeplinește condiția prevăzută la art. 47 alin. (1) lit. g) [are cel puțin un salariat], microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă. [...] În cazul în care, în acest termen [30 de zile] nu se angajează un nou salariat, microîntreprinderea datorează impozit pe profit începând cu trimestrul următor celui în care a încetat raportul de muncă.
 (4) Microîntreprinderile care în cursul unui trimestru încep să desfășoare activități dintre cele prevăzute de art. 47 alin. (3) lit. f)-i) [domeniul bancar, asigurări/reasigurări și piața de capital, jocuri de noroc, explorare/exploatare petrol și gaze] datorează impozit pe profit începând cu trimestrul respectiv."
-— Legea 227/2015, art. 52 alin. (1)-(4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 52 alin. (1)-(4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele patru trigger-e, aplicabile independent unul de altul:

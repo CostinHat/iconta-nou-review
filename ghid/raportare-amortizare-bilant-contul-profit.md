@@ -26,7 +26,7 @@ Legea impune raportarea la valoare netă (imagine fidelă a patrimoniului), făr
 
 ## Ce face iConta.eu
 
-Confirmat direct în motorul de generare (`core/bilant.py`):
+Confirmat direct în motorul de generare:
 
 - **În bilanț (F10)** — rândurile de imobilizări necorporale și corporale se calculează net, scăzând din valoarea brută conturile de amortizare și ajustări: **281** (amortizarea imobilizărilor corporale) și **291/2931/2935** (ajustări pentru depreciere), pe lângă conturile similare pentru imobilizări necorporale.
 - **În contul de profit și pierdere prescurtat (F20, micro)** — rândul „ajustări de valoare" se calculează ca sumă a conturilor **654, 681, 686** (debit) minus **754, 7812, 7813, 7814, 786** (credit); contul **681** (cheltuieli de exploatare privind amortizările și ajustările) intră direct aici.

@@ -15,7 +15,7 @@ Salariile restante rămân o datorie a angajatorului mult timp după scadența l
 ::: ghid-temei
 „Articolul 166 (1) Dreptul la acţiune cu privire la drepturile salariale, precum şi cu privire la daunele rezultate din neexecutarea în totalitate sau în parte a obligaţiilor privind plata salariilor se prescrie în termen de 3 ani de la data la care drepturile respective erau datorate.
 (2) Termenul de prescripţie prevăzut la alin. (1) este întrerupt în cazul în care intervine o recunoaştere din partea debitorului cu privire la drepturile salariale sau derivând din plata salariului."
-— Legea 53/2003 (Codul muncii), art. 166 alin. (1), (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 166 alin. (1), (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce rezultă de aici pentru gestionarea salariilor restante:

@@ -14,7 +14,7 @@ Vânzarea unui mijloc fix presupune două operațiuni contabile distincte, care 
 
 ::: ghid-temei
 „În creditul contului 213 «Instalații tehnice și mijloace de transport» se înregistrează: – valoarea neamortizată a instalațiilor tehnice și mijloacelor de transport scoase din evidență (658); – amortizarea instalațiilor tehnice și a mijloacelor de transport scoase din evidență (281); [...]"
-— OMFP 1802/2014 (Reglementări contabile), Funcțiunea conturilor, contul 213 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementări contabile), Funcțiunea conturilor, contul 213 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din funcțiunea contului rezultă mecanismul, aplicabil similar oricărui cont de mijloc fix (211, 212, 213, 214 etc.):

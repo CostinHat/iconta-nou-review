@@ -16,18 +16,18 @@ Folosirea codului pentru trecut nu șterge însă întârzierea. Obligațiile au
 
 ::: ghid-temei
 „(12) Codul de identificare fiscală poate fi utilizat de contribuabili și pentru îndeplinirea obligațiilor fiscale aferente perioadelor anterioare datei de înregistrare fiscală."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (12) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (12) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(11) Data înregistrării fiscale este: a) data depunerii declarației fiscale, în cazul contribuabililor prevăzuți la alin. (5); b) data atribuirii codului de identificare fiscală, în celelalte cazuri."
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la: a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică;"
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (6) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „a) nedepunerea de către contribuabil/plătitor la termenele prevăzute de lege a declarațiilor de înregistrare fiscală, de radiere a înregistrării fiscale sau de mențiuni;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

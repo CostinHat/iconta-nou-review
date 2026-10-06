@@ -14,14 +14,14 @@ Definiția „costului de achiziție" din reglementările contabile românești 
 
 ::: ghid-temei
 „6. cost de achiziție înseamnă prețul datorat și eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție. În acest sens, costul de achiziție al bunurilor cuprinde prețul de cumpărare, taxele de import și alte taxe (cu excepția acelora pe care persoana juridică le poate recupera de la autoritățile fiscale), cheltuielile de transport, manipulare și alte cheltuieli care pot fi atribuibile direct achiziției bunurilor respective. În costul de achiziție se includ, de asemenea, comisioanele, taxele notariale, cheltuielile cu obținerea de autorizații și alte cheltuieli nerecuperabile, atribuibile direct bunurilor respective. [...]"
-— OMFP 1802/2014, Secțiunea 1.2, pct. 6 (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, Secțiunea 1.2, pct. 6 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Faptul că această definiție se aplică și mijloacelor fixe, nu doar stocurilor, rezultă din regula generală de evaluare la intrare, aplicabilă tuturor „bunurilor":
 
 ::: ghid-temei
 „75. - (1) La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: a) la cost de achiziție - pentru bunurile procurate cu titlu oneros; [...]"
-— OMFP 1802/2014, Capitolul 3 „Reguli generale de evaluare", Secțiunea 3.1, pct. 75 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, Capitolul 3 „Reguli generale de evaluare", Secțiunea 3.1, pct. 75 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Deci: dacă un comision e **atribuibil direct** achiziției unui mijloc fix concret (comision de intermediere, comision de broker vamal la o achiziție din import), el se capitalizează în valoarea de intrare a activului. Nu se includ, în schimb, comisioanele de natura costurilor de finanțare (comision de acordare/administrare a unui credit folosit pentru achiziție) — acelea urmează regimul distinct al costurilor îndatorării (pct. 79-80 din același ordin), capitalizabile doar pentru active cu ciclu lung de fabricație, categorie din care un mijloc fix cumpărat gata de utilizare e explicit exclus.
@@ -34,7 +34,7 @@ Deci: dacă un comision e **atribuibil direct** achiziției unui mijloc fix conc
 
 ## Ce face iConta.eu
 
-Mecanismul automat de capitalizare a costurilor accesorii (transport, taxe) pe articolele unei intrări în gestiune — **F139, Landed cost pe NIR** (`core/stocuri.py::nir_gv`) — e construit exclusiv pentru **stocuri**, pe metoda global-valorică (F088). Verificat explicit în cod: motorul de gestiune cantitativ-valorică (CMP) nu are niciun parametru de accesoriu, iar modulul de import/migrare a mijloacelor fixe (F059, `core/mijloace_fixe_import_api.py`) preia direct valoarea de intrare introdusă de contabil, fără o funcție de repartizare proporțională a unor costuri accesorii pe mai multe active.
+Mecanismul automat de capitalizare a costurilor accesorii (transport, taxe) pe articolele unei intrări în gestiune — **F139, Landed cost pe NIR** — e construit exclusiv pentru **stocuri**, pe metoda global-valorică (F088). Verificat explicit în cod: motorul de gestiune cantitativ-valorică (CMP) nu are niciun parametru de accesoriu, iar modulul de import/migrare a mijloacelor fixe (F059, aplicația) preia direct valoarea de intrare introdusă de contabil, fără o funcție de repartizare proporțională a unor costuri accesorii pe mai multe active.
 
 Practic, deși temeiul legal (OMFP 1802/2014, pct. 6) susține includerea unui comision direct atribuibil în costul de achiziție al unui mijloc fix, **iConta.eu nu are un mecanism automat care să facă această capitalizare pentru mijloace fixe** — contabilul introduce el însuși valoarea de intrare completă (preț + comision atribuibil), fie la înregistrarea inițială a activului, fie la migrarea registrului dintr-un alt program.
 

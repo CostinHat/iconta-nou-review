@@ -15,7 +15,7 @@ Când un client cu care ați lucrat ajunge în faliment sau într-un plan de reo
 ::: ghid-temei
 „Baza de impozitare se reduce în următoarele situații: [...]
 d) în cazul în care contravaloarea bunurilor livrate sau a serviciilor prestate nu se poate încasa ca urmare a intrării în faliment a beneficiarului sau ca urmare a punerii în aplicare a unui plan de reorganizare admis și confirmat printr-o sentință judecătorească, prin care creanța creditorului este modificată sau eliminată. Ajustarea este permisă începând cu data pronunțării hotărârii judecătorești de confirmare a planului de reorganizare, iar, în cazul falimentului beneficiarului, începând cu data sentinței [...] prin care s-a decis intrarea în faliment [...] Ajustarea se efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care s-a pronunțat hotărârea judecătorească [...] Ajustarea este permisă chiar dacă s-a ridicat rezerva verificării ulterioare [...] În cazul în care, ulterior ajustării bazei de impozitare, sunt încasate sume aferente creanțelor respective, se anulează corespunzător ajustarea efectuată, corespunzător sumelor încasate, prin decontul perioadei fiscale în care acestea sunt încasate."
-— Legea 227/2015 (Codul fiscal), art. 287 lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 287 lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula se aplică din perspectiva **furnizorului/creditorului** cu o creanță nerecuperabilă de la un client aflat în faliment sau reorganizare — nu din perspectiva firmei proprii care se lichidează. Practic:

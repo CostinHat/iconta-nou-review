@@ -34,6 +34,6 @@ Sponsorizarea rămâne o cheltuială reală, înregistrată contabil, dar la cal
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` din `core/sponsorizari.py` nu primește și nici nu folosește cota micro (1%/3%) ca parametru — calculul se baza, cât a fost activ, exclusiv pe impozitul micro deja calculat pentru trimestru, indiferent de cota din care rezultase acel impozit. Pentru orice `la_data` din afara intervalului 01.04.2019–31.12.2023 — deci pentru toate operațiunile din 2026 — funcția returnează credit 0, cu notă explicită de inaplicabilitate a facilității, indiferent de cota micro a firmei.
+Funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` din aplicație nu primește și nici nu folosește cota micro (1%/3%) ca parametru — calculul se baza, cât a fost activ, exclusiv pe impozitul micro deja calculat pentru trimestru, indiferent de cota din care rezultase acel impozit. Pentru orice `la_data` din afara intervalului 01.04.2019–31.12.2023 — deci pentru toate operațiunile din 2026 — funcția returnează credit 0, cu notă explicită de inaplicabilitate a facilității, indiferent de cota micro a firmei.
 
 [iConta.eu](/)

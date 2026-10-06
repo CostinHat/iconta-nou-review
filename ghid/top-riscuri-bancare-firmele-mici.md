@@ -16,7 +16,7 @@ Cel mai frecvent și cel mai brutal, pentru că blochează instant conturile, nu
 
 ::: ghid-temei
 „Din momentul indisponibilizării, respectiv de la data și ora primirii adresei de înființare a popririi asupra disponibilităților bănești, instituțiile de credit nu procedează la decontarea documentelor de plată primite, respectiv la debitarea conturilor debitorilor și nu acceptă alte plăți din conturile acestora până la achitarea integrală a obligațiilor fiscale înscrise în adresa de înființare a popririi, cu excepția: a) sumelor necesare plății drepturilor salariale, inclusiv a impozitelor și contribuțiilor aferente acestora, reținute la sursă, [...]"
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (14) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (14) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Practic, o datorie fiscală restantă necorectată la timp poate bloca toate încasările zilnice, nu doar suma popribilă — banca nu mai decontează nimic din cont până la stingerea integrală a sumei din adresa de poprire, cu excepții limitate (salarii nete, accize în anumite condiții). Riscul real nu e valoarea datoriei, e viteza cu care se propagă blocajul asupra întregii activități.

@@ -16,14 +16,14 @@ Contează în practică pentru că, la plătitorul trimestrial, o cheltuială de
 
 ::: ghid-temei
 „La calculul rezultatului fiscal al contribuabililor care plătesc trimestrial impozit pe profit, limitele cheltuielilor deductibile se aplică trimestrial, astfel încât, la finele anului acestea să se încadreze în prevederile titlului II din Codul fiscal. Pentru contribuabilii care plătesc impozitul pe profit anual, limitele cheltuielilor deductibile prevăzute de titlul II din Codul fiscal se aplică anual."
-— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul II, pct. 5 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
-— Codul fiscal (Legea 227/2015), art. 19 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 19 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „Contribuabilii, alții decât cei prevăzuți la alin. (4) [...] pot opta pentru calculul, declararea și plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial."
-— Codul fiscal (Legea 227/2015), art. 41 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

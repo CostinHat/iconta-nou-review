@@ -14,7 +14,7 @@ O întrebare frecventă la grupurile de firme: se poate depune un singur fișier
 
 ::: ghid-temei
 „Header (Antet) - Conţine informaţii generale despre fişier, inclusiv numele software-ului care l-a produs; compania în numele căreia este depus SAF-T."
-— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, secțiunea 1 Header din structura SAF-T (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, secțiunea 1 Header din structura SAF-T (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 **Limitare asumată onest:** corpusul de surse verificate pentru acest ghid nu conține, în textele disponibile ale OPANAF 1783/2021 sau OPANAF 407/2025, o prevedere explicită care să interzică sau să permită o depunere consolidată la nivel de grup — dar structura fișierului, organizată pe secțiuni de „Header" cu un singur identificator fiscal (`RegistrationNumber`) și pe balanță/jurnale ale unei singure entități, arată clar că fișierul e conceput pentru o singură persoană juridică, nu pentru un grup.
@@ -32,6 +32,6 @@ Ce rezultă practic pentru un grup de firme:
 
 ## Ce face iConta.eu
 
-Modulul SAF-T din iConta.eu (`core/d406.py`) generează fișierul D406 separat pentru fiecare firmă administrată în aplicație, pe baza contabilității proprii a acesteia. Aplicația nu oferă o funcție de consolidare a mai multor fișiere SAF-T la nivel de grup — fiecare entitate își generează și depune propria declarație.
+Modulul SAF-T din iConta.eu generează fișierul D406 separat pentru fiecare firmă administrată în aplicație, pe baza contabilității proprii a acesteia. Aplicația nu oferă o funcție de consolidare a mai multor fișiere SAF-T la nivel de grup — fiecare entitate își generează și depune propria declarație.
 
 [iConta.eu](/)

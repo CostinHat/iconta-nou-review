@@ -38,6 +38,6 @@ Obligațiile de evidență a stocurilor (recepție, gestiune, descărcare lunar�
 
 ## Ce face iConta.eu
 
-Motorul de gestiune global-valorică (`core/stocuri.py` + `core/stocuri_api.py`) nu are niciun parametru sau ramură de cod legată de regimul de impozitare al firmei (micro vs. profit) — funcțiile `nir_gv`, `coeficient_k` și `descarcare_gv` calculează identic, indiferent dacă tenantul e configurat ca plătitor de impozit micro sau de impozit pe profit. Impozitul propriu-zis (D101 pentru profit, sau declarația specifică micro) se calculează separat, din alte module, fără nicio legătură cu motorul de stocuri.
+Motorul de gestiune global-valorică nu are niciun parametru sau ramură de cod legată de regimul de impozitare al firmei (micro vs. profit) — funcțiile `nir_gv`, `coeficient_k` și `descarcare_gv` calculează identic, indiferent dacă tenantul e configurat ca plătitor de impozit micro sau de impozit pe profit. Impozitul propriu-zis (D101 pentru profit, sau declarația specifică micro) se calculează separat, din alte module, fără nicio legătură cu motorul de stocuri.
 
 [iConta.eu](/)

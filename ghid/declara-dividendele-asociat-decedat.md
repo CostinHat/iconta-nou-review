@@ -14,7 +14,7 @@ Decesul unui asociat nu oprește dreptul la dividende deja aprobate sau în curs
 
 ::: ghid-temei
 „În cazul dobândirii unei părți sociale prin succesiune, prevederile alin. (2) nu sunt aplicabile dacă prin actul constitutiv nu se dispune altfel; în acest din urmă caz, societatea este obligată la plata părții sociale către succesori, conform ultimului bilanț contabil aprobat."
-— Legea 31/1990 (legea societăților), art. 202 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 202 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Regula de bază: partea socială a asociatului decedat se transmite moștenitorilor fără să fie nevoie de aprobarea celorlalți asociați (regula de la alin. (2), care cere aprobarea a 3/4 din capital pentru cesiuni către terți, nu se aplică succesiunii) — **cu excepția** situației în care actul constitutiv prevede altfel. Dacă actul constitutiv exclude continuarea cu moștenitorii, societatea e obligată să le plătească partea socială, calculată după ultimul bilanț contabil aprobat.
@@ -23,7 +23,7 @@ Regula de bază: partea socială a asociatului decedat se transmite moștenitori
 
 ::: ghid-temei
 „Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății."
-— Legea 31/1990 (legea societăților), art. 203 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 203 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Fără această înscriere — pe baza certificatului de moștenitor sau a hotărârii judecătorești, după caz — moștenitorii nu au, formal, calitatea de asociați și societatea nu poate distribui către ei ca și către titulari ai părții sociale.
@@ -32,7 +32,7 @@ Fără această înscriere — pe baza certificatului de moștenitor sau a hotă
 
 ::: ghid-temei
 „Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final. Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor..."
-— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Fie că dividendele erau deja aprobate înainte de deces și doar neplătite, fie că se distribuie ulterior pe baza rezultatului exercițiului anterior, societatea reține impozitul de 16% la momentul plății către moștenitor — calitatea de succesor nu schimbă cota și nici mecanismul de reținere la sursă.

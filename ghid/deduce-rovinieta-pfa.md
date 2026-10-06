@@ -14,7 +14,7 @@ Rovinieta e o cheltuială legată de folosirea unui autovehicul pe drumurile pub
 
 ::: ghid-temei
 „Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: a) să fie efectuate în cadrul activităților independente, justificate prin documente [...] j) cheltuielile de funcționare, întreținere și reparații, aferente autoturismelor folosite de contribuabil sau membru asociat sunt deductibile limitat potrivit alin. (7) lit. k), la cel mult un singur autoturism aferent fiecărei persoane."
-— Legea 227/2015, art. 68 alin. (4) lit. a) și alin. (5) lit. j) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 68 alin. (4) lit. a) și alin. (5) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic pentru rovinietă la PFA:
@@ -32,6 +32,6 @@ Ce rezultă practic pentru rovinietă la PFA:
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu permite înregistrarea plăților în registrul de încasări și plăți și clasificarea lor pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă (`core/rip_api.py`, categoria `cheltuiala_limitata`). La data acestui ghid, aplicația **nu aplică automat plafonul „un singur autoturism pe persoană"** din art. 68 alin. (5) lit. j) și nu verifică dacă rovinieta introdusă corespunde unui vehicul deja afectat activității — încadrarea corectă a cheltuielii rămâne responsabilitatea celui care operează în cont.
+Pentru PFA, iConta.eu permite înregistrarea plăților în registrul de încasări și plăți și clasificarea lor pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă (categoria `cheltuiala_limitata`). La data acestui ghid, aplicația **nu aplică automat plafonul „un singur autoturism pe persoană"** din art. 68 alin. (5) lit. j) și nu verifică dacă rovinieta introdusă corespunde unui vehicul deja afectat activității — încadrarea corectă a cheltuielii rămâne responsabilitatea celui care operează în cont.
 
 [iConta.eu](/)

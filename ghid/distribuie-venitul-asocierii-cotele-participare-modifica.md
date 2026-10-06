@@ -16,10 +16,10 @@ Cu o singură cotă pe tot anul, o parte din venit ajunge la asociatul greșit. 
 
 ::: ghid-temei
 „Venitul/Pierderea anual/anuală realizat(ă) în cadrul asocierii se distribuie asociaților proporțional cu cota procentuală de participare corespunzătoare contribuției, conform contractului de asociere."
-— Codul fiscal (Legea 227/2015), art. 125 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 125 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(6) În cazul modificării cotelor de participare în cursul anului, pentru distribuirea venitului net anual se va proceda astfel: a) se determină un venit net/o pierdere intermediar/ intermediară la sfârșitul lunii în care s-au modificat cotele pe baza venitului brut și a cheltuielilor, astfel cum acestea sunt înregistrate în evidențele contabile; ... b) venitul net/pierderea intermediar/intermediară se alocă fiecărui asociat, în funcție de cotele de participare, până la data modificării acestora; ... c) la sfârșitul anului, din venitul net/pierderea anual/anuală se deduce venitul net/pierderea intermediar/intermediară, iar diferența se alocă asociaților, în funcție de cotele de participare ulterioare modificării acestora; ... d) venitul net/pierderea anual/anuală distribuit/distribuită fiecărui asociat se determină prin însumarea veniturilor nete/pierderilor intermediare determinate potrivit lit. b) și c) ."
-— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 41 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul IV, pct. 41 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Mecanismul are patru pași:

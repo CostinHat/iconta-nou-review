@@ -16,17 +16,17 @@ Pentru o firmă, schimbarea contează mai ales la **impozitul pe teren**, care s
 
 ::: ghid-temei
 „Dacă încadrarea terenului în funcție de rangul localității și zonă se modifică în cursul unui an sau în cursul anului intervine un eveniment care conduce la modificarea impozitului pe teren, impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor.”
-— Codul fiscal (Legea 227/2015), art. 466 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Dacă încadrarea clădirii în funcție de rangul localității și zonă se modifică în cursul unui an sau în cursul anului intervine un eveniment care conduce la modificarea impozitului pe clădiri, impozitul se calculează conform noii situații începând cu data de 1 ianuarie a anului următor.”
-— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 461 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(5) Dacă în cursul anului fiscal se modifică rangul localităților, delimitarea zonelor ori limitele intravilanului/extravilanului, după caz, impozitul pe clădiri și impozitul pe teren, în cazul persoanelor fizice și al celor juridice, după caz, se modifică potrivit noilor condiții, începând cu data de 1 ianuarie a anului fiscal următor. (6) În situația prevăzută la alin. (5) , impozitul pe clădiri și impozitul pe teren datorate se determină din oficiu de organele fiscale locale, fără a se mai depune o nouă declarație fiscală, iar contribuabililor li se comunică modificările survenite.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 9 alin. (5)-(6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 9 alin. (5)-(6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce reiese concret:

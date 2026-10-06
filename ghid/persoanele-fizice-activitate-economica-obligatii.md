@@ -14,7 +14,7 @@ Pentru o persoană fizică autorizată, întrebarea centrală în fiecare an nu 
 
 ::: ghid-temei
 „[Persoana fizică care realizează venituri], din una sau mai multe surse și/sau categorii de venituri, a căror valoare anuală cumulată este cel puțin egală cu 12 salarii minime brute pe țară, datorează contribuția de asigurări sociale la o bază de calcul stabilită potrivit alin. (2). [...] Încadrarea în plafonul anual de cel puțin 12 salarii minime brute pe țară [...] se efectuează prin cumularea veniturilor nete și/sau a normelor anuale de venit din activități independente determinate potrivit art. 68."
-— Legea nr. 227/2015 (Codul fiscal), art. 148 alin. (1) și (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 148 alin. (1) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de bază, pentru o PFA sau altă persoană cu activitate independentă:
@@ -31,6 +31,6 @@ Mecanismul de bază, pentru o PFA sau altă persoană cu activitate independent�
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă un registru-jurnal de încasări și plăți pentru persoane fizice autorizate care conduc contabilitate în partidă simplă, în regim de venit net real (`core/rip_api.py`, conform OMFP 170/2015), din care se pot calcula veniturile realizate. Declarația unică (D212) generată din aplicație încadrează venitul în pragurile de 12, respectiv 6 salarii minime brute pentru CAS și CASS, pe veniturile pe care le primește (din registru și din formular); aplicația nu depune declarația și nu cunoaște singură sursele persoanei din afara ei — pe acelea le adaugă contabilul sau persoana fizică autorizată.
+La data acestui ghid, iConta.eu oferă un registru-jurnal de încasări și plăți pentru persoane fizice autorizate care conduc contabilitate în partidă simplă, în regim de venit net real (conform OMFP 170/2015), din care se pot calcula veniturile realizate. Declarația unică (D212) generată din aplicație încadrează venitul în pragurile de 12, respectiv 6 salarii minime brute pentru CAS și CASS, pe veniturile pe care le primește (din registru și din formular); aplicația nu depune declarația și nu cunoaște singură sursele persoanei din afara ei — pe acelea le adaugă contabilul sau persoana fizică autorizată.
 
 [iConta.eu](/)

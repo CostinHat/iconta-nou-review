@@ -46,8 +46,8 @@ Dacă vânzările lunii (707) sunt 400 lei: adaos descărcat = 400 × 0,25 = 100
 
 ## Ce face iConta.eu
 
-Funcția `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)` din `core/stocuri.py` implementează exact formula de mai sus, cu excluderea explicită a soldului/rulajului 4428 din numitor. Dacă numitorul ajunge la zero sau negativ, funcția **refuză să calculeze** și aruncă o eroare explicită, în loc să întoarcă 0 sau o valoare implicită.
+Funcția `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)` din aplicație implementează exact formula de mai sus, cu excluderea explicită a soldului/rulajului 4428 din numitor. Dacă numitorul ajunge la zero sau negativ, funcția **refuză să calculeze** și aruncă o eroare explicită, în loc să întoarcă 0 sau o valoare implicită.
 
-Funcția `descarcare_gv(rc_707, tva_vanzari, ...)` aplică apoi K la vânzările lunii (`adaos = rc_707 × K`, `cmv = rc_707 − adaos`) și generează nota de descărcare (`607=371` pentru CMV, `378=371` pentru adaos, `4428=371` pentru TVA). Dacă nu au fost vânzări în lună (`rc_707 == 0`), nu se generează nicio notă „pe zero”. Calculul din `descarca_luna` (`core/stocuri_api.py`) ia soldurile inițiale din tabela `solduri_initiale` și rulajele din notele **validate**, cumulat de la 1 ianuarie — confirmând textual regula „cumulat pe exercițiu” din lege.
+Funcția `descarcare_gv(rc_707, tva_vanzari, ...)` aplică apoi K la vânzările lunii (`adaos = rc_707 × K`, `cmv = rc_707 − adaos`) și generează nota de descărcare (`607=371` pentru CMV, `378=371` pentru adaos, `4428=371` pentru TVA). Dacă nu au fost vânzări în lună (`rc_707 == 0`), nu se generează nicio notă „pe zero”. Calculul din `descarca_luna` ia soldurile inițiale din tabela `solduri_initiale` și rulajele din notele **validate**, cumulat de la 1 ianuarie — confirmând textual regula „cumulat pe exercițiu” din lege.
 
 [iConta.eu](/)

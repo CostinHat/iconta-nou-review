@@ -32,6 +32,6 @@ Când portofoliul are zeci de firme, verificarea manuală a D406 firmă cu firm�
 
 ## Ce face iConta.eu
 
-Funcția `obligatii_datorate()` din modulul F022 (`core/control_fiscal_api.py`) evaluează D406 separat pentru fiecare firmă din portofoliu, cu reguli distincte după regimul de TVA: plătitorii cu perioadă lunară primesc verdict lunar, cei cu perioadă trimestrială/semestrială/anuală și neplătitorii de TVA primesc verdict trimestrial. Fiecare restanță de D406 poartă motivul explicit — un termen deja depășit fără declarație confirmată ca depusă — vizibil în detaliul firmei, nu doar în sumarul de portofoliu.
+Funcția `obligatii_datorate()` din modulul F022 evaluează D406 separat pentru fiecare firmă din portofoliu, cu reguli distincte după regimul de TVA: plătitorii cu perioadă lunară primesc verdict lunar, cei cu perioadă trimestrială/semestrială/anuală și neplătitorii de TVA primesc verdict trimestrial. Fiecare restanță de D406 poartă motivul explicit — un termen deja depășit fără declarație confirmată ca depusă — vizibil în detaliul firmei, nu doar în sumarul de portofoliu.
 
 [iConta.eu](/)

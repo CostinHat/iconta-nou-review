@@ -14,7 +14,7 @@ Regula generală la inventariere este stabilirea stocurilor faptice prin număra
 
 ::: ghid-temei
 „15. – (1) Stabilirea stocurilor faptice se face prin numărare, cântărire, măsurare sau cubare, după caz. Bunurile aflate în ambalaje originale intacte se desfac prin sondaj, acest lucru urmând a fi menționat și în listele de inventariere respective."
-— OMFP nr. 2.861/2009, pct. 15 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP nr. 2.861/2009, pct. 15 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 Din normă rezultă condițiile stricte în care sondajul e admis:
@@ -31,6 +31,6 @@ Din normă rezultă condițiile stricte în care sondajul e admis:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă un modul de înregistrare a rezultatelor inventarierii — note de plus și de minus, pentru stocuri și mijloace fixe (`core/inventariere.py`) — pe baza cărora se generează notele contabile de regularizare. Aplicația **nu efectuează inventarierea faptică** și nu decide dacă un bun poate fi verificat prin sondaj; comisia de inventariere este cea care stabilește metoda de numărare la fața locului și consemnează în lista de inventariere modul de verificare folosit, iar iConta.eu preia doar rezultatul final.
+La data acestui ghid, iConta.eu oferă un modul de înregistrare a rezultatelor inventarierii — note de plus și de minus, pentru stocuri și mijloace fixe — pe baza cărora se generează notele contabile de regularizare. Aplicația **nu efectuează inventarierea faptică** și nu decide dacă un bun poate fi verificat prin sondaj; comisia de inventariere este cea care stabilește metoda de numărare la fața locului și consemnează în lista de inventariere modul de verificare folosit, iar iConta.eu preia doar rezultatul final.
 
 [iConta.eu](/)

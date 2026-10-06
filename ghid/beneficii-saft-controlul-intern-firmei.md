@@ -14,7 +14,7 @@ SAF-T (Standard Audit File for Tax), depus în România ca declarația informati
 
 ::: ghid-temei
 „Fișierul standard de control fiscal (SAF-T) se transmite de către contribuabili/plătitori prin intermediul Declarației informative privind fișierul standard de control fiscal, denumită în continuare Declarația informativă D406 [...] SAF-T permite organelor fiscale accesul la date din evidența contabilă și fiscală [...] SAF-T este un fișier în format electronic, de tip XML, conținând date extrase automat din sistemele informatice ale contribuabililor/plătitorilor, exportate și stocate într-un format standardizat."
-— OPANAF 1783/2021, art. 2 și anexa 1, pct. 2-3 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, art. 2 și anexa 1, pct. 2-3 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 De ce structura SAF-T ajută la controlul intern, nu doar la raportarea către ANAF:
@@ -33,6 +33,6 @@ De ce structura SAF-T ajută la controlul intern, nu doar la raportarea către A
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația D406/SAF-T (`core/d406.py`, `core/d406_active.py`, `core/d406_stocuri.py`) pe baza acelorași date de contabilitate, mijloace fixe și stocuri folosite și pentru celelalte declarații și rapoarte din aplicație, cu validare pe structura oficială ANAF (XSD-ul publicat) înainte de generare. Faptul că fișierul D406 se construiește din exact aceleași înregistrări pe care contabilul le vede zilnic în aplicație înseamnă că o eroare de corelare (partener, sold, amortizare) devine vizibilă la generarea declarației, nu doar la un eventual control ANAF — acesta e beneficiul concret pentru controlul intern, oferit ca efect al modului în care aplicația ține evidența contabilă generală.
+iConta.eu generează declarația D406/SAF-T pe baza acelorași date de contabilitate, mijloace fixe și stocuri folosite și pentru celelalte declarații și rapoarte din aplicație, cu validare pe structura oficială ANAF (XSD-ul publicat) înainte de generare. Faptul că fișierul D406 se construiește din exact aceleași înregistrări pe care contabilul le vede zilnic în aplicație înseamnă că o eroare de corelare (partener, sold, amortizare) devine vizibilă la generarea declarației, nu doar la un eventual control ANAF — acesta e beneficiul concret pentru controlul intern, oferit ca efect al modului în care aplicația ține evidența contabilă generală.
 
 [iConta.eu](/)

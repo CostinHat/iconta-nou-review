@@ -17,7 +17,7 @@ Documentarea diferențelor fiscale — de la simple corectări la interpretări 
 (1) Evidențele contabile și fiscale se păstrează, după caz, la domiciliul fiscal al contribuabilului/plătitorului, la sediul social ori la sediile secundare ale acestuia, inclusiv pe suport electronic, sau pot fi încredințate spre păstrare unei societăți autorizate, potrivit legii, să presteze servicii de arhivare.
 [...]
 (4) în cazul în care evidențele contabile și fiscale sunt ținute cu ajutorul sistemelor electronice de gestiune, pe lângă datele arhivate în format electronic contribuabilul/plătitorul este obligat să păstreze și să prezinte aplicațiile informatice cu ajutorul cărora le-a generat."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 109 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 109 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru pregătirea unui control fiscal viitor:
@@ -34,6 +34,6 @@ Ce rezultă din text pentru pregătirea unui control fiscal viitor:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/control_incrucisat.py` compară în mod explicit datele declarate cu evidența contabilă și marchează fiecare constatare cu trei stări posibile — verde (coerent), roșu (divergent) sau gri (nu s-a putut verifica) — declarând totodată temeiul și limita fiecărei verificări, potrivit docstringului modulului; iConta.eu păstrează în platformă evidența contabilă și declarațiile generate pentru firmă, ceea ce sprijină documentarea unui eventual control, dar nu constituie el însuși un serviciu de arhivare autorizat în sensul art. 109 alin. (1).
+Verificat în cod: Aplicația compară în mod explicit datele declarate cu evidența contabilă și marchează fiecare constatare cu trei stări posibile — verde (coerent), roșu (divergent) sau gri (nu s-a putut verifica) — declarând totodată temeiul și limita fiecărei verificări, potrivit docstringului modulului; iConta.eu păstrează în platformă evidența contabilă și declarațiile generate pentru firmă, ceea ce sprijină documentarea unui eventual control, dar nu constituie el însuși un serviciu de arhivare autorizat în sensul art. 109 alin. (1).
 
 [iConta.eu](/)

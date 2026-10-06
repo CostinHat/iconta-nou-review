@@ -15,7 +15,7 @@ Un cont Revolut folosit pentru activitatea firmei nu are un regim contabil speci
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.
 (2) Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz."
-— Legea contabilității nr. 82/1991, art. 6 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 6 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Legea contabilă nu menționează Revolut sau alte instituții de plată/monedă electronică drept categorie separată — regula de la art. 6 se aplică identic, indiferent de furnizorul contului. Extrasul de cont emis de Revolut e documentul justificativ pentru operațiunile bancare respective, la fel cum ar fi extrasul unei bănci tradiționale.
@@ -32,6 +32,6 @@ Legea contabilă nu menționează Revolut sau alte instituții de plată/monedă
 
 ## Ce face iConta.eu
 
-Modulul de parsare a extraselor bancare din iConta.eu (`core/banca_parser.py`) importă extrase de cont pentru reconciliere pe baza formatului fișierului furnizat, fără un conector dedicat specific pentru Revolut — dacă extrasul Revolut poate fi exportat într-un format tabelar/CSV compatibil, importul și reconcilierea cu facturile emise/primite funcționează la fel ca pentru orice altă bancă, dar potrivirea automată depinde de structura fișierului exportat de Revolut, verificată de utilizator la import.
+Modulul de parsare a extraselor bancare din iConta.eu importă extrase de cont pentru reconciliere pe baza formatului fișierului furnizat, fără un conector dedicat specific pentru Revolut — dacă extrasul Revolut poate fi exportat într-un format tabelar/CSV compatibil, importul și reconcilierea cu facturile emise/primite funcționează la fel ca pentru orice altă bancă, dar potrivirea automată depinde de structura fișierului exportat de Revolut, verificată de utilizator la import.
 
 [iConta.eu](/)

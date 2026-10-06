@@ -14,10 +14,10 @@ Un titlu despre „tendințe" e ușor de confundat cu o prognoză — dar un ghi
 
 ::: ghid-temei
 „Sumele în numerar aflate în casieria persoanelor prevăzute la art. 1 alin. (1) nu pot depăși, la sfârșitul fiecărei zile, plafonul de 50.000 lei. În cazul magazinelor de tipul cash and carry, supermagazinelor și hipermagazinelor care sunt organizate și funcționează în baza legislației în vigoare, sumele în numerar aflate în casierie nu pot depăși, la sfârșitul fiecărei zile, plafonul de 500.000 lei."
-— Legea 70/2015, art. 4^2 alin. (1), astfel cum a fost modificat prin OUG 115/2023 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— Legea 70/2015, art. 4^2 alin. (1), astfel cum a fost modificat prin OUG 115/2023 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 
 „Operațiunile de încasări și plăți în numerar între persoanele fizice [...] se pot efectua în limita unui plafon zilnic de 50.000 lei/tranzacție. Sunt interzise încasările și plățile fragmentate în numerar pentru tranzacțiile mai mari de 50.000 lei, precum și fragmentarea unei tranzacții mai mari de 50.000 lei."
-— Legea 70/2015, art. 10 (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 10 (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce este cert, la data acestui ghid:

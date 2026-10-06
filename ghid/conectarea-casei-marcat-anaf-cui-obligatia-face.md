@@ -16,10 +16,10 @@ Distincția contează la control. Tehnicianul instalează, fiscalizează și în
 
 ::: ghid-temei
 „Obligația de a asigura conectarea la distanță a aparatelor de marcat electronice fiscale în vederea transmiterii de date fiscale către Agenția Națională de Administrare Fiscală revine operatorilor economici prevăzuți la art. 1 alin. (1) din Ordonanța de urgență a Guvernului nr. 28/1999, republicată , cu modificările și completările ulterioare."
-— OPANAF 435/2021, art. 2 alin. (1) (sursă: anaf_surse/ordin_435_2021.html)
+— OPANAF 435/2021, art. 2 alin. (1) (sursă: [OPANAF nr. 435/2021 privind procedura de conectare a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/240150))
 
 „c) operatorii economici care achiziționează aparate de marcat electronice fiscale ulterior datei de 1.12.2021, la data instalării aparatului de marcat electronic fiscal."
-— OPANAF 435/2021, art. 3 alin. (1) lit. c) (sursă: anaf_surse/ordin_435_2021.html)
+— OPANAF 435/2021, art. 3 alin. (1) lit. c) (sursă: [OPANAF nr. 435/2021 privind procedura de conectare a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/240150))
 :::
 
 Operatorii economici de la art. 1 alin. (1) din OUG 28/1999 sunt cei care încasează, cu numerar sau cu cardul, contravaloarea bunurilor vândute cu amănuntul ori a serviciilor prestate direct populației. Aceiași operatori au obligația legală de conectare la distanță (art. 3^1 alin. (4) din OUG 28/1999).
@@ -28,7 +28,7 @@ Ce se întâmplă la prima punere în funcțiune:
 
 ::: ghid-temei
 „La prima punere în funcțiune a aparatului de marcat electronic fiscal, distribuitorul autorizat/unitatea de service acreditată, prin persoanele desemnate, furnizează în Registru informațiile prevăzute la punctul 5 subpct. 5.1 și 5.2 sau, după caz, subpct. 5.3 sau 5.4 , pct. 8 subpct. 8.5 , 8.6 și 8.7 , pct. 9 subpct. 9.1-9.5 și 9.11, pct. 11 din anexa nr. 1 la ordin"
-— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (1) (sursă: anaf_surse/ordin_4156_2017.html)
+— OPANAF 4156/2017, Anexa nr. 3, pct. 4 alin. (1) (sursă: [OPANAF nr. 4156/2017 privind registrul național de evidență a aparatelor de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/196648))
 :::
 
 - **Service-ul înregistrează** în Registru adresa și coordonatele GPS, codurile CAEN, contractul de service, datele de contact și datele instalării. Printre ele intră și pct. 11 din anexa 1: dacă la locul de utilizare există sau nu conexiune la internet.

@@ -30,6 +30,6 @@ Se crede uneori că, odată deschisă procedura de lichidare, societatea nu mai 
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare pentru F057 nu a găsit, în motorul de lichidare (`core/lichidare.py`), o funcție dedicată separată pentru încasarea creanțelor — acesta acoperă doar vânzarea activelor imobilizate (`nota_vanzare_activ`) și partajul final (`partaj`). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
+Dosarul de cercetare pentru F057 nu a găsit, în motorul de lichidare, o funcție dedicată separată pentru încasarea creanțelor — acesta acoperă doar vânzarea activelor imobilizate (`nota_vanzare_activ`) și partajul final (`partaj`). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
 
 [iConta.eu](/)

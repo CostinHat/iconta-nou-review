@@ -13,7 +13,7 @@ Diferența de impozit pe profit rezultă din definitivarea anuală (P40 × 16% =
 ## Temeiul legal
 
 ::: ghid-temei
-"Toate flag-urile de stare din rădăcina XML (`d_rec`, `d_reg`, `d_reglem`, `d_anulare`, `d_succ`, `d_prof`, `d_alte`) sunt hardcodate «0» în `build_xml()` (`core/d101.py:418`), fără parametru de intrare care să le seteze." — dosarul de cercetare F027.
+"Toate flag-urile de stare din rădăcina XML (`d_rec`, `d_reg`, `d_reglem`, `d_anulare`, `d_succ`, `d_prof`, `d_alte`) sunt hardcodate «0» în `build_xml()`, fără parametru de intrare care să le seteze." — dosarul de cercetare F027.
 :::
 
 Pentru definitivarea normală, impozitul rezultat este cota de 16% (CF art.17) aplicată pe profitul impozabil final (P40 → P411), după deduceri, add-back-uri și rezerva legală.

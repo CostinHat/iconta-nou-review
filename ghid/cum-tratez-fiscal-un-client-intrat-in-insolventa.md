@@ -51,6 +51,6 @@ provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decâ
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează procentul de deducere a ajustării de creanță la impozitul pe profit prin `deductibilitate_creanta(..., faliment_declarat=True)`, care întoarce 100% (cu condiția negarantării și neafilierii) și generează nota contabilă 6814=491. Aplicația nu calculează ajustarea bazei de TVA (art. 287) și nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment (art. 25 alin. (4) lit. h)) — ambele rămân operațiuni separate, de tratat manual, conform termenelor și condițiilor de mai sus.
+Aplicația calculează procentul de deducere a ajustării de creanță la impozitul pe profit prin `deductibilitate_creanta(..., faliment_declarat=True)`, care întoarce 100% (cu condiția negarantării și neafilierii) și generează nota contabilă 6814=491. Aplicația nu calculează ajustarea bazei de TVA (art. 287) și nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment (art. 25 alin. (4) lit. h)) — ambele rămân operațiuni separate, de tratat manual, conform termenelor și condițiilor de mai sus.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ O firmă românească ce vinde online către consumatori din alte state membre, 
 
 ::: ghid-temei
 „Prezentul regim special poate fi utilizat de către orice persoană impozabilă care are sediul activității economice în România [...]. Regimul special poate fi utilizat în următoarele cazuri: a) de către orice persoană impozabilă care efectuează vânzări intracomunitare de bunuri la distanță. [...] c) de către orice persoană impozabilă care prestează servicii către o persoană neimpozabilă, atunci când persoana impozabilă nu este stabilită în statul membru de consum."
-— Legea 227/2015 (Codul fiscal), art. 315 alin. (2) (Regimul special pentru Uniune) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 315 alin. (2) (Regimul special pentru Uniune) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o firmă care vinde online în UE:

@@ -16,20 +16,20 @@ Excepția importantă: dacă firma a aplicat regimul special de scutire pentru �
 
 ::: ghid-temei
 „În condițiile stabilite prin normele metodologice se acordă dreptul de deducere a taxei pentru achizițiile efectuate de o persoană impozabilă înainte de înregistrarea acesteia în scopuri de TVA, conform art. 316"
-— Codul fiscal (Legea 227/2015), art. 297 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 297 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 297 alin. (6) din Codul fiscal, orice persoană impozabilă are dreptul să deducă taxa pentru achizițiile efectuate de aceasta înainte de înregistrarea în scopuri de TVA, conform art. 316 din Codul fiscal, din momentul în care această persoană intenționează să desfășoare o activitate economică, cu condiția să nu se depășească perioada prevăzută la art. 301 alin. (2) din Codul fiscal. Deducerea se exercită prin înscrierea taxei deductibile în decontul de taxă prevăzut la art. 323 din Codul fiscal, depus după înregistrarea persoanei impozabile în scopuri de TVA conform art. 316 din Codul fiscal, cu excepția situației în care s-a aplicat regimul special de scutire pentru întreprinderile mici prevăzut la art. 310 din Codul fiscal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (14) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (14) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Dreptul de deducere pentru achizițiile de bunuri efectuate înainte de înregistrarea în scopuri de TVA conform art. 316 din Codul fiscal poate fi exercitat de persoana impozabilă chiar dacă factura nu conține mențiunea referitoare la codul de înregistrare în scopuri de TVA atribuit beneficiarului conform art. 316 din Codul fiscal."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (16) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 67 alin. (16) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „persoana impozabilă își poate exercita dreptul de deducere prin decontul perioadei fiscale în care sunt îndeplinite aceste condiții și formalități sau printr-un decont ulterior, dar în cadrul termenului de prescripție prevăzut în Codul de procedură fiscală"
-— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 301 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe scurt:

@@ -8,14 +8,14 @@ poarta: v1
 
 # Împuternicirea pentru depunerea documentelor la ONRC
 
-Precizare de temei, înainte de conținut: cadrul procedural actual, detaliat, al depunerii documentelor la Oficiul Național al Registrului Comerțului (formularele de împuternicire, cerințele de autentificare, procedura online) e reglementat prin Legea 265/2022 privind registrul comerțului — act care **se regăsește în sursele verificate local** (anaf_surse/legea_265_2022.html). Aceasta prevede expres că cererile se pot depune prin mandatar cu procură specială sau generală **autentică** ori de avocat, cu **împuternicire avocațială** (art. 79 alin. (1), art. 81 alin. (1) și art. 3 alin. (1) lit. e)). Se confirmă totodată principiul general din Legea 31/1990: reprezentarea printr-un împuternicit e admisă explicit chiar la actul fondator al firmei, cererea de înmatriculare.
+Precizare de temei, înainte de conținut: cadrul procedural actual, detaliat, al depunerii documentelor la Oficiul Național al Registrului Comerțului (formularele de împuternicire, cerințele de autentificare, procedura online) e reglementat prin Legea 265/2022 privind registrul comerțului — act care **se regăsește în sursele verificate local** ([Legea nr. 265/2022 privind registrul comerțului](https://legislatie.just.ro/Public/DetaliiDocument/257835)). Aceasta prevede expres că cererile se pot depune prin mandatar cu procură specială sau generală **autentică** ori de avocat, cu **împuternicire avocațială** (art. 79 alin. (1), art. 81 alin. (1) și art. 3 alin. (1) lit. e)). Se confirmă totodată principiul general din Legea 31/1990: reprezentarea printr-un împuternicit e admisă explicit chiar la actul fondator al firmei, cererea de înmatriculare.
 
 ## Temeiul legal
 
 ::: ghid-temei
 „Articolul 36
 (1) În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori sau, dacă este cazul, primii membri ai directoratului și ai consiliului de supraveghere ori un împuternicit al acestora vor cere înmatricularea societății în registrul comerțului în a cărui rază teritorială își va avea sediul societatea. Ei răspund în mod solidar pentru orice prejudiciu pe care îl cauzează prin neîndeplinirea acestei obligații."
-— Legea 31/1990 (Legea societăților), art. 36 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (Legea societăților), art. 36 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce se poate confirma din acest text:

@@ -14,7 +14,7 @@ Una dintre condițiile cumulative pentru a aplica impozitul pe veniturile micro�
 
 ::: ghid-temei
 „are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)"
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut din formularea condiției:
@@ -31,6 +31,6 @@ Ce trebuie reținut din formularea condiției:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică automat** îndeplinirea condițiilor de eligibilitate pentru regimul micro, inclusiv condiția salariatului. Aplicația ține evidența contractelor de muncă și a statelor de plată (`core/salarizare.py`, `core/stat_plata_api.py`), dar decizia privind încadrarea sau menținerea firmei la impozitul micro, pe baza tuturor condițiilor cumulative de la art. 47, rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu verifică automat** îndeplinirea condițiilor de eligibilitate pentru regimul micro, inclusiv condiția salariatului. Aplicația ține evidența contractelor de muncă și a statelor de plată, dar decizia privind încadrarea sau menținerea firmei la impozitul micro, pe baza tuturor condițiilor cumulative de la art. 47, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

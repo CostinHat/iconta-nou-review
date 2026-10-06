@@ -14,10 +14,10 @@ Depinde exclusiv de două criterii, aplicate cumulativ — nu de natura bunului 
 
 ::: ghid-temei
 „mijloc fix - orice imobilizare corporală, care este deținută pentru a fi utilizată în producția sau livrarea de bunuri ori în prestarea de servicii, pentru a fi închiriată terților sau în scopuri administrative, dacă are o durată normală de utilizare mai mare de un an și o valoare egală sau mai mare decât limita stabilită prin hotărâre a Guvernului."
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 21 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei; această limită se actualizată anual, în funcție de indicele de inflație, prin hotărâre a Guvernului;"
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) lit. b), în forma modificată de OUG 8/2026 (în vigoare de la 25.02.2026; anterior, limita era 2.500 lei, stabilită prin HG 276/2013) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (2) lit. b), în forma modificată de OUG 8/2026 (în vigoare de la 25.02.2026; anterior, limita era 2.500 lei, stabilită prin HG 276/2013) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două condiții **cumulative**, aplicate unui televizor cumpărat de firmă:
@@ -37,6 +37,6 @@ Cele două condiții **cumulative**, aplicate unui televizor cumpărat de firmă
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/obiecte_inventar.py` citește pragul valoric al mijlocului fix dintr-un registru de cote istoricizat (`prag_mf(la_data)`), nu dintr-o valoare fixă — pentru achizițiile de la 25.02.2026 încoace pragul aplicat este 5.000 lei (OUG 8/2026), iar pentru cele anterioare, 2.500 lei (HG 276/2013), fiecare corect legat de data operațiunii. Verificarea celeilalte condiții — durata reală de utilizare planificată de firmă pentru bunul respectiv — rămâne o evaluare a contabilului la momentul înregistrării achiziției.
+Verificat în cod: Aplicația citește pragul valoric al mijlocului fix dintr-un registru de cote istoricizat (`prag_mf(la_data)`), nu dintr-o valoare fixă — pentru achizițiile de la 25.02.2026 încoace pragul aplicat este 5.000 lei (OUG 8/2026), iar pentru cele anterioare, 2.500 lei (HG 276/2013), fiecare corect legat de data operațiunii. Verificarea celeilalte condiții — durata reală de utilizare planificată de firmă pentru bunul respectiv — rămâne o evaluare a contabilului la momentul înregistrării achiziției.
 
 [iConta.eu](/)

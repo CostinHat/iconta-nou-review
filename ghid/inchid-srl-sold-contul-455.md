@@ -21,7 +21,7 @@ Textul de mai sus confirmă principiul general: **lichidarea presupune întâi p
 
 ## Ce se greșește în practică
 
-Cea mai frecventă confuzie este între contul **455** (datorii ale societății către asociați, de regulă împrumuturi) și contul **456** „Decontări cu acționarii/asociații privind capitalul" — cel folosit efectiv la partajul final. Contabilii care rulează direct operația de „Partaj către asociați" din iConta.eu se așteaptă uneori ca soldul din 455 să fie preluat automat de această operație. Nu este cazul: motorul de lichidare din iConta.eu (`core/lichidare.py`, funcția `partaj`) operează explicit pe capital social, rezerve și profituri, toate contra contului 456, nu pe 455.
+Cea mai frecventă confuzie este între contul **455** (datorii ale societății către asociați, de regulă împrumuturi) și contul **456** „Decontări cu acționarii/asociații privind capitalul" — cel folosit efectiv la partajul final. Contabilii care rulează direct operația de „Partaj către asociați" din iConta.eu se așteaptă uneori ca soldul din 455 să fie preluat automat de această operație. Nu este cazul: motorul de lichidare din iConta.eu (funcția `partaj`) operează explicit pe capital social, rezerve și profituri, toate contra contului 456, nu pe 455.
 
 ## Ce face iConta.eu
 

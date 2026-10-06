@@ -14,7 +14,7 @@ Spre deosebire de o firmă, un PFA nu are un calendar fiscal trimestrial complex
 
 ::: ghid-temei
 „Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor. [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 122 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 122 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Reperele centrale ale calendarului unui PFA:

@@ -16,15 +16,15 @@ Evaluarea contează pentru că din ea rezultă venitul brut, apoi venitul net (d
 
 ::: ghid-temei
 „În cazul în care arenda se exprimă în natură, evaluarea în lei se face pe baza prețurilor medii ale produselor agricole, stabilite prin hotărâri ale consiliilor județene și, respectiv, ale Consiliului General al Municipiului București, ca urmare a propunerilor direcțiilor teritoriale de specialitate ale Ministerului Agriculturii și Dezvoltării Rurale, hotărâri ce trebuie emise înainte de începerea anului fiscal."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul în care prețurile medii ale produselor agricole, stabilite potrivit prevederilor alin. (5) , au fost modificate în cursul anului fiscal de realizare a venitului, potrivit procedurii de la alin. (5) noile prețuri pentru evaluarea în lei a veniturilor din arendă exprimate în natură, pentru determinarea bazei impozabile, se aplică începând cu data de 1 a lunii următoare comunicării acestora către direcțiile generale regionale ale finanțelor publice."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul veniturilor obținute din arendarea bunurilor agricole din patrimoniul personal, venitul brut se stabilește pe baza raportului juridic/contractului încheiat între părți și reprezintă totalitatea sumelor în bani încasate și/sau echivalentul în lei al veniturilor în natură primite."
-— Codul fiscal (Legea 227/2015), art. 84 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 84 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

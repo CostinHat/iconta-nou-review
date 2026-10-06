@@ -16,24 +16,24 @@ Reținerea nu se face dacă persoana dovedește că e înregistrată fiscal pent
 
 ::: ghid-temei
 „În veniturile din activitățile prevăzute la art. 114 alin. (2) lit. g) din Codul fiscal sunt cuprinse veniturile realizate de contribuabilii care nu sunt înregistrați fiscal potrivit legislației în materie și care desfășoară activități de producție, comerț, prestări de servicii, profesii liberale, din drepturi de proprietate intelectuală, precum și venituri din activități agricole, silvicultură și piscicultură, fără a avea caracter de continuitate"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 34 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 34 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul pe venit se calculează prin reținere la sursă la momentul acordării veniturilor de către plătitorii de venituri, prin aplicarea asupra venitului brut a unei cote de: a)"
-— Codul fiscal (Legea 227/2015), art. 115 alin. (1), care prevede la lit. a) cota de 10% și pentru veniturile de la art. 114 alin. (2) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (1), care prevede la lit. a) cota de 10% și pentru veniturile de la art. 114 alin. (2) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Fac excepție de la prevederile alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „contribuabilii care obțin venituri din activitățile prevăzute la art. 114 alin. (2) lit. g)"
-— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „care fac dovada înregistrării fiscale pentru activitatea respectivă, potrivit legislației în materie, prin depunerea declarației pe propria răspundere, la plătitorii de venituri, la momentul plății veniturilor."
-— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul calculat și reținut reprezintă impozit final."
-— Codul fiscal (Legea 227/2015), art. 115 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 115 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile, pe scurt:

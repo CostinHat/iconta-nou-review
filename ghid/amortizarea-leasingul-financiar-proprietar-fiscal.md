@@ -16,7 +16,7 @@ Proprietatea juridică poate rămâne, prin contract, la societatea de leasing p
 **Legea 227/2015 (Codul fiscal), art. 29 alin. (1)**: „În cazul leasingului financiar utilizatorul este tratat din punct de vedere fiscal ca proprietar, în timp ce, în cazul leasingului operațional, locatorul are această calitate."
 
 **OMFP 1802/2014, pct. 214 alin. (1)**: „Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator [...]."
-— (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt; anaf_surse/omfp_1802_2014.txt)
+— (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282); [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Codul fiscal spune explicit: la leasingul financiar, **utilizatorul** (locatarul) e „tratat ca proprietar" — nu societatea de leasing, care rămâne formal creditor/finanțator.

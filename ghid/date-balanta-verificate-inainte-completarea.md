@@ -13,7 +13,7 @@ Balanța pe care o citește motorul D101 trebuie verificată punctual pe câteva
 ## Temeiul legal
 
 ::: ghid-temei
-"`pull()` (liniile 448–467): citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)." — dosarul de cercetare F027, pe baza `core/d101.py`.
+"`pull()`: citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)." — dosarul de cercetare F027, pe baza aplicația.
 :::
 
 Concret, de verificat înainte de completare:

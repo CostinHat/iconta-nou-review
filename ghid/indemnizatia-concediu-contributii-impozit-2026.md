@@ -16,7 +16,7 @@ Indemnizația de concediu de odihnă nu e un venit separat, cu regim fiscal prop
 „Pentru perioada concediului de odihnă salariatul beneficiază de o indemnizaţie de concediu care nu poate fi mai mica decât valoarea totală a drepturilor salariale cuvenite pentru perioada respectiva."
 
 „Sunt considerate venituri din salarii toate veniturile în bani și/sau în natură obținute de o persoană fizică rezidentă ori nerezidentă ce desfășoară o activitate în baza unui contract individual de muncă [...] indiferent de perioada la care se referă, de denumirea veniturilor ori de forma sub care ele se acordă [...]."
-— Legea 53/2003 (Codul muncii), art. 145 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt); Codul fiscal, art. 76 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 53/2003 (Codul muncii), art. 145 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647)); Codul fiscal, art. 76 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința practică:
@@ -34,6 +34,6 @@ Consecința practică:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un calcul separat pentru „indemnizația de concediu de odihnă" — pentru că, fiscal, ea nu e un venit distinct. Contabilul introduce suma indemnizației (calculată conform art. 145, ca medie zilnică × zile) ca parte din venitul brut al lunii, iar restul îl face motorul de calcul al salariului (`core/salarizare.py`, `calcul_salariu`): CAS 25%, CASS 10%, impozit 10% pe net, exact ca la orice altă componentă a salariului, cu nota contabilă generată automat (641/421, 421/4315, 421/4316, 421/444). Aplicația nu calculează însă automat suma indemnizației pornind de la zilele de concediu programate — acel calcul (media zilnică din luna efectuării concediului × zile) rămâne în sarcina contabilului, la introducerea brutului lunii.
+iConta.eu nu are un calcul separat pentru „indemnizația de concediu de odihnă" — pentru că, fiscal, ea nu e un venit distinct. Contabilul introduce suma indemnizației (calculată conform art. 145, ca medie zilnică × zile) ca parte din venitul brut al lunii, iar restul îl face motorul de calcul al salariului (`calcul_salariu`): CAS 25%, CASS 10%, impozit 10% pe net, exact ca la orice altă componentă a salariului, cu nota contabilă generată automat (641/421, 421/4315, 421/4316, 421/444). Aplicația nu calculează însă automat suma indemnizației pornind de la zilele de concediu programate — acel calcul (media zilnică din luna efectuării concediului × zile) rămâne în sarcina contabilului, la introducerea brutului lunii.
 
 [iConta.eu](/)

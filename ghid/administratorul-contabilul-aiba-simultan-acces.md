@@ -14,13 +14,13 @@ Da. Accesul la Spațiul Privat Virtual (SPV) al unei firme nu e limitat la o sin
 
 ::: ghid-temei
 „(1) Persoanele juridice sau alte entităţi fără personalitate juridică se pot identifica în mediul electronic astfel: a) cu certificatul calificat al persoanei juridice sau al entităţii fără personalitate juridică; b) cu certificatul calificat deţinut de persoana fizică reprezentant legal al persoanei juridice sau al entităţii fără personalitate juridică; c) cu certificatul calificat deţinut de reprezentantul desemnat al persoanei juridice sau al entităţii fără personalitate juridică; d) cu certificatul calificat deţinut de împuternicitul persoanei juridice sau al entităţii fără personalitate juridică."
-— OMFP 660/2017 privind Spațiul Privat Virtual, art. 15 alin. (1) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017 privind Spațiul Privat Virtual, art. 15 alin. (1) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 
 „(4) În sensul prezentului ordin, reprezentantul desemnat este persoana fizică, angajat al persoanei juridice sau al entităţii fără personalitate juridică, desemnată de către reprezentantul legal al persoanei juridice sau al entităţii fără personalitate juridică, pentru înregistrarea şi utilizarea SPV."
-— OMFP 660/2017, art. 15 alin. (4) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 15 alin. (4) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 
 „(1) La serviciile de comunicare electronică prin SPV au acces persoanele fizice, persoanele juridice sau alte entităţi fără personalitate juridică, direct sau prin reprezentanţii sau împuterniciţii acestora."
-— OMFP 660/2017, art. 4 alin. (1) (sursă: anaf_surse/omfp_660_2017.txt)
+— OMFP 660/2017, art. 4 alin. (1) (sursă: [OMFP nr. 660/2017 privind procedura de comunicare prin mijloace electronice de transmitere la distanță](https://legislatie.just.ro/Public/DetaliiDocument/189347))
 :::
 
 Ce rezultă practic din aceste texte:

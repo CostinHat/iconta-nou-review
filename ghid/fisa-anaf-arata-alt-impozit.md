@@ -16,7 +16,7 @@ Diferența dintre suma din fișa pe plătitor și impozitul pe profit calculat i
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale.
 (2) Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.
 (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (2), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (2), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Concret, atunci când fișa pe plătitor arată alt impozit pe profit decât cel din contabilitate, ordinea de verificare e:
@@ -34,6 +34,6 @@ Concret, atunci când fișa pe plătitor arată alt impozit pe profit decât cel
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **calculează și generează declarația D101** pe baza datelor din contabilitate (`core/d101.py`, cu module de reconciliere în `core/d101_reconciliere.py`), inclusiv verificări interne care compară impozitul calculat cu rulajele contabile ale firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu compară automat suma din contabilitate cu ceea ce arată evidența ANAF — acea comparație și depunerea declarației rectificative, dacă e cazul, rămân o operațiune manuală, făcută de contabil pe baza consultării SPV sau a fișei eliberate de organul fiscal.
+La data acestui ghid, iConta.eu **calculează și generează declarația D101** pe baza datelor din contabilitate (cu module de reconciliere în aplicație), inclusiv verificări interne care compară impozitul calculat cu rulajele contabile ale firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu compară automat suma din contabilitate cu ceea ce arată evidența ANAF — acea comparație și depunerea declarației rectificative, dacă e cazul, rămân o operațiune manuală, făcută de contabil pe baza consultării SPV sau a fișei eliberate de organul fiscal.
 
 [iConta.eu](/)

@@ -16,13 +16,13 @@ Pentru firmă, diferența e practică. O hotărâre care doar anulează poprirea
 
 ::: ghid-temei
 „în cazul anulării actului de executare contestat sau al încetării executării înseși și al anulării titlului executoriu, instanța poate dispune prin aceeași hotărâre să i se restituie celui îndreptățit suma ce i se cuvine din valorificarea bunurilor ori din reținerile prin poprire."
-— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Dacă admite contestația la executare, instanța, după caz, poate dispune anularea actului de executare contestat sau îndreptarea acestuia, anularea ori încetarea executării înseși, anularea sau lămurirea titlului executoriu ori efectuarea actului de executare a cărui îndeplinire a fost refuzată."
-— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în cazul respingerii contestației contestatorul poate fi obligat, la cererea organului de executare silită, la despăgubiri pentru pagubele cauzate prin întârzierea executării"
-— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 262 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce reiese din text:

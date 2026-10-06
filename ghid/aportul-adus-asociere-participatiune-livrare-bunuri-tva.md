@@ -17,14 +17,14 @@ Regula are limite clare. Dacă un asociat furnizează mai mult decât partea lui
 ::: ghid-temei
 „(3) Bunurile care sunt puse la dispoziția asocierii de către membrii săi fără plată, ca aport la asociere în limita cotei de participare stabilite prin contract, nu constituie livrare de bunuri cu plată în sensul art. 270 din Codul fiscal."
 „(7) Aportul la asociere nu este considerat avans la o livrare/prestare, în măsura în care sunt respectate prevederile prezentelor norme referitoare la asocierile în participațiune, respectiv în situația în care nu au loc livrări de bunuri/prestări de servicii exclusiv între membrii asociați."
-— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (3) și (7) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (3) și (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 „În acest caz, baza impozabilă este suma primită de membrul respectiv al asocierii drept contravaloare a operațiunilor ce depășesc partea prevăzută pentru el în contractul de asociere."
-— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Asocierile în participațiune nu dau naștere unei persoane impozabile separate."
-— Codul fiscal (Legea 227/2015), art. 269 alin. (11) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Norma este dată în aplicarea art. 269 alin. (11) și art. 321 alin. (5) din Codul fiscal, care au același conținut și în forma actuală.

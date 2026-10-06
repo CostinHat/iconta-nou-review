@@ -14,7 +14,7 @@ O plată făcută prin internet banking, dar care nu apare (încă) în fișa pe
 
 ::: ghid-temei
 „(11) În cazul stingerii prin plată a obligațiilor fiscale, bugetare sau a altor sume colectate de instituții publice, în condițiile legii, momentul plății este: [...] d) în cazul plăților efectuate prin decontare bancară, inclusiv internet banking, home banking, mobile banking sau alte mijloace de plată la distanță puse la dispoziția debitorilor de instituțiile de credit, inclusiv tranzacțiile efectuate prin intermediul contului tranzitoriu, data la care băncile debitează contul persoanei care efectuează plata pe baza instrumentelor de decontare specifice, astfel cum această informație este transmisă prin mesajul electronic de plată de către instituția bancară inițiatoare, potrivit reglementărilor specifice în vigoare, cu excepția situației prevăzute la art. 177;"
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie făcut, în ordine, când suma nu apare în fișă:
@@ -32,6 +32,6 @@ Ce trebuie făcut, în ordine, când suma nu apare în fișă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește obligațiile fiscale datorate și termenele de plată prin modulul de control fiscal (`core/control_fiscal_api.py`, funcțiile `obligatii_datorate` și `declaratii_datorate`), pe baza calendarului fiscal al firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu confirmă automat recepționarea unei plăți de către trezorerie — verificarea datei reale de debitare a contului bancar și, dacă e cazul, transmiterea dovezii de plată către organul fiscal rămân operațiuni pe care contabilul le face în afara aplicației.
+La data acestui ghid, iConta.eu urmărește obligațiile fiscale datorate și termenele de plată prin modulul de control fiscal (funcțiile `obligatii_datorate` și `declaratii_datorate`), pe baza calendarului fiscal al firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu confirmă automat recepționarea unei plăți de către trezorerie — verificarea datei reale de debitare a contului bancar și, dacă e cazul, transmiterea dovezii de plată către organul fiscal rămân operațiuni pe care contabilul le face în afara aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Nu există o listă oficială, unică, de „documente acceptate la control" —
 
 ::: ghid-temei
 „Documentele justificative și evidențele contabile ale contribuabilului/plătitorului constituie probe la stabilirea bazei de impozitare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 72 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 72 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Art. 73 alin. (1) CPF completează principiul: „Contribuabilul/Plătitorul are sarcina de a dovedi actele și faptele care au stat la baza declarațiilor sale și a oricăror cereri adresate organului fiscal." — dovada aparține firmei, nu invers.

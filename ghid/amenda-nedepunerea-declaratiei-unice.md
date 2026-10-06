@@ -14,7 +14,7 @@ Amenda pentru declarația unică netranspusă la termen nu are legătură cu obl
 
 ::: ghid-temei
 „(3) În cazul persoanelor fizice nedepunerea la termenele prevăzute de lege a declarațiilor de venit, precum și a declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice constituie contravenție și se sancționează cu amendă de la 50 lei la 500 lei."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Detaliile care contează pentru o persoană fizică (inclusiv PFA) aflată în această situație:
@@ -31,6 +31,6 @@ Detaliile care contează pentru o persoană fizică (inclusiv PFA) aflată în a
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă evidența contabilă pentru persoane fizice autorizate care conduc contabilitate în partidă simplă (`core/rip_api.py`), din care se pot extrage veniturile realizate relevante pentru declarația unică, dar **nu generează și nu depune** declarația unică propriu-zisă și nu calculează amenda pentru nedepunere — aceasta rămâne o obligație de raportare pe care persoana fizică sau contabilul o gestionează direct pe portalul ANAF, la termenele legale.
+La data acestui ghid, iConta.eu oferă evidența contabilă pentru persoane fizice autorizate care conduc contabilitate în partidă simplă, din care se pot extrage veniturile realizate relevante pentru declarația unică, dar **nu generează și nu depune** declarația unică propriu-zisă și nu calculează amenda pentru nedepunere — aceasta rămâne o obligație de raportare pe care persoana fizică sau contabilul o gestionează direct pe portalul ANAF, la termenele legale.
 
 [iConta.eu](/)

@@ -36,6 +36,6 @@ Toate aceste termene se mută la prima zi lucrătoare, dacă data calculată pic
 
 ## Ce face iConta.eu
 
-Modulul de scadențe (`core/scadente.py`) calculează, pentru fiecare din cele 9 declarații urmărite, termenul exact al perioadei, mutat automat la prima zi lucrătoare dacă pică în weekend sau sărbătoare legală — inclusiv sărbătorile cu dată mobilă, calculate din data Paștelui ortodox, nu hardcodate an de an. Semaforul F022 (`core/control_fiscal_api.py`) folosește acest calcul ca sursă unică pentru toate verdictele de termen, astfel încât aceeași regulă de scadență se aplică identic în toată aplicația.
+Modulul de scadențe calculează, pentru fiecare din cele 9 declarații urmărite, termenul exact al perioadei, mutat automat la prima zi lucrătoare dacă pică în weekend sau sărbătoare legală — inclusiv sărbătorile cu dată mobilă, calculate din data Paștelui ortodox, nu hardcodate an de an. Semaforul F022 folosește acest calcul ca sursă unică pentru toate verdictele de termen, astfel încât aceeași regulă de scadență se aplică identic în toată aplicația.
 
 [iConta.eu](/)

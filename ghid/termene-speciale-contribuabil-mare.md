@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „Avizul de inspecție fiscală se comunică contribuabilului/plătitorului, înainte de începerea inspecției fiscale, astfel: a) cu 30 de zile pentru marii contribuabili; b) cu 15 zile pentru ceilalți contribuabili/plătitori."
-— Legea nr. 207/2015, art. 122 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015, art. 122 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Obligația de transmitere a fișierului standard de control fiscal prin intermediul Declarației informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: — pentru contribuabilii încadrați în categoria marilor contribuabili la data de 1 ianuarie 2022 [...] obligația de depunere [...] începe de la data de 1 ianuarie 2022 [...]; — pentru contribuabilii încadrați în categoria contribuabili mijlocii la data de 31 decembrie 2021, obligația [...] începe de la data de 1 ianuarie 2023 [...]; — pentru contribuabilii încadrați în categoria de contribuabili mici la data de 31 decembrie 2021, obligația [...] începe de la data de 1 ianuarie 2025 [...]."
-— OPANAF nr. 1.783/2021, Anexa 5, pct. 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Din cele două surse rezultă două termene speciale distincte, cu logici diferite:
@@ -34,6 +34,6 @@ Din cele două surse rezultă două termene speciale distincte, cu logici diferi
 
 ## Ce face iConta.eu
 
-Generatorul de D406 din iConta.eu (`core/d406.py` și fișierele `d406_*.py`) produce declarația SAF-T pe baza datelor firmei, dar aplicația nu urmărește automat, la data acestui ghid, calendarul de intrare treptată în obligația de depunere (mare/mijlociu/mic contribuabil) și nici termenele diferențiate pentru avizul de inspecție fiscală — acestea rămân verificări pe care contabilul trebuie să le facă separat, în funcție de încadrarea comunicată de ANAF pentru firma respectivă.
+Generatorul de D406 din iConta.eu (aplicația și fișierele `d406_*.py`) produce declarația SAF-T pe baza datelor firmei, dar aplicația nu urmărește automat, la data acestui ghid, calendarul de intrare treptată în obligația de depunere (mare/mijlociu/mic contribuabil) și nici termenele diferențiate pentru avizul de inspecție fiscală — acestea rămân verificări pe care contabilul trebuie să le facă separat, în funcție de încadrarea comunicată de ANAF pentru firma respectivă.
 
 [iConta.eu](/)

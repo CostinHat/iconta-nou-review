@@ -14,7 +14,7 @@ Când se constată că durata de viață utilă stabilită inițial pentru un mi
 
 ::: ghid-temei
 „Ca rezultat al incertitudinilor inerente în desfășurarea activităților, unele elemente ale situațiilor financiare anuale nu pot fi evaluate cu precizie, ci doar estimate. Se pot solicita, de exemplu, estimări ale: [...] duratei de viață utile, precum și a modului preconizat de consumare a beneficiilor economice viitoare încorporate în activele amortizabile (metoda de amortizare) etc. [...] Efectul modificării unei estimări contabile se recunoaște prospectiv prin includerea sa în rezultatul: – perioadei în care are loc modificarea, dacă aceasta afectează numai perioada respectivă [...]; sau – perioadei în care are loc modificarea și al perioadelor viitoare, dacă modificarea are efect și asupra acestora (de exemplu, durata de viață utilă a imobilizărilor corporale)."
-— OMFP 1802/2014, pct. 70 alin. (1) și (4) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 70 alin. (1) și (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Distincția e importantă pentru cum se tratează contabil situația:
@@ -32,6 +32,6 @@ Distincția e importantă pentru cum se tratează contabil situația:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **stochează durata normală de funcționare** (`dnf_luni`, în `core/repo_mijloace_fixe.py`) introdusă de contabil la înregistrarea mijlocului fix și calculează amortizarea pe baza ei, dar **nu are un flux dedicat pentru revizuirea unei estimări** — nu există în cod o funcție care să permită modificarea prospectivă a duratei rămase pentru un activ deja amortizat integral, conform pct. 70 din OMFP 1802/2014. Ajustarea unei asemenea situații rămâne, pentru moment, o intervenție manuală a contabilului.
+La data acestui ghid, iConta.eu **stochează durata normală de funcționare** (`dnf_luni`, în aplicație) introdusă de contabil la înregistrarea mijlocului fix și calculează amortizarea pe baza ei, dar **nu are un flux dedicat pentru revizuirea unei estimări** — nu există în cod o funcție care să permită modificarea prospectivă a duratei rămase pentru un activ deja amortizat integral, conform pct. 70 din OMFP 1802/2014. Ajustarea unei asemenea situații rămâne, pentru moment, o intervenție manuală a contabilului.
 
 [iConta.eu](/)

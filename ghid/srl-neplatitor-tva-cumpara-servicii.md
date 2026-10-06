@@ -17,7 +17,7 @@ Da, o firmă neînregistrată normal în scopuri de TVA poate achiziționa servi
 (2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...]
 Articolul 317 - Înregistrarea în scopuri de TVA a altor persoane care efectuează achiziții intracomunitare sau pentru servicii
 (1) Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...] c) persoana impozabilă care își are stabilit sediul activității economice în România și persoana impozabilă care aplică regimul special de scutire prevăzut la art. 310^2, care nu sunt înregistrate și nu au obligația să se înregistreze conform art. 316 și care nu sunt deja înregistrate conform lit. a), b) sau d) ori alin. (2) sau (2^1), dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective;"
-— Cod fiscal, art. 278 alin. (2) și art. 317 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 278 alin. (2) și art. 317 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul, pas cu pas:

@@ -14,7 +14,7 @@ Când o firmă vinde, cumpără sau împrumută bani de la o societate afiliată
 
 ::: ghid-temei
 „(4) Tranzacțiile între persoane afiliate se realizează conform principiului valorii de piață. În cadrul unei tranzacții, al unui grup de tranzacții între persoane afiliate, organele fiscale pot ajusta, în cazul în care principiul valorii de piață nu este respectat, sau pot estima, în cazul în care contribuabilul nu pune la dispoziția organului fiscal competent datele necesare pentru a stabili dacă prețurile de transfer practicate în situația analizată respectă principiul valorii de piață, suma venitului sau a cheltuielii aferente rezultatului fiscal oricăreia dintre părțile afiliate pe baza nivelului tendinței centrale a pieței."
-— Legea nr. 227/2015 (Codul fiscal), art. 11 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 11 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Efectul direct asupra impozitului pe profit:
@@ -32,6 +32,6 @@ Efectul direct asupra impozitului pe profit:
 
 ## Ce face iConta.eu
 
-Verificat în cod: modulul `core/d394.py` gestionează declararea existenței operațiunilor cu persoane afiliate prin câmpul `prsAfiliat` din declarația D394, pe baza unui indicator setat în profilul firmei (`are_operatiuni_afiliate`). Aplicația **nu calculează și nu ajustează automat prețurile de transfer** — nu există în cod o funcționalitate care să aplice metodele de determinare a valorii de piață (comparării prețurilor, cost plus etc.) sau să recalculeze rezultatul fiscal în funcție de acestea. Declararea corectă a operațiunilor cu persoane afiliate și, dacă e cazul, întocmirea dosarului prețurilor de transfer rămân în sarcina contabilului.
+Verificat în cod: Aplicația gestionează declararea existenței operațiunilor cu persoane afiliate prin câmpul `prsAfiliat` din declarația D394, pe baza unui indicator setat în profilul firmei (`are_operatiuni_afiliate`). Aplicația **nu calculează și nu ajustează automat prețurile de transfer** — nu există în cod o funcționalitate care să aplice metodele de determinare a valorii de piață (comparării prețurilor, cost plus etc.) sau să recalculeze rezultatul fiscal în funcție de acestea. Declararea corectă a operațiunilor cu persoane afiliate și, dacă e cazul, întocmirea dosarului prețurilor de transfer rămân în sarcina contabilului.
 
 [iConta.eu](/)

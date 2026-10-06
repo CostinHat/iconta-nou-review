@@ -16,15 +16,15 @@ Contestația nu oprește efectele inactivității. Pe durata ei, firma rămâne 
 
 ::: ghid-temei
 „Împotriva prezentei decizii se poate formula contestație la organul fiscal emitent, în termen de 45 de zile de la data comunicării, în conformitate cu dispozițiile art. 270 alin. (1) și art. 272 alin. (6)"
-— OPANAF 3846/2015, Anexa nr. 5a) (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, Anexa nr. 5a) (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 
 „Contestațiile împotriva actelor administrative fiscale emise potrivit prezentului ordin se soluționează potrivit prevederilor legale în vigoare de organul fiscal emitent, pe baza documentației și a motivației formulate de organul fiscal, de organul cu atribuții de executare silită, de organul de inspecție fiscală sau de Direcția generală antifraudă fiscală, care a formulat propunerea în baza căreia a fost emis respectivul act administrativ fiscal."
-— OPANAF 3846/2015, art. 13 (sursă: anaf_surse/ordin_3846_2015.html)
+— OPANAF 3846/2015, art. 13 (sursă: [OPANAF nr. 3846/2015 pentru aprobarea procedurilor de aplicare a art. 92 din Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174706))
 :::
 
 ::: ghid-temei
 „Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se construiește contestația:

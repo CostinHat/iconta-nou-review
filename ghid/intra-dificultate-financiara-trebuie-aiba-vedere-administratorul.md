@@ -16,14 +16,14 @@ Obligația contează mai ales dacă firma ajunge totuși în insolvență: de la
 
 ::: ghid-temei
 „În cazul în care societatea se află în stare de dificultate, administratorii/directorii au în vedere cel puțin următoarele: a) interesele creditorilor, ale deținătorilor de titluri de participație și ale altor părți interesate; [...] b) necesitatea de a lua măsuri rezonabile și adecvate pentru evitarea insolvenței și pentru reducerea la minimum a pierderilor suferite de creditori, de angajai, de deținătorii de titluri de participație și de alte părți interesate; [...] c) necesitatea de a evita adoptarea, cu intenție sau din gravă neglijență, a unei conduite care amenință viabilitatea întreprinderii."
-— Legea societăților nr. 31/1990, art. 73 alin. (1^1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 73 alin. (1^1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „dificultatea reprezintă starea generată de orice împrejurare care determină o afectare temporară a activității ce dă naștere unei amenințări reale și grave la adresa capacității viitoare a debitorului de a-și plăti datoriile la scadență, dacă nu sunt luate măsuri adecvate; debitorul în stare de dificultate este capabil să își execute obligațiile pe măsură ce devin scadente;"
-— Legea 85/2014, art. 5 alin. (1) pct. 26^2 (sursă: anaf_surse/legea_85_2014.html)
+— Legea 85/2014, art. 5 alin. (1) pct. 26^2 (sursă: [Legea nr. 85/2014 privind procedurile de prevenire a insolvenței și de insolvență](https://legislatie.just.ro/Public/DetaliiDocument/159286))
 „d) măsurile întreprinse de organele statutare ale societății în vederea prevenirii stării de insolvență/a falimentului și pentru acoperirea pasivului societății, inclusiv cele aplicate potrivit art. 73 alin. (1^1) din Legea nr. 31/1990"
-— Legea 85/2014, art. 97 alin. (1^1) lit. d) (sursă: anaf_surse/legea_85_2014.html)
+— Legea 85/2014, art. 97 alin. (1^1) lit. d) (sursă: [Legea nr. 85/2014 privind procedurile de prevenire a insolvenței și de insolvență](https://legislatie.just.ro/Public/DetaliiDocument/159286))
 :::
 
 Ce înseamnă concret:

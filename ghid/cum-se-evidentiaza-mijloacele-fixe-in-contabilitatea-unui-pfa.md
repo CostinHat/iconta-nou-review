@@ -36,6 +36,6 @@ Fișa mijlocului fix (cod 14-2-2) este documentul individual, per activ: urmăre
 
 ## Ce face iConta.eu
 
-Funcția `registru_inventar(conn, schema, an)` din `core/rip_api.py` construiește automat Registrul-inventar (cod 14-1-2/b): calculează mijloacele fixe la valoare rămasă (aplicând amortizarea liniară pe lunile scurse din durata normală de funcționare, `dnf_luni`) și le însumează cu disponibilitățile bănești — soldul Registrului-jurnal de încasări și plăți, validat și cumulat până la 31 decembrie — obținând totalul activului. Evidența individuală a fiecărui mijloc fix (echivalentul Fișei mijlocului fix) se ține în tabela `mijloace_fixe`, populată prin `core/mijloace_fixe_import_api.py`; `registru_inventar()` citește aceste date ca atare, fără să reverifice încadrarea inițială a bunului ca mijloc fix.
+Funcția `registru_inventar(conn, schema, an)` din aplicație construiește automat Registrul-inventar (cod 14-1-2/b): calculează mijloacele fixe la valoare rămasă (aplicând amortizarea liniară pe lunile scurse din durata normală de funcționare, `dnf_luni`) și le însumează cu disponibilitățile bănești — soldul Registrului-jurnal de încasări și plăți, validat și cumulat până la 31 decembrie — obținând totalul activului. Evidența individuală a fiecărui mijloc fix (echivalentul Fișei mijlocului fix) se ține în tabela `mijloace_fixe`, populată prin aplicație; `registru_inventar()` citește aceste date ca atare, fără să reverifice încadrarea inițială a bunului ca mijloc fix.
 
 [iConta.eu](/)

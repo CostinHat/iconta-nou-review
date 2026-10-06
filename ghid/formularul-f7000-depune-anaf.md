@@ -16,13 +16,13 @@ Pentru contabil, contează în două situații. Prima: când clientul e chiar op
 
 ::: ghid-temei
 „Se aprobă modelul Formularului F7000 utilizat de Operatorii de platforme în vederea îndeplinirii obligației de raportare prevăzute la art. 291^5 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală , cu modificările și completările ulterioare, prevăzut în anexa nr. 1 ."
-— OPANAF 1996/2023, art. 1 (sursă: anaf_surse/ordin_1996_2023.html)
+— OPANAF 1996/2023, art. 1 (sursă: [OPANAF nr. 1996/2023 privind formularul operatorilor de platforme (art. 291^5 CPF)](https://legislatie.just.ro/Public/DetaliiDocument/277645))
 
 „2. Formularul de raportare se transmite prin portal, sub forma unui fișier PDF cu XML atașat, semnat electronic, prin mijloace de transmitere la distanță. ... 3. Pentru depunerea formularelor F7000, Operatorii de platforme trebuie să dețină un certificat digital calificat"
-— OPANAF 1996/2023, Anexa nr. 2, pct. 2 și 3 (sursă: anaf_surse/ordin_1996_2023.html)
+— OPANAF 1996/2023, Anexa nr. 2, pct. 2 și 3 (sursă: [OPANAF nr. 1996/2023 privind formularul operatorilor de platforme (art. 291^5 CPF)](https://legislatie.just.ro/Public/DetaliiDocument/277645))
 
 „(1) Operatorii de platforme cărora le revine obligația de raportare trebuie să îndeplinească procedurile de diligență fiscală și de raportare prevăzute în secțiunile II și III din anexa nr. 5."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^5 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut despre F7000:

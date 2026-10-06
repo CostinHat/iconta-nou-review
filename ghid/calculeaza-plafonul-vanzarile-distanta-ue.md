@@ -14,7 +14,7 @@ O firmă românească care vinde online către clienți persoane fizice din alte
 
 ::: ghid-temei
 „c) valoarea totală, fără TVA, a operațiunilor prevăzute la lit. b) nu depășește, în anul calendaristic curent, 10.000 euro sau echivalentul acestei sume în moneda națională și nici nu a depășit această sumă în cursul anului calendaristic precedent. (2) Atunci când, în cursul unui an calendaristic, pragul prevăzut la alin. (1) lit. c) este depășit, prevederile art. 275 alin. (2) și art. 278 alin. (5) lit. h) se aplică de la momentul depășirii pragului."
-— Legea nr. 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) și alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 278^1 alin. (1) lit. c) și alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut din calcul:
@@ -33,6 +33,6 @@ Ce trebuie reținut din calcul:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu calculează automat plafonul cumulat de 10.000 euro pentru vânzările la distanță și nu semnalează depășirea lui — urmărirea acestui prag și schimbarea regimului de TVA la momentul depășirii rămân în sarcina contabilului. Aplicația are un modul pentru declarația D398 (`core/d398.py`), prin care se poate genera declarația specială de TVA pentru regimurile speciale OSS (UE, non-UE, import/IOSS) odată ce firma s-a înregistrat în regim — dar declarația e completată manual, pe baza valorilor introduse de contabil pe fiecare stat membru de consum, nu preluate automat din facturile emise.
+La data acestui ghid, iConta.eu nu calculează automat plafonul cumulat de 10.000 euro pentru vânzările la distanță și nu semnalează depășirea lui — urmărirea acestui prag și schimbarea regimului de TVA la momentul depășirii rămân în sarcina contabilului. Aplicația are un modul pentru declarația D398, prin care se poate genera declarația specială de TVA pentru regimurile speciale OSS (UE, non-UE, import/IOSS) odată ce firma s-a înregistrat în regim — dar declarația e completată manual, pe baza valorilor introduse de contabil pe fiecare stat membru de consum, nu preluate automat din facturile emise.
 
 [iConta.eu](/)

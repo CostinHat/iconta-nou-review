@@ -14,7 +14,7 @@ Alegerea lichidatorului nu e complet liberă — legea impune condiții de calif
 
 ::: ghid-temei
 „Lichidatorii vor putea fi persoane fizice sau persoane juridice. Lichidatorii persoane fizice sau reprezentanții permanenți - persoane fizice ale societății lichidatoare - trebuie să fie lichidatori autorizați, în condițiile legii."
-— Legea 31/1990, art. 253 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 253 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din text și din contextul legii:
@@ -32,6 +32,6 @@ Ce rezultă din text și din contextul legii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **are module de calcul pentru operațiuni de lichidare** (de exemplu, notele contabile pentru vânzarea unui activ în procesul de lichidare, în `core/lichidare.py`), dar **nu are un modul de alegere, numire sau verificare a calificării unui lichidator** — această decizie și procedura de numire rămân complet în afara aplicației.
+La data acestui ghid, iConta.eu **are module de calcul pentru operațiuni de lichidare** (de exemplu, notele contabile pentru vânzarea unui activ în procesul de lichidare, în aplicație), dar **nu are un modul de alegere, numire sau verificare a calificării unui lichidator** — această decizie și procedura de numire rămân complet în afara aplicației.
 
 [iConta.eu](/)

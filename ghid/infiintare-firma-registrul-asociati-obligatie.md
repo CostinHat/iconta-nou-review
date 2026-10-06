@@ -14,7 +14,7 @@ La înființarea unui SRL, administratorii preiau automat o obligație pe care m
 
 ::: ghid-temei
 „Societatea trebuie să țină, prin grija administratorilor, un registru al asociaților, în care se vor înscrie, după caz, numele și prenumele, denumirea, domiciliul sau sediul fiecărui asociat, partea acestuia din capitalul social, transferul părților sociale sau orice altă modificare privitoare la acestea."
-— Legea 31/1990 (legea societăților), art. 198 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 198 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Registrul nu e o formalitate opțională — legea îl impune expres, „prin grija administratorilor", chiar de la constituirea societății, cu date minime obligatorii: identitatea fiecărui asociat, partea sa din capitalul social și istoricul modificărilor (transferuri, majorări, excluderi etc.).
@@ -23,7 +23,7 @@ Registrul nu e o formalitate opțională — legea îl impune expres, „prin gr
 
 ::: ghid-temei
 „Administratorii răspund personal și solidar pentru orice daună pricinuită prin nerespectarea prevederilor de la alin. (1)."
-— Legea 31/1990 (legea societăților), art. 198 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 198 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Nu e o obligație „a societății" în abstract — răspunderea cade personal și solidar pe administratori dacă registrul lipsește sau e incorect și asta produce un prejudiciu (de exemplu un asociat/moștenitor care nu poate face dovada calității sale).
@@ -32,7 +32,7 @@ Nu e o obligație „a societății" în abstract — răspunderea cade personal
 
 ::: ghid-temei
 „Registrul poate fi cercetat de asociați și creditori."
-— Legea 31/1990 (legea societăților), art. 198 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 198 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Dreptul de consultare nu e limitat la asociați — și creditorii societății au acces la registru, ceea ce înseamnă că nu poate fi ținut informal, „pe hârtie liberă", fără să reziste unei verificări externe.
@@ -41,7 +41,7 @@ Dreptul de consultare nu e limitat la asociați — și creditorii societății 
 
 ::: ghid-temei
 „Transmiterea părților sociale trebuie înscrisă în registrul comerțului și în registrul de asociați al societății."
-— Legea 31/1990 (legea societăților), art. 203 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 203 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Registrul de asociați nu e izolat de registrul comerțului — orice transfer de părți sociale (vânzare, cesiune, succesiune) trebuie înscris în ambele, nu doar la ONRC. Dacă registrul intern rămâne neactualizat, apare o discrepanță între ce arată ONRC și ce arată evidența internă a firmei.

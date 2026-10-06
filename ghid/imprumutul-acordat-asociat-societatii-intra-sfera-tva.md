@@ -16,14 +16,14 @@ Când asociatul este o persoană fizică ce nu desfășoară activitate economic
 
 ::: ghid-temei
 „Printre altele, se cuprind în sfera operațiunilor scutite conform art. 292 alin. (2) lit. a) pct. 1 din Codul fiscal și împrumuturile acordate de asociați/acționari societăților în vederea asigurării resurselor financiare ale societății, împrumuturile garantate cu bunuri imobile, inclusiv împrumuturile ipotecare, împrumuturile garantate cu bunuri mobile corporale, inclusiv împrumuturile acordate de casele de amanet."
-— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „acordarea și negocierea de credite, precum și administrarea creditelor de către persoana care le acordă;"
-— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „Este considerată persoană impozabilă orice persoană care desfășoară, de o manieră independentă și indiferent de loc, activități economice de natura celor prevăzute la alin. (2) , oricare ar fi scopul sau rezultatul acestei activități."
-— Codul fiscal (Legea 227/2015), art. 269 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

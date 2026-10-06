@@ -14,7 +14,7 @@ Observi o sumă diferită între PDF-ul unei facturi și XML-ul ei din RO e-Fact
 
 ::: ghid-temei
 „Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Documentul cu valoare juridică e XML-ul semnat electronic de Ministerul Finanțelor, descărcabil din portalul SPV/ANAF — nu PDF-ul.
@@ -29,7 +29,7 @@ Observi o sumă diferită între PDF-ul unei facturi și XML-ul ei din RO e-Fact
 
 ## Ce face iConta.eu
 
-Cauza tehnică e confirmată în codul aplicației, nu doar teoretică: PDF-ul facturii (`core/pdf_util.py::bani`) rotunjește sumele fără să specifice metoda de rotunjire, ceea ce face Python să aplice implicit rotunjirea bancară (ROUND_HALF_EVEN). XML-ul pentru e-Factura (`core/efactura_send.py::_bani`) rotunjește explicit cu ROUND_HALF_UP, regula pe care aplicația o cere pentru orice sumă fiscală.
+Cauza tehnică e confirmată în codul aplicației, nu doar teoretică: PDF-ul facturii rotunjește sumele fără să specifice metoda de rotunjire, ceea ce face Python să aplice implicit rotunjirea bancară (ROUND_HALF_EVEN). XML-ul pentru e-Factura rotunjește explicit cu ROUND_HALF_UP, regula pe care aplicația o cere pentru orice sumă fiscală.
 
 Concret: la 3 bucăți × 3,335 lei/bucată (bază de calcul 10,005 lei), PDF-ul arată 10,00 lei, iar XML-ul arată 10,01 lei — din același rând de date, fără nicio intervenție manuală. Ce poți face acum, până la o reparație: tratează întotdeauna suma din XML (verificată în SPV) ca fiind cea corectă; dacă diferența afectează un total raportat, corectează manual reconcilierea, nu factura. Nu există în acest moment în aplicație o atenționare automată care să semnaleze o astfel de divergență între cele două documente — depistarea ei rămâne, deocamdată, manuală.
 

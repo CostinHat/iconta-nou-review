@@ -16,15 +16,15 @@ Dacă aceste dificultăți nu există, același transport e tratat ca **uz perso
 
 ::: ghid-temei
 „În cazul vehiculelor utilizate pentru transportul angajaților la și de la locul de muncă se consideră că vehiculul este utilizat în scopul activității economice atunci când există dificultăți evidente în folosirea altor mijloace de transport adecvate, cum ar fi lipsa mijloacelor de transport în comun, decalajul orarului mijloacelor de transport în comun față de programul de lucru al persoanei impozabile."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Transportul la și de la locul de muncă al angajaților în alte condiții decât cele menționate la alin. (3) , este considerat uz personal al vehiculului."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII, pct. 68 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate și a taxei aferente cheltuielilor legate de vehiculele aflate în proprietatea sau în folosința persoanei impozabile, în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice."
-— Codul fiscal (Legea 227/2015), art. 298 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 298 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile pentru deducere integrală:

@@ -16,10 +16,10 @@ Scutirea de formalități are însă o limită clară: acoperă doar operațiuni
 
 ::: ghid-temei
 „(5) Persoana impozabilă prevăzută la alin. (1) care aplică regimul de scutire în România nu are obligația să solicite înregistrarea în scopuri de TVA conform art. 316 sau 317 și nici să depună decontul de TVA prevăzut la art. 323 , pentru livrările de bunuri și prestările de servicii care fac obiectul scutirii în România."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(8) Competența de administrare a regimului special de scutire prevăzut de prezentul articol revine organului fiscal central stabilit prin ordin al președintelui A.N.A.F."
-— Codul fiscal (Legea 227/2015), art. 310^2 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^2 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se citește regula:

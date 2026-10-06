@@ -15,7 +15,7 @@ Sectorul construcțiilor a beneficiat, ani la rând, de facilități fiscale spe
 ::: ghid-temei
 „5. Abrogat.
 (la 01-01-2025, Punctul 5., Articolul 60, Capitolul I, Titlul IV a fost abrogat de Punctul 7., Articolul LXIV din ORDONANȚA DE URGENȚĂ nr. 156 din 30 decembrie 2024, publicată în MONITORUL OFICIAL nr. 1334 din 31 decembrie 2024)"
-— Legea 227/2015 (Codul fiscal), art. 60 pct. 5, abrogat prin OUG 156/2024 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 60 pct. 5, abrogat prin OUG 156/2024 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret pentru 2026:

@@ -14,7 +14,7 @@ Contabilii verifică des soldul contului 421 „Personal — salarii datorate" �
 
 ::: ghid-temei
 „Cu ajutorul acestui cont se ține evidența decontărilor cu personalul pentru drepturile salariale cuvenite acestuia în bani sau în natură, inclusiv a sporurilor, adaosurilor, premiilor din fondul de salarii etc. Contul 421 «Personal - salarii datorate» este un cont de pasiv. În creditul contului 421 «Personal - salarii datorate» se înregistrează: – salariile și alte drepturi cuvenite personalului (641); [...] În debitul contului 421 «Personal - salarii datorate» se înregistrează: – rețineri din salarii reprezentând avansuri acordate personalului, sume opozabile salariaților datorate terților, contribuția pentru asigurări sociale, contribuția pentru ajutorul de șomaj, garanții, impozitul pe salarii, precum și alte rețineri datorate (425, 427, 431, 437, 428, 444); [...] – drepturi de personal neridicate (426); – salariile nete achitate personalului (512, 531)."
-— OMFP 1.802/2014, Reglementările contabile, descrierea funcțiunii contului 421 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1.802/2014, Reglementările contabile, descrierea funcțiunii contului 421 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din această descriere rezultă de ce soldul contului 421, la un moment dat, nu coincide automat cu „netul de plată" din statul de salarii al lunii curente:

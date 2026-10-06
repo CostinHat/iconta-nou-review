@@ -14,7 +14,7 @@ Trecerea de la impozit pe profit la sistemul de microîntreprindere nu se face �
 
 ::: ghid-temei
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1)."
-— Legea 227/2015 (Codul fiscal), art. 48 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 48 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, răspunsul depinde de un singur lucru: dacă firma a îndeplinit condițiile de microîntreprindere de la art. 47 alin. (1) la 31 decembrie a anului anterior, poate opta pentru micro începând cu anul fiscal următor.
@@ -32,6 +32,6 @@ Practic, răspunsul depinde de un singur lucru: dacă firma a îndeplinit condi�
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu automatizează verificarea eligibilității pentru trecerea la regimul de microîntreprindere** — nu am găsit în cod (`core/`) un modul care să verifice condițiile de la art. 47 alin. (1) la 31 decembrie și să propună sau să blocheze opțiunea pentru anul fiscal următor. Decizia de a opta pentru micro rămâne, la acest moment, în sarcina contabilului, care trebuie să verifice manual îndeplinirea condițiilor.
+La data acestui ghid, iConta.eu **nu automatizează verificarea eligibilității pentru trecerea la regimul de microîntreprindere** — nu am găsit în cod un modul care să verifice condițiile de la art. 47 alin. (1) la 31 decembrie și să propună sau să blocheze opțiunea pentru anul fiscal următor. Decizia de a opta pentru micro rămâne, la acest moment, în sarcina contabilului, care trebuie să verifice manual îndeplinirea condițiilor.
 
 [iConta.eu](/)

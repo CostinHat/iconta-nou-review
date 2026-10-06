@@ -34,6 +34,6 @@ Termenul limită pentru orice corecție (fie prin regularizare, fie prin procedu
 
 ## Ce face iConta.eu
 
-Rândurile manuale de regularizare TVA (intracomunitar, taxare inversă, corecții de perioadă) se introduc și se editează dintr-un panou dedicat (`core/d300_manual_api.py`), cu recalcularea automată a decontului („Regenerează D300") după fiecare modificare. Aplicația nu automatizează alegerea între „regularizare în perioadă ulterioară" și „procedura erorilor materiale" — încadrarea corectă a erorii rămâne o decizie a contabilului.
+Rândurile manuale de regularizare TVA (intracomunitar, taxare inversă, corecții de perioadă) se introduc și se editează dintr-un panou dedicat, cu recalcularea automată a decontului („Regenerează D300") după fiecare modificare. Aplicația nu automatizează alegerea între „regularizare în perioadă ulterioară" și „procedura erorilor materiale" — încadrarea corectă a erorii rămâne o decizie a contabilului.
 
 [iConta.eu](/)

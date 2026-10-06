@@ -16,15 +16,15 @@ Diferența contează la calculul programului: un program de 8 ore de muncă plus
 
 ::: ghid-temei
 „În cazurile în care durata zilnică a timpului de muncă este mai mare de 6 ore, salariații au dreptul la pauză de masă și la alte pauze, în condițiile stabilite prin contractul colectiv de muncă aplicabil sau prin regulamentul intern."
-— Codul muncii (Legea 53/2003), art. 134 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 134 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(2) Tinerii în vârstă de până la 18 ani beneficiază de o pauză de masă de cel puțin 30 de minute, în cazul în care durata zilnică a timpului de muncă este mai mare de 4 ore și jumătate.(3) Pauzele, cu excepția dispozițiilor contrare din contractul colectiv de muncă aplicabil și din regulamentul intern, nu se vor include în durata zilnică normală a timpului de muncă."
-— Codul muncii (Legea 53/2003), art. 134 alin. (2)-(3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 134 alin. (2)-(3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Perioada de repaus reprezintă orice perioadă care nu este timp de muncă."
-— Codul muncii (Legea 53/2003), art. 133 (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 133 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Regulile, pe scurt:

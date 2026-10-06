@@ -13,10 +13,10 @@ Calculul rezultatului fiscal în D101 pornește din balanță, dar nu se opreșt
 ## Temeiul legal
 
 ::: ghid-temei
-"D101 tratează amortizarea ca INTRARE, nu o calculează — P11 = amortizare fiscală (deducere, intră în P16 total deduceri, reduce profitul impozabil), P2x/P28-tip = cheltuiala cu amortizarea contabilă (intră în rollup-ul P34 «cheltuieli nedeductibile», se adaugă înapoi la baza impozabilă). Contabilul introduce manual ambele valori." — dosarul de cercetare F027, pe baza `core/d101.py` și `calcul_d101`.
+"D101 tratează amortizarea ca INTRARE, nu o calculează — P11 = amortizare fiscală (deducere, intră în P16 total deduceri, reduce profitul impozabil), P2x/P28-tip = cheltuiala cu amortizarea contabilă (intră în rollup-ul P34 «cheltuieli nedeductibile», se adaugă înapoi la baza impozabilă). Contabilul introduce manual ambele valori." — dosarul de cercetare F027, pe baza aplicația și `calcul_d101`.
 :::
 
-Punctul de plecare este `pull()` (liniile 448–467), care citește balanța cu separarea clasică: conturile 76/66 ca financiar, restul 7x/6x ca exploatare. Din același pas se preiau și datele pentru rezerva legală: capitalul social (1012), rezerva existentă (1061) și cheltuiala cu impozitul pe profit (cont 691) — aceasta din urmă e și sursa avertismentului de nedeductibilitate dacă rândul P23 rămâne pe 0.
+Punctul de plecare este `pull()`, care citește balanța cu separarea clasică: conturile 76/66 ca financiar, restul 7x/6x ca exploatare. Din același pas se preiau și datele pentru rezerva legală: capitalul social (1012), rezerva existentă (1061) și cheltuiala cu impozitul pe profit (cont 691) — aceasta din urmă e și sursa avertismentului de nedeductibilitate dacă rândul P23 rămâne pe 0.
 
 ## Ce se greșește în practică
 

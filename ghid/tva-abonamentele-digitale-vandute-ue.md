@@ -14,7 +14,7 @@ Un abonament digital (acces la o platformă, conținut online, software ca servi
 
 ::: ghid-temei
 „(5) Prin excepție de la prevederile alin. (3) [...] h) locul unde beneficiarul este stabilit, își are domiciliul stabil sau reședința obișnuită, în cazul următoarelor servicii prestate către o persoană neimpozabilă: [...] 3. serviciile furnizate pe cale electronică."
-— Legea 227/2015 (Codul fiscal), art. 278 alin. (5) lit. h) pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 278 alin. (5) lit. h) pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecințele pentru o firmă românească ce vinde abonamente digitale către consumatori (persoane neimpozabile) din alte state membre:

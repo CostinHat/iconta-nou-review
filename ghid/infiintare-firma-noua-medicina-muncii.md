@@ -14,7 +14,7 @@ Din momentul în care o firmă nou-înființată angajează primul salariat, ia 
 
 ::: ghid-temei
 „În vederea asigurării condițiilor de securitate și sănătate în muncă și pentru prevenirea accidentelor de muncă și a bolilor profesionale, angajatorii au următoarele obligații: [...] j) să angajeze numai persoane care, în urma examenului medical și, după caz, a testării psihologice a aptitudinilor, corespund sarcinii de muncă pe care urmează să o execute și să asigure controlul medical periodic și, după caz, controlul psihologic periodic, ulterior angajării."
-— Legea nr. 319/2006, art. 13 lit. j) (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea nr. 319/2006, art. 13 lit. j) (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 :::
 
 Ce rezultă pentru o firmă nou-înființată:

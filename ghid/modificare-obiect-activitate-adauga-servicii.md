@@ -14,12 +14,12 @@ Obiectul de activitate al unei societăți nu e o simplă listă informativă �
 
 ::: ghid-temei
 „Actul constitutiv al societății în nume colectiv, în comandită simplă sau cu răspundere limitată va cuprinde: [...] c) obiectul de activitate al societății, cu precizarea domeniului și a activității principale."
-— Legea 31/1990, art. 7 lit. c) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 7 lit. c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Actul constitutiv poate fi modificat prin hotărâre a adunării generale ori a Consiliului de administrație, respectiv directoratului [...]." [alin. (1)] „După fiecare modificare a actului constitutiv, administratorii, respectiv directoratul vor depune la registrul comerțului actul modificator și textul complet al actului constitutiv, actualizat cu toate modificările, care vor fi înregistrate în registrul comerțului în temeiul încheierii registratorului de registrul comerțului." [alin. (4)]
-— Legea 31/1990, art. 204 alin. (1) și (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 204 alin. (1) și (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Obiectul de activitate, cu precizarea domeniului și a activității principale, e un element obligatoriu al actului constitutiv de la înființare (art. 7 lit. c) — nu poate fi schimbat printr-o simplă notificare informală.

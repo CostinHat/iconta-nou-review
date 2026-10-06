@@ -40,7 +40,7 @@ O firmă are, în 2026, cifra de afaceri 4.000.000 lei și impozit pe profit dat
 
 ## Ce face iConta.eu
 
-Funcția `plafon_credit(cifra_afaceri, impozit_profit, la_data=None)` din `core/sponsorizari.py` calculează exact formula de mai sus: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, iar rezultatul e `min(p1, p2)`. Pentru orice `la_data` din 2026, motorul folosește varianta curentă a regulii (singura înregistrată în `_VARIANTE_PLAFON_CREDIT`, activă din 01.01.2018 în sus, cu procentul de 0,75% aplicat pentru toate datele — atenție dacă recalculați retroactiv o perioadă anterioară lui 03.02.2022, unde procentul legal era, de fapt, 0,5%, nu 0,75%).
+Funcția `plafon_credit(cifra_afaceri, impozit_profit, la_data=None)` din aplicație calculează exact formula de mai sus: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, iar rezultatul e `min(p1, p2)`. Pentru orice `la_data` din 2026, motorul folosește varianta curentă a regulii (singura înregistrată în `_VARIANTE_PLAFON_CREDIT`, activă din 01.01.2018 în sus, cu procentul de 0,75% aplicat pentru toate datele — atenție dacă recalculați retroactiv o perioadă anterioară lui 03.02.2022, unde procentul legal era, de fapt, 0,5%, nu 0,75%).
 
 Funcția `credit_sponsorizare(...)` merge un pas mai departe: `credit = min(sponsorizari_efectuate, plafon)`, plus `redirectionabil_d177 = plafon - credit`, adică spațiul rămas care poate fi redirecționat separat, prin D177, din impozitul pe profit datorat.
 

@@ -16,15 +16,15 @@ Dacă închirierea este scutită de TVA, pentru că proprietarul nu a optat pent
 
 ::: ghid-temei
 „(4) Orice cheltuieli cu impozitele și taxele datorate de o persoană impozabilă în legătură cu o livrare de bunuri sau o prestare de servicii, dacă nu sunt incluse în prețul bunurilor livrate ori al serviciilor prestate, ci sunt recuperate de la clienți prin refacturare, se cuprind în baza de impozitare a taxei pe valoarea adăugată, potrivit prevederilor art. 286 alin. (3) lit. a) din Codul fiscal. De exemplu: – în cazul închirierii unei clădiri, impozitul pe clădiri datorat conform art. 455 alin. (1) din Codul fiscal de proprietarul clădirii se cuprinde în baza de impozitare a TVA, dacă operațiunea este taxabilă prin opțiune;”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30 alin. (4), titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 30 alin. (4), titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Furnizorul/ prestatorul nu poate aplica structura de comisionar prevăzută la pct. 31 alin. (4) pentru a refactura cheltuieli accesorii și nici pentru a refactura cheltuieli cu impozite și taxe conform prevederilor alin. (4) .”
-— HG 1/2016, pct. 30 alin. (5), titlul VII (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 30 alin. (5), titlul VII (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Baza de impozitare cuprinde următoarele: a) impozitele și taxele, dacă prin lege nu se prevede altfel, cu excepția taxei pe valoarea adăugată;”
-— Codul fiscal (Legea 227/2015), art. 286 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 286 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

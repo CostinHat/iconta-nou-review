@@ -16,10 +16,10 @@ Susținerea orală contează mai ales în dosarele complexe. Argumentele tehnice
 
 ::: ghid-temei
 „(5) Contestatorul/Intervenientul sau împuterniciții acestora poate/pot solicita organului de soluționare competent susținerea orală a contestației. În acest caz, organul de soluționare fixează un termen pentru susținerea acesteia. Această solicitare poate fi adresată organului de soluționare competent în termen de cel mult 30 de zile de la data înregistrării contestației, sub sancțiunea decăderii. La solicitarea contestatorului/intervenientului sau împuterniciților acestora, organul de soluționare este obligat să asigure acestuia/acestora accesul la toate probele ce au legătură cu soluționarea contestației fiscale, cu excepția cazului în care obiective de interes general justifică restrângerea accesului la respectivele probe."
-— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(4) Contestatorul, intervenienții sau împuterniciții acestora poate/pot să depună probe noi în susținerea cauzei. În această situație, organului fiscal emitent al actului administrativ fiscal atacat i se oferă posibilitatea să se pronunțe asupra acestora."
-— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 276 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii:

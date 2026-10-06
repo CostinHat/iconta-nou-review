@@ -14,7 +14,7 @@ Pierderea fiscală acumulată de o societate nu dispare atunci când societatea 
 
 ::: ghid-temei
 „(2) Pierderea fiscală înregistrată de contribuabilii care își încetează existența ca efect al unei operațiuni de fuziune sau divizare totală se recuperează de către contribuabilii nou-înființați ori de către cei care preiau patrimoniul societății absorbite sau divizate, după caz, proporțional cu activele transferate persoanelor juridice beneficiare, potrivit proiectului de fuziune/divizare."
-— Legea 227/2015 (Codul fiscal), art. 31 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 31 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regula de alocare e clară: pierderea fiscală a societății care dispare (divizare totală) se împarte între societățile beneficiare **proporțional cu activele transferate fiecăreia**, conform proiectului de divizare — nu se atribuie integral unei singure firme și nu se pierde.

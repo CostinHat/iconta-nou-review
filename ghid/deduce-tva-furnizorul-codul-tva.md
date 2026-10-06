@@ -14,10 +14,10 @@ Regula generală e clară și restrictivă: dacă furnizorul tău a rămas făr�
 
 ::: ghid-temei
 „Beneficiarii care achiziționează bunuri și/sau servicii de la persoane impozabile stabilite în România, cărora li s-a anulat înregistrarea în scopuri de TVA conform prevederilor art. 316 alin. (11) lit. c)-e) și lit. h), și au fost înscriși în Registrul persoanelor impozabile a căror înregistrare în scopuri de TVA conform art. 316 a fost anulată, nu beneficiază de dreptul de deducere a taxei pe valoarea adăugată aferente achizițiilor respective, cu excepția achizițiilor de bunuri efectuate în cadrul procedurii de executare silită și/sau a achizițiilor de bunuri de la persoane impozabile aflate în procedura falimentului potrivit Legii nr. 85/2014, cu modificările și completările ulterioare."
-— Codul fiscal, art. 11 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt:1464-1469)
+— Codul fiscal, art. 11 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „A.N.A.F. organizează Registrul persoanelor impozabile înregistrate în scopuri de TVA conform art. 316 și Registrul persoanelor impozabile a căror înregistrare în scopuri de TVA conform art. 316 a fost anulată. Registrele sunt publice și se afișează pe site-ul A.N.A.F."
-— Codul fiscal, art. 316 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 316 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva puncte esențiale, care rezultă direct din text:

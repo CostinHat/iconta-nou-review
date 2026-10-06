@@ -16,15 +16,15 @@ Când neutralitatea cade, diferența dintre prețul de piață și valoarea fisc
 
 ::: ghid-temei
 „Prevederile prezentului articol nu se aplică atunci când fuziunea, divizarea sub orice formă, transferul de active sau schimbul de acțiuni: a) are drept consecință frauda și evaziunea fiscală constatată în condițiile legii;"
-— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „are drept efect faptul că o societate, implicată sau nu în operațiune, nu mai îndeplinește condițiile necesare reprezentării angajaților în organele de conducere ale societății, în conformitate cu acordurile în vigoare înainte de operațiunea respectivă."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (12) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Dispozițiile alin. (3) se aplică numai dacă societatea beneficiară calculează amortizarea și orice câștig sau pierdere, aferente activelor și pasivelor transferate, în concordanță cu dispozițiile care ar fi fost aplicate societății cedente dacă fuziunea, divizarea sub orice formă nu ar fi avut loc."
-— Codul fiscal (Legea 227/2015), art. 33 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 33 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Situațiile în care regimul nu se aplică sau se pierde:

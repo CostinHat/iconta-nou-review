@@ -14,7 +14,7 @@ Verificarea documentară este o procedură fiscală mai puțin cunoscută decât
 
 ::: ghid-temei
 „(1) Pentru stabilirea corectă a situației fiscale a contribuabilului/plătitorului, organul fiscal poate proceda la o verificare documentară. (2) Verificarea documentară constă în efectuarea unei analize de coerență a situației fiscale a contribuabilului/plătitorului, pe baza documentelor existente la dosarul fiscal al contribuabilului/plătitorului, precum și pe baza oricăror informații și documente transmise de terți sau deținute de organul fiscal, care au relevanță pentru determinarea situației fiscale. (3) Verificarea documentară se efectuează de către organele de inspecție fiscală, organele de control antifraudă fiscală și organele fiscale competente să exercite verificarea situației fiscale personale potrivit art. 138 alin. (3)."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 148 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 148 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Câteva elemente-cheie ale procedurii, așa cum rezultă din text și din articolul următor (art. 148^1):

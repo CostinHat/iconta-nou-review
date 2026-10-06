@@ -14,12 +14,12 @@ Pentru un contract cu timp parțial se aplică, în principiu, aceleași cote de
 
 ::: ghid-temei
 „Contribuția de asigurări sociale datorată de către persoanele fizice care obțin venituri din salarii sau asimilate salariilor, în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial, calculată potrivit alin. (5), nu poate fi mai mică decât nivelul contribuției de asigurări sociale calculate prin aplicarea cotei prevăzute la art. 138 lit. a) asupra salariului de bază minim brut pe țară în vigoare în luna pentru care se datorează contribuția de asigurări sociale, corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ."
-— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 146 alin. (5^6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cotele generale aplicabile veniturilor din salarii, indiferent de tipul normei:
 
-- **Impozit pe venit**: „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie [...]" — Codul fiscal, art. 64 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html).
+- **Impozit pe venit**: „Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie [...]" — Codul fiscal, art. 64 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)).
 - **Contribuția de asigurări sociale (CAS)**: „25% datorată de către persoanele fizice care au calitatea de angajați sau pentru care există obligația plății contribuției de asigurări sociale" — Codul fiscal, art. 138 lit. a).
 - **Contribuția de asigurări sociale de sănătate (CASS)**: „Cota de contribuție de asigurări sociale de sănătate este de 10% și se datorează de către persoanele fizice care au calitatea de angajați [...]" — Codul fiscal, art. 156.
 - **Contribuția asiguratorie pentru muncă (CAM)**, în sarcina angajatorului: „Cota contribuției asiguratorii pentru muncă este de 2,25%." — Codul fiscal, art. 220^3 alin. (1).

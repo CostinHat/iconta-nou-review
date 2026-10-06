@@ -16,21 +16,21 @@ Reprezentanța depune **declarația privind impozitul pe reprezentanță** (form
 
 ::: ghid-temei
 „Reprezentanța unei/unor persoane juridice străine are obligația să declare și să plătească impozitul pe reprezentanță la bugetul de stat până în ultima zi a lunii februarie inclusiv a anului de impunere."
-— Codul fiscal (Legea 227/2015), art. 237 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 237 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Reprezentanța unei/unor persoane juridice străine înființată în România în cursul unei luni din anul de impunere are obligația să calculeze, să depună declarația fiscală la organul fiscal competent și să plătească impozitul pentru anul de impunere, în termen de 30 de zile de la data la care aceasta a fost înființată. Impozitul se calculează începând cu data de 1 a lunii în care aceasta a fost înființată până la sfârșitul anului respectiv."
-— Codul fiscal (Legea 227/2015), art. 237 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 237 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Reprezentanța unei/unor persoane juridice străine desființată din România în cursul anului de impunere are obligația să recalculeze impozitul pe reprezentanță și să depună declarația fiscală la organul fiscal competent în termen de 30 de zile de la data la care aceasta a fost desființată. Reprezentanța recalculează impozitul anual pentru perioada de activitate de la începutul anului până la data de 1 a lunii următoare celei în care se desființează."
-— Codul fiscal (Legea 227/2015), art. 237 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 237 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe reprezentanță pentru un an fiscal este de 18.000 lei."
-— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 236 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „26. În aplicarea art. 237 din Codul fiscal, modelul și conținutul declarației privind impozitul pe reprezentanță se aprobă prin ordin al președintelui Agenției Naționale de Administrare Fiscală, potrivit Codului de procedură fiscală."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 26 (norme art. 237 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul VI, pct. 26 (norme art. 237 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt, cele trei situații:

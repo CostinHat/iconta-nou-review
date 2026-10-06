@@ -41,6 +41,6 @@ O firmă constituie o ajustare de creanță de 8.000 lei (client negarantat, nea
 
 ## Ce face iConta.eu
 
-Rândurile D101 de cheltuieli nedeductibile (P23-P33, cumulate în P34) sunt **input manual** în `core/d101.py` — funcția citește direct valorile primite de la utilizator (`g("P23")` ... `g("P33")`) și nu importă nimic din `core/provizioane.py`. Nu există niciun calcul automat pornind de la soldurile conturilor 6812/6814 sau de la flagul `deductibil` întors de `nota_provizion` ori `deductibilitate_creanta`. În consecință, întreaga analiză de mai sus (identificarea provizioanelor nedeductibile și a părții nedeductibile din cele parțial deductibile) trebuie făcută separat, iar rezultatul introdus manual în rândurile corespunzătoare din D101.
+Rândurile D101 de cheltuieli nedeductibile (P23-P33, cumulate în P34) sunt **input manual** în aplicație — funcția citește direct valorile primite de la utilizator (`g("P23")` ... `g("P33")`) și nu importă nimic din aplicație. Nu există niciun calcul automat pornind de la soldurile conturilor 6812/6814 sau de la flagul `deductibil` întors de `nota_provizion` ori `deductibilitate_creanta`. În consecință, întreaga analiză de mai sus (identificarea provizioanelor nedeductibile și a părții nedeductibile din cele parțial deductibile) trebuie făcută separat, iar rezultatul introdus manual în rândurile corespunzătoare din D101.
 
 [iConta.eu](/)

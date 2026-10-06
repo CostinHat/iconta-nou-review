@@ -14,7 +14,7 @@ O firmă care vinde acces la un produs software prin abonament (SaaS) factureaz�
 
 ::: ghid-temei
 „Se consideră prestare de servicii orice operațiune care nu constituie livrare de bunuri, așa cum este definită la art. 270."
-— Legea 227/2015, art. 271 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 271 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul de recunoaștere pentru abonamentele software:

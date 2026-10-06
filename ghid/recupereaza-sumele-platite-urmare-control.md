@@ -14,7 +14,7 @@ Când o decizie de impunere emisă în urma unui control fiscal e anulată — p
 
 ::: ghid-temei
 „(2) În cazul creanțelor contribuabilului/plătitorului rezultate din anularea unui act administrativ fiscal prin care au fost stabilite obligații fiscale de plată și care au fost stinse anterior anulării, contribuabilul/plătitorul este îndreptățit la dobândă începând cu ziua în care a operat stingerea creanței fiscale individualizate în actul administrativ anulat și până în ziua restituirii sau compensării creanței contribuabilului/plătitorului rezultate în urma anulării actului administrativ fiscal."
-— Legea 207/2015, art. 182 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 182 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul recuperării, pas cu pas:

@@ -40,6 +40,6 @@ Latura de **vânzare/revânzare** e acoperită de motorul de calcul al marjei: i
 
 Latura de **achiziție intracomunitară neimpozabilă** conform art. 268 alin. (8) lit. c) nu are un flux dedicat în aplicație — clasificarea unei achiziții ca neimpozabilă sub acest temei, cu verificarea condițiilor (statutul vânzătorului, taxarea în regimul special din statul lui), rămâne o decizie de fond a contabilului, înregistrată manual.
 
-Vezi și: [TVA pentru marja de profit la bunuri second-hand cumpărate din UE](/ghid/tva-pentru-marja-de-profit-la-bunuri-second-hand-cumparate-din-ue), [Achiziția intracomunitară de bunuri second-hand: regim special](/ghid/achizitia-intracomunitara-de-bunuri-second-hand-regim-special)
+Vezi și: [TVA pentru marja de profit la bunuri second-hand cumpărate din UE](/ghid/tva-marja-profit-bunuri-second), [Achiziția intracomunitară de bunuri second-hand: regim special](/ghid/achizitia-intracomunitara-bunuri-second-hand-regim-special)
 
 [iConta.eu](/)

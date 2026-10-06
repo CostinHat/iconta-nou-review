@@ -16,17 +16,17 @@ Diferența are efect direct. În regimul marjei, TVA se calculează doar pe dife
 
 ::: ghid-temei
 „bunurile second-hand sunt bunurile mobile corporale care pot fi refolosite în starea în care se află sau după efectuarea unor reparații, altele decât operele de artă, obiectele de colecție sau antichitățile, pietrele prețioase și alte bunuri prevăzute în normele metodologice;”
-— Codul fiscal (Legea 227/2015), art. 312 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 312 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „h) obiectele vechi care sunt executate din metale prețioase sau și cu pietre prețioase, cum ar fi bijuteriile (clasice și fantezie), obiectele de aurărie și argintărie și toate celelalte obiecte vechi, inclusiv uneltele, integral sau parțial formate din aur, argint, platină, pietre prețioase, indiferent de gradul de puritate a metalelor și pietrelor prețioase, dacă aceste obiecte nu mai sunt apte să îndeplinească funcționalitatea lor inițială și nu au păstrat decât funcționalitățile inerente acestor metale și pietre.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (2) lit. h) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (2) lit. h) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „trebuie avute în vedere toate circumstanțele obiective în care a avut loc revânzarea. În acest sens, pot fi luate în considerare elemente precum: prezentarea obiectelor, metoda de evaluare a valorii respectivelor obiecte și metoda de facturare, respectiv în vrac (brut/greutate) sau per unitate.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (2^1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 86 alin. (2^1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Lit. h) se aplică doar când ambele condiții sunt îndeplinite: obiectul **nu mai poate** servi funcției inițiale și a păstrat **doar** funcționalitatea metalului sau a pietrei. Alin. (2^1) spune cum se judecă asta în practică:

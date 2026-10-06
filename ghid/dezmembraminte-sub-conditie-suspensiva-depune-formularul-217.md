@@ -16,12 +16,12 @@ Termenul e trimestrial și se leagă de **încasare**, nu de data actului notari
 
 ::: ghid-temei
 „Declarația se completează și se depune până la data de 25 inclusiv a lunii următoare trimestrului în care a fost încasat venitul."
-— OPANAF 396/2025, Anexa nr. 2, pct. 4.1 (sursă: anaf_surse/ordin_396_2025.html)
+— OPANAF 396/2025, Anexa nr. 2, pct. 4.1 (sursă: [OPANAF nr. 396/2025 pentru aprobarea formularului 217](https://legislatie.just.ro/Public/DetaliiDocument/296042))
 :::
 
 ::: ghid-temei
 „Impozitul astfel calculat se declară de contribuabili până la data de 25 inclusiv a lunii următoare trimestrului în care a fost încasat venitul, prin depunerea la organul fiscal competent a Declarației privind impozitul pe veniturile din transferul dezmembrămintelor dreptului de proprietate sub condiție suspensivă, iar plata impozitului datorat se efectuează în cadrul aceluiași termen."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (6^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (6^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cine depune și în ce situații (Anexa nr. 2, pct. 1):

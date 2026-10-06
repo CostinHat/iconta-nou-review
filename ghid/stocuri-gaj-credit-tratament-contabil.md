@@ -14,7 +14,7 @@ Când o firmă obține un credit bancar și pune drept garanție anumite stocuri
 
 ::: ghid-temei
 „Înregistrarea în contabilitate a intrării stocurilor se efectuează la data transferului riscurilor și beneficiilor. [...] Totuși, pot exista decalaje de timp, de exemplu, pentru: – bunuri vândute în consignație sau stocurile la dispoziția clientului; [...] – stocuri gajate livrate creditorului beneficiar al gajului, care rămân în evidența debitorului până la vânzarea lor [...]"
-— OMFP 1802/2014, Reglementări contabile, pct. 283 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 283 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula-cheie pentru acest caz specific:
@@ -31,6 +31,6 @@ Regula-cheie pentru acest caz specific:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de tratamentul contabil al garanțiilor reale asupra stocurilor, nu de funcționalitatea F086 (sponsorizări și credit fiscal) documentată pentru acest ghid — sunt două sensuri complet diferite ale cuvântului „credit" (garanție bancară vs. reducere de impozit pentru sponsorizare). Cercetarea disponibilă a verificat direct în cod exclusiv motorul de sponsorizări și garda de plafon din D101 (`core/sponsorizari.py`, `core/d101.py`); nu avem o verificare a vreunui modul din iConta.eu pentru gestiunea stocurilor gajate sau pentru evidența garanțiilor reale, așa că nu facem nicio afirmație — pozitivă sau negativă — despre o astfel de funcție, pentru a nu inventa ce nu am verificat.
+Acest subiect ține de tratamentul contabil al garanțiilor reale asupra stocurilor, nu de funcționalitatea F086 (sponsorizări și credit fiscal) documentată pentru acest ghid — sunt două sensuri complet diferite ale cuvântului „credit" (garanție bancară vs. reducere de impozit pentru sponsorizare). Cercetarea disponibilă a verificat direct în cod exclusiv motorul de sponsorizări și garda de plafon din D101; nu avem o verificare a vreunui modul din iConta.eu pentru gestiunea stocurilor gajate sau pentru evidența garanțiilor reale, așa că nu facem nicio afirmație — pozitivă sau negativă — despre o astfel de funcție, pentru a nu inventa ce nu am verificat.
 
 [iConta.eu](/)

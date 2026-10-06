@@ -14,7 +14,7 @@ O factură emisă de o firmă înscrisă la TVA la încasare nu are o structură
 
 ::: ghid-temei
 „Elementele facturii [...] p) în cazul în care exigibilitatea TVA intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, mențiunea «TVA la încasare»."
-— Codul fiscal, art. 319 alin. (20) lit. p) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 319 alin. (20) lit. p) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Legea nu cere un tip de factură distinct (`InvoiceTypeCode` diferit în UBL) pentru TVA la încasare — cere doar prezența unei mențiuni text pe document, alături de celelalte elemente obligatorii de la art. 319 alin. (20) (denumirea părților, baza de impozitare, cota, suma taxei etc.).
@@ -31,7 +31,7 @@ O factură emisă de o firmă înscrisă la TVA la încasare nu are o structură
 
 ## Ce face iConta.eu
 
-iConta.eu calculează corect baza de impozitare, cota (inclusiv regula specială art. 291 alin. 5, implementată separat în `core/cota_tva_incasare.py`) și suma TVA pe fiecare linie de factură, indiferent de regimul TVA al firmei. Generatorul de facturi electronice (`core/efactura_send.py`, F126) construiește un XML UBL/CIUS-RO valid din aceste date.
+iConta.eu calculează corect baza de impozitare, cota (inclusiv regula specială art. 291 alin. 5, implementată separat în aplicație) și suma TVA pe fiecare linie de factură, indiferent de regimul TVA al firmei. Generatorul de facturi electronice (F126) construiește un XML UBL/CIUS-RO valid din aceste date.
 
 Ce nu face, verificat direct în cod: generatorul XML-ului nu include nicăieri mențiunea text „TVA la încasare" cerută de art. 319 alin. (20) lit. p) — categoriile de TVA folosite în XML sunt doar standard ("S") și cotă zero ("Z"), fără vreo mențiune sau categorie distinctă pentru regimul de încasare. Conținutul facturii electronice, așa cum e generat azi de aplicație, e deci incomplet față de cerința legală de mai sus pentru o firmă la TVA la încasare — un gol pe care contabilul trebuie să-l suplinească manual, prin alt mijloc, până la o actualizare a generatorului.
 

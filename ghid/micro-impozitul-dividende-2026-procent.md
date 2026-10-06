@@ -14,10 +14,10 @@ Nu există o cotă „specială pentru micro" la impozitul pe dividende: regula 
 
 ::: ghid-temei
 „O persoană juridică română care plătește dividende către o persoană juridică română are obligația să rețină, să declare și să plătească impozitul pe dividende reținut către bugetul de stat, astfel cum se prevede în prezentul articol. [...] Impozitul pe dividende se stabilește prin aplicarea unei cote de impozit de 16% asupra dividendului brut plătit unei persoane juridice române."
-— Legea 227/2015 (Codul fiscal), art. 43 alin. (1) și (2), astfel cum a fost modificat prin Legea 141/2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 43 alin. (1) și (2), astfel cum a fost modificat prin Legea 141/2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul dividendelor distribuite în baza situațiilor financiare interimare întocmite în cursul anului 2025/anului fiscal modificat care începe în anul 2025, cota de impozit pe dividende este de 10%, fără recalcularea impozitului pe dividendele respective, după regularizarea acestora pe baza situațiilor financiare anuale aferente exercițiului financiar 2025/anului fiscal modificat care începe în anul 2025, aprobate potrivit legii."
-— Legea nr. 141/2025, art. VII alin. (2) — normă tranzitorie reținută ca notă la art. 43 din Codul fiscal (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 141/2025, art. VII alin. (2) — normă tranzitorie reținută ca notă la art. 43 din Codul fiscal (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cronologia aplicării, așa cum rezultă din notele care însoțesc modificarea legislativă:

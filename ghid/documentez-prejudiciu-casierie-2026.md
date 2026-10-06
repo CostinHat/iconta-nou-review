@@ -14,10 +14,10 @@ Un prejudiciu de casierie (lipsă constatată la numărătoare) se documentează
 
 ::: ghid-temei
 „REGISTRUL DE CASĂ (Cod 14-4-7A și Cod 14-4-7bA) [...] Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, anexa 2 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, anexa 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 
 „Angajatorul este obligat, în temeiul normelor şi principiilor răspunderii civile contractuale, sa îl despăgubească pe salariat în situaţia în care acesta a suferit un prejudiciu material din culpa angajatorului în timpul îndeplinirii obligaţiilor de serviciu sau în legătură cu serviciul."
-— Legea nr. 53/2003 (Codul muncii), art. 269 alin. (1) — Capitolul „Răspunderea patrimonială" (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea nr. 53/2003 (Codul muncii), art. 269 alin. (1) — Capitolul „Răspunderea patrimonială" (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce documentează efectiv un prejudiciu de casierie:

@@ -14,10 +14,10 @@ Diferența față de sistemul real e structurală: la normă de venit nu se comp
 
 ::: ghid-temei
 „Contribuabilii pot ajusta normele anuale de venit de la alin. (4) în declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice. Ajustarea normelor anuale de venit se realizează de către contribuabil prin aplicarea coeficienților de corecție publicați de către Direcțiile generale regionale ale finanțelor publice, respectiv a municipiului București, asupra normelor anuale de venit."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii care desfășoară activități pentru care venitul net se determină pe bază de norme de venit au obligația să completeze numai partea referitoare la venituri din Registrul de evidență fiscală și nu au obligații privind evidența contabilă."
-— Codul fiscal, art. 69 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 69 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă practic pentru completarea D212 la capitolul de normă de venit:
@@ -35,8 +35,8 @@ Ce rezultă practic pentru completarea D212 la capitolul de normă de venit:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) emite capitolul dedicat normei de venit (`cap12`) cu câmpurile oficiale — `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`, `real_impozit` — contabilul introduce norma și, dacă e cazul, norma ajustată (nu se preiau dintr-o evidență), iar venitul net, venitul impozabil și impozitul de 10% le calculează aplicația.
+Generatorul D212 al iConta.eu emite capitolul dedicat normei de venit (`cap12`) cu câmpurile oficiale — `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`, `real_impozit` — contabilul introduce norma și, dacă e cazul, norma ajustată (nu se preiau dintr-o evidență), iar venitul net, venitul impozabil și impozitul de 10% le calculează aplicația.
 
-Registrul de evidență fiscală pentru persoane fizice din iConta.eu (`core/registru_evidenta_fiscala.py`, conform OMFP 3254/2017) susține corect regula specifică normei de venit: la `mod_venit_net = 3` (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Fișa D212 din `core/rip_api.py` (`fisa_d212`) e construită pentru sistem real; pentru PFA la normă, CAS și CASS se calculează în Declarația unică (D212), pe norma declarată acolo.
+Registrul de evidență fiscală pentru persoane fizice din iConta.eu (conform OMFP 3254/2017) susține corect regula specifică normei de venit: la `mod_venit_net = 3` (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Fișa D212 din aplicație (`fisa_d212`) e construită pentru sistem real; pentru PFA la normă, CAS și CASS se calculează în Declarația unică (D212), pe norma declarată acolo.
 
 [iConta.eu](/)

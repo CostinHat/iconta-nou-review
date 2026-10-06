@@ -17,7 +17,7 @@ Poprirea bancară e una dintre cele mai temute măsuri de executare silită, dar
 (12) Pentru stingerea creanțelor fiscale, debitorii titulari de conturi bancare pot fi urmăriți prin poprire asupra sumelor din conturile bancare [...].
 (13) În măsura în care este necesar, pentru achitarea sumei datorate la data sesizării instituției de credit, [...] sumele existente, precum și cele viitoare provenite din încasările zilnice în conturile în lei și în valută sunt indisponibilizate în limita sumei necesare pentru realizarea obligației ce se execută silit, astfel cum aceasta rezultă din adresa de înființare a popririi. [...]
 (14) Din momentul indisponibilizării [...] instituțiile de credit nu procedează la decontarea documentelor de plată primite, respectiv la debitarea conturilor debitorilor și nu acceptă alte plăți din conturile acestora până la achitarea integrală a obligațiilor fiscale înscrise în adresa de înființare a popririi, cu excepția: a) sumelor necesare plății drepturilor salariale, inclusiv a impozitelor și contribuțiilor aferente acestora, reținute la sursă, dacă [...] debitorul nu deține alte disponibilități bănești; b) sumelor necesare plății accizelor de către antrepozitarii autorizați [...]; c) sumelor necesare plății accizelor, în numele antrepozitarilor autorizați, de către cumpărătorii de produse energetice; d) sumelor necesare plății obligațiilor fiscale de care depinde menținerea valabilității înlesnirii."
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (1), (12), (13) și (14) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (1), (12), (13) și (14) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă concret din text:
@@ -36,6 +36,6 @@ Ce rezultă concret din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are nicio funcționalitate legată de poprirea bancară sau de executarea silită** — aplicația e un instrument de contabilitate și declarații fiscale, nu de gestionare a raporturilor de executare cu ANAF. Modulele de bancă (`core/banca.py`, `core/banca_parser.py`) prelucrează extrasele bancare pentru înregistrarea operațiunilor contabile, dar nu detectează și nu marchează distinct sumele indisponibilizate printr-o poprire. Gestionarea unei popriri active (identificarea sumei blocate, urmărirea excepțiilor legale de plată) rămâne complet în afara aplicației, în relația directă a firmei cu banca și cu ANAF.
+La data acestui ghid, iConta.eu **nu are nicio funcționalitate legată de poprirea bancară sau de executarea silită** — aplicația e un instrument de contabilitate și declarații fiscale, nu de gestionare a raporturilor de executare cu ANAF. Modulele de bancă prelucrează extrasele bancare pentru înregistrarea operațiunilor contabile, dar nu detectează și nu marchează distinct sumele indisponibilizate printr-o poprire. Gestionarea unei popriri active (identificarea sumei blocate, urmărirea excepțiilor legale de plată) rămâne complet în afara aplicației, în relația directă a firmei cu banca și cu ANAF.
 
 [iConta.eu](/)

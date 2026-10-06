@@ -15,7 +15,7 @@ Odată ce ANAF emite decizia de eșalonare la plată, regimul accesoriilor se sc
 ::: ghid-temei
 „(1) Pe perioada pentru care au fost acordate eșalonări la plată, pentru obligațiile fiscale eșalonate la plată, cu excepția celor prevăzute la art. 173 alin. (2), se datorează și se calculează dobânzi, la nivelul stabilit potrivit art. 174 alin. (5).
 (4) Penalitatea de întârziere prevăzută la art. 176 se calculează până la data emiterii deciziei de eșalonare la plată."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 197 alin. (1) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 197 alin. (1) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă un regim în trei timpi:

@@ -14,7 +14,7 @@ O sumă ridicată din casierie fără document justificativ corespunzător nu po
 
 ::: ghid-temei
 „Ordinul de deplasare (delegație) se întocmește pentru fiecare deplasare, de către persoana care urmează a efectua deplasarea, precum și pentru justificarea avansurilor acordate în vederea procurării de valori materiale cu plata în numerar. În cazul în care la decontarea avansului suma cheltuielilor efectuate este mai mare decât avansul primit, pentru diferența de primit de către titularul de avans se întocmește Dispoziție de plată către casierie (cod 14-4-4)."
-— OMFP 2634/2015, Anexa 2 (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Documentele corecte, în funcție de situație:
@@ -32,6 +32,6 @@ Documentele corecte, în funcție de situație:
 
 ## Ce face iConta.eu
 
-iConta.eu are un registru de casă (`core/casa_api.py`) în care fiecare operațiune se introduce cu categorie, sumă, document justificativ și, unde e cazul, partener — aplicația generează automat nota contabilă asociată (ca ciornă, validată apoi de contabil) și avertizează la depășirea plafoanelor legale de casă. Aplicația nu generează însă formularele tipizate propriu-zise (Ordin de deplasare cod 14-5-4, Dispoziție de plată/încasare către casierie cod 14-4-4) — acestea rămân documente separate, pe care contabilul le întocmește și le atașează operațiunii înregistrate.
+iConta.eu are un registru de casă în care fiecare operațiune se introduce cu categorie, sumă, document justificativ și, unde e cazul, partener — aplicația generează automat nota contabilă asociată (ca ciornă, validată apoi de contabil) și avertizează la depășirea plafoanelor legale de casă. Aplicația nu generează însă formularele tipizate propriu-zise (Ordin de deplasare cod 14-5-4, Dispoziție de plată/încasare către casierie cod 14-4-4) — acestea rămân documente separate, pe care contabilul le întocmește și le atașează operațiunii înregistrate.
 
 [iConta.eu](/)

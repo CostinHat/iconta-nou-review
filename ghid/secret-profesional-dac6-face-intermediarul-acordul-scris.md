@@ -16,10 +16,10 @@ Ce contează în practică este că secretul profesional nu oprește raportarea,
 
 ::: ghid-temei
 „(7) în cazul intermediarilor care, potrivit legii, fac obiectul unei obligații de păstrare a secretului profesional, aceștia raportează aranjamentele transfrontaliere care fac obiectul raportării doar cu acordul scris al contribuabilului relevant. (8) în lipsa acordului prevăzut la alin. (7): a) intermediarul notifică, fără întârziere, în scris, oricărui alt intermediar obligația de raportare a informațiilor prevăzute la alin. (19), cu excepția avocatului care are calitatea de intermediar; b) intermediarul notifică, fără întârziere, în scris, contribuabilului relevant obligația de raportare a informațiilor prevăzute la alin. (19), în cazul în care nu există un alt intermediar."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (7) și (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (7) și (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „o) cu amendă de la 5.000 lei la 30.000 lei în cazul săvârșirii faptelor prevăzute la alin. (1) lit. x)."
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. o) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (2) lit. o) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii intermediarului, în ordine:

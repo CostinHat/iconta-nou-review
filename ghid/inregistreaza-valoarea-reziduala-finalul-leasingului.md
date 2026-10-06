@@ -14,7 +14,7 @@ Valoarea reziduală e, practic, ultima plată pe care locatarul o face pentru a 
 
 ::: ghid-temei
 „213. ‐ (1) [...] a) contract de leasing este un acord prin care locatorul cedează locatarului, în schimbul unei plăți sau serii de plăți, dreptul de a utiliza un bun pentru o perioadă stabilită; [...] (2) Un contract de leasing este recunoscut ca leasing financiar dacă îndeplinește cel puțin una dintre următoarele condiții: [...] b) locatarul are opțiunea de a cumpăra bunul la un preț estimat a fi suficient de mic [...]."
-— OMFP 1802/2014, pct. 213 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 213 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Valoarea reziduală face parte, alături de avans și de ratele de capital, din valoarea totală a bunului recunoscută **de la primire** — nu se adaugă separat la finalul contractului.

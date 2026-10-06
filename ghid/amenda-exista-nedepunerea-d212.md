@@ -14,10 +14,10 @@ Amenda pentru nedepunerea D212 la termen e stabilită într-un interval fix, rel
 
 ::: ghid-temei
 „În cazul persoanelor fizice nedepunerea la termenele prevăzute de lege a declarațiilor de venit, precum și a declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice constituie contravenție și se sancționează cu amendă de la 50 lei la 500 lei."
-— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 336 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În cazul asocierilor și al altor entități fără personalitate juridică, contravențiile prevăzute la alin. (1) se sancționează cu amenda prevăzută pentru persoanele fizice."
-— Legea 207/2015, art. 336 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 336 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut din text:
@@ -35,6 +35,6 @@ Ce trebuie reținut din text:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu calculează și nu afișează amenda contravențională pentru nedepunere, care se stabilește de organul fiscal, nu de contribuabil. Motorul de calcul (`core/d212_engine.py`) produce corect CAS, CASS și impozitul datorat, indiferent de momentul depunerii, dar rămâne în sarcina contabilului să urmărească termenul legal și riscul contravențional asociat unei depuneri tardive.
+D212 se generează în iConta.eu din datele introduse de contabil — aplicația nu calculează și nu afișează amenda contravențională pentru nedepunere, care se stabilește de organul fiscal, nu de contribuabil. Motorul de calcul produce corect CAS, CASS și impozitul datorat, indiferent de momentul depunerii, dar rămâne în sarcina contabilului să urmărească termenul legal și riscul contravențional asociat unei depuneri tardive.
 
 [iConta.eu](/)

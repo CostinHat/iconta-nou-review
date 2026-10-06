@@ -15,7 +15,7 @@ O firmă din HoReCa cu activitate concentrată pe câteva luni (o terasă de var
 ::: ghid-temei
 „(1) Principiul contabilității de angajamente. Efectele tranzacțiilor și ale altor evenimente sunt recunoscute atunci când tranzacțiile și evenimentele se produc (și nu pe măsură ce numerarul sau echivalentul său este încasat sau plătit) și sunt înregistrate în contabilitate și raportate în situațiile financiare ale perioadelor aferente.
 (2) Trebuie să se țină cont de veniturile și cheltuielile aferente exercițiului financiar, indiferent de data încasării veniturilor sau data plății cheltuielilor."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 53 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Notă: acest text reglementează principiul general al contabilității de angajamente, aplicabil oricărei entități, nu o regulă specifică pentru sectorul HoReCa sau pentru sezonalitate — nu există în legislația contabilă românească un tratament distinct pentru „veniturile sezoniere"; ceea ce se aplică este exact acest principiu general.

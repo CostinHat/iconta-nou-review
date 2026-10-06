@@ -14,7 +14,7 @@ Nu. D390 (declarația recapitulativă) și regimul special OSS servesc scopuri d
 
 ::: ghid-temei
 „Regimul special pentru vânzările intracomunitare de bunuri la distanță, pentru livrările de bunuri interne efectuate de interfețele electronice care facilitează aceste livrări și pentru serviciile prestate de persoane impozabile stabilite în Uniunea Europeană, dar nu în statul membru de consum [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 315 (denumirea marginală a articolului, Capitolul XI, Titlul VII) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315 (denumirea marginală a articolului, Capitolul XI, Titlul VII) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul regimului OSS, așa cum rezultă din structura Codului fiscal (art. 314 — regimul non-UE pentru servicii, art. 315 — regimul UE, art. 315^2 — regimul de import/IOSS):
@@ -31,6 +31,6 @@ Mecanismul regimului OSS, așa cum rezultă din structura Codului fiscal (art. 3
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu poate genera XML-ul declarației D398, pe baza structurii oficiale a validatorului ANAF (`core/d398.py`). Declarația este însă **integral manuală**: aplicația nu ține evidența operațiunilor OSS pe stat de consum și cotă de TVA străină aplicabilă, așa că toate valorile trebuie introduse manual de contabil — iConta.eu nu deduce automat aceste sume din registrele contabile ale firmei.
+La data acestui ghid, iConta.eu poate genera XML-ul declarației D398, pe baza structurii oficiale a validatorului ANAF. Declarația este însă **integral manuală**: aplicația nu ține evidența operațiunilor OSS pe stat de consum și cotă de TVA străină aplicabilă, așa că toate valorile trebuie introduse manual de contabil — iConta.eu nu deduce automat aceste sume din registrele contabile ale firmei.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ O firmă care dezvoltă un produs software și capitalizează costurile de dezvo
 
 ::: ghid-temei
 „O imobilizare necorporală trebuie scoasă din evidență la cedare sau atunci când niciun beneficiu economic viitor nu mai este așteptat din utilizarea ori din cedarea sa."
-— OMFP nr. 1.802/2014, pct. 188 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, pct. 188 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă concret pentru un proiect de software abandonat înainte de lansare:

@@ -15,14 +15,14 @@ Pentru că fiecare trimestru de impozit micro este independent (spre deosebire d
 ::: ghid-temei
 **CF art. 51 alin. (1):**
 > „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.html`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 53 alin. (1):**
 > „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie **veniturile din orice
 > sursă**, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile
 > aferente costurilor serviciilor în curs de execuție; ... j) valoarea reducerilor comerciale acordate
 > ulterior facturării, înregistrate în contul «709»..."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:6480-6519`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 ## De ce nu se poate „repara" în trimestrul curent

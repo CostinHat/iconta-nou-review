@@ -14,7 +14,7 @@ Nu am identificat, în sursele legislative fiscale verificate, o normă distinct
 
 ::: ghid-temei
 „Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Redirecționare onestă către regulile generale aplicabile, în lipsa unui regim specific pentru ride-sharing identificat în sursele verificate:

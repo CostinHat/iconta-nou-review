@@ -14,10 +14,10 @@ Sediul social e un element al actului constitutiv, nu doar o adresă de corespon
 
 ::: ghid-temei
 „(1) Actul constitutiv poate fi modificat prin hotărâre a adunării generale ori a Consiliului de administrație, respectiv directoratului, adoptată în temeiul art. 114 alin. (1), sau prin hotărârea instanței judecătorești, în condițiile art. 223 alin. (3) și ale art. 226 alin. (2)."
-— Legea 31/1990, art. 204 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 204 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „(1) Adunarea generală decide prin votul reprezentând majoritatea absolută a asociaților și a părților sociale, în afară de cazul când în actul constitutiv se prevede altfel."
-— Legea 31/1990, art. 192 alin. (1), aplicabil societăților cu răspundere limitată (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 192 alin. (1), aplicabil societăților cu răspundere limitată (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Pașii legali pentru schimbarea sediului social la o SRL:

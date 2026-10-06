@@ -14,10 +14,10 @@ Termenul care circulă în practică — „jurnal de evenimente" — nu e cel f
 
 ::: ghid-temei
 „Aparate de marcat electronice fiscale sunt considerate și casele de marcat electronice fiscale și alte sisteme ce includ dispozitive cu funcții de case de marcat, echipate cu dispozitiv de memorare a jurnalului electronic, care înglobează constructiv un modul fiscal, prin intermediul căruia controlează memoria fiscală, dispozitivul de imprimare, dispozitivul de memorare, afișajul client, dispozitivul de salvare externă și dispozitivul de comunicație externă care permite integrarea într-un sistem informatic;"
-— OUG 28/1999 (republicată), art. 3 alin. (2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999 (republicată), art. 3 alin. (2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „[Aparatele de marcat electronice fiscale trebuie să îndeplinească cumulativ] [...] c) imprimarea, memorarea și emiterea electronică de: bonuri fiscale, rapoarte fiscale de închidere zilnică, jurnale electronice, rapoarte de sinteză și rapoarte memorie fiscală, pentru aparatele de marcat electronice fiscale definite la alin. (2); [...]"
-— OUG 28/1999 (republicată), art. 3 alin. (3) lit. c) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999 (republicată), art. 3 alin. (3) lit. c) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 - Jurnalul electronic e componenta AMEF care stochează detaliat fiecare bon fiscal emis, distinctă de memoria fiscală (care reține datele de sinteză ale rapoartelor de închidere zilnică).
@@ -32,6 +32,6 @@ Termenul care circulă în practică — „jurnal de evenimente" — nu e cel f
 
 ## Ce face iConta.eu
 
-iConta.eu nu implementează niciun concept propriu de „jurnal de evenimente" al casei de marcat — căutarea termenului în tot codul aplicației (`core/`) nu are niciun rezultat, nici sub acest nume, nici ca funcționalitate tehnică echivalentă. Aplicația are însă o funcție conexă reală: modulul `core/amef_import.py` importă Raportul Z exportat de o casă de marcat electronică fiscală (fișier XML sau p7b semnat electronic), conform structurii oficiale din OPANAF 146/2018, anexa 2, secțiunea II.7 — extrage identificatorul (NUI) casei de marcat, numărul raportului, totalurile pe cote de TVA și pe modalități de plată (card, numerar, tichete de masă etc.), pentru înregistrarea contabilă a zilei. Această funcție preia rezultatul sintetic al zilei — raportul de închidere zilnică — nu jurnalul electronic propriu-zis al aparatului, care rămâne exclusiv în interiorul AMEF-ului și în responsabilitatea producătorului/distribuitorului autorizat.
+iConta.eu nu implementează niciun concept propriu de „jurnal de evenimente" al casei de marcat — căutarea termenului în tot codul aplicației nu are niciun rezultat, nici sub acest nume, nici ca funcționalitate tehnică echivalentă. Aplicația are însă o funcție conexă reală: Aplicația importă Raportul Z exportat de o casă de marcat electronică fiscală (fișier XML sau p7b semnat electronic), conform structurii oficiale din OPANAF 146/2018, anexa 2, secțiunea II.7 — extrage identificatorul (NUI) casei de marcat, numărul raportului, totalurile pe cote de TVA și pe modalități de plată (card, numerar, tichete de masă etc.), pentru înregistrarea contabilă a zilei. Această funcție preia rezultatul sintetic al zilei — raportul de închidere zilnică — nu jurnalul electronic propriu-zis al aparatului, care rămâne exclusiv în interiorul AMEF-ului și în responsabilitatea producătorului/distribuitorului autorizat.
 
 [iConta.eu](/)

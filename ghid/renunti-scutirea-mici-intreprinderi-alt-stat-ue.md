@@ -16,10 +16,10 @@ Până la data efectivă, firma rămâne în regimul de scutire în statul respe
 
 ::: ghid-temei
 „(8) Persoana impozabilă stabilită în Romania informează organul fiscal competent printr-o actualizare a notificării prealabile cu privire la orice modificări ale informațiilor furnizate anterior conform alin. (3) , inclusiv cu privire la intenția de a se prevala de scutire într-un alt stat membru sau în alte state membre decât cel indicat sau cele indicate în notificarea prealabilă, precum și cu privire la decizia de a înceta aplicarea regimului de scutire în unul sau mai multe dintre statele membre în care persoana impozabilă respectivă nu este stabilită [...] Încetarea devine efectivă începând cu prima zi a următorului trimestru calendaristic care urmează primirii informațiilor de la persoana impozabilă sau, în cazul în care aceste informații sunt primite în ultima lună a unui trimestru calendaristic, începând cu prima zi a celei de a doua luni a trimestrului calendaristic următor."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Actualizărilor notificării prealabile li se aplică regimul juridic al declarațiilor de mențiuni prevăzute la art. 88 din Legea nr. 207/2015, cu modificările și completările ulterioare."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (8) teza finală (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (8) teza finală (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii:

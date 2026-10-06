@@ -14,10 +14,10 @@ O lipsă de gestiune descoperită după depunerea Declarației 101 (impozit pe p
 
 ::: ghid-temei
 „(6) În baza art. 304 alin. (1) lit. c) din Codul fiscal, persoana impozabilă realizează o ajustare pozitivă sau, după caz, trebuie să efectueze o ajustare negativă a taxei deductibile în situații precum: a) bunuri lipsă în gestiune din alte cauze decât cele prevăzute la art. 304 alin. (2) din Codul fiscal. În cazul bunurilor lipsă din gestiune care sunt imputate, sumele imputate nu sunt considerate contravaloarea unor operațiuni în sfera de aplicare a TVA, indiferent dacă pentru acestea este sau nu obligatorie ajustarea taxei;"
-— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. 78 alin. (6) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice de aplicare a Codului fiscal), pct. 78 alin. (6) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ordinea practică a corecției:
@@ -35,6 +35,6 @@ Ordinea practică a corecției:
 
 ## Ce face iConta.eu
 
-Modulul de inventariere din iConta.eu (`core/inventariere.py`) înregistrează constatările de plusuri/minusuri la inventar, iar generatorul D101 (`core/d101.py`) calculează impozitul pe profit pe baza datelor contabile introduse pentru perioada respectivă. La data acestui ghid, aplicația **nu automatizează** distincția dintre lipsuri imputabile și neimputabile pentru ajustarea TVA (art. 304 alin. 6 lit. a) și nici generarea automată a unei declarații D101 rectificative — contabilul introduce manual ajustările rezultate din inventariere, iar pentru corecția declarației deja depuse folosește fluxul general de rectificare aplicabil oricărei declarații.
+Modulul de inventariere din iConta.eu înregistrează constatările de plusuri/minusuri la inventar, iar generatorul D101 calculează impozitul pe profit pe baza datelor contabile introduse pentru perioada respectivă. La data acestui ghid, aplicația **nu automatizează** distincția dintre lipsuri imputabile și neimputabile pentru ajustarea TVA (art. 304 alin. 6 lit. a) și nici generarea automată a unei declarații D101 rectificative — contabilul introduce manual ajustările rezultate din inventariere, iar pentru corecția declarației deja depuse folosește fluxul general de rectificare aplicabil oricărei declarații.
 
 [iConta.eu](/)

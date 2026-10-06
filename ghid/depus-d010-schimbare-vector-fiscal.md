@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „ART. 88 Modificări ulterioare înregistrării fiscale (1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 88 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 88 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Termenul curge de la **data producerii** modificării (de exemplu, data de la care firma devine plătitoare de TVA prin depășirea plafonului), nu de la data la care contabilul observă schimbarea.

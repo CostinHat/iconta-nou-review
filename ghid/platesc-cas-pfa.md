@@ -14,7 +14,7 @@ CAS pentru o PFA nu se plătește lunar, prin rețineri, ca la salarii — este 
 
 ::: ghid-temei
 „(1) Contribuabilii prevăzuți la art. 148 alin. (1) și (4) calculează contribuția de asigurări sociale prin aplicarea cotei prevăzute la art. 138 lit. a) asupra bazei anuale de calcul menționate la art. 148 alin. (2), depun Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice până la termenul legal prevăzut la art. 122 alin. (3) și au obligația de a efectua plata acesteia în cadrul aceluiași termen."
-— Legea nr. 227/2015 (Codul fiscal), art. 151 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 151 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii concreți, așa cum rezultă din art. 148 și 151 din Codul fiscal:
@@ -33,6 +33,6 @@ Pașii concreți, așa cum rezultă din art. 148 și 151 din Codul fiscal:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, pentru PFA-urile în sistem real (partidă simplă), iConta.eu calculează baza CAS/CASS din operațiunile validate ale contribuabilului, prin modulul `core/rip_api.py` (funcția `fisa_d212`), folosind plafoanele legale verificate pentru anii acoperiți de aplicație, și generează Declarația unică (D212) prin `core/d212.py`. Aplicația nu efectuează ea însăși plata contribuției către bugetul de stat — plata rămâne un pas separat, realizat de contribuabil, în același termen legal la care se depune D212.
+La data acestui ghid, pentru PFA-urile în sistem real (partidă simplă), iConta.eu calculează baza CAS/CASS din operațiunile validate ale contribuabilului, prin aplicație (funcția `fisa_d212`), folosind plafoanele legale verificate pentru anii acoperiți de aplicație, și generează Declarația unică (D212) prin aplicație. Aplicația nu efectuează ea însăși plata contribuției către bugetul de stat — plata rămâne un pas separat, realizat de contribuabil, în același termen legal la care se depune D212.
 
 [iConta.eu](/)

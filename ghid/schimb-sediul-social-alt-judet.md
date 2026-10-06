@@ -14,10 +14,10 @@ Mutarea sediului social nu e doar o schimbare de adresă pe hârtie — e o modi
 
 ::: ghid-temei
 „După fiecare modificare a actului constitutiv, administratorii, respectiv directoratul vor depune la registrul comerțului actul modificator și textul complet al actului constitutiv, actualizat cu toate modificările, care vor fi înregistrate în registrul comerțului în temeiul încheierii registratorului de registrul comerțului."
-— Legea 31/1990 (legea societăților), art. 204 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 204 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 
 „Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății în următoarele cazuri, [...]: a) nu mai sunt îndeplinite condițiile referitoare la sediul social, ca urmare a expirării duratei actului care atestă dreptul de folosință asupra spațiului cu destinație de sediu social ori transferului dreptului de folosință sau proprietate asupra spațiului cu destinație de sediu social."
-— Legea 31/1990, art. 237^2 alin. (1) lit. a) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 237^2 alin. (1) lit. a) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce presupune, practic, schimbarea sediului social în alt județ:

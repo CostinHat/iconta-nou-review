@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP 2634/2015, Anexa 2, cod 14-4-7/a (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, cod 14-4-7/a (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce reiese, strict din text, pentru procedura de „închidere":
@@ -32,6 +32,6 @@ Ce reiese, strict din text, pentru procedura de „închidere":
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu (`core/casa.py`) calculează automat soldul de casă zilnic pe baza operațiunilor introduse (`registru_casa`, `sold_final`) și verifică încadrarea în plafoanele legale de numerar (`verifica_plafon`). Această funcționalitate reflectă direct cerința legală de stabilire a soldului de casă la sfârșitul fiecărei zile. La data acestui ghid, iConta.eu **nu gestionează explicit conceptul de „tură"** ca subdiviziune a zilei de casierie — soldul se calculează și se închide la nivel de zi, nu la nivel de tură individuală, iar structurarea internă pe ture (dacă firma o folosește operațional) rămâne în afara evidenței aplicației.
+Modulul de casierie al iConta.eu calculează automat soldul de casă zilnic pe baza operațiunilor introduse (`registru_casa`, `sold_final`) și verifică încadrarea în plafoanele legale de numerar (`verifica_plafon`). Această funcționalitate reflectă direct cerința legală de stabilire a soldului de casă la sfârșitul fiecărei zile. La data acestui ghid, iConta.eu **nu gestionează explicit conceptul de „tură"** ca subdiviziune a zilei de casierie — soldul se calculează și se închide la nivel de zi, nu la nivel de tură individuală, iar structurarea internă pe ture (dacă firma o folosește operațional) rămâne în afara evidenței aplicației.
 
 [iConta.eu](/)

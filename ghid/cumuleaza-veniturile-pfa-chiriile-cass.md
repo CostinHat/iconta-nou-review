@@ -14,7 +14,7 @@ Un titular de PFA care mai încasează și chirii dintr-un apartament închiriat
 
 ::: ghid-temei
 „(1) Persoanele fizice care [...] au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat [...] care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară. [...] (2) Persoanele fizice care [...] au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. c)-h), din una sau mai multe surse și/sau categorii de venituri, datorează contribuția de asigurări sociale de sănătate la o bază de calcul stabilită potrivit alin. (3), dacă în anul de realizare a veniturilor valoarea cumulată a acestora este cel puțin egală cu 6 salarii minime brute pe țară."
-— Legea nr. 227/2015 (Codul fiscal), art. 170 alin. (1)-(2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 170 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Veniturile din **activități independente** (PFA — art. 155 alin. (1) lit. b)) formează **propria bază de calcul CASS**, plafonată la 72 de salarii minime brute pe țară.

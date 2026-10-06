@@ -16,13 +16,13 @@ Pentru clientul dumneavoastră care lucrează cu primăria, asta înseamnă un s
 
 ::: ghid-temei
 „Ordonatorii de credite pot face noi angajamente legale, în limita prevederilor bugetare aprobate, numai după stingerea plăților restante înregistrate la finele anului anterior, respectiv a arieratelor din execuția anului curent, cu excepția celor provenite din neacordarea sumelor cuvenite conform contractelor de finanțare a proiectelor derulate prin programe naționale."
-— Legea 273/2006 privind finanțele publice locale, art. 14 alin. (8) teza a doua (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006 privind finanțele publice locale, art. 14 alin. (8) teza a doua (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „(9) Prin excepție de la prevederile alin. (8) , se pot încheia noi angajamente legale pentru proiecte/programe finanțate din fonduri externe nerambursabile."
-— Legea 273/2006, art. 14 alin. (9) (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 14 alin. (9) (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 
 „3. angajament legal - faza din procesul execuției bugetare, reprezentând orice act juridic din care rezultă sau ar putea rezulta o obligație pe seama fondurilor publice;"
-— Legea 273/2006, art. 2 alin. (1) pct. 3 (sursă: anaf_surse/legea_273_2006_fin_publice_locale.txt)
+— Legea 273/2006, art. 2 alin. (1) pct. 3 (sursă: [Legea nr. 273/2006 privind finanțele publice locale](https://legislatie.just.ro/Public/DetaliiDocument/73527))
 :::
 
 Ce înseamnă concret:

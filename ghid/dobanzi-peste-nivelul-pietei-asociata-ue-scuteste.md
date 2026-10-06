@@ -16,12 +16,12 @@ Aceeași regulă se aplică redevențelor. În practică, apare des la împrumut
 
 ::: ghid-temei
 „Când datorită relațiilor speciale existente între debitor și beneficiarul efectiv al dobânzii sau redevențelor ori între unul dintre ei și o altă persoană, suma dobânzilor sau redevențelor depășește suma care s-ar fi convenit între debitor și beneficiarul efectiv, în lipsa unor astfel de relații, prevederile prezentului articol se aplică numai în această ultimă sumă menționată, dacă există o astfel de sumă."
-— Codul fiscal (Legea 227/2015), art. 259 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 259 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt enumerate la art. 223 alin. (1) ."
-— Codul fiscal (Legea 227/2015), art. 224 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 224 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

@@ -14,7 +14,7 @@ Poprirea bancară nu apare din senin — e ultima etapă a unei proceduri de exe
 
 ::: ghid-temei
 „ART. 230 [...] Executarea silită începe prin comunicarea somației. Dacă în termen de 15 zile de la comunicarea somației nu se stinge debitul sau nu se notifică organul fiscal cu privire la intenția de a demara procedura de mediere, se continuă măsurile de executare silită. Somația este însoțită de un exemplar al titlului executoriu emis de organul de executare silită."
-— Legea 207/2015, art. 230 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 230 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Secvența legală, în ordine, e:

@@ -16,12 +16,12 @@ Regula are efect concret. Deducerea personală depinde de venitul brut lunar, ia
 
 ::: ghid-temei
 „(11) Indemnizațiile aferente concediilor de odihnă se defalcă pe lunile la care se referă și se impun cumulat cu veniturile realizate în aceste luni.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (11) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 14 alin. (11) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Deducerea personală de bază se acordă pentru persoanele fizice care au un venit lunar brut de până la 2.000 de lei peste nivelul salariului de bază minim brut pe țară garantat în plată aprobat prin hotărâre a Guvernului, în vigoare în luna de realizare a venitului.”
-— Codul fiscal (Legea 227/2015), art. 77 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică:

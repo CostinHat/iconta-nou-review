@@ -14,7 +14,7 @@ Sistemul RO e-Factura nu este doar un canal de transmitere a facturilor, ci și 
 
 ::: ghid-temei
 „Nerespectarea prevederilor alin. (6) pentru una sau mai multe facturi al căror termen-limită de transmitere în sistemul național privind factura electronică RO e-Factura intervine în cursul unei luni calendaristice constituie contravenție și se sancționează cu amendă de la 5.000 lei la 10.000 lei, pentru persoanele juridice încadrate în categoria contribuabililor mari, [...] cu amendă de la 2.500 lei la 5.000 lei, pentru persoanele juridice încadrate în categoria contribuabililor mijlocii, [...] și cu amendă de la 1.000 lei la 2.500 lei, pentru celelalte persoane juridice, precum și pentru persoanele fizice."
-— Legea nr. 296/2023, art. LIX alin. (7) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea nr. 296/2023, art. LIX alin. (7) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 - Termenul de transmitere verificat de ANAF este de **5 zile lucrătoare de la data emiterii facturii**, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii conform Codului fiscal (art. LIX alin. (6) din aceeași lege).

@@ -39,6 +39,6 @@ Ajustarea de TVA și deductibilitatea cheltuielii cu medicamentele scoase din ge
 
 ## Ce face iConta.eu
 
-Motorul F066 (`core/perisabilitati.py`) calculează separarea 607 deductibil/nedeductibil pe baza procentului de limită introdus de contabil și generează linia de ajustare TVA (635=4426) doar pentru partea nedeductibilă, exact conform art. 304 alin. (1). Câmpul `degradare_dovedita_distrusa` din motor dezactivează explicit ajustarea TVA, indiferent de mărimea depășirii, atunci când degradarea calitativă și distrugerea sunt dovedite — dar decizia că dovada există (procesul-verbal de distrugere) rămâne o verificare documentară a contabilului, nu una automată a aplicației.
+Motorul F066 calculează separarea 607 deductibil/nedeductibil pe baza procentului de limită introdus de contabil și generează linia de ajustare TVA (635=4426) doar pentru partea nedeductibilă, exact conform art. 304 alin. (1). Câmpul `degradare_dovedita_distrusa` din motor dezactivează explicit ajustarea TVA, indiferent de mărimea depășirii, atunci când degradarea calitativă și distrugerea sunt dovedite — dar decizia că dovada există (procesul-verbal de distrugere) rămâne o verificare documentară a contabilului, nu una automată a aplicației.
 
 [iConta.eu](/)

@@ -18,7 +18,7 @@ Trebuie făcută întâi o distincție, pentru că răspunsul depinde de ea: dac
 (2) Este îndreptățit la contestație numai cel care consideră că a fost lezat în drepturile sale printr-un act administrativ fiscal. [...]
 ART. 270 Termenul de depunere a contestației
 (1) Contestația se depune în termen de 45 de zile de la data comunicării actului administrativ fiscal, sub sancțiunea decăderii."
-— Cod de procedură fiscală (Legea nr. 207/2015), art. 268 alin. (1)-(2) și art. 270 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Cod de procedură fiscală (Legea nr. 207/2015), art. 268 alin. (1)-(2) și art. 270 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce e sigur, pentru actele administrativ-fiscale (deciziile de impunere, deciziile referitoare la obligații fiscale accesorii etc.):

@@ -16,15 +16,15 @@ Situația se schimbă când se închiriază chiar echipamentul, adică satelitul
 
 ::: ghid-temei
 „plățile pentru accesul la sateliți prin închirierea de transpondere sau pentru utilizarea unor cabluri ori conducte pentru transportul energiei, gazelor sau petrolului, în situația în care clientul nu se află în posesia transponderelor, cablurilor, conductelor, fibrelor optice sau unor tehnologii similare;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „orice echipament industrial, comercial sau științific, container, cablu, conductă, satelit, fibră optică sau tehnologii similare;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(15) Sumele plătite operatorilor de sateliți de către societățile de radio, televiziune sau de către societățile de telecomunicații ori de către alți clienți, în baza unor contracte de închiriere de transponder care permit utilizarea capacității de a transmite în mai multe zone geografice, nu reprezintă redevență dacă nu este transferată nicio tehnologie legată de satelit și dacă clientul nu se află în posesia satelitului când realizează transmisiile, ci are numai acces la capacitatea de transmisie a acestuia."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (15) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (15) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Codul fiscal în vigoare preia regula în chiar definiția redevenței, iar normele o detaliază. Ce verifici în contract:

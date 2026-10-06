@@ -15,7 +15,7 @@ Declararea inactivității nu este definitivă — legea prevede condiții clare
 ::: ghid-temei
 „(5) Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. a), d) - g) se reactivează dacă sunt îndeplinite, cumulativ, următoarele condiții: a) își îndeplinește toate obligațiile declarative prevăzute de lege; b) nu înregistrează obligații fiscale restante.
 (5^1) Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. b) și c) se reactivează dacă sunt îndeplinite, cumulativ, condițiile prevăzute la alin. (5) și dacă organul fiscal central care a propus reactivarea constată că acesta funcționează la domiciliul fiscal declarat."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5) și (5^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5) și (5^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii de reactivare depind de motivul inactivării, dar au un nucleu comun:

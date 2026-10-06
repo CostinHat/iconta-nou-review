@@ -16,15 +16,15 @@ Diferența contează pentru angajator. Deducerea se reconsideră începând cu l
 
 ::: ghid-temei
 „(12) Dacă la un contribuabil intervine o schimbare care are influență asupra nivelului reprezentând deducerea personală acordată și această schimbare duce la diminuarea deducerii personale, contribuabilul este obligat să înștiințeze plătitorul de venituri din salarii în termen de 15 zile calendaristice de la data la care s-a produs evenimentul care a generat modificarea, astfel încât angajatorul/plătitorul să reconsidere nivelul deducerii începând cu luna următoare celei în care s-a produs evenimentul.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (12) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (12) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „plătitorul veniturilor din salarii va reconsidera nivelul deducerii personale corespunzătoare pentru persoanele rămase în întreținere începând cu luna următoare celei în care a fost realizat venitul, indiferent de data la care se face comunicarea către angajator/plătitor”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (8) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (8) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoana în întreținere poate fi soția/soțul, copiii sau alți membri de familie, rudele contribuabilului sau ale soțului/soției acestuia până la gradul al doilea inclusiv, ale cărei venituri, impozabile și neimpozabile, nu depășesc lunar 20% din salariul de bază minim brut pe țară garantat în plată”
-— Codul fiscal (Legea 227/2015), art. 77 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -16,12 +16,12 @@ Condiția despre reproducere e cea care schimbă rezultatul. Dacă distribuitoru
 
 ::: ghid-temei
 „plățile pentru obținerea drepturilor de distribuție a unui produs sau serviciu, fără a da dreptul la reproducere;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 36 alin. (2) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(2) Nu reprezintă redevențe, potrivit art. 7 pct. 36 din Codul fiscal, sumele plătite în schimbul obținerii drepturilor exclusive de distribuție a unui produs sau serviciu, deoarece acestea nu sunt efectuate în schimbul folosinței sau dreptului de folosință a unui element de proprietate inclus în definiție. Intermediarul distribuitor rezident nu plătește dreptul de a folosi marca sau numele sub care sunt vândute bunurile, el obține doar dreptul exclusiv de a vinde bunurile pe care le cumpără de la producător."
-— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), Titlul VI, pct. 2 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce verifici în contract:

@@ -48,6 +48,6 @@ O firmă a constituit un provizion pentru garanții de 5.000 lei, integral dedus
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` generează nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812` prin `nota_provizion`, respectiv `491 = 7814` / `39x = 7814` prin `nota_ajustare_creanta` și `nota_ajustare_stoc`), dar **nu recalculează și nu propagă automat caracterul impozabil sau neimpozabil al venitului din reluare** — flagul `deductibil` calculat la constituire nu e reutilizat la reluare. Verificarea dacă provizionul reluat fusese dedus inițial și, deci, dacă venitul din reluare e impozabil sau nu, rămâne o decizie manuală, pe baza regulii de simetrie explicate mai sus.
+Aplicația generează nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812` prin `nota_provizion`, respectiv `491 = 7814` / `39x = 7814` prin `nota_ajustare_creanta` și `nota_ajustare_stoc`), dar **nu recalculează și nu propagă automat caracterul impozabil sau neimpozabil al venitului din reluare** — flagul `deductibil` calculat la constituire nu e reutilizat la reluare. Verificarea dacă provizionul reluat fusese dedus inițial și, deci, dacă venitul din reluare e impozabil sau nu, rămâne o decizie manuală, pe baza regulii de simetrie explicate mai sus.
 
 [iConta.eu](/)

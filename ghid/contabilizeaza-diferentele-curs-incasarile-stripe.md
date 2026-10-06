@@ -14,7 +14,7 @@ Din punct de vedere contabil, o încasare printr-un procesator de plăți online
 
 ::: ghid-temei
 „322. - (1) Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar."
-— OMFP 1802/2014, Reglementările contabile, pct. 322 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat la o încasare Stripe: creanța față de client (factura emisă, în valută) se stinge la momentul în care banii ajung efectiv la firmă, la cursul BNR al zilei decontării. Dacă acel curs diferă de cursul din evidență (cel de la emiterea facturii), diferența — favorabilă (765) sau nefavorabilă (665) — se recunoaște în luna în care are loc încasarea, exact ca la orice altă decontare de creanță în valută.

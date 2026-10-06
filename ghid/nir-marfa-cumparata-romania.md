@@ -14,7 +14,7 @@ Mulți contabili întocmesc NIR pentru orice marfă intrată în gestiune, indif
 
 ::: ghid-temei
 „Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare. În cazurile în care nu este obligatorie întocmirea NIR-ului, recepția și încărcarea în gestiune, după caz, și înregistrarea în contabilitate se fac pe baza documentului de livrare care însoțește transportul (factura, avizul de însoțire a mărfii etc.)."
-— OMFP 2634/2015, Anexa 2, Cod 14-3-1A — Notă de recepție și constatare de diferențe (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, Cod 14-3-1A — Notă de recepție și constatare de diferențe (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Aplicat la marfa cumpărată din România, cu factură, de la un furnizor persoană juridică:
@@ -31,6 +31,6 @@ Aplicat la marfa cumpărată din România, cu factură, de la un furnizor persoa
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/stocuri_cv_api.py` oferă funcția `intrare_din_factura()`, care generează direct intrarea cantitativă în gestiune pe baza facturii de achiziție validate, fără a impune un NIR separat — coerent cu regula de mai sus pentru cazul fără diferențe. Pentru situațiile în care NIR-ul e obligatoriu (diferențe la recepție, evidență la preț de vânzare), `core/stocuri.py` conține motorul `nir_gv()` pentru NIR global-valoric, cu calcul de adaos și TVA neexigibilă. Alegerea între cele două fluxuri rămâne, azi, o decizie a contabilului la fiecare recepție, nu una automatizată în funcție de criteriile legale de mai sus.
+La data acestui ghid, aplicația oferă funcția `intrare_din_factura()`, care generează direct intrarea cantitativă în gestiune pe baza facturii de achiziție validate, fără a impune un NIR separat — coerent cu regula de mai sus pentru cazul fără diferențe. Pentru situațiile în care NIR-ul e obligatoriu (diferențe la recepție, evidență la preț de vânzare), aplicația conține motorul `nir_gv()` pentru NIR global-valoric, cu calcul de adaos și TVA neexigibilă. Alegerea între cele două fluxuri rămâne, azi, o decizie a contabilului la fiecare recepție, nu una automatizată în funcție de criteriile legale de mai sus.
 
 [iConta.eu](/)

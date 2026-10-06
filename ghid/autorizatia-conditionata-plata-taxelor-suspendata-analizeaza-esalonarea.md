@@ -16,13 +16,13 @@ Prețul protecției este o condiție mai strictă la garanții. Iar dacă cerere
 
 ::: ghid-temei
 „Pentru debitorii care au solicitat eșalonarea la plată și care trebuie să achite obligațiile fiscale administrate de organul fiscal central într-un anumit termen pentru a se menține autorizația, acordul ori alt act administrativ similar, autoritatea competentă nu revocă/nu suspendă actul pe motiv de neplată a obligațiilor fiscale la termenul prevăzut în legislația specifică, iar garanțiile constituite nu se execută până la soluționarea cererii de acordare a eșalonării la plată"
-— Codul de procedură fiscală (Legea 207/2015), art. 204 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 204 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Pentru debitorii prevăzuți la alin. (1), eșalonarea la plată se acordă numai cu condiția constituirii garanțiilor prevăzute la art. 193 alin. (6) lit. a) și/sau b), după caz."
-— Codul de procedură fiscală (Legea 207/2015), art. 204 alin. (1^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 204 alin. (1^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „g) debitorii care trebuie să achite obligațiile fiscale administrate de organul fiscal central într-un anumit termen pentru a se menține autorizația, acordul ori alt act administrativ similar."
-— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (6) lit. g) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 209^1 alin. (6) lit. g) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regimul, pas cu pas:

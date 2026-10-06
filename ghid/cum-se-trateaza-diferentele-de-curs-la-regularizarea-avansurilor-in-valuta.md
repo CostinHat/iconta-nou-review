@@ -44,7 +44,7 @@ O firmă plătește un avans de 10.000 EUR unui furnizor pe 3 martie, la cursul 
 
 ## Ce face iConta.eu
 
-Motorul de avansuri (`core/avansuri.py`) este un motor pur, fără acces la cursul valutar BNR: funcțiile primesc direct `suma_fara_tva`, presupusă deja convertită în lei. Nu există niciun parametru de curs sau monedă în cele patru funcții (`nota_avans_platit`, `nota_regularizare_avans_platit`, `nota_avans_incasat`, `nota_regularizare_avans_incasat`), iar singurul apelant din `core/uc_tenants.py` (`nota_avans`, liniile 3466-3522) transmite suma primită direct de la stratul HTTP, fără nicio conversie valutară.
+Motorul de avansuri este un motor pur, fără acces la cursul valutar BNR: funcțiile primesc direct `suma_fara_tva`, presupusă deja convertită în lei. Nu există niciun parametru de curs sau monedă în cele patru funcții (`nota_avans_platit`, `nota_regularizare_avans_platit`, `nota_avans_incasat`, `nota_regularizare_avans_incasat`), iar singurul apelant din aplicație (`nota_avans`) transmite suma primită direct de la stratul HTTP, fără nicio conversie valutară.
 
 Onest spus: **iConta.eu nu calculează automat diferența de curs la regularizarea unui avans în valută.** Contabilul trebuie să calculeze el însuși suma în lei — la cursul BNR din ultima zi bancară anterioară datei plății/încasării avansului, respectiv la cursul din data exigibilității pentru orice diferență nefacturată prin avans — și să introducă direct suma în lei rezultată. Motorul respectă corect regula că 409/419 nu se reevaluează (pentru că, oricum, nu are nicio logică de reevaluare), dar responsabilitatea calculului valutar propriu-zis rămâne integral a contabilului.
 

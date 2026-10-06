@@ -14,7 +14,7 @@ Lichidarea unei firme nu e un act unic, ci un proces în doi timpi, reglementat 
 
 ::: ghid-temei
 „Lichidarea și radierea societății se efectuează potrivit dispozițiilor art. 237 alin. (6)-(13)."
-— Legea 31/1990 (legea societăților), art. 227 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (legea societăților), art. 227 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Din articolele conexe rezultă etapele-cheie ale procesului:

@@ -14,10 +14,10 @@ Banii au ieșit din contul firmei, extrasul bancar o arată clar — dar în fi�
 
 ::: ghid-temei
 „(2) În cazul creanțelor fiscale administrate de organul fiscal central și organul fiscal local, debitorii efectuează plata acestora într-un cont unic ... (4) în cazul în care suma plătită nu acoperă obligațiile fiscale datorate unui buget sau fond, distribuirea în cadrul fiecărui buget sau fond se face în următoarea ordine: a) pentru toate impozitele și contribuțiile sociale cu reținere la sursă; b) pentru toate celelalte obligații fiscale principale; c) pentru obligațiile fiscale accesorii aferente obligațiilor prevăzute la lit. a) și b)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (2) și (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (2) și (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(11) În cazul stingerii prin plată a obligațiilor fiscale ... momentul plății este: ... d) în cazul plăților efectuate prin decontare bancară, inclusiv internet banking, home banking, mobile banking ..., data la care băncile debitează contul persoanei care efectuează plata pe baza instrumentelor de decontare specifice, astfel cum această informație este transmisă prin mesajul electronic de plată de către instituția bancară inițiatoare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 163 alin. (11) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă două lucruri utile pentru diagnostic:

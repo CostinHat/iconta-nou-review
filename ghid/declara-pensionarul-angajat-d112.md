@@ -15,7 +15,7 @@ Un salariat care este și pensionar nu se declară altfel decât un salariat obi
 ::: ghid-temei
 „15 A_2 Pensionar N(1) DA Valori : 1- pensionar sau 0 ERR : campul pensionar necompletat/incorect [...]
 30 B1_2 2.Pensionar N(1) DA Valori : 1-pensionar sau 0"
-— Structura oficială a Declarației 112, câmpurile A_2 (Anexa 1.1) și B1_2 (Anexa 1.2) (sursă: anaf_surse/d112_struct_anaf.txt)
+— Structura oficială a Declarației 112, câmpurile A_2 (Anexa 1.1) și B1_2 (Anexa 1.2) (sursă: [Structura fișierului XML pentru declarația D112, publicată de ANAF](https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structura_D112_0126_300326.pdf))
 :::
 
 Ce rezultă din documentația tehnică oficială ANAF privind structura fișierului XML al D112:

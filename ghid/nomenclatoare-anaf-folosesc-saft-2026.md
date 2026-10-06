@@ -16,7 +16,7 @@ Fișierul standard de control fiscal (SAF-T, raportat prin D406) nu acceptă tex
 „Tax Table (Tabelă taxe) - Conţine informaţii specifice despre taxe. În funcţie de tipul de taxă (de exemplu, TVA), contribuabilul/plătitorul va selecta codurile de taxă din nomenclatorul Coduri de taxă TVA pentru operaţiuni, asociate operaţiunilor incluse în fişierul SAF-T. [...]
 UOMTable (Tabela unităţilor de măsură - UOM) - Conţine detalii cu privire la unităţile de măsură, pentru situaţiile în care este necesară conversia stocurilor între diverse unităţi de măsură, conform nomenclatorului Unităţi de măsură, care face parte integrantă din schema SAF-T. [...]
 MovementType Table (Tabelă tipuri mişcări) - Conţine tipurile de mişcare şi subtipurile de mişcare asociate mişcărilor privind stocurile, definite prin nomenclatorul Codificare mişcări de produse în stocuri, care face parte integrantă din schema SAF-T."
-— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, descrierea structurii MasterFiles (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa privind procedura de depunere a Declarației informative D406, descrierea structurii MasterFiles (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Nomenclatoarele relevante, așa cum sunt descrise în documentația tehnică oficială:

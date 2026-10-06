@@ -14,12 +14,12 @@ Factura simplificată — cea emisă pentru sume mici sau în situațiile specia
 
 ::: ghid-temei
 „Persoana impozabilă care are obligaţia de a emite facturi conform prezentului articol, precum şi persoana impozabilă care optează pentru emiterea facturii potrivit alin. (11) pot emite facturi simplificate în oricare dintre următoarele situaţii: a) atunci când valoarea facturilor, inclusiv TVA, nu este mai mare de 100 euro. [...]"
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (12) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „L - livrări de bunuri/prestări de servicii pentru care au fost emise facturi, cu excepţia facturilor simplificate; A - achiziţii de bunuri/servicii pentru care au fost primite facturi, cu excepţia facturilor simplificate."
-— OPANAF 2194/2025, Anexa 2 (sursă: anaf_surse/opanaf_2194_2025_d394.txt:1168-1169)
+— OPANAF 2194/2025, Anexa 2 (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 - Facturile simplificate **se declară**, dar nu la tipurile L/A din secțiunile C-F ale declarației — acestea le exclud explicit.
@@ -34,6 +34,6 @@ Factura simplificată — cea emisă pentru sume mici sau în situațiile specia
 
 ## Ce face iConta.eu
 
-Aici trebuie spus cinstit: **iConta.eu nu are încă suport pentru facturi simplificate sau pentru case de marcat electronice fiscale (AMEF)**. Codul generatorului D394 (`core/d394.py`) definește explicit câmpurile cerute de validatorul ANAF pentru aceste categorii (`bazaFSLcod`, `bazaFSL`, `bazaFSA`, `bazaFSAI`, `bazaBFAI` și perechile lor de TVA), dar le populează cu valoarea zero — comentariul din sursă e explicit: „iConta nu are încă facturi simplificate şi AMEF -> rămân 0 până se construiesc". Câmpurile sunt trimise obligatoriu (validatorul cere ca ele să existe chiar și la zero), dar dacă firma ta emite efectiv facturi simplificate sau folosește case de marcat, acele valori nu ajung azi în D394 prin iConta — trebuie completate manual, în afara aplicației, până la extinderea acestei funcționalități.
+Aici trebuie spus cinstit: **iConta.eu nu are încă suport pentru facturi simplificate sau pentru case de marcat electronice fiscale (AMEF)**. Codul generatorului D394 definește explicit câmpurile cerute de validatorul ANAF pentru aceste categorii (`bazaFSLcod`, `bazaFSL`, `bazaFSA`, `bazaFSAI`, `bazaBFAI` și perechile lor de TVA), dar le populează cu valoarea zero — comentariul din sursă e explicit: „iConta nu are încă facturi simplificate şi AMEF -> rămân 0 până se construiesc". Câmpurile sunt trimise obligatoriu (validatorul cere ca ele să existe chiar și la zero), dar dacă firma ta emite efectiv facturi simplificate sau folosește case de marcat, acele valori nu ajung azi în D394 prin iConta — trebuie completate manual, în afara aplicației, până la extinderea acestei funcționalități.
 
 [iConta.eu](/)

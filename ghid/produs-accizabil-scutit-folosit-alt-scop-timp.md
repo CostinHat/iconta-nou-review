@@ -16,21 +16,21 @@ Termenul e mult mai scurt decât regula obișnuită, care e 25 a lunii următoar
 
 ::: ghid-temei
 „(4) În cazul unui produs accizabil care are dreptul de a fi scutit sau exceptat de la plata accizelor, utilizarea în orice scop care nu este în conformitate cu scutirea, respectiv exceptarea atrage obligația de plată a accizelor."
-— Codul fiscal (Legea 227/2015), art. 340 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 340 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „e) în cazurile prevăzute la art. 340 alin. (4)-(7) , persoana care determină eliberarea pentru consum;"
-— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 341 alin. (1) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „c) orice persoană aflată în una dintre situațiile prevăzute la art. 340 alin. (4)-(7) are obligația de a plăti accizele în termen de 5 zile de la data la care acestea au devenit exigibile;"
-— Codul fiscal (Legea 227/2015), art. 345 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 345 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(3) Prin excepție de la prevederile alin. (1) și (2) , orice persoană aflată în una dintre situațiile prevăzute la art. 340 alin. (1) lit. b) și c) și art. 340 alin. (4)-(7) are obligația de a depune o declarație de accize la autoritatea competentă în termen de 5 zile calendaristice de la data eliberării pentru consum."
-— Codul fiscal (Legea 227/2015), art. 346 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 346 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(1) Accizele devin exigibile în momentul eliberării pentru consum și în statul membru în care se face eliberarea pentru consum."
-— Codul fiscal (Legea 227/2015), art. 339 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 339 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii, în ordine:

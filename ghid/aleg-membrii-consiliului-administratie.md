@@ -14,12 +14,12 @@ La o societate pe acțiuni administrată în sistem unitar, consiliul de adminis
 
 ::: ghid-temei
 „Societatea pe acțiuni este administrată de unul sau mai mulți administratori, numărul acestora fiind totdeauna impar. Când sunt mai mulți administratori, ei constituie un consiliu de administrație." [alin. (1)] „Societățile pe acțiuni ale căror situații financiare anuale fac obiectul unei obligații legale de auditare sunt administrate de cel puțin 3 administratori." [alin. (2)]
-— Legea 31/1990, art. 137 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 137 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Administratorii sunt desemnați de către adunarea generală ordinară a acționarilor, cu excepția primilor administratori, care sunt numiți prin actul constitutiv." [alin. (1)] „Candidații pentru posturile de administrator sunt nominalizați de către membrii actuali ai consiliului de administrație sau de către acționari." [alin. (2)]
-— Legea 31/1990, art. 137^1 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 137^1 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Numărul administratorilor la o SA trebuie să fie **întotdeauna impar**, iar dacă sunt mai mulți, ei formează consiliul de administrație (art. 137 alin. 1).

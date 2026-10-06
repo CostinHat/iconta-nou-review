@@ -16,10 +16,10 @@ Chiar organul fiscal local care a emis actul. Codul de procedură fiscală (Lege
 
 ::: ghid-temei
 „(1) Contestațiile formulate împotriva titlurilor de creanță, precum și împotriva altor acte administrativ-fiscale emise de organul fiscal central se soluționează de către structura specializată de soluționare a contestațiilor din cadrul Ministerului Finanțelor Publice. [...] (4) Contestațiile formulate împotriva actelor administrativ-fiscale emise de organele fiscale locale din cadrul autorităților administrației publice locale se soluționează de către aceste organe fiscale. (5)Contestațiile formulate împotriva actelor administrativ-fiscale emise de alte autorități publice care, potrivit legii, administrează creanțe fiscale se soluționează de către aceste autorități."
-— Codul de procedură fiscală (Legea 207/2015), art. 272 alin. (1), (4) și (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 272 alin. (1), (4) și (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În cazul creanțelor administrate de organul fiscal local, pe perioada suspendării se datorează majorări de întârziere de 0,5% pe lună sau pe fracțiune de lună, reprezentând echivalentul prejudiciului."
-— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 278 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Regulile, pe scurt:

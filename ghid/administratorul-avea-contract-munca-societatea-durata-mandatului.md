@@ -16,14 +16,14 @@ Pentru contabil, consecința e practică: remunerația administratorului nu se p
 
 ::: ghid-temei
 „Pe durata îndeplinirii mandatului, administratorii nu pot încheia cu societatea un contract de muncă. În cazul în care administratorii au fost desemnați dintre salariații societății, contractul individual de muncă este suspendat pe perioada mandatului."
-— Legea societăților nr. 31/1990, art. 137^1 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 137^1 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Dispozițiile privitoare la administrarea societăților pe acțiuni nu sunt aplicabile societăților cu răspundere limitată, indiferent dacă sunt sau nu supuse obligației de auditare."
-— Legea societăților nr. 31/1990, art. 197 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 197 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Asociatul unic poate avea calitatea de salariat al societății cu răspundere limitată al cărui asociat unic este."
-— Legea societăților nr. 31/1990, art. 196^1 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 196^1 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

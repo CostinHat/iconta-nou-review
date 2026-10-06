@@ -6341,7 +6341,17 @@ _GHID_REDIRECT = {
     "verific-d101-corespunde-balanta-verificare": "verific-d101-corespunde-balanta-verificare-2",
     "verific-d390-jurnalul-vanzari": "verific-d390-jurnalul-vanzari-2",
     "verific-firma-aplica-tva-incasare-2": "verific-firma-aplica-tva-incasare",
+    # [06.10.2026, comanda Costin pct.5] 404 raportate: slug-uri lungi, în forma veche, legate din pagini publicate spre ghiduri
+    # care trăiesc sub slug scurt (succesorul confirmat pe titlu)
+    "esalonare-la-plata-anaf": "esalonare-la-plata-anaf-2026",
+    "tva-pentru-marja-de-profit-la-bunurile-second-hand": "tva-marja-profit-bunurile-second",
+    "tva-pentru-marja-de-profit-la-bunuri-second-hand-cumparate-din-ue": "tva-marja-profit-bunuri-second",
+    "catalogul-mijloacelor-fixe-durate-normale-de-amortizare": "catalog-mijloace-fixe-durate",
+    "achizitia-intracomunitara-de-bunuri-second-hand-regim-special": "achizitia-intracomunitara-bunuri-second-hand-regim-special",
+    "cand-incepe-amortizarea-pif-sau-achizitie": "incepe-amortizarea-mijloc-fix",
 }
+#: [06.10.2026 pct.5] adrese care au existat fără un ghid-succesor: 301 spre cuprinsul temelor
+_GHID_REDIRECT_HUB = ("proba-ghid",)
 _GHID_OG_IMAGINE = _GHID_BAZA + "/static/logo_login.png"   # provizoriu; DE_FACUT: imagine dedicata per ghid
 
 # Shell public: leaga stil.css, foloseste DOAR clase + tokeni (fara <style> inline, fara culori
@@ -6508,6 +6518,34 @@ def _ghid_404():
         media_type="text/html; charset=utf-8", status_code=404)
 
 
+def _ghid_teme_index():
+    """[06.10.2026, comanda Costin pct.6–7] Indexul pe teme (`core.ghid_teme.index`, cache declarat acolo), refăcut când se
+    schimbă directorul ghidurilor sau registrul titlurilor. Întoarce (pe_slug, pe_tema)."""
+    from core import ghid_teme as _gt, ghid_titluri as _gtl
+    try:
+        cheie = (os.stat(_GHID_DIR).st_mtime_ns, os.stat(_gtl.CALE).st_mtime_ns)
+    except OSError:
+        cheie = None
+    return _gt.index(cheie, _ghid_lista, lambda: {r["slug_publicat"]: r["categorie"] for r in _gtl.incarca()
+                                                   if r.get("status") == "publicat" and r.get("slug_publicat")})
+
+
+def _ghid_legaturi(slug):
+    """Linkul spre tema ghidului și ghidurile înrudite (DS cap.22 v2.72, `.ghid-legaturi`)."""
+    from core import ghid_teme as _gt
+    pe_slug, pe_tema = _ghid_teme_index()
+    g = pe_slug.get(slug)
+    if not g:
+        return ""
+    _c, tslug, ttitlu, _d = _gt.DUPA_CHEIE[g["tema"]]
+    rel = _gt.inrudite(slug, pe_slug, pe_tema)
+    lista = "".join('<li><a href="/ghid/%s">%s</a></li>' % (s, _ghid_html.escape(pe_slug[s]["titlu"])) for s in rel)
+    return ('<nav class="ghid-legaturi" aria-label="Ghiduri înrudite">'
+            + ('<h2>Ghiduri înrudite</h2><ul>%s</ul>' % lista if lista else "")
+            + '<p class="ghid-tema">Tema: <a href="/ghid/tema/%s">%s</a> · <a href="/ghid">Toate temele</a></p></nav>'
+            % (tslug, _ghid_html.escape(ttitlu)))
+
+
 def _ghid_lista():
     """Lista ghidurilor PUBLICATE = TOATE fisierele ghid/*.md cu front-matter valid. Sursa UNICA pentru index +
     sitemap (aliniat la ce declara comentariul: ghid/ e sursa unica). FUNCTIONALITATI.csv (coloana ghid_slug) NU
@@ -6572,10 +6610,22 @@ def admin_analytics(zile: int = 30, ctx=Depends(cere_rol("superadmin"))):
 def public_ghid(slug: str):
     """Pagina publica de ghid (DS cap.22). Fara autentificare. slug -> ghid/{slug}.md -> markdown -> shell.
     Front-matter per pagina: title (optional), description, published, modified."""
+    from fastapi.responses import RedirectResponse
+    # [06.10.2026, comanda Costin pct.5] adrese care au existat -> 301 permanent: `slug.md` spre slug; un id de registru
+    # (GH-00001) spre ghidul lui publicat; o adresă fără succesor spre cuprinsul temelor
+    if (slug or "").endswith(".md") and os.path.isfile(os.path.join(_GHID_DIR, slug)):
+        return RedirectResponse(_GHID_BAZA + "/ghid/" + slug[:-3], status_code=301)
+    if _ghid_re.fullmatch(r"GH-\d{5}", slug or ""):
+        from core import ghid_titluri as _gtl
+        _r = next((r for r in _gtl.incarca() if r["id"] == slug), None)
+        if _r and _r.get("slug_publicat") and os.path.isfile(os.path.join(_GHID_DIR, _r["slug_publicat"] + ".md")):
+            return RedirectResponse(_GHID_BAZA + "/ghid/" + _r["slug_publicat"], status_code=301)
+        return RedirectResponse(_GHID_BAZA + "/ghid", status_code=301)
+    if slug in _GHID_REDIRECT_HUB:
+        return RedirectResponse(_GHID_BAZA + "/ghid", status_code=301)
     if not _GHID_SLUG_RE.match(slug or ""):
         return _ghid_404()
     if slug in _GHID_REDIRECT:
-        from fastapi.responses import RedirectResponse
         return RedirectResponse(_GHID_BAZA + "/ghid/" + _GHID_REDIRECT[slug], status_code=301)
     cale = os.path.join(_GHID_DIR, slug + ".md")
     if not os.path.isfile(cale):
@@ -6596,28 +6646,55 @@ def public_ghid(slug: str):
               "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
               "image": _GHID_OG_IMAGINE}
     jsonld = {k: v for k, v in jsonld.items() if v not in ("", None)}
-    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md), jsonld=jsonld, slug=slug),
+    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md) + _ghid_legaturi(slug),
+                                              jsonld=jsonld, slug=slug),
                     media_type="text/html; charset=utf-8")
 
 
 @app.get("/ghid")
 def public_ghid_index():
-    """Index-ul ghidurilor: legat din subsol, ca paginile sa nu existe doar in sitemap. Generat din _ghid_lista()."""
-    guides = _ghid_lista()
+    """[06.10.2026, comanda Costin pct.6] CUPRINSUL temelor: „/ghid rămâne cuprinsul temelor” — o pagină de temă pentru fiecare
+    (`/ghid/tema/{tema}`), nu 6.559 de linkuri pe o pagină. Temele: `core.ghid_teme.TEME` (sursa unică)."""
+    from core import ghid_teme as _gt
+    _ps, pe_tema = _ghid_teme_index()
     items = []
-    for g in guides:
-        t = _ghid_html.escape(g["titlu"])
-        items.append('<h2><a href="/ghid/%s">%s</a></h2>' % (g["slug"], t))
-        if g["descriere"]:
-            items.append('<p>%s</p>' % _ghid_html.escape(g["descriere"]))
+    for cheie, tslug, ttitlu, tdesc in _gt.TEME:
+        n = len(pe_tema.get(cheie, []))
+        if not n:
+            continue
+        items.append('<li><a href="/ghid/tema/%s">%s</a> <span class="ghid-numar">%d ghiduri</span><p>%s</p></li>'
+                     % (tslug, _ghid_html.escape(ttitlu), n, _ghid_html.escape(tdesc)))
     corp = ('<h1>Ghiduri fiscale iConta.eu</h1>'
             '<p>Ghiduri practice pentru contabili: temei legal verificat la sursă, procedura manuală și '
-            'ce automatizează iConta.eu. Se adaugă pe măsură ce le scriem.</p>'
-            + ("\n".join(items) if items else "<p>În curând.</p>"))
+            'ce automatizează iConta.eu. Alege tema.</p>'
+            + ('<ul class="ghid-teme">%s</ul>' % "".join(items) if items else "<p>În curând.</p>"))
     return Response(content=_ghid_pagina_html(
         "Ghiduri fiscale",
         "Ghiduri fiscale practice pentru contabili — temei legal, proceduri și controalele automate iConta.eu.",
         _GHID_BAZA + "/ghid", corp, og_type="website"),
+        media_type="text/html; charset=utf-8")
+
+
+@app.get("/ghid/tema/{tema}")  # [api_intern_v1] pagină publică legată din HTML-ul generat de server (/ghid, ghidurile), nu din static/
+def public_ghid_tema(tema: str):
+    """[06.10.2026, comanda Costin pct.6] Pagina unei teme: ghidurile ei, cu descrierea, ordonate după titlu."""
+    from core import ghid_teme as _gt
+    t = _gt.DUPA_SLUG.get(tema or "")
+    if not t:
+        return _ghid_404()
+    pe_slug, pe_tema = _ghid_teme_index()
+    slugs = pe_tema.get(t[0], [])
+    if not slugs:
+        return _ghid_404()
+    items = []
+    for s in slugs:
+        g = pe_slug[s]
+        items.append('<li><a href="/ghid/%s">%s</a>%s</li>' % (s, _ghid_html.escape(g["titlu"]),
+                     ('<p>%s</p>' % _ghid_html.escape(g["descriere"])) if g.get("descriere") else ""))
+    corp = ('<p class="ghid-tema"><a href="/ghid">Ghiduri</a> › %s</p><h1>%s</h1><p>%s</p><ul class="ghid-lista">%s</ul>'
+            % (_ghid_html.escape(t[2]), _ghid_html.escape(t[2]), _ghid_html.escape(t[3]), "".join(items)))
+    return Response(content=_ghid_pagina_html(
+        "Ghiduri: " + t[2], t[3], _GHID_BAZA + "/ghid/tema/" + t[1], corp, og_type="website"),
         media_type="text/html; charset=utf-8")
 
 
@@ -6635,6 +6712,13 @@ def public_sitemap():
     lastmods = [g["modified"] for g in guides if g["modified"]]
     urls = [u(_GHID_BAZA + "/"),
             u(_GHID_BAZA + "/ghid", max(lastmods) if lastmods else None)]
+    # [06.10.2026 pct.6] paginile de temă, cu data celui mai nou ghid din temă
+    from core import ghid_teme as _gt
+    _ps, _pt = _ghid_teme_index()
+    for cheie, tslug, _t, _d in _gt.TEME:
+        if _pt.get(cheie):
+            urls.append(u(_GHID_BAZA + "/ghid/tema/" + tslug,
+                          max((_ps[s]["modified"] for s in _pt[cheie] if _ps[s].get("modified")), default=None)))
     for g in guides:
         urls.append(u(_GHID_BAZA + "/ghid/" + g["slug"], g["modified"] or None))
     urls.append(u(_GHID_BAZA + "/public/termeni"))

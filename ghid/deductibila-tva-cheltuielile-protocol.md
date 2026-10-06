@@ -15,10 +15,10 @@ Da, ca regulă generală — spre deosebire de deductibilitatea la impozitul pe 
 ::: ghid-temei
 „Articolul 298 Limitări speciale ale dreptului de deducere
 (1) Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate și a taxei aferente cheltuielilor legate de vehiculele aflate în proprietatea sau în folosința persoanei impozabile, în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice."
-— Codul fiscal (Legea 227/2015), art. 298 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 298 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Orice persoană impozabilă are dreptul să deducă taxa aferentă achizițiilor, dacă acestea sunt destinate utilizării în folosul următoarelor operațiuni: a) operațiuni taxabile; [...]"
-— Codul fiscal (Legea 227/2015), art. 297 alin. (4) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 297 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din coroborarea celor două articole rezultă:

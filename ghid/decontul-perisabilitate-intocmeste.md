@@ -40,6 +40,6 @@ Verificarea faptică, aprobarea administratorului și procesul-verbal sunt condi
 
 ## Ce face iConta.eu
 
-Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" (`static/js/ecrane/operatiuni_ecran.js:292-299`) colectează cele cinci date de mai sus; funcția `nota_perisabilitati` (`core/uc_tenants.py:4085`) validează contul de stoc prin `cont_valid.cere_cont` (respinge un cont inexistent în planul firmei) și scrie nota ca ciornă, cu liniile calculate de motorul pur `core/perisabilitati.py`. Cota de TVA e obligatorie de introdus — dacă lipsește, motorul ridică eroare explicită, fără să folosească un procent implicit.
+Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" colectează cele cinci date de mai sus; funcția `nota_perisabilitati` validează contul de stoc prin `cont_valid.cere_cont` (respinge un cont inexistent în planul firmei) și scrie nota ca ciornă, cu liniile calculate de motorul pur aplicația. Cota de TVA e obligatorie de introdus — dacă lipsește, motorul ridică eroare explicită, fără să folosească un procent implicit.
 
 [iConta.eu](/)

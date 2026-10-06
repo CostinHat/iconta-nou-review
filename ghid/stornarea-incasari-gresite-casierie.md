@@ -14,7 +14,7 @@ O sumă încasată greșit la casierie — client greșit, sumă greșită, oper
 
 ::: ghid-temei
 „15. În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primește, se eliberează sau se justifică numerarul, ori al altor documente pentru care normele de utilizare prevăd asemenea restricții, documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv. La corectarea documentului justificativ în care se consemnează operații de predare-primire a valorilor materiale și a mijloacelor fixe este necesară confirmarea, prin semnătură, atât a predătorului, cât și a primitorului."
-— OMFP nr. 2.634/2015, Anexa 1 (Norme generale de întocmire și utilizare a documentelor financiar-contabile), pct. 15 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Anexa 1 (Norme generale de întocmire și utilizare a documentelor financiar-contabile), pct. 15 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Aplicat la o încasare greșită la casierie, mecanismul e simplu, dar diferit de corectarea unei note contabile obișnuite:
@@ -32,6 +32,6 @@ Aplicat la o încasare greșită la casierie, mecanismul e simplu, dar diferit d
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează registrul de casă și mișcările de numerar prin modulul `core/casa.py` (funcțiile `registru_casa`, `sold_final`, `verifica_plafon`, `regula_cont_casa`), care calculează soldurile și verifică plafonul de casă, dar **nu are o funcție dedicată de „anulare" a unei chitanțe/dispoziții de încasare** care să reproducă mecanismul de la pct. 15 (document păstrat, marcat anulat, cu unul nou emis în loc). Corectarea unei încasări greșite — anularea documentului fizic și, dacă e cazul, stornarea notei contabile aferente — se face manual, prin înregistrările pe care contabilul le introduce în aplicație.
+La data acestui ghid, iConta.eu gestionează registrul de casă și mișcările de numerar prin aplicație (funcțiile `registru_casa`, `sold_final`, `verifica_plafon`, `regula_cont_casa`), care calculează soldurile și verifică plafonul de casă, dar **nu are o funcție dedicată de „anulare" a unei chitanțe/dispoziții de încasare** care să reproducă mecanismul de la pct. 15 (document păstrat, marcat anulat, cu unul nou emis în loc). Corectarea unei încasări greșite — anularea documentului fizic și, dacă e cazul, stornarea notei contabile aferente — se face manual, prin înregistrările pe care contabilul le introduce în aplicație.
 
 [iConta.eu](/)

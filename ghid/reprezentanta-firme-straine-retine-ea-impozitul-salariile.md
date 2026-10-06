@@ -16,12 +16,12 @@ Fără opțiune, regula e inversă: fiecare angajat al reprezentanței își dec
 
 ::: ghid-temei
 „Misiunile diplomatice și posturile consulare acreditate în România, precum și reprezentanțele organismelor internaționale ori reprezentanțele societăților și ale organizațiilor economice străine, autorizate potrivit legii să își desfășoare activitatea în România, pot opta ca, pentru angajații acestora, care realizează venituri din salarii impozabile în România, să îndeplinească obligațiile privind calculul, reținerea și plata impozitului pe veniturile din salarii. Prevederile alin. (2) nu se aplică contribuabililor, în cazul în care opțiunea de mai sus este formulată și comunicată organului fiscal competent."
-— Codul fiscal (Legea 227/2015), art. 82 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 82 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Misiunile diplomatice și posturile consulare acreditate în România, precum și reprezentanțele organismelor internaționale ori reprezentanțele societăților comerciale și ale organizațiilor economice străine, autorizate potrivit legii să desfășoare activitate în România, care optează ca, pentru angajații acestora care realizează venituri din salarii impozabile în România, să îndeplinească obligațiile privind calculul, reținerea și plata impozitului pe veniturile din salarii, comunică acest fapt organului fiscal prin completarea și depunerea declarației."
-— OPANAF 3780/2017, Anexa nr. 3, pct. 4 (sursă: anaf_surse/ordin_3780_2017.html)
+— OPANAF 3780/2017, Anexa nr. 3, pct. 4 (sursă: [OPANAF nr. 3780/2017 privind formularele utilizate în administrarea impozitului pe venit](https://legislatie.just.ro/Public/DetaliiDocument/196288))
 :::
 
 Ce înseamnă în practică:

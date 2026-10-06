@@ -14,7 +14,7 @@ Multe firme transportă marfa însoțită de aviz, urmând ca factura să fie em
 
 ::: ghid-temei
 „Avizul de însoțire a mărfii servește ca: - document de însoțire a mărfii pe timpul transportului, după caz; - document ce stă la baza întocmirii facturii, după caz; - dispoziție de transfer al valorilor materiale de la o gestiune la alta [...]; - document de primire în gestiune, după caz; - document de descărcare din gestiune a bunurilor cedate cu titlu gratuit. Avizul de însoțire a mărfii se întocmește de către entitățile care nu au posibilitatea întocmirii facturii în momentul livrării produselor, mărfurilor sau altor valori materiale [...]."
-— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice, cod 14-3-6A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2.634/2015, Anexa 2 — Norme specifice, cod 14-3-6A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Domeniul de reglementare al sistemului RO e-Factura, definit chiar în actul normativ care l-a înființat, confirmă distincția:

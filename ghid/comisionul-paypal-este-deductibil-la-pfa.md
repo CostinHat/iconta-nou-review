@@ -33,6 +33,6 @@ Fiindcă nu există text expres, documentul justificativ contează dublu: extras
 
 ## Ce face iConta.eu
 
-Validarea din `core/rip_api.py` (`_valideaza`) nu face distincție automată între tipul de comision: orice plată introdusă cu categoria `cheltuiala_deductibila` trebuie doar să aibă sumă pozitivă, dată, explicație și deductibilitate marcată — decizia de încadrare a comisionului PayPal ca deductibil rămâne a contabilului, pe baza documentului emis de platformă. Aplicația nu propune automat această categorie pentru comisioane reținute de procesatori nebancari (spre deosebire de `import_banca`, care propune implicit categoria pentru operațiunile din extrasul bancar) — introducerea și justificarea comisionului PayPal se fac manual, cu explicația și documentul aferent.
+Validarea din aplicație (`_valideaza`) nu face distincție automată între tipul de comision: orice plată introdusă cu categoria `cheltuiala_deductibila` trebuie doar să aibă sumă pozitivă, dată, explicație și deductibilitate marcată — decizia de încadrare a comisionului PayPal ca deductibil rămâne a contabilului, pe baza documentului emis de platformă. Aplicația nu propune automat această categorie pentru comisioane reținute de procesatori nebancari (spre deosebire de `import_banca`, care propune implicit categoria pentru operațiunile din extrasul bancar) — introducerea și justificarea comisionului PayPal se fac manual, cu explicația și documentul aferent.
 
 [iConta.eu](/)

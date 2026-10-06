@@ -43,6 +43,6 @@ Pentru aceste cazuri, în iConta.eu nu există azi un modul dedicat care să des
 
 ## Ce face iConta.eu
 
-Pentru o încasare cu cardul care ajunge în extras ca linie individuală cu CUI vizibil, motorul de matching (`core/reconciliere.py`) o tratează identic cu orice altă încasare bancară — potrivire exactă, pe combinație sau FIFO. Pentru decontările agregate de la procesatori de plăți sau terminale POS, iConta.eu nu are azi un parser sau un mecanism automat de despărțire pe facturi individuale și de netare a comisionului — funcționalitatea corespunzătoare din registrul intern de funcționalități este amânată, nu construită. Alocarea rămâne manuală, din picker-ul „Alege facturile", pe baza raportului de tranzacții al procesatorului.
+Pentru o încasare cu cardul care ajunge în extras ca linie individuală cu CUI vizibil, motorul de matching o tratează identic cu orice altă încasare bancară — potrivire exactă, pe combinație sau FIFO. Pentru decontările agregate de la procesatori de plăți sau terminale POS, iConta.eu nu are azi un parser sau un mecanism automat de despărțire pe facturi individuale și de netare a comisionului — funcționalitatea corespunzătoare din registrul intern de funcționalități este amânată, nu construită. Alocarea rămâne manuală, din picker-ul „Alege facturile", pe baza raportului de tranzacții al procesatorului.
 
 [iConta.eu](/)

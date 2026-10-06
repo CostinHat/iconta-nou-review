@@ -16,10 +16,10 @@ Este una dintre cele mai simple obligații din OUG 28/1999, dar și una dintre c
 
 ::: ghid-temei
 „Operatorii economici prevăzuți la alin. (1) , cu excepția celor care utilizează aparate de marcat electronice fiscale care potrivit prevederilor art. 3 alin. (2^1) nu înglobează constructiv dispozitivul de imprimare, sunt obligați să afișeze la loc vizibil un anunț detaliat de atenționare a clienților cu privire la obligația respectării dispozițiilor prevăzute la alin. (9) , (10) și (10^1) . Modelul și conținutul anunțului se aprobă prin ordin al ministrului finanțelor publice."
-— OUG 28/1999, art. 1 alin. (11) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 1 alin. (11) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „h) neîndeplinirea de către utilizatorii aparatelor de marcat electronice fiscale a obligației de a afișa anunțul de atenționare prevăzut la art. 1 alin. (11) ;"
-— OUG 28/1999, art. 10 lit. h) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 10 lit. h) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce trebuie să conțină anunțul. Legea trimite la trei reguli:

@@ -23,7 +23,7 @@ La metoda prețului cu amănuntul, costul mărfii vândute se obține prin deduc
 > vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor**.
 > Orice modificare a prețului de vânzare presupune recalcularea marjei brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (1) și (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (1) și (8).
 
 > "6. cost de achiziție înseamnă prețul datorat și eventualele cheltuieli conexe minus eventualele
 > reduceri ale costului de achiziție. În acest sens, **costul de achiziție al bunurilor cuprinde
@@ -35,7 +35,7 @@ La metoda prețului cu amănuntul, costul mărfii vândute se obține prin deduc
 > Cheltuielile de transport sunt incluse în costul de achiziție și atunci când funcția de
 > aprovizionare este externalizată."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 8, definiții, poziția 6
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 8, definiții, poziția 6
 > ("cost de achiziție").
 :::
 

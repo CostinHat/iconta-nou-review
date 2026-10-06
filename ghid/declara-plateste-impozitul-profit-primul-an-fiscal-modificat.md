@@ -16,16 +16,16 @@ Greșelile tipice din anul trecerii sunt un trimestru uitat, o declarație anual
 
 ::: ghid-temei
 „Primul an fiscal modificat include și perioada anterioară din anul calendaristic cuprinsă între 1 ianuarie și ziua anterioară primei zi a anului fiscal modificat, acesta reprezentând un singur an fiscal."
-— Codul fiscal (Legea 227/2015), art. 16 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 16 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „contribuabilii care declară și plătesc impozitul pe profit trimestrial și pentru care anul fiscal modificat începe în a doua, respectiv în a treia lună a trimestrului calendaristic, prima lună, respectiv primele două luni ale trimestrului calendaristic respectiv, vor constitui un trimestru, pentru care contribuabilul are obligația declarării și plății impozitului pe profit, până la data de 25 inclusiv a primei luni următoare încheierii trimestrului calendaristic respectiv."
-— Codul fiscal (Legea 227/2015), art. 41 alin. (15) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (15) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „contribuabilii care declară și plătesc impozitul pe profit anual, cu plăți anticipate efectuate trimestrial, pentru anul fiscal modificat continuă efectuarea plăților anticipate la nivelul celor stabilite înainte de modificare;"
-— Codul fiscal (Legea 227/2015), art. 41 alin. (15) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (15) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii care intră sub incidența prevederilor art. 16 alin. (5) au obligația să depună o declarație anuală privind impozitul pe profit și să plătească impozitul pe profit aferent anului fiscal respectiv, până la data de 25 a celei de-a șasea luni inclusiv, de la închiderea anului fiscal modificat"
-— Codul fiscal (Legea 227/2015), art. 42 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 42 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, regulile pentru primul an fiscal modificat sunt:

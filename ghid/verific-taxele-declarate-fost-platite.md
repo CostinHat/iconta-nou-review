@@ -14,7 +14,7 @@ A depune o declarație fiscală și a plăti suma din ea sunt două obligații d
 
 ::: ghid-temei
 „Dobânzile se calculează pentru fiecare zi de întârziere, începând cu ziua imediat următoare termenului de scadență și până la data stingerii sumei datorate, inclusiv."
-— Legea 207/2015, art. 174 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 174 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Structura de verificare corectă are două straturi separate:
@@ -32,6 +32,6 @@ Structura de verificare corectă are două straturi separate:
 
 ## Ce face iConta.eu
 
-iConta.eu are un semafor de conformare fiscală per firmă (`core/control_fiscal_api.py`) care derivă, din profilul firmei, ce declarații sunt datorate pe fiecare perioadă trecută și le compară cu evidența declarațiilor efectiv depuse — semnalând lipsurile, cu termenul depășit sau apropiat. Acest semafor verifică însă **depunerea**, nu **plata**: aplicația nu are, la data acestui ghid, o integrare cu fișa pe plătitor din SPV care să confirme dacă sumele declarate au fost efectiv încasate de bugetul de stat. Confirmarea stingerii reale a obligațiilor rămâne o verificare separată, făcută direct în SPV.
+iConta.eu are un semafor de conformare fiscală per firmă care derivă, din profilul firmei, ce declarații sunt datorate pe fiecare perioadă trecută și le compară cu evidența declarațiilor efectiv depuse — semnalând lipsurile, cu termenul depășit sau apropiat. Acest semafor verifică însă **depunerea**, nu **plata**: aplicația nu are, la data acestui ghid, o integrare cu fișa pe plătitor din SPV care să confirme dacă sumele declarate au fost efectiv încasate de bugetul de stat. Confirmarea stingerii reale a obligațiilor rămâne o verificare separată, făcută direct în SPV.
 
 [iConta.eu](/)

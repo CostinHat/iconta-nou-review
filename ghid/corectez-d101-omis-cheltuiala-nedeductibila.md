@@ -14,7 +14,7 @@ Dacă, după depunerea D101, descoperi că o cheltuială ar fi trebuit tratată 
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative. [...] (5) Declarația de impunere nu poate fi depusă și nu poate fi corectată după anularea rezervei verificării ulterioare."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3), (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (1), (3), (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Corectarea se face prin **declarație rectificativă** D101, depusă în cadrul termenului de prescripție a dreptului organului fiscal de a stabili creanțe fiscale.
@@ -30,6 +30,6 @@ Dacă, după depunerea D101, descoperi că o cheltuială ar fi trebuit tratată 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul D101 din iConta.eu (`core/d101.py`, `core/d101_reconciliere.py`) calculează și validează declarația pe baza datelor din evidența contabilă a firmei, iar aplicația poate genera din nou formularul după ce o cheltuială e reclasificată drept nedeductibilă în evidență. Nu am găsit însă un flux dedicat de „declarație rectificativă" care să compare automat versiunea inițială cu cea corectată sau care să verifice starea rezervei verificării ulterioare — depunerea efectivă a rectificativei, cu verificarea condițiilor legale de mai sus, rămâne responsabilitatea contabilului.
+La data acestui ghid, modulul D101 din iConta.eu calculează și validează declarația pe baza datelor din evidența contabilă a firmei, iar aplicația poate genera din nou formularul după ce o cheltuială e reclasificată drept nedeductibilă în evidență. Nu am găsit însă un flux dedicat de „declarație rectificativă" care să compare automat versiunea inițială cu cea corectată sau care să verifice starea rezervei verificării ulterioare — depunerea efectivă a rectificativei, cu verificarea condițiilor legale de mai sus, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

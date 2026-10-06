@@ -16,20 +16,20 @@ Contează pentru contabilul care calculează salariul părintelui. Angajarea cop
 
 ::: ghid-temei
 „Copiii minori, în vârstă de până la 18 ani împliniți, ai contribuabilului sunt considerați întreținuți.”
-— Codul fiscal (Legea 227/2015), art. 77 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(6) Copilul minor este considerat întotdeauna întreținut, cu excepția celor încadrați în muncă, indiferent dacă se află în unități speciale sanitare sau de protecție specială și altele asemenea, precum și în unități de învățământ, inclusiv în situația în care costul de întreținere este suportat de aceste unități.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „Copilul minor cu vârsta cuprinsă între 16 și 18 ani, încadrat în muncă [...] devine contribuabil și beneficiază de deducerea personală, situație în care, pentru perioada respectivă, părinții nu mai beneficiază de deducerea personală.”
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 13 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Suma reprezentând deducerea personală de bază se acordă pentru persoanele aflate în întreținerea contribuabilului, pentru acea perioadă impozabilă din anul fiscal în care acestea au fost întreținute. Perioada se rotunjește la luni întregi în favoarea contribuabilului.”
-— Codul fiscal (Legea 227/2015), art. 77 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 77 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

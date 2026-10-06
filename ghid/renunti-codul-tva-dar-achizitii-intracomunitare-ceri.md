@@ -16,12 +16,12 @@ Fără cererea simultană, firma poate ajunge să primească servicii din UE sau
 
 ::: ghid-temei
 „(9) Persoana impozabilă care solicită, conform alin. (7) , scoaterea din evidența persoanelor impozabile înregistrate în scopuri de TVA, conform art. 316 , dar are obligația de a se înregistra în scopuri de taxă, conform art. 317 , trebuie să solicite înregistrarea în scopuri de TVA, conform art. 317 , concomitent cu solicitarea de scoatere din evidența persoanelor impozabile înregistrate în scopuri de TVA, conform art. 316 . Înregistrarea în scopuri de TVA, conform art. 317 , va fi valabilă începând cu data anulării înregistrării în scopuri de TVA conform art. 316 . Prevederile prezentului alineat se aplică și în cazul în care persoana impozabilă optează pentru înregistrarea în scopuri de TVA, conform art. 317 , concomitent cu solicitarea de scoatere din evidența persoanelor impozabile înregistrate în scopuri de TVA, conform art. 316 ."
-— Codul fiscal (Legea 227/2015), art. 310 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Solicitarea se poate depune la organele fiscale competente între data de 1 și 10 a fiecărei luni următoare perioadei fiscale aplicate de persoana impozabilă, în conformitate cu prevederile art. 322 . Anularea va fi valabilă de la data comunicării deciziei privind anularea înregistrării în scopuri de TVA."
-— Codul fiscal (Legea 227/2015), art. 310 alin. (7) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Când ai obligația de înregistrare conform art. 317. Art. 317 alin. (1) din Codul fiscal (Legea 227/2015) enumeră, printre altele, situațiile în care firma neînregistrată conform art. 316:

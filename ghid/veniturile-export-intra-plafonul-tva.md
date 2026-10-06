@@ -14,7 +14,7 @@ Exportul e scutit de TVA, cu drept de deducere — dar „scutit de taxă" nu î
 
 ::: ghid-temei
 „Cifra de afaceri care servește drept referință pentru aplicarea alin. (1) este constituită din valoarea totală, exclusiv taxa [...], a livrărilor de bunuri și a prestărilor de servicii efectuate de persoana impozabilă în cursul unui an calendaristic, taxabile sau, după caz, care ar fi taxabile dacă nu ar fi desfășurate de o mică întreprindere, a operațiunilor scutite cu drept de deducere și, dacă nu sunt accesorii activității principale, a operațiunilor scutite fără drept de deducere prevăzute la art. 292 alin. (2) lit. a), b), e) și f), cu locul în România. Prin excepție, nu se cuprind în cifra de afaceri prevăzută la alin. (1) livrările de active fixe corporale [...] și cesiunea/transferul de active necorporale, efectuate de persoana impozabilă."
-— Codul fiscal (Legea 227/2015), art. 310 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Exportul (livrări de bunuri expediate în afara Uniunii Europene) e o operațiune **scutită cu drept de deducere**, conform art. 294 alin. (1) lit. a)-b) Cod fiscal — și textul de mai sus include explicit „operațiunile scutite cu drept de deducere" în cifra de afaceri de referință pentru plafon.

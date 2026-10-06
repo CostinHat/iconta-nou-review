@@ -15,7 +15,7 @@ Legea nu are un articol care să enumere explicit „diferența dintre D112 și 
 ::: ghid-temei
 „3. analiza de risc - activitatea efectuată de organul fiscal în scopul identificării riscurilor de neconformare în ceea ce privește îndeplinirea de către contribuabil/plătitor a obligațiilor prevăzute de legislația fiscală, de a le evalua, de a le gestiona, precum și de a le utiliza în scopul efectuării activităților de administrare fiscală [...]
 ART. 121 (1) [...] selectarea contribuabililor/plătitorilor pentru efectuarea acțiunii de inspecție fiscală se efectuează la nivelul aparatului central al ANAF, în funcție de nivelul riscului stabilit pe baza analizei de risc."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 1 pct. 3 și art. 121 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 1 pct. 3 și art. 121 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea nu detaliază public criteriile exacte de risc (ele sunt, de regulă, interne A.N.A.F.), dar principiul e clar: orice neconcordanță între ce declari și ce ai în contabilitate alimentează scorul de risc care determină selecția pentru inspecție. Tipuri de diferențe D112–balanță relevante în practică:

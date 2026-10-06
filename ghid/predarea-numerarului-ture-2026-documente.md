@@ -14,7 +14,7 @@ Legea nu prevede o procedură separată numită „predare de tură" — dar cer
 
 ::: ghid-temei
 „DISPOZIȚIE DE PLATĂ/ÎNCASARE CĂTRE CASIERIE (Cod 14-4-4) Dispoziția de plată/încasare către casierie servește ca: - dispoziție pentru casierie, în vederea achitării în numerar a unor sume, potrivit dispozițiilor legale ... - document justificativ de înregistrare în Registrul de casă și în contabilitate, în cazul plăților în numerar efectuate fără alt document justificativ."
-— OMFP 2634/2015, Anexa 2 — Norme specifice de utilizare a documentelor financiar-contabile (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2 — Norme specifice de utilizare a documentelor financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Din text rezultă cadrul aplicabil, chiar dacă „schimbul de tură" nu e menționat explicit ca operațiune distinctă:

@@ -16,14 +16,14 @@ Norma metodologică spune doar că în bază nu intră construcțiile înregistr
 
 ::: ghid-temei
 „(1) În aplicarea prevederilor art. 498 alin. (1) din Codul fiscal, prin valoarea construcțiilor existente în patrimoniul contribuabililor la data de 31 decembrie a anului anterior se înțelege valoarea evidențiată contabil în soldul conturilor corespunzătoare construcțiilor, fără a lua în considerare construcțiile înregistrate în conturi în afara bilanțului, conform reglementărilor contabile aplicabile."
-— HG 1/2016, norme metodologice, titlul X, pct. 2 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul X, pct. 2 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „prin aplicarea unei cote de 0,25% asupra valorii construcțiilor din contracte/acorduri sau alte acte juridice prin care se constituie drepturi de administrare/concesiune/folosință cu titlu gratuit/închiriere, în cazul celor aparținând domeniului public/privat al statului sau al unităților administrativ-teritoriale, existente la data de 31 decembrie a anului anterior/în ultima zi a anului fiscal modificat anterior celui pentru care se datorează impozitul pe construcții, pentru care nu se datorează taxa pe clădiri potrivit prevederilor titlului IX ; în acest caz, impozitul este datorat de contribuabilii care le au în administrare/concesiune/ folosință cu titlu gratuit/închiriere."
-— Codul fiscal (Legea 227/2015), art. 498 alin. (1) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 498 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 „În sensul alin. (1) lit. a) , valoarea netă a construcțiilor reprezintă valoarea evidențiată în soldul debitor al conturilor corespunzătoare construcțiilor din care se scade valoarea contabilă cumulată a amortizării acestora."
-— Codul fiscal (Legea 227/2015), art. 498 alin. (1^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 498 alin. (1^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum aplici regula:

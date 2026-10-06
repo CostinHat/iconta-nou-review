@@ -14,14 +14,14 @@ Cea mai mare parte a costurilor unui restaurant sau bar (materie primă, marfă,
 
 ::: ghid-temei
 „Prin bacșiș se înțelege orice sumă de bani oferită în mod voluntar de client, în plus față de contravaloarea bunurilor livrate sau a serviciilor prestate de către operatorii economici care desfășoară activități corespunzătoare codurilor CAEN: 5610 - «Restaurante», 5630 - «Baruri și alte activități de servire a băuturilor». [...] (9) [...] sumele provenite din încasarea bacșișului de la client de către operatorul economic nu pot fi asimilate unui element de natura veniturilor pentru acesta din urmă, iar distribuirea acestora către salariați nu poate fi asimilată unui element de natura cheltuielilor."
-— Legea 376/2022, care introduce art. 2^3 în OUG 28/1999, alin. (1) și (9) (sursă: anaf_surse/legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt)
+— Legea 376/2022, care introduce art. 2^3 în OUG 28/1999, alin. (1) și (9) (sursă: [Legea nr. 376/2022 pentru modificarea și completarea OUG nr. 28/1999](https://legislatie.just.ro/Public/DetaliiDocument/263133))
 :::
 
 Excepția relevantă pentru „deductibilitate" apare la alin. (7) al aceluiași articol: dacă bacșișul e evidențiat distinct **pe factură**, la cererea clientului, el „se înregistrează pe cheltuieli de protocol și are regimul fiscal al acestora" — deci intră sub plafonul de deductibilitate limitată din Codul fiscal:
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: a) cheltuielile de protocol în limita unei cote de 2% aplicată asupra profitului contabil la care se adaugă cheltuielile cu impozitul pe profit și cheltuielile de protocol. În cadrul cheltuielilor de protocol se includ și cheltuielile înregistrate cu taxa pe valoarea adăugată colectată [...], pentru cadourile oferite de contribuabil, cu valoare mai mare de 100 lei."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Restul restului de costuri specifice HoReCa (materie primă, ambalaje, utilități, chirie spațiu) urmează regula generală de deductibilitate din art. 25 alin. (1) CF — „cheltuieli efectuate în scopul desfășurării activității economice" — fără un regim particular pentru sectorul HoReCa în legislația verificată.
@@ -34,7 +34,7 @@ Restul restului de costuri specifice HoReCa (materie primă, ambalaje, utilită�
 
 ## Ce face iConta.eu
 
-Elementul specific HoReCa pe care iConta.eu îl implementează efectiv este **F010 — Bacșiș HoReCa** (`core/bacsis.py`), pentru traseul obișnuit: încasarea bacșișului pe bon (461=462 la încasare, 5121/5311=461) și distribuirea lui la salariați, cu reținerea automată a impozitului de 10% (`462=446`, plata netă `462=5121/5311`), rotunjit la 2 zecimale. Motorul respinge orice sumă de zero sau negativă, cu mesaj explicit.
+Elementul specific HoReCa pe care iConta.eu îl implementează efectiv este **F010 — Bacșiș HoReCa**, pentru traseul obișnuit: încasarea bacșișului pe bon (461=462 la încasare, 5121/5311=461) și distribuirea lui la salariați, cu reținerea automată a impozitului de 10% (`462=446`, plata netă `462=5121/5311`), rotunjit la 2 zecimale. Motorul respinge orice sumă de zero sau negativă, cu mesaj explicit.
 
 Traseul de la alin. (7) — bacșișul evidențiat distinct pe factură, la cererea clientului, tratat ca cheltuială de protocol — **nu e implementat separat în cod**: nu există un flux dedicat care să facă legătura automată dintre acest caz și plafonul de 2% din art. 25 alin. (3) lit. a) CF. Pentru costurile obișnuite ale unui local (marfă, materie primă, utilități), iConta.eu nu are o funcționalitate dedicată de verificare a deductibilității specifice HoReCa — ele se înregistrează prin fluxurile generale de achiziții și cheltuieli ale aplicației, cu aceleași reguli fiscale ca la orice altă firmă.
 

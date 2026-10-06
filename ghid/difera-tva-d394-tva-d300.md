@@ -14,10 +14,10 @@ D300 (decontul de TVA) și D394 (declarația informativă privind livrările/pre
 
 ::: ghid-temei
 „Prin decontul de taxă prevăzut la art. 323, persoanele impozabile trebuie să determine diferențele dintre sumele prevăzute la alin. (3) și (4), care reprezintă regularizările de taxă, și stabilirea soldului taxei de plată sau a soldului sumei negative a taxei."
-— Legea nr. 227/2015, art. 303 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 303 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu se înscriu achiziţiile intracomunitare de bunuri şi servicii pentru care există obligativitatea înscrierii în declaraţia 390."
-— OPANAF 2194/2025 (structura D394), Anexa 2 - Instrucțiuni de completare (sursă: anaf_surse/opanaf_2194_2025_d394.txt)
+— OPANAF 2194/2025 (structura D394), Anexa 2 - Instrucțiuni de completare (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 Câteva cauze reale, nu erori, pentru care sumele diferă:

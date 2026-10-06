@@ -14,10 +14,10 @@ Termenul de 5 zile lucrătoare pentru transmiterea unei facturi în RO e-Factura
 
 ::: ghid-temei
 „(6) Termenul-limită pentru transmiterea facturilor prevăzute la alin. (1)-(3) în sistemul național privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită prevăzută pentru emiterea facturii la art. 319 alin. (16) din Legea nr. 227/2015, cu modificările și completările ulterioare."
-— Legea 296/2023, art. LIX alin. (6) (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 296/2023, art. LIX alin. (6) (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 
 „(16) Pentru alte operațiuni decât cele prevăzute la alin. (15), persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă."
-— Codul fiscal (Legea 227/2015), art. 319 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Algoritmul de calcul, cu cele două date de referință:
@@ -35,6 +35,6 @@ Algoritmul de calcul, cu cele două date de referință:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, `core/efactura_send.py` (`fctel`) generează și transmite XML-ul facturii către SPV prin `upload_ubl()`, cu confirmarea stării prin `stare_mesaj()`. Calculul automat al celor două ancore de termen (5 zile de la emitere / 5 zile de la data-limită legală, în zile lucrătoare) și semnalarea proactivă a riscului de depășire nu au fost identificate ca funcție distinctă în cod — verificarea încadrării în termen rămâne, azi, o responsabilitate a contabilului, la momentul transmiterii.
+La data acestui ghid, aplicația (`fctel`) generează și transmite XML-ul facturii către SPV prin `upload_ubl()`, cu confirmarea stării prin `stare_mesaj()`. Calculul automat al celor două ancore de termen (5 zile de la emitere / 5 zile de la data-limită legală, în zile lucrătoare) și semnalarea proactivă a riscului de depășire nu au fost identificate ca funcție distinctă în cod — verificarea încadrării în termen rămâne, azi, o responsabilitate a contabilului, la momentul transmiterii.
 
 [iConta.eu](/)

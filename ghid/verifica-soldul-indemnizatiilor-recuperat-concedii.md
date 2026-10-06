@@ -14,7 +14,7 @@ O parte din indemnizația de concediu medical e suportată de angajator, o parte
 
 ::: ghid-temei
 „(1) Sumele reprezentând indemnizații, care se plătesc asiguraților și care, potrivit prevederilor prezentei ordonanțe de urgență, se suportă din bugetul Fondului național unic de asigurări sociale de sănătate, se recuperează din bugetul Fondului național unic de asigurări sociale de sănătate din creditele bugetare prevăzute cu această destinație. Aceste sume nu pot fi recuperate din sumele constituite reprezentând contribuție de asigurări sociale de sănătate."
-— OUG nr. 158/2005, art. 38 alin. (1) (sursă: anaf_surse/oug_158_2005_consolidat.txt)
+— OUG nr. 158/2005, art. 38 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
 Din text rezultă circuitul corect de recuperare:
@@ -31,6 +31,6 @@ Din text rezultă circuitul corect de recuperare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează, pentru fiecare certificat de concediu medical introdus, separarea sumei pe zile suportate de angajator și zile suportate de FNUASS, folosită apoi în declarația D112 (`core/d112.py`). Aplicația **nu urmărește** stadiul efectiv al cererilor de restituire depuse la casa de asigurări și nu ține un sold automat al sumelor recuperate față de cele declarate — compararea sumei calculate ca fiind de recuperat cu încasările reale de la Fond rămâne o reconciliere pe care contabilul o face manual, pe baza extrasului de cont.
+La data acestui ghid, iConta.eu calculează, pentru fiecare certificat de concediu medical introdus, separarea sumei pe zile suportate de angajator și zile suportate de FNUASS, folosită apoi în declarația D112. Aplicația **nu urmărește** stadiul efectiv al cererilor de restituire depuse la casa de asigurări și nu ține un sold automat al sumelor recuperate față de cele declarate — compararea sumei calculate ca fiind de recuperat cu încasările reale de la Fond rămâne o reconciliere pe care contabilul o face manual, pe baza extrasului de cont.
 
 [iConta.eu](/)

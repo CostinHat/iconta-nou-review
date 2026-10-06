@@ -14,7 +14,7 @@ Dividendele nu apar dintr-o singură înregistrare, ci parcurg un traseu în tre
 
 ::: ghid-temei
 „Contul 457 «Dividende de plată» Cu ajutorul acestui cont se ține evidența dividendelor datorate acționarilor/asociaților corespunzător aportului la capitalul social. Contul 457 «Dividende de plată» este un cont de pasiv. În creditul contului 457 «Dividende de plată» se înregistrează: – dividendele datorate acționarilor/asociaților din profitul realizat în exercițiile precedente (117). [...] În debitul contului 457 «Dividende de plată» se înregistrează: – sumele achitate acționarilor/asociaților, reprezentând dividende datorate acestora (512, 531); – impozitul pe dividende (446)."
-— OMFP nr. 1.802/2014, Capitolul 16, funcțiunea contului 457 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014, Capitolul 16, funcțiunea contului 457 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Practic, în situațiile financiare, dividendele parcurg următorul traseu contabil:

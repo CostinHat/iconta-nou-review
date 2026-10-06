@@ -14,7 +14,7 @@ Diurna acordată unui salariat aflat în delegare sau detașare nu este integral
 
 ::: ghid-temei
 „k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat; [...] (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă o formulă cu două praguri, se aplică cel mai mic dintre ele:
@@ -34,7 +34,7 @@ Din text rezultă o formulă cu două praguri, se aplică cel mai mic dintre ele
 
 ## Ce face iConta.eu
 
-Formula legală de mai sus este implementată corect în motorul de calcul din `core/deconturi.py` (funcția `plafon_diurna`): calculează ambele praguri (2,5× diurnă bugetară și 3×salariu/zile lucrătoare), alege minimul, și întoarce separat suma neimpozabilă și cea impozabilă. Motorul este chiar „period-aware" — recunoaște dacă diurna bugetară aplicabilă e 20 sau 23 lei, în funcție de data la care se raportează calculul.
+Formula legală de mai sus este implementată corect în motorul de calcul din aplicație (funcția `plafon_diurna`): calculează ambele praguri (2,5× diurnă bugetară și 3×salariu/zile lucrătoare), alege minimul, și întoarce separat suma neimpozabilă și cea impozabilă. Motorul este chiar „period-aware" — recunoaște dacă diurna bugetară aplicabilă e 20 sau 23 lei, în funcție de data la care se raportează calculul.
 
 Există însă o limitare reală, verificată în cod: **acest calcul de plafon nu este accesibil din nicio interfață a aplicației**. Ecranul „Decont deplasare / diurnă" (din „Operațiuni speciale") permite doar înregistrarea unui avans sau a unui decont — nu oferă un buton sau un câmp pentru a vedea plafonul calculat. Mai mult, atunci când se înregistrează un decont propriu-zis, aplicația **postează întreaga sumă de diurnă introdusă drept cheltuială**, fără să verifice automat dacă depășește plafonul. Separarea neimpozabil/impozabil descrisă mai sus există doar ca funcție de calcul brut la nivel de cod (API), nu ca pas automat în fluxul de înregistrare a decontului. Contabilul trebuie, astăzi, să calculeze manual plafonul înainte de a introduce diurna, pentru a decide singur dacă și cât din ea trebuie tratat ca venit salarial suplimentar.
 

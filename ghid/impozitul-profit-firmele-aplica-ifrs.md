@@ -14,7 +14,7 @@ O firmă care își întocmește situațiile financiare potrivit Standardelor In
 
 ::: ghid-temei
 „Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea 227/2015 (Codul fiscal), art. 19, principiul general al determinării rezultatului fiscal (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19, principiul general al determinării rezultatului fiscal (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Referirea la „reglementările contabile aplicabile" din articolul de bază e cheia pentru firmele care aplică IFRS:

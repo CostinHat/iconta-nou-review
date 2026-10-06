@@ -18,10 +18,10 @@ Un avans de trezorerie dat administratorului (pentru deplasări, achiziții măr
 e) plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.
 [...]
 (4) La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d), după caz."
-— Legea 70/2015 (pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar), art. 3 alin. (1) lit. e), alin. (4) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 (pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar), art. 3 alin. (1) lit. e), alin. (4) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 
 „(1) Nerespectarea prevederilor art. 1 alin. (1), art. 3 alin. (2) și (3), art. 4 alin. (1), (2) și (4), art. 9 și 10 constituie contravenții [...] și se sancționează [...] cu amendă de 10% din suma încasată/plătită care depășește plafonul stabilit de prezentul capitol pentru fiecare tip de operațiune, dar nu mai puțin de 100 lei."
-— Legea 70/2015, art. 12 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015, art. 12 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă concret pentru avansul dat administratorului:
@@ -39,6 +39,6 @@ Ce rezultă concret pentru avansul dat administratorului:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu (`core/casa.py`) verifică automat plafonul zilnic al avansurilor spre decontare (funcția `verifica_plafon`), cu temeiul legal atașat direct în cod (Legea 70/2015, plafon de 5.000 lei/persoană/zi), și semnalează depășirile ca avertisment de risc la control. Aplicația generează și notele contabile de acordare (`avans_acordare`), restituire (`avans_restituire`) și decontare (`avans_deconteaza`) a avansurilor de trezorerie (contul 542), cu sold urmărit pe fiecare titular de avans.
+Modulul de casierie din iConta.eu verifică automat plafonul zilnic al avansurilor spre decontare (funcția `verifica_plafon`), cu temeiul legal atașat direct în cod (Legea 70/2015, plafon de 5.000 lei/persoană/zi), și semnalează depășirile ca avertisment de risc la control. Aplicația generează și notele contabile de acordare (`avans_acordare`), restituire (`avans_restituire`) și decontare (`avans_deconteaza`) a avansurilor de trezorerie (contul 542), cu sold urmărit pe fiecare titular de avans.
 
 [iConta.eu](/)

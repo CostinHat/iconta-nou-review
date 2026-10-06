@@ -14,7 +14,7 @@ Procedura exactă de dovadă a calificării — ce documente se depun la registr
 
 ::: ghid-temei
 „3. activitate independentă - orice activitate desfășurată de către o persoană fizică în scopul obținerii de venituri, care îndeplinește cel puțin 4 dintre următoarele criterii: 3.1. persoana fizică dispune de libertatea de alegere a locului și a modului de desfășurare a activității, precum și a programului de lucru; 3.2. persoana fizică dispune de libertatea de a desfășura activitatea pentru mai mulți clienți; 3.3. riscurile inerente activității sunt asumate de către persoana fizică ce desfășoară activitatea; 3.4. activitatea se realizează prin utilizarea patrimoniului persoanei fizice care o desfășoară; 3.5. activitatea se realizează de persoana fizică prin utilizarea capacității intelectuale și/sau a prestației fizice a acesteia, în funcție de specificul activității; 3.6. persoana fizică face parte dintr-un corp/ordin profesional cu rol de reprezentare, reglementare și supraveghere a profesiei desfășurate, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective; 3.7. persoana fizică dispune de libertatea de a desfășura activitatea direct, cu personal angajat sau prin colaborare cu terțe persoane în condițiile legii."
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 3 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Această definiție nu e procedura de înființare — e criteriul pe care fiscul îl folosește, ulterior, pentru a stabili dacă activitatea se califică drept „independentă" (adică impozitată la titlul IV din Codul fiscal, ca PFA) și nu ca activitate dependentă deghizată:
@@ -31,6 +31,6 @@ Această definiție nu e procedura de înființare — e criteriul pe care fiscu
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de dovadă a pregătirii profesionale la înregistrarea unui PFA — aceasta ține de OUG 44/2008 și de registrul comerțului, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), care ține evidența anuală a venitului brut și a cheltuielilor deductibile pe fiecare sursă de venit, precum și generarea declarației D212 (`core/d212.py`) din datele introduse de contabil, cu contribuțiile și impozitul calculate.
+La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de dovadă a pregătirii profesionale la înregistrarea unui PFA — aceasta ține de OUG 44/2008 și de registrul comerțului, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din aplicație, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), care ține evidența anuală a venitului brut și a cheltuielilor deductibile pe fiecare sursă de venit, precum și generarea declarației D212 din datele introduse de contabil, cu contribuțiile și impozitul calculate.
 
 [iConta.eu](/)

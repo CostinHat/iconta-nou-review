@@ -16,12 +16,12 @@ Regula privește SA, dar se aplică și cenzorilor din SRL, potrivit art. 199 al
 
 ::: ghid-temei
 „Nu pot fi cenzori, iar dacă au fost aleși, decad din mandatul lor: a) rudele sau afinii până la al patrulea grad inclusiv sau soții administratorilor; [...] b) persoanele care primesc sub orice formă, pentru alte funcții decât aceea de cenzor, un salariu sau o remunerație de la administratori sau de la societate sau ai căror angajatori sunt în raporturi contractuale sau se află în concurență cu aceasta; [...] c) persoanele cărora le este interzisă funcția de membru al consiliului de administrație, respectiv al consiliului de supraveghere și al directoratului, în temeiul art. 73^1; [...] d) persoanele care, pe durata exercitării atribuțiilor conferite de această calitate, au atribuții de control în cadrul Ministerului Finanțelor Publice sau al altor instituții publice, cu excepția situațiilor prevăzute expres de lege."
-— Legea societăților nr. 31/1990, art. 161 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 161 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Dispozițiile prevăzute pentru cenzorii societăților pe acțiuni se aplică și cenzorilor din societățile cu răspundere limitată."
-— Legea societăților nr. 31/1990, art. 199 alin. (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 199 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

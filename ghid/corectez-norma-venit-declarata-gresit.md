@@ -14,10 +14,10 @@ Corectarea se face prin depunerea unei declarații unice rectificative, din prop
 
 ::: ghid-temei
 „(1) Declarația de impunere poate fi corectată de către contribuabil/plătitor, pe perioada termenului de prescripție a dreptului de a stabili creanțe fiscale. [...] (3) Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative."
-— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 105 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „3.1. Declarația unică [...] poate fi corectată de contribuabili din proprie inițiativă, ori de câte ori informațiile actuale nu corespund celor din declarația depusă anterior, prin depunerea unei declarații rectificative în condițiile prevăzute de Legea nr. 207/2015 [...] 3.4. Declarația rectificativă se utilizează pentru: [...] modificarea unor date referitoare la categoria/sursa veniturilor sau a nivelului acestora, potrivit legii; [...] corectarea altor informații prevăzute de formular."
-— OPANAF 888/2018 (sursă: anaf_surse/opanaf_888_2018.txt)
+— OPANAF 888/2018 (sursă: [OPANAF nr. 888/2018 pentru aprobarea formularului 212 (Declarația unică)](https://legislatie.just.ro/Public/DetaliiDocument/199198))
 :::
 
 Aplicat la norma de venit: dacă ai declarat greșit norma de venit (de exemplu ai bifat activitatea greșit, ai folosit un nivel de normă din alt județ/an, sau nu ai actualizat-o la o modificare adusă de organul fiscal), corecția e o declarație rectificativă, cu datele corecte pentru capitolul de venituri pe bază de normă. Nu există un formular separat „rectificare normă de venit" — mecanismul e cel general al Declarației unice.
@@ -30,7 +30,7 @@ Aplicat la norma de venit: dacă ai declarat greșit norma de venit (de exemplu 
 
 ## Ce face iConta.eu
 
-Fișa D212 din iConta.eu (`core/rip_api.py`, motorul `core/d212_engine.py`) acoperă **PFA/II/IF în sistem real** (partida simplă) — venitul net din registrul de încasări și plăți, plus CAS/CASS/impozitul aferent. Pentru norma de venit, calculul e în generatorul declarației (`core/d212.py`, capitolul `cap12`): contabilul introduce norma publicată și, dacă e cazul, norma ajustată, iar aplicația calculează venitul net (proporțional cu zilele de activitate), venitul impozabil, impozitul de 10% și contribuțiile.
+Fișa D212 din iConta.eu (aplicația) acoperă **PFA/II/IF în sistem real** (partida simplă) — venitul net din registrul de încasări și plăți, plus CAS/CASS/impozitul aferent. Pentru norma de venit, calculul e în generatorul declarației (capitolul `cap12`): contabilul introduce norma publicată și, dacă e cazul, norma ajustată, iar aplicația calculează venitul net (proporțional cu zilele de activitate), venitul impozabil, impozitul de 10% și contribuțiile.
 
 Practic, iConta.eu nu verifică dacă norma introdusă e cea corectă pentru activitate și localitate — o normă greșită se corectează în formularul D212, iar aplicația recalculează venitul net, impozitul și contribuțiile; urmează depunerea declarației rectificative, conform mecanismului general de mai sus.
 

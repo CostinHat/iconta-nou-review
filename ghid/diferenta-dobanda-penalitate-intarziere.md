@@ -14,7 +14,7 @@ Când o obligație fiscală nu e plătită la scadență, ANAF nu calculează un
 
 ::: ghid-temei
 „Pentru neachitarea la termenul de scadență de către debitor a obligațiilor fiscale principale, se datorează după acest termen dobânzi și penalități de întârziere. [...] Nivelul dobânzii este de 0,02% pentru fiecare zi de întârziere. [...] Nivelul penalității de întârziere este de 0,01% pentru fiecare zi de întârziere."
-— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1), art. 174 alin. (5) și art. 176 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 173 alin. (1), art. 174 alin. (5) și art. 176 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Diferențele esențiale între cele două:
@@ -32,6 +32,6 @@ Diferențele esențiale între cele două:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat de calcul automat al dobânzilor și penalităților de întârziere pentru obligații fiscale restante — aplicația oferă evidența contabilă generală (facturi, state de plată, declarații) și un motor de urmărire a scadențelor declarative (`core/control_fiscal_api.py`), dar simularea accesoriilor pentru sume neplătite la termen rămâne un calcul pe care contabilul îl face separat, de regulă pe baza fișei pe plătitor eliberate de ANAF (care conține valorile finale oficiale).
+La data acestui ghid, iConta.eu nu are un modul dedicat de calcul automat al dobânzilor și penalităților de întârziere pentru obligații fiscale restante — aplicația oferă evidența contabilă generală (facturi, state de plată, declarații) și un motor de urmărire a scadențelor declarative, dar simularea accesoriilor pentru sume neplătite la termen rămâne un calcul pe care contabilul îl face separat, de regulă pe baza fișei pe plătitor eliberate de ANAF (care conține valorile finale oficiale).
 
 [iConta.eu](/)

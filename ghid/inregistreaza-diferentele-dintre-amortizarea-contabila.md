@@ -14,7 +14,7 @@ Amortizarea contabilă (cea din bilanț, calculată după politica contabilă a 
 
 ::: ghid-temei
 „(17) Pentru mijloacele fixe amortizabile, deducerile de amortizare se determină fără a lua în calcul amortizarea contabilă. Câștigurile sau pierderile rezultate din vânzarea ori din scoaterea din funcțiune a acestor mijloace fixe se calculează pe baza valorii fiscale a acestora, diminuată cu amortizarea fiscală, cu excepția celor prevăzute la alin. (14)."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (17) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (17) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă de aici pentru evidența practică:
@@ -33,6 +33,6 @@ Ce rezultă de aici pentru evidența practică:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (`core/repo_mijloace_fixe.py`) ține o singură schemă de amortizare per mijloc fix (valoare, valoare reziduală, durată normală de funcționare în luni), folosită pentru amortizarea contabilă înregistrată în evidență. La data acestui ghid, aplicația **nu calculează și nu urmărește separat o amortizare fiscală distinctă** de cea contabilă și nu automatizează reconcilierea impozitului amânat rezultat din diferențele temporare — nu există, în cod, o funcție dedicată „amortizare_fiscala" sau tratamentul impozitului pe profit amânat. Contabilul rămâne responsabil să verifice, pentru fiecare mijloc fix, dacă durata și metoda contabilă coincid cu cele admise fiscal și, dacă nu, să calculeze manual diferența pentru declarația de impozit pe profit.
+Modulul de mijloace fixe din iConta.eu ține o singură schemă de amortizare per mijloc fix (valoare, valoare reziduală, durată normală de funcționare în luni), folosită pentru amortizarea contabilă înregistrată în evidență. La data acestui ghid, aplicația **nu calculează și nu urmărește separat o amortizare fiscală distinctă** de cea contabilă și nu automatizează reconcilierea impozitului amânat rezultat din diferențele temporare — nu există, în cod, o funcție dedicată „amortizare_fiscala" sau tratamentul impozitului pe profit amânat. Contabilul rămâne responsabil să verifice, pentru fiecare mijloc fix, dacă durata și metoda contabilă coincid cu cele admise fiscal și, dacă nu, să calculeze manual diferența pentru declarația de impozit pe profit.
 
 [iConta.eu](/)

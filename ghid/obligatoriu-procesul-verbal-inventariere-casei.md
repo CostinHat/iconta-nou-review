@@ -14,7 +14,7 @@ Da — procesul-verbal al comisiei de inventariere e documentul care încheie fo
 
 ::: ghid-temei
 „«Registrul-inventar» (cod 14-1-2) este un document contabil obligatoriu în care se înscriu rezultatele inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, grupate după natura lor, conform posturilor din bilanț."
-— OMFP 2861/2009, Anexa 1, pct. 44 alin. (1) (sursă: anaf_surse/omfp_2861_2009.txt)
+— OMFP 2861/2009, Anexa 1, pct. 44 alin. (1) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
 
 - Procesul-verbal al comisiei de inventariere conține obligatoriu, potrivit normelor: data întocmirii, membrii comisiei, numărul și data deciziei de numire, gestiunea/gestiunile inventariate, data începerii și terminării operațiunii, rezultatele constatate, concluziile și propunerile privind cauzele plusurilor/lipsurilor, persoanele vinovate și propunerile de casare/scoatere din uz.

@@ -15,7 +15,7 @@ Regimul contabil și fiscal al unei pensiuni turistice depinde în primul rând 
 ::: ghid-temei
 „Sunt considerate venituri din prestarea de servicii de cazare veniturile obținute de operatorii economici definiți potrivit legislației specifice domeniului turismului - contribuabili potrivit prezentului titlu, prin punerea la dispoziție a unui spațiu amenajat în scopul înnoptării pentru o perioadă determinată, măsurată în zile.
 [...] Venitul net anual din prestarea de servicii de cazare se determină prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei forfetare de 30% asupra venitului brut."
-— Legea 227/2015 (Codul fiscal), art. 68^3 alin. (1) și (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68^3 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cele două scenarii principale, în funcție de forma juridică:

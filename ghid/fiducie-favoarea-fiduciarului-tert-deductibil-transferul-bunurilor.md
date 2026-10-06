@@ -16,12 +16,12 @@ Logica e simplă. Când constituitorul rămâne beneficiar, bunurile lucrează t
 
 ::: ghid-temei
 „În cazul contractelor de fiducie, încheiate conform dispozițiilor Codului civil, în care calitatea de beneficiar o are fiduciarul sau o terță persoană, cheltuielile înregistrate din transferul masei patrimoniale fiduciare de la constituitor către fiduciar sunt considerate cheltuieli nedeductibile."
-— Codul fiscal (Legea 227/2015), art. 30 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul contractelor de fiducie, încheiate conform dispozițiilor Codului civil, în care constituitorul are și calitatea de beneficiar, se aplică următoarele reguli: a) transferul masei patrimoniale fiduciare de la constituitor către fiduciar nu este transfer impozabil în înțelesul prezentului titlu"
-— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 30 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie reținut:

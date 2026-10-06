@@ -16,15 +16,15 @@ Dacă firma străină are un singur sediu permanent, nu mai e nimic de ales: ace
 
 ::: ghid-temei
 „Persoana juridică străină care desfășoară activitatea prin intermediul mai multor sedii permanente în România are obligația să stabilească unul dintre aceste sedii ca sediu permanent desemnat pentru îndeplinirea obligațiilor care îi revin potrivit prezentului titlu. La nivelul sediului permanent desemnat se cumulează veniturile, respectiv cheltuielile sediilor permanente aparținând aceleiași persoane juridice străine."
-— Codul fiscal (Legea 227/2015), art. 37 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 37 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Sediul permanent desemnat în România calculează, declară și plătește obligațiile ce revin potrivit titlului II"
-— Codul fiscal (Legea 227/2015), art. 37 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 37 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În situația în care persoana juridică străină își desfășoară activitatea în România printr-un singur sediu permanent, acesta este și sediul permanent desemnat pentru îndeplinirea obligațiilor care revin potrivit prezentului titlu."
-— Codul fiscal (Legea 227/2015), art. 36 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 36 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum funcționează:

@@ -14,7 +14,7 @@ Când o firmă donează mărfuri sau produse finite unui beneficiar de sponsoriz
 
 ::: ghid-temei
 „bunurile acordate gratuit în cadrul acțiunilor de sponsorizare sau mecenat nu sunt considerate livrări de bunuri dacă valoarea totală în cursul unui an calendaristic se încadrează în limita a 3 la mie din cifra de afaceri constituită din operațiuni taxabile, scutite cu sau fără drept de deducere, precum și din operațiuni pentru care locul livrării/prestării este considerat a fi în străinătate potrivit prevederilor art. 275 și 278 din Codul fiscal. Încadrarea în plafon se determină pe baza datelor raportate prin deconturile de taxă depuse pentru un an calendaristic. Nu se iau în calcul pentru încadrarea în aceste plafoane sponsorizările și acțiunile de mecenat, acordate în numerar, și nici bunurile pentru care taxa nu a fost dedusă. Depășirea plafoanelor constituie livrare de bunuri cu plată, respectiv se colectează taxa. Taxa colectată aferentă depășirii se include în decontul întocmit pentru ultima perioadă fiscală a anului respectiv."
-— HG 1/2016, pct. 7 alin. (12) lit. b) (norme de aplicare a art. 270 alin. (8) lit. c) din Codul fiscal) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, pct. 7 alin. (12) lit. b) (norme de aplicare a art. 270 alin. (8) lit. c) din Codul fiscal) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Din text rezultă mecanismul concret de urmărit la descărcarea din gestiune:
@@ -34,6 +34,6 @@ Din text rezultă mecanismul concret de urmărit la descărcarea din gestiune:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează **creditul fiscal de sponsorizare** (art. 25 alin. (4) lit. i) din Codul fiscal) în `core/sponsorizari.py`, prin funcția `credit_sponsorizare()`, dar înregistrarea contabilă suportată pentru sponsorizare (`nota_sponsorizare()`) acoperă doar varianta în bani — contul 6582 în corespondență cu 401 (pe contract) sau 5121 (plată directă). Nu există în cod nicio funcție dedicată descărcării de gestiune a stocurilor acordate pentru sponsorizare și nicio verificare automată a plafonului de 3 la mie din cifra de afaceri. Contabilul trebuie să urmărească manual acest plafon și să înregistreze separat autofactura de TVA în cazul depășirii.
+La data acestui ghid, iConta.eu calculează **creditul fiscal de sponsorizare** (art. 25 alin. (4) lit. i) din Codul fiscal) în aplicație, prin funcția `credit_sponsorizare()`, dar înregistrarea contabilă suportată pentru sponsorizare (`nota_sponsorizare()`) acoperă doar varianta în bani — contul 6582 în corespondență cu 401 (pe contract) sau 5121 (plată directă). Nu există în cod nicio funcție dedicată descărcării de gestiune a stocurilor acordate pentru sponsorizare și nicio verificare automată a plafonului de 3 la mie din cifra de afaceri. Contabilul trebuie să urmărească manual acest plafon și să înregistreze separat autofactura de TVA în cazul depășirii.
 
 [iConta.eu](/)

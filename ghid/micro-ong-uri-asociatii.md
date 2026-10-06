@@ -14,7 +14,7 @@ Regimul de impozit pe veniturile microîntreprinderilor (Titlul III din Codul fi
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. [...] d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale; [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3); [...] i) a depus în termen situațiile financiare anuale, dacă are această obligație potrivit legii."
-— art. 47 alin. (1) din Legea 227/2015 (Codul fiscal) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— art. 47 alin. (1) din Legea 227/2015 (Codul fiscal) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Condiția de eligibilitate cea mai vizibilă pentru un ONG mic: venituri anuale sub echivalentul a **100.000 EUR**, calculate la cursul de la închiderea exercițiului financiar.
@@ -32,6 +32,6 @@ Important de înțeles: dacă un ONG ar opta pentru impozitul pe veniturile micr
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) tratează exclusiv regimul special de la art. 15 din Codul fiscal — clasificarea veniturilor fără scop patrimonial pe grupa 73 și calculul plafonului de scutire pentru veniturile economice. **Aplicația nu are nicio funcție dedicată** verificării eligibilității pentru regimul microîntreprinderilor și nu calculează impozitul pe cifra de afaceri specific acestui regim pentru un ONG — subiectul aparține unui alt titlu al Codului fiscal, netratat de această funcționalitate.
+Funcționalitatea de contabilitate ONG din iConta.eu tratează exclusiv regimul special de la art. 15 din Codul fiscal — clasificarea veniturilor fără scop patrimonial pe grupa 73 și calculul plafonului de scutire pentru veniturile economice. **Aplicația nu are nicio funcție dedicată** verificării eligibilității pentru regimul microîntreprinderilor și nu calculează impozitul pe cifra de afaceri specific acestui regim pentru un ONG — subiectul aparține unui alt titlu al Codului fiscal, netratat de această funcționalitate.
 
 [iConta.eu](/)

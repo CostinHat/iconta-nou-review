@@ -34,6 +34,6 @@ Ca și la deductibilă, dacă eroarea e strict materială (fără impact asupra 
 
 ## Ce face iConta.eu
 
-Regularizările de TVA colectată se introduc din același panou manual dedicat corecțiilor (`core/d300_manual_api.py`), alături de intracomunitar și taxare inversă, cu recalcularea automată a decontului după fiecare modificare (buton „Regenerează D300"). Aplicația nu decide automat dacă o eroare e „materială" sau de fond — încadrarea rămâne o decizie a contabilului.
+Regularizările de TVA colectată se introduc din același panou manual dedicat corecțiilor, alături de intracomunitar și taxare inversă, cu recalcularea automată a decontului după fiecare modificare (buton „Regenerează D300"). Aplicația nu decide automat dacă o eroare e „materială" sau de fond — încadrarea rămâne o decizie a contabilului.
 
 [iConta.eu](/)

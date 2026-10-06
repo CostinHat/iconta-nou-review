@@ -14,7 +14,7 @@ Amortizarea accelerată e o metodă fiscală permisă de Codul fiscal, dar nu ne
 
 ::: ghid-temei
 „(8) În cazul metodei de amortizare accelerată, amortizarea se calculează după cum urmează: a) pentru primul an de utilizare, amortizarea nu poate depăși 50% din valoarea fiscală de la data intrării în patrimoniul contribuabilului a mijlocului fix; b) pentru următorii ani de utilizare, amortizarea se calculează prin raportarea valorii rămase de amortizare a mijlocului fix la durata normală de utilizare rămasă a acestuia."
-— Codul fiscal (Legea 227/2015), art. 28 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 28 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:
@@ -34,6 +34,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **calculează amortizarea fiscală a mijloacelor fixe pe toate cele patru metode** — liniară, degresivă, accelerată și superaccelerată — în modulul `core/d406_active.py`, inclusiv regula celor 50% din valoarea fiscală în primul an pentru metoda accelerată (art. 28 alin. (8)) și 65% pentru superaccelerata (art. 28 alin. (8^1)). Aplicația **verifică și restricția pe categorie de activ**: refuză metoda accelerată pentru construcții sau pentru mijloace fixe din afara subgrupei 2.1, respectând explicit art. 28 alin. (5) din Codul fiscal.
+La data acestui ghid, iConta.eu **calculează amortizarea fiscală a mijloacelor fixe pe toate cele patru metode** — liniară, degresivă, accelerată și superaccelerată — în aplicație, inclusiv regula celor 50% din valoarea fiscală în primul an pentru metoda accelerată (art. 28 alin. (8)) și 65% pentru superaccelerata (art. 28 alin. (8^1)). Aplicația **verifică și restricția pe categorie de activ**: refuză metoda accelerată pentru construcții sau pentru mijloace fixe din afara subgrupei 2.1, respectând explicit art. 28 alin. (5) din Codul fiscal.
 
 [iConta.eu](/)

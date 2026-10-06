@@ -14,7 +14,7 @@ Secțiunea „Active" din SAF-T se raportează o singură dată pe an, la nivelu
 
 ::: ghid-temei
 „Informațiile privind «Activele» din cadrul Declarației informative D406 sunt întocmite la nivelul anului financiar aplicat de către contribuabili și transmise printr-o singură depunere, respectiv o singură raportare a Declarației informative D406, până la data depunerii situațiilor financiare aferente exercițiului financiar la care se referă. Declarația informativă D406 pentru «Active» se poate transmite ca o declarație independentă, nefiind necesară introducerea tuturor secțiunilor/subsecțiunilor dintr-o Declarație informativă D406, ci doar a zonelor indicate ca fiind obligatorii pentru transmiterea acestui tip de informație."
-— OPANAF nr. 1.783/2021, Anexa 5, pct. 7-8 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5, pct. 7-8 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce rezultă pentru situația unei vânzări de mijloc fix:
@@ -32,6 +32,6 @@ Ce rezultă pentru situația unei vânzări de mijloc fix:
 
 ## Ce face iConta.eu
 
-Generatorul de secțiune Active din SAF-T (`core/d406_active.py`, funcțiile `xml_asset`/`xml_d406_anual_active`) construiește raportarea anuală pentru fiecare mijloc fix, inclusiv amortizarea calculată până la data de referință, pe baza datelor introduse în modulul de mijloace fixe. Vânzarea propriu-zisă a activului (emiterea facturii, calculul rezultatului din cesiune) se înregistrează separat, în modulul de facturare al aplicației, și se reflectă în secțiunile curente ale D406, nu în raportarea anuală de Active.
+Generatorul de secțiune Active din SAF-T (funcțiile `xml_asset`/`xml_d406_anual_active`) construiește raportarea anuală pentru fiecare mijloc fix, inclusiv amortizarea calculată până la data de referință, pe baza datelor introduse în modulul de mijloace fixe. Vânzarea propriu-zisă a activului (emiterea facturii, calculul rezultatului din cesiune) se înregistrează separat, în modulul de facturare al aplicației, și se reflectă în secțiunile curente ale D406, nu în raportarea anuală de Active.
 
 [iConta.eu](/)

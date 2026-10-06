@@ -14,7 +14,7 @@ Regula de calcul rămâne aceeași ca în anii anteriori — cota de 10% aplicat
 
 ::: ghid-temei
 „Persoanele fizice care în anul fiscal pentru care se depune declarația [...] au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut sau normei anuale de venit, respectiv a normei anuale de venit ajustate, după caz [...] care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."
-— Codul fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025 art. XII pct. 19, aplicabil veniturilor din 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 170 alin. (1), astfel cum a fost modificat de Legea 239/2025 art. XII pct. 19, aplicabil veniturilor din 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii de calcul pentru veniturile 2026:
@@ -32,7 +32,7 @@ Pașii de calcul pentru veniturile 2026:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` implementează exact această distincție pentru anul de venit 2026: funcția `plafoane_an(2026)` ridică pragul maxim la 72 de salarii minime brute, citind Legea 239/2025 art. XII pct. 19, verificată la sursă, în timp ce reperul de salariu minim rămâne fix la valoarea de la 1 ianuarie 2026 (4.050 lei, conform HG 1506/2024), indiferent de majorarea ulterioară din iulie 2026. Calculul liniar al CASS (`calculeaza_cass`) e disponibil prin `fisa_d212` (`core/rip_api.py`), pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți.
+Aplicația implementează exact această distincție pentru anul de venit 2026: funcția `plafoane_an(2026)` ridică pragul maxim la 72 de salarii minime brute, citind Legea 239/2025 art. XII pct. 19, verificată la sursă, în timp ce reperul de salariu minim rămâne fix la valoarea de la 1 ianuarie 2026 (4.050 lei, conform HG 1506/2024), indiferent de majorarea ulterioară din iulie 2026. Calculul liniar al CASS (`calculeaza_cass`) e disponibil prin `fisa_d212`, pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți.
 
 Aplicația refuză explicit calculul pentru orice an fiscal în afara celor verificate la sursă (2025, 2026) — un an neverificat ar produce o fișă plauzibilă, dar pe praguri neconfirmate.
 

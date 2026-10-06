@@ -14,10 +14,10 @@ poarta: v1
 
 ::: ghid-temei
 „214. ‐ (1) Înregistrarea în contabilitate a amortizării bunului ce face obiectul contractului se efectuează în cazul leasingului financiar de către locatar/utilizator, iar în cazul leasingului operațional, de către locator/finanțator. [...] (3) În cazul leasingului operațional, bunurile sunt supuse amortizării de către locator, pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale acestuia."
-— OMFP 1802/2014, pct. 214 alin. (1) și (3) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 214 alin. (1) și (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
 „218. ‐ (1) În contabilitatea locatarului, bunurile luate în leasing operațional sunt evidențiate în conturi de evidență din afara bilanțului."
-— OMFP 1802/2014, pct. 218 alin. (1) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 218 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - La locatar, bunul luat în leasing operațional nu intră niciodată în conturile de imobilizări — e evidențiat doar **extrabilanțier**, informativ.

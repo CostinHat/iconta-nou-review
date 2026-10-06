@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „96. - (1) Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; ... b) metoda primul intrat-primul ieșit - FIFO; ... c) metoda ultimul intrat-primul ieșit - LIFO."
-— OMFP 1802/2014, pct. 96 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Legea prezintă cele trei metode ca alternative valabile, fără nicio ierarhie sau recomandare între ele — formularea „uneia din următoarele metode" nu privilegiază niciuna.
@@ -30,6 +30,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Această întrebare este, în esență, una de recomandare contabilă generală, nu o instrucțiune despre o funcție din aplicație — iConta.eu **nu oferă FIFO ca opțiune** pentru evaluarea stocurilor. Pentru gestiunea cantitativ-valorică, aplicația implementează exclusiv metoda CMP (`core/stocuri_cv.py`); pentru comerțul cu amănuntul există separat metoda global-valorică (prețul cu amănuntul, cu adaos comercial), complet diferită de FIFO sau CMP. Prin urmare, un utilizator care se întreabă „ce metodă aleg în iConta" nu are de fapt de ales între FIFO și CMP în aplicație — singura opțiune reală pentru evidența pe articol este CMP.
+Această întrebare este, în esență, una de recomandare contabilă generală, nu o instrucțiune despre o funcție din aplicație — iConta.eu **nu oferă FIFO ca opțiune** pentru evaluarea stocurilor. Pentru gestiunea cantitativ-valorică, aplicația implementează exclusiv metoda CMP; pentru comerțul cu amănuntul există separat metoda global-valorică (prețul cu amănuntul, cu adaos comercial), complet diferită de FIFO sau CMP. Prin urmare, un utilizator care se întreabă „ce metodă aleg în iConta" nu are de fapt de ales între FIFO și CMP în aplicație — singura opțiune reală pentru evidența pe articol este CMP.
 
 [iConta.eu](/)

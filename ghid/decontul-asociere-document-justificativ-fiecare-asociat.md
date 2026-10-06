@@ -16,12 +16,12 @@ Asta rezolvă o problemă practică: facturile furnizorilor și cele către clie
 
 ::: ghid-temei
 „furnizarea de informații în scris, pe bază de decont de asociere, către fiecare asociat/participant, persoană juridică sau fizică, cu privire la partea din veniturile și/sau cheltuielile realizate/efectuate care îi sunt repartizate în baza contractului de asociere; decontul de asociere pe baza căruia se repartizează veniturile/cheltuielile reprezintă document justificativ la nivel de asociat/participant;"
-— Codul fiscal (Legea 227/2015), art. 233 alin. (2) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 233 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ."
-— Legea contabilității (Legea 82/1991), art. 6 alin. (1) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității (Legea 82/1991), art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Ce trebuie să conțină și cum se folosește decontul:

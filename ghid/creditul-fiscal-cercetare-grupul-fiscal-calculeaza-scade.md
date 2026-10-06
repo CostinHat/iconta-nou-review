@@ -16,15 +16,15 @@ Practic, cheltuielile eligibile și calculul rămân la firma care face cercetar
 
 ::: ghid-temei
 „membrul grupului fiscal care optează pentru aplicarea prevederilor prezentului articol determină și comunică persoanei juridice responsabile valoarea reprezentând creditul fiscal pentru cheltuielile de cercetare-dezvoltare, în funcție de situația individuală"
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (10) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (10) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „persoana juridică responsabilă însumează valorile reprezentând creditul fiscal pentru cheltuielile de cercetare-dezvoltare transmise de membrii grupului fiscal și aplică, în mod corespunzător, prevederile alin. (3)-(7) ."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (10) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (10) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul grupului fiscal, impozitul minim pe cifra de afaceri anual reprezintă impozitul minim pe cifra de afaceri anual rezultat după scăderea sumelor reprezentând creditul fiscal extern, sponsorizare/ mecenat, precum și a valorii rezultate prin aplicarea cotei de 16% asupra deducerii suplimentare pentru cercetare-dezvoltare, după caz, dacă un membru al grupului a optat pentru aplicarea prevederilor art. 18^1 alin. (11^1) ."
-— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) lit. b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 20^1 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cine ce face:

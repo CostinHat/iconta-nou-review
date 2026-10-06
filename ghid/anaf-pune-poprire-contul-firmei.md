@@ -17,7 +17,7 @@ Poprirea e forma de executare silită prin care ANAF indisponibilizează, direct
 (1) Sunt supuse executării silite prin poprire orice sume urmăribile reprezentând venituri și disponibilități bănești în lei și în valută, titluri de valoare sau alte bunuri mobile necorporale, deținute și/sau datorate, cu orice titlu, debitorului de către terțe persoane sau pe care aceștia le vor datora și/sau deține în viitor în temeiul unor raporturi juridice existente. [...]
 (6) Poprirea nu este supusă validării. [...]
 (8) Poprirea se consideră înființată din momentul primirii adresei de înființare de către terțul poprit."
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (1), (6), (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (1), (6), (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie știut despre mecanismul popririi asupra contului firmei:

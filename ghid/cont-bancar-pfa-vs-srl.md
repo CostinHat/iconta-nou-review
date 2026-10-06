@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 „(1) Societățile comerciale, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare, societățile cooperatiste și celelalte persoane juridice au obligația să organizeze și să conducă contabilitatea financiară, potrivit prezentei legi. [...]
 (5) Persoanele fizice care desfășoară activități producătoare de venit, definite de Codul fiscal, și ale căror venituri sunt determinate în sistem real au obligația să conducă evidența contabilă pe baza regulilor contabilității în partidă simplă sau, la opțiunea acestora, pe baza regulilor contabilității în partidă dublă, potrivit reglementărilor contabile emise în acest sens, cu excepția situației în care în legislația fiscală se prevede altfel."
-— Legea contabilității nr. 82/1991, art. 1 alin. (1) și alin. (5) (sursă: anaf_surse/legea_82_1991_consolidat.txt)
+— Legea contabilității nr. 82/1991, art. 1 alin. (1) și alin. (5) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 - **SRL-ul are personalitate juridică proprie, distinctă de asociați**, cu patrimoniu separat și contabilitate în partidă dublă obligatorie — orice mișcare de bani a firmei trebuie să treacă prin conturile ei, nu prin conturile personale ale asociaților.
@@ -30,6 +30,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Modulele de bancă ale iConta.eu (`core/banca.py`, `core/banca_parser.py`) tratează la fel din punct de vedere tehnic orice cont bancar adăugat, indiferent dacă utilizatorul e SRL sau PFA — aplicația nu impune și nu verifică dacă titularul folosește un cont dedicat exclusiv activității economice; separarea rămâne o decizie și o disciplină a utilizatorului.
+Modulele de bancă ale iConta.eu tratează la fel din punct de vedere tehnic orice cont bancar adăugat, indiferent dacă utilizatorul e SRL sau PFA — aplicația nu impune și nu verifică dacă titularul folosește un cont dedicat exclusiv activității economice; separarea rămâne o decizie și o disciplină a utilizatorului.
 
 [iConta.eu](/)

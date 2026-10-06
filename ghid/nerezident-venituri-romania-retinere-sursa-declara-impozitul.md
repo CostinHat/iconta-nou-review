@@ -16,12 +16,12 @@ Situația tipică e persoana care locuiește în alt stat și închiriază un ap
 
 ::: ghid-temei
 „Cu excepția plății impozitului pe venit prin reținere la sursă, contribuabilii persoane fizice nerezidente, care realizează venituri din România, potrivit prezentului titlu, au obligația să declare și să plătească impozitul corespunzător fiecărei surse de venit."
-— Codul fiscal (Legea 227/2015), art. 129 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 129 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Veniturile supuse impunerii, din categoriile prevăzute la alin. (1) , se determină pe fiecare sursă, potrivit regulilor specifice fiecărei categorii de venit, impozitul fiind final."
-— Codul fiscal (Legea 227/2015), art. 129 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 129 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se citește regula:

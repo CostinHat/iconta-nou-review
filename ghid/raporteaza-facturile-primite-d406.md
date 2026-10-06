@@ -24,7 +24,7 @@ Greșeala tipică este preluarea facturilor primite direct din nota contabilă d
 
 ## Ce face iConta.eu
 
-Conform docstring-ului generatorului (`core/d406.py`, actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Pentru facturile primite, aceasta înseamnă preluarea liniilor reale ale facturii (cantitate, unitate de măsură, preț, descriere, cotă), reconciliate automat cu antetul, cu verificare structurală prin validatorul DUK.
+Conform docstring-ului generatorului (actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Pentru facturile primite, aceasta înseamnă preluarea liniilor reale ale facturii (cantitate, unitate de măsură, preț, descriere, cotă), reconciliate automat cu antetul, cu verificare structurală prin validatorul DUK.
 
 Cotele de TVA de pe liniile facturilor primite urmează aceeași logică period-aware descrisă pentru livrări: codurile TaxCode se aplică în funcție de data facturii, ținând cont de schimbarea introdusă de Legea 141/2025 de la 1 august 2025.
 

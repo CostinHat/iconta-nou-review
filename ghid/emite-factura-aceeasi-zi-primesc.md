@@ -14,7 +14,7 @@ Da. Din momentul înmatriculării în registrul comerțului, firma are personali
 
 ::: ghid-temei
 „Societatea este persoană juridică de la data înmatriculării în registrul comerțului."
-— Legea 31/1990 privind societățile, art. 41 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 41 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Personalitatea juridică — și, odată cu ea, capacitatea de a încheia acte comerciale, inclusiv de a emite facturi — se dobândește chiar la data înmatriculării, nu la o dată ulterioară.
@@ -30,6 +30,6 @@ Da. Din momentul înmatriculării în registrul comerțului, firma are personali
 
 ## Ce face iConta.eu
 
-Validarea CUI la ANAF din iConta.eu interoghează serviciul oficial ANAF pentru un CUI dat și întoarce, printre altele, statutul de plătitor de TVA al firmei — funcția e folosită la verificarea partenerilor. Verificarea automată a codului de TVA în VIES nu are loc la emiterea oricărei facturi către un partener cu cod de prefix non-românesc: ea rulează doar în fluxul dedicat de „Vânzare intracomunitară" (`core/uc_tenants.py::vanzare_ic`), unde codul de TVA al clientului, tipul operațiunii (bunuri/servicii) și dovada transportului se introduc explicit, iar `core/intracomunitar.py::verifica_vies` interoghează serviciul oficial VIES înainte de a genera factura. Fluxul obișnuit de emitere a unei facturi (`core/facturi_api.py::emite_factura`) nu conține nicio verificare VIES. Emiterea propriu-zisă a facturii nu e condiționată în aplicație de vreo perioadă de așteptare de la înființarea firmei — odată introdusă firma și datele ei (inclusiv statutul de plătitor/neplătitor de TVA), iConta permite emiterea de facturi din prima zi, cu sau fără TVA, conform statutului fiscal real al firmei la acel moment.
+Validarea CUI la ANAF din iConta.eu interoghează serviciul oficial ANAF pentru un CUI dat și întoarce, printre altele, statutul de plătitor de TVA al firmei — funcția e folosită la verificarea partenerilor. Verificarea automată a codului de TVA în VIES nu are loc la emiterea oricărei facturi către un partener cu cod de prefix non-românesc: ea rulează doar în fluxul dedicat de „Vânzare intracomunitară", unde codul de TVA al clientului, tipul operațiunii (bunuri/servicii) și dovada transportului se introduc explicit, iar aplicația interoghează serviciul oficial VIES înainte de a genera factura. Fluxul obișnuit de emitere a unei facturi nu conține nicio verificare VIES. Emiterea propriu-zisă a facturii nu e condiționată în aplicație de vreo perioadă de așteptare de la înființarea firmei — odată introdusă firma și datele ei (inclusiv statutul de plătitor/neplătitor de TVA), iConta permite emiterea de facturi din prima zi, cu sau fără TVA, conform statutului fiscal real al firmei la acel moment.
 
 [iConta.eu](/)

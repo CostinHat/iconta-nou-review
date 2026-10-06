@@ -15,7 +15,7 @@ Statutul de microîntreprindere schimbă modul în care se calculează impozitul
 ::: ghid-temei
 „(1) Operatorii economici care încasează, integral sau parțial, cu numerar sau prin utilizarea cardurilor de credit/debit sau a substitutelor de numerar contravaloarea bunurilor livrate cu amănuntul, precum și a prestărilor de servicii efectuate direct către populație sunt obligați să utilizeze aparate de marcat electronice fiscale.
 (2) [...] au obligația să emită bonuri fiscale cu aparate de marcat electronice fiscale și să le înmâneze clienților. La solicitarea clienților, utilizatorii vor elibera acestora și factură."
-— OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 1 alin. (1)-(2) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, art. 1 alin. (1)-(2) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Ce rezultă pentru o firmă micro cu vânzări cash:

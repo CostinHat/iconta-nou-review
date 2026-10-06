@@ -16,21 +16,21 @@ Baza se împarte după cotele de proprietate. Fiecare coproprietar datorează im
 
 ::: ghid-temei
 „(4^1) În cazul transferului unei proprietăți imobiliare deținute în coproprietate, baza de calcul a impozitului pentru fiecare proprietar o reprezintă partea din valoarea totală a tranzacției sau valoarea stabilită prin studiul de piață, după caz, corespunzătoare cotei de deținere. În situația în care cotele de deținere nu sunt precizate, se prezumă că fiecare coproprietar deține o cotă egală cu a celorlalți."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4^1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4^1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(4^2) În cazul transferului unei proprietăți imobiliare deținute în devălmășie, baza de calcul a impozitului ce revine coproprietarilor devălmași se atribuie fiecăruia în cote egale din valoarea totală a tranzacției sau valoarea stabilită prin studiul de piață, după caz."
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4^2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (4^2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „(xii) în cazul înstrăinării unor proprietăți imobiliare deținute de doi sau mai mulți proprietari, fiecare dobândind dreptul de proprietate în cote diferite, la date diferite, data dobândirii este cea corespunzătoare dobândirii fiecărei cote-părți de fiecare dintre proprietari;"
-— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. h) pct. (xii) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul IV, pct. 33 alin. (1) lit. h) pct. (xii) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Impozitul prevăzut la alin. (1)"
-— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „se calculează la valoarea declarată de părți în actul prin care se transferă dreptul de proprietate, dezmembrămintele sale sau nuda proprietate."
-— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 111 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii de calcul:

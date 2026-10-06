@@ -18,7 +18,7 @@ O plată dublă către bugetul de stat — aceeași obligație fiscală achitat�
 (2) în situația în care s-a făcut o plată fără a fi datorată, cel pentru care s-a făcut astfel plata are dreptul la restituirea sumei respective.
 [...]
 (8) în cazul în care contribuabilul/plătitorul înregistrează obligații restante, restituirea/rambursarea se efectuează numai după efectuarea compensării potrivit prezentului cod."
-— Legea 207/2015, art. 168 alin. (1), (2) și (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 168 alin. (1), (2) și (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text pentru o plată duplicată:

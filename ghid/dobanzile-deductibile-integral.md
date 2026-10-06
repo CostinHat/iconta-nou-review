@@ -15,7 +15,7 @@ Regula generală din Codul fiscal nu este „dobânda e deductibilă dacă e leg
 ::: ghid-temei
 „Contribuabilul are dreptul de a deduce, într-o perioadă fiscală, costurile excedentare ale îndatorării până la plafonul deductibil reprezentat de echivalentul în lei al sumei de 1.000.000 euro. [...]
 (5) Prin excepție de la alin. (1) și (4), în cazul în care contribuabilul este o entitate independentă, în sensul că nu face parte dintr-un grup consolidat în scopuri de contabilitate financiară, și nu are nicio întreprindere asociată și niciun sediu permanent, acesta deduce integral costurile excedentare ale îndatorării, în perioada fiscală în care acestea sunt suportate."
-— Legea nr. 227/2015 (Codul fiscal), art. 40^2 alin. (4) și (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 40^2 alin. (4) și (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă două căi spre deductibilitate integrală:
@@ -32,6 +32,6 @@ Din text rezultă două căi spre deductibilitate integrală:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe profit din datele contabile introduse (`core/d101.py`, `core/d100.py`), dar **nu automatizează testul de la art. 40^2** — nici verificarea plafonului de 1.000.000 euro, nici încadrarea firmei ca „entitate independentă", nici calculul bazei de 30% EBITDA fiscal. Ajustarea fiscală pentru costurile excedentare ale îndatorării rămâne o evaluare pe care contabilul o face manual și o introduce ca atare în calculul rezultatului fiscal.
+La data acestui ghid, iConta.eu calculează impozitul pe profit din datele contabile introduse, dar **nu automatizează testul de la art. 40^2** — nici verificarea plafonului de 1.000.000 euro, nici încadrarea firmei ca „entitate independentă", nici calculul bazei de 30% EBITDA fiscal. Ajustarea fiscală pentru costurile excedentare ale îndatorării rămâne o evaluare pe care contabilul o face manual și o introduce ca atare în calculul rezultatului fiscal.
 
 [iConta.eu](/)

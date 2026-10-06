@@ -14,7 +14,7 @@ Nu orice diferență de stoc constatată la inventar e „pierdere tehnologică"
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii; [...] e) pierderile tehnologice care sunt cuprinse în norma de consum proprie necesară pentru fabricarea unui produs sau prestarea unui serviciu;"
-— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. d) și e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 25 alin. (3) lit. d) și e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Legea desparte clar două categorii, cu regim diferit:
@@ -26,7 +26,7 @@ Legea desparte clar două categorii, cu regim diferit:
 
 ::: ghid-temei
 „Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre."
-— HG 831/2004, art. 1 (sursă: anaf_surse/hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.txt)
+— HG 831/2004, art. 1 (sursă: [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623))
 :::
 
 Anexa la HG 831/2004 stabilește procente maxime de perisabilitate pe categorii de mărfuri (alimentare, nealimentare, la transport, la depozitare, la desfacere cu amănuntul). Diferența constatată la inventar se compară cu limita din anexă, aplicată la cantitatea/valoarea vândută sau manipulată în perioada respectivă — nu la stocul total. Ce depășește limita legală nu mai e „perisabilitate", ci lipsă în gestiune.

@@ -14,7 +14,7 @@ Comisioanele reținute de o platformă de comerț online (procesare plăți, abo
 
 ::: ghid-temei
 „Contul 622 «Cheltuieli privind comisioanele și onorariile» Cu ajutorul acestui cont se ține evidența cheltuielilor reprezentând comisioanele datorate pentru cumpărarea sau vânzarea titlurilor de valoare imobilizate sau a celor de plasament, comisioanele de intermediere, onorariile de consiliere, contencios, expertizare, precum și a altor cheltuieli similare."
-— OMFP 1802/2014, funcțiunea conturilor, grupa 62 „Cheltuieli cu alte servicii executate de terți" (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, funcțiunea conturilor, grupa 62 „Cheltuieli cu alte servicii executate de terți" (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce presupune, concret, înregistrarea corectă:
@@ -31,6 +31,6 @@ Ce presupune, concret, înregistrarea corectă:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are o integrare dedicată cu Shopify sau cu alte platforme de comerț online — nu importă automat extrasele de tranzacții sau comisioanele reținute. Aplicația oferă însă evidența contabilă generală pentru astfel de facturi: modulul de contare a facturilor (`core/contare_facturi.py`) generează notele contabile pentru facturile de achiziție introduse manual, iar modulul de operațiuni intracomunitare (`core/intracomunitar.py`) tratează corect TVA pentru serviciile primite de la furnizori din afara României — cu taxare inversă 4426=4427 pentru firmele plătitoare de TVA cu drept de deducere, respectiv TVA nedeductibilă (intrată în costul achiziției) pentru firmele înregistrate doar conform art. 317. (Modulul `core/taxare_inversa.py` e altceva: taxare inversă internă, art. 331 Cod fiscal, pentru categorii specifice de bunuri — deșeuri, cereale, energie electrică, telefoane/console sub prag etc. — nu pentru servicii de la furnizori din afara României.) Introducerea facturii/extrasului de comision de la Shopify rămâne, la acest moment, un pas manual al contabilului.
+iConta.eu nu are o integrare dedicată cu Shopify sau cu alte platforme de comerț online — nu importă automat extrasele de tranzacții sau comisioanele reținute. Aplicația oferă însă evidența contabilă generală pentru astfel de facturi: modulul de contare a facturilor generează notele contabile pentru facturile de achiziție introduse manual, iar modulul de operațiuni intracomunitare tratează corect TVA pentru serviciile primite de la furnizori din afara României — cu taxare inversă 4426=4427 pentru firmele plătitoare de TVA cu drept de deducere, respectiv TVA nedeductibilă (intrată în costul achiziției) pentru firmele înregistrate doar conform art. 317. (aplicația e altceva: taxare inversă internă, art. 331 Cod fiscal, pentru categorii specifice de bunuri — deșeuri, cereale, energie electrică, telefoane/console sub prag etc. — nu pentru servicii de la furnizori din afara României.) Introducerea facturii/extrasului de comision de la Shopify rămâne, la acest moment, un pas manual al contabilului.
 
 [iConta.eu](/)

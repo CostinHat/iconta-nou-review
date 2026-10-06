@@ -37,6 +37,6 @@ Un PFA radiat în luna aprilie 2025 a realizat un venit net de 55.000 lei până
 
 ## Ce face iConta.eu
 
-Motorul (`core/rip_api.py: fisa_d212`) însumează toate încasările validate cu categoria "activitate" din anul fiscal respectiv, indiferent de data exactă din lună — nu face distincție specială pentru operațiuni din perioada de dinaintea radierii. Calculul CAS și CASS (`core/d212_engine.py`) folosește pragurile anuale întregi (12/24 salarii minime pentru CAS, 6/60 sau 6/72 pentru CASS), fără nicio proratare la numărul de luni funcționate — ceea ce e conform art. 151 alin. (2)-(3), pentru că excepția de proratare se aplică doar persoanelor care devin exceptate de la CAS, nu simplei încetări de activitate.
+Motorul însumează toate încasările validate cu categoria "activitate" din anul fiscal respectiv, indiferent de data exactă din lună — nu face distincție specială pentru operațiuni din perioada de dinaintea radierii. Calculul CAS și CASS folosește pragurile anuale întregi (12/24 salarii minime pentru CAS, 6/60 sau 6/72 pentru CASS), fără nicio proratare la numărul de luni funcționate — ceea ce e conform art. 151 alin. (2)-(3), pentru că excepția de proratare se aplică doar persoanelor care devin exceptate de la CAS, nu simplei încetări de activitate.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ La înființare, un PFA care desfășoară activități pentru care există norm
 
 ::: ghid-temei
 „Contribuabilii care obțin venituri din activități independente, impuși pe bază de norme de venit, au dreptul să opteze pentru determinarea venitului net în sistem real, potrivit art. 68. [...] Opțiunea [...] este obligatorie pentru contribuabil pe o perioadă de 2 ani fiscali consecutivi și se consideră reînnoită pentru o nouă perioadă dacă contribuabilul nu solicită revenirea la sistemul anterior."
-— Legea nr. 227/2015 (Codul fiscal), art. 69^1 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 69^1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce trebuie știut la alegerea regimului:

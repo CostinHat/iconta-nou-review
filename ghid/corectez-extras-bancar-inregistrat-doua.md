@@ -14,7 +14,7 @@ Când același extras — sau aceeași linie dintr-un extras — ajunge înregis
 
 ::: ghid-temei
 „În cazul operațiunilor contabile pentru care nu se întocmesc documente justificative, înregistrările în contabilitate se fac pe bază de note de contabilitate care au la bază note justificative sau note de calcul, după caz. În cazul stornărilor, pe documentul inițial se menționează numărul și data notei de contabilitate prin care s-a efectuat stornarea operațiunii, iar în nota de contabilitate de stornare se menționează documentul, data și numărul de ordine ale operațiunii care face obiectul stornării."
-— OMFP nr. 2.634/2015, Norme generale, pct. 20 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP nr. 2.634/2015, Norme generale, pct. 20 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Practic, corectarea unei înregistrări duble cere:

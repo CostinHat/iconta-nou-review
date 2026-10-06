@@ -16,15 +16,15 @@ Declarația pare o formalitate de închidere, dar se dă „sub sancțiunea fapt
 
 ::: ghid-temei
 „La finalizarea inspecției fiscale, contribuabilul/plătitorul este obligat să dea o declarație scrisă, pe propria răspundere, din care să rezulte că au fost puse la dispoziție toate documentele și informațiile solicitate pentru inspecția fiscală. în declarație se menționează și faptul că au fost restituite toate documentele solicitate și puse la dispoziție de contribuabil/plătitor."
-— Codul de procedură fiscală (Legea 207/2015), art. 118 alin. (7) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 118 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „1. - am pus la dispoziția organelor de inspecție fiscală toate documentele și informațiile solicitate pentru desfășurarea inspecției fiscale și răspund de exactitatea, realitatea și legalitatea acestora; ... 2. - documentele puse la dispoziția organelor de inspecție fiscală au fost restituite în totalitate la finalizarea inspecției fiscale, cu excepția celor pentru care s-a întocmit proces-verbal de ridicare de înscrisuri. ... 3. Alte aspecte de declarat:"
-— OPANAF 3711/2015, Anexa nr. 8.a (sursă: anaf_surse/ordin_3711_2015.html)
+— OPANAF 3711/2015, Anexa nr. 8.a (sursă: [OPANAF nr. 3711/2015 privind formularele utilizate în activitatea de inspecție fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174332))
 
 „Persoana care dă această declarație poate accepta sau nu elementele din declarație care sunt prevăzute la pct. 1-2. La pct. 3 poate declara orice alte aspecte în legătură cu obiectul inspecției fiscale."
-— OPANAF 3711/2015, Anexa nr. 8.b (sursă: anaf_surse/ordin_3711_2015.html)
+— OPANAF 3711/2015, Anexa nr. 8.b (sursă: [OPANAF nr. 3711/2015 privind formularele utilizate în activitatea de inspecție fiscală](https://legislatie.just.ro/Public/DetaliiDocument/174332))
 :::
 
 Ce înseamnă fiecare punct:

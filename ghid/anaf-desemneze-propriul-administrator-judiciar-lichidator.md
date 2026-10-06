@@ -16,13 +16,13 @@ Pentru firma intrată în insolvență cu datorii mari la buget, pragul conteaz�
 
 ::: ghid-temei
 „în situația în care organul fiscal central deține cel puțin 50% din valoarea totală a creanțelor, A.N.A.F. poate decide desemnarea unui administrator judiciar/lichidator, stabilindu-i și remunerația. Confirmarea administratorului judiciar/lichidatorului desemnat de A.N.A.F. de către judecătorul-sindic se efectuează, conform art. 45 alin. (1) lit. e) din Legea nr. 85/2014."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (8) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în dosarele în care organul fiscal deține cel puțin 50% din valoarea totală a creanțelor, acesta are dreptul să verifice activitatea administratorului judiciar/lichidatorului și să îi solicite prezentarea documentelor referitoare la activitatea desfășurată și onorariile încasate."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (9) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în vederea recuperării creanțelor fiscale de la debitorii care se află în stare de insolvență potrivit Legii nr. 85/2014, organul fiscal solicită înscrierea la masa credală a impozitelor, taxelor, contribuțiilor sociale existente în evidența creanțelor fiscale la data declarării insolvenței."
-— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 265 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut:

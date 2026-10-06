@@ -15,7 +15,7 @@ O plată salarială peste suma corect calculată (eroare de calcul, dublă plat�
 ::: ghid-temei
 „Articolul 164 (1) Nicio reținere din salariu nu poate fi operată, în afara cazurilor și condițiilor prevăzute de lege.
 (2) Reținerile cu titlu de daune cauzate angajatorului nu pot fi efectuate decât dacă datoria salariatului este scadentă, lichidă și exigibilă și a fost constatată ca atare printr-o hotărâre judecătorească definitivă și irevocabilă."
-— Legea 53/2003 (Codul muncii), art. 164 alin. (1) și (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Legea 53/2003 (Codul muncii), art. 164 alin. (1) și (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Ce înseamnă practic, pentru o sumă plătită în plus din eroare:

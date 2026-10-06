@@ -13,7 +13,7 @@ Da. Locul prestării unui serviciu B2B intracomunitar (la sediul beneficiarului,
 ## Temeiul legal
 
 ::: ghid-temei
-„Nicio ramură de cod specifică regimului micro pentru operațiuni intracomunitare, în afara câmpurilor generice `operatiuni_ic`/`inreg_art317` din vectorul fiscal (…), care se aplică indiferent de regimul de impozitare (micro/profit).” — dosar F050, secțiunea „Microîntreprindere + IC” (cod sursă: `date_firma.js`, `core/control_fiscal_api.py`, confirmat și de `core/test_perimetru_firma_declarat.py`, care descrie un tenant de test „neplătitor micro cu achiziții intracomunitare”).
+„Nicio ramură de cod specifică regimului micro pentru operațiuni intracomunitare, în afara câmpurilor generice `operatiuni_ic`/`inreg_art317` din vectorul fiscal (…), care se aplică indiferent de regimul de impozitare (micro/profit).” — dosar F050, secțiunea „Microîntreprindere + IC” (cod sursă: `date_firma.js`, aplicația, confirmat și de aplicația, care descrie un tenant de test „neplătitor micro cu achiziții intracomunitare”).
 :::
 
 Ce confirmă acest citat e faptul că, la nivel de aplicație, obligațiile legate de operațiunile intracomunitare (D390, verificarea VIES) nu depind de regimul de impozitare al firmei — se aplică la fel unei microîntreprinderi ca unei firme plătitoare de impozit pe profit. Regimul micro și existența operațiunilor intracomunitare sunt două perimetre independente.

@@ -16,15 +16,15 @@ Pentru cabinet, asta înseamnă că un accident de muncă poate genera, pe lâng
 
 ::: ghid-temei
 „Angajatorii răspund patrimonial, potrivit legii civile, pentru prejudiciile cauzate victimelor accidentelor de muncă sau bolilor profesionale, în măsura în care daunele nu sunt acoperite integral prin prestațiile asigurărilor sociale de stat."
-— Legea 319/2006, art. 44 (sursă: anaf_surse/legea_319_2006_consolidat.txt)
+— Legea 319/2006, art. 44 (sursă: [Legea nr. 319/2006 a securității și sănătății în muncă](https://legislatie.just.ro/Public/DetaliiDocument/73772))
 
 „(2) În situația în care se face dovada unor prejudicii care nu sunt acoperite prin prevederile prezentei legi, în mod subsidiar și complementar, intră în funcțiune răspunderea civilă, potrivit dreptului comun."
-— Legea 346/2002, art. 4 alin. (2) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 4 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „Indemnizația pentru incapacitate temporară de muncă în cazul accidentului de muncă sau al bolii profesionale se suportă în primele 3 zile de incapacitate de către angajator, iar din a 4-a zi de incapacitate, din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale"
-— Legea 346/2002, art. 34 (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 34 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Plata unei obligații fiscale se face către un cont unic de Trezorerie, iar con
 
 ::: ghid-temei
 „(2) În cazul creanțelor fiscale administrate de organul fiscal central și organul fiscal local, debitorii efectuează plata acestora într-un cont unic, prin utilizarea unui ordin de plată pentru Trezoreria Statului pentru obligațiile fiscale datorate."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 163 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 163 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Toate obligațiile fiscale administrate central se plătesc într-un **cont unic** de Trezorerie, pe bază de ordin de plată — nu în conturi separate pe fiecare tip de impozit.
@@ -30,6 +30,6 @@ Plata unei obligații fiscale se face către un cont unic de Trezorerie, iar con
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are, separat, un conector SPV (`core/spv_conector.py`, `core/spv_receive.py`, `core/spv_poll.py`) care autentifică firma la ANAF și descarcă mesajele/recipisele din SPV, și un modul de reconciliere bancară (`core/reconciliere.py`) care potrivește liniile din extrasul de cont cu facturile deschise ale partenerilor. Nu am găsit însă în cod o funcție care să lege direct cele două fluxuri — adică să confrunte automat o plată din extrasul bancar cu o obligație fiscală afișată în SPV și să confirme corespondența. Această verificare rămâne, la acest moment, manuală, între extrasul de cont și fișa pe plătitor din SPV.
+La data acestui ghid, iConta.eu are, separat, un conector SPV care autentifică firma la ANAF și descarcă mesajele/recipisele din SPV, și un modul de reconciliere bancară care potrivește liniile din extrasul de cont cu facturile deschise ale partenerilor. Nu am găsit însă în cod o funcție care să lege direct cele două fluxuri — adică să confrunte automat o plată din extrasul bancar cu o obligație fiscală afișată în SPV și să confirme corespondența. Această verificare rămâne, la acest moment, manuală, între extrasul de cont și fișa pe plătitor din SPV.
 
 [iConta.eu](/)

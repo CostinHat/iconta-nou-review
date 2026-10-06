@@ -16,15 +16,15 @@ Contează pentru că, din acel moment, se schimbă interlocutorul pentru cereri,
 
 ::: ghid-temei
 „(4) Organul fiscal central competent notifică contribuabilul ori de câte ori intervin modificări cu privire la calitatea de contribuabil mare sau, după caz, contribuabil mijlociu."
-— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „(3) în scopul administrării de către organul fiscal central a obligațiilor fiscale datorate de contribuabilii mari și mijlocii, inclusiv de sediile secundare ale acestora, prin ordin al președintelui A.N.A.F. se poate stabili competența de administrare în sarcina altor organe fiscale decât cele prevăzute la alin. (1), precum și criteriile de selecție și listele contribuabililor care dobândesc calitatea de contribuabil mare sau, după caz, contribuabil mijlociu."
-— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 30 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(1) în cazul în care se schimbă domiciliul fiscal, potrivit legii, competența teritorială trece la noul organ fiscal central de la data schimbării domiciliului fiscal. (2) Prevederile alin. (1) se aplică în mod corespunzător și contribuabililor mari și mijlocii, definiți potrivit legii, în cazul în care se modifică această calitate. (3) în situația în care se află în curs de derulare o procedură de administrare, cu excepția procedurii de executare silită, organul fiscal central care a început procedura este competent să o finalizeze."
-— Codul de procedură fiscală (Legea 207/2015), art. 36 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 36 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce reiese din text:

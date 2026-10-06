@@ -14,7 +14,7 @@ Firma poate plăti prime de asigurare voluntară de sănătate pentru angajați 
 
 ::: ghid-temei
 „f) primele de asigurare voluntară de sănătate, precum și serviciile medicale furnizate sub formă de abonament, suportate de angajator pentru angajații proprii, astfel încât la nivelul anului să nu se depășească echivalentul în lei al sumei de 400 euro, pentru fiecare persoană."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (4^1) lit. f) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (4^1) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Mecanismul taxării:

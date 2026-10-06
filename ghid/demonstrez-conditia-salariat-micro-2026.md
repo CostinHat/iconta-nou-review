@@ -14,7 +14,7 @@ Pe lângă plafonul de venituri și structura acționariatului, o firmă trebuie
 
 ::: ghid-temei
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Condiția se verifică, la fel ca celelalte condiții de încadrare ca micro, **la 31 decembrie a anului fiscal precedent** — nu în orice moment al anului curent.
@@ -30,6 +30,6 @@ Pe lângă plafonul de venituri și structura acționariatului, o firmă trebuie
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul complet de salarizare și evidență a salariaților (`core/salariati_api.py`, `core/repo_salariati.py`) prin care se pot urmări contractele active. Nu am găsit însă o funcție care să verifice automat, la 31 decembrie, dacă firma are cel puțin un contract de muncă activ și să semnaleze riscul de ieșire din regimul micro pentru anul următor — coroborarea condiției de salariat cu regimul fiscal al firmei rămâne, la acest moment, în sarcina contabilului.
+La data acestui ghid, iConta.eu are un modul complet de salarizare și evidență a salariaților prin care se pot urmări contractele active. Nu am găsit însă o funcție care să verifice automat, la 31 decembrie, dacă firma are cel puțin un contract de muncă activ și să semnaleze riscul de ieșire din regimul micro pentru anul următor — coroborarea condiției de salariat cu regimul fiscal al firmei rămâne, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

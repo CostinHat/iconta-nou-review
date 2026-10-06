@@ -16,7 +16,7 @@ Retragerile de numerar din casieria firmei făcute de administrator (de regulă 
 „se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.
 [...]
 Articolul 11 (1) Se interzice persoanelor prevăzute la art. 1 alin. (2) să elibereze persoanelor prevăzute la art. 1 alin. (1) și art. 8 sume în numerar peste plafonul stabilit la art. 3 alin. (1) lit. c), pe fiecare persoană și tranzacție, cu excepția operațiunilor prevăzute la art. 5."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare, art. 3 alin. (1) lit. e) și art. 11 alin. (1) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare, art. 3 alin. (1) lit. e) și art. 11 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce înseamnă acest temei pentru justificarea retragerilor administratorului:
@@ -34,6 +34,6 @@ Ce înseamnă acest temei pentru justificarea retragerilor administratorului:
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/casa.py` calculează, pe baza cotei „plafon_avans_decontare" citită din nomenclatorul de cote (cu temeiul legal aferent), sumele acordate ca avans de trezorerie pe fiecare partener/persoană și generează un avertisment (`PLAFON_AVANS`) atunci când suma cumulată depășește plafonul legal; aplicația ține, de asemenea, evidența decontării avansurilor (contul 542) și a soldurilor nedecontate, dar decizia de a elibera sau nu suma peste plafon rămâne, desigur, a operatorului care introduce operațiunea de casă.
+Verificat în cod: Aplicația calculează, pe baza cotei „plafon_avans_decontare" citită din nomenclatorul de cote (cu temeiul legal aferent), sumele acordate ca avans de trezorerie pe fiecare partener/persoană și generează un avertisment (`PLAFON_AVANS`) atunci când suma cumulată depășește plafonul legal; aplicația ține, de asemenea, evidența decontării avansurilor (contul 542) și a soldurilor nedecontate, dar decizia de a elibera sau nu suma peste plafon rămâne, desigur, a operatorului care introduce operațiunea de casă.
 
 [iConta.eu](/)

@@ -16,15 +16,15 @@ Pentru firmă, diferența plătită nu se pierde, dar nici nu se recuperează au
 
 ::: ghid-temei
 „(3) Diferențele de impozit/taxă pe clădiri se vor compensa cu obligații datorate aceluiași buget sau se vor restitui în anul fiscal în care contribuabilul depune documentele justificative sau organul fiscal local constată încadrarea în situațiile menționate la art. 456 alin. (1) din Codul fiscal."
-— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IX, pct. 21 alin. (3) (norme art. 456 CF) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice de aplicare a Codului fiscal (HG 1/2016), Titlul IX, pct. 21 alin. (3) (norme art. 456 CF) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „21. (1) În aplicarea art. 456 alin. (1) din Codul fiscal, scutirea de la plata impozitului pe clădiri se acordă pe baza documentelor doveditoare, valabile la data de 31 decembrie a anului fiscal anterior, care atestă situația respectivă, cu excepția contribuabililor care sunt deja cuprinși în baza de date a unității administrativ-teritoriale."
-— HG 1/2016, Titlul IX, pct. 21 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Titlul IX, pct. 21 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Nu se datorează impozit/taxă pe clădiri pentru: [...] clădirile din parcurile industriale, parcurile științifice și tehnologice, precum și cele utilizate de incubatoarele de afaceri, cu respectarea legislației în materia ajutorului de stat"
-— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 456 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

@@ -17,7 +17,7 @@ Regimul de declarare anuală, cu plăți anticipate trimestriale, e o opțiune s
 > „Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5), pot opta pentru calculul, declararea și
 > plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial... Opțiunea este
 > obligatorie pentru cel puțin 2 ani fiscali consecutivi."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4536-4544`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 41 alin. (8):**
 > „Contribuabilii care aplică sistemul de declarare și plată a impozitului pe profit anual, cu plăți
@@ -25,7 +25,7 @@ Regimul de declarare anuală, cu plăți anticipate trimestriale, e o opțiune s
 > impozitul pe profit datorat pentru anul precedent, actualizat cu indicele prețurilor de consum...
 > cu excepția plății anticipate aferente trimestrului IV care se declară și se plătește până la data
 > de 25 decembrie, respectiv până la data de 25 a ultimei luni din anul fiscal modificat."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:4600-4602`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 ## Formula regimului opțional, distinctă de cea standard
@@ -46,6 +46,6 @@ Opțiunea pentru acest regim este obligatorie pentru minimum 2 ani fiscali conse
 
 ## Ce face iConta.eu
 
-Vectorul fiscal al firmei (`core/vector_fiscal_api.py`) distinge doar între regimurile „micro" și „profit" (`_REGIMURI = ("micro", "profit")`) — nu există un atribut separat care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale. Ca urmare, motorul de calcul (`core/d100.py`, `deriva_obligatii`) aplică întotdeauna formula regimului standard — bază cumulată de la 1 ianuarie, nu formula 1/4 din impozitul anului precedent. Dacă firma dvs. a optat oficial pentru regimul cu plăți anticipate trimestriale, calculul acestei formule trebuie făcut și verificat manual, în afara declarației generate automat — aplicația nu are astăzi această distincție implementată.
+Vectorul fiscal al firmei distinge doar între regimurile „micro" și „profit" (`_REGIMURI = ("micro", "profit")`) — nu există un atribut separat care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale. Ca urmare, motorul de calcul (`deriva_obligatii`) aplică întotdeauna formula regimului standard — bază cumulată de la 1 ianuarie, nu formula 1/4 din impozitul anului precedent. Dacă firma dvs. a optat oficial pentru regimul cu plăți anticipate trimestriale, calculul acestei formule trebuie făcut și verificat manual, în afara declarației generate automat — aplicația nu are astăzi această distincție implementată.
 
 [iConta.eu](/)

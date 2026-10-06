@@ -14,7 +14,7 @@ Termenul „profesie liberală" nu e o listă închisă undeva într-un singur a
 
 ::: ghid-temei
 „34. profesii liberale - acele ocupații exercitate pe cont propriu de persoane fizice, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective;"
-— Legea 227/2015 (Codul fiscal), art. 7 pct. 34 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 7 pct. 34 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanismul: Codul fiscal nu enumeră profesiile liberale, ci trimite la „actele normative speciale" ale fiecărei profesii (de exemplu legile care reglementează avocatura, expertiza contabilă, arhitectura, notariatul, medicina veterinară independentă etc.). Cine se califică drept „profesie liberală" în sens fiscal se stabilește deci pe două paliere:

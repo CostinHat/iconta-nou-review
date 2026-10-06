@@ -35,6 +35,6 @@ Notă: excepția de la 21 decembrie privește doar termenul care s-ar împlini l
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 (`core/d300.py`) determină automat perioada fiscală lunară a firmei (`core/perioada_fiscala_tva.py`) și calculează TVA de plată/recuperat conform structurii OPANAF 174/2026, valabilă din prima perioadă fiscală a anului 2026.
+Decontul de TVA v12 determină automat perioada fiscală lunară a firmei și calculează TVA de plată/recuperat conform structurii OPANAF 174/2026, valabilă din prima perioadă fiscală a anului 2026.
 
 [iConta.eu](/)

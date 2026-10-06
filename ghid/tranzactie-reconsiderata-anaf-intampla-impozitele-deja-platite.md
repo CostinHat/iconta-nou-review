@@ -16,12 +16,12 @@ Practic, firma datorează doar **diferența** dintre obligațiile stabilite dup�
 
 ::: ghid-temei
 „Obligațiile fiscale stabilite de organul fiscal central ca urmare a reconsiderării unei tranzacții, potrivit legii, se regularizează cu obligațiile fiscale declarate/plătite de contribuabil/plătitor aferente respectivei tranzacții. În acest caz, sumele achitate în contul obligațiilor fiscale declarate/plătite de contribuabil/plătitor se consideră, în totalitate, indiferent de bugetul unde au fost ulterior distribuite, a reprezenta plăți anticipate în contul obligațiilor fiscale stabilite ca urmare a reconsiderării, cu regularizarea ulterioară între bugete."
-— Codul de procedură fiscală (Legea 207/2015), art. 171 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 171 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „La stabilirea sumei unui impozit, a unei taxe sau a unei contribuții sociale obligatorii, autoritățile fiscale pot să nu ia în considerare o tranzacție care nu are un scop economic, ajustând efectele fiscale ale acesteia, sau pot reîncadra forma unei tranzacții/activități pentru a reflecta conținutul economic al tranzacției/activității."
-— Codul fiscal (Legea 227/2015), art. 11 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 11 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă reconsiderarea și cum se regularizează:

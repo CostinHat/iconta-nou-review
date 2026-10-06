@@ -14,7 +14,7 @@ Legea dă un termen precis pentru emiterea facturii, calculat nu de la data pres
 
 ::: ghid-temei
 „Pentru alte operațiuni decât cele prevăzute la alin. (15), persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă. De asemenea, persoana impozabilă trebuie să emită o factură pentru suma avansurilor încasate în legătură cu o livrare de bunuri/prestare de servicii cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a încasat avansurile, cu excepția cazului în care factura a fost deja emisă."
-— Legea 227/2015 (Codul fiscal), art. 319 alin. (16) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

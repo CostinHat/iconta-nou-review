@@ -15,7 +15,7 @@ Regimul de impozitare micro nu schimbă cu nimic regulile de casierie — o micr
 ```
 ::: ghid-temei
 „(1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: [...] c) plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi."
-— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. c) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar, art. 3 alin. (1) lit. c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 ```
 
@@ -34,6 +34,6 @@ Reguli practice pentru casieria unei microîntreprinderi, valabile în 2026:
 
 ## Ce face iConta.eu
 
-Modulul `core/casa.py` implementează `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate zilnic, dacă a fost depășit plafonul legal aplicabil fiecărei categorii de operațiune (inclusiv distincția pentru cash and carry și avansuri spre decontare), confirmat direct din cod. Alertele de plafon funcționează pe operațiunile trecute prin `core/casa_api.py`; contribuția lor la baza impozabilă a regimului micro se reflectă mai departe prin evidența generală a veniturilor, fără un modul separat care să lege explicit „plafon de numerar depășit" de „bază impozabilă micro" — legătura conceptuală rămâne una pe care contabilul o face.
+Aplicația implementează `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate zilnic, dacă a fost depășit plafonul legal aplicabil fiecărei categorii de operațiune (inclusiv distincția pentru cash and carry și avansuri spre decontare), confirmat direct din cod. Alertele de plafon funcționează pe operațiunile trecute prin aplicație; contribuția lor la baza impozabilă a regimului micro se reflectă mai departe prin evidența generală a veniturilor, fără un modul separat care să lege explicit „plafon de numerar depășit" de „bază impozabilă micro" — legătura conceptuală rămâne una pe care contabilul o face.
 
 [iConta.eu](/)

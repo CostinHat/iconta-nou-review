@@ -14,7 +14,7 @@ Dacă descoperi că ai aplicat cota greșită de TVA pe o factură deja emisă (
 
 ::: ghid-temei
 „(4) În cazul taxei pe valoarea adăugată, corectarea erorilor din deconturile de taxă se realizează potrivit prevederilor Codului fiscal. Erorile materiale din decontul de taxă pe valoarea adăugată se corectează potrivit procedurii aprobate prin ordin al președintelui A.N.A.F."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 105 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Corectarea unei cote de TVA greșite pe o factură se face prin **factură de corecție** (stornare + factură nouă, sau notă de corecție, după caz), nu prin modificarea directă a decontului deja depus.
@@ -30,6 +30,6 @@ Dacă descoperi că ai aplicat cota greșită de TVA pe o factură deja emisă (
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de facturare din iConta.eu permite emiterea facturilor de stornare/corecție și integrarea lor în jurnalul de vânzări, iar modulul D300 (`core/d300.py`, `core/d300_reconciliere.py`) preia automat operațiunile din perioada curentă, inclusiv corecțiile emise atunci. Aplicația nu are însă un asistent dedicat care să distingă automat între „eroare materială" (cu procedura simplificată ANAF) și corectare de fond a cotei TVA — încadrarea corectă a tipului de eroare și emiterea documentului potrivit rămân în sarcina contabilului.
+La data acestui ghid, modulul de facturare din iConta.eu permite emiterea facturilor de stornare/corecție și integrarea lor în jurnalul de vânzări, iar modulul D300 preia automat operațiunile din perioada curentă, inclusiv corecțiile emise atunci. Aplicația nu are însă un asistent dedicat care să distingă automat între „eroare materială" (cu procedura simplificată ANAF) și corectare de fond a cotei TVA — încadrarea corectă a tipului de eroare și emiterea documentului potrivit rămân în sarcina contabilului.
 
 [iConta.eu](/)

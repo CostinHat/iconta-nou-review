@@ -14,13 +14,13 @@ Da. Impozitul pe veniturile microîntreprinderilor (Titlul III din Codul fiscal)
 
 ::: ghid-temei
 „întreprindere mică reprezintă persoana impozabilă care aplică regimul special de scutire prevăzut la art. 310 [...]"
-— Legea 227/2015 (Codul fiscal), art. 266 alin. (1) pct. 16 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 266 alin. (1) pct. 16 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(3) Persoana impozabilă care îndeplinește condițiile prevăzute la alin. (1) pentru aplicarea regimului special de scutire poate opta oricând pentru aplicarea regimului normal de taxă."
-— Legea 227/2015, art. 310 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 310 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „d) capitalul social al acesteia este deținut de persoane, altele decât statul și unitățile administrativ-teritoriale;"
-— Legea 227/2015, art. 47 alin. (1) lit. d) — condiție de încadrare la impozitul micro (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) lit. d) — condiție de încadrare la impozitul micro (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Testele de eligibilitate pentru cele două regimuri sunt independente:

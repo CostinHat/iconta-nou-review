@@ -28,6 +28,6 @@ Pentru **contravaloarea hranei acordate de angajator** — o formă distinctă d
 
 ## Ce face iConta.eu
 
-Modulul de beneficii (`core/beneficii_api.py`, `core/salarizare.py`) tratează tichetele de masă ca flux dedicat: calcul CASS 10% pe valoarea nominală, apoi impozit 10% pe baza rămasă, fără CAS/CAM, cu plafonul de 45 lei/tichet valabil pentru 2026 și cu numărul de tichete derivat direct din pontajul lunii confirmat. Dacă firma acordă efectiv contravaloarea hranei (hrană preparată în unități proprii sau achiziționată de la unități specializate, art. 76 alin. (4^1) lit. b)), în loc de tichete de masă, acel flux fiscal e separat de F133 și trebuie configurat distinct în statul de plată — nu se poate presupune că regulile de calcul ale tichetelor de masă se aplică automat și acolo.
+Modulul de beneficii tratează tichetele de masă ca flux dedicat: calcul CASS 10% pe valoarea nominală, apoi impozit 10% pe baza rămasă, fără CAS/CAM, cu plafonul de 45 lei/tichet valabil pentru 2026 și cu numărul de tichete derivat direct din pontajul lunii confirmat. Dacă firma acordă efectiv contravaloarea hranei (hrană preparată în unități proprii sau achiziționată de la unități specializate, art. 76 alin. (4^1) lit. b)), în loc de tichete de masă, acel flux fiscal e separat de F133 și trebuie configurat distinct în statul de plată — nu se poate presupune că regulile de calcul ale tichetelor de masă se aplică automat și acolo.
 
 [iConta.eu](/)

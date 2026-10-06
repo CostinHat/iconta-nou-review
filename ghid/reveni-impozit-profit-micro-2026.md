@@ -14,10 +14,10 @@ Da, dar nu oricând și nu automat. Revenirea la impozitul micro este o opțiune
 
 ::: ghid-temei
 „Persoanele juridice române pot opta să aplice impozitul reglementat de prezentul titlu începând cu anul fiscal următor celui în care îndeplinesc condițiile de microîntreprindere prevăzute la art. 47 alin. (1)."
-— Legea 227/2015, art. 48 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Microîntreprinderile nu pot opta pentru plata impozitului pe profit în cursul anului fiscal, opțiunea putând fi exercitată începând cu anul fiscal următor, cu excepțiile prevăzute la art. 52. Opțiunea se comunică organelor fiscale competente [...]."
-— Legea 227/2015, art. 48 alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 48 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Deci mecanismul e simetric cu ieșirea din sistem: la fel cum trecerea la profit se poate întâmpla în cursul anului (art. 52), revenirea la micro se poate face **doar** de la 1 ianuarie al anului fiscal următor, și numai dacă la 31 decembrie a anului precedent sunt îndeplinite cumulativ condițiile de la art. 47 alin. (1): venituri sub 100.000 euro, capital social deținut de alte persoane decât statul, firma nu e în dizolvare/lichidare, are cel puțin un salariat, asociații nu dețin peste 25% și în alte microîntreprinderi, iar situațiile financiare au fost depuse în termen.

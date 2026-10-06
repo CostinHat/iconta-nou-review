@@ -14,7 +14,7 @@ Scutirea de TVA pentru o livrare intracomunitară nu se acordă automat doar pen
 
 ::: ghid-temei
 „(2) Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru, cu excepția: 1. livrărilor intracomunitare efectuate de o întreprindere mică, altele decât livrările intracomunitare de mijloace de transport noi; 2. livrărilor intracomunitare care au fost supuse regimului special pentru bunurile second-hand, opere de artă, obiecte de colecție și antichități, conform prevederilor art. 312;"
-— Legea nr. 227/2015 privind Codul fiscal, art. 294 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă direct din articolul citat, și ce rămâne dincolo de el:

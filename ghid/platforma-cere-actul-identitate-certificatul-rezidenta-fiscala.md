@@ -16,10 +16,10 @@ Cererea nu e un abuz și nu e o simplă formalitate. Când e făcută în temeiu
 
 ::: ghid-temei
 „3. În aplicarea pct. 3 lit. b) de la subsecțiunea F și prin excepție de la pct. 1 și 2 din subsecțiunea C, în cazurile în care Operatorul de platformă care are obligația de raportare are motive să considere că oricare dintre informațiile descrise la subsecțiunile B sau E pot fi inexacte în temeiul informațiilor furnizate de către autoritatea competentă din România sau de către autoritatea competentă a unui stat membru într-o cerere privind un anumit Vânzător, Operatorul de platformă care are obligația de raportare solicită Vânzătorului să corecteze informațiile despre care s-a constatat că sunt incorecte și să furnizeze documente justificative, date sau informații, provenite dintr-o sursă independentă, cum ar fi: a)un document de identificare valabil, emis de o autoritate publică din România sau din alt stat membru; b)un certificat de rezidență fiscală, aprobat prin ordin al ministrului finanțelor."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. C pct. 3 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. C pct. 3 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „1. Operatorul de platformă care are obligația de raportare stabilește dacă informațiile colectate în temeiul subsecțiunii A, al pct. 2 lit. a)-e) din subsecțiunea B și al subsecțiunii E sunt corecte, utilizând toate informațiile și documentele de care dispune în evidențele sale, precum și orice interfață electronică pusă la dispoziție gratuit de un stat membru sau de Uniunea Europeană pentru a verifica valabilitatea NIF-ului și/sau a numărului TVA."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. C pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. C pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 De ce și când apare cererea:

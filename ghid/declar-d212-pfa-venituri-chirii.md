@@ -14,7 +14,7 @@ D212 nu obligă la alegerea între cele două surse — se completează amândou
 
 ::: ghid-temei
 „Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează pentru fiecare sursă din cadrul fiecărei categorii de venit, indiferent de modalitatea de determinare a venitului net anual/câștigului net anual, după caz, în vederea stabilirii și declarării impozitului pe venit, respectiv a pierderii fiscale anuale."
-— Codul fiscal (Legea 227/2015), art. 122 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 122 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru cele două surse:
@@ -32,7 +32,7 @@ Ce înseamnă practic pentru cele două surse:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu (`core/d212.py`) cu mai multe capitole de venit deodată: activitatea independentă, preluată din Registrul-jurnal de încasări și plăți, și — în lista „Alte venituri” a formularului — chiriile, pentru care aplicația aplică cota forfetară de cheltuieli de 20% și impozitul de 10%. Fișa D212 (`core/rip_api.py`, `fisa_d212`) rămâne doar pentru venitul din PFA.
+D212 se generează în iConta.eu cu mai multe capitole de venit deodată: activitatea independentă, preluată din Registrul-jurnal de încasări și plăți, și — în lista „Alte venituri” a formularului — chiriile, pentru care aplicația aplică cota forfetară de cheltuieli de 20% și impozitul de 10%. Fișa D212 (`fisa_d212`) rămâne doar pentru venitul din PFA.
 
 Declarația calculează contribuțiile pe cumulurile lor distincte: CAS pe activitatea independentă, CASS pe activitatea independentă și, separat, CASS pe chirii și celelalte venituri de aceeași natură, pe trepte de 6, 12 sau 24 de salarii minime. Contabilul verifică datele introduse (contractele, sumele).
 

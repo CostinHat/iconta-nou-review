@@ -16,10 +16,10 @@ Copia e calea directă prin care vânzătorul vede ce s-a transmis despre el. Pe
 
 ::: ghid-temei
 „5. Un Operator de platformă care are obligația de raportare comunică, de asemenea, informațiile prevăzute la pct. 2 și 3 din subsecțiunea B Vânzătorului Raportabil vizat de respectivele informații, cel târziu până la data de 31 ianuarie a anului următor anului calendaristic în care Vânzătorul este identificat ca Vânzător Raportabil."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 5 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 5 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „5. Corecțiile informațiilor transmise se efectuează după cum urmează: a) la inițiativa Operatorilor de platforme; ... b) ca urmare a unei solicitări de corecție transmise de alte jurisdicții raportoare prin intermediul A.N.A.F.; ... c) ca urmare a unei notificări transmise de A.N.A.F.; ... d) ca urmare a măsurilor dispuse de către A.N.A.F. după efectuarea unui control."
-— OPANAF 1996/2023, Anexa nr. 2, pct. 5 (sursă: anaf_surse/ordin_1996_2023.html)
+— OPANAF 1996/2023, Anexa nr. 2, pct. 5 (sursă: [OPANAF nr. 1996/2023 privind formularul operatorilor de platforme (art. 291^5 CPF)](https://legislatie.just.ro/Public/DetaliiDocument/277645))
 :::
 
 Ce conține copia (secț. III lit. B pct. 2 și 3) și ce verifici la fiecare element:

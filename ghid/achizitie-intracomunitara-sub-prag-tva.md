@@ -14,7 +14,7 @@ Nu orice cumpărare de bunuri dintr-un alt stat membru UE generează automat o a
 
 ::: ghid-temei
 „Prin excepție de la prevederile alin. (3) lit. a), nu sunt considerate operațiuni impozabile în România achizițiile intracomunitare de bunuri care îndeplinesc următoarele condiții: a) sunt efectuate de o persoană impozabilă care efectuează numai livrări de bunuri sau prestări de servicii pentru care taxa nu este deductibilă sau de o persoană juridică neimpozabilă; b) valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice."
-— Legea 227/2015 (Codul fiscal), art. 268 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 268 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă în practică:

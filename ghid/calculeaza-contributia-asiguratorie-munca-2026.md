@@ -14,10 +14,10 @@ CAM se calculează simplu — o cotă unică aplicată pe baza salarială — da
 
 ::: ghid-temei
 „Contribuabilii obligați la plata contribuției asiguratorii pentru muncă sunt, după caz: a) persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora, pentru cetățenii români, cetățeni ai altor state sau apatrizii, pe perioada în care au, conform legii, domiciliul sau reședința în România [...]"
-— Legea nr. 227/2015, art. 220^1 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^1 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuția asiguratorie pentru muncă nu se datorează pentru prestațiile suportate din bugetul asigurărilor sociale de stat, bugetul asigurărilor pentru șomaj, precum și din Fondul național unic de asigurări sociale de sănătate."
-— Legea nr. 227/2015, art. 220^5 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 220^5 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă:

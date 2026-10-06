@@ -18,7 +18,7 @@ Amortizarea fiscală nu e o singură formulă, ci trei regimuri diferite, iar le
 (7) În cazul metodei de amortizare degresivă, amortizarea se calculează prin multiplicarea cotelor de amortizare liniară cu unul dintre coeficienții următori: a) 1,5, dacă durata normală de utilizare a mijlocului fix amortizabil este între 2 și 5 ani; b) 2,0, dacă durata normală de utilizare a mijlocului fix amortizabil este între 6 și 10 ani; c) 2,5, dacă durata normală de utilizare a mijlocului fix amortizabil este mai mare de 10 ani.
 (8) În cazul metodei de amortizare accelerată, amortizarea se calculează după cum urmează: a) pentru primul an de utilizare, amortizarea nu poate depăși 50% din valoarea fiscală de la data intrării în patrimoniul contribuabilului a mijlocului fix; b) pentru următorii ani de utilizare, amortizarea se calculează prin raportarea valorii rămase de amortizare a mijlocului fix la durata normală de utilizare rămasă a acestuia.
 (12) Amortizarea fiscală se calculează după cum urmează: a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5)."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (5), (6), (7), (8), (12) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (5), (6), (7), (8), (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanica fiecărei metode:
@@ -39,7 +39,7 @@ Pentru anul 2026 există și o a patra metodă, temporară: amortizarea **supera
 
 ## Ce face iConta.eu
 
-Motorul de amortizare din `core/d406_active.py` implementează toate patru metodele (liniară, degresivă, accelerată, superaccelerată) exact pe regulile de mai sus: coeficienții degresivi 1,5/2,0/2,5 pe treptele de durată, plafonul de 50% pentru accelerată în primul an (65% pentru superaccelerată), comutarea automată liniar↔degresiv quando liniarul devine mai avantajos, și restricțiile de categorie din CF art. 28 alin. (5) — pentru conturi de construcții (212) se permite doar liniară, pentru echipamente (2131) se adaugă accelerata, pentru animale/plantații (2134/217) superaccelerata doar dacă activul a fost pus în funcțiune în 2026. Dacă se cere o metodă nepermisă pentru categoria activului, motorul refuză explicit calculul, cu eroare care numește activul, contul, categoria și motivul — nu calculează tacit pe liniar.
+Motorul de amortizare din aplicație implementează toate patru metodele (liniară, degresivă, accelerată, superaccelerată) exact pe regulile de mai sus: coeficienții degresivi 1,5/2,0/2,5 pe treptele de durată, plafonul de 50% pentru accelerată în primul an (65% pentru superaccelerată), comutarea automată liniar↔degresiv quando liniarul devine mai avantajos, și restricțiile de categorie din CF art. 28 alin. (5) — pentru conturi de construcții (212) se permite doar liniară, pentru echipamente (2131) se adaugă accelerata, pentru animale/plantații (2134/217) superaccelerata doar dacă activul a fost pus în funcțiune în 2026. Dacă se cere o metodă nepermisă pentru categoria activului, motorul refuză explicit calculul, cu eroare care numește activul, contul, categoria și motivul — nu calculează tacit pe liniar.
 
 Acest motor unic alimentează patru ecrane din aplicație: fișa mijlocului fix, nota lunară de amortizare, casarea și reevaluarea unui activ — deci cifrele de amortizare afișate în oricare din ele sunt consistente între ele, calculate de aceeași logică.
 

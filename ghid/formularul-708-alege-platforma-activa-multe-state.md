@@ -16,10 +16,10 @@ Alegerea evită raportarea dublă și îl obligă pe operator la un singur set d
 
 ::: ghid-temei
 „se utilizează și se editează cu ajutorul programului de asistență pus la dispoziție pe site-ul Agenției Naționale de Administrare Fiscală și se depune exclusiv prin mijloace electronice de transmitere la distanță, potrivit legii, până la data de 31 decembrie inclusiv a anului pentru care se face raportarea."
-— OPANAF 2026/2023, Anexa nr. 1, instrucțiuni de utilizare (sursă: anaf_surse/ordin_2026_2023.html)
+— OPANAF 2026/2023, Anexa nr. 1, instrucțiuni de utilizare (sursă: [OPANAF nr. 2026/2023 privind procedura administrativă pentru Operatorii de platformă](https://legislatie.just.ro/Public/DetaliiDocument/277486))
 
 „În cazul în care un Operator de platformă care are obligația de raportare în sensul pct. 4 lit. a) din subsecțiunea A a secțiunii I îndeplinește oricare dintre condițiile prevăzute la această dispoziție și în România și în alte state membre, atunci Operatorul de platformă care are obligația de raportare poate alege să efectueze fie în România, fie în alt stat membru procedurile de raportare prevăzute la secțiunea III."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. IV (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. IV (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum funcționează alegerea:

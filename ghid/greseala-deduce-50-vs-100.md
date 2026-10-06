@@ -17,7 +17,7 @@ Regula implicită pentru un autoturism aflat în patrimoniul firmei e deducerea 
 (1) Prin excepție de la prevederile art. 297 se limitează la 50% dreptul de deducere a taxei aferente cumpărării, achiziției intracomunitare, importului, închirierii sau leasingului de vehicule rutiere motorizate și a taxei aferente cheltuielilor legate de vehiculele aflate în proprietatea sau în folosința persoanei impozabile, în cazul în care vehiculele nu sunt utilizate exclusiv în scopul activității economice.
 (2) Restricția prevăzută la alin. (1) nu se aplică vehiculelor rutiere motorizate având o masă totală maximă autorizată care depășește 3.500 kg sau mai mult de 9 scaune, inclusiv scaunul șoferului.
 (3) Prevederile alin. (1) nu se aplică următoarelor categorii de vehicule rutiere motorizate: a) vehiculele utilizate exclusiv pentru servicii de urgență, servicii de pază și protecție și servicii de curierat; [...] b) vehiculele utilizate de agenții de vânzări și de achiziții; [...] c) vehiculele utilizate pentru transportul de persoane cu plată, inclusiv pentru serviciile de taximetrie; [...] d) vehiculele utilizate pentru prestarea de servicii cu plată, inclusiv pentru instruire de către școlile de șoferi; [...] e) vehiculele utilizate pentru închiriere sau a căror folosință este transmisă în cadrul unui contract de leasing financiar ori operațional; [...] f) vehiculele utilizate ca mărfuri în scop comercial."
-— Legea 227/2015 (Codul fiscal), art. 298 alin. (1)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 298 alin. (1)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă exact unde se produce, de regulă, greșeala:

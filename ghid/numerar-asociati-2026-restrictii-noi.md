@@ -14,7 +14,7 @@ De la 18 decembrie 2025, Legea societăților are o restricție nouă, care leag
 
 ::: ghid-temei
 „Societățile care distribuie trimestrial dividende, potrivit legii, nu pot acorda acționarilor sau asociaților [...] împrumuturi, până la regularizarea diferențelor rezultate din distribuirea dividendelor în cursul anului."
-— Legea 31/1990, art. 67 alin. (2^3), introdus de Legea 239/2025, în vigoare de la 18.12.2025 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (2^3), introdus de Legea 239/2025, în vigoare de la 18.12.2025 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Restricția se aplică **doar firmelor care distribuie dividende trimestrial** (deci care optează pentru dividend interimar) și **doar cât timp** diferențele din distribuirea în cursul anului nu au fost regularizate prin situațiile financiare anuale.
@@ -29,6 +29,6 @@ De la 18 decembrie 2025, Legea societăților are o restricție nouă, care leag
 
 ## Ce face iConta.eu
 
-Din verificarea codului (`core/decontari_asociati.py`), funcția care generează nota de împrumut către/de la asociat, `nota_imprumut_asociat()`, **nu verifică nicio condiție legată de dividendele interimare nerregularizate** înainte de a genera operațiunea. Aplicația calculează corect liniile contabile ale împrumutului (primire, restituire, dobândă, impozit reținut), dar nu blochează și nu avertizează dacă firma a distribuit dividende trimestrial și nu a făcut încă regularizarea anuală — verificarea restricției din art. 67 alin. (2^3) rămâne, la acest moment, o obligație de conformitate pe care contabilul trebuie s-o urmărească manual, nu o validare automată în iConta.eu.
+Din verificarea codului, funcția care generează nota de împrumut către/de la asociat, `nota_imprumut_asociat()`, **nu verifică nicio condiție legată de dividendele interimare nerregularizate** înainte de a genera operațiunea. Aplicația calculează corect liniile contabile ale împrumutului (primire, restituire, dobândă, impozit reținut), dar nu blochează și nu avertizează dacă firma a distribuit dividende trimestrial și nu a făcut încă regularizarea anuală — verificarea restricției din art. 67 alin. (2^3) rămâne, la acest moment, o obligație de conformitate pe care contabilul trebuie s-o urmărească manual, nu o validare automată în iConta.eu.
 
 [iConta.eu](/)

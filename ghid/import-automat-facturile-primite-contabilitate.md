@@ -14,7 +14,7 @@ Factura electronică primită prin RO e-Factura nu este doar un fișier XML „d
 
 ::: ghid-temei
 „(6) Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG nr. 120/2021, art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021, art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Din acest text, coroborat cu restul articolului 4, rezultă statutul facturii electronice descărcate din sistem:
@@ -33,6 +33,6 @@ Legea nu obligă, însă, la o metodă anume de „import" în programul de cont
 
 ## Ce face iConta.eu
 
-iConta.eu automatizează partea de **preluare**, nu și pe cea de validare finală. Un job programat (`core/spv_receive.py`) interoghează periodic contul SPV al firmei, descarcă facturile noi primite prin RO e-Factura și le inserează ca ciornă în `efactura_primite`, folosind parserul XML din `core/efactura_import.py` pentru a extrage furnizor, sumă, TVA și liniile facturii. Din acel moment, factura apare în aplicație ca ciornă, dar **nu devine automat o cheltuială înregistrată** — contabilul trebuie să o valideze explicit (principiul celor patru ochi), moment în care i se atribuie contul de cheltuială și intră efectiv în evidență. Deduplicarea (aceeași factură descărcată la mai multe rulări) este tratată la nivel de bază de date, pe identificatorul mesajului ANAF.
+iConta.eu automatizează partea de **preluare**, nu și pe cea de validare finală. Un job programat interoghează periodic contul SPV al firmei, descarcă facturile noi primite prin RO e-Factura și le inserează ca ciornă în `efactura_primite`, folosind parserul XML din aplicație pentru a extrage furnizor, sumă, TVA și liniile facturii. Din acel moment, factura apare în aplicație ca ciornă, dar **nu devine automat o cheltuială înregistrată** — contabilul trebuie să o valideze explicit (principiul celor patru ochi), moment în care i se atribuie contul de cheltuială și intră efectiv în evidență. Deduplicarea (aceeași factură descărcată la mai multe rulări) este tratată la nivel de bază de date, pe identificatorul mesajului ANAF.
 
 [iConta.eu](/)

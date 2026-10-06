@@ -14,7 +14,7 @@ Costul mediu ponderat (CMP) nu este o valoare fixă, stabilită o singură dată
 
 ::: ghid-temei
 „(2) Metoda «costului mediu ponderat» (CMP) presupune calcularea costului fiecărui element pe baza mediei ponderate a costurilor elementelor similare aflate în stoc la începutul perioadei și a costului elementelor similare produse sau cumpărate în timpul perioadei. Media poate fi calculată periodic sau după fiecare recepție. Perioada de calcul nu trebuie să depășească durata medie de stocare."
-— OMFP 1802/2014, pct. 96 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 96 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Legea nu impune un singur moment de recalcul: permite explicit **două** variante — recalcul **periodic** (de exemplu lunar) sau recalcul **după fiecare recepție** (adică după fiecare intrare de marfă).
@@ -29,7 +29,7 @@ Costul mediu ponderat (CMP) nu este o valoare fixă, stabilită o singură dată
 
 ## Ce face iConta.eu
 
-Motorul de stocuri cantitativ-valorice al iConta.eu (`core/stocuri_cv.py`) implementează exclusiv varianta „**recalcul după fiecare intrare**": la fiecare mișcare de tip intrare, cantitatea și valoarea totală din stoc se actualizează, iar CMP-ul curent rezultă din împărțirea valorii totale la cantitatea totală (`cmp_curent = val / cant`). Acest calcul e verificat direct în testele unitare ale aplicației, inclusiv un test dedicat exact recalculării CMP-ului după o intrare intermediară (zece bucăți la preț de 10, ieșire de cinci, apoi cinci bucăți noi la preț de 16 → CMP nou de 13, calculat ca medie ponderată pe stocul rămas plus intrarea nouă).
+Motorul de stocuri cantitativ-valorice al iConta.eu implementează exclusiv varianta „**recalcul după fiecare intrare**": la fiecare mișcare de tip intrare, cantitatea și valoarea totală din stoc se actualizează, iar CMP-ul curent rezultă din împărțirea valorii totale la cantitatea totală (`cmp_curent = val / cant`). Acest calcul e verificat direct în testele unitare ale aplicației, inclusiv un test dedicat exact recalculării CMP-ului după o intrare intermediară (zece bucăți la preț de 10, ieșire de cinci, apoi cinci bucăți noi la preț de 16 → CMP nou de 13, calculat ca medie ponderată pe stocul rămas plus intrarea nouă).
 
 Important de precizat: aceasta este **alegerea implementată de iConta**, una dintre cele două variante permise de lege — nu singura variantă permisă de OMFP 1802/2014. Aplicația nu oferă o opțiune de recalcul periodic (lunar) pentru gestiunea cantitativ-valorică; dacă firma dorește varianta lunară, trebuie să folosească alt tip de evidență, nu modulul de stocuri cantitativ-valorice la CMP.
 

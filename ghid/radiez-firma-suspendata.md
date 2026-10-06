@@ -14,7 +14,7 @@ O firmă cu activitatea suspendată la registrul comerțului nu e automat radiat
 
 ::: ghid-temei
 „Dacă în termen de 3 luni de la data rămânerii definitivă a hotărârii de dizolvare nu s-a formulat nicio cerere de numire a lichidatorului potrivit prevederilor alin. (6), Oficiul Național al Registrului Comerțului sau orice persoană interesată poate solicita tribunalului radierea societății din registrul comerțului."
-— Legea 31/1990 (a societăților), art. 237 alin. (8) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 (a societăților), art. 237 alin. (8) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Etapele care rezultă din articolul 237, pentru o firmă care vrea (sau ajunge) la radiere:

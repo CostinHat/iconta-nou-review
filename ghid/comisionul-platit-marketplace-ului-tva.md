@@ -18,7 +18,7 @@ Nu există, în sursele verificate, o prevedere specifică pentru „comisionul 
 [...]
 Articolul 297 Sfera de aplicare a dreptului de deducere
 (1) Dreptul de deducere ia naștere la momentul exigibilității taxei."
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) și art. 297 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (1) și art. 297 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din aceste reguli generale pentru comisionul de marketplace:
@@ -35,6 +35,6 @@ Ce rezultă din aceste reguli generale pentru comisionul de marketplace:
 
 ## Ce face iConta.eu
 
-Nu am găsit în `core/` (grep pe „marketplace") un modul specific pentru tratamentul comisioanelor plătite platformelor de tip marketplace — comisioanele se înregistrează, la acest moment, ca orice altă cheltuială de intermediere/comision, folosind fluxurile generale de facturi primite și deduceri TVA din aplicație, fără o regulă automată dedicată acestui tip de serviciu.
+Nu am găsit în aplicație (grep pe „marketplace") un modul specific pentru tratamentul comisioanelor plătite platformelor de tip marketplace — comisioanele se înregistrează, la acest moment, ca orice altă cheltuială de intermediere/comision, folosind fluxurile generale de facturi primite și deduceri TVA din aplicație, fără o regulă automată dedicată acestui tip de serviciu.
 
 [iConta.eu](/)

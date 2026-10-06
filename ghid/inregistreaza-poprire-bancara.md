@@ -14,7 +14,7 @@ Poprirea bancară nu e o plată pe care firma o inițiază — e banca ta care, 
 
 ::: ghid-temei
 „(12) Pentru stingerea creanțelor fiscale, debitorii titulari de conturi bancare pot fi urmăriți prin poprire asupra sumelor din conturile bancare, prevederile alin. (5) aplicându-se în mod corespunzător. (13) [...] sumele existente, precum și cele viitoare provenite din încasările zilnice în conturile în lei și în valută sunt indisponibilizate în limita sumei necesare pentru realizarea obligației ce se execută silit [...]. Instituțiile de credit au obligația să plătească sumele indisponibilizate în contul indicat de organul de executare silită în termen de 3 zile lucrătoare de la indisponibilizare."
-— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (12)-(13) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 236 alin. (12)-(13) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Poprirea se înființează printr-o adresă a organului fiscal trimisă direct băncii (terțul poprit), nu firmei — poprirea „se consideră înființată" din momentul în care banca primește adresa, nu din momentul în care contabilul află de ea (art. 236 alin. 5, 8).

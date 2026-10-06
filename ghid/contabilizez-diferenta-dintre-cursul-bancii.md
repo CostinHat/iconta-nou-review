@@ -34,6 +34,6 @@ Regula de semn: la o creanță sau la disponibilul din cont, o creștere a cursu
 
 ## Ce face iConta.eu
 
-`core/diferente_curs.py` calculează automat diferența de curs la decontarea unei creanțe sau datorii în valută, pe baza cursului de evidență și a cursului de decontare introduse, și determină automat sensul (765 câștig / 665 pierdere) în funcție de tipul elementului (creanță, disponibil sau datorie) — motorul e strict de calcul, cursurile efective (de evidență și de decontare) se introduc pentru fiecare operațiune, aplicația nu presupune un curs implicit pentru niciunul dintre ele.
+Aplicația calculează automat diferența de curs la decontarea unei creanțe sau datorii în valută, pe baza cursului de evidență și a cursului de decontare introduse, și determină automat sensul (765 câștig / 665 pierdere) în funcție de tipul elementului (creanță, disponibil sau datorie) — motorul e strict de calcul, cursurile efective (de evidență și de decontare) se introduc pentru fiecare operațiune, aplicația nu presupune un curs implicit pentru niciunul dintre ele.
 
 [iConta.eu](/)

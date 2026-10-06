@@ -16,10 +16,10 @@ Obligația anuală aparține firmei, nu intermediarului. Faptul că un consultan
 
 ::: ghid-temei
 „(16) Contribuabilul relevant raportează A.N.A.F. informațiile cu privire la utilizarea aranjamentului transfrontalier care face obiectul raportării în fiecare an în care acesta a fost utilizat. (17) Prin ordin al președintelui A.N.A.F. se aprobă formularul utilizat de intermediarii sau contribuabilii relevanți, după caz, în vederea raportării informațiilor cu privire la aranjamentele transfrontaliere care fac obiectul raportării, potrivit alin. (1) - (16)."
-— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (16) și (17) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 291^4 alin. (16) și (17) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „w) neraportarea ori raportarea cu întârziere de către intermediarii sau contribuabilii relevanți, după caz, a aranjamentelor transfrontaliere care fac obiectul raportării;"
-— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. w) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 336 alin. (1) lit. w) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din text:

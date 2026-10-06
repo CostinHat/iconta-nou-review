@@ -14,7 +14,7 @@ Stocul nu intră în bilanț la costul de achiziție „brut", fără verificare
 
 ::: ghid-temei
 „(1) Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate. Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere."
-— OMFP 1802/2014, Reglementările contabile privind situațiile financiare anuale, pct. 88 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementările contabile privind situațiile financiare anuale, pct. 88 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 - Evaluarea se face în cadrul inventarierii obligatorii de la finalul exercițiului financiar, care cuprinde toate elementele de active, datorii și capitaluri proprii, nu doar stocurile (pct. 82).

@@ -34,6 +34,6 @@ Răspunsul nu e „da" în toate cazurile, nici „nu" în toate cazurile — de
 
 ## Ce face iConta.eu
 
-Motorul de potrivire cotă (`core/cote_tva.py`) clasifică transportul, implicit, alături de consultanță, IT și chirii comerciale, ca „serviciu obișnuit" — la cota standard de 21%. Distincția dintre transportul accesoriu unei livrări proprii (care ar trebui să urmeze cota bunului) și transportul ca serviciu independent nu e modelată automat în motor — la facturarea unui transport legat direct de o livrare proprie de bunuri, cota corectă (cea a bunului) se declară manual, aplicând regula de la art. 286 alin. (3) lit. b).
+Motorul de potrivire cotă clasifică transportul, implicit, alături de consultanță, IT și chirii comerciale, ca „serviciu obișnuit" — la cota standard de 21%. Distincția dintre transportul accesoriu unei livrări proprii (care ar trebui să urmeze cota bunului) și transportul ca serviciu independent nu e modelată automat în motor — la facturarea unui transport legat direct de o livrare proprie de bunuri, cota corectă (cea a bunului) se declară manual, aplicând regula de la art. 286 alin. (3) lit. b).
 
 [iConta.eu](/)

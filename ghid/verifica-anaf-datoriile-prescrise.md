@@ -14,7 +14,7 @@ Când un contribuabil invocă prescripția unei datorii fiscale, ANAF nu se limi
 
 ::: ghid-temei
 „(1) Dreptul organului fiscal de a stabili creanțe fiscale se prescrie în termen de 5 ani, cu excepția cazului în care legea dispune altfel. (2) Termenul de prescripție a dreptului prevăzut la alin. (1) începe să curgă de la data de 1 iulie a anului următor celui pentru care se datorează obligația fiscală, dacă legea nu dispune altfel. (3) Dreptul de a stabili creanțe fiscale se prescrie în termen de 10 ani în cazul în care acestea rezultă din săvârșirea unei fapte prevăzute de legea penală."
-— Legea 207/2015 (Codul de procedură fiscală), art. 110 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 110 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce verifică, concret, organul fiscal atunci când se pune problema prescripției:

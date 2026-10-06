@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Următoarele cheltuieli nu sunt deductibile: [...] cheltuielile făcute în favoarea acționarilor sau asociaților, altele decât cele generate de plăți pentru bunurile livrate sau serviciile prestate contribuabilului, la prețul de piață pentru aceste bunuri sau servicii;"
-— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 25 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă mecanismul de sancționare fiscală a amestecului de patrimonii:
@@ -32,6 +32,6 @@ Din text rezultă mecanismul de sancționare fiscală a amestecului de patrimoni
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat decontărilor cu asociații (`core/decontari_asociati.py`), cu funcții pentru înregistrarea împrumuturilor acordate/primite de la asociați (`nota_imprumut_asociat`) și a notelor de dividend (`core/dividende_curs.py`), care permit tratarea corectă — ca împrumut, avans sau distribuire de dividende — a sumelor puse la dispoziția sau retrase de asociat. Aplicația **nu clasifică automat** o cheltuială plătită din contul firmei drept „în favoarea asociatului" și nu o exclude din calculul impozitului pe profit doar pe baza contului bancar folosit — încadrarea corectă a fiecărei plăți rămâne o decizie a contabilului, pe baza documentelor justificative.
+La data acestui ghid, iConta.eu are un modul dedicat decontărilor cu asociații, cu funcții pentru înregistrarea împrumuturilor acordate/primite de la asociați (`nota_imprumut_asociat`) și a notelor de dividend, care permit tratarea corectă — ca împrumut, avans sau distribuire de dividende — a sumelor puse la dispoziția sau retrase de asociat. Aplicația **nu clasifică automat** o cheltuială plătită din contul firmei drept „în favoarea asociatului" și nu o exclude din calculul impozitului pe profit doar pe baza contului bancar folosit — încadrarea corectă a fiecărei plăți rămâne o decizie a contabilului, pe baza documentelor justificative.
 
 [iConta.eu](/)

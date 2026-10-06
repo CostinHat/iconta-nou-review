@@ -26,7 +26,7 @@ Greșeala tipică este aplicarea automată a metodei global-valorice (cu conturi
 
 ## Ce face iConta.eu
 
-Pentru gestiuni pe cantități și costuri individuale — mai apropiate de profilul unui depozit en-gros — iConta.eu are un motor separat, cantitativ-valoric (CMP): `core/stocuri_cv.py` / `core/stocuri_cv_api.py`, care recalculează costul mediu ponderat după fiecare intrare, ține o fișă de magazie cronologică per articol și nu permite unei ieșiri să depășească stocul existent la data ei.
+Pentru gestiuni pe cantități și costuri individuale — mai apropiate de profilul unui depozit en-gros — iConta.eu are un motor separat, cantitativ-valoric (CMP): Aplicația / aplicația, care recalculează costul mediu ponderat după fiecare intrare, ține o fișă de magazie cronologică per articol și nu permite unei ieșiri să depășească stocul existent la data ei.
 
 Această legătură cu profilul „depozit en-gros" nu este însă verificată explicit în dosarul tehnic care stă la baza acestui ghid — cercetarea a confirmat doar legătura dintre evidența cantitativ-valorică și rețetarul HoReCa, nu una specifică pentru vânzarea en-gros. Recomandăm, pentru un depozit en-gros concret, o verificare punctuală a metodei de gestiune potrivite, în funcție de modul real de stabilire a prețurilor de vânzare, înainte de a alege între cele două motoare de calcul ale aplicației.
 

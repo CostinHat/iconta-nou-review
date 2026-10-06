@@ -14,10 +14,10 @@ Trecerea la sistem real nu se limitează la o singură bifă — presupune compl
 
 ::: ghid-temei
 „Opțiunea pentru determinarea venitului net anual în sistem real, inclusiv în cazul contribuabililor care încep activitatea în cursul anului fiscal, se exercită prin completarea Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice cu informații privind determinarea venitului net anual în sistem real și depunerea formularului la organul fiscal competent în termenul legal de depunere prevăzut la art. 122 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 69^1 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69^1 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Contribuabilii prevăzuți la titlul IV din Legea nr. 227/2015 privind Codul fiscal [...] pentru care venitul net anual se stabilește în sistem real, în baza datelor din contabilitate, au obligația să completeze Registrul de evidență fiscală în conformitate cu prevederile prezentului ordin."
-— OMFP 3254/2017, art. 1 alin. (1) (sursă: anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt)
+— OMFP 3254/2017, art. 1 alin. (1) (sursă: [OMFP nr. 3254/2017 privind Registrul de evidență fiscală pentru persoanele fizice](https://legislatie.just.ro/Public/DetaliiDocument/196396))
 :::
 
 Ce trebuie făcut concret, din momentul opțiunii:

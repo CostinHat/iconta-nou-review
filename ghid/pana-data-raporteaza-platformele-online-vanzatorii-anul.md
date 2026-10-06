@@ -16,10 +16,10 @@ Pentru contabilul firmei sau al persoanei care vinde prin platforme, calendarul 
 
 ::: ghid-temei
 „1. Un Operator de platformă care are obligația de raportare în temeiul pct. 4 lit. a) din subsecțiunea A a secțiunii I raportează autorității competente din România informațiile prevăzute la subsecțiunea B în ceea ce privește Perioada de Raportare. Informațiile prevăzute la subsecțiunea B trebuie raportate cel târziu până la data de 31 ianuarie a anului următor anului calendaristic în care Vânzătorul este identificat ca Vânzător Raportabil."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. A pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „1. Un Operator de platformă care are obligația de raportare finalizează procedura de diligență fiscală prevăzută la subsecțiunile A-E până la data de 31 decembrie a Perioadei de Raportare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. F pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. F pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Calendarul complet:

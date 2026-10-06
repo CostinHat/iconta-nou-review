@@ -16,13 +16,13 @@ Mai departe, fiecare membru își calculează propriul IMCA, după formula obiș
 
 ::: ghid-temei
 „În cazul grupului fiscal, cifra de afaceri de peste 50.000.000 euro prevăzută la alin. (1) se calculează de persoana juridică responsabilă prin însumarea cifrei de afaceri a membrilor grupului fiscal."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „în cazul în care grupul fiscal aplică sistemul de plată trimestrial, fiecare membru al grupului fiscal calculează, trimestrial/anual, după caz, impozitul minim pe cifra de afaceri, potrivit formulei de calcul prevăzute la alin. (3)"
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „persoana juridică responsabilă compară impozitul pe profit trimestrial/anual determinat la nivelul grupului, respectiv plățile anticipate, după caz, cu valoarea însumată a impozitelor minime pe cifra de afaceri transmise de membrii grupului fiscal [...] În cazul în care rezultatul fiscal al grupului este pierdere fiscală, impozitul grupului se datorează la nivelul valorii însumate a impozitelor minime pe cifra de afaceri transmise de membrii grupului."
-— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 18^1 alin. (8) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii:

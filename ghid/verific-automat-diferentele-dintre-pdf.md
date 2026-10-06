@@ -16,7 +16,7 @@ PDF-ul unei facturi RO e-Factura e doar o reprezentare vizuală generată dintr-
 „(4) În situaţia în care factura electronică transmisă respectă structura prevăzută la alin. (1), se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea acesteia în sistemul naţional privind factura electronică RO e-Factura.
 (5) În situaţia în care factura electronică transmisă nu respectă structura prevăzută la alin. (1), emitentul primeşte mesaj cu erorile identificate. [...]
 (6) Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 4 alin. (4)-(6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 4 alin. (4)-(6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce rezultă din articol pentru verificarea practică:

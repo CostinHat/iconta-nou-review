@@ -16,12 +16,12 @@ Pentru contabilul sau administratorul asociației, termenele contează direct: d
 
 ::: ghid-temei
 „(1) Administratorul este obligat să notifice, în scris, proprietarul care are plăți restante la cheltuielile comune ale imobilului asupra datoriilor și să înștiințeze președintele și comitetul executiv al asociației de proprietari despre restanțe. (2) Asociația de proprietari, prin președinte, are dreptul de a acționa în instanță proprietarul care se face vinovat de neplata cotelor de contribuție la cheltuielile asociației mai mult de 60 de zile de la termenul scadent, respectiv 90 zile de la afișarea listei, informând membrii asociației prin afișare la avizier. (3) Acțiunea asociației de proprietari este scutită de taxa de timbru, atât în primă instanță, cât și în cazul exercitării de către aceasta a căilor de atac, ordinare sau extraordinare."
-— Legea 196/2018, art. 78 alin. (1)-(3) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 78 alin. (1)-(3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 ::: ghid-temei
 „(2) Termenul de plată a cotelor de contribuție la cheltuielile asociației de proprietari, afișate pe lista lunară de plată, este de maximum 30 de zile calendaristice de la data afișării."
-— Legea 196/2018, art. 77 alin. (2) (sursă: anaf_surse/legea_196_2018_asociatii_proprietari_consolidat.txt)
+— Legea 196/2018, art. 77 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::
 
 Pașii, în ordinea legii:

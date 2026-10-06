@@ -14,7 +14,7 @@ Aceeași încasare ajunge, din greșeală, înregistrată de două ori — o dat
 
 ::: ghid-temei
 „În cazul operațiunilor contabile pentru care nu se întocmesc documente justificative, înregistrările în contabilitate se fac pe bază de note de contabilitate care au la bază note justificative sau note de calcul, după caz. În cazul stornărilor, pe documentul inițial se menționează numărul și data notei de contabilitate prin care s-a efectuat stornarea operațiunii, iar în nota de contabilitate de stornare se menționează documentul, data și numărul de ordine ale operațiunii care face obiectul stornării."
-— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 20 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1 „Norme generale", pct. 20 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Corecția unei duble înregistrări nu se face prin ștergerea pur și simplu a rândului din contabilitate, ci prin **stornare** — o notă de contabilitate separată, care anulează efectul înregistrării greșite.

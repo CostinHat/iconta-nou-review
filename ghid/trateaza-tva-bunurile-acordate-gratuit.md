@@ -14,10 +14,10 @@ Din perspectiva TVA, „gratuit" nu înseamnă automat „fără obligații fisc
 
 ::: ghid-temei
 „Orice distribuire de bunuri din activele unei persoane impozabile către asociații sau acționarii săi, inclusiv o distribuire de bunuri legată de lichidarea sau de dizolvarea fără lichidare a persoanei impozabile, cu excepția transferului prevăzut la alin. (7), constituie livrare de bunuri efectuată cu plată, dacă taxa aferentă bunurilor respective sau părților lor componente a fost dedusă total sau parțial."
-— Legea nr. 227/2015, art. 270 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 270 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Nu constituie livrare de bunuri, în sensul alin. (1): a) bunurile acordate gratuit din rezerva de stat ca ajutoare umanitare externe sau interne; [...] d) transferul alimentelor destinate consumului uman, aflate aproape de expirarea datei durabilității minimale, în situația în care acesta este efectuat potrivit prevederilor legale privind diminuarea risipei alimentare."
-— Legea nr. 227/2015, art. 270 alin. (8) lit. a), d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 270 alin. (8) lit. a), d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Tabloul complet al tratamentului TVA la bunuri gratuite:

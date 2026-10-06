@@ -16,10 +16,10 @@ Notificarea nu este încă un control. Este o etapă de dinaintea selecției, î
 
 ::: ghid-temei
 „(1) Pentru persoanele fizice identificate cu risc fiscal potrivit art. 138 alin. (2) lit. a), organul competent cu efectuarea verificării situației fiscale personale transmite acestora, în scris, o notificare de conformare cu privire la riscurile fiscale identificate, în scopul reanalizării de către acestea a situației fiscale și, după caz, de a depune sau de a corecta declarațiile fiscale. (2) Prin notificare se comunică persoanei fizice că în termen de 30 de zile de la data comunicării notificării are posibilitatea depunerii sau corectării declarației fiscale. Până la expirarea acestui termen, organul fiscal central prevăzut la art. 138 alin. (2) lit. c) nu întreprinde nicio acțiune în vederea selectării pentru verificarea situației fiscale personale. (3) Depunerea sau corectarea declarației fiscale de către persoana fizică nu împiedică selectarea pentru verificarea situației fiscale personale, însă numai după împlinirea termenului prevăzut la alin. (2). (4) După împlinirea termenului prevăzut la alin. (2) persoanele fizice cu risc fiscal ridicat care nu au remediat riscurile fiscale pentru care au fost notificate sunt supuse obligatoriu unei verificări a situației fiscale personale sau unei verificări documentare."
-— Codul de procedură fiscală (Legea 207/2015), art. 140^1 alin. (1)–(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 140^1 alin. (1)–(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Diferența este semnificativă dacă între veniturile estimate în cadrul analizei de risc și veniturile declarate de persoana fizică și/sau de plătitori este o diferență mai mare de 10% din veniturile declarate, dar nu mai puțin de 50.000 lei;"
-— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (2) lit. a) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 138 alin. (2) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce poți face și ce urmează:

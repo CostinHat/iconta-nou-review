@@ -16,18 +16,18 @@ Dacă devine persoană impozabilă, asta nu înseamnă automat că trebuie să s
 
 ::: ghid-temei
 „În cazul achiziției de terenuri și/sau de construcții de către persoana fizică în scopul vânzării, livrarea acestor bunuri reprezintă o activitate cu caracter de continuitate dacă persoana fizică realizează mai mult de o singură tranzacție în cursul unui an calendaristic. Dacă persoana fizică realizează o singură livrare într-un an aceasta este considerată ocazională și nu este considerată o livrare impozabilă. Dacă intervine o a doua livrare în cursul aceluiași an, prima livrare nu se impozitează, dar este luată în considerare la calculul plafonului prevăzut la art. 310 din Codul fiscal.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 4 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 4 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Situațiile în care persoanele fizice care efectuează livrări de bunuri imobile devin persoane impozabile se prevăd prin normele metodologice.”
-— Codul fiscal (Legea 227/2015), art. 269 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă care îndeplinește condițiile prevăzute la alin. (1) pentru aplicarea regimului special de scutire poate opta oricând pentru aplicarea regimului normal de taxă. Persoana impozabilă care realizează în cursul unui an calendaristic exclusiv operațiuni scutite fără drept de deducere conform art. 292 nu se consideră că depășește plafonul prevăzut la alin. (1)”
-— Codul fiscal (Legea 227/2015), art. 310 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana impozabilă care aplică regimul special de scutire și a cărei cifră de afaceri [...] depășește plafonul de scutire prevăzut la alin. (1) trebuie să solicite înregistrarea în scopuri de TVA, conform art. 316 [...] cel târziu la data depășirii plafonului.”
-— Codul fiscal (Legea 227/2015), art. 310 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se judecă situația:

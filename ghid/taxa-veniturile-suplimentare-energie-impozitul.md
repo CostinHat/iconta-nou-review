@@ -14,7 +14,7 @@ Companiile mari din sectorul energiei nu plătesc doar impozit pe profit calcula
 
 ::: ghid-temei
 „Contribuabilii, alții decât cei prevăzuți la art. 15, care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit, cumulat de la începutul anului fiscal/anului fiscal modificat până la sfârșitul trimestrului/anului de calcul, mai mic decât impozitul minim pe cifra de afaceri stabilit potrivit prevederilor alin. (3), sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri."
-— Legea 227/2015 (Codul fiscal), art. 18^1 alin. (1), introdus prin Legea 296/2023 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Legea 227/2015 (Codul fiscal), art. 18^1 alin. (1), introdus prin Legea 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 Regula generală (IMCA de 1% din indicatorul VT–Vs–I–A) se aplică și companiilor din energie, dar cu o ajustare specifică prevăzută pentru cele reglementate de ANRE:

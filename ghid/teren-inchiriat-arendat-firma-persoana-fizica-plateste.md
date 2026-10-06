@@ -16,20 +16,20 @@ Dacă părțile convin prin contract ca firma să suporte impozitul, înțeleger
 
 ::: ghid-temei
 „În cazul în care terenul, proprietate privată a persoanelor fizice sau juridice, este închiriat, concesionat sau arendat în baza unui contract de închiriere, de concesiune ori de arendare, după caz, impozitul pe teren se datorează de către proprietar, cu excepția cazurilor prevăzute la pct. 66 ."
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 68 (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul IX, pct. 68 (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Orice persoană care are în proprietate teren situat în România datorează pentru acesta un impozit anual, exceptând cazurile în care în prezentul titlu se prevede altfel."
-— Codul fiscal (Legea 227/2015), art. 463 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 463 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Pentru terenurile aflate în domeniul public sau privat al statului ori al unităților administrativ-teritoriale, concesionate, închiriate, date în administrare ori în folosință, după caz, oricăror entități, altele decât cele de drept public, se stabilește taxa pe teren"
-— Codul fiscal (Legea 227/2015), art. 463 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 463 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „impozitul pe teren se datorează de locatar, începând cu data de 1 ianuarie a anului următor celui în care a fost încheiat contractul;"
-— Codul fiscal (Legea 227/2015), art. 466 alin. (7) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 466 alin. (7) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, după tipul contractului:

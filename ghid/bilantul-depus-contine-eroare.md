@@ -34,6 +34,6 @@ Stornarea propriu-zisă se face fie prin stornare în roșu, fie prin înregistr
 
 ## Ce face iConta.eu
 
-Trebuie spus deschis: motorul de generare a bilanțului din iConta.eu (`core/bilant.py`, `core/bilant_api.py`) **nu are nicio funcție de corectare sau rectificare a unui S1005/S1003 deja generat** — nu există niciun mecanism care să „redeschidă" o declarație deja produsă. Ce oferă aplicația este suportul contabil pentru tratamentul corect descris mai sus: înregistrarea notei de corecție (pe 117, pentru erorile din exerciții anterioare, sau direct pe conturile de clasa 6/7, pentru erorile din exercițiul curent), care va fi reflectată automat la următoarea generare a bilanțului din balanța actualizată.
+Trebuie spus deschis: motorul de generare a bilanțului din iConta.eu **nu are nicio funcție de corectare sau rectificare a unui S1005/S1003 deja generat** — nu există niciun mecanism care să „redeschidă" o declarație deja produsă. Ce oferă aplicația este suportul contabil pentru tratamentul corect descris mai sus: înregistrarea notei de corecție (pe 117, pentru erorile din exerciții anterioare, sau direct pe conturile de clasa 6/7, pentru erorile din exercițiul curent), care va fi reflectată automat la următoarea generare a bilanțului din balanța actualizată.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Procentul de compensare în cotă forfetară se aplică pentru: a) produsele agricole prevăzute la alin. (1) lit. e) și serviciile agricole prevăzute la alin. (1) lit. d), livrate/prestate de agricultor către alte persoane impozabile decât cele care beneficiază, în interiorul țării, de regimul special prevăzut de prezentul articol [...]"
-— Codul fiscal, art. 315^1 alin. (3) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 315^1 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Compensația forfetară de 8% este, prin definiție legală, un mecanism B2B: se aplică doar când cumpărătorul este o altă persoană impozabilă (de regulă o firmă înregistrată în scopuri de TVA), pentru că doar acesta poate deduce compensația conform art. 315^1 alin. (17).

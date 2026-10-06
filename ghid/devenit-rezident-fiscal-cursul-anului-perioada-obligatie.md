@@ -14,15 +14,15 @@ Persoana fizică devenită rezidentă în România în cursul unui an are **obli
 
 ::: ghid-temei
 „Dacă o persoană fizică devine rezidentă în România numai pentru o perioadă dintr-un an fiscal, această persoană fizică are obligație fiscală integrală în România numai pentru acea perioadă din anul fiscal în care este considerată rezidentă; pentru perioada din anul fiscal, respectiv de la data sosirii în România și până la data la care devine rezidentă în România, persoana fizică este considerată nerezidentă, fiind supusă impozitului numai pentru veniturile obținute din România."
-— OMFP 1099/2016, art. 16 alin. (4) (sursă: anaf_surse/ordin_1099_2016.html)
+— OMFP 1099/2016, art. 16 alin. (4) (sursă: [Ordinul MFP nr. 1099/2016 pentru reglementarea unor aspecte privind rezidența în România a persoanelor fizice](https://legislatie.just.ro/Public/DetaliiDocument/180514))
 :::
 
 ::: ghid-temei
 „Persoana fizică nerezidentă care îndeplinește condiția de rezidență prevăzută la art. 7 pct. 28 lit. b) este supusă impozitului pe venit pentru veniturile obținute din orice sursă, atât din România, cât și din afara României, începând cu prima zi în care declară că centrul intereselor vitale se află în România."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoana fizică nerezidentă care îndeplinește condiția de rezidență prevăzută la art. 7 pct. 28 lit. c) este supusă impozitului pe venit pentru veniturile obținute din orice sursă, atât din România, cât și din afara României, începând cu prima zi a sosirii în România."
-— Codul fiscal (Legea 227/2015), art. 59 alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 59 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se citesc împreună:

@@ -16,15 +16,15 @@ Răspunsul scris devine astfel o protecție reală, cu condiția ca întrebarea 
 
 ::: ghid-temei
 „în exercitarea dreptului său de apreciere, organul fiscal trebuie să ia în considerare opinia emisă în scris de organul fiscal competent respectivului contribuabil/plătitor în cadrul activității de asistență și îndrumare a contribuabililor/plătitorilor, precum și soluția adoptată de organul fiscal în cadrul unui act administrativ fiscal sau de instanța judecătorească, printr-o hotărâre definitivă, emisă anterior, pentru situații de fapt similare la același contribuabil/plătitor."
-— Codul de procedură fiscală (Legea 207/2015), art. 6 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 6 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care organul fiscal constată că există diferențe între starea de fapt fiscală a contribuabilului/plătitorului și informațiile avute în vedere la emiterea unei opinii scrise sau a unui act administrativ fiscal la același contribuabil/plătitor, organul fiscal are dreptul să consemneze constatările în conformitate cu situația fiscală reală și cu legislația fiscală și are obligația să menționeze în scris motivele pentru care nu ia în considerare opinia prealabilă."
-— Codul de procedură fiscală (Legea 207/2015), art. 6 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 6 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „(11) Soluția fiscală individuală anticipată și acordul de preț în avans sunt opozabile și obligatorii față de organul fiscal, numai dacă termenii și condițiile acestora au fost respectate de contribuabil/plătitor."
-— Codul de procedură fiscală (Legea 207/2015), art. 52 alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 52 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce înseamnă concret:

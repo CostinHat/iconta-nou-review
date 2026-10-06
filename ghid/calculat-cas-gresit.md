@@ -27,7 +27,7 @@ CAS nu poate fi calculat sub nivelul corespunzător salariului minim brut pe ța
 
 Recalculați luna respectivă pe baza corectă (podea corectă, salariu minim corect pentru fereastra din acea lună, facilitate aplicată doar dacă toate condițiile sunt îndeplinite). Diferența dintre CAS-ul declarat greșit și CAS-ul recalculat corect se regularizează, de regulă, printr-o declarație rectificativă pentru declarația care conținea CAS-ul greșit.
 
-**De semnalat onest**: procedura efectivă de depunere a unei declarații rectificative (formular, termen, mecanism) nu face parte din codul verificat pentru acest ghid — dosarul de cercetare acoperă motorul de calcul salarial (`core/salarizare.py`), nu fluxul de corecție al declarațiilor deja depuse. Pentru pașii exacți de rectificare, verificați direct funcționalitatea de declarații a aplicației.
+**De semnalat onest**: procedura efectivă de depunere a unei declarații rectificative (formular, termen, mecanism) nu face parte din codul verificat pentru acest ghid — dosarul de cercetare acoperă motorul de calcul salarial, nu fluxul de corecție al declarațiilor deja depuse. Pentru pașii exacți de rectificare, verificați direct funcționalitatea de declarații a aplicației.
 
 ## Ce se greșește în practică
 
@@ -36,6 +36,6 @@ Recalculați luna respectivă pe baza corectă (podea corectă, salariu minim co
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/salarizare.py`) verifică automat podeaua de contribuții („baza_podea", liniile 292-323) de fiecare dată când brutul introdus e sub pragul corespunzător lunii — pragul vine din registrul „period-aware" `core.common.COTE`, potrivit fereastrei active (salariul minim, eventual redus cu facilitatea). Recalcularea unei luni anterioare cu datele corecte pentru acea lună (dată explicită, obligatorie pentru funcția de deducere și pentru selectarea cotelor) produce automat valoarea corectă de CAS pentru comparație cu ce a fost declarat greșit.
+Motorul de calcul verifică automat podeaua de contribuții („baza_podea") de fiecare dată când brutul introdus e sub pragul corespunzător lunii — pragul vine din registrul „period-aware" `core.common.COTE`, potrivit fereastrei active (salariul minim, eventual redus cu facilitatea). Recalcularea unei luni anterioare cu datele corecte pentru acea lună (dată explicită, obligatorie pentru funcția de deducere și pentru selectarea cotelor) produce automat valoarea corectă de CAS pentru comparație cu ce a fost declarat greșit.
 
 [iConta.eu](/)

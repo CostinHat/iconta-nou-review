@@ -14,7 +14,7 @@ Un „checklist fiscal pentru restaurant" nu are un temei legal unic — activit
 
 ::: ghid-temei
 „Cota redusă de 11% se aplică asupra bazei de impozitare pentru [...] serviciile de restaurant și de catering, cu excepția băuturilor alcoolice, precum și a băuturilor nealcoolice care se încadrează la codul NC 2202."
-— Codul fiscal, art. 291 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 291 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru un restaurant:

@@ -16,15 +16,15 @@ Pentru venitul în natură, cum ar fi un apartament sau acțiuni, contează cine
 
 ::: ghid-temei
 „Venitul realizat în bani și în natură de beneficiarul persoană fizică la transferul masei patrimoniale de la fiduciar se supune impunerii potrivit prevederilor cap. X - Venituri din alte surse. Fac excepție veniturile realizate de beneficiar din transferul masei patrimoniale, în situația în care acesta este constituitorul, caz în care veniturile respective sunt neimpozabile. Obligația evaluării veniturilor realizate, la prețul stabilit prin expertiză tehnică, la locul și la data primirii acestora, revine fiduciarului. Pierderile fiscale înregistrate din administrarea masei patrimoniale de către fiduciar reprezintă pierderi definitive și nu se deduc la determinarea venitului impozabil pentru beneficiar ulterior transferului masei patrimoniale de la fiduciar la beneficiarul persoană fizică."
-— Codul fiscal (Legea 227/2015), art. 63 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 63 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Contribuabilii care realizează venituri din alte surse identificate ca fiind impozabile, altele decât cele prevăzute la art. 115 alin. (1) [...] au obligația de a depune Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice la organul fiscal competent, pentru fiecare an fiscal"
-— Codul fiscal (Legea 227/2015), art. 116 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 116 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul pe venit datorat se calculează de către contribuabil, pe baza declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice prin aplicarea cotei de 10% asupra: [...] a) venitului brut, în cazul veniturilor din alte surse pentru care contribuabilii au obligația depunerii declarației unice"
-— Codul fiscal (Legea 227/2015), art. 116 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 116 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

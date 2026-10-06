@@ -16,7 +16,7 @@ Livrarea intracomunitară de bunuri e scutită de TVA cu drept de deducere, dar 
 „(2) Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]
 (2^1) Scutirea prevăzută la alin. (2) lit. a) nu se aplică în cazul în care furnizorul nu a respectat obligația prevăzută la art. 325 alin. (1) de a depune o declarație recapitulativă sau declarația recapitulativă depusă de acesta nu conține informațiile corecte referitoare la această livrare [...], cu excepția cazului în care furnizorul poate justifica în mod corespunzător deficiența într-un mod considerat satisfăcător de autoritățile fiscale competente.
 (3) Prin ordin al ministrului finanțelor publice se stabilesc, acolo unde este cazul, documentele necesare pentru a justifica scutirea de taxă pentru operațiunile prevăzute la alin. (1) și (2) și, după caz, procedura și condițiile care trebuie îndeplinite pentru aplicarea scutirii de taxă."
-— Legea 227/2015 (Codul fiscal), art. 294 alin. (2) lit. a), alin. (2^1) și alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 294 alin. (2) lit. a), alin. (2^1) și alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din text rezultă cadrul în care se plasează întrebarea despre lipsa CMR-ului:

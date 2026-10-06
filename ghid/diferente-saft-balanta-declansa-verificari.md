@@ -14,7 +14,7 @@ Selectarea firmelor pentru inspecție fiscală nu se mai face „la întâmplare
 
 ::: ghid-temei
 „(1) În cazul creanțelor fiscale administrate de organul fiscal local, selectarea contribuabililor/plătitorilor ce urmează a fi supuși inspecției fiscale este efectuată de către organul de inspecție fiscală competent, în funcție de nivelul riscului. Nivelul riscului se stabilește pe baza analizei de risc. În cazul creanțelor fiscale administrate de organul fiscal central, selectarea contribuabililor/plătitorilor pentru efectuarea acțiunii de inspecție fiscală se efectuează la nivelul aparatului central al ANAF, în funcție de nivelul riscului stabilit pe baza analizei de risc."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 121 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea definește explicit „analiza de risc" ca fiind „activitatea efectuată de organul fiscal în scopul identificării riscurilor de neconformare în ceea ce privește îndeplinirea de către contribuabil/plătitor a obligațiilor prevăzute de legislația fiscală" (art. 7 pct. 3). Tipurile de neconcordanțe SAF-T vs. balanță care alimentează tipic o astfel de analiză:
@@ -33,6 +33,6 @@ Când riscul e identificat, contribuabilul primește întâi o **notificare de c
 
 ## Ce face iConta.eu
 
-iConta.eu nu are acces la sistemul intern de analiză de risc al ANAF și nu poate simula sau prezice o selecție pentru inspecție. Ce oferă concret: o verificare internă, independentă, a coerenței propriului SAF-T înainte de depunere — `core/d406_reconciliere.py` reconstruiește balanța de rulaje per cont direct din notele contabile validate ale firmei și o compară cu rulajele din fișierul SAF-T generat, blocând depunerea dacă apare o divergență pe un cont sau un dezechilibru debit/credit pe o notă. Scopul e să elimine, înainte de depunere, exact tipul de neconcordanțe (rulaj greșit, notă dezechilibrată) care ar putea atrage atenția unei analize de risc ANAF — nu să evalueze riscul propriu-zis, funcție care nu există în aplicație.
+iConta.eu nu are acces la sistemul intern de analiză de risc al ANAF și nu poate simula sau prezice o selecție pentru inspecție. Ce oferă concret: o verificare internă, independentă, a coerenței propriului SAF-T înainte de depunere — aplicația reconstruiește balanța de rulaje per cont direct din notele contabile validate ale firmei și o compară cu rulajele din fișierul SAF-T generat, blocând depunerea dacă apare o divergență pe un cont sau un dezechilibru debit/credit pe o notă. Scopul e să elimine, înainte de depunere, exact tipul de neconcordanțe (rulaj greșit, notă dezechilibrată) care ar putea atrage atenția unei analize de risc ANAF — nu să evalueze riscul propriu-zis, funcție care nu există în aplicație.
 
 [iConta.eu](/)

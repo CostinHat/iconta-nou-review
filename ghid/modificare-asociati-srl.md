@@ -16,22 +16,22 @@ Modificarea propriu-zisă nu se face în iConta.eu și nu ține de funcționalit
 
 ::: ghid-temei
 „Cota-parte din profit ce se plătește fiecărui asociat constituie dividend."
-— Legea 31/1990, art. 67 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat, opțional trimestrial pe baza situațiilor financiare interimare și anual, după regularizarea efectuată prin situațiile financiare anuale, dacă prin actul constitutiv nu se prevede altfel."
-— Legea 31/1990, art. 67 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Dividendele care se cuvin după data transmiterii acțiunilor aparțin cesionarului, în afară de cazul în care părțile au convenit altfel."
-— Legea 31/1990, art. 67 alin. (6) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 67 alin. (6) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Transmiterea are efect față de terți numai din momentul înscrierii ei în registrul comerțului."
-— Legea 31/1990, art. 203 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 203 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Aceste texte devin relevante după transmiterea părților sociale. Dividendele se împart proporțional cu cotele de participare la capitalul social vărsat (dacă actul constitutiv nu prevede altfel), iar cele care se cuvin după data transmiterii aparțin noului asociat, dacă părțile nu au convenit altfel. Concret: un dividend distribuit după data transmiterii se calculează pe noile cote; unul distribuit înainte rămâne al vechilor asociați, chiar dacă se plătește după cesiune.

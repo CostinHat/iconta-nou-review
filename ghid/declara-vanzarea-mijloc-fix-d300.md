@@ -20,7 +20,7 @@ Din perspectiva decontului de TVA, vânzarea unui mijloc fix nu are un tratament
 
 ## Cum intră în decont
 
-Structura confirmată în cod (`core/d300.py`, liniile 46-47) mapează fiecare cotă de TVA pe un rând specific de livrare: **21% → R9, 11% → R10, 9% → R11**. Vânzarea unui mijloc fix se declară exact ca orice altă vânzare, pe rândul corespunzător cotei aplicate facturii de vânzare — nu există un rând sau o secțiune separată, în structura verificată, dedicată exclusiv mijloacelor fixe.
+Structura confirmată în cod mapează fiecare cotă de TVA pe un rând specific de livrare: **21% → R9, 11% → R10, 9% → R11**. Vânzarea unui mijloc fix se declară exact ca orice altă vânzare, pe rândul corespunzător cotei aplicate facturii de vânzare — nu există un rând sau o secțiune separată, în structura verificată, dedicată exclusiv mijloacelor fixe.
 
 Notă din sursele verificate: doar cotele 21%, 11% și 9% au rând automat în această structură — orice altă cotă aplicată (de exemplu una tranzitorie sau specială) „dispare" din decontul automat dacă nu e tratată manual, cu avertisment generat de aplicație.
 
@@ -34,6 +34,6 @@ Un aspect care nu face parte din sursele verificate pentru acest ghid: dacă vâ
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 (`core/d300.py`) rutează automat orice livrare — inclusiv vânzarea unui mijloc fix — pe rândul corespunzător cotei facturate (R9 la 21%, R10 la 11%, R11 la 9%), cu avertisment explicit dacă apare o cotă neobișnuită, netratată automat. Aplicația nu calculează separat o eventuală ajustare a TVA deduse la achiziția mijlocului fix vândut — acel calcul, dacă e aplicabil, rămâne în afara acestui mecanism.
+Decontul de TVA v12 rutează automat orice livrare — inclusiv vânzarea unui mijloc fix — pe rândul corespunzător cotei facturate (R9 la 21%, R10 la 11%, R11 la 9%), cu avertisment explicit dacă apare o cotă neobișnuită, netratată automat. Aplicația nu calculează separat o eventuală ajustare a TVA deduse la achiziția mijlocului fix vândut — acel calcul, dacă e aplicabil, rămâne în afara acestui mecanism.
 
 [iConta.eu](/)

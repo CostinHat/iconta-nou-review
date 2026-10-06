@@ -16,15 +16,15 @@ Pentru contabilul utilizatorului, asta înseamnă că salariatul temporar nu int
 
 ::: ghid-temei
 „Pe toată durata misiunii salariatul temporar beneficiază de salariul plătit de agentul de muncă temporară."
-— Codul muncii (Legea 53/2003), art. 96 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 96 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „(3) Agentul de muncă temporară este cel care reține și virează toate contribuțiile și impozitele datorate de salariatul temporar către bugetele statului și plătește pentru acesta toate contribuțiile datorate în condițiile legii.(4) În cazul în care în termen de 15 zile calendaristice de la data la care obligațiile privind plata salariului și cele privind contribuțiile și impozitele au devenit scadente și exigibile, iar agentul de muncă temporară nu le execută, ele vor fi plătite de utilizator, în baza solicitării salariatului temporar.(5) Utilizatorul care a plătit sumele datorate potrivit alin. (4) se subrogă, pentru sumele plătite, în drepturile salariatului temporar împotriva agentului de muncă temporară."
-— Codul muncii (Legea 53/2003), art. 96 alin. (3)-(5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 96 alin. (3)-(5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „Salariul primit de salariatul temporar pentru fiecare misiune nu poate fi inferior celui pe care îl primește salariatul utilizatorului, care prestează aceeași muncă sau una similară cu cea a salariatului temporar."
-— Codul muncii (Legea 53/2003), art. 92 alin. (3) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 92 alin. (3) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Cine ce face:

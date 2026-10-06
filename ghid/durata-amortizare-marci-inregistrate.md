@@ -14,7 +14,7 @@ O marcă de comerț sau de fabrică achiziționată (nu creată intern) este o i
 
 ::: ghid-temei
 „Cheltuielile aferente achiziționării de brevete, drepturi de autor, licențe, mărci de comerț sau fabrică, drepturi de explorare a resurselor naturale și alte imobilizări necorporale recunoscute din punct de vedere contabil, cu excepția cheltuielilor de constituire, a fondului comercial, a imobilizărilor necorporale cu durată de viață utilă nedeterminată, încadrate astfel potrivit reglementărilor contabile aplicabile, precum și cheltuielile de dezvoltare care din punct de vedere contabil reprezintă imobilizări necorporale se recuperează prin intermediul deducerilor de amortizare liniară pe perioada contractului sau pe durata de utilizare, după caz."
-— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 28 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic pentru o marcă înregistrată:

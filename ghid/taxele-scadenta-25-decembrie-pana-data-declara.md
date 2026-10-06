@@ -16,12 +16,12 @@ Regula lovește în primul rând obligațiile lunare cu termen la 25 a lunii urm
 
 ::: ghid-temei
 „Creanțele fiscale administrate de organul fiscal central pentru care, potrivit Codului fiscal sau altor legi care le reglementează, scadența și/sau termenul de declarare se împlinesc la 25 decembrie, sunt scadente și/sau se declară până la data de 21 decembrie. în situația în care data de 21 decembrie, este zi nelucrătoare, creanțele fiscale sunt scadente și/sau se declară până în ultima zi lucrătoare anterioară datei de 21 decembrie."
-— Codul de procedură fiscală (Legea 207/2015), art. 155 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 155 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă."
-— Codul fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică:

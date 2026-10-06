@@ -14,7 +14,7 @@ După o inspecție fiscală, organul de control emite o decizie de impunere prin
 
 ::: ghid-temei
 „(1) Pentru diferențele de obligații fiscale principale și pentru obligațiile fiscale accesorii, stabilite prin decizie potrivit legii, termenul de plată se stabilește în funcție de data comunicării deciziei, astfel: a) dacă data comunicării este cuprinsă în intervalul 1 - 15 din lună, termenul de plată este până la data de 5 a lunii următoare, inclusiv; b) dacă data comunicării este cuprinsă în intervalul 16 - 31 din lună, termenul de plată este până la data de 20 a lunii următoare, inclusiv."
-— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 156 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 156 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 - Termenul de plată nu curge de la data emiterii deciziei de impunere, ci de la data la care aceasta a fost **comunicată efectiv** contribuabilului.

@@ -16,12 +16,12 @@ Regula în forma actuală se aplică **veniturilor aferente lunii august 2025 ș
 
 ::: ghid-temei
 „Baza lunară de calcul al contribuției de asigurări sociale de sănătate datorată de persoanele fizice prevăzute la art. 153 alin. (1) lit. f^4) și f^5) o reprezintă cuantumul indemnizației de șomaj sau, după caz, al altor drepturi de protecție socială ori al indemnizației de asigurări sociale de sănătate de care beneficiază conform prevederilor legale."
-— Codul fiscal (Legea 227/2015), art. 157^4 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 157^4 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Plătitorii de venit prevăzuți la art. 153 alin. (1) lit. f^4) și f^5) au obligația de a calcula și de a reține la sursă contribuția de asigurări sociale de sănătate datorată pentru indemnizațiile prevăzute la art. 155 alin. (1) lit. i) și j) ."
-— Codul fiscal (Legea 227/2015), art. 168 alin. (1^3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 168 alin. (1^3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce spune legea, pe elemente:

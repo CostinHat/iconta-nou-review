@@ -14,7 +14,7 @@ O firmă românească trimite marfă într-un depozit din alt stat membru, unde 
 
 ::: ghid-temei
 „Transferul de către o persoană impozabilă de bunuri care fac parte din activele activității sale economice către un alt stat membru în cadrul regimului de stocuri la dispoziția clientului nu este tratat ca o livrare de bunuri efectuată cu titlu oneros. [...] se consideră că regimul de stocuri la dispoziția clientului există atunci când sunt îndeplinite următoarele condiții: a) bunurile sunt expediate sau transportate de o persoană impozabilă sau de o parte terță în numele său către un alt stat membru, în vederea livrării bunurilor respective în acel stat membru, într-un stadiu ulterior și după sosire, către altă persoană impozabilă care are dreptul să intre în posesia respectivelor bunuri în conformitate cu un acord existent între ambele persoane impozabile; b) persoana impozabilă care expediază sau transportă bunurile nu și-a stabilit activitatea economică și nici nu are un sediu fix în statul membru către care sunt expediate sau transportate bunurile; c) persoana impozabilă căreia îi sunt destinate a fi livrate bunurile este identificată în scopuri de TVA în statul membru către care sunt expediate sau transportate bunurile [...]."
-— Codul fiscal (Legea 227/2015), art. 270^1 alin. (1) și (2) lit. a)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 270^1 alin. (1) și (2) lit. a)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Condițiile sunt cumulative, iar dacă lipsește vreuna, marfa trimisă în consignație nu intră la acest regim simplificat:

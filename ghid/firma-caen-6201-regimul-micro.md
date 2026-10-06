@@ -14,7 +14,7 @@ Firmele de IT cu obiect de activitate CAEN 6201 s-au obișnuit, în ultimii ani,
 
 ::: ghid-temei
 „(1) Cota de impozit pe veniturile microîntreprinderilor este de 1%. [...] (1^1) Abrogat."
-— Legea nr. 227/2015 (Codul fiscal), art. 51 alin. (1), modificat de OUG nr. 89/2025, aplicabil de la 01-01-2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 51 alin. (1), modificat de OUG nr. 89/2025, aplicabil de la 01-01-2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce s-a schimbat concret pentru firmele cu CAEN 6201:

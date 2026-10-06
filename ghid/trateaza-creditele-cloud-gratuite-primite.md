@@ -14,7 +14,7 @@ E frecvent ca un startup să primească, de la un furnizor de servicii cloud, un
 
 ::: ghid-temei
 „La data intrării în entitate, bunurile se evaluează și se înregistrează în contabilitate la valoarea de intrare, care se stabilește astfel: [...] d) la valoarea justă - pentru bunurile obținute cu titlu gratuit sau constatate plus la inventariere. [...] Valoarea justă a activelor se determină, în general, după datele de evidență de pe piață, printr-o evaluare efectuată, de regulă, de evaluatori autorizați, potrivit legii."
-— OMFP 1802/2014 (reglementări contabile), pct. 75 alin. (1) lit. d) și alin. (2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 75 alin. (1) lit. d) și alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Cum se aplică, cu o rezervă de interpretare, la creditele cloud:

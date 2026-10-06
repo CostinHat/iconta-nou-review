@@ -14,7 +14,7 @@ Da. Legea societăților nu cere ca sediul social să fie deținut în proprieta
 
 ::: ghid-temei
 „Cererea va fi însoțită de: [...] c) dovada sediului declarat;"
-— Legea 31/1990, art. 36 alin. (2) lit. c) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 36 alin. (2) lit. c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Legea nu condiționează înmatricularea de un anumit tip de titlu asupra spațiului — cere doar „dovada sediului declarat", ceea ce Oficiul Registrului Comerțului acceptă, în practică, sub forma:

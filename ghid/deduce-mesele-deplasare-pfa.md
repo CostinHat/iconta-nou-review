@@ -14,7 +14,7 @@ Regimul fiscal al PFA e diferit de cel al unui salariat, iar diferența conteaz�
 
 ::: ghid-temei
 „(4) Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: [...] h) să fie efectuate pe perioada deplasării contribuabilului care își desfășoară activitatea individual și/sau într-o formă de asociere, în țară și în străinătate, în scopul desfășurării activității, reprezentând cheltuieli de cazare și transport, altele decât cele prevăzute la alin. (7) lit. k)."
-— Codul fiscal, art. 68 alin. (4) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 68 alin. (4) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă direct din text:
@@ -32,7 +32,7 @@ Ce rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Modulul de deconturi de deplasare și diurnă (`core/deconturi.py`, ecranul „Decont deplasare / diurnă") funcționează exclusiv la nivelul unei firme plătitoare de partidă dublă — generează note contabile de tip 542/625/4426/641, specifice contabilității în partidă dublă. PFA-urile țin, în schimb, Registrul de încasări și plăți (partidă simplă), un flux complet diferit. Nu există în cod nicio legătură între modulul de deconturi și evidența unei PFA.
+Modulul de deconturi de deplasare și diurnă (ecranul „Decont deplasare / diurnă") funcționează exclusiv la nivelul unei firme plătitoare de partidă dublă — generează note contabile de tip 542/625/4426/641, specifice contabilității în partidă dublă. PFA-urile țin, în schimb, Registrul de încasări și plăți (partidă simplă), un flux complet diferit. Nu există în cod nicio legătură între modulul de deconturi și evidența unei PFA.
 
 Concret, iConta.eu **nu are astăzi o funcție dedicată** pentru cheltuielile de deplasare ale unei PFA — nici pentru cazare/transport (singurele deductibile conform art. 68 alin. (4) lit. h) CF), nici, cu atât mai puțin, pentru mese, care oricum nu au temei de deducere separată. Titularul unei PFA trebuie să înregistreze aceste cheltuieli prin instrumentele generale de evidență a activității independente din aplicație, nu prin ecranul de deconturi construit pentru salariați.
 

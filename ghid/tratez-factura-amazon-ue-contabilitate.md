@@ -14,7 +14,7 @@ O factură emisă de Amazon (de regulă Amazon EU S.à r.l., cu sediul în Luxem
 
 ::: ghid-temei
 „(1) Se consideră achiziție intracomunitară de bunuri obținerea dreptului de a dispune, ca și un proprietar, de bunuri mobile corporale expediate sau transportate la destinația indicată de cumpărător, de către furnizor, de către cumpărător sau de către altă persoană, în contul furnizorului sau al cumpărătorului, către un stat membru, altul decât cel de plecare a transportului sau de expediere a bunurilor."
-— Legea nr. 227/2015 (Codul fiscal), art. 273 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 273 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din citat rezultă mecanismul de bază:
@@ -31,6 +31,6 @@ Din citat rezultă mecanismul de bază:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un conector dedicat pentru Amazon**. Aplicația oferă un modul general pentru achiziții intracomunitare (`core/intracomunitar.py`), cu funcții de validare VIES a codului de TVA al furnizorului și de calcul al taxării inverse (`tva_taxare_inversa`, `note_taxare_inversa`), pe care contabilul le poate folosi pentru a înregistra manual o factură Amazon ca AIC. Singurul conector automat de import comenzi din prezent este cel pentru WooCommerce (`core/woocommerce.py`), relevant pentru magazine online proprii, nu pentru achiziții de la Amazon. Introducerea și clasificarea corectă a facturii Amazon — AIC, achiziție de servicii sau achiziție cu TVA străin nedeductibil — rămân o decizie manuală a contabilului.
+La data acestui ghid, iConta.eu **nu are un conector dedicat pentru Amazon**. Aplicația oferă un modul general pentru achiziții intracomunitare, cu funcții de validare VIES a codului de TVA al furnizorului și de calcul al taxării inverse (`tva_taxare_inversa`, `note_taxare_inversa`), pe care contabilul le poate folosi pentru a înregistra manual o factură Amazon ca AIC. Singurul conector automat de import comenzi din prezent este cel pentru WooCommerce, relevant pentru magazine online proprii, nu pentru achiziții de la Amazon. Introducerea și clasificarea corectă a facturii Amazon — AIC, achiziție de servicii sau achiziție cu TVA străin nedeductibil — rămân o decizie manuală a contabilului.
 
 [iConta.eu](/)

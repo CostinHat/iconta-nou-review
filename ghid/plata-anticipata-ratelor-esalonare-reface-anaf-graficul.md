@@ -16,10 +16,10 @@ Firmele care încasează o sumă mare pe parcursul eșalonării pot scăpa astfe
 
 ::: ghid-temei
 „Debitorul poate plăti anticipat, parțial sau total, sumele cuprinse în graficul de eșalonare la plată. în acest caz, debitorul notifică organului fiscal, prin cerere, intenția de a stinge anticipat aceste sume. în cazul achitării anticipate parțiale, organul fiscal competent înștiințează debitorul, până la următorul termen de plată din graficul de eșalonare, cu privire la stingerea sumelor datorate în contul următoarelor rate de eșalonare aprobate până la concurența cu suma achitată."
-— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „în situația în care se sting anticipat mai mult de 3 rate din graficul de eșalonare la plată, organul fiscal competent, din oficiu, reface graficul de eșalonare, până la următorul termen de plată a ratelor, cu respectarea perioadei de eșalonare aprobate. în acest caz, ratele ce fac obiectul stingerii anticipate sunt exigibile la data plății sau la data emiterii deciziei de rambursare, după caz. Noul grafic de eșalonare se comunică debitorului prin decizia organului fiscal."
-— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (5) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 207 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii și efectele:

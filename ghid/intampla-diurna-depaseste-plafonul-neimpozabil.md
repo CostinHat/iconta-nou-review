@@ -14,7 +14,7 @@ Diurna acordată salariaților pentru delegare/detașare are un plafon neimpozab
 
 ::: ghid-temei
 „indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați [...] pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat."
-— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 76 alin. (2) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret din text, cu valorile în vigoare:
@@ -32,6 +32,6 @@ Ce rezultă concret din text, cu valorile în vigoare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție dedicată pentru plafonul neimpozabil al diurnei (`core/deconturi.py`, `plafon_diurna`), care aplică exact formula legală — minimul dintre 2,5 ori diurna internă bugetară (period-aware: 20 lei/zi până la 31.03.2023, 23 lei/zi din 01.04.2023, conform Ordinului MF 1235/2023) și 3 salarii de bază raportate la zilele lucrătoare din lună — și calculează automat partea neimpozabilă și excedentul impozabil al diurnei acordate. Rezultatul alimentează decontul de deplasare și, pentru partea impozabilă, statul de plată și **D112**.
+La data acestui ghid, iConta.eu are o funcție dedicată pentru plafonul neimpozabil al diurnei (`plafon_diurna`), care aplică exact formula legală — minimul dintre 2,5 ori diurna internă bugetară (period-aware: 20 lei/zi până la 31.03.2023, 23 lei/zi din 01.04.2023, conform Ordinului MF 1235/2023) și 3 salarii de bază raportate la zilele lucrătoare din lună — și calculează automat partea neimpozabilă și excedentul impozabil al diurnei acordate. Rezultatul alimentează decontul de deplasare și, pentru partea impozabilă, statul de plată și **D112**.
 
 [iConta.eu](/)

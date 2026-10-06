@@ -14,7 +14,7 @@ Regimul special OSS (One Stop Shop) permite unei firme din România să declare,
 
 ::: ghid-temei
 „(7) Declarația specială de TVA trebuie să conțină următoarele informații: [...] b) valoarea totală, exclusiv taxa, cotele taxei aplicabile și valoarea totală a taxei corespunzătoare subdivizată pe cote, datorate fiecărui stat membru de consum în care taxa este exigibilă, în ceea ce privește următoarele livrări de bunuri sau prestări de servicii reglementate de prezentul articol, efectuate în cursul perioadei fiscale: 1. vânzările intracomunitare de bunuri la distanță; [...] 3. prestările de servicii; [...] c) valoarea totală a taxei datorate în statele membre de consum."
-— Legea nr. 227/2015 (Codul fiscal), art. 315 alin. (7) lit. b)-c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 315 alin. (7) lit. b)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, „separarea pe țări" nu e o opțiune de raportare, ci structura obligatorie a declarației:
@@ -31,6 +31,6 @@ Practic, „separarea pe țări" nu e o opțiune de raportare, ci structura obli
 
 ## Ce face iConta.eu
 
-Verificat în cod: iConta.eu generează declarația D398 (declarația specială de TVA pentru regimurile speciale UE/non-UE/import — OSS), cu structura citită și probată direct pe validatorul oficial ANAF (modulul `core/d398.py`). Declarația respectă structura pe stat membru de consum (element `MS`) și pe operațiune/cotă (element `SUPPLY`, cu câmpuri `vat_rate`, `taxable_amount`, `vat_amount` pentru fiecare cotă aplicabilă). Important: **aplicația nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină** — nu există, la acest moment, o legătură între vânzările înregistrate în facturare și defalcarea lor pe țară/cotă; toate valorile din D398 se introduc manual de către contabil, pe baza propriei evidențe a vânzărilor la distanță.
+Verificat în cod: iConta.eu generează declarația D398 (declarația specială de TVA pentru regimurile speciale UE/non-UE/import — OSS), cu structura citită și probată direct pe validatorul oficial ANAF (aplicația). Declarația respectă structura pe stat membru de consum (element `MS`) și pe operațiune/cotă (element `SUPPLY`, cu câmpuri `vat_rate`, `taxable_amount`, `vat_amount` pentru fiecare cotă aplicabilă). Important: **aplicația nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină** — nu există, la acest moment, o legătură între vânzările înregistrate în facturare și defalcarea lor pe țară/cotă; toate valorile din D398 se introduc manual de către contabil, pe baza propriei evidențe a vânzărilor la distanță.
 
 [iConta.eu](/)

@@ -23,12 +23,12 @@ Metoda prețului cu amănuntul (global-valorică) e definită de lege special pe
 > vândute se calculează prin deducerea valorii marjei brute din prețul de vânzare al stocurilor**.
 > Orice modificare a prețului de vânzare presupune recalcularea marjei brute."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (1) și (8).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (1) și (8).
 
 > "(5) Coeficienții de repartizare a diferențelor de preț pot fi calculați la nivelul conturilor
 > sintetice de gradul I și II, [...] pe grupe sau categorii de stocuri."
 >
-> — sursă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, pct. 286 alin. (5).
+> — sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320), pct. 286 alin. (5).
 :::
 
 ## Când se potrivește și când nu
@@ -46,7 +46,7 @@ Dacă însă prețurile variază semnificativ per client sau contract (rabaturi 
 
 ## Ce face iConta.eu
 
-Mecanismul de calcul din `core/stocuri.py` nu distinge tehnic între „magazin cu amănuntul” și „depozit en-gros” — motorul lucrează cu prețuri de vânzare, costuri de achiziție și cote de TVA introduse explicit la fiecare linie de NIR, indiferent de tipul de client final. `nir_gv` calculează costul de achiziție (cu transport și taxe capitalizate), extrage TVA din prețul de vânzare prin formula sutei mărite și calculează adaosul, respingând adaos negativ sau vânzare sub cost. La descărcarea lunară, `coeficient_k` poate fi rulat separat pe grupe/categorii de stocuri, dacă rulajele sunt separate corespunzător — util pentru un depozit cu linii de produse cu marje foarte diferite.
+Mecanismul de calcul din aplicație nu distinge tehnic între „magazin cu amănuntul” și „depozit en-gros” — motorul lucrează cu prețuri de vânzare, costuri de achiziție și cote de TVA introduse explicit la fiecare linie de NIR, indiferent de tipul de client final. `nir_gv` calculează costul de achiziție (cu transport și taxe capitalizate), extrage TVA din prețul de vânzare prin formula sutei mărite și calculează adaosul, respingând adaos negativ sau vânzare sub cost. La descărcarea lunară, `coeficient_k` poate fi rulat separat pe grupe/categorii de stocuri, dacă rulajele sunt separate corespunzător — util pentru un depozit cu linii de produse cu marje foarte diferite.
 
 Decizia dacă un depozit en-gros se încadrează efectiv în criteriile legale ale metodei prețului cu amănuntul (preț de vânzare unic, marje similare) rămâne una de politică contabilă a entității, nu una impusă tehnic de aplicație. Iar dacă metoda e aplicată, TVA-ul descărcat lunar din 4428 rămâne o aproximare dintr-o cotă medie ponderată a stocului cumulat, nu din structura reală a vânzărilor lunii — de verificat separat, mai ales dacă depozitul lucrează cu produse la cote de TVA diferite.
 

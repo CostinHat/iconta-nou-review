@@ -16,12 +16,12 @@ Pentru alte contracte decât leasingul (de exemplu un credit bancar pentru mași
 
 ::: ghid-temei
 „În cazul cheltuielilor aferente vehiculelor rutiere motorizate reprezentând diferențe de curs valutar înregistrate ca urmare a derulării unui contract de leasing, limita de 50% se aplică asupra diferenței nefavorabile dintre veniturile din diferențe de curs valutar/veniturile financiare aferente creanțelor și datoriilor cu decontare în funcție de cursul unei valute, rezultate din evaluarea sau decontarea acestora și cheltuielile din diferențe de curs valutar/cheltuielile financiare aferente;"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. l) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. l) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cadrul cheltuielilor aferente vehiculelor rutiere motorizate supuse limitării fiscale se cuprind cheltuielile direct atribuibile unui vehicul, cum sunt: impozitele locale, asigurarea obligatorie de răspundere civilă auto, inspecțiile tehnice periodice, rovinieta, chiriile, partea nedeductibilă din taxa pe valoarea adăugată, dobânzile, comisioanele, diferențele de curs valutar înregistrate ca urmare a derulării altor contracte decât cele de leasing. În cazul cheltuielilor reprezentând diferențe de curs valutar înregistrate ca urmare a derulării unui contract de leasing, limita de 50% se aplică asupra diferenței nefavorabile dintre veniturile din diferențe de curs valutar/veniturile financiare aferente datoriilor cu decontare în funcție de cursul unei valute, rezultate din evaluarea sau decontarea acestora, și cheltuielile din diferențe de curs valutar/cheltuielile financiare aferente."
-— HG 1/2016, Normele metodologice, titlul II, pct. 16 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice, titlul II, pct. 16 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Cum aplici regula:

@@ -16,17 +16,17 @@ Pentru lichidator și contabil, ordinea contează. Ultimul D100 trebuie să fie 
 
 ::: ghid-temei
 „Persoanele juridice care se dizolvă cu lichidare, potrivit legii, în cursul aceluiași an în care a început lichidarea au obligația să depună declarația de impozit pe veniturile microîntreprinderilor și să plătească impozitul aferent până la data depunerii situațiilor financiare la organul fiscal competent.”
-— Codul fiscal (Legea 227/2015), art. 56 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 56 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(3) Perioada impozabilă a microîntreprinderii se încheie, în cazul dizolvării urmate de lichidare, la data depunerii situațiilor financiare la registrul unde a fost înregistrată, potrivit legii, înființarea persoanei juridice respective. (4) În cazul microîntreprinderilor care își încetează existența în cursul anului, data până la care se depune declarația de impozit pe veniturile microîntreprinderilor este una dintre datele menționate la alin. (2) și (3) , la care se încheie perioada impozabilă.”
-— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (3)-(4), titlul III (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele metodologice ale Codului fiscal), pct. 3 alin. (3)-(4), titlul III (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Persoanele juridice care, în cursul anului fiscal, se dizolvă fără lichidare au obligația să depună declarația de impozit pe veniturile microîntreprinderilor și să plătească impozitul până la închiderea perioadei impozabile.”
-— Codul fiscal, art. 56 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 56 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

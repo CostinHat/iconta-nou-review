@@ -14,7 +14,7 @@ Da, cu o nuanță: legea separă clar registrul în lei de registrul în valută
 
 ::: ghid-temei
 „REGISTRUL DE CASĂ (Cod 14-4-7A și Cod 14-4-7bA) REGISTRUL DE CASĂ (în valută - Cod 14-4-7/aA și Cod 14-4-7/cA) Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți."
-— OMFP nr. 2634/2015, anexa 2, secțiunea „Registrul de casă" (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP nr. 2634/2015, anexa 2, secțiunea „Registrul de casă" (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 - Norma numește explicit **două formulare distincte**, cu coduri diferite: „Registrul de casă" (cod 14-4-7A/7bA) pentru operațiunile în lei și „Registrul de casă (în valută)" (cod 14-4-7/aA/7cA) pentru cele în valută — deci răspunsul la „trebuie ținut separat de cel în lei?" e **da**, la nivel de formular.
@@ -29,7 +29,7 @@ Da, cu o nuanță: legea separă clar registrul în lei de registrul în valută
 
 ## Ce face iConta.eu
 
-Aici trebuie spusă direct limita produsului: **iConta.eu nu are, azi, suport pentru operațiuni de casă în valută**. Ecranul „card Casa" (`core/casa_api.py`) mapează toate operațiunile fix pe contul de casă în lei (`5311`), tabela din baza de date (`casa_operatiuni`) nu are nicio coloană de valută, iar formularul de introducere a unei operațiuni nu oferă opțiunea de a alege o monedă străină. Motorul de calcul intern (`core/casa.py`, funcția `regula_cont_casa`) conține, e drept, o ramură pregătită pentru conturile de casă în valută (5314/5124), dar acest cod **nu e apelat din nicio rută sau ecran** — e cod scris, dar neconectat la aplicația live.
+Aici trebuie spusă direct limita produsului: **iConta.eu nu are, azi, suport pentru operațiuni de casă în valută**. Ecranul „card Casa" mapează toate operațiunile fix pe contul de casă în lei (`5311`), tabela din baza de date (`casa_operatiuni`) nu are nicio coloană de valută, iar formularul de introducere a unei operațiuni nu oferă opțiunea de a alege o monedă străină. Motorul de calcul intern (funcția `regula_cont_casa`) conține, e drept, o ramură pregătită pentru conturile de casă în valută (5314/5124), dar acest cod **nu e apelat din nicio rută sau ecran** — e cod scris, dar neconectat la aplicația live.
 
 Practic: dacă firma încasează sau plătește numerar în valută prin casierie, evidența acelor operațiuni trebuie ținută în afara ecranului „card Casa" din iConta.eu, cel puțin până la extinderea funcționalității.
 

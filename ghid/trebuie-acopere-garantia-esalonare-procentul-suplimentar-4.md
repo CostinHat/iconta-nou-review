@@ -16,13 +16,13 @@ Alegerea duratei schimbă deci și valoarea garanției. Un grafic mai lung înse
 
 ::: ghid-temei
 „Garanțiile constituite sub formele prevăzute la alin. (6) trebuie să acopere sumele eșalonate la plată, dobânzile datorate pe perioada eșalonării la plată, plus un procent de până la 16% din sumele eșalonate la plată, în funcție de perioada de eșalonare la plată, astfel: a) pentru eșalonări de la 13 la 24 de luni, procentul este de 4%; b) pentru eșalonări de la 25 la 36 de luni, procentul este de 8%; c) pentru eșalonări de la 37 la 48 de luni, procentul este de 12%; d) pentru eșalonări de peste 49 de luni, procentul este de 16%."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (13) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (13) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (13), garanțiile constituite sub formele prevăzute la alin. (6) lit. a) și b) trebuie să acopere sumele eșalonate la plată, precum și dobânzile datorate pe perioada eșalonării la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (14) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (14) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Garanțiile ori valoarea bunurilor prevăzute la art. 193 alin. (13) - (16) trebuie să acopere și penalitățile de întârziere, precum și majorările de întârziere amânate la plată."
-— Codul de procedură fiscală (Legea 207/2015), art. 208 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 208 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Cum se construiește suma:

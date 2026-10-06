@@ -16,10 +16,10 @@ Excepția depinde de felul în care se încasează banii, nu de natura serviciul
 
 ::: ghid-temei
 „Se exceptează de la prevederile art. 1 alin. (1) încasările efectuate din următoarele activități: [...] s) serviciile de încărcare a vehiculelor electrice a căror contravaloare se încasează prin intermediul automatelor comerciale exclusiv prin utilizarea cardurilor de credit/debit și/sau a aplicațiilor de tip portofel electronic."
-— OUG 28/1999, art. 2 lit. s) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 2 lit. s) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 
 „Prin excepție de la dispozițiile alin. (2) , în cazul echipamentelor nesupravegheate de tipul automatelor comerciale ce funcționează exclusiv pe bază de plăți cu cardul, aparatul de marcat electronic fiscal nu este obligatoriu."
-— OUG 28/1999, art. 3 alin. (2^3) (sursă: anaf_surse/oug_28_1999.html)
+— OUG 28/1999, art. 3 alin. (2^3) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Condițiile excepției de la art. 2 lit. s), toate cumulativ:

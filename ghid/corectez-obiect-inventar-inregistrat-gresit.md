@@ -14,7 +14,7 @@ Dincolo de principiul general al corectării erorilor contabile, întrebarea pra
 
 ::: ghid-temei
 „69. - Înregistrarea stornării unei operațiuni contabile aferente exercițiului financiar curent se efectuează fie prin corectarea cu semnul minus a operațiunii inițiale (stornare în roșu), fie prin înregistrarea inversă a acesteia (stornare în negru), în funcție de politica contabilă și programele informatice utilizate."
-— OMFP 1802/2014, reglementări contabile, pct. 69 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.html)
+— OMFP 1802/2014, reglementări contabile, pct. 69 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă, concret, cele două tehnici:

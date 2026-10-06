@@ -15,7 +15,7 @@ Vânzarea sub costul de achiziție nu este, ca regulă, o operațiune interzisă
 ::: ghid-temei
 „Baza de impozitare pentru livrări de bunuri și prestări de servicii efectuate în interiorul țării
 (1) Baza de impozitare a taxei pe valoarea adăugată este constituită din: a) pentru livrări de bunuri și prestări de servicii, altele decât cele prevăzute la lit. b) și c), din tot ceea ce constituie contrapartida obținută sau care urmează a fi obținută de furnizor ori prestator din partea cumpărătorului, beneficiarului sau a unui terț, inclusiv subvențiile direct legate de prețul acestor operațiuni;"
-— Legea nr. 227/2015 privind Codul fiscal, art. 286 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 286 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **TVA**: se calculează la prețul efectiv agreat cu cumpărătorul (contrapartida obținută), indiferent de costul de achiziție. O vânzare sub cost nu majorează și nu diminuează artificial baza de TVA — se aplică pur și simplu cota la prețul de vânzare real.

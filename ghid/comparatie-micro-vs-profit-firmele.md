@@ -16,7 +16,7 @@ Firmele din HoReCa nu mai au un regim fiscal special propriu de câțiva ani —
 „În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: (...)
 c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro. (...)
 g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Legea 227/2015, art. 47 alin. (1) lit. c) și g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) lit. c) și g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru un restaurant sau bar, alegerea reală e:
@@ -34,6 +34,6 @@ Pentru un restaurant sau bar, alegerea reală e:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu face o comparație automată micro vs. profit** pentru o firmă din HoReCa — alegerea regimului rămâne o decizie a contabilului, pe baza cifrelor reale ale firmei. Aplicația are însă un motor real pentru tratamentul fiscal al bacșișului (`core/bacsis.py`), separat corect de baza de TVA și de contribuțiile sociale, cu impozitare la 10% reținut la sursă, conform Legii 376/2022 și art. 115 din Codul fiscal — o piesă reală din contabilitatea HoReCa, nu o simulare.
+La data acestui ghid, iConta.eu **nu face o comparație automată micro vs. profit** pentru o firmă din HoReCa — alegerea regimului rămâne o decizie a contabilului, pe baza cifrelor reale ale firmei. Aplicația are însă un motor real pentru tratamentul fiscal al bacșișului, separat corect de baza de TVA și de contribuțiile sociale, cu impozitare la 10% reținut la sursă, conform Legii 376/2022 și art. 115 din Codul fiscal — o piesă reală din contabilitatea HoReCa, nu o simulare.
 
 [iConta.eu](/)

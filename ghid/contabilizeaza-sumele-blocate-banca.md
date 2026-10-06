@@ -18,7 +18,7 @@ Când o parte din soldul contului bancar e indisponibilizată — printr-o popri
 „18. - (2) [...] a) un activ reprezintă o resursă controlată de către entitate ca rezultat al unor evenimente trecute, de la care se așteaptă să genereze beneficii economice viitoare pentru entitate. Un activ este recunoscut în contabilitate și prezentat în bilanț atunci când este probabilă realizarea unui beneficiu economic viitor de către entitate și activul are un cost sau o valoare care poate fi evaluat/evaluată în mod credibil; [...]
 24. - Situațiile financiare anuale trebuie să ofere o imagine fidelă a activelor, datoriilor, poziției financiare și a profitului sau pierderii entității.
 25. - Dacă aplicarea prevederilor prezentelor reglementări nu este suficientă pentru a oferi o imagine fidelă a activelor, a datoriilor, a poziției financiare și a profitului sau pierderii entității, în notele explicative la situațiile financiare sunt furnizate informațiile suplimentare necesare pentru respectarea cerinței respective."
-— OMFP 1802/2014, pct. 18 alin. (2) lit. a) și pct. 24-25 (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 18 alin. (2) lit. a) și pct. 24-25 (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă, cu prudență, din aceste principii pentru sumele blocate de bancă:
@@ -36,6 +36,6 @@ Ce rezultă, cu prudență, din aceste principii pentru sumele blocate de bancă
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu prelucrează extrasele bancare prin `core/banca.py` și `core/banca_parser.py`, dar nu are o funcționalitate care să identifice sau să marcheze distinct sumele indisponibilizate printr-o poprire bancară — toate sumele din extras intră în contul 512 conform mișcărilor reale, fără o clasificare separată pentru „disponibil blocat". Semnalarea unei asemenea situații în notele explicative, conform pct. 24-25, rămâne o operațiune manuală a contabilului.
+La data acestui ghid, iConta.eu prelucrează extrasele bancare prin aplicație, dar nu are o funcționalitate care să identifice sau să marcheze distinct sumele indisponibilizate printr-o poprire bancară — toate sumele din extras intră în contul 512 conform mișcărilor reale, fără o clasificare separată pentru „disponibil blocat". Semnalarea unei asemenea situații în notele explicative, conform pct. 24-25, rămâne o operațiune manuală a contabilului.
 
 [iConta.eu](/)

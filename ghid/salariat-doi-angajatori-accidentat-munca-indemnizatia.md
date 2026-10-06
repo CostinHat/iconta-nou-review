@@ -16,12 +16,12 @@ Contează în practică pentru că ambii angajatori primesc, de regulă, câte u
 
 ::: ghid-temei
 „(3) Pentru situațiile în care persoana asigurată desfășoară activitatea la mai mulți angajatori indemnizația pentru incapacitate temporară de muncă ca urmare a unui accident de muncă sau boală profesională se achită o singură dată."
-— Legea 346/2002, art. 37 alin. (3) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 37 alin. (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 ::: ghid-temei
 „(1) Baza de calcul al indemnizațiilor pentru incapacitate temporară de muncă, pentru reducerea timpului de muncă sau pentru trecerea temporară în alt loc de muncă se determină ca medie a veniturilor brute din salarii sau asimilate salariilor [...] realizate lunar de către asigurat la angajator, în ultimele 6 luni anterioare lunii pentru care se acordă concediul medical, fără a lua în calcul veniturile obținute și la alți angajatori."
-— Legea 346/2002, art. 19 alin. (1) (sursă: anaf_surse/legea_346_2002_consolidat.txt)
+— Legea 346/2002, art. 19 alin. (1) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::
 
 Ce înseamnă concret:

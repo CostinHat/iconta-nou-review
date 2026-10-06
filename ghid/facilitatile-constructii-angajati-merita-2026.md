@@ -14,7 +14,7 @@ Sectorul construcțiilor a beneficiat, ani la rând, de facilități fiscale dis
 
 ::: ghid-temei
 „7. La articolul 60, punctele 2, 5 și 7 se abrogă. 8. Articolul 601 se abrogă. [...] (3) Prevederile art. LXIV pct. 7, 8 și 10-14 se aplică începând cu veniturile aferente lunii ianuarie 2025."
-— Ordonanța de urgență nr. 156/2024, art. LXIV pct. 7-8 și art. LXV alin. (3) (sursă: anaf_surse/oug_156_2024.txt)
+— Ordonanța de urgență nr. 156/2024, art. LXIV pct. 7-8 și art. LXV alin. (3) (sursă: [OUG nr. 156/2024 privind unele măsuri fiscal-bugetare pentru anul 2025](https://legislatie.just.ro/Public/DetaliiDocument/293109))
 :::
 
 Ce s-a schimbat efectiv:

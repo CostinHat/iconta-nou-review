@@ -14,7 +14,7 @@ Obligația de depunere a SAF-T (Declarația informativă D406) nu depinde de tip
 
 ::: ghid-temei
 „3. Următoarele categorii de contribuabili au obligația de depunere a fișierului standard de control fiscal (SAF-T), prin intermediul Declarației informative D406: [...] c) societățile pe acțiuni (S.A.); [...] g) societățile cu răspundere limitată (S.R.L.); [...] 4. Următoarele categorii de contribuabili nu au obligația de depunere a fișierului standard de control fiscal (SAF-T): a) persoanele fizice autorizate (PFA); b) întreprinderile individuale (II); c) întreprinderile familiale (IF); [...]"
-— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 3 lit. c) și g), pct. 4 lit. a)-c) (sursă: anaf_surse/opanaf_407_2025_saft_d406.txt)
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 3 lit. c) și g), pct. 4 lit. a)-c) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 Ceea ce contează de fapt pentru obligativitate:

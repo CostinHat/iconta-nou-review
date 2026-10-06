@@ -14,7 +14,7 @@ O microîntreprindere românească nu are un regim separat pentru veniturile din
 
 ::: ghid-temei
 „Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie veniturile din orice sursă, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile aferente costurilor serviciilor în curs de execuție; c) veniturile din producția de imobilizări corporale și necorporale; d) veniturile din subvenții; [...]."
-— Legea 227/2015, art. 53 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 53 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lista de scăderi din baza impozabilă (art. 53) e limitativă și nu conține nicio excepție pentru veniturile realizate din străinătate. Spre deosebire de impozitul pe profit (Titlul II), unde art. 39 din Codul fiscal reglementează explicit **evitarea dublei impuneri** — impozitul plătit unui stat străin se scade din impozitul pe profit datorat în România, dacă există convenție de evitare a dublei impuneri — Titlul III (microîntreprinderi) nu conține un articol echivalent de credit fiscal extern. Practic, o microîntreprindere care obține venituri din străinătate plătește 1% pe ele în România, indiferent de un eventual impozit reținut deja în celălalt stat, iar recuperarea acelui impozit se face, dacă e posibilă, exclusiv prin mecanismele convenției bilaterale aplicabile, nu prin Codul fiscal.

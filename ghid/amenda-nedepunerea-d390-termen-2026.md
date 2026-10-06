@@ -16,7 +16,7 @@ D390 nu e o declarație oarecare din perspectiva sancțiunilor — Codul de proc
 „Constituie contravenții următoarele fapte: a) nedepunerea la termenele prevăzute de lege a declarațiilor recapitulative reglementate de normele din Codul fiscal privind taxa pe valoarea adăugată; b) depunerea de declarații recapitulative incorecte ori incomplete.
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel: a) cu amendă de la 1.000 lei la 5.000 lei în cazul săvârșirii faptei prevăzute la lit. a); b) cu amendă de la 500 lei la 1.500 lei în cazul săvârșirii faptei prevăzute la lit. b).
 (3) Nu se sancționează contravențional: a) persoanele care corectează declarația recapitulativă până la termenul legal de depunere a următoarei declarații recapitulative, dacă fapta prevăzută la alin. (1) lit. b) nu a fost constatată de organul fiscal anterior corectării; b) persoanele care, ulterior termenului legal de depunere, corectează declarațiile ca urmare a unui fapt neimputabil persoanei impozabile."
-— Legea 207/2015, art. 337 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015, art. 337 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Structura sancțiunilor, exactă:
@@ -34,6 +34,6 @@ Structura sancțiunilor, exactă:
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația D390 pe baza operațiunilor intracomunitare clasificate automat din facturile emise și primite (`core/d390.py`), inclusiv calculul, validarea și construirea fișierului XML pentru depunere. La data acestui ghid, aplicația **nu calculează și nu afișează cuantumul amenzii aplicabile** pentru o eventuală nedepunere sau depunere incorectă — urmărirea termenului de depunere și evitarea sancțiunilor contravenționale de la art. 337 rămân, la acest moment, responsabilitatea contabilului, aplicația oferind doar instrumentul de calcul și generare a declarației.
+iConta.eu generează declarația D390 pe baza operațiunilor intracomunitare clasificate automat din facturile emise și primite, inclusiv calculul, validarea și construirea fișierului XML pentru depunere. La data acestui ghid, aplicația **nu calculează și nu afișează cuantumul amenzii aplicabile** pentru o eventuală nedepunere sau depunere incorectă — urmărirea termenului de depunere și evitarea sancțiunilor contravenționale de la art. 337 rămân, la acest moment, responsabilitatea contabilului, aplicația oferind doar instrumentul de calcul și generare a declarației.
 
 [iConta.eu](/)

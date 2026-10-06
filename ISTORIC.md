@@ -1527,3 +1527,14 @@ factura „7” emisă fără serie; Date firmă fără metodă și fără istor
 din mesaj, factura „ZT7” emisă cu formularul păstrat; metoda „cantitativ-valoric” aleasă, iar istoricul arată cine a schimbat-o,
 cu valoarea veche și cea nouă.
 
+
+## 06.10.2026 — Lotul 06.10, partea 2: /ghid pentru indexare (comanda Costin)
+
+**Ce s-a făcut:** adresele vechi de ghid răspund 301 (6 slug-uri cu înlocuitor, `.md`, `GH-#####`, `proba-ghid`), iar 11 linkuri
+interne rupte s-au reparat; `/ghid` devine cuprinsul a 19 teme (5,6 KB în loc de 2,3 MB), fiecare temă cu pagina ei, în
+sitemap; fiecare ghid arată tema și 6 ghiduri înrudite; „(sursă: anaf_surse/…)” devine numele actului cu link spre
+legislatie.just.ro sau static.anaf.ro (129 din 132 de surse cu adresă verificată), iar căile `core/….py` din proză au dispărut
+— 3.828 de ghiduri rescrise. Niciun ghid nou publicat.
+
+**Măsurat:** Google real n-a cerut `/sitemap.xml` în cele 14 zile de jurnal (505 cereri pe site, 0 pe sitemap); sitemap-ul
+răspunde 200, valid, 6.581 de adrese. Titluri aprobate nepublicate: GH-09299 (lotul 19).

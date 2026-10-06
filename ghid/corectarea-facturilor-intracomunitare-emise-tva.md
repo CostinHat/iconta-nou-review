@@ -16,7 +16,7 @@ Codul fiscal nu prevede o procedură separată pentru corectarea facturilor intr
 „(1) Corectarea informațiilor înscrise în facturi sau în alte documente care țin loc de factură se efectuează astfel:
 a) în cazul în care factura nu a fost transmisă către beneficiar, aceasta se anulează și se emite o nouă factură;
 b) în cazul în care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă, pe de o parte, informațiile din factura inițială, numărul și data facturii corectate, valorile cu semnul minus [...], iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus [...], în care se înscriu numărul și data facturii corectate."
-— Legea 227/2015 (Codul fiscal), art. 330 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 330 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la o livrare intracomunitară cu TVA eronat:

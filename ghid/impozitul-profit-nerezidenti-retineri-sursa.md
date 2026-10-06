@@ -14,7 +14,7 @@ Denumirea „impozitul pe profit la nerezidenți" e înșelătoare — impozitul
 
 ::: ghid-temei
 „Nerezidenții care obțin venituri impozabile din România au obligația de a plăti impozit conform prezentului capitol."
-— Codul fiscal (Legea 227/2015), art. 221 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 221 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Impozitul se aplică asupra veniturilor **brute** impozabile obținute din România de nerezidenți (art. 222) — nu asupra unui profit net calculat de firma română.

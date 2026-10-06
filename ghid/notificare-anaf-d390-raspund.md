@@ -14,7 +14,7 @@ Când ANAF semnalează o neconcordanță între declarația recapitulativă (D39
 
 ::: ghid-temei
 „(1) Contribuabilul/Plătitorul sau altă persoană împuternicită de acesta are obligația de a furniza organului fiscal informațiile necesare pentru determinarea stării de fapt fiscale. [...] (2) Cererea de furnizare a informațiilor se formulează în scris. În cerere, organul fiscal trebuie să specifice natura informațiilor solicitate pentru determinarea stării de fapt fiscale și documentele care susțin informațiile furnizate, atunci când acestea nu sunt deținute de organul fiscal."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 58 alin. (1)-(2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 58 alin. (1)-(2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie verificat la primirea unei notificări legate de D390:

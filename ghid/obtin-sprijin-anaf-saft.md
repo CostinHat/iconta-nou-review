@@ -14,7 +14,7 @@ SAF-T (Standard Audit File for Tax), raportat prin Declarația informativă D406
 
 ::: ghid-temei
 „Pentru pregătirea Declarației informative D406, ANAF pune la dispoziția contribuabilului/plătitorului două forme de asistență: a) specificațiile pentru formatul și conținutul Declarației informative D406; b) programul «Validator» pentru fișierul SAF-T în format XML - program independent, în format executabil, interpretat, scris în limbaj Java, cu care contribuabilii/plătitorii pot valida sintactic și în parte semantic raportarea, înainte de a o încărca pe portalul ANAF."
-— OPANAF nr. 1783/2021, procedura de transmitere a fișierului SAF-T, pct. 2 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1783/2021, procedura de transmitere a fișierului SAF-T, pct. 2 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - ANAF pune la dispoziție **specificațiile tehnice** pentru formatul și conținutul D406, publicate prin „Ghidul contribuabilului pentru pregătirea și depunerea Declarației informative D406".

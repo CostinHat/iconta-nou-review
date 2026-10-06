@@ -14,7 +14,7 @@ O factură uitată dintr-un decont deja depus nu se repară prin redepunerea dec
 
 ::: ghid-temei
 „Datele înscrise incorect într-un decont de taxă se pot corecta prin decontul unei perioade fiscale ulterioare şi se vor înscrie la rândurile de regularizări."
-— Codul fiscal (Legea 227/2015), art. 323 alin. (3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 323 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Nu se depune o „rectificativă" clasică peste decontul greșit: corecția intră în decontul **următor**, la rândurile dedicate regularizărilor, nu prin reluarea integrală a decontului vechi.

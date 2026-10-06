@@ -16,18 +16,18 @@ Contează pentru că altfel impozitul se poate reține de două ori, o dată la 
 
 ::: ghid-temei
 „Impozitul se calculează prin aplicarea cotei de 10% asupra venitului net și se reține la sursă, de către plătitorii de venituri prevăzuți la alin. (2) [...] la momentul plății veniturilor."
-— Codul fiscal (Legea 227/2015), art. 72 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 72 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Impozitul calculat și reținut reprezintă impozit final și se plătește la bugetul de stat până la data de 25 inclusiv a lunii următoare celei în care a fost reținut."
-— Codul fiscal (Legea 227/2015), art. 72 alin. (5) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 72 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „organismele de gestiune colectivă sau alte entități, care, conform dispozițiilor legale, au atribuții de gestiune a drepturilor de proprietate intelectuală, a căror gestiune le este încredințată de către titulari. În această situație se încadrează și producătorii și agenții mandatați de titularii de drepturi, prin intermediul cărora se colectează și se repartizează drepturile respective."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (1) lit. b) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (1) lit. b) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
 „În sensul art. 72 din Codul fiscal, în situația în care sumele reprezentând venituri din exploatarea drepturilor de proprietate intelectuală se colectează prin mai multe organisme de gestiune colectivă sau prin alte entități asemănătoare, obligația calculării și reținerii impozitului revine organismului sau entității care efectuează plata către titularul de drepturi de proprietate intelectuală."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 11 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce înseamnă concret:

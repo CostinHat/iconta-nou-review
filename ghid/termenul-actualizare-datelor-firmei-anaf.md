@@ -17,7 +17,7 @@ Orice modificare a datelor declarate inițial la înregistrarea fiscală — sed
 (1) Modificările ulterioare ale datelor din declarația de înregistrare fiscală trebuie aduse la cunoștință organului fiscal central, în termen de 15 zile de la data producerii acestora, prin completarea și depunerea declarației de mențiuni.
 (2) în cazul modificărilor intervenite în datele declarate inițial și înscrise în certificatul de înregistrare fiscală, contribuabilul/plătitorul depune, odată cu declarația de mențiuni, și certificatul de înregistrare fiscală, în vederea anulării acestuia și eliberării unui nou certificat.
 (3) Declarația de mențiuni este însoțită de documente care atestă modificările intervenite."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1)-(3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 88 alin. (1)-(3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce trebuie reținut din acest termen:

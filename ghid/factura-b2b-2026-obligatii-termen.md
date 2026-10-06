@@ -14,10 +14,10 @@ Obligativitatea RO e-Factura în relația dintre firme (B2B) nu este nouă în 2
 
 ::: ghid-temei
 „În relaţia comercială B2B, între persoane impozabile stabilite în România conform art. 266 alin. (2) din Legea nr. 227/2015 [...], emitentul facturii electronice are obligaţia de transmitere a acesteia către destinatar utilizând sistemul naţional privind factura electronică RO e-Factura [...]"
-— OUG nr. 115/2023, care a introdus obligativitatea B2B în OUG nr. 120/2021 (sursă: anaf_surse/oug_115_2023_consolidat.txt)
+— OUG nr. 115/2023, care a introdus obligativitatea B2B în OUG nr. 120/2021 (sursă: [OUG nr. 115/2023 privind unele măsuri fiscal-bugetare](https://legislatie.just.ro/Public/DetaliiDocument/277404))
 
 „Termenul-limită pentru transmiterea facturilor în sistemul naţional privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015 [...]"
-— OUG nr. 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG nr. 89/2025 (sursă: anaf_surse/oug_89_2025.txt)
+— OUG nr. 120/2021, art. 10 alin. (7), astfel cum a fost modificat prin OUG nr. 89/2025 (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Pentru 2026, două lucruri contează practic:
@@ -34,6 +34,6 @@ Pentru 2026, două lucruri contează practic:
 
 ## Ce face iConta.eu
 
-iConta.eu generează și transmite facturile B2B prin RO e-Factura din modulul `core/efactura_send.py` (declanșat prin `core/efactura_trimitere.py`), folosind conectorul OAuth2 al firmei. Aplicația nu calculează, la acest moment, un contor vizibil al termenului de 5 zile lucrătoare rămase pentru fiecare factură nesincronizată — verificat direct în cod, transmiterea propriu-zisă se face **doar** la inițiativa utilizatorului: nu există un job programat care să urce automat facturile netransmise către SPV (`core/spv_poll.py` e documentat explicit ca „jumătatea de PRIMIRE a propriului send" — interoghează starea trimiterilor deja făcute, nu inițiază trimiteri noi). Respectarea termenului legal de 5 zile lucrătoare rămâne, deci, responsabilitatea contribuabilului. Starea fiecărei trimiteri deja făcute (în așteptare, acceptată, respinsă) este urmărită automat prin `core/spv_poll.py`.
+iConta.eu generează și transmite facturile B2B prin RO e-Factura din aplicație (declanșat prin aplicație), folosind conectorul OAuth2 al firmei. Aplicația nu calculează, la acest moment, un contor vizibil al termenului de 5 zile lucrătoare rămase pentru fiecare factură nesincronizată — verificat direct în cod, transmiterea propriu-zisă se face **doar** la inițiativa utilizatorului: nu există un job programat care să urce automat facturile netransmise către SPV (aplicația e documentat explicit ca „jumătatea de PRIMIRE a propriului send" — interoghează starea trimiterilor deja făcute, nu inițiază trimiteri noi). Respectarea termenului legal de 5 zile lucrătoare rămâne, deci, responsabilitatea contribuabilului. Starea fiecărei trimiteri deja făcute (în așteptare, acceptată, respinsă) este urmărită automat prin aplicație.
 
 [iConta.eu](/)

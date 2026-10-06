@@ -14,7 +14,7 @@ Reforma cotelor de TVA de la 1 august 2025 a rescris regulile pentru numeroase c
 
 ::: ghid-temei
 „Articolul 291 alin. (2) lit. b) livrarea următoarelor bunuri: alimente, inclusiv băuturi, destinate consumului uman și animal, animale și păsări vii din specii domestice, ale căror coduri NC se stabilesc prin normele metodologice, cu excepția: 1. băuturilor alcoolice; [...] 2. băuturilor nealcoolice care se încadrează la codul NC 2202; [...] 3. alimentelor cu zahăr adăugat, al căror conținut total de zahăr este de minimum 10 g/100 g produs, altele decât laptele praf pentru nou-născuți, sugari și copii de vârstă mică; [...] 4. suplimentelor alimentare definite de Legea nr. 56/2021 privind suplimentele alimentare, cu modificările și completările ulterioare;"
-— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b), modificat prin Legea nr. 141/2025, în vigoare de la 01.08.2025 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 291 alin. (2) lit. b), modificat prin Legea nr. 141/2025, în vigoare de la 01.08.2025 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Produsele de panificație (pâine, chifle, cozonac, covrigi și similare) rămân încadrate ca „alimente" la lit. b), fără să intre, de regulă, sub niciuna dintre cele patru excepții (alcool, băuturi NC 2202, zahăr adăugat ≥10 g/100 g, suplimente).

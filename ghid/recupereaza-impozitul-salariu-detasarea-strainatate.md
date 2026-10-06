@@ -16,12 +16,12 @@ Dacă salariatul rămâne la același angajator, angajatorul calculează impozit
 
 ::: ghid-temei
 „(23) În situația în care contribuabilii prevăzuți la art. 59 alin. (1) lit. a) și alin. (2) din Codul fiscal urmează să desfășoare activitatea dependentă în alt stat într-o perioadă mai mare decât perioada prevăzută în convenția de evitare a dublei impuneri încheiată de România cu statul în care se desfășoară activitatea, dar detașarea acestora încetează înainte de perioada prevăzută în convenție, dreptul de impunere a veniturilor din salarii revine statului român, astfel: a) în situația în care persoana fizică își continuă relația contractuală generatoare de venituri din salarii cu angajatorul, veniturile aferente perioadelor anterioare pentru care nu s-a calculat, nu s-a reținut și nu s-a virat impozitul pe salarii se impun separat față de drepturile lunii curente, prin aplicarea cotei de impozit asupra bazei de calcul determinate separat pentru fiecare lună. Impozitul astfel calculat se reține de către angajator din veniturile din salarii începând cu luna încetării detașării și până la lichidarea impozitului. Impozitul se recuperează într-o perioadă cel mult egală cu perioada în care persoana fizică a fost detașată în străinătate."
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (23) lit. a) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IV, pct. 12 alin. (23) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Fac excepție veniturile salariale plătite de către sau în numele unui angajator care este rezident în România ori are sediul permanent în România, care sunt impozabile în România numai în situația în care România are drept de impunere;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe scurt, pentru un salariat care rămâne în firmă:

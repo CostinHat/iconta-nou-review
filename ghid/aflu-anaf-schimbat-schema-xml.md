@@ -17,7 +17,7 @@ Structura XML a facturii electronice nu e o convenție tehnică informală a ANA
 a) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute în standardul european SR EN 16931-1, care sunt aplicabile la nivel naţional;
 b) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional; [...]
 (11) Prin ordin al ministrului finanţelor se reglementează specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice RO_CIUS [...] în termen de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al României, Partea I."
-— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 4 alin. (1) și (11) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG nr. 120/2021 privind Sistemul naţional privind factura electronică RO e-Factura, art. 4 alin. (1) și (11) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 Ce rezultă din text pentru verificarea unei eventuale schimbări de schemă:

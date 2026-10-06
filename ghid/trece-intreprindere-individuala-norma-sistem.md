@@ -17,7 +17,7 @@ Trecerea nu se face „din oficiu" și nu se poate răzgândi de pe o lună pe a
 (1) Contribuabilii care obțin venituri din activități independente, impuși pe bază de norme de venit, au dreptul să opteze pentru determinarea venitului net în sistem real, potrivit art. 68.
 (2) Opțiunea de a determina venitul net în sistem real, pe baza datelor din contabilitate, potrivit prevederilor art. 68, este obligatorie pentru contribuabil pe o perioadă de 2 ani fiscali consecutivi și se consideră reînnoită pentru o nouă perioadă dacă contribuabilul nu solicită revenirea la sistemul anterior. [...]
 (3) Opțiunea pentru determinarea venitului net anual în sistem real, inclusiv în cazul contribuabililor care încep activitatea în cursul anului fiscal, se exercită prin completarea Declarației unice privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice cu informații privind determinarea venitului net anual în sistem real și depunerea formularului la organul fiscal competent în termenul legal de depunere prevăzut la art. 122 alin. (3)."
-— Legea 227/2015 (Codul fiscal), art. 69^1 alin. (1)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 69^1 alin. (1)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pașii concreți ai trecerii:
@@ -36,6 +36,6 @@ Pașii concreți ai trecerii:
 
 ## Ce face iConta.eu
 
-Generatorul Declarației 212 din iConta.eu (`core/d212.py`) tratează distinct capitolele de venit realizat pe sistem real (cap. 11) și pe normă de venit (cap. 12), permițând completarea corectă a formularului în funcție de regimul ales. La data acestui ghid, aplicația **nu urmărește automat perioada de angajament de 2 ani** impusă de art. 69^1 alin. (2) — contabilul rămâne responsabil să verifice dacă titularul poate reveni legal la normă de venit sau dacă se află încă în perioada obligatorie de aplicare a sistemului real, înainte de a completa declarația corespunzătoare.
+Generatorul Declarației 212 din iConta.eu tratează distinct capitolele de venit realizat pe sistem real (cap. 11) și pe normă de venit (cap. 12), permițând completarea corectă a formularului în funcție de regimul ales. La data acestui ghid, aplicația **nu urmărește automat perioada de angajament de 2 ani** impusă de art. 69^1 alin. (2) — contabilul rămâne responsabil să verifice dacă titularul poate reveni legal la normă de venit sau dacă se află încă în perioada obligatorie de aplicare a sistemului real, înainte de a completa declarația corespunzătoare.
 
 [iConta.eu](/)

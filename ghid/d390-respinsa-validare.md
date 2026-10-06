@@ -14,7 +14,7 @@ O declarație D390 poate fi „respinsă" în două momente diferite: la validar
 
 ::: ghid-temei
 „2. Verificarea formală a declaraţiilor recapitulative. Pentru fiecare declaraţie recapitulativă organul fiscal competent verifică: a) corectitudinea codului de înregistrare în scopuri de TVA al persoanei impozabile care realizează operaţiuni intracomunitare, prin verificarea datelor de identificare din declaraţie cu cele existente în Registrul contribuabililor; b) integralitatea codurilor de înregistrare în scopuri de TVA ale operatorilor străini înscrişi în declaraţia recapitulativă: înscrierea corectă a codului de ţară, precum şi a numărului de caractere ale codului. [...] 3.1. După prelucrarea declaraţiilor recapitulative vor fi identificate persoanele impozabile care au depus declaraţii recapitulative ce prezintă erori, potrivit pct. 2, iar pentru aceste persoane se emit notificări pentru corectarea declaraţiei."
-— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 2-3.1 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 2-3.1 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Din text rezultă că respingerea „la validare", în sensul unei verificări oficiale a conținutului, se întâmplă **după** depunere, nu în timp real la încărcare:

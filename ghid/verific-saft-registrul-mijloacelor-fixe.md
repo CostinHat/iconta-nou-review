@@ -15,7 +15,7 @@ Mulți contabili se așteaptă ca declarația D406 (SAF-T), secțiunea Active, s
 ::: ghid-temei
 „7. Informaţiile privind «Activele» din cadrul Declaraţiei informative D406 sunt întocmite la nivelul anului financiar aplicat de către contribuabili şi transmise printr-o singură depunere, respectiv o singură raportare a Declaraţiei informative D406, până la data depunerii situaţiilor financiare aferente exerciţiului financiar la care se referă.
 8. Declaraţia informativă D406 pentru «Active» se poate transmite ca o declaraţie independentă, nefiind necesară introducerea tuturor secţiunilor/subsecţiunilor dintr-o Declaraţie informativă D406, ci doar a zonelor indicate ca fiind obligatorii pentru transmiterea acestui tip de informaţie."
-— OPANAF 1783/2021, Anexa (Instrucțiuni de completare D406), pct. 7-8 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa (Instrucțiuni de completare D406), pct. 7-8 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Secțiunea Active a D406 se depune o singură dată, la nivelul anului financiar, cel târziu odată cu situațiile financiare anuale — nu lunar, ca restul declarației.
@@ -30,8 +30,8 @@ Mulți contabili se așteaptă ca declarația D406 (SAF-T), secțiunea Active, s
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: secțiunea Active a SAF-T (`core/d406_active.py`, funcționalitatea „D406 Active") se generează direct din tabela `mijloace_fixe` — motorul de amortizare unic (liniar/degresiv/accelerat/superaccelerat, conform art. 28 Cod fiscal) e consumat atât de ecranul de mijloace fixe, cât și de generatorul SAF-T. Nu există un al doilea flux independent cu care rezultatul să fie comparat în aplicație; endpoint-ul e disponibil (`GET /tenants/{tenant_id}/d406-active`), dar **fără ecran dedicat în UI** la acest moment.
+Verificat direct în cod: secțiunea Active a SAF-T (funcționalitatea „D406 Active") se generează direct din tabela `mijloace_fixe` — motorul de amortizare unic (liniar/degresiv/accelerat/superaccelerat, conform art. 28 Cod fiscal) e consumat atât de ecranul de mijloace fixe, cât și de generatorul SAF-T. Nu există un al doilea flux independent cu care rezultatul să fie comparat în aplicație; endpoint-ul e disponibil (`GET /tenants/{tenant_id}/d406-active`), dar **fără ecran dedicat în UI** la acest moment.
 
-Aici intervine legătura reală cu importul de mijloace fixe la migrare (`core/mijloace_fixe_import_api.py`): la import, aplicația verifică explicit fiecare rând — cod de inventar, durată, valoare — și avertizează dacă lipsește **contul de imobilizare** pe categorie, cu mesajul din cod: „Mijloacele fixe intră în amortizare și în D406 SAF-T", pentru că fără acest cont metodele accelerat/superaccelerat sunt respinse ulterior la generarea declarației. Practic, „verificarea SAF-T cu registrul" pentru un registru migrat înseamnă rezolvarea din start a avertismentelor de import — un registru incomplet la migrare rămâne incomplet și în secțiunea Active a SAF-T, pentru că sunt aceleași date.
+Aici intervine legătura reală cu importul de mijloace fixe la migrare: la import, aplicația verifică explicit fiecare rând — cod de inventar, durată, valoare — și avertizează dacă lipsește **contul de imobilizare** pe categorie, cu mesajul din cod: „Mijloacele fixe intră în amortizare și în D406 SAF-T", pentru că fără acest cont metodele accelerat/superaccelerat sunt respinse ulterior la generarea declarației. Practic, „verificarea SAF-T cu registrul" pentru un registru migrat înseamnă rezolvarea din start a avertismentelor de import — un registru incomplet la migrare rămâne incomplet și în secțiunea Active a SAF-T, pentru că sunt aceleași date.
 
 [iConta.eu](/)

@@ -16,9 +16,9 @@ Contează în practică pentru că mulți beneficiari din agricultură, horeca s
 
 ::: ghid-temei
 „(2) Pot desfășura activități necalificate cu caracter ocazional și cetățenii altor state sau apatrizii care au domiciliul sau, după caz, reședința în România, în condițiile legislației române."
-— Legea 52/2011, art. 1 alin. (2) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (2) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „Articolul 1 (1) În înțelesul prezentei legi, următorii termeni se definesc după cum urmează: a) zilier - persoana fizică, cetățean român sau străin, ce are capacitate de muncă și care desfășoară activități necalificate cu caracter ocazional, pentru un beneficiar sau un împuternicit al acestuia, contra unei remunerații;"
-— Legea 52/2011, art. 1 alin. (1) lit. a) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 1 alin. (1) lit. a) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Condițiile pentru un zilier străin:

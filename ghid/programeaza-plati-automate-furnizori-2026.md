@@ -14,7 +14,7 @@ Nu există o „lege a plăților automate" — dar există un temei legal foart
 
 ::: ghid-temei
 „(1) În raporturile dintre profesioniști, termenul de plată nu poate fi mai mare de 60 de zile calendaristice. Prin excepție, părțile pot stipula în contract un termen de plată mai mare, sub rezerva ca această clauză să nu fie abuzivă, potrivit art. 12. [...] (3) Părțile nu pot conveni cu privire la data emiterii/primirii facturii. Orice clauză prin care se stipulează un termen de emitere/primire a facturii este lovită de nulitate absolută."
-— Legea nr. 72/2013, art. 5 alin. (1) și (3) (sursă: anaf_surse/legea_72_2013.html)
+— Legea nr. 72/2013, art. 5 alin. (1) și (3) (sursă: [Legea nr. 72/2013 privind combaterea întârzierii în executarea obligațiilor de plată](https://legislatie.just.ro/Public/DetaliiDocument/146555))
 :::
 
 Ce rezultă pentru o firmă care vrea să-și organizeze plățile către furnizori:

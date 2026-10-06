@@ -16,7 +16,7 @@ Firmele de construcții și cele care execută lucrări pe etape (situații de l
 
 ::: ghid-temei
 „51. - (1) Principiul prudenței. La întocmirea situațiilor financiare anuale, recunoașterea și evaluarea trebuie realizate pe o bază prudentă și, în special: a) în contul de profit și pierdere poate fi inclus numai profitul realizat la data bilanțului; [...] (2) Activele și veniturile nu trebuie să fie supraevaluate, iar datoriile și cheltuielile, subevaluate. Totuși, exercitarea prudenței nu permite, de exemplu, constituirea de provizioane excesive, subevaluarea deliberată a activelor sau veniturilor, dar nici supraevaluarea deliberată a datoriilor sau cheltuielilor, deoarece situațiile financiare nu ar mai fi neutre și nu ar mai avea calitatea de a fi credibile."
-— OMFP 1802/2014, pct. 51 alin. (1) lit. a) și alin. (2) (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 51 alin. (1) lit. a) și alin. (2) (Reglementări contabile privind situațiile financiare anuale individuale) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă, cu certitudine, din acest principiu pentru o lucrare în curs de execuție:

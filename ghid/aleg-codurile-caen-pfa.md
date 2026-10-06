@@ -14,7 +14,7 @@ Alegerea codurilor CAEN la înființarea unei PFA (codul principal de activitate
 
 ::: ghid-temei
 „Articolul 16 (1) PFA poate avea în obiectul de activitate cel mult 5 clase de activități prevăzute de codul CAEN."
-— OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale, art. 16 alin. (1) (sursă: anaf_surse/oug_44_2008.html)
+— OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale, art. 16 alin. (1) (sursă: [OUG nr. 44/2008 privind desfășurarea activităților economice de către PFA, II și IF](https://legislatie.just.ro/Public/DetaliiDocument/91808))
 :::
 
 Redirecționăm onest, fără să inventăm un citat: pentru alegerea propriu-zisă a codurilor CAEN, referința tehnică folosită în practică e Clasificarea activităților din economia națională (CAEN), actualizată periodic, iar procedura de înregistrare a acestora la Registrul Comerțului ține de actul normativ specific autorizării PFA — un temei pe care nu l-am putut confirma dintr-o sursă din setul disponibil pentru acest ghid. Recomandăm verificarea directă la sursa oficială (Oficiul Național al Registrului Comerțului) înainte de a considera orice explicație ca fiind temei legal complet.

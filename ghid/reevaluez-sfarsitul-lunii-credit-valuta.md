@@ -14,7 +14,7 @@ Firmele care au contractat un credit în euro, dolari sau altă valută trebuie 
 
 ::: ghid-temei
 „La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. Diferențele de curs înregistrate se recunosc în contabilitate la venituri sau cheltuieli din diferențe de curs valutar, după caz."
-— OMFP 1802/2014, Reglementări contabile, pct. 325 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 325 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Aplicat concret la un credit în valută:
@@ -33,6 +33,6 @@ Aplicat concret la un credit în valută:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de reevaluarea valutară a creditelor bancare, o operațiune de contabilitate generală — nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid, care privește exclusiv creditul fiscal obținut din sponsorizare (o reducere de impozit pe profit), fără nicio legătură cu creditele bancare sau cu reevaluarea valutară. Cercetarea disponibilă a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101 (`core/sponsorizari.py`, `core/d101.py`); nu avem, în acest dosar, o verificare a vreunui modul din iConta.eu pentru reevaluarea lunară a datoriilor în valută, așa că nu facem nicio afirmație despre existența sau absența unei asemenea automatizări.
+Acest subiect ține de reevaluarea valutară a creditelor bancare, o operațiune de contabilitate generală — nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid, care privește exclusiv creditul fiscal obținut din sponsorizare (o reducere de impozit pe profit), fără nicio legătură cu creditele bancare sau cu reevaluarea valutară. Cercetarea disponibilă a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare a vreunui modul din iConta.eu pentru reevaluarea lunară a datoriilor în valută, așa că nu facem nicio afirmație despre existența sau absența unei asemenea automatizări.
 
 [iConta.eu](/)

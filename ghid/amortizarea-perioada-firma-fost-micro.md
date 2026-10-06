@@ -14,10 +14,10 @@ Codul fiscal reglementează amortizarea fiscală ca mecanism de recuperare a val
 
 ::: ghid-temei
 „Mijlocul fix amortizabil este orice imobilizare corporală care îndeplinește cumulativ următoarele condiții: a) este deținut și utilizat în producția, livrarea de bunuri sau în prestarea de servicii, pentru a fi închiriat terților sau în scopuri administrative; b) la data intrării în patrimoniul contribuabilului, are o valoare fiscală egală sau mai mare decât suma de 5.000 lei [...]; c) are o durată normală de utilizare mai mare de un an."
-— Legea nr. 227/2015, art. 28 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 28 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Calculul și plata impozitului pe profit de către microîntreprinderile care se încadrează în prevederile alin. (1), (2), (4) și (7) se efectuează luând în considerare veniturile și cheltuielile realizate începând cu trimestrul respectiv."
-— Legea nr. 227/2015, art. 52 alin. (6) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 52 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă, cu limita clar marcată:
@@ -35,6 +35,6 @@ Ce rezultă, cu limita clar marcată:
 
 ## Ce face iConta.eu
 
-Modulul de amortizare a mijloacelor fixe din iConta.eu (`core/d406_active.py`) calculează amortizarea pe baza valorii de intrare, a duratei normale de utilizare și a datei de punere în funcțiune, continuu, indiferent de schimbarea regimului de impozitare (micro/profit) al firmei pe parcurs — aplicația nu introduce o „recuperare" suplimentară a amortizării din perioada de micro, pentru că nu am identificat temei legal explicit pentru un asemenea mecanism.
+Modulul de amortizare a mijloacelor fixe din iConta.eu calculează amortizarea pe baza valorii de intrare, a duratei normale de utilizare și a datei de punere în funcțiune, continuu, indiferent de schimbarea regimului de impozitare (micro/profit) al firmei pe parcurs — aplicația nu introduce o „recuperare" suplimentară a amortizării din perioada de micro, pentru că nu am identificat temei legal explicit pentru un asemenea mecanism.
 
 [iConta.eu](/)

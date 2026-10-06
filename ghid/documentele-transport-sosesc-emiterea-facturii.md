@@ -14,7 +14,7 @@ Ordinea firească, potrivit reglementărilor contabile, e ca documentul care în
 
 ::: ghid-temei
 „Avizul de însoțire a mărfii servește ca: - document de însoțire a mărfii pe timpul transportului, după caz; - document ce stă la baza întocmirii facturii, după caz; [...] Avizul de însoțire a mărfii se întocmește de către entitățile care nu au posibilitatea întocmirii facturii în momentul livrării produselor, mărfurilor sau altor valori materiale, precum și în alte situații stabilite prin procedurile proprii ale entității."
-— OMFP 2634/2015, Anexa 2, cod 14-3-6A (sursă: anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt)
+— OMFP 2634/2015, Anexa 2, cod 14-3-6A (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 2, Norme specifice)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Ce rezultă de aici, cu onestitate față de limitele textului:

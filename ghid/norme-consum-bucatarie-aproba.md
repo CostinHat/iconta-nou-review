@@ -14,7 +14,7 @@ Pentru firmele din alimentație publică (restaurante, cofetării, cantine), o p
 
 ::: ghid-temei
 „Următoarele cheltuieli au deductibilitate limitată: [...] pierderile tehnologice care sunt cuprinse în norma de consum proprie necesară pentru fabricarea unui produs sau prestarea unui serviciu."
-— Legea 227/2015, art. 25 alin. (3) lit. e) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 25 alin. (3) lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă practic „normă de consum proprie":
@@ -32,6 +32,6 @@ Ce înseamnă practic „normă de consum proprie":
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu (`core/stocuri.py`, `core/obiecte_inventar.py`) ține evidența cantitativ-valorică a materiilor prime și produselor, cu note contabile pentru plusuri și minusuri de inventar. La data acestui ghid, aplicația **nu are un modul dedicat de fișe tehnologice sau rețetare** care să calculeze automat norma de consum proprie pentru prepararea produselor din bucătărie — stabilirea și documentarea normei de consum, precum și verificarea încadrării pierderilor efective în această normă, rămân un proces intern al firmei, în afara aplicației.
+Modulul de stocuri din iConta.eu ține evidența cantitativ-valorică a materiilor prime și produselor, cu note contabile pentru plusuri și minusuri de inventar. La data acestui ghid, aplicația **nu are un modul dedicat de fișe tehnologice sau rețetare** care să calculeze automat norma de consum proprie pentru prepararea produselor din bucătărie — stabilirea și documentarea normei de consum, precum și verificarea încadrării pierderilor efective în această normă, rămân un proces intern al firmei, în afara aplicației.
 
 [iConta.eu](/)

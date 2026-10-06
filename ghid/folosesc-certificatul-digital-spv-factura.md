@@ -16,7 +16,7 @@ Certificatul digital calificat nu este o opțiune „mai sigură" pentru accesul
 „(1) Contribuabilul/Plătitorul care depune cereri, înscrisuri sau documente la organul fiscal, prin mijloace electronice de transmitere la distanţă, se identifică în relaţia cu organul fiscal astfel:
 a) persoanele juridice, asocierile şi alte entităţi fără personalitate juridică, precum şi persoanele fizice care desfăşoară activităţi economice în mod independent ori exercită profesii libere se identifică numai cu certificate calificate;
 b) persoanele fizice, altele decât cele prevăzute la lit. a), se identifică prin intermediul furnizorilor de servicii publice de autentificare electronică autorizaţi potrivit legii sau prin diverse dispozitive, cum ar fi certificat calificat, credenţiale de tip utilizator/parolă însoţite de liste de coduri de autentificare de unică folosinţă, telefon mobil, digipass ori alte dispozitive [...]"
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 80 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Distincția din lege este clară și are consecințe practice directe:
@@ -33,6 +33,6 @@ Distincția din lege este clară și are consecințe practice directe:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu emite și nu gestionează certificate digitale** — acestea se obțin de la furnizori autorizați de servicii de certificare, în afara aplicației. Ce face iConta.eu este să folosească, o singură dată, autorizarea obținută cu acest certificat (prin fluxul OAuth2 al ANAF, implementat în `core/spv_conector.py`) pentru a conecta contul SPV al firmei sau PFA-ului la aplicație; ulterior, aplicația reînnoiește automat accesul prin token-uri tehnice, fără să mai fie nevoie de certificatul fizic la fiecare operațiune. Certificatul rămâne, însă, obligatoriu la autorizarea inițială și la reautorizări.
+La data acestui ghid, iConta.eu **nu emite și nu gestionează certificate digitale** — acestea se obțin de la furnizori autorizați de servicii de certificare, în afara aplicației. Ce face iConta.eu este să folosească, o singură dată, autorizarea obținută cu acest certificat (prin fluxul OAuth2 al ANAF, implementat în aplicație) pentru a conecta contul SPV al firmei sau PFA-ului la aplicație; ulterior, aplicația reînnoiește automat accesul prin token-uri tehnice, fără să mai fie nevoie de certificatul fizic la fiecare operațiune. Certificatul rămâne, însă, obligatoriu la autorizarea inițială și la reautorizări.
 
 [iConta.eu](/)

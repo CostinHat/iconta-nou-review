@@ -18,15 +18,15 @@ Ghidul nu tratează procedura prin care firma devine rezidentă, ci regulile de 
 
 ::: ghid-temei
 „Prevederile referitoare la persoana juridică română cuprinse la art. 23 [...] se aplică în aceleași condiții și situații persoanelor juridice cu sediul în România, înființate potrivit legislației europene, și persoanelor juridice străine rezidente în România potrivit locului conducerii efective."
-— Codul fiscal (Legea 227/2015), art. 35 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 35 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „persoanele juridice străine rezidente în România potrivit locului conducerii efective trebuie să aibă una dintre formele de organizare prevăzute în anexa nr. 1"
-— Codul fiscal (Legea 227/2015), art. 35 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 35 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În cazul persoanelor juridice române, al persoanelor juridice străine rezidente în România potrivit locului conducerii efective, precum și al persoanelor juridice cu sediul social în România, înființate potrivit legislației europene, asupra profitului impozabil obținut din orice sursă, atât din România, cât și din străinătate;"
-— Codul fiscal (Legea 227/2015), art. 14 lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 14 lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Regulile aplicabile, pe articole:

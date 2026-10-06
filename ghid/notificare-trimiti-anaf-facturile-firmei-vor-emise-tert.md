@@ -16,12 +16,12 @@ Situația e frecventă: un cabinet, un centru de servicii al grupului sau o firm
 
 ::: ghid-temei
 „Pot fi emise facturi de către un terț în numele și în contul furnizorului/prestatorului în condițiile stabilite prin normele metodologice, cu excepția situației în care partea terță este stabilită într-o țară cu care nu există niciun instrument juridic referitor la asistența reciprocă."
-— Codul fiscal (Legea 227/2015), art. 319 alin. (19) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 319 alin. (19) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 319 alin. (19) din Codul fiscal, emiterea facturii poate fi externalizată, respectiv factura se poate întocmi de un terț în următoarele condiții: a) furnizorul/prestatorul să notifice prin scrisoare recomandată organului fiscal competent faptul că emiterea de facturi va fi realizată de un terț, cu cel puțin o lună calendaristică înainte de a iniția această procedură, și să anexeze la scrisoare numele, adresa și, după caz, codul de înregistrare în scopuri de TVA ale terțului; … b) factura să fie emisă de către terț în numele și în contul furnizorului/prestatorului; … c) factura să cuprindă toate informațiile prevăzute la art. 319 alin. (20) sau, după caz, la art. 319 alin. (21) din Codul fiscal; … d) facturile să fie puse la dispoziția organelor fiscale competente fără nicio întârziere, ori de câte ori se solicită acest lucru."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce conține, concret, notificarea:

@@ -14,10 +14,10 @@ Când o firmă din România angajează o persoană cu domiciliul în altă țar�
 
 ::: ghid-temei
 „în cazul persoanelor fizice nerezidente, care desfășoară activitate dependentă în România, venitului salarial net din această activitate dependentă;"
-— Legea nr. 227/2015, art. 59 alin. (1) lit. d) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 59 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele fizice care realizează venituri din salarii sau asimilate salariilor și/sau din activități independente, atât în România, cât și pe teritoriul unui stat membru al Uniunii Europene, al unui stat membru al Spațiului Economic European sau al Confederației Elvețiene pentru care autoritățile competente ale acestor state sau organismele desemnate ale acestor autorități stabilesc că, pentru veniturile realizate în afara României, legislația aplicabilă în domeniul contribuțiilor sociale obligatorii este cea din România, au obligația plății contribuțiilor sociale obligatorii prevăzute la art. 2 alin. (2), după caz."
-— Legea nr. 227/2015, art. 216 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 216 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din text:

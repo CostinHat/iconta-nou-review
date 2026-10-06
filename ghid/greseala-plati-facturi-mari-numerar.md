@@ -14,7 +14,7 @@ O factură cu valoare mare, achitată integral cash „ca să fie mai simplu", p
 
 ::: ghid-temei
 „Sunt interzise plățile fragmentate în numerar către furnizorii de bunuri și servicii pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, către magazinele de tipul cash and carry. Persoanele [...] pot achita facturile cu valori care depășesc plafonul de 5.000 lei, către furnizorii de bunuri și servicii, respectiv de 10.000 lei, către magazinele de tipul cash and carry, astfel: 5.000 lei/10.000 lei în numerar, suma care depășește acest plafon putând fi achitată numai prin instrumente de plată fără numerar."
-— Legea 70/2015 privind limitarea utilizării numerarului, art. 3 alin. (3) (sursă: anaf_surse/legea_70_2015_consolidat.txt)
+— Legea 70/2015 privind limitarea utilizării numerarului, art. 3 alin. (3) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Ce rezultă concret pentru o factură mare:

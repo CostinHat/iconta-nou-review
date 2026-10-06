@@ -16,20 +16,20 @@ Contează ca cererea să nu ajungă la ANAF sau la o altă instituție decât ce
 
 ::: ghid-temei
 „6. Se întocmește un exemplar unic de către solicitant. [...] 7. Circulă: – se depune la autoritatea sau instituția publică către care a fost efectuată plata; [...] – se transmite, în original, alături de decizia de restituire, la unitatea Trezoreriei Statului care deservește autoritatea sau instituția publică; [...] – în forma scanată, între unitatea Trezoreriei Statului și organul fiscal central competent."
-— OPANAF 187/2018, Anexa nr. 2, Caracteristici, pct. 6–7 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 2, Caracteristici, pct. 6–7 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „Menționez că am luat cunoștință că din sumele de restituit vor fi compensate de către organul fiscal central competent eventualele obligații fiscale/bugetare restante existente în evidența fiscală la data restituirii."
-— OPANAF 187/2018, Anexa nr. 2 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 2 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 
 „5. Se întocmește în două exemplare de către autoritatea sau instituția publică către care a fost efectuată plata și căreia i-a fost adresată cererea de restituire."
-— OPANAF 187/2018, Anexa nr. 3, Caracteristici, pct. 5 (sursă: anaf_surse/ordin_187_2018.html)
+— OPANAF 187/2018, Anexa nr. 3, Caracteristici, pct. 5 (sursă: [OPANAF nr. 187/2018 pentru aprobarea Procedurii de restituire a sumelor plătite în plus sau necuvenit](https://legislatie.just.ro/Public/DetaliiDocument/197174))
 :::
 
 ::: ghid-temei
 „(1) Dreptul contribuabilului/plătitorului de a cere restituirea creanțelor fiscale se prescrie în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a luat naștere dreptul la restituire."
-— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 219 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Circuitul, pe etape:

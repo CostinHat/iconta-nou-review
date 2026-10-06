@@ -15,7 +15,7 @@ Da — dacă firma neplătitoare de TVA are cod special de înregistrare (art. 3
 ::: ghid-temei
 „1.1. Declaraţia recapitulativă se depune lunar, în condiţiile prevăzute la art. 325 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare (Codul fiscal), până la data de 25 inclusiv a lunii următoare unei luni calendaristice, de către persoanele impozabile înregistrate în scopuri de TVA conform art. 316 sau 317 din Codul fiscal.
 1.2. Persoanele impozabile înregistrate în scopuri de TVA depun declaraţia recapitulativă numai pentru lunile calendaristice în care ia naştere exigibilitatea taxei [...]"
-— OPANAF 705/2020 (aprobarea formularului 390 VIES), Anexa 2, Instrucțiuni, pct. 1.1-1.2 (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020 (aprobarea formularului 390 VIES), Anexa 2, Instrucțiuni, pct. 1.1-1.2 (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Ce rezultă din text:

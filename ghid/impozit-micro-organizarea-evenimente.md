@@ -14,10 +14,10 @@ O firmă care organizează evenimente (conferințe, târguri, petreceri corporat
 
 ::: ghid-temei
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1), în forma aplicabilă de la 01.01.2026 (modificat de OUG 89/2025) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1), în forma aplicabilă de la 01.01.2026 (modificat de OUG 89/2025) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „b) 3%, pentru microîntreprinderile care: [...] 2. desfășoară activități, principale sau secundare, corespunzătoare codurilor CAEN: [...] 5610 - Restaurante, 5621 - Activități de alimentație (catering) pentru evenimente, 5629 - Alte servicii de alimentație n.c.a., 5630 - Baruri și alte activități de servire a băuturilor, [...]"
-— Codul fiscal, art. 51 alin. (1) lit. b) pct. 2, formă introdusă de Legea 296/2023, abrogată de la 01.01.2026 de OUG 89/2025 (sursă: anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt)
+— Codul fiscal, art. 51 alin. (1) lit. b) pct. 2, formă introdusă de Legea 296/2023, abrogată de la 01.01.2026 de OUG 89/2025 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
 - De la 1 ianuarie 2026, OUG 89/2025 a eliminat complet vechiul split de cote 1%/3% pe coduri CAEN: toate microîntreprinderile plătesc 1%, indiferent de activitatea desfășurată.
@@ -33,6 +33,6 @@ O firmă care organizează evenimente (conferințe, târguri, petreceri corporat
 
 ## Ce face iConta.eu
 
-La calculul impozitului pentru firmele aflate în regim micro (declarația D100), iConta.eu aplică automat cota din registrul central de cote (`core/common.py`, cheia `"impozit_micro"`), citită prin `core/d100.py`. Registrul reține azi o singură valoare, 1%, valabilă din 2023, cu o notă explicită în cod care confirmă că OUG 89/2025 a eliminat de la 01.01.2026 splitul 1%/3% pe coduri CAEN și pragul de 60.000 euro asociat lui. Contabilul poate suprascrie manual cota dacă are un caz particular, dar nu există nicio logică în aplicație care să citească sau să diferențieze după codul CAEN al firmei — ceea ce, pentru 2026, corespunde exact legii: nu mai există nicio diferențiere de urmărit pe activitate.
+La calculul impozitului pentru firmele aflate în regim micro (declarația D100), iConta.eu aplică automat cota din registrul central de cote (cheia `"impozit_micro"`), citită prin aplicație. Registrul reține azi o singură valoare, 1%, valabilă din 2023, cu o notă explicită în cod care confirmă că OUG 89/2025 a eliminat de la 01.01.2026 splitul 1%/3% pe coduri CAEN și pragul de 60.000 euro asociat lui. Contabilul poate suprascrie manual cota dacă are un caz particular, dar nu există nicio logică în aplicație care să citească sau să diferențieze după codul CAEN al firmei — ceea ce, pentru 2026, corespunde exact legii: nu mai există nicio diferențiere de urmărit pe activitate.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „Societatea este persoană juridică de la data înmatriculării în registrul comerțului."
-— Legea 31/1990 privind societățile, art. 41 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990 privind societățile, art. 41 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Câteva elemente completează rolul registrului comerțului, așa cum rezultă din Legea 31/1990 și din Legea 265/2022 (legea specială a registrului comerțului, care a reorganizat instituția și a înlocuit rezoluțiile directorului oficiului registrului comerțului cu încheierile registratorului de registrul comerțului):

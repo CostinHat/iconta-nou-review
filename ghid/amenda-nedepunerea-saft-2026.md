@@ -20,7 +20,7 @@ b) depunerea incorectă ori incompletă a fișierului standard de control fiscal
 (2) Contravențiile prevăzute la alin. (1) se sancționează astfel:
 a) cu amendă de la 1.000 lei la 5.000 lei în cazul săvârșirii faptei prevăzute la lit. a);
 b) cu amendă de la 500 lei la 1.500 lei în cazul săvârșirii faptei prevăzute la lit. b)."
-— Legea 207/2015 (Codul de procedură fiscală), art. 337^1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 337^1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Din text rezultă două praguri distincte, nu o singură amendă:

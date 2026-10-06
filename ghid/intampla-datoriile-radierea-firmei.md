@@ -14,7 +14,7 @@ Ideea că o firmă „dispare" din registrul comerțului și datoriile ei se sti
 
 ::: ghid-temei
 „În societățile în nume colectiv, în comandită simplă și în cele cu răspundere limitată, asociații pot hotărî, o dată cu dizolvarea, cu cvorumul și majoritatea prevăzute pentru modificarea actului constitutiv, și modul de lichidare a societății, atunci când sunt de acord cu privire la repartizarea și lichidarea patrimoniului societății și când asigură stingerea pasivului sau regularizarea lui în acord cu creditorii."
-— Legea nr. 31/1990 privind societățile, art. 235 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990 privind societățile, art. 235 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce rezultă din text pentru radierea unei firme cu datorii:

@@ -14,7 +14,7 @@ Da, în regulă generală. Legea societăților nu interzice unei persoane să �
 
 ::: ghid-temei
 „Organele fiscale competente anulează înregistrarea unei persoane în scopuri de TVA, conform prezentului articol: [...] c) dacă asociații/administratorii persoanei impozabile sau persoana impozabilă însăși au înscrise în cazierul fiscal infracțiuni și/sau faptele prevăzute la art. 4 alin. (4) lit. a) din Ordonanța Guvernului nr. 39/2015 privind cazierul fiscal, de la data comunicării deciziei de anulare de către organele fiscale competente."
-— Cod fiscal, art. 316 alin. (11) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal, art. 316 alin. (11) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret:

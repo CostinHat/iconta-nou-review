@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „activitate dependentă la funcția de bază - orice activitate desfășurată în baza unui contract individual de muncă sau a unui statut special prevăzut de lege, declarată angajatorului ca funcție de bază de către angajat; în cazul în care activitatea se desfășoară pentru mai mulți angajatori, angajatul este obligat să declare numai angajatorului ales că locul respectiv este locul unde exercită funcția pe care o consideră de bază"
-— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 2 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 7 pct. 2 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă din definiție pentru declararea corectă:

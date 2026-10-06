@@ -14,7 +14,7 @@ O firmă înființată pe 14 mai nu are un „trimestru II întreg" din perspect
 
 ::: ghid-temei
 „(2) Când un contribuabil se înființează sau încetează să mai existe în cursul unui an fiscal, perioada impozabilă este perioada din anul calendaristic pentru care contribuabilul a existat. (3) Când un contribuabil se înființează în cursul unui an fiscal, perioada impozabilă începe: a) de la data înregistrării acestuia în registrul comerțului, dacă are această obligație potrivit legii; b) de la data înregistrării în registrul ținut de instanțele judecătorești sau alte autorități competente, dacă are această obligație, potrivit legii."
-— Codul fiscal (Legea 227/2015), art. 16 alin. (2)-(3) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 16 alin. (2)-(3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Aplicat la un caz concret:

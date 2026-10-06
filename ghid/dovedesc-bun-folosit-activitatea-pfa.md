@@ -14,7 +14,7 @@ Pentru un PFA care determină venitul net în sistem real (pe baza datelor din c
 
 ::: ghid-temei
 „Condițiile generale pe care trebuie să le îndeplinească cheltuielile efectuate în scopul desfășurării activității independente, pentru a putea fi deduse, în funcție de natura acestora, sunt: a) să fie efectuate în cadrul activităților independente, justificate prin documente [...] i) cheltuielile efectuate pentru activitatea independentă, cât și în scopul personal al contribuabilului sau asociaților sunt deductibile numai pentru partea de cheltuială care este aferentă activității independente."
-— Legea 227/2015, art. 68 alin. (4) lit. a) și alin. (5) lit. i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 68 alin. (4) lit. a) și alin. (5) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă, în practică, „justificat prin documente":
@@ -32,6 +32,6 @@ Ce înseamnă, în practică, „justificat prin documente":
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu ține registrul de încasări și plăți (potrivit OMFP 170/2015) și permite clasificarea fiecărei plăți pe categorii — cheltuială deductibilă, cheltuială cu deductibilitate limitată sau cheltuială nedeductibilă (`core/rip_api.py`). La data acestui ghid, aplicația **nu verifică și nu generează documentele de afectare a bunului activității** — încadrarea unei cheltuieli ca deductibilă și păstrarea dovezilor (factură pe numele PFA, declarație de afectare, foaie de parcurs) rămân responsabilitatea titularului PFA sau a contabilului care operează în cont.
+Pentru PFA, iConta.eu ține registrul de încasări și plăți (potrivit OMFP 170/2015) și permite clasificarea fiecărei plăți pe categorii — cheltuială deductibilă, cheltuială cu deductibilitate limitată sau cheltuială nedeductibilă. La data acestui ghid, aplicația **nu verifică și nu generează documentele de afectare a bunului activității** — încadrarea unei cheltuieli ca deductibilă și păstrarea dovezilor (factură pe numele PFA, declarație de afectare, foaie de parcurs) rămân responsabilitatea titularului PFA sau a contabilului care operează în cont.
 
 [iConta.eu](/)

@@ -28,6 +28,6 @@ Greșeala frecventă e presupunerea că baza de calcul a concediului medical e s
 
 ## Ce face iConta.eu
 
-Pentru calculul salarial obișnuit, `core/salarizare.py` folosește ca bază brutul lunii (eventual redus cu facilitatea), conform registrului „period-aware" `core.common.COTE`. Dosarul de cercetare pentru F080 nu confirmă dacă și cum acest mecanism se leagă de calculul indemnizațiilor de concediu medical — pentru veniturile incluse în baza de calcul a concediului medical, verifică ecranul dedicat (F122) sau textul OUG 158/2005.
+Pentru calculul salarial obișnuit, aplicația folosește ca bază brutul lunii (eventual redus cu facilitatea), conform registrului „period-aware" `core.common.COTE`. Dosarul de cercetare pentru F080 nu confirmă dacă și cum acest mecanism se leagă de calculul indemnizațiilor de concediu medical — pentru veniturile incluse în baza de calcul a concediului medical, verifică ecranul dedicat (F122) sau textul OUG 158/2005.
 
 [iConta.eu](/)

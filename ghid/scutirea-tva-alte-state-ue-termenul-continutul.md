@@ -16,10 +16,10 @@ Termenul nu se mută pe prima zi lucrătoare. Pentru trimestrul III 2026, raport
 
 ::: ghid-temei
 „trebuie să întocmească și să depună la organul fiscal competent, pentru fiecare trimestru calendaristic, până în ultima zi calendaristică a lunii următoare trimestrului, chiar dacă aceasta este o zi nelucrătoare, un raport în care menționează codul individual de identificare prevăzut la alin. (6) , precum și următoarele informații: a) valoarea totală a livrărilor de bunuri și/sau a prestărilor de servicii efectuate în cursul trimestrului calendaristic în România sau «0» în cazul în care nu s-au efectuat livrări de bunuri sau prestări de servicii; ... b) valoarea totală a livrărilor de bunuri și/sau a prestărilor de servicii efectuate în cursul trimestrului calendaristic în fiecare dintre statele membre, altele decât România, sau «0» în cazul în care nu s-au efectuat livrări de bunuri sau prestări de servicii."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (13) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(15) Sumele prevăzute la alin. (3) și (13) se declară în euro. Pentru livrările de bunuri și prestările de servicii care au fost efectuate în alte monede, persoana impozabilă utilizează pentru conversie cursul de schimb în vigoare în prima zi a anului calendaristic."
-— Codul fiscal (Legea 227/2015), art. 310^1 alin. (15) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 310^1 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce conține raportul:

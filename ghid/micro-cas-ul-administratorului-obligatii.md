@@ -14,7 +14,7 @@ Impozitul de 1% pe veniturile microîntreprinderii și contribuțiile sociale da
 
 ::: ghid-temei
 „remunerația administratorilor societăților, companiilor/societăților naționale și regiilor autonome, desemnați/numiți în condițiile legii, precum și sumele primite de reprezentanții în adunarea generală a acționarilor și în consiliul de administrație;"
-— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. o) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. o) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Fiindcă remunerația administratorului e încadrată la „venituri asimilate salariilor" (art. 76 alin. (2)), ea intră în baza de calcul a CAS și CASS, exact ca un salariu, chiar dacă administratorul nu are contract individual de muncă, ci doar contract de mandat.

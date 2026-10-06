@@ -14,7 +14,7 @@ O plată efectuată de fapt prin bancă, dar înregistrată din greșeală în c
 
 ::: ghid-temei
 „65. – (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente. (2) Corectarea erorilor se efectuează la data constatării lor. ... 67. – (1) Corectarea erorilor aferente exercițiului financiar curent se efectuează pe seama contului de profit și pierdere. (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»)."
-— OMFP 1802/2014, pct. 65 alin. (1)-(2) și pct. 67 alin. (1)-(2) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP 1802/2014, pct. 65 alin. (1)-(2) și pct. 67 alin. (1)-(2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Regula de corectare depinde de momentul erorii, nu de tipul ei (bancă vs. casierie):

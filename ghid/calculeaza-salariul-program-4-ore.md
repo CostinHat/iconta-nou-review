@@ -46,6 +46,6 @@ Greșeala frecventă e aplicarea facilității „salariul minim neimpozabil" ș
 
 ## Ce face iConta.eu
 
-Brutul proporțional și verificarea podelei sunt calculate automat de `core/salarizare.py` — funcția `calcul_salariu()` verifică `tip_norma` (întreagă/parțială) și aplică regula „baza_podea" (liniile 292-323) doar când brutul e sub prag. Cotele și salariul minim aplicabil vin din registrul „period-aware" `core.common.COTE`, potrivit lunii calculate.
+Brutul proporțional și verificarea podelei sunt calculate automat de aplicația — funcția `calcul_salariu()` verifică `tip_norma` (întreagă/parțială) și aplică regula „baza_podea" doar când brutul e sub prag. Cotele și salariul minim aplicabil vin din registrul „period-aware" `core.common.COTE`, potrivit lunii calculate.
 
 [iConta.eu](/)

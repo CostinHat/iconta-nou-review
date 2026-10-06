@@ -14,7 +14,7 @@ Cele două expresii se folosesc adesea interschimbabil în vorbirea curentă, da
 
 ::: ghid-temei
 „g) marja profitului este diferența dintre prețul de vânzare aplicat de persoana impozabilă revânzătoare și prețul de cumpărare, în care: 1. prețul de vânzare constituie suma obținută de persoana impozabilă revânzătoare de la cumpărător sau de la un terț, inclusiv subvențiile direct legate de această tranzacție, impozitele, obligațiile de plată, taxele și alte cheltuieli, cum ar fi cele de comision, ambalare, transport și asigurare, percepute de persoana impozabilă revânzătoare cumpărătorului, cu excepția reducerilor de preț; 2. prețul de cumpărare reprezintă tot ce constituie suma obținută, conform definiției prețului de vânzare, de furnizor, de la persoana impozabilă revânzătoare;"
-— Codul fiscal (Legea 227/2015), art. 312 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 312 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Diferența practică:
@@ -32,6 +32,6 @@ Confuzia apare fiindcă ambele privesc, la bază, „diferența dintre preț de 
 
 ## Ce face iConta.eu
 
-iConta.eu implementează strict conceptul legal de „marjă a profitului" din art. 312 CF, pentru operațiunile de vânzare în regim special (second-hand și, echivalent, turism — art. 311), prin motorul de calcul al regimului de marjă și raportul de citire aferent, „Jurnal regim marjă". Acest mecanism e distinct de evidența mărfurilor la preț de vânzare cu amănuntul: pentru aceasta din urmă, aplicația are un modul separat, „gestiunea global-valorică" (`core/stocuri.py`, metoda prețului cu amănuntul, OMFP 1802/2014), care calculează adaosul comercial pe articolele NIR-ului, îl contabilizează pe contul 378 („Diferențe de preț la mărfuri", cu TVA neexigibilă pe 4428) și îl descarcă lunar proporțional cu vânzările — mecanism disponibil doar firmelor care țin gestiunea în acest regim, nu celor cu gestiune cantitativ-valorică. Cele două funcționalități rămân separate în aplicație: marja profitului (art. 312) nu se calculează prin motorul de adaos comercial, și invers.
+iConta.eu implementează strict conceptul legal de „marjă a profitului" din art. 312 CF, pentru operațiunile de vânzare în regim special (second-hand și, echivalent, turism — art. 311), prin motorul de calcul al regimului de marjă și raportul de citire aferent, „Jurnal regim marjă". Acest mecanism e distinct de evidența mărfurilor la preț de vânzare cu amănuntul: pentru aceasta din urmă, aplicația are un modul separat, „gestiunea global-valorică" (metoda prețului cu amănuntul, OMFP 1802/2014), care calculează adaosul comercial pe articolele NIR-ului, îl contabilizează pe contul 378 („Diferențe de preț la mărfuri", cu TVA neexigibilă pe 4428) și îl descarcă lunar proporțional cu vânzările — mecanism disponibil doar firmelor care țin gestiunea în acest regim, nu celor cu gestiune cantitativ-valorică. Cele două funcționalități rămân separate în aplicație: marja profitului (art. 312) nu se calculează prin motorul de adaos comercial, și invers.
 
 [iConta.eu](/)

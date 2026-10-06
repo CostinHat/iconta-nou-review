@@ -15,7 +15,7 @@ Raportarea corectă a stocurilor în situațiile financiare anuale nu se rezumă
 ::: ghid-temei
 „65. - (1) Erorile constatate în contabilitate se pot referi fie la exercițiul financiar curent, fie la exercițiile financiare precedente.
 66. - (1) Erorile din perioadele anterioare sunt omisiuni și declarații eronate cuprinse în situațiile financiare ale entității pentru una sau mai multe perioade anterioare."
-— OMFP nr. 1.802/2014 (Reglementări contabile), pct. 65-66 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementări contabile), pct. 65-66 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce rezultă pentru raportarea stocurilor în situațiile financiare ale anului 2026:
@@ -32,6 +32,6 @@ Ce rezultă pentru raportarea stocurilor în situațiile financiare ale anului 2
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/d406_stocuri.py` calculează soldurile de deschidere și închidere ale stocurilor (cantitate și valoare) pe baza mișcărilor înregistrate, pentru raportarea SAF-T la cerere ANAF, iar `core/bilant.py` generează situațiile financiare anuale (F10/F20) din soldurile balanței; aplicația nu are, la acest moment, un modul separat de tratare a corectării erorilor de stoc din exerciții anterioare potrivit pct. 65-66 — o astfel de corecție rămâne o operațiune contabilă manuală, introdusă de contabil.
+Verificat în cod: Aplicația calculează soldurile de deschidere și închidere ale stocurilor (cantitate și valoare) pe baza mișcărilor înregistrate, pentru raportarea SAF-T la cerere ANAF, iar aplicația generează situațiile financiare anuale (F10/F20) din soldurile balanței; aplicația nu are, la acest moment, un modul separat de tratare a corectării erorilor de stoc din exerciții anterioare potrivit pct. 65-66 — o astfel de corecție rămâne o operațiune contabilă manuală, introdusă de contabil.
 
 [iConta.eu](/)

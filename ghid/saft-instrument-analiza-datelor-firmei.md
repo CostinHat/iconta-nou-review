@@ -14,7 +14,7 @@ Fișierul standard de control fiscal (SAF-T), depus prin Declarația informativ�
 
 ::: ghid-temei
 „3. Următoarele categorii de contribuabili au obligația de depunere a fișierului standard de control fiscal (SAF-T), prin intermediul Declarației informative D406: - regiile autonome; - institutele naționale de cercetare-dezvoltare; - societățile pe acțiuni (S.A.); - societățile în comandită pe acțiuni (SCA); - societățile în comandită simplă (SCS); - societățile în nume colectiv (SNC); - societățile cu răspundere limitată (S.R.L.) [...]"
-— OPANAF nr. 1.783/2021, Anexa 5 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 5 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Câteva repere despre ce conține și cine depune SAF-T:

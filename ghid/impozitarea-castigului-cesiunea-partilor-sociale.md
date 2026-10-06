@@ -14,7 +14,7 @@ Părțile sociale ale unui SRL sunt, din punct de vedere fiscal, titluri de valo
 
 ::: ghid-temei
 „Câștigul/pierderea din transferul titlurilor de valoare, altele decât instrumentele financiare derivate și cele reglementate la alin. (2)-(6), reprezintă diferența pozitivă/negativă realizată între valoarea de înstrăinare/prețul de vânzare și valoarea lor fiscală, după caz, pe tipuri de titluri de valori, care include costurile aferente tranzacției [...], dovedite cu documente justificative."
-— Legea 227/2015 (Codul fiscal), art. 94 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 94 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Elementele de calcul, potrivit legii:
@@ -32,6 +32,6 @@ Elementele de calcul, potrivit legii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat calculului impozitului pe câștigul din cesiunea de părți sociale — spre deosebire de dividende și de lichidare, pentru care aplicația are motoare de calcul explicite (`core/decontari_asociati.py`, `core/lichidare.py`), cesiunea de părți sociale între asociați sau către un terț nu e acoperită de niciun modul specific. Calculul și declararea acestui impozit rămân, pentru moment, în sarcina contabilului.
+La data acestui ghid, iConta.eu nu are un modul dedicat calculului impozitului pe câștigul din cesiunea de părți sociale — spre deosebire de dividende și de lichidare, pentru care aplicația are motoare de calcul explicite, cesiunea de părți sociale între asociați sau către un terț nu e acoperită de niciun modul specific. Calculul și declararea acestui impozit rămân, pentru moment, în sarcina contabilului.
 
 [iConta.eu](/)

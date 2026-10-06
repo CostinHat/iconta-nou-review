@@ -14,7 +14,7 @@ Raportul Z de la aparatul de marcat electronic fiscal (AMEF) nu e doar o cifră 
 
 ::: ghid-temei
 „(2^1) Prin excepție de la prevederile alin. (2), pentru încasările realizate prin utilizarea cardurilor de credit/debit, utilizatorii nu au obligația să imprime/să înmâneze bonuri fiscale cu aparate de marcat electronice fiscale clienților."
-— OUG nr. 28/1999, art. 1 alin. (2^1) (sursă: anaf_surse/oug_28_1999.html)
+— OUG nr. 28/1999, art. 1 alin. (2^1) (sursă: [OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale](https://legislatie.just.ro/Public/DetaliiDocument/17431))
 :::
 
 Structura raportului Z, conform formatului standard folosit de AMEF-uri (OPANAF nr. 146/2018), separă vânzările pe tipuri de plată — cod 3 pentru numerar, cod 1 pentru card, plus tichete de masă, bonuri valorice, vouchere și alte instrumente. Pentru reconciliere:

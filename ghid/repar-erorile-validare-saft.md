@@ -16,7 +16,7 @@ O eroare de validare la transmiterea SAF-T (Declarația informativă D406) nu se
 „12. În situația în care, ca urmare a încercării de transmitere a Declarației D406, sunt primite mesaje de eroare/erori, utilizatorul trebuie să verifice cauza erorii prin analiza documentului generat de programul «Validator», fişierul SAFT.xml.err.txt. Odată identificată eroarea sau identificate erorile, se corectează problema semnalată de către utilizator şi se generează un nou fişier XML. Cu fişierul nou-obţinut se reiau paşii prezentaţi la pct. 5 şi 6, pentru validarea şi generarea Declaraţiei informative D406, începând cu pasul 1. Dacă nu s-au primit mesaje de eroare, declaraţia este pregătită pentru semnarea electronică şi transmitere.
 [...]
 24. În cazul în care un contribuabil/plătitor a primit o recipisă în care se menţionează că încărcarea s-a realizat cu erori, acesta este responsabil să corecteze respectivele erori în fişierul XML generat în format SAF-T şi să retransmită declaraţia reluând paşii descrişi la pct. 5 şi 6."
-— OPANAF 1783/2021, Anexa — Instrucțiuni de completare și transmitere a Declarației informative D406, pct. 12 și pct. 24 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa — Instrucțiuni de completare și transmitere a Declarației informative D406, pct. 12 și pct. 24 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Pașii concreți, așa cum rezultă din instrucțiuni:

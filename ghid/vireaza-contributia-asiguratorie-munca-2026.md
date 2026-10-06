@@ -15,7 +15,7 @@ Contribuția asiguratorie pentru muncă (CAM) este datorată de angajatori pentr
 ```
 ::: ghid-temei
 „...au obligația de a calcula contribuția asiguratorie pentru muncă și de a o plăti la bugetul de stat, într-un cont distinct, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile sau până la data de 25 inclusiv a lunii următoare trimestrului pentru care se plătesc veniturile, după caz."
-— Legea nr. 227/2015 privind Codul fiscal, art. 220^6 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 privind Codul fiscal, art. 220^6 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 ```
 
@@ -34,6 +34,6 @@ Reguli practice care rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, salarizarea din `core/` (modulele legate de D112 și de stat de plată) calculează contribuțiile datorate de angajator, inclusiv CAM, pe baza veniturilor înregistrate; declarația D112 generată de aplicație a fost verificată, conform disciplinei proiectului, pe validatorul oficial ANAF. Distincția între regimul lunar și cel trimestrial de declarare rămâne o setare pe care contabilul o confirmă pentru fiecare firmă, în funcție de încadrarea ei legală.
+La data acestui ghid, salarizarea din aplicație (modulele legate de D112 și de stat de plată) calculează contribuțiile datorate de angajator, inclusiv CAM, pe baza veniturilor înregistrate; declarația D112 generată de aplicație a fost verificată, conform disciplinei proiectului, pe validatorul oficial ANAF. Distincția între regimul lunar și cel trimestrial de declarare rămâne o setare pe care contabilul o confirmă pentru fiecare firmă, în funcție de încadrarea ei legală.
 
 [iConta.eu](/)

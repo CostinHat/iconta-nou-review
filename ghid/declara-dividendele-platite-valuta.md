@@ -14,7 +14,7 @@ Un dividend aprobat în lei, dar plătit efectiv unui asociat în valută (de ex
 
 ::: ghid-temei
 „319. - O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii."
-— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 319 (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP nr. 1.802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate), pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din regula generală de conversie rezultă tratamentul pentru dividendele plătite în valută:
@@ -32,6 +32,6 @@ Din regula generală de conversie rezultă tratamentul pentru dividendele plăti
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe dividende ponderat pe fiecare tranșă de plată, potrivit distribuirilor înregistrate (`core/dividende_curs.py`, funcția `impozit_ponderat`), care potrivește FIFO plățile pe distribuirile deschise și aplică cota de impozit valabilă la data fiecărei plăți. Pentru conversia sumelor plătite în valută, aplicația se bazează pe cursurile BNR gestionate în `core/curs_bnr.py`. Introducerea corectă a monedei de plată și verificarea faptului că suma din extrasul bancar corespunde cursului BNR din ziua plății rămân, însă, o verificare manuală a contabilului la momentul înregistrării plății.
+La data acestui ghid, iConta.eu calculează impozitul pe dividende ponderat pe fiecare tranșă de plată, potrivit distribuirilor înregistrate (funcția `impozit_ponderat`), care potrivește FIFO plățile pe distribuirile deschise și aplică cota de impozit valabilă la data fiecărei plăți. Pentru conversia sumelor plătite în valută, aplicația se bazează pe cursurile BNR gestionate în aplicație. Introducerea corectă a monedei de plată și verificarea faptului că suma din extrasul bancar corespunde cursului BNR din ziua plății rămân, însă, o verificare manuală a contabilului la momentul înregistrării plății.
 
 [iConta.eu](/)

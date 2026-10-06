@@ -32,6 +32,6 @@ Dacă pentru creanța respectivă a fost constituită anterior o ajustare (491),
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează și contabilizează ajustarea deductibilă a creanțelor (`deductibilitate_creanta`, art. 26), dar nu modelează scoaterea propriu-zisă din evidență a unei creanțe și nu verifică dacă situația concretă se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h) — aceasta rămâne o evaluare manuală a contabilului, pe baza documentelor disponibile despre debitor.
+Aplicația calculează și contabilizează ajustarea deductibilă a creanțelor (`deductibilitate_creanta`, art. 26), dar nu modelează scoaterea propriu-zisă din evidență a unei creanțe și nu verifică dacă situația concretă se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h) — aceasta rămâne o evaluare manuală a contabilului, pe baza documentelor disponibile despre debitor.
 
 [iConta.eu](/)

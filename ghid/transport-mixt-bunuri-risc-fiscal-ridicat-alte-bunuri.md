@@ -16,10 +16,10 @@ Pentru cabinet, regula contează la clienții care livrează pe teritoriul nați
 
 ::: ghid-temei
 „(1) În cazul în care în cadrul unei partide de bunuri sunt transportate atât bunuri cu risc fiscal ridicat, cât și alte bunuri care nu fac parte din categoria celor cu risc fiscal ridicat stabilite în acest sens prin ordin al președintelui Agenției Naționale de Administrare Fiscală, utilizatorii prevăzuți la art. 8 alin. (1) au obligația să declare în Sistemul RO e-Transport datele aferente transporturilor pentru toate bunurile transportate în cadrul unei partide de bunuri."
-— OUG 41/2022, art. 12 alin. (1) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 12 alin. (1) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(2) În cazul în care din documentele deținute de către utilizatorii prevăzuți la art. 8 alin. (1) lit. d) nu rezultă încadrarea bunurilor transportate în una dintre categoriile de bunuri prevăzute la alin. (1) , aceștia au obligația declarării în Sistemul RO e-Transport a datelor aferente transporturilor pentru toate bunurile transportate în cadrul unei partide de bunuri."
-— OUG 41/2022, art. 12 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 12 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Cum se aplică:

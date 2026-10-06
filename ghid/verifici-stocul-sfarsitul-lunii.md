@@ -14,7 +14,7 @@ Verificarea lunară a stocului nu înseamnă o inventariere fizică completă (c
 
 ::: ghid-temei
 „Registrul-inventar se completează pe baza inventarierii faptice a fiecărui cont de activ și de pasiv. [...] În cazul în care inventarierea are loc pe parcursul anului, în Registrul-inventar se înregistrează soldurile existente la data inventarierii, la care se adaugă rulajele intrărilor și se scad rulajele ieșirilor de la data inventarierii până la data încheierii exercițiului financiar."
-— OMFP 2634/2015, Norme generale privind documentele financiar-contabile (sursă: anaf_surse/omfp_2634_2015.txt)
+— OMFP 2634/2015, Norme generale privind documentele financiar-contabile (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Pașii utili pentru verificarea lunară:
@@ -33,6 +33,6 @@ Pașii utili pentru verificarea lunară:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu (`core/stocuri_api.py`, `core/repo_stocuri.py`) oferă rapoarte de sold pe gestiune și articol, iar reconcilierea automată dintre facturi și mișcările de stoc e acoperită prin `core/stocuri_cv_api.py` (funcția `intrare_din_factura`), care creează intrarea cantitativă în fișa de magazie la validarea facturii de marfă, legată de aceasta prin `factura_id`. La data acestui ghid, aplicația **nu generează automat un raport lunar de excepții** (stocuri negative, diferențe de reconciliere) fără să fie cerut explicit — verificarea lunară a stocului rămâne un pas activ pe care contabilul îl parcurge, folosind rapoartele de stoc și de reconciliere oferite de aplicație.
+Modulul de stocuri din iConta.eu oferă rapoarte de sold pe gestiune și articol, iar reconcilierea automată dintre facturi și mișcările de stoc e acoperită prin aplicație (funcția `intrare_din_factura`), care creează intrarea cantitativă în fișa de magazie la validarea facturii de marfă, legată de aceasta prin `factura_id`. La data acestui ghid, aplicația **nu generează automat un raport lunar de excepții** (stocuri negative, diferențe de reconciliere) fără să fie cerut explicit — verificarea lunară a stocului rămâne un pas activ pe care contabilul îl parcurge, folosind rapoartele de stoc și de reconciliere oferite de aplicație.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ La calculul impozitului pe profit, nu orice cheltuială înregistrată contabil 
 
 ::: ghid-temei
 „Pentru determinarea rezultatului fiscal sunt considerate cheltuieli deductibile cheltuielile efectuate în scopul desfășurării activității economice [...] Următoarele cheltuieli au deductibilitate limitată: [...] i) amortizarea, în limita prevăzută la art. 28 [...] Următoarele cheltuieli nu sunt deductibile: a) cheltuielile proprii ale contribuabilului cu impozitul pe profit datorat [...] b) dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități."
-— Codul fiscal (Legea 227/2015), art. 25 alin. (1), alin. (3) lit. i) și alin. (4) lit. a)-b) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 25 alin. (1), alin. (3) lit. i) și alin. (4) lit. a)-b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structura art. 25 separă net cele trei regimuri, iar amortizarea are propriul ei articol de trimitere (art. 28), cu reguli specifice pe categorii de mijloace fixe:

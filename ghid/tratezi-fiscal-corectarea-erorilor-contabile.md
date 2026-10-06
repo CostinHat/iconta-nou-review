@@ -15,7 +15,7 @@ O eroare contabilă descoperită după ce situațiile financiare ale unui exerci
 ::: ghid-temei
 „66. - (1) Erorile din perioadele anterioare sunt omisiuni și declarații eronate cuprinse în situațiile financiare ale entității pentru una sau mai multe perioade anterioare rezultând din greșeala de a utiliza sau de a nu utiliza informații credibile care: a) erau disponibile la momentul la care situațiile financiare pentru acele perioade au fost aprobate spre a fi emise; [...] b) ar fi putut fi obținute în mod rezonabil și luate în considerare la întocmirea și prezentarea acelor situații financiare anuale. (2) Astfel de erori includ efectele greșelilor matematice, greșelilor de aplicare a politicilor contabile, ignorării sau interpretării greșite a evenimentelor și fraudelor.
 67. - (2) Corectarea erorilor semnificative aferente exercițiilor financiare precedente se efectuează pe seama rezultatului reportat (contul 1174 «Rezultatul reportat provenit din corectarea erorilor contabile»)."
-— OMFP 1802/2014, pct. 66 alin. (1)-(2), pct. 67 alin. (2) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, pct. 66 alin. (1)-(2), pct. 67 alin. (2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din text, tratamentul are două paliere care nu se suprapun:

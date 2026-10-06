@@ -16,7 +16,7 @@ Amortizarea unui bun preluat prin leasing financiar trece prin doi pași distinc
 **OMFP 1802/2014, pct. 214 alin. (2)**: „În cazul leasingului financiar, achizițiile de către locatar de bunuri imobile şi mobile sunt tratate ca investiții în imobilizări, fiind supuse amortizării pe o bază consecventă cu politica normală de amortizare pentru bunuri similare ale locatarului."
 
 **Legea 227/2015 (Codul fiscal), art. 28 alin. (14)**: „[...] pentru mijloacele de transport de persoane care au cel mult 9 scaune de pasageri, incluzând și scaunul șoferului, din categoria M1 [...], cheltuielile cu amortizarea sunt deductibile, pentru fiecare, în limita a 1.500 lei/lună."
-— (sursă: anaf_surse/omfp_1802_2014.txt; anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320); [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Legea cere o politică de amortizare „consecventă" cu bunuri similare ale locatarului — nu există un regim contabil special doar pentru că bunul a venit prin leasing.

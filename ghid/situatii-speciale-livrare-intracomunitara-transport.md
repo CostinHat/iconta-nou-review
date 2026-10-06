@@ -14,7 +14,7 @@ Scutirea de TVA cu drept de deducere pentru livrările intracomunitare nu e lega
 
 ::: ghid-temei
 „Livrarea intracomunitară reprezintă o livrare de bunuri, în înțelesul alin. (1), care sunt expediate sau transportate dintr-un stat membru în alt stat membru de către furnizor sau de persoana către care se efectuează livrarea ori de altă persoană în contul acestora."
-— Legea 227/2015 (Codul fiscal), art. 270 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 270 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe lângă condiția transportului efectiv, scutirea propriu-zisă mai cere:

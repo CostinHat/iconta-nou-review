@@ -16,14 +16,14 @@ Excepția importantă este nulitatea absolută. Dacă hotărârea are un motiv d
 
 ::: ghid-temei
 „Dispozițiile prevăzute pentru societățile pe acțiuni, în ce privește dreptul de a ataca hotărârile adunării generale, se aplică și societăților cu răspundere limitată, termenul de 15 zile prevăzut la art. 132 alin. (2) urmând să curgă de la data la care asociatul a luat cunoștință de hotărârea adunării generale pe care o atacă."
-— Legea societăților nr. 31/1990, art. 196 (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 196 (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 ::: ghid-temei
 „Hotărârile adunării generale contrare legii sau actului constitutiv pot fi atacate în justiție, în termen de 15 zile de la data publicării în Monitorul Oficial al României, Partea a IV-a, de oricare dintre acționarii care nu au luat parte la adunarea generală sau care au votat contra și au cerut să se insereze aceasta în procesul-verbal al ședinței."
-— Legea societăților nr. 31/1990, art. 132 alin. (2) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 132 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 „Când se invocă motive de nulitate absolută, dreptul la acțiune este imprescriptibil, iar cererea poate fi formulată și de orice persoană interesată."
-— Legea societăților nr. 31/1990, art. 132 alin. (3) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea societăților nr. 31/1990, art. 132 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce înseamnă concret:

@@ -14,7 +14,7 @@ Nu toate veniturile înregistrate contabil intră în calculul impozitului pe pr
 
 ::: ghid-temei
 „La calculul rezultatului fiscal, următoarele venituri sunt neimpozabile: a) dividendele primite de la o persoană juridică română; [...] d) veniturile din anularea, recuperarea, inclusiv refacturarea cheltuielilor pentru care nu s-a acordat deducere, veniturile din reducerea sau anularea provizioanelor pentru care nu s-a acordat deducere, veniturile din restituirea ori anularea unor dobânzi și/sau penalități pentru care nu s-a acordat deducere [...]; g) veniturile reprezentând creșteri de valoare rezultate din reevaluarea mijloacelor fixe, terenurilor, imobilizărilor necorporale, după caz, care compensează cheltuielile cu descreșterile anterioare aferente aceleiași imobilizări."
-— Legea nr. 227/2015 (Codul fiscal), art. 23 lit. a), d), g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 23 lit. a), d), g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Lista de la art. 23 e **limitativă**: dividendele primite de la persoane juridice române (lit. a), în anumite condiții și cele de la persoane juridice străine dintr-un stat terț cu convenție de evitare a dublei impuneri (lit. b), venituri din majorarea titlurilor de participare prin încorporarea rezervelor (lit. c), venituri din anularea cheltuielilor/provizioanelor pentru care nu s-a acordat deducere (lit. d), venituri din impozitul pe profit amânat pentru contribuabilii la IFRS (lit. e), venituri din modificarea valorii juste a investițiilor imobiliare/activelor biologice la IFRS (lit. f), venituri din reevaluarea mijloacelor fixe care compensează descreșteri anterioare (lit. g), și altele enumerate până la lit. s).
@@ -30,6 +30,6 @@ Nu toate veniturile înregistrate contabil intră în calculul impozitului pe pr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține evidența contabilă a veniturilor pe conturile din planul de conturi și calculează impozitul pe profit în modulul D101 (`core/d101.py`) pornind de la rezultatul contabil. Nu am găsit însă o listă de verificare automată care să clasifice fiecare venit înregistrat drept impozabil sau neimpozabil conform art. 23 și să ajusteze automat baza de calcul — încadrarea fiecărui venit pe categoriile din lege rămâne o decizie a contabilului, reflectată apoi manual în calculul rezultatului fiscal.
+La data acestui ghid, iConta.eu ține evidența contabilă a veniturilor pe conturile din planul de conturi și calculează impozitul pe profit în modulul D101 pornind de la rezultatul contabil. Nu am găsit însă o listă de verificare automată care să clasifice fiecare venit înregistrat drept impozabil sau neimpozabil conform art. 23 și să ajusteze automat baza de calcul — încadrarea fiecărui venit pe categoriile din lege rămâne o decizie a contabilului, reflectată apoi manual în calculul rezultatului fiscal.
 
 [iConta.eu](/)

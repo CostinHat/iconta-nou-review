@@ -16,10 +16,10 @@ Diferența contează pentru clienții cabinetului care fac achiziții sau livră
 
 ::: ghid-temei
 „(2) Prin Sistemul RO e-Transport sunt monitorizate transporturile rutiere pe teritoriul național ale bunurilor cu risc fiscal ridicat și transporturile rutiere internaționale de bunuri."
-— OUG 41/2022, art. 1 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 1 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(3) Utilizatorii prevăzuți la art. 8^1 sunt obligați să declare în Sistemul RO e-Transport datele referitoare la transporturile internaționale de bunuri, astfel încât să poată fi identificate prin codul UIT."
-— OUG 41/2022, art. 9 alin. (3) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 9 alin. (3) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Cine declară, pe tipuri de transport:

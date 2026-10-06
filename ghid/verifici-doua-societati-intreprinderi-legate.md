@@ -14,7 +14,7 @@ Regimul micro permite unui asociat să aibă o singură firmă pe acest regim, d
 
 ::: ghid-temei
 „are asociați/acționari care dețin, în mod direct sau indirect, peste 25% din valoarea/numărul titlurilor de participare sau al drepturilor de vot și este singura persoană juridică stabilită de către asociați/acționari să aplice prevederile prezentului titlu."
-— Codul fiscal, art. 47 alin. (1) lit. h) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal, art. 47 alin. (1) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru a stabili dacă firma A și firma B sunt „legate" în sensul regimului micro:

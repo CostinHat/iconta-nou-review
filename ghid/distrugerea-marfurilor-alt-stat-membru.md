@@ -14,7 +14,7 @@ Un bun trimis în alt stat membru (pentru testare, prelucrare sau ca stoc la dis
 
 ::: ghid-temei
 „Nu se ajustează deducerea inițială a taxei în cazul: a) bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă. În cazul bunurilor furate, persoana impozabilă demonstrează furtul bunurilor pe baza actelor doveditoare emise de organele judiciare."
-— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Distrugerea are un tratament distinct de simpla nereturnare a bunului dintr-un nontransfer:

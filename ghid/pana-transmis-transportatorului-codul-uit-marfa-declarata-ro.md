@@ -16,13 +16,13 @@ Codul UIT trebuie să ajungă la operatorul de transport **cel târziu în momen
 
 ::: ghid-temei
 „(2) Utilizatorii prevăzuți la alin. (1) sunt obligați să pună la dispoziția operatorului de transport rutier codul UIT aferent bunurilor transportate, direct sau prin intermediul organizatorului transportului, după caz, până cel târziu la prezentarea vehiculului în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv la punerea efectivă în mișcare a vehiculului, după caz."
-— OUG 41/2022, art. 8 alin. (2) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8 alin. (2) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(4) Operatorul de transport rutier este obligat să pună la dispoziția conducătorului auto codul UIT primit conform prevederilor art. 8 alin. (2) ."
-— OUG 41/2022, art. 8^2 alin. (4) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 8^2 alin. (4) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 
 „(1) Pentru generarea codului UIT, utilizatorii prevăzuți la art. 8 alin. (1) și la art. 8^1 pot declara în Sistemul RO e-Transport datele referitoare la transporturile de bunuri, cu maximum 3 zile calendaristice înainte de data declarată pentru începerea transportului, dar până la prezentarea în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv punerea efectivă în mișcare a vehiculului, după caz."
-— OUG 41/2022, art. 11 alin. (1) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 11 alin. (1) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Calendarul unui cod UIT:

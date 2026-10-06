@@ -14,9 +14,9 @@ Amenda este de la 1.000 la 5.000 lei. Regula de bază din Legea 52/2011 e plata 
 
 ::: ghid-temei
 „e) să plătească zilierului remunerația cuvenită, prin orice mijloc de plată admis de lege, la sfârșitul fiecărei zile; plata remunerației se poate realiza cel mai târziu la sfârșitul săptămânii sau al perioadei de desfășurare a activității, respectiv lunar, în situația în care perioada de desfășurare a activității depășește 30 de zile, numai cu acordul exprimat în scris de către zilier și beneficiar sau un împuternicit al acestuia; [...]"
-— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 5 alin. (2) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „c) încălcarea prevederilor art. 5 alin. (2) lit. e) , constând în lipsa acordului pe care zilierul și beneficiarul sau un împuternicit al acestuia trebuie să-l exprime în scris pentru ca plata remunerației să se realizeze cel mai târziu la sfârșitul săptămânii sau al perioadei de desfășurare a activității, se sancționează cu amendă de la 1.000 la 5.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. c) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. c) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce înseamnă concret:

@@ -14,10 +14,10 @@ Da, din 2025 încoace. Codul fiscal a avut, în forma inițială, o condiție ca
 
 ::: ghid-temei
 „b) a realizat venituri, altele decât cele din consultanță și management, în proporție de peste 80% din veniturile totale;"
-— Legea 227/2015, forma inițială, art. 47 lit. b) (sursă: anaf_surse/cf_2015_forma_initiala.txt)
+— Legea 227/2015, forma inițială, art. 47 lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal (forma inițială)](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „f) Abrogată. (la 01-01-2025, Litera f), Alineatul (1), Articolul 47, Titlul III a fost abrogată de Punctul 3., Articolul LXIV din ORDONANȚA DE URGENȚĂ nr. 156 din 30 decembrie 2024 [...])."
-— Legea 227/2015, art. 47 alin. (1) lit. f), forma actuală (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015, art. 47 alin. (1) lit. f), forma actuală (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 Condițiile care rămân în vigoare, art. 47 alin. (3), enumeră expres domeniile excluse de la microîntreprindere: fonduri de garantare, activități bancare, asigurări/reasigurări și piața de capital, jocuri de noroc, explorare/exploatare petrol și gaze — **consultanța și managementul nu figurează printre ele.**
 :::

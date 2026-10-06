@@ -13,7 +13,7 @@ Multe firme IT mici (micro-întreprinderi, neplătitoare de TVA „normal") lucr
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d). Alin. (1)-(2) modificate de OG 22/2025 art. I pct. 24, 01-09-2025.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160+)
+CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d). Alin. (1)-(2) modificate de OG 22/2025 art. I pct. 24, 01-09-2025.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160)
 :::
 
 Câmpul din profilul firmei descrie chiar acest scop: „Înregistrare specială în scopuri de TVA (art. 317 CF) pentru achiziții/livrări intracomunitare la neplătitori.” Adică o firmă IT neplătitoare de TVA obișnuit are nevoie de codul special art. 317 dacă, în activitatea ei curentă, prestează servicii către firme din UE sau primește servicii de la furnizori din UE — cazuri tipice pentru domeniul IT (dezvoltare pentru clienți străini, abonamente la unelte/servicii cloud facturate de furnizori din alt stat membru).

@@ -14,7 +14,7 @@ Spre deosebire de avansurile de trezorerie, care se pierd în masa generală a �
 
 ::: ghid-temei
 „Movement of Goods (Mişcări de bunuri): Conţine detalii cu privire la mişcarea bunurilor, precum numărul total de mişcări în perioada selectată, total cantitate primită, total cantitate ieşită, referinţa unică a fiecărei mişcări de bunuri şi data fiecărei mişcări de bunuri, data postării fiecărei mişcări de bunuri, tipul mişcării de bunuri (conform nomenclatorului Codificare mişcări de [...])."
-— OPANAF nr. 1.783/2021, Anexa 1 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF nr. 1.783/2021, Anexa 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Ce trebuie știut despre nomenclatorul și frecvența raportării:
@@ -31,6 +31,6 @@ Ce trebuie știut despre nomenclatorul și frecvența raportării:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de generare D406 din iConta.eu (`core/d406.py`) are nomenclatorul complet al tipurilor de mișcări de stoc verificat împotriva listei oficiale ANAF, dar secțiunea „Movement of Goods" nu este încă populată automat cu ieșirile efective de marfă în fișierele lunare — codul tratează în mod explicit acest lucru ca pe o limitare cunoscută, nu ascunsă, tocmai pentru că această secțiune e cerută separat, la raportarea de stocuri, nu în fiecare depunere lunară.
+La data acestui ghid, motorul de generare D406 din iConta.eu are nomenclatorul complet al tipurilor de mișcări de stoc verificat împotriva listei oficiale ANAF, dar secțiunea „Movement of Goods" nu este încă populată automat cu ieșirile efective de marfă în fișierele lunare — codul tratează în mod explicit acest lucru ca pe o limitare cunoscută, nu ascunsă, tocmai pentru că această secțiune e cerută separat, la raportarea de stocuri, nu în fiecare depunere lunară.
 
 [iConta.eu](/)

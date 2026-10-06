@@ -14,7 +14,7 @@ Scutirea de TVA la o livrare intracomunitară de bunuri nu e automată — legea
 
 ::: ghid-temei
 „Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă [...] care acționează ca atare în alt stat membru [...], care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...] Scutirea prevăzută la alin. (2) lit. a) nu se aplică în cazul în care furnizorul nu a respectat obligația [...] de a depune o declarație recapitulativă sau declarația recapitulativă depusă de acesta nu conține informațiile corecte referitoare la această livrare [...], cu excepția cazului în care furnizorul poate justifica în mod corespunzător deficiența într-un mod considerat satisfăcător de autoritățile fiscale competente."
-— Legea 227/2015 (Codul fiscal), art. 294 alin. (2) lit. a) și alin. (2^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.html)
+— Legea 227/2015 (Codul fiscal), art. 294 alin. (2) lit. a) și alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Structura scutirii, așa cum rezultă din text:
@@ -31,6 +31,6 @@ Structura scutirii, așa cum rezultă din text:
 
 ## Ce face iConta.eu
 
-Nu am identificat în codul iConta.eu o funcție care să verifice automat, la emiterea facturii, validitatea codului de TVA al cumpărătorului în VIES sau care să blocheze scutirea de TVA în lipsa acestei verificări. Ce am confirmat este generarea declarației D390 (`core/d390.py`), cu clasificare și reconciliere proprii — dar corelarea explicită a scutirii de TVA a fiecărei facturi cu depunerea corectă a D390, conform art. 294 alin. (2^1), rămâne o verificare pe care contabilul o face manual, nu una automatizată în aplicație.
+Nu am identificat în codul iConta.eu o funcție care să verifice automat, la emiterea facturii, validitatea codului de TVA al cumpărătorului în VIES sau care să blocheze scutirea de TVA în lipsa acestei verificări. Ce am confirmat este generarea declarației D390, cu clasificare și reconciliere proprii — dar corelarea explicită a scutirii de TVA a fiecărei facturi cu depunerea corectă a D390, conform art. 294 alin. (2^1), rămâne o verificare pe care contabilul o face manual, nu una automatizată în aplicație.
 
 [iConta.eu](/)

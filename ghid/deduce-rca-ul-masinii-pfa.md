@@ -17,7 +17,7 @@ Da, dacă mașina face parte din patrimoniul afacerii — dar RCA-ul are un regi
 f) să reprezinte cheltuieli cu prime de asigurare efectuate pentru: 1. active corporale sau necorporale din patrimoniul afacerii; [...]
 (7) Nu sunt cheltuieli deductibile: [...]
 k) 50% din cheltuielile aferente vehiculelor rutiere motorizate care nu sunt utilizate exclusiv în scopul desfășurării activității și a căror masă totală maximă autorizată nu depășește 3.500 kg și nu au mai mult de 9 scaune de pasageri [...]"
-— Legea 227/2015 (Codul fiscal), art. 68 alin. (4) lit. f) pct. 1 și alin. (7) lit. k) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 68 alin. (4) lit. f) pct. 1 și alin. (7) lit. k) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se aplică, concret, cele două reguli:

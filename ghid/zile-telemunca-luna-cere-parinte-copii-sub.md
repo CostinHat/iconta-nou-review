@@ -16,15 +16,15 @@ Pentru angajator, dreptul nu e discreționar: refuzul trebuie să se sprijine pe
 
 ::: ghid-temei
 „La cerere, salariații care au în întreținere copii în vârstă de până la 11 ani beneficiază de 4 zile pe lună de muncă la domiciliu sau în regim de telemuncă, [...] cu excepția situațiilor în care natura sau felul muncii nu permite desfășurarea activității în astfel de condiții.(2) În situația în care ambii părinți sau reprezentați legali sunt salariați, cererea prevăzută la alin. (1) va fi însoțită de o declarație pe propria răspundere a celuilalt părinte sau reprezentant legal, din care să rezulte faptul că, pentru aceeași perioadă, acesta nu a solicitat concomitent desfășurarea activității în regim de muncă la domiciliu sau telemuncă."
-— Codul muncii (Legea 53/2003), art. 118^1 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118^1 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 ::: ghid-temei
 „(4) Prin excepție de la prevederile alin. (1), salariații care au în întreținere copii în vârstă de până la 18 ani, încadrați în grad de handicap, beneficiază de 8 zile pe lună de muncă la domiciliu sau în regim de telemuncă"
-— Codul muncii (Legea 53/2003), art. 118^1 alin. (4) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118^1 alin. (4) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 
 „În cazul salariaților care au în întreținere 2 sau mai mulți copii încadrați în grad de handicap cu vârsta de până la 18 ani, suplimentar față de numărul de zile prevăzut la alin. (4), pentru fiecare copil se mai acordă câte două zile pe lună de muncă la domiciliu sau în regim de telemuncă, în condițiile prevăzute la alin. (1)-(3)."
-— Codul muncii (Legea 53/2003), art. 118^1 alin. (5) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+— Codul muncii (Legea 53/2003), art. 118^1 alin. (5) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
 Condițiile, pe rând:

@@ -16,12 +16,12 @@ Motivul ține de logica TVA: la achiziție, bunul a fost cumpărat în calitate 
 
 ::: ghid-temei
 „Transferul în patrimoniul afacerii al bunurilor sau serviciilor achiziționate sau dobândite de persoanele fizice și care au fost folosite în scopuri personale, în vederea utilizării pentru desfășurarea de activități economice, nu este o operațiune asimilată unei livrări de bunuri/prestări de servicii, efectuate cu plată, iar persoana fizică nu poate deduce taxa aferentă bunurilor/serviciilor respective prin aplicarea procedurii de ajustare prevăzută la art. 304 și 305 din Codul fiscal.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 4 alin. (8) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul VII pct. 4 alin. (8) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Este considerată persoană impozabilă orice persoană care desfășoară, de o manieră independentă și indiferent de loc, activități economice de natura celor prevăzute la alin. (2) [...] oricare ar fi scopul sau rezultatul acestei activități.”
-— Codul fiscal (Legea 227/2015), art. 269 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 269 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

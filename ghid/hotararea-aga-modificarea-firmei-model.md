@@ -14,7 +14,7 @@ Orice schimbare structurală a unui SRL — sediu, obiect de activitate, capital
 
 ::: ghid-temei
 „(1) Actul constitutiv poate fi modificat prin hotărâre a adunării generale ori a Consiliului de administrație, respectiv directoratului, adoptată în temeiul art. 114 alin. (1), sau prin hotărârea instanței judecătorești [...]. (4) După fiecare modificare a actului constitutiv, administratorii, respectiv directoratul vor depune la registrul comerțului actul modificator și textul complet al actului constitutiv, actualizat cu toate modificările, care vor fi înregistrate în registrul comerțului în temeiul încheierii registratorului de registrul comerțului."
-— Legea 31/1990, art. 204 alin. (1) și (4) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea 31/1990, art. 204 alin. (1) și (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Ce trebuie să conțină, în esență, o hotărâre AGA de modificare:

@@ -16,12 +16,12 @@ Există și situația inversă. Dacă serviciul nu este scutit în România, dar
 
 ::: ghid-temei
 „prestările de servicii prevăzute la art. 278 alin. (2) efectuate în beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană, altele decât cele scutite de TVA în statul membru în care acestea sunt impozabile, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă;"
-— Codul fiscal (Legea 227/2015), art. 325 alin. (1) lit. c) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 325 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „În sensul art. 325 alin. (1) lit. c) din Codul fiscal, în cazul prestărilor de servicii prevăzute la art. 278 alin. (2) din Codul fiscal efectuate în beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Comunitate, prestatorul raportează în declarația recapitulativă numai serviciile care nu beneficiază de scutire de taxă în statul membru în care acestea sunt impozabile. În acest scop, se consideră că operațiunea este scutită de taxă în statul membru în care este impozabilă dacă respectiva operațiune ar fi scutită de taxă în România. În situația în care în România nu este aplicabilă o scutire de taxă, prestatorul este exonerat de obligația de a declara în declarația recapitulativă respectivul serviciu, dacă primește o confirmare oficială din partea autorității fiscale din statul membru în care operațiunea este impozabilă, din care să rezulte că în statul membru respectiv se aplică o scutire de taxă."
-— HG 1/2016, norme metodologice, titlul VII, pct. 105 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, norme metodologice, titlul VII, pct. 105 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Norma este în acord cu textul actual al art. 325 alin. (1) lit. c), care exclude expres din declarație serviciile scutite în statul membru în care sunt impozabile.

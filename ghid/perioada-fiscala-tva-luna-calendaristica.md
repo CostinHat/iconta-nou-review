@@ -15,7 +15,7 @@ Perioada fiscală determină la ce interval se depune decontul de TVA. Regula de
 ::: ghid-temei
 „(1) Perioada fiscală este luna calendaristică.
 (2) Prin excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri din operațiuni taxabile și/sau scutite cu drept de deducere și/sau neimpozabile în România conform art. 275 și 278 [...]"
-— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (1) și (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 322 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Practic, aplicarea regulii se face astfel:

@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „(1) Contribuabilii plătitori de impozit pe profit, indiferent de sistemul de declarare și plată prevăzut la art. 41 din Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, precum și contribuabilii plătitori de impozit pe veniturile microîntreprinderilor, potrivit titlului III „Impozitul pe veniturile microîntreprinderilor" din aceeași lege, beneficiază de o bonificație de 3% din impozitul pe profit anual/impozitul pe veniturile microîntreprinderilor, aferente anului fiscal 2025/anului fiscal modificat care începe în anul 2025, după caz. [...] (3) Bonificația se acordă de către organul fiscal cu respectarea următoarelor condiții de către contribuabil: a) are depuse toate declarațiile conform vectorului fiscal; b) sunt stinse integral și la termenele prevăzute de lege impozitul pe profit anual/impozit pe veniturile microîntreprinderilor, aferente anului 2025/anului fiscal modificat care începe în anul 2025, după caz; c) nu înregistrează nicio altă obligație fiscală/bugetară restantă la termenul legal pentru depunerea declarațiilor [...]"
-— OUG nr. 8/2026, art. 7 alin. (1) și (3) (sursă: anaf_surse/oug_8_2026.txt)
+— OUG nr. 8/2026, art. 7 alin. (1) și (3) (sursă: [OUG nr. 8/2026 privind instituirea unor măsuri de relansare economică](https://legislatie.just.ro/Public/DetaliiDocument/307580))
 :::
 
 Trei condiții cumulative trebuie îndeplinite pentru ca bonificația de 3% să fie acordată:

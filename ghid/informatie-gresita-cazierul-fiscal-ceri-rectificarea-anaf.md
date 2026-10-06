@@ -16,17 +16,17 @@ Rectificarea privește informațiile care nu corespund realității sau care au 
 
 ::: ghid-temei
 „(1) Contribuabilii care figurează în evidența cazierului fiscal pot cere rectificarea informațiilor înscrise, dacă acestea nu corespund situației reale ori înregistrarea lor nu s-a făcut cu respectarea dispozițiilor legale. (2) Cererea de rectificare, însoțită de acte doveditoare, se adresează organului fiscal competent care a efectuat înscrierea în cazierul fiscal. (3) Organele fiscale sunt obligate să verifice susținerile contribuabililor și, după caz, iau măsuri de rectificare a informațiilor și eliberează un nou certificat de cazier fiscal în locul celui contestat sau emit decizia de respingere a cererii de rectificare. (4) Soluția se comunică contribuabilului în termen de 5 zile de la data depunerii cererii, în condițiile Codului de procedură fiscală."
-— OG 39/2015, art. 10 (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 10 (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „(1) Contribuabilii cărora li s-a respins cererea de rectificare sau cărora nu li s-a răspuns în termenul prevăzut de art. 10 alin. (4) pot depune contestație la tribunal, secția de contencios administrativ și fiscal. Contestația se depune în termen de 30 de zile de la comunicarea deciziei de respingere a cererii de rectificare sau de la expirarea termenului de comunicare a modului de soluționare a cererii de rectificare. Contestația se poate introduce și în cazul în care eroarea înregistrării în cazierul fiscal nu se datorează organelor fiscale."
-— OG 39/2015, art. 11 alin. (1) (sursă: anaf_surse/og_39_2015.html)
+— OG 39/2015, art. 11 alin. (1) (sursă: [OG nr. 39/2015 privind cazierul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/170982))
 :::
 
 ::: ghid-temei
 „1. În cazul în care datele înscrise în cazierul fiscal nu corespund situației reale ori înregistrarea lor nu s-a făcut cu respectarea dispozițiilor legale, contribuabilul poate solicita rectificarea acestora prin completarea formularului de cerere 503 "Cerere de rectificare a informațiilor înscrise în cazierul fiscal", în condițiile prevăzute de art. 10 din Ordonanța Guvernului nr. 39/2015 . [...] 3. Actele doveditoare se anexează la cererea de rectificare, în copie certificată de organul fiscal competent pe baza prezentării actelor originale sau în copie legalizată."
-— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. IV pct. 1 și 3 (sursă: anaf_surse/ordin_2594_2015__anexa_269686.html)
+— Procedura aprobată prin OPANAF 2594/2015, anexa nr. 1, cap. IV pct. 1 și 3 (sursă: [OPANAF nr. 2594/2015 privind cazierul fiscal (anexa-procedură de înscriere, scoatere și rectificare)](https://legislatie.just.ro/Public/DetaliiDocument/171984))
 :::
 
 Pașii:

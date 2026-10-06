@@ -14,7 +14,7 @@ Numele „REVISAL" mai circulă des, dar sistemul prin care se transmit azi date
 
 ::: ghid-temei
 „Pentru persoanele care urmează să desfășoare activitate în baza unui contract individual de muncă [...] angajatorii [...] completează și transmit în Registru datele menționate la art. 4 alin. (2), cel târziu în ziua anterioară începerii activității de către aceste persoane."
-— HG 295/2025, art. 3 alin. (1) (sursă: anaf_surse/hg_295_2025_reges_online_registru_salariati.txt)
+— HG 295/2025, art. 3 alin. (1) (sursă: [HG nr. 295/2025 privind Registrul general de evidență a salariaților - REGES-ONLINE](https://legislatie.just.ro/Public/DetaliiDocument/295995))
 :::
 
 Datele care trebuie completate și transmise sunt enumerate la art. 4 alin. (2): data încheierii contractului, numărul acestuia și data începerii activității (lit. d), funcția/ocupația conform COR (lit. e), durata contractului — nedeterminată/determinată (lit. g), salariul de bază lunar brut, indemnizațiile, sporurile și alte adaosuri (lit. j), printre alte elemente.

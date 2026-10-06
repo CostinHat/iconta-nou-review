@@ -14,7 +14,7 @@ O marcă de comerț achiziționată (cumpărată de la un terț, nu creată inte
 
 ::: ghid-temei
 „(9) Cheltuielile aferente achiziționării de brevete, drepturi de autor, licențe, mărci de comerț sau fabrică, drepturi de explorare a resurselor naturale și alte imobilizări necorporale recunoscute din punct de vedere contabil, cu excepția cheltuielilor de constituire, a fondului comercial, a imobilizărilor necorporale cu durată de viață utilă nedeterminată, încadrate astfel potrivit reglementărilor contabile aplicabile, precum și cheltuielile de dezvoltare care din punct de vedere contabil reprezintă imobilizări necorporale se recuperează prin intermediul deducerilor de amortizare liniară pe perioada contractului sau pe durata de utilizare, după caz."
-— Legea 227/2015 (Codul fiscal), art. 28 alin. (9) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 28 alin. (9) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce rezultă concret pentru o marcă achiziționată:
@@ -32,6 +32,6 @@ Ce rezultă concret pentru o marcă achiziționată:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (`core/repo_mijloace_fixe.py`) folosește o schemă generică de amortizare (valoare, valoare reziduală, durată normală de funcționare în luni), aplicabilă oricărui activ amortizabil introdus, indiferent dacă e corporal sau necorporal. La data acestui ghid, aplicația **nu diferențiază automat regimul special al imobilizărilor necorporale** (metodă exclusiv liniară, durată legată de contract sau de utilizare, excludere pentru durată de viață nedeterminată) — contabilul e cel care stabilește durata corectă la introducerea mărcii ca activ și confirmă că metoda selectată e liniară, conform art. 28 alin. (9).
+Modulul de mijloace fixe din iConta.eu folosește o schemă generică de amortizare (valoare, valoare reziduală, durată normală de funcționare în luni), aplicabilă oricărui activ amortizabil introdus, indiferent dacă e corporal sau necorporal. La data acestui ghid, aplicația **nu diferențiază automat regimul special al imobilizărilor necorporale** (metodă exclusiv liniară, durată legată de contract sau de utilizare, excludere pentru durată de viață nedeterminată) — contabilul e cel care stabilește durata corectă la introducerea mărcii ca activ și confirmă că metoda selectată e liniară, conform art. 28 alin. (9).
 
 [iConta.eu](/)

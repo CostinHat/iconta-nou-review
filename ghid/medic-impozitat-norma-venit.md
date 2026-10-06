@@ -14,10 +14,10 @@ Nu. Profesia de medic este organizată și exercitată sub un regim profesional 
 
 ::: ghid-temei
 „În cazul contribuabililor care realizează venituri din activități independente, altele decât venituri din profesii liberale definite la art. 67 alin. (2), venitul net anual se determină pe baza normelor de venit de la locul desfășurării activității."
-— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 69 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Constituie venituri din profesii liberale veniturile obținute din prestarea de servicii cu caracter profesional, potrivit actelor normative speciale care reglementează organizarea și exercitarea profesiei respective."
-— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 67 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Consecința pentru un medic care activează ca persoană fizică independentă (cabinet medical individual sau formă similară):

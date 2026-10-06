@@ -16,17 +16,17 @@ Diferența se înregistrează doar contabil, ca venit sau cheltuială financiar�
 
 ::: ghid-temei
 „Pentru livrări de bunuri sau prestări de servicii în interiorul țării, contractate în valută cu decontare în lei la cursul de schimb din data plății, diferențele de curs dintre cursul de schimb menționat în factura întocmită conform alin. (1) și cursul de schimb utilizat la data încasării nu sunt considerate diferențe de preț și nu se emite o factură în acest sens."
-— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 35 alin. (3) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 35 alin. (3) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României sau ultimul curs de schimb publicat de Banca Centrală Europeană ori cursul de schimb utilizat de banca prin care se efectuează decontările, valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză"
-— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „b) Pentru creanțele și datoriile, exprimate în lei, a căror decontare se face în funcție de cursul unei valute, eventualele diferențe favorabile sau nefavorabile, care rezultă din evaluarea acestora se înregistrează la alte venituri sau alte cheltuieli financiare, după caz."
-— OMFP 1802/2014 (reglementările contabile), pct. 94 lit. b) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementările contabile), pct. 94 lit. b) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă concret:

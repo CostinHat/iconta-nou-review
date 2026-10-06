@@ -16,12 +16,12 @@ Pentru contabilul debitorului urmează partea practică: livrarea e a firmei, de
 
 ::: ghid-temei
 „În sensul art. 319 alin. (19) din Codul fiscal, în cazul bunurilor supuse executării silite care sunt livrate prin organele de executare silită, factura se întocmește de către organele de executare silită pe numele și în contul debitorului executat silit. În factură se face o mențiune cu privire la faptul că facturarea este realizată de organul de executare silită. Originalul facturii se transmite cumpărătorului, respectiv adjudecatarului, iar exemplarul al doilea se transmite debitorului executat silit. […] Organele de executare silită emit facturi cu TVA numai în cazul operațiunilor taxabile și numai dacă debitorul este înregistrat în scopuri de TVA conform art. 316 din Codul fiscal sau a fost înregistrat în scopuri de TVA și i s-a anulat înregistrarea conform art. 316 alin. (11) lit. a)-e) și h) din Codul fiscal. Nu se menționează TVA pe factură în cazul operațiunilor pentru care se aplică taxare inversă conform prevederilor art. 331 din Codul fiscal."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (5) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Dacă organul de executare silită, menționat la alin. (5) , încasează contravaloarea bunurilor, inclusiv taxa de la cumpărător sau de la adjudecatar, are obligația să vireze la bugetul de stat taxa încasată de la cumpărător ori adjudecatar în termen de 5 zile lucrătoare de la data adjudecării. Pe baza documentului de plată a taxei pe valoarea adăugată transmis de organele de executare silită, debitorul executat silit evidențiază suma achitată, cu semnul minus, la rândul de regularizări taxa colectată din decontul de taxă prevăzut la art. 323 din Codul fiscal."
-— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (6) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016 (Normele Codului fiscal), Titlul VII, pct. 96 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Pe scurt:

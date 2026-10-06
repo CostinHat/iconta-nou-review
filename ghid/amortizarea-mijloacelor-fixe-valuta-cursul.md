@@ -14,7 +14,7 @@ Un mijloc fix cumpărat în valută (de exemplu, un utilaj importat, achitat în
 
 ::: ghid-temei
 „La fiecare dată a bilanțului: [...] c) Elementele nemonetare achiziționate cu plata în valută și înregistrate la cost istoric (imobilizări, stocuri) trebuie prezentate în situațiile financiare anuale utilizând cursul de schimb valutar de la data efectuării tranzacției."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 94 lit. c) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 94 lit. c) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din acest text rezultă consecința practică pentru amortizare: dacă mijlocul fix nu este reevaluat (rămâne la cost istoric), valoarea lui în lei — deci și baza de amortizare — se stabilește o singură dată, la cursul BNR din ziua achiziției, și nu se recalculează ulterior în funcție de fluctuațiile cursului valutar.
@@ -23,7 +23,7 @@ Situația diferă doar dacă firma a optat pentru **reevaluarea** mijlocului fix
 
 ::: ghid-temei
 „d) Elementele nemonetare achiziționate cu plata în valută și înregistrate la valoarea justă (de exemplu, imobilizările corporale reevaluate) trebuie prezentate în situațiile financiare anuale la această valoare."
-— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 94 lit. d) (sursă: anaf_surse/omfp_1802_2014.txt)
+— OMFP nr. 1.802/2014 pentru aprobarea reglementărilor contabile, pct. 94 lit. d) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 În acest caz, valoarea reevaluată (stabilită prin raport de evaluare, în lei) devine noua bază de amortizare, indiferent de moneda inițială de achiziție.

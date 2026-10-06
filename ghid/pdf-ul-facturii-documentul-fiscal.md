@@ -14,14 +14,14 @@ Răspuns scurt: nu. După ce o factură a fost transmisă și acceptată în sis
 
 ::: ghid-temei
 „Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de semnătura electronică a Ministerului Finanţelor."
-— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: anaf_surse/oug_120_2021.txt)
+— OUG 120/2021 (RO e-Factura), art. 4 alin. (6) (sursă: [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243))
 :::
 
 - Legea leagă statutul de „exemplar original" strict de fișierul XML **și** de semnătura electronică a Ministerului Finanțelor aplicată pe el — nu de un document derivat, generat ulterior, în alt format.
 - Pentru relațiile dintre persoane impozabile stabilite în România, Codul fiscal restrânge explicit domeniul: doar facturile care respectă condițiile RO e-Factura sunt „considerate facturi" în sensul legii:
 
 > „Prin excepție de la prevederile alin. (1), pentru operațiunile realizate între persoane impozabile stabilite în România conform art. 266 alin. (2), sunt considerate facturi numai facturile care îndeplinesc condițiile prevăzute de Ordonanța de urgență a Guvernului nr. 120/2021 [...]"
-> — Codul fiscal, art. 319 alin. (1^1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+> — Codul fiscal, art. 319 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 - Nu există în aceste texte o mențiune separată despre statutul juridic al unui PDF generat în paralel — concluzia că PDF-ul nu e documentul oficial e o deducție directă din faptul că legea numește explicit doar XML-ul, nu o afirmație literală „PDF-ul nu e valabil".
 
 ## Ce se greșește în practică
@@ -32,7 +32,7 @@ Răspuns scurt: nu. După ce o factură a fost transmisă și acceptată în sis
 
 ## Ce face iConta.eu
 
-Funcționalitatea „PDF factură" din iConta.eu (`core/factura_pdf.py`) generează un document de vizualizare: randare reportlab a datelor facturii, cu logo, culoare accent și font personalizabile ale firmei, folosit la emitere, pe portalul clientului și la trimiterea prin email. Acest PDF **nu e stocat** ca „versiune finală" a facturii și **nu are nicio legătură de cod** cu procesul de transmitere, validare și semnare din RO e-Factura — se generează din nou, la fiecare cerere, din datele curente ale facturii din baza de date.
+Funcționalitatea „PDF factură" din iConta.eu generează un document de vizualizare: randare reportlab a datelor facturii, cu logo, culoare accent și font personalizabile ale firmei, folosit la emitere, pe portalul clientului și la trimiterea prin email. Acest PDF **nu e stocat** ca „versiune finală" a facturii și **nu are nicio legătură de cod** cu procesul de transmitere, validare și semnare din RO e-Factura — se generează din nou, la fiecare cerere, din datele curente ale facturii din baza de date.
 
 Aplicația nu marchează nicăieri PDF-ul ca „neoficial" sau „copie" — nu există în interfață o distincție vizuală între PDF-ul unei facturi transmise prin e-Factura și al uneia care nu a fost. Statutul juridic descris mai sus rămâne o informație pe care contabilul trebuie s-o cunoască, nu una semnalată de aplicație.
 

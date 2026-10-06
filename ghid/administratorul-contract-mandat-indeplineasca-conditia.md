@@ -14,10 +14,10 @@ O confuzie frecventă la firmele mici: administratorul e remunerat, plătește c
 
 ::: ghid-temei
 „[O microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent:] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 47 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „(4) În sensul prezentului titlu, prin salariat se înțelege persoana angajată cu contract individual de muncă cu normă întreagă, potrivit Legii nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare. Condiția se consideră îndeplinită și în cazul microîntreprinderilor care: a) au persoane angajate cu contract individual de muncă cu timp parțial dacă fracțiunile de normă prevăzute în acestea, însumate, reprezintă echivalentul unei norme întregi; b) au încheiate contracte de administrare sau mandat, potrivit legii, în cazul în care remunerația acestora este cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată."
-— Legea 227/2015 (Codul fiscal), art. 51 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 51 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Cum se combină textele:
@@ -34,6 +34,6 @@ Cum se combină textele:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează distinct, în motorul de calcul, remunerația administratorului cu contract de mandat (CAS 25% + CASS 10% + impozit 10%, fără CIM, fără CAM) față de salariile propriu-zise calculate din statul de plată (`core/contracte_speciale.py`). Aplicația **nu verifică automat**, la nivelul întregii firme, dacă remunerația de mandat atinge pragul salariului minim brut necesar pentru a îndeplini condiția de salariat de la art. 51 alin. (4) lit. b) și nu decide dacă firma se încadrează la micro pe acest temei; această verificare rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu tratează distinct, în motorul de calcul, remunerația administratorului cu contract de mandat (CAS 25% + CASS 10% + impozit 10%, fără CIM, fără CAM) față de salariile propriu-zise calculate din statul de plată. Aplicația **nu verifică automat**, la nivelul întregii firme, dacă remunerația de mandat atinge pragul salariului minim brut necesar pentru a îndeplini condiția de salariat de la art. 51 alin. (4) lit. b) și nu decide dacă firma se încadrează la micro pe acest temei; această verificare rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -16,7 +16,7 @@ Excepția e importantă pentru magazinele online care vând haine, încălțămi
 
 ::: ghid-temei
 „Fac excepție de la prevederile prezentei ordonanțe de urgență următoarele transporturi: [...] c) transportul bunurilor de către prestatorii de servicii poștale în colete poștale, definite conform prevederilor art. 2 pct. 16 din [...] serviciile poștale"
-— OUG 41/2022, art. 16 lit. c) (sursă: anaf_surse/oug_41_2022.txt)
+— OUG 41/2022, art. 16 lit. c) (sursă: [OUG nr. 41/2022 pentru instituirea Sistemului național RO e-Transport](https://legislatie.just.ro/Public/DetaliiDocument/253801))
 :::
 
 Condițiile sunt cumulative:

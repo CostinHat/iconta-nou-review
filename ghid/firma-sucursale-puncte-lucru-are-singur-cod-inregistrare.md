@@ -16,17 +16,17 @@ Confuzia apare din alt motiv. Sediile secundare se declară la organul fiscal, i
 
 ::: ghid-temei
 „Persoanei impozabile care are sediul activității economice în România și care are pe teritoriul României sucursale și alte sedii secundare, fără personalitate juridică, i se atribuie un singur cod de înregistrare în scopuri de taxă conform art. 316 din Codul fiscal.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (4) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 88 alin. (4) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Contribuabilul/Plătitorul are obligația de a declara organului fiscal central, înființarea de sedii secundare, în termen de 30 de zile de la:”
-— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 ::: ghid-temei
 „În sensul prezentului articol, prin sediu secundar se înțelege un loc prin care se desfășoară integral sau parțial activitatea contribuabilului/plătitorului, cum ar fi: birou, magazin, atelier, depozit și altele asemenea”
-— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 85 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pe scurt, pentru o firmă românească cu mai multe locații:

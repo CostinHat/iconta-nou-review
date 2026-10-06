@@ -18,11 +18,11 @@ Confuzia e frecventă pentru că TVA la încasare există ca regim separat, iar 
 > sursă**, din care se scad: a) veniturile aferente costurilor stocurilor de produse; b) veniturile
 > aferente costurilor serviciilor în curs de execuție; ... j) valoarea reducerilor comerciale acordate
 > ulterior facturării, înregistrate în contul «709»..."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.txt:6480-6519`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 
 **CF art. 51 alin. (1):**
 > „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— sursă: `anaf_surse/cod_fiscal_227_2015_consolidat.html`
+— sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282)
 :::
 
 ## Ce înseamnă în practică „facturat, nu încasat"
@@ -45,6 +45,6 @@ O microîntreprindere emite în trimestrul II facturi în valoare totală de 50.
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d100.py`, funcția `deriva_obligatii`) determină baza impozitului micro (cod obligație 121) ca `venituri_trimestru × 1%`, unde veniturile trimestrului sunt citite din conturile 70x/75x/76x minus 709, pentru perioada exactă a trimestrului curent — nu cumulat de la 1 ianuarie. Datele sunt preluate de `d100.pull()` direct din înregistrările contabile ale firmei, deci suma calculată reflectă exact baza „la facturat" impusă de art. 53 alin. (1), nu sumele încasate.
+Motorul de calcul (funcția `deriva_obligatii`) determină baza impozitului micro (cod obligație 121) ca `venituri_trimestru × 1%`, unde veniturile trimestrului sunt citite din conturile 70x/75x/76x minus 709, pentru perioada exactă a trimestrului curent — nu cumulat de la 1 ianuarie. Datele sunt preluate de `d100.pull()` direct din înregistrările contabile ale firmei, deci suma calculată reflectă exact baza „la facturat" impusă de art. 53 alin. (1), nu sumele încasate.
 
 [iConta.eu](/)

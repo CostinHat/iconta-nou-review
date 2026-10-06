@@ -34,6 +34,6 @@ Vehiculele exceptate de la plafonul de 50% (folosite exclusiv pentru servicii de
 
 ## Ce face iConta.eu
 
-Aplicația calculează și înregistrează diferențele de curs valutar (665/765) pe baza cursurilor introduse pentru fiecare operațiune, prin motorul de diferențe de curs (`core/diferente_curs.py`). Aceste sume ajung, ca orice altă cheltuială sau venit financiar, în balanța folosită la calculul impozitului pe profit — aplicația nu aplică, în prezent, o ajustare automată separată pentru plafonul de 50% specific diferențelor de curs din leasingul auto; verificarea acestei încadrări punctuale rămâne o decizie a contabilului, la calculul rezultatului fiscal.
+Aplicația calculează și înregistrează diferențele de curs valutar (665/765) pe baza cursurilor introduse pentru fiecare operațiune, prin motorul de diferențe de curs. Aceste sume ajung, ca orice altă cheltuială sau venit financiar, în balanța folosită la calculul impozitului pe profit — aplicația nu aplică, în prezent, o ajustare automată separată pentru plafonul de 50% specific diferențelor de curs din leasingul auto; verificarea acestei încadrări punctuale rămâne o decizie a contabilului, la calculul rezultatului fiscal.
 
 [iConta.eu](/)

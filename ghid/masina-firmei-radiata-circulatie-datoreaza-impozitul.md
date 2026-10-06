@@ -16,12 +16,12 @@ Pe lângă asta, firma trebuie să depună declarația de radiere la organul fis
 
 ::: ghid-temei
 „În cazul radierii din circulație a unui mijloc de transport, proprietarul are obligația de a depune declarația de radiere la organul fiscal competent în a cărui rază teritorială se află domiciliul, sediul sau punctul de lucru, după caz, în termen de 30 de zile de la data radierii. Începând cu data de 1 ianuarie a anului următor radierii, proprietarul încetează să datoreze impozitul aferent mijlocului de transport.”
-— Codul fiscal (Legea 227/2015), art. 471 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 471 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „(1) Radierea din evidență a vehiculelor se face de către autoritatea care a efectuat înmatricularea sau înregistrarea doar în cazul scoaterii definitive din circulație a acestora, la cererea proprietarului, în următoarele cazuri: a) proprietarul dorește retragerea definitivă din circulație a vehiculului și face dovada depozitării acestuia într-un spațiu adecvat, deținut în condițiile legii, spațiu care nu afectează domeniul public sau care afectează domeniul public, dar pentru care există o convenție sau o autorizație, în acest scop, de la autoritățile competente; [...] b) proprietarul face dovada dezmembrării, casării sau predării vehiculului la unități specializate în vederea dezmembrării; [...] c) la scoaterea definitivă din România a vehiculului respectiv; [...] d) în cazul furtului vehiculului.”
-— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 126 alin. (1) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul IX, pct. 126 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Ce reiese de aici:

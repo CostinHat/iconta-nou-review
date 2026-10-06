@@ -14,7 +14,7 @@ Depinde de regimul de impozitare al firmei. La impozit pe profit, diferențele d
 
 ::: ghid-temei
 „(1) Rezultatul fiscal se calculează ca diferență între veniturile și cheltuielile înregistrate conform reglementărilor contabile aplicabile, din care se scad veniturile neimpozabile și deducerile fiscale și la care se adaugă cheltuielile nedeductibile. [...] Rezultatul fiscal pozitiv este profit impozabil, iar rezultatul fiscal negativ este pierdere fiscală."
-— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 19 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - **La impozit pe profit** (art. 19 alin. (1)): niciun articol din Codul fiscal nu exclude diferențele de curs din calculul general al rezultatului fiscal — veniturile din 765 sunt impozabile, cheltuielile din 665 sunt deductibile, exact ca orice alt venit/cheltuială financiară înregistrată contabil.
@@ -30,6 +30,6 @@ Depinde de regimul de impozitare al firmei. La impozit pe profit, diferențele d
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar (`core/diferente_curs.py`, F041) e un motor pur de contabilizare pe 665/765 — calculează suma și generează nota, la decontare sau la reevaluare lunară. Aplicația **nu calculează impozitul pe profit** și **nu calculează impozitul pe veniturile microîntreprinderilor** pe baza acestor conturi: nu există în cod nicio legătură între `diferente_curs.py` și motoarele de declarații fiscale (D101, D710 sau echivalent). Regulile de mai sus rămân, deocamdată, aplicate manual de contabil, pe baza rulajului 665/765 generat automat de F041.
+Funcționalitatea de diferențe de curs valutar (F041) e un motor pur de contabilizare pe 665/765 — calculează suma și generează nota, la decontare sau la reevaluare lunară. Aplicația **nu calculează impozitul pe profit** și **nu calculează impozitul pe veniturile microîntreprinderilor** pe baza acestor conturi: nu există în cod nicio legătură între `diferente_curs.py` și motoarele de declarații fiscale (D101, D710 sau echivalent). Regulile de mai sus rămân, deocamdată, aplicate manual de contabil, pe baza rulajului 665/765 generat automat de F041.
 
 [iConta.eu](/)

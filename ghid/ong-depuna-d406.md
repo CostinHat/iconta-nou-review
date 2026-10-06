@@ -14,7 +14,7 @@ Declarația informativă D406, prin care se transmite fișierul standard de cont
 
 ::: ghid-temei
 „3. Următoarele categorii de contribuabili au obligaţia de depunere a fişierului standard de control fiscal (SAF-T), prin intermediul Declaraţiei informative D406: [...] - asociaţiile cu scop patrimonial; - asociaţiile/persoanele fără scop patrimonial; [...] - alte persoane juridice, care nu se regăsesc menţionate în mod expres la pct. 4."
-— OPANAF 1783/2021, Anexa 5, pct. 3 (sursă: anaf_surse/opanaf_1783_2021_saft_d406.txt)
+— OPANAF 1783/2021, Anexa 5, pct. 3 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 - Lista de la pct. 3 include explicit **asociațiile și persoanele fără scop patrimonial** printre categoriile obligate să depună D406 — nu e o obligație limitată la societățile comerciale (SRL, SA etc.).
@@ -29,6 +29,6 @@ Declarația informativă D406, prin care se transmite fișierul standard de cont
 
 ## Ce face iConta.eu
 
-Funcționalitatea de contabilitate ONG din iConta.eu (`core/ong.py`) se ocupă exclusiv de înregistrarea veniturilor fără scop patrimonial pe conturile din grupa 73 și de calculul scutirii de impozit pe profit potrivit art. 15 Cod fiscal — **nu generează și nu depune Declarația D406/SAF-T**; niciun modul legat de contabilitatea ONG nu atinge fișierul standard de control fiscal. Dacă organizația are obligația D406, aceasta se gestionează, dacă e disponibilă, prin modulele generale de raportare ale aplicației, independent de această funcționalitate.
+Funcționalitatea de contabilitate ONG din iConta.eu se ocupă exclusiv de înregistrarea veniturilor fără scop patrimonial pe conturile din grupa 73 și de calculul scutirii de impozit pe profit potrivit art. 15 Cod fiscal — **nu generează și nu depune Declarația D406/SAF-T**; niciun modul legat de contabilitatea ONG nu atinge fișierul standard de control fiscal. Dacă organizația are obligația D406, aceasta se gestionează, dacă e disponibilă, prin modulele generale de raportare ale aplicației, independent de această funcționalitate.
 
 [iConta.eu](/)

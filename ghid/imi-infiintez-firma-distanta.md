@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 „În termen de 15 zile de la data încheierii actului constitutiv, fondatorii, primii administratori sau, dacă este cazul, primii membri ai directoratului și ai consiliului de supraveghere ori un împuternicit al acestora vor cere înmatricularea societății în registrul comerțului în a cărui rază teritorială își va avea sediul societatea. Ei răspund în mod solidar pentru orice prejudiciu pe care îl cauzează prin neîndeplinirea acestei obligații."
-— Legea nr. 31/1990, art. 36 alin. (1) (sursă: anaf_surse/legea_31_1990_societatile.txt)
+— Legea nr. 31/1990, art. 36 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 - Termenul de **15 zile** de la semnarea actului constitutiv curge indiferent dacă cererea se depune fizic sau electronic.

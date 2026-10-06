@@ -33,6 +33,6 @@ Procentul deductibil dintr-o ajustare pentru deprecierea creanțelor nu e fix �
 
 ## Ce face iConta.eu
 
-`deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din `core/provizioane.py` aplică exact ordinea de mai sus și întoarce procentul corect plus temeiul textual asociat (de exemplu „art. 26(1)c" pentru 30%, „art. 26(1)j" pentru 100%). Funcția nu calculează singură zilele de întârziere sau nu verifică automat starea de faliment a debitorului — aceste date sunt introduse de contabil, pe baza documentelor disponibile.
+`deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație aplică exact ordinea de mai sus și întoarce procentul corect plus temeiul textual asociat (de exemplu „art. 26(1)c" pentru 30%, „art. 26(1)j" pentru 100%). Funcția nu calculează singură zilele de întârziere sau nu verifică automat starea de faliment a debitorului — aceste date sunt introduse de contabil, pe baza documentelor disponibile.
 
 [iConta.eu](/)

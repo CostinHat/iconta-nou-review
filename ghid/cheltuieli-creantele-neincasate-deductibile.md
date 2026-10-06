@@ -33,6 +33,6 @@ Următoarele cheltuieli nu sunt deductibile: [...] h) pierderile înregistrate l
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` calculează și contabilizează doar ajustarea (constituire 6814=491, reluare 491=7814), pe baza `deductibilitate_creanta`. Aplicația nu modelează scoaterea propriu-zisă din evidență a creanței și nu verifică încadrarea în cele șase excepții de la art. 25 alin. (4) lit. h) — această evaluare, la fel ca și nota contabilă corespunzătoare, rămâne manuală.
+Aplicația calculează și contabilizează doar ajustarea (constituire 6814=491, reluare 491=7814), pe baza `deductibilitate_creanta`. Aplicația nu modelează scoaterea propriu-zisă din evidență a creanței și nu verifică încadrarea în cele șase excepții de la art. 25 alin. (4) lit. h) — această evaluare, la fel ca și nota contabilă corespunzătoare, rămâne manuală.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Un abonament software (SaaS, mentenanță, licență cu plată periodică) e, di
 
 ::: ghid-temei
 „În cazul livrărilor de bunuri și al prestărilor de servicii care se efectuează continuu, altele decât cele prevăzute la alin. (7), cum sunt livrările de gaze naturale, de apă, de energie electrică, serviciile de telefonie, de închiriere, de leasing, de consesionare, de arendare de bunuri, de acordare cu plată pentru o anumită perioadă a unor drepturi reale, precum dreptul de uzufruct și superficia, asupra unui bun imobil, și alte livrări/prestări asemenea, se consideră că livrarea de bunuri/prestarea de servicii este efectuată la fiecare dată prevăzută în contract pentru plata bunurilor livrate/serviciilor prestate sau, în lipsa unei astfel de prevederi contractuale, la data emiterii unei facturi, dar perioada de decontare nu poate depăși un an."
-— Cod fiscal (Legea 227/2015), art. 281 alin. (8) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Cod fiscal (Legea 227/2015), art. 281 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 - Un abonament software se încadrează la „alte livrări/prestări asemenea" cu caracter continuu — nu la excepția de la alin. (7), care vizează servicii cu decontare pe bază de situații de lucrări (construcții, consultanță etc.).

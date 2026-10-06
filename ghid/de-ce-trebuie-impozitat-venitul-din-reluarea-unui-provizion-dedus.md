@@ -37,6 +37,6 @@ O firmă a dedus 3.000 lei la constituirea unui provizion pentru garanții (cot�
 
 ## Ce face iConta.eu
 
-`core/provizioane.py` generează corect nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812`, prin `nota_provizion`), dar nu recalculează automat, la momentul reluării, dacă provizionul respectiv fusese dedus la constituire — flagul `deductibil` nu e propagat de la constituire la reluare. Responsabilitatea de a identifica provizioanele deduse anterior și de a include venitul din reluarea lor în rezultatul fiscal, conform art. 26 alin. (5), rămâne a utilizatorului aplicației.
+Aplicația generează corect nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812`, prin `nota_provizion`), dar nu recalculează automat, la momentul reluării, dacă provizionul respectiv fusese dedus la constituire — flagul `deductibil` nu e propagat de la constituire la reluare. Responsabilitatea de a identifica provizioanele deduse anterior și de a include venitul din reluarea lor în rezultatul fiscal, conform art. 26 alin. (5), rămâne a utilizatorului aplicației.
 
 [iConta.eu](/)

@@ -14,7 +14,7 @@ Nu există, în Codul fiscal actual, o excludere specifică pentru firmele de î
 
 ::: ghid-temei
 „Nu intră sub incidența prezentului titlu următoarele persoane juridice române: [...] f) persoana juridică română care desfășoară activități în domeniul bancar; g) persoana juridică română care desfășoară activități în domeniul asigurărilor și reasigurărilor, al pieței de capital [...]; h) persoana juridică română care desfășoară activități în domeniul jocurilor de noroc; i) persoana juridică română care desfășoară activități de explorare, dezvoltare, exploatare a zăcămintelor de petrol și gaze naturale."
-— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (3) lit. f)-i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Lista completă de excludere de la regimul micro este limitativă și vizează domenii specifice (bancar, asigurări, piață de capital, jocuri de noroc, petrol și gaze) — închirierea de echipamente **nu se regăsește** printre ele. Consecința:
@@ -31,6 +31,6 @@ Lista completă de excludere de la regimul micro este limitativă și vizează d
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește regimul fiscal setat de contabil în profilul firmei (`core/vector_fiscal_api.py`) și generează declarațiile corespunzătoare, dar **nu evaluează automat** dacă o firmă din domeniul închirierii de echipamente îndeplinește condițiile de la art. 47 — inclusiv impactul veniturilor din transferul de mijloace fixe asupra plafonului de 100.000 euro. Verificarea eligibilității pentru regimul micro rămâne o analiză a contabilului, pe baza situației reale a firmei.
+La data acestui ghid, iConta.eu urmărește regimul fiscal setat de contabil în profilul firmei și generează declarațiile corespunzătoare, dar **nu evaluează automat** dacă o firmă din domeniul închirierii de echipamente îndeplinește condițiile de la art. 47 — inclusiv impactul veniturilor din transferul de mijloace fixe asupra plafonului de 100.000 euro. Verificarea eligibilității pentru regimul micro rămâne o analiză a contabilului, pe baza situației reale a firmei.
 
 [iConta.eu](/)

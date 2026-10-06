@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, `anaf_surse/cod_fiscal_227_2015_consolidat.txt` + `core/d101.py`, dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
 :::
 
 Sursele verificate în acest dosar arată că motorul D101 verifică explicit contul 691 (cheltuiala cu impozitul pe profit, cont de rezultat) și structura balanței pe clase (66/76 financiar, 7x/6x exploatare), dar nu confirmă o comparație explicită cu soldul contului de bilanț 4411 (impozit pe profit datorat).
@@ -23,6 +23,6 @@ O neconcordanță între impozitul din D101 și soldul 4411 poate avea cauze con
 
 ## Ce face iConta.eu
 
-La generare, iConta.eu rulează o reconciliere independentă a bazei contabile (`core/d101_reconciliere.py`) și verifică `totalPlata_A` emis (`core/reconciliere_emis.py`), pe lângă avertismentul dedicat contului 691 descris mai sus. Datele sunt citite din profilul firmei și din balanță, cu separarea exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 pentru calculul rezervei legale. Conform surselor verificate, aplicația nu compară însă explicit rezultatul cu soldul contului de bilanț 4411 (impozit pe profit datorat) — verificările acoperă contul de cheltuială (691) și structura balanței, nu soldul de bilanț al obligației față de buget. Pentru o neconcordanță specifică cu 4411, verificați manual, împreună cu contabilul, cronologia înregistrărilor (impozit calculat vs. plăți anticipate deja înregistrate) — aplicația nu documentează, conform surselor verificate, un control automat dedicat acestei comparații.
+La generare, iConta.eu rulează o reconciliere independentă a bazei contabile și verifică `totalPlata_A` emis, pe lângă avertismentul dedicat contului 691 descris mai sus. Datele sunt citite din profilul firmei și din balanță, cu separarea exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 pentru calculul rezervei legale. Conform surselor verificate, aplicația nu compară însă explicit rezultatul cu soldul contului de bilanț 4411 (impozit pe profit datorat) — verificările acoperă contul de cheltuială (691) și structura balanței, nu soldul de bilanț al obligației față de buget. Pentru o neconcordanță specifică cu 4411, verificați manual, împreună cu contabilul, cronologia înregistrărilor (impozit calculat vs. plăți anticipate deja înregistrate) — aplicația nu documentează, conform surselor verificate, un control automat dedicat acestei comparații.
 
 [iConta.eu](/)

@@ -16,18 +16,18 @@ Pentru firmă, plafonul contează mai ales la controalele fiscale: organul fisca
 
 ::: ghid-temei
 „Dacă aceeași persoana a săvârșit mai multe contravenții sancțiunea se aplică pentru fiecare contravenție. (2) Când contravențiile au fost constatate prin același proces-verbal, sancțiunile contravenționale se cumulează fără a putea depăși dublul maximului amenzii prevăzut pentru contravenția cea mai grava sau, după caz, maximul general stabilit în prezenta ordonanța pentru prestarea unei activități în folosul comunității."
-— OG 2/2001, art. 10 alin. (1)-(2) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 10 alin. (1)-(2) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 
 „Dacă o persoana săvârșește mai multe contravenții constatate în același timp de același agent constatator, se încheie un singur proces-verbal."
-— OG 2/2001, art. 20 alin. (1) (sursă: anaf_surse/og_2_2001.html)
+— OG 2/2001, art. 20 alin. (1) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::
 
 ::: ghid-temei
 „Dispozițiile prezentului titlu se completează cu prevederile Ordonanței Guvernului nr. 2/2001 privind regimul juridic al contravențiilor"
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „se aplică prin derogare de la art. 10 alin. (2) prima teză referitoare la dublul maximului amenzii prevăzut pentru contravenția cea mai gravă"
-— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 339 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Pașii de calcul:

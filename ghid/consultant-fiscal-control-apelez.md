@@ -14,7 +14,7 @@ Legea nu obligă niciun contribuabil să apeleze la un consultant fiscal pentru 
 
 ::: ghid-temei
 „În cazul reprezentării contribuabilului/plătitorul în relația cu organul fiscal prin avocat, consultant fiscal sau expert contabil, forma și conținutul împuternicirii sunt cele prevăzute de dispozițiile legale privind organizarea și exercitarea profesiei de avocat, consultant fiscal sau expert contabil, după caz."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 18 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din acest cadru legal:

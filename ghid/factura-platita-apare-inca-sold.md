@@ -14,7 +14,7 @@ O factură rămasă „deschisă" în sold, deși clientul sau furnizorul confir
 
 ::: ghid-temei
 „Documentele justificative trebuie să cuprindă [...] conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia [...] datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz."
-— OMFP 2634/2015, Anexa 1, pct. 2 (sursă: anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt)
+— OMFP 2634/2015, Anexa 1, pct. 2 (sursă: [OMFP nr. 2634/2015 privind documentele financiar-contabile (anexa 1, Norme generale)](https://legislatie.just.ro/Public/DetaliiDocument/173682))
 :::
 
 Motivele tehnice pentru care o sumă plătită nu stinge factura în evidență:
@@ -32,6 +32,6 @@ Motivele tehnice pentru care o sumă plătită nu stinge factura în evidență:
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor de reconciliere bancară (`core/reconciliere.py`) care potrivește liniile din extrasul de cont cu facturile deschise ale fiecărui partener: caută întâi o potrivire exactă (o factură sau o combinație de până la 4 facturi cu sumă identică), apoi, dacă nu găsește, alocă suma FIFO pe facturile cele mai vechi. Fiecare linie de extras primește un status vizibil — verde (potrivire exactă), galben (alocare parțială/FIFO, necesită confirmare) sau roșu (fără CUI identificat sau fără facturi deschise ale partenerului) — astfel încât o factură rămasă în sold se poate diagnostica direct din statusul liniei de extras corespunzătoare, nu doar din presupuneri.
+iConta.eu are un motor de reconciliere bancară care potrivește liniile din extrasul de cont cu facturile deschise ale fiecărui partener: caută întâi o potrivire exactă (o factură sau o combinație de până la 4 facturi cu sumă identică), apoi, dacă nu găsește, alocă suma FIFO pe facturile cele mai vechi. Fiecare linie de extras primește un status vizibil — verde (potrivire exactă), galben (alocare parțială/FIFO, necesită confirmare) sau roșu (fără CUI identificat sau fără facturi deschise ale partenerului) — astfel încât o factură rămasă în sold se poate diagnostica direct din statusul liniei de extras corespunzătoare, nu doar din presupuneri.
 
 [iConta.eu](/)

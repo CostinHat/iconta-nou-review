@@ -37,6 +37,6 @@ Contabilitatea unui PFA în sistem real, așa cum e organizată și în iConta.e
 
 ## Ce face iConta.eu
 
-Sursa cifrelor pentru D212 (`core/rip_api.py: fisa_d212`) însumează separat: încasările validate cu categoria "activitate" (venitul brut), plățile validate cu categoria "cheltuiala_deductibila" (cheltuielile deductibile integral) și raportează distinct cheltuielile din categoria "cheltuiala_limitata", cu un avertisment — pentru acestea, contabilul trebuie să stabilească manual partea deductibilă, conform plafoanelor de la art. 68 alin. (5). Operațiunile nevalidate (ciorne) nu intră în niciun calcul — sunt doar numărate, cu avertisment, pentru ca utilizatorul să știe că mai are operațiuni de confirmat înainte de a genera declarația finală.
+Sursa cifrelor pentru D212 însumează separat: încasările validate cu categoria "activitate" (venitul brut), plățile validate cu categoria "cheltuiala_deductibila" (cheltuielile deductibile integral) și raportează distinct cheltuielile din categoria "cheltuiala_limitata", cu un avertisment — pentru acestea, contabilul trebuie să stabilească manual partea deductibilă, conform plafoanelor de la art. 68 alin. (5). Operațiunile nevalidate (ciorne) nu intră în niciun calcul — sunt doar numărate, cu avertisment, pentru ca utilizatorul să știe că mai are operațiuni de confirmat înainte de a genera declarația finală.
 
 [iConta.eu](/)

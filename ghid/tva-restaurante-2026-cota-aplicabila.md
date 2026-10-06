@@ -36,6 +36,6 @@ Cea mai des întâlnită greșeală e aplicarea unei singure cote pe tot bonul u
 
 ## Ce face iConta.eu
 
-Categoriile `restaurant_catering` (11%) și excepțiile `bauturi_alcoolice`/`bauturi_nc2202` (21%) din `core/cote_tva.py` sunt aplicate automat, pe fiecare linie de bon sau factură, prin motorul de potrivire cotă — astfel încât un meniu de restaurant și o băutură alcoolică vândute pe același document primesc fiecare cota lui corectă, fără intervenție manuală.
+Categoriile `restaurant_catering` (11%) și excepțiile `bauturi_alcoolice`/`bauturi_nc2202` (21%) din aplicație sunt aplicate automat, pe fiecare linie de bon sau factură, prin motorul de potrivire cotă — astfel încât un meniu de restaurant și o băutură alcoolică vândute pe același document primesc fiecare cota lui corectă, fără intervenție manuală.
 
 [iConta.eu](/)

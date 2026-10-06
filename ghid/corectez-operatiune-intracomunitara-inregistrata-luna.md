@@ -15,7 +15,7 @@ poarta: v1
 ::: ghid-temei
 CF art. 284 alin. (1)-(2): „Faptul generator la AIC = data la care ar interveni la o livrare similară în statul membru al achiziției; exigibilitatea = data facturii furnizorului (sau autofactura art. 319 alin. 9), cel târziu a 15-a zi a lunii următoare celei a faptului generator.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17785-17793)
 
-OPANAF 705/2020, pct. 1.2: „Persoanele impozabile înregistrate în scopuri de TVA depun declarația recapitulativă numai pentru luna de raportare în care ia naștere exigibilitatea taxei pentru livrările/achizițiile/prestările intracomunitare (...).” (sursă: `anaf_surse/opanaf_705_2020_d390.txt`, L619-623)
+OPANAF 705/2020, pct. 1.2: „Persoanele impozabile înregistrate în scopuri de TVA depun declarația recapitulativă numai pentru luna de raportare în care ia naștere exigibilitatea taxei pentru livrările/achizițiile/prestările intracomunitare (...).” (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Practic, luna în care o achiziție intracomunitară trebuie declarată e determinată de exigibilitate: data facturii furnizorului, dar nu mai târziu de a 15-a zi a lunii următoare faptului generator. Dacă o operațiune a fost înregistrată cu o dată greșită (de exemplu data facturii, în loc de data corectă a faptului generator, sau invers), ea poate ajunge clasificată în luna greșită pentru D390.

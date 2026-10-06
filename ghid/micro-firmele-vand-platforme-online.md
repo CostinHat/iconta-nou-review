@@ -14,10 +14,10 @@ Canalul de vânzare — magazin propriu, platformă proprie de tip WooCommerce s
 
 ::: ghid-temei
 „c) a realizat venituri care nu au depăşit echivalentul în lei a 100.000 euro. Cursul de schimb pentru determinarea echivalentului în euro este cel valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile; [...] g) are cel puțin un salariat, cu excepția situației prevăzute la art. 48 alin. (3)."
-— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), g) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) lit. c), g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Cota de impozit pe veniturile microîntreprinderilor este de 1%."
-— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 51 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce nu se schimbă pentru o firmă care vinde pe platforme online:
@@ -36,6 +36,6 @@ Ce diferă, în schimb, e organizarea evidenței: vânzările prin platforme ter
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un conector pentru WooCommerce (`core/woocommerce.py`), care importă comenzile din platformă și le transformă automat în facturi în aplicație (idempotent, pe numărul comenzii). Aplicația **nu verifică însă automat** condițiile de încadrare la regimul micro (plafonul de venituri, condiția salariatului) și nu distinge automat comisionul de platformă de venitul brut al vânzării — aceste calcule și verificări rămân responsabilitatea contabilului, pe baza evidenței contabile generale oferite de aplicație.
+La data acestui ghid, iConta.eu are un conector pentru WooCommerce, care importă comenzile din platformă și le transformă automat în facturi în aplicație (idempotent, pe numărul comenzii). Aplicația **nu verifică însă automat** condițiile de încadrare la regimul micro (plafonul de venituri, condiția salariatului) și nu distinge automat comisionul de platformă de venitul brut al vânzării — aceste calcule și verificări rămân responsabilitatea contabilului, pe baza evidenței contabile generale oferite de aplicație.
 
 [iConta.eu](/)

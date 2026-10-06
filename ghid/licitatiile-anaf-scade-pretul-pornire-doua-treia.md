@@ -16,13 +16,13 @@ Pentru debitor, aceste trepte arată cât de repede se erodează valoarea bunulu
 
 ::: ghid-temei
 „Prețul de pornire a licitației este prețul de evaluare pentru prima licitație, diminuat cu 25% pentru a doua licitație și cu 50% pentru următoarele licitații."
-— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (11) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În situația în care nici la a treia licitație nu se vinde bunul, se organizează o nouă licitație. În acest caz bunul va fi vândut la cel mai mare preț oferit, chiar dacă acesta este inferior prețului de pornire a licitației, dar nu mai mic decât 25% din prețul de evaluare al acestuia."
-— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (14) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (14) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „Prin excepție de la prevederile alin. (14), în cazul în care se valorifică bunuri imobile, iar la licitație se prezintă un singur ofertant, vânzarea se face doar în condițiile în care se oferă cel [...] puțin prețul de pornire a licitației."
-— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (14^1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 250 alin. (14^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce mai trebuie știut:

@@ -35,6 +35,6 @@ Un PFA plătește lunar 15 lei comision de mentenanță cont curent și, ocazion
 
 ## Ce face iConta.eu
 
-Comisionul bancar se înregistrează ca operațiune de plată, în categoria `cheltuiala_deductibila` din `CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata", "cheltuiala_nedeductibila", "aport_retragere", "rambursare_credit"}` (`core/rip_api.py`). Validarea (`_valideaza`) cere deductibilitate explicită pentru orice plată de tip `cheltuiala*`. Mai mult, funcția `import_banca` generează automat ciorne din extrasul bancar (`extras_linii`), cu categorie și deductibilitate propuse implicit ca "cheltuiala_deductibila"/"integral" — propunere pe care contabilul o confirmă sau o corectează înainte de validare, așa cum cere explicit comentariul din cod.
+Comisionul bancar se înregistrează ca operațiune de plată, în categoria `cheltuiala_deductibila` din `CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata", "cheltuiala_nedeductibila", "aport_retragere", "rambursare_credit"}`. Validarea (`_valideaza`) cere deductibilitate explicită pentru orice plată de tip `cheltuiala*`. Mai mult, funcția `import_banca` generează automat ciorne din extrasul bancar (`extras_linii`), cu categorie și deductibilitate propuse implicit ca "cheltuiala_deductibila"/"integral" — propunere pe care contabilul o confirmă sau o corectează înainte de validare, așa cum cere explicit comentariul din cod.
 
 [iConta.eu](/)

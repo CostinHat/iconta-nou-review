@@ -15,7 +15,7 @@ Un avans încasat sau plătit pentru o livrare sau achiziție intracomunitară d
 ::: ghid-temei
 „a) «Livrări intracomunitare de bunuri» - se înscrie suma totală a livrărilor intracomunitare de bunuri scutite de la plata taxei în condiţiile art. 294 alin. (2) lit. a) şi d) din Codul fiscal, pe fiecare cumpărător, pentru care exigibilitatea taxei ia naştere în luna calendaristică respectivă, **inclusiv sumele din facturile pentru încasări de avansuri pentru livrări intracomunitare de bunuri, scutite**;
 c) «Achiziţii intracomunitare de bunuri» - se înscrie suma totală a achiziţiilor intracomunitare de bunuri, pe fiecare furnizor, pentru care persoana impozabilă, care depune declaraţia, este obligată la plata taxei conform art. 308 din Codul fiscal şi pentru care exigibilitatea taxei intervine în luna calendaristică respectivă, **inclusiv sumele din facturile primite pentru plăţi de avansuri pentru achiziţii intracomunitare de bunuri**;"
-— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1, literele a) și c) (sursă: anaf_surse/opanaf_705_2020_d390.txt)
+— OPANAF 705/2020, Anexa 2, Instrucțiuni pct. 1, literele a) și c) (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 Regula, așa cum apare explicit în text, se aplică simetric pe toate cele patru tipuri de operațiuni cu bunuri:

@@ -14,7 +14,7 @@ Se întâmplă frecvent: exercițiul financiar se închide, situațiile financia
 
 ::: ghid-temei
 „În cazul evenimentelor ulterioare datei bilanțului care conduc la ajustarea situațiilor financiare anuale, entitatea ajustează valorile recunoscute în situațiile sale financiare, pentru a reflecta evenimentele ulterioare datei bilanțului. (2) Exemple de evenimente ulterioare datei bilanțului care conduc la ajustarea situațiilor financiare [...]: [...] e) determinarea ulterioară perioadei de raportare a costului activelor cumpărate sau a încasărilor din activele vândute înainte de finalul perioadei de raportare (de exemplu, reduceri comerciale și financiare acordate, respectiv primite, după încheierea exercițiului financiar)."
-— OMFP 1802/2014 (Reglementări contabile), pct. 73 alin. (1) și alin. (2) lit. e) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (Reglementări contabile), pct. 73 alin. (1) și alin. (2) lit. e) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Ce înseamnă practic:

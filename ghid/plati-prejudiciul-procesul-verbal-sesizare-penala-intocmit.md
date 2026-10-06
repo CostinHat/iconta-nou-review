@@ -16,13 +16,13 @@ Plata contează din două motive. Pe plan fiscal, sumele din procesul-verbal nu 
 
 ::: ghid-temei
 „(2) Pe baza proceselor-verbale prevăzute la alin. (1), organul fiscal organizează evidența fiscală a sumelor reprezentând prejudiciul înscrise în aceste procese-verbale, distinct de evidența creanțelor fiscale. (3) Contribuabilul/Plătitorul sau altă persoană interesată poate să plătească sumele înscrise în procesele-verbale prevăzute la alin. (1) sau, după caz, pretențiile organului fiscal înscrise în documentele prin care s-a constituit parte civilă în procesul penal. (4) Ori de câte ori, prin actele emise de organele judiciare, rezultă că persoana care a efectuat plata nu datorează sumele achitate, acestea se restituie. în acest caz, dreptul la restituire se naște la data comunicării actului de către organul judiciar."
-— Codul de procedură fiscală (Legea 207/2015), art. 150 alin. (2)–(4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 150 alin. (2)–(4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „În cazul săvârșirii unei infracțiuni prevăzute la art. 6^1 , 8 sau 9 , dacă până la primul termen de judecată prejudiciul cauzat este acoperit integral, prin plată efectivă, limitele pedepsei prevăzute de lege pentru fapta săvârșită se reduc la jumătate."
-— Legea 241/2005, art. 10 alin. (2) (sursă: anaf_surse/legea_241_2005.html)
+— Legea 241/2005, art. 10 alin. (2) (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 
 „În cazul săvârșirii unei infracțiuni prevăzute la art. 6^1 , 8 sau 9 , prin care s-a cauzat un prejudiciu care nu depășește 1.000.000 euro, în echivalentul monedei naționale, dacă în cursul urmăririi penale prejudiciul cauzat majorat cu 25% din valoarea acestuia, la care se adaugă dobânzile și penalitățile, este acoperit integral, prin plată efectivă, fapta nu se pedepsește, aplicându-se dispozițiile art. 16 alin. (1) lit. h) din Codul de procedură penală ."
-— Legea 241/2005, art. 10 alin. (3) (sursă: anaf_surse/legea_241_2005.html)
+— Legea 241/2005, art. 10 alin. (3) (sursă: [Legea nr. 241/2005 pentru prevenirea și combaterea evaziunii fiscale](https://legislatie.just.ro/Public/DetaliiDocument/63590))
 :::
 
 Ce trebuie știut:

@@ -16,9 +16,9 @@ Pentru contabil, asta e prima verificare la un client nou care plătește zilier
 
 ::: ghid-temei
 „(1) Munca necalificată cu caracter ocazional se poate presta în următoarele domenii prevăzute în Clasificarea activităților din economia națională, actualizată: a) agricultură, vânătoare și servicii anexe - diviziunea 01; [...] b) silvicultură, cu excepția exploatări forestiere - diviziunea 02; [...] c) pescuit și acvacultură - diviziunea 03; [...] d) activități de organizare a expozițiilor, târgurilor și congreselor - grupa 823;"
-— Legea 52/2011, art. 13 alin. (1) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13 alin. (1) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 „e) beneficiarul sau un împuternicit al acestuia care folosește zilieri pentru alte activități decât cele expres reglementate de prezenta lege se sancționează cu amendă de la 10.000 la 20.000 lei;"
-— Legea 52/2011, art. 14 alin. (1) lit. e) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 14 alin. (1) lit. e) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Lista completă din art. 13 alin. (1), în forma consolidată din corpus:

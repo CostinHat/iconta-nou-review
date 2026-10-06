@@ -16,13 +16,13 @@ Pentru contabil, setul arată exact ce vede ANAF: identificarea leagă raportare
 
 ::: ghid-temei
 „1. Operatorul de platformă care are obligația de raportare colectează toate informațiile următoare pentru fiecare Vânzător care este o persoană fizică și care nu este Vânzător Exclus: a)prenumele și numele; b)Adresa Principală; c)orice NIF emis Vânzătorului respectiv, inclusiv fiecare stat membru emitent, și, în absența unui NIF, locul nașterii Vânzătorului respectiv; d)numărul TVA al Vânzătorului respectiv, dacă există; e)data nașterii."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. B pct. 1 (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. II lit. B pct. 1 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „e)Contraprestația totală plătită sau creditată în fiecare trimestru al Perioadei de Raportare și numărul de Activități Relevante pentru care aceasta a fost plătită sau creditată; f)orice onorarii, comisioane sau taxe reținute sau percepute de Operatorul de platformă care are obligația de raportare în fiecare trimestru al Perioadei de Raportare."
-— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. B pct. 2 lit. e) și f) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), Anexa nr. 5, secț. III lit. B pct. 2 lit. e) și f) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 
 „b) pentru persoanele fizice și juridice, precum și pentru alte entități care se înregistrează potrivit legii speciale la registrul comerțului, codul unic de înregistrare atribuit potrivit legii speciale; [...] d) pentru persoanele fizice, altele decât cele prevăzute la lit. c), codul numeric personal atribuit potrivit legii speciale;"
-— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. b) și d) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (1) lit. b) și d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Setul complet, pe categorii:

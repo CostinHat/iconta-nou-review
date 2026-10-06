@@ -16,20 +16,20 @@ Faptul că firma rămâne „agricolă” după codul CAEN nu contează. Conteaz
 
 ::: ghid-temei
 „b) contribuabilii care obțin venituri majoritare din cultura cerealelor, a plantelor tehnice și a cartofului, pomicultură și viticultură au obligația de a declara și de a plăti impozitul pe profit anual, până la termenele prevăzute la art. 42”
-— Codul fiscal (Legea 227/2015), art. 41 alin. (5) lit. b), în forma aplicabilă din anul fiscal 2026 (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (5) lit. b), în forma aplicabilă din anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III.”
-— Codul fiscal (Legea 227/2015), art. 41 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
 „Verificarea ponderii veniturilor obținute de contribuabili din cultura cerealelor, a plantelor tehnice și a cartofului, pomicultură și viticultură se face la sfârșitul fiecărui an fiscal, iar în situația în care veniturile majoritare se obțin din alte activități decât cele menționate, aceștia vor aplica pentru anul fiscal următor sistemul trimestrial de declarare și plată a impozitului pe profit prevăzut la art. 41 alin. (1) din Codul fiscal.”
-— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 41 alin. (2) (sursă: anaf_surse/hg_1_2016_norme_cod_fiscal.txt)
+— HG 1/2016, Normele metodologice ale Codului fiscal, titlul II pct. 41 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 ::: ghid-temei
 „Contribuabilii, alții decât cei prevăzuți la alin. (4) și (5) [...] pot opta pentru calculul, declararea și plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial.”
-— Codul fiscal (Legea 227/2015), art. 41 alin. (2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Codul fiscal (Legea 227/2015), art. 41 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ce înseamnă concret:

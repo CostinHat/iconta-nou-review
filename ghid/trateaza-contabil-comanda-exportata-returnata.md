@@ -14,10 +14,10 @@ O comandă exportată (livrare de bunuri în afara Uniunii Europene) beneficiaz�
 
 ::: ghid-temei
 „Sunt scutite de taxă: a) livrările de bunuri expediate sau transportate în afara Uniunii Europene de către furnizor sau de altă persoană în contul său."
-— Legea 227/2015 (Codul fiscal), art. 294 alin. (1) lit. a) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea 227/2015 (Codul fiscal), art. 294 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „În cazul mărfurilor returnate de clienți în același exercițiu financiar în care a avut loc operațiunea de vânzare, se corectează conturile 411 «Clienți», 707 «Venituri din vânzarea mărfurilor», 607 «Cheltuieli privind mărfurile» și 371 «Mărfuri». În cazul în care mărfurile returnate se referă la o vânzare efectuată în exercițiul financiar precedent, corecția se înregistrează la data bilanțului [...]."
-— OMFP 1802/2014 (reglementări contabile), pct. 330 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014 (reglementări contabile), pct. 330 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Din combinarea celor două reguli rezultă tratamentul de bază:

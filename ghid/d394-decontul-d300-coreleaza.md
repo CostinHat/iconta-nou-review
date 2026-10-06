@@ -24,7 +24,7 @@ Relația corectă între cele două declarații e o inegalitate, nu o egalitate:
 
 ## Ce nu face aplicația
 
-Căutare directă în codul motorului D300 (`core/d300.py`) și al panoului manual F251 (`core/d300_manual_api.py`) nu găsește nicio referință la D394 — cele două module nu "știu" unul de celălalt.
+Căutare directă în codul motorului D300 și al panoului manual F251 nu găsește nicio referință la D394 — cele două module nu "știu" unul de celălalt.
 
 Există un test intern, `test_d300_d394_paritate.py`, care confruntă `calcul_d300` cu `calcul_d394`, dar propriul lui docstring îl declară explicit **tautologic**: ambele generatoare citesc aceleași linii de factură și deduc cota identic — testul prinde doar drift între cele două generatoare, nu erori reale de agregare. Nu e un instrument expus contabilului.
 

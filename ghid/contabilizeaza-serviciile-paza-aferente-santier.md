@@ -14,7 +14,7 @@ Nu există, în reglementările contabile disponibile, o regulă dedicată expli
 
 ::: ghid-temei
 „Principiul contabilității de angajamente. Efectele tranzacțiilor și ale altor evenimente sunt recunoscute atunci când tranzacțiile și evenimentele se produc (și nu pe măsură ce numerarul sau echivalentul său este încasat sau plătit) și sunt înregistrate în contabilitate și raportate în situațiile financiare ale perioadelor aferente."
-— OMFP 1802/2014, Reglementări contabile, pct. 53 alin. (1) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
+— OMFP 1802/2014, Reglementări contabile, pct. 53 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 Onest, despre limitele acestei surse: OMFP 1802/2014 nu conține, în textul identificat, un punct dedicat explicit tratamentului serviciilor de pază de șantier. Ce se poate spune cu temei legal solid e doar principiul general:

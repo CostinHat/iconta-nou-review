@@ -17,7 +17,7 @@ Nu există, în sursele verificate, o procedură specială de contestație pentr
 (1) împotriva titlului de creanță, precum și împotriva altor acte administrative fiscale se poate formula contestație potrivit prezentului titlu. Contestația este o cale administrativă de atac și nu înlătură dreptul la acțiune al celui care se consideră lezat în drepturile sale printr-un act administrativ fiscal.
 [...]
 (3) Baza de impozitare și creanța fiscală stabilite prin decizie de impunere se contestă numai împreună."
-— Legea nr. 207/2015 (Codul de procedură fiscală), art. 268 alin. (1) și (3) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 268 alin. (1) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce rezultă din acest temei pentru o decizie de impunere emisă pe lipsuri de stoc constatate la inventar sau control:
@@ -34,6 +34,6 @@ Ce rezultă din acest temei pentru o decizie de impunere emisă pe lipsuri de st
 
 ## Ce face iConta.eu
 
-Verificat în cod: `core/stocuri.py` și `core/repo_stocuri.py` țin evidența mișcărilor de stoc pe articol, iar `core/control_incrucisat.py` semnalează neconcordanțele dintre declarații și contabilitate cu stare verde/roșu/gri; iConta.eu nu are, la acest moment, un modul dedicat generării sau depunerii unei contestații împotriva unei decizii de impunere — redactarea și depunerea contestației, cu documentele justificative aferente lipsurilor de stoc, rămân în sarcina contabilului/firmei.
+Verificat în cod: Aplicația țin evidența mișcărilor de stoc pe articol, iar aplicația semnalează neconcordanțele dintre declarații și contabilitate cu stare verde/roșu/gri; iConta.eu nu are, la acest moment, un modul dedicat generării sau depunerii unei contestații împotriva unei decizii de impunere — redactarea și depunerea contestației, cu documentele justificative aferente lipsurilor de stoc, rămân în sarcina contabilului/firmei.
 
 [iConta.eu](/)

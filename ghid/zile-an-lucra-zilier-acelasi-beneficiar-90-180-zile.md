@@ -16,10 +16,10 @@ Pentru o firmă din HoReCa, organizare de evenimente sau publicitate, limita est
 
 ::: ghid-temei
 „(4) Niciun zilier nu poate presta activități pentru același beneficiar sau un împuternicit al acestuia pe o perioadă mai lungă de 90 de zile cumulate pe durata unui an calendaristic, cu excepția zilierilor care prestează activități în domeniile agricol, silvic, viticol, pomicol, legumicol, floricol, piscicol, creșterii animalelor în sistem extensiv prin pășunatul sezonier al bovinelor, cabalinelor, activități sezoniere în cadrul grădinilor botanice, precum și în activitățile de cercetare-dezvoltare-inovare din domeniul agricol [...]; în cazul acestora, perioada nu poate depăși 180 de zile cumulate pe durata unui an calendaristic."
-— Legea 52/2011, art. 4 alin. (4) (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 4 alin. (4) (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 
 „Prin excepție de la prevederile art. 4 alin. (4) , zilierii care ocupă un loc de muncă în urma intermedierii realizate de o agenție acreditată potrivit prezentei legi pot presta activități pentru același beneficiar sau un împuternicit al acestuia pe o perioadă de maximum 180 de zile cumulate pe durata unui an calendaristic."
-— Legea 52/2011, art. 13^5 (sursă: anaf_surse/legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt)
+— Legea 52/2011, art. 13^5 (sursă: [Legea nr. 52/2011 privind exercitarea unor activități cu caracter ocazional desfășurate de zilieri](https://legislatie.just.ro/Public/DetaliiDocument/127831))
 :::
 
 Ce trebuie reținut:

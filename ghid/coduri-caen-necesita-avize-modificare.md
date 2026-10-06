@@ -16,7 +16,7 @@ Adăugarea sau schimbarea unui cod CAEN nu se face niciodată „liber" pentru a
 
 ::: ghid-temei
 „Organul fiscal central organizează evidența contribuabililor/plătitorilor în cadrul registrului contribuabililor/plătitorilor, care conține: a) datele de identificare a contribuabilului/plătitorului; b) date privind vectorul fiscal; c) alte informații necesare administrării creanțelor fiscale."
-— Legea 207/2015 (Codul de procedură fiscală), art. 91 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+— Legea 207/2015 (Codul de procedură fiscală), art. 91 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Ce se poate confirma, din perspectivă strict fiscală:

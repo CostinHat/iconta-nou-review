@@ -14,10 +14,10 @@ Un pensionar care se angajează sau rămâne angajat nu beneficiază de nicio sc
 
 ::: ghid-temei
 „Sumele prevăzute la alin. (1) lit. d) și f) intră în baza lunară de calcul al contribuției de asigurări sociale, indiferent dacă persoanele respective sunt din cadrul aceleiași entități ori din afara ei, pensionari sau angajați cu contract individual de muncă."
-— Legea nr. 227/2015, art. 139 alin. (4) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 139 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
 „Persoanele fizice care au calitatea de pensionari, pentru veniturile din pensii de până la suma de 3.000 lei lunar inclusiv, pentru care nu se datorează contribuția de asigurări sociale de sănătate."
-— Legea nr. 227/2015, art. 154 alin. (1) lit. h^2) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+— Legea nr. 227/2015, art. 154 alin. (1) lit. h^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Din cele două texte rezultă regimul aplicabil în 2026:
