@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile } from "../api.js?v=eb01ea8ebd";
+import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu } from "../api.js?v=e9cf26e11b";
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -94,7 +94,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Episod de boală</div>
-        <label class="set-bifa"><input type="checkbox" id="cm-continuare"> <span>Certificat de continuare (același episod de boală)</span></label>
+        <label class="camp" style="max-width:420px"><span class="camp-eticheta">Certificat de continuare (același episod de boală)<span class="oblig">*</span></span>${selectDaNu('id="cm-continuare"', null, "Certificat de continuare")}</label>
         <div id="cm-episod-zona" style="display:none;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px">
           <label class="camp"><span class="camp-eticheta">Seria certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-serie-ini" class="camp-input" placeholder="ex. AB"><span class="camp-ajutor">Seria și numărul certificatului INIȚIAL al episodului (tipărite pe certificatul de continuare). Indemnizația se calculează pe durata întregului episod (OUG 158/2005 art.17(1)): adăugarea continuării poate ridica procentul certificatelor anterioare (procentul valabil se vede în dreptul codului).</span></label>
           <label class="camp"><span class="camp-eticheta">Numărul certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-numar-ini" class="camp-input" placeholder="ex. 1234567"></label>
@@ -104,8 +104,9 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni<span class="oblig">*</span></span><input type="number" id="cm-ven6" class="camp-input" step="0.01" placeholder="suma total\u0103"><span class="camp-ajutor">Suma veniturilor brute din ultimele 6 luni lucrate (din statele de plat\u0103). Baza = aceast\u0103 sum\u0103 \u00eemp\u0103r\u021bit\u0103 la zilele lucr\u0103toare.</span></label>
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
-          <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se plătește)</span></label>
-          <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-program-national"> <span>Pacient inclus în program național de sănătate (D112 D_9a)</span></label>
+          <!-- [lotul 07.10 B, DS cap.17] DA/NU situaționale: alese de om, nu căsuțe nebifate („Nu” ales de ecran) -->
+          <label class="camp"><span class="camp-eticheta">Spitalizare (prima zi se plătește)<span class="oblig">*</span></span>${selectDaNu('id="cm-spital"', null, "Spitalizare")}</label>
+          <label class="camp"><span class="camp-eticheta">Pacient în program național de sănătate (D112 D_9a)<span class="oblig">*</span></span>${selectDaNu('id="cm-program-national"', null, "Pacient în program național de sănătate")}</label>
         </div>
         <p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii">Calculeaz\u0103 \u0219i salveaz\u0103</button>
@@ -122,7 +123,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     selCod.addEventListener("change", () => { cnpZona.style.display = ["09","91","92","17"].includes(selCod.value) ? "" : "none"; });  // [D_8/D_8a] CNP persoana ingrijita, camp conditionat
     const chkCont = zona.querySelector("#cm-continuare");
     const episodZona = zona.querySelector("#cm-episod-zona");
-    chkCont.addEventListener("change", () => { episodZona.style.display = chkCont.checked ? "grid" : "none"; });  // [CM-episod] campuri certificat initial, conditionat
+    chkCont.addEventListener("change", () => { episodZona.style.display = daNu(chkCont) === true ? "grid" : "none"; });  // [CM-episod] campuri certificat initial, conditionat
 
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
@@ -150,7 +151,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const rez = zona.querySelector("#cm-rezultat");
       rez.innerHTML = "";
       curataEroriCamp(zona);
-      if (cereAlegerile(zona, ["#cm-cod"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+      if (cereAlegerile(zona, ["#cm-cod", "#cm-continuare", "#cm-spital", "#cm-program-national"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const inceput = zona.querySelector("#cm-inceput").value;
       const sfarsit = zona.querySelector("#cm-sfarsit").value;
       const zile = parseInt(zona.querySelector("#cm-zile").value, 10);
@@ -171,7 +172,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) eC.push(["cm-cnp-ingrijit", "La codurile de îngrijire copil (09/91/92) sau pacient oncologic (17) completează CNP-ul persoanei îngrijite (13 cifre) — D112 îl cere obligatoriu."]);
       if (codSel === "10" && !((zona.querySelector("#cm-venit").value || "").trim())) eC.push(["cm-venit", "La codul 10 completează venitul brut realizat în perioada CM."]);
       // [CM-episod] la continuare, seria+numarul certificatului INITIAL sunt obligatorii (episodul se leaga pe ele)
-      if (zona.querySelector("#cm-continuare").checked) {
+      if (daNu(zona.querySelector("#cm-continuare")) === true) {
         if (!(zona.querySelector("#cm-serie-ini").value || "").trim()) eC.push(["cm-serie-ini", "Completează seria certificatului inițial al episodului (de pe certificatul de continuare)."]);
         if (!(zona.querySelector("#cm-numar-ini").value || "").trim()) eC.push(["cm-numar-ini", "Completează numărul certificatului inițial al episodului."]);
       }
@@ -189,12 +190,12 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         data_inceput: inceput,
         data_sfarsit: zona.querySelector("#cm-sfarsit").value || null,
         diagnostic: zona.querySelector("#cm-diag").value,
-        spitalizare: zona.querySelector("#cm-spital").checked,
-        program_national: zona.querySelector("#cm-program-national").checked,  // [D_9a] marcaj program national de sanatate
+        spitalizare: daNu(zona.querySelector("#cm-spital")),
+        program_national: daNu(zona.querySelector("#cm-program-national")),  // [D_9a] marcaj program national de sanatate
         zile_cm: zile,
         venituri_6_luni: ven6,
         zile_6_luni: zile6,
-        este_continuare: zona.querySelector("#cm-continuare").checked,
+        este_continuare: daNu(zona.querySelector("#cm-continuare")),
         serie_initiala: (zona.querySelector("#cm-serie-ini").value || "").trim() || null,
         numar_initial: (zona.querySelector("#cm-numar-ini").value || "").trim() || null,
         an: inc.getFullYear(),

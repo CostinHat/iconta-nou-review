@@ -61,6 +61,15 @@ import re
 NS = "mfp:anaf:dgti:d204:declaratie:v3"
 _NEDIGIT = re.compile(r"\D")
 _CATEG_VENIT = {1, 2, 3, 4, 5, 6}          # coduri categorie venit acceptate
+_FORMA_ORG = {1, 2}                       # structura ANAF D204 pct.24; validatorul instalat respinge 3
+
+
+def _int_sau_none(x):
+    """Un întreg scris de om, sau None — niciodată un implicit pus de aplicație (DS cap.17)."""
+    try:
+        return int(x) if str(x).strip() not in ("", "None") else None
+    except (TypeError, ValueError):
+        return None
 _CUI_KEY = (7, 5, 3, 2, 1, 7, 5, 3, 2)     # cheia de control CUI
 _CNP_W = (2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9)
 _JUDET_BUC = {"40", "B", "BUCURESTI", "MUNICIPIUL BUCUREȘTI"}
@@ -170,10 +179,10 @@ def calcul_d204(manual):
                 "pierd_d": _i(a.get("pierd")),
             })
         out.append({
-            "categ_venit": int(act.get("categ_venit") or 1),
+            "categ_venit": _int_sau_none(act.get("categ_venit")),   # [lotul 07.10 B] fără „or 1”: lipsa se refuză numit
             "det_ven_net": int(act.get("det_ven_net") or 1),
             "caen": _cif(act.get("caen") or act.get("CAEN")),
-            "forma_org": int(act.get("forma_org") or 1),
+            "forma_org": _int_sau_none(act.get("forma_org")),
             "judet": str(act.get("judet") or "").strip(),
             "sector": str(act.get("sector") or "").strip(),
             "sediu": act.get("sediu"),
@@ -219,8 +228,13 @@ def erori_generare(prof, manual):
         er.append("D204 cere cel puțin o activitate cu cel puțin un asociat.")
     for idx, act in enumerate(calc["activitati"], 1):
         et = "Activitate %d" % idx
-        if act["categ_venit"] not in _CATEG_VENIT:
+        if act["categ_venit"] is None:
+            er.append("%s: lipsă categoria de venit." % et)
+        elif act["categ_venit"] not in _CATEG_VENIT:
             er.append("%s: categ_venit %s invalid." % (et, act["categ_venit"]))
+        # structura ANAF D204, forma_org „Listă de valori (1,2)”; probat pe validator 07.10.2026: 3 -> „nu se afla in lista”
+        if act["forma_org"] not in _FORMA_ORG:
+            er.append("%s: lipsă forma de organizare (1 asociere fără personalitate juridică / 2 entitate în regim de transparență fiscală)." % et)
         if act["det_ven_net"] not in (1, 2):
             er.append("%s: det_ven_net trebuie 1 sau 2." % et)
         if act["det_ven_net"] == 2:

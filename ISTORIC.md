@@ -1740,3 +1740,19 @@ Decizia și clasificarea celor 82: DECIZII 07.10.2026 („Ecranele scrise de mâ
   Inspection Tool, 200); serverul răspundea corect. În sitemap era un URL redirecționat (`cote-tva-2025`).
 - Reparat: index de sitemap-uri `https://iconta.eu/sitemap-index.xml` (pagini + ghiduri pe bucăți de 1.000), indicat de `robots.txt`;
   ghidurile redirecționate scoase din sitemap și din cuprins.
+
+## 07.10.2026 — Lotul 07.10 B, frontul A: preselecția corectată (comanda Costin)
+
+Supersedează, pe partea de preselecție, intrarea „Ecranele scrise de mână” de mai sus (PIVOT în DECIZII 07.10.2026, „frontul A”).
+
+- Emiterea revine precompletată vizibil: moneda RON, țara DEDUSĂ din CUI (DE123456789 -> DE, CUI numeric -> RO), operațiunea normală,
+  factura. Moneda facturii recurente: RON. Destinația TVA pe linie: „taxabilă”. D318: cererea inițială.
+- Conturile din Operațiuni vin precompletate cu sugestia standard (5124, 4111, 371, 707, 301 …); golite, se refuză („Câmp obligatoriu:
+  Cont bancă”).
+- 13 bife care răspundeau „Nu” în locul omului devin întrebări Da/Nu cu „— alege —”: funcția de bază (venea bifată), declarația pentru
+  copii, scutirea de contribuția minimă; CM — continuare, spitalizare, program național; TVA la încasare la furnizor; acordul D177;
+  e_int D398; RIP / cota forfetară / CAS-CASS străinătate la D212.
+- Declarații: D204 forma de organizare și D208 modalitatea de transfer (plecau „1” fără câmp) se aleg; D204 categoria nu mai vine „1”;
+  D216 cota de deținere nu mai vine „0.3” (era cota impozitului); D318 moneda nu mai vine „EUR”; D398 moneda e fixă, EUR (prin lege).
+- Date firmă: exceptarea AMEF și înregistrarea art.317 n-au implicit; nealese, se cer o dată, la prima chitanță fără factură / D394 cu
+  chitanțe fără cotă, respectiv la D301. Pe baza de test: 28 de firme cu AMEF și 27 cu art.317 au devenit „neales”.

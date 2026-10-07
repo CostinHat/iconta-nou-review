@@ -36,7 +36,8 @@ def test_selecturi_vector_obligatorii_au_alege():
 def test_placeholder_randat_la_valoare_lipsa():
     """campVector pune optiunea placeholder cand alege && valoare lipsa (altfel browserul arata prima optiune)."""
     src = _src()
-    assert re.search(r'c\.alege\s*&&\s*!v', src), "campVector trebuie sa detecteze alege && valoare lipsa"
+    # [lotul 07.10 B] `neales` (art.317, cerut la prima folosire) pune același placeholder, fără a fi obligatoriu
+    assert re.search(r'\(c\.alege \|\| c\.neales\)\s*&&\s*!v', src), "campVector trebuie sa detecteze alege/neales && valoare lipsa"
     assert 'selected disabled hidden' in src, "placeholderul trebuie afisat (selected) dar neselectabil (disabled hidden)"
 
 

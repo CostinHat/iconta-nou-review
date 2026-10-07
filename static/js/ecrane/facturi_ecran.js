@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, ALEGE, cereAlegerile } from "../api.js?v=eb01ea8ebd";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile } from "../api.js?v=e9cf26e11b";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=1162888580";
+import { randeazaEmitere } from "./emitere_ecran.js?v=4641a8fefe";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -129,8 +129,9 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
       <label class="camp"><span class="camp-eticheta">Cont cheltuială (sugerat, confirmă)</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628" aria-label="Cont cheltuiala"></label>
     </div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
-      <label class="camp"><span class="camp-eticheta">Clasificare TVA (D300)</span>
-        <span style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="pr-furnizor-incasare" aria-label="Furnizor cu TVA la încasare"> <span class="tip-micut">Furnizorul aplică TVA la încasare (deducere amânată până la plată, art. 297 alin. (2))</span></span></label>
+      <!-- [lotul 07.10 B, DS cap.17] DA/NU situațional: ales de om (căsuța nebifată răspundea „Nu” în locul lui) -->
+      <label class="camp"><span class="camp-eticheta">Furnizorul aplică TVA la încasare (deducere amânată până la plată, art. 297 alin. (2))<span class="oblig">*</span></span>
+        ${selectDaNu('id="pr-furnizor-incasare"', null, "Furnizor cu TVA la încasare")}</label>
       <label class="camp"><span class="camp-eticheta">Țara furnizorului (ISO)</span><input class="camp-input" id="pr-tara" value="${esc(((p.cif_emitent || "").match(/^[A-Za-z]{2}/) || ["RO"])[0].toUpperCase())}" placeholder="RO" aria-label="Tara furnizorului"></label>
     </div>
     <div style="margin-top:14px">
@@ -142,13 +143,16 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     <div id="pr-xml-zona" style="margin-top:10px"></div>`;
   const zona = corp.querySelector("#pr-zona");
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
+    curataEroriCamp(corp);
+    if (cereAlegerile(corp, ["#pr-furnizor-incasare"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (!(corp.querySelector("#pr-tara").value || "").trim()) { eroareCamp(corp, "pr-tara", "Scrie țara furnizorului (codul ISO, ex. RO)."); return; }
     confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
       try {
-        const _tara = (corp.querySelector("#pr-tara").value || "").trim().toUpperCase() || "RO";
+        const _tara = corp.querySelector("#pr-tara").value.trim().toUpperCase();   // dedusă din CIF-ul emitentului, vizibilă (DS cap.17)
         const _dest = Array.from(corp.querySelectorAll(".pr-dest")).map((s) => s.value);  // [A12b] destinatie TVA per linie, ordinea liniilor
         const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
           cont: corp.querySelector("#pr-cont").value.trim(),
-          furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked,  // [B1 D300]
+          furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),  // [B1 D300] ales de om
           tert_tara: _tara,
           destinatii: _dest });
         arataMesaj(zona, "Validată. Cheltuiala creată (factura #" + (r.factura_id || "—") + ").", "ok");
@@ -717,7 +721,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=bd41dc5a16");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=fd99b37230");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -1042,8 +1046,8 @@ export function formSablon(corp, nav, tenantId, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
       <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" aria-label="Ziua din lun\u0103 la care se emite" title="Ziua din lun\u0103 la care se emite">
-      <select class="camp-input" id="fr-moneda" aria-label="Moneda">${ALEGE}
-        <option value="RON">RON</option>
+      <select class="camp-input" id="fr-moneda" aria-label="Moneda">
+        <option value="RON" selected>RON</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>
       </select>
@@ -1136,7 +1140,6 @@ export function formSablon(corp, nav, tenantId, opt) {
   corp.querySelector("#fr-salveaza").addEventListener("click", async () => {
     const zona = corp.querySelector("#fr-rezultat");
     curataEroriCamp(corp);
-    if (cereAlegerile(corp, ["#fr-moneda"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un rand incomplet se valideaza
     // pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const corpCerere = {

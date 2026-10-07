@@ -194,6 +194,11 @@ def calcul_d301(prof, perioada, operatiuni_raw):
     return res
 
 
+#: [lotul 07.10 B] refuzul pentru înregistrarea art.317 neleasă (o singură formă: generatorul o pune, testul o compară)
+MESAJ_ART317_NEALES = ("Nedeclarat în Date firmă: firma e înregistrată în scopuri de TVA conform art. 317 CF? (Da/Nu, o singură dată "
+                       "— de aici iese pers_inreg din D301).")
+
+
 def erori_generare(prof):
     """Campurile de PROFIL obligatorii pentru D301. Lista goala = se poate genera.
 
@@ -224,6 +229,10 @@ def erori_generare(prof):
         erori.append("LIPSĂ bancă (obligatorie la D301).")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
         erori.append("LIPSĂ cont (obligatoriu la D301).")
+    # [lotul 07.10 B, comanda Costin A.3] înregistrarea art.317 decide pers_inreg (1/2); neleasă -> se cere acum, o dată, în
+    # Date firmă — nu se emite „1” în locul omului
+    if prof.get("inreg_art317") is None:
+        erori.append(MESAJ_ART317_NEALES)
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori

@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile } from "../api.js?v=eb01ea8ebd";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=e9cf26e11b";
 import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
@@ -63,20 +63,20 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
-    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", nr_zile_scutite_rip: "", fisa: null, fisa_eroare: "", norma: [], venituri: [], strainatate: [], alte_cass: {}, exceptie_minim_cass: "" },
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: null, pierdere_precedenta: "", caen: "", nr_zile_scutite_rip: "", fisa: null, fisa_eroare: "", norma: [], venituri: [], strainatate: [], alte_cass: {}, exceptie_minim_cass: "" },
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
     // [formular_manual_d230] redirectionare 3,5% catre ONG (PF): identitate + entitate beneficiara. In memorie, ca d200.
     d230: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", adresa_c: "", telefon_c: "", email_c: "", den_entitate: "", cif_entitate: "", cont_entitate: "", suma_entitate: "", procent: "", valabilitate_distribuire: null },
     // [formular_manual_d204] asociere fara personalitate juridica: asociere + reprezentant + o activitate + asociati. In memorie, ca d200.
-    d204: { d_rec: 0, asociere: { den: "", cif: "", adresa: "" }, reprezentant: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, activitate: { categ_venit: 1, caen: "", judet: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit3: "", chelt3: "" }, asociati: [] },
+    d204: { d_rec: 0, asociere: { den: "", cif: "", adresa: "" }, reprezentant: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, activitate: { categ_venit: null, forma_org: null, caen: "", judet: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit3: "", chelt3: "" }, asociati: [] },
     // [formular_manual_d223] venituri estimate asociere f.PJ: declarant + asociere + responsabil + activitate + asociati. In memorie, ca d200.
     d223: { declarant_nume: "", declarant_prenume: "", declarant_functie: "", d_rec1: 0, d_rec: 0, asociere: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, responsabil: { den_r: "", cif_r: "", adresa_r: "" }, activitate: { categ_venit: null, forma_org: null, det_venit: null, caen: "", judet: "", localitate: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit_brut: "", cheltuieli: "" }, asociati: [] },
     // [formular_manual_d216] impozit special bunuri de valoare mare: antet + liste imobile/mobile. In memorie, ca d200.
     d216: { nume: "", cif: "", domiciliuFiscal: "", nume_intocmit: "", functia_intocmit: "", d_rec: 0, nume_imputernicit: "", cif_imputernicit: "", imobile: [], mobile: [] },
     // [formular_manual_d208] transfer proprietati imobiliare (notari): antet + tranzactie/imobil + beneficiari + parti. In memorie, ca d200.
-    d208: { nume: "", cif: "", domiciliu: "", nume_intocmit: "", functia_intocmit: "", dRec: 0, nr_act_notarial: "", mod_transfer: "1", taxa_notar: "", imobil: { judet: "", localitate: "", codSIRUTA: "", nr_cadastral: "", tip_imobil: null, val_tranzactie_imobil: "", val_piata_imobil: "" }, beneficiari: [], parti: [] },
+    d208: { nume: "", cif: "", domiciliu: "", nume_intocmit: "", functia_intocmit: "", dRec: 0, nr_act_notarial: "", mod_transfer: null, alt_mod_transfer: "", taxa_notar: "", imobil: { judet: "", localitate: "", codSIRUTA: "", nr_cadastral: "", tip_imobil: null, val_tranzactie_imobil: "", val_piata_imobil: "" }, beneficiari: [], parti: [] },
     // [formular_manual_d221] venituri agricole pe norme: declarant + contribuabil + activitate + produse (+ asociati la forma_org=2). In memorie, ca d200.
     d221: { nume_declar: "", prenume_declar: "", functie_declar: "TITULAR", cif: "", nume_a: "", adresa_a: "", forma_org: null, d_rec: 0, nr_contr: "", data_contr: "", activitate: { judet: "", localitate: "", optiune: null }, produse: [], asociati: [] },
     // [formular_manual_d603] exceptare CASS (PF): identitate + categorie + stat asigurare + perioada. In memorie, ca d200.
@@ -90,11 +90,11 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d110] regularizare impozit retinut la sursa: d_temei + IBAN/banca + lista obligatii. Identitatea din firma_profil. In memorie, ca d200.
     d110: { d_temei: null, d_rec: 0, iban: "", banca: "", obligatii: [] },
     // [formular_manual_d398] OSS TVA: regim + identitate + linii-supply pe stat de consum (grupate pe MS). In memorie, ca d200.
-    d398: { moes_voes_imp: null, name: "", vat_id_no: "", e_int: 0, currency: "EUR", d_rec: 0, linii: [] },
+    d398: { moes_voes_imp: null, name: "", vat_id_no: "", e_int: null, currency: "EUR", d_rec: 0, linii: [] },
     // [formular_manual_d318] rambursare TVA din alt stat UE (Directiva 2008/9/CE): perioada + solicitant +
     // cont de rambursare + activitate NACE + facturi (achizitie/import) cu furnizor UE. In memorie, ca d200.
-    d318: { an: "", annual: 1, luna_inceput: 1, luna_sfarsit: 12, refunding_country: null, cui: "", d_rec: null,
-            reference_number: "", iban: "", bic: "", owner_name: "", owner_type: null, currency: "EUR",
+    d318: { an: "", annual: 1, luna_inceput: 1, luna_sfarsit: 12, refunding_country: null, cui: "", d_rec: 0,
+            reference_number: "", iban: "", bic: "", owner_name: "", owner_type: null, currency: "",
             declarant: "", functie: "", sol_denumire: "", sol_strada: "", sol_email: "", sol_cod: "",
             act_nace: "", act_desc: "", facturi: [] },
   };
@@ -1069,8 +1069,7 @@ function randeazaFormularD177(corp, nav) {
       <label class="camp" style="width:160px"><span class="camp-eticheta">Suma redirecționată (lei) <span class="oblig">*</span></span><input id="d177-suma" type="number" step="1" min="0" class="camp-input"></label>
       <label class="camp" id="d177-contract-wrap" style="width:190px"><span class="camp-eticheta">Nr. și data contractului <span class="oblig">*</span></span><input id="d177-contract" type="text" class="camp-input"></label>
       <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresa beneficiar</span><input id="d177-adr" type="text" class="camp-input"></label>
-      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
-        <input id="d177-acord" type="checkbox"><span class="camp-eticheta" style="margin:0">Sunt de acord cu informarea beneficiarului</span></label>
+      <label class="camp" style="width:230px"><span class="camp-eticheta">Acord pentru informarea beneficiarului <span class="oblig">*</span></span>${selectDaNu('id="d177-acord"', null, "Acord pentru informarea beneficiarului")}</label>
       <button class="buton-secundar" id="d177-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d177-msg"></div>
@@ -1096,7 +1095,7 @@ function randeazaFormularD177(corp, nav) {
   }));
   gv("#d177-add").addEventListener("click", () => {
     curataEroriCamp(zona);
-    if (cereAlegerile(zona, ["#d177-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d177-tip", "#d177-acord"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     const tip = gv("#d177-tip").value;
     const cui = gv("#d177-cui").value.trim();
     const den = gv("#d177-den").value.trim();
@@ -1104,7 +1103,7 @@ function randeazaFormularD177(corp, nav) {
     const sumaRaw = gv("#d177-suma").value;
     const contract = gv("#d177-contract").value.trim();
     const adr = gv("#d177-adr").value.trim();
-    const acord = gv("#d177-acord").checked;
+    const acord = daNu(gv("#d177-acord"));   // [lotul 07.10 B] declarat la ANAF: ales de om, nu căsuță nebifată
     const err = [];
     if (!cui) err.push(["d177-cui", tip === "3" ? "Completează CNP-ul beneficiarului." : "Completează codul fiscal (CUI) al beneficiarului."]);
     if (!den) err.push(["d177-den", "Completează denumirea sau numele beneficiarului."]);
@@ -1509,14 +1508,14 @@ function _d204DataISO(v) {
 function _d204Manual() {
   const d = S.d204 || {};
   const a = d.asociere || {}, r = d.reprezentant || {}, ac = d.activitate || {};
-  const cv = parseInt(ac.categ_venit, 10) || 1;
+  const cv = parseInt(ac.categ_venit, 10) || null;   // [lotul 07.10 B] categoria se scrie, nu vine „1” (DS cap.17)
   return {
     d_rec: d.d_rec ? 1 : 0,
     asociere: { den: (a.den || "").trim(), cif: (a.cif || "").replace(/\s+/g, ""), adresa: (a.adresa || "").trim() },
     reprezentant: { nume: (r.nume || "").trim(), cif: (r.cif || "").replace(/\s+/g, ""), adresa: (r.adresa || "").trim(),
       telefon: (r.telefon || "").trim(), email: (r.email || "").trim() },
     activitate: { categ_venit: cv, det_ven_net: 1, caen: (ac.caen || "").replace(/\s+/g, ""),
-      forma_org: cv === 3 ? 1 : (parseInt(ac.forma_org, 10) || 1),
+      forma_org: parseInt(ac.forma_org, 10) || null,   // [lotul 07.10 B] aleasă pe ecran; până azi pleca „1” fără câmp
       judet: (ac.judet || "").trim(), sector: (ac.sector || "").trim(), sediu: (ac.sediu || "").trim(),
       nr_contr: (ac.nr_contr || "").trim(), data_contr: (ac.data_contr || "").trim(),
       venit3: Math.round(_n(ac.venit3) || 0), chelt3: Math.round(_n(ac.chelt3) || 0) },
@@ -1536,6 +1535,7 @@ function randeazaFormularD204(corp, nav) {
   let sCota = 0, sVen = 0, sPier = 0;
   aso.forEach((s) => { sCota += _n(s.cota) || 0; sVen += Math.round(_n(s.venit) || 0); sPier += Math.round(_n(s.pierd) || 0); });
   const bucuresti = String(ac.judet) === "40";
+  const optSel = (val, cur) => '<option value="' + val + '"' + (String(cur) === val ? " selected" : "") + ">";
   const optJud = _D204_JUDETE.map((p) => '<option value="' + p[0] + '"' + (String(ac.judet) === p[0] ? " selected" : "") + ">" + esc(p[1]) + "</option>").join("");
   const grila = aso.length
     ? aso.map((s, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(s.nume || "(fără nume)") + " · CNP/CUI " + esc(s.cif || "?") +
@@ -1561,7 +1561,11 @@ function randeazaFormularD204(corp, nav) {
     "</div>" +
     '<div class="camp-eticheta" style="margin:8px 0 4px">Activitatea (sistem real — venit net; norma de venit nu e acoperită)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
-      '<label class="camp" style="width:150px"><span class="camp-eticheta">Categorie venit <span class="oblig">*</span></span><input id="d204-categ" type="number" step="1" min="1" max="6" class="camp-input" value="' + esc(String(ac.categ_venit || 1)) + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Categorie venit <span class="oblig">*</span></span><input id="d204-categ" type="number" step="1" min="1" max="6" class="camp-input" value="' + esc(ac.categ_venit == null ? "" : String(ac.categ_venit)) + '"></label>' +
+      // [lotul 07.10 B] forma de organizare: nomenclatorul structurii ANAF D204 (1 asociere fără personalitate juridică, 2 entitate
+      // supusă regimului transparenței fiscale), probat pe validatorul instalat: 1 și 2 valide, 3 „nu se afla in lista”
+      '<label class="camp" style="width:260px"><span class="camp-eticheta">Formă de organizare <span class="oblig">*</span></span><select id="d204-forma" class="camp-input">' + alegeDacaLipseste(ac.forma_org) +
+        optSel("1", ac.forma_org) + "1 — asociere fără personalitate juridică</option>" + optSel("2", ac.forma_org) + "2 — entitate în regim de transparență fiscală</option></select></label>" +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Cod CAEN <span class="oblig">*</span></span><input id="d204-caen" type="text" maxlength="4" class="camp-input" value="' + esc(ac.caen || "") + '"></label>' +
       '<label class="camp" style="width:190px"><span class="camp-eticheta">Județ <span class="oblig">*</span></span><select id="d204-judet" class="camp-input"><option value="">— alege —</option>' + optJud + "</select></label>" +
       (bucuresti ? '<label class="camp" style="width:110px"><span class="camp-eticheta">Sector <span class="oblig">*</span></span><input id="d204-sector" type="text" maxlength="1" class="camp-input" value="' + esc(ac.sector || "") + '"></label>' : "") +
@@ -1598,12 +1602,13 @@ function randeazaFormularD204(corp, nav) {
     S.d204.reprezentant = { nume: gv("#d204-rnume").value.trim(), cif: gv("#d204-rcif").value.trim(), adresa: gv("#d204-radr").value.trim(),
       telefon: gv("#d204-rtel").value.trim(), email: gv("#d204-remail").value.trim() };
     const sect = gv("#d204-sector");
-    S.d204.activitate = { categ_venit: parseInt(gv("#d204-categ").value, 10) || 1, caen: gv("#d204-caen").value.trim(),
+    S.d204.activitate = { categ_venit: parseInt(gv("#d204-categ").value, 10) || null, forma_org: gv("#d204-forma").value || null, caen: gv("#d204-caen").value.trim(),
       judet: gv("#d204-judet").value, sector: sect ? sect.value.trim() : "", sediu: gv("#d204-sediu").value.trim(),
       nr_contr: gv("#d204-nrc").value.trim(), data_contr: gv("#d204-datac").value, venit3: _n(gv("#d204-venit3").value) || 0, chelt3: _n(gv("#d204-chelt3").value) || 0 };
   };
   ["#d204-aden", "#d204-acif", "#d204-aadr", "#d204-rnume", "#d204-rcif", "#d204-radr", "#d204-rtel", "#d204-remail", "#d204-categ", "#d204-caen", "#d204-sediu", "#d204-nrc", "#d204-datac", "#d204-venit3", "#d204-chelt3"].forEach((id) => { const e = gv(id); if (e) e.addEventListener("change", salveaza); });
   gv("#d204-rec").addEventListener("change", salveaza);
+  gv("#d204-forma").addEventListener("change", salveaza);
   gv("#d204-judet").addEventListener("change", () => { salveaza(); randeazaFormularD204(corp, nav); });
   const sect0 = gv("#d204-sector");
   if (sect0) sect0.addEventListener("change", salveaza);
@@ -1627,6 +1632,8 @@ function randeazaFormularD204(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d204.asociati || []).length) { eroareCamp(zona, "d204-acnp", "Adaugă cel puțin un asociat înainte de a genera D204."); return; }
+    if (S.d204.activitate.categ_venit == null) { eroareCamp(zona, "d204-categ", "Scrie categoria de venit."); return; }
+    if (cereAlegerile(zona, ["#d204-forma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     pas2(corp, nav);
   });
 }
@@ -1842,7 +1849,7 @@ function randeazaFormularD216(corp, nav) {
       '<label class="camp" style="width:90px"><span class="camp-eticheta">Cod str</span><input id="d216-icstr" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Nr. cadastral</span><input id="d216-icad" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:140px"><span class="camp-eticheta">Valoare impozabilă</span><input id="d216-ival" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<label class="camp" style="width:100px"><span class="camp-eticheta">Cotă %</span><input id="d216-icota" type="number" step="0.0001" min="0" max="100" class="camp-input" value="0.3"></label>' +
+      '<label class="camp" style="width:100px"><span class="camp-eticheta">Cota de deținere % <span class="oblig">*</span></span><input id="d216-icota" type="number" step="0.0001" min="0" max="100" class="camp-input" placeholder="ex. 100"></label>' +
       '<label class="camp" style="width:140px"><span class="camp-eticheta">Plafon</span><input id="d216-iplaf" type="number" step="1" min="0" class="camp-input"></label>' +
       '<button class="buton-secundar" id="d216-addi" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ imobil</button>' +
     "</div>" +
@@ -1881,13 +1888,17 @@ function randeazaFormularD216(corp, nav) {
     if (!gv("#d216-icad").value.trim()) err.push(["d216-icad", "Completează numărul cadastral."]);
     if (val <= 0) err.push(["d216-ival", "Valoarea impozabilă trebuie > 0."]);
     if (val <= plaf) err.push(["d216-ival", "Valoarea impozabilă trebuie să depășească plafonul."]);
+    // [lotul 07.10 B] „Cota de deţinere” = „cota-parte deţinută din imobil” (broșura ANAF D216, rd.3; R28.1: baza = (valoare - plafon) × cotă / 100) nu mai vine „0.3” (era cota
+    // impozitului, pusă în câmpul greșit); o scrie omul: 0 < cotă ≤ 100
+    const cotaPI = _n(gv("#d216-icota").value);
+    if (!(cotaPI > 0 && cotaPI <= 100)) err.push(["d216-icota", "Scrie cota de deținere din imobil (între 0 și 100)."]);
     if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
     salveazaAntet();
     S.d216.imobile = S.d216.imobile || [];
     S.d216.imobile.push({ judet_imobil: gv("#d216-ijud").value.trim(), cod_judet_imobil: gv("#d216-icjud").value.trim(),
       localitate_imobil: gv("#d216-iloc").value.trim(), cod_localitate_imobil: gv("#d216-icloc").value.trim(),
       strada_imobil: gv("#d216-istr").value.trim(), cod_strada_imobil: gv("#d216-icstr").value.trim(),
-      nr_cadastral: gv("#d216-icad").value.trim(), valoare_impozabila_imobil: val, cota: _n(gv("#d216-icota").value) || 0, plafon_imobil: plaf });
+      nr_cadastral: gv("#d216-icad").value.trim(), valoare_impozabila_imobil: val, cota: cotaPI, plafon_imobil: plaf });
     randeazaFormularD216(corp, nav);
   });
   gv("#d216-addm").addEventListener("click", () => {
@@ -1918,7 +1929,7 @@ function _d208Manual() {
   return {
     nume: (d.nume || "").trim(), cif: (d.cif || "").replace(/\s+/g, ""), domiciliu: (d.domiciliu || "").trim(),
     nume_intocmit: (d.nume_intocmit || "").trim(), functia_intocmit: (d.functia_intocmit || "").trim(), dRec: d.dRec ? "1" : "0",
-    nr_act_notarial: (d.nr_act_notarial || "").trim(), mod_transfer: String(d.mod_transfer || "1"), taxa_notar: Math.round(_n(d.taxa_notar) || 0),
+    nr_act_notarial: (d.nr_act_notarial || "").trim(), mod_transfer: d.mod_transfer ? String(d.mod_transfer) : "", alt_mod_transfer: String(d.mod_transfer) === "4" ? (d.alt_mod_transfer || "").trim() : "", taxa_notar: Math.round(_n(d.taxa_notar) || 0),
     imobile: [{
       judet: (im.judet || "").trim(), localitate: (im.localitate || "").trim(), codSIRUTA: (im.codSIRUTA || "").replace(/\s+/g, ""),
       nr_cadastral: (im.nr_cadastral || "").trim(), tip_imobil: String(im.tip_imobil),
@@ -1967,6 +1978,11 @@ function randeazaFormularD208(corp, nav) {
     '<div class="camp-eticheta" style="margin:8px 0 4px">Tranzacția și imobilul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Nr. act notarial <span class="oblig">*</span></span><input id="d208-act" type="text" class="camp-input" value="' + esc(d.nr_act_notarial || "") + '"></label>' +
+      // [lotul 07.10 B] modalitatea de transfer: structura ANAF D208 v1.0.0 (19.02.2024) poz.22, mod_transfer IN (1,2,3,4); până azi
+      // pleca „1” (vânzare-cumpărare) fără câmp — o moștenire sau o donație ieșea declarată vânzare
+      '<label class="camp" style="width:230px"><span class="camp-eticheta">Modalitatea de transfer <span class="oblig">*</span></span><select id="d208-mod" class="camp-input">' + alegeDacaLipseste(d.mod_transfer) +
+        [["1", "act de vânzare-cumpărare"], ["2", "moștenire"], ["3", "donație"], ["4", "altă modalitate de transfer"]].map(([v, l]) => '<option value="' + v + '"' + (String(d.mod_transfer) === v ? " selected" : "") + ">" + l + "</option>").join("") + "</select></label>" +
+      (String(d.mod_transfer) === "4" ? '<label class="camp" style="width:260px"><span class="camp-eticheta">Explicații altă modalitate <span class="oblig">*</span></span><input id="d208-altmod" type="text" maxlength="250" class="camp-input" value="' + esc(d.alt_mod_transfer || "") + '"></label>' : "") +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Taxă notar</span><input id="d208-taxa" type="number" step="1" min="0" class="camp-input" value="' + esc(String(d.taxa_notar || "")) + '"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Județ <span class="oblig">*</span></span><select id="d208-jud" class="camp-input"><option value="">— alege —</option>' + optJud + "</select></label>" +
       '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Localitate <span class="oblig">*</span></span><input id="d208-loc" type="text" class="camp-input" value="' + esc(im.localitate || "") + '"></label>' +
@@ -2013,12 +2029,16 @@ function randeazaFormularD208(corp, nav) {
     S.d208.nume_intocmit = gv("#d208-inume").value.trim();
     S.d208.functia_intocmit = gv("#d208-ifunc").value.trim();
     S.d208.nr_act_notarial = gv("#d208-act").value.trim();
+    S.d208.mod_transfer = gv("#d208-mod").value || null;
+    const altm = gv("#d208-altmod"); if (altm) S.d208.alt_mod_transfer = altm.value.trim();
     S.d208.taxa_notar = _n(gv("#d208-taxa").value) || 0;
     S.d208.imobil = { judet: gv("#d208-jud").value, localitate: gv("#d208-loc").value.trim(), codSIRUTA: gv("#d208-sir").value.trim(),
       nr_cadastral: gv("#d208-cad").value.trim(), tip_imobil: gv("#d208-tip").value,
       val_tranzactie_imobil: _n(gv("#d208-valt").value) || 0, val_piata_imobil: _n(gv("#d208-valp").value) || 0 };
   };
   ["#d208-nume", "#d208-cif", "#d208-dom", "#d208-inume", "#d208-ifunc", "#d208-act", "#d208-taxa", "#d208-jud", "#d208-loc", "#d208-sir", "#d208-cad", "#d208-tip", "#d208-valt", "#d208-valp"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d208-mod").addEventListener("change", () => { salveaza(); randeazaFormularD208(corp, nav); });
+  { const altm0 = gv("#d208-altmod"); if (altm0) altm0.addEventListener("change", salveaza); }
   gv("#d208-rec").addEventListener("change", salveaza);
   zona.querySelectorAll(".dec-d208-delb").forEach((b) => b.addEventListener("click", () => { S.d208.beneficiari.splice(parseInt(b.dataset.idx), 1); randeazaFormularD208(corp, nav); }));
   zona.querySelectorAll(".dec-d208-delp").forEach((b) => b.addEventListener("click", () => { S.d208.parti.splice(parseInt(b.dataset.idx), 1); randeazaFormularD208(corp, nav); }));
@@ -2053,7 +2073,8 @@ function randeazaFormularD208(corp, nav) {
   gv("#d208-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d208-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d208-mod", "#d208-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (String(S.d208.mod_transfer) === "4" && !S.d208.alt_mod_transfer) { eroareCamp(zona, "d208-altmod", "Explică modalitatea de transfer."); return; }
     if (!(S.d208.beneficiari || []).length) { eroareCamp(zona, "d208-bcui", "Adaugă cel puțin un beneficiar."); return; }
     if (!(S.d208.parti || []).length) { eroareCamp(zona, "d208-pcui", "Adaugă cel puțin o parte contractantă."); return; }
     pas2(corp, nav);
@@ -2636,15 +2657,15 @@ function _d398Manual() {
   (d.linii || []).forEach((l) => {
     const st = (l.mscon_state || "").toUpperCase();
     (byState[st] = byState[st] || []).push({
-      supply_type: parseInt(l.supply_type, 10) || 1, trade_type: parseInt(l.trade_type, 10) || 1,
-      vat_rate_type: parseInt(l.vat_rate_type, 10) || 1, vat_rate: _n(l.vat_rate) || 0,
+      supply_type: parseInt(l.supply_type, 10), trade_type: parseInt(l.trade_type, 10),   // [lotul 07.10 B] alese la rând (cereAlegerile) — fără „|| 1”
+      vat_rate_type: parseInt(l.vat_rate_type, 10), vat_rate: _n(l.vat_rate) || 0,
       taxable_amount: _n(l.taxable_amount) || 0, vat_id_no_msest: (l.vat_id_no_msest || "").replace(/\s+/g, "").toUpperCase() });
   });
   const ms = Object.keys(byState).map((st) => ({ mscon_state: st, supplies: byState[st] }));
   const m = {
     moes_voes_imp: moes, name: (d.name || "").trim(), vat_id_no: (d.vat_id_no || "").replace(/\s+/g, "").toUpperCase(),
     an_r: an, luna_r: trim * 3, period_start_date: q[0] + "." + an, period_end_date: q[1] + "." + an,
-    d_rec: d.d_rec ? 1 : 0, currency: (d.currency || "EUR").toUpperCase(), ms: ms,
+    d_rec: d.d_rec ? 1 : 0, currency: "EUR", ms: ms,   // CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22): „se întocmește în euro”
   };
   if (moes === 1) m.e_int = d.e_int ? 1 : 0;
   return m;
@@ -2672,8 +2693,8 @@ function randeazaFormularD398(corp, nav) {
       '<label class="camp" style="width:230px"><span class="camp-eticheta">Regim special <span class="oblig">*</span></span><select id="d398-moes" class="camp-input">' + alegeDacaLipseste(d.moes_voes_imp) + optRegim("1", "1 — UE (bunuri+servicii)") + optRegim("2", "2 — non-UE (servicii)") + optRegim("3", "3 — import (bunuri)") + "</select></label>" +
       '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire <span class="oblig">*</span></span><input id="d398-name" type="text" class="camp-input" value="' + esc(d.name || "") + '"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Cod TVA <span class="oblig">*</span></span><input id="d398-vat" type="text" class="camp-input" value="' + esc(d.vat_id_no || "") + '"></label>' +
-      '<label class="camp" style="width:110px"><span class="camp-eticheta">Monedă</span><input id="d398-cur" type="text" maxlength="3" class="camp-input" value="' + esc(d.currency || "EUR") + '"></label>' +
-      (moes === 1 ? '<label class="set-bifa"><input id="d398-eint" type="checkbox" ' + (d.e_int ? "checked" : "") + '> <span>Stabiliri fixe (e_int)</span></label>' : "") +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Monedă</span><input id="d398-cur" type="text" class="camp-input" value="EUR" readonly aria-readonly="true" aria-label="Monedă: euro, impusă de lege" title="Impusă de lege: declarația specială de TVA se întocmește în euro (CF art.314 alin.(10), art.315 alin.(12), art.315^2 alin.(22))"></label>' +
+      (moes === 1 ? '<label class="camp" style="width:170px"><span class="camp-eticheta">Stabiliri fixe (e_int) <span class="oblig">*</span></span>' + selectDaNu('id="d398-eint"', d.e_int, "Stabiliri fixe (e_int)") + "</label>" : "") +
     "</div>" +
     '<p class="camp-ajutor" style="margin:2px 0 8px">Perioada de raportare (trimestrul) se ia din selectorul de sus. TVA-ul se calculează automat = bază × cotă / 100 (per stat de consum).</p>' +
     grila +
@@ -2697,11 +2718,10 @@ function randeazaFormularD398(corp, nav) {
     S.d398.moes_voes_imp = gv("#d398-moes").value;
     S.d398.name = gv("#d398-name").value.trim();
     S.d398.vat_id_no = gv("#d398-vat").value.replace(/\s+/g, "").toUpperCase();
-    S.d398.currency = (gv("#d398-cur").value.trim() || "EUR").toUpperCase();
-    const ei = gv("#d398-eint"); if (ei) S.d398.e_int = ei.checked ? 1 : 0;
+    const ei = gv("#d398-eint"); if (ei) { const v = daNu(ei); S.d398.e_int = v === null ? null : (v ? 1 : 0); }
   };
   gv("#d398-moes").addEventListener("change", () => { salveaza(); randeazaFormularD398(corp, nav); });
-  ["#d398-name", "#d398-vat", "#d398-cur"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  ["#d398-name", "#d398-vat"].forEach((id) => gv(id).addEventListener("change", salveaza));
   const ei0 = gv("#d398-eint"); if (ei0) ei0.addEventListener("change", salveaza);
   zona.querySelectorAll(".dec-d398-del").forEach((b) => b.addEventListener("click", () => { S.d398.linii.splice(parseInt(b.dataset.idx), 1); randeazaFormularD398(corp, nav); }));
   gv("#d398-add").addEventListener("click", () => {
@@ -2724,7 +2744,7 @@ function randeazaFormularD398(corp, nav) {
   gv("#d398-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d398-moes"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d398-moes", "#d398-eint"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(S.d398.linii || []).length) { eroareCamp(zona, "d398-stat", "Adaugă cel puțin o livrare."); return; }
     pas2(corp, nav);
   });
@@ -2751,7 +2771,7 @@ function _d318Manual() {
       taxable_amount: _n(f.taxable_amount) || 0,
       vat_amount: _n(f.vat_amount) || 0,
       deductible_vat: _n(f.deductible_vat) || 0,
-      currency: (d.currency || "EUR").toUpperCase(),
+      currency: (d.currency || "").toUpperCase(),
       furnizor: {
         denumire: (f.fz_denumire || "").trim(), strada: (f.fz_strada || "").trim(),
         tara: (f.fz_tara || d.refunding_country || "").toUpperCase(),
@@ -2764,7 +2784,7 @@ function _d318Manual() {
   const m = {
     an: parseInt(d.an, 10) || S.an, luna_inceput: li, luna_sfarsit: ls, annual: annual,
     cui: (d.cui || "").replace(/\s+/g, ""), d_rec: d.d_rec ? 1 : 0,
-    refunding_country: (d.refunding_country || "").toUpperCase(), currency: (d.currency || "EUR").toUpperCase(),
+    refunding_country: (d.refunding_country || "").toUpperCase(), currency: (d.currency || "").toUpperCase(),
     iban: (d.iban || "").replace(/\s+/g, "").toUpperCase(), bic: (d.bic || "").replace(/\s+/g, "").toUpperCase(),
     owner_name: (d.owner_name || "").trim(), owner_type: d.owner_type,
     declarant: (d.declarant || "").trim(), functie: (d.functie || "").trim(),
@@ -2808,7 +2828,7 @@ function randeazaFormularD318(corp, nav) {
       inp("d318-cui", "CUI solicitant <span class=\"oblig\">*</span>", d.cui, "150px") +
     "</div>" +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
-      '<label class="camp" style="width:180px"><span class="camp-eticheta">Tip cerere</span><select id="d318-drec" class="camp-input">' + alegeDacaLipseste(d.d_rec) + '<option value="0"' + (String(d.d_rec) === "0" ? " selected" : "") + ">inițială</option><option value=\"1\"" + (d.d_rec ? " selected" : "") + ">rectificativă</option></select></label>" +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Tip cerere</span><select id="d318-drec" class="camp-input"><option value="0"' + (d.d_rec ? "" : " selected") + ">inițială</option><option value=\"1\"" + (d.d_rec ? " selected" : "") + ">rectificativă</option></select></label>" +
       (d.d_rec ? inp("d318-ref", "Nr. referință (RO…) <span class=\"oblig\">*</span>", d.reference_number, "200px") : "") +
     "</div>" +
     '<div class="camp-eticheta" style="margin:6px 0 4px">Contul de rambursare</div>' +
@@ -2817,7 +2837,7 @@ function randeazaFormularD318(corp, nav) {
       inp("d318-bic", "BIC/SWIFT <span class=\"oblig\">*</span>", d.bic, "150px") +
       inp("d318-owner", "Titular cont <span class=\"oblig\">*</span>", d.owner_name, "200px") +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Tip titular</span><select id="d318-ownt" class="camp-input">' + alegeDacaLipseste(d.owner_type) + '<option value="A"' + (d.owner_type === "A" ? " selected" : "") + ">A — solicitant</option><option value=\"R\"" + (d.owner_type === "R" ? " selected" : "") + ">R — reprezentant</option></select></label>" +
-      inp("d318-cur", "Monedă", d.currency || "EUR", "100px", 'type="text" maxlength="3"') +
+      inp("d318-cur", "Monedă <span class=\"oblig\">*</span>", d.currency || "", "100px", 'type="text" maxlength="3" placeholder="ex. HUF" title="Moneda statului membru de rambursare (HG 1/2016 pct.73 alin.(6) lit.e)"') +
     "</div>" +
     '<div class="camp-eticheta" style="margin:6px 0 4px">Identitatea solicitantului</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
@@ -2850,7 +2870,7 @@ function randeazaFormularD318(corp, nav) {
       '<button class="buton-secundar" id="d318-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ factură</button>' +
     "</div>" +
     '<div id="d318-msg"></div>' +
-    '<p class="camp-ajutor" style="margin-top:8px">Total TVA deductibil cerut la rambursare: <b>' + totalDed.toFixed(2) + "</b> " + esc(d.currency || "EUR") +
+    '<p class="camp-ajutor" style="margin-top:8px">Total TVA deductibil cerut la rambursare: <b>' + totalDed.toFixed(2) + "</b> " + esc(d.currency || "") +
       ". Codul bunului/serviciului (1–10) e o clasificare a statului de rambursare. Reprezentant, pro-rata și copii de documente = increment ulterior.</p>" +
     '<p style="margin-top:8px"><button class="buton-primar" id="d318-regen">Regenerează D318</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
@@ -2864,13 +2884,13 @@ function randeazaFormularD318(corp, nav) {
     if (ls) d.luna_sfarsit = parseInt(ls.value, 10) || 12;
     d.refunding_country = gv("#d318-tara").value;
     d.cui = gv("#d318-cui").value.replace(/\s+/g, "");
-    d.d_rec = gv("#d318-drec").value === "" ? null : parseInt(gv("#d318-drec").value, 10);
+    d.d_rec = parseInt(gv("#d318-drec").value, 10);   // [lotul 07.10 B] „inițială” vizibil = cazul uzual (DS cap.17), ca bifa „rectificativă” de la celelalte
     const ref = gv("#d318-ref"); if (ref) d.reference_number = ref.value.trim();
     d.iban = gv("#d318-iban").value.replace(/\s+/g, "").toUpperCase();
     d.bic = gv("#d318-bic").value.replace(/\s+/g, "").toUpperCase();
     d.owner_name = gv("#d318-owner").value.trim();
     d.owner_type = gv("#d318-ownt").value;
-    d.currency = (gv("#d318-cur").value.trim() || "EUR").toUpperCase();
+    d.currency = gv("#d318-cur").value.trim().toUpperCase();
     d.sol_denumire = gv("#d318-soldenumire").value.trim();
     d.sol_strada = gv("#d318-solstrada").value.trim();
     d.sol_email = gv("#d318-solemail").value.trim();
@@ -2914,7 +2934,9 @@ function randeazaFormularD318(corp, nav) {
   gv("#d318-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d318-tara", "#d318-drec", "#d318-ownt"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d318-tara", "#d318-ownt"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 07.10 B] moneda nu mai vine „EUR”: e a statului de rambursare (HG 1/2016 pct.73 alin.(6) lit.e) și o scrie omul
+    if (!d.currency) { eroareCamp(zona, "d318-cur", "Scrie moneda statului membru de rambursare (ex. EUR, HUF, PLN)."); return; }
     if (!(d.facturi || []).length) { eroareCamp(zona, "d318-fnr", "Adaugă cel puțin o factură."); return; }
     pas2(corp, nav);
   });
@@ -3114,7 +3136,7 @@ function randeazaFormularD212(corp, nav) {
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
       '<label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Categoria de venit <span class="oblig">*</span></span><select id="d212-v-cat" class="camp-input">' + ALEGE + optCat + "</select></label>" +
       '<label class="camp" style="width:220px"><span class="camp-eticheta">Determinarea venitului net</span><select id="d212-v-det" class="camp-input">' + ALEGE + '<option value="2">cote forfetare de cheltuieli</option><option value="1">sistem real (contabilitate)</option></select></label>' +
-      '<label class="set-bifa"><input id="d212-v-faracota" type="checkbox"> <span>Moștenitor / drept de suită — fără cota forfetară</span></label>' +
+      '<label class="camp" style="width:300px"><span class="camp-eticheta">Moștenitor / drept de suită — fără cota forfetară <span class="oblig">*</span></span>' + selectDaNu('id="d212-v-faracota"', null, "Moștenitor / drept de suită — fără cota forfetară") + "</label>" +
       '<label class="camp" style="width:220px"><span class="camp-eticheta">Forma de organizare</span><select id="d212-v-forma" class="camp-input">' + ALEGE + optForma + "</select></label>" +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-v-caen" type="text" maxlength="4" class="camp-input"></label>' +
     "</div>" +
@@ -3157,7 +3179,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="flex:1 1 300px"><span class="camp-eticheta">Categoria de venit <span class="oblig">*</span></span><select id="d212-s-cat" class="camp-input">' + ALEGE + optStr + "</select></label>" +
       '<label class="camp" style="width:240px"><span class="camp-eticheta">Evitarea dublei impuneri</span><select id="d212-s-metoda" class="camp-input"><option value="">fără convenție aplicată</option><option value="1">metoda creditului fiscal</option><option value="2">metoda scutirii</option><option value="4">venit scutit prin acord internațional</option></select></label>' +
       '<label class="camp" style="width:220px"><span class="camp-eticheta">Determinarea venitului net</span><select id="d212-s-det" class="camp-input">' + ALEGE + '<option value="2">cote forfetare de cheltuieli</option><option value="1">sistem real (contabilitate)</option></select></label>' +
-      '<label class="set-bifa"><input id="d212-s-faracontrib" type="checkbox"> <span>Fără CAS/CASS în România (asigurat în alt stat)</span></label>' +
+      '<label class="camp" style="width:300px"><span class="camp-eticheta">Fără CAS/CASS în România (asigurat în alt stat) <span class="oblig">*</span></span>' + selectDaNu('id="d212-s-faracontrib"', null, "Fără CAS/CASS în România") + "</label>" +
     "</div>" +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Venit brut / valoarea tranzacției (lei)</span><input id="d212-s-brut" type="number" min="0" step="1" class="camp-input"></label>' +
@@ -3183,7 +3205,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="set-bifa"><input id="d212-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
     "</div>" +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
-      '<label class="set-bifa"><input id="d212-rip" type="checkbox" ' + (d.din_rip ? "checked" : "") + '> <span>Include venitul din registrul RIP (subsecțiunea I.1.1, sistem real)</span></label>' +
+      '<label class="camp" style="width:330px"><span class="camp-eticheta">Include venitul din registrul RIP (subsecțiunea I.1.1, sistem real) <span class="oblig">*</span></span>' + selectDaNu('id="d212-rip"', d.din_rip, "Include venitul din registrul RIP") + "</label>" +
       '<label class="camp" style="width:240px"><span class="camp-eticheta">Pierderi fiscale reportate din anii precedenți (lei)</span><input id="d212-pp" type="number" min="0" step="1" class="camp-input" value="' + esc(String(d.pierdere_precedenta || "")) + '"></label>' +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-caen" type="text" maxlength="4" class="camp-input" value="' + esc(d.caen || "") + '"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite (handicap)</span><input id="d212-scut" type="number" min="0" step="1" class="camp-input" value="' + esc(String(d.nr_zile_scutite_rip || "")) + '"></label>' +
@@ -3203,7 +3225,7 @@ function randeazaFormularD212(corp, nav) {
     S.d212.nume_c = gv("#d212-nume").value.trim();
     S.d212.adresa_c = gv("#d212-adr").value.trim();
     S.d212.d_rec = gv("#d212-rec").checked ? 1 : 0;
-    S.d212.din_rip = gv("#d212-rip").checked ? 1 : 0;
+    { const v = daNu(gv("#d212-rip")); S.d212.din_rip = v === null ? null : (v ? 1 : 0); }
     S.d212.pierdere_precedenta = gv("#d212-pp").value.trim();
     S.d212.caen = gv("#d212-caen").value.trim();
     S.d212.exceptie_minim_cass = gv("#d212-exccass").value;
@@ -3240,7 +3262,7 @@ function randeazaFormularD212(corp, nav) {
   gv("#d212-s-add").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveazaAntet();
-    if (cereAlegerile(zona, ["#d212-s-cat", "#d212-s-det", "#d212-s-tipjoc"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d212-s-cat", "#d212-s-det", "#d212-s-tipjoc", "#d212-s-faracontrib"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     const tara = gv("#d212-s-tara").value.trim().toUpperCase();
     if (!/^[A-Z]{2}$/.test(tara)) {
       eroareCamp(zona, "d212-s-tara", "Scrie codul țării din două litere (ex. DE pentru Germania, AT pentru Austria; Grecia = EL).");
@@ -3261,7 +3283,7 @@ function randeazaFormularD212(corp, nav) {
     });
     const platit = gv("#d212-s-platit").value.trim();
     if (platit !== "") v.impozit_platit = platit;
-    if (gv("#d212-s-faracontrib").checked) v.fara_contributii = true;
+    if (daNu(gv("#d212-s-faracontrib")) === true) v.fara_contributii = true;
     S.d212.strainatate = S.d212.strainatate || [];
     S.d212.strainatate.push(v);
     randeazaFormularD212(corp, nav);
@@ -3274,7 +3296,7 @@ function randeazaFormularD212(corp, nav) {
   gv("#d212-v-add").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveazaAntet();
-    if (cereAlegerile(zona, ["#d212-v-cat", "#d212-v-det", "#d212-v-forma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d212-v-cat", "#d212-v-det", "#d212-v-forma", "#d212-v-faracota"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     const cat = gv("#d212-v-cat").value;
     const v = { categ_venit: cat };
     const ia = { "d212-v-det": "det_ven_net", "d212-v-forma": "forma_org", "d212-v-caen": "caen", "d212-v-sediu": "sediu",
@@ -3286,7 +3308,7 @@ function randeazaFormularD212(corp, nav) {
       const val = gv("#" + id).value.trim();
       if (val !== "") v[ia[id]] = val;
     });
-    if (_D212_CAMP_CAT["d212-v-faracota"].includes(cat) && gv("#d212-v-faracota").checked) v.fara_cota_forfetara = true;
+    if (_D212_CAMP_CAT["d212-v-faracota"].includes(cat) && daNu(gv("#d212-v-faracota")) === true) v.fara_cota_forfetara = true;
     S.d212.venituri = S.d212.venituri || [];
     S.d212.venituri.push(v);
     randeazaFormularD212(corp, nav);
@@ -3329,7 +3351,7 @@ function randeazaFormularD212(corp, nav) {
   gv("#d212-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveazaAntet();
-    if (cereAlegerile(zona, ["#d212-exccass"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d212-exccass", "#d212-rip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!S.d212.cif || !S.d212.nume_c || !S.d212.adresa_c) {
       eroareCamp(zona, "d212-cnp", "Completează CNP, nume și adresă — D212 nu se poate genera fără identificarea persoanei fizice.");
       return;

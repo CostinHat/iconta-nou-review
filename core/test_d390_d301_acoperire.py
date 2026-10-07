@@ -50,10 +50,10 @@ def conn_d390():
             with conn.cursor() as cur:
                 _make_schema(conn, _SCHEMA_B)
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,caen,platitor_tva,tip_decont,operatiuni_ic,"
-                            "adresa,oras,judet,banca,iban,telefon,declarant_nume,declarant_prenume,declarant_functie) "
+                            "adresa,oras,judet,banca,iban,telefon,declarant_nume,declarant_prenume,declarant_functie,inreg_art317) "
                             "VALUES (1,'P1 PROFIT SRL','95275466','4669',true,'lunar',true,"
                             "'Str 1','Buc','B','BCR','RO49RNCB0000000000000001','0700000000',"
-                            "'Ionescu','Ana','ADMINISTRATOR')")
+                            "'Ionescu','Ana','ADMINISTRATOR',false)")   # art.317 declarat (lotul 07.10 B)
                 # achizitie IC de bunuri de la furnizor UE extern (Germania). Fara TVA local (autolichidare).
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,tert_platitor_tva,"
                             "total,tva,taxare_inversa) VALUES ('DE1','2026-05-08','primita','DE136695976',"
@@ -92,10 +92,10 @@ def conn_d301():
             with conn.cursor() as cur:
                 _make_schema(conn, _SCHEMA_C)
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,caen,platitor_tva,tip_decont,operatiuni_ic,"
-                            "adresa,oras,judet,banca,iban,telefon,declarant_nume,declarant_prenume,declarant_functie) "
+                            "adresa,oras,judet,banca,iban,telefon,declarant_nume,declarant_prenume,declarant_functie,inreg_art317) "
                             "VALUES (1,'N1 NEPLATITOR SRL','95451848','4791',false,'trimestrial',true,"
                             "'Str 1','Buc','B','BCR','RO49RNCB0000000000000001','0700000000',"
-                            "'Ionescu','Ana','ADMINISTRATOR')")
+                            "'Ionescu','Ana','ADMINISTRATOR',false)")   # art.317 declarat (lotul 07.10 B)
                 # achizitie IC de bunuri (tip 1), 10.500 EUR (peste pragul L10 de 10.000), curs BNR.
                 cur.execute("INSERT INTO d301_operatiuni (an,luna,tip,nr_doc,data_doc,val_valuta,tip_valuta,curs,tva) "
                             "VALUES (2026,6,1,'INV-DE-77','15.06.2026',10500,'EUR',4.9772,10975)")

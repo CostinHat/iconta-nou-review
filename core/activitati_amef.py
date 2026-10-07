@@ -49,6 +49,7 @@ INSTRUCTIUNI_G = ("OPANAF 2194/2025 anexa 2 pct.15-17", "anaf_surse/opanaf_2194_
                   "TVA (21%, 19%, 11%, 9%, 5%) [...] 17. Coloana \"Taxa pe valoarea adăugată\" [...]")
 
 COD_VANZARE_NEEXCEPTATA = "CHITANTA_VANZARE_FARA_EXCEPTARE_AMEF"
+COD_NEDECLARATA = "AMEF_EXCEPTARE_NEDECLARATA"
 COD_COTA_LIPSA = "CHITANTA_I2_FARA_COTA"
 COD_COTA_NEPERMISA = "CHITANTA_I2_COTA_NEPERMISA"
 
@@ -84,6 +85,16 @@ def refuz_vanzare_neexceptata():
                   "firmă, la «Casa de marcat». Altfel, emite factura și chitanța din ea.", ART1[0])
 
 
+def refuz_nedeclarata():
+    """[lotul 07.10 B, comanda Costin A.3] faptul nu mai are implicit în schemă: se cere la prima folosire, o singură dată."""
+    e = _refuz(COD_NEDECLARATA,
+               "Chitanța fără factură nu s-a emis: în Date firmă, la «Casa de marcat», nu e declarat dacă firma are activitate "
+               "exceptată de la casa de marcat (OUG 28/1999 art. 2). Declar-o o singură dată — de ea depinde dacă încasarea "
+               "e vânzare (D394, încasări din activități exceptate) sau încasare de creanță.", ART2[0])
+    e.ecran = "date_firma"
+    return e
+
+
 def refuz_cota_lipsa():
     return _refuz(COD_COTA_LIPSA,
                   "Chitanța nu s-a emis: alege cota de TVA a încasării (0% dacă activitatea e scutită). Firma e exceptată "
@@ -107,8 +118,9 @@ def refuz_cota_nepermisa(cota, permise):
 def detaliu(e):
     """Corpul refuzului (HTTP 400) ca AFIRMAȚIE TIPATĂ — ecranul citește `mesaj` și `cod`."""
     from core import afirmatii as _af
+    extra = {"ecran": e.ecran} if getattr(e, "ecran", None) else {}   # butonul spre Date firmă (api.js, `detail.ecran`)
     return _af.afirmatie("neconformitate", "chitanta", str(e), unde="Casă", regula=e.temei,
-                         cod=e.cod, mesaj=str(e), temei=e.temei)
+                         cod=e.cod, mesaj=str(e), temei=e.temei, **extra)
 
 
 def cote_permise(la_data):

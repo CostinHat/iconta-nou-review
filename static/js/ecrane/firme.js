@@ -1,21 +1,21 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, cereAlegerile } from "../api.js?v=eb01ea8ebd";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile } from "../api.js?v=e9cf26e11b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=45e7b0e6ec";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=9513cfc395";
+import { fluxConcediu } from "./flux_concediu.js?v=709cfc813e";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=77cc07ee26";
 import { ecranRip } from "./rip_ecran.js?v=f9e35ff63e";
 import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=bf7462331c";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=e120e829b1";
 import { ecranEtransport } from "./etransport_ecran.js?v=108eff72eb";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=928ac5dbcd";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=97987511b1";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=3e15180a64";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=32eb8fe849";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=40206e2ad2";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -884,8 +884,9 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       const optiuni = (extra.optiuni || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
       return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><select id="sn-${id}" class="camp-input">${ALEGE}${optiuni}</select></div>`;
     }
-    if (tip === "checkbox") {
-      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}</label><input type="checkbox" id="sn-${id}"></div>`;
+    if (tip === "danu") {
+      // [lotul 07.10 B, DS cap.17] DA/NU situațional: select cu „— alege —”, nu căsuță (nebifată = „Nu” ales de ecran)
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}<span class="oblig">*</span></label>${selectDaNu(`id="sn-${id}"`, null, eticheta)}</div>`;
     }
     const inputTip = tip === "numar" ? "number" : (tip === "data" ? "date" : "text");
     const pas = (extra && extra.pas) || "0.01";
@@ -906,13 +907,13 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("data_nastere", "Data nașterii (pentru deducerea tinerilor sub 26 de ani)", "data")}
       ${camp("copii_scolarizati", "Copii ≤ 18 ani înscriși în învățământ (deducere 100 lei/copil)", "numar", { pas: "1" })}
-      ${camp("declaratie_copii", "Declarația părintelui pentru copii (art.77) — fără ea deducerea nu se acordă", "checkbox")}
-      <div class="camp"><label class="set-bifa"><input type="checkbox" id="sn-functie_baza" checked> <span>Funcția de bază la acest angajator (fără ea nu se acordă deducerea personală — CF art. 77 alin. (1))</span></label></div>
+      ${camp("declaratie_copii", "Declarația părintelui pentru copii (art.77) — fără ea deducerea nu se acordă", "danu")}
+      ${camp("functie_baza", "Funcția de bază la acest angajator (fără ea nu se acordă deducerea personală — CF art. 77 alin. (1))", "danu")}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${campCorLookup("sn", true)}
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
-      ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
+      ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "danu")}
     </div>
     <div id="sn-prapastie"></div>
     <p style="margin-top:12px">
@@ -937,12 +938,13 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
         persoane_intretinere: Number(corp.querySelector("#sn-persoane_intretinere").value) || 0,
         data_nastere: corp.querySelector("#sn-data_nastere").value || null,
         copii_scolarizati: Number(corp.querySelector("#sn-copii_scolarizati").value) || 0,
-        declaratie_copii: corp.querySelector("#sn-declaratie_copii").checked,
-        functie_baza: corp.querySelector("#sn-functie_baza").checked,
+        // previzualizare (nu scrie nimic): un DA/NU încă neales intră ca „nu” doar în calculul informativ al prăpastiei
+        declaratie_copii: daNu(corp.querySelector("#sn-declaratie_copii")) === true,
+        functie_baza: daNu(corp.querySelector("#sn-functie_baza")) === true,
         tip_norma: corp.querySelector("#sn-tip_norma").value,
         ore_zi: Number(corp.querySelector("#sn-ore_zi").value) || null,
         data_angajare: corp.querySelector("#sn-data_angajare").value || null,
-        scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
+        scutit_contrib_minim: daNu(corp.querySelector("#sn-scutit_contrib_minim")) === true,
       });
     } catch (e) { zonaPrapastie.innerHTML = ""; return; }
     if (!r || !r.aplicabil) { zonaPrapastie.innerHTML = ""; return; }
@@ -958,9 +960,9 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
   }
   ["#sn-salariu_brut", "#sn-persoane_intretinere", "#sn-data_nastere", "#sn-copii_scolarizati",
    "#sn-declaratie_copii", "#sn-tip_norma", "#sn-ore_zi", "#sn-data_angajare",
-   "#sn-scutit_contrib_minim"].forEach((sel) => {
+   "#sn-scutit_contrib_minim", "#sn-functie_baza"].forEach((sel) => {
     const el = corp.querySelector(sel);
-    if (el) el.addEventListener("input", () => {
+    if (el) el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => {
       clearTimeout(ceasPrapastie);
       ceasPrapastie = setTimeout(verificaPrapastia, 400);
     });
@@ -971,7 +973,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const nume = corp.querySelector("#sn-nume").value.trim();
     const brut = corp.querySelector("#sn-salariu_brut").value;
     curataEroriCamp(corp);  // [G10 cap.6 v2.30] eroare langa camp
-    if (cereAlegerile(corp, ["#sn-tip_norma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(corp, ["#sn-tip_norma", "#sn-declaratie_copii", "#sn-functie_baza", "#sn-scutit_contrib_minim"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!nume) { eroareCamp(corp, "sn-nume", "Numele este obligatoriu."); return; }
     if (!brut || !(Number(brut) > 0)) { eroareCamp(corp, "sn-salariu_brut", "Salariul brut este obligatoriu și trebuie să fie mai mare ca 0."); return; }  // [#8]
     if (!corp.querySelector("#sn-cor").value.trim()) { eroareCamp(corp, "sn-cor-cauta", "Alege ocupația (cod COR) din listă — obligatorie pentru D112/REGES."); return; }  // [#7]
@@ -987,13 +989,13 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       persoane_intretinere: corp.querySelector("#sn-persoane_intretinere").value ? Number(corp.querySelector("#sn-persoane_intretinere").value) : 0,
       data_nastere: corp.querySelector("#sn-data_nastere").value || null,
       copii_scolarizati: corp.querySelector("#sn-copii_scolarizati").value ? Number(corp.querySelector("#sn-copii_scolarizati").value) : 0,
-      declaratie_copii: corp.querySelector("#sn-declaratie_copii").checked,
+      declaratie_copii: daNu(corp.querySelector("#sn-declaratie_copii")),
       judet_casa: corp.querySelector("#sn-judet_casa").value.trim() || null,
       cor: corp.querySelector("#sn-cor").value.trim() || null,
       iban: corp.querySelector("#sn-iban").value.trim().replace(/\s/g, "").toUpperCase() || null,  // [F134]
       tichet_masa_valoare: corp.querySelector("#sn-tichet_masa_valoare").value ? Number(corp.querySelector("#sn-tichet_masa_valoare").value) : 0,  // [F133]
-      scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
-      functie_baza: corp.querySelector("#sn-functie_baza").checked,  // [3c · CF art.77(1)] deducerea doar la functia de baza
+      scutit_contrib_minim: daNu(corp.querySelector("#sn-scutit_contrib_minim")),
+      functie_baza: daNu(corp.querySelector("#sn-functie_baza")),  // [3c · CF art.77(1)] deducerea doar la functia de baza
     };
     try {
       await api.post(`/tenants/${t.id}/salariati`, corpReq);

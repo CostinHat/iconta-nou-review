@@ -1209,8 +1209,16 @@ def pull(conn, schema, perioada):
         # și dacă exceptarea se scoate ulterior (aceeași regulă ca D300); cele fără cotă (refuz numit) și semnalul
         # casei doar la firma marcată exceptată — la celelalte, chitanța fără cotă e o încasare de creanță (5311=4111)
         exceptata = bool(prof.get("activitate_exceptata_amef"))
-        chitante_i2 = [dict(x) for x in _repo.select_chitante_fara_factura(cur, inceput, sfarsit)
-                       if exceptata or x["cota_tva"] is not None]
+        _chit = [dict(x) for x in _repo.select_chitante_fara_factura(cur, inceput, sfarsit)]
+        # [lotul 07.10 B, comanda Costin A.3] exceptarea AMEF neleasă în Date firmă: o chitanță fără factură și fără cotă e
+        # creanță la firma neexceptată și vânzare neclasificată la cea exceptată — aici răspunsul schimbă D394, deci se cere
+        if prof.get("activitate_exceptata_amef") is None and any(x["cota_tva"] is None for x in _chit):
+            from core import activitati_amef as _amef
+            _e = ValueError("D394 nu se poate genera: " + str(_amef.refuz_nedeclarata()).replace(
+                "Chitanța fără factură nu s-a emis: ", "în perioadă sunt chitanțe fără factură, iar "))
+            _e.cod, _e.ecran = _amef.COD_NEDECLARATA, "date_firma"
+            raise _e
+        chitante_i2 = [x for x in _chit if exceptata or x["cota_tva"] is not None]
         casa_nelegate = []
         if exceptata:
             from core.casa_api import CATEGORII_FARA_VANZARE as _FV

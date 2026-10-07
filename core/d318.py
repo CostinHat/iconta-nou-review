@@ -188,6 +188,10 @@ def erori_generare(prof, manual):
         er.append("reference_number trebuie să înceapă cu 'RO' (R9.2).")
     if not str(manual.get("refunding_country") or "").strip():
         er.append("Lipsă cod stat de rambursare (refunding_country).")
+    # HG 1/2016 pct.73 alin.(6) lit.e-f: sumele se exprimă „în moneda statului membru de rambursare” — o cere omul, nu se pune „EUR”
+    # (lotul 07.10 B, DS cap.17: aplicația nu deduce moneda dintr-un tabel neverificat la sursă)
+    if not str(manual.get("currency") or "").strip():
+        er.append("Lipsă moneda cererii: moneda statului membru de rambursare (HG 1/2016 pct.73 alin.(6) lit.e).")
     if not str(manual.get("iban") or "").strip():
         er.append("Lipsă IBAN cont de rambursare (iban).")
     if not str(manual.get("owner_name") or "").strip():
@@ -256,15 +260,16 @@ def _goods_xml(tag, bunuri):
     return out
 
 
-def _amt_attrs(f):
-    """Atribute monetare comune facturilor de achizitie/import."""
+def _amt_attrs(f, moneda):
+    """Atribute monetare comune facturilor de achizitie/import. Moneda liniei = moneda cererii (HG 1/2016 pct.73 alin.(6)
+    lit.e-f: „exprimate în moneda statului membru de rambursare”), afară de cazul în care linia o poartă explicit."""
     a = ""
     a += _attr("taxableAmount", _sum2(f.get("taxable_amount", f.get("taxableAmount"))) or "0.00")
-    a += _attr("currency_ta", _esc(f.get("currency_ta", f.get("currency")) or "EUR"))
+    a += _attr("currency_ta", _esc(f.get("currency_ta", f.get("currency")) or moneda))
     a += _attr("vatAmount", _sum2(f.get("vat_amount", f.get("vatAmount"))) or "0.00")
-    a += _attr("currency_va", _esc(f.get("currency_va", f.get("currency")) or "EUR"))
+    a += _attr("currency_va", _esc(f.get("currency_va", f.get("currency")) or moneda))
     a += _attr("deductibleVATAmount", _sum2(f.get("deductible_vat", f.get("deductibleVATAmount"))) or "0.00")
-    a += _attr("currency_dva", _esc(f.get("currency_dva", f.get("currency")) or "EUR"))
+    a += _attr("currency_dva", _esc(f.get("currency_dva", f.get("currency")) or moneda))
     if f.get("prorata_rate", f.get("prorataRate")) not in (None, ""):
         a += _attr("prorataRate", _sum2(f.get("prorata_rate", f.get("prorataRate"))))
     return a
@@ -296,7 +301,7 @@ def build_xml(prof, manual):
     h += _attr("iban", _esc(str(manual.get("iban") or "").replace(" ", "").upper()))
     if manual.get("bic"):
         h += _attr("bic", _esc(str(manual.get("bic") or "").replace(" ", "").upper()))
-    h += _attr("currency", _esc(manual.get("currency") or "EUR"))
+    h += _attr("currency", _esc(manual.get("currency")))
     h += _attr("amount", _sum2(calc["amount"]))
     if manual.get("anul_prorata", manual.get("anulPro")) not in (None, ""):
         h += _attr("anulPro", int(manual.get("anul_prorata", manual.get("anulPro"))))
@@ -351,7 +356,7 @@ def build_xml(prof, manual):
         if str(f.get("reference_number") or "").strip():
             pa += _attr("referenceNumber", _esc(f.get("reference_number")))
         pa += _attr("issuingDate", _data(f.get("issuing_date", f.get("issuingDate"))))
-        pa += _amt_attrs(f)
+        pa += _amt_attrs(f, _esc(manual.get("currency")))
         lines.append("  <PurchaseInformation%s>" % pa)
         fz = f.get("furnizor") or {}
         es = _attr("firstName", _esc(fz.get("denumire", fz.get("firstName")), 200))
@@ -377,7 +382,7 @@ def build_xml(prof, manual):
         if str(f.get("reference_information", f.get("referenceInformation")) or "").strip():
             ia += _attr("referenceInformation", _esc(f.get("reference_information", f.get("referenceInformation"))))
         ia += _attr("issuingDate", _data(f.get("issuing_date", f.get("issuingDate"))))
-        ia += _amt_attrs(f)
+        ia += _amt_attrs(f, _esc(manual.get("currency")))
         lines.append("  <ImportInformation%s>" % ia)
         fz = f.get("furnizor") or {}
         sp = _attr("firstName", _esc(fz.get("denumire", fz.get("firstName")), 200))

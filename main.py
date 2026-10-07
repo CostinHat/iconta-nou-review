@@ -1185,7 +1185,7 @@ class VectorIn(BaseModel):  # [p82_vector]
     platitor_tva: Optional[bool] = None  # obligatoriu (ca operatiuni_ic) -> None respins in salveaza cu TVA_LIPSA, fara default tacit False. Vezi DECIZII 23.07.
     tip_decont: Optional[str] = None
     operatiuni_ic: Optional[bool] = None   # obligatoriu la migrare (ca tip_decont) -> None respins in salveaza, fara default tacit
-    inreg_art317: Optional[bool] = False   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
+    inreg_art317: Optional[bool] = None   # [art.317] CF art.317; [lotul 07.10 B] None = neales, cerut la D301 (nu „Nu” tacit)
     tva_data_inceput: Optional[str] = None   # [tva_inceput] data inreg. in scopuri de TVA (ISO 'YYYY-MM-DD'); ceruta contabilului cand ANAF n-o are
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]

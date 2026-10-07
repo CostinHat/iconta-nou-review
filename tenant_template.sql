@@ -2795,3 +2795,12 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.documente_interne_contor (
 --
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS metoda_stoc text
     CHECK (metoda_stoc IN ('global_valoric', 'cantitativ_valoric'));
+
+--
+-- Faptele DA/NU din Date firmă fără implicit în schemă (lotul 07.10 B, comanda Costin A.3) — mirror al core/migrare_fapte_date_firma.py.
+-- NULL = neales; se cer o singură dată, la prima folosire (chitanța fără factură / D394 pentru AMEF, D301 pentru art.317).
+--
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN activitate_exceptata_amef DROP NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN activitate_exceptata_amef DROP DEFAULT;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN inreg_art317 DROP NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN inreg_art317 DROP DEFAULT;

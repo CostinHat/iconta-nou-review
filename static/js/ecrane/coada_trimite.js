@@ -6,7 +6,7 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=eb01ea8ebd";
+import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=e9cf26e11b";
 
 export async function trimiteInCoada(zona, body, laSucces, confirmare) {
   const corp = Object.assign({}, body);

@@ -414,7 +414,7 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
     if any(k in (date or {}) for k in CAMPURI_AMEF):
         from core.uc_comun import bifa as _bifa
         try:
-            exc = _bifa(date, "activitate_exceptata_amef", False)
+            exc = _bifa(date, "activitate_exceptata_amef", None)   # [lotul 07.10 B] gol = neales (NULL), nu „Nu”
         except ValueError as e:
             return {"ok": False, "camp": "activitate_exceptata_amef", "mesaj": str(e)}
         lit = str(date.get("activitate_amef") or "").strip().lower() or None

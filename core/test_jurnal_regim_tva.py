@@ -29,6 +29,9 @@ _FARA_JURNAL = {
     ("tenant_provisioning", "precompleteaza_din_anaf"):
         "precompletarea din ANAF la CREAREA firmei (register, adăugare, import) — valoarea inițială, nu o schimbare: nu "
         "există „vechi” (DECIZII 04.10.2026, PIVOT pe drepturi, consecința 1)",
+    ("migrare_fapte_date_firma", "aplica"):
+        "normalizarea schemei (lotul 07.10 B, comanda Costin A.3): un `false` care era implicitul coloanei, nedistinct de o "
+        "alegere, devine NULL (neales) — nu e o schimbare făcută de un utilizator; rândurile cu intrare în jurnal (alese) rămân",
 }
 _SCRIERE = re.compile(r"\b(?:INSERT\s+INTO|UPDATE)\s+[\w\"%{}.']*firma_profil\b(?!_)")
 _CAMP = re.compile(r"\b(?:%s)\b" % "|".join(R.CAMPURI_REGIM_TVA))
@@ -140,14 +143,14 @@ def test_vectorul_jurnalizeaza_toate_cele_trei_si_prima_salvare_cu_vechiul_gol(c
     from core import vector_fiscal_api as v
     r = v.salveaza(cur.connection, "micro", True, "trimestrial", False, nume="ZT", cui="14399840", user_id=5)
     assert r["ok"], r
-    assert _jurnal(cur) == [("platitor_tva", None, "true", 5), ("tip_decont", None, "trimestrial", 5),
-                            ("inreg_art317", None, "false", 5)]
+    # [lotul 07.10 B] art.317 neales (None) nu mai devine „false”: prima salvare fără el nu jurnalizează nimic pentru el
+    assert _jurnal(cur) == [("platitor_tva", None, "true", 5), ("tip_decont", None, "trimestrial", 5)]
     cur.execute("UPDATE firma_profil SET tip_decont = 'T'")   # seed-ul vechi: aceeași periodicitate
     cur.execute("DELETE FROM firma_profil_jurnal")
     assert v.salveaza(cur.connection, "micro", True, "trimestrial", False, user_id=5)["ok"]
     assert _jurnal(cur) == [], "„T” -> „trimestrial” jurnalizat ca schimbare"
     assert v.salveaza(cur.connection, "micro", True, "lunar", False, inreg_art317=True, user_id=6)["ok"]
     assert v.salveaza(cur.connection, "micro", False, None, False, user_id=6)["ok"]
-    assert _jurnal(cur) == [("tip_decont", "trimestrial", "lunar", 6), ("inreg_art317", "false", "true", 6),
+    assert _jurnal(cur) == [("tip_decont", "trimestrial", "lunar", 6), ("inreg_art317", None, "true", 6),
                             ("platitor_tva", "true", "false", 6), ("tip_decont", "lunar", None, 6),
-                            ("inreg_art317", "true", "false", 6)]
+                            ("inreg_art317", "true", None, 6)]   # omis = neales (None), consemnat ca atare

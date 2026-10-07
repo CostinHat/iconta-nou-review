@@ -217,6 +217,11 @@ def pull(conn, schema, perioada):
     return {}
 
 
+#: Moneda D398 e impusă de lege, nu aleasă: CF art.314 alin.(10) („Declarația specială de TVA se întocmește în euro.”), la fel
+#: CF art.315 alin.(12) și CF art.315^2 alin.(22). Ecranul o arată fixă (lotul 07.10 B, DS cap.17: valoare fixă, nu alegere).
+MONEDA_OSS = "EUR"
+
+
 def erori_generare(prof, manual):
     er = []
     moes = _int(manual.get("moes_voes_imp"))
@@ -315,7 +320,7 @@ def build_xml(prof, an, luna, manual):
     if _esc(manual.get("period_start_date")):
         h.append(_attr("period_start_date", _esc(manual.get("period_start_date"))))
         h.append(_attr("period_end_date", _esc(manual.get("period_end_date"))))
-    h.append(_attr("currency", _esc(manual.get("currency")) or "EUR"))
+    h.append(_attr("currency", MONEDA_OSS))   # CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22)
     h.append(_attr("vat_id_no", _esc(manual.get("vat_id_no"))))
     if _esc(manual.get("intermediary_id")):
         h.append(_attr("intermediary_id", _esc(manual.get("intermediary_id"))))

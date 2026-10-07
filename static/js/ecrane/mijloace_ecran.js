@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=eb01ea8ebd";
+import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=e9cf26e11b";
 
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   const azi = dataIso();

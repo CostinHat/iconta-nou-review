@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=eb01ea8ebd";
+import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=e9cf26e11b";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -18,6 +18,8 @@ const C = (nume, eticheta, tip = "numar", extra = {}) => ({ nume, eticheta, tip,
 // „acceptă doar da sau nu”), șapte lipseau din formular (serverul punea tăcut „nu”), trei aveau „Da” preselectat. Gard:
 // core/test_formulare_operatiuni_campuri.py::test_bifele_serverului_se_cer_explicit_da_nu.
 const DN = (nume, eticheta, extra = {}) => C(nume, eticheta, "select", { optiuni: [["true", "Da"], ["false", "Nu"]], neales: "— alege —", ...extra });
+// [lotul 07.10 B] câmpurile-cont (`cont`, `cont_*`) cu sugestie se precompletează (DS cap.17 corectat: cazul uzual, vizibil, schimbabil — regula în `camp`)
+const CONT_PRECOMPLETAT = (c) => c.tip === "text" && /^cont(_|$)/.test(c.nume) && !!c.sugestie && !c.optional;
 
 const REGISTRU = [
   { cat: "Finanțare", cheie: "leasing", titlu: "Leasing", ruta: "nota-leasing", campuri: [
@@ -458,6 +460,10 @@ export async function ecranOperatiuni(corp, nav, t) {
         input = `<input type="date" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">`;
       } else if (c.tip === "numar") {
         input = `<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
+      } else if (CONT_PRECOMPLETAT(c)) {
+        // [lotul 07.10 B, DS cap.17 corectat] un CONT vine precompletat VIZIBIL cu sugestia standard (707, 5124, 612 …): e cazul
+        // uzual, se vede înainte de „Generează nota” și se schimbă; golit, câmpul obligatoriu se refuză („Câmp obligatoriu”).
+        input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" value="${esc(c.sugestie)}">`;
       } else {
         input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       }

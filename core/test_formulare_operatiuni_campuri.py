@@ -205,6 +205,30 @@ def test_CALIBRARE_preselectia_e_prinsa():
     assert {"nota-credit:tip"} <= selecturi_preselectate(stricat)
 
 
+def test_conturile_vin_precompletate_cu_sugestia_standard():
+    """[lotul 07.10 B, comanda Costin A.2] „conturile din formularele Operațiunilor (cont_banca, cont_venit, cont_cheltuiala, …) vin
+    precompletate vizibil cu sugestia standard (707, 5124, 612 …), modificabile, câmpul gol nu se acceptă”. Motorul pune sugestia ca
+    VALOARE pe orice câmp-cont obligatoriu; câmpul rămâne obligatoriu („Câmp obligatoriu” la gol). MUTAȚIE: `value=` -> `placeholder=`
+    în ramura `CONT_PRECOMPLETAT` -> pică."""
+    import scan_formulare_operatiuni as F
+    js = _surse_()[0]
+    assert F.motor_conturi_precompletate(js)
+    assert sorted(F.conturi_fara_sugestie(js)) == sorted(F.CONTURI_NEPRECOMPLETATE)
+    assert len(re.findall(r'C\("cont(?:_[a-z_]+)?", "[^"]*", "text"', js)) >= 19      # premisă: 19 câmpuri-cont + 1 în rânduri
+
+
+def test_CALIBRARE_cont_fara_sugestie_sau_motor_cu_placeholder_e_prins():
+    import scan_formulare_operatiuni as F
+    js = _surse_()[0]
+    a = 'C("cont_banca", "Cont bancă", "text", { sugestie: "5124" })'
+    assert js.count(a) == 1
+    nou = F.conturi_fara_sugestie(js.replace(a, 'C("cont_banca", "Cont bancă", "text")')) - F.conturi_fara_sugestie(js)
+    assert [k.split(":")[1] for k in nou] == ["cont_banca"]
+    b = 'value="${esc(c.sugestie)}">`;'
+    assert js.count(b) == 1
+    assert not F.motor_conturi_precompletate(js.replace(b, 'placeholder="${esc(c.sugestie)}">`;'))
+
+
 def motorul_onoreaza_registrul(js):
     """Ce declară registrul (`trimiteCa`, `lista`, `multiCond`, condiția în lanț) trebuie să-l și facă motorul — altfel
     garda de mai sus ar judeca un formular pe care ecranul nu-l trimite așa. Întoarce ce lipsește din motor."""

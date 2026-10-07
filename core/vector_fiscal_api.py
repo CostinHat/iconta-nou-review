@@ -44,7 +44,7 @@ def citeste(conn_schema):
         "tip_decont": tip_decont_lung(decont),  # [decont_lung] UI compara pe forma lunga; seed vechi are L/T
         # None = necompletat (nu False tacit) -> frontendul distinge "nesetat" de "Nu" (fara preselectie). Vezi DECIZII 23.07.
         "operatiuni_ic": bool(ic) if ic is not None else None,
-        "inreg_art317": bool(art317),
+        "inreg_art317": bool(art317) if art317 is not None else None,   # [lotul 07.10 B] None = neales (cerut la D301)
         # [tva_inceput] data inregistrarii in scopuri de TVA (fapt ANAF sau introdusa manual de contabil) ca
         # ISO 'YYYY-MM-DD' -> pre-populeaza formularul; motorul o foloseste ca margine pt D300/D394/D406.
         "tva_data_inceput": tva_inceput.isoformat() if tva_inceput else None,
@@ -54,7 +54,7 @@ def citeste(conn_schema):
 
 
 def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
-             nume=None, cui=None, inreg_art317=False, tva_data_inceput=None, user_id=None):  # [p83_upsert] UPSERT
+             nume=None, cui=None, inreg_art317=None, tva_data_inceput=None, user_id=None):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
     Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert).
     [PIVOT DECIZII 04.10.2026] Schimbarea regimului de TVA (platitor_tva, tip_decont, inreg_art317) se jurnalizeaza cu
@@ -75,7 +75,9 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         return {"ok": False, "cod": "IC_LIPSA", "camp": "operatiuni_ic",
                 "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
     ic = bool(operatiuni_ic)
-    art317 = bool(inreg_art317)   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
+    # [art.317] inregistrare speciala scopuri TVA (art. 317 CF). [lotul 07.10 B] None = neales: rămâne nul și se cere la prima
+    # folosire (D301 pers_inreg) — nu devine „Nu” la salvarea vectorului
+    art317 = bool(inreg_art317) if inreg_art317 is not None else None
 
     # [tva_inceput] data inregistrarii in scopuri de TVA (de pe certificatul ANAF). Are sens DOAR la platitor
     # (la neplatitor -> NULL, nu se stocheaza). Accepta ISO 'YYYY-MM-DD' sau None; format invalid -> eroare

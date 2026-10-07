@@ -88,7 +88,8 @@ def _tranzactii(manual):
     if manual.get("imobile"):
         return [{
             "nr_act_notarial": manual.get("nr_act_notarial"),
-            "mod_transfer": manual.get("mod_transfer", "1"),
+            "mod_transfer": manual.get("mod_transfer"),   # [lotul 07.10 B] fără „1” implicit: lipsa se refuză numit
+            "alt_mod_transfer": manual.get("alt_mod_transfer"),
             "taxa_notar": manual.get("taxa_notar", 0),
             "imobile": manual.get("imobile", []),
         }]
@@ -171,6 +172,11 @@ def erori_generare(prof, manual):
         pre = "Tranzacția %d: " % k
         if not str(t.get("nr_act_notarial") or "").strip():
             er.append(pre + "lipsă nr_act_notarial (identificatorul tranzactiei).")
+        # structura ANAF D208 v1.0.0 (19.02.2024) poz.22-23: mod_transfer IN (1,2,3,4); 4 cere alt_mod_transfer, altfel interzis
+        if str(t.get("mod_transfer") or "").strip() not in ("1", "2", "3", "4"):
+            er.append(pre + "lipsă modalitatea de transfer (1 vânzare-cumpărare / 2 moștenire / 3 donație / 4 altă modalitate).")
+        elif str(t.get("mod_transfer")).strip() == "4" and not str(t.get("alt_mod_transfer") or "").strip():
+            er.append(pre + "modalitatea 4 (altă modalitate) cere explicația modalității de transfer.")
         imob = _imobile(t)
         if not imob:
             er.append(pre + "niciun imobil.")
@@ -250,7 +256,7 @@ def _imobil_xml(im):
 def _tranzactie_xml(t):
     roll = _rollup_tranzactie(t)
     a = ['nr_act_notarial="%s"' % _esc(t.get("nr_act_notarial"), 50),
-         'mod_transfer="%s"' % _esc(t.get("mod_transfer", "1"), 2)]
+         'mod_transfer="%s"' % _esc(t.get("mod_transfer"), 2)]
     if t.get("alt_mod_transfer"):
         a.append('alt_mod_transfer="%s"' % _esc(t.get("alt_mod_transfer"), 250))
     a.append('nuda_proprietate="%s"' % _esc(t.get("nuda_proprietate", "0"), 1))

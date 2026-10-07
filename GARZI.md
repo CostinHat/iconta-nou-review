@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**719 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**721 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 682
+### `core/` — 684
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9184,6 +9184,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_export_winmentor.py` — Teste F187 — export WinMENTOR. Verificare contra spec-ului OFICIAL (Facturi clienti.pdf Rev.1.2 +
 - `core/test_factura_bon_fiscal.py` — GARD — factura emisă pe baza bonului fiscal se numără O SINGURĂ DATĂ (decizia Costin A, 02.10.2026).
 - `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
+- `core/test_fapte_date_firma.py` — GARD — două fapte DA/NU din Date firmă fără implicit în schemă (lotul 07.10 B, comanda Costin A.3).
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
 - `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
 - `core/test_fara_secrete_in_git.py` — GARD — niciun secret în fișierele urmărite de git (comanda Costin 05.10.2026).
@@ -9268,6 +9269,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lot0610_p4.py` — GARDA părții 4 din comanda Costin 06.10.2026 — povestea lunii.
 - `core/test_lot0710_p2.py` — Lotul 07.10, partea 2 — retestul Costin din 06.10.2026 (F5 salarii nov. 2026, F1 factură): gărzile pe server.
 - `core/test_lot0710_ui.py` — Lotul 07.10, partea 2 — gărzile pe ecrane (JS), pe NUMĂRĂTOARE de structuri, nu pe apartenența unui șir.
+- `core/test_lot0710b_fapte_declaratii.py` — GARD — faptele din declarații pe care aplicația le punea în locul omului (lotul 07.10 B, comanda Costin A.2: „Restul îl
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -10528,3 +10530,14 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | gard | fișier | ce face imposibil | mutația | limita |
 |---|---|---|---|---|
 | sitemap în limitele protocolului, fără redirecturi | `core/test_sitemap_index.py` (5) | un URL redirecționat (301) în sitemap; un copil peste 50.000 URL / 50 MB; indexul și sitemap-ul plat din surse diferite; `robots.txt` care nu indică indexul; un link intern / `ghid_slug` / fișier `.md` pentru un slug redirecționat | `ghid/cote-tva-2025.md` pus la loc -> 2 roșii | 200 + autocanonic verificat pe un eșantion (1/50); verificarea completă (6.580) s-a făcut la livrare pe serverul viu |
+
+## 07.10.2026 — Regula preselecției corectată: preselecție permisă vs „— alege —” (comanda Costin, lotul 07.10 B, frontul A)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| preselecția permisă își scrie criteriile | `core/test_selecturi_ecrane.py::test_preselectiile_permise_isi_scriu_criteriile` + `test_CALIBRARE_preselectat_cu_alege_e_prins` | un select clasificat `PRESELECTAT_PERMIS` fără (a) uzual/dedus, (b) vizibil, (c) schimbabil în motiv; unul care a primit iar „— alege —” | „— alege —” pus la `em-moneda` -> pică | clasificare scrisă de om; criteriul (a) se judecă la clasificare |
+| DA/NU situațional nu e căsuță | `scripts/scan_selecturi_ecrane.py::casute`/`danu_necerute` + `test_casutele_ramase_sunt_toate_clasificate`, `test_CALIBRARE_danu_necerut_e_prins` | o căsuță nouă neclasificată (nebifată = „Nu” ales de ecran); un `selectDaNu` pe care handlerul nu-l cere | MA1: `cm-spital` înapoi căsuță -> ROȘU | lexical (`<input type="checkbox"`, `selectDaNu(`) |
+| input precompletat clasificat | `inputuri_precompletate` + `test_inputurile_precompletate_sunt_clasificate`, `test_CALIBRARE_input_precompletat_neclasificat_e_prins` | un `value="x"` / `|| "x"` nou într-un input, neîncadrat | MA10: D204 categoria `|| 1` -> ROȘU; MA11: D216 cota `0.3` -> ROȘU | lexical; starea inițială doar pentru declarațiile din `STARE_INITIALA` |
+| conturile Operațiunilor precompletate | `scan_formulare_operatiuni::motor_conturi_precompletate`/`conturi_fara_sugestie` + `test_conturile_vin_precompletate_cu_sugestia_standard` | un câmp-cont fără sugestie; motorul care pune sugestia ca placeholder | MA3 -> ROȘU | numai registrul Operațiunilor |
+| faptele declarațiilor nu mai pleacă tacit | `core/test_lot0710b_fapte_declaratii.py` (6) | D204 `forma_org` / categoria lipsă trimise ca „1”; D208 `mod_transfer` „1”; D318 moneda „EUR”; D398 altă monedă decât EUR | MA7 (D208 `or "1"`), MA8 (D398 din cerere) -> ROȘU | D204 norma de venit (det_ven_net=2) rămâne neacoperită (documentat în modul) |
+| art.317 și AMEF fără implicit | `core/test_fapte_date_firma.py` (7), `core/test_d394_i2.py` (2 noi), `test_rute_stoc_pana_in_declaratie.py` (prin HTTP) | schema care pune iar „Nu”; migrarea care lasă `false` nedistinct; D301 cu pers_inreg ghicit; chitanța fără factură sau D394 (cu chitanțe fără cotă) pe exceptarea neleasă | MA4, MA5, MA6 -> ROȘU | firmele cu „Nu” ales înainte, fără jurnal, sunt întrebate încă o dată |

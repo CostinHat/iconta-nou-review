@@ -382,6 +382,11 @@ def test_CHITANTA_FARA_COTA_clasificata_prin_HTTP_ajunge_in_D394_I2(lume):
                     "declarant_functie) VALUES (1,'TENANT RUTE STOC','14399840','Str Test 1','Bucuresti','B','4322',"
                     "'0722000000','BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR') "
                     "ON CONFLICT (id) DO NOTHING" % SCH)
+    # [lotul 07.10 B, comanda Costin A.3] exceptarea AMEF n-are implicit: neleasă, prima chitanță fără factură o cere (prin HTTP)
+    r0 = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 242}, headers=_H(lume))
+    assert (r0.status_code, r0.json()["detail"]["cod"], r0.json()["detail"]["ecran"]) == (400, "AMEF_EXCEPTARE_NEDECLARATA", "date_firma")
+    with lume["conn"].cursor() as cur:
+        cur.execute('UPDATE "%s".firma_profil SET activitate_exceptata_amef = false' % SCH)   # declarată „Nu” în Date firmă
     r = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 242}, headers=_H(lume))
     assert r.status_code == 200, r.text[:300]
     cid = r.json()["chitanta_id"]

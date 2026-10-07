@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.78 · 7 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.79 · 7 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -224,8 +224,22 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   **Extinsă la ecranele scrise de mână (v2.78, 07.10.2026, comanda Costin — `scan_selecturi_ecrane`):** un select a cărui valoare e fapt
   fiscal (inclusiv conținutul unei declarații către ANAF) pornește cu `ALEGE` / `alegeDacaLipseste(valoare salvată)` din `api.js`, iar
   handlerul care trimite îl cere cu `cereAlegerile(rădăcină, câmpuri)` (refuz lângă câmp). Fiecare select din aceste ecrane e fie
-  conform, fie clasificat cu motivul (`CLASIFICARE`: ne-fiscal / valoare existentă / opțiune goală în builder / conflict DS). Gard:
-  același `FAPT_FISCAL_NECERUT` + `core/test_selecturi_ecrane.py`. Excepție deschisă: destinația TVA pe linie (cap.28 pct.2) — conflict.
+  conform, fie clasificat cu motivul (`CLASIFICARE`). Gard: același `FAPT_FISCAL_NECERUT` + `core/test_selecturi_ecrane.py`.
+  **Corectată (v2.79, 07.10.2026, comanda Costin, lotul 07.10 B A.1) — când e permisă preselecția.** *„Preselecția e PERMISĂ când
+  valoarea (a) e cazul uzual sau se deduce din date (țara din CUI-ul partenerului, regimul din profilul firmei, moneda RON), (b) se
+  vede pe ecran înainte de confirmare și (c) se poate schimba. Preselecția e INTERZISĂ pentru un fapt care depinde de situația
+  concretă și pe care aplicația nu-l poate ști: Da/Nu situaționale (imputabil, faliment, asigurat, certificat de amânare …),
+  categoria sau temeiul dintr-o declarație, tipul imobilului, valabilitatea, opțiuni de regim alese de contribuabil. Acolo rămâne
+  „— alege —”.”* Mecanic: (1) o preselecție permisă stă în `CLASIFICARE` ca `PRESELECTAT_PERMIS`, cu criteriile (a)–(c) scrise în
+  motiv (moneda / țara dedusă din CUI / tipul operației / documentul la emitere, moneda facturii recurente, destinația TVA pe linie,
+  cererea inițială D318); (2) **un câmp-cont** din Operațiuni (`cont`, `cont_*`) vine precompletat VIZIBIL cu sugestia standard
+  (707, 5124, 612 …), modificabil, iar golul se refuză (`CONT_PRECOMPLETAT` în motor; excepțiile în `CONTURI_NEPRECOMPLETATE`);
+  (3) **un DA/NU situațional nu e căsuță de bifat** — o căsuță nebifată răspunde „Nu” în locul omului: e `selectDaNu` din `api.js`
+  („— alege —” + Da/Nu, citit cu `daNu`), cerut de handler; fiecare căsuță rămasă e în `CASUTE`, cu motivul (rectificativa = cazul
+  uzual, setări de acces, selecții de lucru); (4) **un input cu valoare pusă de ecran** (literal sau `|| "x"`) e în `INPUTURI`, cu
+  motivul; o valoare impusă de lege e FIXĂ (readonly), nu alegere — D398 „se întocmește în euro” (CF art.314 alin.(10)); (5) un fapt
+  DA/NU din Date firmă fără implicit în schemă (`activitate_exceptata_amef`, `inreg_art317`) e `CERUT_LA_PRIMA_FOLOSIRE`: „— alege —”
+  când e neales, salvarea îl lasă nul, refuzul numit (cu buton spre Date firmă) vine la prima folosire relevantă.
 
 ## 18. Carduri pe firmă — regim obligatoriu, o singură sursă
 
@@ -707,7 +721,8 @@ o **decizie fiscală per linie** înainte de validare — de pildă destinația 
    input liber, fiindcă valorile sunt un set închis. Poartă `aria-label`, iar deasupra listei de linii
    stă un `.camp-ajutor` (cap.6) care spune criteriul fiscal și consecința fiecărei valori.
 2. **Un default sigur, explicit** — valoarea cea mai frecventă și fără efect advers (aici `taxabil`:
-   deducere integrală, nu intră în pro-rata). Default-ul e `selected` în markup, nu tăcut.
+   deducere integrală, nu intră în pro-rata). Default-ul e `selected` în markup, nu tăcut. (v2.79: e preselecția PERMISĂ din
+   cap.17 — cazul uzual, vizibil pe fiecare linie, schimbabil; cele două capitole spun același lucru.)
 3. **Restul liniei rămâne read-only.** Faptul importat (descriere, cantitate, preț, cotă) **nu se
    editează** — se afișează, iar lângă el se **adaugă** o decizie. Distincția e normativă:
    **a CLASIFICA** (a adăuga o decizie proprie peste un fapt importat) **≠ a EDITA** (a schimba faptul
@@ -723,6 +738,13 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.79 (07.10.2026)** — **cap.17/cap.28: regula preselecției corectată** (comanda Costin, lotul 07.10 B A): permisă când valoarea e
+uzuală sau dedusă, vizibilă și schimbabilă; interzisă pentru faptul situațional. Emiterea revine la RON / țara dedusă din CUI /
+operațiunea normală / factura, vizibil; conturile din Operațiuni precompletate cu sugestia; 13 căsuțe DA/NU situaționale devin
+`selectDaNu`; D204 forma de organizare și D208 modalitatea de transfer (trimise tacit „1”, fără câmp) intră în formular; D216 cota
+de deținere nu mai vine „0.3”; D318 moneda nu mai vine „EUR”; D398 moneda e fixă (EUR, prin lege). Conflictul cap.28 pct.2 / cap.17
+închis. Gard: `FAPT_FISCAL_NECERUT` extins (`PRESELECTAT_PERMIS`, `CASUTE`, `INPUTURI`, `danu_necerute`, `CONT_PRECOMPLETAT`).
+
 **v2.78 (07.10.2026)** — **cap.17: FAPT_FISCAL_NECERUT extins la ecranele scrise de mână** (comanda Costin, „clasificarea celor 82”):
 59 de selecturi fiscale pornesc cu „— alege —” și sunt cerute la trimitere (`ALEGE`, `alegeDacaLipseste`, `cereAlegerile` în `api.js`);
 23 clasificate cu motiv. Conflict deschis cu cap.28 pct.2 (destinația TVA pe linie).

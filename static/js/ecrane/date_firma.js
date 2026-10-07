@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo } from "../api.js?v=eb01ea8ebd";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste } from "../api.js?v=e9cf26e11b";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -61,9 +61,10 @@ function _blocAmef(d) {
     <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Activitate exceptată de la casa de marcat</span>
-        <select class="camp-input" id="df-activitate_exceptata_amef">
-          <option value="0"${p.activitate_exceptata_amef ? "" : " selected"}>Nu</option>
-          <option value="1"${p.activitate_exceptata_amef ? " selected" : ""}>Da</option>
+        <!-- [lotul 07.10 B, comanda Costin A.3] neales (NULL) = „— alege —”; se cere o dată, la prima chitanță fără factură / D394 -->
+        <select class="camp-input" id="df-activitate_exceptata_amef">${alegeDacaLipseste(p.activitate_exceptata_amef)}
+          <option value="0"${p.activitate_exceptata_amef === false ? " selected" : ""}>Nu</option>
+          <option value="1"${p.activitate_exceptata_amef === true ? " selected" : ""}>Da</option>
         </select>
       </label>
       <label class="camp" id="df-activitate_amef-camp"${p.activitate_exceptata_amef ? "" : ' style="display:none"'}>
@@ -190,7 +191,9 @@ const VECTOR = [
   { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },
-  { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select",
+  // [lotul 07.10 B, comanda Costin A.3] `neales`: „— alege —” când nu e ales (NULL), FĂRĂ a fi obligatoriu la salvare — se cere o
+  // singură dată la prima folosire (D301 pers_inreg); salvarea vectorului îl păstrează nul, nu „Nu”
+  { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select", neales: true,
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "\u00cenregistrare special\u0103 \u00een scopuri de TVA (art. 317 CF) pentru achizi\u021bii/livr\u0103ri intracomunitare la nepl\u0103titori. Decide D390 (VIES) \u0219i pers_inreg \u00een D301." },
   // [tva_inceput] data inregistrarii in scopuri de TVA - EDITABILA, ceruta contabilului cand ANAF n-o are.
@@ -210,7 +213,7 @@ function campVector(c, val) {
     const v = val === true ? "da" : val === false ? "nu" : (val || "");
     // [alege] valoare lipsa pe select obligatoriu -> placeholder "— alege —" AFISAT (selected), dar
     // neselectabil (disabled hidden): fara el, browserul afiseaza prima optiune reala ca aleasa (Regula 4).
-    const ph = (c.alege && !v)
+    const ph = ((c.alege || c.neales) && !v)
       ? `<option value="" selected disabled hidden>— alege —</option>` : "";
     const opts = c.opt.map(([k, t]) =>
       `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
@@ -391,7 +394,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       platitor_tva: triBool(_tvaV),
       tip_decont: corp.querySelector("#vf-tip_decont").value || null,
       operatiuni_ic: triBool(_icV),
-      inreg_art317: corp.querySelector("#vf-inreg_art317").value === "da",
+      inreg_art317: triBool(corp.querySelector("#vf-inreg_art317").value),   // [lotul 07.10 B] neales -> null
       // [tva_inceput] are sens doar la platitor; la neplatitor trimitem null (backendul o goleste oricum)
       tva_data_inceput: _tvaV === "da"
         ? (corp.querySelector("#vf-tva_data_inceput").value || null) : null,

@@ -90,7 +90,7 @@ def _int(x):
 
 
 def _cota(x):
-    """cota procentuala pe bunul imobil (0 < cota <= 100). Vine din manual (NU se hardcodeaza)."""
+    """„Cota de deţinere” (broșura ANAF D216, rd.3: „cota-parte deţinută din imobil”), 0 < cota <= 100. Vine din manual."""
     try:
         return float(str(x).replace(",", "."))
     except (TypeError, ValueError):

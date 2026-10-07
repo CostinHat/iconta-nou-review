@@ -1487,7 +1487,7 @@ try:
     # ales dintr-o listă pornește cu „— alege —” și e cerut de handler; restul selecturilor, clasificate cu motiv.
     import scan_selecturi_ecrane as _sse
     for _k_ff, _ce_ff in _sse.masoara():
-        rap["fapt_fiscal_necerut"].append((_k_ff.split(":", 1)[0], 0, _k_ff, _ce_ff + " (DS cap.17 v2.78)"))
+        rap["fapt_fiscal_necerut"].append((_k_ff.split(":", 1)[0], 0, _k_ff, _ce_ff + " (DS cap.17 v2.79)"))
 except Exception as _e_ff:
     rap["fapt_fiscal_necerut"].append(("verificator", 0, "EROARE", "gard fapt_fiscal_necerut: " + str(_e_ff)))
 

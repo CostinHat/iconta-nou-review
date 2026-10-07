@@ -202,8 +202,8 @@ def conn_i2(monkeypatch):
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, telefon, banca, iban, "
                     "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare,declarant_nume,declarant_prenume,declarant_functie,"
-                    "cont_venit_implicit) VALUES (1,'INSTAL SRL','14399840','Str Test 1','Bucuresti','B','4322','0722000000',"
-                    "'BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR','704')")
+                    "cont_venit_implicit,activitate_exceptata_amef) VALUES (1,'INSTAL SRL','14399840','Str Test 1','Bucuresti','B','4322','0722000000',"
+                    "'BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR','704',false)")   # „Nu”, declarat
             proxy = _FaraCommit(conn)
             from core import uc_tenants, auth_api, uc_comun as _uc
             monkeypatch.setattr(uc_tenants.db, "get_conn", lambda *a, **k: contextlib.nullcontext(proxy))
@@ -326,6 +326,27 @@ def test_incasarea_din_casa_fara_chitanta_e_semnalata_ridicarea_nu(conn_i2):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_exceptarea_neleasa_se_cere_la_prima_chitanta_fara_factura(conn_i2):
+    """[lotul 07.10 B, comanda Costin A.3] fără implicit în schemă: neleasă, prima chitanță fără factură o cere, numit, cu ecranul
+    Date firmă (OUG 28/1999 art.2). MUTAȚIE: scoasă ramura `exceptata is None` -> chitanța se emite ca încasare de creanță."""
+    from core import erori
+    _exceptata(conn_i2, None)
+    with pytest.raises(erori.CerereGresita) as e:
+        _emite(data="2026-09-05", suma=242)
+    assert (_cod(e), e.value.detaliu["ecran"]) == (_amef.COD_NEDECLARATA, "date_firma")
+
+
+def test_exceptarea_neleasa_opreste_d394_numai_cand_schimba_declaratia(conn_i2):
+    """D394 se oprește pe exceptarea neleasă NUMAI dacă în perioadă sunt chitanțe fără factură și fără cotă (creanță la firma
+    neexceptată, vânzare neclasificată la cea exceptată); fără ele, răspunsul n-ar schimba nimic și D394 se generează."""
+    _emite(data="2026-09-05", suma=242)                  # emisă cu „Nu” declarat
+    _exceptata(conn_i2, None)
+    xml, _res = _d394.genereaza(conn_i2, _SCHEMA, Perioada(2026, luna=8))       # luna fără chitanțe: trece
+    with pytest.raises(ValueError) as e:
+        _d394.genereaza(conn_i2, _SCHEMA, Perioada(2026, luna=9))
+    assert (e.value.cod, e.value.ecran) == (_amef.COD_NEDECLARATA, "date_firma")
+
+
 def test_firma_neexceptata_nu_semnaleaza_si_nu_refuza(conn_i2):
     from core import uc_tenants
     _emite(data="2026-09-05", suma=242)                 # încasare de creanță, firmă neexceptată

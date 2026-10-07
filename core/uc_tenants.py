@@ -1446,7 +1446,7 @@ def chitanta_emite(tenant_id, c, ctx):
                 # încasare neclasificată n-ar avea unde intra în D394 (decizia Costin: refuz numit, nu zero).
                 from core import activitati_amef as _amef
                 exceptata, cont_venit = (repo_firma_profil.amef_si_cont_venit(cur, schema)
-                                          or (False, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
+                                          or (None, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
                 import datetime as _dt
                 try:
                     _dc = _dt.date.fromisoformat(str(c.data)[:10])
@@ -1454,6 +1454,8 @@ def chitanta_emite(tenant_id, c, ctx):
                     raise _erori.CerereGresita("Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ."
                                                % (c.data,))
                 try:
+                    if exceptata is None:   # [lotul 07.10 B] neales în Date firmă: se cere acum, o dată
+                        raise _amef.refuz_nedeclarata()
                     if not exceptata and c.cota_tva is not None:
                         raise _amef.refuz_vanzare_neexceptata()
                     if exceptata and c.cota_tva is None:
@@ -1511,8 +1513,10 @@ def chitanta_cota(tenant_id, chitanta_id, c, ctx):
                 raise _erori.Inexistent("chitanță inexistentă")
             _id, data_, suma, factura_id, cota_veche, anulata, op_id, iid, status = r
             exceptata, cont_venit = (repo_firma_profil.amef_si_cont_venit(cur, schema)
-                                          or (False, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
+                                          or (None, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
             try:
+                if exceptata is None:   # [lotul 07.10 B] neales în Date firmă: se cere acum, o dată
+                    raise _amef.refuz_nedeclarata()
                 if not exceptata:
                     raise _amef.refuz_vanzare_neexceptata()
                 if factura_id or anulata or cota_veche is not None:

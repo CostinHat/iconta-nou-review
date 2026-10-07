@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=eb01ea8ebd";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=e9cf26e11b";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
 export async function randeazaSetari(corp, nav) {

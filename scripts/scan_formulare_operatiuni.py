@@ -247,6 +247,36 @@ def bife_nerespectate(js, main, uc):
     return out
 
 
+#: [lotul 07.10 B] câmpuri-cont din RÂNDURILE repetabile (`subcampuri`) care NU se precompletează — cu motivul
+CONTURI_NEPRECOMPLETATE = {
+    "reevaluare-valuta:cont": "contul fiecărui sold în valută diferă de la rând la rând (4111, 401, 5124 …): nu există un caz uzual — "
+                              "sugestia rămâne exemplu (placeholder), câmpul e cerut pe fiecare rând",
+}
+
+
+def motor_conturi_precompletate(js):
+    """Motorul pune sugestia standard ca VALOARE (nu placeholder) pe câmpurile-cont obligatorii? Se citește din codul lui."""
+    return (re.search(r'const CONT_PRECOMPLETAT = \(c\) => c\.tip === "text" && /\^cont\(_\|\$\)/\.test\(c\.nume\) && !!c\.sugestie', js)
+            is not None and re.search(r'\} else if \(CONT_PRECOMPLETAT\(c\)\) \{\n(?:\s*//[^\n]*\n)*\s*input = `<input type="text" id="op-\$\{c\.nume\}"'
+                                      r' class="camp-input" aria-label="\$\{esc\(c\.eticheta\)\}" value="\$\{esc\(c\.sugestie\)\}">`;', js) is not None)
+
+
+def conturi_fara_sugestie(js):
+    """{rută:cheie} — câmp-cont (`cont`, `cont_*`) fără sugestie standard: ar porni gol (DS cap.17 corectat: contul vine
+    precompletat vizibil cu sugestia standard, modificabil, golul refuzat). Rândurile repetabile, separat (`CONTURI_NEPRECOMPLETATE`)."""
+    out = set()
+    starts = list(re.finditer(r'cheie: "([^"]+)", titlu: "([^"]+)", ruta: "([^"]+)"', js))
+    for k, m in enumerate(starts):
+        corp = js[m.end():(starts[k + 1].start() if k + 1 < len(starts) else len(js))]
+        principal, _, sub = corp.partition("subcampuri:")
+        for c in re.finditer(r'C\("(cont(?:_[a-z_]+)?)", "[^"]*", "text"(, \{[^\n]*?\})?\)', principal):
+            if "sugestie:" not in (c.group(2) or "") or "optional: true" in (c.group(2) or ""):
+                out.add("%s:%s" % (m.group(3), c.group(1)))
+        for c in re.finditer(r'C\("(cont(?:_[a-z_]+)?)", "[^"]*", "text"', sub):
+            out.add("%s:%s" % (m.group(3), c.group(1)))
+    return out
+
+
 def selecturi_preselectate(js):
     """Un select OBLIGATORIU fără „— alege —” vine cu prima opțiune aleasă — o preselecție tacită (DS cap.17)."""
     return {"%s:%s" % (ruta, c["cheie"]) for _k, ruta, cs in formulare(js) for c in cs
@@ -265,6 +295,10 @@ def masoara():
         out.append((k, "câmp opțional: golul lui = implicitul serverului"))
     for r, b, ce in bife_nerespectate(js, main, uc):
         out.append(("%s:%s" % (r, b), ce))
+    if not motor_conturi_precompletate(js):
+        out.append(("motor:CONT_PRECOMPLETAT", "motorul nu mai pune sugestia standard ca valoare pe câmpurile-cont (DS cap.17 corectat)"))
+    for k in sorted(conturi_fara_sugestie(js) - set(CONTURI_NEPRECOMPLETATE)):
+        out.append((k, "câmp-cont fără sugestie standard precompletată (sau opțional)"))
     for k in sorted(selecturi_preselectate(js)):
         out.append((k, "select obligatoriu cu prima opțiune aleasă de ecran (preselecție tacită)"))
     return out

@@ -17715,3 +17715,61 @@ interzisă doar pentru faptul situațional pe care aplicația nu-l poate ști. D
   `/sitemap-index.xml` (`/sitemap-pagini.xml` + `/sitemap-ghiduri-N.xml`, câte 1.000), indicat de `robots.txt`; `/sitemap.xml` rămâne
   valid. Adresa nouă dă Search Console o resursă pe care n-a văzut-o, deci o preluare nouă, și numărătoarea pe bucăți.
 - **Limita:** jurnalul nginx nu înregistrează gazda (`$host`); schimbarea formatului cere sudo cu parolă (nu am).
+
+## 07.10.2026 — Lotul 07.10 B, frontul A: regula preselecției corectată (PIVOT peste „Ecranele scrise de mână” și „Cele 33 de chei”)
+
+**PIVOT, explicit.** Supersedează, pe partea de preselecție, intrările din 07.10.2026 „Ecranele scrise de mână: regula DS cap.17
+extinsă, cu clasificarea celor 82” și „Cele 33 de chei”: acolo, orice select cu fapt fiscal pornea cu „— alege —”; conflictul cu
+DS cap.28 pct.2 (destinația TVA pe linie) rămăsese deschis. **Final:** regula lui Costin, verbatim (comanda lotului 07.10 B, A.1):
+*„Preselecția e PERMISĂ când valoarea (a) e cazul uzual sau se deduce din date (țara din CUI-ul partenerului, regimul din profilul
+firmei, moneda RON), (b) se vede pe ecran înainte de confirmare și (c) se poate schimba. Preselecția e INTERZISĂ pentru un fapt care
+depinde de situația concretă și pe care aplicația nu-l poate ști: Da/Nu situaționale (imputabil, faliment, asigurat, certificat de
+amânare …), categoria sau temeiul dintr-o declarație, tipul imobilului, valabilitatea, opțiuni de regim alese de contribuabil.
+Acolo rămâne „— alege —”.”* Norma trăiește în DS cap.17 (v2.79) și în `scripts/scan_selecturi_ecrane.py` (clasa `PRESELECTAT_PERMIS`,
+cu criteriile (a)–(c) scrise în motiv), verificată de `FAPT_FISCAL_NECERUT`.
+
+**Aplicarea (executor):**
+1. **Preselectate vizibil (PRESELECTAT_PERMIS, 7):** emiterea — moneda RON, țara DEDUSĂ din CUI (`taraDinCui`: prefixul statului,
+   CUI numeric -> RO), operațiunea normală, factura; moneda facturii recurente RON; destinația TVA pe linie „taxabilă” (DS cap.28
+   pct.2 — acum în acord cu cap.17); D318 „cerere inițială” (ca bifa „Rectificativă” nebifată de la celelalte 17 declarații).
+2. **Conturile din Operațiuni** (`cont`, `cont_*`, 19 câmpuri): vin precompletate VIZIBIL cu sugestia standard, modificabile; golite
+   se refuză („Câmp obligatoriu”). Excepție scrisă: contul pe rândurile reevaluării valutare (diferă de la rând la rând — nu există
+   un caz uzual).
+3. **Rămân „— alege —” (FISCAL, 55):** toate categoriile / temeiurile / tipurile din declarații, Da/Nu situaționale, opțiunile de
+   regim — fiecare cu motivul în `CLASIFICARE`. eTransport scopul bunului (categorie în notificarea către ANAF) rămâne de ales.
+4. **Aceeași clasă, găsită măsurând (nu era în listă):**
+   - **13 căsuțe de bifat** care răspundeau „Nu” în locul omului devin `selectDaNu` (Da/Nu cu „— alege —”, cerut de handler):
+     funcția de bază, declarația pentru copii, scutirea de contribuția minimă (salariat nou); CM — certificat de continuare,
+     spitalizare, program național; TVA la încasare la furnizor (factura primită); acordul D177; e_int D398; venitul din RIP,
+     cota forfetară, CAS/CASS străinătate (D212). Celelalte 31 de căsuțe sunt clasificate (`CASUTE`): rectificativa = cazul uzual,
+     setări de acces, selecții de lucru, opțiunea D600 (fără ea generarea se refuză).
+   - **D204 `forma_org`** pleca „1” fără câmp pe ecran. Structura ANAF D204 pct.24 „Listă de valori (1,2)”: 1 asociere fără
+     personalitate juridică / 2 entitate supusă regimului transparenței fiscale; probat pe validatorul instalat: 1 valid, 2 valid,
+     3 „valoarea '3' nu se afla in lista”. Acum select cerut. Categoria D204 nu mai vine „1”.
+   - **D208 `mod_transfer`** pleca „1” (vânzare-cumpărare) fără câmp: o moștenire sau o donație ieșea declarată vânzare. Structura
+     ANAF D208 v1.0.0 (19.02.2024) poz.22: 1 vânzare-cumpărare / 2 moștenire / 3 donație / 4 altă modalitate (poz.23:
+     `alt_mod_transfer` obligatoriu cu 4). Acum select cerut + explicația la 4.
+   - **D216 „Cotă %” venea 0.3** în câmpul cotei de deținere — era cota IMPOZITULUI pusă în câmpul greșit (broșura ANAF D216, rd.3:
+     „Cota de deţinere — se completează cota-parte deţinută din imobil”); cu ea, baza ieșea de ~333 de ori mai mică. Acum gol, cerut.
+   - **D318 moneda venea „EUR”** (ecran și server). HG 1/2016 pct.73 alin.(6) lit.e-f: sumele „exprimate în moneda statului membru
+     de rambursare”. Acum cerută; liniile o preiau.
+   - **D398 moneda** e FIXĂ, nu alegere: CF art.314 alin.(10), art.315 alin.(12), art.315^2 alin.(22) — „Declarația specială de TVA
+     se întocmește în euro.” Câmp readonly, emis `EUR` din constantă.
+5. **Input-uri precompletate permise (`INPUTURI`, 7):** D603 țara RO, lunile D318 (cererea anuală), UM „buc”, conturile NIR 401/446,
+   D398 EUR (fixă). eTransport UM „H87” și D221 „TITULAR” vin din starea formularului (uzuale, vizibile, schimbabile).
+
+**Alternativă respinsă:** păstrarea „— alege —” peste tot (regula de dimineață) — Costin a anulat-o explicit. **Limită:** scanerele
+sunt lexicale (`<select`, `<input`, `selectDaNu(`); un control construit altfel nu se vede.
+
+## 07.10.2026 — Lotul 07.10 B, A.3: activitate_exceptata_amef și inreg_art317 fără implicit în schemă
+
+**Comanda:** „cont_venit_implicit 707 rămâne. Cele două fapte Da/Nu, pe firmele unde nu le-a ales nimeni, se cer o dată la prima
+folosire relevantă, ca seria și metoda de stoc; mecanismul îl alegi tu.”
+**Mecanismul ales:** coloanele devin nule-permise, fără implicit (`core/migrare_fapte_date_firma.py`, mirror în template). NULL =
+neales. Date firmă arată „— alege —” și salvarea îl lasă nul (nu „Nu”). Refuzul numit, cu buton spre Date firmă, vine la prima
+folosire: **AMEF** — prima chitanță fără factură (și clasificarea cotei unei chitanțe); D394 numai când în perioadă sunt chitanțe
+fără factură și fără cotă (atunci răspunsul schimbă declarația). **art.317** — D301 (pers_inreg 1/2).
+**Datele existente:** un `false` stocat nu se deosebește de implicitul vechi (ecranul venea cu „Nu” ales și îl salva) -> devine
+NULL; rămân orice `true` și `inreg_art317=false` cu intrare în `firma_profil_jurnal` (schimbare consemnată = alegere).
+**Alternativă respinsă:** o coloană „ales_la” separată (dublă sursă pentru același fapt). **Limită:** firmele care aleseseră
+explicit „Nu” la AMEF înainte, fără jurnal, sunt întrebate încă o dată — o singură dată.
