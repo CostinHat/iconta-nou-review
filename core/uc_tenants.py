@@ -5643,12 +5643,19 @@ def reges_poll(tenant_id, ctx):
     m_rs = _re.search(r"ReferintaSalariat>?\s*<Id>([0-9a-f-]{36})", rasp)
     m_rc = _re.search(r"ReferintaContract>?\s*<Id>([0-9a-f-]{36})", rasp)
     # ── FAZA 2: tranzacție scurtă, necondiționat ────────────────────────────────────────
+    salvat = False
     with db.get_conn() as conn:
         if m_mid:
             with conn.cursor() as cur:
                 repo_salariati.scrie_raspunsul_reges(cur, rasp[:4000], m_rs.group(1) if m_rs else None, m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id)
+                salvat = cur.rowcount > 0
             conn.commit()
-    return {"http_status": status, "raspuns": rasp[:1000]}
+    # [C5 clasa, comanda Costin 07.10.2026] Ecranul anunța „niciun răspuns nou” după ce mesajul fusese CONSUMAT din coada REGES și
+    # scris: citea `mesaje`/`raspunsuri`, chei pe care ruta nu le-a întors niciodată. Răspunsul spune acum ce s-a întâmplat: dacă
+    # a venit ceva, pentru ce mesaj, cu ce referințe și dacă s-a găsit mesajul nostru căruia să i se scrie (DS cap.27).
+    return {"http_status": status, "raspuns": rasp[:1000], "primit": bool(rasp.strip()),
+            "message_id": m_mid.group(1) if m_mid else None, "salvat": salvat,
+            "referinta_salariat": m_rs.group(1) if m_rs else None, "referinta_contract": m_rc.group(1) if m_rc else None}
 
 
 

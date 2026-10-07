@@ -241,7 +241,7 @@ async function trimiteRaspuns(corp, nav, id, fir) {
   btn.disabled = true; btn.textContent = "Se trimite…";
   try {
     const r = await api.post(`/raportari/${id}/mesaj`, { text });
-    const mid = r.mesaj_id ?? r.id ?? (r.mesaj && r.mesaj.id);
+    const mid = r.mesaj_id;   // [C5 clasa, 07.10.2026] ruta întoarce numai `mesaj_id`; alternativele `id` și `mesaj.id` nu existau (citiri moarte)
     if (fisier && mid != null) {
       const fd = new FormData();
       fd.append("fisier", fisier);

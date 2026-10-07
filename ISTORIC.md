@@ -1697,3 +1697,15 @@ Decizia și temeiurile: DECIZII 07.10.2026. Gărzile: GARZI 07.10.2026.
 - **C4** mijlocul fix se alege din registrul activelor; **C11** bilanțul S1005/S1003 trece prin coadă (pregătit → validat → depus),
   cu termenul din Legea 82/1991; **fila veche** se reîncarcă singură la autentificare când nu e niciun formular început.
 - Datorie nouă: 29 de tipuri fără termen de depunere sursat (coada le pune perioada de raportare).
+
+## 07.10.2026 — C5 și C6 reparate, cu clasa (comanda Costin)
+
+Decizia: DECIZII 07.10.2026 („C5 și C6”). Gărzile: GARZI 07.10.2026 („C5 și C6”).
+
+- **C5** Operațiuni › Chirii / comodat: după nota scrisă, ecranul spunea „Calcul (nu s-a generat nicio notă): inregistrari: 31”; acum
+  „Notă generată (ciornă) #33”. **Aceeași clasă:** REGES › Răspunsuri spunea „niciun răspuns nou” după un mesaj consumat din coada
+  REGES și scris; acum spune ce a venit, pentru ce mesaj, cu ce referințe și dacă s-a păstrat. Două citiri moarte scoase.
+- **C6** Export extracomunitar: „Dovada export (DVE)” era text („acceptă doar da sau nu”); acum DA/NU. **Aceeași clasă:** 8 bife pe care
+  serverul le citea și formularul nu le avea (un provizion pe o creanță în faliment ieșea „deductibil 0%”, acum 100%), 3 cu „Da”
+  preselectat, una opțională — toate cerute explicit, cu „— alege —”. `puritate` (aur) = număr.
+- Rămân 33 de chei opționale fără câmp în formularele Operațiunilor — ratchet; care intră în ecran e decizie de produs.

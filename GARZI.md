@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**713 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**715 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 678
+### `core/` — 680
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9366,6 +9366,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
 - `core/test_ramas.py` — GARDĂ anti-vacuu pe lista derivată a ce a rămas de făcut.
 - `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele
+- `core/test_raspuns_citit.py` — GARD — ecranul nu anunță rezultatul unei scrieri după o cheie pe care ruta n-o întoarce (comanda Costin 07.10.2026, C5).
 - `core/test_reaprindere.py` — GARD: o restanță al cărei DECLANȘATOR s-a produs nu poate rămâne nereluată.
 - `core/test_reconciliere.py` — —
 - `core/test_reconciliere_d100_wiring.py` — core/test_reconciliere_d100_wiring.py - GARD end-to-end pentru reconcilierea D100 pe semafor
@@ -9375,6 +9376,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_refuz_generator_422.py` — GARD (D6, 20.08.2026): un generator care REFUZĂ motivat nu are voie să ajungă la contabil ca 500 gol.
 - `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
 - `core/test_refuzuri.py` — CLICHET: un refuz dintr-un modul care CITEAZĂ legea nu mai poate apărea fără temeiul lui.
+- `core/test_reges_poll_raspuns.py` — GARD — „Răspunsuri REGES” spune ce s-a întâmplat la citirea cozii REGES (comanda Costin 07.10.2026, clasa C5).
 - `core/test_regim_peste_perioada_inchisa.py` — GARD [R46, 26.08.2026]: un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă.
 - `core/test_register_cabinet_cui.py` — GARD register_cabinet_cui: la inregistrarea self-service, CUI-ul validat (cel care a trecut
 - `core/test_registre_art321.py` — GARD: cele doua registre ale art. 321 alin. (4) CF — ce le tine sa nu se strice tacut.
@@ -10415,8 +10417,8 @@ Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu c
 | C2 declarațiile cu formular manual nu ajung în coadă din ecran (pas3 fără `manual`/`obligatii`) | 11. Interfață | DATORIE — `test_datorie_coada_din_ecran_poarta_formularul` | D307 pe ecran: DUK „fără erori” → „D307 nu are ce genera” | — | [citare-istorica: reparat 07.10.2026, datoria înlocuită de testul permanent — GARZI 07.10.2026]
 | C3 D112 part-time S2 2026: aplicația 4.125 (4.325 − 200), validatorul instalat 3.750 (4.050 − 300) → SP1B4_1; ecranul „nu blochează”, coada blochează | 3. Calcul fiscal | DECIZIE (raport §6) | Panificatie 09/2026, asigurat 4 | care prag e în vigoare pe S2 2026 (temei) și dacă o atenționare DUK oprește coada |
 | C4 „ID mijloc fix” fără listă (reevaluare/casare) | 11. Interfață | DECIZIE de produs | refuzul cere „alege-l din listă”, lista nu există | forma câmpului (select din registru) |
-| C5 nota scrisă, ecranul spune „nicio notă” (comodat/chirii) | 11. Interfață | DATORIE — `test_datorie_operatiuni_ecran_recunoaste_mai_multe_note` | nota #20 8038=891 | — |
-| C6 „Dovadă” text liber vs `bifa` da/nu | 11. Interfață | DATORIE — `test_datorie_bifele_serverului_sunt_selecturi_in_ecran` | refuz „acceptă doar da sau nu” | — |
+| C5 nota scrisă, ecranul spune „nicio notă” (comodat/chirii) | 11. Interfață | DATORIE — `test_datorie_operatiuni_ecran_recunoaste_mai_multe_note` | nota #20 8038=891 | — | [citare-istorica: reparat 07.10.2026 cu clasa, datoria înlocuită de core/test_raspuns_citit.py — GARZI 07.10.2026 «C5 și C6»]
+| C6 „Dovadă” text liber vs `bifa` da/nu | 11. Interfață | DATORIE — `test_datorie_bifele_serverului_sunt_selecturi_in_ecran` | refuz „acceptă doar da sau nu” | — | [citare-istorica: reparat 07.10.2026 cu clasa, datoria înlocuită de test_bifele_serverului_se_cer_explicit_da_nu — GARZI 07.10.2026 «C5 și C6»]
 | C7 cheia `agricultor` dublată: „Achiziție de la agricultor” deschide vânzarea | 11. Interfață / 3. Calcul | DATORIE — `test_datorie_operatiuni_chei_unice` | nota 4111=704 în loc de achiziție | — | [citare-istorica: reparat 07.10.2026, datoria înlocuită de testul permanent — GARZI 07.10.2026]
 | C8 marjă turism negativă: 4111 = costuri (2.000) ≠ încasat (1.000) | 3. Calcul fiscal | DESCHIS — verificat pe bază | Agentie Turism Marja, nota #5 | o probă pe schemă efemeră (calculul stă în use-case, cu baza) |
 | C9 recipisa declarațiilor nu se întoarce | 10. Ieșiri externe | [EXTERN] — blocantul SPVWS2 (`ARHITECTURA_SPV.md`) | depunere = index SPV tastat | certificatul calificat server-side |
@@ -10459,3 +10461,22 @@ Rămân deschise din parcurgere: C5, C6 (xfail), C8, C10, C12, C14, C15, C16 (GA
 Inventarului A în commitul care îl redenumește — `test_fisiere_coloana_completa` citește discul (numele vechi = inexistent), iar
 `test_verificarile_A_nu_sunt_in_urma_codului` citește HEAD (numele nou = încă absent). R17 (D101) e ancorat pe proba DUK pe 2026
 (`test_imca_d101_duk_valid`), cu testul de termen redenumit numit în bump; poate fi adăugat în coloană din commitul următor.
+
+## 07.10.2026 — C5 și C6, cu generalizarea pe clasă (comanda Costin)
+
+Decizia: DECIZII 07.10.2026 („C5 și C6”). Categoria **11. Interfață** (ecranul spune ce s-a întâmplat; ecranul cere ce citește
+serverul), cu efect în **3. Calcul fiscal** (un DA/NU absent din ecran = „nu” tăcut pe server: provizionul pe o creanță în faliment
+ieșea „deductibil 0%” în loc de 100%).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| ecranul citește din răspunsul unei scrieri doar ce ruta produce | `core/test_raspuns_citit.py` (3) | o cheie citită pe care ruta (urmărită în `core/`) n-o produce — „nicio notă” cu nota scrisă (C5), „niciun răspuns nou” cu mesajul REGES consumat; o rută dinamică nedeclarată | cititorul vechi `r.inregistrare_id` -> roșu; REGES pe `mesaje`/`raspunsuri` -> roșu | supra-aproximează producătorul (orice ramură); GET nu e în perimetru (cheile din rânduri SQL nu se văd: 5 fals-pozitive din 53); numai `const X = await api…` |
+| răspunsul „Răspunsuri REGES” | `core/test_reges_poll_raspuns.py` (4) | `primit` / `salvat` lipsă sau mincinos (un mesaj străin dat drept păstrat) | `primit` scos -> roșu; `salvat = True` -> roșu | REGES și conexiunea înlocuite; SQL-ul de scriere neschimbat |
+| un DA/NU al serverului se cere explicit | `core/test_formulare_operatiuni_campuri.py::test_bifele_serverului_se_cer_explicit_da_nu` + calibrare (3) | o bifă citită prin `bifa` și: absentă din formular, câmp text, fără „— alege —” obligatoriu, opțiuni pe care `bifa` le refuză | `dovada_export` text -> roșu; `faliment` scos -> roșu; `DN` fără `neales` -> roșu | numai formularele Operațiunilor (celelalte ecrane trimit bife din butoane, cu boolean) |
+| câmp text citit ca număr | `…::test_campul_text_nu_e_citit_ca_numar` | un câmp text al cărui nume codul îl citește numeric (`puritate`) | `puritate` text -> roșu | după NUME |
+| cheile opționale fără câmp nu cresc | `…::test_cheile_optionale_fara_camp_nu_cresc` (ratchet în ambele sensuri, 33) | o cheie nouă citită de rută fără câmp în formular; o listă care nu mai e adevărată | `zile_depasire` scos -> roșu | care din cele 33 intră în ecran = DECIZIE |
+
+**Datorii închise:** C5, C6 (testele permanente de mai sus le înlocuiesc). **Măsurat pe drum (aceeași clasă, reparate):** REGES ›
+Răspunsuri; 8 bife absente (certificat_amanare, garantata, afiliata, faliment, degradare_dovedita_distrusa, asigurat_sau_distrus,
+in_lei_cu_clauza, durata_sub_1_an — ultima ratată de prima mea căutare, `[a-z_]` fără cifre, prinsă de gardă); 3 preselectate;
+`destinatie_cd` opțional; `puritate`; 2 citiri moarte. Rămân deschise din parcurgere: C8, C10, C12, C14, C15, C16 (GARZI 06.10.2026).

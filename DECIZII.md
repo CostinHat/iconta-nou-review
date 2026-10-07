@@ -17491,3 +17491,43 @@ coadă, cu drepturile declarațiilor (pregătește / validează / depune) și cu
 probele DUK pe an=2026 (test_imca_d101_duk_valid) vor pica”. Semnalul a venit la instalarea validatorului D101 publicat (C3, clasa
 validatoarelor în urmă): martie = „Err R17 Scadenta platii”, iunie = valid. **Final:** 25 iunie anul următor, temei OUG 8/2026 art.6
 pct.12 -> CF art.42 alin.(1) („până la data de 25 iunie inclusiv a anului următor”), același termen ca `core/scadente.py`.
+
+## 07.10.2026 — C5 și C6, cu generalizarea pe clasă (comanda Costin)
+
+**Comanda, verbatim:** „repară C5 și C6, cu generalizarea pe clasă”
+
+**Clasele, așa cum au fost măsurate înainte de cod** (firul în TESTE, „În lucru acum”):
+- **C5 — ecranul anunță rezultatul unei scrieri după o cheie pe care ruta n-o întoarce.** 81 de apeluri de scriere cu răspunsul citit
+  (toate ecranele; rutele dinamice din Operațiuni desfăcute pe cele 34). Defecte: nota-chirie („nicio notă” cu ciorna scrisă) și
+  REGES › Răspunsuri („niciun răspuns nou” după ce mesajul a fost consumat din coada REGES și scris la salariat). Citiri moarte (fără
+  efect fals, dar cod care nu poate fi adevărat): `r.referinta` la trimiterea REGES, `r.id` / `r.mesaj` la mesajul de raportare.
+- **C6 — un DA/NU pe care serverul îl citește prin `bifa` nu e cerut ca DA/NU explicit.** Patru forme: câmp text (dovada_export,
+  dovada_transport — instanța C6); bifă absentă din formular, deci „nu” tăcut pe server (8: certificat_amanare, garantata, afiliata,
+  faliment, degradare_dovedita_distrusa, asigurat_sau_distrus, in_lei_cu_clauza, durata_sub_1_an — ultima ratată de prima
+  căutare, `[a-z_]` fără cifre, și prinsă de gardă); select cu „Da” preselectat (imputabil,
+  furnizor_platitor_tva, agricultor_in_registru); select opțional cu „-” (destinatie_cd). Vecinul de tip, aceeași rădăcină (tipul
+  câmpului ≠ tipul citit): `puritate`, câmp text citit ca număr.
+
+**Temeiul de produs (nu fiscal):** DS cap.17 (DEFAULT_FISCAL_TACIT) — un fapt fiscal decisiv „se cere EXPLICIT … fără preselecție
+tacită”; DS cap.27 — „un act cu efect asupra unei entități se încheie cu o confirmare vizibilă care numește entitatea și consecința”.
+Regulile fiscale aplicate de server (CF art.26, art.294 alin.(1) lit.a și alin.(2) lit.a, art.304, art.326 alin.(4), OMFP 1802/2014
+pct.94) NU se schimbă — se schimbă faptul că omul le poate da datele.
+
+**INTERPRETARE (de reconfirmat):** pe server, `bifa(corp, x, False)` rămâne cu implicitul pentru apelanții API. Ecranul le cere acum pe
+toate explicit, iar garda o face imposibil de pierdut în ecran. Alternativa respinsă: implicitul scos și pe server — schimbă contractul
+API pentru integratori fără ca vreunul să fi fost întrebat (decizie de produs, nu de corectitudine a ecranului).
+
+**Limita, declarată:** 33 de chei opționale citite de rutele Operațiunilor (`corp.get`) nu au câmp în formular (unele intenționat, calea
+API — vezi EXCEPTII în `core/test_formulare_operatiuni_campuri.py`). Nu sunt DA/NU și nu toate sunt fapte fiscale; un ratchet oprește
+creșterea, iar care dintre ele intră în ecran e decizie de produs (raportul turei, §6).
+
+**Consecințe (executor, 07.10.2026):**
+1. **C5.** Operațiuni: ecranul citește notele scrise din `inregistrari` SAU `inregistrare_id` („Notă generată (ciornă) #33”, sau „N note
+   generate (ciorne #…)”); „nicio notă” numai când ruta n-a scris. REGES › Răspunsuri: ruta întoarce `primit`, `message_id`, referințele
+   și `salvat` (UPDATE-ul a atins mesajul firmei); ecranul spune ce a venit — „niciun răspuns nou” numai la coadă goală.
+2. **C6.** Constructorul `DN(...)` în `operatiuni_ecran.js` = select Da/Nu cu „— alege —”; 13 câmpuri DA/NU îl folosesc. Câmpurile noi
+   stau la finalul formularului rutei lor, condiționate de ramura pe care serverul le citește (provizion › creanță, inventariere ›
+   minus, obiect de inventar › achiziție, LIC › bunuri). `zile_depasire` intră cu cele trei bife ale creanței: aceeași funcție de
+   deductibilitate (CF art.26), fără ea „faliment = Da” era singura cale spre o cifră corectă. `puritate` = număr.
+3. **Etichetele** spun faptul, nu norma; ajutorul repetă numai temeiul deja scris în modulul de domeniu (art.26, art.294, art.304,
+   art.326 alin.(4), OMFP 1802/2014 pct.94) — nicio regulă fiscală nouă.

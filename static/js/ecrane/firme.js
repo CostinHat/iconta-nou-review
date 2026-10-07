@@ -8,7 +8,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=4275ef442f";  /* cm_flux_v1 *
 import { randeazaFacturi } from "./facturi_ecran.js?v=47b6988b99";
 import { ecranRip } from "./rip_ecran.js?v=68e0430034";
 import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=be64ac4f0f";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=107db25bff";
 import { ecranEtransport } from "./etransport_ecran.js?v=49b829a378";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=4400876d01";  // [decl_firma_v1]
@@ -1355,10 +1355,19 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelector("#sp-reges-poll").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/reges-poll`, {});  /* [drepturi_rol 04.10.2026] ruta e POST (consumă un mesaj din coada REGES și îi scrie răspunsul); GET primea 405 la fiecare apăsare */
-        const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
+        // [C5 clasa, comanda Costin 07.10.2026] Citea `mesaje`/`raspunsuri`, pe care ruta nu le întoarce -> „niciun răspuns nou” și
+        // după un mesaj consumat din coada REGES (ireversibil). Acum spune ce a venit, pentru ce mesaj și dacă s-a păstrat (DS cap.27).
+        const ce = !r || !r.primit ? "niciun răspuns nou"
+          : r.message_id
+          ? `Răspuns primit pentru mesajul ${esc(r.message_id)}`
+            + (r.referinta_salariat ? ` \u00b7 referința salariatului ${esc(r.referinta_salariat)}` : "")
+            + (r.referinta_contract ? ` \u00b7 referința contractului ${esc(r.referinta_contract)}` : "")
+            + (r.salvat ? " \u00b7 păstrat în evidența mesajelor REGES ale firmei."
+                        : " \u00b7 mesajul nu e unul trimis de firma aceasta — nu s-a păstrat.")
+          : `REGES a răspuns fără identificator de mesaj (nu s-a păstrat): ${esc(String(r.raspuns).slice(0, 300))}`;
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
-          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data ? dataRo(m2.data) : ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || "răspuns fără detalii"}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
+          <div class="pf-frand-sub">${ce}</div></div>`;
       } catch (e) { arataMesaj(zonaReges, e.mesaj || "eroare", "eroare"); }
     });
     corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {
@@ -1708,8 +1717,9 @@ async function ecranSalariati(corp, nav, t) {
         const btn = zonaReges.querySelector("#rg-trimite");
         btn.disabled = true; btn.textContent = "Se trimite\u2026";
         try {
-          const r = await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: sid, adresa });
-          zonaReges.innerHTML = `<p class="pf-intro">Trimis in REGES${r.referinta ? " \u00b7 ref " + r.referinta : ""}. Verifica R\u0103spunsuri REGES.</p>`;
+          await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: sid, adresa });
+          // [C5 clasa, 07.10.2026] `r.referinta` nu vine niciodată din rută (citire moartă, scoasă); referința sosește la Răspunsuri REGES.
+          zonaReges.innerHTML = `<p class="pf-intro">Trimis \u00een REGES. Referința salariatului sosește la R\u0103spunsuri REGES.</p>`;
         } catch (e) { btn.disabled = false; btn.textContent = "Trimite \u00een REGES"; rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "eroare")}</span>`; }
       });
     }));

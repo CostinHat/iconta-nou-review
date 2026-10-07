@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: C1/C2/C7 reparate, deciziile C3/C4/C11 + reîncărcarea la autentificare executate; nicio decizie cerută**
+# PREDARE LANȚ — **07.10.2026: C5 și C6 reparate cu clasa (după C1/C2/C7 + C3/C4/C11); o decizie cerută (cele 33 de chei fără câmp)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (C1/C2/C7 + C3/C4/C11 + reîncărcarea la autentificare), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `20d5c0cb` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-07** (C5 și C6 cu clasa), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `815619dd` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -36,6 +36,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 | **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate [cifră corectată în lotul 07.10: 62] | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
 | **ciorna facturii, a patra pierdere + parcurgerea g11/g08/g09** (comanda Costin 06.10 seara): cauza = fila încărcată pe codul vechi, iar „Versiune nouă” își lua referința la autentificare (acum: la încărcare); prețul și articolul pe care nu le-a ales omul (emitere, recurentă, stoc, rețetă, transfer, reclasificare, fișa de magazie; prețul lipsă refuzat de server); 67 de puncte parcurse, 15 constatări (5 datorii xfail strict) | `de36b2a1` · `d116ec9f` | `iconta_ciorna_factura.zip` · `iconta_parcurgere_g08_g09_g11.zip` |
 | **C1/C2/C7 + C3/C4/C11 + reîncărcarea** (comanda Costin 07.10, răspunsul la §6): validatoarele DUK la zi (D112 J27.0.6 + D100/D101/D710/B230; manifest + gardă de 30 de zile); atenționarea DUK intră în coadă cu confirmarea scrisă, eroarea oprește; D390 și formularele manuale în coadă; „Achiziție de la agricultor” = achiziția; mijlocul fix din listă; bilanțul prin coadă; fila veche se reîncarcă la autentificare fără formular început | commitul de închidere | `iconta_c1_c2_c7.zip` |
+| **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
@@ -50,10 +51,13 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI 07.10.2026).
-  **Rămân deschise** (fără comandă nu se iau la rând): C5 „nicio notă” când nota există și C6 „Dovadă” text vs da/nu (xfail strict);
-  C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
+- **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
+  07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
+- **DECIZIE CERUTĂ (07.10, C6):** 33 de chei opționale (`corp.get`) citite de rutele Operațiunilor nu au câmp în formular — serverul pune
+  implicitul. Lista exactă: `core/test_formulare_operatiuni_campuri.py::CHEI_OPTIONALE_FARA_CAMP_07_10` (ratchet). Unele sunt calea API
+  intenționat; altele sunt fapte (ex. `nota-sponsorizare:beneficiar_in_registru`, `vanzare-aur-investitii:optiune_taxare`). Care intră
+  în ecran e alegerea lui Costin.
 - **Termenele de depunere nesursate (07.10, datorie nouă)**: 29 de tipuri n-au termen în `core/scadente.py`; coada le pune perioada
   de raportare („anul 2025”), nu un termen ghicit. Ratchet `test_niciun_tip_nou_fara_termen_de_depunere` + xfail strict
   `test_datorie_toate_tipurile_au_termen_sursat` (lista `_FARA_TERMEN_07_10`). Se închide tip cu tip, cu temeiul citat.
@@ -107,6 +111,12 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
 
+- **(07.10, C6) Fiecare DA/NU din Operațiuni e obligatoriu și NEpreselectat** (`DN(...)`, „— alege —”): o probă care trimite un formular
+  de operațiune alege explicit Da/Nu (provizion › creanță cere și `zile_depasire`; export, import, perisabilități, decontare, LIC ›
+  bunuri, inventariere › minus, obiect de inventar › achiziție au bife noi).
+- **(07.10, C5) `POST reges-poll` întoarce `primit`, `message_id`, `salvat`, referințele** (pe lângă `http_status`, `raspuns`).
+- **(07.10, C5) O scriere al cărei răspuns e citit în ecran trece prin `core/test_raspuns_citit.py`**: o cheie citită pe care ruta n-o
+  produce pică; o cale dinamică nouă (`${…}` care nu e parametru) se declară în `DINAMICE`.
 - **(07.10) O eroare DUK nu intră în coadă, nici cu `motiv_trecere`** (422 `ERORI_DUK`); o atenționare cere `motiv_trecere` =
   confirmarea scrisă (422 `ATENTIONARI_NECONFIRMATE` fără ea), păstrată în `payload.confirmare_atentionari` {text, de_id, la,
   amprenta}; aprobarea/depunerea o recunosc cât timp XML-ul e același. `duk.severitate` decide (A: = atenționare; altfel eroare).

@@ -45,6 +45,34 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **C5 + C6 cu generalizarea pe clasă (comanda Costin 07.10.2026: „repară C5 și C6, cu generalizarea pe clasă”)** — verbatim în
+  DECIZII 07.10.2026 („C5 și C6”). Poarta completă o singură dată, la publicare.
+  - ultim: măsurarea claselor. C5 („ecranul anunță rezultatul unei scrieri după o cheie pe care ruta n-o întoarce”): 81 de apeluri de
+    scriere cu răspuns citit; 2 defecte (Operațiuni › nota-chirie „nicio notă” cu nota scrisă; REGES › Răspunsuri „niciun răspuns
+    nou” cu mesajul consumat și scris) + 2 citiri moarte (`r.referinta` la trimiterea REGES, `r.id`/`r.mesaj` la raportări).
+    C6 („un DA/NU citit de server prin `bifa` nu e cerut ca DA/NU explicit în ecran”): 2 câmpuri text (dovada_export, dovada_transport),
+    8 bife absente din formular (certificat_amanare, garantata, afiliata, faliment, degradare_dovedita_distrusa, asigurat_sau_distrus,
+    in_lei_cu_clauza, durata_sub_1_an — serverul pune tăcut „nu”), 3 selecturi cu „Da” preselectat (imputabil, furnizor_platitor_tva,
+    agricultor_in_registru), 1 opțional cu „-” (destinatie_cd); vecinul de tip: `puritate` text, citit ca număr.
+  - urmator: — (livrat; închiderea pe `main`: registre, artefacte, poarta completă o dată, four-way). STARE = ÎNCHIS
+  - livrat (pașii 1–5): C5 + REGES + citirile moarte; C6 (13 DA/NU prin `DN`, 8 bife adăugate, `zile_depasire`, `puritate`);
+    gărzile (`test_raspuns_citit`, `test_reges_poll_raspuns`, garda bifelor + vecinul de tip + ratchet 33); 10 mutații roșii; proba
+    înainte/după (provizion pe faliment: „deductibil 0%” -> „deductibil 100%”); uneltele vizuale.
+  - pasi:
+    1. C5: `operatiuni_ecran.js` citește notele scrise din `inregistrare_id` SAU `inregistrari` (una sau mai multe ciorne, numite);
+       „nicio notă” numai când ruta n-a scris niciuna.
+    2. C5 clasa: REGES poll — `uc_tenants.reges_poll` întoarce `primit` + referințele deja extrase; `firme.js` arată răspunsul primit
+       (sau textul brut, escapat, când n-are identificator), „niciun răspuns nou” numai la răspuns gol; citirile moarte scoase
+       (`r.referinta`, `r.id`/`r.mesaj`).
+    3. C6: `operatiuni_ecran.js` — dovada_export / dovada_transport = select Da/Nu; cele 7 bife absente adăugate la finalul formularului
+       rutei lor (+ `zile_depasire` lângă cele trei ale creanței, aceeași funcție de deductibilitate); toate bifele cu „— alege —”, fără
+       preselecție (DS cap.17); `puritate` = număr.
+    4. Gărzi: `core/test_raspuns_citit.py` (clasa C5, cu extinderea rutelor dinamice; rută nerezolvată = roșu); garda C6 în
+       `core/test_formulare_operatiuni_campuri.py` (bifa -> select Da/Nu obligatoriu, fără preselecție; câmp text citit numeric);
+       ratchet pe cheile opționale citite de server și absente din formular (33 rămase = decizie).
+    5. Probă de browser înainte/după (nota-chirie, export, LIC, provizion, REGES fără chei = [NEVERIFICABIL]), mutații, unelte vizuale,
+       registre, poartă, publicare.
+
 - fir: **C1/C2/C7 + deciziile C3/C4/C11 + reîncărcarea la autentificare (comanda Costin 07.10.2026, răspunsul la §6)** — verbatim în
   DECIZII 07.10.2026. Poarta completă o singură dată, la publicare; ZIP `~/ghid_incoming/iconta_c1_c2_c7.zip`.
   - ultim: validatorul D112 J27.0.1 -> J27.0.6 (publicat 14.09.2026; J27.0.2 „corectie regula salmin”) instalat; D112 part-time

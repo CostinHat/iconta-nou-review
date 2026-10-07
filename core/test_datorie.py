@@ -354,26 +354,8 @@ def test_datorie_d212_cass22_retinuta_peste_datorata():
 # mecanic intră aici, ca afirmație a comportamentului CORECT, nereparate; dovezile (capturi, cereri, jurnale) stau în
 # ZIP-ul parcurgerii, iar restul constatărilor în GARZI 06.10.2026 („Parcurgerea g11/g08/g09”).
 # [07.10.2026] C1, C2, C7 REPARATE (comanda Costin) — datoriile lor au devenit teste permanente: `core/test_text_structurat.py`,
-# `core/test_coada_corp_unic.py`, `core/test_chei_unice.py`. Rămân aici C5 și C6.
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Chirii/comodat): `nota-chirie` întoarce {inregistrari: [id…]}, iar ecranul Operațiuni speciale caută `r.inregistrare_id` -> după ce nota ciornă #20 (8038=891, 1.000) s-a scris, contabilul citește «Calcul (nu s-a generat nicio notă): inregistrari: 20»")
-def test_datorie_operatiuni_ecran_recunoaste_mai_multe_note():
-    src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
-    bloc = src[src.index("const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`"):]
-    bloc = bloc[:bloc.index("} catch (e) {")]
-    assert re.search(r"\br\.inregistrari\b", bloc)
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Export/IC): serverul citește «Dovada export (DVE)» și «Dovada transport» prin `bifa` (DA/NU, altfel refuz), iar ecranul le dă drept câmp TEXT liber, cu eticheta unui document -> contabilul scrie numărul DVE și primește «acceptă doar da sau nu»")
-def test_datorie_bifele_serverului_sunt_selecturi_in_ecran():
-    rad = pathlib.Path(__file__).resolve().parent.parent
-    src = (rad / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
-    bife = set()
-    for f in rad.glob("core/uc_*.py"):
-        bife |= set(re.findall(r'bifa\(corp, "([a-z_]+)"', f.read_text(encoding="utf-8")))
-    text = [n for n in bife if re.search(r'C\("%s", "[^"]*", "text"' % n, src)]
-    assert not text, text
+# `core/test_coada_corp_unic.py`, `core/test_chei_unice.py`. [07.10.2026] C5 și C6 REPARATE (comanda Costin), cu clasa: testele
+# permanente `core/test_raspuns_citit.py` și `core/test_formulare_operatiuni_campuri.py::test_bifele_serverului_se_cer_explicit_da_nu`.
 
 
 # ── [07.10.2026] Termenele de depunere nesursate (găsite la C11: bilanțul în coadă dădea 500 „scadenta: lipsește luna sau trim”).
