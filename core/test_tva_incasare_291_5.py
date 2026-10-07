@@ -207,7 +207,10 @@ def test_parserul_chiar_vede_campurile_stiute():
     for stiut in ("data", "sens", "suma_incasata", "data_fapt_generator", "cota"):
         assert stiut in c, "parserul nu vede câmpul cunoscut `%s`" % stiut
     assert c["sens"]["optiuni"] == ["incasare", "plata"]
-    assert c["cota"]["chei"] >= {"optional", "sugestie"}
+    # [07.10.2026, „Cele 33 de chei”] cota nu mai e opțională (serverul o cere — `cota_ceruta`; DS cap.17): calibrarea cheilor
+    # se face pe un câmp cu mai multe chei știute
+    assert c["cota"]["chei"] >= {"sugestie"}
+    assert c["data_factura_avans"]["chei"] >= {"cond", "ajutor"}
 
 
 def test_ecranul_cere_alegerea_si_nu_o_preselecteaza():

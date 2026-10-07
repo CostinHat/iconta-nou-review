@@ -24,13 +24,14 @@ const REGISTRU = [
     C("data", "Data", "data"), 
     C("tip", "Tip operațiune", "select", { optiuni: [["primire","Primire bun (financiar)"],["rata","Rată lunară"],["reziduala","Valoare reziduală"],["operational","Chirie leasing operațional"]] }),
     C("valoare_capital", "Valoare capital", "numar", { cond: { camp: "tip", val: "primire" } }),
-    C("dobanda_totala", "Dobândă totală", "numar", { cond: { camp: "tip", val: "primire" }, optional: true }),
-    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "tip", val: "primire" }, optional: true, sugestie: "2133" }),
+    C("dobanda_totala", "Dobândă totală", "numar", { cond: { camp: "tip", val: "primire" } }),
+    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "tip", val: "primire" }, sugestie: "2133" }),
     C("capital", "Capital rată", "numar", { cond: { camp: "tip", val: "rata" } }),
-    C("dobanda", "Dobândă", "numar", { cond: { camp: "tip", val: "rata" }, optional: true }),
-    C("comision", "Comision", "numar", { cond: { camp: "tip", val: "rata" }, optional: true }),
+    C("dobanda", "Dobândă", "numar", { cond: { camp: "tip", val: "rata" } }),
+    C("comision", "Comision", "numar", { cond: { camp: "tip", val: "rata" } }),
     C("valoare_reziduala", "Valoare reziduală", "numar", { cond: { camp: "tip", val: "reziduala" } }),
     C("chirie", "Chirie lunară", "numar", { cond: { camp: "tip", val: "operational" } }),
+    C("cont_cheltuiala", "Cont cheltuială", "text", { cond: { camp: "tip", val: "operational" }, sugestie: "612" }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "tip", val: ["rata", "reziduala", "operational"] }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Finanțare", cheie: "credit", titlu: "Credite bancare", ruta: "nota-credit", campuri: [
@@ -40,16 +41,20 @@ const REGISTRU = [
     C("suma", "Suma", "numar", { cond: { camp: "operatie", val: ["primire", "restanta", "garantie"] } }),
     C("fel", "Garanție", "select", { optiuni: [["primita","Primită (8021)"],["acordata","Acordată (8011)"]], neales: "— alege —", cond: { camp: "operatie", val: "garantie" } }),
     C("actiune", "Acțiune", "select", { optiuni: [["inregistrare","Înregistrare"],["eliberare","Eliberare / stingere"]], neales: "— alege —", cond: { camp: "operatie", val: "garantie" } }),
-    C("dobanda", "Dobândă", "numar", { cond: { camp: "operatie", val: "dobanda" } }),
-    C("rata", "Rata (capital)", "numar", { cond: { camp: "operatie", val: "plata" }, optional: true }),
+    C("dobanda", "Dobândă", "numar", { cond: { camp: "operatie", val: ["dobanda", "plata"] } }),
+    C("rata", "Rata (capital)", "numar", { cond: { camp: "operatie", val: "plata" } }),
+    C("comision", "Comision bancar (627)", "numar", { cond: { camp: "operatie", val: "plata" } }),
+    DN("dobanda_angajata", "Dobânda a fost înregistrată deja pe 666", { cond: { camp: "operatie", val: "plata" }, ajutor: "Da: se plătește din 1682/5198; Nu: 666 = 5121 direct." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Finanțare", cheie: "asociati", titlu: "Decontări asociați (455/457)", ruta: "nota-asociati", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["dividend","Dividend"],["imprumut","Împrumut asociat"],["regularizare","Regularizare interimare"],["restituire_dividend","Restituire dividend încasată"]] }),
     C("brut", "Dividend brut", "numar", { cond: { camp: "operatie", val: "dividend" } }),
     C("interimar", "Fel", "select", { optiuni: [["0","Anual (1171/457)"],["1","Interimar (463/456)"]], neales: "— alege —", cond: { camp: "operatie", val: "dividend" } }),
+    DN("cu_plata", "Dividendul se plătește acum", { cond: { camp: "operatie", val: "dividend" }, ajutor: "Da: nota cuprinde și plata netului (457/456 = 5121)." }),
     C("suma", "Suma împrumut", "numar", { cond: { camp: "operatie", val: "imprumut" } }),
     C("fel", "Sens", "select", { optiuni: [["primire","Primire de la asociat"],["restituire","Restituire către asociat"]], cond: { camp: "operatie", val: "imprumut" } }),
+    C("dobanda", "Dobânda plătită asociatului", "numar", { cond: { camp: "fel", val: "restituire" }, ajutor: "0 dacă împrumutul e fără dobândă; din dobândă se reține impozitul (4551 = 446)." }),
     C("total_interimar", "Total dividende interimare", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
     C("dividend_anual", "Dividend anual final", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
     C("impozit_interimar", "Impozit reținut pe interimare", "numar", { cond: { camp: "operatie", val: "regularizare" }, optional: true,
@@ -60,13 +65,13 @@ const REGISTRU = [
   { cat: "Finanțare", cheie: "avans", titlu: "Avansuri (409/419)", ruta: "nota-avans", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["avans_platit","Avans plătit (409)"],["regularizare_platit","Regularizare 409"],["avans_incasat","Avans încasat (419)"],["regularizare_incasat","Regularizare 419"]] }),
-    C("suma", "Suma (fără TVA)"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    C("suma", "Suma (fără TVA)"), C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     // [R149] La regularizare, cota e cea de la LIVRARE (art. 291 alin. 6) — de-aia campul apare
     // numai pe cele doua operatii de regularizare.
     C("data_livrare", "Data livrării/prestării", "data",
       { cond: { camp: "operatie", val: ["regularizare_platit", "regularizare_incasat"] },
         ajutor: "Regularizarea aplica cota in vigoare la data livrarii, nu la data regularizarii (art. 291 alin. 6)." }),
-    C("destinatie", "Destinație", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizări"],["imobilizari_necorporale","Imobilizări necorporale"]], optional: true }),
+    C("destinatie", "Destinație", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizări"],["imobilizari_necorporale","Imobilizări necorporale"]], cond: { camp: "operatie", val: ["avans_platit", "regularizare_platit"] } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "Vânzări speciale", cheie: "agricultor", titlu: "Vânzare către agricultor (regim special)", ruta: "vanzare-agricultor", campuri: [
@@ -79,7 +84,7 @@ const REGISTRU = [
     C("denumire", "Denumire", "text"),
     C("valoare", "Valoare (fără TVA)", "numar"),
     C("tip", "Tip", "select", { optiuni: [["software","Software (36 luni)"],["licenta","Licență"],["brevet","Brevet"]] }),
-    C("dnf_luni", "Durată contract (luni)", "numar", { cond: { camp: "tip", val: "licenta" }, optional: true }),
+    C("dnf_luni", "Durată contract (luni)", "numar", { cond: { camp: "tip", val: "licenta" } }),
     C("furnizor_nume", "Furnizor", "text"),
     C("furnizor_cui", "CUI furnizor", "text"),
     C("numar", "Nr. factură furnizor", "text"),
@@ -90,6 +95,8 @@ const REGISTRU = [
     C("operatie", "Opera\u021bie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),
     C("mijloc_fix_id", "Mijlocul fix", "mijloc_fix", { cond: { camp: "operatie", val: "reevaluare" } }),   // [C4, 07.10.2026] din registru
     C("valoare_justa", "Valoare justă", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
+    C("sold_105_activ", "Sold 105 existent pentru acest activ", "numar", { cond: { camp: "operatie", val: "reevaluare" }, ajutor: "0 dacă activul n-a mai fost reevaluat; o scădere se acoperă întâi din el (105), restul pe 655." }),
+    C("pierdere_655_anterioara", "Pierdere din reevaluări anterioare (655)", "numar", { cond: { camp: "operatie", val: "reevaluare" }, ajutor: "0 dacă nu există; o creștere o compensează întâi pe 755, restul pe 105 (OMFP 1802/2014 pct. 111–116)." }),
     C("suma", "Suma surplus", "numar", { cond: { camp: "operatie", val: "surplus" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "obiect_inv", titlu: "Obiecte de inventar (303)", ruta: "nota-obiect-inventar", campuri: [
@@ -103,6 +110,7 @@ const REGISTRU = [
     C("fel", "Fel", "select", { optiuni: [["creanta","Ajustare creanțe (491)"],["provizion","Provizion (151)"],["stoc","Ajustare stocuri (39x)"]] }),
     C("actiune", "Acțiune", "select", { optiuni: [["constituire","Constituire"],["reluare","Reluare"]] }),
     C("suma", "Suma"),
+    C("cont_ajustare", "Cont ajustare stocuri", "text", { cond: { camp: "fel", val: "stoc" }, sugestie: "397" }),
     C("tip", "Tip provizion", "select", { optiuni: [["litigii","Litigii"],["garantii","Garanții"],["dezafectare","Dezafectare"],["restructurare","Restructurare"],["impozite","Impozite"],["altele","Altele"]], cond: { camp: "fel", val: "provizion" } }),
     C("descriere", "Descriere", "text", { optional: true }),
     C("zile_depasire", "Zile de la scadență (neîncasată)", "numar", { cond: { camp: "fel", val: "creanta" }, ajutor: "Peste 270 de zile: 30% deductibil (art. 26 alin. (1) lit. c))." }),
@@ -113,25 +121,27 @@ const REGISTRU = [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["obtinere","Ob\u021binere produse"],["pic","Produc\u021bie \u00een curs (331)"],["vanzare","V\u00e2nzare + desc\u0103rcare"]] }),
     C("cost_standard", "Cost standard", "numar", { cond: { camp: "operatie", val: "obtinere" } }),
-    C("cost_efectiv", "Cost efectiv", "numar", { cond: { camp: "operatie", val: "obtinere" }, optional: true }),
+    C("cost_efectiv", "Cost efectiv", "numar", { cond: { camp: "operatie", val: "obtinere" } }),
     C("suma", "Suma PIC", "numar", { cond: { camp: "operatie", val: "pic" } }),
     C("moment", "Moment", "select", { optiuni: [["constatare","Constatare"],["reluare","Reluare"]], cond: { camp: "operatie", val: "pic" } }),
     C("pret_vanzare", "Preț vânzare", "numar", { cond: { camp: "operatie", val: "vanzare" } }),
     C("cost_standard_iesit", "Cost standard ieșit", "numar", { cond: { camp: "operatie", val: "vanzare" } }),
+    C("coef_348", "Coeficientul diferențelor de preț (348)", "numar", { cond: { camp: "operatie", val: "vanzare" }, ajutor: "0 dacă nu există diferențe; pozitiv = nefavorabilă (711 = 348), negativ = favorabilă." }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "vanzare" }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "inventariere", titlu: "Inventariere anuală", ruta: "nota-inventariere", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["plus","Plus stoc"],["plus_mf","Plus mijloc fix"],["minus","Minus"],["casare","Casare"]] }),
     C("valoare", "Valoare"),
-    C("cont_stoc", "Cont stoc", "text", { optional: true, sugestie: "371" }),
+    C("cont_stoc", "Cont stoc", "text", { cond: { camp: "operatie", val: ["plus", "minus"] }, sugestie: "371" }),
     DN("imputabil", "Imputabil", { cond: { camp: "operatie", val: "minus" } }),
-    C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "operatie", val: "minus" }, optional: true }),
+    C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "imputabil", val: "true" } }),
+    C("vinovat", "Cui se impută", "select", { cond: { camp: "imputabil", val: "true" }, optiuni: [["salariat","Salariat (4282)"],["tert","Terț (461)"]] }),
     C("denumire", "Denumire mijloc fix", "text", { cond: { camp: "operatie", val: "plus_mf" } }),
-    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, optional: true, sugestie: "2131" }),
-    C("cont_amortizare", "Cont amortizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, optional: true, sugestie: "2813" }),
+    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, sugestie: "2131" }),
+    C("cont_amortizare", "Cont amortizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, sugestie: "2813" }),
     C("dnf_luni", "Durat\u0103 normal\u0103 (luni)", "numar", { cond: { camp: "operatie", val: "plus_mf" } }),
-    C("data_pif", "Dat\u0103 punere \u00een func\u021biune", "data", { cond: { camp: "operatie", val: "plus_mf" }, optional: true }),
+    C("data_pif", "Dat\u0103 punere \u00een func\u021biune", "data", { cond: { camp: "operatie", val: "plus_mf" } }),
     C("metoda", "Metod\u0103 amortizare", "select", { cond: { camp: "operatie", val: "plus_mf" }, optiuni: [["liniara","Liniar\u0103"],["degresiva","Degresiv\u0103"],["accelerata","Accelerat\u0103"],["superaccelerata","Superaccelerat\u0103"]] }),
     DN("destinatie_cd", "Destinat cercetării-dezvoltării", { cond: { camp: "operatie", val: "plus_mf" }, ajutor: "Da: amortizarea accelerată e permisă pe orice cont (CF art. 20 alin. (1) lit. b))." }),
     C("mijloc_fix_id", "Mijlocul fix", "mijloc_fix", { cond: { camp: "operatie", val: "casare" } }),   // [C4, 07.10.2026] din registru
@@ -161,20 +171,29 @@ const REGISTRU = [
       { cond: { camp: "ramura_291_5", val: "factura_avans" },
         ajutor: "Trebuie s\u0103 fie \u00eenainte de data livr\u0103rii \u2014 altfel excep\u021bia nu se aplic\u0103, "
           + "iar opera\u021biunea e \u00een situa\u021bia general\u0103." }),
-    C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vânzare regim marjă (second-hand)", ruta: "vanzare-marja", campuri: [
     C("data", "Data", "data"), C("pret_vanzare", "Preț vânzare"), C("pret_cumparare", "Preț cumpărare"),
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "marja_turism", titlu: "Marjă agenții de turism", ruta: "vanzare-marja-turism", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "marja_turism", titlu: "Marjă agenții de turism", ruta: "vanzare-marja-turism",
+    multi: "componente", multiTitlu: "Componentele pachetului (regim normal)", multiCond: { camp: "optiune_normal", val: "true" }, campuri: [
     C("data", "Data", "data"),
     C("calitate_client", "Client", "select", { optiuni: [["PF","Persoană fizică"],["PJ","Persoană juridică"]] }),
-    C("incasat", "Încasat de la client"),
-    C("cost_ue", "Cost servicii UE"),
-    C("cost_non_ue", "Cost servicii non-UE", "numar", { optional: true }),
+    DN("intermediar", "Agenția acționează ca intermediar", { ajutor: "Da: baza e comisionul (art. 311 alin. (9)); sumele încasate în numele altora nu sunt venit." }),
+    DN("optiune_normal", "Opțiune pentru regimul normal de TVA", { cond: { camp: "intermediar", val: "false" }, ajutor: "Permisă numai pentru client persoană juridică și servicii toate în România (art. 311 alin. (10))." }),
+    C("locuri", "Locul serviciilor", "select", { cond: { camp: "optiune_normal", val: "true" }, lista: true, optiuni: [["RO","Toate în România"],["UE","Și în alte state UE"],["NONUE","Și în afara UE"]] }),
+    C("incasat", "Încasat de la client", "numar", { cond: { camp: "optiune_normal", val: "false" } }),
+    C("cost_ue", "Cost servicii UE", "numar", { cond: { camp: "optiune_normal", val: "false" } }),
+    C("cost_non_ue", "Cost servicii non-UE", "numar", { cond: { camp: "optiune_normal", val: "false" } }),
+    C("comision", "Comisionul agenției", "numar", { cond: { camp: "intermediar", val: "true" } }),
+    DN("tva_inclus", "Comisionul include TVA", { cond: { camp: "intermediar", val: "true" } }),
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
-    C("descriere", "Descriere", "text", { optional: true }) ] },
+    C("descriere", "Descriere", "text", { optional: true }) ], subcampuri: [
+    C("descriere", "Componenta", "text"),
+    C("baza", "Baza (cu marja alocată)"),
+    C("cota", "Cota TVA %", "numar", { sugestie: "21" }) ] },
   { cat: "TVA regimuri speciale", cheie: "taxare_inversa", titlu: "Taxare inversă internă (art. 331)", ruta: "achizitie-taxare-inversa", campuri: [
     C("data", "Data", "data"),
     C("furnizor_nume", "Furnizor", "text"),
@@ -192,7 +211,7 @@ const REGISTRU = [
     C("valoare", "Valoare"),
     C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
     C("numar", "Nr. document (borderou)", "text", { optional: true }),
-    C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optional: true, optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
+    C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "agricultor_achizitie", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (fără taxă)"),
@@ -206,6 +225,10 @@ const REGISTRU = [
     C("suma", "Valoare vânzare"),
     C("calitate_client", "Client", "select", { optiuni: [["PF","Persoană fizică"],["PJ","Persoană juridică"]] }),
     C("client_identificare", "Identificare client", "text"),
+    C("an_emisie", "Anul emisiunii monedei", "numar", { cond: { camp: "tip", val: "moneda" }, ajutor: "Moneda de aur e de investiții dacă e emisă după 1800 (art. 313 alin. (1) lit. b))." }),
+    C("pret_unitar", "Prețul monedei", "numar", { cond: { camp: "tip", val: "moneda" } }),
+    C("valoare_aur", "Valoarea aurului conținut", "numar", { cond: { camp: "tip", val: "moneda" }, ajutor: "Prețul nu poate depăși valoarea aurului cu mai mult de 80% (art. 313 alin. (1) lit. b))." }),
+    DN("optiune_taxare", "Opțiune de taxare", { cond: { camp: "calitate_client", val: "PJ" }, ajutor: "Da: taxare inversă în locul scutirii — permisă numai către o persoană impozabilă (art. 313 alin. (4)–(5))." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "Extern", cheie: "reeval_valuta", titlu: "Reevaluare lunară solduri valută", ruta: "reevaluare-valuta", multi: "solduri", campuri: [
@@ -222,6 +245,7 @@ const REGISTRU = [
     C("moneda", "Moneda (EUR/USD...)", "text", { sugestie: "EUR" }),
     C("curs_evidenta", "Curs de evidență"),
     C("cont_tert", "Cont terț", "text", { sugestie: "4111" }),
+    C("cont_banca", "Cont bancă", "text", { sugestie: "5124" }),
     C("descriere", "Descriere", "text", { optional: true }),
     DN("in_lei_cu_clauza", "Factură în lei cu clauză valutară", { ajutor: "Da: diferența pe 668/768 (OMFP 1802/2014 pct. 94 lit. b)); Nu: pe 665/765." }) ] },
   { cat: "Extern", cheie: "achizitie_ic", titlu: "Achiziție intracomunitară", ruta: "achizitie-ic", campuri: [
@@ -231,39 +255,48 @@ const REGISTRU = [
     C("furnizor_nume", "Furnizor", "text", { optional: true }),
     C("cont_destinatie", "Cont destinație", "text", { sugestie: "371" }),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
-    C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
-    C("data_faptului_generator", "Data faptului generator (dacă diferă)", "data", { optional: true, ajutor: "Opțional. Gol = încadrare pe data facturii. Completat = exigibilitate MIN(dată factură, ziua 15 luna următoare) — art. 284." }),
+    C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
+    C("data_faptului_generator", "Data faptului generator", "data", { ajutor: "Exigibilitatea = MIN(data facturii, ziua 15 a lunii următoare faptului generator) — art. 284. Dacă e aceeași cu a facturii, scrie data facturii." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitară (VIES live)", ruta: "vanzare-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
     C("cod_tva_client", "Cod TVA client (ex. DE123456789)", "text"),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
+    C("cont_venit", "Cont venit", "text", { sugestie: "707", ajutor: "Bunuri: de regulă 707; servicii: 704." }),
     DN("dovada_transport", "Ai dovada transportului în alt stat membru", { cond: { camp: "tip", val: "bunuri" }, ajutor: "Fără ea scutirea nu se aplică (art. 294 alin. (2) lit. a)) — se facturează cu TVA." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "import_ec", titlu: "Import extracomunitar (DVI)", ruta: "import-extracomunitar", campuri: [
     C("data", "Data", "data"), C("valoare_vamala", "Valoare vamală (RON)"),
     C("cont_destinatie", "Cont destinație", "text", { sugestie: "371" }),
-    C("procent_taxa_vamala", "Taxă vamală %", "numar", { optional: true }),
-    C("accize", "Accize", "numar", { optional: true }),
-    C("accesorii", "Accesorii", "numar", { optional: true }),
+    C("procent_taxa_vamala", "Taxă vamală %", "numar", {}),
+    C("accize", "Accize", "numar", {}),
+    C("accesorii", "Accesorii", "numar", {}),
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }),
     DN("certificat_amanare", "Certificat de amânare a plății TVA în vamă", { ajutor: "Da: TVA în decont, 4426 = 4427 (art. 326 alin. (4)); Nu: TVA plătită în vamă." }) ] },
   { cat: "Extern", cheie: "export_ec", titlu: "Export extracomunitar (DVE)", ruta: "export-extracomunitar", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
     C("tara_client", "Țara clientului", "text"),
+    C("cont_venit", "Cont venit", "text", { sugestie: "707" }),
     DN("dovada_export", "Ai declarația vamală de export (DVE)", { ajutor: "Fără ea scutirea nu se aplică (art. 294 alin. (1) lit. a)) — se facturează cu TVA până la obținerea dovezii." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "Personal și deconturi", cheie: "decont", titlu: "Decont deplasare / diurnă", ruta: "nota-decont-deplasare", campuri: [
     C("data", "Data", "data"),
-    C("fel", "Fel", "select", { optiuni: [["avans","Avans deplasare (542)"],["decont","Decont final"]] }),
-    C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]] }),
+    C("fel", "Fel", "select", { optiuni: [["avans","Avans deplasare (542)"],["decont","Decont final"],["plafon","Calcul plafon neimpozabil diurnă"]] }),
+    C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]], cond: { camp: "fel", val: ["avans", "decont"] } }),
+    C("diurna_pe_zi", "Diurna acordată pe zi", "numar", { cond: { camp: "fel", val: "plafon" } }),
+    C("zile", "Zile de deplasare", "numar", { cond: { camp: "fel", val: "plafon" } }),
+    C("salariu_baza", "Salariul de bază", "numar", { cond: { camp: "fel", val: "plafon" } }),
+    C("zile_lucratoare", "Zile lucrătoare în lună", "numar", { cond: { camp: "fel", val: "plafon" } }),
+    C("deplasare", "Deplasare", "select", { cond: { camp: "fel", val: "plafon" }, optiuni: [["interna","În țară (diurna bugetară 23 lei — HG 714/2018)"],["externa","În străinătate (HG 518/1995)"]] }),
+    C("diurna_bugetara", "Diurna bugetară a țării (în valută)", "numar", { cond: { camp: "deplasare", val: "externa" } }),
+    C("curs", "Cursul valutei", "numar", { cond: { camp: "deplasare", val: "externa" } }),
     C("suma", "Suma avans", "numar", { cond: { camp: "fel", val: "avans" } }),
     C("avans", "Avans acordat", "numar", { cond: { camp: "fel", val: "decont" } }),
-    C("diurna", "Diurnă", "numar", { cond: { camp: "fel", val: "decont" }, optional: true }),
-    C("transport", "Transport", "numar", { cond: { camp: "fel", val: "decont" }, optional: true }),
-    C("cazare", "Cazare", "numar", { cond: { camp: "fel", val: "decont" }, optional: true }),
+    C("diurna", "Diurnă", "numar", { cond: { camp: "fel", val: "decont" } }),
+    C("transport", "Transport", "numar", { cond: { camp: "fel", val: "decont" } }),
+    C("cazare", "Cazare", "numar", { cond: { camp: "fel", val: "decont" } }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "fel", val: "decont" }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Personal și deconturi", cheie: "contract_special", titlu: "Contracte speciale (zilieri, mandat, cenzori)", ruta: "nota-contract-special", campuri: [
@@ -277,20 +310,23 @@ const REGISTRU = [
     C("fel", "Fel", "select", { optiuni: [["incasare","Încasare"],["distribuire","Distribuire la salariați"]] }),
     C("suma", "Suma"),
     C("sursa", "Sursa", "select", { optiuni: [["card","Card"],["numerar","Numerar"]], cond: { camp: "fel", val: "incasare" } }),
+    C("sursa_distribuire", "Plata către salariați", "select", { trimiteCa: "sursa", optiuni: [["banca","Bancă (5121)"],["numerar","Numerar (5311)"]], cond: { camp: "fel", val: "distribuire" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "Diverse", cheie: "sponsorizare", titlu: "Sponsorizare (credit fiscal)", ruta: "nota-sponsorizare", campuri: [
     C("data", "Data", "data"), C("suma", "Suma sponsorizată"),
-    C("mod", "Mod", "select", { optiuni: [["contract","Contract (6582=401)"],["plata","Plată directă (6582=5121)"]], optional: true }),
-    C("tip_impozit", "Tip impozit", "select", { optiuni: [["profit","Impozit pe profit"],["micro","Microîntreprindere"]], optional: true }),
-    C("cifra_afaceri", "Cifra de afaceri (pt credit)", "numar", { optional: true }),
-    C("impozit_profit", "Impozit datorat (pt credit)", "numar", { optional: true }),
+    C("mod", "Mod", "select", { optiuni: [["contract","Contract (6582=401)"],["plata","Plată directă (6582=5121)"]] }),
+    C("tip_impozit", "Tip impozit", "select", { optiuni: [["profit","Impozit pe profit"],["micro","Microîntreprindere"]] }),
+    C("cifra_afaceri", "Cifra de afaceri (pt credit)", "numar", {}),
+    C("impozit_profit", "Impozit datorat (pt credit)", "numar", {}),
+    DN("beneficiar_in_registru", "Beneficiarul e înscris în Registrul entităților/unităților de cult", { ajutor: "Nu: fără credit fiscal din impozit (art. 25 alin. (4) lit. i))." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "subventie", titlu: "Subvenții (445/741)", ruta: "nota-subventie", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["exploatare","Exploatare"],["investitii","Investiții (475)"],["reluare","Reluare la venituri"]] }),
     C("suma", "Suma", "numar", { cond: { camp: "fel", val: ["exploatare", "investitii"] } }),
-    C("moment", "Moment", "select", { optiuni: [["drept","La dreptul de a primi"],["incasare","La încasare"]], optional: true, cond: { camp: "fel", val: ["exploatare", "investitii"] } }),
+    C("moment", "Moment", "select", { optiuni: [["drept","La dreptul de a primi"],["incasare","La încasare"]], cond: { camp: "fel", val: ["exploatare", "investitii"] } }),
+    C("cont_venit", "Cont venit din subvenție", "text", { cond: { camp: "fel", val: "exploatare" }, sugestie: "741" }),
     C("valoare_activ", "Valoarea activului subvenționat", "numar", { cond: { camp: "fel", val: "reluare" } }),
     C("subventie", "Subvenția primită pentru activ", "numar", { cond: { camp: "fel", val: "reluare" } }),
     C("amortizare_lunara", "Amortizarea lunii", "numar", { cond: { camp: "fel", val: "reluare" } }),
@@ -310,9 +346,9 @@ const REGISTRU = [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["comodat","Comodat"],["chirie_platita","Chirie plătită (612)"],["chirie_incasata","Chirie încasată (706)"],["refacturare","Refacturare utilități"]] }),
     C("valoare", "Valoarea bunului", "numar", { cond: { camp: "fel", val: "comodat" } }),
-    C("moment", "Moment", "select", { cond: { camp: "fel", val: "comodat" }, optiuni: [["primire","Primire"],["restituire","Restituire"]], optional: true }),
+    C("moment", "Moment", "select", { cond: { camp: "fel", val: "comodat" }, optiuni: [["primire","Primire"],["restituire","Restituire"]] }),
     C("chirie", "Chiria", "numar", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata"] } }),
-    C("proprietar", "Proprietar", "select", { cond: { camp: "fel", val: "chirie_platita" }, optiuni: [["pj","Persoană juridică"],["pf","Persoană fizică"]], optional: true }),
+    C("proprietar", "Proprietar", "select", { cond: { camp: "fel", val: "chirie_platita" }, optiuni: [["pj","Persoană juridică"],["pf","Persoană fizică"]] }),
     C("total_factura", "Total factură utilități", "numar", { cond: { camp: "fel", val: "refacturare" } }),
     C("parte_refacturata", "Partea refacturată", "numar", { cond: { camp: "fel", val: "refacturare" } }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata", "refacturare"] }, sugestie: "21" }),
@@ -322,7 +358,7 @@ const REGISTRU = [
     C("valoare_intrari", "Valoare intrări (bază calcul)"),
     C("procent_limita", "Procent limită HG 831/2004 (%)"),
     C("pierdere_constatata", "Pierdere constatată"),
-    C("cont_stoc", "Cont stoc", "text", { optional: true, sugestie: "371" }),
+    C("cont_stoc", "Cont stoc", "text", { sugestie: "371" }),
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }),
     DN("degradare_dovedita_distrusa", "Bunuri degradate calitativ și distruse, dovedit", { ajutor: "Da: fără ajustarea TVA pe pierderea peste limită; Nu: ajustarea 635 = 4426." }) ] },
@@ -331,7 +367,10 @@ const REGISTRU = [
     C("operatie", "Opera\u021bie", "select", { optiuni: [["achizitie","Achizi\u021bie (garan\u021bii pl\u0103tite)"],["vanzare","V\u00e2nzare (garan\u021bii \u00eencasate)"],["restituire","Restituire"],["autofactura","Autofactura SGR"],["virare","Virare"]] }),
     C("nr_ambalaje", "Nr. ambalaje (0,50 lei/buc)", "numar", { optional: true }),
     C("suma", "Suma (alternativ la nr.)", "numar", { optional: true }),
-    C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]], optional: true }),
+    C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]], cond: { camp: "operatie", val: ["vanzare", "restituire"] } }),
+    C("catre", "Virarea garanțiilor", "select", { cond: { camp: "operatie", val: "virare" }, optiuni: [["furnizor","Către furnizor (462 = 401)"],["plata","Plată directă (462 = 5121)"]] }),
+    C("garantii_returnate", "Garanții returnate (încasate de la RetuRO)", "numar", { cond: { camp: "operatie", val: "autofactura" } }),
+    C("tarif_gestionare", "Tarif de gestionare (cu TVA)", "numar", { cond: { camp: "operatie", val: "autofactura" } }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "autofactura" }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "ong", titlu: "Operațiuni ONG (OMFP 3103/2017)", ruta: "nota-ong", campuri: [
@@ -339,6 +378,7 @@ const REGISTRU = [
     C("operatie", "Opera\u021bie", "select", { optiuni: [["venit","Venit AFSP"],["scutire","Calcul scutire art. 15 CF"]] }),
     C("suma", "Suma", "numar", { cond: { camp: "operatie", val: "venit" } }),
     C("fel", "Fel venit", "select", { optiuni: [["cotizatie","Cotizație (731)"],["contributie","Contribuție"],["donatie","Donație (733)"],["sponsorizare","Sponsorizare primită (733)"],["financiar","Financiar (734)"]], cond: { camp: "operatie", val: "venit" } }),
+    C("sursa", "Încasat în", "select", { cond: { camp: "operatie", val: "venit" }, optiuni: [["casa","Casă (5311)"],["banca","Bancă (5121)"]] }),
     C("venituri_economice", "Venituri economice ale anului", "numar", { cond: { camp: "operatie", val: "scutire" } }),
     C("venituri_neimpozabile", "Venituri neimpozabile ale anului", "numar", { cond: { camp: "operatie", val: "scutire" } }),
     C("curs_eur", "Curs EUR (BNR)", "numar", { cond: { camp: "operatie", val: "scutire" } }),
@@ -349,9 +389,11 @@ const REGISTRU = [
     C("pret", "Preț vânzare", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
     C("valoare_bruta", "Valoare brută activ", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
     C("amortizare_cumulata", "Amortizare cumulată", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
+    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "operatie", val: "vanzare_activ" }, sugestie: "2131" }),
+    C("cont_amortizare", "Cont amortizare", "text", { cond: { camp: "operatie", val: "vanzare_activ" }, sugestie: "2813" }),
     C("capital_social", "Capital social", "numar", { cond: { camp: "operatie", val: "partaj" } }),
-    C("rezerve", "Rezerve", "numar", { cond: { camp: "operatie", val: "partaj" }, optional: true }),
-    C("profituri", "Profituri nerepartizate", "numar", { cond: { camp: "operatie", val: "partaj" }, optional: true }),
+    C("rezerve", "Rezerve", "numar", { cond: { camp: "operatie", val: "partaj" } }),
+    C("profituri", "Profituri nerepartizate", "numar", { cond: { camp: "operatie", val: "partaj" } }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "vanzare_activ" }, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 ];
@@ -402,8 +444,11 @@ export async function ecranOperatiuni(corp, nav, t) {
         // omului. Fara ea, un `select` obligatoriu vine cu prima optiune deja aleasa — ceea ce
         // pentru o alegere JURIDICA (art. 291 alin. 5) ar fi un default tacit imbracat in
         // interfata. Campul ramane OBLIGATORIU: gol -> „Câmp obligatoriu", ca la orice altul.
+        // [comanda Costin 07.10.2026, „Cele 33 de chei” — DS cap.17] Regula e acum a MOTORULUI: ORICE select obligatoriu
+        // pornește cu „— alege —” (sau textul lui `neales`). Măsurat: 36 de selecturi obligatorii veneau cu prima opțiune aleasă
+        // (felul operației, termenul creditului 519/162, metoda de amortizare) — o alegere fiscală făcută de ecran.
         const gol = c.optional ? '<option value="">-</option>'
-          : (c.neales ? `<option value="" selected>${esc(c.neales)}</option>` : "");
+          : `<option value="" selected>${esc(c.neales || "— alege —")}</option>`;
         input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "mijloc_fix") {
         // [decizia Costin 07.10.2026, C4] „«ID mijloc fix» la reevaluare și casare: devine listă din registrul activelor firmei.”
@@ -425,7 +470,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         <div class="grila-campuri">
           ${opCurenta.campuri.map(camp).join("")}
         </div>
-        ${opCurenta.multi ? '<div class="pf-frand-nume" style="margin:12px 0 6px">Solduri</div><div id="op-multi"></div>' : ""}
+        ${opCurenta.multi ? `<div class="op-multi-bloc"${opCurenta.multiCond ? ` data-cond-camp="${opCurenta.multiCond.camp}" data-cond-val="${[].concat(opCurenta.multiCond.val).join("|")}"` : ""}><div class="pf-frand-nume" style="margin:12px 0 6px">${esc(opCurenta.multiTitlu || "Solduri")}</div><div id="op-multi"></div></div>` : ""}
         <p style="margin-top:12px"><button class="buton-primar" id="op-trimite">Genereaz\u0103 nota (ciorn\u0103)</button></p>
         <div id="op-mesaj"></div>
       </div>`;
@@ -435,7 +480,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     const zonaMulti = corp.querySelector("#op-multi");
     const randMulti = (i) => `<div class="grila-campuri grila-campuri-compacta">
       ${opCurenta.subcampuri.map((sc) => {
-        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="camp-input">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
+        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="camp-input"><option value="" selected>— alege —</option>${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
         const t2 = sc.tip === "numar" ? "number" : "text";
         return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="camp-input" placeholder="${sc.sugestie||""}"></div>`;
       }).join("")}</div>`;
@@ -449,11 +494,18 @@ export async function ecranOperatiuni(corp, nav, t) {
     }
 
     // vizibilitate conditionata
+    // [07.10.2026] În LANȚ: un câmp se vede numai dacă și câmpul de care depinde se vede (vinovatul cere „Imputabil: Da”, iar
+    // „Imputabil” cere „Minus”) — altfel o valoare rămasă într-un select ascuns ar arăta (și ar cere) un câmp fără sens.
     const actualizeazaCond = () => {
-      corp.querySelectorAll(".camp[data-cond-camp]").forEach((l) => {
-        const sel = corp.querySelector(`#op-${l.dataset.condCamp}`);
-        l.style.display = sel && l.dataset.condVal.split("|").includes(sel.value) ? "" : "none";
-      });
+      const deps = [...corp.querySelectorAll(".camp[data-cond-camp], .op-multi-bloc[data-cond-camp]")];
+      for (let tura = 0; tura < 4; tura++) {
+        deps.forEach((l) => {
+          const sel = corp.querySelector(`#op-${l.dataset.condCamp}`);
+          const parinte = sel && sel.closest(".camp");
+          const vizibil = parinte && parinte.style.display !== "none";
+          l.style.display = sel && vizibil && l.dataset.condVal.split("|").includes(sel.value) ? "" : "none";
+        });
+      }
     };
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
       corp.querySelector(`#op-${c.nume}`).addEventListener("change", actualizeazaCond));
@@ -481,10 +533,13 @@ export async function ecranOperatiuni(corp, nav, t) {
         if (ascuns) continue;
         const v = el.value;
         if (!v && !c.optional) { lipsa = c.eticheta; break; }
-        if (v) corpReq[c.nume] = c.tip === "numar" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
+        const val = c.tip === "numar" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
+        // `trimiteCa`: aceeași cheie, alt câmp (bacșiș: sursa are alte valori la distribuire); `lista`: serverul cere o listă
+        if (v) corpReq[c.trimiteCa || c.nume] = c.lista ? [val] : val;
       }
       if (lipsa) { arataMesaj(zona, "Câmp obligatoriu: " + lipsa, "avert"); return; }
-      if (opCurenta.multi) {
+      const blocMulti = corp.querySelector(".op-multi-bloc");
+      if (opCurenta.multi && blocMulti && blocMulti.style.display !== "none") {
         corpReq[opCurenta.multi] = [...corp.querySelectorAll("#op-multi > div")].map((rand) => {
           const o = {};
           opCurenta.subcampuri.forEach((sc) => {

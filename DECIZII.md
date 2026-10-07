@@ -17531,3 +17531,46 @@ creșterea, iar care dintre ele intră în ecran e decizie de produs (raportul t
    deductibilitate (CF art.26), fără ea „faliment = Da” era singura cale spre o cifră corectă. `puritate` = număr.
 3. **Etichetele** spun faptul, nu norma; ajutorul repetă numai temeiul deja scris în modulul de domeniu (art.26, art.294, art.304,
    art.326 alin.(4), OMFP 1802/2014 pct.94) — nicio regulă fiscală nouă.
+
+## 07.10.2026 — Cele 33 de chei opționale fără câmp: regula DS cap.17 (comanda Costin)
+
+**Comanda, verbatim:** „1. Cele 33 de chei opționale fără câmp: regula este aceea din DS cap.17. O cheie care e fapt fiscal (schimbă
+nota, baza sau impozitul) intră în formular, cerută explicit, fără preselecție. O cheie strict tehnică, pentru API, rămâne în afara
+ecranului. Clasifici tu toate cele 33 după regula asta, repari ce intră în ecran și pui în raport lista cu încadrarea și motivul
+fiecăreia. 2. Listează operațiile, execută-le, raportează durata măsurată a fiecăreia. Poarta completă o singură dată, la publicare.
+3. La închidere: ZIP la ~/ghid_incoming/iconta_chei_optionale.zip (cod schimbat, probe înainte/după cu capturi, jurnale), plus ZIP-ul
+turei C5/C6 la ~/ghid_incoming/iconta_c5_c6.zip, cu căile exacte în raport.”
+
+**Testul de încadrare, aplicat la sursă** (`corp.get` în use-case + funcția de domeniu în care ajunge): cheia schimbă un CONT al notei,
+o LINIE, BAZA sau REGIMUL/impozitul -> fapt fiscal, intră. Altfel rămâne în afara ecranului, cu motivul scris lângă ea în
+`scripts/scan_formulare_operatiuni.py`. Lista cu încadrarea fiecăreia: raportul turei, §8, și registrul de clasificare din script.
+
+**Încadrarea celor 33 (testul: schimbă un cont al notei, o linie, baza sau regimul/impozitul):**
+- **INTRĂ (31).** Conturi ale notei: `decontare-valuta:cont_banca` (5124), `export-extracomunitar:cont_venit` (707), `vanzare-ic:cont_venit`
+  (707/704), `nota-leasing:cont_cheltuiala` (612), `nota-lichidare:cont_imobilizare` (2131), `nota-lichidare:cont_amortizare` (2813),
+  `nota-provizion:cont_ajustare` (397), `nota-subventie:cont_venit` (741), `nota-ong:sursa` (5311/5121), `nota-sgr:catre` (401/5121),
+  `nota-inventariere:vinovat` (4282/461), `nota-credit:dobanda_angajata` (1682/5198 față de 666). Linii ale notei: `nota-asociati:cu_plata`
+  (plata netului), `nota-asociati:dobanda` (dobânda + impozitul reținut), `nota-credit:comision` (627), `nota-productie:coef_348`
+  (diferențele de preț), `nota-sgr:garantii_returnate` (5121 = 461), `nota-sgr:tarif_gestionare` (708 + TVA),
+  `reevaluare-imobilizare:sold_105_activ` și `:pierdere_655_anterioara` (105/655/755). Bază și impozit: `nota-decont-deplasare:curs` și
+  `:diurna_bugetara` (plafonul neimpozabil, CF art.76 alin.(2) lit.k), `nota-sponsorizare:beneficiar_in_registru` (creditul fiscal,
+  CF art.25 alin.(4) lit.i). Regim TVA: `vanzare-aur-investitii:an_emisie`, `:pret_unitar`, `:valoare_aur` (calificarea monedei, CF
+  art.313 alin.(1) lit.b), `:optiune_taxare` (scutit/taxare inversă, art.313 alin.(4)–(5)); `vanzare-marja-turism:intermediar`,
+  `:optiune_normal`, `:locuri`, `:tva_inclus` (regimul și baza, art.311).
+- **RĂMÂN ÎN AFARA ECRANULUI (2).** `achizitie-agricultor:agricultor` — numai text în explicația notei; `achizitie-necorporala:cod` —
+  codul de registru, generat când lipsește. Niciuna nu schimbă nota, baza sau impozitul. **Notă de rigoare:** niciuna nu e
+  „tehnică, pentru API” în sens strict — sunt ne-fiscale; testul decisiv al regulii (fapt fiscal sau nu) le lasă afară.
+
+**Consecințe (executor, aceeași clasă, măsurată pe toate formularele Operațiunilor):**
+1. **Ramurile pe care formularul nu le arăta** au intrat odată cu cheile lor: turism normal (componentele pachetului) și intermediar
+   (comision, TVA inclus); aur-monedă; calculul plafonului de diurnă (intern = 23 lei HG 714/2018, extern = diurna țării + curs).
+2. **(b) cheie pe ramură cu câmp ascuns:** dobânda la plata creditului (reparat), sursa la distribuirea bacșișului (reparat, câmp
+   propriu — `trimiteCa`); conturile casării pe calea API (rămân, cu motivul: din ecran casarea ia activul din registru).
+3. **(c) câmp opțional cu implicit tacit:** obligatorii acum (sume, conturi, date, selecturi, cotele pe care serverul le cerea deja);
+   rămân opționale 5, cu motivul (`OPTIONALE_PERMISE`).
+4. **(d) 36 de selecturi obligatorii preselectate** (felul operației, termenul creditului, metoda de amortizare): regula trece în
+   MOTOR — orice select obligatoriu pornește cu „— alege —”.
+5. **7 DA/NU noi** erau citite de server cu `corp.get(…, True/False)`; trimise ca „false” (text) ar fi fost adevărate. Citite acum prin
+   `bifa` (prins de garda existentă `test_bifele_se_citesc_doar_prin_bifa`, înainte de orice probă).
+6. **Norma** intră în DS cap.17 (v2.77, `FAPT_FISCAL_NECERUT`) și în verificator, pe același instrument ca testul. Limita: ecranele
+   scrise de mână (82 de selecturi fără opțiune goală în afara Operațiunilor, măsurat) — extinderea e decizie (raportul turei, §6).

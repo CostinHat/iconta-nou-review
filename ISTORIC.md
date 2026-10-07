@@ -1709,3 +1709,15 @@ Decizia: DECIZII 07.10.2026 („C5 și C6”). Gărzile: GARZI 07.10.2026 („C5
   serverul le citea și formularul nu le avea (un provizion pe o creanță în faliment ieșea „deductibil 0%”, acum 100%), 3 cu „Da”
   preselectat, una opțională — toate cerute explicit, cu „— alege —”. `puritate` (aur) = număr.
 - Rămân 33 de chei opționale fără câmp în formularele Operațiunilor — ratchet; care intră în ecran e decizie de produs.
+
+## 07.10.2026 — Cele 33 de chei: fiecare fapt fiscal cerut explicit în Operațiuni (comanda Costin)
+
+Decizia și încadrarea fiecărei chei: DECIZII 07.10.2026 („Cele 33 de chei”). Gărzile: GARZI 07.10.2026.
+
+- 31 din cele 33 de chei citite de server fără câmp au intrat în formulare (conturi ale notei, linii, baza diurnei, creditul de
+  sponsorizare, regimul aurului și al turismului); 2 rămân în afara ecranului, cu motivul.
+- Au intrat și ramurile care nu se vedeau: turism normal și intermediar, aur-monedă, calculul plafonului de diurnă.
+- Aceeași regulă pe tot registrul: niciun select nu mai vine cu o opțiune aleasă (36 veneau), câmpurile al căror gol era un implicit
+  al serverului sunt obligatorii, dobânda la plata creditului și sursa bacșișului distribuit se pot da.
+- Probat: plata creditului cu dobândă neangajată -> 666 = 5121 și comision 627; bacșișul distribuit în numerar -> 462 = 5311 (era 5121);
+  moneda de aur -> scutită; turism intermediar 300 cu TVA -> 247,93 + 52,07.

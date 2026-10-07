@@ -1472,6 +1472,20 @@ for _nume, _t in fisiere.items():
     for _m in re.finditer(r'<input[^>]*type="(?:number|text)"[^>]*id="[a-z]+-[a-z_]*_id"', _t):
         rap["id_intern_tastabil"].append((_nume, _t[:_m.start()].count("\n") + 1, "input", "ID intern tastat — alegerea din listă (DS cap.24 v2.76)"))
 
+# --- FAPT_FISCAL_NECERUT (DS cap.17 v2.77, comanda Costin 07.10.2026, „Cele 33 de chei”): o cheie care e fapt fiscal (schimbă nota,
+#     baza sau impozitul) se cere în formularul Operațiunilor EXPLICIT, fără preselecție; una strict tehnică rămâne în afara
+#     ecranului, cu motivul scris. Același instrument ca `core/test_formulare_operatiuni_campuri.py` — o singură implementare, două
+#     porți. Mutația care o probează: câmpul „Accize” pus la loc opțional -> TOTAL > 0.
+rap["fapt_fiscal_necerut"] = []
+try:
+    import sys as _sys_ff
+    _sys_ff.path.insert(0, os.path.join(BAZA_PY, "scripts"))
+    import scan_formulare_operatiuni as _sfo
+    for _k_ff, _ce_ff in _sfo.masoara():
+        rap["fapt_fiscal_necerut"].append(("operatiuni_ecran.js", 0, _k_ff, _ce_ff + " (DS cap.17 v2.77)"))
+except Exception as _e_ff:
+    rap["fapt_fiscal_necerut"].append(("verificator", 0, "EROARE", "gard fapt_fiscal_necerut: " + str(_e_ff)))
+
 # --- COADA_UN_SINGUR_DRUM (DS cap.24 v2.76, comanda Costin 07.10.2026, C1/C2/C3/C11): trimiterea în coadă trece numai prin
 #     `coada_trimite.js` (corpul generării, refuzul real, confirmarea atenționărilor DUK). Mutația care o probează: un
 #     `api.post("/coada", …)` scris de mână în declaratii.js -> TOTAL > 0.

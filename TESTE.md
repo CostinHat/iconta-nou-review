@@ -45,6 +45,36 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Cele 33 de chei opționale fără câmp — regula DS cap.17 (comanda Costin 07.10.2026)** — verbatim în DECIZII 07.10.2026
+  („Cele 33 de chei”). Poarta completă o singură dată, la publicare; ZIP `~/ghid_incoming/iconta_chei_optionale.zip` + ZIP-ul turei
+  C5/C6 `~/ghid_incoming/iconta_c5_c6.zip`.
+  - ultim: clasificarea la sursă (citit fiecare `corp.get` și funcția de domeniu în care ajunge): 31 fapte fiscale (schimbă un cont
+    al notei, o linie, baza sau regimul TVA) -> intră; 2 nu (`achizitie-agricultor:agricultor` = text în explicație;
+    `achizitie-necorporala:cod` = cod de registru generat). Aceeași clasă, măsurată: (b) 4 chei citite pe o ramură pe care câmpul lor
+    e ascuns (`nota-credit` plată › dobândă, bacșiș distribuire › sursă, inventariere casare › 2 conturi pe calea API); (c) 41 de câmpuri
+    opționale cu implicit pe server — 8 selecturi (preselecție tacită, ca `destinatie_cd` la C6) + 3 cote marcate opțional deși serverul
+    le cere; restul = conturi cu sugestie și sume goale = 0 (DECIZIE: devin obligatorii?).
+  - urmator: — (livrat; închiderea pe `main`: registre, artefacte, poarta completă o dată, four-way, cele două ZIP-uri). STARE = ÎNCHIS
+  - livrat (pașii 1–6): instrumentul comun + verificatorul `FAPT_FISCAL_NECERUT` (DS cap.17 v2.77); motorul (lanț, `multi`
+    condiționat, `trimiteCa`, `lista`, fără preselecție); 31 de chei în formulare + ramurile lor; (b)/(c)/(d); 7 DA/NU prin `bifa`;
+    9 mutații roșii; proba înainte/după (24 de formulare, 7 drumuri); uneltele vizuale.
+  - pasi:
+    1. `scripts/scan_formulare_operatiuni.py`: analiza formularelor scoasă din `core/test_formulare_operatiuni_campuri.py` (o singură
+       implementare pentru test ȘI verificator); clasificarea (cheile în afara ecranului, cu motivul) stă acolo, ca date.
+    2. Motorul formularului (`operatiuni_ecran.js`): vizibilitate în lanț (câmpul se vede doar dacă și părintele lui se vede); bloc
+       `multi` condiționat; `trimiteCa` (alt nume de câmp, aceeași cheie); `lista` (valoarea trimisă ca listă).
+    3. Câmpurile celor 31 de chei, cerute explicit, fără preselecție (DN / select cu „— alege —” / număr / cont cu sugestie): turism
+       (regimurile normal și intermediar ajung în ecran: componente, comision, TVA inclus), aur (monedă: an, preț, valoarea aurului;
+       opțiunea de taxare), decont (calculul plafonului de diurnă: internă / externă), credit (comision, dobânda angajată, dobânda la
+       plată), asociați, SGR, producție, ONG, reevaluare, lichidare, conturile (leasing, provizion, subvenție, decontare, export, LIC),
+       inventariere (vinovatul), sponsorizare, bacșiș la distribuire.
+    4. Varianta (c): cele 8 selecturi opționale cu implicit -> obligatorii cu „— alege —”; cele 3 cote -> obligatorii (garda „cerut dar
+       opțional” vedea `cota_ceruta(corp)`, nu `cota_ceruta({**corp, …})`).
+    5. Gărzi: cheile fără câmp = exact lista clasificată; cheile citite pe ramură ascunsă = exact lista clasificată; select opțional cu
+       implicit pe server = interzis; câmpurile opționale rămase = ratchet (decizie); verificator `FAPT_FISCAL_NECERUT` (DS cap.17) pe
+       același instrument.
+    6. Probe înainte/după cu capturi (formularele atinse + drumuri cu efect în notă), mutații, unelte vizuale, registre, poartă, două ZIP-uri.
+
 - fir: **C5 + C6 cu generalizarea pe clasă (comanda Costin 07.10.2026: „repară C5 și C6, cu generalizarea pe clasă”)** — verbatim în
   DECIZII 07.10.2026 („C5 și C6”). Poarta completă o singură dată, la publicare.
   - ultim: măsurarea claselor. C5 („ecranul anunță rezultatul unei scrieri după o cheie pe care ruta n-o întoarce”): 81 de apeluri de

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.76 · 7 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.77 · 7 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -212,6 +212,15 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 17. Fapte fiscale — o singură sursă, fără default tacit (backend)
 - **DEFAULT_FISCAL_TACIT** (v2.16, 23.07.2026; extins v2.18, v2.19). Un câmp fiscal decisiv (`regim_fiscal`, `tip_firma`, `platitor_tva`, `tip_decont`, `operatiuni_ic`) **NU se defaultează pe LITERAL inline** — interzis `x or "micro"`, `x || "srl"`, `… else "pfa"`, `? : "trimestrial"`, `operatiuni_ic or False`, `operatiuni_ic || false` (literalele: micro/profit/srl/pfa/lunar/trimestrial + booleanul True/False/false și "da"/"nu" pentru `operatiuni_ic`). Un câmp obligatoriu care nu se poate autocompleta (ex. `tip_decont` — ANAF v9 nu aduce periodicitatea; `operatiuni_ic` — profil declarat de contabil, decide obligația D390) se cere EXPLICIT, cu criteriul afișat prin `.camp-ajutor` (cap.6), fără preselecție tacită. Faptul, normalizarea și default-ul trăiesc **într-un singur loc**: primitivele din `core/migrare_api.py` (`regim_contabil` = tip_firma→partidă simplă/dublă, `regim_efectiv` = regimul CIT efectiv cu partidă simplă⇒None, `tip_firma_nrm` = normalizare + default 'srl'). Consumatorii le importă; NU redau fallback-ul. Motiv: un `regim_fiscal or "micro"` inline în logica de obligații fabrică declarații pe firme la care nu se aplică (dovedit: termene emitea D100 pe un PFA, 23.07). Se prinde forma or/||/else — fallback pe CITIRE (`x or "micro"`, `x || "srl"`, `… else "pfa"`, ternar `? … : "micro"` cu literalul în ramura ELSE = default când câmpul lipsește); atribuirea simplă `x = "srl"` (declarație, nu fallback) și maparea valoare→etichetă `x === "profit" ? "profit" : …` (literal în ramura THEN) NU se prind. Regula **DEFAULT_FISCAL_TACIT** în verificator scanează **`.py` ȘI `.js`**; EXCEPTAT: `migrare_api.py` (primitivele — singurul loc unde literalul e legitim). Frontendul folosește FAPTUL expus de backend (`regim_contabil` prin `tenantii_userului` / `/migrare/vector`), nu defaultează inline.
+- **FAPT_FISCAL_NECERUT** (v2.77, 07.10.2026, comanda Costin — `scan_formulare_operatiuni`). **O cheie pe care serverul o citește și
+  care e fapt fiscal (schimbă nota, baza sau impozitul) intră în formular, cerută explicit, fără preselecție. O cheie strict
+  tehnică, pentru API, rămâne în afara ecranului** — cu motivul scris lângă ea (`CHEI_IN_AFARA_ECRANULUI`). Trei consecințe pe
+  formularele Operațiunilor: (1) niciun select obligatoriu nu vine cu o opțiune aleasă — motorul pune „— alege —” pe oricare;
+  (2) un câmp e opțional numai dacă golul lui NU e o valoare pe care serverul o pune în locul omului (`OPTIONALE_PERMISE`: sumă
+  goală = 0, cont gol = 371, dată goală = data notei sunt implicite, deci câmpul e obligatoriu); (3) o cheie citită pe o ramură
+  are câmpul vizibil pe acea ramură. Gard: verificator `FAPT_FISCAL_NECERUT` + `core/test_formulare_operatiuni_campuri.py`, pe
+  același instrument (`scripts/scan_formulare_operatiuni.py`). LIMITA: vede formularele din registrul Operațiunilor; ecranele
+  scrise de mână nu.
 
 ## 18. Carduri pe firmă — regim obligatoriu, o singură sursă
 
@@ -709,6 +718,11 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.77 (07.10.2026)** — **cap.17: FAPT_FISCAL_NECERUT** (comanda Costin, „Cele 33 de chei”): cheia fiscală citită de server se cere
+explicit în formular, fără preselecție; cea tehnică rămâne în afara ecranului, cu motiv. 31 din 33 de chei intrate în Operațiuni;
+36 de selecturi obligatorii nu mai vin preselectate (regula e a motorului); câmpurile opționale cu implicit tacit devin obligatorii.
+Verificator `FAPT_FISCAL_NECERUT`.
+
 **v2.76 (07.10.2026)** — **cap.24: entitatea se alege din listă, nu prin ID; trimiterea în coadă are un singur drum.** „Mijlocul fix” (reevaluare, casare) = listă din registrul activelor; `coada_trimite.js` (`trimiteInCoada`) folosit de Declarații și Bilanț — corpul generării, refuzul real, confirmarea atenționărilor DUK (C3). Gărzi: `ID_INTERN_TASTABIL`, `COADA_UN_SINGUR_DRUM`.
 **v2.75 (06.10.2026)** — **cap.24: prețul și articolul pe care nu le-a ales omul (comanda Costin 06.10.2026, pct.1b/1c).** Rândul nou fără preț și fără articol; propunerea (preț din nomenclator, UM din articol) se golește când denumirea se schimbă; denumirea scrisă de mână dezleagă articolul; prețul golit = lipsă (`null`), refuzată de server lângă câmp. Aplicat: emiterea, factura recurentă, intrarea în stoc, rețeta (ingredientul nou și prețul), transferul și reclasificarea (opțiunea goală), nomenclatorul de produse. Gard: `PRET_SAU_ARTICOL_NEALES`.
 **v2.74 (06.10.2026)** — **Lotul 07.10 (retestul F5/F1): cap.2 ascuns = invizibil; cap.6 mesajul de după un buton în vedere și refuzul cu buton spre ecran.** `[hidden]{display:none!important}` global (înlocuiește excepțiile `.acces-overlay[hidden]`, `.pa-lista[hidden]`); `aduInVedere` + `SELECTOR_MESAJ` în `api.js`; `ecran_destinatie.js` (`ECRANE`, `butonSpreEcran`) + `_butonSpreEcran` în `api.js`. Clase noi: `.val-evidentiat` (elementul deschis dintr-o notificare), `.df-jurnal` / `.df-jurnal-cadru` (istoricul Date firmă încape în fereastră), `.em-ciorna` (anunțul facturii păstrate), `.ecran-destinatie`. Gărzi: `HIDDEN_CU_DISPLAY`, `MESAJ_FARA_ADUCERE_IN_VEDERE`, `REFUZ_ECRAN_FARA_BUTON`.

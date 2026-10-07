@@ -2823,8 +2823,8 @@ def vanzare_marja_turism(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
-                                       corp.get("optiune_normal", False),
-                                       corp.get("intermediar", False))
+                                       _uc_comun.bifa(corp, "optiune_normal", False),
+                                       _uc_comun.bifa(corp, "intermediar", False))
             if regim == "special":
                 r = _m.marja_turism_special(corp["incasat"], corp["cost_ue"],
                                             corp.get("cost_non_ue", 0), _common.cota_ceruta(corp))
@@ -2844,7 +2844,7 @@ def vanzare_marja_turism(tenant_id, corp, ctx):
                 rasp = {"regim": regim, "total_baza": str(r["total_baza"]),
                         "total_tva": str(r["total_tva"]), "total_factura": str(r["total_factura"])}
             else:
-                r = _m.comision_intermediar(corp["comision"], _common.cota_ceruta(corp), corp.get("tva_inclus", False))
+                r = _m.comision_intermediar(corp["comision"], _common.cota_ceruta(corp), _uc_comun.bifa(corp, "tva_inclus", False))
                 linii = [("4111", "704", r["baza"])]
                 if r["tva"] > 0:
                     linii.append(("4111", "4427", r["tva"]))
@@ -2877,7 +2877,7 @@ def vanzare_aur_investitii(tenant_id, corp, ctx):
                                                corp.get("valoare_aur"))
             if not ok:
                 raise ValueError("nu este aur de investitii: " + motiv)
-            regim = _m.livrare_aur(corp.get("optiune_taxare", False),
+            regim = _m.livrare_aur(_uc_comun.bifa(corp, "optiune_taxare", False),
                                    corp["calitate_client"], corp["client_identificare"])
             suma = Decimal(str(corp["suma"]))
             if suma <= 0:
@@ -3637,7 +3637,7 @@ def nota_credit(tenant_id, corp, ctx):
             elif op == "plata":
                 r = _cr.nota_plata(corp.get("rata", 0), corp.get("dobanda", 0),
                                    corp.get("comision", 0), tip,
-                                   dobanda_angajata=corp.get("dobanda_angajata", True))
+                                   dobanda_angajata=_uc_comun.bifa(corp, "dobanda_angajata", True))
                 d0 = "Plata rata/dobanda/comision credit"
             elif op == "restanta":
                 r = _cr.nota_restanta(corp["suma"], tip)
@@ -4015,7 +4015,7 @@ def nota_asociati(tenant_id, corp, ctx):
                 interimar = _uc_comun.bifa(corp, "interimar", False)   # select „0”/„1”: bool("0") ar fi True
                 r = _da.nota_dividend(corp["brut"], _date.fromisoformat(corp["data"]),
                                       interimar,
-                                      corp.get("cu_plata", True))
+                                      _uc_comun.bifa(corp, "cu_plata", True))
                 info = {"impozit": str(r["impozit"]), "net": str(r["net"]),
                         "cota": r["cota"]}
                 d0 = f"Dividende {'interimare' if interimar else 'anuale'} "                      f"brut {corp['brut']}, impozit {r['cota']}%"
@@ -4064,7 +4064,7 @@ def nota_sponsorizare_ep(tenant_id, corp, ctx):
                                             corp.get("impozit_profit", 0),
                                             corp["suma"],
                                             corp.get("tip_impozit", "profit"),
-                                            corp.get("beneficiar_in_registru", True))
+                                            _uc_comun.bifa(corp, "beneficiar_in_registru", True))
                 info = {k: (str(v) if not isinstance(v, str) else v)
                         for k, v in c.items()}
         except (ValueError, KeyError) as e:

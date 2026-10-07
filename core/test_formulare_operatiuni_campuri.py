@@ -14,136 +14,20 @@ din ramură trebuie să fie vizibile pentru opțiune (fără `cond`, sau cu `con
 LIMITA, declarată: vede doar accesul `corp["x"]` (obligatoriu), nu `corp.get` (opțional prin construcție); vede
 ramurile scrise ca `if/elif var == "v"`, nu dispecere prin dicționare.
 """
-import io
 import os
 import re
+import sys
 
 import pytest
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-#: (rută, select=opțiune, câmp) acceptate, cu motivul: ramura care-l cere NU e atinsă din ecran.
-EXCEPTII = {
-    ("nota-inventariere", "operatie=casare", "valoare_bruta"):
-        "formularul cere `mijloc_fix_id` (obligatoriu) -> ramura fără el, cu sumele date de mână, e calea API",
-    ("nota-inventariere", "operatie=casare", "amortizare_cumulata"): "idem",
-    ("vanzare-marja-turism", "*", "componente"):
-        "regimul normal (art.311 alin.(10)) se alege prin `optiune_normal`, pe care ecranul nu-l are: din ecran se "
-        "ajunge numai la regimul special — ramura e calea API",
-    ("vanzare-marja-turism", "*", "comision"): "idem, regimul de intermediar (`intermediar`)",
-    ("nota-sponsorizare", "*", "cifra_afaceri"): "citit numai sub `if corp.get(\"cifra_afaceri\") is not None` — calcul opțional",
-    ("nota-sgr", "operatie=virare", "suma"):
-        "câmp comun: alternativ la nr. ambalaje la achiziție/vânzare/restituire, obligatoriu doar la virare; motorul de "
-        "formulare nu are «opțional pe operație» pentru același câmp, iar refuzul rutei numește câmpul",
-    ("achizitie-agricultor", "*", "agricultor"): "citit numai sub `if corp.get(\"agricultor\")` — opțional prin construcție",
-}
-
-
-def _citeste(p):
-    return io.open(os.path.join(RAD, p), encoding="utf-8").read()
-
-
-def formulare(js):
-    # [C6, 07.10.2026] `DN(...)` se citește din DEFINIȚIA lui în ecran (opțiunile și „— alege —”), nu se presupune: un constructor
-    # schimbat (ex. fără `neales`) trebuie să se vadă în fiecare câmp DA/NU. Fără definiție, `DN(` nu e DA/NU.
-    dn_def = re.search(r'const DN = [^\n]*', js)
-    dn_def = dn_def.group(0) if dn_def else ""
-    parti = dn_def.split("optiuni:", 1)
-    dn_opt = re.findall(r'\["([^"]*)",', parti[1]) if len(parti) == 2 else None
-    dn_neales = re.search(r"\bneales: ", dn_def) is not None
-    starts = list(re.finditer(r'cheie: "([^"]+)", titlu: "([^"]+)", ruta: "([^"]+)"', js))
-    for k, m in enumerate(starts):
-        corp = js[m.end():(starts[k + 1].start() if k + 1 < len(starts) else len(js))]
-        multi = re.match(r'\s*,\s*multi: "(\w+)"', corp)
-        corp = corp.split("subcampuri:")[0]
-        poz = [x.start() for x in re.finditer(r'\b(?:C|DN)\("', corp)] + [len(corp)]
-        campuri = []
-        for a, b in zip(poz, poz[1:]):
-            buc = corp[a:b]
-            m_c = re.match(r'(C|DN)\("(\w+)"(?:, "[^"]*"(?:, "(\w+)")?)?', buc)
-            nume, dn = m_c.group(2), m_c.group(1) == "DN"
-            cm = re.search(r'cond: \{ camp: "(\w+)", val: (\[[^\]]*\]|"[^"]*") \}', buc)
-            opt = re.search(r'optiuni: \[(.*?)\]\]', buc)
-            # [C6, 07.10.2026] `DN(...)` = select Da/Nu cu „— alege —” (constructorul din operatiuni_ecran.js); `tip`/`neales`
-            # se citesc, ca garda bifelor să vadă CE fel de câmp cere un DA/NU.
-            campuri.append({"nume": nume, "optional": re.search(r"\boptional: true\b", buc) is not None, "cond": (cm.group(1), re.findall(r'"([^"]*)"', cm.group(2))) if cm else None,
-                            "optiuni": dn_opt if dn else (re.findall(r'\["([^"]*)",', opt.group(1) + "]") if opt else None),
-                            "tip": ("select" if dn_opt else "?") if dn else (m_c.group(3) or "numar"),
-                            "neales": dn_neales if dn else re.search(r"\bneales: ", buc) is not None})
-        if multi:   # cheia `multi` e lista de rânduri, completată din subcâmpuri
-            campuri.append({"nume": multi.group(1), "optional": False, "cond": None, "optiuni": None, "tip": "multi", "neales": False})
-        yield m.group(1), m.group(3), campuri
-
-
-def functie_uc(ruta, main, uc):
-    m = re.search(r'@app\.post\("/tenants/\{tenant_id\}/%s"\)\ndef \w+\(' % re.escape(ruta), main)
-    if not m:
-        return None
-    f = re.search(r'_uc_tenants\.(\w+)\(', main[m.end():main.find("\n@app", m.end())])
-    if not f or ("def %s(" % f.group(1)) not in uc:
-        return None
-    i = uc.index("def %s(" % f.group(1))
-    return uc[i:uc.find("\ndef ", i + 5)]
-
-
-def ramura(src, var, val):
-    m = re.search(r'\n( *)(?:if|elif) %s == "%s":' % (re.escape(var), re.escape(val)), src)
-    if not m:
-        return None
-    ind = len(m.group(1))
-    linii = []
-    for l in src[m.end():].split("\n")[1:]:
-        if l.strip() and len(l) - len(l.lstrip(" ")) <= ind:
-            break
-        linii.append(l)
-    return "\n".join(linii)
-
-
-def cerute_in(cod):
-    """Câmpurile pe care un bloc de cod le cere OBLIGATORIU: acces direct `corp["x"]` și ajutoarele care refuză fără
-    câmp — `cota_ceruta(corp)` cere `cota`; `cere_cont(conn, schema, corp.get("x"), "x")` FĂRĂ implicit cere `x`."""
-    c = set(re.findall(r'corp\["(\w+)"\]', cod))
-    if re.search(r"cota_ceruta\(corp\)", cod):
-        c.add("cota")
-    c |= set(re.findall(r'cere_cont\(conn, schema, corp\.get\("(\w+)"\), "\w+"\)', cod))
-    return c - {"data"}
-
-
-def lipsuri(js, main, uc):
-    out = []
-    for cheie, ruta, campuri in formulare(js):
-        src = functie_uc(ruta, main, uc)
-        if not src:
-            continue
-        ramificat = False
-        for sel in (c for c in campuri if c["optiuni"]):
-            vm = re.search(r'(\w+) = corp\.get\("%s"' % sel["nume"], src)
-            if not vm:
-                continue
-            ramificat = True
-            for val in sel["optiuni"]:
-                br = ramura(src, vm.group(1), val)
-                if br is None:
-                    continue
-                cerute = cerute_in(br)
-                vizibile = {c["nume"] for c in campuri
-                            if c["cond"] is None or c["cond"][0] != sel["nume"] or val in c["cond"][1]}
-                optionale = {c["nume"] for c in campuri if c["optional"]}
-                for x in sorted(cerute & vizibile & optionale):
-                    if (ruta, "%s=%s" % (sel["nume"], val), x) not in EXCEPTII:
-                        out.append((ruta, sel["nume"], val, x, "optional"))
-                for x in sorted(cerute - vizibile):
-                    if (ruta, "%s=%s" % (sel["nume"], val), x) in EXCEPTII:
-                        continue
-                    out.append((ruta, sel["nume"], val, x, "lipsa"))
-        if not ramificat:   # formular cu o singură operație: tot corpul rutei
-            for x in sorted(cerute_in(src) & {c["nume"] for c in campuri if c["optional"]}):
-                if (ruta, "*", x) not in EXCEPTII:
-                    out.append((ruta, None, None, x, "optional"))
-            for x in sorted(cerute_in(src) - {c["nume"] for c in campuri}):
-                if (ruta, "*", x) not in EXCEPTII:
-                    out.append((ruta, None, None, x, "lipsa"))
-    return out
+sys.path.insert(0, os.path.join(RAD, "scripts"))
+# [07.10.2026, „Cele 33 de chei”] Analiza stă în `scripts/scan_formulare_operatiuni.py`: o singură implementare pentru gărzile de aici
+# ȘI pentru regula `FAPT_FISCAL_NECERUT` din verificator; clasificarea (ce rămâne în afara ecranului, cu motivul) e date, acolo.
+from scan_formulare_operatiuni import (ASCUNSE_PERMISE, BIFA_VALORI, CHEI_IN_AFARA_ECRANULUI, EXCEPTII,  # noqa: E402,F401
+                                       OPTIONALE_PERMISE, _citeste, ascunse_pe_ramura, bife_nerespectate, cerute_in,
+                                       chei_fara_camp, formulare, functie_uc, lipsuri, masoara, motor_fara_preselectie,
+                                       optionale, ramura, selecturi_preselectate)
 
 
 def _mesaj(r):
@@ -205,30 +89,6 @@ def test_bifa_refuza_ce_nu_e_da_nu_si_cere_campul_obligatoriu():
 # 1 opțional cu „-”. Regula (DS cap.17, DEFAULT_FISCAL_TACIT): faptul fiscal „se cere EXPLICIT … fără preselecție tacită”.
 # =================================================================================================================
 
-#: valorile pe care `uc_comun.bifa` le înțelege — orice altă opțiune a unui select DA/NU ar fi refuzată de server
-BIFA_VALORI = {"true", "false", "1", "0", "da", "nu"}
-
-
-def bife_nerespectate(js, main, uc):
-    out = []
-    for _cheie, ruta, campuri in formulare(js):
-        src = functie_uc(ruta, main, uc)
-        if not src:
-            continue
-        dupa_nume = {c["nume"]: c for c in campuri}
-        for b in sorted(set(re.findall(r'bifa\(corp, "(\w+)"', src))):
-            c = dupa_nume.get(b)
-            if c is None:
-                out.append((ruta, b, "lipsește din formular — serverul pune implicitul fără ca omul să fi ales"))
-            elif c["tip"] != "select":
-                out.append((ruta, b, "e câmp „%s”, nu DA/NU" % c["tip"]))
-            elif c["optional"] or not c["neales"]:
-                out.append((ruta, b, "DA/NU fără „— alege —” obligatoriu (preselectat sau opțional)"))
-            elif not set(c["optiuni"] or []) <= BIFA_VALORI:
-                out.append((ruta, b, "opțiuni pe care `bifa` le refuză: %s" % sorted(set(c["optiuni"]) - BIFA_VALORI)))
-    return out
-
-
 def test_bifele_serverului_se_cer_explicit_da_nu():
     rele = bife_nerespectate(_citeste("static/js/ecrane/operatiuni_ecran.js"), _citeste("main.py"), _citeste("core/uc_tenants.py"))
     assert rele == [], "bife ale serverului necerute explicit în ecran:\n  " + "\n  ".join("%s › %s: %s" % r for r in rele)
@@ -241,7 +101,7 @@ def test_bifele_serverului_se_cer_explicit_da_nu():
     # bifa scoasă din formular
     (('    DN("faliment", ', '    C("_scos_", "x", "numar", '), ("nota-provizion", "faliment", "lipsește din formular — serverul pune implicitul fără ca omul să fi ales")),
     # preselecția „Da”
-    (('    DN("imputabil", "Imputabil", { ', '    C("imputabil", "Imputabil", "select", { optiuni: [["true","Da"],["false","Nu"]], '),
+    (('    DN("imputabil", "Imputabil", { ', '    C("imputabil", "Imputabil", "select", { optional: true, optiuni: [["true","Da"],["false","Nu"]], '),
      ("nota-inventariere", "imputabil", "DA/NU fără „— alege —” obligatoriu (preselectat sau opțional)")),
 ])
 def test_CALIBRARE_bifele_prind_fiecare_forma(stricare, asteptat):
@@ -272,35 +132,94 @@ def test_campul_text_nu_e_citit_ca_numar():
     assert sorted(text & nume_citite_numeric()) == []
 
 
-#: [07.10.2026] Cheile OPȚIONALE (`corp.get`) pe care rutele Operațiunilor le citesc și formularul nu le are — fiecare primește pe
-#: server implicitul ei. Unele sunt calea API, intenționat (EXCEPTII sus); care intră în ecran e DECIZIE DE PRODUS (DECIZII
-#: 07.10.2026, „C5 și C6”). Ratchet în AMBELE sensuri: o cheie nouă fără câmp pică; una care primește câmp se scoate de aici.
-CHEI_OPTIONALE_FARA_CAMP_07_10 = {
-    "achizitie-agricultor:agricultor", "achizitie-necorporala:cod", "decontare-valuta:cont_banca", "export-extracomunitar:cont_venit",
-    "nota-asociati:cu_plata", "nota-asociati:dobanda", "nota-credit:comision", "nota-credit:dobanda_angajata",
-    "nota-decont-deplasare:curs", "nota-decont-deplasare:diurna_bugetara", "nota-inventariere:vinovat",
-    "nota-leasing:cont_cheltuiala", "nota-lichidare:cont_amortizare", "nota-lichidare:cont_imobilizare",
-    "nota-ong:sursa", "nota-productie:coef_348", "nota-provizion:cont_ajustare",
-    "nota-sgr:catre", "nota-sgr:garantii_returnate", "nota-sgr:tarif_gestionare", "nota-sponsorizare:beneficiar_in_registru",
-    "nota-subventie:cont_venit", "reevaluare-imobilizare:pierdere_655_anterioara", "reevaluare-imobilizare:sold_105_activ",
-    "vanzare-aur-investitii:an_emisie", "vanzare-aur-investitii:optiune_taxare", "vanzare-aur-investitii:pret_unitar",
-    "vanzare-aur-investitii:valoare_aur", "vanzare-ic:cont_venit", "vanzare-marja-turism:intermediar",
-    "vanzare-marja-turism:locuri", "vanzare-marja-turism:optiune_normal", "vanzare-marja-turism:tva_inclus",
-}
+# =================================================================================================================
+# [comanda Costin 07.10.2026, „Cele 33 de chei”] DS cap.17: „O cheie care e fapt fiscal (schimbă nota, baza sau impozitul) intră în
+# formular, cerută explicit, fără preselecție. O cheie strict tehnică, pentru API, rămâne în afara ecranului.” Clasificarea e în
+# `scripts/scan_formulare_operatiuni.py` (31 au intrat; 2 rămân, cu motivul). Fiecare garda de mai jos e ratchet în AMBELE sensuri.
+# =================================================================================================================
+
+def test_cheile_fara_camp_sunt_exact_cele_clasificate():
+    """MUTAȚIE: câmpul „Cont venit” scos de la export -> `export-extracomunitar:cont_venit` fără câmp -> pică."""
+    acum = chei_fara_camp(*_surse_())
+    assert sorted(acum - set(CHEI_IN_AFARA_ECRANULUI)) == [], "cheie citită de server, fără câmp în formular și neclasificată"
+    assert sorted(set(CHEI_IN_AFARA_ECRANULUI) - acum) == [], "cheie clasificată «în afara ecranului» care are acum câmp: scoate-o"
+    assert all(len(m) > 60 for m in CHEI_IN_AFARA_ECRANULUI.values())
 
 
-def chei_optionale_fara_camp(js, main, uc):
-    out = set()
-    for _cheie, ruta, campuri in formulare(js):
-        src = functie_uc(ruta, main, uc)
-        if src:
-            citite = set(re.findall(r'corp\.get\("(\w+)"', src)) | set(re.findall(r'bifa\(corp, "(\w+)"', src))
-            out |= {"%s:%s" % (ruta, k) for k in citite - {c["nume"] for c in campuri}}
-    return out
+def test_nicio_cheie_citita_pe_o_ramura_unde_campul_e_ascuns():
+    """Varianta (b) a clasei: `nota-credit` › plată citea dobânda, câmpul se vedea numai la „Dobândă”. MUTAȚIE: dobânda înapoi
+    doar pe „dobanda” -> pică."""
+    acum = ascunse_pe_ramura(*_surse_())
+    assert sorted(acum - set(ASCUNSE_PERMISE)) == [], "cheie citită pe o ramură pe care câmpul ei e ascuns"
+    assert sorted(set(ASCUNSE_PERMISE) - acum) == []
 
 
-def test_cheile_optionale_fara_camp_nu_cresc():
-    """MUTAȚIE: „Zile de la scadență” scos din formularul provizionului -> `nota-provizion:zile_depasire` apare -> pică."""
-    acum = chei_optionale_fara_camp(_citeste("static/js/ecrane/operatiuni_ecran.js"), _citeste("main.py"), _citeste("core/uc_tenants.py"))
-    assert sorted(acum - CHEI_OPTIONALE_FARA_CAMP_07_10) == [], "cheie citită de server, fără câmp în formular"
-    assert sorted(CHEI_OPTIONALE_FARA_CAMP_07_10 - acum) == [], "cheie care are acum câmp: scoate-o din listă"
+def test_campurile_optionale_sunt_exact_cele_permise():
+    """Varianta (c): un câmp opțional = golul lui devine implicitul serverului (accize 0, cont 371, data notei…). MUTAȚIE: „Accize”
+    pus la loc opțional -> pică."""
+    acum = optionale(_surse_()[0])
+    assert sorted(acum - set(OPTIONALE_PERMISE)) == [], "câmp opțional al cărui gol e un implicit al serverului"
+    assert sorted(set(OPTIONALE_PERMISE) - acum) == []
+
+
+def test_niciun_select_obligatoriu_nu_vine_preselectat():
+    """Varianta (d): 36 de selecturi obligatorii veneau cu prima opțiune aleasă. Regula e a MOTORULUI acum. MUTAȚIE: motorul fără
+    „— alege —” implicit -> pică."""
+    js = _surse_()[0]
+    assert motor_fara_preselectie(js)
+    assert sorted(selecturi_preselectate(js)) == []
+
+
+def test_verificatorul_si_testul_folosesc_aceeasi_masuratoare():
+    assert masoara() == []
+
+
+def _surse_():
+    return _citeste("static/js/ecrane/operatiuni_ecran.js"), _citeste("main.py"), _citeste("core/uc_tenants.py")
+
+
+@pytest.mark.parametrize("stricare,asteptat", [
+    (('    C("cont_venit", "Cont venit", "text", { sugestie: "707" }),\n', ''), "export-extracomunitar:cont_venit"),
+    (('C("comision", "Comision bancar (627)", "numar", { cond: { camp: "operatie", val: "plata" } }),', ''), "nota-credit:comision"),
+])
+def test_CALIBRARE_cheia_scoasa_din_formular_e_prinsa(stricare, asteptat):
+    js, main, uc = _surse_()
+    assert js.count(stricare[0]) == 1, stricare[0]
+    assert asteptat in chei_fara_camp(js.replace(stricare[0], stricare[1]), main, uc)
+
+
+def test_CALIBRARE_ramura_ascunsa_e_prinsa():
+    js, main, uc = _surse_()
+    a = 'C("dobanda", "Dobândă", "numar", { cond: { camp: "operatie", val: ["dobanda", "plata"] } }),'
+    assert js.count(a) == 1
+    stricat = js.replace(a, 'C("dobanda", "Dobândă", "numar", { cond: { camp: "operatie", val: "dobanda" } }),')
+    assert {"nota-credit:operatie=plata:dobanda"} <= ascunse_pe_ramura(stricat, main, uc)
+
+
+def test_CALIBRARE_preselectia_e_prinsa():
+    js = _surse_()[0]
+    a = '`<option value="" selected>${esc(c.neales || "— alege —")}</option>`;'
+    assert js.count(a) == 1
+    stricat = js.replace(a, '(c.neales ? `<option value="" selected>${esc(c.neales)}</option>` : "");')
+    assert not motor_fara_preselectie(stricat)
+    assert {"nota-credit:tip"} <= selecturi_preselectate(stricat)
+
+
+def motorul_onoreaza_registrul(js):
+    """Ce declară registrul (`trimiteCa`, `lista`, `multiCond`, condiția în lanț) trebuie să-l și facă motorul — altfel
+    garda de mai sus ar judeca un formular pe care ecranul nu-l trimite așa. Întoarce ce lipsește din motor."""
+    cerinte = {
+        "trimiteCa": r"corpReq\[c\.trimiteCa \|\| c\.nume\]",
+        "lista": r"c\.lista \? \[val\] : val",
+        "multiCond": r'opCurenta\.multiCond \? ` data-cond-camp="\$\{opCurenta\.multiCond\.camp\}"',
+        "multi ascuns netrimis": r'blocMulti\.style\.display !== "none"',
+        "lanț": r'const vizibil = parinte && parinte\.style\.display !== "none";',
+    }
+    return sorted(k for k, rx in cerinte.items() if not re.search(rx, js))
+
+
+def test_motorul_onoreaza_trimiteCa_lista_multiCond_si_lantul():
+    """[07.10.2026] Probat în browser (`frontend_test/proba_chei_optionale.py`): bacșișul distribuit în numerar -> 462 = 5311;
+    turismul normal trimite `componente` și `locuri` ca listă; „Cui se impută” apare numai la Minus + Imputabil: Da.
+    MUTAȚIE: oricare din cele cinci scoasă din motor -> pică."""
+    assert motorul_onoreaza_registrul(_surse_()[0]) == []

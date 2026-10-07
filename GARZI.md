@@ -8797,7 +8797,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**715 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**716 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
 ### `core/` — 680
 
@@ -9482,7 +9482,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 35
+### `scripts/` — 36
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9497,6 +9497,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
 - `scripts/scan_etichete_campuri.py` — scripts/scan_etichete_campuri.py — câmpuri de formular fără etichetă accesibilă (gardul `core/test_etichete_campuri.py`).
 - `scripts/scan_forme_punct.py` — scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
+- `scripts/scan_formulare_operatiuni.py` — scripts/scan_formulare_operatiuni.py — ce CERE ecranul Operațiuni față de ce CITEȘTE serverul. O singură implementare, două porți:
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
@@ -10474,9 +10475,29 @@ ieșea „deductibil 0%” în loc de 100%).
 | răspunsul „Răspunsuri REGES” | `core/test_reges_poll_raspuns.py` (4) | `primit` / `salvat` lipsă sau mincinos (un mesaj străin dat drept păstrat) | `primit` scos -> roșu; `salvat = True` -> roșu | REGES și conexiunea înlocuite; SQL-ul de scriere neschimbat |
 | un DA/NU al serverului se cere explicit | `core/test_formulare_operatiuni_campuri.py::test_bifele_serverului_se_cer_explicit_da_nu` + calibrare (3) | o bifă citită prin `bifa` și: absentă din formular, câmp text, fără „— alege —” obligatoriu, opțiuni pe care `bifa` le refuză | `dovada_export` text -> roșu; `faliment` scos -> roșu; `DN` fără `neales` -> roșu | numai formularele Operațiunilor (celelalte ecrane trimit bife din butoane, cu boolean) |
 | câmp text citit ca număr | `…::test_campul_text_nu_e_citit_ca_numar` | un câmp text al cărui nume codul îl citește numeric (`puritate`) | `puritate` text -> roșu | după NUME |
-| cheile opționale fără câmp nu cresc | `…::test_cheile_optionale_fara_camp_nu_cresc` (ratchet în ambele sensuri, 33) | o cheie nouă citită de rută fără câmp în formular; o listă care nu mai e adevărată | `zile_depasire` scos -> roșu | care din cele 33 intră în ecran = DECIZIE |
+| cheile opționale fără câmp nu cresc | `…::test_cheile_optionale_fara_camp_nu_cresc` (ratchet în ambele sensuri, 33) | o cheie nouă citită de rută fără câmp în formular; o listă care nu mai e adevărată | `zile_depasire` scos -> roșu | care din cele 33 intră în ecran = DECIZIE | [citare-istorica: înlocuit 07.10.2026 de clasificarea celor 33 — GARZI 07.10.2026 «Cele 33 de chei»]
 
 **Datorii închise:** C5, C6 (testele permanente de mai sus le înlocuiesc). **Măsurat pe drum (aceeași clasă, reparate):** REGES ›
 Răspunsuri; 8 bife absente (certificat_amanare, garantata, afiliata, faliment, degradare_dovedita_distrusa, asigurat_sau_distrus,
 in_lei_cu_clauza, durata_sub_1_an — ultima ratată de prima mea căutare, `[a-z_]` fără cifre, prinsă de gardă); 3 preselectate;
 `destinatie_cd` opțional; `puritate`; 2 citiri moarte. Rămân deschise din parcurgere: C8, C10, C12, C14, C15, C16 (GARZI 06.10.2026).
+
+## 07.10.2026 — Cele 33 de chei: regula DS cap.17 (FAPT_FISCAL_NECERUT), cu clasa (comanda Costin)
+
+Decizia: DECIZII 07.10.2026 („Cele 33 de chei”). Categoriile **3. Calcul fiscal** (o cheie nespusă = implicitul serverului în notă,
+bază sau regim) și **11. Interfață** (ecranul cere tot ce citește serverul, explicit, fără preselecție).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| cheile fără câmp = exact cele clasificate | `core/test_formulare_operatiuni_campuri.py::test_cheile_fara_camp_sunt_exact_cele_clasificate` + calibrare (2) | o cheie citită de server fără câmp și fără motiv scris (`CHEI_IN_AFARA_ECRANULUI`) | „Cont venit” scos de la export -> roșu | numai formularele din registrul Operațiunilor |
+| nicio cheie pe ramură ascunsă | `…::test_nicio_cheie_citita_pe_o_ramura_unde_campul_e_ascuns` + calibrare | o cheie citită pe ramura `select=v` cu câmpul ascuns pe ea (`ASCUNSE_PERMISE`) | dobânda ascunsă la plată -> roșu | ramurile `if/elif var == "v"`; condiția directă a câmpului |
+| câmpurile opționale = exact cele permise | `…::test_campurile_optionale_sunt_exact_cele_permise` | un câmp opțional al cărui gol e un implicit al serverului (sumă 0, cont 371, data notei) | „Accize” opțional -> roșu | — |
+| niciun select preselectat | `…::test_niciun_select_obligatoriu_nu_vine_preselectat` + calibrare | un select obligatoriu cu prima opțiune aleasă (36 până azi); regula e a motorului | motorul fără „— alege —” -> roșu (verificator 49) | subrândurile `multi` au aceeași regulă, nevăzută de gardă |
+| motorul face ce declară registrul | `…::test_motorul_onoreaza_trimiteCa_lista_multiCond_si_lantul` | `trimiteCa` / `lista` / `multiCond` / lanțul ignorate de motor | fiecare din cele cinci scoasă -> roșu | structural (regex pe motor); comportamentul — proba de browser |
+| DA/NU nou citit prin `bifa` | `…::test_bifele_se_citesc_doar_prin_bifa` (existent) — a prins 7 citiri `corp.get` | `bool("false")` = adevărat pe un DA/NU trimis ca text | `dobanda_angajata` prin `corp.get` -> roșu | — |
+| verificator `FAPT_FISCAL_NECERUT` (DS cap.17 v2.77) | `verificator_conformitate.py`, instrument comun `scripts/scan_formulare_operatiuni.py` | aceleași, în poarta verificatorului | M1–M4 -> TOTAL 1 / 1 / 1 / 49 | idem |
+
+**Măsurat și reparat:** 31 din 33 de chei au intrat (2 rămân, cu motivul); varianta (b) 4 chei pe ramură ascunsă (2 reparate, 2 = calea API);
+varianta (c) câmpuri opționale cu implicit tacit -> obligatorii (5 rămân opționale, cu motivul); varianta (d) 36 de selecturi
+preselectate -> regula motorului; 7 DA/NU noi citite de server prin `bifa`. **Limita perimetrului:** ecranele scrise de mână (în afara
+registrului Operațiunilor) nu sunt văzute de aceste gărzi.
