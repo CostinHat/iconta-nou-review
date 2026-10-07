@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate } from "../api.js?v=eff78f4bb3";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, ALEGE, cereAlegerile } from "../api.js?v=eb01ea8ebd";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=5588924d9a";
+import { randeazaEmitere } from "./emitere_ecran.js?v=1162888580";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -717,7 +717,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=08f916fe63");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=bd41dc5a16");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -1042,7 +1042,7 @@ export function formSablon(corp, nav, tenantId, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
       <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" aria-label="Ziua din lun\u0103 la care se emite" title="Ziua din lun\u0103 la care se emite">
-      <select class="camp-input" id="fr-moneda" aria-label="Moneda">
+      <select class="camp-input" id="fr-moneda" aria-label="Moneda">${ALEGE}
         <option value="RON">RON</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>
@@ -1136,6 +1136,7 @@ export function formSablon(corp, nav, tenantId, opt) {
   corp.querySelector("#fr-salveaza").addEventListener("click", async () => {
     const zona = corp.querySelector("#fr-rezultat");
     curataEroriCamp(corp);
+    if (cereAlegerile(corp, ["#fr-moneda"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un rand incomplet se valideaza
     // pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const corpCerere = {

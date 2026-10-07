@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.77 · 7 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.78 · 7 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -221,6 +221,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   are câmpul vizibil pe acea ramură. Gard: verificator `FAPT_FISCAL_NECERUT` + `core/test_formulare_operatiuni_campuri.py`, pe
   același instrument (`scripts/scan_formulare_operatiuni.py`). LIMITA: vede formularele din registrul Operațiunilor; ecranele
   scrise de mână nu.
+  **Extinsă la ecranele scrise de mână (v2.78, 07.10.2026, comanda Costin — `scan_selecturi_ecrane`):** un select a cărui valoare e fapt
+  fiscal (inclusiv conținutul unei declarații către ANAF) pornește cu `ALEGE` / `alegeDacaLipseste(valoare salvată)` din `api.js`, iar
+  handlerul care trimite îl cere cu `cereAlegerile(rădăcină, câmpuri)` (refuz lângă câmp). Fiecare select din aceste ecrane e fie
+  conform, fie clasificat cu motivul (`CLASIFICARE`: ne-fiscal / valoare existentă / opțiune goală în builder / conflict DS). Gard:
+  același `FAPT_FISCAL_NECERUT` + `core/test_selecturi_ecrane.py`. Excepție deschisă: destinația TVA pe linie (cap.28 pct.2) — conflict.
 
 ## 18. Carduri pe firmă — regim obligatoriu, o singură sursă
 
@@ -718,6 +723,10 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.78 (07.10.2026)** — **cap.17: FAPT_FISCAL_NECERUT extins la ecranele scrise de mână** (comanda Costin, „clasificarea celor 82”):
+59 de selecturi fiscale pornesc cu „— alege —” și sunt cerute la trimitere (`ALEGE`, `alegeDacaLipseste`, `cereAlegerile` în `api.js`);
+23 clasificate cu motiv. Conflict deschis cu cap.28 pct.2 (destinația TVA pe linie).
+
 **v2.77 (07.10.2026)** — **cap.17: FAPT_FISCAL_NECERUT** (comanda Costin, „Cele 33 de chei”): cheia fiscală citită de server se cere
 explicit în formular, fără preselecție; cea tehnică rămâne în afara ecranului, cu motiv. 31 din 33 de chei intrate în Operațiuni;
 36 de selecturi obligatorii nu mai vin preselectate (regula e a motorului); câmpurile opționale cu implicit tacit devin obligatorii.

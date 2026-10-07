@@ -45,6 +45,28 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **FAPT_FISCAL_NECERUT în ecranele scrise de mână — clasificarea celor 82 (comanda Costin 07.10.2026: „Extinde regula la ecranele
+  scrise de mână, cu clasificarea celor 82”)** — verbatim în DECIZII 07.10.2026 („Ecranele scrise de mână”). Poarta completă o singură
+  dată, la publicare.
+  - ultim: cele 82 citite la sursă (markup, builder, unde ajunge valoarea): fapte fiscale fără „— alege —” (declarații manuale, emitere,
+    Date firmă, salariați, casă, RIP, eTransport, registrul PF, bilanț) / ne-fiscale (filtre, navigare, mediul REGES, registratura) /
+    deja cu opțiune goală în builder / valoare existentă afișată. CONFLICT: destinația TVA pe linie (DS cap.28 rule 2 „default sigur …
+    `selected` în markup”) contra DS cap.17 „fără preselecție” -> rămâne, decizie cerută.
+  - urmator: — (livrat; închiderea pe `main`: registre, artefacte, poarta completă o dată, four-way). STARE = ÎNCHIS
+  - livrat (pașii 1–4): mecanismul din `api.js`; 59 de selecturi fiscale cu „— alege —” + cerute de handler; starea inițială a
+    formularelor-panou nulă + fallback-urile JS scoase; scanner + gardă + verificator + DS cap.17 v2.78; 6 mutații roșii; proba
+    înainte/după (23 de ecrane, refuzuri la emitere / casă / D301, drumul complet pe casă); uneltele vizuale.
+  - pasi:
+    1. `static/js/api.js`: `ALEGE` (opțiune „— alege —”, neselectabilă după alegere), `alegeDacaLipseste(salvat)`,
+       `cereAlegerile(rădăcină, câmpuri)` (refuz lângă câmp, câmpurile ascunse sărite).
+    2. Selecturile FISCALE: „— alege —” când nu există valoare salvată; handlerul fiecărui formular cere alegerea; fallback-urile
+       tăcute din JS (`|| "RO"`, `|| "normal"`, `|| "factura"`, `|| "cfp"`, `|| "teren"`, `|| "2"`) scoase.
+    3. `scripts/scan_selecturi_ecrane.py` + garda `core/test_selecturi_ecrane.py` (fiecare select din ecranele scrise de mână e
+       într-o singură clasă, cu motivul; cele fiscale au „— alege —” și sunt cerute de handler) + verificator `FAPT_FISCAL_NECERUT`
+       extins; DS cap.17.
+    4. Probă de browser înainte/după (ecranele și formularele atinse; drumuri: emitere factură, D301 rând, RIP, casă, salariat),
+       mutații, unelte vizuale, registre, poartă.
+
 - fir: **Cele 33 de chei opționale fără câmp — regula DS cap.17 (comanda Costin 07.10.2026)** — verbatim în DECIZII 07.10.2026
   („Cele 33 de chei”). Poarta completă o singură dată, la publicare; ZIP `~/ghid_incoming/iconta_chei_optionale.zip` + ZIP-ul turei
   C5/C6 `~/ghid_incoming/iconta_c5_c6.zip`.

@@ -1721,3 +1721,15 @@ Decizia și încadrarea fiecărei chei: DECIZII 07.10.2026 („Cele 33 de chei�
   al serverului sunt obligatorii, dobânda la plata creditului și sursa bacșișului distribuit se pot da.
 - Probat: plata creditului cu dobândă neangajată -> 666 = 5121 și comision 627; bacșișul distribuit în numerar -> 462 = 5311 (era 5121);
   moneda de aur -> scutită; turism intermediar 300 cu TVA -> 247,93 + 52,07.
+
+## 07.10.2026 — Ecranele scrise de mână: niciun fapt fiscal ales de ecran (comanda Costin)
+
+Decizia și clasificarea celor 82: DECIZII 07.10.2026 („Ecranele scrise de mână”). Gărzile: GARZI 07.10.2026.
+
+- 59 de liste care alegeau în locul contabilului pornesc acum cu „— alege —”, iar trimiterea fără alegere se refuză lângă câmp:
+  formularele manuale ale declarațiilor, emiterea (moneda, țara, tipul operației, documentul), eTransport, tipul firmei, S1005/S1003,
+  casa, RIP, codul CM, salariații (norma, contractul, suspendările, tichetele cadou), registrul PF.
+- Formularele declarațiilor nu mai pornesc cu răspunsuri în stare (D230 „Un an”, D208 „Teren”, D110 „Regularizare”, D318 „DE”/„A” …).
+- Probat: casa fără categorie -> refuz lângă câmp; cu categorie -> dispoziția și nota 5311 = 4111. Selecturi alese la deschidere pe 23
+  de ecrane: 54 -> 9 (rămase = valori salvate).
+- Decizii deschise: destinația TVA pe linie (conflict DS), implicitele din schemă (Date firmă), input-urile precompletate.

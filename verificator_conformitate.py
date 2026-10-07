@@ -1483,6 +1483,11 @@ try:
     import scan_formulare_operatiuni as _sfo
     for _k_ff, _ce_ff in _sfo.masoara():
         rap["fapt_fiscal_necerut"].append(("operatiuni_ecran.js", 0, _k_ff, _ce_ff + " (DS cap.17 v2.77)"))
+    # [07.10.2026, „Ecranele scrise de mână”] aceeași regulă în afara registrului Operațiunilor (DS cap.17 v2.78): un fapt fiscal
+    # ales dintr-o listă pornește cu „— alege —” și e cerut de handler; restul selecturilor, clasificate cu motiv.
+    import scan_selecturi_ecrane as _sse
+    for _k_ff, _ce_ff in _sse.masoara():
+        rap["fapt_fiscal_necerut"].append((_k_ff.split(":", 1)[0], 0, _k_ff, _ce_ff + " (DS cap.17 v2.78)"))
 except Exception as _e_ff:
     rap["fapt_fiscal_necerut"].append(("verificator", 0, "EROARE", "gard fapt_fiscal_necerut: " + str(_e_ff)))
 

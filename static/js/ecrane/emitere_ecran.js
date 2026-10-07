@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta } from "../api.js?v=eff78f4bb3";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, ALEGE, cereAlegerile } from "../api.js?v=eb01ea8ebd";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=ab288d196e";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
@@ -148,7 +148,7 @@ export function stergeCiorna(tenantId) {
 // ---------- FORMULAR EMITERE ----------
 function formularEmitere(corp, nav, tenantId, num, opt) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
-  let monedaSel = "RON";
+  let monedaSel = "";   // [FAPT_FISCAL_NECERUT] moneda se alege, nu vine „RON” din ecran
   // [B1 D300] Tara partenerului decide ruta in generator (RO->intern, UE->livrare IC/taxare inversa,
   // non-UE->export). Grupul UE OGLINDESTE core/d390.TARI_UE ca incadrarea sa coincida cu backendul.
   const TARI_UE_JS = { AT:"Austria", BE:"Belgia", BG:"Bulgaria", CY:"Cipru", CZ:"Cehia",
@@ -158,7 +158,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     SE:"Suedia", SI:"Slovenia", SK:"Slovacia", GB:"Regatul Unit", XI:"Irlanda de Nord" };
   const TARI_NONUE_JS = { US:"Statele Unite", CH:"Elveția", TR:"Turcia", CN:"China",
     MD:"Republica Moldova", NO:"Norvegia", RS:"Serbia", UA:"Ucraina" };
-  const optiuniTara = `<option value="RO" selected>România (RO)</option>`
+  const optiuniTara = ALEGE + `<option value="RO">România (RO)</option>`
     + `<optgroup label="Uniunea Europeană">`
     + Object.keys(TARI_UE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_UE_JS[c])} (${c})</option>`).join("")
     + `</optgroup><optgroup label="În afara UE (export)">`
@@ -214,8 +214,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-total" id="em-total"></div>
     <div class="em-moneda-rand">
       <label class="em-moneda-eticheta" for="em-moneda">Monedă</label>
-      <select class="camp-input" id="em-moneda">
-        <option value="RON" selected>RON (lei)</option>
+      <select class="camp-input" id="em-moneda">${ALEGE}
+        <option value="RON">RON (lei)</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>
         <option value="GBP">GBP</option>
@@ -230,8 +230,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
       <select class="camp-input" id="em-tara">${optiuniTara}</select>
       <label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
-      <select class="camp-input" id="em-tipop">
-        <option value="normal" selected>Operațiune normală</option>
+      <select class="camp-input" id="em-tipop">${ALEGE}
+        <option value="normal">Operațiune normală</option>
         <option value="avans">Avans încasat</option>
         <option value="regularizare_avans">Regularizare avans</option>
       </select>
@@ -242,7 +242,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
     <div class="em-actiuni">
-      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
+      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">${ALEGE}
         <option value="factura">Factura</option>
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
@@ -487,7 +487,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // prezentare (chiar interdictia 4) - aici se opreste doar cifra gresita, nu duplicarea.
       tva += Math.round(val * ((l.cota_tva || 0) / 100) * 100) / 100;
     });
-    const cu = (x) => `${bani(x)} ${monedaSel}`;   // `bani()` e formatorul canonic (api.js); aici doar i se adauga moneda
+    const cu = (x) => `${bani(x)} ${monedaSel || ""}`;   // `bani()` e formatorul canonic (api.js); aici doar i se adauga moneda
     const nestiut = faraCota > 0;
     corp.querySelector("#em-total").innerHTML = `
       <div class="em-total-rand"><span>Bază</span><b>${cu(baza)}</b></div>
@@ -609,7 +609,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   const notaMon = corp.querySelector("#em-moneda-nota");
   if (selMon) {
     selMon.addEventListener("change", () => {
-      monedaSel = selMon.value || "RON";
+      monedaSel = selMon.value;
       if (notaMon) notaMon.textContent = monedaSel === "RON"
         ? "" : "TVA se convertește în lei la cursul BNR (art. 319).";
       recalc();
@@ -644,8 +644,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       tert_cui: corp.querySelector("#em-cui").value.trim() || null,
       tert_adresa: corp.querySelector("#em-adresa").value.trim() || null,
       moneda: monedaSel,
-      tert_tara: (corp.querySelector("#em-tara") || {}).value || "RO",              // [B1 D300]
-      tip_operatiune: (corp.querySelector("#em-tipop") || {}).value || "normal",    // [B1 D300]
+      tert_tara: corp.querySelector("#em-tara").value,              // [B1 D300] — ales de om (FAPT_FISCAL_NECERUT), nu „RO” tăcut
+      tip_operatiune: corp.querySelector("#em-tipop").value,    // [B1 D300] — ales de om, nu „normal” tăcut
       // [decizia A 02.10] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1)); validarea e pe server
       bon_fiscal_nr: ((corp.querySelector("#em-bon-nr") || {}).value || "").trim() || null,
       bon_fiscal_data: (corp.querySelector("#em-bon-data") || {}).value || null,
@@ -768,7 +768,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // [punte_stoc_v1] F172: poarta "pleaca marfa acum?" INAINTE de emitere, la firma CV cu linie de
   // articol (caseta-poarta, DS cap.5 v2.14). Fara articole -> emitere directa, flux identic cu azi.
   function porniEmitere() {
-    const tip = (corp.querySelector("#em-tip") || {}).value || "factura";
+    curataEroriCamp(corp);
+    if (cereAlegerile(corp, ["#em-moneda", "#em-tara", "#em-tipop", "#em-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    const tip = corp.querySelector("#em-tip").value;
     const cuArticole = linii.filter((l) => l && l.articol_id).length;
     // [decizia A 02.10] factura din bon nu descarcă gestiunea (marfa a ieșit cu bonul) -> fără poartă
     const dinBon = !!((corp.querySelector("#em-bon-nr") || {}).value || "").trim();

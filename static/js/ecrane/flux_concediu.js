@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie } from "../api.js?v=eff78f4bb3";
+import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile } from "../api.js?v=eb01ea8ebd";
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -84,7 +84,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
           <label class="camp"><span class="camp-eticheta">Serie</span><input type="text" id="cm-serie" class="camp-input" placeholder="ex. AB"></label>
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
-          <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
+          <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${ALEGE}${optCod}</select></label>
           <label class="camp" id="cm-venit-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Venit brut realizat \u00een perioada CM, dup\u0103 reducerea timpului (lei)<span class="oblig">*</span></span><input type="number" id="cm-venit" class="camp-input" min="0" step="0.01"></label>
           <label class="camp" id="cm-urgenta-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Cod urgen\u021b\u0103 medico-chirurgical\u0103<span class="oblig">*</span></span><input type="number" id="cm-urgenta" class="camp-input" min="1" max="177" placeholder="1\u2013177"><span class="camp-ajutor">Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06.</span></label>
           <label class="camp" id="cm-cnp-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">CNP-ul persoanei \u00eengrijite<span class="oblig">*</span></span><input type="text" id="cm-cnp-ingrijit" class="camp-input" maxlength="13" inputmode="numeric" placeholder="13 cifre"><span class="camp-ajutor">CNP-ul copilului (cod 09/91/92) sau al pacientului cu afec\u021biuni oncologice (cod 17) pentru care s-a eliberat certificatul. D112 \u00eel cere obligatoriu (regula DUK S97).</span></label>
@@ -150,6 +150,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const rez = zona.querySelector("#cm-rezultat");
       rez.innerHTML = "";
       curataEroriCamp(zona);
+      if (cereAlegerile(zona, ["#cm-cod"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const inceput = zona.querySelector("#cm-inceput").value;
       const sfarsit = zona.querySelector("#cm-sfarsit").value;
       const zile = parseInt(zona.querySelector("#cm-zile").value, 10);

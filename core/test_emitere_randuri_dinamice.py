@@ -140,6 +140,9 @@ def em_env():
 def _fill_benef(pg):
     pg.fill("#em-nume", "Client SRL")
     pg.fill("#em-cui", "RO12345678")
+    # [07.10.2026, FAPT_FISCAL_NECERUT] ecranul nu mai alege moneda / țara / operația / documentul: le alege omul (și testul)
+    pg.select_option("#em-moneda", "RON"); pg.select_option("#em-tara", "RO")
+    pg.select_option("#em-tipop", "normal"); pg.select_option("#em-tip", "factura")
 
 
 def _fill_linie(pg, i, l):

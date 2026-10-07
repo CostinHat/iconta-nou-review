@@ -1,17 +1,17 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar } from "../api.js?v=eff78f4bb3";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, cereAlegerile } from "../api.js?v=eb01ea8ebd";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=4275ef442f";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=47b6988b99";
-import { ecranRip } from "./rip_ecran.js?v=68e0430034";
+import { fluxConcediu } from "./flux_concediu.js?v=45e7b0e6ec";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=9513cfc395";
+import { ecranRip } from "./rip_ecran.js?v=f9e35ff63e";
 import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=bf7462331c";
-import { ecranEtransport } from "./etransport_ecran.js?v=49b829a378";
+import { ecranEtransport } from "./etransport_ecran.js?v=108eff72eb";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=4400876d01";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=928ac5dbcd";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
@@ -55,8 +55,8 @@ export function randeazaListaFirme(container, nav, inapoi) {
         </div>
         <div class="camp" style="margin-bottom:14px">
           <label for="fn-tip" class="camp-eticheta">Tip firmă</label>
-          <select class="camp-input" id="fn-tip">
-            <option value="srl" selected>SRL / SA (partidă dublă)</option>
+          <select class="camp-input" id="fn-tip">${ALEGE}
+            <option value="srl">SRL / SA (partidă dublă)</option>
             <option value="pfa">PFA / II / IF / profesii liberale (partidă simplă)</option>
           </select>
           <p class="camp-ajutor">Tipul <strong>nu se mai poate schimba</strong> după creare: determină sistemul contabil (partidă dublă sau simplă) și, odată introduse date, acestea nu pot fi mutate în celălalt regim. Verifică înainte de a continua.</p>
@@ -99,6 +99,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
         // Până azi cădea în rândul gri de sub CUI (`#fn-cui-info`), la 333 px deasupra butonului: „nu se întâmplă nimic”.
         const msg = corp.querySelector("#fn-msg");
         curataEroriCamp(corp); arataMesaj(msg, "", "info");
+        if (cereAlegerile(corp, ["#fn-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
         if (emailCl && !emailCl.includes("@")) { eroareCamp(corp, "fn-email", "Emailul nu pare valid. Lasă gol dacă nu inviți pe nimeni acum."); return; }
         btn.disabled = true; btn.textContent = "Se creează...";
         let rT = null;
@@ -881,7 +882,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const optional = !(extra && extra.obligatoriu);
     if (tip === "select") {
       const optiuni = (extra.optiuni || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
-      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><select id="sn-${id}" class="camp-input">${optiuni}</select></div>`;
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><select id="sn-${id}" class="camp-input">${ALEGE}${optiuni}</select></div>`;
     }
     if (tip === "checkbox") {
       return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}</label><input type="checkbox" id="sn-${id}"></div>`;
@@ -970,6 +971,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const nume = corp.querySelector("#sn-nume").value.trim();
     const brut = corp.querySelector("#sn-salariu_brut").value;
     curataEroriCamp(corp);  // [G10 cap.6 v2.30] eroare langa camp
+    if (cereAlegerile(corp, ["#sn-tip_norma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!nume) { eroareCamp(corp, "sn-nume", "Numele este obligatoriu."); return; }
     if (!brut || !(Number(brut) > 0)) { eroareCamp(corp, "sn-salariu_brut", "Salariul brut este obligatoriu și trebuie să fie mai mare ca 0."); return; }  // [#8]
     if (!corp.querySelector("#sn-cor").value.trim()) { eroareCamp(corp, "sn-cor-cauta", "Alege ocupația (cod COR) din listă — obligatorie pentru D112/REGES."); return; }  // [#7]
@@ -1100,7 +1102,7 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
       <label class="camp"><span class="camp-eticheta">Departament</span><input id="ad-dept" class="camp-input"></label>
       <label class="camp"><span class="camp-eticheta">Serie CI</span><input id="ad-serieci" class="camp-input"></label>
       <label class="camp"><span class="camp-eticheta">Nr. CI</span><input id="ad-nrci" class="camp-input"></label>
-      <label class="camp"><span class="camp-eticheta">Tip contract</span><select id="ad-tip" class="camp-input"><option value="nedeterminata">nedeterminată</option><option value="determinata">determinată</option></select></label>
+      <label class="camp"><span class="camp-eticheta">Tip contract</span><select id="ad-tip" class="camp-input">${ALEGE}<option value="nedeterminata">nedeterminată</option><option value="determinata">determinată</option></select></label>
       <label class="camp"><span class="camp-eticheta">Nr. CIM</span><input id="ad-nrcim" class="camp-input"></label>
       <label class="camp"><span class="camp-eticheta">Dată CIM</span><input type="date" id="ad-datacim" class="camp-input"></label>
       <label class="camp"><span class="camp-eticheta">Vechime în muncă</span><input id="ad-vm" class="camp-input" placeholder="ex. 8 ani 3 luni"></label>
@@ -1116,6 +1118,7 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
     const msg = corp.querySelector("#ad-msg");
     const val = (id) => corp.querySelector(id).value.trim();
     if (!val("#ad-scop")) { arataMesaj(msg, "Completează scopul adeverinței.", "eroare"); return; }
+    if (cereAlegerile(corp, ["#ad-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     const body = {
       scop: val("#ad-scop"), functie: val("#ad-functie"), departament: val("#ad-dept"),
       serie_ci: val("#ad-serieci"), nr_ci: val("#ad-nrci"), tip_contract: corp.querySelector("#ad-tip").value,
@@ -1405,7 +1408,7 @@ async function ecranSalariati(corp, nav, t) {
                           ["1iunie", "1 Iunie"], ["altul", "alt eveniment (taxabil)"]];
       zonaCadou.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
-        <select id="cadou-ev" aria-label="Evenimentul tichetelor cadou" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
+        <select id="cadou-ev" aria-label="Evenimentul tichetelor cadou" class="camp-input" style="width:200px">${ALEGE}${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
         <input type="number" step="0.01" min="0" id="cadou-input" aria-label="Valoarea tichetelor cadou (lei)" class="camp-input" placeholder="valoare (lei)" style="width:150px">
         <button class="buton-primar" id="cadou-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="cadou-cancel">Renunță</button></div>
@@ -1414,6 +1417,7 @@ async function ecranSalariati(corp, nav, t) {
       corp.querySelector("#cadou-input").focus();
       corp.querySelector("#cadou-cancel").addEventListener("click", () => { zonaCadou.innerHTML = ""; });
       corp.querySelector("#cadou-save").addEventListener("click", async () => {
+        if (cereAlegerile(corp, ["#cadou-ev"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
         const valoare = parseFloat(corp.querySelector("#cadou-input").value) || 0;
         const eveniment = corp.querySelector("#cadou-ev").value;
         try {
@@ -1584,7 +1588,7 @@ async function ecranSalariati(corp, nav, t) {
     };
     corp.querySelectorAll("[data-date]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.date;
-      const norma = b.dataset.dnorma || "intreaga";
+      const norma = b.dataset.dnorma || "";
       zonaDate.innerHTML = `<div style="margin:10px 0;padding:12px;border:1px solid var(--linie);border-radius:var(--raza)">
         <div class="camp-eticheta" style="font-weight:600;margin-bottom:8px">Corectează datele salariatului</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px">
@@ -1592,7 +1596,7 @@ async function ecranSalariati(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Prenume</span><input id="ed-pren" class="camp-input" value="${esc(b.dataset.dpren)}"></label>
           <label class="camp"><span class="camp-eticheta">CNP</span><input id="ed-cnp" class="camp-input" inputmode="numeric" maxlength="13" value="${esc(b.dataset.dcnp)}"></label>
           <label class="camp"><span class="camp-eticheta">Data angajării</span><input type="date" id="ed-ang" class="camp-input" value="${esc(b.dataset.dang)}"></label>
-          <label class="camp"><span class="camp-eticheta">Normă</span><select id="ed-norma" class="camp-input">
+          <label class="camp"><span class="camp-eticheta">Normă</span><select id="ed-norma" class="camp-input">${alegeDacaLipseste(norma)}
             <option value="intreaga" ${norma === "intreaga" ? "selected" : ""}>Întreagă (8h)</option>
             <option value="partiala" ${norma === "partiala" ? "selected" : ""}>Parțială</option></select></label>
           <label class="camp"><span class="camp-eticheta">Ore/zi</span><input type="number" min="1" max="8" step="0.5" id="ed-orezi" class="camp-input" value="${esc(b.dataset.dorezi)}"></label>
@@ -1605,6 +1609,7 @@ async function ecranSalariati(corp, nav, t) {
       corp.querySelector("#ed-cancel").addEventListener("click", () => { zonaDate.innerHTML = ""; });
       corp.querySelector("#ed-save").addEventListener("click", async () => {
         const msg = corp.querySelector("#ed-msg");
+        if (cereAlegerile(corp, ["#ed-norma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
         const nume = corp.querySelector("#ed-nume").value.trim();
         const prenume = corp.querySelector("#ed-pren").value.trim();
         const cnp = corp.querySelector("#ed-cnp").value.trim();
@@ -1645,7 +1650,7 @@ async function ecranSalariati(corp, nav, t) {
           ? model.map((x, i) => `<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:6px 0">
               <label class="camp"><span class="camp-eticheta">De la<span class="oblig">*</span></span><input type="date" id="susp${i}-inceput" class="camp-input" value="${esc(x.data_inceput || "")}"></label>
               <label class="camp"><span class="camp-eticheta">Până la<span class="oblig">*</span></span><input type="date" id="susp${i}-sfarsit" class="camp-input" value="${esc(x.data_sfarsit || "")}"></label>
-              <label class="camp"><span class="camp-eticheta">Tip<span class="oblig">*</span></span><select id="susp${i}-tip" class="camp-input">${Object.entries(TIP_SUSP).map(([k, v]) => `<option value="${k}" ${(x.tip || "cfp") === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+              <label class="camp"><span class="camp-eticheta">Tip<span class="oblig">*</span></span><select id="susp${i}-tip" class="camp-input">${alegeDacaLipseste(x.tip)}${Object.entries(TIP_SUSP).map(([k, v]) => `<option value="${k}" ${x.tip === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
               <label class="camp"><span class="camp-eticheta">Act / temei</span><input id="susp${i}-temei" class="camp-input" value="${esc(x.temei || "")}"></label>
               <button class="buton-sters buton-mic" data-susp-sterge="${i}">Șterge</button></div>`).join("")
           : `<div class="stare-goala stare-goala--inline">Nicio suspendare înregistrată: luna se plătește pe toate zilele din contract. Dacă salariatul a avut concediu fără plată sau contract suspendat, adaugă perioada cu „+ Adaugă”.</div>`;
@@ -1661,11 +1666,12 @@ async function ecranSalariati(corp, nav, t) {
           citeste(); model.splice(Number(x.dataset.suspSterge), 1); randeaza();
         }));
         zonaSusp.querySelector("#susp-adauga").addEventListener("click", () => {
-          citeste(); model.push({ data_inceput: "", data_sfarsit: "", tip: "cfp", temei: "" }); randeaza();
+          citeste(); model.push({ data_inceput: "", data_sfarsit: "", tip: "", temei: "" }); randeaza();
         });
         zonaSusp.querySelector("#susp-cancel").addEventListener("click", inchide);
         zonaSusp.querySelector("#susp-save").addEventListener("click", async (ev) => {
           citeste();
+          if (cereAlegerile(zonaSusp, model.map((_x, i) => `#susp${i}-tip`))) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
           const btn = ev.currentTarget;
           btn.disabled = true; btn.textContent = "Se salvează…";
           try {
@@ -2379,11 +2385,11 @@ async function ecranRegistruFiscal(corp, nav, t) {
       <h3 style="margin-top:22px">\u00censcrie un r\u00e2nd</h3>
       <div id="rf-eroare"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px">
-        <label class="camp"><span class="camp-eticheta">Categoria de venit</span><select id="rf-categorie" class="camp-input">
+        <label class="camp"><span class="camp-eticheta">Categoria de venit</span><select id="rf-categorie" class="camp-input">${ALEGE}
           ${Object.keys(d.categorii || {}).map((k) => `<option value="${esc(k)}">${esc(d.categorii[k])}</option>`).join("")}
         </select></label>
         <label class="camp"><span class="camp-eticheta">Sursa de venit</span><input type="text" id="rf-sursa_venit" class="camp-input"></label>
-        <label class="camp"><span class="camp-eticheta">Venitul net se stabile\u0219te</span><select id="rf-mod_venit_net" class="camp-input">
+        <label class="camp"><span class="camp-eticheta">Venitul net se stabile\u0219te</span><select id="rf-mod_venit_net" class="camp-input">${ALEGE}
           ${Object.keys(d.moduri_venit_net || {}).map((k) => `<option value="${esc(k)}">${esc(d.moduri_venit_net[k])}</option>`).join("")}
         </select></label>
         <label class="camp"><span class="camp-eticheta">Venit brut</span><input type="number" step="0.01" id="rf-venit_brut" class="camp-input"></label>
@@ -2419,6 +2425,7 @@ async function ecranRegistruFiscal(corp, nav, t) {
     potriveste();
 
     corp.querySelector("#rf-adauga").addEventListener("click", async () => {
+      if (cereAlegerile(corp, ["#rf-categorie", "#rf-mod_venit_net"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const corpJson = { an: an, categorie: Number(cat.value), mod_venit_net: Number(mod.value),
                          sursa_venit: corp.querySelector("#rf-sursa_venit").value,
                          venit_brut: corp.querySelector("#rf-venit_brut").value };
@@ -2763,7 +2770,7 @@ async function ecranBilant(corp, nav, t) {
       <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="bl-an" class="camp-input" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
-        <label class="camp"><span class="camp-eticheta">Tip</span><select id="bl-tip" class="camp-input">
+        <label class="camp"><span class="camp-eticheta">Tip</span><select id="bl-tip" class="camp-input">${ALEGE}
           <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
           <option value="s1003">S1003 \u00b7 entit\u0103\u021bi mici</option>
         </select></label>
@@ -2791,6 +2798,7 @@ async function ecranBilant(corp, nav, t) {
     const par = () => `an=${corp.querySelector("#bl-an").value}`;
     const tip = () => corp.querySelector("#bl-tip").value;
     corp.querySelector("#bl-val").addEventListener("click", async () => {
+      curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       arataMesaj(rez, "Se validează…", "info");
       try {
         const r = await api.post(`/tenants/${t.id}/${tip()}-valideaza?${par()}`, {});
@@ -2807,10 +2815,12 @@ async function ecranBilant(corp, nav, t) {
     // același drum ca la orice declarație (`trimiteInCoada`: poarta validatorului, atenționările cu confirmare, refuzul real).
     corp.querySelector("#bl-coada").addEventListener("click", async () => {
       const zona = corp.querySelector("#bl-coada-mesaj");
+      curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       await trimiteInCoada(zona, { tenant_id: t.id, tip: tip(), an: parseInt(corp.querySelector("#bl-an").value, 10) },
         () => arataMesaj(zona, `${tip().toUpperCase()} ${corp.querySelector("#bl-an").value} a intrat în coada de validare — cabinetul o validează și o depune.`, "ok"));
     });
     corp.querySelector("#bl-xml").addEventListener("click", async () => {
+      curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       try {
         const r = await api.get(`/tenants/${t.id}/${tip()}-xml?${par()}`);
         const b = new Blob([r.xml], { type: "application/xml" });
@@ -3041,7 +3051,7 @@ async function ecranCasa(corp, nav, t) {
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
+          <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${ALEGE}${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
           <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" placeholder="0,00"></label>
           <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
           <label class="camp">
@@ -3133,6 +3143,7 @@ async function ecranCasa(corp, nav, t) {
         _lipsa = true;
       }
       if (_lipsa) return;
+      if (cereAlegerile(corp, ["#c-cat"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       try {
         const r = await api.post(`/tenants/${t.id}/casa/operatiuni`, {
           data: corp.querySelector("#c-data").value,

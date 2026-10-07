@@ -387,6 +387,33 @@ export function curataEroriCamp(root) {
   r.querySelectorAll(".camp-invalid").forEach((e) => { e.classList.remove("camp-invalid"); e.removeAttribute("aria-invalid"); });
 }
 
+// ── [FAPT_FISCAL_NECERUT, DS cap.17 v2.78 — comanda Costin 07.10.2026: „Extinde regula la ecranele scrise de mână”] ──────────
+// Un fapt fiscal ales dintr-o listă nu vine ales de ecran. Lista pornește cu „— alege —” (selectată, neselectabilă după alegere —
+// `disabled hidden`), iar trimiterea fără alegere se refuză LÂNGĂ câmp. Merge și unde "" e o valoare legitimă (marcajul e
+// `data-alege`, nu valoarea goală). Clasificarea fiecărui select: `scripts/scan_selecturi_ecrane.py`.
+export const ALEGE = '<option value="" data-alege selected disabled hidden>— alege —</option>';
+
+// „— alege —” numai când nu există o valoare salvată (o valoare salvată se ARATĂ, nu se cere din nou)
+export function alegeDacaLipseste(salvat) {
+  return salvat === undefined || salvat === null || salvat === "" ? ALEGE : "";
+}
+
+// Primul select vizibil din `selectori` rămas pe „— alege —” primește refuzul lângă el; întoarce true dacă lipsește o alegere.
+export function cereAlegerile(root, selectori) {
+  const r = root || document;
+  for (const s of selectori) {
+    const el = r.querySelector(s);
+    if (!el || el.offsetParent === null || el.disabled) continue;      // ascuns / inactiv: nu se cere
+    const o = el.options[el.selectedIndex];
+    if (!o || o.hasAttribute("data-alege")) {
+      if (el.id) eroareCamp(r, el.id, "Alege o valoare — aplicația nu alege în locul tău.");
+      else { el.classList.add("camp-invalid"); el.setAttribute("aria-invalid", "true"); aduInVedere(el); }
+      return true;
+    }
+  }
+  return false;
+}
+
 // [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.
 // Foloseste: confirmaCaseta(elementZona, "Mesaj...", () => { actiunea });
 // Injecteaza caseta + butoane sub/inaintea zonei date; Renunta o inchide.

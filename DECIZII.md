@@ -17574,3 +17574,44 @@ o LINIE, BAZA sau REGIMUL/impozitul -> fapt fiscal, intră. Altfel rămâne în 
    `bifa` (prins de garda existentă `test_bifele_se_citesc_doar_prin_bifa`, înainte de orice probă).
 6. **Norma** intră în DS cap.17 (v2.77, `FAPT_FISCAL_NECERUT`) și în verificator, pe același instrument ca testul. Limita: ecranele
    scrise de mână (82 de selecturi fără opțiune goală în afara Operațiunilor, măsurat) — extinderea e decizie (raportul turei, §6).
+
+## 07.10.2026 — Ecranele scrise de mână: regula DS cap.17 extinsă, cu clasificarea celor 82 (comanda Costin)
+
+**Comanda, verbatim:** „Extinde regula la ecranele scrise de mână, cu clasificarea celor 82”
+
+**Regula aplicată** (DS cap.17, `FAPT_FISCAL_NECERUT`, 07.10.2026): un select a cărui valoare e fapt fiscal (schimbă nota, baza,
+impozitul sau conținutul unei declarații către ANAF) nu vine preselectat — pornește cu „— alege —” când nu există valoare salvată, iar
+trimiterea fără alegere se refuză lângă câmp. Un select ne-fiscal (filtru de afișare, navigare, setare tehnică) rămâne, cu motivul
+scris în clasificare. **Conținutul unei declarații** se socotește fapt fiscal: e ce se declară la ANAF.
+
+**CONFLICT, nerezolvat de executor:** DS cap.28 (v2.63) pct.2 cere pentru destinația TVA pe linia unei facturi primite „Un default
+sigur, explicit … `taxabil` … Default-ul e `selected` în markup, nu tăcut.” Regula de azi spune „fără preselecție”. Sunt două decizii
+ale lui Costin care se contrazic pe același control: selectul rămâne cum e, cu motivul „conflict DS cap.28 / cap.17”, iar decizia e
+cerută în raportul turei, §6.
+
+**Clasificarea celor 82** (sursa unică: `scripts/scan_selecturi_ecrane.py::CLASIFICARE`, fiecare cu motivul; 81 de chei — `je-centru`
+apare de două ori):
+- **59 FAPTE FISCALE, reparate** (pornesc cu „— alege —”, handlerul le cere): 39 în Declarații (D390 manual, D301, D710, D307, D177,
+  D200, D230, D223, D208, D221, D603, D110, D398, D318, D212, D207, D300); emiterea (moneda, țara, tipul operației, tipul
+  documentului); eTransport (tipul operației, județele, scopul bunului); moneda facturii recurente; tipul firmei; salariatul nou
+  (norma), adeverința (contractul), tichetele cadou (evenimentul), corectarea normei, suspendări (tipul); registrul PF (categoria,
+  venitul net); S1005/S1003; casa (categoria); codul CM; RIP (tip, categorie, metodă).
+- **12 NE-FISCALE** (filtre, navigare, setarea mediului REGES, registratura documentelor) — rămân.
+- **5 VALOARE EXISTENTĂ**: clasificarea curentă D390; pontajul (informativ, F135 — „prezent” = lipsa excepției); trei câmpuri din Date
+  firmă care arată valoarea STOCATĂ, dar a căror coloană are implicit în schemă (`activitate_exceptata_amef` și `inreg_art317` NOT NULL
+  DEFAULT false, `cont_venit_implicit` DEFAULT '707') — implicitul e în schemă, nu în ecran; scoaterea lui = schimbare de schemă și
+  migrare pe date reale -> **decizie cerută**.
+- **5 cu opțiunea goală în builder** (articolul, contul fișei, centrul de cost ×2).
+- **1 CONFLICT DS** (destinația TVA pe linie, cap.28 pct.2 vs cap.17) -> **decizie cerută**.
+
+**Consecințe (executor):**
+1. Mecanism unic în `api.js`: `ALEGE` (marcată `data-alege`, fiindcă la D212 „” e o valoare legitimă — „nicio excepție”),
+   `alegeDacaLipseste(salvat)`, `cereAlegerile(rădăcină, câmpuri)`.
+2. **Al treilea loc al aceluiași implicit, găsit de proba de browser:** starea inițială a formularelor-panou din `declaratii.js`
+   (`valabilitate_distribuire: 1`, `tip_imobil: "teren"`, `forma_org: "1"`, `exceptare: "2"`, `d_temei: 0`, `refunding_country: "DE"`,
+   `owner_type: "A"` …) — deși markup-ul avea „— alege —”, ecranul răspundea din stare. Pornesc acum nule; garda le verifică.
+   Fallback-urile JS din constructorii de cerere și din emitere (`|| "RO"`, `|| "normal"`, `|| "factura"`, `|| "teren"`, `|| 2`,
+   `|| "A"`, `monedaSel = "RON"`) scoase — handlerul cere alegerea înainte.
+3. **Limita:** input-urile PRECOMPLETATE (nu selecturi) poartă aceeași formă de implicit — găsite în trecere: D204 categoria „1”,
+   D603 țara „RO”, D398 moneda „EUR”, lunile D318, eTransport unitatea „H87”, D221 funcția „TITULAR”. Nu fac parte din cele 82;
+   extinderea regulii la input-uri = decizie (raportul turei, §6).

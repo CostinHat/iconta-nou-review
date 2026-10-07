@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso } from "../api.js?v=eff78f4bb3";
+import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=eb01ea8ebd";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -33,7 +33,8 @@ export async function ecranEtransport(corp, nav, t) {
   // MODEL: array de obiecte simple, POZITIONALE, fara identitati persistente (cap.24 / constrangere batch 3a).
   // Valorile stau in model, NU in DOM: re-randarea integrala la add/delete (cap.24 regula 1) distruge inputurile,
   // altfel, cu valorile tinute in DOM, s-ar pierde ce s-a tastat pe randurile ramase. bunuri[i] tine pozitia i.
-  const bunNou = () => ({ cod_scop: "101", cod_tarifar: "", denumire: "", cantitate: "", um: "H87", greutate_neta: "", greutate_bruta: "", valoare_fara_tva: "" });
+  const bunNou = () => ({ cod_scop: "",   // [FAPT_FISCAL_NECERUT] scopul se alege, nu vine „101”
+    cod_tarifar: "", denumire: "", cantitate: "", um: "H87", greutate_neta: "", greutate_bruta: "", valoare_fara_tva: "" });
   let bunuri = [bunNou()];
 
   const _et = (e) => e.endsWith(" *")
@@ -42,7 +43,7 @@ export async function ecranEtransport(corp, nav, t) {
   const inp = (id, eticheta, tip = "text", val = "", extra = "") =>
     `<label class="camp">${_et(eticheta)}<input type="${tip}" id="${id}" class="camp-input" value="${esc(val)}" ${extra}></label>`;
   const sel = (id, eticheta, optiuni, val = "") =>
-    `<label class="camp">${_et(eticheta)}<select id="${id}" class="camp-input">${optiuni.map(([v, l]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`;
+    `<label class="camp">${_et(eticheta)}<select id="${id}" class="camp-input">${alegeDacaLipseste(val)}${optiuni.map(([v, l]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`;
 
   const blocLoc = (p, titlu) => `
     <div class="pf-frand-nume" style="margin:12px 0 6px">${titlu}</div>
@@ -205,6 +206,8 @@ export async function ecranEtransport(corp, nav, t) {
 
     corp.querySelector("#et-trimite").addEventListener("click", () => {
       const zona = corp.querySelector("#et-mesaj");
+      curataEroriCamp(corp);
+      if (cereAlegerile(corp, ["#et-tip", "#s-judet", "#f-judet", ...bunuri.map((_b, i) => `#b${i}-cod_scop`)])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
       if (!f.ok) { arataMesaj(zona, f.mesaj, "avert"); return; }   // poarta de timp (backend re-verifica)
       confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {

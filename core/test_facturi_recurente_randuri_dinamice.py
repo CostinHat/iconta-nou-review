@@ -130,6 +130,7 @@ def fr_env():
 def _fill_benef(pg):
     pg.fill("#fr-nume", "Client SRL")
     pg.fill("#fr-cui", "RO12345678")
+    pg.select_option("#fr-moneda", "RON")   # [07.10.2026, FAPT_FISCAL_NECERUT] moneda o alege omul
 
 
 def _fill_linie(pg, i, l):

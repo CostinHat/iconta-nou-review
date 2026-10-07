@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=eff78f4bb3";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=eb01ea8ebd";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -57,13 +57,13 @@ export async function ecranRip(corp, nav, t) {
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
           <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input"><option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input">${ALEGE}<option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
           <label class="camp"><span class="camp-eticheta">Categorie</span><select id="r-cat" class="camp-input"></select></label>
           <label class="camp"><span class="camp-eticheta">Deductibilitate</span><select id="r-ded" class="camp-input" disabled>
             <option value="">-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
           <label class="camp"><span class="camp-eticheta">Suma (lei)<span class="oblig">*</span></span><input type="number" step="0.01" id="r-suma" class="camp-input" placeholder="0,00"></label>
-          <label class="camp"><span class="camp-eticheta">Metod\u0103</span><select id="r-met" class="camp-input"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Metod\u0103</span><select id="r-met" class="camp-input">${ALEGE}<option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
           <label class="camp"><span class="camp-eticheta">Explicație<span class="oblig">*</span></span><input type="text" id="r-expl" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document nr.</span><input type="text" id="r-doc" class="camp-input"></label>
         </div>
@@ -83,8 +83,9 @@ export async function ecranRip(corp, nav, t) {
     _tg("#r-toggle", "#r-zona");
     const selTip = corp.querySelector("#r-tip"), selCat = corp.querySelector("#r-cat"), selDed = corp.querySelector("#r-ded");
     const umpleCat = () => {
-      const cats = selTip.value === "incasare" ? CATEGORII_INC : CATEGORII_PL;
-      selCat.innerHTML = cats.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
+      // [FAPT_FISCAL_NECERUT] fără tip ales nu se arată categoriile niciunuia; categoria se alege și ea
+      const cats = selTip.value === "incasare" ? CATEGORII_INC : selTip.value === "plata" ? CATEGORII_PL : [];
+      selCat.innerHTML = ALEGE + cats.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
       actDed();
     };
     const actDed = () => {
@@ -101,6 +102,8 @@ export async function ecranRip(corp, nav, t) {
     corp.querySelector("#r-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
 
     corp.querySelector("#r-adauga").addEventListener("click", async () => {
+      curataEroriCamp(corp);
+      if (cereAlegerile(corp, ["#r-tip", "#r-cat", "#r-met"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       try {
         await api.post(`/tenants/${t.id}/rip/operatiuni`, {
           data_operatiune: corp.querySelector("#r-data").value,

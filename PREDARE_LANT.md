@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: cele 33 de chei încadrate (DS cap.17, FAPT_FISCAL_NECERUT); o decizie cerută (ecranele scrise de mână)**
+# PREDARE LANȚ — **07.10.2026: FAPT_FISCAL_NECERUT extins la ecranele scrise de mână (82 clasificate); trei decizii cerute**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (cele 33 de chei, DS cap.17), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `a0014273` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-07** (ecranele scrise de mână, cele 82), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `11f8c2ed` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -36,6 +36,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 | **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate [cifră corectată în lotul 07.10: 62] | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
 | **ciorna facturii, a patra pierdere + parcurgerea g11/g08/g09** (comanda Costin 06.10 seara): cauza = fila încărcată pe codul vechi, iar „Versiune nouă” își lua referința la autentificare (acum: la încărcare); prețul și articolul pe care nu le-a ales omul (emitere, recurentă, stoc, rețetă, transfer, reclasificare, fișa de magazie; prețul lipsă refuzat de server); 67 de puncte parcurse, 15 constatări (5 datorii xfail strict) | `de36b2a1` · `d116ec9f` | `iconta_ciorna_factura.zip` · `iconta_parcurgere_g08_g09_g11.zip` |
 | **C1/C2/C7 + C3/C4/C11 + reîncărcarea** (comanda Costin 07.10, răspunsul la §6): validatoarele DUK la zi (D112 J27.0.6 + D100/D101/D710/B230; manifest + gardă de 30 de zile); atenționarea DUK intră în coadă cu confirmarea scrisă, eroarea oprește; D390 și formularele manuale în coadă; „Achiziție de la agricultor” = achiziția; mijlocul fix din listă; bilanțul prin coadă; fila veche se reîncarcă la autentificare fără formular început | commitul de închidere | `iconta_c1_c2_c7.zip` |
+| **Ecranele scrise de mână — cele 82** (comanda Costin 07.10): 59 de selecturi fiscale pornesc cu „— alege —” și sunt cerute la trimitere (`ALEGE` / `cereAlegerile` în `api.js`), 23 clasificate cu motiv; starea inițială a formularelor-panou nulă | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
 | **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
@@ -55,9 +56,11 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
-- **DECIZIE CERUTĂ (07.10, cele 33 de chei):** regula DS cap.17 (`FAPT_FISCAL_NECERUT`) e păzită pe formularele din registrul
-  Operațiunilor. În ecranele scrise de mână sunt 108 selecturi, 82 fără opțiune goală (măsurat: declaratii.js 43, firme.js 23, restul
-  sub 5 pe fișier) — multe sunt filtre, nu fapte fiscale. Extinderea regulii (clasificare + gardă) acolo e alegerea lui Costin.
+- **DECIZII CERUTE (07.10, ecranele scrise de mână):** (1) destinația TVA pe linia facturii primite — DS cap.28 pct.2 („default sigur
+  … `selected`”) contra DS cap.17 („fără preselecție”); rămâne `taxabil` preselectat până decide Costin. (2) Implicitele din SCHEMĂ în Date
+  firmă (`activitate_exceptata_amef`, `inreg_art317` NOT NULL DEFAULT false; `cont_venit_implicit` DEFAULT '707') — ecranul arată
+  valoarea stocată, dar ea n-a fost aleasă de om; scoaterea = schemă + migrare. (3) Input-urile PRECOMPLETATE (D204 categoria „1”,
+  D603 „RO”, D398 „EUR”, lunile D318, eTransport „H87”, D221 „TITULAR”) — altă formă a aceluiași implicit, în afara celor 82.
 - **Termenele de depunere nesursate (07.10, datorie nouă)**: 29 de tipuri n-au termen în `core/scadente.py`; coada le pune perioada
   de raportare („anul 2025”), nu un termen ghicit. Ratchet `test_niciun_tip_nou_fara_termen_de_depunere` + xfail strict
   `test_datorie_toate_tipurile_au_termen_sursat` (lista `_FARA_TERMEN_07_10`). Se închide tip cu tip, cu temeiul citat.
@@ -111,6 +114,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
 
+- **(07.10, ecranele scrise de mână) Un fapt fiscal ales dintr-o listă pornește cu „— alege —”** (`ALEGE`, marcată `data-alege`) și
+  handlerul îl cere (`cereAlegerile`): o probă care emite o factură alege moneda, țara, tipul operației și documentul; o probă care
+  completează o declarație manuală alege fiecare listă (starea inițială a Declarațiilor e nulă). Clasificarea fiecărui select:
+  `scripts/scan_selecturi_ecrane.py::CLASIFICARE` — un select nou fără „— alege —” și neclasificat oprește poarta.
 - **(07.10, cele 33) NICIUN select din Operațiuni nu mai vine preselectat** (motorul pune „— alege —”), iar câmpurile al căror gol era
   un implicit al serverului sunt obligatorii (sume: scrie 0; conturi: scrie contul; data faptului generator la AIC, data PIF). O
   probă care trimite un formular de operațiune alege felul operației și completează tot ce e vizibil (`OPTIONALE_PERMISE` = cele 5

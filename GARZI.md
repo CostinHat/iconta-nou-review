@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**716 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**718 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 680
+### `core/` — 681
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9416,6 +9416,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_scrieri_pana_in_declaratie.py` — Rutele care scriu în tabele din care se ridică declarații — probate PÂNĂ ÎN RÂNDUL DECLARAȚIEI.
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
 - `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
+- `core/test_selecturi_ecrane.py` — GARD — FAPT_FISCAL_NECERUT în ecranele scrise de mână (comanda Costin 07.10.2026: „Extinde regula la ecranele scrise de mână, cu
 - `core/test_separa_cui.py` — [Regula 4 + Regula 14.4] GARD: intrarile care nu-s CUI NU dispar in tacere la validarea la ANAF.
 - `core/test_sesiune_fara_pierdere.py` — GARD — un contabil nu pierde ce a completat (comanda Costin 05.10.2026, pct.1).
 - `core/test_set_bifa_nu_se_striveste.py` — GARD: căsuța unei bife cu etichetă (`.set-bifa`, DS v2.11) nu se strivește sub dimensiunea ei (02.10.2026).
@@ -9482,7 +9483,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 36
+### `scripts/` — 37
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9515,6 +9516,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_rute_fara_proba.py` — Ce rută SCRIE fără ca vreo probă s-o numească.
 - `scripts/scan_salariu_coloana.py` — scripts/scan_salariu_coloana.py — instrumentul gardului `core/test_2b_coloana.py` (punctul 4, 04.10.2026).
 - `scripts/scan_scrieri_declaratii.py` — Care rute SCRIU în tabele din care se calculează cifre de declarație.
+- `scripts/scan_selecturi_ecrane.py` — scripts/scan_selecturi_ecrane.py — FAPT_FISCAL_NECERUT în ecranele SCRISE DE MÂNĂ (în afara registrului Operațiunilor).
 - `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
 - `scripts/scan_stare_proces.py` — P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
 - `scripts/scan_tranzactii.py` — scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.
@@ -10501,3 +10503,21 @@ bază sau regim) și **11. Interfață** (ecranul cere tot ce citește serverul,
 varianta (c) câmpuri opționale cu implicit tacit -> obligatorii (5 rămân opționale, cu motivul); varianta (d) 36 de selecturi
 preselectate -> regula motorului; 7 DA/NU noi citite de server prin `bifa`. **Limita perimetrului:** ecranele scrise de mână (în afara
 registrului Operațiunilor) nu sunt văzute de aceste gărzi.
+
+## 07.10.2026 — FAPT_FISCAL_NECERUT extins la ecranele scrise de mână: clasificarea celor 82 (comanda Costin)
+
+Decizia: DECIZII 07.10.2026 („Ecranele scrise de mână”). Categoriile **11. Interfață** și **3. Calcul fiscal** (un fapt ales de ecran
+ajunge în notă, în bază sau în declarația către ANAF).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| niciun fapt fiscal ales de ecran | `core/test_selecturi_ecrane.py::test_niciun_fapt_fiscal_nu_vine_ales_de_ecran` + calibrări (3) | un select fiscal fără „— alege —”; unul pe care handlerul nu-l cere; un select nou neclasificat | moneda emiterii fără „— alege —” / scoasă din `cereAlegerile` / un select nou în pachete -> roșu (verificator TOTAL 1) | identificare lexicală (`<select`); „cerut” = locatorul apare în `cereAlegerile` în același fișier |
+| clasificarea completă, cu motiv | `…::test_clasificarea_acopera_cele_82_si_fiecare_are_motiv` | o clasă schimbată tăcut, un motiv gol | — (structural) | — |
+| starea inițială pornește nealeasă | `…::test_starea_initiala_a_formularelor_panou_porneste_nealeasa` + calibrare | un fapt fiscal cu valoare în obiectul `S` al Declarațiilor (ecranul răspunde din stare) | `valabilitate_distribuire: 1` pus la loc -> roșu | lista cheilor e explicită (`STARE_INITIALA`) |
+| mecanismul comun | `…::test_mecanismul_comun_din_api` | „— alege —” nemarcat / selectabil; `cereAlegerile` pe valoarea goală (ar rupe D212 „nicio excepție”) | `cereAlegerile` pe `value === ""` -> roșu | — |
+| verificator `FAPT_FISCAL_NECERUT` (DS cap.17 v2.78) | `verificator_conformitate.py`, instrument `scripts/scan_selecturi_ecrane.py` | aceleași, în poarta verificatorului | M1/M2/M3/M5 -> TOTAL 1 | idem |
+
+**Măsurat:** 82 de selecturi fără opțiune goală în afara Operațiunilor -> 59 fapte fiscale reparate, 23 clasificate cu motiv. Proba de
+browser (23 de ecrane): selecturi cu valoare aleasă la deschidere 54 -> 9 (toate valori salvate sau clasificarea D390 curentă).
+**Rămân deschise (decizii):** destinația TVA pe linie (conflict DS cap.28/cap.17); implicitele din schemă (3 coloane Date firmă);
+input-urile precompletate (altă formă a aceluiași implicit).
