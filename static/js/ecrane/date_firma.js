@@ -110,6 +110,20 @@ function _blocCapital(d) {
 
 // [06.10.2026, comanda Costin §6.3] Metoda de stoc: setare EXPLICITĂ, fără implicit — până se alege, „nedeclarată”, iar ieșirile
 // de marfă și facturile cu marfă se refuză numit (core/metoda_stoc.py). De ea depinde cum se descarcă marfa, o singură dată.
+// [decizia Costin 07.10.2026, pct.5] Seria chitanțelor: o stabilește firma (OMFP 2634/2015 anexa 1 pct.24), nu aplicația — fără
+// „CH” din oficiu. Necompletată, prima chitanță se refuză cu trimitere aici; odată scrisă, nu se mai șterge.
+function _blocChitante(d) {
+  const sc = (d.profil || {}).serie_chitanta || "";
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Chitanțe</h2>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Seria chitanțelor</span>
+        <input class="camp-input" id="df-serie_chitanta" maxlength="10" value="${esc(sc)}" placeholder="litere și cifre, ex. seria din chitanțier" aria-label="Seria chitanțelor">
+      </label>
+    </div>`;
+}
+
 function _blocStoc(d) {
   const m = (d.profil || {}).metoda_stoc || "";
   return `
@@ -127,7 +141,7 @@ function _blocStoc(d) {
 // [06.10.2026, comanda Costin §6.4] „Orice modificare se jurnalizează (cine, când, valoare veche → nouă), inclusiv forma juridică
 // și capitalul, iar jurnalul e vizibil cabinetului.”
 const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
-  metoda_stoc: "Metoda de stoc", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
+  metoda_stoc: "Metoda de stoc", serie_chitanta: "Seria chitanțelor", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
   cont_venit_implicit: "Cont venit implicit" };
 // [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
@@ -329,6 +343,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     </div>
     ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
     ${_blocAmef(d)}
+    ${_blocChitante(d)}
     ${_blocStoc(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
@@ -364,6 +379,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     date.activitate_exceptata_amef = corp.querySelector("#df-activitate_exceptata_amef").value;   // [D394 Î2]
     date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
     date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
+    date.serie_chitanta = corp.querySelector("#df-serie_chitanta").value.trim() || null;   // [decizii 07.10 pct.5]
     if (corp.querySelector("#df-forma_juridica")) {
       date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
       date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;

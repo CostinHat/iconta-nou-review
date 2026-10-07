@@ -24,7 +24,7 @@ def email_firma(cur):
 
 
 def seria_chitantei(cur, schema):
-    cur.execute(f"SELECT COALESCE(serie_chitanta, 'CH') FROM {schema}.firma_profil LIMIT 1")
+    cur.execute(f"SELECT serie_chitanta FROM {schema}.firma_profil LIMIT 1")   # [decizii 07.10 pct.5] fără „CH” din oficiu
     return cur.fetchone()
 
 

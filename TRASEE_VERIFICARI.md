@@ -228,7 +228,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4)*
+*ce face: RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · miscari_stoc (INSERT) — prin `coada_api`, `stocuri_anulare`*
 
 - [x] nota produsă e **ciornă**, nu evidență validată — descrierea o spune, verifică structural
 - propunerea de conturi vine din maparea corectată; nu se ghicește din denumire
@@ -298,7 +298,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · scrie nota ciorna a statului de plata*
 
-*ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] nota e ciornă, iar totalurile coincid cu propunerea văzută înainte
 - divergența față de D112, dacă a existat la propunere, rămâne consemnată pe notă — nu se stinge prin salvare
@@ -1255,7 +1255,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T15 — Salariatul — angajare, contract, adeverință, REGES
 
-*clasa MANUAL · 17 rute · 12 schimba date · 8 firme il pot exercita azi*
+*clasa MANUAL · 20 rute · 14 schimba date · 8 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`*
 
@@ -1379,6 +1379,26 @@ faptica, pe baza listelor de inventariere.
 - [x] beneficiul intră cu perioada lui, nu cu „de acum înainte"
 - plafonul neimpozabil aplicabil e cel de la data lunii, nu de la data introducerii
 - ce depășește plafonul devine venit impozabil, iar partea impozabilă e vizibilă separat — nu se topește în brut
+
+### `POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente`
+
+*garda `cere_drept` · **fara rol***
+
+*ce face: [S1] {an, luna, tip (prima / spor / ore_suplimentare), denumire, suma, ore (numai la ore suplimentare)}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · elemente_salariale (DELETE/INSERT) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `elemente_salariale`, `jurnal_api`*
+
+- [x] tipul (primă / spor / ore suplimentare) se ALEGE — fără el, 422 cu câmpul `tip` numit (`test_ELEMENTELE_variabile_ale_salariului_prin_HTTP`)
+- [x] orele se cer numai la orele suplimentare; suma > 0 (`test_elementul_se_cere_complet_fara_preselectie`)
+- [x] luna cu D112 depusă nu mai primește elemente — cod `D112_DEPUSA` (`test_luna_cu_d112_depusa_nu_mai_primeste_elemente`)
+- [x] elementul intră în brut, CAS, CASS, impozit, D112 (DUK valid), nota de salarii și fluturaș (`test_prima_ajunge_in_stat_d112_si_nota_la_fel_si_d112_e_valid`)
+
+### `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/elemente/{element_id}`
+
+*garda `cere_drept` · **fara rol***
+
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · elemente_salariale (DELETE/INSERT) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `elemente_salariale`, `jurnal_api`*
+
+- [x] ștergerea scoate elementul din luna lui (`test_ELEMENTELE_variabile_ale_salariului_prin_HTTP`)
+- [x] luna închisă sau cu D112 depusă nu se mai modifică (aceeași poartă ca la adăugare)
 
 ## T16 — Pontajul
 
@@ -1757,9 +1777,9 @@ faptica, pe baza listelor de inventariere.
 
 ## T24 — Bonul fiscal și raportul Z (AMEF, horeca)
 
-*clasa MECANIC · 2 rute · 2 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 4 rute · 3 schimba date · ? firme il pot exercita azi*
 
-*clasa MECANIC · 2 rute · 2 schimba date · nu se poate sti din date*
+*clasa MECANIC · 4 rute · 3 schimba date · nu se poate sti din date*
 
 ### `POST /tenants/{tenant_id}/horeca/import-amef`
 
@@ -1782,6 +1802,16 @@ faptica, pe baza listelor de inventariere.
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `import-amef`.** Ambele produc nota de raport Z; una are rol, cealaltă nu
 - dacă e introducere manuală a raportului Z, verifică: totalurile pe cote de TVA se adună la totalul general
 - dacă e aceeași operațiune pe două căi, e interdicția 15 — iar rolul diferit o face vizibilă
+
+### `POST /tenants/{tenant_id}/horeca/raport-z/{nota_id}/fara-marfa`
+
+*garda `cere_drept` · **fara rol***
+
+*ce face: intoarce ce da `_uc_tenants.horeca_z_fara_marfa()`*
+
+- [x] declarația cere un da / nu explicit (un șir -> 400) și se face numai pe un Z nevalidat (`test_Z_FARA_MARFA_prin_HTTP_deblocheaza_validarea_la_cantitativ_valoric`)
+- [x] un Z cu ieșiri legate nu poate fi declarat „fără marfă” (`z_descarcare.marcheaza_fara_marfa`)
+- [x] după declarație Z-ul se validează; fără ea și fără ieșiri, validarea se refuză `Z_NEDESCARCAT` (`test_d3_z_la_cantitativ_valoric_nu_se_valideaza_fara_descarcare`)
 
 ---
 

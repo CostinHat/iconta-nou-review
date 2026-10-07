@@ -12,8 +12,8 @@ altcuiva - fisierul se genereaza DOAR pentru salariatii cu IBAN valid").
 """
 from core import salariati_import_api as _sal
 
-_CSV = (b"nume,prenume,cnp,data angajare,norma,brut,judet,cor,iban\n"
-        b"Popescu,Ana,2900215410011,2020-01-15,intreaga,5000,B,251401,RO49AAAA1B31007593840000\n")
+_CSV = (b"nume,prenume,cnp,data angajare,norma,functie de baza,scutit contributie minima,brut,judet,cor,iban\n"
+        b"Popescu,Ana,2900215410011,2020-01-15,intreaga,da,nu,5000,B,251401,RO49AAAA1B31007593840000\n")
 
 
 def test_extrage_mapeaza_iban():
@@ -24,7 +24,7 @@ def test_extrage_mapeaza_iban():
 
 def test_verifica_iban_invalid_semnalat():
     rand = {"nume": "POP", "prenume": "ION", "cnp": "2900215410011", "cnp_valid": True,
-            "tip_norma": "intreaga", "ore_zi": 8, "iban": "RO00AAAA1B31007593840000"}
+            "tip_norma": "intreaga", "ore_zi": 8, "functie_baza": True, "scutit_contrib_minim": False, "iban": "RO00AAAA1B31007593840000"}
     er = _sal.verifica_randuri([rand])
     assert any(e.get("regula") == "iban_invalid" for e in er), \
         "IBAN invalid la import NU e semnalat (banii pot pleca altcuiva): %r" % er
@@ -32,7 +32,7 @@ def test_verifica_iban_invalid_semnalat():
 
 def test_verifica_iban_valid_trece():
     rand = {"nume": "POP", "prenume": "ION", "cnp": "2900215410011", "cnp_valid": True,
-            "tip_norma": "intreaga", "ore_zi": 8, "iban": "RO49AAAA1B31007593840000"}
+            "tip_norma": "intreaga", "ore_zi": 8, "functie_baza": True, "scutit_contrib_minim": False, "iban": "RO49AAAA1B31007593840000"}
     er = _sal.verifica_randuri([rand])
     assert not any(e.get("regula") == "iban_invalid" for e in er), er
 
@@ -63,7 +63,7 @@ def test_importa_scrie_iban():
             pass
 
     rand = {"nume": "POP", "prenume": "ION", "cnp": "2900215410011", "cnp_valid": True,
-            "tip_norma": "intreaga", "ore_zi": 8, "salariu_brut": 5000, "judet_casa": "B",
+            "tip_norma": "intreaga", "ore_zi": 8, "functie_baza": True, "scutit_contrib_minim": False, "salariu_brut": 5000, "judet_casa": "B",
             "cor": "251401", "iban": "RO49AAAA1B31007593840000", "data_angajare": "2020-01-15"}
     _sal.importa(_Conn(), [rand])
     assert "iban" in (captured.get("sql") or "").lower(), "INSERT-ul salariati NU include coloana iban"

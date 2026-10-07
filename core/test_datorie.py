@@ -380,3 +380,9 @@ def test_niciun_tip_nou_fara_termen_de_depunere():
 @pytest.mark.xfail(strict=True, reason="DATORIE 07.10.2026 (temei neverificat: termenul de depunere): 29 de tipuri din dispecer — între ele toate declarațiile anuale cu formular din selector (D107, D177, D200, D201, D204, D207, D212, D216, D221, D223, D230, D318, D600, D603) — n-au termen sursat în `core/scadente.py`; coada le etichetează cu perioada de raportare („anul 2025”), iar termenele, alertele și restanțele nu le cunosc scadența")
 def test_datorie_toate_tipurile_au_termen_sursat():
     assert sorted(_fara_termen()) == []
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 07.10.2026 (decizia Costin, „Deciziile 07.10” pct.1: „nu acum … tema intră în registrul de restanțe”): stocul cantitativ-valoric la preț de vânzare (371/378/4428 pe articol, descărcarea adaosului și a TVA neexigibile la fiecare ieșire) și evaluarea la cost FIFO nu există; Date firmă le arată „nesuportat încă” și le refuză la salvare (`metoda_stoc.NESUPORTATE`)")
+def test_datorie_stoc_cantitativ_la_pret_de_vanzare_si_fifo():
+    from core import metoda_stoc
+    assert metoda_stoc.NESUPORTATE == {}

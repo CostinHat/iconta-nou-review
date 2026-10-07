@@ -54,6 +54,10 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("chitanta_emite", 'refuz_spre_ecran(MESAJ_SERIE_CHITANTA_LIPSA, COD_SERIE_CHITANTA_LIPSA, "date_firma", "OMFP 2634/2015 anexa 1 pct.24")'): (
+        "Comanda Costin 07.10.2026 („Deciziile 07.10”, pct.5): „Seria chitanței: cerută la prima folosire, ca seria facturii; fără "
+        "«CH» din oficiu.” Prima chitanță a firmei fără serie se refuză (400), STRUCTURAT cu ținta `ecran` (butonul spre Date "
+        "firmă) — înainte se emitea cu „CH”, pe care nu-l alesese nimeni (OMFP 2634/2015 anexa 1 pct.24: seria „stabilit(ă) de entitate”)."),
     ("coada_adauga", '_refuz_duk("ERORI_DUK", _rez, _sev)'): (
         "Comanda Costin 07.10.2026, C3: „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului. O eroare DUK oprește.” Eroarea DUK refuză intrarea (422) FĂRĂ portiță — înainte `motiv_trecere` trecea și peste erori." ),
     ("coada_adauga", '_refuz_duk("ATENTIONARI_NECONFIRMATE", _rez, _sev)'): (

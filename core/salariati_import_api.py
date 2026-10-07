@@ -44,6 +44,12 @@ def valideaza_cnp(cnp):
     return True, "ok"
 
 
+def _da_nu(v):
+    """„da”/„nu” (și 1/0, true/false, x) -> bool; gol sau altceva -> None (necunoscut, nu ghicit)."""
+    t = str(v or "").strip().lower()
+    return True if t in ("da", "1", "true", "x", "yes") else (False if t in ("nu", "0", "false", "no") else None)
+
+
 def _gaseste_col(antet, *chei):
     for i, h in enumerate(antet):
         hl = str(h).strip().lower()
@@ -124,6 +130,9 @@ def extrage(continut, nume_fisier=""):
     i_jud = _gaseste_col(antet, "judet", "casa")
     i_cor = _gaseste_col(antet, "cor", "ocupatie", "ocupație")
     i_iban = _gaseste_col(antet, "iban", "cont bancar")   # [iban_import] contul in care se plateste salariul (SEPA)
+    # [decizia Costin 07.10, pct.4] cele două DA/NU cerute explicit: coloana lipsă sau celula goală -> None (rândul se refuză)
+    i_fbaza = _gaseste_col(antet, "functie de baza", "funcție de bază", "functia de baza", "funcția de bază")
+    i_scut = _gaseste_col(antet, "scutit", "contributie minima", "contribuție minimă")
     if i_nume < 0 and i_cnp < 0:
         raise ValueError("nu găsesc coloana nume/CNP salariat - fișier nerecunoscut")
 
@@ -151,8 +160,10 @@ def extrage(continut, nume_fisier=""):
         else:
             tip_norma = ""
         ore = _numar(cel(i_ore)) if i_ore >= 0 else 0.0
-        if ore <= 0 and tip_norma:   # ore implicite doar cand norma E cunoscuta; altfel 0 (semnalat)
-            ore = 8 if tip_norma == "intreaga" else 4
+        # [decizii 07.10 pct.4, aceeași clasă] 8 ore = norma întreagă (dedus din normă); la normă PARȚIALĂ orele nu se ghicesc
+        # (până azi „4” din oficiu) — lipsa se refuză numit (`ore_lipsa`)
+        if ore <= 0 and tip_norma == "intreaga":
+            ore = 8
 
         out.append({
             "nume": nume_v,
@@ -167,6 +178,8 @@ def extrage(continut, nume_fisier=""):
             "cor": cel(i_cor),
             # [iban_import] normalizat (fara spatii, majuscule); gol -> "" (necunoscut, NU fabricat)
             "iban": cel(i_iban).replace(" ", "").upper(),
+            "functie_baza": _da_nu(cel(i_fbaza)) if i_fbaza >= 0 else None,
+            "scutit_contrib_minim": _da_nu(cel(i_scut)) if i_scut >= 0 else None,
             "cnp_valid": valid,
             "cnp_motiv": motiv,
         })
@@ -220,6 +233,16 @@ def verifica_randuri(randuri, azi=None):
         if not str(r.get("tip_norma") or "").strip():
             er.append(respinge("salariat", i, "norma_lipsa",
                             "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume))
+        elif r.get("tip_norma") == "partiala" and not (r.get("ore_zi") or 0):
+            er.append(respinge("salariat", i, "ore_lipsa",
+                            "%s: orele pe zi ale normei parțiale lipsesc - baza D112 la normă parțială" % nume))
+        # [decizia Costin 07.10, pct.4] aceeași regulă ca pe ecran: cele două DA/NU se cer explicit, cu câmpul numit
+        if r.get("functie_baza") is None:
+            er.append(respinge("salariat", i, "functie_baza_lipsa",
+                            "%s: funcția de bază (Da/Nu) lipsește - coloana «Funcție de bază»; decide deducerea personală" % nume))
+        if r.get("scutit_contrib_minim") is None:
+            er.append(respinge("salariat", i, "scutire_minim_lipsa",
+                            "%s: scutirea de contribuția minimă (Da/Nu) lipsește - coloana «Scutit contribuție minimă»" % nume))
         # [salariu_import] salariul de baza e OBLIGATORIU si > 0 (ca la creare, salariati_api #8):
         # intra in D112 si pe fluturas. Lipsa lui (coloana absenta / celula goala -> parser 0.0) NU se
         # accepta tacit (DS cap.17, fara default fabricat): firma ar plati CAS/CASS pe podeaua sub-minim
@@ -291,14 +314,15 @@ def importa(conn, randuri):
         for r in randuri:
             # NU exista skip tacit: importa a ridicat deja (mai sus) daca vreun CNP e invalid, deci aici
             # toate randurile sunt valide (fostul skip pe CNP invalid era cod mort: importa ridica intai).
-            part_time = (r.get("tip_norma", "intreaga") == "partiala")
+            part_time = (r.get("tip_norma") == "partiala")   # norma e cerută mai sus (norma_lipsa): fără „intreaga” implicit
             # upsert-ok: re-import salariat pe CNP - actualizeaza fisa existenta (IBAN pazit separat)
             cur.execute("""
                 INSERT INTO salariati
                   (cnp, nume, prenume, data_angajare, part_time, ore_zi,
-                   persoane_intretinere, judet_casa, cor, iban)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   persoane_intretinere, judet_casa, cor, iban, functie_baza, scutit_contrib_minim)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
+                  functie_baza=EXCLUDED.functie_baza, scutit_contrib_minim=EXCLUDED.scutit_contrib_minim,
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
                   data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
                   ore_zi=EXCLUDED.ore_zi,
@@ -309,10 +333,11 @@ def importa(conn, randuri):
                   iban=COALESCE(EXCLUDED.iban, salariati.iban)
                 RETURNING id
             """, (r["cnp"], r["nume"], r["prenume"], r.get("data_angajare"),
-                  part_time, r.get("ore_zi", 8),
+                  part_time, r.get("ore_zi"),   # validat mai sus (norma + orele normei parțiale): fără „8” implicit
                   r.get("persoane_intretinere", 0),
                   r.get("judet_casa", ""), r.get("cor", ""),
-                  (r.get("iban") or "").strip() or None))   # gol -> NULL (necunoscut), nu "" fabricat
+                  (r.get("iban") or "").strip() or None,   # gol -> NULL (necunoscut), nu "" fabricat
+                  r.get("functie_baza"), r.get("scutit_contrib_minim")))   # [decizii 07.10 pct.4] cerute explicit
             # [PASUL 2b] salariul de baza pe salariu_istoric (sursa unica); reparat si activ (coloana retrasa PASUL 1)
             _sid = cur.fetchone()[0]
             from core import salariu_istoric as _si

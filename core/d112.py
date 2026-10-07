@@ -213,6 +213,14 @@ def _d112_casa(judet):
     j = (j.replace("\u0103", "a").replace("\u00e2", "a").replace("\u00ee", "i")
           .replace("\u015f", "s").replace("\u0219", "s").replace("\u0163", "t").replace("\u021b", "t"))
     return _D112_CASA.get(j, "_B")
+def _venituri_adaugate(s):
+    """[retest 07.10 seara, S1] Veniturile din salarii PESTE salariul lucrat, declarate în brut (B1_sal2, B4_3) și în baza
+    contributivă (B2_5 / B4_7): excesul de tichete de vacanță [D3], partea taxabilă a cadoului, elementele variabile (prime,
+    sporuri, ore suplimentare — CF art.76 alin.(1)). O SINGURĂ definiție pentru ambele (înainte, două rânduri care adunau
+    aceleași componente separat), aceeași cu `salarizare.calcul_salariu` (`b_imp`)."""
+    return _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) + _d112int(s.get("elemente_variabile", 0))
+
+
 def _d112int(x):
     """Rotunjire ARITMETICA (nu bancara): daca partea zecimala >= 0.5, se adauga 1
     - regula explicita din ANAF structura D112 0126_030226 ("Contributiile se rotunjesc
@@ -328,7 +336,7 @@ def calcul_d112(prof, salariati, an, luna):
             raise ValueError(
                 "D112: salariatul %s (CNP %s) are data_angajare necompletată - dataAng e obligatoriu în "
                 "D112 (XSD). Completeaz-o în fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
-        brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0))  # [D3] exces vacanta + [cadou 16.08] cadou taxabil in brutul declarat (S731)
+        brut = _d112int(s.get("brut")) + _venituri_adaugate(s)  # [D3] exces vacanta + [cadou 16.08] cadou taxabil + [S1] elemente variabile in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
         if bazac < 0:
@@ -362,7 +370,7 @@ def calcul_d112(prof, salariati, an, luna):
             # (calcul_salariu pe brut_lucrat). Gard: test_pull_declaratii.
             # test_d112_cm_baza_salariala_realizata_nu_brut_intreg. (Rotunjirea Sigma(round) vs round(total) = 2b,
             # datorie separata in GARZI 05.08 - neatinsa aici.)
-            bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) - facil
+            bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _venituri_adaugate(s) - facil
             if bazac < 0:
                 bazac = 0
             zile = int(s.get("zile_active", nzl)) - zile_cm   # [lot 19] zilele din contract, nu toată luna
@@ -884,6 +892,9 @@ def pull(conn, schema, perioada):
     from core import salariu_istoric as _si  # salariul contractual DATE-AWARE (sursa unica: salariu_istoric)
     _ultima_luna = _dt(an, luna, _cal.monthrange(an, luna)[1])
     _cs_sal = conn.cursor()
+    # [S1] elementele variabile ale lunii (prime, sporuri, ore suplimentare) — aceeași citire ca statul de plată
+    from core import elemente_salariale as _es
+    _elem = _es.lista_luna(conn, schema, an, luna)
     for s in salariati:
         _sal_luna = float(_si.salariu_la(_cs_sal, schema, s["id"], _ultima_luna) or 0)
         # [lot 19 pct.4c] prezența în contract (angajare/încetare, CFP/suspendare, schimbare de salariu) — ACEEAȘI
@@ -910,6 +921,10 @@ def pull(conn, schema, perioada):
         _cum_c = float(_ben.total_an(conn, schema, s["id"], an, "vacanta", pana_luna=luna) or 0)
         _cum_a = float(_ben.total_an(conn, schema, s["id"], an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
         _exces_van = _ben.exces_vacanta_luna(_cum_c, _cum_a, _plaf_van)
+        _var = _es.total(_elem.get(s["id"]))
+        # [S1] indemnizația CM a lunii (art.76 alin.(1): „inclusiv indemnizațiile pentru incapacitate temporară de muncă”), din
+        # certificatele stocate — aceeași sumă pe care o citește statul de plată (`concedii_medicale.brut_ang + brut_fnuass`)
+        _venit_cm = float(sum(float(x.get("brut_ang") or 0) + float(x.get("brut_fnuass") or 0) for x in (s.get("cm") or [])))
         r = _sz.calcul_salariu(brut_lucrat,
                                functie_baza=bool(s.get("functie_baza", True)),   # [3c] CF art.77(1)
                                persoane=s.get("persoane_intretinere") or 0,
@@ -929,8 +944,12 @@ def pull(conn, schema, perioada):
                                sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara]
                                copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
                                declaratie_copii=bool(s.get("declaratie_copii")),
-                               suspendari=_susp)
+                               suspendari=_susp,
+                               elemente_variabile=_var, venit_cm=_venit_cm)
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
+        s["elemente_variabile"] = float(_var)   # [S1] în brutul declarat și în bază (`_venituri_adaugate`); și pentru contare
+        s["elemente"] = _elem.get(s["id"], [])
+        s["venit_cm"] = _venit_cm               # [S1] în venitul realizat al facilității (OUG 89/2025 art.III alin.(1) lit.b)
         # [lot 19 pct.4c] ce consumă generatorul + contarea: zilele active, cele suspendate (B1_7), suspendările
         # (aceeași prorata a pragului în contare), fracția facilitații (contarea n-o recalcula — a doua cifră).
         s["zile_active"] = _za
@@ -1004,7 +1023,7 @@ def pull(conn, schema, perioada):
         # [lot 19 pct.4c] CF art.146 alin.(5^6): „corespunzător numărului zilelor lucrătoare din lună în care contractul
         # a fost ACTIV” -> zilele active (fără angajare/încetare/suspendare), iar baza = brutul realizat pe ele.
         zile_lucr = max(_za - int(s.get("zile_cm") or 0), 0)
-        baza = _brut_cuv
+        baza = _brut_cuv + _venituri_adaugate(s)   # [S1] venitul realizat (CF art.146 alin.(5^6)), ca baza din `calcul_salariu`
         scutit = bool(s.get("scutit_pt"))
         prag_zile = _d112int(prag_pt * zile_lucr / nzl) if nzl else 0  # A91b: aritmetic, nu bancar
         if not scutit and 0 < baza < prag_zile:

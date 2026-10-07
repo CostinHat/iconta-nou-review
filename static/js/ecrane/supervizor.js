@@ -19,7 +19,7 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc } from "../api.js?v=e9cf26e11b";
-import { randA as randConstatare } from "./control_verdict.js?v=45d828dd41";
+import { randA as randConstatare } from "./control_verdict.js?v=23c5b03b5d";
 
 function perioada(r) {
   return `${String(r.luna).padStart(2, "0")}/${r.an}`;

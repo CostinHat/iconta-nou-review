@@ -45,6 +45,73 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Deciziile 07.10 (răspunsul la §6 al lotului 07.10 B, comanda Costin 07.10.2026)** — verbatim în DECIZII 07.10.2026
+  („Deciziile Costin la §6 al lotului 07.10 B”). O singură poartă completă, la publicarea finală; ZIP `~/ghid_incoming/iconta_decizii_07_10.zip`.
+  - ultim: D1 și D4 pe disc (D4: API + import + previzualizare + model CSV; fixture-urile din 7 fișiere și 2 probe aduse la regulă,
+    108 passed); D5 cod pe disc (migrarea în D6). Comanda Costin „Retest 07.10 pe F1” (07.10.2026) adaugă R1 și R2 în lot.
+  - ultim (2): D2, D3, R1 (a–e, fără migrarea pe producție), R2, S2, S3, S4 pe disc; `core/test_decizii_0710.py` 20 passed;
+    migrarea `core/migrare_decizii_0710.py` rulată pe baza de TEST (20/20). MĂSURAT pe F1: NIR 1 n-are mișcare în fișă —
+    stornarea lui nu schimbă 116 / 5.900,00 (raportat la §6).
+  - ultim (3): S1 pe disc; setul de vecinătate (432 de fișiere: 4337 verzi, 58 roșii) -> reparate pe clasă (fixturi pentru
+    deciziile D4/D5/S3, lit.b pe mărirea în lună — corecție cu textul pe linie, gărzile structurale); 29 de mutații ROȘII; probele
+    înainte (3545ee88) / după, cu capturi; clasa `--gri-clar` (DS v2.80). Totul într-un singur commit, cu poarta completă o dată.
+  - urmator: — (livrat în commitul de închidere; deciziile cerute în raport). STARE = ÎNCHIS
+  - extins (comanda „Retest 07.10 seara — F5 09/2026”, verbatim în DECIZII 07.10.2026): S1–S4, aceeași poartă și același ZIP.
+  - extins (comanda „Retest 07.10 pe F1”, verbatim în DECIZII 07.10.2026): R1, R2; ZIP-ul final cu tot ce s-a schimbat (cod,
+    documentație, artefactele de măsurare).
+  - pasi:
+    D1. `core/metoda_stoc.py`: combinațiile nesuportate (cantitativ-valoric la preț de vânzare, FIFO) numite; Date firmă le arată cu
+        „nesuportat încă”, `firma_profil_api` le refuză clar; restanța în `core/test_datorie.py` (xfail strict).
+    D5. Seria chitanței: fără „CH” (cod + schemă); cerută la prima chitanță, refuz cu ecranul Date firmă; câmp în Date firmă; migrare
+        (păstrează seria unde există deja chitanțe emise cu ea).
+    D4. `main.SalariatIn` fără implicite pentru functie_baza / scutit_contrib_minim / tip_norma (refuz cu câmpul numit);
+        importul salariaților citește cele trei coloane și refuză rândul fără ele, numit.
+    D2. NIR legat de o factură primită (`nir.factura_id`): la global-valoric scrie numai 371=378 și 371=4428; la cantitativ-valoric
+        legarea se refuză (factura face deja intrarea); NIR-ul nelegat rămâne complet; formularul alege factura.
+    D3. Z la cantitativ-valoric: nota Z ciornă; validarea (`jurnal_api.valideaza`, unicul drum) cere ieșiri legate de Z
+        (`miscari_stoc.z_inregistrare_id`, manual sau rețetă) sau declarația explicită „fără marfă”; ecranul Z oferă descărcarea.
+    R1. Respingerea unui document cu mișcare de stoc inversează mișcarea în fișa de magazie (înregistrare inversă, nu ștergere;
+        CMP recalculat); documentul rămâne în listă, „respins”, cu motivul, și poate fi refăcut. MĂSURAT pe F1 (tenant_049, citire):
+        NIR 1 (10 buc × 55 = 550,00, metoda goală — logica veche) NU are nicio mișcare în fișă; 116 / 5.900,00 = 100 − 10 + 20 − 2 − 2
+        + 10 (NIR 2). Inversarea corectă lasă 116 / 5.900,00; „105 / 5.350,00” ar cere scoaterea a 11 buc dintr-o intrare care n-a
+        existat -> se raportează (§6), nu se fabrică. Pași:
+        R1a. Schema + motor: `miscari_stoc.nir_id` (legătura NIR -> intrări; completată din eticheta documentului), `anuleaza_id`
+             (index unic: o mișcare se inversează o singură dată); `stocuri_cv.fisa_magazie` primește rândul invers (cantitate
+             negativă, valoarea originală — stornare în roșu); `adauga_nir` scrie `nir_id`.
+        R1b. `core/stocuri_anulare.py`: mișcările documentului (NIR / factură / notă), inversarea (datată la respingere, nu în
+             trecut — ieșirile de după își păstrează CMP-ul; refuz numit dacă marfa a ieșit deja), apelată din `coada_api.respinge`
+             în aceeași tranzacție.
+        R1c. Revenirea pe alt drum se închide: `jurnal_api.valideaza` și `coada_api.retrimite_nota` refuză nota unui document cu
+             stocul inversat („refă documentul”); recontabilizarea facturii refăcute reface și mișcarea (verificările de
+             idempotență din `intrare_din_factura` / `descarca_factura` ignoră mișcările inversate).
+        R1d. NIR: lista și detaliul arată „respins” + motivul; „Refă NIR-ul” deschide formularul completat; NIR-ul refăcut
+             (`nir.refacut_din_id`) scoate ciornele respinse ale celui vechi.
+        R1e. Migrarea pe documentele deja respinse (toate firmele): inversarea mișcărilor neinversate; F1 raportat cu cifrele.
+    R2. Titlul elementului din coadă și confirmarea după respingere: „NIR nr 1 din 07.10.2026 · DANTE INTERNATIONAL SA · 4 note”
+        (o singură definiție, din documentul grupului), nu numele repetat pe fiecare notă; elementele existente prin migrare.
+    S1. Elemente variabile de salariu (comanda „Retest 07.10 seara — F5 09/2026”): prime, sporuri, ore suplimentare, pe salariat
+        și pe lună, introduse de contabil fără preselecție; intră în brut și în bazele CAS / CASS / impozit; distincte pe fluturaș
+        și în compoziția netului. MĂSURAT: `beneficii_lunare` e pentru beneficii extrasalariale (tichete, cadou), alt tratament
+        fiscal — nu se refolosește; `stat_plata_api.stat_plata` și `d112.pull` cheamă fiecare `calcul_salariu` (două căi).
+        S1a. Tabelul `elemente_salariale` (salariat, an, lună, tip ∈ prima / spor / ore_suplimentare, denumire, ore — numai la
+             orele suplimentare —, sumă > 0), `core/elemente_salariale.py` (adaugă / șterge / lista lunii / totalul lunii — o
+             singură citire), rutele salariatului pe lună.
+        S1b. `salarizare.calcul_salariu(elemente_variabile=)`: intră în brut (numerar) și în bazele CAS / CASS / impozit;
+             facilitatea cere venitul brut REALIZAT ≤ plafon (OUG 156/2024 art.LXVI alin.(1) lit.b / OUG 89/2025 art.III),
+             pe ambele ramuri.
+        S1c. Statul de plată și `d112.pull` trec același total (aceeași citire); brutul declarat și baza pragului îl cuprind;
+             D112 cu o primă validat pe DUK; controlul notă-declarație verde.
+        S1d. Fluturașul și statul: rânduri distincte (salariul de bază, fiecare element), compoziția netului.
+        S1e. Ecranul: elementele lunii pe salariat (adaugă cu tip „— alege —”, denumire, sumă, orele la ore suplimentare).
+    S2. „Salariu — de la”: implicit prima zi a lunii lucrate (nu data de azi).
+    S3. Retrimiterea după respingere: recontabilizarea care produce aceeași notă ca cea respinsă -> avertisment („nimic nu s-a
+        schimbat de la respingere”, cu motivul) și confirmare explicită (nu blocaj); cardul din coadă al notei retrimise:
+        „retrimisă după respingere”, motivul anterior, schimbată / neschimbată față de cea respinsă.
+    S4. Notificările „de validat” se marchează rezolvate (validat / respins / înlocuit) la schimbarea stării elementului; nota
+        înlocuită nu lasă a doua notificare activă (F5: #3 -> #4; NIR 1 / NIR 2 pe F1).
+    D6. Migrarea unică + template; gărzi + mutații; probe înainte/după cu capturi; unelte vizuale; registre; setul de vecinătate
+        complet; poarta completă o dată; four-way; migrarea pe producție (după backup); ZIP; raportul.
+
 - fir: **Lotul 07.10 B — A corecția regulii DS cap.17, B sitemap, C retestul 07.10 (comanda Costin 07.10.2026)** — verbatim în
   DECIZII 07.10.2026 („Lotul 07.10 B”). Trei publicări (B, A, C), fiecare cu poarta completă o dată; ZIP-uri
   `~/ghid_incoming/iconta_lot_07_10_b.zip` și `~/ghid_incoming/iconta_selecturi_82.zip`.

@@ -465,7 +465,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, None,
-      "432 rute montate in modul si 0 instructiuni SQL — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
+      "437 rute montate in modul si 0 instructiuni SQL — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
       "PLAN_HARDENING.md:839 — stratul HTTP e acolo unde sunt rutele"),
     D("core/repo_beneficii_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/beneficii_api.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
@@ -501,7 +501,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/d112.py` — 3 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d112_reconciliere.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/d112_reconciliere.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/d112_reconciliere.py` — 7 instructiuni SQL (+1: elementele variabile ale lunii, S1 07.10.2026), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d205.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/d205.py` — 5 instructiuni SQL, zero `get_conn`, zero commit",
@@ -801,6 +801,18 @@ REGISTRU = (
       "citit la sursa (docstring + ce face modulul)"),
     D("core/mijloace_fixe_import_api.py", REPOSITORY, None,
       "«import mijloace fixe (stratul 6 migrare) per firma» — acces la date; 0 get_conn / 1 commit proprii — atinge orchestrarea (D4b)",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/elemente_salariale.py", REPOSITORY, None,
+      "«elementele VARIABILE ale salariului, pe salariat și pe lună» (retest 07.10 seara, S1) — prime / sporuri / ore suplimentare: "
+      "validare + SQL propriu; 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/stocuri_anulare.py", REPOSITORY, None,
+      "«respingerea unui document cu mișcare de stoc o stornează în fișa de magazie» (retest 07.10, R1) — stornare în roșu, "
+      "refacerea facturii; 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/z_descarcare.py", REPOSITORY, None,
+      "«raportul Z la firma cu stocul CANTITATIV-VALORIC» (decizii 07.10, D3) — descărcarea pe articol legată de Z, "
+      "declarația „fără marfă”, poarta validării; 0 get_conn / 0 commit proprii",
       "citit la sursa (docstring + ce face modulul)"),
     D("core/note_derivate.py", REPOSITORY, None,
       "«nota derivată se corectează numai din documentul-sursă» (lotul 07.10 B, C9) — citește legăturile notei cu documentul ei; "

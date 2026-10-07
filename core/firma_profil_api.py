@@ -171,7 +171,7 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
 
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
-CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc")
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta")
 
 
 def _instantaneu(conn):
@@ -344,8 +344,9 @@ def cere_administrator(conn, document):
 
 
 def _metode_stoc():
-    from core.metoda_stoc import ETICHETE
-    return ETICHETE
+    """Metodele suportate + cele nesuportate încă (afișate, refuzate la salvare — decizia Costin 07.10, pct.1)."""
+    from core.metoda_stoc import ETICHETE, NESUPORTATE
+    return {**ETICHETE, **NESUPORTATE}
 
 
 def _activitati_amef():
@@ -357,7 +358,7 @@ def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
-               + list(CAMPURI_AMEF) + ["metoda_stoc"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]
+               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -406,10 +407,26 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
                 return {"ok": False, "camp": "metoda_stoc",
                         "mesaj": "Metoda de stoc nu se șterge după ce a fost declarată — se schimbă cu cealaltă, iar "
                                  "schimbarea rămâne în jurnal."}
+        elif _m in _ms.NESUPORTATE:   # [decizia Costin 07.10, pct.1] refuz clar, „nesuportat încă”
+            return {"ok": False, "camp": "metoda_stoc", "cod": _ms.COD_NESUPORTATA,
+                    "mesaj": _ms.MESAJ_NESUPORTATA % _ms.NESUPORTATE[_m]}
         elif _m not in (_ms.GV, _ms.CV):
             return {"ok": False, "camp": "metoda_stoc", "mesaj": "Metoda de stoc e global-valorică sau cantitativ-valorică."}
         else:
             _val["metoda_stoc"] = _m
+    # [decizia Costin 07.10, pct.5] seria chitanțelor: „cerută la prima folosire, ca seria facturii; fără «CH» din oficiu”.
+    # OMFP 2634/2015 anexa 1 pct.24: seria e „stabilit(ă) de entitate”. Odată stabilită nu se șterge (numerotarea continuă pe ea).
+    if "serie_chitanta" in (date or {}):
+        _sc = str(date.get("serie_chitanta") or "").strip().upper() or None
+        if _sc is None:
+            if inainte.get("serie_chitanta"):
+                return {"ok": False, "camp": "serie_chitanta",
+                        "mesaj": "Seria chitanțelor nu se șterge după ce a fost stabilită — se schimbă, iar schimbarea rămâne în jurnal."}
+        elif not _re.fullmatch(r"[A-Z0-9]{1,10}", _sc):
+            return {"ok": False, "camp": "serie_chitanta",
+                    "mesaj": "Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."}
+        else:
+            _val["serie_chitanta"] = _sc
     # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
     if any(k in (date or {}) for k in CAMPURI_AMEF):
         from core.uc_comun import bifa as _bifa

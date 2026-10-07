@@ -86,7 +86,7 @@ def firma(monkeypatch):
                         "VALUES (1,'ZT SCRIERI SRL','14399840','Str Probei 1','Cluj-Napoca','CJ',"
                         "'6202',true,'L','BT','RO49AAAA1B31007593840000','Popescu','Ion','admin',"
                         "'0700000000')")
-            cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200, serie_factura = 'ZT', metoda_stoc = 'global_valoric', inreg_art317 = false, activitate_exceptata_amef = false WHERE id = 1")  # L31/1990 art.74 alin.(3) (capital) + CF art.319 alin.(20) lit.a) (seria) + metoda de stoc explicită (06.10.2026)
+            cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200, serie_factura = 'ZT', serie_chitanta = 'ZC', metoda_stoc = 'global_valoric', inreg_art317 = false, activitate_exceptata_amef = false WHERE id = 1")  # L31/1990 art.74 alin.(3) (capital) + CF art.319 alin.(20) lit.a) (seria) + metoda de stoc explicită (06.10.2026)
             cur.execute("SET search_path TO public")
             cur.execute("INSERT INTO public.tenants (schema_name,nume,cui,accounting_firm_id,activ) "
                         "VALUES (%s,'ZT SCRIERI','14399840',%s,true) RETURNING id", (SCH, firm))
@@ -584,14 +584,15 @@ def test_SALARIATUL_creat_si_IMPORTAT_ajung_in_tabelul_citit_de_D112(firma):
     cl = _client()
     r = cl.post(_U(firma, "/tenants/{tenant_id}/salariati"), headers=_H(firma), json={
         "nume": "POPESCU", "prenume": "ION", "cnp": "1800101221144",
-        "data_angajare": "2026-01-05", "salariu_brut": 5000, "cor": "251401"})
+        "data_angajare": "2026-01-05", "salariu_brut": 5000, "cor": "251401",
+        "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False})
     assert r.status_code == 200, r.text[:300]
     assert _numar(firma, "SELECT count(*) FROM salariati") == 1, "salariatul nu s-a scris"
 
     i = cl.post(_U(firma, "/tenants/{tenant_id}/salariati-import"), headers=_H(firma), json={
         "randuri": [{"nume": "IONESCU", "prenume": "MARIA", "cnp": "2800101221138",
                      "salariu_brut": 6000, "data_angajare": "2026-02-01", "cor": "251401",
-                     "tip_norma": "intreaga"}]})
+                     "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False}]})
     assert i.status_code == 200, i.text[:300]
     assert _numar(firma, "SELECT count(*) FROM salariati") == 2, "importul n-a adăugat rândul"
 
@@ -603,7 +604,8 @@ def test_CONCEDIUL_salvat_si_STERS_urmeaza_in_tabelul_citit_de_D112(firma):
     cl = _client()
     s = cl.post(_U(firma, "/tenants/{tenant_id}/salariati"), headers=_H(firma), json={
         "nume": "POPESCU", "prenume": "ION", "cnp": "1800101221144",
-        "data_angajare": "2026-01-05", "salariu_brut": 5000, "cor": "251401"})
+        "data_angajare": "2026-01-05", "salariu_brut": 5000, "cor": "251401",
+        "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False})
     assert s.status_code == 200, s.text[:300]
     sid = _numar(firma, "SELECT max(id) FROM salariati")
 

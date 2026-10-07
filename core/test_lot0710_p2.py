@@ -111,7 +111,7 @@ def test_documentul_se_respinge_si_se_retrimite_intreg(tx):
     assert len(c.respinge(conn, cid, str(valid), "lipsește avizul", respins_de_id=valid, cabinet_id_apelant=cab)["membri"]) == 2
     st = c.stari_note(conn, tid, [n1, n2])
     assert {st[n1]["stare_coada"], st[n2]["stare_coada"]} == {"respinsa"}
-    assert c.retrimite_nota(conn, cab, tid, n2, asist)["ok"]
+    assert c.retrimite_nota(conn, cab, tid, n2, asist, confirma=True)["ok"]   # [S3] neschimbată -> confirmată explicit
     st = c.stari_note(conn, tid, [n1, n2])
     assert {st[n1]["stare_coada"], st[n2]["stare_coada"]} == {"la_senior"}   # retrimisă cu tot documentul
 
@@ -129,7 +129,7 @@ def test_respinsa_apoi_validata_e_o_pregatire_si_zero_la_suta_din_prima(tx):
     nid = _nota(conn, "Chirie", 500, doc="Contract CH-1")
     cid = c.pune_notele_in_coada(conn, cab, tid, asist)[0]["coada_id"]
     c.respinge(conn, cid, str(valid), "data greșită", respins_de_id=valid, cabinet_id_apelant=cab)
-    cid2 = c.retrimite_nota(conn, cab, tid, nid, asist)["coada_id"]
+    cid2 = c.retrimite_nota(conn, cab, tid, nid, asist, confirma=True)["coada_id"]   # [S3] neschimbată -> confirmată explicit
     _ca(cur, valid)
     assert c.aproba(conn, cid2, str(valid), valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
     dupa = asistenti_api.calitate(conn, cab, asist)

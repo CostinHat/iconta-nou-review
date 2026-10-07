@@ -663,8 +663,8 @@ function descarcaModelSolduri() {
 const MODELE = {
   parteneri: { fisier: "model_solduri_parteneri.csv", antet: "cont,cui,denumire,sold debitor,sold creditor",
     randuri: ["4111,RO12345678,Client Exemplu SRL,5000,0", "401,RO87654321,Furnizor Exemplu SRL,0,3000"] },
-  salariati: { fisier: "model_salariati.csv", antet: "nume,prenume,cnp,data angajare,norma,brut,judet,cor,iban",
-    randuri: ["Popescu,Ana,2900215410011,2020-01-15,intreaga,5000,B,251401,RO49AAAA1B31007593840000", "Ionescu,Radu,1850715410012,2021-03-01,intreaga,6000,CJ,522101,"] },
+  salariati: { fisier: "model_salariati.csv", antet: "nume,prenume,cnp,data angajare,norma,ore,functie de baza,scutit contributie minima,brut,judet,cor,iban",
+    randuri: ["Popescu,Ana,2900215410011,2020-01-15,intreaga,8,da,nu,5000,B,251401,RO49AAAA1B31007593840000", "Ionescu,Radu,1850715410012,2021-03-01,partiala,4,da,nu,6000,CJ,522101,"] },
   asociati: { fisier: "model_asociati.csv", antet: "nume,cnp/cui,cota %",
     randuri: ["Popescu Ana,2900215410011,60", "Ionescu Radu,1850715410012,40"] },
   mijloace: { fisier: "model_mijloace_fixe.csv", antet: "cod,denumire,valoare intrare,valoare rezidual,durata luni,data PIF,metoda,cont imobilizare,cont amortizare",
@@ -1058,7 +1058,10 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     const cnpCell = ok
       ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>`
       : `<span class="mig-cnp-no">${esc(r.cnp || "—")} ⚠ <span class="mig-motiv">${esc(r.cnp_motiv)}</span></span>`;
-    const norma = r.tip_norma === "partiala" ? `parțială ${r.ore_zi}h` : "întreagă";
+    // [decizii 07.10 pct.4] norma și cele două DA/NU se arată cum au venit din fișier; lipsa e „—” (rândul se refuză, numit)
+    const dn = (x) => (x === true ? "Da" : x === false ? "Nu" : "—");
+    const norma = (r.tip_norma === "partiala" ? `parțială ${r.ore_zi || "—"}h` : r.tip_norma === "intreaga" ? "întreagă" : "—")
+      + ` · funcție de bază: ${dn(r.functie_baza)} · scutit minim: ${dn(r.scutit_contrib_minim)}`;
     return `
       <div class="mig-sold-rand mig-rand-sal ${ok ? "" : "mig-rand-invalid"}">
         <span class="mig-sold-den">${esc(r.nume)} ${esc(r.prenume)}</span>

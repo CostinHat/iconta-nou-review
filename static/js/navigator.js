@@ -391,8 +391,11 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
       lista.innerHTML = "";
       items.forEach((n) => {
         const it = document.createElement("button");
-        it.className = "clopot-item" + (n.citit ? "" : " clopot-necitit");
-        it.innerHTML = `<div class="clopot-text">${esc(n.text||"")}</div><div class="clopot-cand">${_clopotData(n.cand)}</div>`;
+        // [retest 07.10 seara, S4] notificarea rezolvată (elementul și-a schimbat starea) nu mai e „de făcut”: o spune și nu mai
+        // apare ca necitită
+        const REZ = { validat: "rezolvată: validată", respins: "rezolvată: respinsă", inlocuit: "rezolvată: înlocuită" };
+        it.className = "clopot-item" + (n.citit || n.rezolvata ? "" : " clopot-necitit");
+        it.innerHTML = `<div class="clopot-text">${esc(n.text||"")}</div><div class="clopot-cand">${_clopotData(n.cand)}${n.rezolvata ? " · " + esc(REZ[n.rezolvata] || "rezolvată") : ""}</div>`;
         it.addEventListener("click", async () => {
           panou.remove();
           // [lotul 07.10 pct.8, comanda Costin 06.10.2026] „Click pe notificarea «Notă pregătită, de validat» doar închide lista;
@@ -401,7 +404,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=9657ebed5d");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=2eb55662ae");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu am putut deschide De validat:", e); }
@@ -411,7 +414,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=e9cf26e11b");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=77abd6ad79");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=ff714711ca");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

@@ -1453,7 +1453,10 @@ try:
         for _m in re.finditer(r"articol_id:\s*arts\[0\]", _t):
             rap["pret_sau_articol_neales"].append((_nume, _t[:_m.start()].count("\n") + 1, "arts[0]", "rândul nou legat de primul articol (DS cap.24 v2.75)"))
         for _m in re.finditer(r'<option value="\$\{a\.id\}"', _t):
-            if '<option value=""' not in _t[max(0, _m.start() - 300):_m.start()]:
+            # [07.10.2026] `${ALEGE}` (api.js) E opțiunea goală canonică (`<option value="" data-alege …>`, DS cap.17): o listă care
+            # pornește cu ea e conformă — fără asta, gardul lexical respingea exact forma pe care o cere DS-ul
+            _fer = _t[max(0, _m.start() - 300):_m.start()]
+            if '<option value=""' not in _fer and "${ALEGE}" not in _fer:
                 rap["pret_sau_articol_neales"].append((_nume, _t[:_m.start()].count("\n") + 1, "option", "lista de articole fără opțiunea goală (DS cap.24 v2.75)"))
     _em = fisiere.get("emitere_ecran.js", "")
     if "golestePropunerea(l, pret, um);" not in _em or not re.search(r"dataset\.den[^\n]*l\.articol_id = null", _em):
@@ -1637,14 +1640,17 @@ for _fis, _txt in sorted(fisiere.items()):
 #     pentru buline, borduri și fundaluri, nu pentru text: pe alb dau ~2,6:1 și ~2,5:1, sub pragul WCAG 1.4.3 (4,5:1). Textul
 #     folosește `--galben-text` / `--gri`. Găsită de axe pe Registrul jurnal („● Ciornă”) și la Bancă („Parțial”, „Contat ✓”),
 #     la proba pasului C. Mutația care o probează: `color:var(--galben)` repus pe insigna „Ciornă” -> TOTAL > 0.
-_RX_SEMAFOR_TEXT = re.compile(r"(?<![-\w])color\s*:\s*(?:var\(--galben\)|var\(--gri-semafor\)|#c9961f|#9aa3b2|\$\{CUL\.(?:galben|gri)\})", re.I)
+#     [DS cap.15 v2.80, 08.10.2026] Aceeași clasă: `--gri-clar` (#8a929e) dă 3,14:1 pe alb (2,84:1 pe fundalul notificării
+#     necitite) — e pentru fundaluri / placeholder, nu pentru text; textul secundar e `--gri` (5,91:1). Găsită de axe pe clopoțel
+#     (lotul „Deciziile 07.10”). Excepție: `::placeholder`. Mutația: `color: var(--gri-clar)` repus pe `.clopot-cand` -> TOTAL > 0.
+_RX_SEMAFOR_TEXT = re.compile(r"(?<![-\w])color\s*:\s*(?:var\(--galben\)|var\(--gri-semafor\)|var\(--gri-clar\)|#c9961f|#9aa3b2|#8a929e|\$\{CUL\.(?:galben|gri)\})", re.I)
 rap["culoare_semafor_text"] = []
 _surse_css = dict(fisiere)
 with open(os.path.expanduser("~/iconta_nou/static/stil.css"), encoding="utf-8") as _h:
     _surse_css["stil.css"] = _h.read()
 for _fis, _txt in sorted(_surse_css.items()):
     for _i, _ln in enumerate(_txt.split("\n"), 1):
-        if _RX_SEMAFOR_TEXT.search(_ln):
+        if _RX_SEMAFOR_TEXT.search(_ln) and "::placeholder" not in _ln:
             rap["culoare_semafor_text"].append((_fis, _i, "CULOARE_SEMAFOR_TEXT", _ln.strip()[:70]))
 # forma INDIRECTĂ: un dicționar / o variabilă / o funcție cu culoare de semafor, folosită apoi ca `color:${…}`. LIMITĂ
 # declarată (GARZI 05.10.2026): culoarea transmisă prin PARAMETRU (ex. `cifra(…, "var(--galben)")` -> `color:${accent}`) nu se

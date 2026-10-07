@@ -206,6 +206,17 @@ def nota_horeca_z_validata(cur, schema, data_, numar, descriere, document_ref=No
     return cur.fetchone()
 
 
+def nota_horeca_z_ciorna(cur, schema, data_, numar, descriere, document_ref=None):
+    """[decizii 07.10 pct.3] Raportul Z scris de mână la firma CANTITATIV-VALORICĂ: CIORNĂ — validarea cere descărcarea pe articol
+    (`z_descarcare`, poarta din `jurnal_api.valideaza`). La global-valoric rămâne `nota_horeca_z_validata`."""
+    cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
+                VALUES (%s, %s, %s, 'horeca_z', 'ciorna', %s) RETURNING id
+            """,
+                (data_, numar, descriere, document_ref))
+    return cur.fetchone()
+
+
 def adauga_z_cota(cur, schema, inregistrare_id, cota, baza, tva):
     """[lot 19 pct.4b] Defalcarea raportului Z pe o cotă (baza + TVA), în aceeași tranzacție cu nota."""
     cur.execute(f"""INSERT INTO {schema}.rapoarte_z_cote (inregistrare_id, cota, baza, tva)

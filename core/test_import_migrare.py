@@ -21,7 +21,7 @@ AZI = d.date(2026, 7, 15)
 # ---------------- SALARIATI ----------------
 def _s(**kw):
     b = {"nume": "X", "prenume": "Y", "cnp_valid": True, "data_angajare": "2024-01-08",
-         "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga",  # [Q11] salariat complet are norma
+         "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False,  # [Q11; decizii 07.10 pct.4] salariat complet are norma
          "salariu_brut": 5000}  # [salariu_import] ... si salariu de baza > 0
     b.update(kw)
     return b

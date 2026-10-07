@@ -46,7 +46,7 @@ def lista(conn, user_id, doar_necitite=False, limita=50):
         if doar_necitite:
             cond += " AND citit = false"
         cur.execute(
-            "SELECT id, tip, text, link, citit, creat_la "
+            "SELECT id, tip, text, link, citit, creat_la, rezolvata "
             "  FROM public.notificari WHERE " + cond +
             " ORDER BY creat_la DESC LIMIT %s", val + [int(limita)])
         out = []
@@ -54,6 +54,8 @@ def lista(conn, user_id, doar_necitite=False, limita=50):
             out.append({
                 "id": r["id"], "tip": r["tip"], "text": r["text"],
                 "link": r["link"], "citit": r["citit"],
+                # [retest 07.10 seara, S4] validat / respins / inlocuit: elementul și-a schimbat starea, nu mai cere nimic
+                "rezolvata": r["rezolvata"],
                 "cand": r["creat_la"].isoformat(),
             })
     return {"ok": True, "notificari": out}
@@ -62,7 +64,7 @@ def lista(conn, user_id, doar_necitite=False, limita=50):
 def contor(conn, user_id):
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT COUNT(*) FROM public.notificari WHERE user_id = %s AND citit = false",
+            "SELECT COUNT(*) FROM public.notificari WHERE user_id = %s AND citit = false AND rezolvata IS NULL",
             (int(user_id),))
         n = cur.fetchone()[0]
     return {"ok": True, "necitite": int(n)}
@@ -86,8 +88,25 @@ def sumar(conn, user_id):  # [p63_notif_sumar]
     with conn.cursor() as cur:
         cur.execute(
             "SELECT tip, COUNT(*) FROM public.notificari "
-            " WHERE user_id = %s AND citit = false GROUP BY tip",
+            " WHERE user_id = %s AND citit = false AND rezolvata IS NULL GROUP BY tip",
             (int(user_id),))
         pe_tip = [{"tip": r[0], "n": int(r[1])} for r in cur.fetchall()]
     total = sum(x["n"] for x in pe_tip)
     return {"ok": True, "necitite": total, "pe_tip": pe_tip}
+
+
+def rezolva_nota_inlocuita(conn, schema, nota_id):
+    """[retest 07.10 seara, S4] Nota respinsă a fost ÎNLOCUITĂ (recontabilizare, NIR refăcut): notificarea „a fost respinsă” a
+    celui care a pregătit-o (legătura `jurnal:<firmă>:<notă>[:an:lună]`) nu mai cere nimic -> `inlocuit`. `schema` gol = schema
+    curentă a conexiunii."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = COALESCE(NULLIF(%s, ''), current_schema())",
+                    (str(schema or "").strip('"'),))
+        t = cur.fetchone()
+        if not t:
+            return 0
+        cheie = "jurnal:%d:%d" % (int(t[0]), int(nota_id))
+        cur.execute("UPDATE public.notificari SET rezolvata = 'inlocuit', rezolvata_la = now() "
+                    "WHERE tip = 'respinsa' AND rezolvata IS NULL AND (link = %s OR link LIKE %s)", (cheie, cheie + ":%"))
+        return cur.rowcount
+

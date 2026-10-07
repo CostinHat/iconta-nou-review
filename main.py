@@ -1127,17 +1127,19 @@ class SalariatIn(BaseModel):
     prenume: Optional[str] = None
     cnp: Optional[str] = None
     data_angajare: Optional[str] = None
-    tip_norma: str = "intreaga"
+    # [decizia Costin 07.10, pct.4] „aceeași regulă ca pe ecran”: tip_norma, scutit_contrib_minim și functie_baza fără implicit —
+    # lipsa se refuză cu câmpul numit (`salariati_api.valideaza`), nu devine „intreaga” / „Nu” / „Da” în locul omului
+    tip_norma: Optional[str] = None
     ore_zi: Optional[float] = None
     salariu_brut: float = 0
     persoane_intretinere: int = 0
     judet_casa: Optional[str] = None
-    scutit_contrib_minim: bool = False
+    scutit_contrib_minim: Optional[bool] = None
     motiv_exceptare: Optional[int] = None
     cor: Optional[str] = None
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
-    functie_baza: bool = True  # [3c · CF art.77(1)] deducerea personala doar la functia de baza
+    functie_baza: Optional[bool] = None  # [3c · CF art.77(1)] deducerea personala doar la functia de baza; cerută explicit
 
 class SalariatEdit(BaseModel):
     nume: Optional[str] = None
@@ -1266,6 +1268,8 @@ class SalariatRand(BaseModel):
     cnp: str = ""
     data_angajare: Optional[str] = None
     tip_norma: str = ""     # [Q11] fara default tacit (DS cap.17): necunoscut ramane necunoscut, semnalat
+    functie_baza: Optional[bool] = None          # [decizii 07.10 pct.4] cerut explicit; lipsa -> rândul refuzat, numit
+    scutit_contrib_minim: Optional[bool] = None  # idem
     ore_zi: float = 0
     salariu_brut: float = 0
     persoane_intretinere: int = 0
@@ -2868,6 +2872,33 @@ def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/salariati/{salariat_id}/elemente")
+# [retest 07.10 seara, S1] elementele variabile ale salariului (prime, sporuri, ore suplimentare) pe lună
+def salariat_elemente(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    try:
+        return _uc_tenants.salariat_elemente(tenant_id, salariat_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/salariati/{salariat_id}/elemente")
+def salariat_element_adauga(tenant_id: int, salariat_id: int, corp: dict = Body(...),
+                            ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[S1] {an, luna, tip (prima / spor / ore_suplimentare), denumire, suma, ore (numai la ore suplimentare)}."""
+    try:
+        return _uc_tenants.salariat_element_adauga(tenant_id, salariat_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/salariati/{salariat_id}/elemente/{element_id}")
+def salariat_element_sterge(tenant_id: int, salariat_id: int, element_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.salariat_element_sterge(tenant_id, salariat_id, element_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}")
 def salariat_sterge(tenant_id: int, salariat_id: int,                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
@@ -3327,11 +3358,11 @@ def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(ce
 # [R33] Actul: scrie nota CIORNA a statului de plata. Semnaleaza, NU blocheaza - divergenta se
 # intoarce si dupa contare, ca sa nu se stinga prin ignorare (regula de la contradictiile pe
 # statul de plata). Ciorna, nu validata: patru-ochi ramane.
-def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def salarii_contare_scrie(tenant_id: int, an: int, luna: int, confirma: bool = False, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Scrie nota ciorna a statului de plata. Idempotent pe `document_ref` (interdictia 8:
-    schema nu lasa un al doilea exemplar)."""
+    schema nu lasa un al doilea exemplar). [S3] `confirma`: recontabilizarea identică cu nota respinsă se face numai confirmată."""
     try:
-        return _uc_tenants.salarii_contare_scrie(tenant_id, an, luna, ctx)
+        return _uc_tenants.salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=confirma)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -3517,6 +3548,24 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
                     ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_tenants.horeca_raport_z(tenant_id, rz, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/horeca/rapoarte-z")
+# [decizii 07.10 pct.3] rapoartele Z ale lunii, cu starea descărcării pe articol (ecranul Raport Z, la cantitativ-valoric)
+def horeca_rapoarte_z(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    try:
+        return _uc_tenants.horeca_rapoarte_z(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/horeca/raport-z/{nota_id}/fara-marfa")
+# [decizii 07.10 pct.3] declarația EXPLICITĂ că în raportul Z nu s-a vândut marfă din stoc (altfel Z-ul nu se validează)
+def horeca_z_fara_marfa(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.horeca_z_fara_marfa(tenant_id, nota_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
@@ -5093,9 +5142,9 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drept
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/retrimite")
 # [validare_note, comanda Costin 06.10.2026 pct.1] Nota RESPINSĂ din coada de validare, corectată, se trimite din nou —
 # act explicit al celui care a pregătit-o („Poate pregăti”), ca o respingere să nu se anuleze singură.
-def jurnal_retrimite(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    try:
-        return _uc_coada.jurnal_retrimite(tenant_id, nota_id, ctx)
+def jurnal_retrimite(tenant_id: int, nota_id: int, confirma: bool = False, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:   # [S3] `confirma`: nota neschimbată față de cea respinsă se retrimite numai confirmată
+        return _uc_coada.jurnal_retrimite(tenant_id, nota_id, ctx, confirma=confirma)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -5546,7 +5595,7 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
-def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def factura_contabilizeaza(tenant_id: int, factura_id: int, confirma: bool = False, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026,
     varianta (ii)+(iii) din AAA4).
 
@@ -5562,7 +5611,7 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_dre
     ambiguă de TVA la încasare **trece** (omul are contextul pe care automatul nu-l are), iar plasa
     anti-dublare **avertizează** în loc să oprească."""
     try:
-        return _uc_tenants.factura_contabilizeaza(tenant_id, factura_id, ctx)
+        return _uc_tenants.factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=confirma)   # [S3]
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

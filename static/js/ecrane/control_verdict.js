@@ -280,7 +280,11 @@ export function legaVerdict(corp, nav, firma) {
       let ok = 0;
       const err = [];
       for (const id of ids) {
-        try { await api.post(`/tenants/${firma.tenant_id}/facturi/${id}/contabilizeaza`, {}); ok++; }
+        try {
+          const r = await api.post(`/tenants/${firma.tenant_id}/facturi/${id}/contabilizeaza`, {});
+          // [S3] refacerea identică cu nota respinsă nu se face în masă: cere confirmarea pe factură
+          if (r && r.cod === "NESCHIMBATA") err.push(`${id}: ${r.mesaj}`); else ok++;
+        }
         catch (e) { err.push(`${id}: ${e.mesaj || e.message}`); }
       }
       if (err.length) {

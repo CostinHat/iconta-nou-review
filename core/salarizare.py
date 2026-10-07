@@ -148,7 +148,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=()):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -188,6 +188,17 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # ambele pe vbt. Cu sporuri separate diverg: (c) ramane pe baza, (d) trece pe baza+sporuri, iar
     # venit_brut_total trebuie redefinit + un parametru nou pentru baza contractuala.
     vbt = _dec(venit_brut_total) if venit_brut_total is not None else b
+    # [retest 07.10 seara, S1] ELEMENTELE VARIABILE (prime, sporuri, ore suplimentare — `core/elemente_salariale.py`) sunt
+    # venit din salarii (CF art.76 alin.(1): „toate veniturile în bani … indiferent de … denumirea veniturilor”): intră în
+    # brutul plătit și în bazele CAS / CASS / impozit. Condiția (c) rămâne pe salariul de bază FĂRĂ ele (OUG 89/2025 art.III
+    # alin.(1) lit.a: „fără a include sporuri și alte adaosuri”), iar condiția (d) trece pe VENITUL BRUT REALIZAT — lit.b:
+    # „venitul brut realizat din salarii … astfel cum este definit la art. 76 alin. (1)-(3) … fără a include contravaloarea
+    # tichetelor de masă, voucherelor de vacanță … nu depășește nivelul de 4.300 lei inclusiv” -> salariul lucrat + elementele
+    # variabile + cadoul taxabil + indemnizația de concediu medical (art.76 alin.(1): „inclusiv indemnizațiile pentru
+    # incapacitate temporară de muncă”). Până azi (d) se judeca pe brutul contractual și lipsea pe ramura `facilitate_prorata`.
+    var = _dec(elemente_variabile) if _dec(elemente_variabile) > 0 else Decimal(0)
+    venit_realizat = b + var + (_dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)) + _dec(venit_cm or 0)
+    sub_plafon = venit_realizat <= plafon_fac
     # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori) - UN SINGUR loc,
     # folosita SI la facilitate SI la pragul de suprataxare. 1 daca nu e luna de angajare (contract activ tot).
     _prorata = Decimal(1)
@@ -227,7 +238,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         # facilitate = facilitate_val x acea fractie. Inlocuieste si eligibilitatea (vbt==sm) si proratarea
         # pe fereastra activa (alin.4 lit.b/c/d): pe zilele la minim, minimul <= plafon automat. Norma
         # intreaga ramane conditie (HG 146/2026). Vezi core/salariu_istoric.py.
-        facilitate = facilitate_val * _dec(facilitate_prorata) if (norma_intreaga and functie_baza) else Decimal(0)
+        facilitate = facilitate_val * _dec(facilitate_prorata) if (norma_intreaga and functie_baza and sub_plafon) else Decimal(0)
     else:
         # Forma clasica (fara istoric): eligibilitate vbt==sm + proratare pe fereastra activa (alin.4
         # lit.b) angajare / lit.d) incetare). TEXT EXPLICIT (spre deosebire de prag - vezi baza_podea).
@@ -235,7 +246,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
             # interpretare: incadrat_la_minim
             # Egalitatea stricta NU e in textul legii - e alegerea noastra, declarata in
             # core/registru_interpretari.py cu varianta respinsa (prag_maxim) si cu motivul.
-            norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
+            norma_intreaga and functie_baza and vbt == sm and sub_plafon
         ) else Decimal(0)
         facilitate = facilitate * _prorata
     # [D3 02.08.2026] excesul de tichete de vacanta peste plafonul anual (6 sal.minime) = venit
@@ -251,7 +262,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # [cadou 16.08] cadou TAXABIL (excedent >300 la eveniment legal / integral la nelegal, CF art.76(4)a
     # + art.142) = venit salarial COMPLET: intra in b_imp ca exces_vac -> CAS/CASS (baza_contrib), CAM, impozit.
     cadou_tax = _dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)
-    b_imp = b + exces_vac + cadou_tax
+    b_imp = b + var + exces_vac + cadou_tax
     baza_contrib = b_imp - facilitate
 
     cas = baza_contrib * cota_cas
@@ -310,7 +321,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     cass_tichete = leu_aritmetic(cass_tichete)
     impozit = leu_aritmetic(impozit)
     impozit_tichete = leu_aritmetic(impozit_tichete)
-    net = b - cas - cass - cass_tichete - impozit
+    net = b + var - cas - cass - cass_tichete - impozit   # [S1] elementele variabile se plătesc în bani
 
     # [lot 06.10 pct.11] CAM pe BAZA CONTRIBUTIVA, fara suma neimpozabila de la salariul minim: OUG 89/2025 art.III
     # alin.(1) „Prin derogare de la prevederile art. 78, art. 139 alin. (1), art. 140, art. 157 alin. (1) și ale
@@ -376,7 +387,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "tichete_cultural": _q(tichete_cult),      # [cultural] valoare nominala; impozit 10%, FARA CASS
         "tichete_cresa": _q(tichete_cresa),        # [cresa] valoare nominala; impozit 10%, FARA CASS
         # angajatorul suporta valoarea nominala a biletelor (le cumpara) - cost real
-        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac + tichete_cult + tichete_cresa),
+        "elemente_variabile": _q(var),            # [S1] prime + sporuri + ore suplimentare (în brut și în baze)
+        "cost_angajator": _q(b + var + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac + tichete_cult + tichete_cresa),
     }
 
 
@@ -398,7 +410,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=()):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -414,7 +426,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
               tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii,
-              suspendari=suspendari)
+              suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm)
 
 
 # ============================================================

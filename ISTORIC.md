@@ -1777,3 +1777,29 @@ Supersedează, pe partea de preselecție, intrarea „Ecranele scrise de mână�
   document `nir-1`; statul 11/2026 (11383/11384) -> `nota-2`.
 - Publicarea C: GitHub a răspuns „Internal Server Error” la push (ambele depozite, chiar și pentru un commit deja publicat — problemă
   a serverului, githubstatus „All Systems Operational”); a doua încercare a trecut; sentinelele scoase după four-way închis.
+
+## 07.10.2026 — „Deciziile 07.10” + retesturile 07.10 (F1 după-amiază, F5 seara) — un singur lot, o singură poartă
+
+- D1: metodele de stoc nesuportate (cantitativ-valoric la preț de vânzare, FIFO) apar „nesuportat încă” și se refuză la salvare;
+  restanța e test de datorie.
+- D2: NIR-ul legat de factura primită (global-valoric) scrie numai adaosul și TVA neexigibilă; costul trebuie să fie al facturii;
+  formularul cere „fără factură” sau factura; factura legată nu se mai șterge.
+- D3: raportul Z la cantitativ-valoric intră ciornă și nu se validează fără descărcarea pe articol (ieșire / rețetă legată de Z) sau
+  declarația „fără marfă din stoc”; ecranul Raport Z are secțiunea de descărcare.
+- D4: salariatul pe API și la import cere norma, funcția de bază și scutirea de contribuția minimă (rândul fără ele se refuză numit);
+  modelul CSV și previzualizarea le arată.
+- D5: seria chitanței nu mai vine „CH” din oficiu: se cere la prima chitanță, se scrie în Date firmă.
+- R1: respingerea unui document cu mișcare de stoc o stornează în fișă (în roșu, cu valoarea ei); NIR-ul respins apare „respins” cu
+  motivul și se reface; factura respinsă se reface cu „Contabilizează”. Pe F1, NIR 1 nu avea mișcare în fișă — stocul rămâne 116 /
+  5.900,00 (raport §6).
+- R2: titlul documentului din coadă e scurt: „NIR nr 1 din 07.10.2026 · DANTE INTERNATIONAL SA · 4 note”, la fel în confirmare.
+- S1: prime, sporuri, ore suplimentare pe salariat și lună — în brut, CAS, CASS, impozit, D112 (validat pe DUK), nota de salarii, pe
+  fluturaș distinct; facilitatea de la minim cade când venitul realizat (cu prime și CM) trece de plafon. Pe drum: statul nu trecea
+  cadoul taxabil, nota nu trecea funcția de bază — aliniate, cu gard.
+- S2: „Salariu — de la” pornește cu prima zi a lunii lucrate.
+- S3: recontabilizarea / retrimiterea identică cu nota respinsă cere confirmare; cardul din coadă spune „retrimisă după respingere”,
+  motivul și dacă s-a schimbat.
+- S4: notificările „de validat” se rezolvă singure când elementul e validat / respins / înlocuit; clopoțelul le arată rezolvate.
+- Facilitatea de la salariul minim: condiția „venit realizat ≤ plafon” (OUG 89/2025 art.III lit.b) se aplică acum și în luna cu
+  mărire de salariu; un salariat mărit la mijlocul lunii peste plafon nu mai primește facilitatea proratată pe luna aceea.
+- Contrast: textul secundar în gri deschis (ora notificărilor, rapoarte, ghid) trece pe griul de text (DS cap.15 v2.80).

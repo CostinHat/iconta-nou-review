@@ -61,7 +61,7 @@ function grafic(istoric, camp, titlu, culoare, maxFix) {
       <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px" preserveAspectRatio="none">
         <polyline points="${puncte.join(" ")}" fill="none" stroke="${culoare}" stroke-width="2" />
       </svg>
-      <div class="tip-micut" style="display:flex;justify-content:space-between;color:var(--gri-clar);margin-top:2px">
+      <div class="tip-micut" style="display:flex;justify-content:space-between;color:var(--gri);margin-top:2px">
         <span>${primaOra}</span><span>${ultimaOra}</span>
       </div>
     </div>`;

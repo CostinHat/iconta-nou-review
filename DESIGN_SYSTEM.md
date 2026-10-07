@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.79 · 7 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.80 · 8 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -201,6 +201,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Culorile din cod folosesc EXCLUSIV variabile canonice: `var(--ardezie)` (text), `var(--gri)`/`var(--gri-clar)` (secundar), `var(--rosu)`/`var(--verde)`/`var(--galben)`/`var(--albastru)` (stări), `var(--linie)` (borduri), `var(--fundal)`/`var(--alb)` (fundaluri). INTERZIS hex ad-hoc (`#ddd`, `#8a97a5`, `#fff`) în aplicație.
 - Border-radius folosește `var(--raza)` (6px). INTERZIS valoare literală (`border-radius:8px`). Excepție: `50%` pentru cercuri.
 - **Amberul de TEXT (v2.33, 25.08.2026)**: `--galben` (#c9961f) e culoarea semaforului, nu a textului — pe `--galben-fundal` dă **2.42:1**, sub prag. Textul de avertizare pe fundal deschis folosește **`var(--galben-text)`** (#92500a, 5.64:1). Adăugat cu ocazia R41 partea II, unde eticheta „verdict stătut" cerea un amber lizibil. `.cf-galben` rămâne pe hexul lui până la o migrare separată.
+- **Griul deschis de TEXT (v2.80, 08.10.2026)**: `--gri-clar` (#8a929e) dă **3,14:1** pe alb și **2,84:1** pe fundalul notificării necitite (#eef4ff), sub pragul WCAG 1.4.3 (4,5:1) — e pentru fundaluri, borduri și `::placeholder`, nu pentru text. Textul secundar folosește **`var(--gri)`** (#5b6573, 5,91:1). Găsit de axe pe clopoțel (ora notificării); aceeași clasă cu amberul de mai sus. Gardian: `CULOARE_SEMAFOR_TEXT` în `verificator_conformitate.py` (excepție: `::placeholder`).
 - Landing page (`pagina-*`, login) e sistem vizual separat (marketing) — nu se supune paletei aplicației.
 
 ---
@@ -738,6 +739,10 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.80 (08.10.2026)** — **cap.15: `--gri-clar` nu e culoare de text** (lotul „Deciziile 07.10”, găsit de axe pe clopoțel): 3,14:1 pe alb;
+textul secundar e `--gri`. Nouă locuri reparate (stil.css 7, admin_sanatate.js, facturi_ecran.js); `CULOARE_SEMAFOR_TEXT` din
+verificator acoperă și `--gri-clar` (excepție `::placeholder`). Plus, din același lot: clopoțelul arată notificarea **rezolvată**
+(„rezolvată: validată / respinsă / înlocuită”, pe rândul orei) și nu o mai numără.
 **v2.79 (07.10.2026)** — **cap.17/cap.28: regula preselecției corectată** (comanda Costin, lotul 07.10 B A): permisă când valoarea e
 uzuală sau dedusă, vizibilă și schimbabilă; interzisă pentru faptul situațional. Emiterea revine la RON / țara dedusă din CUI /
 operațiunea normală / factura, vizibil; conturile din Operațiuni precompletate cu sugestia; 13 căsuțe DA/NU situaționale devin

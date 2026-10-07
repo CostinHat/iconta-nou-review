@@ -22,9 +22,8 @@ def _fara_decimal(x):
 
 
 def _miscari(cur, schema, articol_id):
-    cur.execute(f"""SELECT data, tip, cantitate, pret_unitar FROM {schema}.miscari_stoc
-                    WHERE articol_id=%s ORDER BY data, id""", (articol_id,))
-    return [dict(r) for r in cur.fetchall()]
+    from core import repo_stocuri   # [retest 07.10 R1] o singură citire a fișei (cu stornările)
+    return [dict(r) for r in repo_stocuri.miscari_ale_articolului(cur, schema, articol_id)]
 
 
 def _cmp_si_stoc(cur, schema, articol_id):
@@ -135,6 +134,8 @@ def descarca(conn, schema, corp):
         # raportul Z nu mai intră în descărcarea globală (refuzată), deci vânzarea HoReCa se descarcă o singură dată.
         from core import metoda_stoc as _ms
         _ms.cere(cur, schema, _ms.CV, "Consumul pe rețetă")
+        from core import z_descarcare as _zd   # [decizii 07.10 pct.3] consumul care descarcă un raport Z se leagă de el
+        z_id = _zd.cere_z(cur, schema, corp["z_id"]) if corp.get("z_id") not in (None, "") else None
         cur.execute(f"SELECT * FROM {schema}.retete WHERE id=%s", (corp["reteta_id"],))
         ret = cur.fetchone()
         if not ret:
@@ -171,9 +172,9 @@ def descarca(conn, schema, corp):
             cheie = (l["cont_cheltuiala"], l["cont_stoc"])
             pe_cont[cheie] = pe_cont.get(cheie, Decimal("0")) + c["valoare"]
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                            (articol_id, data, tip, cantitate, valoare, document, inregistrare_id)
-                            VALUES (%s,%s,'iesire',%s,%s,'reteta',%s)""",
-                        (l["articol_id"], d, c["cantitate"], c["valoare"], iid))
+                            (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, z_inregistrare_id)
+                            VALUES (%s,%s,'iesire',%s,%s,'reteta',%s,%s)""",
+                        (l["articol_id"], d, c["cantitate"], c["valoare"], iid, z_id))
         for (deb, cred), suma in pe_cont.items():
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma)

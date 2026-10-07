@@ -234,15 +234,23 @@ def test_d112_pull_prorateaza_facilitatea_la_incetare(schema):
 def test_d112_facilitate_prorata_la_mentinere_partiala(schema):
     # GARD PERMANENT (mutat din test_datorie dupa modelarea salariu_istoric, PASUL 2a): facilitatea se
     # prorateaza pe zilele in care salariul e MENTINUT la minim (OUG 156/2024 art.LXVI alin.4 lit.a).
-    # Salariat la minim (4050) pana pe 15 iun, marit la 5000 din 16 -> facilitate pe zilele 1-15 (10/21).
+    # Salariat la minim (4050) pana pe 15 iun, marit la 4200 din 16 -> facilitate pe zilele 1-15 (10/21): venitul realizat
+    # 4050 x 10/21 + 4200 x 11/21 = 4128,57 <= 4300, deci conditia lit.b e indeplinita si se aplica proratarea (alin.(4) lit.a).
+    # [07.10.2026, S1] CORECTAT: cazul vechi (marire la 5000) dadea 142,86, dar venitul realizat al lunii e 4547,62 > 4300.
+    # OUG 89/2025 art.III alin.(1): „dacă sunt îndeplinite CUMULATIV următoarele condiții: … b) venitul brut realizat … pentru
+    # aceeași lună, nu depășește nivelul de 4.300 lei inclusiv” -> 0 (verificat: D112 cu 142,86 primea S72.1 pe DUK; cu 0, valid).
     from core import d112
     with schema.cursor() as cur:
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MARIRE','A','1900101410011','2026-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) "
-                    "VALUES (1,'2026-01-01',4050),(1,'2026-06-16',5000)")
+                    "VALUES (1,'2026-01-01',4050),(1,'2026-06-16',4200)")
     _, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
     assert len(sal) == 1
     assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2), sal[0].get("facilitate")  # 142.86 = 300 x 10/21 (zile la minim 1-15 iun)
+    with schema.cursor() as cur:
+        cur.execute("UPDATE salariu_istoric SET salariu_brut = 5000 WHERE valabil_din = '2026-06-16'")
+    _, sal = d112.pull(schema, SCHEMA_T, Perioada(an=2026, luna=6))
+    assert float(sal[0]["facilitate"]) == 0.0   # OUG 89/2025 art.III alin.(1) lit.b: realizat 4547,62 > 4300
 
 
 def test_cm_arbori_paraleli_acelasi_rezultat(schema):

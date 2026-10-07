@@ -35,7 +35,9 @@ def miscari_pentru_d406(cur, schema, an):
 
 
 def miscari_ale_articolului(cur, schema, articol_id):
-    cur.execute(f"""SELECT data, tip, cantitate, pret_unitar FROM {schema}.miscari_stoc
-                                WHERE articol_id=%s ORDER BY data, id""",
-                (articol_id,))
-    return cur.fetchall()
+    """Fișa de magazie a articolului, în ordinea în care o citește motorul CMP (`stocuri_cv.fisa_magazie`). SURSA UNICĂ a acestei
+    citiri [retest 07.10 R1]: stornarea în roșu cere `valoare` și `anuleaza_id` — trei citiri separate (fișa, rețetele, inventarul)
+    ar fi trebuit să le afle toate trei."""
+    cur.execute(f"""SELECT id, data, tip, cantitate, pret_unitar, valoare, document, anuleaza_id FROM {schema}.miscari_stoc
+                    WHERE articol_id=%s ORDER BY data, id""", (articol_id,))
+    return [dict(r) for r in cur.fetchall()]

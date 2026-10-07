@@ -16,6 +16,16 @@ O IEȘIRE DE MARFĂ = O SINGURĂ DESCĂRCARE, după metodă (sursa UNICĂ a regu
 GV = "global_valoric"
 CV = "cantitativ_valoric"
 ETICHETE = {GV: "global-valoric (preț cu amănuntul, 371/378/4428)", CV: "cantitativ-valoric (fișe de magazie, CMP)"}
+#: [decizia Costin 07.10.2026, pct.1] Combinațiile pe care aplicația NU le are încă: „nu acum. Combinațiile nesuportate se refuză
+#: clar la setarea firmei („nesuportat încă”), iar tema intră în registrul de restanțe” (core/test_datorie.py). Se arată în Date
+#: firmă, ca omul să vadă că există și că nu se pot alege — nu se ascund.
+NESUPORTATE = {
+    "cantitativ_valoric_pret_vanzare": "cantitativ-valoric la preț de vânzare (371/378/4428 pe articol) — nesuportat încă",
+    "cantitativ_valoric_fifo": "cantitativ-valoric la cost FIFO — nesuportat încă",
+}
+COD_NESUPORTATA = "METODA_STOC_NESUPORTATA"
+MESAJ_NESUPORTATA = ("Metoda de stoc aleasă nu e suportată încă: %s. Acum se pot folosi global-valoric (preț cu amănuntul) sau "
+                     "cantitativ-valoric la cost (CMP). Tema e în registrul de restanțe.")
 COD_NEDECLARATA = "METODA_STOC_NEDECLARATA"
 COD_ALTA = "METODA_STOC_ALTA"
 

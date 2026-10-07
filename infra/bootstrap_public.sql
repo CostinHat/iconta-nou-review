@@ -914,3 +914,32 @@ ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_ales_de integer;
 -- Urmele portalului, copiate la scoatere. NUMAI pe motiv='scoatere_firma' - la GDPR nu se
 -- copiaza nimic, fiindca acolo scopul actului e chiar disparitia datelor.
 ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;
+
+-- [retest 07.10 seara, S4] notificarea se marchează REZOLVATĂ când elementul își schimbă starea — mirror al
+-- core/migrare_decizii_0710.py (SQL_PUBLIC)
+ALTER TABLE public.notificari ADD COLUMN IF NOT EXISTS rezolvata text;
+ALTER TABLE public.notificari ADD COLUMN IF NOT EXISTS rezolvata_la timestamp with time zone;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='notificari_rezolvata_ck' AND connamespace='public'::regnamespace) THEN
+    ALTER TABLE public.notificari ADD CONSTRAINT notificari_rezolvata_ck
+      CHECK (rezolvata IS NULL OR rezolvata IN ('validat', 'respins', 'inlocuit'));
+  END IF;
+END $$;
+CREATE OR REPLACE FUNCTION public.notificari_rezolva_din_coada() RETURNS trigger LANGUAGE plpgsql AS $f$
+BEGIN
+  -- elementul din coadă își schimbă starea (sau dispare): notificarea „de validat” care duce la el devine REZOLVATĂ
+  IF TG_OP = 'DELETE' THEN
+    UPDATE public.notificari SET rezolvata = 'inlocuit', rezolvata_la = now()
+     WHERE tip = 'de_validat' AND rezolvata IS NULL AND link = 'validat:' || OLD.id;
+    RETURN OLD;
+  END IF;
+  IF OLD.stare = 'la_senior' AND NEW.stare IS DISTINCT FROM OLD.stare THEN
+    UPDATE public.notificari SET rezolvata = CASE WHEN NEW.stare = 'respinsa' THEN 'respins' ELSE 'validat' END,
+           rezolvata_la = now()
+     WHERE tip = 'de_validat' AND rezolvata IS NULL AND link = 'validat:' || NEW.id;
+  END IF;
+  RETURN NEW;
+END $f$;
+DROP TRIGGER IF EXISTS declaratii_coada_rezolva_notificari ON public.declaratii_coada;
+CREATE TRIGGER declaratii_coada_rezolva_notificari AFTER UPDATE OF stare OR DELETE ON public.declaratii_coada
+  FOR EACH ROW EXECUTE FUNCTION public.notificari_rezolva_din_coada();

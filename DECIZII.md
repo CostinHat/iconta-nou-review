@@ -17829,3 +17829,168 @@ glifului (top/right 0) — mutată în afara lui, cu inel în culoarea barei; bu
 
 **Executat (07.10.2026, 20:00):** `core.migrare_grup_coada` pe producție, după backupul cozii — 8 elemente legate de documentul lor
 (F1A3 -> `factura-49`, NIR 1 -> `nir-1`, statul 11/2026 -> `nota-2`). Toate migrările lotului sunt pe producție.
+
+## 07.10.2026 — Deciziile Costin la §6 al lotului 07.10 B (comanda „decizii 07.10”)
+
+**Comanda, verbatim:**
+„1. Stoc cantitativ-valoric la preț de vânzare și FIFO: nu acum. Combinațiile nesuportate se refuză clar la setarea firmei
+(„nesuportat încă”), iar tema intră în registrul de restanțe.
+2. NIR legat de factura primită, la global-valoric: NIR-ul legat scrie numai adaosul (371=378) și TVA neexigibilă (371=4428);
+costul vine din factură. Un NIR nelegat rămâne complet.
+3. Raportul Z la cantitativ-valoric: fără refuz. Descărcarea pe articol se cere explicit (manual sau prin rețetă); Z-ul nu se
+validează fără ea.
+4. Salariatul pe calea API și la import: aceeași regulă ca pe ecran. functie_baza, scutit_contrib_minim și tip_norma se cer
+explicit; un rând fără ele se refuză cu câmpul numit.
+5. Seria chitanței: cerută la prima folosire, ca seria facturii; fără „CH” din oficiu.
+6. Poarta completă: o singură dată pe lot, la publicarea finală (nu la fiecare front). Înainte de poartă rulezi setul complet de
+vecinătate al tuturor fronturilor din lot.
+7. Listează operațiile, execută-le, raportează durata măsurată a fiecăreia.
+8. La închidere: ZIP la ~/ghid_incoming/iconta_decizii_07_10.zip (cod schimbat, probe înainte/după cu capturi, jurnale), cu
+calea exactă în raport.
+Poți trece la următorul pas din listă.”
+
+**Consecința pentru lot (pct.6):** o singură publicare (un singur commit cu poarta completă), după setul de vecinătate al tuturor
+fronturilor. Temeiul seriei chitanței: OMFP 2634/2015 anexa 1 pct.24 — „fiecare document va avea un număr de ordine sau o serie,
+după caz, număr sau serie ce trebuie să fie secvențial(ă), stabilit(ă) de entitate” (stabilită de entitate, nu de aplicație).
+
+## 07.10.2026 — Retestul Costin pe F1 (după 3545ee88): două cerințe noi, intră în lotul „Deciziile 07.10”
+
+**Comanda, verbatim:** „Retest 07.10 pe F1 (după 3545ee88): NIR nou la cost — corect (doar 371=401 600,00 și 4426=401 126,00, stoc
+actualizat imediat, CMP recalculat). Coada — corect, un document = un element.
+Două cerințe noi, intră în lotul curent:
+1. Respingerea unui document cu mișcare de stoc nu atinge stocul. NIR 1 (F1, 07.10.2026) a fost respins în coadă, dar Marfa A a rămas
+la 116 buc / 5.900,00, iar NIR 1 apare în „NIR-urile lunii” fără nicio stare. Decizie: respingerea anulează mișcarea de stoc printr-o
+înregistrare inversă în fișa de magazie (nu prin ștergere), cu CMP recalculat. Documentul respins rămâne în listă, marcat „respins”,
+cu motivul vizibil, și poate fi refăcut de asistent. Aplică și pe NIR 1 deja respins. Rezultat așteptat pe F1: 105 buc / 5.350,00.
+2. Titlul elementului din coadă repetă numele documentului pentru fiecare notă („NIR 1 DANTE…; NIR 1 DANTE…; …”). Trebuie să fie scurt,
+de forma „NIR nr 1 din 07.10.2026 · DANTE INTERNATIONAL SA · 4 note”. La fel în mesajul de confirmare după respingere.
+La publicarea finală a lotului: ZIP cu tot ce s-a schimbat (cod, documentație, artefactele de măsurare), cu calea exactă raportată.
+Poți trece la următorul pas din listă.”
+**Consecință pentru executor:** R1 și R2 intră ca pași în firul „Deciziile 07.10” (TESTE.md), înaintea lui D6; aceeași poartă
+completă, o singură dată, la publicarea finală. Decizia de fond (inversare, nu ștergere) e a lui Costin; temeiul și limitele se scriu
+la livrarea pasului.
+
+## 07.10.2026 — Retestul Costin de seară pe F5 09/2026: patru cerințe noi, intră în lotul „Deciziile 07.10”
+
+**Comanda, verbatim:** „Retest 07.10 seara — F5 09/2026 (salarii, coadă, notificări). Patru cerințe noi, intră în lotul curent:
+1. Elemente variabile de salariu: pe salariat nu există loc pentru prime (nota #3 a fost respinsă pentru „lipsește prima de
+performanță la Popescu” și nu poate fi corectată). Adaugă prime, sporuri și ore suplimentare, pe salariat și pe lună. Intră în brut
+și în bazele CAS / CASS / impozit și apar distinct în fluturaș și în compoziția netului. Valori introduse de contabil, fără
+preselecție.
+2. La „Salariu”, câmpul „de la” e precompletat cu data de azi (07.10.2026), deși se lucrează pe 09/2026. Dacă rămâne precompletat,
+implicit trebuie să fie prima zi a lunii lucrate.
+3. Retrimitere după respingere: dacă recontabilizarea produce aceeași notă ca cea respinsă, asistentul vede un avertisment („nimic
+nu s-a schimbat de la respingere”, cu motivul alături) și confirmă explicit; nu se blochează. În coadă, cardul unei note retrimise
+arată „retrimisă după respingere”, motivul respingerii anterioare și dacă nota s-a schimbat față de cea respinsă.
+4. Notificările „de validat” rămân în clopoțel și după validare sau respingere (NIR 1 respins și NIR 2 validat apar încă), iar nota
+F5 apare de două ori după înlocuirea #3 cu #4. O notificare se marchează rezolvată (validat / respins / înlocuit) când elementul își
+schimbă starea; o notă înlocuită nu lasă o a doua notificare activă.
+Sub aceeași poartă completă și același ZIP de la publicarea finală (cod, documentație, artefacte de măsurare, cu calea exactă
+raportată).
+Poți trece la următorul pas din listă.”
+**Consecință pentru executor:** S1–S4 intră ca pași în firul „Deciziile 07.10” (TESTE.md), înaintea lui D6. Temeiul fiscal al S1
+(bazele CAS / CASS / impozit pentru prime, sporuri, ore suplimentare) se citează din CF la livrarea pasului, nu din memorie.
+
+
+## 07.10.2026 — Executarea: „Deciziile 07.10” (D1–D5) + retestul F1 (R1–R2) + retestul de seară F5 (S1–S4)
+
+Comenzile, verbatim, sunt în cele trei intrări de mai sus (07.10.2026). Aici: cum s-au aplicat, temeiul, alternativa respinsă, limita.
+
+**D1 — combinațiile nesuportate.** `metoda_stoc.NESUPORTATE` (cantitativ-valoric la preț de vânzare, FIFO): Date firmă le arată
+„— nesuportat încă”, salvarea le refuză numit (`METODA_STOC_NESUPORTATA`, câmpul `metoda_stoc`); restanța e `xfail(strict=True)` în
+`core/test_datorie.py` (când se construiesc, testul pică și anunță). *Alternativă respinsă:* a le ascunde din listă (contabilul n-ar
+afla de ce nu le găsește). *Limită:* niciuna nouă — tema rămâne restanță, cum a decis Costin.
+
+**D2 — NIR legat de factura primită (global-valoric).** `nir.factura_id` (cheie fără `ON DELETE`, index unic: o factură, un NIR).
+NIR-ul legat scrie numai 371=378 și 371=4428; costul NIR-ului trebuie să fie netul facturii în lei (altfel 371 n-ar mai fi valoarea de
+vânzare și K ar ieși greșit — *INTERPRETARE CU TEMEI* din OMFP 1802/2014 pct.287 alin.(1)-(2) „Metoda aleasă trebuie aplicată cu
+consecvență”); transportul/taxele pe NIR-ul legat se refuză (costul accesoriu vine din factura lui); la cantitativ-valoric legarea se
+refuză (factura face deja intrarea); factura legată nu se șterge (refuz `LEGATA_DE_NIR`). Formularul NIR la global-valoric cere
+alegerea „fără factură” / factura (DS cap.17: legat sau nu e un fapt situațional). Pe API lipsa `factura_id` = NIR complet (decizia:
+„Un NIR nelegat rămâne complet”). *Alternativă respinsă:* a compara costul pe linii (factura poate avea alte linii decât NIR-ul) — se
+compară totalul. *Limită [DECIZIE în raport]:* un NIR complet înregistrat ÎNAINTE ca factura să fie contată, apoi factura contată,
+încarcă tot 371 de două ori — legarea se face numai la NIR.
+
+**D3 — raportul Z la cantitativ-valoric.** Z-ul se înregistrează fără refuz, dar la cantitativ-valoric ca CIORNĂ; `jurnal_api.valideaza`
+(unicul drum: jurnalul și coada) îl refuză (`Z_NEDESCARCAT`) până când are ieșiri pe articol legate (`miscari_stoc.z_inregistrare_id`,
+manual sau prin rețetă) sau declarația explicită „fără marfă din stoc” (`rapoarte_z_amef.fara_marfa`). Ecranul Raport Z: secțiunea
+„Descărcarea mărfii vândute” pe fiecare Z nevalidat. La global-valoric nimic nu se schimbă (descărcarea lunară cu K). Temei: OMFP
+1802/2014 pct.287 alin.(1)-(2). *Alternativă respinsă:* descărcarea „implicită” pe un articol ales de aplicație (Z-ul n-are articole —
+ar fi o ghicire). *Limită:* nu se verifică dacă valoarea descărcată corespunde încasării Z (vânzarea e la preț, ieșirea la cost).
+
+**D4 — salariatul pe API și la import.** `SalariatIn` fără implicite pentru `tip_norma` / `functie_baza` / `scutit_contrib_minim`;
+refuz cu câmpul numit (CF art.77 alin.(1) — deducerea numai la funcția de bază). Importul citește coloanele „funcție de bază” și
+„scutit contribuție minimă” (da/nu), refuză rândul fără ele și rândul cu normă parțială fără ore (implicitul de 4 ore a dispărut —
+clichetul de constante 2 -> 1); modelul CSV le are. *Limită:* niciuna.
+
+**D5 — seria chitanței.** Implicitul „CH” scos din schemă; „CH” fără nicio chitanță emisă devine NULL la migrare (implicitul vechi, nu o
+alegere); prima chitanță fără serie se refuză cu buton spre Date firmă (`SERIE_CHITANTA_LIPSA`); câmpul „Seria chitanțelor” în Date
+firmă (litere și cifre, nu se golește odată stabilită). Temei: OMFP 2634/2015 anexa 1 pct.24 — seria „stabilită de entitate”.
+
+**R1 — respingerea stornează stocul.** *INTERPRETARE CU TEMEI:* OMFP 1802/2014 pct.69 permite stornarea în roșu sau în negru („în
+funcție de politica contabilă și programele informatice utilizate”); s-a ales ROȘU — aceeași mișcare cu minus, cu valoarea ei
+originală (`miscari_stoc.anuleaza_id`, index unic), datată la respingere. Motivul: toate citirile care însumează pe tip (stocul pe
+locații, D406, costul vânzărilor) se anulează singure; în negru, fiecare agregare ar fi trebuit să excludă perechea. Respingerea se
+refuză (`STOC_IESIT`) dacă marfa a ieșit deja (fișa ar deveni negativă) și nu scrie nimic. Nota documentului stornat nu mai intră în
+evidență pe niciun drum (validare din jurnal, retrimitere); NIR-ul respins se REFACE (`nir.refacut_din_id`, o dată; ciornele respinse
+ale celui vechi se scot), factura respinsă se reface cu „Contabilizează” (care reface și mișcarea). Lista și detaliul NIR arată
+„Respins la validare: <motiv>”. Citirile fișei (fișa, rețetele, verificarea stocurilor) au acum o singură sursă
+(`repo_stocuri.miscari_ale_articolului`). **MĂSURAT pe F1 (tenant_049, citire): NIR 1 (10 buc × 55 = 550,00, metoda goală — logica
+veche) n-a scris NICIO mișcare în fișă; 116 / 5.900,00 = 100 − 10 + 20 − 2 − 2 + 10 (NIR 2). Stornarea lui lasă 116 / 5.900,00;
+„105 / 5.350,00” ar cere scoaterea a 11 bucăți (NIR 1 are 10) dintr-o intrare care n-a existat — nu se fabrică (raport §6).**
+*Limită:* inventarul și transferul n-au „refacere” proprie (refacerea = o operație nouă).
+
+**R2 — titlul documentului în coadă.** „<document> · <partener> · <n> note” (ex. „NIR nr 1 din 07.10.2026 · DANTE INTERNATIONAL SA · 4
+note”), o singură definiție (`coada_api.eticheta_element`) pentru listă, fereastra de respingere, confirmare și notificări; partenerul
+în payload (`coada_api._PARTENER`: factura, altfel furnizorul NIR-ului); elementele existente migrate (hash refăcut, nicio stare).
+*Limită:* textul notificărilor deja scrise rămâne cum a fost scris (s-au rezolvat — S4).
+
+**S1 — elementele variabile ale salariului.** `elemente_salariale` (primă / spor / ore suplimentare, denumire, ore numai la orele
+suplimentare, sumă > 0; tipul se alege, nimic implicit); luna închisă sau cu D112 depusă nu se mai modifică (rectificativă). Temei: CF
+art.76 alin.(1) — „toate veniturile în bani … indiferent de … denumirea veniturilor” -> brut și bazele CAS (art.139), CASS (art.157),
+impozit (art.78). Facilitatea de la minim: OUG 89/2025 art.III alin.(1) lit.a (baza FĂRĂ sporuri) rămâne pe salariul de bază; lit.b
+(„venitul brut REALIZAT … art.76 alin.(1)-(3) … fără tichete … ≤ 4.300 lei” / 4.600 din iulie) trece pe venitul realizat = salariul
+lucrat + elementele + cadoul taxabil + indemnizația CM (art.76 alin.(1): „inclusiv indemnizațiile pentru incapacitate temporară de
+muncă”) — pe AMBELE ramuri (pe `facilitate_prorata` condiția lipsea). Același total în statul de plată, D112 (B1_sal2, baza — o singură
+definiție `d112._venituri_adaugate`), nota de salarii și calea a doua (`d112_reconciliere`, citire SQL proprie); fluturașul arată
+brutul defalcat (`FEL_DETALIU`). D112 cu primă 500,50 lei validat pe DUK. **Aceeași clasă, găsită comparând argumentele celor trei
+apelanți:** statul nu trecea `cadou_taxabil`, nota nu trecea `functie_baza` — reparate, gardul `test_calcul_salariu_apelanti` le
+ține egale. *Alternativă respinsă:* a refolosi `beneficii_lunare` (beneficii extrasalariale, alt tratament fiscal). *Limită:* sporul
+pentru orele suplimentare nu se calculează (Codul muncii art.123 alin.(2): „cel puțin 75%” — procentul e în contract; suma o scrie
+contabilul, cum a cerut comanda).
+
+**S2 — „Salariu — de la”.** Pornește cu prima zi a lunii lucrate (luna statului afișat), nu cu data de azi. Clasa căutată: câmpurile
+de dată precompletate cu „azi” pe ecranele cu lună de lucru — singurul „valabil de la” era acesta (emiterea, încasarea, registrul au
+data faptului de azi).
+
+**S3 — retrimiterea neschimbată.** Amprenta notei (data + liniile debit / credit / sumă) se păstrează în payload-ul elementului;
+recontabilizarea statului, „Contabilizează” factura, NIR-ul refăcut și retrimiterea compară documentul nou cu cel respins: identic ->
+avertisment („Nimic nu s-a schimbat de la respingere … motivul …”) și confirmare explicită (`confirma`), nu blocaj. Cardul din coadă:
+„Retrimisă după respingere · motivul anterior · s-a schimbat / NU s-a schimbat / nu se poate compara” (nota respinsă de dinaintea
+amprentei).
+
+**S4 — notificările rezolvate.** `public.notificari.rezolvata` (validat / respins / inlocuit): triggerul de pe coadă rezolvă
+notificarea „de validat” la ORICE schimbare de stare a elementului (sau la ștergere) — mecanism, nu disciplină pe fiecare drum;
+notificarea „a fost respinsă” a celui care a pregătit nota se rezolvă „înlocuită” când nota e înlocuită. Clopoțelul o arată
+„rezolvată: …”, contorul și sumarul n-o mai numără. Notificările existente: rezolvate la migrare după starea elementului.
+
+**Pe drum (aceeași clasă cu ce se repara):** `ALEGE` era deja un `<option>` complet — trei selecturi noi îl împachetau încă o dată
+(reparat înainte de publicare).
+
+**Găsit la setul de vecinătate (S1, lit.b) — CORECȚIE pe un caz existent.** Mărirea la mijloc de lună de la minim la 5.000 lei (iunie
+2026: 4.050 până pe 15, 5.000 din 16) primea facilitatea proratată 142,86 (300 × 10/21), deși venitul REALIZAT al lunii e 4.547,62 >
+4.300. OUG 89/2025 art.III alin.(1): „dacă sunt îndeplinite **cumulativ** următoarele condiții: … b) venitul brut realizat … pentru
+aceeași lună, nu depășește nivelul de 4.300 lei inclusiv” — deci 0. Proratarea alin.(4) lit.a rămâne pentru lunile în care venitul
+realizat e sub plafon (mărire la 4.200: 4.128,57 -> 142,86). Arbitrul: validatorul DUK nu verifică plafonul direct; varianta veche
+primea atenționarea S72.1 (CASS cu un leu sub calculul validatorului), cea nouă e validă fără atenționări. Cele două teste care
+fixau 142,86 la 5.000 au fost corectate cu textul pe linie. *Efect vizibil:* pe un salariat mărit la mijlocul lunii peste plafon,
+facilitatea lunii aceleia dispare (CAS/CASS/impozit pe toată suma).
+
+**Refuzurile noi poartă COD**, nu numai propoziție (`FACTURA_DEJA_LEGATA`, `COST_DIFERIT_DE_FACTURA`, `NIR_LEGAT_LA_COST`,
+`TRANSPORT_LA_NIR_LEGAT`, `NIR_NERESPINS`, `NIR_DEJA_REFACUT`, `DOCUMENT_STORNAT`, `Z_NEDESCARCAT`, `D112_DEPUSA`, `STOC_IESIT`,
+`NESCHIMBATA`); refuzurile validării (`DOCUMENT_STORNAT`, `Z_NEDESCARCAT`) sunt afirmații tipate cu temeiul (`regula`). Gărzile
+asertează pe cod, nu pe text (`test_garzi_pe_text`).
+
+**Clasa „culoare nepotrivită pentru text” extinsă (DS cap.15 v2.80).** axe a semnalat ora notificării din clopoțel: `--gri-clar`
+(#8a929e) dă 3,14:1 pe alb. Nouă locuri cu text în `--gri-clar` (stil.css 7, două ecrane) trec pe `--gri` (5,91:1); regula
+`CULOARE_SEMAFOR_TEXT` din verificator acoperă și `--gri-clar` (excepție `::placeholder`).

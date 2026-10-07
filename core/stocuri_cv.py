@@ -35,6 +35,26 @@ def fisa_magazie(miscari, stoc_initial=None):
     out = []
     for m in miscari:
         c = _d(m["cantitate"])
+        if c < 0 and m.get("anuleaza_id") and m["tip"] in ("intrare", "iesire"):
+            # [retest 07.10 R1] STORNAREA ÎN ROȘU a unei mișcări (documentul ei a fost respins): aceeași mișcare cu semnul minus și
+            # cu VALOAREA ei originală, nu la CMP-ul de acum. OMFP 1802/2014 pct.69: „Înregistrarea stornării unei operațiuni
+            # contabile aferente exercițiului financiar curent se efectuează fie prin corectarea cu semnul minus a operațiunii
+            # inițiale (stornare în roșu), fie prin înregistrarea inversă a acesteia (stornare în negru)”. CMP-ul se recalculează
+            # din soldul rămas.
+            v = _q(m["valoare"])
+            if m["tip"] == "intrare":
+                if cant + c < 0:
+                    raise ValueError(f"stornarea intrarii {-c} peste stocul {cant} la {m.get('data')}")
+                cant += c
+                val += v
+            else:
+                cant -= c
+                val -= v
+            if cant == 0:
+                val = Decimal("0.00")
+            out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val),
+                        "cmp": _q4(val / cant) if cant > 0 else None})
+            continue
         if c <= 0:
             raise ValueError(f"cantitate invalida: {m}")
         if m["tip"] == "intrare":

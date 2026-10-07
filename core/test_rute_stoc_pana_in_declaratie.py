@@ -387,6 +387,12 @@ def test_CHITANTA_FARA_COTA_clasificata_prin_HTTP_ajunge_in_D394_I2(lume):
     assert (r0.status_code, r0.json()["detail"]["cod"], r0.json()["detail"]["ecran"]) == (400, "AMEF_EXCEPTARE_NEDECLARATA", "date_firma")
     with lume["conn"].cursor() as cur:
         cur.execute('UPDATE "%s".firma_profil SET activitate_exceptata_amef = false' % SCH)   # declarată „Nu” în Date firmă
+    # [decizii 07.10 pct.5] seria chitanței: fără „CH” din oficiu — cerută la prima chitanță, cu trimitere în Date firmă
+    # (OMFP 2634/2015 anexa 1 pct.24: seria „stabilit(ă) de entitate”)
+    r1 = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 242}, headers=_H(lume))
+    assert (r1.status_code, r1.json()["detail"]["cod"], r1.json()["detail"]["ecran"]) == (400, "SERIE_CHITANTA_LIPSA", "date_firma")
+    with lume["conn"].cursor() as cur:
+        cur.execute('UPDATE "%s".firma_profil SET serie_chitanta = \'ZC\'' % SCH)   # aleasă de firmă în Date firmă
     r = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 242}, headers=_H(lume))
     assert r.status_code == 200, r.text[:300]
     cid = r.json()["chitanta_id"]
@@ -494,3 +500,48 @@ def test_R192_dupa_inregistrarea_amortizarii_reevaluarea_TRECE(lume):
                       "valoare_justa": 5000}, headers=_H(lume))
     assert r.status_code == 200, r.text[:300]
     assert r.json()["amortizare_eliminata"] == "1400.00", r.json()
+
+
+# ── [lotul „Deciziile 07.10”, 07.10.2026] rutele noi care scriu, probate prin HTTP ────────────────────────────────────────
+def test_ELEMENTELE_variabile_ale_salariului_prin_HTTP(lume):
+    """S1 (retest Costin 07.10 seara): „Adaugă prime, sporuri și ore suplimentare, pe salariat și pe lună … Valori introduse de
+    contabil, fără preselecție.” Ruta refuză elementul fără tip, cu câmpul numit (422), îl scrie complet (200), îl arată pe luna
+    lui și îl șterge. Temei: CF art.76 alin.(1) (venit din salarii, oricare i-ar fi denumirea)."""
+    cl = _client()
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".salariati (nume, prenume, cnp, data_angajare, ore_zi, judet_casa, functie_baza, '
+                    "scutit_contrib_minim) VALUES ('POP','ION','1900101410011','2024-01-01',8,'B',true,false) RETURNING id" % SCH)
+        sid = cur.fetchone()[0]
+    url = "/tenants/%d/salariati/%d/elemente" % (lume["tid"], sid)
+    r0 = cl.post(url, json={"an": AN, "luna": LUNA, "denumire": "prima", "suma": 500}, headers=_H(lume))
+    assert r0.status_code == 422 and [x["camp"] for x in r0.json()["detail"]["erori_campuri"]] == ["tip"]
+    r1 = cl.post(url, json={"an": AN, "luna": LUNA, "tip": "prima", "denumire": "prima de performanță", "suma": 500},
+                 headers=_H(lume))
+    assert r1.status_code == 200, r1.text[:300]
+    g = cl.get(url + "?an=%d&luna=%d" % (AN, LUNA), headers=_H(lume)).json()
+    assert ([e["denumire"] for e in g["elemente"]], g["total"]) == (["prima de performanță"], "500.00")
+    d = cl.delete("/tenants/%d/salariati/%d/elemente/%d" % (lume["tid"], sid, r1.json()["id"]), headers=_H(lume))
+    assert d.status_code == 200 and cl.get(url + "?an=%d&luna=%d" % (AN, LUNA), headers=_H(lume)).json()["elemente"] == []
+
+
+def test_Z_FARA_MARFA_prin_HTTP_deblocheaza_validarea_la_cantitativ_valoric(lume):
+    """D3 („Deciziile 07.10” pct.3): „Raportul Z la cantitativ-valoric: fără refuz. Descărcarea pe articol se cere explicit …;
+    Z-ul nu se validează fără ea.” Prin HTTP: validarea Z-ului nedescărcat se refuză; declarația „fără marfă” trebuie să fie un
+    da/nu explicit (un șir se refuză); după ea, Z-ul se validează."""
+    from core import repo_contabilitate as rc
+    cl = _client()
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, metoda_stoc) VALUES (1, \'TENANT\', \'14399840\', '
+                    "'cantitativ_valoric') ON CONFLICT (id) DO UPDATE SET metoda_stoc = EXCLUDED.metoda_stoc" % SCH)
+        zid = rc.nota_horeca_z_ciorna(cur, SCH, ZI, "Z-PROBA", "Raport Z", "Raport Z nr 1")[0]
+        rc.adauga_linie_3(cur, SCH, zid, "5311", "707", 121)
+        rc.adauga_z_amef(cur, SCH, zid, "8000000001", 3)
+    v0 = cl.post("/tenants/%d/jurnal/%d/valideaza" % (lume["tid"], zid), headers=_H(lume))
+    assert (v0.status_code, v0.json()["detail"]["cod"]) == (400, "Z_NEDESCARCAT")
+    lst = cl.get("/tenants/%d/horeca/rapoarte-z?an=%d&luna=%d" % (lume["tid"], AN, LUNA), headers=_H(lume)).json()
+    assert lst["descarcare_pe_articol"] is True and [(z["id"], z["iesiri"], z["fara_marfa"]) for z in lst["rapoarte"]] == [(zid, 0, None)]
+    url = "/tenants/%d/horeca/raport-z/%d/fara-marfa" % (lume["tid"], zid)
+    assert cl.post(url, json={"fara_marfa": "da"}, headers=_H(lume)).status_code == 400
+    assert cl.post(url, json={"fara_marfa": True}, headers=_H(lume)).status_code == 200
+    v1 = cl.post("/tenants/%d/jurnal/%d/valideaza" % (lume["tid"], zid), headers=_H(lume))
+    assert v1.status_code == 200, v1.text[:300]

@@ -41,7 +41,7 @@ def conn():
 def _creeaza(conn, brut=4050):
     return sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
                                data_angajare="2026-01-01", salariu_brut=brut,
-                               tip_norma="intreaga", cor="522101")["salariat_id"]
+                               tip_norma="intreaga", functie_baza=True, scutit_contrib_minim=False, cor="522101")["salariat_id"]
 
 
 def test_crearea_scrie_salariul_in_istoric(conn):
@@ -65,8 +65,10 @@ def test_editarea_salariului_adauga_intrare_noua_nu_suprascrie(conn):
 
 def test_facilitate_prorata_la_marire_prin_API(conn):
     # Cap-coada: marire la mijloc de luna prin API -> D112 prorateaza facilitatea pe zilele la minim (lit.a).
+    # [07.10.2026, S1] marirea la 4200 (nu 5000): venitul realizat 4128,57 <= 4300 -> lit.b indeplinita, proratarea lit.a se aplica;
+    # la 5000 venitul realizat (4547,62) trece de plafon -> 0 (OUG 89/2025 art.III alin.(1) lit.b, conditii cumulative)
     sid = _creeaza(conn, 4050)
-    sa.actualizeaza_salariat(conn, sid, salariu_brut=5000, valabil_din="2026-06-16")
+    sa.actualizeaza_salariat(conn, sid, salariu_brut=4200, valabil_din="2026-06-16")
     _, sal = d112.pull(conn, SCHEMA_T, Perioada(an=2026, luna=6))
     assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2)   # 142.86 (zile la minim 1-15 iun)
 

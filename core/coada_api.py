@@ -200,8 +200,10 @@ def eticheta_element(fel, tip, perioada, payload):
         descr = [str(d or "").strip() or "fără descriere" for d in (p.get("descrieri") or [p.get("descriere")])]
         doc = (p.get("document_ref") or "").strip()
         if len(descr) > 1:
-            # [lotul 07.10 pct.9] un document cu mai multe note: documentul întâi, apoi ce conține
-            return " · ".join(x for x in ["Document", doc, "%d note: %s" % (len(descr), "; ".join(descr))] if x)
+            # [retest 07.10 R2, comanda Costin] un document cu mai multe note se numește SCURT: „NIR nr 1 din 07.10.2026 · DANTE
+            # INTERNATIONAL SA · 4 note” — documentul, partenerul, câte note. Descrierile (aceeași, repetată pe fiecare notă) nu
+            # mai intră în titlu; notele se văd la „Vezi notele”.
+            return " · ".join(x for x in [doc or "Document", (p.get("partener") or "").strip(), "%d note" % len(descr)] if x)
         parti = ["Notă", descr[0]]
         # [lotul 07.10 pct.13] documentul nu se repetă când descrierea îl spune deja (fără diacritice, fără majuscule)
         if doc and _fara_diacritice(doc) not in _fara_diacritice(descr[0]) and _fara_diacritice(descr[0]) not in _fara_diacritice(doc):
@@ -230,9 +232,89 @@ def _payload_nota(n):
     from core import jurnal_api as _j
     d = n["data"]
     doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
-    return {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
-            "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
-            "grup": grup_nota(n["id"], n.get("grup_doc"))}
+    p = {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
+         "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
+         "partener": n.get("partener"),
+         "grup": grup_nota(n["id"], n.get("grup_doc"))}
+    # [retest 07.10 seara, S3] documentul notei, documentul pe care îl reface (NIR-ul refăcut: cel respins) și amprenta notei —
+    # din ele cardul din coadă spune „retrimisă după respingere”, motivul anterior și dacă nota s-a schimbat
+    p["doc"] = cheie_document(p)
+    p["doc_anterior"] = ("nir-%d" % int(n["nir_refacut_din"])) if n.get("nir_refacut_din") else p["doc"]
+    p["amprenta"] = n.get("amprenta")
+    return p
+
+
+def cheie_document(p):
+    """[S3] Documentul unei note din coadă, din payload (o singură definiție; și migrarea o folosește): factura / NIR-ul
+    (`grup`); o notă automată (`sursa`, ex. statul de plată) — documentul ei justificativ; altfel nota însăși."""
+    g = str(p.get("grup") or "")
+    if g.startswith(("factura-", "nir-")):
+        return g
+    if (p.get("sursa") or "manual") != "manual" and p.get("document_ref"):
+        return "doc:%s:%s" % (p["sursa"], p["document_ref"])
+    return perioada_nota(p.get("inregistrare_id")) if p.get("inregistrare_id") else g
+
+
+def ciornele_documentului(cur, schema, grup):
+    """[S3] Notele CIORNĂ ale unui document (cheia `_GRUP_DOC`, ex. `factura-12`), pe schema firmei."""
+    cur.execute('SET LOCAL search_path TO "%s", public' % str(schema).strip('"'))
+    cur.execute("SELECT i.id FROM inregistrari i WHERE (" + _GRUP_DOC + ") = %s AND i.status = 'ciorna' ORDER BY i.id", (grup,))
+    return [(x[0] if not isinstance(x, dict) else x["id"]) for x in cur.fetchall()]
+
+
+def amprente_note(cur, nota_ids, schema=None):
+    """[S3] Amprentele notelor (lista sortată). `schema` gol = schema din calea conexiunii."""
+    ids = [int(i) for i in nota_ids or []]
+    if not ids:
+        return []
+    a = _AMPRENTA if not schema else _AMPRENTA.replace("inregistrari_linii", '"%s".inregistrari_linii' % str(schema).strip('"'))
+    cur.execute("SELECT " + a + " FROM %sinregistrari i WHERE i.id = ANY(%%s)" % (('"%s".' % str(schema).strip('"')) if schema else ""),
+                (ids,))
+    return sorted((x[0] if not isinstance(x, dict) else list(x.values())[0]) for x in cur.fetchall())
+
+
+def motiv_respingere(cur, schema, nota_id):
+    """[S3] Motivul ultimei respingeri a notei (elementul ei din coadă), pe firma schemei (gol = schema conexiunii)."""
+    cur.execute("SELECT c.motiv_respingere FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
+                "WHERE t.schema_name = COALESCE(NULLIF(%s, ''), current_schema()) AND c.fel = 'nota' AND c.perioada = %s "
+                "AND c.stare = 'respinsa' ORDER BY c.id DESC LIMIT 1", (str(schema or "").strip('"'), perioada_nota(nota_id)))
+    r = cur.fetchone()
+    return (r[0] if not isinstance(r, dict) else r["motiv_respingere"]) if r else None
+
+
+COD_NESCHIMBATA = "NESCHIMBATA"
+MESAJ_NESCHIMBATA = ("Nimic nu s-a schimbat de la respingere: nota scrisă acum e aceeași cu cea respinsă (motivul respingerii: „%s”). "
+                     "Retrimiți totuși aceeași notă la validare?")
+
+
+def avertisment_neschimbata(vechi, noi, motiv, confirmat):
+    """[S3, comanda Costin] „dacă recontabilizarea produce aceeași notă ca cea respinsă, asistentul vede un avertisment («nimic nu
+    s-a schimbat de la respingere», cu motivul alături) și confirmă explicit; nu se blochează.” Întoarce avertismentul (cererea
+    de confirmare) sau None. `vechi` / `noi` = amprentele documentului respins și ale celui scris acum."""
+    if confirmat or not vechi or sorted(vechi) != sorted(noi):
+        return None
+    return {"ok": False, "cod": COD_NESCHIMBATA, "cere_confirmare": True, "motiv": motiv,
+            "mesaj": MESAJ_NESCHIMBATA % (motiv or "fără motiv")}
+
+
+def retrimisa(cur, tenant_id, membri):
+    """[S3] Pentru cardul din coadă: documentul acestor elemente reface unul RESPINS? -> {motiv, la, schimbata (True / False /
+    None = necunoscut: nota respinsă n-avea amprentă)}; altfel None. `motiv_respingere` = același nume ca la `stari_note`. `membri` = [(coada_id, payload)]."""
+    p0 = (membri[0][1] or {}) if membri else {}
+    doc = p0.get("doc_anterior")
+    if not doc:
+        return None
+    cur.execute("SELECT id, motiv_respingere, payload->>'amprenta', respins_la FROM public.declaratii_coada WHERE tenant_id = %s "
+                "AND fel = 'nota' AND stare = 'respinsa' AND payload->>'doc' = %s AND id < %s ORDER BY respins_la DESC, id DESC",
+                (tenant_id, doc, min(m[0] for m in membri)))
+    rows = [tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()]
+    if not rows:
+        return None
+    ultima = [x for x in rows if (x[3], x[1]) == (rows[0][3], rows[0][1])]   # același act de respingere (tot documentul)
+    vechi = [x[2] for x in ultima]
+    noi = [(m[1] or {}).get("amprenta") for m in membri]
+    schimbata = None if (None in vechi or None in noi) else (sorted(vechi) != sorted(noi))
+    return {"motiv_respingere": ultima[0][1], "la": ultima[0][3].isoformat() if ultima[0][3] else None, "schimbata": schimbata}
 
 
 def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
@@ -258,9 +340,21 @@ _GRUP_DOC = ("CASE WHEN i.sursa IN ('facturi', 'stocuri') AND COALESCE(i.factura
              "AND ms.factura_id IS NOT NULL ORDER BY ms.id LIMIT 1)) "
              "ELSE (SELECT 'nir-' || n.id FROM nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1) END")
 
+#: [retest 07.10 R2] Partenerul documentului, pentru titlul elementului din coadă: al facturii (legată de notă sau de ieșirea din
+#: stoc a notei), altfel furnizorul NIR-ului. O singură definiție (lista, notificarea, migrarea titlurilor existente).
+_PARTENER = ("COALESCE(f.tert_nume, (SELECT f2.tert_nume FROM miscari_stoc ms JOIN facturi f2 ON f2.id = ms.factura_id "
+             "WHERE ms.inregistrare_id = i.id ORDER BY ms.id LIMIT 1), (SELECT n.furnizor FROM nir n "
+             "WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1))")
+
+#: [retest 07.10 seara, S3] AMPRENTA notei: data + liniile (debit / credit / sumă), în ordine — „aceeași notă” înseamnă aceeași
+#: amprentă. Se păstrează în payload-ul elementului, ca o notă respinsă și apoi ștearsă la înlocuire să poată fi comparată.
+_AMPRENTA = ("md5(i.data::text || ':' || COALESCE((SELECT string_agg(l.cont_debit || '/' || l.cont_credit || '/' || l.suma::text, ';' "
+             "ORDER BY l.cont_debit, l.cont_credit, l.suma) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id), ''))")
+
 _SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
                 "f.numar AS f_nr, f.data_emitere AS f_data, "
-                + _GRUP_DOC + " AS grup_doc, "
+                + _GRUP_DOC + " AS grup_doc, " + _PARTENER + " AS partener, " + _AMPRENTA + " AS amprenta, "
+                "(SELECT n.refacut_din_id FROM nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1) AS nir_refacut_din, "
                 "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total "
                 "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
 
@@ -318,8 +412,9 @@ def membri_grup(cur, coada_id, stare="la_senior"):
     return [((x["id"], x["payload"]) if isinstance(x, dict) else (x[0], x[1])) for x in cur.fetchall()]
 
 
-def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
-    """O notă RESPINSĂ, corectată, se trimite din nou la validare — act explicit al celui care a pregătit-o."""
+def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid, confirma=False):
+    """O notă RESPINSĂ, corectată, se trimite din nou la validare — act explicit al celui care a pregătit-o.
+    [S3] Nota neschimbată față de cea respinsă (aceeași amprentă) cere confirmare explicită (`confirma`); nu se blochează."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(_SELECT_NOTE + "WHERE i.id = %s", (nota_id,))
@@ -329,11 +424,20 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
         cur.execute("SELECT status FROM inregistrari WHERE id = %s", (nota_id,))
         if cur.fetchone()["status"] != "ciorna":
             return {"ok": False, "cod": "STARE_GRESITA", "mesaj": "numai o notă ciornă se trimite la validare"}
-        cur.execute("SELECT stare FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s "
-                    "ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(nota_id)))
+        cur.execute("SELECT stare, payload->>'amprenta' AS amprenta, motiv_respingere FROM public.declaratii_coada "
+                    "WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(nota_id)))
         ultim = cur.fetchone()
         if ultim and ultim["stare"] != "respinsa":
             return {"ok": False, "cod": "DEJA_IN_COADA", "mesaj": "nota e deja la validare sau validată"}
+        from core import stocuri_anulare as _sa   # [retest 07.10 R1] documentul cu stocul stornat se reface, nu se retrimite
+        _st = _sa.document_stornat(cur, None, nota_id)
+        if _st:
+            return {"ok": False, "cod": _sa.COD_DOCUMENT_STORNAT, "mesaj": _sa.MESAJ_NOTA_STORNATA % _st}
+        if ultim:
+            _av = avertisment_neschimbata([ultim["amprenta"]] if ultim["amprenta"] else [], [n["amprenta"]],
+                                          ultim["motiv_respingere"], confirma)
+            if _av:
+                return _av
         # [lotul 07.10 pct.9] documentul se retrimite ÎNTREG: celelalte ciorne ale aceleiași facturi, respinse odată cu ea
         grup = grup_nota(n["id"], n.get("grup_doc"))
         frati = [n]
@@ -448,6 +552,11 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d["id"] = membri[0]["id"]
                 d["membri_ids"] = [m["id"] for m in membri]
             d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
+            if d["fel"] == "nota" and d["stare"] == "la_senior":
+                # [S3] „cardul unei note retrimise arată «retrimisă după respingere», motivul respingerii anterioare și dacă
+                # nota s-a schimbat față de cea respinsă”
+                _m = [(m["id"], m["nota"]) for m in membri] if membri and len(membri) > 1 else [(d["id"], d.get("nota"))]
+                d["retrimisa"] = retrimisa(cur, d["tenant_id"], _m)
         return grupate
 
 
@@ -760,9 +869,11 @@ def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, mot
                   cabinet_id_apelant=cabinet_id_apelant)
 
 
-def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_apelant=None):
+def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_apelant=None, schema_nota=None):
     """la_senior -> respinsa + motiv. Refuză dacă starea nu permite.
-    [B1] Apartenența pe obiect: `cabinet_id_apelant` = cabinetul care cere; alt cabinet -> ALT_CABINET."""
+    [B1] Apartenența pe obiect: `cabinet_id_apelant` = cabinetul care cere; alt cabinet -> ALT_CABINET.
+    [retest 07.10 R1] O NOTĂ respinsă își stornează documentul în fișa de magazie (`stocuri_anulare.storneaza`, pe `schema_nota`),
+    în aceeași tranzacție; dacă marfa a ieșit deja, respingerea se refuză (STOC_IESIT) și nu se scrie nimic."""
     # [motiv_obligatoriu_v1] respingerea fără motiv lasă contabilul fără explicație
     if motiv is None or not str(motiv).strip():
         return {"ok": False, "cod": "MOTIV_LIPSA",
@@ -780,7 +891,15 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_a
         if not poate_tranzitiona(st, "respinge"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot respinge din starea '%s'" % st}
-        ids = [m[0] for m in membri_grup(cur, coada_id)] or [coada_id]   # [lotul 07.10 pct.9] tot documentul
+        membri = membri_grup(cur, coada_id) or []
+        ids = [m[0] for m in membri] or [coada_id]   # [lotul 07.10 pct.9] tot documentul
+        note_ids = [int((p or {}).get("inregistrare_id") or 0) for _i, p in membri if (p or {}).get("inregistrare_id")]
+        if note_ids and schema_nota:
+            from core import stocuri_anulare as _sa
+            grup = (membri[0][1] or {}).get("grup")
+            st = _sa.storneaza(conn, schema_nota, grup, note_ids, motiv)
+            if st.get("eroare"):
+                return {"ok": False, "cod": "STOC_IESIT", "mesaj": st["eroare"]}
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='respinsa', "
             "respins_de=%s, respins_de_id=%s, respins_la=now(), motiv_respingere=%s WHERE id = ANY(%s)",

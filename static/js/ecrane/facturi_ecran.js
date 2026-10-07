@@ -281,7 +281,18 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
       ev.stopPropagation();
       try {
-        const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
+        const url = `/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`;
+        let r = await api.post(url, {});
+        if (r && r.cod === "NESCHIMBATA") {
+          // [S3] aceeași notă ca cea respinsă: avertisment cu motivul + confirmare explicită (nu blocaj)
+          confirmaCaseta(b.parentElement || b, r.mesaj, async () => {
+            try {
+              r = await api.post(url + "?confirma=true", {});
+              b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
+            } catch (e2) { arataMesaj(b.parentElement || corp, (e2 && e2.mesaj) || "eroare", "eroare"); }
+          }, { textOk: "Retrimite fără schimbări" });
+          return;
+        }
         b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
         b.outerHTML = `<span class="tip-desc" style="color:var(--galben-text);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
@@ -721,7 +732,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=77abd6ad79");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=ff714711ca");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -978,7 +989,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         const sumaTxt = bani(suma) + " " + (s.moneda || "RON");
         const stare = s.activ
           ? '<span style="color:var(--verde)">activ</span>'
-          : '<span style="color:var(--gri-clar)">inactiv</span>';
+          : '<span style="color:var(--gri)">inactiv</span>';
         return `
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">

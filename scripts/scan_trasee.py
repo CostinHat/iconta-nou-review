@@ -121,11 +121,11 @@ TRASEE = [
     # --- adăugate 25.08.2026, din inventarul complet ---
     ("T15", "Salariatul — angajare, contract, adeverință, REGES",
      [r"^/tenants/\{\}/salariati$", r"^/tenants/\{\}/salariati/\{\}$",
-      r"^/tenants/\{\}/salariati/\{\}/(adeverinta|beneficiu-lunar)",
+      r"^/tenants/\{\}/salariati/\{\}/(adeverinta|beneficiu-lunar|elemente)",
       r"^/tenants/\{\}/prapastie-salariu",
       r"^/tenants/\{\}/contracte", r"^/contracte/marcaje", r"^/tenants/\{\}/reges-",
       r"^/cor$"],
-     ["salariati", "salariu_istoric", "contracte_sabloane"]),
+     ["salariati", "salariu_istoric", "contracte_sabloane", "elemente_salariale"]),
     ("T16", "Pontajul",
      [r"^/tenants/\{\}/salariati/\{\}/pontaj", r"^/tenants/\{\}/pontaj",
       r"^/util/zile-lucratoare"],

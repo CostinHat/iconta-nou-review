@@ -29,7 +29,7 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=e9cf26e11b";
-import { randA as randConstatare } from "./control_verdict.js?v=45d828dd41";
+import { randA as randConstatare } from "./control_verdict.js?v=23c5b03b5d";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
 function numeFirma(firme, tid) {
@@ -250,6 +250,7 @@ function randNota(c, firme, corp, nav, perm) {
     <div class="val-info">
       <div class="val-titlu"><b>${esc(c.eticheta || "Notă")}</b></div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
+      ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota NU s-a schimbat față de cea respinsă" : "schimbarea nu se poate compara (nota respinsă e dinaintea amprentei)"}</div>` : ""}
       <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}</div>
       <button type="button" class="btn-link val-vezi-nota">${(c.membri_ids || []).length > 1 ? "Vezi notele →" : "Vezi nota →"}</button>
     </div>

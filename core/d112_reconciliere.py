@@ -57,6 +57,11 @@ NU dintr-un intermediar al generatorului.
 DIVERGENTA = HARD-BLOCK (ReconciliereD112) care numeste angajatul si AMBELE valori; NU repara
 tacit (tipar DECIZII 05.08).
 
+ELEMENTELE VARIABILE (S1, 07.10.2026): prima / sporul / orele suplimentare ale lunii (`elemente_salariale`, citite cu SQL
+PROPRIU) sunt venit din salarii (CF art.76 alin.(1)) -> baza = brutul contractual + elementele (venitul REALIZAT); la salariul
+minim facilitatea se acordă numai dacă venitul realizat ≤ plafon (OUG 89/2025 art.III alin.(1) lit.b). Recalculat aici
+independent, pe aceeași regulă scrisă din lege, nu din `calcul_salariu`.
+
 LIMITE suplimentare: input partajat gresit (ambele cai citesc acelasi brut gresit) = §8.
 """
 
@@ -128,6 +133,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
         # [lot 19 pct.4c] luna neîntreagă pe salariu/suspendare -> brutul generatorului e proratat pe zile (salariu_istoric),
         # aici nu se re-derivă proratarea: skip LEGITIM (complexitate), ca luna parțială pe angajare/încetare.
         partiala_ids = {r["salariat_id"] for r in _repo.select_luna_partiala(cur, schema, luna_inc, luna_sf)}
+        variabile = {r["salariat_id"]: Decimal(str(r["total"] or 0)) for r in _repo.elemente_variabile(cur, schema, an, luna)}
         ben_ids = set()
         try:
             ben_ids = {r["salariat_id"] for r in _repo.select_6(cur, schema, an, luna)}
@@ -149,6 +155,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                     unde="salariatul %s" % sid, regula="salariu_brut_lipsa"),
                     salariat=sid))
                 continue
+            realizat = brut + variabile.get(sid, Decimal(0))   # [S1] venitul REALIZAT: contractual + elementele variabile
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
             if r["scutit_contrib_minim"]:
                 sarite.append(sid); continue   # scutit_pt = alias scutit_contrib_minim (d112.py:431) -> exceptat suprataxare
@@ -182,7 +189,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 # constructie, ci prin DISCIPLINA: cand cele doua nu coincid, intrebarea se duce la
                 # ARBITRU, nu se muta verificatorul peste verificat. Gardat: core/test_cale_a_doua.py.
                 prag = sm - fac_val
-                baza_pt = brut if brut >= prag else prag
+                baza_pt = realizat if realizat >= prag else prag
                 exp = {"cas": _q(baza_pt * cota_cas), "cass": _q(baza_pt * cota_cass)}
                 pt_ap = bool(g.get("pt_aplica"))
                 emis = {"cas": _q((g.get("cas_min_pt") if pt_ap else g.get("cas")) or 0),
@@ -204,7 +211,8 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 # baza_contrib = sm - facilitate, aplicat la CAS SI CASS (ca in salarizare.py:79-82).
                 if not _stabil_la_minim(cur, schema, sid, luna_inc, luna_sf):
                     sarite.append(sid); continue   # schimbare in luna -> facilitate proratata (sub-caz ulterior) NEACOPERIT
-                baza = (sm - fac_val) if sm <= plafon_fac else sm   # vbt > plafon -> facilitate 0
+                # [S1] lit.b: venitul REALIZAT (cu elementele variabile) peste plafon -> facilitate 0
+                baza = (realizat - fac_val) if realizat <= plafon_fac else realizat
                 exp = {"cas": _q(baza * cota_cas), "cass": _q(baza * cota_cass)}
                 reconciliati.append(sid)
                 for camp in ("cas", "cass"):
@@ -224,7 +232,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 continue
             # --- SUB-CAZ 1b (05.08): angajat PESTE MINIM cu TICHETE DE MASA -> CAS reconciliabil, CASS numit-afara ---
             if are_tichete_masa:
-                exp_cas = _q(brut * cota_cas)   # tichetele de masa NU ating baza CAS (salarizare.py)
+                exp_cas = _q(realizat * cota_cas)   # tichetele de masa NU ating baza CAS (salarizare.py)
                 reconciliati_cas_doar.append(sid)
                 got = _q(g.get("cas") or 0)     # valoarea EMISA la ANAF (half-up ca _d112int), nu trunchiere
                 if got != exp_cas:
@@ -232,7 +240,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                                        "generator": got, "cale2": exp_cas, "diferenta": got - exp_cas})
                 continue   # CASS emisa = brut x cota_cass + cass_tichete (d112.py:239) - NU se confrunta (limita declarata)
             # --- CAZ SIMPLU: recalcul independent (baza contributie = brut, facilitate 0) ---
-            exp = {"cas": _q(brut * cota_cas), "cass": _q(brut * cota_cass)}
+            exp = {"cas": _q(realizat * cota_cas), "cass": _q(realizat * cota_cass)}
             reconciliati.append(sid)
             for camp in ("cas", "cass"):
                 got = _q(g.get(camp) or 0)  # rotunjire la intreg ca _d112int (valoarea EMISA la ANAF), nu trunchiere

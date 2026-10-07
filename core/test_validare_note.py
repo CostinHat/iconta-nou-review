@@ -141,7 +141,9 @@ def test_respingerea_tine_pana_la_retrimitere(tx):
     assert c.pune_notele_in_coada(conn, cab, tid, asist) == []
     st = c.stari_note(conn, tid, [nid])[nid]
     assert (st["stare_coada"], st["motiv_respingere"]) == ("respinsa", "lipsește factura")
-    assert c.retrimite_nota(conn, cab, tid, nid, asist)["ok"]
+    # [retest 07.10 seara, S3, decizia Costin] nota NESCHIMBATĂ față de cea respinsă se retrimite numai confirmată explicit
+    assert c.retrimite_nota(conn, cab, tid, nid, asist)["cod"] == "NESCHIMBATA"
+    assert c.retrimite_nota(conn, cab, tid, nid, asist, confirma=True)["ok"]
     assert c.stari_note(conn, tid, [nid])[nid]["stare_coada"] == "la_senior"
     assert c.retrimite_nota(conn, cab, tid, nid, asist)["cod"] == "DEJA_IN_COADA"
 

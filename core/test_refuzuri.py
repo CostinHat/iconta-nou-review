@@ -101,7 +101,10 @@ BASELINE = {
     "core/scadente.py": 2,
     "core/sponsorizari.py": 3,
     "core/stocuri.py": 9,
-    "core/stocuri_cv.py": 5,
+    # [07.10.2026, retest R1] 5 -> 6: stornarea în roșu a unei intrări a cărei marfă a ieșit deja se refuză („stornarea intrării
+    # … peste stocul …”) — refuz de FORMĂ, aceeași clasă cu „ieșire peste stoc” de lângă el (fișa nu poate deveni negativă);
+    # un articol de lege n-are ce căuta pe el. Creșterea se înregistrează, nu se ascunde.
+    "core/stocuri_cv.py": 6,
     "core/tva_marja.py": 3,
     "core/tva_marja_turism.py": 7,
 }

@@ -612,6 +612,15 @@ def sterge_factura(conn, factura_id):
         prim = cur.fetchone()
         n = _cf.contare_existenta(cur, "", factura_id)
         legate = _cf.note_cu_cheia(cur, "", factura_id)
+        cur.execute("SELECT numar FROM nir WHERE factura_id = %s LIMIT 1", (factura_id,))
+        nir_legat = cur.fetchone()
+    if nir_legat:
+        # [decizii 07.10 pct.2] NIR-ul legat își ia costul din factură (scrie numai adaosul și TVA neexigibilă): fără factură,
+        # 371 ar rămâne cu adaosul unei mărfi fără cost. Cheia `nir_factura_fk` n-are `ON DELETE` — refuzul o numește.
+        raise _cf.RefuzContare(
+            "LEGATA_DE_NIR",
+            "Factura e legată de NIR-ul %s, care își ia costul din ea, și nu se șterge. Corecția se face prin storno — un al "
+            "doilea document." % nir_legat["numar"], detalii={"nir_numar": nir_legat["numar"], "iesire": "storno"})
     if trim:
         raise _cf.RefuzContare(
             "LEGATA_DE_SPV",

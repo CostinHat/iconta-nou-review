@@ -133,6 +133,10 @@ MESAJ_Z_FARA_BONURI = ("Numărul de bonuri fiscale e obligatoriu — e tipărit 
 # [decizia A 02.10.2026] factura emisă pe baza bonului fiscal: marfa a ieșit cu bonul (raportul Z), nu se descarcă a doua oară
 MESAJ_FACTURA_BON_STOC = ("Factura emisă pe baza bonului fiscal nu mai descarcă gestiunea: marfa a ieșit deja cu bonul. "
                           "Alege «NU — doar fiscal».")
+# [decizia Costin 07.10, pct.5] seria chitanțelor: cerută la prima folosire (OMFP 2634/2015 anexa 1 pct.24: „stabilit(ă) de entitate”)
+COD_SERIE_CHITANTA_LIPSA = "SERIE_CHITANTA_LIPSA"
+MESAJ_SERIE_CHITANTA_LIPSA = ("Chitanța nu s-a emis: firma n-are serie pentru chitanțe. Seria o stabilește firma (OMFP 2634/2015 "
+                              "anexa 1 pct.24) — scrie-o în Date firmă, la «Chitanțe», o singură dată; numerotarea continuă pe ea.")
 MESAJ_AMEF_FARA_BONURI = ("fișierul AMEF nu poartă numărul de bonuri fiscale (atributul nrB al raportului Z) — fără el "
                           "raportul nu poate intra în D394; verifică exportul casei de marcat")
 

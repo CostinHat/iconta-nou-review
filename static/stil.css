@@ -973,7 +973,7 @@ html, body {
 
 /* === VAL-NOTA-PERM === */
 .val-nota-perm {
-  font-size: 12.5px; color: var(--gri-clar); font-style: italic;
+  font-size: 12.5px; color: var(--gri); font-style: italic;
   padding: 6px 4px; display: inline-block;
 }\n
 
@@ -1160,7 +1160,7 @@ html, body {
 
 .rap-gol {
   padding: 24px;
-  color: var(--gri-clar);
+  color: var(--gri);
   font-size: var(--text-mic);
   text-align: center;
   margin: auto;
@@ -1205,7 +1205,7 @@ html, body {
   font-size: var(--text-mic); font-weight: 600; color: var(--ardezie);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.rap-cand { flex: 0 0 auto; font-size: var(--text-mic); color: var(--gri-clar); }
+.rap-cand { flex: 0 0 auto; font-size: var(--text-mic); color: var(--gri); }
 .rap-rand-jos {
   display: block;
   font-size: var(--text-mic); color: var(--gri);
@@ -1245,7 +1245,7 @@ html, body {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
-.rap-msg-cand { font-size: var(--text-mic); color: var(--gri-clar); margin-top: 3px; }
+.rap-msg-cand { font-size: var(--text-mic); color: var(--gri); margin-top: 3px; }
 
 /* utilizator = stanga, gri; admin = dreapta, albastru */
 .rap-msg-user { align-self: flex-start; }
@@ -1554,7 +1554,7 @@ html, body {
 .clopot-toate { border: 0; background: transparent; color: var(--albastru); font-size: var(--text-mic); cursor: pointer; }
 .clopot-toate:hover { text-decoration: underline; }
 .clopot-lista { overflow-y: auto; flex: 1 1 auto; }
-.clopot-gol { padding: 20px; text-align: center; color: var(--gri-clar); font-size: var(--text-mic); }
+.clopot-gol { padding: 20px; text-align: center; color: var(--gri); font-size: var(--text-mic); }
 .clopot-item {
   display: block; width: 100%; text-align: left; border: 0;
   background: var(--alb); border-bottom: 1px solid var(--linie);
@@ -1564,7 +1564,7 @@ html, body {
 .clopot-necitit { background: #eef4ff; }
 .clopot-necitit:hover { background: #e3edfd; }
 .clopot-text { font-size: var(--text-mic); color: var(--ardezie); line-height: 1.4; }
-.clopot-cand { font-size: var(--text-mic); color: var(--gri-clar); margin-top: 3px; }
+.clopot-cand { font-size: var(--text-mic); color: var(--gri); margin-top: 3px; }
 
 
 /* [p64_pachete] */
@@ -2467,7 +2467,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ghid-wrap p, .ghid-wrap li { font-size: var(--text-mic); color: var(--gri); line-height: 1.65; }
 .ghid-wrap a { color: var(--albastru); }
 .ghid-wrap strong { color: var(--ardezie); }
-.ghid-wrap blockquote { border-left: 3px solid var(--linie); margin: 16px 0; padding: 4px 0 4px 16px; color: var(--gri-clar); }
+.ghid-wrap blockquote { border-left: 3px solid var(--linie); margin: 16px 0; padding: 4px 0 4px 16px; color: var(--gri); }
 .ghid-wrap hr { border: none; border-top: 1px solid var(--linie); margin: 28px 0; }
 .ghid-subsol { font-size: var(--text-desc); color: var(--gri); margin-top: 28px; }
 /* [06.10.2026, comanda Costin pct.6–7] DS cap.22 v2.72: cuprinsul temelor, pagina temei, legăturile de la finalul ghidului */

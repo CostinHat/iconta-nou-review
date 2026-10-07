@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: lotul 07.10 B livrat — B `adf95715`, A `63f99d7b`, C `b572089b`; trei decizii cerute**
+# PREDARE LANȚ — **08.10.2026: lotul „Deciziile 07.10” + retesturile 07.10 (F1, seara F5) livrat într-un commit; două decizii cerute**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, la închidere), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `b572089b` (C publicat; A `63f99d7b`; B `adf95715`; intrarea lotului: `47c04fe3`); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-08** (lotul „Deciziile 07.10”, la închidere), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `3545ee88` (intrarea lotului); commitul de închidere (această predare) poartă TOT lotul și rulează poarta completă, o singură dată (decizia Costin pct.6).
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -39,6 +39,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 | **Ecranele scrise de mână — cele 82** (comanda Costin 07.10): 59 de selecturi fiscale pornesc cu „— alege —” și sunt cerute la trimitere (`ALEGE` / `cereAlegerile` în `api.js`), 23 clasificate cu motiv; starea inițială a formularelor-panou nulă | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
 | **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
+| **„Deciziile 07.10” + retesturile 07.10** (comenzile Costin 07.10, verbatim în DECIZII): D1 metodele de stoc nesuportate refuzate; D2 NIR legat de factura primită (numai 378/4428); D3 Z la cantitativ-valoric validat numai cu descărcare pe articol / „fără marfă”; D4 salariatul pe API și la import cu cele trei fapte cerute; D5 seria chitanței cerută; R1 respingerea stornează stocul (roșu), NIR-ul se reface; R2 titlul scurt al documentului; S1 prime / sporuri / ore suplimentare (brut, baze, D112 pe DUK, notă, fluturaș; lit.b pe venitul realizat); S2 „de la” = ziua 1 a lunii lucrate; S3 retrimiterea neschimbată cere confirmare, cardul o spune; S4 notificările rezolvate | commitul de închidere | `iconta_decizii_07_10.zip` |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
@@ -56,6 +57,10 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
+- **LIVRAT: „Deciziile 07.10” + retesturile 07.10** (DECIZII 07.10.2026 „Executarea…”; ZIP `iconta_decizii_07_10.zip`). Producția
+  migrată după backup (`core/migrare_decizii_0710.py`). **Decizii cerute (raportul lotului, §6):** (1) F1: NIR 1 n-a avut niciodată
+  mișcare în fișă — stocul rămâne 116 / 5.900,00, nu 105 / 5.350,00; (2) NIR complet înregistrat ÎNAINTE de contarea facturii de marfă
+  (global-valoric) încarcă 371 de două ori — ce se face la factură.
 - **LIVRAT: lotul 07.10 B** (DECIZII 07.10 „Lotul 07.10 B” / „frontul A” / „frontul C”; ZIP `iconta_lot_07_10_b.zip` +
   `iconta_selecturi_82.zip`). Producția migrată complet (backup `iconta_v2_pre_lot0710b_20261007_1741.dump` + coada 20:00).
   **Search Console (Costin):** de șters vechiul `sitemap.xml` și de trimis `https://iconta.eu/sitemap-index.xml`.
@@ -289,8 +294,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **132** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **890** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77** | **133** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **902** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

@@ -144,7 +144,8 @@ def test_compozitia_are_cele_patru_feluri_si_ambele_totaluri():
     """Anti-vacuu pe compoziția însăși: un `[]` ar trece toate probele de mai sus fără să spună nimic."""
     c = sp.compozitie_fluturas(_rand())
     assert len(c) >= 15, "compoziție prea săracă: %d rânduri" % len(c)
-    assert {x["fel"] for x in c} == {sp.FEL_LINIE, sp.FEL_TOTAL, sp.FEL_MENTIUNE, sp.FEL_NOTA}
+    # [S1] + `FEL_DETALIU`: defalcarea brutului (salariul de bază lucrat + elementele variabile)
+    assert {x["fel"] for x in c} == {sp.FEL_LINIE, sp.FEL_TOTAL, sp.FEL_MENTIUNE, sp.FEL_NOTA, sp.FEL_DETALIU}
     totaluri = [x["eticheta"] for x in c if x["fel"] == sp.FEL_TOTAL]
     assert len(totaluri) == 2, "un fluturaș are DOUĂ totaluri (net, disponibil), nu %d" % len(totaluri)
 

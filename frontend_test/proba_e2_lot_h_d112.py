@@ -128,6 +128,7 @@ def main():
                      {"randuri": [{"nume": "%s Salariat" % MARCA, "prenume": "Rularea%d" % rul,
                                    "cnp": cnp, "data_angajare": "%d-%02d-01" % (AN, LUNA),
                                    "tip_norma": "intreaga", "ore_zi": 8, "salariu_brut": BRUT,
+                                   "functie_baza": True, "scutit_contrib_minim": False,
                                    "persoane_intretinere": 0, "judet_casa": "", "cor": cor,
                                    "cnp_valid": True, "cnp_motiv": "ok"}]}, tok)
     intr["raspuns"] = {"stare": st1, "corp": str(r1)[:300]}

@@ -396,6 +396,15 @@ CLASIFICARE = {
             "peste un apel de retea — intrebare de concurenta, nu de proprietate; e numita in "
             "raport, la restante.",
     },
+    "core/migrare_decizii_0710.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "DDL-ul public (notificari.rezolvata + triggerul) <-> DDL-ul fiecarei scheme <-> stornarea documentelor deja "
+                  "respinse, schema cu schema <-> partenerul in payload-ul elementelor din coada",
+        "de_ce":
+            "fiecare pas e comis SEPARAT si e idempotent (ADD COLUMN IF NOT EXISTS, CREATE INDEX IF NOT EXISTS, stornarea numai a "
+            "miscarilor VII — `anuleaza_id` unic —, partenerul numai unde lipseste). O cadere intre pasi lasa o stare din care "
+            "rularea a doua continua fara efect dublu; niciun efect extern (e-mail, ANAF, disc).",
+    },
     "core/facturi_recurente.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "emiterea facturilor scadente, firma cu firma <-> cache-ul de curs",

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**724 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**728 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 687
+### `core/` — 691
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8898,6 +8898,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cache_declarat.py` — P6 valul 2 — un cache admis isi poarta cele cinci lucruri, si dovada nu e o promisiune.
 - `core/test_cai_creare_factura.py` — GARDA inventarului de căi prin care se naște o factură (HHH1). Instrumentul:
 - `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
+- `core/test_calcul_salariu_apelanti.py` — GARD STRUCTURAL — cei trei apelanți care calculează salariul LUNII (statul de plată, D112, nota de salarii) trec
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
 - `core/test_camp_blocant.py` — GARDĂ [R93, 30.08.2026]: un câmp declarat OBLIGATORIU trebuie să OPREASCĂ generatorul, nu să
 - `core/test_capital_social.py` — GARD — capitalul social pe factură (lot 19, defectul 12, 03.10.2026).
@@ -9128,6 +9129,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_data_curenta.py` — GARD [01.09.2026, interdicția 3]: un calcul fiscal nu citește data curentă în tăcere.
 - `core/test_date_firma_alege_placeholder.py` — core/test_date_firma_alege_placeholder.py — GARD (jumatatea frontend a defectului „default fabricat"
 - `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
+- `core/test_decizii_0710.py` — GARDA lotului „Deciziile 07.10” + retestul Costin pe F1 (comenzile din 07.10.2026, verbatim în DECIZII).
 - `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere
 - `core/test_declarant_warn.py` — core/test_declarant_warn.py — GARD: cand declarantul lipseste din profil, generatoarele AVERTIZEAZA
 - `core/test_declaratii_50.py` — GARD (07.09.2026) — cele 50 de declarații de pe ecranul public nu pot rămâne în urmă.
@@ -9407,6 +9409,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_rute_model_body.py` — core/test_rute_model_body.py — GARD: un model Pydantic pe un handler e BODY, nu query.
 - `core/test_rute_probate.py` — O rută care SCRIE și pe care nicio probă n-o numește — clichet, ca să nu mai crească.
 - `core/test_rute_stoc_pana_in_declaratie.py` — Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI.
+- `core/test_s1_elemente_salariale.py` — GARD S1 (retest Costin 07.10 seara, pct.1) — elementele variabile ale salariului: prime, sporuri, ore suplimentare.
+- `core/test_s2_salariu_de_la.py` — GARD S2 (retest Costin 07.10 seara, pct.2) — „La «Salariu», câmpul «de la» e precompletat cu data de azi (07.10.2026), deși se
 - `core/test_salariati_blocaj_vizibil.py` — core/test_salariati_blocaj_vizibil.py — GARD: pe Stat de plata, butoanele dezactivate SEPA
 - `core/test_salariati_import_iban.py` — core/test_salariati_import_iban.py — GARD: importul de salariati (stratul 4 migrare) aduce IBAN
 - `core/test_salarii_contare.py` — Teste gardian pentru salarii_contare (partea pura).
@@ -10552,3 +10556,23 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | coada pe document (factură, NIR), plata separată, migrarea elementelor vechi | `core/test_lot0710b_coada_document.py` (3) + `test_lot0710_p2.py` | cele 4 note ale unui NIR ca 4 elemente; o plată lipită de factura ei; elementele fără `payload.grup` lăsate separate | MC1, MC2, MC3 -> ROȘU | documentele noi cu mai multe note intră în `_GRUP_DOC` când apar |
 | nota derivată nu se editează / șterge din jurnal; recontabilizarea înlocuiește nota respinsă | `core/test_lot0710b_note_derivate.py` (3) | editarea contării unei facturi din jurnal; ștergerea unei ieșiri din stoc (mișcarea rămâne fără notă); „deja contată” pe o contare respinsă; ștergerea contării ciornă (drumul spre ștergerea facturii) rămâne permisă | MC4, MC5 -> ROȘU | NIR-ul și ieșirile n-au încă recontabilizare (refuzul spune unde se anulează) |
 | NIR-ul urmează metoda de stoc; articol explicit; raftul gol nu e 0; NIR-ul se deschide | `core/test_lot0710b_nir.py` (5), `test_flux_factura_f1_c.py` | 371=378 / 371=4428 la firma la cost; „Marfa  A” ca al doilea articol; prețul de raft gol trecut drept 0; NIR fără detaliu | MC6, MC7, MC8 -> ROȘU | cantitativ-valoric la preț de vânzare și FIFO nu există (decizie cerută) |
+
+## 07.10.2026 — „Deciziile 07.10” + retesturile 07.10 (F1, seara F5): D1–D5, R1–R2, S1–S4 (comenzile Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| metoda de stoc nesuportată | `core/test_decizii_0710.py::test_d1_…` + `test_datorie.py` (xfail strict) | salvarea „cantitativ-valoric la preț de vânzare” / FIFO; tema uitată | M1 -> ROȘU | — |
+| salariatul cere cele trei fapte (API + import) | `test_decizii_0710.py::test_d4_…` (2) | un salariat creat sau importat cu funcția de bază / scutirea / norma presupuse | M2, M3 -> ROȘU | — |
+| seria chitanței fără „CH” | `test_decizii_0710.py::test_d5_…` | o chitanță cu seria pe care n-a ales-o nimeni | M4 -> ROȘU | — |
+| NIR legat: numai 378/4428, costul = factura | `test_decizii_0710.py::test_d2_…` (2) | 371=401 de două ori (NIR + factură); un NIR legat cu alt cost decât factura; ștergerea facturii legate | M5, M6 -> ROȘU | NIR complet înaintea facturii (decizie cerută) |
+| Z la cantitativ-valoric nevalidabil fără descărcare | `test_decizii_0710.py::test_d3_…` (2) | Z validat fără ieșire pe articol sau „fără marfă”; regula aplicată la global-valoric | M19, M20 -> ROȘU | valoarea descărcată nu se confruntă cu încasarea |
+| stornarea în roșu la respingere | `test_decizii_0710.py::test_r1_…` (6) | stocul neatins după respingere; stornare la CMP în loc de valoarea mișcării; respingerea care lasă fișa negativă / scrie pe jumătate; nota documentului stornat validată pe alt drum; NIR refăcut de două ori sau cu ciornele vechi rămase; factura refăcută fără intrare | M7–M12 -> ROȘU | inventarul / transferul se refac prin operație nouă |
+| titlul scurt al documentului în coadă | `test_decizii_0710.py::test_r2_…` (2) | „Document · … · 4 note: NIR 1 …; NIR 1 …”; elementele vechi fără partener | M13, M14 -> ROȘU | textul notificărilor deja scrise |
+| elementele variabile în brut, baze, D112, notă, fluturaș | `core/test_s1_elemente_salariale.py` (8, D112 pe DUK) | prima lăsată în afara brutului / bazelor / D112; facilitatea păstrată peste plafonul lit.b (și cu CM); tipul presupus; luna cu D112 depusă modificată; calea a doua rămasă pe brutul contractual | M21–M26 -> ROȘU | sporul orelor suplimentare nu se calculează (contractul) |
+| cei trei apelanți ai lunii trec aceleași intrări | `core/test_calcul_salariu_apelanti.py` (AST) | un parametru al calculului trecut numai de unii apelanți (fluturaș ≠ D112 ≠ notă) | M27 -> ROȘU | numai cele trei apeluri ale lunii (adeverința și simulatorul au alt scop) |
+| „Salariu — de la” = prima zi a lunii lucrate | `core/test_s2_salariu_de_la.py` (chromium, modulul real) | data de azi propusă pe altă lună decât cea lucrată | M16 -> ROȘU | ruta statului e simulată (numai câmpul se probează) |
+| facilitatea: lit.b pe venitul realizat, și la mărirea în lună | `test_pull_declaratii.py`, `test_salariu_scrieri.py` (corectate) | facilitate proratată peste plafonul lunii (mărire la 5.000: 142,86 -> 0) | M21 -> ROȘU | — |
+| `${ALEGE}` = opțiunea goală canonică în verificator | `verificator_conformitate.py` PRET_SAU_ARTICOL_NEALES | o listă de articole fără opțiunea goală (și forma canonică respinsă greșit) | M28 (`${ALEGE}` scos) -> TOTAL 1 | lexical, fereastra de 300 de caractere |
+| `--gri-clar` nu e culoare de text (DS cap.15 v2.80) | `verificator_conformitate.py` CULOARE_SEMAFOR_TEXT | text secundar la 3,14:1 (clopoțel, rapoarte, ghid) | M29 (`--gri-clar` repus pe `.clopot-cand`) -> TOTAL 1 | culoarea transmisă prin parametru (limita existentă a regulii) |
+| retrimiterea neschimbată cere confirmare; cardul o spune | `test_decizii_0710.py::test_s3_…` (2) + `test_validare_note.py` | aceeași notă retrimisă fără avertisment; cardul fără motivul anterior / starea schimbării | M17, M18 -> ROȘU | notele respinse înainte de amprentă: „nu se poate compara” |
+| notificarea rezolvată la schimbarea stării | `test_decizii_0710.py::test_s4_…` (trigger pe coadă) | „de validat” activ după validare / respingere; „respinsă” activ după înlocuire | M15 (DROP TRIGGER) -> ROȘU | notificările fără element (`validat` fără id) nu se pot lega |

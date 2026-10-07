@@ -123,6 +123,8 @@ def main():
         "nume": MARCA, "prenume": "Salariat", "cnp": CNP_NOU,
         "salariu_brut": float(BRUT), "data_angajare": "%d-%02d-01" % (AN, LUNA),
         "functie": "operator", "norma": 8,
+        # [decizii 07.10 pct.4] cele trei fapte se cer explicit pe API, ca pe ecran
+        "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False,
         # COR e OBLIGATORIU la creare (D112/REGES), si codul trebuie sa existe in nomenclator —
         # ruta o spune pe litere. Se ia din `public.cor_ocupatii`, nu se inventeaza.
         "cor": COR,

@@ -202,8 +202,8 @@ def conn_i2(monkeypatch):
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, telefon, banca, iban, "
                     "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare,declarant_nume,declarant_prenume,declarant_functie,"
-                    "cont_venit_implicit,activitate_exceptata_amef) VALUES (1,'INSTAL SRL','14399840','Str Test 1','Bucuresti','B','4322','0722000000',"
-                    "'BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR','704',false)")   # „Nu”, declarat
+                    "cont_venit_implicit,activitate_exceptata_amef,serie_chitanta) VALUES (1,'INSTAL SRL','14399840','Str Test 1','Bucuresti','B','4322','0722000000',"
+                    "'BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR','704',false,'ZC')")   # „Nu”, declarat; seria aleasă (decizii 07.10 pct.5)
             proxy = _FaraCommit(conn)
             from core import uc_tenants, auth_api, uc_comun as _uc
             monkeypatch.setattr(uc_tenants.db, "get_conn", lambda *a, **k: contextlib.nullcontext(proxy))
@@ -280,7 +280,7 @@ def test_chitanta_fara_cota_blocheaza_d394_numit_pana_la_clasificare(conn_i2):
     # decizia Costin: încasări neclasificate -> refuz NUMIT, nu Î2 pe zero. MUTAȚIE: scos refuzul -> D394 se generează
     with pytest.raises(ValueError) as e:
         _d394.genereaza(conn_i2, _SCHEMA, Perioada(2026, luna=9))
-    assert (e.value.cod, e.value.chitante) == ("D394_I2_NECLASIFICAT", ["CH-%s" % vechi["numar"]])
+    assert (e.value.cod, e.value.chitante) == ("D394_I2_NECLASIFICAT", ["ZC-%s" % vechi["numar"]])
     r = uc_tenants.chitanta_cota(1, vechi["chitanta_id"], ChitantaCota(cota_tva=21), {"uid": 1})
     assert r["cota_tva"] == 21 and _nota(conn_i2, vechi["chitanta_id"]) == [("5311", "704", "200.00"),
                                                                             ("5311", "4427", "42.00")]

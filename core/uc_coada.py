@@ -246,15 +246,22 @@ def coada_aproba(coada_id, date, ctx):
 
 def coada_respinge(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/respinge`; docstringul ei a ramas in stratul HTTP."""
-    with db.get_conn() as conn:
-        if not _uc_comun._are_permisiune(ctx, "poate_valida"):
-            raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
+    if not _uc_comun._are_permisiune(ctx, "poate_valida"):
+        raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
+    # [retest 07.10 R1] nota se respinge pe schema firmei ei: respingerea stornează în aceeași tranzacție mișcarea de stoc a
+    # documentului (`stocuri_anulare.storneaza`) — ori ambele, ori niciuna
+    _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)
+    with db.get_conn(_schema_nota) as conn:
         r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]),
-                               cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
+                               cabinet_id_apelant=ctx["firm"],  # [B1] apartenenta pe obiect
+                               schema_nota=_schema_nota)
+        if not r["ok"]:
+            conn.rollback()
     if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
         _cod = r.get("cod")
         # [B1] ALT_CABINET -> 404 (Inexistent) prin ramura else.
-        _http = (_erori.Conflict if _cod == "STARE_GRESITA" else _erori.CerereGresita if _cod == "MOTIV_LIPSA" else _erori.Inexistent)
+        _http = (_erori.Conflict if _cod == "STARE_GRESITA" else _erori.CerereGresita if _cod in ("MOTIV_LIPSA", "STOC_IESIT")
+                 else _erori.Inexistent)
         raise _http(r.get("mesaj", _cod))
     # [p57_notif] notifica pregatitorul cu motivul
     try:
@@ -398,7 +405,7 @@ def _schema_notei(coada_id, ctx):
     return el[0], (el[2] if el[0] == "nota" else None), el
 
 
-def jurnal_retrimite(tenant_id, nota_id, ctx):
+def jurnal_retrimite(tenant_id, nota_id, ctx, confirma=False):
     """Nota respinsă, corectată, se trimite din nou la validare (act explicit al celui care a pregătit-o)."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -408,7 +415,9 @@ def jurnal_retrimite(tenant_id, nota_id, ctx):
             raise _erori.Inexistent("nota #%s nu există" % nota_id)
         # R42: o notă dintr-o lună ÎNCHISĂ nu se mai poate valida, deci nici trimite la validare
         _uc_comun._cere_luna_deschisa(conn, schema, n[1])
-        r = coada_api.retrimite_nota(conn, ctx["firm"], tenant_id, nota_id, int(ctx["uid"]))
+        r = coada_api.retrimite_nota(conn, ctx["firm"], tenant_id, nota_id, int(ctx["uid"]), confirma=confirma)
+    if r.get("cod") == coada_api.COD_NESCHIMBATA:   # [S3] avertisment, nu refuz: ecranul cere confirmarea
+        return r
     if not r["ok"]:
         raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r.get("mesaj"))
     with db.get_conn() as conn:

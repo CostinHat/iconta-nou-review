@@ -106,4 +106,9 @@ def sterge_respinsa(cur, schema, nota_id):
     """Scoate nota respinsă înaintea înlocuirii (liniile cad prin ON DELETE CASCADE). Elementul ei din coadă rămâne, `respinsa`,
     ca istoric: motivul respingerii nu se pierde."""
     cur.execute("DELETE FROM %sinregistrari WHERE id = %%s AND status = 'ciorna'" % _q(schema), (nota_id,))
-    return cur.rowcount
+    n = cur.rowcount
+    if n:
+        # [retest 07.10 seara, S4] o notă înlocuită nu lasă notificarea „a fost respinsă” activă
+        from core import notificari_api as _notif
+        _notif.rezolva_nota_inlocuita(cur.connection, schema, nota_id)
+    return n

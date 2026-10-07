@@ -46,6 +46,14 @@ def select_5(cur, schema, an, luna):
     return cur.fetchall()
 
 
+def elemente_variabile(cur, schema, an, luna):
+    """[S1] Elementele variabile ale lunii (prime, sporuri, ore suplimentare), pe salariat — SQL PROPRIU al căii a doua (nu
+    `elemente_salariale`, care e citirea generatorului)."""
+    cur.execute("SELECT salariat_id, SUM(suma) AS total FROM %s.elemente_salariale WHERE an=%%s AND luna=%%s GROUP BY salariat_id"
+                % schema, (an, luna))
+    return cur.fetchall()
+
+
 def select_6(cur, schema, an, luna):
     cur.execute("SELECT DISTINCT salariat_id FROM %s.beneficii_lunare WHERE an=%%s AND luna=%%s"
                 % schema, (an, luna))

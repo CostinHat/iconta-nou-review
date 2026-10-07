@@ -72,6 +72,8 @@ from core import scan_constante
 # rotunjire a unei comparatii, scrisa in ruta INAINTE de val, neatinsa de el; se regaseste in
 # `git show HEAD:main.py`. Clichetul urca cu 1 fiindca DOMENIUL a crescut, nu codul.
 BASELINE = {
+    # [decizii 07.10 pct.4, 07.10.2026] `salariati_import_api.py` 2 -> 1: implicitul de 4 ore/zi la norma partiala a disparut —
+    #     orele se cer explicit din fisier (randul fara ele se refuza, numit), nu se mai presupun.
     # [lotul 07.10 B, 07.10.2026] `d406_stocuri.py` 1 -> 0 (scos din dictionar): precizia e acum DERIVATA (orice 10^-k pe
     # `.quantize`), nu enumerata — literalul de acolo era o pozitie zecimala (`scan_constante._este_precizie`).
     # [E1, 14.09.2026] 2 -> 4: `PRAG_RITM = 5` si `FEREASTRA_RITM_SEC = 900`. NU sunt valori noi
@@ -104,7 +106,7 @@ BASELINE = {
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
     "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
     "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
-    "salariati_import_api.py": 2, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
+    "salariati_import_api.py": 1, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
     "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1,
     # [lot 06.10, 06.10.2026] +2, DELIBERAT si cu motivul — aceeasi clasa OPERATIONALA numita mai sus (nu exista inca o clasa

@@ -8,10 +8,8 @@ from core import stocuri_cv as _m
 
 
 def _miscari(cur, schema, articol_id):
-    cur.execute(f"""SELECT tip, cantitate, pret_unitar, data, document
-                    FROM {schema}.miscari_stoc WHERE articol_id=%s ORDER BY data, id""",
-                (articol_id,))
-    return [dict(r) for r in cur.fetchall()]
+    from core import repo_stocuri   # [retest 07.10 R1] o singură citire a fișei (cu stornările)
+    return [dict(r) for r in repo_stocuri.miscari_ale_articolului(cur, schema, articol_id)]
 
 
 def articole(conn, schema):
@@ -104,7 +102,9 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
     Idempotent pe `factura_id` (o a doua chemare nu creează a doua intrare). Potrivește articolul pe
     denumire (case-insensitive); dacă nu există, îl creează (ca `intrare`)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT 1 FROM {schema}.miscari_stoc WHERE factura_id=%s AND tip='intrare' LIMIT 1",
+        # [retest 07.10 R1] numai o intrare VIE (nestornată) face factura „intrată”: după respingere, refacerea o scrie din nou
+        cur.execute(f"""SELECT 1 FROM {schema}.miscari_stoc m WHERE m.factura_id=%s AND m.tip='intrare' AND m.anuleaza_id IS NULL
+                        AND NOT EXISTS (SELECT 1 FROM {schema}.miscari_stoc r WHERE r.anuleaza_id = m.id) LIMIT 1""",
                     (factura_id,))
         if cur.fetchone():
             return {"stare": "deja_intrat", "factura_id": factura_id, "linii": 0}
@@ -147,6 +147,9 @@ def iesire(conn, schema, corp, factura_id=None):
         a = cur.fetchone()
         if not a:
             return None
+        # [decizii 07.10 pct.3] ieșirea care descarcă un raport Z se leagă de el (Z-ul nu se validează fără descărcare)
+        from core import z_descarcare as _zd
+        z_id = _zd.cere_z(cur, schema, corp["z_id"]) if corp.get("z_id") not in (None, "") else None
         try:
             r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"])
         except ValueError as e:
@@ -166,10 +169,10 @@ def iesire(conn, schema, corp, factura_id=None):
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                     (iid, a["cont_cheltuiala"], a["cont_stoc"], r["valoare"]))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie, factura_id)
-                        VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s) RETURNING id""",
+                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie, factura_id, z_inregistrare_id)
+                        VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
-                     corp.get("document"), iid, corp.get("locatie") or None, factura_id))
+                     corp.get("document"), iid, corp.get("locatie") or None, factura_id, z_id))
         mid = cur.fetchone()["id"]
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "nota": f"{a['cont_cheltuiala']}={a['cont_stoc']}", "inregistrare_id": iid}
@@ -184,7 +187,8 @@ def descarca_factura(conn, schema, factura_id, data):
     from core import jurnal_api as _j
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         # [05.10.2026] o factură se descarcă o singură dată: dacă are deja ieșiri de stoc, a doua chemare nu mai scrie nimic
-        cur.execute(f"SELECT 1 FROM {schema}.miscari_stoc WHERE factura_id = %s AND tip = 'iesire' LIMIT 1", (factura_id,))
+        cur.execute(f"""SELECT 1 FROM {schema}.miscari_stoc m WHERE m.factura_id = %s AND m.tip = 'iesire' AND m.anuleaza_id IS NULL
+                        AND NOT EXISTS (SELECT 1 FROM {schema}.miscari_stoc r WHERE r.anuleaza_id = m.id) LIMIT 1""", (factura_id,))
         if cur.fetchone():
             return {"descarcate": [], "erori": [], "deja_descarcata": True}
         cur.execute(f"""SELECT id, descriere, cantitate, articol_id FROM {schema}.factura_linii

@@ -51,6 +51,12 @@ def stat_plata(conn, schema, an, luna):
     # total/salariat (SUM evenimente) + flag taxabil (>300 sau eveniment nelegal -> semnal, tratare la 2b2).
     cadou_luna = _ben.lista_luna(conn, schema, an, luna, "cadou")
     cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
+    # [S1] elementele variabile ale lunii (prime, sporuri, ore suplimentare) — aceeași citire ca D112 (`d112.pull`)
+    from core import elemente_salariale as _es
+    elem_luna = _es.lista_luna(conn, schema, an, luna)
+    # [S1, aceeași clasă — găsită comparând argumentele celor trei apelanți] partea TAXABILĂ a cadoului intră în calcul ca în
+    # D112 (`d112.pull`) și în notă: statul n-o trecea, deci fluturașul și declarația difereau la un cadou taxabil
+    cadou_tax_luna = _ben.cadou_taxabil_luna(conn, schema, an, luna)
     stat = []
     import calendar as _cal
     from core import salariu_istoric as _si  # salariul contractual DATE-AWARE (sursa unica: salariu_istoric)
@@ -111,7 +117,11 @@ def stat_plata(conn, schema, an, luna):
                                          sub_26=salarizare.sub_26_la(data_nastere, ref),   # [deducere suplimentara]
                                          copii_scoala=(int(copii_scolarizati or 0) if declaratie_copii else 0),
                                          declaratie_copii=bool(declaratie_copii),
-                                         suspendari=_susp)
+                                         suspendari=_susp,
+                                         # [S1] elementele variabile + indemnizația CM (venitul realizat al facilității)
+                                         elemente_variabile=_es.total(elem_luna.get(sid)),
+                                         cadou_taxabil=float(cadou_tax_luna.get(sid, 0) or 0),
+                                         venit_cm=(c_cm["brut"] if c_cm else 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -124,6 +134,9 @@ def stat_plata(conn, schema, an, luna):
             "tip_norma": ("partiala" if part_time else "intreaga"),
             "data_angajare": data_ang.isoformat() if data_ang else None, "ore_zi": ore_zi,
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
+            # [S1] compoziția brutului: salariul de bază lucrat + fiecare element variabil, distinct (fluturaș, stat)
+            "brut_baza_lucrat": round(float(brut_lucrat), 2), "elemente": elem_luna.get(sid, []),
+            "elemente_variabile": float(calc.get("elemente_variabile", 0)),
             # [lot 19 pct.4c] transparența proratării: salariul din contract și zilele lucrătoare active din lună
             "brut_contractual": float(brut or 0), "zile_active": _za,
             "suspendari": susp_toate.get(sid, []),
@@ -352,6 +365,7 @@ FEL_LINIE = "linie"          # rand obisnuit, cu suma
 FEL_TOTAL = "total"          # rand ingrosat: SALARIU NET, TOTAL DISPONIBIL
 FEL_MENTIUNE = "mentiune"    # rand in tabel FARA suma (zilele de CM)
 FEL_NOTA = "nota"            # nota de sub tabel: ce plateste ANGAJATORUL, nu salariatul
+FEL_DETALIU = "detaliu"      # [S1] defalcarea randului de deasupra (brutul), cu suma ei — NU se aduna la net
 
 # Campurile statului pe care compozitia le DUCE la om - pe hartie si pe ecran. Nu e o lista de
 # bunavointa: `core/test_compozitie_fluturas.py` pune in fiecare o valoare-martor unica si cere
@@ -360,7 +374,8 @@ CAMPURI_COMPUSE = ("brut", "facilitate", "cas", "cass", "deducere_baza", "deduce
                    "deducere_copii", "impozit_salariu", "net", "cm_zile", "cm_net", "cm_brut",
                    "cass_tichete", "impozit_tichete", "tichete_nominal", "tichete_vacanta",
                    "cadou", "tichete_cultural", "tichete_cresa", "valoare_tichete",
-                   "total_disponibil", "cost", "cam", "cas_suprataxa", "cass_suprataxa")
+                   "total_disponibil", "cost", "cam", "cas_suprataxa", "cass_suprataxa",
+                   "brut_baza_lucrat", "elemente_variabile")   # [S1] compoziția brutului
 
 # Ce trimite ruta si compozitia NU arata, cu motivul scris. Fara randul asta, absenta ar arata
 # identic cu o scapare - iar conditia de inchidere a lui R97 cere ori reparatie, ori motiv scris.
@@ -369,6 +384,25 @@ CAMPURI_NEAFISATE_MOTIVATE = {
                         "Un subtotal asezat langa chiar componentele lui nu adauga nimic pe un "
                         "fluturas; ce lipsea era compozitia, nu inca o suma."),
 }
+
+
+def randuri_brut(r):
+    """[retest 07.10 seara, S1] „Apar distinct în fluturaș și în compoziția netului”: brutul defalcat — salariul de bază lucrat și
+    fiecare element variabil (primă, spor, ore suplimentare), cu denumirea scrisă de contabil. Rânduri `FEL_DETALIU`: compun
+    „Salariu brut”, nu se adună încă o dată la net. Exemplarul înghețat fără lista elementelor cade pe totalul lor (nu pe 0)."""
+    var = float(r.get("elemente_variabile") or 0)
+    if var <= 0:
+        return []
+    out = [("  din care salariul de bază (zilele lucrate)", float(r.get("brut_baza_lucrat") or 0), FEL_DETALIU)]
+    elemente = r.get("elemente") if isinstance(r.get("elemente"), list) else []
+    if not elemente:
+        return out + [("  din care elemente variabile (prime, sporuri, ore suplimentare)", var, FEL_DETALIU)]
+    for e in elemente:
+        et = "%s — %s" % (e.get("eticheta_tip") or e.get("tip"), e.get("denumire") or "")
+        if e.get("ore"):
+            et += " (%s ore)" % ("%g" % float(e["ore"]))
+        out.append(("  din care " + et, float(e.get("suma") or 0), FEL_DETALIU))
+    return out
 
 
 def compozitie_fluturas(r):
@@ -400,6 +434,7 @@ def compozitie_fluturas(r):
 
     linii = [
         ("Salariu brut", _n("brut"), FEL_LINIE),
+        *randuri_brut(r),
         ("Facilitate salariu minim (netaxabilă)", _n("facilitate"), FEL_LINIE),
         ("CAS (25%)", -_n("cas"), FEL_LINIE),
         ("CASS (10%)", -_n("cass"), FEL_LINIE),

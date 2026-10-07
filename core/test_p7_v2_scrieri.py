@@ -239,7 +239,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   Pas NOU, citire.
     # [lotul 07.10 pct.15, 06.10.2026] 287 -> 288, cu apelul numit: repo_contabilitate.id_nota_dupa_numar (tenant_stat_plata) —
     #   statul de plată arată la deschidere starea notei lunii în coada de validare (respingerea fără clic). Pas NOU, citire.
-    assert _apeluri_catre_repository() == 288
+    # [lotul „Deciziile 07.10”, 08.10.2026] 288 -> 289, cu apelul numit: repo_contabilitate.nota_horeca_z_ciorna (horeca_raport_z) —
+    #     raportul Z scris de mână e CIORNĂ la firma cantitativ-valorică (decizia pct.3), VALIDAT în rest: două apeluri explicite.
+    assert _apeluri_catre_repository() == 289
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

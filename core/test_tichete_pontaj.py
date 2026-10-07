@@ -37,7 +37,7 @@ def conn():
 
 def _sid(conn):
     sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
-                              data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga",
+                              data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga", functie_baza=True, scutit_contrib_minim=False,
                               cor="522101")["salariat_id"]
     with conn.cursor() as cur:
         cur.execute("UPDATE salariati SET tichet_masa_valoare = 40 WHERE id = %s", (sid,))

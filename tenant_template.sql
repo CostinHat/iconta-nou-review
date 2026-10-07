@@ -2812,3 +2812,37 @@ ALTER TABLE TENANT_PLACEHOLDER.nir_linii ALTER COLUMN pret_vanzare DROP NOT NULL
 ALTER TABLE TENANT_PLACEHOLDER.nir_linii ALTER COLUMN cota_tva DROP DEFAULT;
 ALTER TABLE TENANT_PLACEHOLDER.nir_linii ADD COLUMN IF NOT EXISTS articol_id integer;
 ALTER TABLE TENANT_PLACEHOLDER.nir ADD COLUMN IF NOT EXISTS metoda_stoc text;
+
+--
+-- Lotul „Deciziile 07.10” + retesturile 07.10 (comenzile Costin) — mirror al core/migrare_decizii_0710.py
+--   D5 seria chitanței fără implicit; D2 NIR-ul legat de factura primită; R1 stornarea la respingere, NIR-ul refăcut.
+--
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN serie_chitanta DROP DEFAULT;
+ALTER TABLE TENANT_PLACEHOLDER.nir ADD COLUMN IF NOT EXISTS factura_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.nir ADD CONSTRAINT nir_factura_fk FOREIGN KEY (factura_id) REFERENCES TENANT_PLACEHOLDER.facturi(id);
+CREATE UNIQUE INDEX IF NOT EXISTS nir_factura_id_uq ON TENANT_PLACEHOLDER.nir (factura_id) WHERE factura_id IS NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD COLUMN IF NOT EXISTS nir_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD COLUMN IF NOT EXISTS anuleaza_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD CONSTRAINT miscari_stoc_nir_fk FOREIGN KEY (nir_id) REFERENCES TENANT_PLACEHOLDER.nir(id);
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD CONSTRAINT miscari_stoc_anuleaza_fk FOREIGN KEY (anuleaza_id) REFERENCES TENANT_PLACEHOLDER.miscari_stoc(id);
+CREATE UNIQUE INDEX IF NOT EXISTS miscari_stoc_anuleaza_uq ON TENANT_PLACEHOLDER.miscari_stoc (anuleaza_id) WHERE anuleaza_id IS NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.nir ADD COLUMN IF NOT EXISTS refacut_din_id integer;
+CREATE UNIQUE INDEX IF NOT EXISTS nir_refacut_din_uq ON TENANT_PLACEHOLDER.nir (refacut_din_id) WHERE refacut_din_id IS NOT NULL;
+-- D3 raportul Z la cantitativ-valoric: ieșirile legate de Z și declarația „fără marfă”
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD COLUMN IF NOT EXISTS z_inregistrare_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD CONSTRAINT miscari_stoc_z_fk FOREIGN KEY (z_inregistrare_id) REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE SET NULL;
+ALTER TABLE TENANT_PLACEHOLDER.rapoarte_z_amef ADD COLUMN IF NOT EXISTS fara_marfa boolean;
+-- S1 elementele variabile ale salariului (prime, sporuri, ore suplimentare), pe salariat și pe lună
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.elemente_salariale (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    salariat_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.salariati(id) ON DELETE CASCADE,
+    an integer NOT NULL,
+    luna integer NOT NULL CHECK (luna BETWEEN 1 AND 12),
+    tip text NOT NULL CHECK (tip IN ('prima', 'spor', 'ore_suplimentare')),
+    denumire text NOT NULL CHECK (length(btrim(denumire)) > 0),
+    ore numeric(7,2) CHECK (ore IS NULL OR ore > 0),
+    suma numeric(12,2) NOT NULL CHECK (suma > 0),
+    creat_la timestamp with time zone NOT NULL DEFAULT now(),
+    CONSTRAINT elemente_salariale_ore_ck CHECK ((tip = 'ore_suplimentare') = (ore IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS elemente_salariale_luna_ix ON TENANT_PLACEHOLDER.elemente_salariale (an, luna, salariat_id);

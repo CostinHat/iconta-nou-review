@@ -264,6 +264,17 @@ def valideaza(conn, schema, nota_id):
                     (nota_id,))
         if cur.fetchone()["c"] == 0:
             return {"eroare": "nota nu are linii"}
+        # [retest 07.10 R1] nota unui document respins, cu stocul stornat, nu mai intră în evidență pe niciun drum (unicul drum
+        # de validare e acesta: jurnalul și coada) — altfel nota ar fi validată, iar marfa ei n-ar mai fi în fișă
+        from core import stocuri_anulare as _sa
+        _st = _sa.document_stornat(cur, schema, nota_id)
+        if _st:   # OMFP 1802/2014 pct.69: stornarea operațiunii — nota ei nu mai are ce înregistra
+            return {**_refuz(_sa.MESAJ_NOTA_STORNATA % _st, "OMFP 1802/2014 pct.69"), "cod": _sa.COD_DOCUMENT_STORNAT}
+        # [decizii 07.10 pct.3] raportul Z la cantitativ-valoric nu se validează fără descărcarea pe articol (sau „fără marfă”)
+        from core import z_descarcare as _zd
+        _z = _zd.refuz_validare(cur, schema, nota_id)
+        if _z:
+            return {**_refuz(_z, "OMFP 1802/2014 pct.287 alin.(1)-(2)"), "cod": _zd.COD_NEDESCARCAT}
         cur.execute(f"UPDATE {schema}.inregistrari SET status='validata' WHERE id=%s", (nota_id,))
         # ai_invatare_v1: invatare din validare (context = descriere, cont = debitul primei linii)
         try:

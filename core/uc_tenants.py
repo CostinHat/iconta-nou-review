@@ -40,6 +40,7 @@ from core import tenant_stergere
 from core import tranzactie
 from core.common import nomenclator_cerut
 from core.mesaje import CUI_FIRMA_LIPSA, PERIOADA_INCHISA, FARA_DREPT_VALIDARE, FARA_ACCES_TENANT
+from core.mesaje import COD_SERIE_CHITANTA_LIPSA, MESAJ_SERIE_CHITANTA_LIPSA   # [decizii 07.10 pct.5]
 from core.pdf_util import bani, data_ro
 from core.unde import Unde as _Unde
 import os
@@ -804,6 +805,48 @@ def salariat_beneficiu_lunar(tenant_id, salariat_id, corp, ctx):
         return r
 
 
+def salariat_elemente(tenant_id, salariat_id, an, luna, ctx):
+    """[S1] Corpul rutei `GET /tenants/{tenant_id}/salariati/{salariat_id}/elemente`."""
+    _uc_comun._cere_perioada(an, luna)
+    from core import elemente_salariale as _es
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        el = _es.lista_luna(conn, schema, an, luna, salariat_id).get(int(salariat_id), [])
+    return {"elemente": el, "total": str(_es.total(el)), "tipuri": _es.TIPURI}
+
+
+def salariat_element_adauga(tenant_id, salariat_id, corp, ctx):
+    """[S1] Corpul rutei `POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente`. Luna închisă sau cu D112 depusă: refuz."""
+    from core import elemente_salariale as _es
+    an, luna = corp.get("an"), corp.get("luna")
+    if not isinstance(an, int) or not isinstance(luna, int) or luna < 1 or luna > 12:
+        raise _erori.CerereGresita("Luna elementului de salariu nu e validă.")
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(an, luna))
+        r = _es.adauga(conn, schema, salariat_id, an, luna, corp, tenant_id=tenant_id)
+        if r.get("cod") == "INEXISTENT":
+            raise _erori.Inexistent(r["mesaj"])
+        if not r["ok"]:
+            raise _erori.DateInvalide({"mesaj": r["mesaj"], "erori_campuri": r["erori_campuri"]} if r.get("erori_campuri")
+                                      else r["mesaj"])
+        return r
+
+
+def salariat_element_sterge(tenant_id, salariat_id, element_id, ctx):
+    """[S1] Corpul rutei `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/elemente/{element_id}`."""
+    from core import elemente_salariale as _es
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r0 = _es.luna_elementului(conn, schema, element_id)
+        if r0:
+            _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(r0[0], r0[1]))
+        r = _es.sterge(conn, schema, salariat_id, element_id, tenant_id=tenant_id)
+        if not r["ok"]:
+            raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r["mesaj"])
+        return r
+
+
 def salariat_sterge(tenant_id, salariat_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salariati/{salariat_id}`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -1485,7 +1528,10 @@ def chitanta_emite(tenant_id, c, ctx):
                 reprezentand = "contravaloare factura %s din %s" % (
                     nrtxt, data_ro(r[6]))
             rs = repo_firma_profil.seria_chitantei(cur, schema)
-            serie = (rs[0] if rs else None) or "CH"
+            serie = str((rs[0] if rs else None) or "").strip()
+            if not serie:   # [decizia Costin 07.10, pct.5] cerută la prima folosire, ca seria facturii; nu „CH” din oficiu
+                raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(MESAJ_SERIE_CHITANTA_LIPSA, COD_SERIE_CHITANTA_LIPSA,
+                                                                       "date_firma", "OMFP 2634/2015 anexa 1 pct.24"))
             nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
         rez = casa_api.adauga(conn, schema, {"data": c.data,
                                              "categorie": "vanzare_fara_factura" if linii else "incasare_client",
@@ -2202,7 +2248,12 @@ def stocuri_lista(tenant_id, an, luna, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        return {"nir": _s.lista_nir(conn, schema, an, luna)}
+        nirs = _s.lista_nir(conn, schema, an, luna)
+        # [retest 07.10 R1] NIR-ul respins rămâne în listă, marcat, cu motivul (și NIR-ul care l-a refăcut)
+        from core import coada_api as _coada
+        toate = [i for n in nirs for i in _s.note_nir(n)]
+        stari = _coada.stari_note(conn, tenant_id, toate)
+        return {"nir": _s.stare_validare_nir(nirs, stari, _s.refaceri_nir(conn, schema, [n["id"] for n in nirs]))}
 
 
 def stocuri_adauga(tenant_id, corp, ctx):
@@ -2213,6 +2264,9 @@ def stocuri_adauga(tenant_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         rez = _s.adauga_nir(conn, schema, corp)
+        if rez.get("cod") == "NESCHIMBATA":   # [S3] NIR-ul refăcut identic cu cel respins: confirmare, nimic scris
+            conn.rollback()
+            return rez
     if rez.get("eroare"):
         if rez.get("ecran"):   # [lotul 07.10 B, C10] metoda de stoc nedeclarată: refuzul trimite în Date firmă (butonul spre ecran)
             raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], None))
@@ -2233,6 +2287,9 @@ def stocuri_nir_detaliu(tenant_id, nir_id, ctx):
         if rez is None:
             raise _erori.Inexistent("NIR inexistent")
         stari = _coada.stari_note(conn, tenant_id, [n["id"] for n in rez["note"]])
+        # [retest 07.10 R1] starea NIR-ului: din toate notele lui (și cele scoase la refacere — elementele din coadă rămân)
+        _s.stare_validare_nir([rez["nir"]], {**_coada.stari_note(conn, tenant_id, _s.note_nir(rez["nir"])), **stari},
+                              _s.refaceri_nir(conn, schema, [rez["nir"]["id"]]))
     for n in rez["note"]:
         n["validare"] = stari.get(n["id"])
     return rez
@@ -2775,16 +2832,33 @@ def factura_recunoaste(tenant_id, factura_id, ctx):
     return {"stare": "recunoscuta", "factura_id": factura_id, "contare": rez}
 
 
-def factura_contabilizeaza(tenant_id, factura_id, ctx):
+def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza`; docstringul ei a ramas in stratul HTTP."""
     from core import contare_facturi as _cf
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
+        from core import coada_api as _cq, note_derivate as _nd
+        with conn.cursor() as _c0:   # [S3] notele respinse ale facturii (contarea + ieșirile), înainte de refacere
+            _resp = [i for i in _cq.ciornele_documentului(_c0, schema, "factura-%d" % int(factura_id)) if _nd.respinsa(_c0, schema, i)]
+            _vechi = _cq.amprente_note(_c0, _resp, schema)
+            _motiv = _cq.motiv_respingere(_c0, schema, _resp[0]) if _resp else None
         try:
             with _cf.cursor_dict(conn) as cur:
                 rez = _cf.contabilizeaza(cur, schema, factura_id, automat=False)
+            # [retest 07.10 R1] factura respinsă la validare, cu stocul stornat: refacerea ei reface și mișcarea de stoc
+            from core import stocuri_anulare as _sa
+            _stoc = _sa.reface_factura(conn, schema, factura_id)
+            if _stoc is not None:
+                rez = {**rez, "stoc": _stoc}
+            if _resp:
+                with conn.cursor() as _c1:
+                    _noi = _cq.amprente_note(_c1, _cq.ciornele_documentului(_c1, schema, "factura-%d" % int(factura_id)), schema)
+                _av = _cq.avertisment_neschimbata(_vechi, _noi, _motiv, confirma)
+                if _av:
+                    conn.rollback()
+                    return _av
         except _cf.RefuzContare as e:
             conn.rollback()
             if e.cod == "INEXISTENTA":
@@ -4838,7 +4912,7 @@ def proforma_transforma(tenant_id, factura_id, ctx):
 
 
 
-def salarii_contare_scrie(tenant_id, an, luna, ctx):
+def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salarii-contare`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
     from core import salarii_contare as _sc
@@ -4864,6 +4938,8 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
                 if not _nd.respinsa(cur, schema, r[0]):
                     return {**p, "deja_contata": True, "nota_id": r[0],
                              "cod": "DEJA_CONTATA"}
+                from core import coada_api as _cq   # [S3] amprenta notei respinse, înainte s-o scoatem
+                _vechi, _motiv = _cq.amprente_note(cur, [r[0]]), _cq.motiv_respingere(cur, schema, r[0])
                 _nd.sterge_respinsa(cur, schema, r[0])
                 inlocuita = r[0]
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
@@ -4877,6 +4953,12 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
                 _jdoc.eticheta_document("Stat de plată", p["document_ref"], ultima))[0]
             for n in p["note"]:
                 repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
+            if inlocuita:
+                # [S3] recontabilizarea care scrie ACEEAȘI notă ca cea respinsă cere confirmare explicită (nu se blochează)
+                _av = _cq.avertisment_neschimbata(_vechi, _cq.amprente_note(cur, [nota_id]), _motiv, confirma)
+                if _av:
+                    conn.rollback()
+                    return {**p, **_av, "deja_contata": True, "nota_id": inlocuita}
         conn.commit()
     if inlocuita:
         return {**p, "deja_contata": True, "nota_id": nota_id, "nota_inlocuita": inlocuita, "cod": "INLOCUITA"}
@@ -4984,8 +5066,16 @@ def horeca_raport_z(tenant_id, rz, ctx):
         baza21 = D(str(rz.total_21)) - tva21
         with conn.cursor() as cur:
             _uc_comun._cere_z_unic(cur, schema, numar)
-            iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport),
-                                                            _jurnal_api.eticheta_document("Raport Z", nr_raport, rz.data, "casa %s" % nui))[0]
+            # [decizii 07.10 pct.3] „Raportul Z la cantitativ-valoric: fără refuz. Descărcarea pe articol se cere explicit (manual sau
+            # prin rețetă); Z-ul nu se validează fără ea.” -> la cantitativ-valoric nota intră CIORNĂ (validarea o păzește)
+            from core import metoda_stoc as _ms
+            _la_cost = _ms.citeste(cur, schema) == _ms.CV
+            _desc_z = "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport)
+            _doc_z = _jurnal_api.eticheta_document("Raport Z", nr_raport, rz.data, "casa %s" % nui)
+            if _la_cost:
+                iid = repo_contabilitate.nota_horeca_z_ciorna(cur, schema, rz.data, numar, _desc_z, _doc_z)[0]
+            else:
+                iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, _desc_z, _doc_z)[0]
             linii = []
             if rz.numerar: linii.append(("5311", "707", rz.numerar))
             if rz.card: linii.append(("5125", "707", rz.card))
@@ -5000,10 +5090,35 @@ def horeca_raport_z(tenant_id, rz, ctx):
                     repo_contabilitate.adauga_z_cota(cur, schema, iid, _c, _b, _t)
             # [D394 op2 Î1, decizia B] casa + bonurile, în ACELAȘI rând ca la importul AMEF (o singură sursă pt D394)
             repo_contabilitate.adauga_z_amef(cur, schema, iid, nui, int(rz.nr_bonuri))
-    return {"ok": True, "nota_id": iid,
+    return {"ok": True, "nota_id": iid, "descarcare_pe_articol": _la_cost,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
 
+
+
+def horeca_rapoarte_z(tenant_id, an, luna, ctx):
+    """[decizii 07.10 pct.3] Corpul rutei `GET /tenants/{tenant_id}/horeca/rapoarte-z`: rapoartele Z ale lunii, cu descărcarea."""
+    _uc_comun._cere_perioada(an, luna)
+    from core import z_descarcare as _zd, metoda_stoc as _ms
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            metoda = _ms.citeste(cur, schema)
+        return {"rapoarte": _zd.lista_luna(conn, schema, an, luna), "descarcare_pe_articol": metoda == _ms.CV}
+
+
+def horeca_z_fara_marfa(tenant_id, nota_id, corp, ctx):
+    """[decizii 07.10 pct.3] Corpul rutei `POST /tenants/{tenant_id}/horeca/raport-z/{nota_id}/fara-marfa`: {fara_marfa: true}
+    declară explicit că Z-ul n-a vândut marfă din stoc; {fara_marfa: false} retrage declarația."""
+    from core import z_descarcare as _zd
+    if not isinstance(corp.get("fara_marfa"), bool):
+        raise _erori.CerereGresita("Spune explicit dacă raportul Z e fără marfă din stoc (da / nu).")
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        try:
+            return _zd.marcheaza_fara_marfa(conn, schema, nota_id, corp["fara_marfa"])
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
 
 
 def tenant_fluturas(tenant_id, salariat_id, an, luna, ctx):

@@ -120,6 +120,15 @@ def valideaza_salariat(date, la_creare=False):
     tn = date.get("tip_norma")
     if tn is not None and tn not in _NORME:
         erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'partiala'."))
+    # [decizia Costin 07.10, pct.4] pe calea API, aceeași regulă ca pe ecran: cele trei fapte se cer explicit la creare
+    if la_creare:
+        if tn is None:
+            erori.append(("tip_norma", "Tipul normei (întreagă / parțială) e obligatoriu — intră în D112."))
+        if date.get("functie_baza") is None:
+            erori.append(("functie_baza", "Funcția de bază la acest angajator (Da/Nu) e obligatorie — de ea depinde deducerea "
+                                          "personală (CF art. 77 alin. (1))."))
+        if date.get("scutit_contrib_minim") is None:
+            erori.append(("scutit_contrib_minim", "Scutirea de contribuția minimă (Da/Nu) e obligatorie — intră în D112."))
     # [F133] valoarea tichetului de masa: 0..plafon legal (nu poate depasi maximul legal/tichet)
     tmv = date.get("tichet_masa_valoare")
     if tmv is not None:

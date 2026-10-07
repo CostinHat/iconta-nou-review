@@ -177,6 +177,7 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
         calc = _sz.calcul_salariu(
             (s.get("brut_lucrat") if s.get("brut_lucrat") is not None else s.get("brut")) or 0,
             persoane=s.get("persoane_intretinere") or 0, la_data=ref,
+            functie_baza=bool(s.get("functie_baza", True)),   # [S1, aceeași clasă] ca `pull`: CF art.77(1); lipsea -> implicit True
             norma_intreaga=not s.get("part_time"),
             venit_brut_total=float(s.get("brut_contractual", s.get("brut")) or 0),   # [lot 19] contractual, ca pull
             sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara] coerenta contare<->D112
@@ -198,7 +199,10 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             tichet_vacanta_exces=float(s.get("exces_vacanta") or 0),
             tichet_cultural=float(s.get("tichet_cultural") or 0),
             tichet_cresa=float(s.get("tichet_cresa") or 0),
-            cadou_taxabil=float(s.get("cadou_taxabil") or 0))
+            cadou_taxabil=float(s.get("cadou_taxabil") or 0),
+            # [S1] elementele variabile și indemnizația CM, din `pull` (o singură citire) — fără ele 641=421 ar ieși fără prime
+            elemente_variabile=float(s.get("elemente_variabile") or 0),
+            venit_cm=float(s.get("venit_cm") or 0))
         ret_salariu["4315"] += _d(calc["cas"])
         ret_salariu["4316"] += _d(calc["cass"]) + _d(calc.get("cass_tichete", 0))
         ret_salariu["444"] += _d(calc["impozit"])

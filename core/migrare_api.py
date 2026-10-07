@@ -173,6 +173,10 @@ REGULI = {
     "durata_lipsa":     {"fel": "lipsa", "inseamna": "durata de amortizare lipseste sau nu e pozitiva"},
     "norma_lipsa":      {"fel": "lipsa", "inseamna": "norma de lucru (intreaga/partiala) lipseste - ceruta de D112"},
     "salariu_lipsa":    {"fel": "lipsa", "inseamna": "salariul de baza lipseste sau nu e mai mare ca 0"},
+    # [decizia Costin 07.10, pct.4] cele trei fapte cerute explicit și la import (aceeași regulă ca pe ecran)
+    "functie_baza_lipsa": {"fel": "lipsa", "inseamna": "funcția de bază la acest angajator (Da/Nu) lipsește - decide deducerea personală"},
+    "scutire_minim_lipsa": {"fel": "lipsa", "inseamna": "scutirea de contribuția minimă (Da/Nu) lipsește - intră în D112"},
+    "ore_lipsa":        {"fel": "lipsa", "inseamna": "orele pe zi ale normei parțiale lipsesc - baza D112 la normă parțială"},
     "valoare_lipsa":    {"fel": "lipsa", "inseamna": "valoarea de intrare lipseste sau nu e pozitiva"},
     "data_lipsa":       {"fel": "lipsa", "inseamna": "data operatiunii lipseste"},
     "explicatie_lipsa": {"fel": "lipsa", "inseamna": "explicatia operatiunii lipseste (coloana e NOT NULL)"},

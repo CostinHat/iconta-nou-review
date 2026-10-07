@@ -4,7 +4,7 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=e9cf26e11b";  /* esc_nc27 */
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=23c5b03b5d";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
