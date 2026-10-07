@@ -17773,3 +17773,56 @@ fără factură și fără cotă (atunci răspunsul schimbă declarația). **art
 NULL; rămân orice `true` și `inreg_art317=false` cu intrare în `firma_profil_jurnal` (schimbare consemnată = alegere).
 **Alternativă respinsă:** o coloană „ales_la” separată (dublă sursă pentru același fapt). **Limită:** firmele care aleseseră
 explicit „Nu” la AMEF înainte, fără jurnal, sunt întrebate încă o dată — o singură dată.
+
+## 07.10.2026 — Lotul 07.10 B, frontul C: retestul Costin 07.10 (C8–C12)
+
+**C8 — coada pe document, și pentru elementele existente.** Măsurat pe producție (citire): elementele 11385/11386 (F1A3, contarea +
+ieșirea din stoc) au fost create pe 06.10 la 12:54, fără `payload.grup` — înaintea grupării; deci da, numai elementele vechi. NIR
+1 (notele 110–113) avea patru chei separate. **Regula, o singură definiție (`coada_api._GRUP_DOC`):** factura = contarea ei
+(`sursa='facturi'`) + ieșirile din stoc făcute de pe ea; NIR = notele lui (`nir.inregistrari_ids`); o PLATĂ legată de factură
+(bancă / casă) e alt document (extrasul / registrul de casă) — înainte intra în grupul facturii. **Migrarea** `core/migrare_grup_coada.py`
+recalculează cheia pe toate elementele `fel='nota'`, fără să schimbe vreo stare. **Alternativă respinsă:** gruparea după textul
+`document_ref` (două documente cu același text s-ar fi lipit). **Limită:** alte documente cu mai multe note (statul de plată cu o
+singură notă azi) nu sunt încă în regulă — se adaugă în `_GRUP_DOC` când apar.
+
+**C9 — nota derivată se corectează numai din documentul-sursă.** O notă e derivată când e LEGATĂ de documentul ei (factura,
+mișcarea de stoc, NIR-ul, operațiunea de casă, chitanța, linia de extras, statul de plată prin `numar`, raportul Z, amortizarea) —
+nu după `sursa`, fiindcă notele din Operațiuni poartă și ele `sursa='facturi'`/`'banca'`/`'salarii'` fără document păstrat (acolo
+jurnalul rămâne calea). Jurnalul refuză EDITAREA oricărei note derivate, cu mesajul care spune unde se corectează
+(`core/note_derivate.py`); ȘTERGEREA (ciornei) se refuză numai unde alt tabel indică nota (stoc, NIR, chitanță, raport Z, amortizare —
+legătura ar rămâne în aer). Contarea facturii și nota statului (legătura stă pe notă; documentul redevine necontat) și casa / extrasul
+(își desfac sursa) se pot șterge — găsit de poarta C: ștergerea unei facturi cu contarea ciornă trece prin ștergerea notei. **Recontabilizarea** (statul: „Contabilizează
+statul” › „Recontabilizează statul”; factura: „Contabilizează”) înlocuiește nota RESPINSĂ cu una scrisă din documentul de acum;
+noua ciornă intră singură în coadă (middleware-ul `note_in_coada`). Elementul respins rămâne în coadă, ca istoric al motivului.
+**Limită:** NIR-ul și ieșirile din stoc n-au încă „recontabilizare”: nota lor respinsă se corectează anulând documentul (refuzul o spune).
+
+**C10 — evaluarea stocului = setarea firmei, aceeași la intrări și ieșiri.** *INTERPRETARE CU TEMEI:* setarea există deja,
+`metoda_stoc`, iar etichetele ei spun evaluarea: cantitativ-valoric = „fișe de magazie, CMP” (cost), global-valoric = „preț cu
+amănuntul, 371/378/4428”. OMFP 1802/2014 pct.287 alin.(1)-(2): „Metoda aleasă trebuie aplicată cu consecvență”. Defectul: NIR-ul
+nu citea setarea și scria MEREU la preț de vânzare. Acum NIR-ul urmează metoda: la cost — 371=401 + 4426=401 (+ accesoriul), fără
+378/4428, prețul de raft nici cerut, nici verificat, intrarea în fișa de magazie la cost; la preț de vânzare — ca înainte. Metoda
+nedeclarată -> refuz cu trimitere la Date firmă (ca la celelalte drumuri). **Drumurile 371 măsurate:** NIR (reparat); factura
+primită de marfă (371=401 la cost + intrarea în fișă — corect la cost); ieșirea pe articol, factura cu articol, rețeta, inventarul
+(CMP, numai la cantitativ-valoric); descărcarea lunară K (numai la global-valoric); transferul (doar locația). **Alternativa
+respinsă:** o a doua setare „evaluare” separată de metodă — ar fi permis combinația cantitativ-valoric la preț de vânzare, pe care
+motorul n-o are (cerută ca decizie). **Limite (decizii cerute în raport):** (1) cantitativ-valoric la preț de vânzare și FIFO nu
+există; (2) la global-valoric, factura primită de marfă contează 371 la cost fără adaos — NIR-ul și factura aceleiași recepții ar
+încărca 371 de două ori; (3) raportul Z nu descarcă marfa pe articol la cantitativ-valoric (Z-ul n-are articole).
+
+**C11 — NIR.** a) prețul de raft gol nu mai e 0 (la global-valoric e cerut lângă câmp; „sub cost” spus lângă câmp, cu diacritice);
+b) furnizorul din ANAF („Verifică”, ca la factură); c) la cantitativ-valoric articolul se alege din listă sau se creează EXPLICIT
+(„+ articol nou…”); „Marfa  A” lângă „Marfa A” se refuză (spațiile și majusculele nu fac alt articol); d) NIR-ul salvat se deschide
+(articolele și notele, cu starea fiecăreia — ruta `GET /tenants/{id}/stocuri/nir/{nir_id}`); e) la cost, intrarea e în fișa de
+magazie la salvare — stocul o arată imediat, nu „în așteptare”. Migrarea `core/migrare_nir_cost.py` (prețul de raft nul la cost,
+`articol_id` pe linie, metoda pe NIR, cota fără implicit 21).
+
+**C12.** a) răspunsul ANAF (plătitor / neplătitor TVA) intră în ciornă și revine la restaurare; b) „Linie fără articol de stoc” e
+casetă informativă (DS cap.5: roșul rămâne pentru ce blochează); c) „Nota #N e la validare în cabinet” — casetă informativă vizibilă;
+d) după Respinge / Validează, ecranul confirmă acțiunea făcută (și când a fost deschis din notificare); e) butonul din fereastra de
+motiv are aspectul butonului care a deschis-o (`buton-sters`); f) reprodus: cu o notificare necitită, cifra stătea peste colțul
+glifului (top/right 0) — mutată în afara lui, cu inel în culoarea barei; butonul nu se mai strânge (`flex-shrink: 0`).
+
+**Migrările pe producție (executor, după precedentul 04.10/06.10: backup verificat, apoi migrarea):** backup
+`~/backups_db/iconta_v2_pre_lot0710b_20261007_1741.dump` (358 de tabele cu date, `pg_restore -l`); `core.migrare_nir_cost` 5/5 și
+`core.migrare_fapte_date_firma` 5/5 (neales: AMEF 5, art.317 4) rulate ÎNAINTEA publicării C (aditive, compatibile cu codul live);
+`core.migrare_grup_coada` rulează DUPĂ publicarea C (folosește regula nouă `_GRUP_DOC`).

@@ -72,8 +72,10 @@ def _factura_cu_doua_note(conn, cur):
     cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva) VALUES ('ZT1', '2026-10-05', 121, 21) RETURNING id")
     fid = cur.fetchone()[0]
     n_contare = _nota(conn, "Factura ZT1", 121)
-    cur.execute("UPDATE inregistrari SET factura_id=%s WHERE id=%s", (fid, n_contare))
+    # [lotul 07.10 B, C8] sursele reale: contarea e a facturii (`facturi`), ieșirea e din stoc (`stocuri`)
+    cur.execute("UPDATE inregistrari SET factura_id=%s, sursa='facturi' WHERE id=%s", (fid, n_contare))
     n_iesire = _nota(conn, "Ieșire marfă ZT1", 80, doc="Factură ZT1 din 05.10.2026")
+    cur.execute("UPDATE inregistrari SET sursa='stocuri' WHERE id=%s", (n_iesire,))
     cur.execute("INSERT INTO articole (denumire) VALUES ('Marfa ZT') RETURNING id")
     aid = cur.fetchone()[0]
     cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, inregistrare_id, factura_id) "

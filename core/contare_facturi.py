@@ -541,6 +541,13 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     # și nici eroare. Refuzul era corect, prezentarea lui nu — `422` face un comportament corect să
     # arate ca un defect.
     ex = contare_existenta(cur, schema, factura_id)
+    if ex and not automat:
+        # [lotul 07.10 B, C9, decizia Costin] actul explicit („Contabilizează”) pe o factură a cărei contare a fost RESPINSĂ la
+        # validare: nota respinsă (ciornă) se înlocuiește cu una scrisă din factura de acum; noua ciornă intră singură în coadă
+        from core import note_derivate as _nd
+        if _nd.respinsa(cur, schema, ex["id"]):
+            _nd.sterge_respinsa(cur, schema, ex["id"])
+            ex = None
     if ex:
         return {"stare": "deja_contata", "inregistrare_id": ex["id"], "linii": [],
                 "afirmatie": _af.afirmatie(

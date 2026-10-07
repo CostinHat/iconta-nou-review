@@ -345,7 +345,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}" data-um="${esc(a.um || "")}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("")}
         </select>`;
       // [05.10.2026, comanda Costin pct.9] pe o firmă cu stoc, linia fără articol spune că marfa nu se descarcă din gestiune
-      const faraArt = `<div class="caseta-atentie em-l-fara-articol" id="em-l${i}-fara-articol"${(l.descriere && !l.articol_id) ? "" : " hidden"}><div class="ca-mesaj">Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune. Dacă e marfă, alege articolul; dacă e serviciu, lasă așa.</div></div>`;
+      // [lotul 07.10 B, C12b] o atenționare, nu o eroare: casetă informativă (DS cap.5 — roșul rămâne pentru ce blochează)
+      const faraArt = `<div class="caseta-info em-l-fara-articol" id="em-l${i}-fara-articol"${(l.descriere && !l.articol_id) ? "" : " hidden"}><span class="ci-mesaj">Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune. Dacă e marfă, alege articolul; dacă e serviciu, lasă așa.</span></div>`;
       return `<div class="em-linie-wrap" data-idx="${i}">${selArticol}<div class="em-linie">${inputsHtml}</div>${faraArt}</div>`;
     }
     return `<div class="em-linie" data-idx="${i}">${inputsHtml}</div>`;
@@ -508,8 +509,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   function salveazaCiorna() {
     if (!ciornaPornita) return;
     if (!areContinut()) { stergeCiorna(tenantId); return; }
+    // [lotul 07.10 B, C12a] și ce a spus ANAF despre client (plătitor / neplătitor TVA): restaurarea îl arată din nou, ca text
+    const _st = corp.querySelector("#em-cui-stare");
     const c = { v: 1, salvat_la: new Date().toISOString(), linii: linii.map((l) => Object.assign({}, l)), moneda: monedaSel,
-                scadentaScrisa, pleacaMarfa: pleacaMarfaCurent, semnMarfa, campuri: {} };
+                scadentaScrisa, pleacaMarfa: pleacaMarfaCurent, semnMarfa, campuri: {},
+                stareCui: _st ? { text: _st.textContent, rau: _st.classList.contains("em-cui-rau") } : null };
     CAMPURI_CIORNA.forEach((id) => { const e = corp.querySelector("#" + id); if (e) c.campuri[id] = e.value; });
     scrieCiorna(tenantId, c);
   }
@@ -518,6 +522,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     ciorna.linii.forEach((l) => linii.push(Object.assign(linieNoua(), l)));
     Object.entries(ciorna.campuri || {}).forEach(([id, v]) => { const e = corp.querySelector("#" + id); if (e && v != null) e.value = v; });
     if (ciorna.moneda) { monedaSel = ciorna.moneda; const sm = corp.querySelector("#em-moneda"); if (sm) sm.value = monedaSel; }
+    if (ciorna.stareCui && ciorna.stareCui.text) {
+      const st = corp.querySelector("#em-cui-stare");
+      st.className = "em-cui-stare" + (ciorna.stareCui.rau ? " em-cui-rau" : "");
+      st.innerHTML = ciorna.stareCui.rau ? esc(ciorna.stareCui.text) : `<span class="em-cui-info">${esc(ciorna.stareCui.text)}</span>`;
+    }
     scadentaScrisa = !!ciorna.scadentaScrisa;
     pleacaMarfaCurent = ciorna.pleacaMarfa == null ? null : ciorna.pleacaMarfa;
     semnMarfa = ciorna.semnMarfa || null;
@@ -570,6 +579,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           if (v.adresa && v.adresa !== "---") corp.querySelector("#em-adresa").value = v.adresa.trim();
           stare.innerHTML = `<span class="em-cui-info">valid în VIES · ${esc(v.tara || pfx)}</span>`;
           stare.className = "em-cui-stare";
+          salveazaCiorna();
         } else {
           stare.textContent = "cod TVA INVALID în VIES — scutirea intracomunitară nu se aplică";
           stare.className = "em-cui-stare em-cui-rau";
@@ -590,6 +600,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         // [p113_doar_gri] doar info TVA cu gri, fara verde/bifa/"gasita"
         stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}</span>`;
         stare.className = "em-cui-stare";
+        salveazaCiorna();   // [lotul 07.10 B, C12a] răspunsul ANAF intră în ciornă: restaurarea îl arată
         // [p109_avert_inactiv] avertisment mare pentru firma INACTIVA
         const av = corp.querySelector("#em-avert-inactiv");
         if (av) av.remove();

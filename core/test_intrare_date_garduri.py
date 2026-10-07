@@ -31,6 +31,8 @@ BANI = ("suma", "valoare", "total", "pret", "tva", "baza", "salariu", "cost", "p
 # (A+B au fost puse NOT NULL.) (C) LEGITIM nullable — declarate cu motiv. Gardul cere ca fiecare sa fie
 # chiar o coloana de bani nullable existenta (fara whitelist stale).
 NULLABLE_OK = {
+    ("nir_linii", "pret_vanzare"): "prețul de raft există numai la stocul la preț de vânzare (global-valoric); la cost "
+                                   "(cantitativ-valoric) nu se cere și nu se verifică — NULL = „nu există”, nu 0 (lotul 07.10 B, C10)",
     ("facturi", "curs_bnr"): "curs BNR doar pe facturi in valuta; RON -> NULL (A1)",
     ("facturi", "total_lei"): "echivalent lei doar pe valuta; RON -> NULL",
     ("facturi", "tva_lei"): "echivalent lei doar pe valuta; RON -> NULL",

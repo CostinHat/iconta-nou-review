@@ -832,7 +832,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T08 — NIR și recepția
 
-*clasa MECANIC · 2 rute · 1 schimba date · 0 firme il pot exercita azi*
+*clasa MECANIC · 3 rute · 1 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 2 rute · 1 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -842,7 +842,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
 - [x] NIR-ul primește **număr din serie**, fără goluri
 - cantitățile recepționate nu depășesc cantitățile de pe factură — sau diferența e consemnată ca minus la recepție
@@ -1531,7 +1531,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
 - [x] descărcarea se leagă de un document — factură, bon, consum. O descărcare fără document rupe lanțul P14
 - metoda de evaluare la ieșire (FIFO, CMP) e cea configurată pe firmă, nu aleasă la operațiune

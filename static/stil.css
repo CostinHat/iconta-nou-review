@@ -1526,12 +1526,14 @@ html, body {
 
 /* [p59_clopot] */
 .nav-clopot {
-  position: relative; background: transparent; border: 0; color: #fff;
+  position: relative; background: transparent; border: 0; color: #fff; flex-shrink: 0;
   font-size: var(--text); cursor: pointer; padding: 6px 8px; margin-right: 4px; line-height: 1;
 }
 .nav-clopot:hover { opacity: 0.85; }
+/* [lotul 07.10 B, C12f] cifra stă în colțul butonului, în AFARA glifului, cu un inel în culoarea barei: așezată peste
+   colțul clopoțelului (top/right 0) acoperea gliful — utilizatorul cu notificări necitite vedea doar „1” */
 .nav-clopot-badge {
-  position: absolute; top: 0; right: 0;
+  position: absolute; top: -4px; right: -6px; box-shadow: 0 0 0 2px var(--albastru);
   min-width: 16px; height: 16px; padding: 0 4px;
   background: var(--rosu-semafor); color: #fff; border-radius: 9px;
   font-size: var(--text-mic); font-weight: 700;
@@ -1860,7 +1862,7 @@ html, body {
 .em-adresa { width:100%; }
 /* [ui11] eroarea de camp pe rand propriu, sa nu ocupe o coloana din grila/flexul beneficiarului */
 .em-benef .msg-eroare { flex-basis:100%; }
-.em-cui-stare { font-size: var(--text-mic); margin-top:6px; min-height:16px; color:#64748b; }
+.em-cui-stare { font-size: var(--text-mic); margin-top:6px; min-height:16px; color:var(--gri); }   /* [lotul 07.10 B] token canonic (axe color-contrast pe #64748b) */
 .em-cui-ok { color:#15803d; font-weight:600; }
 .em-cui-rau { color:#dc2626; }
 .em-cui-atentie { color:#c2410c; }
@@ -1905,7 +1907,7 @@ html, body {
 .em-avert-text b { font-weight:700; }
 
 /* [p111_stil_benef] info TVA neutra + scot spinner de la input number */
-.em-cui-info { color:#64748b; font-weight:400; }
+.em-cui-info { color:var(--gri); font-weight:400; }
 .em-linie input[type=number]::-webkit-outer-spin-button,
 .em-linie input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 .em-linie input[type=number] { -moz-appearance:textfield; appearance:textfield; }

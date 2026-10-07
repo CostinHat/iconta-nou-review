@@ -313,7 +313,8 @@ def test_notele_nir_poarta_nir_ul(conn):
     """MUTAȚIE: documentul netransmis la `_noteaza` -> None -> pică."""
     from core import stocuri_api
     r = stocuri_api.adauga_nir(conn, SCH, {"numar": "12", "data": "2026-10-05", "furnizor": "Furnizor SRL",
-                                    "linii": [{"denumire": "Făină", "cantitate": 10, "pret_achizitie": 3, "pret_vanzare": 4.5, "cota_tva": 11}]})
+                                    "linii": [{"denumire": "Făină", "articol_nou": True,   # [lotul 07.10 B, C11c] articol creat explicit
+                                               "cantitate": 10, "pret_achizitie": 3, "pret_vanzare": 4.5, "cota_tva": 11}]})
     assert not r.get("eroare"), r
     with conn.cursor() as cur:
         cur.execute("SELECT DISTINCT document_ref FROM inregistrari WHERE sursa = 'stocuri'")

@@ -89,6 +89,12 @@ function fmtPerioadaDecl(c) {
   return c.perioada || "—";
 }
 
+// [lotul 07.10 B, C12d] ultima acțiune a validatorului (respinge / validează), cu elementele ei: ecranul o CONFIRMĂ la redesenare.
+// Din notificare, redesenarea venea cu `evidentiaza` = elementul tocmai respins, care nu mai e de validat — și ecranul spunea
+// „nu mai așteaptă validarea: a fost deja validat sau respins”, ca despre altcineva. Acum spune ce ai făcut tu.
+let _ultimaActiune = null;
+function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, la: Date.now() }; }
+
 export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 pct.8] opt.evidentiaza = id-ul din notificare
   corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
@@ -155,8 +161,18 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   }
   // [lotul 07.10 pct.8] din notificare: elementul ei, adus în vedere și marcat (și când e un membru al unui document)
   const evid = Number(opt.evidentiaza);
+  // valabilă câteva secunde, nu „consumată”: întoarcerea din dialog poate redesena ecranul de două ori (o dată din navigator, cu
+  // opțiunile notificării, o dată explicit) — ambele desene arată confirmarea, niciunul nu spune „deja validat sau respins”
+  const actiune = _ultimaActiune && Date.now() - _ultimaActiune.la < 10000 ? _ultimaActiune : null;
+  if (actiune) {
+    const p = document.createElement("div");
+    p.className = "caseta-info";
+    p.innerHTML = `<span class="ci-mesaj">${esc(actiune.text)}</span>`;
+    corp.prepend(p);
+  }
   const _arataEvidentiat = () => {
     if (!Number.isFinite(evid)) return;
+    if (actiune && actiune.ids.includes(evid)) return;          // acțiunea pe elementul din notificare e confirmată mai sus
     const el = [...corp.querySelectorAll("[data-coada-ids]")].find((x) => x.dataset.coadaIds.split(",").map(Number).includes(evid));
     if (el) { el.classList.add("val-evidentiat"); el.scrollIntoView({ block: "center" }); }
     else {
@@ -245,8 +261,13 @@ function randNota(c, firme, corp, nav, perm) {
       titlu: "Respinge nota",
       eticheta: `Motiv respingere pentru ${esc(c.eticheta || "notă")}:`,
       placeholder: "ex: lipsește factura; contul de cheltuială e greșit",
-      obligatoriu: true, buton: "Respinge", butonClasa: "val-respinge",
-      onConfirm: async (motiv) => { await api.post(`/coada/${c.id}/respinge`, { motiv }); nav.inapoi(); randeazaValidat(corp, nav); },
+      // [lotul 07.10 B, C12e] butonul de confirmare arată ca butonul care l-a deschis (roșu plin), nu roz-pal „dezactivat”
+      obligatoriu: true, buton: "Respinge", butonClasa: "buton-sters val-respinge",
+      onConfirm: async (motiv) => {
+        await api.post(`/coada/${c.id}/respinge`, { motiv });
+        _confirma(c.membri_ids || [c.id], `Ai respins ${c.eticheta || "nota"}. Motivul („${motiv}”) apare lângă notă la cel care a pregătit-o.`);
+        nav.inapoi(); randeazaValidat(corp, nav);
+      },
     });
   });
   const bVal = div.querySelector(".val-aproba");
@@ -254,7 +275,11 @@ function randNota(c, firme, corp, nav, perm) {
     const btn = bVal;
     const eroare = corp.querySelector("#val-eroare");
     const valideaza = async () => {
-      try { await aprobaElement(c); randeazaValidat(corp, nav); }
+      try {
+        await aprobaElement(c);
+        _confirma(c.membri_ids || [c.id], `Ai validat ${c.eticheta || "nota"}: a intrat în evidență.`);
+        randeazaValidat(corp, nav);
+      }
       catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
     };
     // aceeași confirmare ca în Registrul-jurnal: nota fără document justificativ se validează numai explicit
@@ -421,9 +446,10 @@ async function actioneaza(c, act, firme, corp, nav) {
       placeholder: "ex: TVA necorelată cu jurnalul de vânzări",
       obligatoriu: true,
       buton: "Respinge",
-      butonClasa: "val-respinge",
+      butonClasa: "buton-sters val-respinge",   // [lotul 07.10 B, C12e]
       onConfirm: async (motiv) => {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
+        _confirma([c.id], `Ai respins ${(c.tip || "").toUpperCase()} (${perDecl}). Motivul („${motiv}”) apare la cel care a pregătit-o.`);
         nav.inapoi();
         randeazaValidat(corp, nav);
       },

@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: lotul 07.10 B în lucru — B sitemap publicat (`adf95715`); A în publicare; C pe disc**
+# PREDARE LANȚ — **07.10.2026: lotul 07.10 B — B (`adf95715`) și A (`63f99d7b`) publicate; C în publicare**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, la publicarea frontului A), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `adf95715` (B publicat; intrarea lotului: `47c04fe3`); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, la publicarea frontului C), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `63f99d7b` (A publicat; B `adf95715`; intrarea lotului: `47c04fe3`); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -56,12 +56,12 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
-- **ÎN LUCRU: lotul 07.10 B** (TESTE „În lucru acum”, DECIZII 07.10 „Lotul 07.10 B” + „frontul A”): **B publicat** (`adf95715`,
-  index `/sitemap-index.xml`, 6.580 URL-uri × 200 verificate pe producție, 0 canonical diferit); **A în publicare** (preselecția
-  permisă când e uzuală/dedusă, vizibilă, modificabilă; 13 bife -> Da/Nu; D204/D208/D216/D318/D398; AMEF și art.317 fără implicit —
-  **migrarea `python3 -m core.migrare_fapte_date_firma` se rulează pe producție DUPĂ deploy, cu backup**); **C pe disc** în worktree
-  (C8 grupul pe document + migrarea `core.migrare_grup_coada`, C9 notele derivate, C10/C11 NIR-ul după metoda de stoc + migrarea
-  `core.migrare_nir_cost`, C12 a–e) — publicarea C urmează (poarta 3).
+- **ÎN LUCRU: lotul 07.10 B** (TESTE „În lucru acum”, DECIZII 07.10 „Lotul 07.10 B” / „frontul A” / „frontul C”): **B publicat**
+  (`adf95715`; 6.580 URL-uri × 200 pe producție); **A publicat** (`63f99d7b`); **C în publicare** (coada pe document, notele
+  derivate, NIR-ul după metoda de stoc, ecranul). Producția: backup `~/backups_db/iconta_v2_pre_lot0710b_20261007_1741.dump`,
+  migrate `nir_cost` și `fapte_date_firma`; **după publicarea C rămâne `python3 -m core.migrare_grup_coada`** (leagă elementele
+  vechi F1A3 și NIR 1 de documentul lor). Decizii cerute (raportul lotului, §6): CV la preț de vânzare / FIFO; NIR legat de factura
+  primită la global-valoric; raportul Z la cantitativ-valoric.
 - **DECIZII CERUTE (07.10, ecranele scrise de mână) — închise de lotul B:** (1) destinația TVA pe linia facturii primite — DS cap.28 pct.2 („default sigur
   … `selected`”) contra DS cap.17 („fără preselecție”); rămâne `taxabil` preselectat până decide Costin. (2) Implicitele din SCHEMĂ în Date
   firmă (`activitate_exceptata_amef`, `inreg_art317` NOT NULL DEFAULT false; `cont_venit_implicit` DEFAULT '707') — ecranul arată
@@ -289,8 +289,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **889** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77** | **132** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **890** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

@@ -2804,3 +2804,11 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN activitate_exceptata_am
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN activitate_exceptata_amef DROP DEFAULT;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN inreg_art317 DROP NOT NULL;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ALTER COLUMN inreg_art317 DROP DEFAULT;
+
+--
+-- NIR-ul la firma cu stocul la cost (lotul 07.10 B, comanda Costin C10/C11) — mirror al core/migrare_nir_cost.py
+--
+ALTER TABLE TENANT_PLACEHOLDER.nir_linii ALTER COLUMN pret_vanzare DROP NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.nir_linii ALTER COLUMN cota_tva DROP DEFAULT;
+ALTER TABLE TENANT_PLACEHOLDER.nir_linii ADD COLUMN IF NOT EXISTS articol_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.nir ADD COLUMN IF NOT EXISTS metoda_stoc text;

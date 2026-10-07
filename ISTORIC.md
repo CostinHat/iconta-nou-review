@@ -1756,3 +1756,16 @@ Supersedează, pe partea de preselecție, intrarea „Ecranele scrise de mână�
   D216 cota de deținere nu mai vine „0.3” (era cota impozitului); D318 moneda nu mai vine „EUR”; D398 moneda e fixă, EUR (prin lege).
 - Date firmă: exceptarea AMEF și înregistrarea art.317 n-au implicit; nealese, se cer o dată, la prima chitanță fără factură / D394 cu
   chitanțe fără cotă, respectiv la D301. Pe baza de test: 28 de firme cu AMEF și 27 cu art.317 au devenit „neales”.
+
+## 07.10.2026 — Lotul 07.10 B, frontul C: retestul 07.10 (comanda Costin)
+
+- Coada: contarea și ieșirea din stoc ale aceleiași facturi sunt un singur element și pentru elementele vechi (F1A3 fusese creat înaintea
+  grupării); cele 4 note ale unui NIR — un element; o plată legată de factură rămâne documentul ei.
+- Notele derivate (factură, stoc, NIR, casă, extras, chitanță, stat de plată, raport Z, amortizare) nu se mai editează din Registrul-
+  jurnal: refuzul spune unde se corectează. „Recontabilizează statul” / „Contabilizează” factura înlocuiesc nota respinsă și o trimit
+  din nou la validare.
+- NIR-ul urmează metoda de stoc a firmei: la cantitativ-valoric intră la cost (371=401, 4426=401), fără 378/4428 și fără preț de raft,
+  iar stocul îl arată imediat; articolul se alege din listă sau se creează explicit; furnizorul din ANAF; NIR-ul salvat se deschide.
+- Ecran: „plătitor TVA” revine după restaurarea ciornei; linia fără articol e informare, nu eroare; trimiterea la validare și
+  respingerea / validarea se confirmă vizibil; butonul Respinge din fereastra de motiv nu mai pare dezactivat; cifra de pe clopoțel
+  nu mai acoperă iconița.

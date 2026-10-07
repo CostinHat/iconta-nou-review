@@ -174,6 +174,11 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
         from core import coada_api as _coada   # [lotul 07.10 pct.6] nota la validare nu se schimbă sub ochii cabinetului
         if _coada.nota_la_validare(cur, schema, nota_id):
             return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
+        # [lotul 07.10 B, C9, decizia Costin] nota derivată dintr-un document se corectează numai din documentul-sursă
+        from core import note_derivate as _nd
+        doc = _nd.documentul_sursa(cur, schema, nota_id)
+        if doc:
+            return {"eroare": _nd.mesaj_refuz(nota_id, doc), "cod": _nd.COD, "document": doc[0]}
         if data is not None:
             data, rd = _data_valida(data)
             if rd:
@@ -231,6 +236,14 @@ def sterge(conn, schema, nota_id):
         from core import coada_api as _coada   # [lotul 07.10 pct.6]
         if _coada.nota_la_validare(cur, schema, nota_id):
             return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
+        # [lotul 07.10 B, C9] o notă derivată nu se șterge din jurnal acolo unde ALT tabel o indică (mișcarea de stoc, NIR-ul,
+        # chitanța, raportul Z, amortizarea): legătura ar rămâne în aer. Se șterg (ciornă) cele a căror legătură stă pe notă —
+        # contarea facturii și nota statului (documentul redevine necontat și se recontabilizează) — și cele care își desfac
+        # sursa aici (operațiunea de casă, linia de extras redevine „potrivită”). Editarea rămâne blocată pentru toate.
+        from core import note_derivate as _nd
+        doc = _nd.documentul_sursa(cur, schema, nota_id)
+        if doc and doc[0] in _nd.FARA_STERGERE:
+            return {"eroare": _nd.mesaj_refuz(nota_id, doc), "cod": _nd.COD, "document": doc[0]}
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
         cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'
                         WHERE status='contat'

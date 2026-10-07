@@ -144,7 +144,9 @@ def test_aliasul_local_bate_pe_cel_de_modul(st):
     nir = [r for r in rute if r["norm"] == "/tenants/{}/stocuri/nir"
            and r["metoda"] == "POST"]
     assert nir, "ruta POST /tenants/{}/stocuri/nir a dispărut din main.py"
-    assert set(nir[0]["module"]) == {"stocuri_api"}, (
+    # [lotul 07.10 B, C10] refuzul „metoda de stoc nedeclarată” trimite în Date firmă prin forma unică
+    # `uc_comun.refuz_spre_ecran` (care construiește afirmația tipată) — două module în plus, numite exact
+    assert set(nir[0]["module"]) == {"stocuri_api", "uc_comun", "afirmatii"}, (
         "ruta de NIR nu mai e legată exact de `stocuri_api`, ci de %s — harta aliasurilor "
         "locale s-a stricat" % sorted(nir[0]["module"]))
 

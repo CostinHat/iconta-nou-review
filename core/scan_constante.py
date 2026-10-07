@@ -307,7 +307,9 @@ def _este_precizie(h):
     # Lipsea doar valoarea, si de-aia `intrastat.py` isi raporta rotunjirea procentului ca datorie
     # fiscala. Masurat inainte de a completa: O SINGURA instanta in tot repo-ul, deci fara efecte
     # laterale. *O enumerare care nu-si deriva membrii imbatraneste la prima valoare noua.*
-    if v in ("0.01", "0.001", "0.005", "0.1", "0.5") and (
+    # [lotul 07.10 B] DERIVAT, nu enumerat: orice 10^-k (0.1, 0.01, … 0.000001) pe un `.quantize(...)` e o poziție zecimală —
+    # lista veche nu avea 0.0001 / 0.000001 și raporta precizia prețului unitar (numeric(12,4)) și a coeficientului K drept fiscale
+    if (re.fullmatch(r"0\.0*1", v) or v in ("0.005", "0.5")) and (
             "quantize" in t or re.search(r"^_?[A-Z0-9_]{1,6}\s*=\s*Decimal", t)):
         return True
     # [03.09.2026] BAZA unei cuantizari zecimale, scrisa ca putere: `Decimal(10) ** -zecimale`.

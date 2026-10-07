@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**721 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**724 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 684
+### `core/` — 687
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9269,7 +9269,10 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lot0610_p4.py` — GARDA părții 4 din comanda Costin 06.10.2026 — povestea lunii.
 - `core/test_lot0710_p2.py` — Lotul 07.10, partea 2 — retestul Costin din 06.10.2026 (F5 salarii nov. 2026, F1 factură): gărzile pe server.
 - `core/test_lot0710_ui.py` — Lotul 07.10, partea 2 — gărzile pe ecrane (JS), pe NUMĂRĂTOARE de structuri, nu pe apartenența unui șir.
+- `core/test_lot0710b_coada_document.py` — GARD — coada grupează notele aceluiași DOCUMENT, și pentru elementele existente (lotul 07.10 B, comanda Costin C8).
 - `core/test_lot0710b_fapte_declaratii.py` — GARD — faptele din declarații pe care aplicația le punea în locul omului (lotul 07.10 B, comanda Costin A.2: „Restul îl
+- `core/test_lot0710b_nir.py` — GARD — NIR-ul urmează evaluarea stocului firmei (lotul 07.10 B, comanda Costin C10/C11).
+- `core/test_lot0710b_note_derivate.py` — GARD — nota derivată dintr-un document se corectează numai din documentul-sursă (lotul 07.10 B, decizia Costin C9).
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -10541,3 +10544,11 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | conturile Operațiunilor precompletate | `scan_formulare_operatiuni::motor_conturi_precompletate`/`conturi_fara_sugestie` + `test_conturile_vin_precompletate_cu_sugestia_standard` | un câmp-cont fără sugestie; motorul care pune sugestia ca placeholder | MA3 -> ROȘU | numai registrul Operațiunilor |
 | faptele declarațiilor nu mai pleacă tacit | `core/test_lot0710b_fapte_declaratii.py` (6) | D204 `forma_org` / categoria lipsă trimise ca „1”; D208 `mod_transfer` „1”; D318 moneda „EUR”; D398 altă monedă decât EUR | MA7 (D208 `or "1"`), MA8 (D398 din cerere) -> ROȘU | D204 norma de venit (det_ven_net=2) rămâne neacoperită (documentat în modul) |
 | art.317 și AMEF fără implicit | `core/test_fapte_date_firma.py` (7), `core/test_d394_i2.py` (2 noi), `test_rute_stoc_pana_in_declaratie.py` (prin HTTP) | schema care pune iar „Nu”; migrarea care lasă `false` nedistinct; D301 cu pers_inreg ghicit; chitanța fără factură sau D394 (cu chitanțe fără cotă) pe exceptarea neleasă | MA4, MA5, MA6 -> ROȘU | firmele cu „Nu” ales înainte, fără jurnal, sunt întrebate încă o dată |
+
+## 07.10.2026 — Retestul 07.10: coada pe document, notele derivate, NIR-ul după metoda de stoc (comanda Costin, lotul 07.10 B, frontul C)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| coada pe document (factură, NIR), plata separată, migrarea elementelor vechi | `core/test_lot0710b_coada_document.py` (3) + `test_lot0710_p2.py` | cele 4 note ale unui NIR ca 4 elemente; o plată lipită de factura ei; elementele fără `payload.grup` lăsate separate | MC1, MC2, MC3 -> ROȘU | documentele noi cu mai multe note intră în `_GRUP_DOC` când apar |
+| nota derivată nu se editează / șterge din jurnal; recontabilizarea înlocuiește nota respinsă | `core/test_lot0710b_note_derivate.py` (3) | editarea contării unei facturi din jurnal; ștergerea unei ieșiri din stoc (mișcarea rămâne fără notă); „deja contată” pe o contare respinsă; ștergerea contării ciornă (drumul spre ștergerea facturii) rămâne permisă | MC4, MC5 -> ROȘU | NIR-ul și ieșirile n-au încă recontabilizare (refuzul spune unde se anulează) |
+| NIR-ul urmează metoda de stoc; articol explicit; raftul gol nu e 0; NIR-ul se deschide | `core/test_lot0710b_nir.py` (5), `test_flux_factura_f1_c.py` | 371=378 / 371=4428 la firma la cost; „Marfa  A” ca al doilea articol; prețul de raft gol trecut drept 0; NIR fără detaliu | MC6, MC7, MC8 -> ROȘU | cantitativ-valoric la preț de vânzare și FIFO nu există (decizie cerută) |

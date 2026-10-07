@@ -182,13 +182,14 @@ def sql_cheie_pregatire(alias=""):
             "THEN COALESCE(%spayload->>'grup', %sperioada) ELSE %sperioada END)") % ((a,) * 7)
 
 
-def grup_nota(nota_id, factura_id=None):
+def grup_nota(nota_id, grup_doc=None):
     """[lotul 07.10 pct.9, comanda Costin 06.10.2026] Cheia DOCUMENTULUI pe care cabinetul îl validează: „O factură produce două
-    note de validat separat (contare + ieșire stoc). Cabinetul validează sau respinge documentul o dată.” Notele aceleiași
-    facturi (contarea, legată prin `inregistrari.factura_id`, și ieșirile din stoc, legate prin `miscari_stoc.factura_id`) au
-    aceeași cheie; orice altă notă e propriul ei document. Fiecare notă își păstrează rândul în coadă (triggerul de
-    sincronizare cu jurnalul rămâne pe notă); cheia leagă rândurile în listă, la validare, la respingere și la numărare."""
-    return ("factura-%d" % int(factura_id)) if factura_id else perioada_nota(nota_id)
+    note de validat separat (contare + ieșire stoc). Cabinetul validează sau respinge documentul o dată.” Cheia vine din
+    `_GRUP_DOC` (SQL, o singură definiție): notele aceleiași facturi (contarea și ieșirile din stoc) -> `factura-<id>`; [lotul
+    07.10 B, C8] cele 4 note ale unui NIR -> `nir-<id>`. Orice altă notă e propriul ei document (`nota-<id>`). Fiecare notă își
+    păstrează rândul în coadă (triggerul de sincronizare cu jurnalul rămâne pe notă); cheia leagă rândurile în listă, la
+    validare, la respingere și la numărare."""
+    return str(grup_doc) if grup_doc else perioada_nota(nota_id)
 
 
 def eticheta_element(fel, tip, perioada, payload):
@@ -231,7 +232,7 @@ def _payload_nota(n):
     doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
     return {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
             "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
-            "grup": grup_nota(n["id"], n.get("factura_grup"))}
+            "grup": grup_nota(n["id"], n.get("grup_doc"))}
 
 
 def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
@@ -247,11 +248,19 @@ def _insereaza_nota(cur, cabinet_id, tenant_id, n, uid):
     return r["id"] if isinstance(r, dict) else r[0]
 
 
+#: [lotul 07.10 B, C8] Documentul notei, o singură definiție (lista, retrimiterea și migrarea `migrare_grup_coada` o folosesc):
+#:   · factura: contarea ei (`sursa='facturi'`, `inregistrari.factura_id`) și ieșirile din stoc făcute de pe ea (`miscari_stoc`);
+#:     o PLATĂ legată de factură (bancă, casă) e alt document (extrasul, registrul de casă) — nu intră în grupul facturii;
+#:   · NIR: notele lui (`nir.inregistrari_ids`) — 371=401, 4426=401, 371=378, 371=4428 sunt un singur document.
+_GRUP_DOC = ("CASE WHEN i.sursa IN ('facturi', 'stocuri') AND COALESCE(i.factura_id, (SELECT ms.factura_id FROM miscari_stoc ms "
+             "WHERE ms.inregistrare_id = i.id AND ms.factura_id IS NOT NULL ORDER BY ms.id LIMIT 1)) IS NOT NULL "
+             "THEN 'factura-' || COALESCE(i.factura_id, (SELECT ms.factura_id FROM miscari_stoc ms WHERE ms.inregistrare_id = i.id "
+             "AND ms.factura_id IS NOT NULL ORDER BY ms.id LIMIT 1)) "
+             "ELSE (SELECT 'nir-' || n.id FROM nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1) END")
+
 _SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
                 "f.numar AS f_nr, f.data_emitere AS f_data, "
-                # [lotul 07.10 pct.9] factura documentului: a notei de contare, sau a ieșirii din stoc făcute de pe ea
-                "COALESCE(i.factura_id, (SELECT ms.factura_id FROM miscari_stoc ms WHERE ms.inregistrare_id = i.id "
-                "AND ms.factura_id IS NOT NULL ORDER BY ms.id LIMIT 1)) AS factura_grup, "
+                + _GRUP_DOC + " AS grup_doc, "
                 "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total "
                 "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
 
@@ -326,12 +335,12 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
         if ultim and ultim["stare"] != "respinsa":
             return {"ok": False, "cod": "DEJA_IN_COADA", "mesaj": "nota e deja la validare sau validată"}
         # [lotul 07.10 pct.9] documentul se retrimite ÎNTREG: celelalte ciorne ale aceleiași facturi, respinse odată cu ea
-        grup = grup_nota(n["id"], n.get("factura_grup"))
+        grup = grup_nota(n["id"], n.get("grup_doc"))
         frati = [n]
         if grup != perioada_nota(n["id"]):
             cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.id <> %s ORDER BY i.id", (nota_id,))
             for x in cur.fetchall():
-                if grup_nota(x["id"], x.get("factura_grup")) != grup:
+                if grup_nota(x["id"], x.get("grup_doc")) != grup:
                     continue
                 cur.execute("SELECT stare FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s "
                             "ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(x["id"])))

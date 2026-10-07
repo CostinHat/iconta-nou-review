@@ -62,6 +62,10 @@ PERECHI_ADAUGATE = {
         "Lotul 07.10 pct.2 (comanda Costin 06.10.2026): „orice mesaj care trimite în alt ecran are buton direct spre el”. Refuzul "
         "metodei de stoc nedeclarate (Date firmă) rămâne același refuz (400, același mesaj), dar STRUCTURAT cu ținta `ecran`, ca "
         "ecranul să pună butonul spre Date firmă; un refuz fără țintă rămâne frază, ca înainte."),
+    ("stocuri_adauga", 'refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], None)'): (
+        "Lotul 07.10 B, C10 (decizia Costin 07.10.2026): „evaluarea stocului … e setare a firmei și se aplică identic la intrări și "
+        "ieșiri … Dacă setarea firmei nu spune evaluarea, se cere la prima folosire, ca seria și metoda.” NIR-ul refuză (400) când "
+        "metoda de stoc nu e declarată, STRUCTURAT cu ținta `ecran` (butonul spre Date firmă), ca la descărcarea lunară."),
     ("coada_continut", "Nota nu mai există în jurnal (a fost ștearsă)."): (
         "Comanda Costin 06.10.2026 (răspunsul la §6, pct.1): coada poartă și NOTE; conținutul unui element-notă se citește din "
         "jurnalul firmei, iar nota ștearsă între timp se refuză cu motivul numit (404), nu cu un conținut gol."),

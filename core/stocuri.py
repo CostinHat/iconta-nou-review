@@ -14,6 +14,7 @@ from decimal import Decimal, ROUND_HALF_UP
 MODUL = "stocuri"
 REGULI = "2026.1"
 TEMEI_GV = "OMFP 1802/2014 - metoda pretului cu amanuntul"
+TEMEI_COST = "OMFP 1802/2014 pct.286 alin.(1), pct.287 alin.(1)-(2) - evaluare la cost, aplicata cu consecventa"
 
 
 def _d(v):
@@ -26,6 +27,66 @@ def _q(v):
 
 def _urma(temei=TEMEI_GV):
     return {"modul": MODUL, "reguli": REGULI, "temei": temei}
+
+
+class RefuzLinie(ValueError):
+    """[lotul 07.10 B, C11a] Refuzul unui ARTICOL din NIR: mesajul + linia și câmpul, ca ecranul să-l pună lângă câmp."""
+    def __init__(self, mesaj, linie, camp):
+        super().__init__(mesaj)
+        self.linie, self.camp = linie, camp
+
+
+def _repartizeaza(linii, transport, taxe):
+    """Costul de bază pe linie și accesoriul (transport + taxe) repartizat proporțional, cu restul pe ultima linie (OMFP 1802/2014:
+    costul de achiziție cuprinde prețul, taxele nerecuperabile și transportul direct atribuibil). -> (baze, reparti, accesoriu)."""
+    transport = _q(transport); taxe = _q(taxe)
+    if transport < 0 or taxe < 0:
+        raise ValueError("Transportul și taxele nu pot fi negative.")
+    accesoriu = transport + taxe
+    baze = []
+    for i, l in enumerate(linii):
+        cant = _d(l["cantitate"])
+        if cant <= 0:
+            raise RefuzLinie("Cantitatea trebuie să fie mai mare decât zero la «%s»." % (l.get("denumire") or ""), i, "cantitate")
+        baze.append(_q(cant * _d(l["pret_achizitie"])))
+    baza_totala = sum(baze, Decimal("0"))
+    if accesoriu > 0 and baza_totala <= 0:
+        raise ValueError("Costul accesoriu nu se poate repartiza: costul de bază al articolelor e zero.")
+    reparti, ramas = [], accesoriu
+    for i, b in enumerate(baze):
+        if accesoriu <= 0:
+            reparti.append(Decimal("0.00"))
+        elif i == len(baze) - 1:
+            reparti.append(ramas)
+        else:
+            cota_r = _q(accesoriu * b / baza_totala)
+            reparti.append(cota_r); ramas -= cota_r
+    return baze, reparti, transport, taxe
+
+
+def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446"):
+    """[lotul 07.10 B, C10] NIR la firma cu stocul la COST (cantitativ-valoric, CMP — `core.metoda_stoc`): marfa intră la costul
+    de achiziție (cu accesoriul repartizat), fără adaos și fără TVA neexigibilă — prețul de raft nu se cere și nu se verifică.
+    Temei: OMFP 1802/2014 pct.286 alin.(1) — ieșirile se evaluează la cost (CMP / FIFO), iar pct.287 alin.(1)-(2): „Metoda aleasă
+    trebuie aplicată cu consecvență”, deci intrarea se evaluează pe aceeași bază ca ieșirea (607=371 la CMP). Note:
+      371 = 401  (cost de bază) · 4426 = 401 (TVA deductibilă) · 371 = cont_transport / cont_taxe (accesoriu capitalizat)."""
+    baze, reparti, transport, taxe = _repartizeaza(linii, transport, taxe)
+    linii_out, tva_ded = [], Decimal("0")
+    for i, (l, cost_baza, land) in enumerate(zip(linii, baze, reparti)):
+        if l.get("cota_tva") is None:
+            raise RefuzLinie("Alege cota de TVA la «%s»." % (l.get("denumire") or ""), i, "cota_tva")
+        tva_ded += _q(cost_baza * _d(l["cota_tva"]) / 100)
+        linii_out.append({**l, "cost_baza": cost_baza, "landed": land, "cost": _q(cost_baza + land)})
+    cost_baza_total = _q(sum(baze, Decimal("0")))
+    note = [{"debit": "371", "credit": "401", "suma": cost_baza_total, **_urma(TEMEI_COST)},
+            {"debit": "4426", "credit": "401", "suma": _q(tva_ded), **_urma(TEMEI_COST)}]
+    if transport > 0:
+        note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma(TEMEI_COST)})
+    if taxe > 0:
+        note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma(TEMEI_COST)})
+    return {"linii": linii_out, "cost_total": _q(cost_baza_total + transport + taxe), "cost_baza_total": cost_baza_total,
+            "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded), "adaos_total": Decimal("0.00"),
+            "tva_neexigibila": Decimal("0.00"), "valoare_vanzare": Decimal("0.00"), "note": note}
 
 
 def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
@@ -53,34 +114,12 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
     # pastreaza interdictia de default tacit, dar la nivel de linie (gardata de test_stocuri.py, nu de
     # test_cota_fara_default.py care testeaza param-ul de nivel-functie). Param-ul global ramane
     # fallback OPTIONAL (o singura cota pentru tot NIR-ul), nu obligatoriu.
-    transport = _q(transport); taxe = _q(taxe)
-    if transport < 0 or taxe < 0:
-        raise ValueError("transport/taxe negative")
+    baze, reparti, transport, taxe = _repartizeaza(linii, transport, taxe)   # o singură repartizare (și pentru `nir_cost`)
     accesoriu = transport + taxe
-    baze = []
-    for l in linii:
-        cant = _d(l["cantitate"])
-        if cant <= 0:
-            raise ValueError(f"cantitate invalida la {l.get('denumire')!r}")
-        baze.append(_q(cant * _d(l["pret_achizitie"])))
-    baza_totala = sum(baze, Decimal("0"))
-    if accesoriu > 0 and baza_totala <= 0:
-        raise ValueError("accesoriu > 0 dar cost de baza 0 - nu se poate repartiza")
-    # repartizare proportionala cu restul pe ultima linie (suma repartizata == accesoriu)
-    reparti = []
-    ramas = accesoriu
-    for i, b in enumerate(baze):
-        if accesoriu <= 0:
-            reparti.append(Decimal("0.00"))
-        elif i == len(baze) - 1:
-            reparti.append(ramas)
-        else:
-            cota_r = _q(accesoriu * b / baza_totala)
-            reparti.append(cota_r); ramas -= cota_r
 
     cost_baza_total = tva_ded = vanzare_total = Decimal("0")
     linii_out = []
-    for l, cost_baza, land in zip(linii, baze, reparti):
+    for _i, (l, cost_baza, land) in enumerate(zip(linii, baze, reparti)):
         cant = _d(l["cantitate"])
         _cota_raw = l.get("cota_tva")
         if _cota_raw is None:
@@ -91,11 +130,13 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
         cost = _q(cost_baza + land)                     # cost de achizitie cu accesoriu
         vanz = _q(cant * _d(l["pret_vanzare"]))
         if vanz < cost:
-            raise ValueError(f"pret de vanzare sub costul de achizitie (cu accesoriu) la {l.get('denumire')!r}")
+            raise RefuzLinie("Prețul de raft e sub costul de achiziție (cu transportul și taxele repartizate) la «%s»: %s lei la "
+                             "raft, %s lei cost." % (l.get("denumire") or "", vanz, cost), _i, "pret_vanzare")
         tva_v = _q(vanz * cota / (100 + cota))          # TVA din pretul de raft (suta marita)
         adaos = _q(vanz - tva_v - cost)
         if adaos < 0:
-            raise ValueError(f"adaos negativ la {l.get('denumire')!r}")
+            raise RefuzLinie("Adaosul iese negativ la «%s»: prețul de raft fără TVA e sub cost." % (l.get("denumire") or ""),
+                             _i, "pret_vanzare")
         cost_baza_total += cost_baza
         tva_ded += _q(cost_baza * cota / 100)           # TVA deductibila pe marfa (accesoriul are TVA-ul lui, separat)
         vanzare_total += vanz

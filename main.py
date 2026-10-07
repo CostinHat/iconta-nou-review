@@ -5271,6 +5271,14 @@ def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drep
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+@app.get("/tenants/{tenant_id}/stocuri/nir/{nir_id}")
+def stocuri_nir_detaliu(tenant_id: int, nir_id: int, ctx=Depends(cere_cabinet)):
+    """[lotul 07.10 B, C11d] NIR-ul salvat, cu articolele și notele lui (și starea lor la validare)."""
+    try:
+        return _uc_tenants.stocuri_nir_detaliu(tenant_id, nir_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 @app.post("/tenants/{tenant_id}/stocuri/descarcare")
 def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:

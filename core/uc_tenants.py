@@ -2214,8 +2214,27 @@ def stocuri_adauga(tenant_id, corp, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         rez = _s.adauga_nir(conn, schema, corp)
     if rez.get("eroare"):
+        if rez.get("ecran"):   # [lotul 07.10 B, C10] metoda de stoc nedeclarată: refuzul trimite în Date firmă (butonul spre ecran)
+            raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], None))
         _ec = rez.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca celelalte ecrane
         raise _erori.DateInvalide({"mesaj": rez["eroare"], "erori_campuri": _ec} if _ec else rez["eroare"])
+    return rez
+
+
+def stocuri_nir_detaliu(tenant_id, nir_id, ctx):
+    """[lotul 07.10 B, C11d] Un NIR salvat, deschis din „NIR-urile lunii”: antetul, articolele și notele lui, fiecare cu starea
+    (ciornă / la validare / validată / respinsă, cu motivul)."""
+    from core import stocuri_api as _s, coada_api as _coada
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("tenant inexistent sau fără acces")
+        rez = _s.nir_detaliu(conn, schema, nir_id)
+        if rez is None:
+            raise _erori.Inexistent("NIR inexistent")
+        stari = _coada.stari_note(conn, tenant_id, [n["id"] for n in rez["note"]])
+    for n in rez["note"]:
+        n["validare"] = stari.get(n["id"])
     return rez
 
 
@@ -4836,9 +4855,17 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
             r = repo_contabilitate.id_nota_dupa_numar_2(cur, p["document_ref"])
+            inlocuita = None
             if r:
-                return {**p, "deja_contata": True, "nota_id": r[0],
-                         "cod": "DEJA_CONTATA"}
+                # [lotul 07.10 B, C9, decizia Costin] „recontabilizarea înlocuiește nota respinsă și o retrimite la validare”:
+                # nota respinsă (ciornă) se scoate și se scrie din statul corectat; noua ciornă intră singură în coadă
+                # (`uc_coada.note_in_coada`). Nota la validare sau validată rămâne — a doua notă n-ar avea temei.
+                from core import note_derivate as _nd
+                if not _nd.respinsa(cur, schema, r[0]):
+                    return {**p, "deja_contata": True, "nota_id": r[0],
+                             "cod": "DEJA_CONTATA"}
+                _nd.sterge_respinsa(cur, schema, r[0])
+                inlocuita = r[0]
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
             # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
             # [lotul 07.10 pct.13] descrierea = ce înregistrează nota; documentul = statul de plată, din sursa unică a notelor
@@ -4851,6 +4878,8 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
             for n in p["note"]:
                 repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
         conn.commit()
+    if inlocuita:
+        return {**p, "deja_contata": True, "nota_id": nota_id, "nota_inlocuita": inlocuita, "cod": "INLOCUITA"}
     return {**p, "deja_contata": True, "nota_id": nota_id, "cod": "CONTATA"}
 
 
