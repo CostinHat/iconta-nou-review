@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: FAPT_FISCAL_NECERUT extins la ecranele scrise de mână (82 clasificate); trei decizii cerute**
+# PREDARE LANȚ — **07.10.2026: lotul 07.10 B în lucru — B sitemap publicat; urmează A (regula cap.17 corectată) și C (retestul)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (ecranele scrise de mână, cele 82), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `11f8c2ed` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, după frontul B), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `47c04fe3` (intrarea); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -56,7 +56,10 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
-- **DECIZII CERUTE (07.10, ecranele scrise de mână):** (1) destinația TVA pe linia facturii primite — DS cap.28 pct.2 („default sigur
+- **ÎN LUCRU: lotul 07.10 B** (TESTE „În lucru acum”, DECIZII 07.10 „Lotul 07.10 B”): B sitemap publicat (index nou
+  `/sitemap-index.xml`); urmează A (preselecția permisă când e uzuală/dedusă, vizibilă, modificabilă) și C (coada pe document, notele
+  derivate, evaluarea stocului, NIR, ecrane). Deciziile de mai jos sunt ÎNCHISE de comanda lotului B (A.1–A.3).
+- **DECIZII CERUTE (07.10, ecranele scrise de mână) — închise de lotul B:** (1) destinația TVA pe linia facturii primite — DS cap.28 pct.2 („default sigur
   … `selected`”) contra DS cap.17 („fără preselecție”); rămâne `taxabil` preselectat până decide Costin. (2) Implicitele din SCHEMĂ în Date
   firmă (`activitate_exceptata_amef`, `inreg_art317` NOT NULL DEFAULT false; `cont_venit_implicit` DEFAULT '707') — ecranul arată
   valoarea stocată, dar ea n-a fost aleasă de om; scoaterea = schemă + migrare. (3) Input-urile PRECOMPLETATE (D204 categoria „1”,

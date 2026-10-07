@@ -17615,3 +17615,103 @@ apare de două ori):
 3. **Limita:** input-urile PRECOMPLETATE (nu selecturi) poartă aceeași formă de implicit — găsite în trecere: D204 categoria „1”,
    D603 țara „RO”, D398 moneda „EUR”, lunile D318, eTransport unitatea „H87”, D221 funcția „TITULAR”. Nu fac parte din cele 82;
    extinderea regulii la input-uri = decizie (raportul turei, §6).
+
+## 07.10.2026 — Lotul 07.10 B: corecția regulii DS cap.17, sitemap-ul, retestul (comanda Costin)
+
+**Comanda, verbatim:**
+„Trei fronturi într-o singură comandă. Ordinea și împărțirea pe pași le alegi tu, după cum îți convine.
+
+A. CORECȚIA REGULII DS cap.17. Decizia de azi „Destinația TVA pe linie: fără preselecție, cap.17 câștigă” se anulează; dacă ai
+început-o, o oprești și o refaci după regula de mai jos.
+1. Regula nouă. Preselecția e PERMISĂ când valoarea (a) e cazul uzual sau se deduce din date (țara din CUI-ul partenerului, regimul din
+profilul firmei, moneda RON), (b) se vede pe ecran înainte de confirmare și (c) se poate schimba. Preselecția e INTERZISĂ pentru un fapt
+care depinde de situația concretă și pe care aplicația nu-l poate ști: Da/Nu situaționale (imputabil, faliment, asigurat, certificat de
+amânare …), categoria sau temeiul dintr-o declarație, tipul imobilului, valabilitatea, opțiuni de regim alese de contribuabil. Acolo
+rămâne „— alege —”.
+2. Aplic-o pe tot ce ai clasificat azi (cele 33 de chei, cele 82 de selecturi, input-urile precompletate din §6.3). Concret: la emitere,
+moneda, țara (dedusă din CUI), tipul operației și documentul revin precompletate vizibil; destinația TVA pe linie revine pe „taxabil”
+vizibil; conturile din formularele Operațiunilor (cont_banca, cont_venit, cont_cheltuiala, cont_ajustare, cont_imobilizare,
+cont_amortizare și celelalte) vin precompletate vizibil cu sugestia standard (707, 5124, 612 …), modificabile, câmpul gol nu se
+acceptă. D398 moneda EUR e impusă de regimul OSS, deci e valoare fixă, nu alegere. Restul îl încadrezi tu după regulă, cu motivul scris
+pentru fiecare.
+3. Date firmă, implicitele din schemă (activitate_exceptata_amef, inreg_art317, cont_venit_implicit): cont_venit_implicit 707 rămâne.
+Cele două fapte Da/Nu, pe firmele unde nu le-a ales nimeni, se cer o dată la prima folosire relevantă, ca seria și metoda de stoc;
+mecanismul îl alegi tu.
+4. Actualizează DS cap.17 / cap.28 ca să nu se mai contrazică, garda și verificatorul în consecință.
+
+B. SITEMAP. Search Console, 07.10: https://iconta.eu/sitemap.xml (retrimis 05.10) are starea „Nu s-a putut prelua”, 0 pagini
+descoperite. Google cunoaște 151 de pagini (120 indexate, 31 neindexate), față de 5.511 ghiduri publicate.
+5. Stabilește cauza din dovezi: jurnalele nginx pentru cererile Googlebot spre /sitemap.xml și /robots.txt începând cu 05.10 (cod HTTP,
+user-agent, IP verificat ca Google), răspunsul exact al serverului (cod, Content-Type, redirecționări, dimensiune, număr de URL-uri),
+robots.txt, orice regulă anti-bot sau de limitare care poate atinge Googlebot.
+6. Repară cauza. Sitemap-ul respectă limitele protocolului (index de sitemap-uri dacă e cazul) și conține numai URL-uri canonice care
+răspund 200.
+7. Spune-mi exact ce trebuie să retrimit eu în Search Console după reparație.
+
+C. RETEST Costin 07.10 (după Ctrl+F5, pe 11f8c2ed). Ciorna facturii, prețul, articolul, scadența, data notei de salarii, notificarea cu
+firma și clicul pe ea: confirmate. De reparat:
+8. Coada, F1A3: contarea și ieșirea din stoc apar ca două elemente separate, fiecare cu Validează/Respinge; validarea contării NU a
+validat ieșirea din stoc. Stabilește dacă e doar pe elemente create înainte de reparație. Oricum ar fi: coada grupează notele
+aceluiași document și pentru elementele existente (migrare), iar proba de browser o arată pe ecran, nu doar pe server. Aceeași grupare
+pentru cele 4 note ale unui NIR.
+9. Nota de salarii respinsă (F5, 09/2026, #3): mesajul o trimite pe Ana să corecteze nota „în Registrul-jurnal”, iar „Contabilizează
+statul” reafișează aceeași notă respinsă, fără cale de refacere. Decizie: o notă derivată dintr-un document (stat de plată, factură,
+ieșire din stoc, NIR, amortizare și restul clasei) se corectează numai din documentul-sursă; recontabilizarea înlocuiește nota
+respinsă și o retrimite la validare; editarea manuală în jurnal e blocată pentru notele derivate, cu mesaj care spune unde se
+corectează. Generalizare pe toată clasa notelor derivate.
+10. NIR pe F1 (metoda de stoc: cantitativ-valoric, CMP): NIR 1 din 07.10, Marfa A 10×55, preț raft 80, a generat 371=401 550 ·
+4426=401 115,50 · 371=378 111,16 · 371=4428 138,84, adică 371 încărcat la preț de vânzare, în timp ce ieșirile pe factură scot la CMP
+(607=371). Soldul 371 nu mai poate corespunde stocului. Decizie: evaluarea stocului (la cost CMP/FIFO sau la preț de vânzare cu
+amănuntul) e setare a firmei și se aplică identic la intrări și ieșiri. La cost: NIR la cost, fără 378/4428, prețul de raft nu se cere
+și nu se verifică. La preț de vânzare: 378/4428 la intrare, ieșiri la preț de vânzare cu descărcarea adaosului și a TVA neexigibile.
+Dacă setarea firmei nu spune evaluarea, se cere la prima folosire, ca seria și metoda. Generalizare pe toate drumurile care încarcă sau
+descarcă 371 (NIR, factură, bon/Z, transfer, inventar, rețetă).
+11. Tot la NIR:
+   a. Cu preț raft gol, refuzul spune „pret de vanzare sub costul de achizitie (cu accesoriu) la 'Marfa A'”: golul a fost luat drept 0
+(clasa „preț pe care nu l-a ales nimeni”), iar mesajul e fără diacritice și nu stă lângă câmp.
+   b. Furnizorul și CUI-ul se scriu de mână; la factură există „Verifică” din ANAF. Aceeași preluare din ANAF și la NIR.
+   c. Articolul se scrie ca text liber. Verifică ce se întâmplă cu o denumire aproape identică („Marfa  A”); NIR-ul alege articolul
+existent din listă sau creează explicit unul nou, niciodată tacit.
+   d. NIR-ul salvat din „NIR-urile lunii” nu se poate deschide: clicul nu face nimic. Trebuie să arate notele și starea lor.
+   e. Tabelul de stoc rămâne pe 106 buc / CMP 50 după NIR. Dacă stocul se actualizează abia la validare, ecranul spune asta (intrare în
+așteptare), nu tace.
+12. Observații mici de ecran:
+   a. după restaurarea ciornei facturii nu mai apare „plătitor TVA” sub adresa clientului;
+   b. „Linie fără articol de stoc” e afișată roșu, ca eroare, deși e atenționare;
+   c. „Nota #3 e la validare în cabinet” e text mic gri; confirmarea trimiterii trebuie să fie vizibilă;
+   d. după Respinge, fereastra deschisă din notificare spune „Elementul din notificare nu mai așteaptă validarea: a fost deja validat
+sau respins” în loc să confirme acțiunea făcută;
+   e. butonul „Respinge” din fereastra de motiv arată dezactivat (roz-pal) cu motivul completat;
+   f. în antetul utilizatorului cabinetului, clopoțelul de notificări apare doar ca cifra „1”, fără iconiță (la Ana apare corect).
+
+D. PENTRU TOATE
+13. Listează operațiile, execută-le, raportează durata măsurată a fiecăreia. Poarta completă o singură dată la fiecare publicare.
+14. La închidere: ZIP la ~/ghid_incoming/iconta_lot_07_10_b.zip (cod schimbat, extrase din jurnale, răspunsuri brute, probe înainte/după
+cu capturi, jurnale), plus ZIP-ul turei cu cele 82 de selecturi la ~/ghid_incoming/iconta_selecturi_82.zip, cu căile exacte în raport.
+Poți trece la următorul pas din listă.”
+
+**PIVOT față de DECIZII 07.10.2026 („Cele 33 de chei”, „C5 și C6”, „Ecranele scrise de mână”).** Acolo, regula DS cap.17 fusese
+aplicată ca „fără preselecție” pe orice fapt fiscal (inclusiv conturile cu sugestie, moneda/țara/operația/documentul la emitere, sumele
+goale). Regula de azi o înlocuiește: preselecția e permisă când valoarea e uzuală sau dedusă din date, vizibilă și modificabilă;
+interzisă doar pentru faptul situațional pe care aplicația nu-l poate ști. Destinația TVA pe linie (cap.28) nu fusese schimbată (rămăsese
+„taxabil”, conflict cerut) — conflictul se închide în favoarea preselecției vizibile.
+
+**B — sitemap, cauza din dovezi (executor, 07.10.2026):**
+- Jurnalele nginx (de la 23.09; IP-urile verificate prin DNS invers + direct): Google verificat (66.249.x, `*.googlebot.com`) a cerut
+  `/sitemap.xml` de DOUĂ ori, ambele pe 05.10 13:13, cu Google-InspectionTool, ambele **200, 769.183 octeți**. Fetcher-ul obișnuit
+  (cel care procesează sitemap-urile trimise) n-a cerut NICIODATĂ sitemap-ul în cele două săptămâni de jurnal, nici pe altă gazdă (nicio
+  cerere 301 de la Google spre sitemap). Cererile cu user-agent „Googlebot” de la 160.79.106.x și 178.105.201.56 nu sunt Google (fără
+  PTR / serverul însuși). Google a primit în 2,5 zile 58 de răspunsuri: 52 × 200, 3 × 301, 3 × 404 — cele trei 404 sunt `robots.txt`
+  pe gazda IP (`http://178.105.201.56/robots.txt`, blocul nginx :80 pentru gazde străine), nu pe `iconta.eu`.
+- Răspunsul serverului acum: `https://iconta.eu/sitemap.xml` 200, `application/xml; charset=utf-8`, 771.017 octeți, XML valid, 6.581
+  URL-uri distincte, toate `https://iconta.eu`; variantele http / www -> 301 spre el; `robots.txt` 200, permite sitemap-ul; mentenanța
+  oprită; nicio regulă anti-bot (limitarea `iconta_auth` e numai pe login). Fiecare URL verificat: 6.580 × 200, **1 × 301**
+  (`/ghid/cote-tva-2025` -> `cote-tva-2026`), 0 cu canonical diferit, 0 noindex.
+- **Concluzie:** „Nu s-a putut prelua” nu corespunde niciunui răspuns eșuat al serverului — Google nu a încercat preluarea după
+  retrimiterea din 05.10 (starea afișată e cea veche, din afara ferestrei de jurnal). Pe server: un URL non-canonic în sitemap.
+- **Reparat:** clasa „referință spre un slug redirecționat”, măsurată pe cele 96 de redirecturi: fișierul `ghid/cote-tva-2025.md`
+  (servit niciodată — ruta îl redirecționa; prima poartă l-a prins ca „invizibil”) scos, 6 link-uri interne din ghiduri și
+  `FUNCTIONALITATI.csv::ghid_slug` mutate pe `cote-tva-2026`; index de sitemap-uri la o adresă NOUĂ,
+  `/sitemap-index.xml` (`/sitemap-pagini.xml` + `/sitemap-ghiduri-N.xml`, câte 1.000), indicat de `robots.txt`; `/sitemap.xml` rămâne
+  valid. Adresa nouă dă Search Console o resursă pe care n-a văzut-o, deci o preluare nouă, și numărătoarea pe bucăți.
+- **Limita:** jurnalul nginx nu înregistrează gazda (`$host`); schimbarea formatului cere sudo cu parolă (nu am).

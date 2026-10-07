@@ -57,4 +57,4 @@ Același consultant, dar serviciul privește o clădire din Austria: locul e Aus
 
 ## Legături
 
-Când taxa se mută la beneficiar în interiorul țării: [taxarea inversă internă](/ghid/taxare-inversa-interna). Raportarea operațiunilor intracomunitare: [controlul încrucișat D390](/ghid/control-incrucisat-d390). Cotele aplicabile: [cotele de TVA în vigoare](/ghid/cote-tva-2025).
+Când taxa se mută la beneficiar în interiorul țării: [taxarea inversă internă](/ghid/taxare-inversa-interna). Raportarea operațiunilor intracomunitare: [controlul încrucișat D390](/ghid/control-incrucisat-d390). Cotele aplicabile: [cotele de TVA în vigoare](/ghid/cote-tva-2026).

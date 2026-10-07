@@ -45,6 +45,37 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Lotul 07.10 B — A corecția regulii DS cap.17, B sitemap, C retestul 07.10 (comanda Costin 07.10.2026)** — verbatim în
+  DECIZII 07.10.2026 („Lotul 07.10 B”). Trei publicări (B, A, C), fiecare cu poarta completă o dată; ZIP-uri
+  `~/ghid_incoming/iconta_lot_07_10_b.zip` și `~/ghid_incoming/iconta_selecturi_82.zip`.
+  - ultim: comanda consemnată; ordinea aleasă: B (sitemap — produs public, independent), A (regula), C (retest).
+  - urmator: publicarea B (poarta 1), apoi A1. STARE = IN LUCRU
+  - livrat B1–B2 (pe disc): dovezile (DECIZII 07.10 „B — sitemap”), `_ghid_lista` fără redirecturi, `/sitemap-index.xml` + copiii,
+    `robots.txt` -> index, garda `core/test_sitemap_index.py`.
+  - pasi:
+    B1. Dovezile: jurnalele nginx (Googlebot -> /sitemap.xml, /robots.txt, de la 05.10: cod, UA, IP verificat prin DNS invers+direct),
+        răspunsul exact (cod, Content-Type, redirecturi, dimensiune, nr. URL), robots.txt, regulile anti-bot / limitare.
+    B2. Reparația cauzei; sitemap în limitele protocolului (index + fișiere ≤ 50.000 URL / 50 MB), numai URL-uri canonice cu 200;
+        gardă; publicare (poarta 1). B3. Ce retrimite Costin în Search Console.
+    A1. Regula nouă în DS cap.17 + cap.28 (fără contradicție); scanerele (`scan_formulare_operatiuni`, `scan_selecturi_ecrane`)
+        clasifică după ea: „preselectat vizibil” (uzual / dedus) vs „— alege —” (situațional).
+    A2. Aplicarea: emitere (moneda RON, țara din CUI, operația, documentul) precompletate; destinația TVA pe linie „taxabil”; conturile
+        din Operațiuni precompletate cu sugestia standard, obligatorii; D398 EUR fixă; restul celor 33 + 82 + input-urile §6.3 încadrate
+        cu motiv.
+    A3. Date firmă: `activitate_exceptata_amef` și `inreg_art317` nealese de nimeni -> cerute o dată la prima folosire relevantă
+        (mecanismul seriei / metodei de stoc); `cont_venit_implicit` 707 rămâne.
+    A4. Gărzi + verificator + probe; publicare (poarta 2).
+    C8. Coada: notele aceluiași document grupate și pentru elementele existente (migrare) + NIR (4 note); probă de browser.
+    C9. Notele derivate: corectare numai din documentul-sursă; recontabilizarea înlocuiește nota respinsă și o retrimite; editarea în
+        jurnal blocată cu mesaj; clasa întreagă.
+    C10. Evaluarea stocului (cost / preț de vânzare) = setare a firmei, cerută la prima folosire; aceeași la intrări și ieșiri, pe toate
+        drumurile 371.
+    C11. NIR: preț raft gol ≠ 0, mesaj cu diacritice lângă câmp; furnizor din ANAF; articolul ales din listă sau creat explicit; NIR-ul
+        salvat se deschide (note + stare); stocul spune „intrare în așteptare”.
+    C12. Ecran: plătitor TVA după restaurarea ciornei; atenționare (nu eroare) la linia fără articol; confirmarea trimiterii la
+        validare vizibilă; Respinge din notificare confirmă acțiunea; butonul Respinge activ arată activ; clopoțelul cabinetului.
+    C13. Probe, mutații, unelte vizuale, registre; publicare (poarta 3); ZIP-urile; raportul.
+
 - fir: **FAPT_FISCAL_NECERUT în ecranele scrise de mână — clasificarea celor 82 (comanda Costin 07.10.2026: „Extinde regula la ecranele
   scrise de mână, cu clasificarea celor 82”)** — verbatim în DECIZII 07.10.2026 („Ecranele scrise de mână”). Poarta completă o singură
   dată, la publicare.

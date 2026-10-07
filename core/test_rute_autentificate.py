@@ -45,6 +45,9 @@ PUBLICE = {
     ("post", "/api/eveniment-public"),          # analytics public: eveniment anonim (ce/de unde/cand), fara date personale
     ("get",  "/ajutor/{fid}"),                 # ajutor contextual: text de FOLOSIRE, nu date de firma
     ("get",  "/sitemap.xml"),                   # SEO
+    ("get",  "/sitemap-index.xml"),             # SEO — indexul de sitemap-uri (07.10.2026), indicat de robots.txt
+    ("get",  "/sitemap-pagini.xml"),            # SEO — copil al indexului
+    ("get",  "/sitemap-ghiduri-{n}.xml"),       # SEO — copii ai indexului, câte 1.000 de ghiduri
     ("get",  "/robots.txt"),                    # SEO
     ("get",  "/favicon.ico"),                   # favicon: fisier static, fara date
     ("get",  "/anaf/oauth/callback"),           # ANAF redirecteaza aici; nu are cum sa poarte

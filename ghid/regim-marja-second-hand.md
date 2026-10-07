@@ -67,6 +67,6 @@ Marja negativă sau zero e tratată automat ca TVA zero, cu reportare în jurnal
 
 Verificarea eligibilității — dacă bunul și furnizorul se încadrează în regimul special — rămâne a ta. E o judecată de fond, nu un calcul.
 
-Vezi și: [regimul special al agențiilor de turism](/ghid/regim-special-agentii-turism), care folosește același mecanism al marjei pe alt tip de operațiune, și [cotele de TVA în vigoare](/ghid/cote-tva-2025).
+Vezi și: [regimul special al agențiilor de turism](/ghid/regim-special-agentii-turism), care folosește același mecanism al marjei pe alt tip de operațiune, și [cotele de TVA în vigoare](/ghid/cote-tva-2026).
 
 [iConta.eu](/)

@@ -80,6 +80,6 @@ gri: Facturile emise ale lunii nu pot fi citite — verificarea nu s-a făcut.
 verde: Toate liniile la cotă standard au cota corectă pentru data facturii.
 :::
 
-Vezi și: [cotele de TVA în vigoare](/ghid/cote-tva-2025) și [decontul de TVA](/ghid/decont-tva-d300-rezultat).
+Vezi și: [cotele de TVA în vigoare](/ghid/cote-tva-2026) și [decontul de TVA](/ghid/decont-tva-d300-rezultat).
 
 [iConta.eu](/)

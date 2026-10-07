@@ -322,7 +322,7 @@ Tablou de stări pe portofoliu + detaliu per firmă cu motiv, termen și remediu
 - Interpretarea ""gri"" ca problemă - gri înseamnă date insuficiente pentru verificare, nu neconformitate.
 ## Reguli fiscale
 Termenele ANAF pe fiecare declarație (țin cont de sărbătorile legale). Vectorul fiscal = sursa obligațiilor declarative."
-Regula cotelor de TVA,"Sursa unică a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioadă.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest,cote-tva-2025,"## Ce face
+Regula cotelor de TVA,"Sursa unică a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioadă.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest,cote-tva-2026,"## Ce face
 Este sursa unică a cotelor de TVA din aplicație: pe baza descrierii produsului potrivește cota corectă (regulă plus AI cu justificare afișată) și ține lista cotelor valide pe fiecare perioadă.
 ## Când se folosește
 La configurarea produselor și la emiterea facturilor, ori de câte ori trebuie stabilită cota aplicabilă.

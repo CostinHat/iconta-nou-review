@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**718 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**719 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 681
+### `core/` — 682
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9421,6 +9421,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_sesiune_fara_pierdere.py` — GARD — un contabil nu pierde ce a completat (comanda Costin 05.10.2026, pct.1).
 - `core/test_set_bifa_nu_se_striveste.py` — GARD: căsuța unei bife cu etichetă (`.set-bifa`, DS v2.11) nu se strivește sub dimensiunea ei (02.10.2026).
 - `core/test_simetrie_denumire.py` — GARD [R81, DECIS 28.08.2026]: denumirea unei firme se scrie în AMÂNDOUĂ locurile sau în niciunul.
+- `core/test_sitemap_index.py` — GARD — sitemap-ul în limitele protocolului, numai URL-uri canonice care răspund 200 (comanda Costin 07.10.2026, B).
 - `core/test_smoke_duk.py` — SMOKE-SWEEP DUK (01.08.2026) — gardul care lipsea: fiecare declaratie generata cu date
 - `core/test_solduri_api.py` — Teste gardian pentru solduri_api (partea PURA).
 - `core/test_solduri_parteneri_api.py` — Teste gardian pentru solduri_parteneri_api (partea PURA).
@@ -10521,3 +10522,9 @@ ajunge în notă, în bază sau în declarația către ANAF).
 browser (23 de ecrane): selecturi cu valoare aleasă la deschidere 54 -> 9 (toate valori salvate sau clasificarea D390 curentă).
 **Rămân deschise (decizii):** destinația TVA pe linie (conflict DS cap.28/cap.17); implicitele din schemă (3 coloane Date firmă);
 input-urile precompletate (altă formă a aceluiași implicit).
+
+## 07.10.2026 — Sitemap: index de sitemap-uri, numai URL-uri canonice cu 200 (comanda Costin, lotul 07.10 B, frontul B)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| sitemap în limitele protocolului, fără redirecturi | `core/test_sitemap_index.py` (5) | un URL redirecționat (301) în sitemap; un copil peste 50.000 URL / 50 MB; indexul și sitemap-ul plat din surse diferite; `robots.txt` care nu indică indexul; un link intern / `ghid_slug` / fișier `.md` pentru un slug redirecționat | `ghid/cote-tva-2025.md` pus la loc -> 2 roșii | 200 + autocanonic verificat pe un eșantion (1/50); verificarea completă (6.580) s-a făcut la livrare pe serverul viu |

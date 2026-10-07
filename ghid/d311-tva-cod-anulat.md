@@ -71,6 +71,6 @@ Aplicația tratează separat perioada fără cod: TVA-ul se colectează, dar nu 
 
 Depunerea o faci din SPV, cu fișierul deja verificat.
 
-Vezi și: [decontul de TVA](/ghid/decont-tva-d300-rezultat), la care se revine după reînregistrare, și [cotele de TVA în vigoare](/ghid/cote-tva-2025).
+Vezi și: [decontul de TVA](/ghid/decont-tva-d300-rezultat), la care se revine după reînregistrare, și [cotele de TVA în vigoare](/ghid/cote-tva-2026).
 
 [iConta.eu](/)

@@ -1733,3 +1733,10 @@ Decizia și clasificarea celor 82: DECIZII 07.10.2026 („Ecranele scrise de mâ
 - Probat: casa fără categorie -> refuz lângă câmp; cu categorie -> dispoziția și nota 5311 = 4111. Selecturi alese la deschidere pe 23
   de ecrane: 54 -> 9 (rămase = valori salvate).
 - Decizii deschise: destinația TVA pe linie (conflict DS), implicitele din schemă (Date firmă), input-urile precompletate.
+
+## 07.10.2026 — Lotul 07.10 B, frontul B: sitemap-ul (comanda Costin)
+
+- Cauza din jurnalele nginx: Google n-a încercat preluarea sitemap-ului după retrimiterea din 05.10 (singurele cereri Google verificate:
+  Inspection Tool, 200); serverul răspundea corect. În sitemap era un URL redirecționat (`cote-tva-2025`).
+- Reparat: index de sitemap-uri `https://iconta.eu/sitemap-index.xml` (pagini + ghiduri pe bucăți de 1.000), indicat de `robots.txt`;
+  ghidurile redirecționate scoase din sitemap și din cuprins.

@@ -64,6 +64,6 @@ Peste generator rulează o **a doua cale de calcul**: totalurile pe cotă sunt r
 
 Depunerea o faci din SPV, cu fișierul deja verificat.
 
-Vezi și: [cotele de TVA în vigoare](/ghid/cote-tva-2025) și [taxarea inversă internă](/ghid/taxare-inversa-interna), care schimbă modul de raportare.
+Vezi și: [cotele de TVA în vigoare](/ghid/cote-tva-2026) și [taxarea inversă internă](/ghid/taxare-inversa-interna), care schimbă modul de raportare.
 
 [iConta.eu](/)

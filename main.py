@@ -6742,34 +6742,74 @@ def public_ghid_tema(tema: str):
         media_type="text/html; charset=utf-8")
 
 
-@app.get("/sitemap.xml")
-def public_sitemap():
-    """Sitemap generat din aceleasi surse ca index-ul (CSV + fisiere) — nu scris de mana."""
-    guides = _ghid_lista()
+#: [07.10.2026, comanda Costin B — „Sitemap-ul respectă limitele protocolului (index de sitemap-uri dacă e cazul) și conține numai
+#: URL-uri canonice care răspund 200”] Câte URL-uri într-un fișier-copil al indexului. Protocolul permite 50.000 / 50 MB; 1.000 ține
+#: fiecare fișier mic și dă în Search Console numărătoarea pe bucăți (unde se oprește indexarea se vede pe fișier).
+_SITEMAP_PE_FISIER = 1000
 
-    def u(loc, lastmod=None):
-        s = "  <url><loc>%s</loc>" % _ghid_html.escape(loc)
-        if lastmod:
-            s += "<lastmod>%s</lastmod>" % lastmod
-        return s + "</url>"
 
-    lastmods = [g["modified"] for g in guides if g["modified"]]
-    urls = [u(_GHID_BAZA + "/"),
-            u(_GHID_BAZA + "/ghid", max(lastmods) if lastmods else None)]
-    # [06.10.2026 pct.6] paginile de temă, cu data celui mai nou ghid din temă
+def _sitemap_intrari():
+    """(pagini, ghiduri) — liste de (loc, lastmod) pentru fiecare pagină publică indexabilă. SURSA UNICĂ pentru /sitemap.xml și pentru
+    indexul de sitemap-uri: aceleași surse ca cuprinsul (`_ghid_lista`, temele), nu scrise de mână. Un ghid redirecționat nu apare."""
     from core import ghid_teme as _gt
+    guides = _ghid_lista()
+    lastmods = [g["modified"] for g in guides if g["modified"]]
+    pagini = [(_GHID_BAZA + "/", None), (_GHID_BAZA + "/ghid", max(lastmods) if lastmods else None)]
     _ps, _pt = _ghid_teme_index()
     for cheie, tslug, _t, _d in _gt.TEME:
         if _pt.get(cheie):
-            urls.append(u(_GHID_BAZA + "/ghid/tema/" + tslug,
-                          max((_ps[s]["modified"] for s in _pt[cheie] if _ps[s].get("modified")), default=None)))
-    for g in guides:
-        urls.append(u(_GHID_BAZA + "/ghid/" + g["slug"], g["modified"] or None))
-    urls.append(u(_GHID_BAZA + "/public/termeni"))
+            pagini.append((_GHID_BAZA + "/ghid/tema/" + tslug,
+                           max((_ps[s]["modified"] for s in _pt[cheie] if _ps[s].get("modified")), default=None)))
+    pagini.append((_GHID_BAZA + "/public/termeni", None))
+    ghiduri = [(_GHID_BAZA + "/ghid/" + g["slug"], g["modified"] or None) for g in guides]
+    return pagini, ghiduri
+
+
+def _sitemap_urlset(intrari):
+    def u(loc, lastmod):
+        return "  <url><loc>%s</loc>%s</url>" % (_ghid_html.escape(loc), ("<lastmod>%s</lastmod>" % lastmod) if lastmod else "")
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-           + "\n".join(urls) + "\n</urlset>\n")
+           + "\n".join(u(l, m) for l, m in intrari) + "\n</urlset>\n")
     return Response(content=xml, media_type="application/xml; charset=utf-8")
+
+
+def _sitemap_bucati(ghiduri):
+    return [ghiduri[i:i + _SITEMAP_PE_FISIER] for i in range(0, len(ghiduri), _SITEMAP_PE_FISIER)]
+
+
+@app.get("/sitemap.xml")
+def public_sitemap():
+    """Sitemap-ul plat (toate paginile, un singur fișier) — rămâne valid pentru cine îl are deja; `robots.txt` indică indexul."""
+    pagini, ghiduri = _sitemap_intrari()
+    return _sitemap_urlset(pagini + ghiduri)
+
+
+@app.get("/sitemap-index.xml")  # [api_intern_v1] cerut de motoarele de căutare (robots.txt îl indică), nu de un ecran
+def public_sitemap_index():
+    """[07.10.2026, comanda Costin B] Indexul de sitemap-uri: paginile + ghidurile pe bucăți de `_SITEMAP_PE_FISIER`."""
+    pagini, ghiduri = _sitemap_intrari()
+    intrari = [("sitemap-pagini.xml", max((m for _l, m in pagini if m), default=None))]
+    for i, buc in enumerate(_sitemap_bucati(ghiduri), 1):
+        intrari.append(("sitemap-ghiduri-%d.xml" % i, max((m for _l, m in buc if m), default=None)))
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           + "\n".join("  <sitemap><loc>%s/%s</loc>%s</sitemap>" % (_GHID_BAZA, f, ("<lastmod>%s</lastmod>" % m) if m else "")
+                        for f, m in intrari)
+           + "\n</sitemapindex>\n")
+    return Response(content=xml, media_type="application/xml; charset=utf-8")
+
+
+@app.get("/sitemap-pagini.xml")  # [api_intern_v1] copil al indexului de sitemap-uri, cerut de motoarele de căutare
+def public_sitemap_pagini():
+    return _sitemap_urlset(_sitemap_intrari()[0])
+
+
+@app.get("/sitemap-ghiduri-{n}.xml")  # [api_intern_v1] copil al indexului de sitemap-uri, cerut de motoarele de căutare
+def public_sitemap_ghiduri(n: int):
+    buc = _sitemap_bucati(_sitemap_intrari()[1])
+    if not 1 <= n <= len(buc):
+        return _ghid_404()
+    return _sitemap_urlset(buc[n - 1])
 
 
 @app.get("/robots.txt")
@@ -6818,10 +6858,10 @@ def public_robots():
            "Allow: /public/termeni\n"
            "Allow: /static/\n"              # CSS, iconite, manifest (necesare la randare)
            "Disallow: /static/js/\n"        # bundle-ul app (app.js) expune fragmente de rute API -> Googlebot le culege; nu se scaneaza (05.08: 18x404+1x401)
-           "Allow: /sitemap.xml\n"
+           "Allow: /sitemap\n"             # /sitemap.xml + indexul și fișierele lui (07.10.2026)
            "Allow: /robots.txt\n"
            "Disallow: /\n"                  # restul suprafetei (app, /auth, rute API)
-           "Sitemap: %s/sitemap.xml\n" % _GHID_BAZA)
+           "Sitemap: %s/sitemap-index.xml\n" % _GHID_BAZA)   # [07.10.2026, comanda Costin B] indexul de sitemap-uri
     return Response(content=txt, media_type="text/plain; charset=utf-8")
 
 

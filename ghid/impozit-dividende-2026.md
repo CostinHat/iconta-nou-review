@@ -62,6 +62,6 @@ Cota se aplică după perioada operațiunii, dintr-un registru intern de valori 
 
 Impozitul reținut alimentează automat declarația **D205** — informativa privind impozitul reținut la sursă — din dividendele înregistrate pe asociați și din notele contabile validate. Peste asta, o verificare independentă recalculează baza și impozitul pe fiecare beneficiar din rulajul contului 457 și le confruntă cu ce iese în declarație; dacă cele două nu coincid, generarea se oprește și îți sunt numite ambele valori.
 
-Vezi și: [cotele de TVA din august 2025](/ghid/cote-tva-2025) — schimbate prin aceeași Lege 141/2025.
+Vezi și: [cotele de TVA din august 2025](/ghid/cote-tva-2026) — schimbate prin aceeași Lege 141/2025.
 
 [iConta.eu](/)
