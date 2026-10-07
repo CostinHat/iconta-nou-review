@@ -1769,3 +1769,11 @@ Supersedează, pe partea de preselecție, intrarea „Ecranele scrise de mână�
 - Ecran: „plătitor TVA” revine după restaurarea ciornei; linia fără articol e informare, nu eroare; trimiterea la validare și
   respingerea / validarea se confirmă vizibil; butonul Respinge din fereastra de motiv nu mai pare dezactivat; cifra de pe clopoțel
   nu mai acoperă iconița.
+
+## 07.10.2026 — Lotul 07.10 B, închiderea (după publicarea C, `b572089b`)
+
+- Producția: `core.migrare_grup_coada` rulat după publicare (backup al cozii `~/backups_db/iconta_v2_coada_pre_grup_20261007_2000.dump`):
+  8 elemente legate de documentul lor — F1A3 (11385/11386) -> `factura-49`; NIR 1 (11388–11391, la validare) -> un singur
+  document `nir-1`; statul 11/2026 (11383/11384) -> `nota-2`.
+- Publicarea C: GitHub a răspuns „Internal Server Error” la push (ambele depozite, chiar și pentru un commit deja publicat — problemă
+  a serverului, githubstatus „All Systems Operational”); a doua încercare a trecut; sentinelele scoase după four-way închis.

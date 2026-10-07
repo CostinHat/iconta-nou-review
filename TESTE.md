@@ -48,10 +48,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - fir: **Lotul 07.10 B — A corecția regulii DS cap.17, B sitemap, C retestul 07.10 (comanda Costin 07.10.2026)** — verbatim în
   DECIZII 07.10.2026 („Lotul 07.10 B”). Trei publicări (B, A, C), fiecare cu poarta completă o dată; ZIP-uri
   `~/ghid_incoming/iconta_lot_07_10_b.zip` și `~/ghid_incoming/iconta_selecturi_82.zip`.
-  - ultim: B publicat (adf95715); A publicat (63f99d7b — prima poartă refuzată: 4 fixture-uri D301, eticheta `selectDaNu`, mesaje cu
-    nume interne; reparate pe clasă); C8–C12 pe disc, probate înainte/după (proba_C), 8 mutații C roșii; migrările pe producție
-    (backup 17:41): nir_cost 5/5, fapte_date_firma 5/5.
-  - urmator: C13 — publicarea C (poarta 3), apoi `core.migrare_grup_coada` pe producție, ZIP-urile, raportul. STARE = IN LUCRU
+  - ultim: B `adf95715`, A `63f99d7b`, C `b572089b` publicate (fiecare cu poarta completă; A și C cu câte o primă poartă refuzată,
+    reparată pe clasă); migrările pe producție toate rulate (nir_cost, fapte_date_firma, grup_coada), după backup; ZIP-urile scrise.
+  - urmator: — (livrat; deciziile cerute în raport). STARE = ÎNCHIS
   - livrat B1–B2 (pe disc): dovezile (DECIZII 07.10 „B — sitemap”), `_ghid_lista` fără redirecturi, `/sitemap-index.xml` + copiii,
     `robots.txt` -> index, garda `core/test_sitemap_index.py`.
   - pasi:

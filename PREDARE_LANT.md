@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **07.10.2026: lotul 07.10 B — B (`adf95715`) și A (`63f99d7b`) publicate; C în publicare**
+# PREDARE LANȚ — **07.10.2026: lotul 07.10 B livrat — B `adf95715`, A `63f99d7b`, C `b572089b`; trei decizii cerute**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, la publicarea frontului C), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `63f99d7b` (A publicat; B `adf95715`; intrarea lotului: `47c04fe3`); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
+- **ultima rescriere**: **2026-10-07** (lotul 07.10 B, la închidere), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `b572089b` (C publicat; A `63f99d7b`; B `adf95715`; intrarea lotului: `47c04fe3`); commitul de închidere (această predare) e cel care rulează poarta completă, o singură dată.
 - **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
@@ -56,12 +56,12 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă, reevaluarea cu cont lipsă, „nimic de amortizat” fără
   motiv, declarația față de balanța validată, F248 „fără ecran”).
-- **ÎN LUCRU: lotul 07.10 B** (TESTE „În lucru acum”, DECIZII 07.10 „Lotul 07.10 B” / „frontul A” / „frontul C”): **B publicat**
-  (`adf95715`; 6.580 URL-uri × 200 pe producție); **A publicat** (`63f99d7b`); **C în publicare** (coada pe document, notele
-  derivate, NIR-ul după metoda de stoc, ecranul). Producția: backup `~/backups_db/iconta_v2_pre_lot0710b_20261007_1741.dump`,
-  migrate `nir_cost` și `fapte_date_firma`; **după publicarea C rămâne `python3 -m core.migrare_grup_coada`** (leagă elementele
-  vechi F1A3 și NIR 1 de documentul lor). Decizii cerute (raportul lotului, §6): CV la preț de vânzare / FIFO; NIR legat de factura
-  primită la global-valoric; raportul Z la cantitativ-valoric.
+- **LIVRAT: lotul 07.10 B** (DECIZII 07.10 „Lotul 07.10 B” / „frontul A” / „frontul C”; ZIP `iconta_lot_07_10_b.zip` +
+  `iconta_selecturi_82.zip`). Producția migrată complet (backup `iconta_v2_pre_lot0710b_20261007_1741.dump` + coada 20:00).
+  **Search Console (Costin):** de șters vechiul `sitemap.xml` și de trimis `https://iconta.eu/sitemap-index.xml`.
+  **Decizii cerute (raportul lotului, §6):** (1) cantitativ-valoric la preț de vânzare și FIFO (motor nou) sau numai CMP;
+  (2) la global-valoric, NIR-ul legat de factura primită (să scrie numai adaosul și TVA neexigibilă) sau refuz; (3) raportul Z la
+  cantitativ-valoric (Z-ul n-are articole: descărcare manuală / rețetă, sau refuz).
 - **DECIZII CERUTE (07.10, ecranele scrise de mână) — închise de lotul B:** (1) destinația TVA pe linia facturii primite — DS cap.28 pct.2 („default sigur
   … `selected`”) contra DS cap.17 („fără preselecție”); rămâne `taxabil` preselectat până decide Costin. (2) Implicitele din SCHEMĂ în Date
   firmă (`activitate_exceptata_amef`, `inreg_art317` NOT NULL DEFAULT false; `cont_venit_implicit` DEFAULT '707') — ecranul arată

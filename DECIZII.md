@@ -17826,3 +17826,6 @@ glifului (top/right 0) — mutată în afara lui, cu inel în culoarea barei; bu
 `~/backups_db/iconta_v2_pre_lot0710b_20261007_1741.dump` (358 de tabele cu date, `pg_restore -l`); `core.migrare_nir_cost` 5/5 și
 `core.migrare_fapte_date_firma` 5/5 (neales: AMEF 5, art.317 4) rulate ÎNAINTEA publicării C (aditive, compatibile cu codul live);
 `core.migrare_grup_coada` rulează DUPĂ publicarea C (folosește regula nouă `_GRUP_DOC`).
+
+**Executat (07.10.2026, 20:00):** `core.migrare_grup_coada` pe producție, după backupul cozii — 8 elemente legate de documentul lor
+(F1A3 -> `factura-49`, NIR 1 -> `nir-1`, statul 11/2026 -> `nota-2`). Toate migrările lotului sunt pe producție.
