@@ -53,6 +53,8 @@ def test_sursa_cunoscuta_isi_gaseste_jurnalul():
     assert d406.jurnal_din_sursa("salarii")[0] == "SALARII"
     assert d406.jurnal_din_sursa("amortizare")[0] == "AMORTIZARE"
     assert d406.jurnal_din_sursa("facturi")[0] == "FACTURI"
+    # [08.10.2026, decizia Costin V2] notele de stoc (NIR, ieșiri, descărcare) au jurnalul lor, nu DIVERSE
+    assert d406.jurnal_din_sursa("stocuri")[:2] == ("STOCURI", "alte operațiuni")
     assert d406.jurnal_din_sursa("  CASA  ")[0] == "CASA", "sursa se normalizează (spații, majuscule)"
 
 

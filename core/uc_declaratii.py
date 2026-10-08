@@ -111,5 +111,6 @@ def declaratie_genereaza(tip, date, ctx):
     avert = getattr(res, "avertismente", None)
     constat = getattr(res, "note_rezultat", None) or []   # canal neutru; [] pt declaratiile fara canal
     return {"tip": tip, "xml": xml, "avertismente": avert, "note_rezultat": constat,
+            "sinteza": getattr(res, "sinteza", None) or [],   # [08.10, V5] rezumatul, pe canalul lui
             "operatiuni": declaratii_api.numar_operatiuni(tip, res),  # [poarta_gol_v1]
             "componente": declaratii_componente.componente(tip, res)}  # [lista 5]

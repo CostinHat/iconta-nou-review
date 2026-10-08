@@ -15,6 +15,7 @@ cheama functia de aici prin adaptorul `_http`.
 """
 
 from core import db, auth_api
+from core import erori as _erori
 from core import repo_tenants
 from core import uc_comun as _uc_comun
 from core.common import azi_ro, pastila_firma
@@ -101,3 +102,41 @@ def control_fiscal_detaliu(tenant_id, ctx):
         pass
     return r
 
+
+
+#: tipurile care se pot marca „depusă în afara iConta” — cele nouă pe care le urmărește Control fiscal
+TIPURI_DEPUSA_EXTERN = ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406")
+
+
+def control_fiscal_depusa_extern(tenant_id, corp, ctx):
+    """[08.10.2026, decizia Costin U2] Marchează o declarație „depusă în afara iConta”, cu recipisa opțională.
+
+    Data depunerii e OBLIGATORIE: fără ea, „la termen / după termen” ar fi o presupunere (data de azi ar face orice declarație
+    veche „depusă după termen”). Nu se marchează peste o depunere existentă — aceea e deja „la zi”."""
+    import datetime
+    from core import repo_control_fiscal_api
+    _uc_comun._schema_sau_404(ctx, tenant_id)
+    tip = str(corp.get("tip") or "").strip().lower()
+    if tip not in TIPURI_DEPUSA_EXTERN:
+        raise _erori.DateInvalide("Tip de declarație necunoscut: %r." % corp.get("tip"))
+    an, luna = int(corp.get("an") or 0), int(corp.get("luna") or 0)
+    azi = azi_ro()
+    if not (2000 <= an <= azi.year and 1 <= luna <= 12):
+        raise _erori.DateInvalide("Perioadă invalidă: %s/%s." % (luna, an))
+    try:
+        data = datetime.date.fromisoformat(str(corp.get("data_depunere") or "")[:10])
+    except ValueError:
+        raise _erori.DateInvalide("Scrie data depunerii (de pe recipisă).")
+    if data > azi:
+        from core.pdf_util import data_ro   # formatorul canonic al datelor pentru ochi (DS cap.4)
+        raise _erori.DateInvalide("Data depunerii (%s) e în viitor." % data_ro(data))
+    recipisa = (str(corp.get("recipisa") or "").strip() or None)
+    if recipisa and len(recipisa) > 100:
+        raise _erori.DateInvalide("Numărul recipisei are peste 100 de caractere.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            if repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip):
+                raise _erori.Conflict("%s pe %02d/%d e deja înregistrată ca depusă." % (tip.upper(), luna, an))
+            repo_control_fiscal_api.insert_depusa_extern(cur, tenant_id, an, luna, tip, data, recipisa)
+        conn.commit()
+    return {"ok": True, "tip": tip, "an": an, "luna": luna, "data_depunere": data.isoformat(), "recipisa": recipisa}

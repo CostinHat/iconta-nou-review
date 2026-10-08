@@ -638,7 +638,7 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    forteaza NICIODATA.
    **MECANISM (gard, nu intentie) — `scripts/githooks/post-commit` (cablat 07.08.2026, backup adaugat aceeasi zi).**
    Publicarea in AMBELE locuri remote nu mai depinde de memoria executorului: dupa fiecare commit pe `main` (deci dupa
-   ce pre-commit a trecut poarta verde), post-commit face `fetch` + verifica fast-forward + `git push` pe `origin/main`
+   ce commit-msg a trecut poarta verde), post-commit face `fetch` + verifica fast-forward + `git push` pe `origin/main`
    SI pe `backup/lant-<data>` (creeaza ramura zilei daca nu exista), NICIODATA `--force`. Daca o tinta a avansat sub
    tine / nu e fast-forward, se opreste pe acea tinta si cere rezolvare manuala (`pull --rebase` pentru main, fara sa
    forteze). Daca vreo publicare nu reuseste, ESUEAZA VIZIBIL: banner + sentinela (`.git/PUSH_MAIN_ESUAT`,
@@ -659,7 +659,13 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    Publicarea NU se opreste la disc. Dupa ORICE executie care a trecut poarta verde (pytest cu COLLECTED confirmat +
    verificator TOTAL 0 + `git status --porcelain` gol), executorul face TOTI cei cinci pasi de publicare FARA sa fie
    ceruti in comanda - absenta lor e o defectiune, nu o optiune a celui care compune comanda:
-   1. **commit** local pe server (declanseaza pre-commit = poarta verde);
+   1. **commit** local pe server (declanseaza poarta verde: `pre-commit` = ruff, apoi `commit-msg` = mesajul INTAI, apoi
+      pytest + verificatorul — ordinea din 08.10.2026, decizia Costin pct.3, `scripts/githooks/README.md`);
+      **registrele intra in ACELASI commit cu lotul** (decizia Costin 08.10.2026 pct.5, verbatim: „Registrele (PREDARE,
+      ISTORIC etc.) intră în commitul lotului, nu într-un commit separat cu poartă proprie. O singură poartă completă pe lot,
+      la publicarea finală.”). Un registru nu poate purta SHA-ul commitului care il contine: SHA-ul se scrie in raport (§2.2
+      sect.11), iar registrul spune „commitul care contine aceasta intrare”. Supersedeaza regula veche „lucrul intai,
+      registrul dupa, cu hash-ul real” (PREDARE, capcanele de procedura, pct.2);
    2. **push** pe `origin/main` SI `backup/lant-<data>` (cablat, post-commit hook - pct.8);
    3. **deploy** = codul comis ajunge pe checkout-ul care serveste productia. Serviciul `iconta-nou` ruleaza din
       `/home/costin/iconta_nou` (WorkingDirectory al unitatii systemd), ACELASI checkout pe care se comite -> deploy-ul

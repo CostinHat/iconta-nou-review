@@ -79,6 +79,7 @@ def _ecran_shell(pg, fid):
 
 
 def ecran_stocuri(pg): _ecran_shell(pg, "fa-stocuri")
+def ecran_inchidere_luna(pg): _ecran_shell(pg, "fa-inchidere")   # [08.10.2026, decizia Costin U3]
 def ecran_registratura(pg): _ecran_shell(pg, "fa-registratura")
 def ecran_banca(pg): _ecran_shell(pg, "fa-banca")
 def ecran_rapoarte(pg): _ecran_shell(pg, "fa-rapoarte")
@@ -226,6 +227,7 @@ ECRANE = [
     ("stat_plata", ecran_stat_plata),
     ("declaratii", ecran_declaratii),
     ("stocuri", ecran_stocuri),
+    ("inchidere_luna", ecran_inchidere_luna),
     ("registratura", ecran_registratura),
     ("banca", ecran_banca),
     ("rapoarte", ecran_rapoarte),

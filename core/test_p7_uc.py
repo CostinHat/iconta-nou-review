@@ -34,6 +34,10 @@ METODE = ("get", "post", "put", "patch", "delete", "head", "options")
 
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ("perioada_blocheaza", 'dict(\n                _af.afirmatie(\n                    "neconformitate", "inchidere_perioada",\n                    "Luna %02d/%04d nu se poate închide." % (luna, an),\n                    unde="perioada %02d/%04d" % (luna, an),\n                    regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "\n                           "înregistrat și validat"),\n                cod="PERIOADA_NU_SE_POATE_INCHIDE",\n                motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl)'): (
+        "Decizia Costin 08.10.2026, W2 + W3: același refuz (422, aceeași afirmație „Luna … nu se poate închide.”), cu două chei în "
+        "plus — `blocaje` (lista structurată, inclusiv AMORTIZARE_NEINREGISTRATA) și `semnale` (soldul 581 nenul) —, din "
+        "`uc_comun.controale_inchidere`, sursa unică pentru poartă și pentru ecranul „Închidere lună”."),
     ("_adresa_e_libera", "EMAIL_EXISTA"): (
         "Testarea ca asistent, comanda Costin 04.10.2026 pct.3 (aceeași clasă): „Există deja un cont cu acest email. "
         "Autentifică-te…” i se spunea celui care își SCHIMBĂ adresa — e deja autentificat. Același cod (400), mesaj "
@@ -54,6 +58,23 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("coada_adauga", "_refuz_d406"): (
+        "Decizia Costin 08.10.2026, V1 (completarea 2 la U1): „totalurile GeneralLedgerEntries din D406 trebuie să egaleze rulajele "
+        "balanței pe lună; dacă nu, «Trimite în coadă» e blocat.” Refuz 422 structurat (D406_DIFERA_DE_BALANTA), cu totalul D406, "
+        "rulajul balanței pe fereastra D406 și câte note nevalidate explică diferența."),
+    ("coada_adauga", "_refuz_tva"): (
+        "Decizia Costin 08.10.2026, U1 (+ completarea: D300, D394, D390): „dacă rândurile de TVA colectată și deductibilă ale D300 nu "
+        "se potrivesc cu rulajele 4427 și 4426 ale lunii (toleranță: rotunjirea la leu), «Trimite în coadă» e blocat și se afișează "
+        "diferența pe conturi.” Refuz 422 structurat (TVA_DIFERA_DE_BALANTA), înaintea validatorului DUK."),
+    ("factura_contabilizeaza", "_nl.detaliu_refuz(e)"): (
+        "Decizia Costin 08.10.2026, pct.2: „la contarea facturii se propune legarea cu NIR-ul nelegat de la același furnizor "
+        "(preselecție permisă — dedusă din date, vizibilă, modificabilă). Dacă contabilul nu leagă, confirmă explicit «altă "
+        "livrare»; nu se blochează.” Factura de marfă (371, global-valoric) cu NIR „fără factură” nelegat la același furnizor se "
+        "refuză (422) STRUCTURAT — `cod` NIR_DE_LEGAT / NIR_NELEGABIL / COST_DIFERIT_DE_FACTURA, candidații, propunerea — până "
+        "când omul alege NIR-ul sau „altă livrare”; înainte se conta tăcut și 371 se încărca de două ori."),
+    ("factura_primita_valideaza", "_nl.detaliu_refuz(e)"): (
+        "Decizia Costin 08.10.2026, pct.2 (aceeași ca la `factura_contabilizeaza`), pe calea SPV: alegerea NIR-ului se cere ÎNAINTE "
+        "de validare — refuzul (422, structurat) anulează tot actul, ca factura să nu rămână validată fără notă."),
     ("chitanta_emite", 'refuz_spre_ecran(MESAJ_SERIE_CHITANTA_LIPSA, COD_SERIE_CHITANTA_LIPSA, "date_firma", "OMFP 2634/2015 anexa 1 pct.24")'): (
         "Comanda Costin 07.10.2026 („Deciziile 07.10”, pct.5): „Seria chitanței: cerută la prima folosire, ca seria facturii; fără "
         "«CH» din oficiu.” Prima chitanță a firmei fără serie se refuză (400), STRUCTURAT cu ținta `ecran` (butonul spre Date "
@@ -248,6 +269,52 @@ APELURI_INLOCUITE = {
         "fusesera scoase, superadminul). Inlocuitorul filtreaza pe `rol='client'`: portalul stinge "
         "DOAR conturi de client. Face strict mai putin daunator, acoperind exact clasa vulnerabila."),
 }
+
+
+#: [08.10.2026] Corpuri EXTRASE într-un ajutor, cu motivul: funcția cheamă acum ajutorul, iar apelurile vechi le face AJUTORUL.
+#: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
+#: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
+APELURI_EXTRASE_IN_AJUTOR = {
+    "perioada_blocheaza": (("core/uc_comun.py", "controale_inchidere"), (
+        "Decizia Costin 08.10.2026, W2 + W3: „Închiderea lunii e blocată dacă amortizarea lunii nu e înregistrată” și „controalele de "
+        "închidere semnalează soldul 581 nenul”. Controalele (ciorne, facturi neîncheiate, e-Facturi, amortizare, 581) trăiesc într-o "
+        "singură funcție, `uc_comun.controale_inchidere`, chemată și de poarta închiderii și de ecranul „Închidere lună”.")),
+    "tenant_mijloace_fixe": (("core/mf_registru.py", "registru"), (
+        "Decizia Costin 08.10.2026, W2: „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de "
+        "calculul teoretic, cu lunile neînregistrate … durata, codul din catalog și planul lunar”. Rândul registrului se construiește "
+        "în `mf_registru.registru` (același calcul teoretic, `amortizat_la_data`, plus cel înregistrat).")),
+}
+
+
+def _apeluri_ajutor(cale, nume):
+    """Apelurile din corpul ajutorului + din funcțiile aceluiași modul pe care le cheamă direct (un nivel)."""
+    arb = ast.parse(io.open(os.path.join(RAD, cale), encoding="utf-8").read())
+    fn = {n.name: n for n in arb.body if isinstance(n, ast.FunctionDef)}
+    c = {}
+
+    def _numara(nod):
+        for x in ast.walk(nod):
+            if isinstance(x, ast.Call):
+                f = x.func
+                n = f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else None)
+                if n:
+                    c[n] = c.get(n, 0) + 1
+    _numara(fn[nume])
+    for x in [k for k in list(c) if k in fn and k != nume]:
+        _numara(fn[x])
+    return c
+
+
+def test_EXTRAGERILE_declarate_chiar_cheama_ajutorul():
+    """Anti-vacuu: o extragere declarată fără apelul ajutorului (sau cu un ajutor inexistent) ar scuza apeluri pierdute."""
+    import ast as _ast
+    from core import scan_sql_efectiv as _ef
+    for fn_nume, ((cale, ajutor), motiv) in APELURI_EXTRASE_IN_AJUTOR.items():
+        assert len(motiv) > 80
+        assert _apeluri_ajutor(cale, ajutor), "%s: ajutorul %s nu cheamă nimic" % (fn_nume, ajutor)
+        _cale, _nod = _ef.functia(fn_nume)
+        chemate = {x.func.attr for x in _ast.walk(_nod) if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)}
+        assert ajutor in chemate, "%s: extragerea declarată în %s nu e în cod" % (fn_nume, ajutor)
 
 
 def test_INLOCUIRILE_declarate_chiar_exista():
@@ -684,6 +751,10 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
         for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
             if _fn == nume and acum.get(_nou):
                 acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
+        # [08.10.2026] corpul EXTRAS într-un ajutor: creditul = apelurile pe care ajutorul chiar le face (vezi tabelul de sus)
+        if nume in APELURI_EXTRASE_IN_AJUTOR and acum.get(APELURI_EXTRASE_IN_AJUTOR[nume][0][1]):
+            for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
+                acum[k] = acum.get(k, 0) + v
         # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
         # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
         # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.

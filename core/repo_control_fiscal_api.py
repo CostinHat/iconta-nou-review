@@ -53,3 +53,32 @@ def select_facturi(cur, inc, sf):
 def select_public_2(cur, tenant_id):
     cur.execute("SELECT tip, an, luna, (data_depunere AT TIME ZONE 'Europe/Bucharest')::date AS data_depunere "
                 "FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))
+
+
+def select_depuse_extern(cur, tenant_id):
+    """[08.10, U2] Depunerile curente marcate „depusă în afara iConta”: (tip, an, luna, recipisa)."""
+    cur.execute("SELECT d.tip, d.an, d.luna, d.recipisa FROM public.declaratii_depuse d "
+                "JOIN public.declaratii_depuse_curente c USING (tenant_id, an, luna, tip, nr_depunere) "
+                "WHERE d.tenant_id = %s AND d.sursa = 'extern'", (tenant_id,))
+    return cur.fetchall()
+
+
+def select_solduri_initiale(cur):
+    """[08.10, U2] Data soldurilor de preluare (cea mai recentă), sau None."""
+    cur.execute("SELECT max(data_referinta) FROM solduri_initiale")
+    return cur.fetchone()
+
+
+def select_depusa_curenta(cur, tenant_id, an, luna, tip):
+    """[08.10, U2] Depunerea curentă pe (firmă, perioadă, tip), sau None."""
+    cur.execute("SELECT data_depunere FROM public.declaratii_depuse_curente WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
+                (tenant_id, an, luna, tip))
+    return cur.fetchone()
+
+
+def insert_depusa_extern(cur, tenant_id, an, luna, tip, data_depunere, recipisa):
+    """[08.10, U2] Depunere „în afara iConta”: versiune nouă (nr_depunere = max + 1), ca orice depunere (F163v2)."""
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, nr_depunere) "
+                "SELECT %s, %s, %s, %s, %s, 'extern', %s, COALESCE(MAX(nr_depunere), 0) + 1 "
+                "FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s",
+                (tenant_id, an, luna, tip, data_depunere, recipisa, tenant_id, an, luna, tip))

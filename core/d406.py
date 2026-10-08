@@ -478,13 +478,17 @@ _FELURI = {
 #   1. CASA si BANCA sunt DOUA identificatoare pentru UN SINGUR fel ("operatiuni de casa si banca").
 #      Norma le grupeaza; aplicatia le tine in registre distincte, iar un jurnal mai fin e mai
 #      informativ, nu mai putin conform - lista fiind ilustrativa.
-#   2. AMORTIZARE nu e un fel numit de norma: intra la "alte operatiuni".
+#   2. AMORTIZARE si STOCURI nu sunt feluri numite de norma: intra la "alte operatiuni".
 _JURNALE = {
     "casa":       ("CASA",       "casa_banca"),
     "banca":      ("BANCA",      "casa_banca"),
     "facturi":    ("FACTURI",    "facturi"),
     "salarii":    ("SALARII",    "salarii"),
     "amortizare": ("AMORTIZARE", "alte"),
+    # [08.10.2026, decizia Costin V2] „Notele cu sursa «stocuri» ajung în jurnalul DIVERSE. Se mapează la un jurnal propriu.”
+    # NIR-uri, ieșiri, descărcarea lunii, inventarul. Norma nu numește un fel pentru stocuri -> „alte operațiuni”, ca AMORTIZARE
+    # (abaterea 2 de mai sus); JournalID-ul e al nostru.
+    "stocuri":    ("STOCURI",    "alte"),
 }
 # `furnizori` sta in nomenclator FARA mapare: niciun `inregistrari.sursa` nu-l produce azi.
 # Se scrie asa, nu se sterge - nomenclatorul e complet, maparea e partiala, si diferenta se vede.
@@ -596,6 +600,7 @@ class Rezultat:
     facturi_cumparare: list = field(default_factory=list) # PurchaseInvoices
     plati: list = field(default_factory=list)             # Payments
     avertismente: list = field(default_factory=list)
+    sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
     # [R165] fereastra REALA a raportarii (perioada fiscala TVA). None -> antetul cade pe
     # luna-ancora, ca inainte: apelantii directi (`d406_active`, `d406_stocuri`) n-o dau.
     data_inceput: object = None
@@ -679,10 +684,10 @@ def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                    facturi_cumparare=facturi_cumparare or [],
                    plati=plati or [],
                    cote_tva=_cote_cu_folosite(cote_tva or COTE_TVA_STANDARD, facturi_vanzare))
-    res.avertismente.append("D406 v%s: %d conturi, %d clienți, %d furnizori, %d note, %d fact.vânz, %d fact.cump, %d plăți."
+    res.sinteza.append("D406 v%s: %d conturi, %d clienți, %d furnizori, %d note, %d fact.vânz, %d fact.cump, %d plăți."   # [08.10, V5]
                             % (SAFT_VERSION, len(conturi), len(clienti), len(furnizori), len(res.note),
                                len(res.facturi_vanzare), len(res.facturi_cumparare), len(res.plati)))
-    res.avertismente.append("Validare finală: DUKIntegrator pe server (-v D406 fisier.xml $ $ an=%d luna=%d)." % (an, luna))
+    res.sinteza.append("Validare finală: DUKIntegrator pe server (-v D406 fisier.xml $ $ an=%d luna=%d)." % (an, luna))   # [08.10, V5] informație, nu avertisment
     # T3 (CATALOG_INVALIDITATE.md): o metoda de plata necunoscuta e inlocuita TACIT cu 03 (fara
     # numerar) de payment_method_anaf. Nu tacit: semnalam per plata valoarea exacta inlocuita.
     for _p in (plati or []):

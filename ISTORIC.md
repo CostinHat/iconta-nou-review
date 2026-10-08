@@ -1826,3 +1826,56 @@ producție la 03:14 (commitul `876e87a2`, four-way închis), iar baza de produc�
 - **Ce nu s-a putut lega**: patru notificări din 06.10 (44, 45, 46, 48) n-au id de element (dinaintea legăturii) — rămân fără stare,
   toate citite.
 
+
+## 08.10.2026 — „Deciziile 08.10”: răspunsurile lui Costin la §6 al lotului „Deciziile 07.10” — un lot, o poartă, registrele în același commit
+
+Comanda (verbatim în DECIZII 08.10.2026) a răspuns la cele trei decizii deschise și a adăugat două: F1 confirmat (116 / 5.900,00, fără
+stornare fabricată); D2 în ordinea inversă; verificarea mesajului înaintea pytest; notificările fără element; registrele în commitul lotului.
+
+- **NIR „fără factură”, apoi factura (global-valoric)**: contarea facturii de marfă (371) de la un furnizor cu NIR nelegat nu mai trece
+  tăcut. Pe orice drum (Contează din Istoric facturi, Validează din SPV, Contabilizează facturile din controlul fiscal) apare caseta
+  „NIR-ul acestei livrări”, cu NIR-ul de același cost propus; „Leagă” scrie stornarea în roșu a costului NIR-ului (371=401 și 4426=401
+  cu minus, documentul = NIR-ul), „Altă livrare” contează normal și o consemnează. Măsurat pe probă: înainte 371 D 1.350,00 / 401 C
+  1.331,00 / 4426 D 231,00 și K 0,091780; după 800,00 / 665,50 / 115,50 și K 0,168129 — aceleași solduri ca ordinea directă. D406
+  cu liniile în roșu: valid pe DUK. La cantitativ-valoric aceeași clasă rămâne deschisă (decizie cerută, datorie strictă).
+- **Poarta**: `commit-msg` verifică întâi mesajul și abia apoi pornește suita (mutată din `pre-commit`); un mesaj greșit costă
+  secunde, nu ~55 de minute.
+- **Clopoțelul**: notificările de acțiune fără element primesc „rezolvată: elementul nu mai există”; baza nu mai primește altele
+  (`notificari_element_ck`), iar „a fost respinsă” a unei declarații se rezolvă când declarația intră din nou în coadă.
+- **Găsit apăsând (proba de browser)**: după „Contează”, rândul facturii rămânea „Contează” — butonul-rând era aplatizat la text de
+  blocarea din timpul scrierii (`api.js`), din codul vechi. Reparat în mecanismul unic (45 de butoane cu elemente, 10 fișiere), cu gard
+  în browser și regula în DS cap.1 (v2.81). Odată rândul întreg, axe a văzut „Contează” la 4,13:1 pe rândul zebră — linkul de acțiune
+  din listele zebră folosește acum albastrul închis al DS (5,55:1), cu gard (DS cap.15 v2.81).
+- **Registrele** (PREDARE, ISTORIC, DECIZII, GARZI, TESTE) intră în commitul care conține această intrare; SHA-ul lui, four-way-ul și
+  migrarea pe producție sunt în raportul turei.
+
+## 08.10.2026 — „Deciziile 08.10”, continuare: retestul de dimineață, controlul fiscal, balanța pe lună, registrul MF (același lot)
+
+Opt mesaje Costin în aceeași zi, toate în același lot și același commit (verbatim în DECIZII 08.10.2026).
+
+- **Statul și ciorna veche (F5)**: contabilizarea înlocuiește ciorna nevalidată cu alte sume cu nota statului de acum; ciorna #1 de pe
+  producție se tratează la fel, după publicare. CAM-ul pe salariat include elementele variabile (124 în loc de 113 pe probă).
+- **Coada și refacerile**: elementele vechi își primesc documentul, deci NIR-ul refăcut arată „retrimis după respingere”; „Refă
+  NIR-ul” vine cu articolul și cu 10 / 55,00; NIR-ul respins și refăcut e o singură linie „Respins · înlocuit de NIR nr …”.
+  Clopoțelul își păstrează pictograma (aceeași cauză ca butonul aplatizat). Titlul cozii spune ce conține.
+- **Facturi și chitanțe**: „încasată / încasată parțial: X din Y / neîncasată” pe factură și în Istoric facturi; refuzul seriei duce la
+  câmpul seriei; nota chitanței spune ce factură stinge, iar detaliul notei are Validează / Respinge.
+- **Declarații**: D300, D394, D390 nu intră în coadă când TVA-ul lor nu se potrivește cu 4427 / 4426 (F1 10/2026: blocat, 4426 −241,50 —
+  TVA din NIR fără factură, decizie cerută); D406 nu intră când GeneralLedgerEntries ≠ rulajul balanței (F1: −6.953,00 = cele două
+  ciorne de bancă); notele de stocuri au jurnal propriu; „[object Object]” a dispărut; rezumatul stă în „Rezumat”, nu în
+  „Avertismente” (și la D301, D406). Contul din afara planului legal (731–738, semănate de șablon) poartă avertisment.
+- **Control fiscal**: restanțele de la luna preluării (F1: 32 -> 0, cele 32 separat), „depusă în afara iConta” cu recipisă, „nedeclarat”
+  în loc de „diferă de contabilitate” când nimic nu e depus, „de urmărit” pe 30 de zile (F1: 0 -> 5), cardul recalculat imediat după
+  orice scriere.
+- **Balanța**: cinci egalități (sold inițial, sume precedente, rulajele lunii, total sume, sold final); rulajele lunii = notele din
+  Registrul jurnal pe lună (F2 octombrie: 7.750 -> 0, cele 7.750 la „sume precedente”), pe ecran și în PDF (A4 culcat).
+- **Mijloace fixe și închiderea lunii**: registrul arată amortizarea înregistrată (F2: 2.400), diferența (1.800) cu lunile lipsă
+  (01–08/2026; 02–12/2025 sunt în soldul preluat), durata, codul din catalogul HG 2139/2004 și planul lunar; cardul „Închidere lună”
+  (Zilnic) arată ce oprește închiderea — inclusiv amortizarea neînregistrată — și semnalează 581 cu sold. „C&D” cere «Poate
+  valida». Balanța, Mijloacele fixe și Declarațiile se deschid late.
+- **Găsite pe drum și reparate pe clasă**: SQL scris direct în use-case (mutat în repository, prins de gardurile P7); soldul inițial al
+  amortizării citit din planul de conturi (0) în loc de soldurile inițiale (prins la mutație); `destinatie_cd` brut în registru (prins de
+  ratchet-ul P7, extins pentru corpurile extrase într-un ajutor); scanerul 1b citea chei inexistente ale balanței.
+- **Găsite de proba de browser, la final**: „Salvează” fără dată ștergea formularul „depusă în afara iConta” — mesajul de stare rescria
+  containerul; reparat în mecanismul unic (orice container cu câmpuri își primește mesajul într-un copil), cu gard în browser. axe pe
+  Balanță: verdele „● se închide” pe rândul zebră la 4,12:1 (și înainte de lot) — zebra tabelelor folosește acum verdele închis (4,53:1).

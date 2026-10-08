@@ -304,18 +304,22 @@ def note_nir(n):
 def stare_validare_nir(nirs, stari, refaceri):
     """[retest 07.10 R1] Starea NIR-ului în listă și în detaliu: „respins”, cu motivul (ultimul element din coadă al vreuneia din
     notele lui e `respinsa`), și NIR-ul care l-a refăcut, dacă există. `stari` = `coada_api.stari_note`; `refaceri` =
-    {nir_id_vechi: numar_nou}. Notele unui NIR refăcut au fost scoase — elementele lor din coadă rămân ca istoric."""
+    {nir_id_vechi: {id, numar, data}}. Notele unui NIR refăcut au fost scoase — elementele lor din coadă rămân ca istoric."""
     for n in nirs:
         resp = [stari[i] for i in note_nir(n) if (stari.get(i) or {}).get("stare_coada") == "respinsa"]
         n["respins"] = ({"motiv_respingere": resp[0].get("motiv_respingere"), "la": resp[0].get("la")} if resp else None)
-        n["refacut_in"] = refaceri.get(n["id"])
+        r = refaceri.get(n["id"])
+        n["refacut_in"] = r["numar"] if r else None
+        # [retest 08.10 pct.5] NIR-ul care îl înlocuiește (lista îl reduce pe cel respins la o linie, lângă cel valabil)
+        n["inlocuit_de"] = r
     return nirs
 
 
 def refaceri_nir(conn, schema, nir_ids):
+    """{nir_id_vechi: {id, numar, data}} — NIR-ul care l-a refăcut."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT refacut_din_id, numar FROM {schema}.nir WHERE refacut_din_id = ANY(%s)", ([int(i) for i in nir_ids],))
-        return {r["refacut_din_id"]: r["numar"] for r in cur.fetchall()}
+        cur.execute(f"SELECT refacut_din_id, id, numar, data FROM {schema}.nir WHERE refacut_din_id = ANY(%s)", ([int(i) for i in nir_ids],))
+        return {r["refacut_din_id"]: {"id": r["id"], "numar": r["numar"], "data": str(r["data"])} for r in cur.fetchall()}
 
 
 def lista_nir(conn, schema, an, luna):

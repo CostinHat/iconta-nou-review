@@ -18,6 +18,15 @@ def id_nota_dupa_numar(cur, numar):
     return cur.fetchone()
 
 
+def liniile_si_data(cur, nota_id):
+    """[retest 08.10 pct.1] (data, [(debit, credit, sumă)] sortate) ale unei note — aceeași formă ca amprenta din coadă."""
+    cur.execute("SELECT data::text FROM inregistrari WHERE id = %s", (nota_id,))
+    d = cur.fetchone()
+    cur.execute("SELECT cont_debit, cont_credit, suma::text FROM inregistrari_linii WHERE inregistrare_id = %s", (nota_id,))
+    return ((d[0] if not isinstance(d, dict) else d["data"]) if d else None,
+            sorted(tuple(x) if not isinstance(x, dict) else (x["cont_debit"], x["cont_credit"], x["suma"]) for x in cur.fetchall()))
+
+
 def id_nota_dupa_numar_2(cur, numar):
     cur.execute("SELECT id FROM inregistrari WHERE numar = %s",
                 (numar,))
@@ -324,3 +333,29 @@ def nota_salarii_ciorna(cur, schema, data_, descriere, tip_document="nota_calcul
                             VALUES (%s,%s,'salarii','ciorna') RETURNING id""",
                 (data_, descriere))
     return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())
+
+
+def search_path_firma(cur, schema):
+    """[08.10, W2] Numele necalificate ale cititorilor (registrul MF) pe schema firmei, numai în tranzacția curentă."""
+    cur.execute('SET LOCAL search_path TO "%s", public' % str(schema).strip('"'))
+
+
+def punct_de_revenire(cur, nume):
+    """[retest 08.10 pct.1] SAVEPOINT — înlocuirea ciornei statului se poate retrage dacă noua notă are aceeași amprentă."""
+    cur.execute("SAVEPOINT %s" % nume)
+
+
+def revino_la(cur, nume):
+    cur.execute("ROLLBACK TO SAVEPOINT %s" % nume)
+
+
+def profil_tva(cur):
+    """[08.10, V1] (platitor_tva, tip_decont) — fereastra D406 (`common.fereastra_d406`)."""
+    cur.execute("SELECT platitor_tva, tip_decont FROM firma_profil LIMIT 1")
+    return cur.fetchone()
+
+
+def note_nevalidate_in_interval(cur, de_la, pana_la):
+    """[08.10, V1] Câte note NEvalidate sunt în [de_la, pana_la) — balanța le arată, D406 nu."""
+    cur.execute("SELECT count(*) FROM inregistrari WHERE status <> 'validata' AND data >= %s AND data < %s", (de_la, pana_la))
+    return cur.fetchone()[0]

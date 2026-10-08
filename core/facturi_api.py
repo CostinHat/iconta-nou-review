@@ -507,13 +507,53 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
         limitclause = " LIMIT %s OFFSET %s"; val += [limit, offset]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT id, numar, data_emitere, directie, total, tva, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id "
+            "SELECT id, numar, data_emitere, directie, total, tva, total_lei, status, "
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la "
             "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         out = [dict(r) for r in cur.fetchall()]
         _cu_stare_contare(cur, out)
+        _cu_stare_incasare(cur, out)
         return out
+
+
+def _cu_stare_incasare(cur, facturi):
+    """[retest 08.10, completarea pct.1, comanda Costin] „starea de încasare (încasată / parțial / neîncasată) trebuie să fie vizibilă
+    pe factură și în lista «Istoric facturi»” — F1A3, încasată integral prin CHF1-1, arăta numai „contabilizată”. O SINGURĂ definiție
+    pentru listă și detaliu: încasat = chitanțele nenulate ale facturii (`chitante.factura_id`) + plățile legate de factură
+    (`inregistrari.factura_id`, nu contarea: 411x pe credit la emisă, 401x pe debit la primită — reconcilierea bancară, casa);
+    `platita_la` (pus de chitanța integrală, de bonul stins) = încasare integrală declarată. Comparat cu totalul în lei.
+    `stare_incasare` = {stare: incasata | partial | neincasata, incasat, total}; None la proformă / aviz / storno."""
+    from decimal import Decimal as _D
+    from core import sume_lei as _sl
+    ids = [f["id"] for f in facturi if (f.get("tip") or "factura") == "factura" and not f.get("storno_din_id")]
+    for f in facturi:
+        f["stare_incasare"] = None
+    if not ids:
+        return
+    cur.execute("SELECT factura_id, COALESCE(SUM(suma), 0) FROM chitante WHERE factura_id = ANY(%s) AND NOT anulata GROUP BY factura_id",
+                (ids,))
+    incasat = {(r["factura_id"] if isinstance(r, dict) else r[0]): _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
+               for r in cur.fetchall()}
+    cur.execute("SELECT i.factura_id, COALESCE(SUM(l.suma), 0) FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+                "JOIN facturi f ON f.id = i.factura_id WHERE i.factura_id = ANY(%s) AND i.sursa IS DISTINCT FROM 'facturi' "
+                "AND ((f.directie = 'emisa' AND l.cont_credit LIKE '411%%') OR (f.directie = 'primita' AND l.cont_debit LIKE '401%%')) "
+                "GROUP BY i.factura_id", (ids,))
+    for r in cur.fetchall():
+        k = r["factura_id"] if isinstance(r, dict) else r[0]
+        incasat[k] = incasat.get(k, _D(0)) + _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
+    for f in facturi:
+        if f["id"] not in ids:
+            continue
+        try:
+            total = _sl.antet_lei(f)[0]
+        except _sl.LipsaCurs:
+            total = _D(str(f.get("total") or 0))
+        inc = incasat.get(f["id"], _D(0))
+        stare = ("incasata" if (f.get("platita_la") or (total > 0 and inc >= total - _D("0.005")))
+                 else ("partial" if inc > 0 else "neincasata"))
+        f["stare_incasare"] = {"stare": stare, "incasat": "%.2f" % (total if (f.get("platita_la") and inc < total) else inc),
+                               "total": "%.2f" % total}
 
 
 def _cu_stare_contare(cur, facturi):
@@ -553,6 +593,7 @@ def detalii_factura(conn, factura_id):
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
         _cu_stare_contare(cur, [f])
+        _cu_stare_incasare(cur, [f])
     return f
 
 
@@ -715,7 +756,9 @@ def pregatire_emitere(conn, tenant_id, la_data):
     if lipsuri and not profil.get("forma_juridica"):
         forma, sursa = forma_propusa_firma(conn, tenant_id)
     permise, _t = _cote_tva_in_vigoare(la_data)
+    from core import capital_social as _csl
     return {"lipsuri_firma": lipsuri, "forma_propusa": forma, "forma_propusa_sursa": sursa,
+            "camp_ecran": _csl.CAMP_LIPSA.get((lipsuri or [None])[0]),   # [retest 08.10, completarea pct.2] butonul, la câmp
             "serie_lipsa": not serie_facturi(conn),   # [06.10.2026 §6.1] nu blochează: refuzul o cere și o setează pe loc
             # [lotul 07.10 pct.18] scadența PROPUSĂ pe formular (editabilă): zilele și temeiul vin de aici, nu din ecran
             "scadenta_zile": SCADENTA_PROPUSA[0], "scadenta_temei": str(SCADENTA_PROPUSA[1]),

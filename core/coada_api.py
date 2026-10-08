@@ -234,7 +234,7 @@ def _payload_nota(n):
     doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
     p = {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
          "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
-         "partener": n.get("partener"),
+         "partener": n.get("partener"), "stinge": n.get("stinge"),   # [08.10, U5]
          "grup": grup_nota(n["id"], n.get("grup_doc"))}
     # [retest 07.10 seara, S3] documentul notei, documentul pe care îl reface (NIR-ul refăcut: cel respins) și amprenta notei —
     # din ele cardul din coadă spune „retrimisă după respingere”, motivul anterior și dacă nota s-a schimbat
@@ -370,7 +370,11 @@ def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):
         cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.creat_de_id = %s AND NOT EXISTS ("
                     "SELECT 1 FROM public.declaratii_coada c WHERE c.tenant_id = %s AND c.fel = 'nota' "
                     "AND c.perioada = 'nota-' || i.id) ORDER BY i.id", (uid, tenant_id))
-        note = cur.fetchall()
+        note = [dict(n) for n in cur.fetchall()]
+        from core import jurnal_api as _j   # [08.10, U5] factura stinsă de chitanța notei, pe cardul din coadă
+        _st = _j.facturi_stinse(cur, None, [n["id"] for n in note])
+        for n in note:
+            n["stinge"] = _st.get(n["id"])
         grupuri = {}
         for n in note:
             cid = _insereaza_nota(cur, cabinet_id, tenant_id, n, uid)

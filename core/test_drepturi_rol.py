@@ -112,6 +112,8 @@ _PINI = {
     ("POST", "/tenants/{tenant_id}/jurnal/{nota_id}/valideaza"): ("VALIDA", "„validarea notelor contabile”"),
     ("POST", "/coada/{coada_id}/aproba"): ("VALIDA", "„validarea … declarațiilor”"),
     ("POST", "/tenants/{tenant_id}/amortizare"): ("VALIDA", "„înregistrarea amortizării”"),
+    ("PUT", "/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd"): ("VALIDA", "decizia Costin 08.10 W4: „schimbă regimul "
+                                                                                       "fiscal al activului și cere «Poate valida»”"),
     ("POST", "/coada/{coada_id}/depune"): ("DEPUNE", "„depunerea la ANAF”"),
     ("POST", "/tenants/{tenant_id}/facturi/emite"): ("PREGATI", "„emitere/storno facturi”"),
     ("POST", "/tenants/{tenant_id}/facturi/{factura_id}/storno"): ("PREGATI", "„emitere/storno facturi”"),

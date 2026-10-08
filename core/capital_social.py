@@ -86,6 +86,11 @@ def forma_propusa(forma_anaf=None, *denumiri):
     return None, None
 
 
+#: [retest 08.10, completarea pct.2] fiecare lipsă din `lipsa` -> câmpul ei din Date firmă (id-ul DOM, contractul DS cap.6)
+CAMP_LIPSA = {"forma juridică a firmei (SRL, SA etc.)": "df-forma_juridica", "capitalul social": "df-capital_subscris",
+              "capitalul social subscris": "df-capital_subscris", "capitalul social vărsat": "df-capital_varsat"}
+
+
 def lipsa(profil):
     """[ce lipsește, în termenii contabilului] pentru ca factura să poată fi emisă; [] = nimic. PFA/II/IF -> []."""
     if profil.get("tip_firma") == "pfa":   # coloana e NOT NULL (implicit „srl”); fără ea: societate -> se cere forma, nu se scutește
@@ -143,16 +148,19 @@ def detaliu(e):
     """Corpul refuzului structurat (HTTP 422) ca AFIRMAȚIE TIPATĂ (`neconformitate`: profilul nu satisface art.74
     alin.(3)); ecranul de emitere citește `cod`, `mesaj`, `lipsa`, `ecran` și deschide caseta spre Date firmă."""
     from core import afirmatii as _af
+    # [retest 08.10, completarea pct.2] butonul duce la PRIMUL câmp care lipsește (forma, apoi capitalul)
     return _af.afirmatie("neconformitate", "factura", str(e), unde="Date firmă", regula=e.temei,
-                         cod=e.cod, mesaj=str(e), temei=e.temei, lipsa=e.lipsa, ecran="date_firma")
+                         cod=e.cod, mesaj=str(e), temei=e.temei, lipsa=e.lipsa, ecran="date_firma",
+                         camp_ecran=CAMP_LIPSA.get((e.lipsa or [None])[0]))
 
 
 def detaliu_metoda_stoc(e):
     """[06.10.2026 §6.3] Același corp de refuz spre Date firmă, pentru metoda de stoc (`core.metoda_stoc`): ecranul de emitere
     păstrează factura și oferă „Deschide Date firmă”, ca la capital."""
     from core import afirmatii as _af
+    from core import mesaje as _mesaje
     return _af.afirmatie("neconformitate", "factura", str(e), unde="Date firmă", regula="metoda de stoc (comanda Costin 06.10.2026)",
-                         cod=e.cod, mesaj=str(e), ecran="date_firma")
+                         cod=e.cod, mesaj=str(e), ecran="date_firma", camp_ecran=_mesaje.camp_ecran(e.cod))
 
 
 def _lei(d):

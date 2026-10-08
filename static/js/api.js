@@ -20,10 +20,16 @@ function blocheazaButon(metoda) {
   if (metoda === "GET") return () => {};
   const b = butonDeclansator();
   if (!b) return () => {};
-  const textOriginal = b.textContent;
   b.disabled = true;
+  // [08.10.2026] Un buton cu ELEMENTE în el (rândul-buton al unei liste, cu „Contează” în el; cardul; iconița) nu se rescrie ca
+  // text: `textContent` îl aplatiza, iar la deblocare îl punea la loc ca text simplu — copiii dispăreau, elementul acțiunii
+  // rămânea detașat, iar ecranul nu-și mai putea arăta rezultatul (rândul facturii rămânea „Contează” după contare). Se
+  // blochează (dezactivat + aria-busy) fără să i se atingă conținutul; „Se lucrează...” rămâne pentru butonul de text simplu.
+  b.setAttribute("aria-busy", "true");
+  if (b.firstElementChild) return () => { b.disabled = false; b.removeAttribute("aria-busy"); };
+  const textOriginal = b.textContent;
   if (!/Se \S+eaz\u0103|Se lucreaz/.test(textOriginal)) b.textContent = "Se lucreaz\u0103...";
-  return () => { b.disabled = false; b.textContent = textOriginal; };
+  return () => { b.disabled = false; b.removeAttribute("aria-busy"); b.textContent = textOriginal; };
 }
 
 async function cere(metoda, cale, corp) {
@@ -196,11 +202,11 @@ function _butonSpreEcran(eroare, cale) {
     const el = zone[zone.length - 1];
     const cadru = el.closest(".em-curs-box, #refuz-nevazut") || el;
     if (cadru.querySelector("[data-ecran-destinatie]")) return true;
-    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=ab288d196e");
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=05e032b67b");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
     el.appendChild(z);
-    butonSpreEcran(z, det.ecran, window._navGlobal, Number(tid), { clasa: "buton-secundar" });
+    butonSpreEcran(z, det.ecran, window._navGlobal, Number(tid), { clasa: "buton-secundar", camp: det.camp_ecran || null });
     return true;
   };
   // după ce ecranul a afișat refuzul; iar dacă nu l-a afișat, după bannerul de refuz nevăzut
@@ -353,6 +359,14 @@ if (typeof MutationObserver !== "undefined") {
 // [msg_conventie_v1] helper global mesaje: tip = "eroare" | "avert" | "info"
 export function arataMesaj(el, txt, tip = "info") {
   if (!el) return;
+  // [08.10.2026, găsit de proba „depusă în afara iConta”] Un container care ține CÂMPURI de formular nu e o zonă de mesaj: `textContent`
+  // le-ar șterge (formularul dispărea la „Salvează” fără dată). Mesajul merge într-un copil propriu, pus la capătul containerului;
+  // câmpurile rămân. Zonele de mesaj (fără câmpuri) se rescriu ca înainte. DS cap.6 v2.82; gard `core/test_mesaj_in_formular.py`.
+  if (el.querySelector("input, select, textarea")) {
+    let z = el.querySelector(":scope > .msg-in-formular");
+    if (!z) { z = document.createElement("div"); z.className = "msg-in-formular"; el.appendChild(z); }
+    el = z;
+  }
   el.textContent = txt || "";
   el.className = el.className.replace(/\bmsg-(eroare|avert|info|ok)\b/g, "").trim();
   el.classList.add("msg-" + tip);

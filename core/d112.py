@@ -95,6 +95,9 @@ class RezultatD112:
     asigurati: list = field(default_factory=list)
     total_plata_a: int = 0
     avertismente: list = field(default_factory=list)
+    # [08.10.2026, decizia Costin V5] „Rezumatele corecte (ex. D112, D394) apar în caseta galbenă «Avertisment». Un rezumat nu e
+    # avertisment.” Sinteza cifrelor stă pe canalul ei.
+    sinteza: list = field(default_factory=list)
 
 
 def _cod_boala_acceptat(cod):
@@ -650,11 +653,11 @@ def calcul_d112(prof, salariati, an, luna):
               "r07": _c2row(("07",))}   # [cod07] carantina - rand C2 propriu (prevenire imbolnavire, FNUASS)
         # carantina e deja in r2[5]=C2_26 (nu se dubleaza)
         c2["t6"] = sum(c2[k][5] for k in ("r1", "r2", "r3", "r4", "r41", "r5"))
-    av.append("D112: %d salariati - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
-              % (n, bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an))
+    sinteza = ["D112: %d salariati - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
+               % (n, bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an)]   # [08.10, V5] nu e avertisment
     return CalculD112(
         rezultat=RezultatD112(an=an, luna=luna, prof=prof, obligatii=obligatii, asigurati=asigurati,
-                              total_plata_a=int(total_plata), avertismente=av),
+                              total_plata_a=int(total_plata), avertismente=av, sinteza=sinteza),
         antet={"nume_declar": nume_d, "prenume_declar": pren_d, "functie_declar": func_d, "cif": cui_f,
                "caen": caen_f, "den": den_f, "casa_ang": casa_ang, "perioada": perioada, "n": n,
                "sum_bazac": sum_bazac, "c1_12": c1_12, "cam_total": cam_total},

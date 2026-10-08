@@ -125,6 +125,7 @@ class Rezultat:
     total_plata_a: int = 0
     mij_transp: int = 0
     avertismente: list = field(default_factory=list)
+    sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
     ops_raw: list = field(default_factory=list)   # T2/T3: valorile BRUTE, pre-coercitie (validate pre-DUK)
 
 
@@ -189,7 +190,7 @@ def calcul_d301(prof, perioada, operatiuni_raw):
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},
                    total_plata_a=total_plata, mij_transp=mij,
                    ops_raw=list(operatiuni_raw))
-    res.avertismente.append("D301 %d/%d: %d operațiuni, TVA total %s."
+    res.sinteza.append("D301 %d/%d: %d operațiuni, TVA total %s."   # [08.10, V5] sinteza cifrelor, nu avertisment
                             % (luna, an, len(ops), bani(sum(tot[t][1] for t in TIPURI_OP), "lei")))
     return res
 

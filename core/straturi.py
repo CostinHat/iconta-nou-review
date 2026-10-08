@@ -465,7 +465,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, None,
-      "437 rute montate in modul si 0 instructiuni SQL — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
+      "439 rute montate in modul si 0 instructiuni SQL (437 + doua din deciziile 08.10.2026: codul din catalog al mijlocului fix, W2, si declaratia „depusa in afara iConta”, U2) — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
       "PLAN_HARDENING.md:839 — stratul HTTP e acolo unde sunt rutele"),
     D("core/repo_beneficii_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/beneficii_api.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
@@ -474,7 +474,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/categorie_marime.py` — 1 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_control_fiscal_api.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/control_fiscal_api.py` — 8 instructiuni SQL, zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/control_fiscal_api.py` — 12 instructiuni SQL (opt mutate in valul D4, patru adaugate de decizia U2 din 08.10.2026: luna preluarii si „depusa in afara iConta”), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_control_incrucisat.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/control_incrucisat.py` — 45 instructiuni SQL, zero `get_conn`, zero commit",
@@ -809,6 +809,19 @@ REGISTRU = (
     D("core/stocuri_anulare.py", REPOSITORY, None,
       "«respingerea unui document cu mișcare de stoc o stornează în fișa de magazie» (retest 07.10, R1) — stornare în roșu, "
       "refacerea facturii; 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/plan_legal.py", REPOSITORY, None,
+      "«un cont care nu e în planul legal nu se poate crea sau folosi fără avertisment» (decizia 08.10, V3) — norma firmei din "
+      "firma_profil, nomenclatorul validatorului ANAF (d406.plan_oficial); 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/mf_registru.py", REPOSITORY, None,
+      "«registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de calculul teoretic» (decizia "
+      "08.10, W2) — soldul contului de amortizare (solduri_initiale + note validate), lunile înregistrate, catalogul HG 2139/2004; "
+      "0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/nir_legare.py", REPOSITORY, None,
+      "«la contarea facturii se propune legarea cu NIR-ul nelegat de la același furnizor» (decizia 08.10, pct.2) — candidații, "
+      "stornarea în roșu a costului NIR-ului; 0 get_conn / 0 commit proprii",
       "citit la sursa (docstring + ce face modulul)"),
     D("core/z_descarcare.py", REPOSITORY, None,
       "«raportul Z la firma cu stocul CANTITATIV-VALORIC» (decizii 07.10, D3) — descărcarea pe articol legată de Z, "

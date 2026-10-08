@@ -67,9 +67,15 @@ def pentru_reevaluare(cur, schema, mijloc_id):
 def toate(cur):
     cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ,
-                                  {_REEV.format(p="")} AS reevaluari, destinatie_cd
+                                  {_REEV.format(p="")} AS reevaluari, destinatie_cd, cod_catalog
                            FROM mijloace_fixe ORDER BY activ DESC, id""")
     return cur.fetchall()
+
+
+def seteaza_cod_catalog(cur, mijloc_id, cod):
+    """[08.10.2026, W2] codul de clasificare din Catalogul HG 2139/2004."""
+    cur.execute("UPDATE mijloace_fixe SET cod_catalog = %s WHERE id = %s RETURNING id, dnf_luni", (cod, mijloc_id))
+    return cur.fetchone()
 
 
 def pentru_inventariere(cur, schema, mijloc_id):

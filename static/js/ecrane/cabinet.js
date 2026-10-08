@@ -3,12 +3,12 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=e9cf26e11b";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4242dc4353";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=ff714711ca";
-import { randeazaMigrare } from "./migrare.js?v=986b1b12ba";
+import { randeazaListaFirme } from "./firme.js?v=20080aef8b";
+import { randeazaMigrare } from "./migrare.js?v=a059e2160d";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=18368f80b7"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
@@ -16,7 +16,7 @@ import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recoman
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=2eb55662ae";
+import { randeazaValidat } from "./validat.js?v=e6153826af";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
 import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]

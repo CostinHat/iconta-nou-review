@@ -9,12 +9,12 @@
   > *„Conditie: eticheta e ignorata daca commitul atinge vreun fisier executabil sau vreun registru.
   > Se aplica doar la stergeri, `.gitignore` si mutari. Altfel devine cheia care deschide tot."*
 
-**DE CE DECIDE INDEXUL, SI NU ETICHETA — nu e o alegere de stil, e ordinea hook-urilor.**
-La `pre-commit`, mesajul commitului **inca nu exista**: cu `git commit -F`, `.git/COMMIT_EDITMSG`
-poarta mesajul commitului **PRECEDENT** — dovedit pe 23.08.2026, scris in chiar antetul lui
-`scripts/githooks/pre-commit`. Deci poarta nu POATE fi sarita de o eticheta; singurul lucru pe care
-il vede e **ce e in index**. Eticheta `# doar-curatenie:` ramane obligatorie, dar rolul ei e altul,
-si il verifica `commit-msg`: **marturia scrisa** ca poarta a fost sarita, si de ce. *O poarta sarita
+**DE CE DECIDE INDEXUL, SI NU ETICHETA.** Pana pe 08.10.2026 saltul se decidea la `pre-commit`, unde mesajul
+**inca nu exista** (cu `git commit -F`, `.git/COMMIT_EDITMSG` poarta mesajul commitului **PRECEDENT** — dovedit pe
+23.08.2026). Din 08.10 (decizia Costin pct.3) suita ruleaza DUPA mesaj, in `scripts/githooks/poarta-suita`, chemata de
+`commit-msg` — mesajul exista, dar regula ramane: o poarta care s-ar deschide cu o eticheta ar depinde de ce tastezi; singurul
+lucru care decide e **ce e in index**. Eticheta `# doar-curatenie:` ramane obligatorie, dar rolul ei e altul,
+si il verifica `scripts/githooks/verifica-mesaj`: **marturia scrisa** ca poarta a fost sarita, si de ce. *O poarta sarita
 in tacere n-ar lasa nicio urma in istorie.* Efectul cerut de conditie e insa exact cel scris: pe un
 commit care atinge un executabil sau un registru, eticheta nu deschide nimic.
 

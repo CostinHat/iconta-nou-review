@@ -28,7 +28,46 @@ from core.common import azi_ro, pastila_firma, perioada_tva_tip  # [fus] ziua RO
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 from core import repo_control_fiscal_api as _repo
 
-PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
+# [08.10.2026, decizia Costin U2, verbatim in DECIZII] „Declarațiile scadente în următoarele 30 de zile apar la «de urmărit»
+# (acum arată 0, deși sunt 4 scadente pe 26.10).” Era 7.
+PRAG_URMARIT_ZILE = 30   # termen in <= 30 zile, nedepus -> galben
+
+
+def luna_preluarii(creat_la, data_solduri=None):
+    """[08.10.2026, decizia Costin U2] „Control fiscal: restanțele se numără doar de la luna de preluare a firmei în iConta.”
+
+    LUNA PRELUĂRII, (an, luna): ziua de după data soldurilor de preluare (`solduri_initiale.data_referinta` — soldurile sunt
+    „la” acea dată, deci evidența în iConta începe a doua zi), iar fără ea luna în care firma a fost adăugată în iConta
+    (`tenants.creat_la`, același „în iConta din” pe care îl folosește auditul de preluare). None dacă nu se știe niciuna.
+    *INTERPRETARE CU TEMEI (de produs, nu fiscală):* aplicația nu ține o dată de preluare separată; cele două date sunt singurele
+    fapte care o descriu. De reconfirmat dacă se adaugă un câmp explicit."""
+    if data_solduri:
+        z = data_solduri + datetime.timedelta(days=1)
+        return (z.year, z.month)
+    if creat_la:
+        return (creat_la.year, creat_la.month)
+    return None
+
+
+def separa_inainte_de_preluare(lipsa, urmarit, preluare):
+    """(lipsa, urmarit, inainte) — obligațiile NEDEPUSE pe perioade dinaintea lunii preluării nu se numără la restanțe și nici la
+    „de urmărit”: stau separat, fiecare cu motivul, și se pot marca „depusă în afara iConta”. Perioada unei declarații
+    trimestriale/anuale e luna ei de ancoră (3/6/9/12), deci un trimestru care cuprinde luna preluării SE numără."""
+    if not preluare:
+        return lipsa, urmarit, []
+    txt = "%02d/%d" % (preluare[1], preluare[0])
+    inainte = []
+
+    def _imparte(lst):
+        rest = []
+        for e in lst:
+            if (e["an"], e.get("luna") or 12) < preluare:
+                inainte.append(dict(e, motiv=("Perioadă dinaintea preluării în iConta.eu (%s) — nu se numără la restanțe. Dacă "
+                                              "a fost depusă în afara iConta.eu, marcheaz-o." % txt)))
+            else:
+                rest.append(e)
+        return rest
+    return _imparte(lipsa), _imparte(urmarit), inainte
 
 # nume scurt de perioada pentru afisare
 _LUNI_NUME = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"]
@@ -801,7 +840,7 @@ def limite_verificarii(azi, jos=None, sus_zile=PRAG_URMARIT_ZILE, vc=None, inchi
         {"fel": "acoperire",
          "text": "Compar obligațiile cu evidența din iConta și cu declarațiile înregistrate aici. "
                  "NU compar cu ce are ANAF în SPV: o declarație depusă direct la ANAF și "
-                 "neînregistrată în aplicație nu apare ca depusă."},
+                 "neînregistrată în aplicație nu apare ca depusă — o marchezi «depusă în afara iConta.eu»."},
         {"fel": "perimetru",
          "text": "Am privit perioada %s → %s. Surse: facturile, notele validate, e-Factura primită "
                  "și operațiunile intracomunitare înregistrate. Documentele care există doar pe "
@@ -931,6 +970,19 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd
 
     lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
+    # [08.10, decizia Costin U2] restanțele se numără de la luna preluării; ce e înainte stă separat, marcabil
+    with conn_schema.cursor() as _cur_p:
+        _ds = _repo.select_solduri_initiale(_cur_p)
+    preluare = luna_preluarii(_creat_la, _ds[0] if _ds else None)
+    lipsa, urmarit, inainte_de_preluare = separa_inainte_de_preluare(lipsa, urmarit, preluare)
+    with conn_public.cursor() as _cur_e:
+        extern = {(t, a, l): rec for t, a, l, rec in _repo.select_depuse_extern(_cur_e, tenant_id)}
+    for e in confirmate + cu_intarziere:   # „depusă în afara iConta”, cu recipisa dacă s-a dat
+        k = (e["tip"], e["an"], e["luna"])
+        if k in extern:
+            e["motiv"] = e["motiv"].replace("Depusă", "Depusă în afara iConta.eu", 1) + (
+                " · recipisă %s" % extern[k] if extern[k] else "")
+            e["extern"] = True
     # [P3 21.08.2026] Randurile sunt deja AFIRMATII normalizate (fel + motiv + domeniul lor).
     # Vechea normalizare le reconstruia cu doar {tip, motiv} — arunca exact felul si domeniul.
     neclar_m = list(neclar)
@@ -997,6 +1049,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             "limite": limite_verificarii(azi, jos=jos_ferestra, inchide_luni=_firma_inchide_luni),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
             "cu_intarziere": cu_intarziere,
+            "inainte_de_preluare": inainte_de_preluare,
+            "luna_preluare": ("%02d/%d" % (preluare[1], preluare[0])) if preluare else None,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
             "regim_tva_anaf": regim_tva_anaf,
             "reconciliere_surse": reconciliere}

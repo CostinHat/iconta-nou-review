@@ -15,6 +15,7 @@ from core import common as _common
 
 def stat_plata(conn, schema, an, luna):
     """Calcul salarii pentru toti salariatii activi, la data de referinta (an, luna)."""
+    from core import d112 as _d112   # [retest 08.10 pct.2] baza CAM pe salariat = definiția D112 (import local: d112 e mare)
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
@@ -182,10 +183,15 @@ def stat_plata(conn, schema, an, luna):
             # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
             "facilitate": float(calc.get("facilitate", 0)),
             "cm_net": float(c_cm["net"]) if c_cm else 0.0,
-            # baza CAM a salariatului, exact ca D112 (`_d112_genereaza`: bazac = brut realizat + exces + cadou -
-            # facilitate, fiecare la leu) - cheie interna, consumata de `_imparte_cam` mai jos
-            "_bazac": max(int(_leu(brut_lucrat)) + int(_leu(calc.get("tichete_vacanta_exces", 0)))
-                          + int(_leu(calc.get("tichete_cadou", 0))) - int(_leu(calc.get("facilitate", 0))), 0),
+            # baza CAM a salariatului, exact ca D112: bazac = brut realizat + veniturile adăugate - facilitate, fiecare la leu -
+            # cheie interna, consumata de `_imparte_cam` mai jos. [retest 08.10 pct.2] Veniturile adăugate vin din definiția
+            # UNICĂ a D112 (`d112._venituri_adaugate`: exces de tichete de vacanță, cadou taxabil, elemente variabile); forma
+            # veche le aduna de mână și uita elementele variabile (Popescu F5 10/2026: CAM 147 pe 6.545,45, cost 7.192,45, deși
+            # nota și D112 aveau CAM-ul pe total cu prima).
+            "_bazac": max(int(_leu(brut_lucrat)) + _d112._venituri_adaugate({
+                              "exces_vacanta": calc.get("tichete_vacanta_exces", 0), "e83_cadou": calc.get("tichete_cadou", 0),
+                              "elemente_variabile": calc.get("elemente_variabile", 0)})
+                          - int(_leu(calc.get("facilitate", 0))), 0),
         })
     _cs_sal.close()
     _imparte_cam(stat, ref)

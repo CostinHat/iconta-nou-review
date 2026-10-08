@@ -118,7 +118,9 @@ def refuz_cota_nepermisa(cota, permise):
 def detaliu(e):
     """Corpul refuzului (HTTP 400) ca AFIRMAȚIE TIPATĂ — ecranul citește `mesaj` și `cod`."""
     from core import afirmatii as _af
-    extra = {"ecran": e.ecran} if getattr(e, "ecran", None) else {}   # butonul spre Date firmă (api.js, `detail.ecran`)
+    from core import mesaje as _mesaje
+    extra = ({"ecran": e.ecran, "camp_ecran": _mesaje.camp_ecran(e.cod)}   # butonul spre Date firmă, la câmpul cerut (api.js)
+             if getattr(e, "ecran", None) else {})
     return _af.afirmatie("neconformitate", "chitanta", str(e), unde="Casă", regula=e.temei,
                          cod=e.cod, mesaj=str(e), temei=e.temei, **extra)
 

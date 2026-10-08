@@ -195,8 +195,8 @@ def familia_a_b_d(conn, tok, tid, schema):
         randuri = documente_api.balanta(conn, schema, AN, LUNA)
         si_d = round(sum(r["si_d"] for r in randuri), 2)
         si_c = round(sum(r["si_c"] for r in randuri), 2)
-        ru_d = round(sum(r.get("ruj_d", r.get("deb", 0)) for r in randuri), 2)
-        ru_c = round(sum(r.get("ruj_c", r.get("cred", 0)) for r in randuri), 2)
+        ru_d = round(sum(r["rul_d"] for r in randuri), 2)   # cheile reale ale balantei (`ruj_*`/`deb` nu existau: 0 mereu)
+        ru_c = round(sum(r["rul_c"] for r in randuri), 2)
         sf_d = round(sum(r.get("sf_d", 0) for r in randuri), 2)
         sf_c = round(sum(r.get("sf_c", 0) for r in randuri), 2)
         art["balanta"] = {"randuri": len(randuri), "se_inchide":

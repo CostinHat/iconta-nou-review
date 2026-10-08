@@ -173,6 +173,15 @@ def apeluri(fisiere_js):
             for u in urluri:
                 cale = re.sub(r"\$\{[^}]+\}", "{}", re.sub(r"^/tenants/\$\{[^}]+\}", "/tenants/{}", u.split("?")[0]))
                 out.append((f, s[:m.start()].count("\n") + 1, cale, met, citite))
+        # [08.10.2026] scrierea trimisă printr-un ÎNVELIȘ care primește șablonul rutei ca al doilea argument (`cuLegareaNir(zona,
+        # "POST /tenants/{tenant_id}/…", trimite)`, decizia 08.10 pct.2): ruta e chiar șablonul — altfel scrierea ar ieși din scan
+        for m in re.finditer(r"(?:const|let) (\w+) = await \w+\(\w+, \"(POST|PUT|PATCH|DELETE) (/[^\"]+)\"", s):
+            var, met, sablon = m.groups()
+            rest = s[m.end():]
+            stop = re.search(r"\n\s*\}\s*catch|\b(?:const|let) %s = await" % re.escape(var), rest)
+            citite = grupuri(var, rest[:stop.start() if stop else 1500])
+            if citite:
+                out.append((f, s[:m.start()].count("\n") + 1, re.sub(r"\{[^}]+\}", "{}", sablon), met.lower(), citite))
     return out
 
 

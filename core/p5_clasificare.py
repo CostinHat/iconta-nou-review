@@ -265,6 +265,28 @@ REGULI = [
             % (_f(x)[0].get("retea_fara_timeout", 0), _loc(x, ("RETEA",)))),
     },
     {
+        # [08.10.2026] Găsit la poarta lotului „Deciziile 08.10”: poarta TVA din `POST /coada` (decizia Costin U1) cheamă
+        # `control_incrucisat.verifica_tva` cu conexiunea ținută; scanerul a ajuns la `valideaza_cui` din `anaf_api` (rețea +
+        # `sleep`) pe treapta OMONIMELOR — `d300.erori_generare` folosește `core.identitate.valideaza_cui` (cifra de control,
+        # fără rețea, `d300.py:37`). Regula `OMONIM` cere ca TOATĂ calea să fie omonimă; aici restul primitivelor (DUK) sunt
+        # reale, dar se execută FĂRĂ conexiune ținută. CLASA: un C5 ale cărui primitive din domeniul conexiunii sunt TOATE
+        # omonime nu are dovadă — e aceeași orbire declarată în antetul scanerului, restrânsă la domeniul lui C5.
+        "cod": "C5-NUMAI-OMONIM",
+        "titlu": "în domeniul conexiunii, numai primitive aduse de omonime",
+        "clasa": FALS,
+        "dovada": "OARBIRE",
+        "cand": lambda x: ("C5" in _f(x)[1]
+                           and bool([p for p in x.get("primitive", []) if p.get("in_domeniu_db") and p.get("fel") != "DB"])
+                           and all(p.get("omonim") for p in x.get("primitive", [])
+                                   if p.get("in_domeniu_db") and p.get("fel") != "DB")),
+        "de_ce": lambda x: (
+            "FALS POZITIV prin OMONIMIE, restrâns la domeniul conexiunii: TOATE primitivele ne-DB executate cu o "
+            "conexiune ținută vin din nume rezolvate pe treapta a treia (reuniunea tuturor definițiilor cu acel nume), "
+            "nu dintr-o definiție anume; primitivele reale ale căii se execută fără conexiune ținută. Prima primitivă "
+            "omonimă din domeniu: %s" % next((p["loc"] + " via " + p["via"] for p in x.get("primitive", [])
+                                               if p.get("in_domeniu_db") and p.get("fel") != "DB"), "-")),
+    },
+    {
         "cod": "C5-EXTERN-CU-CONEXIUNE",
         "titlu": "apel extern cât timp e ținută o conexiune din pool",
         "clasa": ACTIUNE,

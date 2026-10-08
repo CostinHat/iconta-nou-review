@@ -4,12 +4,18 @@
 
     git config core.hooksPath scripts/githooks
 
-## pre-commit
+## Ordinea (08.10.2026, decizia Costin pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după.”)
 
-Ruleaza la FIECARE commit **suita intreaga** (`pytest`) + `verificator_conformitate.py`, MEREU,
-fara argumente si fara subset. Respinge commit-ul daca:
-- `pytest` nu iese cu 0 (suita rosie), sau
-- verificatorul nu da `TOTAL: 0`.
+1. `pre-commit` — `ruff` (nume nedefinite). Rapid.
+2. `commit-msg` -> `verifica-mesaj` — fisierele noi numite, defectul cu loc, fisierele normative citite (`# diff-citit:`),
+   curatenia declarata, octetii de control. Un mesaj respins costa secunde, nu o rulare de suita.
+3. `commit-msg` -> `poarta-suita` — **suita intreaga** (`pytest`) + `verificator_conformitate.py`, MEREU, fara argumente si
+   fara subset (sarita numai la un commit de curatenie, decis de `scripts/curatenie.py` din index). Respinge commit-ul daca:
+   - `pytest` nu iese cu 0 (suita rosie), sau
+   - verificatorul nu da `TOTAL: 0`.
+
+Gard: `core/test_poarta_ordine.py`. Pana pe 08.10 suita statea in `pre-commit`, inaintea mesajului: un mesaj fara
+`# diff-citit:` arunca o rulare verde de ~55 de minute (06.10, 08.10).
 
 ### De ce
 
@@ -19,11 +25,11 @@ comanda tastezi nu e poarta - hook-ul ruleaza mereu tot.
 
 ### Durata
 
-~32s per commit (suita intreaga). Deliberat: un commit rosu pe o aplicatie fiscala costa mai
-mult decat 32s. Daca devine o frana reala, se discuta - dar NU e optional din start.
+~55 de minute per commit (suita intreaga; 08.10.2026: 3286 s pe 7.637 de teste). Deliberat: un commit rosu pe o aplicatie
+fiscala costa mai mult. Cifra vie e in `poarta-suita` si in `.poarta_jurnal.log`.
 
 ## post-commit (cablat 07.08.2026)
-Publica automat pe origin/main SI pe backup/lant-<data> dupa fiecare commit pe `main` (pre-commit a trecut deja poarta verde).
+Publica automat pe origin/main SI pe backup/lant-<data> dupa fiecare commit pe `main` (commit-msg a trecut deja poarta verde).
 Fast-forward, NICIODATA `--force`. Daca origin/main a avansat sub tine -> se opreste si cere `pull --rebase`.
 Esec de publicare -> banner + sentinela (`.git/PUSH_MAIN_ESUAT`, `.git/PUSH_BACKUP_ESUAT`; vizibil, nu tacut).
 Backup: fast-forward, FARA --force, creeaza ramura zilei daca nu exista. Cableaza CLAUDE.md §2.3 pct.8.

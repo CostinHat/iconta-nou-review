@@ -1159,6 +1159,50 @@ def recalculeaza_greu(tenant_id, schema, azi=None, ctx=None, nume=None, cui=None
     return {"valori": valori, "erori": erori}
 
 
+_FUNDAL = {"ruleaza": False, "din_nou": False}
+_FUNDAL_LACAT = None
+
+
+def recalculeaza_in_fundal():
+    """[08.10.2026, decizia Costin U2] „Cardul de pe ecranul principal arată aceleași cifre ca fereastra, fără întârziere.”
+
+    Cardul citea rezumatul lăsat de lucrătorul de la 5 minute; între o scriere și tura următoare firma apărea gri, cu 0, în timp ce
+    fereastra calcula pe loc. Acum, după ORICE cerere de modificare reușită (middleware-ul din `main.py`), lotul rulează IMEDIAT,
+    într-un fir de fundal: același `recalculeaza_lot`, același blocaj per firmă ca lucrătorul (deci nicio firmă nu se calculează de
+    două ori). Citirea portofoliului rămâne o singură interogare (contractul P2, `core/test_p2_contract.py`) — recalcularea NU se
+    mută în cererea de citire. Câte o rulare pe proces; o scriere venită în timpul ei cere încă o trecere, nu un fir nou.
+    Oprită în suită (`ICONTA_RECALCUL_FUNDAL=0`, conftest), unde un fir neașteptat ar face testele nedeterministe.
+    Întoarce True dacă a pornit un fir."""
+    global _FUNDAL_LACAT
+    import os
+    import threading
+    if os.environ.get("ICONTA_RECALCUL_FUNDAL", "1") == "0":
+        return False
+    if _FUNDAL_LACAT is None:
+        _FUNDAL_LACAT = threading.Lock()
+    with _FUNDAL_LACAT:
+        if _FUNDAL["ruleaza"]:
+            _FUNDAL["din_nou"] = True
+            return False
+        _FUNDAL["ruleaza"] = True
+
+    def _lucru():
+        while True:
+            with _FUNDAL_LACAT:
+                _FUNDAL["din_nou"] = False
+            try:
+                recalculeaza_lot()
+            except Exception:  # noqa: BLE001 — firul nu are cui raporta; eroarea se LOGHEAZĂ, iar lucrătorul o reia
+                _log().exception("[U2] recalcularea în fundal a eșuat; o reia lucrătorul de la 5 minute")
+            with _FUNDAL_LACAT:
+                if not _FUNDAL["din_nou"]:
+                    _FUNDAL["ruleaza"] = False
+                    return
+
+    threading.Thread(target=_lucru, name="firma_rezumat_fundal", daemon=True).start()
+    return True
+
+
 # ============================================================================
 #  LUCRĂTORUL
 # ============================================================================

@@ -545,3 +545,28 @@ def test_Z_FARA_MARFA_prin_HTTP_deblocheaza_validarea_la_cantitativ_valoric(lume
     assert cl.post(url, json={"fara_marfa": True}, headers=_H(lume)).status_code == 200
     v1 = cl.post("/tenants/%d/jurnal/%d/valideaza" % (lume["tid"], zid), headers=_H(lume))
     assert v1.status_code == 200, v1.text[:300]
+
+
+# ─────────────────────────── mijloace-fixe/{id}/cod-catalog ───────────────────────────
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_CODUL_DIN_CATALOG_se_scrie_verificat_si_nu_misca_amortizarea_declarata(lume):
+    """`PUT /tenants/{id}/mijloace-fixe/{mijloc_id}/cod-catalog` — [08.10.2026, decizia Costin W2] „Registrul mai afișează durata,
+    codul din catalog și planul lunar de amortizare.” Scrie în `mijloace_fixe` (tabel citit de D406, secțiunea activelor), deci
+    proba merge până în cifra declarată: amortizarea mijlocului (`amortizat_la_data`, aceeași din care se ridică D406) e ACEEAȘI
+    înainte și după — codul e evidență (HG 2139/2004), nu un parametru de calcul.
+    Un cod care nu e în catalog se refuză (422), fără scriere; unul cu durata în afara plajei se scrie, cu avertisment."""
+    cl = _client()
+    url = "/tenants/%d/mijloace-fixe" % lume["tid"]
+    put = lambda cod: cl.put("/tenants/%d/mijloace-fixe/%d/cod-catalog" % (lume["tid"], lume["mfid"]), json={"cod_catalog": cod},
+                             headers=_H(lume))
+    inainte = {m["id"]: m for m in cl.get(url, headers=_H(lume)).json()["mijloace"]}[lume["mfid"]]
+    r = put("9.9.9")
+    assert r.status_code == 422 and r.json()["detail"]["cod"] == "COD_CATALOG_NECUNOSCUT", r.text[:300]
+    r = put("2.1.1.1")
+    assert r.status_code == 200 and r.json()["afirmatii"] == [], r.text[:300]    # HG 2139/2004: 2.1.1.1, plaja cuprinde 60 de luni
+    r = put("2.1.17.2.1")
+    assert r.status_code == 200 and [a["tip"] for a in r.json()["afirmatii"]] == ["durata_catalog"], r.text[:300]   # 12–18 ani
+    dupa = {m["id"]: m for m in cl.get(url, headers=_H(lume)).json()["mijloace"]}[lume["mfid"]]
+    assert (dupa["cod_catalog"], dupa["catalog"]["ani_min"]) == ("2.1.17.2.1", 12)
+    assert (dupa["amortizat_teoretic"], dupa["ramas"]) == (inainte["amortizat_teoretic"], inainte["ramas"])

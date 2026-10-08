@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.80 · 8 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.82 · 8 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -28,6 +28,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 | `.btn-link` | Acțiune discretă tip link. Fără fundal/bordură/umbră. Albastru subliniat. |
 | `.btn-nav` | Exclusiv navigare. 32×32px, portocaliu #f97316. Duce MEREU un pas înapoi. |
 | `.buton-activ` | STARE (nu buton): marchează butonul cu zona toggle deschisă. Albastru închis #1a5a94. |
+
+- **Butonul declanșator în timpul unei scrieri (v2.81, 08.10.2026).** `api.js` (`blocheazaButon`) dezactivează automat butonul
+  apăsat cât durează orice scriere și îi pune `aria-busy`. „Se lucrează...” se scrie NUMAI pe un buton de text simplu, iar la
+  final textul lui revine. Un buton care conține ELEMENTE (rândul-buton al unei liste, cardul, iconița) nu se rescrie: textul
+  l-ar aplatiza și ar detașa elementul acțiunii, iar ecranul n-ar mai putea arăta rezultatul (instanța: „Contează” pe rândul
+  facturii rămânea după contare — 45 de butoane cu elemente, în 10 fișiere). Gard: `core/test_buton_blocat_structura.py`
+  (în browser, pe modulul real).
 
 **Feedback obligatoriu:**
 - Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
@@ -101,6 +108,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
+- **Mesajul nu șterge formularul în care e pus (v2.82, 08.10.2026):** `arataMesaj` pe un container care ține câmpuri (`input`,
+  `select`, `textarea`) scrie mesajul într-un copil propriu (`.msg-in-formular`, la capătul containerului), nu peste conținut — omul nu
+  pierde ce a tastat. O zonă de mesaj fără câmpuri se rescrie ca înainte. Regula stă în mecanismul unic (`api.js`), nu în fiecare ecran;
+  gard în browser `core/test_mesaj_in_formular.py` (găsit la proba „depusă în afara iConta”: „Salvează” fără dată ștergea formularul).
 - **Mesajul de după un buton se aduce în vedere (v2.74, lotul 07.10 pct.3):** un refuz, o întrebare sau o confirmare apărute după apăsarea unui buton se derulează în zona vizibilă — prin `aduInVedere` din `api.js`, chemat de `arataMesaj`, `eroareCamp`, `confirmaCaseta`, iar casetele scrise direct de un ecran (`.caseta-poarta`, `.em-curs-box`, `.msg-*`, `[role=alert]`) le prinde observatorul după clasă (`SELECTOR_MESAJ`). Fără apăsare recentă nu se derulează nimic. O casetă nouă de după-buton cu altă clasă intră în `SELECTOR_MESAJ`. Gard: verificator `MESAJ_FARA_ADUCERE_IN_VEDERE`.
 - **Refuzul care trimite în alt ecran are buton spre el (v2.74, lotul 07.10 pct.2):** serverul pune ținta în refuz (`detail.ecran`); butonul „Deschide <ecran>” se adaugă lângă mesaj de `api.js`, oriunde e afișat, iar ecranul se deschide PESTE formular (← îl readuce; după salvare, „Înapoi la <formular>”). Ecranele-destinație stau în `ecrane/ecran_destinatie.js` (`ECRANE`). INTERZIS un refuz cu ținta numai în frază („Declar-o în Date firmă”) fără `ecran`. Gard: verificator `REFUZ_ECRAN_FARA_BUTON`.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
@@ -137,6 +148,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - max-height calc(100vh - 48px); la tabele lungi: antet + butoane fixe, doar tabelul derulează.
 - Grile de câmpuri în ferestre: clasa `.grila-doc` (copiii primesc `min-width:0` ca să se strângă) — fără grile inline cu display:grid care lasă inputurile să împingă fereastra în scroll orizontal.
 - `.fer-larg` max-width 1000px doar pentru tabele.
+- **Fereastra cu tabele late (v2.81, 08.10.2026, decizia Costin W5)**: `.fer-tabel` (`nav.deschide(…, { lat: "tabel" })`) — lățimea o
+  dă conținutul (`fit-content`), între 1000px și marginea ecranului (`100vw - 48px`); la 1920px tabelele Balanței, Mijloacelor fixe și
+  Declarațiilor nu mai derulează lateral. Derularea laterală rămâne numai când tabelul e mai lat decât ecranul.
 - Nicio fereastră nu iese din ecran.
 - **Închiderea (v2.64, `inchidereDialog` din `api.js`, comanda Costin 04.10.2026).** O fereastră INFORMATIVĂ — fără
   câmpuri de tastat (bun venit, anunț, lupa, ajutorul de dinainte de autentificare, paginile publice, previzualizări) — se închide din **X în antet** și cu
@@ -201,6 +215,14 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Culorile din cod folosesc EXCLUSIV variabile canonice: `var(--ardezie)` (text), `var(--gri)`/`var(--gri-clar)` (secundar), `var(--rosu)`/`var(--verde)`/`var(--galben)`/`var(--albastru)` (stări), `var(--linie)` (borduri), `var(--fundal)`/`var(--alb)` (fundaluri). INTERZIS hex ad-hoc (`#ddd`, `#8a97a5`, `#fff`) în aplicație.
 - Border-radius folosește `var(--raza)` (6px). INTERZIS valoare literală (`border-radius:8px`). Excepție: `50%` pentru cercuri.
 - **Amberul de TEXT (v2.33, 25.08.2026)**: `--galben` (#c9961f) e culoarea semaforului, nu a textului — pe `--galben-fundal` dă **2.42:1**, sub prag. Textul de avertizare pe fundal deschis folosește **`var(--galben-text)`** (#92500a, 5.64:1). Adăugat cu ocazia R41 partea II, unde eticheta „verdict stătut" cerea un amber lizibil. `.cf-galben` rămâne pe hexul lui până la o migrare separată.
+- **Linkul de acțiune pe rândul zebră (v2.81, 08.10.2026)**: `.btn-link` (#2f6fa6) dă **4,13:1** pe `--albastru-clar` (#d6e4f5, rândul impar
+  al `.zebra-lista`) — sub 4,5:1. În `.zebra-lista`, `.btn-link` folosește albastrul închis #1a5a94 (cap.1, `.buton-activ`): 5,55:1 pe
+  rândul zebră, 7,16:1 pe alb. Găsit de axe pe „Contează” din Istoric facturi (ascuns până azi de aplatizarea rândului, cap.1 v2.81).
+  Gardian: `core/test_contrast_zebra.py` (calculează contrastul din `stil.css`).
+- **Textul colorat pe rândul zebră al tabelelor (v2.82, 08.10.2026)**: zebra oricărui tabel (`table tbody tr:nth-child(odd) td`,
+  `--albastru-clar`) redefinește pe celulă `--verde` = `--verde-inchis` (#1b7349, 4,53:1); `--verde` canonic (#1d7a4d) dădea 4,13:1
+  („● se închide” pe Balanță, găsit de axe). Redefinirea de token acoperă și stilurile inline (`color:var(--verde)`) și clasele din
+  celulă. Gardian: `core/test_contrast_zebra.py::test_textul_colorat_pe_randul_zebra…` (verde, roșu, gri, amber ≥ 4,5:1).
 - **Griul deschis de TEXT (v2.80, 08.10.2026)**: `--gri-clar` (#8a929e) dă **3,14:1** pe alb și **2,84:1** pe fundalul notificării necitite (#eef4ff), sub pragul WCAG 1.4.3 (4,5:1) — e pentru fundaluri, borduri și `::placeholder`, nu pentru text. Textul secundar folosește **`var(--gri)`** (#5b6573, 5,91:1). Găsit de axe pe clopoțel (ora notificării); aceeași clasă cu amberul de mai sus. Gardian: `CULOARE_SEMAFOR_TEXT` în `verificator_conformitate.py` (excepție: `::placeholder`).
 - Landing page (`pagina-*`, login) e sistem vizual separat (marketing) — nu se supune paletei aplicației.
 
@@ -739,6 +761,19 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.82 (08.10.2026)** — lotul „Deciziile 08.10”, completările: **cap.6** — mesajul pus pe un container cu câmpuri merge într-un copil
+propriu (`.msg-in-formular`), nu le șterge (`api.js::arataMesaj`, mecanismul unic; gard `core/test_mesaj_in_formular.py`). Ecrane noi pe
+reguli existente, fără regulă nouă: balanța cu cinci egalități (cap.9 `fer-tabel`), grupul „Înainte de preluare” și formularul în-ecran
+„depusă în afara iConta” (cap.5 input în-ecran, cap.20 renderer unic), registrul MF, cardul „Închidere lună” (cap.18). **cap.15** —
+textul verde pe rândul zebră al tabelelor ia `--verde-inchis` (redefinire de token în regula zebrei): #1d7a4d dădea 4,13:1.
+
+**v2.81 (08.10.2026)** — lotul „Deciziile 08.10”: **cap.1** — butonul declanșator cu elemente nu se mai rescrie în timpul scrierii
+(regula de mai sus). **cap.5 / cap.17, o instanță nouă a regulilor existente:** alegerea NIR-ului la contarea facturii primite
+(`ecrane/nir_legare.js`) e o `.caseta-poarta` cu două alegeri care merg amândouă înainte („Leagă de NIR-ul ales” / „Altă livrare —
+nu e niciunul”) și un select preselectat cu propunerea DEDUSĂ (același furnizor, același cost), vizibilă și schimbabilă — fără
+propunere, „— alege —”. Clopoțelul arată și „rezolvată: elementul nu mai există” (notificarea de acțiune al cărei element a dispărut).
+**cap.15** — linkul de acțiune pe rândul zebră ia albastrul închis (#1a5a94): #2f6fa6 dădea 4,13:1 pe `--albastru-clar`.
+**cap.9** — `.fer-tabel`: fereastra cu tabele se lățește după conținut, până la marginea ecranului (Balanță, Mijloace fixe, Declarații).
 **v2.80 (08.10.2026)** — **cap.15: `--gri-clar` nu e culoare de text** (lotul „Deciziile 07.10”, găsit de axe pe clopoțel): 3,14:1 pe alb;
 textul secundar e `--gri`. Nouă locuri reparate (stil.css 7, admin_sanatate.js, facturi_ecran.js); `CULOARE_SEMAFOR_TEXT` din
 verificator acoperă și `--gri-clar` (excepție `::placeholder`). Plus, din același lot: clopoțelul arată notificarea **rezolvată**

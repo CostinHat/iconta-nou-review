@@ -9,7 +9,7 @@ Decizia (verbatim în DECIZII.md, 04.10.2026), mereu doar pe firmele alocate asi
                mijloace fixe și calculul amortizării, export SAGA/WinMentor, e-Transport, pregătirea
                declarațiilor);
   - VALIDA   — „Poate valida”: validarea notelor și a declarațiilor, înregistrarea amortizării, blocarea
-               perioadei (închiderea lunii);
+               perioadei (închiderea lunii), bifa C&D a unui mijloc fix (regimul fiscal al activului, 08.10.2026);
   - DEPUNE   — „Poate depune”: depunerea la ANAF;
   - ADMIN    — doar administratorul cabinetului: firme (adăugare/import/scoatere), asistenți și drepturile
                lor, chei API, GDPR, abonament, datele cabinetului, deblocarea unei perioade închise;

@@ -1,0 +1,96 @@
+#!/bin/sh
+# POARTA SUITEI (iConta): pytest pe suita intreaga + avertismentul de vechime al predarii + verificator_conformitate.py.
+# Chemata de `scripts/githooks/commit-msg` DUPA verificarile mesajului (`verifica-mesaj`) — decizia Costin 08.10.2026 pct.3:
+# „Verificarea commit-msg rulează înaintea pytest, nu după.” Pana pe 08.10 blocul statea in `pre-commit`, care ruleaza
+# inaintea mesajului. Un fisier separat (nu cod inline in commit-msg): testele care cheama verificarile mesajului
+# (`core/test_mesaj_commit_curat.py`, `core/test_curatenie.py`) cheama `verifica-mesaj`, nu suita — altfel ar porni recursiv
+# toata suita din interiorul ei.
+#
+# Respinge commit-ul daca pytest nu iese 0 SAU verificatorul nu da "TOTAL: 0".
+ROOT=$(git rev-parse --show-toplevel) || exit 1
+cd "$ROOT" || exit 1
+PY=./venv/bin/python
+[ -x "$PY" ] || PY=python3
+# ── OCOLIREA DE CURATENIE (03.09.2026, ceruta de Costin) ──────────────────
+# „Operatiunile de curatenie — stergeri de fisiere, .gitignore, mutari — nu ruleaza teste deloc.
+#  Nu exista cale prin care ele sa strice o declaratie."  (PLAN_LUCRU.md, regula 7 de conducere)
+#
+# CINE DECIDE: `scripts/curatenie.py`, din INDEX — NU eticheta din mesaj. Mesajul exista acum (commit-msg), dar eticheta
+# ramane MARTURIE, nu cheie: o poarta care s-ar deschide cu o eticheta ar fi o poarta care depinde de ce tastezi.
+# Eticheta `# doar-curatenie:` ramane obligatorie, si o cere `verifica-mesaj`: ea e MARTURIA ca poarta
+# a fost sarita. O poarta sarita in tacere n-ar lasa nicio urma in istorie.
+#
+# Instrumentul deschide numai daca TOATE tin: stergeri / mutari identice / .gitignore, niciun `.py`
+# sau `.js`, niciun registru, si nimic din ce dispare nu e numit in ce se comite. Orice esec al lui
+# inseamna „nu e curatenie" — fail closed.
+#
+# CE SE SARE: pytest si verificatorul (cele ~55 de minute; v. cifra de mai jos). CE A RULAT DEJA:
+# `ruff` (pre-commit) si verificarile mesajului (verifica-mesaj). Nu se ruleaza
+# nici avertismentul de vechime a predarii — un commit de curatenie nu e o tura de lucru.
+if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
+    sed 's/^/[poarta] /' /tmp/precommit_curatenie.log
+    echo "[poarta] OK - COMMIT NUMAI DE CURATENIE: pytest si verificatorul NU se ruleaza."
+    echo "[poarta]   Mesajul TREBUIE sa poarte '# doar-curatenie: <motiv>' - o cere verifica-mesaj."
+    exit 0
+fi
+# [16.09.2026] CIFRA, CORECTATA: scria „~32s" — statut de mult si fals cu trei ordine de
+# marime. Masurat pe sase rulari consecutive: 2156-2216 s, adica ~36 de minute pentru ~6.190
+# de teste. [08.10.2026] Remasurat: 3286,55 s (54:46) pe 7.637 de teste colectate (poarta lui 876e87a2). Nu e o estimare: se RECALCULEAZA din `.poarta_jurnal.log`, care poarta durata
+# fiecarei rulari respinse. Conteaza fiindca de ea atarna cat costa o RESPINGERE — iar cine
+# citeste hook-ul intai afla de aici cat de scump e sa intri in poarta nepregatit.
+echo "[poarta] pytest (suita intreaga, ~55 min pe ~7.600 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)..."
+"$PY" -m pytest -q > /tmp/precommit_pytest.log 2>&1
+RC=$?
+tail -1 /tmp/precommit_pytest.log
+if [ "$RC" -ne 0 ]; then
+    # JURNALUL PORTII (23.08.2026). Un test rosu OPRESTE commitul, omul repara, si ce ajunge in
+    # istorie e deja verde - deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio
+    # urma. Masurat: in 1.725 de commituri, patru citeaza un test, si toate patru repara TESTUL, nu
+    # ceva prins de el. Intrebarea „a prins vreodata garda X o regresie reala?" n-avea cum sa aiba
+    # raspuns. De aici incolo are: fiecare respingere se scrie, cu data, testele picate si CE ERA
+    # IN STAGE (mesajul nu: suita nu-l primeste — l-a verificat deja `verifica-mesaj`). Jurnalul NU intra in istoric (e in .gitignore) - nu e un artefact de
+    # versionat, e o urma care exista.
+    JURNAL="$ROOT/.poarta_jurnal.log"
+    {
+        echo "=== $(date -Is) RESPINS pytest exit $RC"
+        echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+        # NU se scrie mesajul commitului (pana pe 08.10 suita rula in pre-commit, unde .git/COMMIT_EDITMSG
+        # purta mesajul commitului PRECEDENT — dovedit pe prima respingere reala, 23.08).
+        echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
+        grep -E "^(FAILED|ERROR) " /tmp/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
+        tail -1 /tmp/precommit_pytest.log | sed "s/^/    /"
+    } >> "$JURNAL"
+    echo "[poarta] RESPINS: pytest exit $RC (suita rosie). Log complet: /tmp/precommit_pytest.log"
+    echo "[poarta] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
+    exit 1
+fi
+# ── vechimea PREDARII (24.08.2026, cerut de Costin) ──────────────────────────
+# Un /clear nu se poate garda din hook. Ce SE poate garda e commitul: daca HEAD a
+# plecat cu mai mult de PRAG_PREDARE commituri de la ultima rescriere a predarii,
+# poarta o SPUNE. Nu blocheaza — un blocaj pe fiecare commit ar face din predare
+# un impozit pe reparatiile mici. Pragul suna ~o data pe zi de lucru.
+PRAG_PREDARE=10
+if git diff --cached --name-only | grep -qx "PREDARE_LANT.md"; then
+    :   # se rescrie chiar acum
+else
+    ULT=$(git log -1 --format=%H -- PREDARE_LANT.md 2>/dev/null)
+    if [ -n "$ULT" ]; then
+        VECHI=$(git rev-list --count "$ULT"..HEAD 2>/dev/null || echo 0)
+        if [ "$VECHI" -gt "$PRAG_PREDARE" ]; then
+            echo "[poarta] ATENTIE: PREDARE_LANT.md e cu $VECHI commituri in urma lui HEAD (prag $PRAG_PREDARE)."
+            echo "[poarta]   O predare statuta e mai rea decat una absenta: cine o citeste nu stie care rand mai e adevarat."
+            echo "[poarta]   Rescrie-o inainte de oprire. Commitul NU e blocat."
+        fi
+    fi
+fi
+
+TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
+echo "[poarta] verificator: $TOT"
+case "$TOT" in
+    *"TOTAL: 0"*) echo "[poarta] OK - poarta verde, commit permis." ; exit 0 ;;
+    *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
+       { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
+         echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
+       } >> "$ROOT/.poarta_jurnal.log" ;
+       exit 1 ;;
+esac

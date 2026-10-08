@@ -1,0 +1,142 @@
+#!/bin/sh
+# VERIFICARILE MESAJULUI (iConta) — chemate de `commit-msg` INAINTEA suitei (`poarta-suita`), decizia Costin 08.10.2026 pct.3.
+# Pana pe 08.10 fisierul era chiar `commit-msg`, iar suita rula inaintea lui, in `pre-commit`. Testele care probeaza
+# verificarile (`core/test_mesaj_commit_curat.py`, `core/test_curatenie.py`) cheama ACEST fisier, nu `commit-msg`.
+#
+# Poarta: UN COMMIT CONTINE EXACT CE POTI NUMI (21.08.2026, dupa o incalcare).
+# `git add -A core/ frontend_test/ static/` a maturat 234 de artefacte necomise intr-un commit
+# despre altceva - capturi de proba, scripturi de lucru, CSV-uri. Mesajul nu putea spune nimic
+# despre ele. Un fisier nou care nu incape in mesaj n-are ce cauta in commit.
+#
+# Escape MOTIVAT (acelasi tipar ca `# upsert-ok:`): scrie in mesaj
+#     # multe-fisiere-ok: <de ce sunt toate intentionate>
+MSG="$1"
+PRAG=8
+NOI=$(git diff --cached --name-only --diff-filter=A | wc -l)
+if [ "$NOI" -gt "$PRAG" ] && ! grep -q "multe-fisiere-ok:" "$MSG"; then
+    echo "[commit-msg] RESPINS: $NOI fisiere NOI in commit (prag $PRAG)."
+    git diff --cached --name-only --diff-filter=A | head -12 | sed 's/^/    /'
+    [ "$NOI" -gt 12 ] && echo "    ... si inca $((NOI - 12))"
+    echo "[commit-msg] Daca sunt intentionate: scrie '# multe-fisiere-ok: <motiv>' in mesaj."
+    echo "[commit-msg] Daca NU (ai dat 'git add -A'?): scoate-le cu 'git reset HEAD -- <cale>'."
+    exit 1
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: UN DEFECT MENTIONAT ARE UN LOC (22.08.2026).
+#
+# Cerut de Costin: „un raport care mentioneaza un defect fara ca el sa existe in registru nu trece.
+# Daca in text scrie «am observat ca X», X are un loc."
+#
+# CE PAZESTE, declarat: mesajul de commit — singurul artefact de tip raport care ramane pe disc.
+# Rapoartele din conversatie NU se pot garda de aici; ele raman in seama disciplinei.
+#
+# REGULA, ingustata dupa calibrare pe 81 de mesaje reale (20-22.08): se aprinde numai pe defecte
+# lasate NEREPARATE. Prima forma se aprindea si pe consemnari („DECIZII: divergenta podelei") si pe
+# reparatii („10 defecte reparate") - 10 din 81; un gard care se aprinde pe consemnarea insasi invata
+# pe cineva sa nu mai scrie „defect" in mesaj, adica exact invers. Forma ingustata: 1 din 81.
+#
+# Escape MOTIVAT, ca la celelalte: `# fara-consemnare-ok: <de ce nu are loc>`
+SEMNAL='NEREPARAT|nereparat|nu se repara acum|nu se repară acum|ramane deschis|rămâne deschis|RAMANE DESCHIS|RĂMÂNE DESCHIS|de privit|merita a doua privire|merită a doua privire|am observat|STOP nemiscat|STOP nemișcat'
+LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|VERIFICARE_FUNCTIONALITATI.md|fara-consemnare-ok'
+if grep -qE "$SEMNAL" "$MSG"; then
+    if ! grep -qE "$LOC" "$MSG"; then
+        echo "[commit-msg] RESPINS: mesajul semnaleaza un defect lasat nereparat, dar nu spune UNDE e consemnat."
+        grep -nE "$SEMNAL" "$MSG" | head -4 | sed 's/^/    /'
+        echo "[commit-msg] Un defect mentionat are un loc: o interdictie (#n), o restanta (Rn), sau CONFORMITATE.md."
+        echo "[commit-msg] Daca CHIAR nu are loc: scrie '# fara-consemnare-ok: <motiv>' in mesaj."
+        exit 1
+    fi
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: UN FISIER NORMATIV MODIFICAT SE CITESTE INAINTE DE A FI COMIS (22.08.2026).
+#
+# Cerut de Costin: „Un fisier normativ e o COMANDA SCRISA, nu un artefact de sincronizat. Diff-ul se
+# citeste si se rezuma in mesajul de commit: ce s-a schimbat, ce cerinte noi contine, ce trebuie facut
+# cu ele."
+#
+# INSTANTA care a produs regula: sectiunea „Restantele" din PLAN_LUCRU.md a intrat in repo prin
+# commitul 45f15ab, NECITITA — 70 de linii scrise de Costin, sub mesajul meu. Patru cerinte au stat
+# opt commituri neimplementate, iar o a doua taxonomie a fost derivata in paralel pentru un obiect
+# deja definit.
+#
+# CE PAZESTE, declarat: ca mesajul POARTA un rezumat. Nu poate verifica daca diff-ul a fost inteles —
+# aia ramane disciplina. Dar face imposibil sa treaca TACUT.
+NORMATIVE=$(git diff --cached --name-only | grep -E '^(PLAN_[A-Z_]+\.md|CONFORMITATE\.md|METODA_VERIFICARE\.md|CLAUDE\.md|MEMORY\.md|ARHITECT\.md)$' || true)
+if [ -n "$NORMATIVE" ]; then
+    if ! grep -qE '^# diff-citit:.{20,}' "$MSG"; then
+        echo "[commit-msg] RESPINS: sunt in commit fisiere NORMATIVE, iar mesajul n-are rezumatul diff-ului."
+        echo "$NORMATIVE" | sed 's/^/    /'
+        echo "[commit-msg] Un fisier normativ e o comanda scrisa. Citeste 'git diff --cached -- <fisier>'"
+        echo "[commit-msg] si scrie in mesaj: '# diff-citit: ce s-a schimbat, ce cerinte noi contine, ce fac cu ele'."
+        exit 1
+    fi
+fi
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Poarta: O POARTA SARITA SE SPUNE IN MESAJ, IAR ETICHETA NU DESCHIDE ALTCEVA (03.09.2026).
+#
+# Cerut de Costin: „Adauga in hook o cale de ocolire pentru commituri numai-curatenie: eticheta
+# `# doar-curatenie:` in mesaj. Conditie: eticheta e ignorata daca commitul atinge vreun fisier
+# executabil sau vreun registru. Se aplica doar la stergeri, .gitignore si mutari. Altfel devine
+# cheia care deschide tot."
+#
+# CINE DECIDE, si de ce nu eticheta: `scripts/curatenie.py`, din INDEX — si in `poarta-suita`, care decide saltul suitei.
+# Eticheta nu e citita de nicio poarta care s-ar deschide cu ea: „ignorata" din conditie e o proprietate a constructiei,
+# nu o verificare. Ce ramane etichetei e MARTURIA.
+#
+# Cele doua respingeri sunt simetrice:
+#   • poarta sarita, eticheta absenta   → commitul ar minti prin omisiune;
+#   • eticheta prezenta, dar nu e curatenie → ar minti prin afirmatie. Suita ar rula oricum (o decide
+#     indexul), deci nimic nu s-ar deschide; dar afirmatia falsa nu ramane in istorie.
+ROOT=$(git rev-parse --show-toplevel) || exit 1
+PY="$ROOT/venv/bin/python"
+[ -x "$PY" ] || PY=python3
+if "$PY" "$ROOT/scripts/curatenie.py" --tacut 2>/dev/null; then CURATENIE=1; else CURATENIE=0; fi
+if grep -qE '^# doar-curatenie:.{10,}' "$MSG"; then ETICHETA=1; else ETICHETA=0; fi
+if [ "$CURATENIE" = 1 ] && [ "$ETICHETA" = 0 ]; then
+    echo "[commit-msg] RESPINS: poarta a fost SARITA (commit numai de curatenie), iar mesajul n-o spune."
+    "$PY" "$ROOT/scripts/curatenie.py" | sed 's/^/    /'
+    echo "[commit-msg] Scrie in mesaj: '# doar-curatenie: <ce s-a curatat si de ce>' (minim 10 caractere)."
+    exit 1
+fi
+if [ "$CURATENIE" = 0 ] && [ "$ETICHETA" = 1 ]; then
+    echo "[commit-msg] RESPINS: mesajul poarta '# doar-curatenie:', dar commitul NU e numai curatenie."
+    "$PY" "$ROOT/scripts/curatenie.py" | sed 's/^/    /'
+    echo "[commit-msg] Eticheta nu deschide nimic (saltul il decide indexul). Scoate-o din mesaj."
+    exit 1
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: MESAJUL NU POARTA OCTETI DE CONTROL (28.08.2026).
+#
+# Instanta, si e din aceeasi zi: am scris `\b` intr-un literal Python ne-raw, intr-un script de
+# patch, iar el a ajuns in fisier ca octet BACKSPACE. `core/test_octeti_invizibili.py` l-a prins in
+# COD — si poarta a picat, corect. Apoi am scris exact aceeasi greseala in MESAJUL DE COMMIT care
+# descria prima greseala, unde nu o prindea nimic. Am vazut-o cu ochii, la recitire.
+#
+# Mesajul de commit e SINGURUL artefact de tip raport care ramane pe disc. Un octet de control in el
+# nu se vede la citire (terminalul il consuma), dar corupe fisierul si orice cautare peste istoric.
+# Verificarea „caracter cu caracter dupa fiecare commit" exista deja ca practica; aici devine poarta.
+#
+# CE TRECE: `\n` si `\t`. CE NU: restul clasei — BACKSPACE, VT, FF, ESC, NUL si ceilalti.
+# CE NU FACE, declarat: nu se uita la CONTINUT (aia e treaba celorlalte trei porti de mai sus) si nu
+# are escape motivat — spre deosebire de ele. Nu exista mesaj legitim cu un octet de control in el,
+# deci nu exista motiv de ocolit.
+# `grep [[:cntrl:]]` NU e de ajuns: pe un NUL, grep trateaza intrarea ca binara si nu
+# potriveste. Se numara ce RAMANE dupa ce se sterg caracterele tiparibile, newline, tab si
+# octetii peste 127 (continuarile UTF-8 ale diacriticelor — altfel orice mesaj romanesc ar fi
+# respins). Ce ramane sunt exact octetii de control ASCII, NUL inclusiv.
+_CTRL=$(LC_ALL=C tr -d '\n\t' < "$MSG" | LC_ALL=C tr -d '[:print:]\200-\377' | wc -c)
+if [ "$_CTRL" -gt 0 ]; then
+    echo "[commit-msg] RESPINS: mesajul contine OCTETI DE CONTROL (altii decat newline si tab)."
+    echo "[commit-msg] Randurile, cu octetii facuti vizibili (sed -n l):"
+    LC_ALL=C sed -n l "$MSG" | grep -n '\\[bvfae]\|\\0' | head -5 | sed 's/^/    /'
+    echo "[commit-msg] Cel mai probabil un escape de tip BACKSPACE scris intr-un literal Python"
+    echo "[commit-msg] ne-raw, in scriptul care a produs mesajul. Rescrie mesajul."
+    exit 1
+fi
+
+
+exit 0

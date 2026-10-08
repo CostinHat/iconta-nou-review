@@ -7,9 +7,9 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta } from "../api.js?v=e9cf26e11b";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta } from "../api.js?v=4242dc4353";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=ab288d196e";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=05e032b67b";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -267,7 +267,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     btnEmite.disabled = true;
     btnEmite.title = "Completează întâi în Date firmă: " + lipsuri.join(", ");
     butonSpreEcran(zonaPreg.querySelector("#em-pregatire-actiuni"), "date_firma", nav, tenantId,
-      { id: "em-date-firma-sus", clasa: "buton-secundar", inapoiLa: "factură" });
+      { id: "em-date-firma-sus", clasa: "buton-secundar", inapoiLa: "factură", camp: n.camp_ecran || null });
   }
   function aratăNumarul(n) {
     const sn = corp.querySelector("#em-serie-nr"), nr = corp.querySelector("#em-numar");
@@ -729,7 +729,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-actiuni" id="em-refuz-actiuni"></div>
       </div>`;
     butonSpreEcran(rez.querySelector("#em-refuz-actiuni"), det.ecran, nav, tenantId,
-      { id: det.ecran === "date_firma" ? "em-deschide-date-firma" : null, inapoiLa: "factură" });
+      { id: det.ecran === "date_firma" ? "em-deschide-date-firma" : null, inapoiLa: "factură", camp: det.camp_ecran || null });
   }
 
   // [06.10.2026, comanda Costin §6.1] Seria obligatorie (CF art.319 alin.(20) lit.a): refuzul NU blochează — seria se

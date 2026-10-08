@@ -73,7 +73,8 @@ class RefuzContare(Exception):
     (clichetul 50 / METODA §23).
 
     Felurile: `INEXISTENTA` · `NU_E_DOCUMENT_FISCAL` · `LUNA_INCHISA` · `FARA_COTA` ·
-    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z).
+    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z) ·
+    `NIR_DE_LEGAT` / `NIR_NELEGABIL` / `COST_DIFERIT_DE_FACTURA` (NIR-ul „fără factură” al livrării, decizia 08.10 pct.2).
     """
 
     def __init__(self, cod, mesaj, detalii=None):
@@ -466,7 +467,7 @@ def _descriere(f, data_nota=None, motiv_data=None):
 
 
 def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
-                   data_nota=None, motiv_data=None):
+                   data_nota=None, motiv_data=None, nir_legat=None):
     """Scrie nota de contare a facturii. Tiparul NIR, punct cu punct:
 
     1. **validarea se termină înainte de orice scriere** — tot ce poate refuza refuză mai sus de
@@ -491,6 +492,12 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         mențiune, e o dată arbitrară.
     *Ce NU se schimbă: `factura_id` rămâne, deci documentul justificativ derivat din el arată tot
     factura originală, cu data ei. Legătura nu se pierde, doar se adaugă mențiunea.*
+
+    **`nir_legat` — [decizia Costin 08.10.2026, pct.2].** O factură primită care încarcă 371 la global-valoric, de la un
+    furnizor cu NIR „fără factură” nelegat (`nir_legare.candidati`), cere alegerea: id-ul NIR-ului (legare: stornarea în roșu
+    a costului NIR-ului, `nir_legare.leaga`) sau `nir_legare.ALTA_LIVRARE` (contare normală, consemnată în descriere). Fără
+    alegere: `RefuzContare(NIR_DE_LEGAT)` cu candidații și propunerea dedusă, ÎNAINTE de orice scriere — pe ambele căi
+    (automat sau act explicit), fiindcă nici automatul nu poate ști dacă e aceeași livrare.
     """
     cur.execute("SELECT * FROM %sfacturi WHERE id=%%s" % _p(schema), (factura_id,))
     f = cur.fetchone()
@@ -586,6 +593,24 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     note = genereaza_note(cur, schema, f, prof.get("tvai"), prof.get("cont_venit_implicit"),
                           cont_cheltuiala=cont_cheltuiala)
 
+    # [decizia Costin 08.10.2026, pct.2] NIR-ul „fără factură” al aceleiași livrări: legarea se propune, alegerea e a omului
+    from core import nir_legare as _nl
+    nir_ales, alta_livrare = None, False
+    if _nl.se_aplica(cur, schema, f, note):
+        cands = _nl.candidati(cur, schema, f, data_nota)
+        if cands:
+            if nir_legat in (None, ""):
+                cod, mesaj, det = _nl.refuz_de_ales(f, cands)
+                raise RefuzContare(cod, mesaj, detalii=det)
+            if nir_legat == _nl.ALTA_LIVRARE:
+                alta_livrare = True
+            else:
+                nir_ales, er = _nl.verifica_alegerea(cands, f, nir_legat)
+                if er:
+                    raise RefuzContare(er[0], er[1], detalii={"camp": "nir-legat", "candidati": cands,
+                                                              "propus": _nl.propus(cands), "factura_id": factura_id,
+                                                              "alta_livrare": _nl.ALTA_LIVRARE})
+
     # [DDD2] PLASA, ultima verificare înainte de scriere.
     candidate = candidate_fara_cheie(cur, schema, f)
     if candidate and automat:
@@ -596,19 +621,27 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             % ", #".join(str(n["id"]) for n in candidate),
             detalii={"note": [n["id"] for n in candidate]})
 
+    descriere = _descriere(f, data_nota, motiv_data)
+    if alta_livrare:   # confirmarea omului rămâne lângă notă: factura nu e a niciunuia din NIR-urile nelegate
+        descriere = (descriere + _nl.MENTIUNE_ALTA_LIVRARE)[:200]
     cur.execute("INSERT INTO %sinregistrari (data, factura_id, descriere, sursa, status) "
                 "VALUES (%%s,%%s,%%s,'facturi','ciorna') RETURNING id" % _p(schema),
-                (data_nota, factura_id, _descriere(f, data_nota, motiv_data)))
+                (data_nota, factura_id, descriere))
     r = cur.fetchone()
     iid = r["id"] if isinstance(r, dict) else r[0]
     for n in note:
         cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
                     "VALUES (%%s,%%s,%%s,%%s)" % _p(schema),
                     (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
+    stornare_nir = _nl.leaga(cur, schema, nir_ales["id"], f, data_nota) if nir_ales else None
     out = {"stare": "contata", "inregistrare_id": iid,
            "tva_la_incasare": bool(prof.get("tvai")) or bool(f.get("furnizor_tva_incasare")),
            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])}
                      for n in note]}
+    if nir_ales:
+        out["nir_legat"] = {"nir_id": nir_ales["id"], "numar": nir_ales["numar"], "stornare_id": stornare_nir}
+    if alta_livrare:
+        out["alta_livrare"] = True
     if candidate:
         # Omul a cerut contarea explicit, deci se scrie — dar nu tăcut. Plasa oprește automatul;
         # pe om îl AVERTIZEAZĂ, fiindcă el are ce n-are automatul: contextul.

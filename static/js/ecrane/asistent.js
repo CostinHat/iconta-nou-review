@@ -12,17 +12,17 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=e9cf26e11b";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=4242dc4353";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=2eb55662ae";
-import { randeazaListaFirme } from "./firme.js?v=ff714711ca";
+import { randeazaValidat } from "./validat.js?v=e6153826af";
+import { randeazaListaFirme } from "./firme.js?v=20080aef8b";
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=97987511b1"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=46033e351d"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
@@ -43,7 +43,7 @@ const NODURI = {
     deschide: (nav) => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav)) },
   declaratii: { titlu: "Declarații", icon: "declaratii", ...CULORI_CARD.albastru,
     sinteza: "Pregătește și trimite la validare", cere: "poate_pregati",
-    deschide: (nav) => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav)) },
+    deschide: (nav) => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav), { lat: "tabel" }) },   // [08.10, W5]
   validat: { titlu: "De validat", icon: "clipboard", ...CULORI_CARD.piersica,
     sinteza: "Declarații și note de validat de la colegi", cere: "poate_valida",
     deschide: (nav) => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)) },

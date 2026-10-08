@@ -1,7 +1,7 @@
 // admin_analytics.js — Admin iConta: analytics public (doar superadmin).
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
-import { api, esc, CULORI_CARD } from "../api.js?v=e9cf26e11b";
+import { api, esc, CULORI_CARD } from "../api.js?v=4242dc4353";
 
 const C = CULORI_CARD.albastru;
 

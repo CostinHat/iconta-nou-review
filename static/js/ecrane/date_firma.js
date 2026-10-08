@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste } from "../api.js?v=e9cf26e11b";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste } from "../api.js?v=4242dc4353";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -351,6 +351,10 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     </div>
     ${_blocJurnal(d)}
   `;
+  // [retest 08.10, completarea pct.2] deschis dintr-un refuz care numește câmpul (seria chitanțelor, metoda de stoc, forma juridică …):
+  // câmpul vine în vedere și primește focus — nu pagina de sus
+  const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
+  if (_tinta) { _tinta.scrollIntoView({ block: "center" }); _tinta.focus(); }
 
   // [D394 Î2] activitatea apare DOAR cu bifa „Da”
   const _amefSel = corp.querySelector("#df-activitate_exceptata_amef");
@@ -454,7 +458,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       if (numePortofoliu !== ((t && t.nume) || "")) {
         await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
       }
-      await randeazaDateFirma(corp, nav, tenantId, opt);
+      await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });   // [retest 08.10] după salvare nu se mai sare la câmp
       arataMesaj(corp.querySelector("#df-msg"), "Datele firmei au fost salvate.", "ok");
       // [lotul 07.10 pct.2] deschis dintr-un refuz al altui formular (factura): drumul înapoi, la formularul păstrat
       if (opt.inapoiLa && nav && nav.inapoi) {
@@ -470,7 +474,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       // falsă despre date. *Actul rămâne cu confirmarea lui vizibilă pe calea de reușită (DS
       // cap.27): un `try` propriu pentru redenumire ar fi mutat confirmarea din blocul actului.*
       if (pas === 2) {
-        await randeazaDateFirma(corp, nav, tenantId, opt);
+        await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });   // [retest 08.10] după salvare nu se mai sare la câmp
         arataMesaj(corp.querySelector("#df-msg"),
           "Restul datelor s-au salvat, dar DENUMIREA nu: "
           + ((e && e.mesaj) || "a fost refuzată")

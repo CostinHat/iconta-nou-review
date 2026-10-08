@@ -128,6 +128,16 @@ def _linii_valide(conn, schema, linii):
     return None
 
 
+def _av_plan(conn, schema, linii, out):
+    """[08.10.2026, decizia Costin V3] Avertismentul pentru conturile din afara planului legal al normei firmei (`plan_legal`)."""
+    from core import plan_legal as _pl
+    with conn.cursor() as cur:
+        av = _pl.avertisment(cur, schema, [str(l.get(k) or "").strip() for l in (linii or []) for k in ("debit", "credit")])
+    if av:
+        out["avertisment"] = av
+    return out
+
+
 def creeaza(conn, schema, descriere, data, linii, document_ref=None):
     """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie.
     `document_ref` = documentul justificativ scris de om (Registrul-jurnal col.3); gol -> se derivă sau rămâne lipsă vizibilă."""
@@ -161,6 +171,7 @@ def creeaza(conn, schema, descriere, data, linii, document_ref=None):
         out["factura_id"] = legata
         out["mesaj"] = ("nota a fost legată de factura #%d — o singură factură a lunii se "
                         "potrivește pe sumă" % legata)
+    _av_plan(conn, schema, linii, out)   # [08.10, V3] „nu se poate … folosi fără avertisment”
     return out
 def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, document_ref=None):
     """Editează o notă ciornă. linii = [{debit, credit, suma}] înlocuiește complet liniile.
@@ -222,7 +233,7 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
         if seturi:
             cur.execute(f"UPDATE {schema}.inregistrari SET {', '.join(seturi)} WHERE id=%s",
                         (*valori, nota_id))
-    return {"ok": True}
+    return _av_plan(conn, schema, linii, {"ok": True}) if linii is not None else {"ok": True}   # [08.10, V3]
 
 
 def sterge(conn, schema, nota_id):
@@ -312,6 +323,23 @@ def document_justificativ(document_ref, fel, serie, numar, data):
     if numar is None:
         return None
     return eticheta_factura(fel, serie, numar, data)
+
+
+def facturi_stinse(cur, schema, nota_ids):
+    """[08.10.2026, decizia Costin U5] „Nota unei chitanțe (de ex. CHF1-1) afișează factura pe care o stinge.” {nota_id: „factura
+    <serie><număr> din <zz.ll.aaaa>”} — din legătura chitanței (`chitante.inregistrare_id` -> `chitante.factura_id`), numai chitanțe
+    nenulate. O singură derivare, pentru Registrul jurnal și pentru coadă (cardul și detaliul notei)."""
+    ids = [int(i) for i in nota_ids or [] if i]
+    if not ids:
+        return {}
+    p = ('"%s".' % str(schema).strip('"')) if schema else ""
+    cur.execute("SELECT ch.inregistrare_id, f.tip, f.serie, f.numar, f.data_emitere FROM %schitante ch JOIN %sfacturi f "
+                "ON f.id = ch.factura_id WHERE ch.inregistrare_id = ANY(%%s) AND NOT ch.anulata" % (p, p), (ids,))
+    out = {}
+    for x in cur.fetchall():
+        v = tuple(x.values()) if isinstance(x, dict) else tuple(x)
+        out[v[0]] = "factura " + eticheta_factura(v[1], v[2], v[3], v[4]).split(" ", 1)[-1] if v[3] is not None else None
+    return {k: v for k, v in out.items() if v}
 
 
 def eticheta_document(fel, numar=None, data=None, detaliu=None):

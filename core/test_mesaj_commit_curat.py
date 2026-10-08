@@ -28,7 +28,7 @@ import tempfile
 import pytest
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_HOOK = os.path.join(_RAD, "scripts", "githooks", "commit-msg")
+_HOOK = os.path.join(_RAD, "scripts", "githooks", "verifica-mesaj")   # [08.10] verificarile mesajului, fara suita
 
 
 def _ruleaza(continut_bytes):
@@ -47,7 +47,7 @@ def _ruleaza(continut_bytes):
 
 
 def test_hookul_exista_si_e_executabil():
-    assert os.path.exists(_HOOK), "`scripts/githooks/commit-msg` a dispărut"
+    assert os.path.exists(_HOOK), "`scripts/githooks/verifica-mesaj` a dispărut"
     assert os.access(_HOOK, os.X_OK), "hook-ul nu mai e executabil"
 
 

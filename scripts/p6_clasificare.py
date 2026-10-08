@@ -106,6 +106,14 @@ TABEL = {
         ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Logger memoizat lenes. Valoarea lui nu intra in nicio decizie; doua procese cu doua "
         "obiecte de log se comporta identic."),
+    ("core.firma_rezumat", "_FUNDAL"): V(
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
+        "[08.10.2026, decizia Costin U2] „o rulare a lotului de recalculare e în curs în ACEST proces” (+ „mai trebuie o "
+        "trecere”). Nu poarta decizie: rezultatul e in baza (`firma_rezumat`), iar doua procese care ruleaza fiecare un lot "
+        "nu calculeaza aceeasi firma de doua ori — blocajul consultativ per firma (`ia_blocajul`) e in PostgreSQL."),
+    ("core.firma_rezumat", "_FUNDAL_LACAT"): V(
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
+        "Lacatul de fir care pazeste `_FUNDAL` in acelasi proces. Resursa a procesului prin definitie."),
     ("core.pdf_fonturi", "_INIT"): V(
         ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Flag de initializare idempotenta a fonturilor reportlab — o resursa care TREBUIE "

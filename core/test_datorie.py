@@ -386,3 +386,32 @@ def test_datorie_toate_tipurile_au_termen_sursat():
 def test_datorie_stoc_cantitativ_la_pret_de_vanzare_si_fifo():
     from core import metoda_stoc
     assert metoda_stoc.NESUPORTATE == {}
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 08.10.2026 (decizia Costin 08.10 pct.2 acoperă numai global-valoric; la cantitativ-valoric e [DECIZIE] cerută în raportul lotului „Deciziile 08.10”, §6): un NIR „fără factură” la cost scrie 371=401 + intrarea în fișă, iar factura aceleiași livrări contată după el pe 371 scrie din nou 371=401 (și, pe calea SPV, a doua intrare în fișă, `intrare_din_factura`) — fără nicio întrebare. Ordinea directă e refuzată (`NIR_LEGAT_LA_COST`); ordinea inversă nu e decisă. Se închide când contarea cere alegerea și la cantitativ-valoric (sau Costin decide altfel), consemnat în DECIZII.md")
+def test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea():
+    import io as _io
+    from core import db as _db, tenant_provisioning as _tp, stocuri_api as _s, facturi_api as _fa, contare_facturi as _cf
+    sch = "efemer_datorie_nir_cv"
+    _db.init_pool()
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % sch)
+        cur.execute(_tp.parametrizeaza_template(_io.open("tenant_template.sql", encoding="utf-8").read(), sch))
+        cur.execute("INSERT INTO %s.firma_profil (id, nume, cui, platitor_tva, metoda_stoc) "
+                    "VALUES (1, 'DATORIE SRL', 'RO40372003', true, 'cantitativ_valoric')" % sch)
+        c.commit()
+    try:
+        with _db.get_conn(sch) as c:
+            r = _s.adauga_nir(c, sch, {"numar": "1", "data": "2099-10-07", "furnizor": "F", "cui": "14399840", "linii": [
+                {"denumire": "Marfa A", "articol_nou": True, "cantitate": 10, "pret_achizitie": 55, "cota_tva": 21}]})
+            assert "eroare" not in r, r
+            fid = _fa.creeaza_factura(c, "FP1", "2099-10-07", "primita", [
+                {"descriere": "Marfa A", "cantitate": 10, "pret_unitar": 55, "cota_tva": 21}],
+                tert_nume="F", tert_cui="RO14399840")["factura_id"]
+            with pytest.raises(_cf.RefuzContare):
+                with _cf.cursor_dict(c) as cur:
+                    _cf.contabilizeaza(cur, sch, fid, automat=False)
+    finally:
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % sch)
+            c.commit()

@@ -2,7 +2,8 @@
 # post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea dupa fiecare commit pe main.
 # [08.09.2026] PATRU destinatii, nu trei: origin/main, public/main, backup/lant-<zi>, statica publicata.
 #
-# pre-commit impune DEJA poarta verde (pytest + verificator). Daca acest hook ruleaza, poarta a trecut si
+# commit-msg impune DEJA poarta verde (mesajul, apoi pytest + verificator — `poarta-suita`, din 08.10.2026; inainte in
+# pre-commit). Daca acest hook ruleaza, poarta a trecut si
 # commit-ul exista. Ce lipsea era GARDUL care publica - o regula a carei absenta e definita ca defectiune
 # (pct.8) dar care nu avea niciun mecanism. Publicarea nu mai depinde de memoria executorului.
 #

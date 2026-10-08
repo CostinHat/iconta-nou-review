@@ -915,22 +915,39 @@ ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_ales_de integer;
 -- copiaza nimic, fiindca acolo scopul actului e chiar disparitia datelor.
 ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;
 
--- [retest 07.10 seara, S4] notificarea se marchează REZOLVATĂ când elementul își schimbă starea — mirror al
--- core/migrare_decizii_0710.py (SQL_PUBLIC)
+-- [retest 07.10 seara, S4] notificarea se marchează REZOLVATĂ când elementul își schimbă starea; [08.10, decizia Costin pct.4]
+-- valoarea `inexistent`, gardul `notificari_element_ck` (o notificare de acțiune nerezolvată poartă elementul) și rezolvarea
+-- declarației respinse la retrimitere — mirror al core/migrare_decizii_0810.py (SQL_PUBLIC), care supersedează S4
 ALTER TABLE public.notificari ADD COLUMN IF NOT EXISTS rezolvata text;
 ALTER TABLE public.notificari ADD COLUMN IF NOT EXISTS rezolvata_la timestamp with time zone;
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='notificari_rezolvata_ck' AND connamespace='public'::regnamespace) THEN
-    ALTER TABLE public.notificari ADD CONSTRAINT notificari_rezolvata_ck
-      CHECK (rezolvata IS NULL OR rezolvata IN ('validat', 'respins', 'inlocuit'));
-  END IF;
+  ALTER TABLE public.notificari DROP CONSTRAINT IF EXISTS notificari_rezolvata_ck;
+  ALTER TABLE public.notificari ADD CONSTRAINT notificari_rezolvata_ck
+    CHECK (rezolvata IS NULL OR rezolvata IN ('validat', 'respins', 'inlocuit', 'inexistent'));
 END $$;
+UPDATE public.notificari SET rezolvata = 'inexistent', rezolvata_la = now()
+ WHERE tip IN ('de_validat', 'respinsa') AND rezolvata IS NULL AND (link IS NULL OR link !~ '^(validat|jurnal):[0-9]+');
+-- COALESCE: un CHECK cu `link` NULL ar da NULL, iar Postgres trece un CHECK NULL (prins de garda la prima rulare)
+ALTER TABLE public.notificari DROP CONSTRAINT IF EXISTS notificari_element_ck;
+ALTER TABLE public.notificari ADD CONSTRAINT notificari_element_ck
+  CHECK (tip NOT IN ('de_validat', 'respinsa') OR rezolvata IS NOT NULL OR COALESCE(link, '') ~ '^(validat|jurnal):[0-9]+');
 CREATE OR REPLACE FUNCTION public.notificari_rezolva_din_coada() RETURNS trigger LANGUAGE plpgsql AS $f$
 BEGIN
+  -- [08.10] aceeași declarație (firmă, tip, perioadă) intră din nou în coadă: „a fost respinsă” a celei vechi e înlocuită
+  IF TG_OP = 'INSERT' THEN
+    UPDATE public.notificari SET rezolvata = 'inlocuit', rezolvata_la = now()
+     WHERE tip = 'respinsa' AND rezolvata IS NULL AND link IN (
+           SELECT 'validat:' || c.id FROM public.declaratii_coada c
+            WHERE c.tenant_id = NEW.tenant_id AND c.tip = NEW.tip AND c.perioada = NEW.perioada AND c.stare = 'respinsa'
+              AND c.id <> NEW.id);
+    RETURN NEW;
+  END IF;
   -- elementul din coadă își schimbă starea (sau dispare): notificarea „de validat” care duce la el devine REZOLVATĂ
   IF TG_OP = 'DELETE' THEN
     UPDATE public.notificari SET rezolvata = 'inlocuit', rezolvata_la = now()
      WHERE tip = 'de_validat' AND rezolvata IS NULL AND link = 'validat:' || OLD.id;
+    UPDATE public.notificari SET rezolvata = 'inexistent', rezolvata_la = now()
+     WHERE tip = 'respinsa' AND rezolvata IS NULL AND link = 'validat:' || OLD.id;
     RETURN OLD;
   END IF;
   IF OLD.stare = 'la_senior' AND NEW.stare IS DISTINCT FROM OLD.stare THEN
@@ -941,5 +958,7 @@ BEGIN
   RETURN NEW;
 END $f$;
 DROP TRIGGER IF EXISTS declaratii_coada_rezolva_notificari ON public.declaratii_coada;
-CREATE TRIGGER declaratii_coada_rezolva_notificari AFTER UPDATE OF stare OR DELETE ON public.declaratii_coada
+CREATE TRIGGER declaratii_coada_rezolva_notificari AFTER INSERT OR UPDATE OF stare OR DELETE ON public.declaratii_coada
   FOR EACH ROW EXECUTE FUNCTION public.notificari_rezolva_din_coada();
+-- [08.10, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.” (sursa = 'extern')
+ALTER TABLE public.declaratii_depuse ADD COLUMN IF NOT EXISTS recipisa text;

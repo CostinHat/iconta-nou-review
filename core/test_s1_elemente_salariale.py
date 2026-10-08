@@ -177,3 +177,19 @@ def test_la_salariul_minim_prima_peste_plafon_anuleaza_facilitatea_pe_ambele_cai
     s = next(x for x in sal if x["id"] == sid)
     assert (float(s["facilitate"]), float(s["cas"])) == (0.0, 1138.0)     # (4.050 + 500) × 25% = 1.137,50 -> 1.138
     assert _asigurat_b1(xml)["B1_sal2"] == "4550"
+
+
+def test_cam_pe_salariat_include_elementele_variabile_ca_nota_si_d112(conn):
+    """Retest Costin 08.10.2026, pct.2: „Costul pe salariat nu include CAM pe elementele variabile: Popescu 10/2026 arată cost 7.192,45
+    (CAM 147, pe 6.545,45), corect 7.204,45. Nota și D112 sunt corecte” — CAM-ul de pe stat = CAM-ul din notă (646=436), deci din D112
+    (cod 480), iar costul = brutul + CAM. MUTAȚIE: elementele variabile scoase din `_bazac` (stat_plata_api) -> CAM 113 -> pică."""
+    from core import elemente_salariale as es, stat_plata_api as sp, d112, salarii_contare as sc
+    sid = _sid(conn)
+    assert es.adauga(conn, SCH, sid, 2026, 6, {"tip": "prima", "denumire": "prima de performanță", "suma": "500.50"})["ok"]
+    rand = next(x for x in sp.stat_plata(conn, SCH, 2026, 6) if x["id"] == sid)
+    xml, _r = d112.genereaza(conn, SCH, Perioada(an=2026, luna=6))
+    note = dict(((n[0], n[1]), n[2]) for n in sc.note_lunare(conn, SCH, 2026, 6, xml)[0])
+    # CF art.220^4 alin.(1): baza CAM = „suma câștigurilor brute realizate din salarii … a) veniturile din salarii, în bani” — cu prima.
+    # baza: 5.000 + 500,50 la leu = 5.501 (D112 bazac, fiecare venit la leu); CAM = 5.501 × 2,25% = 123,7725 -> 124 (aritmetic, cod 480)
+    assert (Decimal(str(rand["cam"])), note[("646", "436")]) == (Decimal("124"), Decimal("124.00"))
+    assert Decimal(str(rand["cost"])) == Decimal("5500.50") + Decimal("124")

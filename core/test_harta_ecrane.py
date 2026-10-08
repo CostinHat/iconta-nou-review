@@ -32,6 +32,9 @@ _BASELINE = {
     "fa-import", "fa-jurnal",
     "fa-magazin", "fa-mijloace", "fa-operatiuni", "fa-produse", "fa-rapoarte", "fa-raportz", "fa-registratura",
     "fa-rip", "fa-salariati", "fa-solicitari", "fa-stocuri", "fa-verificari",
+    # [08.10.2026, decizia Costin U3] „Închidere lună”, card separat în grupul Zilnic — și scanat: `nav_ecrane.ECRANE`
+    # („inchidere_luna”).
+    "fa-inchidere",
 }
 
 

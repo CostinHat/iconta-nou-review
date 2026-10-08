@@ -106,8 +106,10 @@ def refuz_spre_ecran(mesaj, cod, ecran, regula=None, tip="operatiune"):
     """[lotul 07.10 pct.2] Corpul refuzului care trimite în alt ecran, ca AFIRMAȚIE TIPATĂ (`neconformitate`, decizia 21.08):
     `cod`, `mesaj` și `ecran` (ținta butonului „Deschide …”). O singură formă pentru toate drumurile."""
     from core import afirmatii as _af
+    from core import mesaje as _mesaje   # [retest 08.10, completarea pct.2] câmpul cerut, în ecranul-țintă
     return _af.afirmatie("neconformitate", tip, mesaj, unde=_UNDE_ECRAN.get(ecran, ecran),
-                         regula=regula or "refuz cu țintă de ecran", cod=cod, mesaj=mesaj, ecran=ecran)
+                         regula=regula or "refuz cu țintă de ecran", cod=cod, mesaj=mesaj, ecran=ecran,
+                         camp_ecran=_mesaje.camp_ecran(cod))
 
 
 def _login_blocat(email):
@@ -244,6 +246,51 @@ def _cu_firma(conn, tenant_id, txt):
     return ("%s: %s" % (nume, txt)) if nume else txt
 
 
+def controale_inchidere(conn, schema, an, luna):
+    """[08.10.2026, deciziile Costin W2 + W3] Controalele închiderii lunii, o singură definiție pentru poarta de blocare și pentru
+    ecranul „Închidere lună”: {blocaje: [{cod, mesaj}], semnale: [{cod, mesaj}]}.
+      blocaje — ciornele din perioadă, facturile neîncheiate, e-Facturile neînregistrate (existente) și AMORTIZAREA LUNII
+                neînregistrată („Închiderea lunii e blocată dacă amortizarea lunii nu e înregistrată”);
+      semnale — 581 (viramente interne) cu sold nenul la sfârșitul lunii („Controalele de la închiderea lunii semnalează 581 cu sold
+                nenul”): un virament intern se închide în aceeași perioadă, deci un sold rămas e o operațiune înregistrată pe o
+                singură parte."""
+    import calendar as _cal
+    from core import inchidere_luna as _il, mf_registru as _mfr, repo_mijloace_fixe as _rmf
+    blocaje, semnale = [], []
+    _unde, _regula = "perioada %02d/%04d" % (luna, an), "o perioadă se închide doar după ce tot ce s-a întâmplat în ea e înregistrat și validat"
+
+    def _ctl(cod, mesaj, **x):   # afirmație tipată (P8): fel + unde + regula; `cod` / `mesaj` pentru ecran
+        return dict(_af.afirmatie("neconformitate", "inchidere_perioada", mesaj, unde=_unde, regula=_regula), cod=cod, mesaj=mesaj, **x)
+    with conn.cursor() as cur:
+        ciorne = _ciorne_in_perioada(cur, schema, an, luna)
+        facturi_desch = _facturi_neincheiate_in_perioada(cur, schema, an, luna)
+    if ciorne:
+        blocaje.append(_ctl("CIORNE", "%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel "
+                                                 "rămân închise înăuntru și nu mai apar nicăieri" % ciorne))
+    if facturi_desch:
+        blocaje.append(_ctl("FACTURI_NEINCHEIATE", "%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau ciornă de "
+                        "recunoaștere); contabilizează-le sau recunoaște-le, altfel după închidere nu se mai poate — amândouă actele "
+                        "cer o lună deschisă" % facturi_desch))
+    bl = _il.blocaj(conn, schema, an, luna)
+    if bl:
+        blocaje.append(_ctl("EFACTURI", str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura."))
+    from core import repo_contabilitate
+    with conn.cursor() as cur:
+        repo_contabilitate.search_path_firma(cur, schema)
+        lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _rmf.toate(cur), an, luna)
+        sold_581 = -_mfr.sold_creditor_cont(cur, "581", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
+    for x in lipsa:
+        blocaje.append(_ctl("AMORTIZARE_NEINREGISTRATA", ("amortizarea lunii nu e înregistrată pe contul %s (%s lei după calcul); "
+                            "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], x["rata"]))
+                            if x.get("rata") is not None else ("amortizarea lunii nu se poate calcula pe contul %s: %s — corectează "
+                            "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
+    if sold_581:
+        semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
+                            "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % sold_581,
+                            cont="581", sold=str(sold_581)))
+    return {"blocaje": blocaje, "semnale": semnale}
+
+
 def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id, tenant_id=None, coada_id=None):
     """[validare_note] Validatorii (mai puțin cine a pregătit) află că au note de validat — o notificare pe cerere.
     [lotul 07.10 pct.8 + 12] Textul numește FIRMA, iar legătura duce la elementul de validat (`validat:<coada_id>`)."""
@@ -252,16 +299,23 @@ def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id, tenant_id=No
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
     txt = (("Notă pregătită, de validat: %s." % etichete[0]) if len(etichete) == 1
            else "%d note pregătite, de validat (prima: %s)." % (len(etichete), etichete[0]))
-    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt),
-                        link=("validat:%d" % int(coada_id)) if coada_id else "validat")
+    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt), link=_link_element(coada_id))
+
+
+def _link_element(coada_id):
+    """[08.10.2026, decizia Costin pct.4] Legătura unei notificări de acțiune numește ELEMENTUL din coadă. Rezerva veche
+    (`"validat"`, fără id) a produs notificări care nu se mai puteau rezolva (44, 45, 46, 48 pe producție); baza o refuză acum
+    (`notificari_element_ck`, `core/migrare_decizii_0810.py`), iar aici lipsa elementului e o eroare, nu o legătură mai vagă."""
+    if not coada_id:
+        raise ValueError("notificarea de acțiune cere elementul din coadă (coada_id lipsește)")
+    return "validat:%d" % int(coada_id)
 
 
 def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id, tenant_id=None, coada_id=None):
     # notifica validatorii (mai putin pregatitorul); [lotul 07.10 pct.12] cu numele firmei și legătura spre element
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
     txt = "Declarația %s (%s) trimisă spre validare." % ((tip or "").upper(), perioada or "")
-    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt),
-                        link=("validat:%d" % int(coada_id)) if coada_id else "validat")
+    _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt), link=_link_element(coada_id))
 
 
 def _pachet_schema(ctx, tenant_id):
@@ -747,7 +801,7 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
         # [lotul 07.10 pct.8 + 12] cine a pregătit nota n-are „De validat”: legătura duce la Registrul jurnal al firmei, la notă
         _pl = info.get("payload") or {}
         _nid = int(_pl.get("inregistrare_id") or 0)
-        _link = "validat"
+        _link = _link_element(coada_id)
         if info.get("tenant_id") and _nid:
             _link = "jurnal:%d:%d" % (int(info["tenant_id"]), _nid)
             if _pl.get("_an") and _pl.get("_luna"):
@@ -764,7 +818,7 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
         txt = "Declaratia %s (%s) a fost depusa." % (tip, per)
     else:
         txt = "Actualizare declaratie %s (%s)." % (tip, per)
-    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link="validat")
+    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link=_link_element(coada_id))   # [08.10 pct.4] cu elementul
 
 
 def _interval_cerut(valoare, nume, minim, maxim, unitate):
@@ -1125,6 +1179,24 @@ def _verificator_esuat(contabil, eticheta, nume, e, an, luna):
     contabil.append(_constatare_esuata(eticheta, nume, e, an, luna))
 
 
+#: Sumarul constatărilor încrucișate în «Verificări contabile»: (depus, nedepus). [08.10.2026, decizia Costin U2] „Fără nicio
+#: declarație, mesajul e «nedeclarat», nu «diferă de contabilitate».” Etichetele = EXACT cele filtrate în
+#: `control_verdict.js` (DEJA_IN_INCRUCISAT); `core/test_control_nedeclarat.py` le confruntă.
+ETICHETE_INCRUCISAT = {
+    "tva_incrucisat": ("TVA declarat diferă de contabilitate", "TVA nedeclarat"),
+    "d112_incrucisat": ("Salarii declarate diferă de contabilitate", "Salarii nedeclarate"),
+    "d390_incrucisat": ("Operațiuni intracomunitare declarate diferă de evidență", "Operațiuni intracomunitare nedeclarate"),
+    "cota_tva_conformitate": ("Facturi emise cu cotă TVA greșită pentru perioadă",) * 2,
+}
+
+
+def eticheta_incrucisat(cheie, constatare):
+    """Eticheta după ce s-a comparat: „declarat … diferă” numai când există o declarație DEPUSĂ (`sursa_declarat == 'depus'`).
+    Constatările care nu compară o declarație (cota TVA) n-au `sursa_declarat` și își păstrează eticheta."""
+    depus, nedepus = ETICHETE_INCRUCISAT[cheie]
+    return nedepus if (constatare or {}).get("sursa_declarat") not in (None, "depus") else depus
+
+
 def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
     """Constatarile contabile STRUCTURATE ale unei firme + verificari_contabile brute (vc). UN SINGUR loc,
     folosit de LISTA (portofoliu) SI de DETALIU -> severitatea (pastila_firma) e aceeasi indiferent cine
@@ -1145,14 +1217,12 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei"), an, luna))
         # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in «Declaratie vs
         # contabilitate»; aici doar sumarul (eticheta + temei). Etichete = EXACT cele filtrate in control.js.
-        for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
-                          ("d112_incrucisat", "Salarii declarate diferă de contabilitate"),
-                          ("d390_incrucisat", "Operațiuni intracomunitare declarate diferă de evidență"),
-                          ("cota_tva_conformitate", "Facturi emise cu cotă TVA greșită pentru perioadă")):
+        for cheie in ("tva_incrucisat", "d112_incrucisat", "d390_incrucisat", "cota_tva_conformitate",):   # = ETICHETE_INCRUCISAT (VERDICT_PARITATE citește cheile literale)
             vd = vc.get(cheie) or {}
             if vd.get("stare") == "rosu":
                 prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
-                contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), an, luna, prima.get("remediu")))
+                contabil.append(_flag_constatare(prima.get("stare"), eticheta_incrucisat(cheie, prima), prima.get("mesaj"),
+                                                 prima.get("temei"), an, luna, prima.get("remediu")))
     except Exception as e:
         _verificator_esuat(contabil, "Verificări contabile — eșuate",
                            "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)",

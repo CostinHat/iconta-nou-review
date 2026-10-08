@@ -9,12 +9,12 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=3cbee4aeb8";
+import { randeazaDateFirma } from "./date_firma.js?v=b3176cc964";
 
 export const ECRANE = {
   date_firma: {
     titlu: "Date firmă",
-    deschide: (nav, tenantId, inapoiLa) => nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId, { inapoiLa })),
+    deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })),
   },
 };
 
@@ -28,7 +28,9 @@ export function butonSpreEcran(zona, ecran, nav, tenantId, opt = {}) {
   b.dataset.ecranDestinatie = ecran;   // îl recunoaște `api.js` (_butonSpreEcran): un singur buton lângă un refuz
   b.dataset.faraActiune = `navigare la ${e.titlu}; salvarea de acolo poartă acțiunea`;
   b.textContent = `Deschide ${e.titlu}`;
-  b.addEventListener("click", () => e.deschide(nav, tenantId, opt.inapoiLa || null));
+  // [retest 08.10, completarea pct.2] „trebuie să ducă direct la secțiunea «Chitanțe», cu câmpul seriei în focus”: refuzul numește
+  // câmpul (`detail.camp_ecran`, tabela `core/mesaje.CAMP_ECRAN_PE_COD`), iar ecranul-țintă îl aduce în vedere și îi dă focus
+  b.addEventListener("click", () => e.deschide(nav, tenantId, opt.inapoiLa || null, opt.camp || null));
   zona.appendChild(b);
   return b;
 }

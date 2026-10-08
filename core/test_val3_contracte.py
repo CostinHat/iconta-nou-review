@@ -276,3 +276,21 @@ def test_VIES_apelul_se_face_cu_pool_ul_LIBER(monkeypatch):
     # ruta s-a oprit în FAZA 1 (404), deci VIES nici nu s-a chemat — și asta e corect:
     assert deschise["in_timpul_apelului"] is None
     assert deschise["n"] == 0, "o conexiune a rămas deschisă"
+
+
+def test_CALIBRARE_C5_numai_omonim_in_ambele_directii():
+    """[08.10.2026] Regula `C5-NUMAI-OMONIM`: dacă în domeniul conexiunii sunt NUMAI primitive aduse de omonime, nu e dovadă
+    (fals pozitiv); una singură reală (neomonimă) păstrează verdictul de acțiune — regula nu poate înghiți un C5 adevărat."""
+    from core import p5_clasificare as p5
+
+    def cale(omonim):
+        return {"intrare": "POST /proba_c5", "fel": "ruta",
+                "detectori": {"C2": "x", "C5": "x"},
+                "fapte": {"feluri": ["DB", "RETEA"], "in_domeniu_db": 1, "numai_omonim": False, "primitive_total": 2},
+                "primitive": [{"fel": "RETEA", "detaliu": "RETEA:post|timeout", "loc": "core/x.py:1", "in_domeniu_db": True,
+                               "pe_bucla": False, "via": "a -> b", "omonim": omonim},
+                              {"fel": "SUBPROC", "detaliu": "SUBPROC:run", "loc": "core/y.py:2", "in_domeniu_db": False,
+                               "pe_bucla": False, "via": "a -> c", "omonim": False}]}
+    assert p5.verdict(cale(True), clasificare={})["regula"] == "C5-NUMAI-OMONIM"
+    assert p5.verdict(cale(True), clasificare={})["clasa"] == p5.FALS
+    assert p5.verdict(cale(False), clasificare={})["clasa"] == p5.ACTIUNE

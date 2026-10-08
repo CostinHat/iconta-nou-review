@@ -21,7 +21,7 @@ import re
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PREDARE = os.path.join(RAD, "PREDARE_LANT.md")
-HOOK = os.path.join(RAD, "scripts", "githooks", "pre-commit")
+HOOK = os.path.join(RAD, "scripts", "githooks", "poarta-suita")   # [08.10] suita s-a mutat din pre-commit
 
 
 def _text(cale):

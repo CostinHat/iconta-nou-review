@@ -53,7 +53,8 @@ def obligatii_din_balanta(randuri):
 
 def cheltuieli_lunare_cash(randuri, luni_scurse):
     """Media lunara a cheltuielilor cash: cl.6 fara 68x (amortizari) si 641/645 (acoperite de 421/431)."""
-    ch = round(sum(r["rul_d"] - r["rul_c"] for r in randuri
+    from core.documente_api import rulaje_cumulate   # cumulatul anului; `rul_*` e acum luna (W1, 08.10)
+    ch = round(sum(rulaje_cumulate(r, "d") - rulaje_cumulate(r, "c") for r in randuri
                    if str(r["cont"]).startswith("6")
                    and not str(r["cont"]).startswith(("68", "641", "645"))), 2)
     return round(ch / max(luni_scurse, 1), 2)

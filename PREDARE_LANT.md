@@ -1,21 +1,22 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **08.10.2026: lotul „Deciziile 07.10” publicat `876e87a2`, producția migrată; trei decizii cerute, nicio comandă deschisă**
+# PREDARE LANȚ — **08.10.2026: lotul „Deciziile 08.10” complet (P1–P5, T1–T9, U1–U5, V1–V5, W1–W5), registrele în același commit; decizii cerute în raport**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-08** (~05:10, comanda Costin „Rescrie PREDARE_LANT.md”, după publicarea lotului), COMPLETĂ pe
-  secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `876e87a2` (lotul „Deciziile 07.10”, four-way închis 08.10 03:14: HEAD = origin/main = backup/lant-2026-10-08 = procesul
-  viu, 2 din 2 procese). Commitul care conține această rescriere (registrele zilei) își închide four-way-ul la `post-commit`; SHA-ul lui e
-  în raportul turei (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
+- **ultima rescriere**: **2026-10-08** (seara, lotul „Deciziile 08.10” — opt mesaje Costin, ÎNAINTEA commitului lotului), COMPLETĂ pe secțiunile de stare
+  (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `330af537` (HEAD de intrare al lotului: registrele zilei după „Deciziile 07.10”). Din 08.10 (decizia Costin pct.5)
+  registrele intră în COMMITUL LOTULUI, deci această predare e conținută de commitul lotului „Deciziile 08.10”; SHA-ul lui, four-way-ul
+  și migrarea pe producție sunt în raportul turei (un fișier nu poate purta hash-ul commitului care îl conține). Verificare:
+  `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
 **Nicio comandă deschisă.** Tot ce s-a cerut până la 08.10.2026 e livrat, fiecare cu poartă completă, four-way și ZIP în
-`/home/costin/ghid_incoming/`. **Trei decizii așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 07.10”, §6 — și FRONTURI, mai
+`/home/costin/ghid_incoming/`. **Două decizii așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 08.10”, §6 — și FRONTURI, mai
 jos); restul fronturilor sunt [EXTERN] sau restanțe scrise:
 
 | ce | commit | ZIP |
@@ -42,6 +43,7 @@ jos); restul fronturilor sunt [EXTERN] sau restanțe scrise:
 | **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
 | **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **„Deciziile 07.10” + retesturile 07.10** (comenzile Costin 07.10, verbatim în DECIZII): D1 metodele de stoc nesuportate refuzate; D2 NIR legat de factura primită (numai 378/4428); D3 Z la cantitativ-valoric validat numai cu descărcare pe articol / „fără marfă”; D4 salariatul pe API și la import cu cele trei fapte cerute; D5 seria chitanței cerută; R1 respingerea stornează stocul (roșu), NIR-ul se reface; R2 titlul scurt al documentului; S1 prime / sporuri / ore suplimentare (brut, baze, D112 pe DUK, notă, fluturaș; lit.b pe venitul realizat); S2 „de la” = ziua 1 a lunii lucrate; S3 retrimiterea neschimbată cere confirmare, cardul o spune; S4 notificările rezolvate | `876e87a2` (+ registrele zilei, 08.10) | `iconta_decizii_07_10.zip` |
+| **„Deciziile 08.10”** (opt mesaje Costin 08.10, verbatim în DECIZII): NIR „fără factură” apoi factura (global-valoric) cere alegerea; poarta verifică mesajul întâi; notificările fără element rezolvate; retestul (ciorna statului înlocuită, CAM pe toate veniturile, „retrimis după respingere”, „Refă NIR-ul”, starea de încasare, refuzul spre câmp, clopoțelul); porțile TVA (4427/4426) și D406 (= rulajele balanței) în coadă; Control fiscal de la luna preluării, „depusă în afara iConta”, „nedeclarat”, 30 de zile, cardul fără întârziere; balanța cu cinci egalități (rulajele lunii = jurnalul lunii); registrul MF (înregistrat / diferență / luni lipsă / catalog / plan) + închiderea lunii (card Zilnic, amortizarea obligatorie, semnalul 581); C&D la «Poate valida»; contul din afara planului legal | commitul care conține această predare (SHA în raport) | `iconta_decizii_08_10.zip` |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
@@ -56,22 +58,30 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **DECIZII CERUTE (lotul „Deciziile 07.10”, 08.10) — blochează numai ce numesc:**
-  1. **F1, „Rezultat așteptat 105 buc / 5.350,00”**: măsurat pe producție, NIR 1 (10 × 55 = 550,00, logica veche) n-a scris NICIO mișcare
-     în fișă; 116 / 5.900,00 = 100 − 10 + 20 − 2 − 2 + 10 (NIR 2). Stornarea la respingere n-a avut ce scoate; stocul rămâne 116 / 5.900,00.
-     Așteaptă confirmarea lui Costin (NIR 1 rămâne „respins”, cu „Refă NIR-ul”; notificarea 56 rămâne activă până la refacere).
-  2. **NIR complet ÎNAINTEA facturii de marfă (global-valoric)**: legarea există numai pe NIR; dacă factura e contată după un NIR nelegat,
-     371 se încarcă de două ori. De ales: refuz la contare / legare propusă / semnal.
-  3. **Proces**: `commit-msg` rulează după cele ~55 de minute de pytest — propunere: verificarea mesajului înaintea pytest (o modificare
-     de hook = un commit cu încă o poartă). Până la decizie, regula de la „STAREA LA PREDARE” (mesajul trecut întâi manual) e obligatorie.
+- **DECIZII CERUTE (lotul „Deciziile 08.10”, raportul §6) — blochează numai ce numesc:**
+  1. **NIR „fără factură”, apoi factura, la CANTITATIV-VALORIC**: aceeași dublă încărcare (371=401 de două ori), măsurată (`DID NOT RAISE`);
+     datorie strictă `test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea`. De ales: aceeași alegere la contare / refuz / altceva.
+  2. **NIR-ul din exercițiul trecut** (NIR în decembrie, factura în ianuarie): nu e propus (OMFP 1802/2014 pct.69: „exercițiul financiar
+     curent”). De ales cum se închide o astfel de livrare.
+  3. **TVA din NIR fără factură în D300** (F1 10/2026: 4426 = 241,50, D300 deduce 0, poarta blochează): CF art.299 alin.(1) lit.a cere
+     factura pentru deducere. De ales: NIR-ul fără factură încarcă 4426 (azi) sau 4428/altă tratare până la factură.
+  4. **Luna preluării**: dedusă (data soldurilor / data adăugării firmei); F3 are note din iunie, preluată în septembrie. De ales dacă
+     devine câmp editabil (Date firmă).
+  5. **Recipisa „depusă în afara iConta”**: azi numărul ei (text). De ales dacă se încarcă și PDF-ul.
+  6. **Aceeași clasă ca T1, nedecisă**: amortizarea („deja generată” când registrul MF s-a schimbat) și descărcarea GV (cere ștergerea
+     manuală a ciornelor) — să înlocuiască ciorna nevalidată, ca la stat?
+  7. **R36 (populația balanței)**: balanța arată și ciornele, D406 / D300 numai notele validate; poarta D406 blochează pe ciornele lunii.
+     Rămâne decizia de fond: evidența = „ce a validat un om” sau „ce a înregistrat aplicația”.
 - **Constatările parcurgerii g11/g08/g09 (06.10)** — C1, C2, C7, C5, C6 reparate și C3, C4, C11 decise și executate pe 07.10 (GARZI
   07.10.2026). **Rămân deschise** (fără comandă nu se iau la rând): C8, C10, C12, C14, C15, C16 în GARZI 06.10.2026 (marja turism negativă,
   reevaluarea cu cont lipsă, „nimic de amortizat” fără motiv, declarația față de balanța validată, F248 „fără ecran”).
 - **Deciziile cerute de lotul 07.10 B (metodele de stoc, NIR-ul legat, Z-ul la cantitativ-valoric) — ÎNCHISE** de „Deciziile 07.10”
   (DECIZII 07.10.2026; D1 cu restanța `test_datorie_stoc_cantitativ_la_pret_de_vanzare_si_fifo`).
-- **Search Console (Costin, din lotul 07.10 B):** de șters vechiul `sitemap.xml` și de trimis `https://iconta.eu/sitemap-index.xml`.
-- **Notificările „de validat” din 06.10 fără element** (44, 45, 46, 48: `link = "validat"`, dinaintea legăturii cu id) nu se pot rezolva
-  automat — limita declarată în GARZI 07.10.2026; toate sunt citite, deci nu se numără.
+- **Search Console (Costin):** de șters vechiul `sitemap.xml` și de trimis `https://iconta.eu/sitemap-index.xml` — namespace-ul și
+  declarația XML verificate pe răspunsul servit (T9, 08.10): nimic de reparat în cod; retrimiterea e a lui Costin.
+- **Notificările fără element** (44, 45, 46, 48) — ÎNCHIS de „Deciziile 08.10” pct.4: `rezolvata = 'inexistent'` prin
+  `core/migrare_decizii_0810.py` (rulată pe producție după publicare, cu backup — rezultatul în raport); gardul
+  `notificari_element_ck` nu mai primește altele.
 - **Termenele de depunere nesursate (07.10, datorie nouă)**: 29 de tipuri n-au termen în `core/scadente.py`; coada le pune perioada
   de raportare („anul 2025”), nu un termen ghicit. Ratchet `test_niciun_tip_nou_fara_termen_de_depunere` + xfail strict
   `test_datorie_toate_tipurile_au_termen_sursat` (lista `_FARA_TERMEN_07_10`). Se închide tip cu tip, cu temeiul citat.
@@ -92,8 +102,13 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
 
+- **Deciziile 08.10**: factura de marfă (371, global-valoric) peste un NIR „fără factură” nelegat al aceluiași furnizor cere alegerea
+  (NIR-ul propus — stornarea în roșu a costului lui — sau „altă livrare”, consemnată); poarta verifică întâi mesajul, apoi pytest;
+  notificarea de acțiune poartă mereu elementul; **registrele intră în commitul lotului** (o poartă pe lot, CLAUDE.md §2.3 pct.10).
+
 - **Ghidurile**: metoda arhitectului — Claude în chat redactează și verifică, Costin aprobă titlurile, Code publică.
-- **Bifa C&D**: fără rol separat (garda fișei, `cere_cabinet`); fiecare schimbare se jurnalizează în `mijloace_fixe_jurnal`.
+- **Bifa C&D**: cere «Poate valida» (PIVOT 08.10, W4 — schimbă regimul fiscal al activului); fiecare schimbare se jurnalizează în
+  `mijloace_fixe_jurnal`.
 - **Factura din bon**: marcată în toate ieșirile (nu omisă, nu vânzare nouă); se naște încasată.
 - **Chitanța fără factură**: la firma exceptată de la AMEF = vânzare cu cotă (Î2); la cea neexceptată = încasare de creanță (5311=4111).
 - **Drepturile pe rol (04.10, „varianta 2”)**: „Poate pregăti” = munca curentă; „Poate valida” = validări, înregistrarea amortizării,
@@ -115,6 +130,11 @@ aplicației**, nu „în așteptarea unei teme”:
   stocul (în roșu) și documentul se reface; retrimiterea neschimbată cere confirmare; notificarea se rezolvă la schimbarea stării;
   primele / sporurile / orele suplimentare intră în brut și în baze; o singură poartă completă pe lot.
 
+- **Deciziile 08.10, completările (seara)**: balanța are cinci egalități — `rul_*` = luna (aceeași mulțime ca jurnalul), cumulatul anului
+  se cere pe nume (`documente_api.rulaje_cumulate`); D300/D394/D390 și D406 au porți în coadă (4427/4426, respectiv GL = rulajul
+  balanței); Control fiscal numără de la luna preluării, „de urmărit” = 30 de zile, „depusă în afara iConta” (`declaratii_depuse.sursa =
+  'extern'`, `recipisa`); rezumatul declarației stă pe `sinteza`, nu pe `avertismente`; închiderea lunii cere amortizarea lunii.
+
 ## DACĂ CONTINUI DE AICI
 
 1. **Ritualul de început** (CLAUDE.md §5): `pwd; hostname; git log --oneline -1; git rev-parse --is-inside-work-tree;
@@ -129,6 +149,24 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(08.10 seara) Recalcularea rezumatelor după scriere**: după orice cerere de modificare reușită pornește un fir de fundal
+  (`firma_rezumat.recalculeaza_in_fundal`); în suită e oprit (`ICONTA_RECALCUL_FUNDAL=0`, conftest). O probă manuală pe 8011 îl are
+  pornit — rândurile `firma_rezumat` se reîmprospătează singure. Migrarea `core/migrare_decizii_0810.py` adaugă și
+  `declaratii_depuse.recipisa` (rulată pe TEST; pe producție la publicare).
+
+- **(08.10, „Deciziile 08.10”) Poarta: `pre-commit` = ruff; `commit-msg` = `verifica-mesaj` (fostul `commit-msg`) apoi `poarta-suita`
+  (pytest + verificatorul).** Un mesaj greșit e respins în secunde, ÎNAINTEA suitei. Un test care probează verificările mesajului cheamă
+  `scripts/githooks/verifica-mesaj` — NU `commit-msg`, care ar porni toată suita.
+- **(08.10) Contarea unei facturi primite pe 371 la global-valoric** de la un furnizor (CUI) cu NIR „fără factură” nelegat în același
+  exercițiu întoarce 422 `cod: NIR_DE_LEGAT` (candidați, `propus`) și nu scrie nimic; se reia cu `?nir_id=` / `?alta_livrare=true`
+  (SPV: `nir_id` / `alta_livrare` în corp). O fixtură care contează o factură de marfă după un NIR al aceluiași furnizor alege.
+- **(08.10) `public.notificari` refuză o notificare `de_validat` / `respinsa` nerezolvată fără element** (`notificari_element_ck`):
+  `link` = `validat:<id>` sau `jurnal:…`. `uc_comun._link_element(None)` ridică `ValueError`.
+- **(08.10) Butonul cu elemente nu mai primește „Se lucrează...”** în timpul scrierii (doar `disabled` + `aria-busy`); o probă care
+  aștepta textul pe un rând-buton / card se schimbă.
+- **(08.10) Scanul vizual „după” cu lucru NECOMIS**: worktree la HEAD + fișierele schimbate / noi copiate peste (scriptul
+  `scan_0810.sh` din ZIP-ul lotului); artefactele cu `ui_hash` se copiază înapoi din worktree.
 
 - **(08.10, „Deciziile 07.10”) Seria chitanței nu mai are implicit**: pe producție toate cele 5 firme au `serie_chitanta` NULL (F1 avea
   „CH” fără nicio chitanță). Prima chitanță e refuzată (`SERIE_CHITANTA_LIPSA`, buton spre Date firmă). Fixturile pun `serie_chitanta='ZC'`.
@@ -288,26 +326,26 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `876e87a2` (08.10.2026):
+**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima poartă completă ÎNAINTEA acestei rescrieri, pe
+`876e87a2` (08.10.2026):
 
 ```
 7613 passed, 9 skipped, 15 xfailed in 3286.55s (0:54:46)      -> COLLECTED 7637 (confirmat cu --collect-only)
 verificator: TOTAL: 0 candidate
 ```
 
-**08.10: regula de mai jos (mesajul trecut întâi manual prin `commit-msg`) a fost IGNORATĂ și s-a plătit din nou** — prima poartă a lotului
-(verde, 55 min) a fost aruncată de `commit-msg` (lipsea `# diff-citit:` pentru CONFORMITATE.md). Nu e o regulă nouă; e a doua oară.
+Poarta lotului „Deciziile 08.10” rulează la commitul care CONȚINE această predare (pct.5) — cifrele ei sunt în raportul turei, nu aici.
+Prima suită completă pe lot, înainte de reparații (08.10 seara): `35 failed, 7652 passed, 9 skipped, 16 xfailed in 3401.00s` — 11
+artefacte generate + 24 de gărzi; toate reparate pe clasă (DECIZII 08.10, „Ce au prins gărzile”), setul refăcut 543 verde.
 
-**Poarta durează ~52 de minute** (pytest complet ~7400 de teste; 06.10: 3151 s și 3158 s). O tură cu o respingere costă deci ~1,75 ore
-numai în porți. **Pe 06.10 închiderea validării notelor a avut nevoie de TREI porți** (15 picate, apoi 3, apoi verde) — toate pe gărzi
-structurale care derivă din cod (atribuire, clasificarea tranzacțiilor, E2a, refuz tăcut, TRASEE, P7, clichete); a doua respingere a
-venit din reparațiile primei, nerulate țintit. **Regula practică:** după ORICE schimbare de cod de după ultima rulare țintită, se rulează
-din nou setul de vecinătate (lista de la „CE CERE POARTA”, plus `test_trasee`, `test_p7_v2_scrieri`, `test_tranzactii_clasificate`,
-`test_atribuire_scrieri`, `test_e2a_univers`, `test_refuz_tacut`, `test_clichete_generate`) — ~8 minute, față de 52.
-`commit-msg` rulează DUPĂ pytest: `# diff-citit:` (fișiere normative), `# multe-fisiere-ok:` (peste 8 fișiere noi) și locul unui
-defect pomenit ca nereparat (`#n` / `Rn` / `CONFORMITATE.md`, altfel `# fara-consemnare-ok: <motiv>`) se pun în mesaj ÎNAINTE de
-primul `git commit`. **Mesajul se trece întâi manual: `bash scripts/githooks/commit-msg <fișierul mesajului>`** — pe 06.10 un commit
-de registre a fost respins de `commit-msg` după 56 de minute de pytest verde.
+**Poarta durează ~55 de minute** (pytest complet ~7600 de teste; 08.10: 3286 s). **Din 08.10 mesajul se verifică ÎNAINTEA suitei**
+(`commit-msg` -> `verifica-mesaj`, apoi `poarta-suita`; decizia Costin pct.3, gard `core/test_poarta_ordine.py`): `# diff-citit:`
+(fișiere normative), `# multe-fisiere-ok:` (peste 8 fișiere noi), locul unui defect pomenit ca nereparat și octeții de control resping
+commitul în secunde. Regula veche „trece mesajul întâi manual” nu mai e necesară — a fost ignorată de două ori (06.10, 08.10) și de-aia
+a devenit ordine în hook. **Regula practică rămâne:** după ORICE schimbare de cod de după ultima rulare țintită, se rulează din nou
+setul de vecinătate (lista de la „CE CERE POARTA”, plus `test_trasee`, `test_p7_v2_scrieri`, `test_tranzactii_clasificate`,
+`test_atribuire_scrieri`, `test_e2a_univers`, `test_refuz_tacut`, `test_clichete_generate`, `test_raspuns_citit`, `test_p7_uc`) — la
+08.10, 913 teste în 17 minute, care au prins 7 roșii înaintea porții.
 
 **Four-way-ul se închide la `post-commit`**: publică pe `origin/main`, `public/main`, `backup/lant-<zi>`, publică statica din HEAD,
 restartează necondiționat și verifică brațele. Confirmarea independentă: `scripts/toate_poarta_head.py <SHA COMPLET>` (cu SHA scurt
@@ -322,7 +360,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **133** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **902** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **916** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -658,8 +696,10 @@ nu o etapă încheiată.*
 
 1. **Un `str.replace` fără aserțiune nu e o modificare, e o speranță.** `scripts/inlocuieste.py`;
    `METODA_VERIFICARE.md` **§28**.
-2. **Poarta testează ARBORELE DE LUCRU, nu indexul.** Ordinea celor două commituri — lucrul întâi,
-   registrul după, cu hash-ul real — **nu e stil, e o constrângere**.
+2. **Poarta testează ARBORELE DE LUCRU, nu indexul.** *[SUPERSEDAT 08.10.2026, decizia Costin pct.5: registrele intră în commitul
+   lotului — o poartă pe lot; SHA-ul stă în raport, nu în registru. Forma veche: „Ordinea celor două commituri — lucrul întâi,
+   registrul după, cu hash-ul real — nu e stil, e o constrângere”.]* Ce rămâne adevărat: arborele de lucru nu se editează cât rulează
+   poarta.
 3. **Raționamentul care ține o restanță DESCHISĂ cere aceeași verificare ca cel care o închide.**
 4. **Un scan pe forma BRUTĂ a datelor supra-numără.**
 5. **Regenerează blocul cu comanda pe care o NUMEȘTE gardul, nu cu una echivalentă.**

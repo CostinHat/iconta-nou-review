@@ -43,8 +43,8 @@ def test_forecast_saptamana_viitoare():
 
 
 def _rb(cont, **k):
-    b = {"cont": cont, "denumire": "", "si_d": 0, "si_c": 0,
-         "rul_d": 0, "rul_c": 0, "sf_d": 0, "sf_c": 0}
+    b = {"cont": cont, "denumire": "", "si_d": 0, "si_c": 0, "prec_d": 0, "prec_c": 0,
+         "rul_d": 0, "rul_c": 0, "tot_d": 0, "tot_c": 0, "sf_d": 0, "sf_c": 0}
     b.update(k)
     return b
 

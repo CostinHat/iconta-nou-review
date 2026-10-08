@@ -28,8 +28,8 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=e9cf26e11b";
-import { randA as randConstatare } from "./control_verdict.js?v=23c5b03b5d";
+import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4242dc4353";
+import { randA as randConstatare } from "./control_verdict.js?v=90aae1066a";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
 function numeFirma(firme, tid) {
@@ -95,6 +95,13 @@ function fmtPerioadaDecl(c) {
 let _ultimaActiune = null;
 function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, la: Date.now() }; }
 
+// [08.10.2026, U4] Titlul cozii = ce conține: „Note de validat”, „Declarații de validat”, „Declarații de depus” — părțile nevide,
+// unite cu „ · ”; coada goală -> „Coada de validare și depunere”.
+export function titluCoada({ note = 0, deValidat = 0, deDepus = 0 }) {
+  const parti = [note ? "Note de validat" : "", deValidat ? "Declarații de validat" : "", deDepus ? "Declarații de depus" : ""].filter(Boolean);
+  return parti.length ? parti.join(" · ") : "Coada de validare și depunere";
+}
+
 export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 pct.8] opt.evidentiaza = id-ul din notificare
   corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
@@ -141,7 +148,13 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     : (patruOchiPolitica
       ? "Validarea în doi e pornită, dar suspendată: ești singurul validator din cabinet, așa că pregătești și depui singur. Reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)."
       : "Declarațiile le pregătești și le depui tu (validarea în doi nu e pornită). Cele din listă așteaptă depunerea.");
+  // [08.10.2026, decizia Costin U4] „Fereastra cu note de validat se numește «De depus». Titlul trebuie să spună ce conține.” Titlul
+  // venea din cardul de pe desktop (calculat o dată, fără note), iar navigatorul îl punea ca <h2>. Acum ecranul își scrie titlul din
+  // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
+  const titlu = titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
+                             deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length });
   corp.innerHTML = `
+    <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
     <div id="val-note"></div>
     <p class="mig-intro">${intro}</p>
     <div id="val-deValidat"></div>
@@ -251,12 +264,20 @@ function randNota(c, firme, corp, nav, perm) {
       <div class="val-titlu"><b>${esc(c.eticheta || "Notă")}</b></div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
       ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota NU s-a schimbat față de cea respinsă" : "schimbarea nu se poate compara (nota respinsă e dinaintea amprentei)"}</div>` : ""}
-      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}</div>
+      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</div>
       <button type="button" class="btn-link val-vezi-nota">${(c.membri_ids || []).length > 1 ? "Vezi notele →" : "Vezi nota →"}</button>
     </div>
     <div class="val-actiuni">${actiuni}</div>`;
-  div.querySelector(".val-vezi-nota").addEventListener("click", () => deschideNota(c, nav));
-  const bResp = div.querySelector(".val-respinge");
+  div.querySelector(".val-vezi-nota").addEventListener("click", () => deschideNota(c, nav, { actiuni, corpLista: corp }));
+  legaActiuniNota(div, c, corp, nav, corp.querySelector("#val-eroare"), false);
+  return div;
+}
+
+// [08.10.2026, decizia Costin U5] Validează / Respinge ale unei note — o singură definiție, pentru cardul din coadă și pentru detaliul
+// notei („Detaliul notei are direct Validează și Respinge”). `dinDetaliu`: după act se închide detaliul și se reîncarcă lista.
+function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
+  const n = c.nota || {};
+  const bResp = zona.querySelector(".val-respinge");
   if (bResp) bResp.addEventListener("click", () => {
     dialogInput(nav, {
       titlu: "Respinge nota",
@@ -267,19 +288,20 @@ function randNota(c, firme, corp, nav, perm) {
       onConfirm: async (motiv) => {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
         _confirma(c.membri_ids || [c.id], `Ai respins ${c.eticheta || "nota"}. Motivul („${motiv}”) apare lângă notă la cel care a pregătit-o.`);
-        nav.inapoi(); randeazaValidat(corp, nav);
+        nav.inapoi(); if (dinDetaliu) nav.inapoi();
+        randeazaValidat(corpLista, nav);
       },
     });
   });
-  const bVal = div.querySelector(".val-aproba");
+  const bVal = zona.querySelector(".val-aproba");
   if (bVal) bVal.addEventListener("click", () => {
     const btn = bVal;
-    const eroare = corp.querySelector("#val-eroare");
     const valideaza = async () => {
       try {
         await aprobaElement(c);
         _confirma(c.membri_ids || [c.id], `Ai validat ${c.eticheta || "nota"}: a intrat în evidență.`);
-        randeazaValidat(corp, nav);
+        if (dinDetaliu) nav.inapoi();
+        randeazaValidat(corpLista, nav);
       }
       catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
     };
@@ -291,10 +313,9 @@ function randNota(c, firme, corp, nav, perm) {
     }
     valideaza();
   });
-  return div;
 }
 
-async function deschideNota(c, nav) {
+async function deschideNota(c, nav, ctx = {}) {
   nav.deschide(c.eticheta || "Notă", async (corp) => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă nota…</p>`;
     let d;
@@ -303,10 +324,11 @@ async function deschideNota(c, nav) {
     // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
     const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
     corp.innerHTML = note.map(({ nota: n, linii }) => `
-      <p class="mig-intro">Nota #${esc(String(n.id || ""))} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}</p>
+      <p class="mig-intro">Nota #${esc(String(n.id || ""))} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
       <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
         <tbody>${(linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
-      </table>`).join("");
+      </table>`).join("") + (ctx.actiuni ? `<div class="val-actiuni" id="val-nota-actiuni" style="margin-top:12px">${ctx.actiuni}</div><div id="val-nota-eroare"></div>` : "");
+    if (ctx.actiuni && ctx.corpLista) legaActiuniNota(corp, c, ctx.corpLista, nav, corp.querySelector("#val-nota-eroare"), true);
   }, { nivel: "cabinet" });
 }
 

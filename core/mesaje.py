@@ -137,6 +137,23 @@ MESAJ_FACTURA_BON_STOC = ("Factura emisă pe baza bonului fiscal nu mai descarc�
 COD_SERIE_CHITANTA_LIPSA = "SERIE_CHITANTA_LIPSA"
 MESAJ_SERIE_CHITANTA_LIPSA = ("Chitanța nu s-a emis: firma n-are serie pentru chitanțe. Seria o stabilește firma (OMFP 2634/2015 "
                               "anexa 1 pct.24) — scrie-o în Date firmă, la «Chitanțe», o singură dată; numerotarea continuă pe ea.")
+# [retest 08.10, completarea pct.2, comanda Costin] „Butonul «Deschide Date firmă» din refuzul chitanței deschide pagina de sus;
+# trebuie să ducă direct la secțiunea «Chitanțe», cu câmpul seriei în focus.” CLASA: orice refuz cu țintă de ecran duce la câmpul
+# pe care îl cere. Câmpul = id-ul DOM din ecranul-țintă (contractul DS cap.6: serverul numește câmpul prin id), sub cheia
+# `camp_ecran` (nu `camp`, care e eroarea per-câmp a formularului curent). O SINGURĂ tabelă, pe codul refuzului.
+# Gard: `core/test_refuz_spre_ecran.py` (fiecare cod emis cu `ecran` are câmp aici, iar câmpul există în ecranul-țintă).
+CAMP_ECRAN_PE_COD = {
+    COD_SERIE_CHITANTA_LIPSA: "df-serie_chitanta",
+    "METODA_STOC_NEDECLARATA": "df-metoda_stoc", "METODA_STOC_NESUPORTATA": "df-metoda_stoc", "METODA_STOC_ALTA": "df-metoda_stoc",
+    "AMEF_EXCEPTARE_NEDECLARATA": "df-activitate_exceptata_amef",
+}
+
+
+def camp_ecran(cod):
+    """Câmpul din ecranul-țintă pe care îl cere refuzul cu codul dat, sau None."""
+    return CAMP_ECRAN_PE_COD.get(cod)
+
+
 MESAJ_AMEF_FARA_BONURI = ("fișierul AMEF nu poartă numărul de bonuri fiscale (atributul nrB al raportului Z) — fără el "
                           "raportul nu poate intra în D394; verifică exportul casei de marcat")
 

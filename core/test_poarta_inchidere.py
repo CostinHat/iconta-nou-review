@@ -149,7 +149,7 @@ def test_o_luna_CURATA_se_inchide(conn):
     """Direcția inversă, fără de care o poartă care refuză mereu ar trece tot ce e mai sus."""
     _nota(conn, status="validata")
     _factura(conn, "emisa")
-    assert _inchide() == {"blocat": "06/2026"}
+    assert _inchide() == {"blocat": "06/2026", "semnale": []}   # [08.10, W3] semnalele închiderii (581 …), aici niciunul
     assert _blocata(conn)
 
 
@@ -157,7 +157,7 @@ def test_o_nota_din_ALTA_luna_nu_blocheaza(conn):
     """Domeniul e luna cerută, nu toată evidența."""
     _nota(conn, data="2026-05-10")
     _factura(conn, "de_recunoscut", data="2026-07-10")
-    assert _inchide() == {"blocat": "06/2026"}
+    assert _inchide() == {"blocat": "06/2026", "semnale": []}   # [08.10, W3] semnalele închiderii (581 …), aici niciunul
 
 
 # ═══════════════════════════════════════════════ redeschiderea: motiv + urmă

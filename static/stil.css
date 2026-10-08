@@ -677,6 +677,11 @@ html, body {
 
 /* fereastra lărgită pe ecranele cu tabel (ex. preview solduri) */
 .fereastra.fer-larg { max-width: 1000px; }
+/* [08.10.2026, decizia Costin W5, DS cap.9 v2.81] „Ferestrele cu tabele (Balanță, Mijloace fixe, Declarații) se lățesc cât e nevoie;
+   fără derulare laterală la rezoluția 1920.” Lățimea o dă conținutul (fit-content), între lățimea ferestrei largi și marginea
+   ecranului; corpul derulează numai pe verticală. */
+.fereastra.fer-tabel { width: fit-content; min-width: min(1000px, calc(100vw - 48px)); max-width: calc(100vw - 48px); }
+.fereastra.fer-tabel .fereastra-corp { overflow-x: auto; }
 
 /* cap de tabel solduri */
 .mig-sold-cap {
@@ -2385,6 +2390,9 @@ select:focus, textarea:focus {
    Regula pe ELEMENT direct (nu pe combinator de parinte) — functioneaza indiferent de container. */
 .zebra-lista > .pf-frand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
 .zebra-lista > .pf-frand:nth-of-type(even) { background: var(--alb) !important; }
+/* [08.10.2026, DS cap.15 v2.81] linkul de acțiune pe rândul zebră: #2f6fa6 dă 4,13:1 pe --albastru-clar (axe, „Contează” în Istoric
+   facturi); albastrul închis al DS (cap.1, #1a5a94) dă 5,55:1 pe rândul zebră și 7,16:1 pe alb. Gard: core/test_contrast_zebra.py */
+.zebra-lista .btn-link { color: #1a5a94; }
 .firme-lista > .firme-rand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
 .firme-lista > .firme-rand:nth-of-type(even) { background: var(--alb) !important; }
 /* [R78] Acelasi zebra si acelasi hover, cand randul e invelit ca sa aiba actiune langa el.
@@ -2396,7 +2404,10 @@ select:focus, textarea:focus {
 .firme-rand-linie > .firme-rand,
 .firme-rand-linie > .firme-rand:hover { background: none !important; }
 .firme-rand:hover { background: #dce7f3 !important; }
-table tbody tr:nth-child(odd) td { background: var(--albastru-clar); }
+table tbody tr:nth-child(odd) td { background: var(--albastru-clar);
+  /* [08.10.2026, DS cap.15 v2.82] verdele de text pe rândul zebră: --verde dă 4,13:1 pe --albastru-clar (axe pe Balanță, „● se
+     închide”); --verde-inchis dă 4,53:1. Tokenul se redefinește pe celulă, deci îl preiau și stilurile inline și clasele din ea. */
+  --verde: var(--verde-inchis); }
 table tbody tr:nth-child(even) td { background: var(--alb); }
 /* ============ sfarsit STANDARD_ZEBRA ============ */
 

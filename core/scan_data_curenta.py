@@ -58,6 +58,10 @@ EXCEPTII = {
         "NU e un calcul fiscal: trimite un email de alertă de acces. `data_transport` e parametrul "
         "unei rute de e-Transport refolosite, nu o dată de calcul. Fals pozitiv al primei sonde, "
         "prins la citirea sursei — se declară ca să nu fie „prins” a doua oară.",
+    ("contare_facturi.py", "se_aplica"):
+        "[08.10.2026, decizia Costin pct.2] `nir_legare.se_aplica` întreabă dacă firma ține stocul global-valoric. Metoda de stoc e "
+        "o setare UNICĂ pe firmă, fără istoric (`metoda_stoc.citeste` nu primește dată, `firma_profil.metoda_stoc`) — aceeași "
+        "citire ca toate căile de stoc. *Dacă metoda capătă istoric pe perioade, excepția devine defect și se scoate de aici.*",
     ("salariati_api.py", "cota"):
         "Validează plafonul unui tichet de masă TASTAT ACUM, într-un formular. „Azi” e data corectă "
         "pentru ce se introduce azi. *Rămâne declarat, nu tăcut: dacă ecranul va edita vreodată "

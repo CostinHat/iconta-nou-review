@@ -6,7 +6,8 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=e9cf26e11b";
+import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=4242dc4353";
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=91b74060b8";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -80,7 +81,11 @@ function randConst(c) {
 }
 
 // rand de declaratie cu termen (Restante / De urmarit / La zi) — poarta MOTIVUL pe orice culoare.
-function randDecl(arr, clasa) {
+function randDecl(arr, clasa, marcabil = false) {
+  // [08.10, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.”
+  const marcare = (x) => !marcabil ? "" : `
+      <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Marchează depusă în afara iConta.eu</button>`;
   return arr.map((x) => `
     <div class="cf-decl-item">
       <div class="mig-sold-rand cf-rand-decl">
@@ -88,7 +93,7 @@ function randDecl(arr, clasa) {
         <span class="cf-perioada">${esc(x.perioada || "")}</span>
         <span class="cf-termen ${clasa}">termen ${dataRo(x.termen)}</span>
       </div>
-      ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}
+      ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}${marcare(x)}
     </div>`).join("");
 }
 // rand de declaratie fara termen (Nu pot verifica / Nu se datoreaza) — doar tip + motiv.
@@ -150,8 +155,10 @@ function randVerif(eticheta, ok, detaliu) {
 const RANG = { rosu: 3, galben: 2, gri: 1, verde: 0 };
 // etichetele constatarilor incrucisate care apar deja in «Declaratie vs contabilitate» -> filtrate din
 // «Verificari contabile» ca sa nu se dubleze (sumarul lor e in contabil, constatarea intreaga e in incrucisat).
+// [08.10, decizia Costin U2] și variantele „nedeclarat” (nimic depus pe perioadă) — oglinda lui uc_comun.ETICHETE_INCRUCISAT
 const DEJA_IN_INCRUCISAT = ["TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate",
-  "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă"];
+  "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă",
+  "TVA nedeclarat", "Salarii nedeclarate", "Operațiuni intracomunitare nedeclarate"];
 
 // RENDERER UNIC al corpului. Primeste payload-ul d de la /control-fiscal/{id}. Sectiunile difera de la ecran
 // la ecran doar prin ce anteta/pastila pune APELANTUL deasupra; corpul (constatarile) e IDENTIC. opt.mod e
@@ -167,6 +174,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   // depus LA termen. O depunere DUPĂ termen nu e verde, dar nici restanță (roșu) -> categorie proprie
   // (chihlimbar/galben), informativă. NU urcă pastila firmei (control_fiscal_api._stare neatins).
   const cu_intarziere = d.cu_intarziere || [];
+  const inainte = (d.inainte_de_preluare || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const neclar = d.neclar || [];
   const neaplicabile = d.neaplicabile || [];
   // [R6] depuneri fara obligatie pereche: „contrazice" langa «Nu se datoreaza», „opinie" langa
@@ -177,12 +185,13 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const opinii = semnale.filter((x) => x.fel === "opinie");
 
   const declaratii = `
-    ${lipsa.length ? `<div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div><div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu")}</div>` : ""}
+    ${lipsa.length ? `<div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div><div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu", true)}</div>` : ""}
     ${urmarit.length ? `<div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div><div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
     ${neclar.length || opinii.length ? `<div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar, opinii, "cf-semnal-opinie")}</div>` : ""}
     ${neaplicabile.length || contraziceri.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>` : ""}
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
-    ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}`;
+    ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
+    ${inainte.length ? `<div class="cf-grup-titlu">Înainte de preluare în iConta.eu — ${esc(d.luna_preluare || "")} (${inainte.length}, nu se numără la restanțe)</div><div class="cf-decl">${randDecl(inainte, "", true)}</div>` : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie).
   const sectIncrucisat = (() => {
@@ -271,6 +280,34 @@ export function randeazaCorpVerdict(d, opt = {}) {
 // firma: { tenant_id, nume, reincarca? } — reincarca() e apelat dupa contabilizarea reusita, ca sa se
 // re-evalueze verdictul (constatarea trece pe verde). Fiecare apelant isi da propriul reincarca.
 export function legaVerdict(corp, nav, firma) {
+  // [08.10, decizia Costin U2] „depusă în afara iConta”: data depunerii (de pe recipisă) obligatorie, numărul recipisei opțional
+  corp.querySelectorAll(".cf-extern-btn").forEach((b) => b.addEventListener("click", () => {
+    const item = b.closest(".cf-decl-item");
+    if (item.querySelector(".cf-extern-form")) return;
+    const per = `${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}`;
+    const f = document.createElement("div");
+    f.className = "cf-extern-form";
+    f.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px";
+    f.innerHTML = `
+      <input type="date" class="camp-input" style="max-width:170px" aria-label="Data depunerii ${esc(b.dataset.tip.toUpperCase())} ${per}" required>
+      <input type="text" class="camp-input" style="max-width:220px" maxlength="100" placeholder="nr. recipisă (opțional)" aria-label="Număr recipisă ${esc(b.dataset.tip.toUpperCase())} ${per}">
+      <button class="buton-primar cf-extern-salveaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern">Salvează</button>
+      <button class="buton-secundar cf-extern-renunta" type="button">Renunță</button>`;
+    item.appendChild(f);
+    const data = f.querySelector("input[type=date]"), rec = f.querySelector("input[type=text]");
+    const ok = f.querySelector(".cf-extern-salveaza"), nu = f.querySelector(".cf-extern-renunta");
+    data.focus();
+    nu.addEventListener("click", () => f.remove());
+    ok.addEventListener("click", async () => {
+      if (!data.value) { arataMesaj(f, "Scrie data depunerii, de pe recipisă.", "avert"); data.focus(); return; }
+      try {
+        await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern`,
+          { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna), data_depunere: data.value, recipisa: rec.value.trim() || null });
+        if (typeof firma.reincarca === "function") firma.reincarca();
+      } catch (e) { arataMesaj(f, e.mesaj || "Nu am putut marca declarația.", "eroare"); }
+    });
+  }));
+
   corp.querySelectorAll(".cf-incr-btn").forEach((b) => b.addEventListener("click", () => {
     const ids = (b.dataset.facturi || "").split(",").filter(Boolean);
     if (!ids.length) return;
@@ -280,12 +317,19 @@ export function legaVerdict(corp, nav, firma) {
       let ok = 0;
       const err = [];
       for (const id of ids) {
+        // [decizia 08.10 pct.2] o factură de marfă cu NIR „fără factură” nelegat: alegerea se cere pe rând, aici
+        const _zl = document.createElement("div");
+        b.parentElement.appendChild(_zl);
         try {
-          const r = await api.post(`/tenants/${firma.tenant_id}/facturi/${id}/contabilizeaza`, {});
+          const r = await cuLegareaNir(_zl, "POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza", (alegere) => {
+            const q = interogareLegare(alegere);
+            return api.post(`/tenants/${firma.tenant_id}/facturi/${id}/contabilizeaza` + (q ? "?" + q : ""), {});
+          });
           // [S3] refacerea identică cu nota respinsă nu se face în masă: cere confirmarea pe factură
           if (r && r.cod === "NESCHIMBATA") err.push(`${id}: ${r.mesaj}`); else ok++;
         }
         catch (e) { err.push(`${id}: ${e.mesaj || e.message}`); }
+        finally { _zl.remove(); }
       }
       if (err.length) {
         b.disabled = false;

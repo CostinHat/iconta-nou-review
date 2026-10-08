@@ -63,6 +63,10 @@ if _TEST_ENV is None and not os.environ.get(_mediu.CHEIE_MEDIU):
 
 _mediu.verifica(os.environ)
 
+# [08.10, decizia Costin U2] recalcularea rezumatelor după scriere rulează într-un fir de fundal (`firma_rezumat.recalculeaza_in_fundal`);
+# în suită, un fir neașteptat care scrie în `firma_rezumat` ar face testele nedeterministe. Testul ei o pornește explicit.
+os.environ.setdefault("ICONTA_RECALCUL_FUNDAL", "0")
+
 
 def pytest_configure(config):
     # skip-urile raman VIZIBILE ca semnal, indiferent de flag-urile de pornire (echiv. -rs)

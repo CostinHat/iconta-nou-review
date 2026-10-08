@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**728 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**739 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 691
+### `core/` — 702
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8877,6 +8877,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_audit_schema.py` — Teste F165 — auditor conformitate schema tenant vs tenant_template.sql.
 - `core/test_b1_apartenenta_coada.py` — [B1–B4, 17.09.2026] Apartenența pe OBIECT — un cabinet nu lucrează pe elementul altui cabinet.
 - `core/test_b3_owner_drepturi.py` — GARD B3: proprietarul cabinetului (admin_firma creat la înregistrare) primește drepturile
+- `core/test_balanta_jurnal.py` — [08.10.2026, decizia Costin W1, verbatim în DECIZII] Balanța nu poate conține ce jurnalul nu arată.
 - `core/test_balanta_pe_ecran.py` — GARD — balanța se poate CITI, nu doar descărca; iar „se închide" nu se afirmă pe gol.
 - `core/test_banca_parser.py` — Test parser extras bancar CSV: delimitator robust (fara csv.Sniffer),
 - `core/test_banca_parser_mt940.py` — Test gardian parser MT940 (SWIFT Statement Message).
@@ -8886,6 +8887,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
 - `core/test_brevo_pe_fir_propriu.py` — core/test_brevo_pe_fir_propriu.py — familia `_trimite_brevo` nu mai tine o conexiune din pool.
+- `core/test_buton_blocat_structura.py` — GARD ÎN BROWSER — blocarea butonului în timpul unei scrieri nu-i distruge conținutul (găsit 08.10.2026, la proba lotului
 - `core/test_c1_numerotare.py` — [C1, 17.09.2026] Numerotarea facturilor: două cereri concurente NU mai primesc același număr.
 - `core/test_c1_pontaj_neconfirmat_gri.py` — C1 (audit tenant_003): starea 'pontaj neconfirmat' pe Stat de plata e o stare de PERIOADA
 - `core/test_c2_import_firme.py` — [C2, 17.09.2026] Import în masă de firme: răspunsul „creat" corespunde bazei.
@@ -8940,10 +8942,12 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cont_venit_linie.py` — core/test_cont_venit_linie.py — #11: contul de venit stabilit PE LINIE de factura.
 - `core/test_contare_automata.py` — GARDA contării automate a facturii — blocurile DDD (cheia), EEE (emisă), FFF (primită).
 - `core/test_contract_ecran_ruta.py` — GARD: contractul ECRAN ↔ RUTĂ nu se rupe tăcut.
+- `core/test_contrast_zebra.py` — GARD — linkul de acțiune pe rândul zebră are contrast AA (DS cap.15 v2.81, găsit de axe 08.10.2026: „Contează” din Istoric facturi,
 - `core/test_control_fiscal.py` — Teste pentru semaforul de conformare fiscala (control_fiscal_api v2).
 - `core/test_control_fiscal_diacritice.py` — core/test_control_fiscal_diacritice.py — GARD: mesajele de VERDICT ale controlului fiscal
 - `core/test_control_incrucisat.py` — Teste gardian pentru control_incrucisat.compara_tva (functia PURA).
 - `core/test_control_incrucisat_wiring.py` — core/test_control_incrucisat_wiring.py — GARD end-to-end pentru verifica_tva (cablaj, nu logica pura).
+- `core/test_control_preluare.py` — [08.10.2026, decizia Costin U2, verbatim în DECIZII] Control fiscal: luna preluării, „depusă în afara iConta”, „de urmărit” pe 30 de
 - `core/test_control_reconciliere_vizibila.py` — core/test_control_reconciliere_vizibila.py — GARD pentru SUPRAFATA UNIFICATA de reconciliere
 - `core/test_cor.py` — Teste gardian pentru F137 (nomenclator COR).
 - `core/test_core_fara_main.py` — E6 — `core/` nu mai depinde de stratul HTTP. `CORE_IMPORTA_MAIN = 0`.
@@ -9130,6 +9134,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_date_firma_alege_placeholder.py` — core/test_date_firma_alege_placeholder.py — GARD (jumatatea frontend a defectului „default fabricat"
 - `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
 - `core/test_decizii_0710.py` — GARDA lotului „Deciziile 07.10” + retestul Costin pe F1 (comenzile din 07.10.2026, verbatim în DECIZII).
+- `core/test_decizii_0810_uvw.py` — GARDA mesajelor Costin 08.10.2026 (al patrulea și completările 2–3, verbatim în DECIZII 08.10.2026), pe ce nu e păzit în altă parte:
 - `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere
 - `core/test_declarant_warn.py` — core/test_declarant_warn.py — GARD: cand declarantul lipseste din profil, generatoarele AVERTIZEAZA
 - `core/test_declaratii_50.py` — GARD (07.09.2026) — cele 50 de declarații de pe ecranul public nu pot rămâne în urmă.
@@ -9281,6 +9286,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_masti.py` — Garda: nicio masca TACUTA peste un query.
 - `core/test_matrice_control_fiscal.py` — Matrice de stari pe control fiscal - PURA, aserții pe FORMĂ (nu valori). NU testeaza UI, NU repara.
 - `core/test_mesaj_commit_curat.py` — GARD [Z, 28.08.2026]: mesajul de commit nu poate purta octeți de control.
+- `core/test_mesaj_in_formular.py` — GARD ÎN BROWSER — un mesaj de stare nu șterge câmpurile formularului în care e pus (găsit 08.10.2026, la proba lotului
 - `core/test_mesaje_fara_camp_intern.py` — core/test_mesaje_fara_camp_intern.py — GARD: mesaj user-facing FĂRĂ nume intern de câmp.
 - `core/test_mesaje_generare_fara_camp_intern.py` — GARD (F5/Regula 14.4): mesajele de VALIDARE ale generatoarelor de declaratii (functiile
 - `core/test_mesaje_valueerror_publicat.py` — GARD (D7/D8/D9, 20.08.2026): mesajele `ValueError` PUBLICATE contabilului sunt în limba lui.
@@ -9295,6 +9301,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_monitor_fiscal.py` — —
 - `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
 - `core/test_neplatitor_tva_emitere.py` — GARD — factura emisă de o firmă NEplătitoare de TVA nu poartă taxa (lot 19 pct.4d, 02.10.2026).
+- `core/test_nir_legare_inversa.py` — GARDA deciziei Costin 08.10.2026, pct.2 — D2 în ordinea inversă (verbatim în DECIZII 08.10.2026):
 - `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
 - `core/test_niveluri_feedback.py` — GARD P0 (07.09.2026) — cele patru niveluri de feedback nu pot deveni o scurtătură nesigură.
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
@@ -9302,6 +9309,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
 - `core/test_note_explicative_micro.py` — GARDĂ: ce datorează o microentitate la notele explicative — și de ce NU e „nimic".
+- `core/test_notificari_element.py` — GARDA deciziei Costin 08.10.2026, pct.4 (verbatim în DECIZII 08.10.2026): „Notificările fără element (44, 45, 46, 48) nu rămân
 - `core/test_numar_fiscal.py` — Teste core.common.numar_fiscal + garda pe generatoarele de declaratii.
 - `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
 - `core/test_nume_firma_unic.py` — GARD [27.08.2026]: două firme cu același nume, în același cabinet, sunt un fapt imposibil.
@@ -9344,6 +9352,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_poarta_gol.py` — Teste numar_operatiuni — puntea catre poarta de declaratie goala.
 - `core/test_poarta_inainte_de_aprobare.py` — GARD [02.09.2026]: POARTA CONFIRMARII CADE INAINTE DE APROBARE, nu dupa.
 - `core/test_poarta_inchidere.py` — GARDA porții de închidere a perioadei — R58, partea care lipsea.
+- `core/test_poarta_ordine.py` — GARDA deciziei Costin 08.10.2026, pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după. Intră în acest lot, nu
 - `core/test_poarta_profil.py` — Garda: verificarea de profil nu e decorativa — daca exista, blocheaza generarea.
 - `core/test_poarta_scurta.py` — GARD (07.09.2026) — poarta scurta din PLAN_LUCRU regula 4 nu poate deveni o formalitate.
 - `core/test_populatii_registre.py` — GARD [R96, 06.09.2026]: cele trei registre obligatorii ori citesc aceeași mulțime, ori abaterea e DECLARATĂ.
@@ -9381,6 +9390,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reconciliere_vie.py` — META-GARD (LANT legislatie TURA 4, 10.08.2026): NICIO reconciliere sursa-vs-declaratie nu moare tacit.
 - `core/test_reevaluare_registru.py` — R59 — reevaluarea ajunge pe registrul care conduce amortizarea, SI in declaratie.
 - `core/test_refuz_generator_422.py` — GARD (D6, 20.08.2026): un generator care REFUZĂ motivat nu are voie să ajungă la contabil ca 500 gol.
+- `core/test_refuz_spre_ecran.py` — GARD — refuzul care trimite în alt ecran duce la CÂMPUL pe care îl cere (retest Costin 08.10.2026, completarea pct.2, verbatim în
 - `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
 - `core/test_refuzuri.py` — CLICHET: un refuz dintr-un modul care CITEAZĂ legea nu mai poate apărea fără temeiul lui.
 - `core/test_reges_poll_raspuns.py` — GARD — „Răspunsuri REGES” spune ce s-a întâmplat la citirea cozii REGES (comanda Costin 07.10.2026, clasa C5).
@@ -9395,6 +9405,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
+- `core/test_retest_0810.py` — GARDA retestului Costin din 08.10.2026 dimineața + completarea lui (verbatim în DECIZII 08.10.2026), pe backend:
 - `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
 - `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
 - `core/test_ritm_partajat.py` — E1 — ritmul se numără O SINGURĂ DATĂ, pe amândouă procesele, și nu se golește la repornire.
@@ -10576,3 +10587,33 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | `--gri-clar` nu e culoare de text (DS cap.15 v2.80) | `verificator_conformitate.py` CULOARE_SEMAFOR_TEXT | text secundar la 3,14:1 (clopoțel, rapoarte, ghid) | M29 (`--gri-clar` repus pe `.clopot-cand`) -> TOTAL 1 | culoarea transmisă prin parametru (limita existentă a regulii) |
 | retrimiterea neschimbată cere confirmare; cardul o spune | `test_decizii_0710.py::test_s3_…` (2) + `test_validare_note.py` | aceeași notă retrimisă fără avertisment; cardul fără motivul anterior / starea schimbării | M17, M18 -> ROȘU | notele respinse înainte de amprentă: „nu se poate compara” |
 | notificarea rezolvată la schimbarea stării | `test_decizii_0710.py::test_s4_…` (trigger pe coadă) | „de validat” activ după validare / respingere; „respinsă” activ după înlocuire | M15 (DROP TRIGGER) -> ROȘU | notificările fără element (`validat` fără id) nu se pot lega |
+
+## 08.10.2026 — „Deciziile 08.10”: NIR legat la contarea facturii, ordinea porții, notificările fără element, butonul aplatizat (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| factura de marfă peste un NIR „fără factură” cere alegerea | `core/test_nir_legare_inversa.py` (7, inclusiv calea SPV) | contarea tăcută a aceleiași livrări (371 / 401 / 4426 de două ori); legarea care lasă alte solduri decât ordinea directă; un NIR cu alt cost / alt furnizor / alt exercițiu / respins propus; factura SPV rămasă validată fără notă la refuz | M1c, M2, M3′, M4, M5, M6 -> ROȘU | numai global-valoric; NIR-ul din exercițiul trecut nu se leagă (decizie cerută) |
+| aceeași clasă la cantitativ-valoric, ținută ca datorie | `core/test_datorie.py::test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea` (xfail strict, `DID NOT RAISE` măsurat) | uitarea dublei încărcări la cost până la decizie | — (xfail: pică singur când se repară) | decizie cerută |
+| verificarea mesajului înaintea suitei | `core/test_poarta_ordine.py` (4: structură + efect pe hook-ul adevărat) | pytest în `pre-commit`; suita chemată înaintea `verifica-mesaj`; un mesaj respins care pornește suita; commitul fără suită | M7, M8, M9 -> ROȘU | `git commit --no-verify` ocolește tot (ca înainte) |
+| notificarea de acțiune poartă elementul | `public.notificari_element_ck` (bază) + `core/test_notificari_element.py` (5) | o notificare `de_validat` / `respinsa` nerezolvată fără element (inclusiv `link` NULL — prins la prima rulare); rezerva `"validat"` în cod; „a fost respinsă” activă după retrimiterea declarației; o valoare `rezolvata` fără etichetă în clopoțel | M10–M14 -> ROȘU | — |
+| butonul cu elemente nu e aplatizat în timpul scrierii | `core/test_buton_blocat_structura.py` (chromium, modulul real) | rândul-buton / cardul / iconița rescrise ca text, elementul acțiunii detașat (rezultatul nemaiarătat — „Contează” rămânea după contare) | mutația ramurii `firstElementChild` -> ROȘU (0 copii, span detașat) | numai butonul ținut minte la `pointerdown` (mecanismul existent) |
+| scanerul răspunsului citit vede și învelișurile cu șablonul rutei | `core/test_raspuns_citit.py::apeluri` (lărgit) | o scriere trimisă prin `cuLegareaNir(zona, "POST /…", …)` ieșită din scan (premisa 80 a căzut la 79) | — (premisa: 82 de scrieri) | învelișul trebuie să primească șablonul ca al doilea argument literal |
+| linkul de acțiune pe rândul zebră ≥ 4,5:1 | `core/test_contrast_zebra.py` (din `stil.css`, ambele fundaluri) | „Contează” / orice `.btn-link` la 4,13:1 pe `--albastru-clar` | regula `.zebra-lista .btn-link` scoasă -> ROȘU (4,13) | numai `.btn-link`; alt text colorat pe zebră îl vede axe, pe ecranele scanate |
+| ciorna statului cu alte sume se înlocuiește | `core/test_retest_0810.py::test_ciorna_cu_alte_sume…` | o ciornă nevalidată cu alte sume decât statul afișat rămasă lângă stat; nota validată atinsă | ramura `ciorna_nevalidata` scoasă -> ROȘU | ciornele amortizării și ale descărcării GV: aceeași clasă, nedecisă (§6) |
+| CAM pe toate veniturile salariale | `core/test_s1_elemente_salariale.py` (CAM) | baza CAM a statului fără elementele variabile (113 în loc de 124 pe probă) | `_bazac` fără `_venituri_adaugate` -> ROȘU | — |
+| refacerea documentului își găsește respingerea | `core/test_retest_0810.py::test_documentul_refacut…` + migrarea `doc_in_coada` | „retrimis după respingere” lipsă pe elementele dinaintea lui S3 | `doc` necompletat -> ROȘU | — |
+| starea de încasare dintr-o singură definiție | `core/test_retest_0810.py::test_starea_de_incasare…` | listă și detaliu cu stări diferite; parțialul nevăzut | `_cu_stare_incasare` fără plăți legate -> ROȘU | plățile nelegate de factură nu se văd (nu se ghicesc) |
+| refuzul cu ecran țintește câmpul | `core/test_refuz_spre_ecran.py` (4) | „Deschide Date firmă” fără câmp; un cod fără câmp; un câmp care nu există pe ecran | `camp_ecran` scos -> ROȘU | — |
+| poarta TVA declarație ↔ balanță | `core/test_retest_0810.py` (U1, 2) | D300 / D394 / D390 în coadă cu R17_2 ≠ 4427 sau R27_2 ≠ 4426 (> 1 leu) | filtrul `CONTURI_TVA_POARTA` scos / apelul porții scos -> ROȘU | note validate; TVA din NIR fără factură = decizie (§6) |
+| D406 = rulajele balanței | `core/test_decizii_0810_uvw.py` (V1, 2) | D406 în coadă cu GeneralLedgerEntries ≠ rulajul balanței pe fereastră (ciorne în lună) | apelul porții scos; fereastra fără limită; ciornele ignorate -> ROȘU | totalul, nu cont cu cont (cont cu cont = `d406_reconciliere`, pe validate) |
+| luna preluării, „depusă în afara iConta”, 30 de zile, „nedeclarat”, cardul | `core/test_control_preluare.py` (8) | restanțe dinaintea preluării; marcare fără dată / peste o depunere; „declară” pe o declarație nedepusă; etichetă nouă nefiltrată pe ecran; cardul așteptând tura de 5 minute | M1–M8 -> ROȘU | luna preluării dedusă (creat_la / data soldurilor), needitabilă — §6 |
+| contul din afara planului legal | `core/test_decizii_0810_uvw.py` (V3) | cont 731–738 (sau orice sintetic din afara nomenclatorului normei) creat / folosit fără avertisment | prefixul nesverificat / avertismentul scos din jurnal -> ROȘU | fără nomenclator pe normă nu se afirmă nimic |
+| linii-obiect afișate, rezumatul pe canalul lui | `core/test_decizii_0810_uvw.py` (V4 în chromium, V5 pe toate generatoarele) | „[object Object]”; „Dxxx …: N …” pe `avertismente` | `celulaObiect` ocolit / D301 înapoi -> ROȘU | forma rezumatului e recunoscută după tipar („Dxxx …: N ”) |
+| balanța = jurnalul pe lună, cinci egalități | `core/test_balanta_jurnal.py` (4) + `core/test_balanta_pe_ecran.py` (actualizat) + `core/test_kpi_client.py` | rulaje „curente” din alte luni; sume precedente pierdute; notele anilor trecuți în afara soldului de la 1 ianuarie; un cititor filtrat pe utilizator fără declarație; KPI care pierde cumulatul anului | W1-M1…M4 -> ROȘU | populația (ciorne în balanță) rămâne R36, nedecisă |
+| registrul MF: înregistrat, lipsă, sold preluat; închiderea cere amortizarea; 581 | `core/test_decizii_0810_uvw.py` (W2, W3) | sold inițial citit din plan (0) în loc de `solduri_initiale`; ciorna numărată ca înregistrare; lunile din soldul preluat date „lipsă”; luna curentă dată „lipsă”; închidere peste amortizare neînregistrată; 581 tăcut | M7a, M7b, M8, M9, M10, M14 -> ROȘU | amortizarea pe MF numai când contul are un singur mijloc |
+| cardul / titlul / lățimea | `core/test_decizii_0810_uvw.py` (U3, U4 chromium, W5) | „Închidere lună” scos din Zilnic; titlul „De depus” pe note; fereastra îngustă pe tabele | M5, M11, M12 -> ROȘU | lățimea la 1920 măsurată în scanul vizual, nu de test |
+| corp extras într-un ajutor, creditat numai pe apelurile reale | `core/test_p7_uc.py::APELURI_EXTRASE_IN_AJUTOR` + `test_EXTRAGERILE_declarate…` | o extragere declarată care scuză apeluri pe care ajutorul nu le face | ajutor declarat greșit (`_cu_firma`) -> ROȘU (P7-M9) | un nivel de funcții locale ale ajutorului |
+| «C&D: da/nu» cere «Poate valida» | `core/test_drepturi_rol.py` (perechea C&D) + `data-actiune` pe buton | asistentul junior schimbând regimul fiscal al activului (amortizare accelerată) | ruta înapoi pe `PREGATI` -> ROȘU (W4-M13) | — |
+| C5 cu omonime numai în domeniul conexiunii = fals pozitiv, calibrat | `core/p5_clasificare.py::C5-NUMAI-OMONIM` + `core/test_val3_contracte.py::test_CALIBRARE_C5_numai_omonim_in_ambele_directii` | ca o primitivă reală ținută peste conexiune să fie înghițită de regula omonimelor | regula scoasă -> `test_clasa_C5_nu_creste` ROȘU (poarta lotului); primitivă neomonimă -> ACȚIUNE | rezolvarea pe nume rămâne oarbă la omonime (antetul scanerului) |
+| mesajul nu șterge câmpurile containerului | `core/test_mesaj_in_formular.py` (chromium, `api.js` real) | un `arataMesaj` pe formular / ecran care detașează câmpurile tastate | ramura câmpurilor scoasă din `arataMesaj` -> ROȘU (câmp detașat) | containerul fără câmpuri se rescrie ca înainte |
+| textul colorat pe zebra tabelelor ≥ 4,5:1 | `core/test_contrast_zebra.py::test_textul_colorat_pe_randul_zebra…` | verde (sau alt token de text) sub prag pe rândul impar | redefinirea `--verde` scoasă -> ROȘU (4,13) | numai tokenii numiți; o culoare hex inline o vede numai axe, pe ecranele scanate |

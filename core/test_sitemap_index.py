@@ -40,12 +40,17 @@ def test_indexul_si_copiii_respecta_protocolul(c):
     assert r.status_code == 200 and r.headers["content-type"].startswith("application/xml")
     copii = _locuri(r.content)
     assert copii[0] == main._GHID_BAZA + "/sitemap-pagini.xml" and len(copii) >= 2
+    # [08.10.2026, indiciul Costin] rădăcina în namespace-ul protocolului + declarația XML UTF-8, numite (nu doar implicate de
+    # `iter(NS + "loc")`): sitemaps.org — „The file must … begin with an opening <urlset> tag … reference the current protocol standard”
+    _DECL = b'<?xml version="1.0" encoding="UTF-8"?>'
+    assert (r.content[:len(_DECL)], ET.fromstring(r.content).tag) == (_DECL, NS + "sitemapindex")
     toate = []
     for u in copii:
         rc = cl.get(u.replace(main._GHID_BAZA, ""))
         assert rc.status_code == 200 and len(rc.content) < 50 * 1024 * 1024, u
         loc = _locuri(rc.content)
         assert 0 < len(loc) <= 50000, u
+        assert (rc.content[:len(_DECL)], ET.fromstring(rc.content).tag) == (_DECL, NS + "urlset"), u
         toate += loc
     plat = _locuri(cl.get("/sitemap.xml").content)
     assert len(toate) == len(set(toate)) and sorted(toate) == sorted(plat)

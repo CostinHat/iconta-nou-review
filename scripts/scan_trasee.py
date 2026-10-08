@@ -54,6 +54,8 @@ TRASEE = [
      # chiar tabela proprie a traseului. Un traseu nou ar fi despartit doua capete ale aceluiasi drum.
      [r"^/declaratii", r"^/coada", r"^/firme/\{\}/verificari", r"^/supervizor$",
       r"^/control-fiscal(/\{\}(?!/audit-preluare))?$",
+      # [08.10.2026, decizia Costin U2] „depusă în afara iConta” scrie `declaratii_depuse`, tabela proprie a traseului
+      r"^/control-fiscal/\{\}/depusa-extern$",
       r"^/termene$", r"^/tenants/\{\}/istoric-declaratii-import"],
      ["declaratii_coada", "declaratii_depuse"]),
     ("T02", "Factura emisă — creare, contabilizare, ieșiri",
@@ -145,6 +147,7 @@ TRASEE = [
      ["retete", "retete_linii", "produse"]),
     ("T22", "Mijlocul fix și amortizarea",
      [r"^/tenants/\{\}/mijloace-fixe$", r"^/tenants/\{\}/mijloace-fixe/\{\}/destinatie-cd", r"^/tenants/\{\}/amortizare",
+      r"^/tenants/\{\}/mijloace-fixe/\{\}/cod-catalog$",   # [08.10.2026, decizia Costin W2]
       r"^/tenants/\{\}/reevaluare-imobilizare"],
      ["mijloace_fixe"]),
     ("T23", "Bonul de la client — portalul și decontul",
@@ -631,7 +634,7 @@ def citeste_rute():
 
 
 RE_W = re.compile(r'\b(INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+'
-                  r'(?:"?\{[^}]*\}"?\.|"?%\(?\w*\)?s"?\.|"?[a-z_]+"?\.)?'
+                  r'(?:"?\{[^}]*\}"?\.|"?%\(?\w*\)?s"?\.?|"?[a-z_]+"?\.)?'
                   r'"?([a-zA-Z_][a-zA-Z0-9_]*)"?', re.I)
 RE_STARE = re.compile(r"\b(status|stare)\s*=\s*['\"]([a-z_]+)['\"]", re.I)
 

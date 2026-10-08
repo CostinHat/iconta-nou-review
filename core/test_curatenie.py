@@ -154,9 +154,9 @@ def _tokenuri(cale):
 
 
 def test_AMANDOUA_hookurile_cheama_instrumentul():
-    """`pre-commit` sare poarta, `commit-msg` cere marturia. Daca vreunul nu mai cheama
-    instrumentul, ocolirea devine ori inaccesibila, ori tacuta."""
-    for hook in ("pre-commit", "commit-msg"):
+    """`poarta-suita` sare poarta, `verifica-mesaj` cere marturia (amandoua chemate de `commit-msg` din 08.10; pana atunci
+    saltul era in `pre-commit`). Daca vreunul nu mai cheama instrumentul, ocolirea devine ori inaccesibila, ori tacuta."""
+    for hook in ("poarta-suita", "verifica-mesaj"):
         chemat = [t for t in _tokenuri(hook) if t.endswith("curatenie.py")]
         assert chemat, "%s nu mai cheama scripts/curatenie.py — regula 7 e scrisa, nu cablata" % hook
 
@@ -173,7 +173,7 @@ def test_commit_msg_cere_ETICHETA_exact_cand_poarta_a_fost_sarita(tmp_path):
         msg = tmp_path / ("msg_%s.txt" % cu_eticheta)
         text = baza + ("# doar-curatenie: proba de calibrare a etichetei\n" if cu_eticheta else "")
         msg.write_text(text, encoding="utf-8")
-        r = subprocess.run(["sh", os.path.join(_RAD, "scripts", "githooks", "commit-msg"),
+        r = subprocess.run(["sh", os.path.join(_RAD, "scripts", "githooks", "verifica-mesaj"),
                             str(msg)], cwd=_RAD, capture_output=True, text=True)
         trecut = (r.returncode == 0)
         assert trecut == (cu_eticheta == e_curatenie), (

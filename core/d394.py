@@ -417,6 +417,7 @@ class Rezultat:
     informatii: dict = field(default_factory=dict)
     total_plata_a: int = 0
     op_efectuate: int = 0
+    sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
     # [R119, 02.09.2026] Ce facturi a inclus declaratia, pe cheia operatiunii. Exista ca sa se poata
     # confrunta cu ce s-a transmis prin e-Factura FARA a reimplementa eligibilitatea: cine decide ce
     # intra ramane generatorul, iar cine confrunta doar citeste.
@@ -983,7 +984,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             "(se declară în D390 - VIES)." % intracom)
     if nefacturabile:
         res.avertismente.append("%d facturi excluse din declarație (vezi mai sus)." % nefacturabile)
-    res.avertismente.append(
+    res.sinteza.append(   # [08.10, V5] sinteza cifrelor, nu avertisment
         "D394 %02d/%d: %d parteneri TVA RO, %d neînregistrați, %d UE, %d non-UE; %d operațiuni."
         % (luna, an, inf["nrCui1"], inf["nrCui2"], inf["nrCui3"], inf["nrCui4"], len(op1)))
     return res

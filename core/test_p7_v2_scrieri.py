@@ -241,7 +241,17 @@ def test_numarul_de_instructiuni_se_conserva():
     #   statul de plată arată la deschidere starea notei lunii în coada de validare (respingerea fără clic). Pas NOU, citire.
     # [lotul „Deciziile 07.10”, 08.10.2026] 288 -> 289, cu apelul numit: repo_contabilitate.nota_horeca_z_ciorna (horeca_raport_z) —
     #     raportul Z scris de mână e CIORNĂ la firma cantitativ-valorică (decizia pct.3), VALIDAT în rest: două apeluri explicite.
-    assert _apeluri_catre_repository() == 289
+    # [lotul „Deciziile 08.10”, 08.10.2026] 289 -> 298, cu cele NOUĂ apeluri numite:
+    #   repo_mijloace_fixe.seteaza_cod_catalog (mijloc_fix_cod_catalog) — W2, codul din Catalogul HG 2139/2004, scriere NOUĂ;
+    #   repo_contabilitate.liniile_si_data (salarii_contare_propunere) — retest pct.1, ecranul spune „ciorna are alte sume”, citire;
+    #   repo_contabilitate.punct_de_revenire + revino_la (salarii_contare_scrie) — retest pct.1, înlocuirea ciornei se retrage
+    #     când noua notă are aceeași amprentă (SAVEPOINT; era SQL direct în use-case, mutat aici);
+    #   repo_control_fiscal_api.select_depusa_curenta + insert_depusa_extern (control_fiscal_depusa_extern) — U2, „depusă în
+    #     afara iConta”: verificarea depunerii existente și scrierea;
+    #   repo_contabilitate.search_path_firma (controale_inchidere) — W2, registrul MF citit pe schema firmei (era SQL direct);
+    #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (poarta_d406_balanta) — V1, poarta D406 = rulajele balanței
+    #     (fereastra D406 și câte ciorne explică diferența), două citiri NOI.
+    assert _apeluri_catre_repository() == 298
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

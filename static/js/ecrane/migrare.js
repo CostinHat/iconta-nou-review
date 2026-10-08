@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate } from "../api.js?v=e9cf26e11b";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate } from "../api.js?v=4242dc4353";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -1575,7 +1575,7 @@ function importPlanConturiFirma(corp, nav, firma) {
         ? conturi.map((c) => `<div class="mig-frand" style="cursor:default">
             <div class="mig-frand-text">
               <div class="mig-frand-nume">${esc(c.simbol)} \u00b7 ${esc(c.denumire)}</div>
-              <div class="mig-frand-sub">${c.tip || ""}</div>
+              <div class="mig-frand-sub">${c.tip || ""}${c.in_afara_planului ? " \u00b7 în afara planului legal al normei firmei" : ""}</div>
             </div>
           </div>`).join("")
         : `<div class="stare-goala">Niciun cont g\u0103sit cu acest termen.</div>`;
@@ -1605,9 +1605,11 @@ function importPlanConturiFirma(corp, nav, firma) {
       return;
     }
     try {
-      await api.post(`/tenants/${firma.tenant_id}/plan-conturi`, { simbol, denumire });
+      const rs = await api.post(`/tenants/${firma.tenant_id}/plan-conturi`, { simbol, denumire });
       inpS.value = ""; inpD.value = "";
-      cauta(cautaInput.value.trim());
+      await cauta(cautaInput.value.trim());
+      // [08.10, V3] „un cont care nu e în planul legal nu se poate crea … fără avertisment”
+      if (rs && rs.avertisment) arataMesaj(eroare, rs.avertisment.motiv || "Cont în afara planului legal.", "avert");
     } catch (e) {
       if (e && e.cod === 409) { inpS.classList.add("camp-invalid"); inpS.setAttribute("aria-invalid", "true"); inpS.focus(); }
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";

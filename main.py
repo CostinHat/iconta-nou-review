@@ -623,6 +623,9 @@ async def _autor_si_note_in_coada(request: Request, call_next):
         response = await call_next(request)
     finally:
         _autor_cerere.reseteaza(_tok)
+    if response.status_code < 400:   # [08.10, decizia Costin U2] cardul nu așteaptă tura de 5 minute
+        from core import firma_rezumat as _fr_fundal
+        _fr_fundal.recalculeaza_in_fundal()
     _m = _re_audit.match(r"^/tenants/(\d+)/", request.url.path)
     if _m and response.status_code < 400 and ctx.get("firm"):
         try:
@@ -2359,6 +2362,24 @@ def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 
+class DepusaExternIn(BaseModel):
+    tip: str
+    an: int
+    luna: int
+    data_depunere: str
+    recipisa: Optional[str] = None
+
+
+@app.post("/control-fiscal/{tenant_id}/depusa-extern")
+def control_fiscal_depusa_extern(tenant_id: int, date: DepusaExternIn, ctx=Depends(cere_drept(_drepturi.DEPUNE))):
+    """[08.10.2026, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.”
+    E un fapt despre DEPUNERE, deci cere «Poate depune»."""
+    try:
+        return _uc_control_fiscal.control_fiscal_depusa_extern(tenant_id, date.model_dump(), ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/control-fiscal/{tenant_id}/audit-preluare")
 # [R45] POST: auditul e declansat de un buton, deci e un ACT — iar verdictul lui se pastreaza.
 # Un GET n-are voie sa scrie (interdictia 6).
@@ -2943,14 +2964,6 @@ def _coada_info(conn, coada_id):
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
-def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id):
-    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._notif_de_validat` — traduce refuzul de
-    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
-    try:
-        return _uc_comun._notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id)
-    except _erori.EroareDeDomeniu as e:
-        raise _http_din(e)
-
 def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
     """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._notif_pregatitor` — traduce
     refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
@@ -3432,9 +3445,10 @@ def _cere_perioada_deschisa(conn, schema, nota_id):
         raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/perioade-blocate")
-def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+def perioade_blocate_lista(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None, ctx=Depends(cere_cabinet)):
+    """[08.10.2026, W2 + W3] `an` + `luna` opționale: și controalele închiderii lunii (blocaje + semnale)."""
     try:
-        return _uc_tenants.perioade_blocate_lista(tenant_id, ctx)
+        return _uc_tenants.perioade_blocate_lista(tenant_id, ctx, an=an, luna=luna)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -5595,7 +5609,8 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
-def factura_contabilizeaza(tenant_id: int, factura_id: int, confirma: bool = False, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def factura_contabilizeaza(tenant_id: int, factura_id: int, confirma: bool = False, nir_id: Optional[int] = None,
+                           alta_livrare: bool = False, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026,
     varianta (ii)+(iii) din AAA4).
 
@@ -5609,9 +5624,13 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, confirma: bool = Fal
 
     Diferența față de calea automată e una singură, și e declarată: aici `automat=False`, deci clasa
     ambiguă de TVA la încasare **trece** (omul are contextul pe care automatul nu-l are), iar plasa
-    anti-dublare **avertizează** în loc să oprească."""
+    anti-dublare **avertizează** în loc să oprească.
+
+    [decizia 08.10 pct.2] `nir_id` / `alta_livrare`: alegerea omului când factura primită (371, global-valoric) are NIR-uri
+    „fără factură” nelegate de la furnizorul ei; fără alegere, 422 cu `cod: NIR_DE_LEGAT`, candidații și propunerea."""
     try:
-        return _uc_tenants.factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=confirma)   # [S3]
+        return _uc_tenants.factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=confirma,   # [S3]
+                                                  nir_id=nir_id, alta_livrare=alta_livrare)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6239,11 +6258,22 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.put("/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd")
-def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.VALIDA))):
     """corp: {destinatie_cd: da/nu}. [lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)): permite
-    amortizarea accelerata a aparaturii si echipamentelor de cercetare-dezvoltare din orice cont."""
+    amortizarea accelerata a aparaturii si echipamentelor de cercetare-dezvoltare din orice cont.
+    [08.10.2026, decizia Costin W4] „Butonul «C&D: da/nu» schimbă regimul fiscal al activului și cere «Poate valida»” — PIVOT peste
+    „Bifa C&D: fără rol separat” (DECIZII 04.10)."""
     try:
         return _uc_tenants.mijloc_fix_destinatie_cd(tenant_id, mijloc_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog")
+def mijloc_fix_cod_catalog(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """corp: {cod_catalog}. [08.10.2026, decizia Costin W2] Codul de clasificare din Catalogul HG 2139/2004, verificat pe catalog."""
+    try:
+        return _uc_tenants.mijloc_fix_cod_catalog(tenant_id, mijloc_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

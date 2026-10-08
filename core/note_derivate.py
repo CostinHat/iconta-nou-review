@@ -102,6 +102,24 @@ def respinsa(cur, schema, nota_id):
     return bool(r) and (r["stare"] if isinstance(r, dict) else r[0]) == "respinsa"
 
 
+def ciorna_nevalidata(cur, schema, nota_id):
+    """[retest 08.10 pct.1] Nota e ciornă și nu e respinsă (în afara cozii sau la validare)? — ciorna pe care contabilizarea
+    documentului o poate înlocui cu nota din documentul de acum."""
+    s = _q(schema)
+    cur.execute("SELECT status FROM %sinregistrari WHERE id = %%s" % s, (nota_id,))
+    r = cur.fetchone()
+    st = (r["status"] if isinstance(r, dict) else r[0]) if r else None
+    return st == "ciorna" and not respinsa(cur, schema, nota_id)
+
+
+def sterge_ciorna_inlocuita(cur, schema, nota_id):
+    """[retest 08.10 pct.1, decizia Costin] Scoate ciorna nevalidată pe care o înlocuiește nota din documentul de acum (liniile cad
+    prin ON DELETE CASCADE; elementul ei `la_senior` din coadă cade prin `trg_coada_nota_sincron`, iar notificarea „de validat” se
+    rezolvă „înlocuită”). Numai o ciornă — o notă validată nu se atinge."""
+    cur.execute("DELETE FROM %sinregistrari WHERE id = %%s AND status = 'ciorna'" % _q(schema), (nota_id,))
+    return cur.rowcount
+
+
 def sterge_respinsa(cur, schema, nota_id):
     """Scoate nota respinsă înaintea înlocuirii (liniile cad prin ON DELETE CASCADE). Elementul ei din coadă rămâne, `respinsa`,
     ca istoric: motivul respingerii nu se pierde."""

@@ -396,6 +396,15 @@ CLASIFICARE = {
             "peste un apel de retea — intrebare de concurenta, nu de proprietate; e numita in "
             "raport, la restante.",
     },
+    "core/migrare_decizii_0810.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "DDL-ul public (valoarea `inexistent`, gardul `notificari_element_ck`, triggerul extins) <-> marcarea "
+                  "notificarilor de actiune fara element <-> documentul (`doc`) in payload-ul elementelor vechi din coada",
+        "de_ce":
+            "doua tranzactii, fiecare comisa la capat; DDL idempotent (DROP/ADD CONSTRAINT, CREATE OR REPLACE FUNCTION, DROP/CREATE "
+            "TRIGGER), marcarea atinge numai randurile nerezolvate, completarea `doc` numai elementele fara el — rularea a doua nu "
+            "schimba nimic; niciun efect extern.",
+    },
     "core/migrare_decizii_0710.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "DDL-ul public (notificari.rezolvata + triggerul) <-> DDL-ul fiecarei scheme <-> stornarea documentelor deja "

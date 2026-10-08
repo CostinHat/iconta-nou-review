@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=e9cf26e11b";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=4242dc4353";
 import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
@@ -391,6 +391,10 @@ async function pas2(corp, nav) {
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
         <ul class="ci-mesaj" style="margin:0;padding-left:18px">${constat.map((c)=>`<li style="margin:3px 0">${esc(typeof c==="string"?c:(c.mesaj||"constatare fără detalii"))}</li>`).join("")}</ul>
+      </div>` : ""}
+    ${(S.rezultat.sinteza || []).length ? `<div class="caseta-info">
+        <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Rezumat</div>
+        <ul class="ci-mesaj" style="margin:0;padding-left:18px">${S.rezultat.sinteza.map((x) => `<li style="margin:3px 0">${esc(String(x))}</li>`).join("")}</ul>
       </div>` : ""}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
@@ -3620,7 +3624,23 @@ async function randeazaManualD300(corp, nav) {
 // ghiceste care numar e o suma.
 //
 // Ce NU se poate desface o spune, nu o tace: `acoperire !== "completa"` vine cu motivul scris.
-function _blocComponente(c) {
+// [08.10.2026, decizia Costin V4] „Secțiunea «Din ce e făcută declarația» afișează «[object Object]» în coloana «linii». Trebuie să
+// arate cont, debit/credit și sumă.” O valoare-obiect (liniile unei note D406: {cont, debit, credit, …}) sau o listă de obiecte se
+// scrie rând cu rând: „cont · debit/credit sumă”; alt obiect, ca perechi „cheie: valoare”. Niciun obiect nu ajunge la String().
+export function celulaObiect(v) {
+  const unu = (x) => {
+    if (x == null) return "";
+    if (typeof x !== "object") return esc(String(x));
+    if ("cont" in x) {
+      const d = Number(x.debit || 0), c = Number(x.credit || 0);
+      return `${esc(String(x.cont))} \u00b7 ${d ? "debit " + bani(d) : "credit " + bani(c)}`;
+    }
+    return Object.entries(x).map(([a, b]) => `${esc(a)}: ${esc(b == null ? "" : (typeof b === "object" ? JSON.stringify(b) : String(b)))}`).join(", ");
+  };
+  return Array.isArray(v) ? v.map(unu).join("<br>") : unu(v);
+}
+
+export function _blocComponente(c) {
   if (!c) return "";
   // Propozitia o detine ECRANUL, nu raspunsul: un text trimis de server ar fi o afirmatie in proza
   // intr-un payload (interzis din 21.08), iar aici e text de interfata - explicit in afara regulii
@@ -3635,7 +3655,8 @@ function _blocComponente(c) {
   const tabel = (s) => {
     const coloane = Object.keys(s.randuri[0] || {});
     const mon = new Set(s.monetare || []);
-    const celula = (r, k) => (r[k] == null ? "" : (mon.has(k) ? bani(r[k]) : esc(String(r[k]))));
+    const celula = (r, k) => (r[k] == null ? "" : (typeof r[k] === "object" ? celulaObiect(r[k])
+      : (mon.has(k) ? bani(r[k]) : esc(String(r[k])))));
     return `<div style="margin-top:10px">
         <div class="camp-eticheta">${esc(s.nume)} \u2014 ${s.total} ${s.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}${s.aratate < s.total ? `, se arat\u0103 primele ${s.aratate}` : ""}</div>
         <table class="fd-tabel">

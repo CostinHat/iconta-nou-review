@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-*clasa MECANIC · 16 rute · 8 schimba date · 9 firme il pot exercita azi*
+*clasa MECANIC · 17 rute · 9 schimba date · 9 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
 
@@ -104,6 +104,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - numărul de rânduri scrise = numărul de declarații din fișier, minus cele respinse, iar respinsele sunt numite
 - un `DELETE/INSERT` nu lasă în urmă rânduri din import-ul anterior care nu mai sunt în fișier — sau, dacă le lasă, se spune care
 - `migrare_status` marchează stratul ca parcurs, cu momentul
+
+### `POST /control-fiscal/{tenant_id}/depusa-extern`
+
+*garda `cere_drept` · **fara rol** · scrie in declaratii_depuse*
+
+*ce face: [08.10.2026, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.” E un fapt despre DEPUNERE, deci cere «Poate depu — scrie declaratii_depuse (INSERT) — prin `repo_control_fiscal_api`*
+
+- [x] [08.10.2026, decizia Costin U2] o declarație anterioară se marchează „depusă în afara iConta”: versiune nouă în `declaratii_depuse` (`sursa = 'extern'`, `recipisa` opțională), iar Control fiscal o arată „La zi” cu recipisa — `core/test_control_preluare.py::test_marcata_depusa_in_afara_iconta…` + proba de browser (restanța D112 08/2026 -> „La zi”)
+- [x] data depunerii e obligatorie (fără ea „la termen / după termen” ar fi o presupunere); nu se marchează peste o depunere existentă (409)
+- [x] cere «Poate depune» — e un fapt despre DEPUNERE
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
@@ -228,7 +238,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · miscari_stoc (INSERT) — prin `coada_api`, `stocuri_anulare`*
+*ce face: RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · miscari_stoc (INSERT) · nir (UPDATE) — prin `coada_api`, `nir_legare`, `stocuri_anulare`*
 
 - [x] nota produsă e **ciornă**, nu evidență validată — descrierea o spune, verifică structural
 - propunerea de conturi vine din maparea corectată; nu se ghicește din denumire
@@ -739,7 +749,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · nir (UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `nir_legare`, `repo_efactura`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
@@ -950,7 +960,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · perioade_inchideri (INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `migrare_inchideri`, `repo_contabilitate`, `repo_main`*
+*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_inchideri (INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `migrare_inchideri`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] închiderea e un act deliberat, cu **autor și moment** consemnate
 - după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
@@ -1671,7 +1681,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T22 — Mijlocul fix și amortizarea
 
-*clasa MECANIC · 4 rute · 3 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 5 rute · 4 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/mijloace-fixe`*
 
@@ -1695,6 +1705,15 @@ faptica, pe baza listelor de inventariere.
 - [x] cu bifa = da, un echipament pe alt cont decât 2131 se poate amortiza accelerat (CF art.20 alin.(1) lit.b)); D406 Assets îl declară cu `DepreciationMethod` accelerata — probat prin HTTP în `core/test_rute_stoc_pana_in_declaratie.py::test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets` (fără bifă: 422)
 - bifa nu deschide accelerata la construcții, terenuri, animale/plantații (nu sunt „aparatură și echipamente”) — `core/test_mf_destinatie_cd.py`
 - **fără rol**: schimbă metoda permisă, deci baza amortizării fiscale (D101) — de verificat dacă bifa cere `admin_firma`, ca reevaluarea la validare
+
+### `PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog`
+
+*garda `cere_drept` · **fara rol** · scrie in mijloace_fixe*
+
+*ce face: corp: {cod_catalog} — scrie mijloace_fixe (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe_jurnal (INSERT) — prin `repo_mijloace_fixe`*
+
+- [x] [08.10.2026, decizia Costin W2] codul se verifică pe Catalogul HG 2139/2004 (refuz 422 dacă nu există); durata din afara plajei lui -> avertisment, nu refuz — probat prin HTTP în `core/test_rute_stoc_pana_in_declaratie.py::test_CODUL_DIN_CATALOG…`
+- [x] codul e evidență, nu parametru de calcul: amortizarea declarată (D406 Assets) rămâne aceeași înainte și după (aceeași probă)
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 
@@ -1807,7 +1826,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_drept` · **fara rol***
 
-*ce face: intoarce ce da `_uc_tenants.horeca_z_fara_marfa()`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rapoarte_z_amef (UPDATE) — prin `z_descarcare`*
 
 - [x] declarația cere un da / nu explicit (un șir -> 400) și se face numai pe un Z nevalidat (`test_Z_FARA_MARFA_prin_HTTP_deblocheaza_validarea_la_cantitativ_valoric`)
 - [x] un Z cu ieșiri legate nu poate fi declarat „fără marfă” (`z_descarcare.marcheaza_fara_marfa`)

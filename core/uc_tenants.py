@@ -191,7 +191,9 @@ def tenant_plan_conturi_lista(tenant_id, q, ctx):
                 rows = repo_contabilitate.conturi_dupa_text(cur, f"%{q}%", f"%{q}%")
             else:
                 rows = repo_contabilitate.toate_conturile(cur)
-    return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2]} for r in rows]}
+            from core import plan_legal as _pl   # [08.10, V3] contul din afara planului legal se vede ca atare
+            afara = set(_pl.in_afara(cur, schema, [r[0] for r in rows]))
+    return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2], "in_afara_planului": r[0] in afara} for r in rows]}
 
 
 def tenant_plan_conturi_adauga(tenant_id, date, ctx):
@@ -221,8 +223,10 @@ def tenant_plan_conturi_adauga(tenant_id, date, ctx):
                 raise _erori.Conflict("Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
                         "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
             repo_contabilitate.adauga_cont_in_plan(cur, simbol, denumire, date.tip or "Bifunctional")
+            from core import plan_legal as _pl   # [08.10, V3] „nu se poate crea … fără avertisment”
+            av = _pl.avertisment(cur, schema, [simbol])
         conn.commit()
-    return {"ok": True, "simbol": simbol}
+    return {"ok": True, "simbol": simbol, "avertisment": av}
 
 
 def solduri_rezumat(tenant_id, ctx):
@@ -984,6 +988,13 @@ def salarii_contare_propunere(tenant_id, an, luna, ctx):
         from core import coada_api as _coada
         with db.get_conn() as conn:
             p["validare"] = _coada.stari_note(conn, tenant_id, [r[0]]).get(r[0])
+        # [retest 08.10 pct.1] ciorna nevalidată cu alte sume (sau altă dată) decât nota din statul afișat: ecranul o spune și oferă
+        # înlocuirea — „nu rămâne niciodată o ciornă cu alte sume decât statul afișat”
+        from core import note_derivate as _nd
+        with db.get_conn(schema) as conn, conn.cursor() as cur:
+            p["ciorna_alte_sume"] = bool(_nd.ciorna_nevalidata(cur, schema, r[0]) and repo_contabilitate.liniile_si_data(cur, r[0])
+                                         != (str(_uc_comun.ultima_zi_a_lunii(an, luna)),
+                                             sorted((n["debit"], n["credit"], "%.2f" % n["suma"]) for n in p["note"])))
     return p
 
 
@@ -1026,42 +1037,37 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
     return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
 
 
-def perioade_blocate_lista(tenant_id, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/perioade-blocate`; docstringul ei a ramas in stratul HTTP."""
+def perioade_blocate_lista(tenant_id, ctx, an=None, luna=None):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/perioade-blocate`; docstringul ei a ramas in stratul HTTP.
+    [08.10.2026, W2 + W3] Cu `an` + `luna`: și controalele închiderii acelei luni (ecranul „Închidere lună” le arată înainte de
+    blocare — aceleași pe care le aplică poarta)."""
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            return {"blocate": [{"an": r[0], "luna": r[1]} for r in repo_contabilitate.perioade_blocate(cur, schema)]}
+            out = {"blocate": [{"an": r[0], "luna": r[1]} for r in repo_contabilitate.perioade_blocate(cur, schema)]}
+        if an and luna:
+            out["controale"] = _uc_comun.controale_inchidere(conn, schema, int(an), int(luna))
+            conn.rollback()   # citire: controalele nu scriu nimic (search_path local se aruncă odată cu tranzacția)
+        return out
 
 
 def perioada_blocheaza(tenant_id, an, luna, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/perioade-blocate`; docstringul ei a ramas in stratul HTTP."""
-    from core import inchidere_luna as _il
     from core import migrare_inchideri as _ui
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            ciorne = _uc_comun._ciorne_in_perioada(cur, schema, an, luna)
-            facturi_desch = _uc_comun._facturi_neincheiate_in_perioada(cur, schema, an, luna)
-        bl = _il.blocaj(conn, schema, an, luna)
-        if ciorne or facturi_desch or bl:
+        # [08.10.2026, W2 + W3] controalele închiderii, o singură definiție (și pentru ecranul „Închidere lună”)
+        ctl = _uc_comun.controale_inchidere(conn, schema, an, luna)
+        if ctl["blocaje"]:
             # Refuzul spune CE oprește și UNDE se rezolvă — nu doar că nu se poate.
-            motive = []
-            if ciorne:
-                motive.append("%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le "
-                              "din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri"
-                              % ciorne)
-            if facturi_desch:
-                motive.append("%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau "
-                              "ciornă de recunoaștere); contabilizează-le sau recunoaște-le, "
-                              "altfel după închidere nu se mai poate — amândouă actele cer o lună "
-                              "deschisă" % facturi_desch)
-            if bl:
-                motive.append(str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura.")
+            motive = [b["mesaj"] for b in ctl["blocaje"]]
+            ciorne = next((1 for b in ctl["blocaje"] if b["cod"] == "CIORNE"), 0)
+            facturi_desch = next((1 for b in ctl["blocaje"] if b["cod"] == "FACTURI_NEINCHEIATE"), 0)
+            bl = next((b["mesaj"] for b in ctl["blocaje"] if b["cod"] == "EFACTURI"), None)
             # Refuzul e o AFIRMAȚIE DESPRE DATELE FIRMEI, deci poartă `fel` din nomenclator (P8):
             # o valoare — starea perioadei — nu satisface o regulă. `unde` și `regula` sunt cerute
             # tocmai fiindcă un refuz fără adresă e un reproș.
@@ -1073,12 +1079,13 @@ def perioada_blocheaza(tenant_id, an, luna, ctx):
                         regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "
                                "înregistrat și validat"),
                     cod="PERIOADA_NU_SE_POATE_INCHIDE",
-                    motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl))
+                    motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl, blocaje=ctl["blocaje"],
+                    semnale=ctl["semnale"]))
         with conn.cursor() as cur:
             repo_contabilitate.blocheaza_perioada(cur, schema, an, luna, ctx["uid"])
         _ui.scrie(conn, schema, an, luna, "inchisa", ctx["uid"])
         conn.commit()
-    return {"blocat": f"{luna:02d}/{an}"}
+    return {"blocat": f"{luna:02d}/{an}", "semnale": ctl["semnale"]}
 
 
 def perioada_deblocheaza(tenant_id, an, luna, motiv, ctx):
@@ -1139,6 +1146,8 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
                                            "centru_cost_id": cc_id, "centru_nume": cc_nume})
                 total += float(suma)
+            for _nid, _st in _j.facturi_stinse(cur, schema, list(note)).items():   # [08.10, U5] chitanța: factura pe care o stinge
+                note[_nid]["stinge"] = _st
     # [14-1-1] "Sumele debitoare si sumele creditoare se totalizeaza lunar." In partida dubla fiecare
     # linie e simultan debit si credit, deci cele doua totaluri sunt egale prin constructie - se dau
     # amandoua, cum cere formularul, nu unul singur.
@@ -1611,7 +1620,8 @@ def cabinet_balanta_date(tenant_id, an, luna, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
     with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
         randuri = documente_api.balanta(conn, schema, an, luna)
-    return {"randuri": randuri,
+        note_lunii = documente_api.note_lunii(conn, schema, an, luna)
+    return {"randuri": randuri, "note_lunii": note_lunii,
             "totaluri": documente_api.totaluri_balanta(randuri),
             "inchidere": documente_api.inchidere_balanta(randuri)}
 
@@ -2832,9 +2842,10 @@ def factura_recunoaste(tenant_id, factura_id, ctx):
     return {"stare": "recunoscuta", "factura_id": factura_id, "contare": rez}
 
 
-def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False):
+def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False, nir_id=None, alta_livrare=False):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza`; docstringul ei a ramas in stratul HTTP."""
     from core import contare_facturi as _cf
+    from core import nir_legare as _nl
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -2846,7 +2857,8 @@ def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False):
             _motiv = _cq.motiv_respingere(_c0, schema, _resp[0]) if _resp else None
         try:
             with _cf.cursor_dict(conn) as cur:
-                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=False)
+                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=False,
+                                         nir_legat=_nl.alegerea(nir_id, alta_livrare))   # [decizia 08.10 pct.2]
             # [retest 07.10 R1] factura respinsă la validare, cu stocul stornat: refacerea ei reface și mișcarea de stoc
             from core import stocuri_anulare as _sa
             _stoc = _sa.reface_factura(conn, schema, factura_id)
@@ -2868,6 +2880,8 @@ def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False):
             # de raspuns ar rupe apelanti fara sa spuna.
             if e.cod == "LUNA_INCHISA":
                 raise _erori.Blocat(PERIOADA_INCHISA)
+            if e.cod in _nl.CODURI:   # [decizia 08.10 pct.2] alegerea NIR-ului: candidații și propunerea, pentru ecran
+                raise _erori.DateInvalide(_nl.detaliu_refuz(e))
             raise _erori.DateInvalide(e.mesaj)
         conn.commit()
     return rez
@@ -4438,33 +4452,16 @@ def nota_contract_special(tenant_id, corp, ctx):
 
 def tenant_mijloace_fixe(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/mijloace-fixe`; docstringul ei a ramas in stratul HTTP."""
-    from decimal import Decimal
     from datetime import date as _date
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     azi = _date.today()
-    out = []
+    # [08.10.2026, decizia Costin W2] registrul arată amortizarea ÎNREGISTRATĂ (contul de amortizare), separat de cea teoretică
+    # (metoda reală, CF art.28 — `d406_active`), diferența, lunile neînregistrate, durata, codul din catalog și planul lunar
+    from core import mf_registru as _mfr
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             rows = repo_mijloace_fixe.toate(cur)
-    from core import d406_active as _d406
-    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ, reev, dcd) in rows:
-        val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
-        amortizat = ramas = eroare = None
-        if activ:
-            mf_d = {"cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                    "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                    "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
-            try:
-                r = _d406.amortizat_la_data(mf_d, azi)   # metoda reala (CF art.28), nu liniar
-                amortizat = str(r["amortizat"]); ramas = str(r["ramas"])
-            except (ValueError, KeyError) as e:
-                eroare = str(e)   # metoda nepermisa / date invalide -> se arata, nu se fabrica liniar
-        out.append({"id": mid, "cod": cod, "denumire": den,
-                    "cont_imobilizare": ci, "cont_amortizare": ca,
-                    "valoare": str(val), "rezidual": str(rez),
-                    "dnf_luni": dnf, "data_pif": str(pif) if pif else None,
-                    "metoda": met, "activ": bool(activ), "destinatie_cd": bool(dcd),
-                    "amortizat": amortizat, "ramas": ramas, "eroare": eroare})
+            out = _mfr.registru(cur, rows, azi)
     return {"mijloace": out}
 
 
@@ -4478,12 +4475,37 @@ def mijloc_fix_destinatie_cd(tenant_id, mijloc_id, corp, ctx):
         raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            # [decizia Costin 04.10.2026] fără rol separat (garda fișei, cere_cabinet); schimbarea se jurnalizează
+            # [08.10.2026, decizia Costin W4] cere «Poate valida» (garda rutei); schimbarea se jurnalizează
             r = repo_mijloace_fixe.seteaza_destinatie_cd(cur, schema, mijloc_id, valoare, ctx.get("uid"))
         if not r:
             raise _erori.Inexistent("Mijlocul fix ales nu există în registrul firmei sau a fost casat.")
         conn.commit()
     return {"id": mijloc_id, "destinatie_cd": valoare, "schimbat": r[1] != valoare}
+
+
+def mijloc_fix_cod_catalog(tenant_id, mijloc_id, corp, ctx):
+    """[08.10.2026, decizia Costin W2] Codul de clasificare din Catalogul HG 2139/2004 („Registrul mai afișează durata, codul din
+    catalog și planul lunar”). Codul se verifică pe catalog (refuz numit dacă nu există); durata din afara plajei lui -> avertisment."""
+    from core import mf_registru as _mfr
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    cod = str((corp or {}).get("cod_catalog") or "").strip().rstrip(".")
+    if not cod:
+        raise _erori.DateInvalide({"cod": "COD_CATALOG_LIPSA", "mesaj": "Scrie codul de clasificare din catalog (HG 2139/2004).",
+                                   "camp": "mf-catalog-%d" % int(mijloc_id)})
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            r = repo_mijloace_fixe.seteaza_cod_catalog(cur, mijloc_id, cod)
+            if not r:
+                raise _erori.Inexistent("Mijlocul fix ales nu există în registrul firmei.")
+            refuz, avert = _mfr.verifica_cod(cod, r[1])
+            if refuz:
+                conn.rollback()
+                raise _erori.DateInvalide({"cod": "COD_CATALOG_NECUNOSCUT", "mesaj": refuz, "camp": "mf-catalog-%d" % int(mijloc_id)})
+        conn.commit()
+    if avert:   # afirmație tipată (P8): durata din afara plajei catalogului
+        avert = dict(_af.afirmatie("neconformitate", "durata_catalog", avert, unde="mijlocul fix %s" % mijloc_id,
+                                   regula="durata normală în plaja codului din Catalogul HG 2139/2004"), mesaj=avert)
+    return {"id": mijloc_id, "cod_catalog": cod, "catalog": _mfr.catalog().get(cod), "afirmatii": [avert] if avert else []}
 
 
 def nota_inventariere(tenant_id, corp, ctx):
@@ -4929,19 +4951,27 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
             r = repo_contabilitate.id_nota_dupa_numar_2(cur, p["document_ref"])
-            inlocuita = None
+            inlocuita = ciorna_veche = None
             if r:
                 # [lotul 07.10 B, C9, decizia Costin] „recontabilizarea înlocuiește nota respinsă și o retrimite la validare”:
                 # nota respinsă (ciornă) se scoate și se scrie din statul corectat; noua ciornă intră singură în coadă
-                # (`uc_coada.note_in_coada`). Nota la validare sau validată rămâne — a doua notă n-ar avea temei.
+                # (`uc_coada.note_in_coada`). Nota validată rămâne — a doua notă n-ar avea temei.
+                # [retest 08.10 pct.1, decizia Costin] „când statul se schimbă și există o ciornă nevalidată pentru aceeași lună,
+                # contabilizarea o înlocuiește cu nota din statul de acum și o trimite la validare; nu rămâne niciodată o ciornă cu
+                # alte sume decât statul afișat.” Ciorna nevalidată (în afara cozii sau la validare) se compară cu nota din statul de
+                # acum, după amprentă (data + liniile): aceeași -> rămâne; alta -> se înlocuiește (elementul ei din coadă cade prin
+                # `trg_coada_nota_sincron`, iar notificarea „de validat” se rezolvă „înlocuită”).
                 from core import note_derivate as _nd
+                from core import coada_api as _cq
                 if not _nd.respinsa(cur, schema, r[0]):
-                    return {**p, "deja_contata": True, "nota_id": r[0],
-                             "cod": "DEJA_CONTATA"}
-                from core import coada_api as _cq   # [S3] amprenta notei respinse, înainte s-o scoatem
-                _vechi, _motiv = _cq.amprente_note(cur, [r[0]]), _cq.motiv_respingere(cur, schema, r[0])
-                _nd.sterge_respinsa(cur, schema, r[0])
-                inlocuita = r[0]
+                    if not _nd.ciorna_nevalidata(cur, schema, r[0]):
+                        return {**p, "deja_contata": True, "nota_id": r[0], "cod": "DEJA_CONTATA"}
+                    ciorna_veche = r[0]
+                    repo_contabilitate.punct_de_revenire(cur, "salarii_ciorna")
+                else:
+                    _vechi, _motiv = _cq.amprente_note(cur, [r[0]]), _cq.motiv_respingere(cur, schema, r[0])   # [S3]
+                    _nd.sterge_respinsa(cur, schema, r[0])
+                    inlocuita = r[0]
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
             # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
             # [lotul 07.10 pct.13] descrierea = ce înregistrează nota; documentul = statul de plată, din sursa unică a notelor
@@ -4953,6 +4983,11 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
                 _jdoc.eticheta_document("Stat de plată", p["document_ref"], ultima))[0]
             for n in p["note"]:
                 repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
+            if ciorna_veche:
+                if _cq.amprente_note(cur, [ciorna_veche]) == _cq.amprente_note(cur, [nota_id]):
+                    repo_contabilitate.revino_la(cur, "salarii_ciorna")   # aceleași sume și dată: ciorna e chiar statul afișat
+                    return {**p, "deja_contata": True, "nota_id": ciorna_veche, "cod": "DEJA_CONTATA"}
+                _nd.sterge_ciorna_inlocuita(cur, schema, ciorna_veche)
             if inlocuita:
                 # [S3] recontabilizarea care scrie ACEEAȘI notă ca cea respinsă cere confirmare explicită (nu se blochează)
                 _av = _cq.avertisment_neschimbata(_vechi, _cq.amprente_note(cur, [nota_id]), _motiv, confirma)
@@ -4962,6 +4997,8 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
         conn.commit()
     if inlocuita:
         return {**p, "deja_contata": True, "nota_id": nota_id, "nota_inlocuita": inlocuita, "cod": "INLOCUITA"}
+    if ciorna_veche:   # [retest 08.10 pct.1] ciorna cu alte sume a fost înlocuită de nota din statul de acum
+        return {**p, "deja_contata": True, "nota_id": nota_id, "nota_inlocuita": ciorna_veche, "cod": "CIORNA_INLOCUITA"}
     return {**p, "deja_contata": True, "nota_id": nota_id, "cod": "CONTATA"}
 
 
@@ -5632,11 +5669,18 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
             "validarea n-a legat nicio factură, deci n-are ce conta",
             surse_consultate=["efactura_primite.factura_id"])}
         if fid_final:
+            from core import nir_legare as _nl
             try:
                 with _cf.cursor_dict(conn) as cur2:
                     contare = _cf.contabilizeaza(cur2, schema, fid_final, automat=True,
-                                                 cont_cheltuiala=cont or None)
+                                                 cont_cheltuiala=cont or None,
+                                                 nir_legat=_nl.alegerea(corp.get("nir_id"), _uc_comun.bifa(corp, "alta_livrare", False)))
             except _cf.RefuzContare as e:
+                if e.cod in _nl.CODURI:
+                    # [decizia 08.10 pct.2] alegerea NIR-ului se cere ÎNAINTE de validare: tot actul se anulează, ca factura
+                    # să nu rămână validată fără notă (contarea ei n-ar mai avea alt drum decât „Contabilizează”)
+                    conn.rollback()
+                    raise _erori.DateInvalide(_nl.detaliu_refuz(e))
                 contare = {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
                            "afirmatie": _af.afirmatie(
                                "neconformitate", e.cod, e.mesaj,

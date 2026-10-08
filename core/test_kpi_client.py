@@ -3,8 +3,8 @@ from core.kpi_client import kpi_din_balanta
 
 
 def _r(cont, **k):
-    b = {"cont": cont, "denumire": "", "si_d": 0, "si_c": 0,
-         "rul_d": 0, "rul_c": 0, "sf_d": 0, "sf_c": 0}
+    b = {"cont": cont, "denumire": "", "si_d": 0, "si_c": 0, "prec_d": 0, "prec_c": 0,
+         "rul_d": 0, "rul_c": 0, "tot_d": 0, "tot_c": 0, "sf_d": 0, "sf_c": 0}
     b.update(k)
     return b
 
@@ -36,3 +36,11 @@ def test_cash_creante_datorii():
 def test_gol():
     k = kpi_din_balanta([])
     assert k["profit"] == 0 and k["cash"] == 0
+
+
+def test_kpi_ramane_cumulat_de_la_1_ianuarie_cu_rulajul_lunii_separat():
+    """[08.10, W1] `rul_*` e acum luna (OMFP 2634/2015 anexa 2 cod 14-6-30/a: „rulajele curente”); KPI-ul e cumulatul anului,
+    deci adună și „sumele precedente” — altfel venitul din septembrie ar dispărea din profitul afișat în octombrie."""
+    bal = [_r("704", prec_c=5000, rul_c=1000), _r("628", prec_d=400)]
+    k = kpi_din_balanta(bal)
+    assert (k["venituri"], k["cheltuieli"], k["profit"]) == (6000, 400, 5600)

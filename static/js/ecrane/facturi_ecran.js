@@ -3,9 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile } from "../api.js?v=e9cf26e11b";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile } from "../api.js?v=4242dc4353";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=9594409956";
+import { randeazaEmitere } from "./emitere_ecran.js?v=604f193235";
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=91b74060b8";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -150,11 +151,13 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
       try {
         const _tara = corp.querySelector("#pr-tara").value.trim().toUpperCase();   // dedusă din CIF-ul emitentului, vizibilă (DS cap.17)
         const _dest = Array.from(corp.querySelectorAll(".pr-dest")).map((s) => s.value);  // [A12b] destinatie TVA per linie, ordinea liniilor
-        const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
-          cont: corp.querySelector("#pr-cont").value.trim(),
-          furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),  // [B1 D300] ales de om
-          tert_tara: _tara,
-          destinatii: _dest });
+        // [decizia 08.10 pct.2] factura de marfă cu NIR „fără factură” nelegat la același furnizor: serverul cere alegerea
+        const r = await cuLegareaNir(zona, "POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza", (alegere) =>
+          api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
+            cont: corp.querySelector("#pr-cont").value.trim(),
+            furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),  // [B1 D300] ales de om
+            tert_tara: _tara,
+            destinatii: _dest, ...alegere }));
         arataMesaj(zona, "Validată. Cheltuiala creată (factura #" + (r.factura_id || "—") + ").", "ok");
         setTimeout(() => nav.inapoi && nav.inapoi(), 900);
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
@@ -180,6 +183,18 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
       xz.innerHTML = `<pre style="max-height:320px;overflow:auto;background:var(--gri-fundal-semafor);padding:8px;white-space:pre-wrap">${esc(r.xml || "")}</pre>`;
     } catch (e) { arataMesaj(xz, e.mesaj || "nu am putut încărca XML-ul", "eroare"); }
   });
+}
+
+// [retest 08.10, completarea pct.1, comanda Costin] „starea de încasare (încasată / parțial / neîncasată) trebuie să fie vizibilă pe
+// factură și în lista «Istoric facturi»” — o singură etichetare, din `stare_incasare` (serverul, `facturi_api._cu_stare_incasare`);
+// la factura primită, aceeași stare spusă din partea firmei: plătită / plătită parțial / neplătită.
+export function etichetaIncasare(f) {
+  const s = f.stare_incasare;
+  if (!s) return "";
+  const primita = f.directie === "primita";
+  if (s.stare === "incasata") return primita ? "plătită" : "încasată";
+  if (s.stare === "partial") return `${primita ? "plătită parțial" : "încasată parțial"}: ${bani(s.incasat)} din ${bani(s.total)} lei`;
+  return primita ? "neplătită" : "neîncasată";
 }
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
@@ -212,11 +227,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           const dir = dirEticheta(f.directie);
           const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
           const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
+          const incasare = f.stare_incasare ? " \u00b7 " + esc(etichetaIncasare(f)) : "";   // [retest 08.10, completarea pct.1]
           return `
         <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + esc(f.tert_nume) : ""}</div>
-            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
+            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}${incasare}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
           ${(!opt.client && !f.nota_contare) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
@@ -280,14 +296,20 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     });
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
       ev.stopPropagation();
+      const _zl = document.createElement("div");   // [decizia 08.10 pct.2] caseta alegerii NIR-ului, sub rândul facturii
+      (b.closest(".fac-frand-btn") || b).after(_zl);   // nu ÎN rând: rândul e un <button>, iar caseta are câmpuri
       try {
         const url = `/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`;
-        let r = await api.post(url, {});
+        let q = "";   // alegerea NIR-ului, păstrată și pentru confirmarea de mai jos
+        let r = await cuLegareaNir(_zl, "POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza", (alegere) => {
+          q = interogareLegare(alegere);
+          return api.post(url + (q ? "?" + q : ""), {});
+        });
         if (r && r.cod === "NESCHIMBATA") {
           // [S3] aceeași notă ca cea respinsă: avertisment cu motivul + confirmare explicită (nu blocaj)
           confirmaCaseta(b.parentElement || b, r.mesaj, async () => {
             try {
-              r = await api.post(url + "?confirma=true", {});
+              r = await api.post(url + "?confirma=true" + (q ? "&" + q : ""), {});
               b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
             } catch (e2) { arataMesaj(b.parentElement || corp, (e2 && e2.mesaj) || "eroare", "eroare"); }
           }, { textOk: "Retrimite fără schimbări" });
@@ -296,7 +318,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
         b.outerHTML = `<span class="tip-desc" style="color:var(--galben-text);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
-      }
+      } finally { _zl.remove(); }
     }));
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
       b.addEventListener("click", () => nav.mergi("Factur\u0103", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt)));  // faza_b_traseu_v1
@@ -507,7 +529,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
-        ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
+        ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}
         <!-- [06.09.2026] Butonul «Link plata» a fost SCOS: calea de plata online e inchisa prin
              decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
@@ -732,7 +754,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=ff714711ca");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=20080aef8b");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });

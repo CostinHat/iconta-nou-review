@@ -10,7 +10,7 @@ CE FACE IMPOSIBIL:
   1. ca ruta de date să dispară, lăsând doar PDF-ul;
   2. ca totalurile să se adune a doua oară, altundeva — hârtia și ecranul s-ar despica în tăcere;
   3. ca **„nu s-a verificat nimic" să fie rotunjit la „se închide"**. O lună fără nicio înregistrare
-     are toate cele trei perechi egale — 0 = 0 — deci o balanță goală ar trece drept închisă. Ăsta
+     are toate perechile egale — 0 = 0 — deci o balanță goală ar trece drept închisă. Ăsta
      nu e un caz de margine, e chiar forma interdicției 32: *un necunoscut nu se rotunjește la ce
      știi*. De-aia starea are TREI valori, nu două.
 
@@ -32,9 +32,11 @@ from core import scan_sql_efectiv as _efectiv
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def _rand(cont, si_d=0.0, si_c=0.0, rul_d=0.0, rul_c=0.0, sf_d=0.0, sf_c=0.0):
-    return {"cont": cont, "denumire": "cont " + cont, "si_d": si_d, "si_c": si_c,
-            "rul_d": rul_d, "rul_c": rul_c, "sf_d": sf_d, "sf_c": sf_c}
+def _rand(cont, si_d=0.0, si_c=0.0, rul_d=0.0, rul_c=0.0, sf_d=0.0, sf_c=0.0, prec_d=0.0, prec_c=0.0):
+    # forma reală a rândului (W1, 08.10): cinci perechi; totalul sumelor = sold inițial + sume precedente + rulaje curente
+    return {"cont": cont, "denumire": "cont " + cont, "si_d": si_d, "si_c": si_c, "prec_d": prec_d, "prec_c": prec_c,
+            "rul_d": rul_d, "rul_c": rul_c, "tot_d": si_d + prec_d + rul_d, "tot_c": si_c + prec_c + rul_c,
+            "sf_d": sf_d, "sf_c": sf_c}
 
 
 ECHILIBRATA = [_rand("5121", si_d=1000.0, rul_d=500.0, sf_d=1200.0),
@@ -55,22 +57,22 @@ def test_o_balanta_dezechilibrata_e_declarata_deschisa_si_arata_unde():
     stricate[0]["rul_d"] += 25.0
     inc = da.inchidere_balanta(stricate)
     assert inc["stare"] == "nu_se_inchide", inc
-    pe_rulaje = next(p for p in inc["perechi"] if p["ce"] == "rulaje")
+    pe_rulaje = next(p for p in inc["perechi"] if p["ce"] == "rulaje curente")
     assert not pe_rulaje["inchisa"]
     assert pe_rulaje["diferenta"] == 25.0, "diferența trebuie ARĂTATĂ, nu doar semnalată"
-    # celelalte două perechi rămân închise: verdictul e pe pereche, nu pe balanță în bloc
-    assert [p["inchisa"] for p in inc["perechi"]] == [True, False, True]
+    # celelalte perechi rămân închise: verdictul e pe pereche, nu pe balanță în bloc
+    assert [p["inchisa"] for p in inc["perechi"]] == [True, True, False, True, True]
 
 
 def test_balanta_goala_NU_se_inchide_ci_nu_are_ce_verifica():
-    """Instanța pentru care există fișierul ăsta: 0 = 0 pe toate trei, deci verdictul naiv ar fi
+    """Instanța pentru care există fișierul ăsta: 0 = 0 pe toate perechile, deci verdictul naiv ar fi
     „se închide" — despre o lună în care nu s-a înregistrat nimic."""
     inc = da.inchidere_balanta([])
     assert inc["stare"] == "nimic_de_verificat", inc
     assert inc["stare"] != "se_inchide"
     assert inc["randuri"] == 0
-    # perechile există și acolo: omul vede că toate trei sunt zero, nu o casetă goală
-    assert len(inc["perechi"]) == 3
+    # perechile există și acolo: omul vede că toate cinci sunt zero, nu o casetă goală
+    assert len(inc["perechi"]) == 5
 
 
 def test_toleranta_e_toleranta_nu_amnistie():
@@ -83,9 +85,10 @@ def test_toleranta_e_toleranta_nu_amnistie():
     assert da.inchidere_balanta(mare)["stare"] == "nu_se_inchide"
 
 
-def test_totalurile_sunt_cele_sase_coloane_si_se_aduna():
+def test_totalurile_sunt_cele_zece_coloane_si_se_aduna():
     tot = da.totaluri_balanta(ECHILIBRATA)
-    assert set(tot) == {"si_d", "si_c", "rul_d", "rul_c", "sf_d", "sf_c"}
+    # OMFP 2634/2015 anexa 2 cod 14-6-30/a: sold inițial, sume precedente, rulaje curente, total sume, sold final — D și C
+    assert set(tot) == {"si_d", "si_c", "prec_d", "prec_c", "rul_d", "rul_c", "tot_d", "tot_c", "sf_d", "sf_c"}
     assert tot["si_d"] == 1000.0 and tot["si_c"] == 1000.0
     assert tot["rul_d"] == 800.0 and tot["rul_c"] == 800.0
     assert tot["sf_d"] == 1700.0 and tot["sf_c"] == 1700.0
@@ -131,8 +134,11 @@ def test_ruta_de_date_exista_si_intoarce_cele_trei_parti():
     assert ruta == "/tenants/{tenant_id}/balanta", ruta
 
 
-def test_cele_trei_perechi_sunt_cele_din_norma():
-    """Perechile se citesc din constantă, ca mulțime — nu se caută un șir într-un text (METODA §23)."""
-    assert {p[0] for p in da.PERECHI_BALANTA} == {"sold initial", "rulaje", "sold final"}
-    assert {p[1] for p in da.PERECHI_BALANTA} == {"si_d", "rul_d", "sf_d"}
-    assert {p[2] for p in da.PERECHI_BALANTA} == {"si_c", "rul_c", "sf_c"}
+def test_cele_cinci_perechi_sunt_cele_din_norma():
+    """Perechile se citesc din constantă, ca mulțime — nu se caută un șir într-un text (METODA §23).
+
+    OMFP 2634/2015 anexa 2, Balanța de verificare cu cinci egalități (cod 14-6-30/a): „soldurile inițiale …; totalul sumelor
+    debitoare și creditoare ale lunii precedente …; rulajele curente …; totalul sumelor …; soldurile finale”."""
+    assert [p[0] for p in da.PERECHI_BALANTA] == ["sold initial", "sume precedente", "rulaje curente", "total sume", "sold final"]
+    assert {p[1] for p in da.PERECHI_BALANTA} == {"si_d", "prec_d", "rul_d", "tot_d", "sf_d"}
+    assert {p[2] for p in da.PERECHI_BALANTA} == {"si_c", "prec_c", "rul_c", "tot_c", "sf_c"}
