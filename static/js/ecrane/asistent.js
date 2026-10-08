@@ -12,18 +12,19 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
+import { itemiContoare } from "./control_verdict.js?v=86b39e444e";   // [retest 08.10 pct.7] contoarele de sus
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=4242dc4353";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaControl } from "./control.js?v=a7b7e8d52b";
+import { randeazaControl } from "./control.js?v=b30c085085";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=e6153826af";
-import { randeazaListaFirme } from "./firme.js?v=e0f9f54799";
+import { randeazaValidat } from "./validat.js?v=3803bf7e3b";
+import { randeazaListaFirme } from "./firme.js?v=ddc8c9cccc";
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=ffeeb0ffc9"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaDeclaratii } from "./declaratii.js?v=36bffb226c"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=eb25e8c5dc"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -169,11 +170,7 @@ async function actualizeazaControlAsi(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = semaforCard([
-      { n: s.rosu, cls: "pct-rosu", txt: "cu restanță" },
-      { n: s.galben, cls: "pct-galben", txt: "de urmărit" },
-      { n: s.gri, cls: "pct-gri", txt: s.gri === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
-    ], VERDICT_POZITIV.firme_toate, s.verde);
+    zona.innerHTML = semaforCard(itemiContoare((r && r.contoare) || {}), VERDICT_POZITIV.firme_toate, s.verde);   // [retest 08.10 pct.7]
   } catch {}
 }
 

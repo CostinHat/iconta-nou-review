@@ -4,7 +4,7 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=4242dc4353";  /* esc_nc27 */
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=90aae1066a";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=86b39e444e";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -17,17 +17,17 @@ export async function randeazaControl(corp, nav, tidAuto) {
     return;
   }
   const firme = date.firme || [];
-  const s = date.sumar || {};
+  const k = date.contoare || {};
 
   corp.innerHTML = `
     <p class="mig-intro">Starea fiscală a fiecărei firme: declarațiile datorate vs depuse (cu termenele ANAF) și coerența lor cu contabilitatea — TVA, salarii, operațiuni intracomunitare, cota facturilor emise, echilibru și trezorerie.</p>
     <div class="cf-sumar">
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${s.verde || 0} la zi</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${s.galben || 0} de urmărit</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${s.rosu || 0} cu restanță</span>
-      <!-- [eticheta_din_fapt] al 4-lea contor: fara el, o firma gri DISPAREA din sumar (totalul nu mai
-           dadea numarul de firme din cabinet). Backendul il numara de la inceput (sumar["gri"]). -->
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.gri.dot}"></span>${s.gri || 0} nu se pot verifica</span>
+      <!-- [08.10.2026, retest pct.7] fapte numărate pe firme (o firmă poate intra în două), nu partiția pe culori -->
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${k.la_zi || 0} la zi</span>
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${k.de_urmarit || 0} cu declarații de urmărit</span>
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${k.restante || 0} cu restanțe</span>
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${k.neconcordante || 0} cu neconcordanțe contabile</span>
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.gri.dot}"></span>${k.nu_se_pot_verifica || 0} nu se pot verifica</span>
     </div>
     <div class="mig-lista" id="cf-lista"></div>
   `;
@@ -43,10 +43,11 @@ export async function randeazaControl(corp, nav, tidAuto) {
 
   firme.forEach((f) => {
     const col = CULORI[f.stare] || CULORI.gri;
-    let detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
-      : f.stare === "galben" ? `${f.urmarit} de urmărit`
-      : f.stare === "verde" ? VERDICT_POZITIV.control_firma
-      : `${f.neclar || 0} declarați${(f.neclar || 0) === 1 ? "e nu se poate verifica" : "i nu se pot verifica"}`;
+    // [08.10.2026, retest pct.7] detaliul numără faptele (restanțe, de urmărit, neverificabile), nu repetă culoarea
+    const fapte = [(f.lipsa || 0) ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}` : "",
+      (f.urmarit || 0) ? `${f.urmarit} de urmărit` : "",
+      (f.neclar || 0) ? `${f.neclar} declarați${f.neclar === 1 ? "e nu se poate verifica" : "i nu se pot verifica"}` : ""].filter(Boolean);
+    let detaliu = fapte.length ? fapte.join(" · ") : (f.stare === "verde" ? VERDICT_POZITIV.control_firma : "");
     if ((f.contabil || []).length) detaliu += " · " + f.contabil.map((c) => (c && c.eticheta) || c).join(" · ");
     const rand = document.createElement("button");
     rand.className = "mig-frand";
@@ -56,7 +57,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
         <div class="mig-frand-sub">${detaliu}</div>
       </div>
       <span class="cf-stare" style="background:${col.bg}">
-        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaStare(f.stare, f.neclar)}
+        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaRand(f)}
       </span>
     `;
     rand.addEventListener("click", () => nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f)));  // [p122_nav_stiva]

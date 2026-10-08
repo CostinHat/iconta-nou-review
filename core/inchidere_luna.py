@@ -36,16 +36,29 @@ def stare(conn, schema, an, luna):
     # arata „1 e-Factura ... e inca neinregistrata" si se oprea acolo - contabilul stia ce, nu si unde.
     # Remediul e al CONTEXTULUI de inchidere, nu al sondei (semaforul foloseste acelasi motiv altfel).
     st["remediu"] = ("Înregistrează-le (sau respinge-le) în e-Factura, apoi închide luna."
-                     if bl else None)
+                     if bl and not luna_in_curs(an, luna) else None)
     return st
+
+
+def luna_in_curs(an, luna, azi=None):
+    """Motivul (text) pentru care luna (an, luna) NU s-a încheiat încă, sau None. [08.10.2026, retest pct.11, verbatim în DECIZII]
+    „luna în curs (10/2026, azi 08.10) se poate bloca, la perioadă și la evidența facturilor” — o lună se închide după ce s-a
+    încheiat: ce se întâmplă în zilele ei rămase n-ar mai avea unde să se înregistreze. SURSA UNICĂ pentru blocarea perioadei
+    (`uc_comun.controale_inchidere`) și închiderea evidenței facturilor (`blocaj`)."""
+    from core.common import azi_ro
+    from core.pdf_util import data_ro
+    azi = azi or azi_ro()
+    if (int(an), int(luna)) >= (azi.year, azi.month):
+        return "luna %02d/%04d nu s-a încheiat (azi e %s) — se închide după ultima ei zi." % (int(luna), int(an), data_ro(azi))
+    return None
 
 
 def blocaj(conn, schema, an, luna):
     """Motivul pentru care luna NU se poate declara inchisa, sau None. Sursa unica: aceeasi sonda pe
     care o foloseste si semaforul (`d390.evidenta_incompleta`) - o singura definitie a „evidentei
-    incomplete", nu doua care pot diverge."""
+    incomplete", nu doua care pot diverge. [retest 08.10 pct.11] Întâi: luna trebuie să se fi încheiat."""
     from core import d390 as _d390
-    return _d390.evidenta_incompleta(conn, schema, an, luna)
+    return luna_in_curs(an, luna) or _d390.evidenta_incompleta(conn, schema, an, luna)
 
 
 def confirma(conn, schema, an, luna, user_id):
@@ -54,9 +67,8 @@ def confirma(conn, schema, an, luna, user_id):
     from core import perioada as _per
     bl = blocaj(conn, schema, an, luna)
     if bl:
-        raise ValueError(
-            "Luna %02d.%04d nu se poate declara închisă: %s Înregistrează-le (sau respinge-le) în "
-            "e-Factura, apoi închide luna." % (luna, an, bl))
+        raise ValueError("Luna %02d.%04d nu se poate declara închisă: %s%s" % (
+            luna, an, bl, "" if luna_in_curs(an, luna) else " Înregistrează-le (sau respinge-le) în e-Factura, apoi închide luna."))
     _per.confirma(conn, schema, an, luna, DOMENIU, user_id)
     return stare(conn, schema, an, luna)
 

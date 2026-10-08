@@ -52,6 +52,13 @@ ABATERI = {
         "Fluxul de factură pe F1, comanda Costin 05.10.2026 pct.8: lista stărilor din mesaj era „noua/potrivita/contata/"
         "ignorata”, iar baza scrie „nou/potrivit/contat/ignorat” — orice filtru întorcea o listă goală. Același cod (422), "
         "același text; lista vine acum din `STARI_EXTRAS` (stările reale), la nivel de modul."),
+    ("coada_depune", '{"cod": "CONSTATARI_NECONFIRMATE", "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o '
+                     'confirmare scrisă înainte de depunere. Depunerea NU e blocată: confirmă-le, cu motiv, și continuă." % '
+                     'len(_ramase)), "constatari": _ramase, "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] '
+                     'pentru fiecare."}'): (
+        "Comanda Costin „Retest 08.10” pct.14 („limbaj de programator în ecrane … texte cu majuscule”): același refuz (409, aceeași "
+        "cheie CONSTATARI_NECONFIRMATE, aceleași constatări); „NU” devine „nu”, iar `actiune` nu mai arată contabilului corpul "
+        "cererii (`confirmari`: [{amprenta, motiv}]), ci ce are de făcut. Gard: `core/test_text_afisat_limbaj.py`."),
     ("vanzare_aur_investitii", "suma invalida"): (
         "G5 (`core/test_g1_cod_mesaj.py`): un input-guard telegrafic primeste constrangerea in "
         "mesaj. Codul ramane 422. Cazul a intrat in domeniul lui G5 odata cu mutarea corpului "
@@ -295,6 +302,14 @@ APELURI_EXTRASE_IN_AJUTOR = {
         "Decizia Costin 08.10.2026, W2 + W3: „Închiderea lunii e blocată dacă amortizarea lunii nu e înregistrată” și „controalele de "
         "închidere semnalează soldul 581 nenul”. Controalele (ciorne, facturi neîncheiate, e-Facturi, amortizare, 581) trăiesc într-o "
         "singură funcție, `uc_comun.controale_inchidere`, chemată și de poarta închiderii și de ecranul „Închidere lună”.")),
+    "declaratie_valideaza": (("core/uc_declaratii.py", "campuri_rezultat"), (
+        "Comanda Costin „Retest 08.10” pct.16: „D406: caseta «Rezumat» nu se vede” — `sinteza` intrase numai în răspunsul "
+        "generării, iar ecranul cheamă validarea. Câmpurile rezultatului (avertismente, note_rezultat, sinteza, operatiuni, "
+        "componente) se asamblează acum într-o singură funcție, `uc_declaratii.campuri_rezultat`, chemată de amândouă rutele.")),
+    "declaratie_genereaza": (("core/uc_declaratii.py", "campuri_rezultat"), (
+        "Comanda Costin „Retest 08.10” pct.16: „D406: caseta «Rezumat» nu se vede” — `sinteza` intrase numai în răspunsul "
+        "generării, iar ecranul cheamă validarea. Câmpurile rezultatului (avertismente, note_rezultat, sinteza, operatiuni, "
+        "componente) se asamblează acum într-o singură funcție, `uc_declaratii.campuri_rezultat`, chemată de amândouă rutele.")),
     "tenant_mijloace_fixe": (("core/mf_registru.py", "registru"), (
         "Decizia Costin 08.10.2026, W2: „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de "
         "calculul teoretic, cu lunile neînregistrate … durata, codul din catalog și planul lunar”. Rândul registrului se construiește "
@@ -329,7 +344,9 @@ def test_EXTRAGERILE_declarate_chiar_cheama_ajutorul():
         assert len(motiv) > 80
         assert _apeluri_ajutor(cale, ajutor), "%s: ajutorul %s nu cheamă nimic" % (fn_nume, ajutor)
         _cale, _nod = _ef.functia(fn_nume)
-        chemate = {x.func.attr for x in _ast.walk(_nod) if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)}
+        # ajutorul poate fi în alt modul (`_uc_comun.controale_inchidere(...)`) sau în același (`campuri_rezultat(...)`, retest 08.10)
+        chemate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
+                   if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}
         assert ajutor in chemate, "%s: extragerea declarată în %s nu e în cod" % (fn_nume, ajutor)
 
 
@@ -633,9 +650,12 @@ def _fara_abateri(nume, ramase_v, ramase_n):
         # [04.10.2026] mesajul vechi poate fi și o CONSTANTĂ NUMITĂ (`EMAIL_EXISTA`), nu doar un literal
         tinte = _forme_mesaj(mesaj)
         v = [p for p in ramase_v if p[1] in tinte]
-        if v and len(ramase_n) == len(v):
+        # [retest 08.10] abaterea = ACELAȘI cod, alt mesaj: se numără perechile noi pe codul ei, nu toate perechile noi ale
+        # funcției (la `coada_depune` mai rămâne una pe 422, scoasă abia de CODURI_ADAUGATE, mai jos)
+        n_cod = [p for p in ramase_n if v and p[0] == v[0][0]]
+        if v and len(n_cod) == len(v):
             ramase_v = [p for p in ramase_v if p not in v]
-            ramase_n = [p for p in ramase_n if p[0] != v[0][0]]
+            ramase_n = [p for p in ramase_n if p not in n_cod]
     # [04.10.2026] Refuzurile MUTATE într-un ajutor comun (aceeași stare, același cod, ridicate acum din ajutorul
     # chemat de funcție): se scot din „înainte, fără pereche”. Anti-vacuu: `test_MUTARILE_in_ajutor_chiar_cheama_ajutorul`.
     for (rut, mesaj), (_ajutor, _motiv) in PERECHI_MUTATE_IN_AJUTOR.items():

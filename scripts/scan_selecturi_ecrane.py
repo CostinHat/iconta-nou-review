@@ -261,6 +261,8 @@ CASUTE = {
     "migrare.js:data-i": "ce rânduri găsite se importă — selecție de lucru, fiecare rând e vizibil",
     "admin.js:sel-bifa": "selecție în administrare — nu fapt fiscal",
     "firme.js:data-fid": "ce facturi se alocă plății — selecție de lucru vizibilă, suma alocată se vede",
+    "validat.js:val-sel": "ce note se validează deodată (retest 08.10 pct.3) — selecție de lucru vizibilă; fiecare notă trece prin aceeași validare",
+    "validat.js:val-sel-toate": "selectează toate notele din listă — selecție de lucru, nu fapt fiscal",
 }
 
 

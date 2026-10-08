@@ -4,19 +4,19 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile } from "../api.js?v=4242dc4353";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=709cfc813e";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=92ab833f31";
+import { fluxConcediu } from "./flux_concediu.js?v=b0919887cf";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=9d8ed45291";
 import { ecranRip } from "./rip_ecran.js?v=f9e35ff63e";
 import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=e120e829b1";
 import { ecranEtransport } from "./etransport_ecran.js?v=108eff72eb";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=a059e2160d";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=ffeeb0ffc9";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=90aae1066a";  // renderer unic verdict control fiscal (DS cap.20)
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=54978bb037";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=36bffb226c";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=86b39e444e";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=57540bb491";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=1b71314d2c";  // [ecran_mf_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=0e52d94065";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=9374227c9a";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -956,7 +956,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     if (!r || !r.aplicabil) { zonaPrapastie.innerHTML = ""; return; }
     const brutIntrodus = Number(corp.querySelector("#sn-salariu_brut").value);
     zonaPrapastie.innerHTML = `<div class="caseta-atentie">
-      <b>Peste salariul minim, netul SCADE.</b>
+      <b>Peste salariul minim, netul scade.</b>
       La ${bani(r.prag)} lei brut, netul e <b>${bani(r.net_la_prag)}</b> lei.
       La ${bani(brutIntrodus)} lei brut, netul e
       <b>${bani(r.net_acum)}</b> lei — cu <b>${bani(r.pierdere)}</b> lei mai puțin.
@@ -1597,7 +1597,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <input type="date" id="incet-input" aria-label="Data încetării contractului" class="camp-input" value="${esc(b.dataset.val)}" style="width:180px">
         <button class="buton-primar" id="incet-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
         <button class="buton-secundar" id="incet-cancel">Renunță</button></div>
-        <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare NU se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
+        <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare nu se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
         <div id="incet-msg"></div>`;
       corp.querySelector("#incet-input").focus();
       corp.querySelector("#incet-cancel").addEventListener("click", () => { zonaIncet.innerHTML = ""; });
@@ -1635,7 +1635,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
             <option value="partiala" ${norma === "partiala" ? "selected" : ""}>Parțială</option></select></label>
           <label class="camp"><span class="camp-eticheta">Ore/zi</span><input type="number" min="1" max="8" step="0.5" id="ed-orezi" class="camp-input" value="${esc(b.dataset.dorezi)}"></label>
         </div>
-        <div class="camp-eticheta" style="color:var(--gri);margin-top:6px">Corectarea acestor date NU modifică declarațiile deja depuse. CNP-ul se validează la salvare.</div>
+        <div class="camp-eticheta" style="color:var(--gri);margin-top:6px">Corectarea acestor date nu modifică declarațiile deja depuse. CNP-ul se validează la salvare.</div>
         <p style="margin-top:8px"><button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
           <button class="buton-secundar" id="ed-cancel" style="margin-left:6px">Renunță</button></p>
         <div id="ed-msg"></div></div>`;
@@ -2282,7 +2282,7 @@ async function ecranFisaCont(corp, nav, t) {
 
     let corpFisa;
     if (!conturi.length) {
-      corpFisa = `<div class="stare-goala">Niciun cont cu mi\u0219care \u00een perioada asta, deci fi\u0219a n-are ce ar\u0103ta. Fi\u0219a se face din notele VALIDATE — o ciorn\u0103 nu e eviden\u021b\u0103. Treci pe alt\u0103 perioad\u0103, sau valideaz\u0103 notele lunii din Registrul jurnal.</div>`;
+      corpFisa = `<div class="stare-goala">Niciun cont cu mi\u0219care \u00een perioada asta, deci fi\u0219a n-are ce ar\u0103ta. Fi\u0219a se face din notele validate — o ciorn\u0103 nu e eviden\u021b\u0103. Treci pe alt\u0103 perioad\u0103, sau valideaz\u0103 notele lunii din Registrul jurnal.</div>`;
     } else if (!f) {
       corpFisa = `<div class="stare-goala stare-goala--inline">Alege un cont din list\u0103 — sunt ${conturi.length} cu mi\u0219care \u00een perioada asta.</div>`;
     } else {
@@ -4018,15 +4018,22 @@ async function ecranInchidereLuna(corp, nav, t) {
     try { zf.innerHTML = facturiDin(await api.get(`/tenants/${t.id}/facturi/perioada?an=${an}&luna=${luna}`)); }
     catch (e) { zf.innerHTML = ""; arataMesaj(zf, "Nu am putut citi starea evidenței facturilor" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + " — reîncearcă.", "eroare"); }
     if (dubla) {
-      const blocata = await legaBlocareLuna(corp.querySelector("#il-lock"), zm, t, an, luna, deseneaza);
-      corp.querySelector("#il-stare-perioada").textContent = blocata
-        ? "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg."
-        : "Luna e deschisă. Blocarea verifică întâi controalele de mai jos.";
-      // [08.10, W2 + W3] controalele închiderii — aceleași pe care le aplică blocarea (blocaje) și semnalele (581 …)
+      // [08.10, W2 + W3] controalele închiderii — aceleași pe care le aplică blocarea (blocaje) și semnalele (581, 401 …)
       let ctl = null;
       const zc = corp.querySelector("#il-controale");
       try { ctl = (await api.get(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`)).controale; }
       catch (e) { arataMesaj(zc, "Nu am putut citi controalele lunii" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + " — reîncearcă.", "eroare"); }
+      const bLock = corp.querySelector("#il-lock");
+      const blocata = await legaBlocareLuna(bLock, zm, t, an, luna, deseneaza);
+      // [08.10.2026, retest pct.11] „«Blochează luna» e activ deși există blocaje” — cât timp ceva oprește închiderea (sau controalele
+      // n-au putut fi citite), butonul de blocare e inactiv; serverul refuză oricum (uc_comun.controale_inchidere).
+      if (!blocata && bLock.isConnected && (!ctl || ctl.blocaje.length)) {
+        bLock.disabled = true;
+        bLock.title = ctl ? "Rezolvă întâi ce oprește închiderea (lista de mai jos)." : "Controalele lunii nu au putut fi citite.";
+      }
+      corp.querySelector("#il-stare-perioada").textContent = blocata
+        ? "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg."
+        : "Luna e deschisă. Blocarea verifică întâi controalele de mai jos.";
       if (ctl) {
         const lista = (xs) => `<ul class="ci-mesaj" style="margin:6px 0 0;padding-left:18px">${xs.map((x) => `<li>${esc(x.mesaj)}</li>`).join("")}</ul>`;
         zc.innerHTML = (ctl.blocaje.length
@@ -4712,7 +4719,7 @@ async function ecranBalanta(corp, nav, t) {
     if (inc.stare === "se_inchide") {
       return `<div class="caseta-info"><span class="ci-mesaj">Balan\u021ba se \u00eenchide pe toate cinci: sold ini\u021bial, sume precedente, rulajele lunii, total sume \u0219i sold final \u2014 verificat pe ${inc.randuri} ${inc.randuri === 1 ? "cont" : "conturi"}. Cifrele din care rezult\u0103 sunt chiar mai jos.</span></div>${perechi}`;
     }
-    return `<div class="caseta-atentie"><div class="ca-mesaj">Balan\u021ba NU se \u00eenchide. Diferen\u021bele sunt mai jos, pe fiecare pereche \u2014 c\u00e2t timp nu sunt zero, nici bilan\u021bul, nici declara\u021biile care citesc solduri nu se pot sprijini pe ea.</div></div>${perechi}`;
+    return `<div class="caseta-atentie"><div class="ca-mesaj">Balan\u021ba nu se \u00eenchide. Diferen\u021bele sunt mai jos, pe fiecare pereche \u2014 c\u00e2t timp nu sunt zero, nici bilan\u021bul, nici declara\u021biile care citesc solduri nu se pot sprijini pe ea.</div></div>${perechi}`;
   };
 
   const deseneaza = async () => {

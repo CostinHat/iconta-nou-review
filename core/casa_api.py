@@ -22,6 +22,12 @@ CONTURI = {
     "vanzare_fara_factura": ("5311", None),
 }
 CATEGORII_INCASARE = {"incasare_client", "ridicare_banca", "vanzare_fara_factura"}
+#: [retest 08.10 pct.19] felul operațiunii, în cuvinte — începutul descrierii notei (`descriere_nota`)
+ETICHETE_CATEGORIE = {
+    "incasare_client": "Încasare de la client", "plata_furnizor": "Plată către furnizor",
+    "ridicare_banca": "Ridicare de numerar din bancă", "depunere_banca": "Depunere de numerar în bancă",
+    "avans_decontare": "Avans spre decontare", "vanzare_fara_factura": "Vânzare fără factură",
+}
 #: categoriile care se nasc DOAR dintr-un document propriu (cu `linii`), nu din dispoziția generică
 CATEGORII_CU_LINII = {"vanzare_fara_factura"}
 #: [D394 Î2] încasările CUNOSCUTE fără caracter de vânzare (decizia Costin 03.10: ridicare de numerar din bancă,
@@ -37,6 +43,16 @@ def _fara_decimal(x):
     if isinstance(x, dict):
         return {k: _fara_decimal(v) for k, v in x.items()}
     return str(x) if isinstance(x, Decimal) or hasattr(x, "isoformat") else x
+
+
+def descriere_nota(op):
+    """Descrierea notei unei operațiuni de casă: ce s-a întâmplat, pe ce document, cu cine (și ce s-a stins, când apelantul o
+    știe). [retest 08.10 pct.19] „Nota chitanței (F1, nr. crt. 17): descrierea e doar numele clientului; trebuie să conțină
+    chitanța și factura stinsă.” — până azi descrierea era `partener` sau categoria, pe toate operațiunile de casă."""
+    parti = [ETICHETE_CATEGORIE.get(op.get("categorie"), str(op.get("categorie") or "").replace("_", " ")),
+             ("%s %s" % (op.get("fel_document") or "document", op["document"])) if op.get("document") else "",
+             op.get("stinge") or "", op.get("partener") or ""]
+    return " — ".join(p for p in parti if p)[:200]
 
 
 def adauga(conn, schema, op, linii=None):
@@ -73,7 +89,7 @@ def adauga(conn, schema, op, linii=None):
         # [05.10.2026, comanda Costin pct.6] documentul scris pe operațiune (chitanța/dispoziția) e și al notei
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                         VALUES (%s,%s,'casa','ciorna',%s) RETURNING id""",
-                    (op["data"], (op.get("partener") or cat.replace("_", " "))[:200],
+                    (op["data"], descriere_nota(op),
                      (str(op.get("document") or "").strip() or None)))
         iid = cur.fetchone()["id"]
         for debit, credit, v in linii:

@@ -336,8 +336,8 @@ def erori_generare(prof, manual):
                 er.append(pv + "Regim_fisc (regim_fisc) obligatoriu în (1,2,3).")
             sv = _intval(v.get("suma_venit"))
             if d_rec == 0 and sv <= 0:
-                er.append(pv + "Suma_venit > 0 intr-o declarație initiala "
-                               "(structuraXML_D402_2022, declaratie initiala; DUK nu o verifica).")
+                er.append(pv + "Suma_venit > 0 într-o declarație inițială "
+                               "(structuraXML_D402_2022, declarație inițială; DUK nu o verifică).")
             elif sv < 0:
                 er.append(pv + "Suma_venit >= 0 "
                                "(structuraXML_D402_2022; DUK nu o verifica).")

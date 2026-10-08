@@ -43,7 +43,7 @@ def test_fara_sfat_gresit_de_adaugare_manuala():
     # Sfatul vechi ducea contabilul la R69/R71/R74/R24 (respinse DUK) -> declarație invalidă.
     assert "pune-le manual la rândurile potrivite" not in av, av
     # Noul mesaj avertizează EXPLICIT să NU se adauge manual (FAIL pe HEAD: lipsea).
-    assert "NU le adăuga manual" in av, av
+    assert "nu le adăuga manual" in av, av
 
 
 def test_cota_zero_semnalata_distinct_de_taxabil():

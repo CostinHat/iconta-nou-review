@@ -58,11 +58,11 @@ CODURI = {
     # comentariu:
     #   51 -> «D_9=51 daca D_5>=30.10.2020»
     #   91, 92 -> «Daca D_9 = (08,09,91,92,10,15,17) atunci D_20=0»
-    "51": {"eticheta": "Boală infectocontagioasă pentru care se instituie măsura izolării", "temei": _T_NUMIT + " — regula pe D_9=51 (data acordării)"},
+    "51": {"eticheta": "Boală infectocontagioasă pentru care se instituie măsura izolării", "temei": _T_NUMIT + " — regula codului 51 (după data acordării)"},
     "91": {"eticheta": "Îngrijire copil bolnav cu afecțiuni grave, în vârstă de până la 16 ani",
-           "temei": _T_NUMIT + " — regula D_20=0 pentru D_9 din (08,09,91,92,10,15,17)"},
+           "temei": _T_NUMIT + " — fără zile suportate de angajator pentru codurile 08, 09, 91, 92, 10, 15, 17"},
     "92": {"eticheta": "Supravegherea și îngrijirea copilului în vârstă de până la 18 ani, pentru care s-a dispus măsura carantinei sau a izolării",
-           "temei": _T_NUMIT + " — regula D_20=0 pentru D_9 din (08,09,91,92,10,15,17)"},
+           "temei": _T_NUMIT + " — fără zile suportate de angajator pentru codurile 08, 09, 91, 92, 10, 15, 17"},
 }
 
 

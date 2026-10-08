@@ -1899,3 +1899,28 @@ fiscali. Un lot, o poartă, registrele în același commit (commitul care conți
 - **Găsite pe drum și reparate pe clasă:** re-contarea după respingere; ajustarea din D406 Stocuri și din refacerea stocului; analiticul
   cu punct în D406 (pe sintetic, ambele căi); semnalul fals pe 4428 la global-valoric; 4428 debitor lipsă din creanțele bilanțului;
   refuzurile din Date firmă fără câmp. **Rămas, decizie cerută:** creditorul 4428 numărat de două ori în bilanț (datorie strictă).
+
+## 08.10.2026 — „Retest 08.10”: deciziile la §6 ale lotului „Deciziile 08.10 §6” + constatările retestului 4–21 (un lot, o poartă)
+
+Comanda Costin (verbatim în DECIZII), 24 de puncte, 17 operații date înainte de execuție; un commit, registrele în el.
+- **Bilanțul 4428** (pct.1): TVA-ul din prețul de raft trece pe analiticul 4428.02 (NIR GV, descărcare, K); bilanțul îl scade numai la
+  rd.05, nu-l mai numără la datorii; datoria strictă din lotul trecut e închisă. Migrarea mută liniile 371/4428 (producția n-are niciuna).
+- **Coada** (pct.3): „De validat” validează mai multe note deodată, fiecare pe drumul aprobării ei.
+- **NIR 2 și NIR 3 F1** (pct.4): note de refacere pe 408 / 4428.01 (stornare în roșu + forma nouă), ciorne de validat; poarta D300 se
+  face verde după validarea lor.
+- **D406 / D394** (pct.5–6): liniile facturilor își arată suma pe sensul ei; totalurile facturii pe fiecare cotă (XML); D394 citește
+  numărul fără cifrele seriei (F1A3 -> 3) și semnalează factura fără serie. DUK: D406 și D394 F1 10/2026 valide.
+- **Control fiscal** (pct.7–10): contoarele numără fapte (restanțe / de urmărit / …), nu culoarea; D100/D205 2025 la „înainte de
+  preluare”; grupul pliat cu „Marchează toate ca depuse de contabilul anterior”; marcarea se modifică și se anulează, fără salt sus.
+- **Închiderea lunii** (pct.11–12): luna în curs nu se mai poate închide (perioada și evidența facturilor, aceeași regulă); „Blochează
+  luna” inactiv pe blocaje; un singur loc, cardul; semnal nou: 401 cu sold debitor (F2: 500).
+- **Mijloace fixe** (pct.13): acțiunile într-un meniu, PIF pe un rând, lunile lipsă în intervale („8 luni: 01–08/2026”).
+- **Limba ecranelor** (pct.14): ~200 de texte ale serverului și 17 ale ecranelor rescrise (diacritice, fără cod, fără majuscule);
+  gardul nou vede și rolurile pe care cele vechi nu le vedeau.
+- **D406 / D394 pe ecran** (pct.15–16): fără suprapuneri și goluri (regula ferestrei largi, pe clasă); „Rezumat” apare (validarea și
+  generarea întorc aceleași câmpuri).
+- **731–738** (pct.17): scoase din șablon și din cele 5 firme de producție (nefolosite).
+- **PDF balanță / nota chitanței / luna preluării** (pct.18–20): CUI + momentul generării în antet; descrierea notei de casă spune
+  felul, documentul, ce stinge și partenerul; „Luna preluării” vine completată cu propunerea.
+- **C&D** (pct.21): proba pe asistent fără «Poate valida» — buton inactiv, API 403, nimic scris.
+- **Rămas, decizie cerută:** descrierea notei 118 F1 (validată) — se păstrează sau se rescrie.

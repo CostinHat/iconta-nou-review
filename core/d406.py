@@ -695,7 +695,7 @@ def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
         _pm, _pm_stiut = _payment_method_anaf_stiut(getattr(_p, "metoda", None))
         if not _pm_stiut:
             res.avertismente.append(
-                "ATENTIE (D406): metoda de plată necunoscută %r pe plată %s - înlocuită cu 03 "
+                "Atenție (D406): metoda de plată necunoscută %r pe plată %s - înlocuită cu 03 "
                 "(fără numerar). Mapează metoda în nomenclatorul de mecanisme de plată "
                 "(Nom_Mecanisme_plati: 01/02/03/98/99)." % (_p.metoda, getattr(_p, "ref", "?")))
     return res
@@ -705,13 +705,13 @@ def valideaza(res):
     erori = []
     prof = res.prof
     if not _NEDIGIT.sub("", prof.get("cui") or ""):
-        erori.append("LIPSĂ CUI companie (RegistrationNumber).")
+        erori.append("Lipsă CUI companie (RegistrationNumber).")
     if not prof.get("nume"):
-        erori.append("LIPSĂ denumire companie.")
+        erori.append("Lipsă denumire companie.")
     if res.luna < 1 or res.luna > 12:
         erori.append("Lună invalidă.")
     if not res.conturi:
-        erori.append("LIPSĂ plan de conturi (GeneralLedgerAccounts).")
+        erori.append("Lipsă plan de conturi (GeneralLedgerAccounts).")
     ids = [c.id for c in res.conturi]
     if len(ids) != len(set(ids)):
         erori.append("AccountID duplicat în planul de conturi.")
@@ -1149,29 +1149,37 @@ def _factura_xml(f, este_vanzare, indent):
         X.append('%s      </TaxAmount>' % sp)
         X.append('%s    </TaxInformation>' % sp)
         X.append('%s  </InvoiceLine>' % sp)
-    # totaluri document: TaxCode/TaxPercentage din PRIMA linie a facturii, nu
-    # hardcodat 310/21% (gresit pentru achizitii si pentru facturile cu cota 0 -
-    # intracomunitare, taxare inversa).
-    prima = f.linii[0] if f.linii else None
-    tcod_tot = prima.tva_cod if prima else "310312"
-    tperc_tot = prima.tva_procent if prima else Decimal(0)
     X.append('%s  <InvoiceDocumentTotals>' % sp)
-    X.append('%s    <TaxInformationTotals>' % sp)
-    X.append('%s      <TaxType>300</TaxType>' % sp)
-    X.append('%s      <TaxCode>%s</TaxCode>' % (sp, _esc(tcod_tot)))
-    X.append('%s      <TaxPercentage>%s</TaxPercentage>' % (sp, _dec(tperc_tot)))
-    X.append('%s      <TaxBase>%s</TaxBase>' % (sp, _dec(f.net)))
-    X.append('%s      <TaxAmount>' % sp)
-    X.append('%s        <Amount>%s</Amount>' % (sp, _dec(f.tva)))
-    X.append('%s        <CurrencyCode>RON</CurrencyCode>' % sp)
-    X.append('%s        <CurrencyAmount>%s</CurrencyAmount>' % (sp, _dec(f.tva)))
-    X.append('%s      </TaxAmount>' % sp)
-    X.append('%s    </TaxInformationTotals>' % sp)
+    # [08.10.2026, retest pct.5] CÂTE UN `TaxInformationTotals` PE COTĂ (cod TVA + procent), în ordinea liniilor. Forma veche lua codul
+    # și procentul PRIMEI linii pentru toată factura: F1 nr. 2 (5.000 la 21% + 800 la 11%) ieșea „bază 5.800, TVA 1.138 la 21%”.
+    # XSD (/opt/duk/saft/saft.xsd, InvoiceDocumentTotals): `TaxInformationTotals … minOccurs="0" maxOccurs="unbounded"`.
+    for (tcod, tperc), (baza, tva) in totaluri_pe_cota(f).items():
+        X.append('%s    <TaxInformationTotals>' % sp)
+        X.append('%s      <TaxType>300</TaxType>' % sp)
+        X.append('%s      <TaxCode>%s</TaxCode>' % (sp, _esc(tcod)))
+        X.append('%s      <TaxPercentage>%s</TaxPercentage>' % (sp, _dec(tperc)))
+        X.append('%s      <TaxBase>%s</TaxBase>' % (sp, _dec(baza)))
+        X.append('%s      <TaxAmount>' % sp)
+        X.append('%s        <Amount>%s</Amount>' % (sp, _dec(tva)))
+        X.append('%s        <CurrencyCode>RON</CurrencyCode>' % sp)
+        X.append('%s        <CurrencyAmount>%s</CurrencyAmount>' % (sp, _dec(tva)))
+        X.append('%s      </TaxAmount>' % sp)
+        X.append('%s    </TaxInformationTotals>' % sp)
     X.append('%s    <NetTotal>%s</NetTotal>' % (sp, _dec(f.net)))
     X.append('%s    <GrossTotal>%s</GrossTotal>' % (sp, _dec(f.brut)))
     X.append('%s  </InvoiceDocumentTotals>' % sp)
     X.append('%s</Invoice>' % sp)
     return X
+
+
+def totaluri_pe_cota(f):
+    """{(cod TVA, procent): (bază, TVA)} ale unei facturi, în ordinea liniilor. O factură fără linii păstrează un total zero pe codul
+    implicit de dinainte (310312, 0%) — ca XML-ul să rămână complet."""
+    out = {}
+    for l in f.linii:
+        b, t = out.get((l.tva_cod, l.tva_procent), (Decimal(0), Decimal(0)))
+        out[(l.tva_cod, l.tva_procent)] = (b + l.valoare, t + l.tva_suma)
+    return out or {("310312", Decimal(0)): (Decimal(0), Decimal(0))}
 
 
 def _source_documents(res):
@@ -1601,7 +1609,7 @@ def erori_generare(prof):
     erori = []
     _cui = str(prof.get("cui") or "").strip()
     if not _cui:
-        erori.append("LIPSĂ CUI firma.")
+        erori.append("Lipsă CUI firma.")
     else:
         # T1 (CATALOG_INVALIDITATE.md): cifra de control a CUI-ului firmei, verificata OFFLINE
         # pre-DUK. Un CUI cu checksum gresit era emis tacit in RegistrationNumber -> DUK
@@ -1611,7 +1619,7 @@ def erori_generare(prof):
             erori.append("CUI firma invalid (%s) - %s. Corectează CUI-ul în profilul firmei "
                          "(DUK regula S.CMH.1)." % (_cui, _motiv))
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firma.")
+        erori.append("Lipsă denumire firma.")
     return erori
 
 
@@ -1643,29 +1651,29 @@ def genereaza(conn, schema, an, luna):
         # avertisment, ca sa nu dispara un cont cu sold fara ca contabilul sa stie (aceeasi regula ca la N
         # in d394 - decizie Costin 04.08: exclus, dar vizibil). Verifica norma firmei / planul de conturi.
         lista = ", ".join(strain[:30]) + (" ... (+%d)" % (len(strain) - 30) if len(strain) > 30 else "")
-        res.avertismente.insert(0, "ATENTIE: %d cont(uri) EXCLUS(e) din D406 - nu apartin normei contabile "
+        res.avertismente.insert(0, "Atenție: %d cont(uri) exclus(e) din D406 - nu aparțin normei contabile "
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifică planul de conturi / baza "
-                                   "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+                                   "contabilă a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
     if surse_necunoscute:
         _dets = "; ".join("nota %s: sursa %r" % (nid, s) for nid, s in surse_necunoscute)
-        res.avertismente.insert(0, "ATENȚIE (D406): %d notă/note cu sursă NEMAPATĂ la un jurnal "
-                                   "auxiliar au intrat în jurnalul de operațiuni diverse (DIVERSE) "
-                                   "- NU tacit. %s. Mapează sursa în `d406._JURNALE` sau corectează "
-                                   "sursa notei." % (len(surse_necunoscute), _dets))
+        res.avertismente.insert(0, "Atenție (D406): %d notă/note cu sursă nemapată la un jurnal "
+                                   "auxiliar au intrat în jurnalul de operațiuni diverse („DIVERSE”) "
+                                   "- nu tacit. %s. Corectează sursa notei (sau cere maparea ei la un jurnal "
+                                   "auxiliar)." % (len(surse_necunoscute), _dets))
     if um_necunoscute:
         _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
-        res.avertismente.insert(0, "ATENTIE (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
-                                   "cu H87 (bucata) - NU tacit: o unitate greșită e eronata/respinsă la "
+        res.avertismente.insert(0, "Atenție (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
+                                   "cu H87 (bucata) - nu tacit: o unitate greșită e eronata/respinsă la "
                                    "ANAF. %s. Mapează unitatile în nomenclatorul UN/ECE Rec.20." % _detu)
     if cote_necunoscute:
         _detc = "; ".join("factura %s: cota %s%%" % (nrf, ct) for nrf, ct in cote_necunoscute)
-        res.avertismente.insert(0, "ATENTIE (D406): cota(e) de TVA fără cod TaxCode de livrare în "
-                                   "nomenclator, înlocuită(e) TACIT cu 310312 (taxare inversa) - date "
-                                   "GRESITE la ANAF. %s. Verifică cota facturii / actualizeaza "
+        res.avertismente.insert(0, "Atenție (D406): cota(e) de TVA fără cod TaxCode de livrare în "
+                                   "nomenclator, înlocuită(e) tacit cu 310312 (taxare inversa) - date "
+                                   "greșite la ANAF. %s. Verifică cota facturii / actualizeaza "
                                    "nomenclatorul de coduri de taxa." % _detc)
     if facturi_fara_curs:
         _detfc = ", ".join(facturi_fara_curs)
-        res.avertismente.insert(0, "ATENTIE (D406): %d factură(i) în valută FĂRĂ curs BNR EXCLUSE din "
+        res.avertismente.insert(0, "Atenție (D406): %d factură(i) în valută fără curs BNR excluse din "
                                    "SalesInvoices/PurchaseInvoices (SAF-T declară CurrencyCode=RON — "
                                    "nu se poate raporta valuta drept lei): %s. Completează cursul pe "
                                    "factură (A1)." % (len(facturi_fara_curs), _detfc))

@@ -146,7 +146,7 @@ def test_fisa_e_o_AFIRMATIE_TIPATA_nu_un_dict_de_proza():
     assert f["fel"] == "fapt" and f["tip"] == "fisa_cont"
     assert f["motiv"] and "14-6-22" in f["motiv"]
     tc = f["temei_completitudine"]
-    assert tc and "validata" in tc and "ciornele" in tc.lower(), tc
+    assert tc and "notelor validate" in tc and "ciornele" in tc.lower(), tc
     assert f["an"] == 2026 and f["luna"] == 8, "faptul trebuie să poarte domeniul"
 
 

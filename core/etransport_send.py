@@ -75,11 +75,11 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
     expirat = acum > valabil_pana
     poate_trimite = not prea_devreme and not expirat
     if prea_devreme:
-        mesaj = "Prea devreme: se declara cu MAX 3 zile inainte (transport %s)." % dt.isoformat()
+        mesaj = "Prea devreme: transportul se declară cu cel mult 3 zile înainte (transport %s)." % dt.isoformat()
     elif expirat:
         mesaj = "UIT expirat: valabilitatea (%s) a trecut." % valabil_pana.isoformat()
     else:
-        mesaj = "OK - UIT valabil pana la %s (%d zile)." % (valabil_pana.isoformat(), zile_val)
+        mesaj = "Codul UIT e valabil până la %s (%d zile)." % (valabil_pana.isoformat(), zile_val)
     return {"poate_trimite": poate_trimite, "prea_devreme": prea_devreme, "expirat": expirat,
             "zile_valabilitate": zile_val, "uit_valabil_pana": valabil_pana,
             "data_transport": dt, "mesaj": mesaj}

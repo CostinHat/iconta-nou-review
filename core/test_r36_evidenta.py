@@ -132,7 +132,7 @@ def test_descarcarea_gv_inlocuieste_ciornele_si_nu_atinge_validatul(lume):
     de înlocuire scoasă (orice notă existentă refuză) -> a doua descărcare refuzată -> pică."""
     from core import stocuri_api as sa
     with _db.get_conn(SCH) as conn:
-        _nota(conn, "2099-10-01", "stocuri", [("371", "401", 1000), ("371", "378", 200), ("371", "4428", 252)])
+        _nota(conn, "2099-10-01", "stocuri", [("371", "401", 1000), ("371", "378", 200), ("371", "4428.02", 252)])
         _nota(conn, "2099-10-10", "facturi", [("4111", "707", 500), ("4111", "4427", 105)])
         r1 = sa.descarca_luna(conn, SCH, 2099, 10)
         assert sa.descarca_luna(conn, SCH, 2099, 10)["aceleasi_sume"] is True

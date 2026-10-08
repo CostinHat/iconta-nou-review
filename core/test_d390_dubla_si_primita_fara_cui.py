@@ -18,23 +18,23 @@ def test_q1a_dubla_sursa_semnalata():
     facturi = [{"cui": "DE123456789", "nume": "Furnizor DE", "directie": "primita", "total": 1000, "tva": 0}]
     manual = [{"tip": "A", "tara": "DE", "cod": "123456789", "den": "Furnizor DE", "baza": 1000}]
     res = _res(facturi, manual)
-    assert any("DUBL" in a and "raportare" in a for a in res.avertismente), res.avertismente
+    assert any("dublă raportare" in a.lower() for a in res.avertismente), res.avertismente
 
 
 def test_q1a_o_singura_sursa_fara_fals_pozitiv():
     facturi = [{"cui": "DE123456789", "nume": "Furnizor DE", "directie": "primita", "total": 1000, "tva": 0}]
     res = _res(facturi)  # doar factura, nicio linie manuala -> fara avertisment de dubla sursa
-    assert not any("DUBL" in a and "raportare" in a for a in res.avertismente), res.avertismente
+    assert not any("dublă raportare" in a.lower() for a in res.avertismente), res.avertismente
 
 
 def test_q2_primita_fara_cui_numita():
     facturi = [{"cui": "", "nume": "Furnizor fara CUI", "directie": "primita", "total": 500, "tva": 0}]
     res = _res(facturi)
-    assert any("PRIMIT" in a and "Furnizor fara CUI" in a for a in res.avertismente), res.avertismente
+    assert any("primită" in a.lower() and "Furnizor fara CUI" in a for a in res.avertismente), res.avertismente
 
 
 def test_q2_emisa_fara_cui_nu_e_numita():
     # vanzare (emisa) fara CUI = client PF domestic normal -> NU primeste avertismentul suspect de primita
     facturi = [{"cui": "", "nume": "Client PF", "directie": "emisa", "total": 500, "tva": 0}]
     res = _res(facturi)
-    assert not any("PRIMIT" in a and "fără CUI furnizor" in a for a in res.avertismente), res.avertismente
+    assert not any("primită" in a.lower() and "fără CUI furnizor" in a for a in res.avertismente), res.avertismente

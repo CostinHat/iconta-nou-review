@@ -29,7 +29,7 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4242dc4353";
-import { randA as randConstatare } from "./control_verdict.js?v=90aae1066a";
+import { randA as randConstatare } from "./control_verdict.js?v=86b39e444e";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 
 function numeFirma(firme, tid) {
@@ -171,6 +171,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>
       <p class="mig-intro">Notele pregătite de asistenți: le validezi (intră în evidență) sau le respingi cu motivul, pe care asistentul îl vede lângă notă. Notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună.</p>`;
     noteDeValidat.forEach((c) => zN.appendChild(randNota(c, firme, corp, nav, perm)));
+    barMaiMulte(zN, corp, nav);
   }
   // [lotul 07.10 pct.8] din notificare: elementul ei, adus în vedere și marcat (și când e un membru al unui document)
   const evid = Number(opt.evidentiaza);
@@ -237,6 +238,38 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   }
 }
 
+// [08.10.2026, decizia Costin pct.3 la §6 S6] „Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).”
+// Bara apare numai când există note pe care le poți valida; serverul trece fiecare notă prin aceeași aprobare și spune ce a refuzat.
+function barMaiMulte(zN, corp, nav) {
+  const bife = [...zN.querySelectorAll(".val-sel")];
+  if (bife.length < 2) return;
+  const bara = document.createElement("div");
+  bara.className = "dec-bara";
+  bara.innerHTML = `<label class="set-bifa"><input type="checkbox" id="val-sel-toate"> <span>Selectează toate (${bife.length})</span></label>
+    <button class="buton-primar" id="val-aproba-selectate" data-actiune="POST /coada/aproba-mai-multe" disabled>Validează selectate</button>
+    <div id="val-mai-multe-msg"></div>`;
+  zN.insertBefore(bara, zN.querySelector(".val-card"));
+  const btn = bara.querySelector("#val-aproba-selectate"), toate = bara.querySelector("#val-sel-toate");
+  const alese = () => bife.filter((b) => b.checked).map((b) => Number(b.dataset.nota));
+  const actualizeaza = () => { const n = alese().length; btn.disabled = !n; btn.textContent = n ? `Validează selectate (${n})` : "Validează selectate"; };
+  bife.forEach((b) => b.addEventListener("change", actualizeaza));
+  toate.addEventListener("change", () => { bife.forEach((b) => { b.checked = toate.checked; }); actualizeaza(); });
+  btn.addEventListener("click", async () => {
+    const ids = alese();
+    btn.disabled = true;
+    try {
+      const r = await api.post("/coada/aproba-mai-multe", { ids });
+      const refuz = r.refuzate || [];
+      _confirma(r.validate || [], `Ai validat ${(r.validate || []).length} ${(r.validate || []).length === 1 ? "notă" : "note"}.`
+        + (refuz.length ? ` Nu s-au validat ${refuz.length}: ${refuz.map((x) => x.mesaj).join(" · ")}` : ""));
+      randeazaValidat(corp, nav);
+    } catch (e) {
+      arataMesaj(bara.querySelector("#val-mai-multe-msg"), (e && e.mesaj) || "Nu am putut valida notele selectate.", "eroare");
+      actualizeaza();
+    }
+  });
+}
+
 // UN singur apel de aprobare, pentru declarații și note: pentru notă, serverul o validează în jurnal (aceeași tranzacție)
 function aprobaElement(c) {
   return api.post(`/coada/${c.id}/aproba`, {});
@@ -250,7 +283,7 @@ function randNota(c, firme, corp, nav, perm) {
   div.dataset.coadaIds = (c.membri_ids || [c.id]).join(",");   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
   const uid = uidCurent();
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
-  let actiuni = "";
+  let actiuni = "", selectabila = false;
   if (!perm.poate_valida) {
     actiuni = `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
   } else if (euAmPregatit) {
@@ -258,10 +291,11 @@ function randNota(c, firme, corp, nav, perm) {
   } else {
     actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
       <button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
+    selectabila = true;
   }
   div.innerHTML = `
     <div class="val-info">
-      <div class="val-titlu"><b>${esc(c.eticheta || "Notă")}</b></div>
+      <div class="val-titlu">${selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : ""}<b>${esc(c.eticheta || "Notă")}</b></div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
       ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota NU s-a schimbat față de cea respinsă" : "schimbarea nu se poate compara (nota respinsă e dinaintea amprentei)"}</div>` : ""}
       <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</div>

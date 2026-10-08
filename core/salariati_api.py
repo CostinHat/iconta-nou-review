@@ -116,7 +116,7 @@ def valideaza_salariat(date, la_creare=False):
     cor = date.get("cor")
     if la_creare and not (cor is not None and str(cor).strip()):
         # [#7] COR obligatoriu la creare (per-camp; existenta in nomenclator o verifica _verifica_cor cu conn).
-        erori.append(("cor", "Ocupatia (cod COR) este obligatorie (necesara D112/REGES)."))
+        erori.append(("cor", "Ocupația (cod COR) este obligatorie (necesară în D112 și REGES)."))
     tn = date.get("tip_norma")
     if tn is not None and tn not in _NORME:
         erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'partiala'."))
@@ -154,7 +154,7 @@ def valideaza_salariat(date, la_creare=False):
         try:
             from datetime import date as _date
             if _date.fromisoformat(str(di)[:10]) < _date.fromisoformat(str(da)[:10]):
-                erori.append("data incetarii nu poate fi inainte de data angajarii")
+                erori.append("Data încetării nu poate fi înainte de data angajării.")
         except (ValueError, TypeError):
             erori.append(("data_incetare", "Data încetării sau a angajării e invalidă."))
     return erori

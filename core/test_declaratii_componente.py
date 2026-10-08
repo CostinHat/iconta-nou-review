@@ -241,9 +241,9 @@ def test_proprietatile_declarate_ajung_in_rand():
     from core.d710 import ObligatieRect
     o = ObligatieRect(cod_oblig="121", suma_dat_i=1000, suma_dat_c=800, suma_ded_i=300)
     rand = dc._rand_din_lista(o, ("suma_plata_i", "suma_plata_c"))
-    assert rand["suma_plata_i"] == 700 and rand["suma_plata_c"] == 800, rand
+    assert rand["de plată inițial"] == 700 and rand["de plată corectat"] == 800, rand
     # și proba inversă: fără declarație, proprietatea NU apare — deci rândul de mai sus chiar testează ceva
-    assert "suma_plata_i" not in dc._rand_din_lista(o)
+    assert "de plată inițial" not in dc._rand_din_lista(o)
 
 
 def test_un_atribut_inexistent_da_zero_randuri():
@@ -306,3 +306,32 @@ def test_valorile_pleaca_serializabile():
     randuri = dc._randuri(res, sec)
     json.dumps(randuri)  # crapă dacă a rămas ceva neserializabil
     assert randuri == [{"suma": 12.34, "zi": "2026-08-30"}]
+
+
+# ── [08.10.2026, retest pct.5 + pct.14] antetele sunt pentru om, liniile își arată suma ─────────────────────────────────────────
+@pytest.mark.parametrize("tip", sorted(dc.COMPONENTE))
+def test_orice_camp_emis_are_eticheta_pentru_om(tip):
+    """Niciun nume de câmp din cod („partener_id”, „self_billing”, „nume1”) nu ajunge antet de tabel: fiecare secțiune-listă își declară
+    elementul, iar fiecare câmp al lui care pleacă (neascuns) are etichetă în `ETICHETE`. MUTAȚIE: „partener_nume” scos din ETICHETE ->
+    pică pe d406."""
+    modul = importlib.import_module("core.%s" % tip)
+    for sec in dc.COMPONENTE[tip]:
+        if sec.chei:
+            continue
+        assert sec.element, "%s / %r: secțiune-listă fără `element` — câmpurile ei nu se pot verifica" % (tip, sec.nume)
+        campuri = list(sec.element) if isinstance(sec.element, tuple) else [f.name for f in dataclasses.fields(getattr(modul, sec.element))]
+        fara = sorted((set(campuri) | set(sec.proprietati)) - set(sec.ascunse) - set(dc.ETICHETE))
+        assert not fara, "%s / %r: câmpuri fără etichetă pentru om: %s" % (tip, sec.nume, fara)
+
+
+def test_liniile_facturii_isi_arata_suma_pe_sensul_ei():
+    """Linia de factură are `valoare` + `sens`, nu `debit` / `credit`: ecranul arăta „707 · credit 0,00” (F1 10/2026). MUTAȚIE: `_linie`
+    citește numai debit / credit -> credit 0 -> pică."""
+    from decimal import Decimal
+    from core import d406
+    f = d406.Factura(nr="2", data=None, partener_id="0014399840", partener_nume="DANTE",
+                     linii=[d406.LinieFactura(nr=1, cont="707", descriere="Marfa A", valoare=Decimal("5000"), sens="C"),
+                            d406.LinieFactura(nr=2, cont="707", descriere="Carte", valoare=Decimal("800"), sens="C")])
+    rand = dc._rand_din_lista(f, (), ("partener_id", "self_billing", "tip"))
+    assert rand["linii"] == [{"cont": "707", "debit": 0, "credit": 5000.0}, {"cont": "707", "debit": 0, "credit": 800.0}]
+    assert {"partener_id", "self_billing", "partener_nume"}.isdisjoint(rand) and rand["partener"] == "DANTE"

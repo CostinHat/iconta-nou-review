@@ -91,6 +91,12 @@ BASELINE = {
     # (note_taxare_inversa). Aceeasi clasa cu TTL-urile/ferestrele operationale deja in clichet.
     "intracomunitar.py": 1,
     "uc_tenants.py": 1,
+    # [lotul „Retest 08.10”, 08.10.2026] 0 -> 1, LARGIREA DOMENIULUI (aceeasi clasa ca intrastat/uc_tenants): etichetele pentru om
+    # ale campurilor D406/D394 (pct.5 si pct.14: „partener_id, partener_nume, self_billing” -> „Cod partener”, …) au urcat
+    # densitatea de vocabular fiscal a modulului peste `PRAG_SEMNAL`, deci scanul il vede. Ce a devenit vizibil e
+    # `LIMITA_RANDURI = 500` — cate randuri arata o sectiune din „Din ce e facuta declaratia” inainte sa se taie (si sa spuna ca s-a
+    # taiat). Operational, nu fiscal; nu e nimic de citat.
+    "declaratii_componente.py": 1,
     # COBORAT 01.10.2026 (Pachet FiscalOS §2): constantele ancorate cu `common.ancoreaza(..., Temei(...))`
     # - casa 6->0 (7 plafoane Legea 70/2015, inclusiv PLAFON_PLATA_CC_TOTAL nou din §3), d101 6->5 (COTA_STANDARD,
     # CF art.17), d101g 1->0, salarizare 18->17 (PRAG_VENIT_DEDUCERE, CF art.77 alin.3). Clasa E (temei in proza)

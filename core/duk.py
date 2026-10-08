@@ -100,13 +100,13 @@ def poate_valida(tip, dist=DIST):
     return bool(cheie) and cheie in validatoare_instalate(dist)
 
 
-def _gri(cheie, temei, limita="XML-ul a fost generat, dar NU validat la ANAF."):
+def _gri(cheie, temei, limita="XML-ul a fost generat, dar nu e validat la ANAF."):
     return {"stare": "gri", "erori": "", "severitate": None, "cheie": cheie, "temei": temei,
             "limita": limita, "modul": MODUL, "reguli": REGULI}
 
 
-LIMITA = ("Validare structura si reguli ANAF. NU verifica daca cifrele corespund "
-          "evidentei contabile - pentru asta e controlul incrucisat.")
+LIMITA = ("Validare de structură și de reguli ANAF. Nu verifică dacă cifrele corespund "
+          "evidenței contabile — pentru asta e controlul încrucișat.")
 
 
 def severitate(rez):
@@ -182,8 +182,8 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
     if tip in TIPURI_SAFT:
         return _valideaza_saft(xml, tip, an=an, luna=luna, timeout=max(timeout, 300))
     if cheie not in validatoare_instalate(dist):
-        return _gri(cheie, "Validatorul %s nu e instalat in pachetul DUKIntegrator." % cheie,
-                    "XML generat, NU validat. Instaleaza validatorul de la ANAF "
+        return _gri(cheie, "Validatorul %s nu e instalat în pachetul DUKIntegrator." % cheie,
+                    "XML generat, nevalidat. Instalează validatorul de la ANAF "
                     "(config/config.properties -> urlVersiuni).")
     td = tempfile.mkdtemp(prefix="duk_%s_" % tip)
     xp = os.path.join(td, "d.xml")
@@ -231,7 +231,7 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
             rez = ""
         # FAIL-SAFE anti fals-verde: eroare semnalata pe stdout FARA fisier de rezultat -> NU 'valid'.
         if (not rez) and any(m in out for m in _MARK_ESEC):
-            return _gri(cheie, "Validatorul a semnalat eroare fara fisier de rezultat: %s."
+            return _gri(cheie, "Validatorul a semnalat o eroare fără fișier de rezultat: %s."
                         % out.strip().replace("\n", " ")[:200])
         temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
         stare = "erori" if rez else "valid"

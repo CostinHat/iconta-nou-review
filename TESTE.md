@@ -45,6 +45,66 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Retest 08.10 — deciziile la §6 ale lotului „Deciziile 08.10 §6” + constatările 4–21 (comanda Costin 08.10.2026, verbatim în
+  DECIZII)** — prioritar față de registrul de parametri fiscali (firul de mai jos, pus pe pauză la R1).
+  - ultim: O1–O16 — toate cele 21 de puncte cu cod, gărzi și mutații (R1–R38 + reluările R17c…R37c, toate roșii; R3 și R16 echivalente, înlocuite de
+    R3b / R16b), probele „înainte” / „după” în browser (1700×1000), registrele, poarta și migrările pe producție în commitul care
+    conține această intrare (SHA în raport, §11). Teste: `core/test_retest_0810_s6.py` (31), `core/test_text_afisat_limbaj.py` (4).
+  - urmator: O17 (ZIP + raportul), apoi firul de mai jos de la R1. STARE = IN LUCRU (O17)
+  - pasi (operațiile date înainte de execuție; un commit la închidere, registrele în el):
+    O2. Măsurarea „înainte” pe producție (rollback) + test, pentru fiecare constatare 4–21, cu output brut.
+    O3. pct.1 bilanț 4428: analitic pentru TVA-ul din prețul de raft (NIR GV, descărcare, K), migrarea soldurilor, rd.05 numai; datoria
+        închisă; DUK S1005.
+    O4. pct.2 consemnat; pct.3 validarea mai multor note deodată în coadă, cu gard pe drepturi.
+    O5. pct.4 notele NIR 1 / NIR 2 F1 refăcute pe 408 / 4428.01, ciorne de validat (migrare pe producție după backup); poarta D300.
+    O6. pct.5–6 D406 „Facturi de vânzare” (ecran + XML), D394 seria / numărul + semnalul fără serie; generalizare; DUK.
+    O7. pct.7–10 Control fiscal: de urmărit vs restanță (listă + contor), D100/D205 2025 înainte de preluare, grupul pliat + „Marchează
+        toate…”, marcarea (mesajul, saltul, modificare / anulare).
+    O8. pct.11–12 Închidere lună (luna în curs, butonul inactiv pe blocaje, un singur loc) + semnalul furnizor cu sold debitor.
+    O9. pct.13 Mijloace fixe la ~1700 px.
+    O10. pct.14 limbajul de programator / textele fără diacritice: inventar măsurat, corectură pe clasă, gard (DS + verificator).
+    O11. pct.15–16 D406 / D394 suprapunerile, spațiile, „Rezumat”.
+    O12. pct.17 conturile 731–738 scoase din șablon și din firmele care nu le folosesc (migrare după backup).
+    O13. pct.18–20 antetul PDF balanță, descrierea notei chitanței, „Luna preluării” precompletată.
+    O14. pct.21 proba C&D pe un utilizator fără drept.
+    O15. Gărzi + mutații, probe vechi -> nou, unelte vizuale, vecinătate, blocuri generate.
+    O16. Registrele, poarta, four-way, migrările pe producție.
+    O17. ZIP + raportul (tabelul cerință -> probă, duratele).
+- fir: **Registrul unic de parametri fiscali + interdicția 26 (comanda Costin 08.10.2026, verbatim în DECIZII 08.10.2026)** — pornit
+  după lotul „Deciziile 08.10 §6” (e07f46e6). Lista de operații (16) dată înainte de execuție; durata fiecăreia măsurată.
+  - ultim: ritualul (agenda curată, agenda_drift: niciun drift); inventarul MĂSURAT: `COTE` 23 chei / 39 intrări, `CONSTANTE_ANCORATE`
+    32, `scan_constante` A 108 / B 417 / C 127 (51 fișiere) / D 72 / E 39 (artefact `inventar_registru_inainte.json`, în ZIP).
+  - urmator: R1 (R0 — `core/scan_registru.py` + testul lui — scris, necomis: lucru pe disc, pus pe pauză pentru „Retest 08.10”).
+    STARE = IN LUCRU (pe pauză până la închiderea „Retest 08.10”)
+  - pasi (fiecare cu commit, aplicația funcțională după fiecare):
+    R0. Instrumentul inventarului (`core/scan_registru.py`): numără valorile fiscale din registru și din afara lui (ancorate, clasele
+        A/C/E ale `scan_constante`, dublurile), pe fișier; artefactul JSON „înainte”.
+    R1. Modelul: `COTE` devine registrul unic — fiecare intrare: valoare, `Temei`, valabil de la / până la (derivat), STARE
+        (propus / verificat / aprobat, cu cine și când); `ancoreaza` scrie în `COTE` (fără al doilea dicționar); exportul
+        registrului în formatul `verif_temeiuri.json`; citirea verdictelor APROB. Gărzi + mutații.
+    R2. Amprentele „înainte”: toate declarațiile generabile pe portofoliu (baza de test; producția în tranzacție anulată), XML
+        normalizat + SHA (`scripts/amprente_declaratii.py`), artefact.
+    R3. Dublurile: `d101/d101g.COTA_STANDARD` -> `impozit_profit`; `cote_tva.COTA_STANDARD/REDUSA` -> `tva_standard`/`tva_redusa`;
+        consumatorii citesc `cota(nume, data_operatiunii)`.
+    R4. Constantele ancorate (32), grupate pe modul (casa, d212, salarizare, bacsis, d100, d394, taxare_inversa, creșa): intrări
+        în registru cu istoricul lor unde există; consumatorii citesc după dată.
+    R5. Clasa A din module (temei-obiect lângă literal, în afara registrului): mutată în registru.
+    R6. Clasa E (temei în proză): temeiul citit în corpus, devenit `Temei`, valoarea mutată în registru.
+    R7. Clasa C — numai valorile FISCALE (cele operaționale rămân, numărate, cu motivul): temeiul căutat în corpus; unde nu se
+        găsește, intrarea „fără temei” (fără valoare / citat presupus — valoarea veche rămâne citită, marcată).
+    R8. Amprentele „după” = „înainte” (aceleași declarații, aceleași SHA).
+    R9. Gardul interdicției 1: o valoare fiscală nouă în afara registrului înroșește poarta (mutație); CONFORMITATE §1.
+    R10. Proba pe perioade: D300 07/2025 cu 19%, 08/2025 cu 21% (schemă efemeră, DUK).
+    R11. Registrul integral exportat (formatul `verif_temeiuri.json`), calea raportată; stările „propus” până la verdict.
+    R12. Detectarea: aducerea săptămânală (timer systemd) a formelor consolidate de pe legislatie.just.ro pentru actele care susțin
+        un temei; versiune nouă în corpus, cea veche arhivată; propunere pentru fiecare citat care nu mai e verbatim; GRI pe sursa
+        neadusă / necitibilă; export pentru arhitect; în registru numai verdictele APROB.
+    R13. Ecranul de superadmin (numai afișare: propunerile și starea lor) + alerta la propunere nouă.
+    R14. Calibrarea detectării: prinde HG 1045/2018 (15.09 -> 30.09.2026, creșa 770) și CF art.291 (01.08.2025); nu propune pe acte
+        neschimbate.
+    R15. Interdicția 26 pe perimetrul derivat mecanic (contări, TVA, declarații, salarii, stocuri): deciziile luate pe text mutate
+        pe câmpuri structurate (migrare + cerere la introducere); proba pe portofoliu cu denumiri scrise altfel; restul numărat.
+    R16. Registrele, poarta, four-way, migrarea pe producție, ZIP, raportul cu duratele.
 - fir: **Deciziile 08.10 §6 (răspunsul Costin la §6 al lotului „Deciziile 08.10”, comanda 08.10.2026)** — verbatim în DECIZII
   08.10.2026 („Deciziile Costin la §6 al lotului «Deciziile 08.10»”). Prioritar față de registrul de parametri fiscali (comanda din aceeași
   tură). O poartă completă la publicare, registrele în același commit; ZIP în `~/ghid_incoming/`; durata măsurată a fiecărei operații.

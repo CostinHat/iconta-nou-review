@@ -26,7 +26,7 @@ def test_cui_cifra_control_gresita_da_motiv():
 def test_cui_non_numeric_da_motiv():
     """I2: CUI non-numeric -> eroare (lipsa/lungime), nu emis tacit."""
     er = erori_generare(_prof("ABCDE"))
-    assert any("CUI invalid" in e for e in er) or any("LIPS" in e for e in er), er
+    assert any("CUI invalid" in e for e in er) or any("Lipsă CUI" in e for e in er), er
 
 
 def test_cui_lungime_gresita_da_motiv():
@@ -38,4 +38,4 @@ def test_cui_lungime_gresita_da_motiv():
 def test_cui_lipsa_inca_semnalat():
     """Regresie: CUI gol raporteaza in continuare LIPSA (nu doar checksum)."""
     er = erori_generare(_prof(""))
-    assert any("LIPS" in e and "CUI" in e for e in er), er
+    assert any("Lipsă CUI" in e for e in er), er

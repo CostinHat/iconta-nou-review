@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-*clasa MECANIC · 17 rute · 9 schimba date · 9 firme il pot exercita azi*
+*clasa MECANIC · 20 rute · 12 schimba date · 9 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
 
@@ -42,6 +42,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] cine aprobă e consemnat, și e diferit de cine a pregătit dacă patru ochi e activ **și** posibil
 - dacă patru ochi e activ și imposibil (un singur validator), ruta refuză cu motivul, nu tace
 - starea trece în „aprobată", nu direct în „depusă"
+
+### `POST /coada/aproba-mai-multe`
+
+*garda `cere_drept` · **fara rol** · drept:poate_valida*
+
+*ce face: [08.10.2026, decizia Costin pct.3 la §6 S6] Validarea mai multor note deodată: fiecare element pe drumul unei aprobări (aceleași porți, aceeași tranzacție pe element); ră — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`*
+
+- [x] [retest 08.10 pct.3] fiecare notă selectată trece prin `coada_aproba` — aceleași porți (patru ochi, verdict, perioadă) ca aprobarea uneia singure; o notă refuzată se întoarce în `refuzate`, numită, cu mesajul ei, iar celelalte rămân aprobate — `core/test_retest_0810_s6.py::test_pct3_mai_multe_note_fiecare_pe_drumul_aprobarii`
+- [x] utilizatorul fără «Poate valida» nu validează nimic (refuz înainte de prima notă) — `test_pct3_fara_drept_nu_se_valideaza_nimic`
+- [x] cel mult `MAX_APROBARI_DEODATA` (200) note într-o cerere; dublurile se scot
 
 ### `POST /coada/{coada_id}/depune`
 
@@ -114,6 +124,24 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] [08.10.2026, decizia Costin U2] o declarație anterioară se marchează „depusă în afara iConta”: versiune nouă în `declaratii_depuse` (`sursa = 'extern'`, `recipisa` opțională), iar Control fiscal o arată „La zi” cu recipisa — `core/test_control_preluare.py::test_marcata_depusa_in_afara_iconta…` + proba de browser (restanța D112 08/2026 -> „La zi”)
 - [x] data depunerii e obligatorie (fără ea „la termen / după termen” ar fi o presupunere); nu se marchează peste o depunere existentă (409)
 - [x] cere «Poate depune» — e un fapt despre DEPUNERE
+
+### `POST /control-fiscal/{tenant_id}/depuse-anterior`
+
+*garda `cere_drept` · **fara rol** · drept:poate_depune*
+
+*ce face: [08.10.2026, retest pct.9] „Marchează toate ca depuse de contabilul anterior” — scrie declaratii_depuse (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) · firma_profil_jurnal (INSERT) — prin `repo_control_fiscal_api`, `repo_firma_profil`*
+
+- [x] [retest 08.10 pct.9] marchează numai perioadele DINAINTEA lunii preluării care nu sunt deja depuse (`sursa = 'contabil_anterior'`, fără dată de depunere — n-o știm); o perioadă de după preluare sau una deja depusă nu se atinge — `core/test_retest_0810_s6.py::test_pct9_marcheaza_toate_dinaintea_preluarii`
+- [x] cere «Poate depune» — e un fapt despre DEPUNERE
+
+### `POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza`
+
+*garda `cere_drept` · **fara rol** · drept:poate_depune*
+
+*ce face: [08.10.2026, retest pct.10] Anularea unei marcări „depusă în afara iConta.eu” / „de contabilul anterior”. — scrie declaratii_depuse (DELETE) — prin `repo_control_fiscal_api`*
+
+- [x] [retest 08.10 pct.10] scoate numai MARCĂRILE (`sursa` ∈ extern / contabil_anterior) ale perioadei; o depunere prin iConta.eu nu se poate anula de aici (409), iar ștergerea filtrează pe sursă și în depozit — `test_pct10_marcarea_se_modifica_si_se_anuleaza_depunerea_reala_nu`, `test_pct10_anularea_nu_atinge_niciodata_o_depunere_prin_iconta`
+- [x] cere «Poate depune»
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 

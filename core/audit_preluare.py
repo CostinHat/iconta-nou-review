@@ -144,7 +144,7 @@ def verifica_balanta(conn, schema):
     from core.solduri_api import verifica_echilibru
     et = "Balanța de deschidere"
     temei = ("Balanța de deschidere trebuie să aibă totalul debitor egal cu cel creditor "
-             "(solduri_initiale). O balanță dezechilibrată face toată contabilitatea preluată "
+             "(soldurile inițiale preluate). O balanță dezechilibrată face toată contabilitatea preluată "
              "să pornească greșit.")
     rows = _rows_solduri_initiale(conn, schema)
     if rows is None:
@@ -358,8 +358,8 @@ def _audit_regim_nedeterminat(e):
                 "Auditul aplica straturi diferite dupa regim (SRL partida dubla / PFA partida simpla); fara "
                 "regim nu stiu care se aplica, deci nu pot rula auditul complet.",
                 "Nu am putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %d straturi nerulate." % len(sarite),
-                "Verifica firma_profil.tip_firma (SRL/PFA), apoi reia auditul.",
-                cauza="Nu pot citi tip_firma din firma_profil (%s)." % e)],
+                "Verifică tipul firmei (SRL/PFA) în Date firmă, apoi reia auditul.",
+                cauza="Nu pot citi tipul firmei din Date firmă (%s)." % e)],
             "coerent": 0, "divergent": 0, "neverificat": 1,
             "limita": ("Audit NErulat: regimul (SRL/PFA) nu s-a putut determina. Straturi nerulate: %s. "
                        "Lipsa lor e vizibilă prin gri, nu tăcută." % ", ".join(sarite)),
@@ -418,7 +418,7 @@ def limita_pe_regim(straturi):
     neverif = [t for t, s in _NEVERIFICAT_V1 if s in straturi]
     limita = "Verificat (%s): %s." % (regim_lbl, ", ".join(verificat) if verificat else "—")
     if neverif:
-        limita += (" NEVERIFICAT (v1): %s — lipsa lor rămâne vizibilă prin gri, nu tăcută."
+        limita += (" Neverificat (v1): %s — lipsa lor rămâne vizibilă prin gri, nu tăcută."
                    % ", ".join(neverif))
-    limita += " Auditul verifică coerența INTERNĂ a pachetului preluat, NU corectitudinea evidenței contabilului anterior."
+    limita += " Auditul verifică coerența internă a pachetului preluat, nu corectitudinea evidenței contabilului anterior."
     return limita

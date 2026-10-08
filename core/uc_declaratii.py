@@ -78,18 +78,27 @@ def declaratie_valideaza(tip, date, ctx):
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],
-            "avertismente": getattr(res, "avertismente", None),
-            "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
-            # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
-            # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
-            # sa nu mai arate identic cu cea golita de un query rupt.
-            "operatiuni": declaratii_api.numar_operatiuni(tip, res),
-            # [lista 5, 30.08.2026] DIN CE e facuta cifra, nu doar CATE. Pana azi ruta intorcea un
-            # contor - „valid, 18 operatiuni" - iar contabilul nu putea vedea CARE 18: 0 din 92 de
-            # iesiri isi aratau componentele (1c). Componentele existau pe obiectul de rezultat al
-            # motorului; lipsea transportul. Ce nu se poate desface spune de ce, nu tace.
-            "componente": declaratii_componente.componente(tip, res),
+            **campuri_rezultat(tip, res),
             "xml_b64": _b64.b64encode(xml.encode()).decode()}
+
+
+def campuri_rezultat(tip, res):
+    """Ce spune rezultatul motorului despre declarație — O SINGURĂ asamblare pentru validare și pentru generare.
+    [retest 08.10 pct.16] „D406: caseta «Rezumat» nu se vede”: `sinteza` (V5) intrase numai în răspunsul generării, iar
+    ecranul cheamă validarea. Două asamblări ale aceluiași răspuns se despart la primul câmp nou; una nu are cu cine."""
+    return {
+        "avertismente": getattr(res, "avertismente", None),
+        "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
+        "sinteza": getattr(res, "sinteza", None) or [],               # [08.10, V5] rezumatul, pe canalul lui (nu avertisment)
+        # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
+        # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
+        # sa nu mai arate identic cu cea golita de un query rupt.
+        "operatiuni": declaratii_api.numar_operatiuni(tip, res),
+        # [lista 5, 30.08.2026] DIN CE e facuta cifra, nu doar CATE. Pana azi ruta intorcea un
+        # contor - „valid, 18 operatiuni" - iar contabilul nu putea vedea CARE 18: 0 din 92 de
+        # iesiri isi aratau componentele (1c). Componentele existau pe obiectul de rezultat al
+        # motorului; lipsea transportul. Ce nu se poate desface spune de ce, nu tace.
+        "componente": declaratii_componente.componente(tip, res)}
 
 
 def declaratie_genereaza(tip, date, ctx):
@@ -108,9 +117,4 @@ def declaratie_genereaza(tip, date, ctx):
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
     except ValueError as e:
         raise _erori.DateInvalide(str(e))
-    avert = getattr(res, "avertismente", None)
-    constat = getattr(res, "note_rezultat", None) or []   # canal neutru; [] pt declaratiile fara canal
-    return {"tip": tip, "xml": xml, "avertismente": avert, "note_rezultat": constat,
-            "sinteza": getattr(res, "sinteza", None) or [],   # [08.10, V5] rezumatul, pe canalul lui
-            "operatiuni": declaratii_api.numar_operatiuni(tip, res),  # [poarta_gol_v1]
-            "componente": declaratii_componente.componente(tip, res)}  # [lista 5]
+    return {"tip": tip, "xml": xml, **campuri_rezultat(tip, res)}

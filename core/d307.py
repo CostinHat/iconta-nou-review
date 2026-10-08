@@ -88,9 +88,9 @@ def erori_generare(prof, manual):
     if not _cif(prof.get("cui")):
         er.append("CUI persoana impozabila lipsă/invalid.")
     if not str(prof.get("den") or "").strip():
-        er.append("LIPSĂ denumire.")
+        er.append("Lipsă denumire.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa.")
+        er.append("Lipsă adresa.")
     # [mesaj_contabil] Regula 14.4 + GARDA campaniei: erorile urca la UTILIZATOR (ValueError -> 422 ->
     # e.mesaj in formular). Text in limba contabilului - ce lipseste si unde -, NU numele intern al
     # campului (declarant_nume/denO/codO/operatiuni[]/d_anulare). Numele XSD raman doar in cod/comentariu.

@@ -46,7 +46,7 @@ def test_mesaj_blocaj_ajunge_la_user():
     assert "2025-06-01 nu poate fi calculată" in user      # ce s-a oprit
     assert "nu e definită înainte de 2026-01-01" in user    # de ce (valoare neverificata la sursa)
     assert "disponibil de la 2026-01-01" in user            # ce se poate face
-    assert "completează în COTE la sursă" in user           # cine decide (dezvoltator)
+    assert "registrul de parametri fiscali" in user           # cine decide (dezvoltator)
 
 
 # ---- proba pe calea reala a adeverintei (schema efemera, ROLLBACK) ----

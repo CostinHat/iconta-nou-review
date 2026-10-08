@@ -30,7 +30,7 @@ def previzualizare(conn, cabinet_id):
     return {"cabinet_id": cabinet_id, "nume": cab["nume"], "nr_tenanti": len(tens), "nr_useri": nu,
             "scheme": [t["schema_name"] for t in tens], "confirmare_ceruta": cab["nume"],
             "randuri_de_sters": randuri,
-            "avertisment": "Ireversibil. NU se șterge: " + NU_SE_STERGE}
+            "avertisment": "Ireversibil. Nu se șterge: " + NU_SE_STERGE}
 
 def executa(conn, cabinet_id, confirmare, sters_de_user_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:

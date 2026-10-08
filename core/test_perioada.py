@@ -47,6 +47,6 @@ def test_blocaj_motivat_are_cele_4_elemente():
     m = str(e)
     assert "PERIOADA_BLOCATA:" in m and isinstance(e, ValueError)
     assert "Tichetele de masa nu se poate calcula" in m       # ce s-a oprit
-    assert "nu e CONFIRMAT" in m                                # de ce
+    assert "nu e confirmat" in m                                # de ce
     assert "Confirmă pontaj-ul lunii" in m and "buton" in m     # ce se poate face
     assert "administrator al firmei" in m                        # cine decide

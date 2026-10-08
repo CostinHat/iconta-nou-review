@@ -115,18 +115,18 @@ def erori_generare(prof, manual):
     er = []
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or (manual.get(c))or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+            er.append("Lipsă %s (declarant obligatoriu)." % c)
     aso = _asociere(prof, manual)
     if not _cif(aso.get("cif")):
         er.append("CUI asociere lipsă/invalid (manual.asociere.cif sau firma_profil).")
     if not str(aso.get("nume") or "").strip():
-        er.append("LIPSĂ denumire asociere.")
+        er.append("Lipsă denumire asociere.")
     if not str(aso.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa asociere.")
+        er.append("Lipsă adresa asociere.")
     resp = manual.get("responsabil") or {}
     for c, et in (("den_r", "den_r"), ("cif_r", "cif_r"), ("adresa_r", "adresa_r")):
         if not str(resp.get(c) or "").strip():
-            er.append("LIPSĂ %s (responsabilul asocierii, obligatoriu)." % et)
+            er.append("Lipsă %s (responsabilul asocierii, obligatoriu)." % et)
     act = manual.get("activitate")
     if not isinstance(act, dict) or not act:
         er.append("D223 cere `manual.activitate` (categ_venit, forma_org, det_venit, CAEN, județ, localitate...).")

@@ -483,10 +483,12 @@ def _lineno(text, pos):
     return text.count("\n", 0, pos) + 1
 
 
-def scan_js_text(text):
+def scan_js_text(text, flag=None):
     """Intoarce [(linie, rol, text_decodat, [triggere])] pentru un sursa JS.
-    Extras DOAR din pozitiile de afisare (chei, atribuiri, nav.*, noduri-text)."""
+    Extras DOAR din pozitiile de afisare (chei, atribuiri, nav.*, noduri-text). `flag` = criteriul (implicit
+    diacriticele, `_flag_js`); `test_text_afisat_limbaj` refoloseste extractia cu criteriul majusculelor."""
     out = []
+    _flag_js = flag or globals()["_flag_js"]
 
     def emit(pos, rol, raw):
         d = _decode_js(raw[1:-1])  # scoate ghilimelele/backtick-urile

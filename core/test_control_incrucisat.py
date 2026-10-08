@@ -273,7 +273,7 @@ def test_d390_temei_si_limita_pe_fiecare_constatare():
     r = compara_d390({"L": 0, "A": 500}, ic)
     for c in r:
         assert "art. 325" in c["temei"]                 # temei legal recapitulativă
-        assert "doar BUNURI" in c["temei"]              # limită explicită servicii
+        assert "numai bunuri IC" in c["temei"]              # limită explicită servicii
         assert "D300 depus" in c["temei"]               # limită explicită D-vs-D
 
 
@@ -350,7 +350,7 @@ def test_temei_si_limita_declarate():
     r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 19)], 2025, 9)
     c = r["constatari"][0]
     assert "Legea 141/2025" in c["temei"] and "redus" in c["temei"].lower()  # cota redusă (11%) unică, nu 9/5
-    assert "NEVERIFICAT" in r["limita"]
+    assert "Neverificat" in r["limita"]
 
 
 # ============================================================
@@ -377,7 +377,7 @@ def test_dvsd_rosu_d390_livrare_d300_fara_R1_1():
     # ținut fraza greșită în loc s-o prindă — un gard ancorat pe TEXT păzește formularea, nu
     # faptul (METODA §23). Ce se asertează acum e ce contabilul chiar trebuie să afle: CARE rând
     # lipsește, ca să știe unde să se uite.
-    assert "R1_1 absent" in liv["temei"]
+    assert "rândul 1.1 lipsește" in liv["temei"]
 
 
 def test_dvsd_verde_ambele_5000():
@@ -417,7 +417,7 @@ def test_dvsd_achizitii_R5_1():
     # achiziții: D390 A=3000 vs D300 R5_1 absent -> ROȘU pe achiziții
     r = compara_d390_vs_d300({"L": 0, "A": 3000}, gasit=True, randuri=_randuri())
     ach = [c for c in r if c["eticheta"].startswith("Achiziții")][0]
-    assert ach["stare"] == "rosu" and "R5_1 absent" in ach["temei"]
+    assert ach["stare"] == "rosu" and "rândul 5.1 lipsește" in ach["temei"]
 
 
 # --- DB: _d300_depus_randuri prin depunere d300 FABRICATA in ROLLBACK. DECUPLAT de tenant_002
@@ -680,9 +680,9 @@ def test_d112_perioada_neconfirmata_da_cauza_precisa(monkeypatch):
     monkeypatch.setattr(_d112, "genereaza", _boom)
     r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
     rem = r["constatari"][0]["remediu"]
-    assert "CONFIRMAT" in rem["cauza"] and "pontaj" in rem["cauza"].lower()
+    assert "nu e confirmat" in rem["cauza"] and "pontaj" in rem["cauza"].lower()
     assert "Date lips" not in rem["cauza"]           # NU mai contrazice explicația precisă
-    assert rem["actiune"] == "Confirmă pontajul lunii (rol admin_firma)."
+    assert rem["actiune"] == "Confirmă pontajul lunii (o face administratorul firmei)."
 
 
 def test_d112_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):
@@ -706,9 +706,9 @@ def test_tva_perioada_neconfirmata_da_cauza_precisa(monkeypatch):
     monkeypatch.setattr(_d300, "genereaza", _boom)
     r = _ci.verifica_tva(_FakeConn((True,)), "tenant_x", 2026, 8)   # platitor_tva=True -> nu iese pe gardă
     rem = r["constatari"][0]["remediu"]
-    assert "CONFIRMAT" in rem["cauza"]
+    assert "nu e confirmat" in rem["cauza"]
     assert "Date lips" not in rem["cauza"]
-    assert rem["actiune"] == "Confirmă perioada lunii (rol admin_firma)."
+    assert rem["actiune"] == "Confirmă perioada lunii (o face administratorul firmei)."
 
 
 def test_tva_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):

@@ -8,7 +8,8 @@ def s(**kw):
 
 def test_f10_activ_simplu():
     sold = {"212": (100000, 0), "2812": (0, 20000), "371": (5000, 0), "378": (0, 1000),
-            "4428": (0, 800), "4111": (3000, 0), "5121": (7000, 0), "5311": (500, 0)}
+            "4428.02": (0, 800), "4111": (3000, 0), "5121": (7000, 0), "5311": (500, 0)}
+    # [retest 08.10 pct.1] TVA-ul din prețul de raft stă pe analiticul 4428.02 (stocuri.CONT_TVA_STOC) și se scade NUMAI la rd.05
     r = bilant.f10_din_balanta(sold)
     assert r[2] == 80000
     assert r[4] == 80000

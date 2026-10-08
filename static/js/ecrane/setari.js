@@ -194,7 +194,7 @@ export async function randeazaSetari(corp, nav) {
         <div class="cap-titlu">Cerere de ștergere cont ${semnAjutor("F205")}</div>
         <div class="caseta-atentie"><div class="ca-mesaj">
           <b>Ștergerea este ireversibilă.</b> Se șterg definitiv toate firmele cabinetului, utilizatorii, facturile, declarațiile, documentele și fișierele — prin distrugerea completă a bazei de date a cabinetului.<br><br>
-          <b>Ce NU se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br><br>
+          <b>Ce nu se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br><br>
           Nu se șterge nimic acum. Depui o cerere; o executăm noi manual, după verificare.
         </div></div>
         <div class="caseta-info"><span class="ci-mesaj">Îți răspundem în cel mult 5 zile lucrătoare de la depunere. Termenul legal maxim de răspuns este de 30 de zile (GDPR art. 12).</span></div>

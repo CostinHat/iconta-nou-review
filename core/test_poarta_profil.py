@@ -73,4 +73,4 @@ def test_valideaza_nu_repeta_verificarile():
         j = src.find("\ndef ", i + 1)
         corp = src[i:j if j > 0 else len(src)]
         assert "erori_generare(prof)" in corp, "%s: valideaza nu foloseste sursa unica" % mod
-        assert corp.count("LIPSĂ bancă") == 0, "%s: valideaza inca repeta verificarea bancii" % mod
+        assert corp.count("Lipsă bancă") == 0 and corp.count("LIPSĂ bancă") == 0, "%s: valideaza inca repeta verificarea bancii" % mod

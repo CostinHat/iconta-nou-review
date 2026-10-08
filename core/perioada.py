@@ -13,7 +13,7 @@ class PerioadaNeconfirmata(ValueError):
     Subclasa de ValueError; tag PERIOADA_BLOCATA -> handler-ul global (main.py) o arata ca 423, nu traceback."""
     def __init__(self, ce, an, luna, domeniu, temei=""):
         self.an, self.luna, self.domeniu = an, luna, domeniu
-        det = ("%s nu se poate calcula pentru %02d.%04d: pontajul lunii (%s) nu e CONFIRMAT - datele sunt "
+        det = ("%s nu se poate calcula pentru %02d.%04d: pontajul lunii (%s) nu e confirmat - datele sunt "
                "informative, nu autoritative%s. Confirmă %s-ul lunii (buton, rol de administrator al firmei, la închidere) sau "
                "corectează datele; până atunci calculul e blocat." % (
                    ce, luna, an, domeniu, (" (" + temei + ")") if temei else "", domeniu))

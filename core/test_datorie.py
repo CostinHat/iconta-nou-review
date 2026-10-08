@@ -385,16 +385,3 @@ def test_datorie_toate_tipurile_au_termen_sursat():
 def test_datorie_stoc_cantitativ_la_pret_de_vanzare_si_fifo():
     from core import metoda_stoc
     assert metoda_stoc.NESUPORTATE == {}
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 08.10.2026 (găsită la §6 pct.3, generalizarea pe consumatorii lui 4428): bilanțul prescurtat "
-                   "scade soldul creditor 4428 din STOCURI (rd.05, „- din ct. 4428”) ȘI îl adună la DATORII (rd.13, „4428***”) — numărat "
-                   "de două ori. OMFP 1802/2014 cere numai partea aferentă stocurilor la rd.05; restul la datorii. Separarea cere să se "
-                   "știe ce parte din 4428 e TVA-ul din prețul de raft (global-valoric) — azi totul e pe sinteticul 4428; decizie cerută "
-                   "(analitic pentru TVA-ul stocului + migrarea soldurilor existente)")
-def test_datorie_bilant_4428_creditor_numarat_de_doua_ori():
-    from decimal import Decimal
-    from core import bilant as b
-    r = b.f10_din_balanta({"371": (Decimal("1210"), Decimal("0")), "378": (Decimal("0"), Decimal("400")),
-                           "4428": (Decimal("0"), Decimal("210")), "1012": (Decimal("0"), Decimal("600"))})
-    assert r[5] == 600 and r[13] == 0   # TVA-ul din prețul de raft scade stocul, nu e și datorie

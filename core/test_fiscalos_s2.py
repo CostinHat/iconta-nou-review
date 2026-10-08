@@ -126,7 +126,7 @@ def test_s2_sarcinile_cote():
     for k in ("tva_redusa_9", "tva_redusa_5"):
         v, t = common.cota(k, date(2026, 10, 1))
         assert v == common.cota("tva_redusa", date(2026, 10, 1))[0] and (t.art, t.alin) == ("291", "2"), k
-        assert re.search(r"doar istoric, nu se reconfirma", expirare_cote.ETICHETE[k]), k
+        assert re.search(r"doar istoric, nu se reconfirmă", expirare_cote.ETICHETE[k]), k
 
 
 def _localizator_art(t):

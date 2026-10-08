@@ -675,7 +675,7 @@ def verdict_din_rand(verdict, erori, amp, la, versiune, xml, confirmare=None):
     if amp != acum:
         return {"stare": "statut", "verdict": verdict, "motiv":
                 "verdictul e pe alt conținut decât cel din coadă (XML-ul s-a regenerat între timp)",
-                "actiune": "redeschide elementul ca să fie validat conținutul CURENT",
+                "actiune": "redeschide elementul ca să fie validat conținutul curent",
                 "amprenta_verdict": amp[:16], "amprenta_acum": acum[:16]}
     # [comanda Costin 07.10.2026, C3] „O atenționare DUK nu oprește coada: se afișează și cere confirmarea scrisă a contabilului.
     # O eroare DUK oprește.” DUK pune ORICE ieșire în `erori`; severitatea o dă `duk.severitate` (A: / E:, fail-safe spre

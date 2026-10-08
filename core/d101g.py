@@ -217,14 +217,14 @@ def erori_generare(prof):
     erori = []
     _cui = _cif(prof.get("cui"))
     if not _cui:
-        erori.append("LIPSĂ CUI persoana juridica responsabila (obligatoriu).")
+        erori.append("Lipsă CUI persoana juridica responsabila (obligatoriu).")
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire persoana juridica responsabila (obligatorie).")
+        erori.append("Lipsă denumire persoana juridica responsabila (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSĂ adresa domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresa domiciliu fiscal (obligatorie).")
     _caen = (prof.get("caen") or "").strip()
     if not _caen:
-        erori.append("LIPSĂ cod CAEN (obligatoriu în D101G).")
+        erori.append("Lipsă cod CAEN (obligatoriu în D101G).")
     elif not re.fullmatch(r"\d{4}", _caen):
         erori.append("D101G: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4). Corectează în Profil firma." % _caen)
     return erori

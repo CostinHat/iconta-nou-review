@@ -371,6 +371,36 @@ def coada_aproba(coada_id, date, ctx):
 
 
 
+#: Câte elemente se validează într-o singură cerere (o zi de Z-uri pe un portofoliu încape; o cerere nu ține serverul minute în șir).
+MAX_APROBARI_DEODATA = 200
+
+
+def coada_aproba_mai_multe(ids, ctx):
+    """[08.10.2026, decizia Costin pct.3 la §6 S6, verbatim în DECIZII] „Coada de validare permite validarea mai multor note deodată
+    (Z-urile vin zilnic).” Fiecare element trece prin `coada_aproba` — aceleași porți (dreptul, patru ochi, apartenența la cabinet,
+    verdictul), câte o tranzacție pe element: un refuz nu anulează validările celorlalte, iar răspunsul îl numește.
+    {"validate": [id], "refuzate": [{"id", "mesaj"}]}."""
+    if not _uc_comun._are_permisiune(ctx, "poate_valida"):
+        raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
+    ids = list(dict.fromkeys(int(i) for i in (ids or [])))
+    if not ids:
+        raise _erori.DateInvalide("Alege cel puțin o notă de validat.")
+    if len(ids) > MAX_APROBARI_DEODATA:
+        raise _erori.DateInvalide("Se validează cel mult %d note deodată; ai ales %d." % (MAX_APROBARI_DEODATA, len(ids)))
+    validate, refuzate = [], []
+    for i in ids:
+        try:
+            coada_aproba(i, {}, ctx)
+            validate.append(i)
+        except _erori.EroareDeDomeniu as e:
+            from core import afirmatii as _af
+            d = e.args[0] if e.args else str(e)
+            mesaj = d.get("mesaj", str(d)) if isinstance(d, dict) else str(d)
+            refuzate.append(dict(_af.afirmatie("neconformitate", "aprobare_refuzata", mesaj, unde="elementul de coadă #%d" % i,
+                                               regula="fiecare notă trece prin porțile aprobării ei"), id=i, mesaj=mesaj))
+    return {"ok": True, "validate": validate, "refuzate": refuzate}
+
+
 def coada_respinge(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/respinge`; docstringul ei a ramas in stratul HTTP."""
     if not _uc_comun._are_permisiune(ctx, "poate_valida"):
@@ -457,13 +487,13 @@ def coada_depune(coada_id, date, ctx):
             raise _erori.Conflict({
                 "cod": "CONSTATARI_NECONFIRMATE",
                 "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o "
-                          "confirmare scrisă înainte de depunere. Depunerea NU e blocată: "
+                          "confirmare scrisă înainte de depunere. Depunerea nu e blocată: "
                           "confirmă-le, cu motiv, și continuă." % len(_ramase)),
                 # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
                 # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație,
                 # netipată — și cine o citea n-ar fi știut care e cea adevărată.
                 "constatari": _ramase,
-                "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] pentru fiecare.",
+                "actiune": "Confirmă fiecare atenționare (cu motivul tău), apoi trimite din nou.",
             })
         # [02.09.2026, defect gasit apasand] APROBAREA VINE DUPA POARTA, si e a serverului.
         # Inlantuirea traia in client (`POST /aproba` apoi `POST /depune`), deci aprobarea trecea si

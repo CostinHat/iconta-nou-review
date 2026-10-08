@@ -105,7 +105,7 @@ def erori_generare(prof, manual):
     if not _cif(prof.get("cui")):
         er.append("CUI firma lipsă/invalid (D311 cere cod fiscal valid).")
     if not (prof.get("den") or prof.get("nume")):
-        er.append("LIPSĂ denumire firma.")
+        er.append("Lipsă denumire firma.")
     # [mesaj_contabil] Regula 14.4 + GARDA campaniei: erorile urca la UTILIZATOR (ValueError -> 422 ->
     # e.mesaj in formular). Textul e in limba contabilului - ce lipseste si unde se completeaza -, NU
     # numele intern al campului (Data_A/d_anul1/OB_51). Numele XSD raman doar in cod/comentariu/test.

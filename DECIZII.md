@@ -18590,3 +18590,118 @@ fiscală, diferența blochează ca înainte; cu ciorne, declarația intră în c
   `PUT /tenants/{tenant_id}` (`permis` cere una din acțiuni: nimeni nu pierde salvarea); (3) cele două refuzuri ale ajustării din
   `stocuri_cv` sunt de FORMĂ / invariant — înregistrate în baseline-ul 77 și în CONFORMITATE §77 (136 -> 138), fără un articol care nu
   li se potrivește.
+
+## 08.10.2026 — Deciziile Costin la §6 al lotului „Deciziile 08.10 §6” + constatările retestului 08.10 (lotul „Retest 08.10”)
+
+**Comanda, verbatim** (confirmată de Costin: „Confirm, e comanda mea. Pornește cu operația 1 și mergi până la capăt.”):
+„Prioritate: punctele de mai jos trec înaintea registrului de parametri fiscali. Le închizi cu commit, raport și ZIP, apoi continui
+registrul.
+
+Deciziile la §6 din RAPORT DECIZIILE_08_10_S6:
+1. Bilanț 4428: aprob separarea — analitic propriu pentru TVA-ul din prețul de raft, cu migrarea soldurilor existente. În bilanț acesta
+se scade doar din stocuri (rd.05) și nu mai apare la datorii. Închide datoria bilant_4428_creditor_numarat_de_doua_ori.
+2. „Prima notă” = cea mai veche notă din jurnal, inclusiv ciornele: confirmat.
+3. Extinderea R36 la bon și Z: confirmată. Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).
+
+Constatări din retestul în aplicație (08.10, după 0d89286f și e07f46e6):
+4. NIR-urile existente fără factură (F1, NIR 1 și NIR 2, 07.10) au rămas pe logica veche (371=401, 4426=401), iar poarta D300 F1 10/2026
+refuză corect pe 241,50. Refă notele existente pe 408 / 4428.01; notele refăcute trec din nou prin validare.
+5. D406 F1 10/2026, „Facturi de vânzare”: liniile facturilor 2 și F1A3 apar cu „707 · credit 0,00”, deși notele au 800 / 5.000 / 200.
+Verifică și XML-ul.
+6. D394 F1 10/2026, „Serii de facturi”: F1A3 iese ca seria F1A, nr. 13 (corect: 3). Factura „2” n-are serie — semnal pentru factură fără
+serie.
+7. Control fiscal, lista: F1 și F5 arată „restanță” cu „0 restanțe”, iar contorul de sus „0 de urmărit”, deși detaliul F1 are 5 de
+urmărit. Nedeclaratul înainte de termen e „de urmărit”, nu restanță.
+8. Control fiscal, detaliul F1: D100 și D205 pe 2025 apar la „Nu pot verifica”; sunt dinaintea preluării și intră în grupul acela.
+9. Grupul „Înainte de preluare” are 31–32 de butoane la F1: pliat implicit, cu o acțiune „Marchează toate ca depuse de contabilul
+anterior”.
+10. Marcarea „depusă în afara iConta.eu”: mesajul „Scrie data” rămâne după completare; după salvare fereastra sare sus; marcarea nu se
+poate modifica sau anula.
+11. Închidere lună: luna în curs (10/2026, azi 08.10) se poate bloca, la perioadă și la evidența facturilor; „Blochează luna” e activ
+deși există blocaje. „Închide luna” apare și în Istoric facturi — un singur loc, cardul.
+12. Semnal nou la închidere: furnizor cu sold debitor (F2: 401 D 500, fără factură).
+13. Mijloace fixe F2: derulare laterală la fereastra reală (~1700 px), PIF tăiat, acțiunile ascunse. Lunile lipsă scurtate („8 luni:
+01–08/2026”), acțiunile într-un meniu.
+14. Limbaj de programator în ecrane: common.COTE tva_standard, R3_1_1/R7_1_1, NEVERIFICAT, d100_fapt / False / None, partener_id,
+partener_nume, self_billing. Plus texte fără diacritice / cu majuscule („ATENTIE”, „apartin”, „incrucisat”).
+15. D406 și D394: „Vezi XML-ul generat”, textul de subsol și „Trimite în coadă” se suprapun peste tabel; spații goale mari între secțiuni.
+16. D406: caseta „Rezumat” nu se vede.
+17. Conturile 731–738 (OMFP 3103/2017) se scot din șablonul de firmă și din firmele existente care nu le folosesc.
+18. PDF balanță: CUI-ul firmei și data generării în antet.
+19. Nota chitanței (F1, nr. crt. 17): descrierea e doar numele clientului; trebuie să conțină chitanța și factura stinsă.
+20. Date firmă, „Luna preluării” (F3): câmpul arată „---------- ----”; vine completat cu propunerea (06/2026), fără textul „Gol =
+propunerea”.
+21. C&D cere „Poate valida”: arată proba pe un utilizator fără drept (Ana).
+22. Raportul are un tabel cu fiecare cerință de mai sus și proba ei; unde nu ai probă, scrie „neverificat”.
+23. Înainte de execuție, listezi operațiile, fără estimări. În raport dai durata măsurată exact pe fiecare operație.
+24. La commitul de închidere: ZIP cu tot ce s-a schimbat (cod, documente noi, artefactele de măsurare), cu calea exactă în raport.
+Poți trece la următorul pas din listă.”
+
+**Consecința pentru executor:** firul „Retest 08.10” în TESTE.md (operațiile 1–17, date înainte de execuție); registrul de parametri
+fiscali (R0 și R1 parțial pe disc, necomise) se reia după închiderea lui. Pct.2 nu cere cod: definiția era deja aceasta
+(`core/luna_preluare.py`, „oricare i-ar fi starea”) — consemnată ca decizie confirmată, nu ca interpretare.
+
+## 08.10.2026 — Executarea lotului „Retest 08.10”: forma contabilă, interpretările și ce a ieșit pe drum
+
+**pct.1 — TVA-ul din prețul de raft pe analitic.** NIR-ul global-valoric scrie `371 = 4428.02` (`stocuri.CONT_TVA_STOC`), descărcarea
+`4428.02 = 371`; K citește soldul / rulajul acestui analitic, nu sinteticul 4428; bilanțul îl scade din rd.05 și îl scoate din soldurile
+care alimentează creanțele și datoriile. Temei: OMFP 1802/2014, formatul bilanțului, rd.05 „Stocuri … (ct. 301 + … + 371 … − din ct.
+4428)”. *INTERPRETARE CU TEMEI (de proces):* un analitic propriu (`4428.02`), simetric cu `4428.01` al NIR-ului fără factură — TVA-ul
+neexigibil al firmei cu TVA la încasare rămâne pe sinteticul 4428 și merge la datorii / creanțe. *Alternativa respinsă:* filtrarea
+rulajului 4428 după contrapartida 371 la citire (fusese `repo_control_incrucisat.select_rulaj_4428_fara_stoc`): o regulă de citire pe
+care orice consumator nou o putea uita. Migrarea mută liniile `371 / 4428` pe analitic; soldul inițial 4428 se mută numai la firma
+global-valorică fără TVA la încasare — la celelalte se RAPORTEAZĂ, nu se ghicește a cui e. Datoria
+`test_datorie_bilant_4428_creditor_numarat_de_doua_ori` e închisă. Măsurat: producția n-are rânduri 4428; baza de test n-are de mutat.
+
+**pct.3** — validarea mai multor note trece fiecare notă prin `coada_aproba` (aceleași porți, aceeași tranzacție pe notă); o notă
+refuzată se întoarce numită, celelalte rămân aprobate. Plafon 200 / cerere.
+
+**pct.4** — NIR 2 și NIR 3 F1 (forma veche, validate): câte o notă de REFACERE, ciornă, stornare în roșu a liniilor de pe 401 + forma
+nouă pe 408 / 4428.01 (OMFP 1802/2014 pct.69, același exercițiu); notele validate nu se rescriu. Autorul = autorul NIR-ului (Ana, fără
+«Poate valida") -> nota intră în coadă. Proba (rollback): poarta D300 rămâne roșie cât timp notele sunt ciorne și se face verde după
+validarea lor.
+
+**pct.11 — o lună se închide după ce s-a încheiat.** Aceeași regulă (`inchidere_luna.luna_in_curs`) pentru blocarea perioadei
+(`uc_comun.controale_inchidere`, blocajul `LUNA_IN_CURS`) și pentru închiderea evidenței facturilor (`inchidere_luna.blocaj`). *Limită:*
+o lună curentă închisă înainte de azi rămâne închisă (regula oprește actul, nu rescrie starea); stornarea o redeschide ca înainte.
+„Închide luna” a ieșit din Istoric facturi — acolo rămâne starea și trimiterea la cardul „Închidere lună”.
+
+**pct.12** — furnizorul cu sold debitor e SEMNAL, nu blocaj: un 401 debitor e o plată fără factură sau un avans pe contul greșit
+(409), nu o lună care nu se poate închide. *Alternativa respinsă:* blocaj — ar opri închiderea pentru o reclasificare.
+
+**pct.13** — meniul acțiunilor = `<details class="dec-xml">` „Acțiuni” (toggle-ul secundar existent, zero clase noi); regula în DS
+cap.9 v2.83, gard `ACTIUNI_RAND_LIBERE`.
+
+**pct.14 — clasa, nu instanțele.** Trei goluri de clasă în gărzile de limbă (rolul — argumentele cu nume, atribuirile, `avertismente.append`;
+șirul mixt sărit întreg; dicționarul), închise de `core/test_text_afisat_limbaj.py`. Măsurat pe tot serverul: 27 de texte fără
+diacritice, 35 cu identificatori de cod, 118 cu majuscule de accent (+31 cu „NU/ȘI”), plus 17 pe ecranele JS — reparate toate.
+*Decizii de formulare:* „NEVERIFICAT:” -> „Neverificat:” / „Nu se verifică:”; un rând D300 se spune „rândul 5.1”; cheia unei cote ->
+eticheta ei (`expirare_cote.ETICHETE`, diacriticizate); un antet de tabel scris cu majuscule -> `text-transform` în CSS. *Excepții
+declarate în gard:* acronimele (lista `ACRONIME`), numerele romane din citări, valorile emise între ghilimele („ADMINISTRATOR”),
+eticheta de protocol `PERIOADA_BLOCATA:` (tăiată înainte de afișare).
+
+**pct.15–16** — cauza comună a suprapunerilor și a golurilor: `.fereastra.fer-larg .dec-xml { flex: 1 1 auto; min-height: 80px }` (un
+`<details>` închis creștea, unul deschis era strivit și curgea peste frați). „Rezumat”: `sinteza` (decizia V5) intrase numai în
+răspunsul generării, iar ecranul cheamă validarea — câmpurile rezultatului se asamblează acum o dată (`uc_declaratii.campuri_rezultat`).
+
+**pct.17** — scoase din `tenant_template.sql`; din firmele existente numai dacă (a) nu le poartă nicio coloană `cont%` din schemă și (b)
+nu sunt în planul legal al normei firmei (`plan_legal.in_afara`; la norma ONG rămân). ONG nu e un tip de firmă creabil (provizionarea
+acceptă srl / pfa), deci șablonul nu pierde un drum. Măsurat pe producție (rollback): 5 din 5 firme, câte 6 conturi, niciunul folosit.
+
+**pct.18–20** — antetul raportului PDF dintr-o funcție (`documente_api.antet_raport`, DS cap.7 v2.84); descrierea notei de casă dintr-o
+funcție (`casa_api.descriere_nota`: felul, documentul, ce stinge, partenerul) pentru TOATE operațiunile de casă; „Luna preluării”
+arată luna efectivă, iar propunerea neschimbată rămâne propunere la salvare (nu se fixează tacit o valoare pe care omul n-a ales-o).
+*Limită:* nota 118 a F1 (chitanța CHF1-1) e validată — descrierea ei rămâne cea veche (istoria nu se rescrie); întrebat la §6.
+
+**Ce a ieșit pe drum (în afara planului, fiecare cu motiv):** potrivirea abaterilor de contract din `core/test_p7_uc.py` număra toate
+perechile noi ale funcției, nu pe cele de pe codul abaterii (la `coada_depune` rămânea o pereche pe 422) — corectată; extragerea
+declarată acceptă și un ajutor din același modul; `declaratii_componente.py` a intrat în universul straturilor și în clichetul
+constantelor prin densitatea de vocabular fiscal (etichetele de la pct.5/14) — `LIMITA_RANDURI = 500` e operațională.
+
+**Completare, după prima rulare a suitei.** (1) Clasa pct.14 se întinde și în mesajele de validare ale generatoarelor de declarații
+manuale: 271 de mesaje în 31 de fișiere poartă nume interne de câmp (`d_temei=1 cere IBAN`, `categ_venit`, `cif_c`) — datorie
+existentă pe clichet din 19.08 (`test_mesaje_generare_fara_camp_intern`, nu poate crește). Rescrierea cere eticheta umană câmp cu
+câmp (din structura ANAF a fiecărei declarații) — o campanie separată, deci decizie cerută (raportul §6), nu executată unilateral.
+Majusculele și diacriticele din aceleași mesaje au fost reparate acum (36). (2) Etichetele cheilor din `COTE` stau lângă `COTE`
+(`common.ETICHETE_COTE`, `expirare_cote.ETICHETE` le reexportă): sursa lor e registrul, iar mesajul `PerioadaIndisponibila` le
+citește fără să depindă de modulul de expirare.

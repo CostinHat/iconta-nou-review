@@ -140,10 +140,9 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
     # Fara el, o fisa care omite o nota arata identic cu una completa.
     return afirmatie(
         "fapt", tip="fisa_cont",
-        motiv="Fisa de cont pentru operatiuni diverse (cod %s), contul %s" % (COD_FORMULAR, cont),
-        temei_completitudine=("toate liniile din `inregistrari_linii` care ating contul %s, pe note cu "
-                              "status='validata', in intervalul [%s, %s), in ordine cronologica; "
-                              "ciornele NU sunt evidenta" % (cont, di, ds)),
+        motiv="Fișa de cont pentru operațiuni diverse (cod %s), contul %s" % (COD_FORMULAR, cont),
+        temei_completitudine=("toate liniile notelor validate care ating contul %s, de la %s până înainte de %s, "
+                              "în ordine cronologică; ciornele nu sunt evidență" % (cont, di, ds)),
         **{
         "formular": COD_FORMULAR,
         "cont": cont,

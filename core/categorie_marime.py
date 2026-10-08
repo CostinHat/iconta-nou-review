@@ -240,8 +240,7 @@ def categorie(conn, schema, an):
         "fapt", tip="categorie_marime",
         motiv=motiv,
         temei_completitudine=("indicatorii se derivă din balanța și rulajele exercițiilor %d și %d, "
-                              "prin aceleași funcții din care se produce bilanțul "
-                              "(`bilant.f10_din_balanta`, `bilant.f20_din_rulaje`); un exercițiu "
+                              "prin aceleași calcule din care se produce bilanțul (formularele F10 și F20); un exercițiu "
                               "fără rulaje se declară necalculabil, nu zero" % (an, an - 1)),
         an=an, luna=None,
         **{

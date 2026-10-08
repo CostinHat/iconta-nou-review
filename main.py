@@ -352,7 +352,7 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
     msg = str(exc)
     if "PERIOADA_BLOCATA" in msg:
         detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip() \
-            if "PERIOADA_BLOCATA:" in msg else "perioada este blocata"
+            if "PERIOADA_BLOCATA:" in msg else "perioada este blocată"
         return _JR(status_code=423, content={"detail": f"Perioada {detaliu}."})
     # [log_500_v1] traceback vizibil pt erori necunoscute inainte de re-raise
     logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
@@ -1336,6 +1336,11 @@ class CoadaIn(BaseModel):
 
 class RespingeIn(BaseModel):
     motiv: str
+
+class AprobaMaiMulteIn(BaseModel):
+    """[08.10.2026, decizia Costin pct.3 la §6 S6] „Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).”"""
+    ids: List[int]
+
 
 class DepuneIn(BaseModel):
     motiv_trecere: Optional[str] = None  # [R41] trecere explicită peste verdict lipsă/stătut/cu erori
@@ -2380,6 +2385,34 @@ def control_fiscal_depusa_extern(tenant_id: int, date: DepusaExternIn, ctx=Depen
         raise _http_din(e)
 
 
+class DepuseAnteriorIn(BaseModel):
+    perioade: List[dict]
+
+
+@app.post("/control-fiscal/{tenant_id}/depuse-anterior")
+def control_fiscal_depuse_anterior(tenant_id: int, date: DepuseAnteriorIn, ctx=Depends(cere_drept(_drepturi.DEPUNE))):
+    """[08.10.2026, retest pct.9] „Marchează toate ca depuse de contabilul anterior” — fapt despre DEPUNERE: «Poate depune»."""
+    try:
+        return _uc_control_fiscal.control_fiscal_depuse_anterior(tenant_id, date.model_dump(), ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+class AnuleazaMarcareIn(BaseModel):
+    tip: str
+    an: int
+    luna: int
+
+
+@app.post("/control-fiscal/{tenant_id}/depusa-extern/anuleaza")
+def control_fiscal_anuleaza_marcare(tenant_id: int, date: AnuleazaMarcareIn, ctx=Depends(cere_drept(_drepturi.DEPUNE))):
+    """[08.10.2026, retest pct.10] Anularea unei marcări „depusă în afara iConta.eu” / „de contabilul anterior”."""
+    try:
+        return _uc_control_fiscal.control_fiscal_anuleaza_marcare(tenant_id, date.model_dump(), ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/control-fiscal/{tenant_id}/audit-preluare")
 # [R45] POST: auditul e declansat de un buton, deci e un ACT — iar verdictul lui se pastreaza.
 # Un GET n-are voie sa scrie (interdictia 6).
@@ -2995,6 +3028,16 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
     validarea in doi era oarba - cine aproba nu vedea ce aproba (declaratie/XML/verdict)."""
     try:
         return _uc_coada.coada_continut(coada_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/coada/aproba-mai-multe")
+def coada_aproba_mai_multe(date: AprobaMaiMulteIn, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+    """[08.10.2026, decizia Costin pct.3 la §6 S6] Validarea mai multor note deodată: fiecare element pe drumul unei aprobări (aceleași
+    porți, aceeași tranzacție pe element); răspunsul spune ce s-a validat și ce s-a refuzat, cu motivul."""
+    try:
+        return _uc_coada.coada_aproba_mai_multe(date.ids, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

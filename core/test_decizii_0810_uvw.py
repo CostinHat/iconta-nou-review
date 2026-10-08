@@ -128,6 +128,10 @@ def test_contul_din_afara_planului_legal_se_numeste_si_se_avertizeaza(conn):
         av = plan_legal.avertisment(cur, SCH, ["4111", "731"])
         assert av["cod"] == plan_legal.COD and av["conturi"] == ["731"] and "731" in av["motiv"]
         assert plan_legal.avertisment(cur, SCH, ["4111", "704"]) is None
+    # [retest 08.10 pct.17] șablonul nu mai seamănă 731; firma care îl are în plan (adăugat, sau păstrat fiindcă e folosit) e
+    # cazul de avertizat — cea care nu-l are e refuzată de `cont_valid` (contul nu există în planul firmei)
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO plan_conturi (simbol, denumire, tip) VALUES ('731', 'Venituri din cotizații', 'Bifunctional')")
     r = jurnal_api.creeaza(conn, SCH, "proba V3", "2099-10-05", [{"debit": "5311", "credit": "731", "suma": 10}])
     assert r["avertisment"]["conturi"] == ["731"]
     r2 = jurnal_api.creeaza(conn, SCH, "proba V3", "2099-10-05", [{"debit": "5311", "credit": "704", "suma": 10}])
@@ -208,8 +212,10 @@ def test_codul_din_catalog_e_cel_din_HG_2139_2004():
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_inchiderea_lunii_cere_amortizarea_lunii_si_semnaleaza_581(cu_mf):
-    from core import uc_comun
+def test_inchiderea_lunii_cere_amortizarea_lunii_si_semnaleaza_581(cu_mf, monkeypatch):
+    from datetime import date as _d
+    from core import uc_comun, common
+    monkeypatch.setattr(common, "azi_ro", lambda: _d(2099, 12, 31))   # perioadele sintetice 2099 sunt încheiate (retest 08.10 pct.11)
     with cu_mf.cursor() as cur:
         _nota(cur, "2099-04-20", [("581", "5311", 1000)])              # ridicare din casă, fără depunerea în bancă
     cu_mf.commit()

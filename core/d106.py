@@ -107,12 +107,12 @@ def erori_generare(prof, manual):
     if not _cif(prof.get("cui")):
         er.append("CIF operator economic lipsă/invalid.")
     if not prof.get("den"):
-        er.append("LIPSĂ denumire operator economic.")
+        er.append("Lipsă denumire operator economic.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa domiciliu fiscal.")
+        er.append("Lipsă adresa domiciliu fiscal.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+            er.append("Lipsă %s (declarant obligatoriu)." % c)
     actionari = manual.get("actionari") or []
     if not actionari:
         er.append("D106 cere cel puțin un actionar (actionari[]).")

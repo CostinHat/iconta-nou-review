@@ -30,8 +30,8 @@ def test_caen_forma_gresita_e_prinsa():
 
 
 def test_pro_rata_in_afara_intervalului_e_prinsa():
-    assert any("pro_rata" in m for m in d300.erori_generare(dict(BAZA, pro_rata=150)))
-    assert any("pro_rata" in m for m in d300.erori_generare(dict(BAZA, pro_rata=-1)))
+    assert any("Pro-rata" in m for m in d300.erori_generare(dict(BAZA, pro_rata=150)))
+    assert any("Pro-rata" in m for m in d300.erori_generare(dict(BAZA, pro_rata=-1)))
 
 
 def test_pro_rata_valid_sau_absent_trece():

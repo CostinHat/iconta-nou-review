@@ -51,28 +51,38 @@ def select_facturi(cur, inc, sf):
 
 
 def select_public_2(cur, tenant_id):
-    cur.execute("SELECT tip, an, luna, (data_depunere AT TIME ZONE 'Europe/Bucharest')::date AS data_depunere "
+    cur.execute("SELECT tip, an, luna, (data_depunere AT TIME ZONE 'Europe/Bucharest')::date AS data_depunere, sursa "
                 "FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))
 
 
 def select_depuse_extern(cur, tenant_id):
-    """[08.10, U2] Depunerile curente marcate „depusă în afara iConta”: (tip, an, luna, recipisa)."""
-    cur.execute("SELECT d.tip, d.an, d.luna, d.recipisa FROM public.declaratii_depuse d "
+    """[08.10, U2] Depunerile curente MARCATE (nu depuse prin iConta.eu): (tip, an, luna, recipisa, sursa) — `extern` („depusă în
+    afara iConta.eu”, cu data de pe recipisă) sau `contabil_anterior` (retest 08.10 pct.9, fără dată cunoscută)."""
+    cur.execute("SELECT d.tip, d.an, d.luna, d.recipisa, d.sursa FROM public.declaratii_depuse d "
                 "JOIN public.declaratii_depuse_curente c USING (tenant_id, an, luna, tip, nr_depunere) "
-                "WHERE d.tenant_id = %s AND d.sursa = 'extern'", (tenant_id,))
+                "WHERE d.tenant_id = %s AND d.sursa IN ('extern', 'contabil_anterior')", (tenant_id,))
     return cur.fetchall()
 
 
 def select_depusa_curenta(cur, tenant_id, an, luna, tip):
-    """[08.10, U2] Depunerea curentă pe (firmă, perioadă, tip), sau None."""
-    cur.execute("SELECT data_depunere FROM public.declaratii_depuse_curente WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
+    """[08.10, U2] Depunerea curentă pe (firmă, perioadă, tip): (data_depunere, sursa), sau None."""
+    cur.execute("SELECT data_depunere, sursa FROM public.declaratii_depuse_curente WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
                 (tenant_id, an, luna, tip))
     return cur.fetchone()
 
 
-def insert_depusa_extern(cur, tenant_id, an, luna, tip, data_depunere, recipisa):
-    """[08.10, U2] Depunere „în afara iConta”: versiune nouă (nr_depunere = max + 1), ca orice depunere (F163v2)."""
+def insert_depusa_extern(cur, tenant_id, an, luna, tip, data_depunere, recipisa, sursa="extern"):
+    """[08.10, U2] Depunere MARCATĂ (`extern` / `contabil_anterior`): versiune nouă (nr_depunere = max + 1), ca orice depunere (F163v2).
+    O marcare modificată e o versiune nouă; cea veche rămâne istoric."""
     cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, nr_depunere) "
-                "SELECT %s, %s, %s, %s, %s, 'extern', %s, COALESCE(MAX(nr_depunere), 0) + 1 "
+                "SELECT %s, %s, %s, %s, %s, %s, %s, COALESCE(MAX(nr_depunere), 0) + 1 "
                 "FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s",
-                (tenant_id, an, luna, tip, data_depunere, recipisa, tenant_id, an, luna, tip))
+                (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, tenant_id, an, luna, tip))
+
+
+def delete_marcari(cur, tenant_id, an, luna, tip):
+    """[08.10.2026, retest pct.10] Anularea unei MARCĂRI (nu a unei depuneri prin iConta.eu): toate versiunile `extern` /
+    `contabil_anterior` ale perioadei. Întoarce câte rânduri au căzut."""
+    cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s "
+                "AND sursa IN ('extern', 'contabil_anterior')", (tenant_id, an, luna, tip))
+    return cur.rowcount

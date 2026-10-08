@@ -5,6 +5,22 @@
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
 import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=4242dc4353";
 
+// ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
+export function luniScurte(luni) {
+  const idx = luni.map((x) => { const [l, a] = x.split("/").map(Number); return a * 12 + l - 1; }).sort((a, b) => a - b);
+  const eticheta = (i) => `${String(i % 12 + 1).padStart(2, "0")}/${Math.floor(i / 12)}`;
+  const parti = [];
+  for (let k = 0; k < idx.length; k++) {
+    let j = k;
+    while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
+    const [a, b] = [idx[k], idx[j]];
+    parti.push(a === b ? eticheta(a) : (Math.floor(a / 12) === Math.floor(b / 12)
+      ? `${String(a % 12 + 1).padStart(2, "0")}–${eticheta(b)}` : `${eticheta(a)}–${eticheta(b)}`));
+    k = j;
+  }
+  return `${idx.length} ${idx.length === 1 ? "lună" : "luni"}: ${parti.join(", ")}`;
+}
+
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   const azi = dataIso();
 
@@ -26,8 +42,9 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   const inregistrat = (m) => m.inregistrat != null
     ? bani(m.inregistrat)
     : (m.inregistrat_pe_cont ? `<span class="tip-desc">pe contul ${esc(m.inregistrat_pe_cont.cont)}: ${bani(m.inregistrat_pe_cont.sold)} (${m.inregistrat_pe_cont.mijloace} mijloace)</span>` : "—");
+  // [08.10.2026, retest pct.13] „Lunile lipsă scurtate («8 luni: 01–08/2026»)” — lunile consecutive se strâng într-un interval.
   const diferenta = (m) => (m.diferenta == null ? "—"
-    : `${bani(m.diferenta)}${(m.luni_neinregistrate || []).length ? `<div class="tip-desc">neînregistrate: ${esc(m.luni_neinregistrate.join(", "))}</div>` : ""}`);
+    : `${bani(m.diferenta)}${(m.luni_neinregistrate || []).length ? `<div class="tip-desc">neînregistrate: ${esc(luniScurte(m.luni_neinregistrate))}</div>` : ""}`);
   const catalogCel = (m) => `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" placeholder="ex. 2.1.17.2.1" aria-label="Cod din catalog ${esc(m.denumire || "")}">
       <button class="buton-secundar" data-catalog="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog">Salvează</button></div>
@@ -52,15 +69,16 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td class="fd-td-num">${diferenta(m)}</td>
         <td class="fd-td-num">${m.ramas != null ? bani(m.ramas) : "—"}</td>`}
         <td>${esc(m.metoda || "")}</td>
-        <td>${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
+        <td style="white-space:nowrap">${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
         <td>${m.activ ? "activ" : "casat"}</td>
         <td>${m.activ ? `
-          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+          <details class="dec-xml"><summary>Acțiuni</summary>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px">
             <button class="buton-secundar" data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
             <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
             <button class="buton-secundar" data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>
             <button class="buton-secundar" data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
-          </div>` : "—"}</td>
+          </div></details>` : "—"}</td>
       </tr>${planLunar(m)}`).join("");
 
     corp.innerHTML = `

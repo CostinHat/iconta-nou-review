@@ -396,6 +396,25 @@ CLASIFICARE = {
             "peste un apel de retea — intrebare de concurenta, nu de proprietate; e numita in "
             "raport, la restante.",
     },
+    "POST /coada/aproba-mai-multe": {
+        "clasa": NECRITIC,
+        "efecte": "aprobarea fiecarei note selectate <-> notificarea pregatitorului ei",
+        "de_ce":
+            "fiecare nota trece prin `coada_aproba` — aceeasi functie, aceeasi tranzactie si aceeasi notificare best-effort ca "
+            "aprobarea uneia singure (v. `POST /coada/{coada_id}/aproba`). O nota refuzata (alt cabinet, deja aprobata, poarta) "
+            "se intoarce numita in `refuzate`, cu mesajul ei, iar celelalte raman aprobate: nu exista stare comuna intre ele, "
+            "deci nicio aprobare pe jumatate (retest 08.10 pct.3).",
+    },
+    "core/migrare_retest_0810.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "analiticul 4428.02 + liniile/soldurile TVA-ului stocului, schema cu schema <-> scoaterea 731–738 nefolosite <-> "
+                  "notele de refacere a NIR-urilor vechi <-> intrarea lor in coada",
+        "de_ce":
+            "fiecare pas, pe fiecare schema, e comis SEPARAT si e idempotent: contul se insereaza cu ON CONFLICT DO NOTHING, liniile "
+            "se muta numai cat mai sunt pe 4428 cu contrapartida 371, un cont 73x se scoate numai daca nu e folosit si nu e in planul "
+            "legal, iar un NIR refacut e marcat in `inregistrari_ids` (a doua rulare il sare). Coada primeste notele prin "
+            "`uc_coada.note_in_coada`, idempotenta pe nota. Niciun efect extern.",
+    },
     "core/migrare_decizii_0810.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "DDL-ul public (valoarea `inexistent`, gardul `notificari_element_ck`, triggerul extins) <-> marcarea "

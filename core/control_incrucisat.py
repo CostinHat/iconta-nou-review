@@ -303,7 +303,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
                                 "fara_nota": len(fara_nota), "cu_ciorna": len(cu_ciorna)},
                     mesaj=(f"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}), dar "
                            f"{len(grup)} facturi {fel} din lună nu sunt în evidență — "
-                           f"{_tva_txt}. Coincidența NU spune nimic despre ele."),
+                           f"{_tva_txt}. Coincidența nu spune nimic despre ele."),
                     remediu={"fel": "investigatie",
                              "cauza": ("Egalitatea se poate produce și prin absența ambilor "
                                        "termeni: o factură necontabilizată lipsește deopotrivă "
@@ -564,7 +564,7 @@ def verifica_d112(conn, schema, an, luna):
         from core.perioada import PerioadaNeconfirmata
         if isinstance(e, PerioadaNeconfirmata):
             cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
-            actiune = "Confirmă pontajul lunii (rol admin_firma)."
+            actiune = "Confirmă pontajul lunii (o face administratorul firmei)."
         elif isinstance(e, ValueError):
             # [cauza_precisa] eroare de business din d112.genereaza (CAEN out-of-enum, CUI invalid):
             # mesajul ei E deja explicatia utila; nu-l acoperi cu genericul care CONTRAZICE (profil complet).
@@ -600,9 +600,9 @@ def verifica_d112(conn, schema, an, luna):
 
             "limita": ("Verificat: totalurile din XML-ul D112 (cod 602/412+458/432+459/480) vs "
                        "conturile 444/4315/4316/436, numai note validate. "
-                       "NEVERIFICAT: brutul (421) — D112 raportează baza de contribuții, "
+                       "Neverificat: brutul (421) — D112 raportează baza de contribuții, "
                        "nu brutul contabil; pe lunile cu concedii medicale diverg legitim. "
-                       "NEVERIFICAT: dacă D112 depus efectiv la ANAF coincide cu cel calculat aici."),
+                       "Neverificat: dacă D112 depus efectiv la ANAF coincide cu cel calculat aici."),
             "modul": MODUL, "reguli": REGULI}
 
 
@@ -632,7 +632,7 @@ def verifica_tva(conn, schema, an, luna):
         from core.perioada import PerioadaNeconfirmata
         if isinstance(e, PerioadaNeconfirmata):
             cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
-            actiune = "Confirmă perioada lunii (rol admin_firma)."
+            actiune = "Confirmă perioada lunii (o face administratorul firmei)."
         elif isinstance(e, ValueError):
             # [cauza_precisa] eroare de business precisa - nu o acoperi cu genericul
             cauza = str(e)
@@ -667,12 +667,9 @@ def verifica_tva(conn, schema, an, luna):
         if _R_dep:
             R, sursa_declarat = _R_dep, "depus"
     necontate = facturi_necontabilizate(conn, schema, _de, _pana)
-    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424"))
-    # [08.10.2026, generalizarea §6 pct.3] semnalul „exigibilitate decalată” pe 4428 citește numai partea care NU e TVA-ul din prețul
-    # de raft (contrapartida 371, global-valoric) — altfel o firmă global-valorică primea gri cu o cauză falsă la fiecare NIR
-    with conn.cursor() as _cur:
-        _rd, _rc = _repo.select_rulaj_4428_fara_stoc(_cur, schema, _de, _pana)
-    rulaje["4428"] = {"debit": _d(_rd), "credit": _d(_rc)}
+    # [08.10.2026, decizia Costin pct.1 la §6 S6] TVA-ul din prețul de raft stă pe analiticul lui (`stocuri.CONT_TVA_STOC`), deci
+    # semnalul „exigibilitate decalată” citește sinteticul 4428 EXACT: numai TVA-ul la încasare / taxarea inversă
+    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
     constatari = compara_tva(R, rulaje, an, luna, necontate,
                              sursa_declarat=sursa_declarat,
                              patru_ochi=_patru_ochi_activ(conn, schema))
@@ -691,13 +688,13 @@ def verifica_tva(conn, schema, an, luna):
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,
 
-        "limita": (("Verificat: D300 DEPUS (rândurile persistate la depunere) vs conturile "
+        "limita": (("Verificat: D300 depus (rândurile persistate la depunere) vs conturile "
                     "4427/4426. " if sursa_declarat == "depus" else
-                    "Verificat: D300 REGENERAT acum din facturile lunii — nu s-a păstrat ce s-a "
+                    "Verificat: D300 regenerat acum din facturile lunii — nu s-a păstrat ce s-a "
                     "depus, deci comparația e evidența de azi față de decontul care s-ar genera "
                     "azi — vs conturile 4427/4426. ") +
                    "Evidența = note validate; ciornele nu intră în rulaj. "
-                   "NEVERIFICAT: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
+                   "Neverificat: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
                    "(necesită SPV)."),
         "modul": MODUL, "reguli": REGULI,
     }
@@ -799,7 +796,7 @@ def compara_d390(baze, ic_facturi, patru_ochi=True):
         temei = (f"D390 baza {cheie} (facturi intracomunitare, auto — art. 325 Cod fiscal, declarația "
                  f"recapitulativă) vs evidența contabilă validată a acelorași facturi ({art}; "
                  f"OMFP 1802/2014). Numai note validate — ciorna e propunere, nu dovadă. "
-                 f"LIMITĂ: doar BUNURI IC, nu servicii (P/S); nu se compară cu D300 depus (nepersistat).")
+                 f"Limită: numai bunuri IC, nu servicii (P/S); nu se compară cu D300 depus (nepersistat).")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contab,
                 "diferenta": dif, "temei": temei, "sursa_declarat": SURSA_D390}
         # ambele 0 -> nimic de raportat
@@ -922,6 +919,7 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
     R = (randuri or {}).get("R") or {}
     rez = []
     for eticheta, cheie, rand in D390_D300_PERECHI:
+        _rand_om = "rândul " + rand[1:].replace("_", ".")   # „R5_1” -> „rândul 5.1” (retest 08.10 pct.14: nu codul intern)
         eticheta = eticheta + per_sufix
         decl = _d(baze.get(cheie, 0))
         prezent = rand in R
@@ -932,13 +930,13 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
         baza = {"eticheta": eticheta, "declarat_d390": int(decl), "declarat_d300": int(d300),
                 "diferenta": int(dif)}
         absent_txt = ("" if prezent else
-                      f" ATENȚIE: {rand} absent din D300 depus. Rândul se derivă AUTOMAT din facturile "
-                      "cu partener din UE (core/d300.py), și se scrie doar dacă existau astfel de "
+                      f" Atenție: {_rand_om} lipsește din D300 depus. Rândul se derivă automat din facturile "
+                      "cu partener din UE și se scrie doar dacă existau astfel de "
                       "facturi la generare; în lipsa lor poate fi introdus manual, dar nu peste cel "
                       "derivat (dublă numărare, refuzată). Absența lui înseamnă că la generare nu "
-                      "erau facturi IC înregistrate — NU că n-au existat operațiuni.")
-        temei = (f"Declarație-vs-declarație: D390 bază {cheie} vs D300 depus rând {rand} "
-                 f"(declaratii_depuse_curente.randuri). D390 = recapitulativa VIES, sursă mai autoritară.{absent_txt}")
+                      "erau facturi IC înregistrate — nu că n-au existat operațiuni.")
+        temei = (f"Declarație-vs-declarație: D390 bază {cheie} față de D300 depus, {_rand_om} "
+                 f"(rândurile salvate la depunere). D390 = recapitulativa VIES, sursă mai autoritară.{absent_txt}")
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
                 mesaj=f"{eticheta}: D390 și D300 depus coincid ({_lei(decl)}).", temei=temei, remediu=None))
@@ -1072,7 +1070,7 @@ def verifica_d390(conn, schema, an, luna):
         from core.perioada import PerioadaNeconfirmata
         if isinstance(e, PerioadaNeconfirmata):
             _cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
-            _actiune = "Confirmă perioada lunii (rol admin_firma)."
+            _actiune = "Confirmă perioada lunii (o face administratorul firmei)."
         elif isinstance(e, ValueError):
             _cauza = str(e)  # [cauza_precisa] eroare de business - nu o acoperi cu genericul
             _actiune = "Corectează în Date firmă ce indică mesajul, apoi reîncearcă."
@@ -1107,17 +1105,17 @@ def verifica_d390(conn, schema, an, luna):
     return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
             "orizontal_rulat": True, "constatari": constatari,
 
-            "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs (1) evidența "
-                       f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "
-                       "DEPUS (rânduri persistate), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
+            "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, automat din facturi) față de (1) evidența "
+                       f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) și (2) D300 "
+                       "depus (rândurile salvate la depunere), pe cea mai recentă perioadă efectiv depusă (afișată în "
                        "verdict, alta decât luna curentă — D300 se depune în luna următoare), cu baza D390 "
-                       "recalculată pe acea perioadă. CE CONFRUNTĂ, EXACT: R1_1/R5_1 ale D300 DEPUS se derivă "
-                       "din ACELEAȘI facturi IC ca baza D390 (core/d300.py) — deci nu sunt două surse "
-                       "independente. Ce prinde comparația e DERIVA dintre ce s-a depus ATUNCI și ce arată "
-                       "evidența ACUM; NU prinde o eroare pe care ambele motoare o fac la fel. Gri dacă "
+                       "recalculată pe acea perioadă. Ce se confruntă, exact: rândurile 1.1 și 5.1 ale D300 depus se "
+                       "derivă din aceleași facturi IC ca baza D390 — deci nu sunt două surse "
+                       "independente. Ce prinde comparația e diferența dintre ce s-a depus atunci și ce arată "
+                       "evidența acum; nu prinde o eroare pe care ambele calcule o fac la fel. Gri dacă "
                        "rândurile lipsesc, dacă D300 e depus fără rânduri, sau dacă nu există nicio depunere. "
-                       "NEVERIFICAT: servicii "
-                       "IC (P/S — D390 le ia manual, iar d300 nu expune R3_1_1/R7_1_1); triangulație (T/R)."),
+                       "Nu se verifică: serviciile IC (P/S — D390 le ia manual, iar D300 nu le separă pe "
+                       "rândurile 3.1.1 și 7.1.1); triangulația (T/R)."),
             "modul": MODUL, "reguli": REGULI}
 
 
@@ -1195,17 +1193,17 @@ def constatare_cota_tva(linii, an, luna):
             gresite[l["id"]] = {"numar": l["numar"], "cota_gasita": cota_int,
                                 "cota_corecta": rez.get("cota_pct")}
 
-    temei = ("Cota TVA de pe fiecare factură emisă trebuie să fie cota standard valabilă LA DATA facturii "
-             "(common.COTE tva_standard, cu dată de valabilitate). Legea 141/2025: cota standard 21% din "
-             "01.08.2025. LIMITĂ: se verifică doar liniile la cotă STANDARD; cota redusă (11%) și scutit "
+    temei = ("Cota TVA de pe fiecare factură emisă trebuie să fie cota standard valabilă la data facturii "
+             "(registrul de parametri fiscali, cu dată de valabilitate). Legea 141/2025: cota standard 21% din "
+             "01.08.2025. Limită: se verifică doar liniile la cotă standard; cota redusă (11%) și scutit "
              "nu depind de schimbarea cotei standard. Nu se verifică dacă produsul necesită cota standard "
-             "(clasificare de produs), doar coerența de PERIOADĂ.")
-    limita = ("Verificat: cota liniilor la cotă standard de pe facturile EMISE ale lunii vs cota standard "
-              "valabilă la data facturii. NEVERIFICAT: cotele reduse/scutit (legitim neschimbate); "
+             "(clasificare de produs), doar coerența de perioadă.")
+    limita = ("Verificat: cota liniilor la cotă standard de pe facturile emise ale lunii vs cota standard "
+              "valabilă la data facturii. Neverificat: cotele reduse/scutit (legitim neschimbate); "
               "clasificarea de produs (dacă produsul chiar cere cota standard).")
     if nedeterminabile:
         # linia sarita nu se ascunde: verdictul ramane pe ce s-a putut verifica, dar spune ce n-a intrat.
-        limita += (" %d linie/linii cu cotă neparsabilă — NEVERIFICATE (verdictul acoperă doar liniile cu "
+        limita += (" %d linie/linii cu cotă neparsabilă — neverificate (verdictul acoperă doar liniile cu "
                    "cotă citibilă)." % nedeterminabile)
 
     if not gresite:
@@ -1425,7 +1423,7 @@ def _c_verde(cheie, eticheta, temei, an=None, luna=None):
         "fapt", cheie,
         "Declarația se reconciliază cu sursa - recalculul independent confirmă valorile.",
         an=an, luna=luna,
-        temei_completitudine="recalcul independent sursă->declarație (core/%s_reconciliere.py)" % cheie))
+        temei_completitudine="recalculul independent al declarației %s din datele sursă" % cheie.upper()))
 
 
 def _c_rosu(cheie, eticheta, temei, mesaj, an=None, luna=None):
@@ -1435,9 +1433,9 @@ def _c_rosu(cheie, eticheta, temei, mesaj, an=None, luna=None):
     amandoua tocmai ca sa se poata arbitra."""
     return _imbraca(eticheta, temei, "rosu", cheie=cheie,
                     remediu={"fel": "investigatie",
-                     "cauza": "Recalculul independent din sursa NU confirma valoarea declarata.",
+                     "cauza": "Recalculul independent din sursa nu confirma valoarea declarata.",
                      "actiune": ("Verifică agregarea și datele sursă - gardul nu alege singur cine are "
-                                 "dreptate. ACEEAȘI reconciliere blochează generarea declarației la depunere."),
+                                 "dreptate. Aceeași reconciliere blochează generarea declarației la depunere."),
                      "facturi": []},
                     a=_af.afirmatie("contradictie", cheie, mesaj,
                                     sursele="valoarea declarată în %s; recalculul independent din sursă"
@@ -1545,8 +1543,8 @@ def _neconform_liber(tip, eticheta, temei, mesaj, unde, regula, remediu=None):
 
 def _ruleaza_una(conn, schema, cheie, eticheta, thunk_builder, an, luna):
     """Ruleaza O reconciliere cu clasificarea anti-"D300 mort" (vezi capul sectiunii). Nu ridica."""
-    temei = ("Aceeasi reconciliere sursa<->declaratie care blocheaza generarea (%s vs recalcul independent "
-             "din sursa, core/%s_reconciliere.py); expusa aici ca verdict, NU mecanism nou." % (eticheta, cheie))
+    temei = ("Aceeași reconciliere sursă-declarație care blochează generarea (%s față de recalculul independent "
+             "din datele sursă); arătată aici ca verdict, nu e un mecanism nou." % eticheta)
     # PASUL 1 - producerea res (functiile generatorului, read-only). ValueError = "nu se poate genera"
     # (date/profil) -> gri genuin; orice altceva = deriva/bug -> ROSU rupt (nu gri).
     try:
@@ -1641,10 +1639,10 @@ def reconciliaza_declaratii(conn, schema, an, luna):
         stare = "verde"
 
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
-            "limita": ("Reconciliere sursă<->declarație pentru declarațiile aplicabile firmei, cu ACEEAȘI "
+            "limita": ("Reconciliere sursă<->declarație pentru declarațiile aplicabile firmei, cu aceeași "
                        "reconciliere care blochează generarea (dXXX_reconciliere.reconciliaza - recalcul "
                        "independent din sursă). Verde=recalculul confirmă; roșu=divergență (ambele valori "
-                       "numite) sau verificare ruptă; gri=nu pot verifica (date/profil lipsă). NEVERIFICAT: "
+                       "numite) sau verificare ruptă; gri=nu pot verifica (date/profil lipsă). Neverificat: "
                        "declarațiile fără subiect în perioadă (sărite tăcut, nu verde fals). Perioade: TVA/"
                        "salarii/SAF-T pe lună; D100 pe trimestru; D101/D205 pe an."),
             "modul": MODUL, "reguli": REGULI}
@@ -1919,8 +1917,8 @@ def _pereche_691(conn, schema, an, p48, d_grup):
     eticheta = "D101 rd.48 vs cont 691 — %d" % an
     temei = ("OPANAF 206/2025 rd.48 («impozitul pe profit anual datorat») față de contul 691 "
              "(«Cheltuieli cu impozitul pe profit», OMFP 1802/2014), rulaj debitor pe anul %d, "
-             "numai note VALIDATE. Declarația față de evidență — surse independente. NU se "
-             "folosește rândul 35 al F20: acolo 691 e adunat cu 698 (impozit pe VENIT), iar "
+             "numai note validate. Declarația față de evidență — surse independente. Nu se "
+             "folosește rândul 35 al F20: acolo 691 e adunat cu 698 (impozit pe venit), iar "
              "numerotarea F20 stă pe o sursă declarată de modul ca versiune necunoscută." % an)
     if d_grup:
         return []
@@ -2045,13 +2043,13 @@ def _orizontal_d300_vs_d394(conn, schema):
     an, luna, r300, r394 = per
     eticheta = "D300 rd.12 vs D394 taxare inversă — %02d/%d" % (luna, an)
     temei = (
-        "Verificare de DERIVĂ între două declarații DEPUSE pe aceeași perioadă. D394 lit. C pct. 17 "
+        "Verificare de derivă între două declarații depuse pe aceeași perioadă. D394 lit. C pct. 17 "
         "(OPANAF 2194/2025): «valoarea totală a bazei impozabile aferentă achizițiilor … pentru care "
         "se aplică taxarea inversă … conform art. 331 din Codul fiscal», față de D300 rd.12 (bază "
-        "colectată din taxare inversă primită). ATENȚIE la ce înseamnă VERDELE aici: cele două "
-        "declarații se derivă din ACELEAȘI facturi (`d300` și `d394` citesc amândouă `facturi`, cu "
+        "colectată din taxare inversă primită). Atenție la ce înseamnă verdele aici: cele două "
+        "declarații se derivă din aceleași facturi (D300 și D394 citesc amândouă facturile, cu "
         "același indicator de taxare inversă), deci coincidența înseamnă «cele două depuneri sunt de "
-        "acord», NU «declarația se potrivește cu realitatea». Ce prinde comparația e intervalul "
+        "acord», nu «declarația se potrivește cu realitatea». Ce prinde comparația e intervalul "
         "dintre cele două depuneri — facturile se pot schimba între ele — și intervenția manuală în "
         "una dintre ele. Corelația e una dintre cele pe care ANAF le rulează.")
 
@@ -2059,7 +2057,7 @@ def _orizontal_d300_vs_d394(conn, schema):
     if necitibile:
         return [_gri_liber(
             "d394", eticheta,
-            temei + " %d chei din `op1` n-au putut fi citite." % necitibile,
+            temei + " %d operațiuni din D394 depus n-au putut fi citite." % necitibile,
             "Nu pot compara: %d operațiuni din D394 depus au chei pe care nu le pot citi, deci nu "
             "văd toată latura. O comparație pe o parte din operațiuni ar numi divergență propria "
             "mea vedere incompletă." % necitibile, an, luna)]
@@ -2162,9 +2160,9 @@ def _orizontal_efactura_vs_d394(conn, schema):
     eticheta = "e-Factura vs D394 — %02d/%d" % (luna, an)
     temei = (
         "Ce a plecat efectiv la ANAF prin e-Factura (recipisă acceptată, mediu prod) față de ce a "
-        "declarat D394 că a inclus (`facturi_incluse`, expus de generator — R119). SURSE "
-        "INDEPENDENTE: una spune «a plecat», cealaltă «am declarat-o»; niciuna nu se derivă din "
-        "cealaltă. Eligibilitatea NU se recalculează aici — cine decide ce intră în D394 rămâne "
+        "declarat D394 că a inclus (lista facturilor incluse, păstrată la generare). Surse "
+        "independente: una spune «a plecat», cealaltă «am declarat-o»; niciuna nu se derivă din "
+        "cealaltă. Eligibilitatea nu se recalculează aici — cine decide ce intră în D394 rămâne "
         "generatorul. O factură transmisă și nedeclarată poate avea totuși o explicație legitimă "
         "(exclusă de generator cu avertisment: cotă nedeclarabilă, partener fără CUI valid, "
         "achiziție intracomunitară care merge în D390), de-aia e semnal, nu verdict.")
@@ -2205,7 +2203,7 @@ def _orizontal_efactura_vs_d394(conn, schema):
                      mesaj="%s: toate cele %d facturi transmise la ANAF prin e-Factura apar și în "
                            "D394 depus." % (eticheta, len(transmise)))]
     return [dict(baza, stare="rosu", temei=temei,
-                 mesaj="%s: %d din %d facturi transmise la ANAF prin e-Factura NU apar în D394 "
+                 mesaj="%s: %d din %d facturi transmise la ANAF prin e-Factura nu apar în D394 "
                        "depus." % (eticheta, len(lipsa), len(transmise)),
                  remediu={"fel": "sugerat",
                           "cauza": "Facturi cu recipisă acceptată de la ANAF care nu se regăsesc "
@@ -2337,8 +2335,8 @@ def _pereche_amortizare(conn, schema, an):
     for cont in sorted(conturi | set(inregistrat)):
         eticheta = "Amortizare declarată vs cont %s — %d" % (cont, an)
         temei = ("Amortizarea cumulată a activelor din registrul de imobilizări (secțiunea Assets a "
-                 "D406/SAF-T, `AccumulatedDepreciation`) față de soldul creditor al contului %s din "
-                 "evidența contabilă VALIDATĂ, la 31.12.%d (OMFP 1802/2014, grupa 28 — «Amortizări "
+                 "D406/SAF-T, amortizarea cumulată) față de soldul creditor al contului %s din "
+                 "evidența contabilă validată, la 31.12.%d (OMFP 1802/2014, grupa 28 — «Amortizări "
                  "privind imobilizările»). Registrul față de evidență — surse independente."
                  % (cont, an))
         d = _d(declarat.get(cont))
@@ -2377,7 +2375,7 @@ def _pereche_amortizare(conn, schema, an):
                         mesaj="%s: registrul de imobilizări declară %s amortizare cumulată, iar "
                               "contul %s are sold %s (diferență %s). Divergența e certă — cele două "
                               "cifre trebuie să coincidă prin construcție —, dar se poate numi doar "
-                              "CONTUL, nu activul: amortizarea nu se ține pe mijloc fix."
+                              "contul, nu activul: amortizarea nu se ține pe mijloc fix."
                               % (eticheta, _lei(d), cont, _lei(i), _lei(d - i)),
                         remediu={"fel": "sugerat",
                                  "cauza": "Amortizarea pe care o declară registrul de imobilizări "

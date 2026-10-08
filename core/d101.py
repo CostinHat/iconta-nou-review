@@ -205,7 +205,7 @@ def _erori_valori_p(g, P, cifra_afaceri=None):
         _plaf_v5b = _i(Decimal(str(cifra_afaceri)) * Decimal("0.0075"))
         if P43 > _plaf_v5b:
             erori.append("D101: P43 (sponsorizare) = %d > plafon %d (V5-bis: limita 0.75%% din cifra de "
-                         "afaceri %d, CF art.25 alin.(4) lit.i - limita DUBLĂ min(0.75%% CA; 20%% impozit); "
+                         "afaceri %d, CF art.25 alin.(4) lit.i - limita dublă min(0.75%% CA; 20%% impozit); "
                          "DUK verifică doar 20%%)." % (P43, _plaf_v5b, _i(Decimal(str(cifra_afaceri)))))
     return erori
 
@@ -397,18 +397,18 @@ def erori_generare(prof):
     erori = []
     _cui = (prof.get("cui") or "").strip()
     if not _cui:
-        erori.append("LIPSĂ CUI (obligatoriu).")
+        erori.append("Lipsă CUI (obligatoriu).")
     else:
         _valid, _motiv = _valideaza_cui(_cui)   # T1: cifra de control CUI, PRE-DUK
         if not _valid:
             erori.append("D101: CUI firmă invalid (%s: %s). Corectează în Profil firmă." % (_cui, _motiv))
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă (obligatorie).")
+        erori.append("Lipsă denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
     _caen = (prof.get("caen") or "").strip()
     if not _caen:
-        erori.append("LIPSĂ cod CAEN (obligatoriu în D101).")
+        erori.append("Lipsă cod CAEN (obligatoriu în D101).")
     elif not re.fullmatch(r"\d{4}", _caen):
         # N(4): forma. Apartenenta la nomenclatorul CAEN complet NU e verificabila offline
         # (lista de valori nu exista in codebase - vezi raport TURA 3); DUK ramane plasa finala.
@@ -554,7 +554,7 @@ def genereaza(conn, schema, perioada, manual=None):
         from core.pdf_util import bani as _bani   # formatorul CANONIC de sume (DS cap.7)
         res.avertismente.append(
             PREFIX_AVERT_691 + "contul 691 are rulaj debitor %s lei pe %d (cheltuiala cu impozitul "
-            "pe profit), iar rândul 23 e 0. Cheltuiala e NEDEDUCTIBILĂ (CF art.25 alin.(4) lit.a) "
+            "pe profit), iar rândul 23 e 0. Cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) "
             "și se adaugă înapoi la rd.23 — altfel impozitul declarat e mai mic decât cel datorat. "
             "Completează rd.23 dacă suma se referă la anul declarat."
             % (_bani(_imp_691), perioada.an))

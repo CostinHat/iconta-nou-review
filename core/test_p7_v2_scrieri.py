@@ -257,7 +257,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   −1: repo_contabilitate.nota_horeca_z_validata (horeca_raport_z) scos — §6 pct.7 (R36), Z-ul tastat e ciornă la ambele metode;
     #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (ciorne_in_perioada, din coada_adauga) — §6 pct.7, porțile
     #     D300/D394/D390/D406 dau avertisment, nu blocaj, când perioada fiscală are ciorne: două citiri NOI. Total 298 -> 303.
-    assert _apeluri_catre_repository() == 303
+    # [lotul „Retest 08.10”, 08.10.2026] 303 -> 307, cu apelurile numite:
+    #   repo_control_fiscal_api.select_depusa_curenta + insert_depusa_extern(sursa="contabil_anterior") (control_fiscal_depuse_anterior)
+    #     — pct.9, „Marchează toate ca depuse de contabilul anterior”: o perioadă deja depusă nu se marchează peste;
+    #   repo_control_fiscal_api.select_depusa_curenta + delete_marcari (control_fiscal_anuleaza_marcare) — pct.10, marcarea se poate
+    #     anula (numai marcările; o depunere din iConta.eu rămâne). Total 303 -> 307.
+    assert _apeluri_catre_repository() == 307
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

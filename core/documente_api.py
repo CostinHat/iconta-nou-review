@@ -171,6 +171,16 @@ def inchidere_balanta(randuri):
     return {"stare": stare, "perechi": perechi, "randuri": len(randuri)}
 
 
+def antet_raport(nume_firma, cui, acum=None):
+    """Rândul de antet al unui raport contabil PDF (DS cap.7 v2.84): firma, CUI-ul ei și momentul generării (ora României)."""
+    import datetime
+    import zoneinfo
+    acum = acum or datetime.datetime.now(zoneinfo.ZoneInfo("Europe/Bucharest"))
+    firma = " · ".join(x for x in (nume_firma or "", ("CUI %s" % cui) if cui else "") if x)
+    from core.pdf_util import data_ro
+    return "%s%sGenerată la %s" % (firma, " — " if firma else "", data_ro(acum, "cu_ora"))
+
+
 def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     """Design System cap.7: reportlab Table cu colWidths explicite (ca factura_pdf.py),
     nu drawString manual. Sume in format romanesc via pdf_util.bani()."""
@@ -184,9 +194,9 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
 
     randuri = balanta(conn, schema, an, luna)
     with conn.cursor() as _cur:
-        _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
+        _cur.execute(f"SELECT culoare_factura, font_factura, cui FROM {schema}.firma_profil WHERE id = 1")
         _prof = _cur.fetchone()
-    _cul_profil, _font_profil = (_prof if _prof else (None, None))
+    _cul_profil, _font_profil, _cui = (_prof if _prof else (None, None, None))
     init_fonturi()
     fr, fb = font(_font_profil or "sans")
     try:
@@ -213,7 +223,8 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     _n_ci = _ci["luna"] + _ci["inainte"]
     el = [
         Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
-        Paragraph(nume_firma, st_meta),
+        # [retest 08.10 pct.18, DS cap.7] „PDF balanță: CUI-ul firmei și data generării în antet.”
+        Paragraph(antet_raport(nume_firma, _cui), st_meta),
         Paragraph("Cuprinde numai notele validate." + (" %d %s nu %s incluse." % (
             _n_ci, "ciorn\u0103 nevalidat\u0103" if _n_ci == 1 else "ciorne nevalidate", "este" if _n_ci == 1 else "sunt")
             if _n_ci else ""), st_meta),

@@ -47,7 +47,19 @@ def control_fiscal_portofoliu(ctx):
                     "contabil": d.get("contabil") or [],
                     "prospetime": {"stare": st.get("stare") or _fr.LIPSESTE,
                                    "calculat_la": st.get("calculat_la")}})
-    return {"firme": out, "sumar": sumar}
+    return {"firme": out, "sumar": sumar, "contoare": contoare_portofoliu(out)}
+
+
+def contoare_portofoliu(firme):
+    """[08.10.2026, retest pct.7] Contoarele de sus = FAPTE numărate pe firme, nu culoarea combinată: „F1 și F5 arată «restanță» cu
+    «0 restanțe», iar contorul de sus «0 de urmărit», deși detaliul F1 are 5 de urmărit. Nedeclaratul înainte de termen e «de urmărit»,
+    nu restanță.” O firmă poate intra în două (restanțe ȘI neconcordanțe); `sumar` (partiția pe culori) rămâne neschimbat."""
+    neconc = lambda f: any((c or {}).get("stare") in ("rosu", "galben") for c in (f.get("contabil") or []))
+    return {"restante": sum(1 for f in firme if (f.get("lipsa") or 0) > 0),
+            "de_urmarit": sum(1 for f in firme if (f.get("urmarit") or 0) > 0),
+            "neconcordante": sum(1 for f in firme if neconc(f)),
+            "nu_se_pot_verifica": sum(1 for f in firme if f.get("stare") == "gri"),
+            "la_zi": sum(1 for f in firme if f.get("stare") == "verde")}
 
 
 def control_fiscal_audit_preluare(tenant_id, ctx):
@@ -108,6 +120,77 @@ def control_fiscal_detaliu(tenant_id, ctx):
 TIPURI_DEPUSA_EXTERN = ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406")
 
 
+#: Sursele unei depuneri MARCATE (nu trimise prin iConta.eu): se pot modifica și anula.
+SURSE_MARCATE = ("extern", "contabil_anterior")
+
+
+def _perioada(corp):
+    tip = str(corp.get("tip") or "").strip().lower()
+    if tip not in TIPURI_DEPUSA_EXTERN:
+        raise _erori.DateInvalide("Tip de declarație necunoscut: %r." % corp.get("tip"))
+    try:
+        an, luna = int(corp.get("an") or 0), int(corp.get("luna") or 0)
+    except (TypeError, ValueError):
+        raise _erori.DateInvalide("Perioadă invalidă: %s/%s." % (corp.get("luna"), corp.get("an")))
+    if not (2000 <= an <= azi_ro().year and 1 <= luna <= 12):
+        raise _erori.DateInvalide("Perioadă invalidă: %s/%s." % (luna, an))
+    return tip, an, luna
+
+
+def control_fiscal_depuse_anterior(tenant_id, corp, ctx):
+    """[08.10.2026, retest pct.9, verbatim în DECIZII] „Grupul «Înainte de preluare» […]: pliat implicit, cu o acțiune «Marchează toate
+    ca depuse de contabilul anterior».” Marchează perioadele date (numai cele DINAINTEA lunii preluării, fiecare nedepusă) cu sursa
+    `contabil_anterior`: depunerea s-a făcut, data ei nu se cunoaște — nu se inventează una, iar clasificarea nu judecă termenul.
+    {"marcate": n, "sarite": [{tip, an, luna, motiv}]}."""
+    import datetime
+    from core import repo_control_fiscal_api, luna_preluare as _lp, repo_firma_profil as _rfp
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    perioade = corp.get("perioade") or []
+    if not perioade or len(perioade) > 200:
+        raise _erori.DateInvalide("Alege între 1 și 200 de perioade de marcat.")
+    with db.get_conn(schema) as cs, cs.cursor() as cur:
+        f = _rfp.fapte_preluare(cur)
+        preluare = _lp.efectiva(f["salvata"], f["creat_la"], f["data_solduri"], f["prima_nota"])
+        cs.rollback()
+    from core import afirmatii as _af
+    marcate, sarite = 0, []
+
+    def _sarita(tip, an, luna, motiv):   # afirmație tipată (P8), cu cheile pe care le citește ecranul
+        return dict(_af.afirmatie("neconformitate", "marcare_depusa_sarita", motiv, unde="%s %02d/%04d" % (tip.upper(), luna, an),
+                                  regula="se marchează numai o perioadă dinaintea preluării, încă nedepusă"), tip=tip, an=an, luna=luna)
+    acum = datetime.datetime.now(datetime.timezone.utc)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            for p in perioade:
+                tip, an, luna = _perioada(p)
+                if not preluare or (an, luna) >= tuple(preluare):
+                    sarite.append(_sarita(tip, an, luna, "nu e dinaintea preluării"))
+                    continue
+                if repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip):
+                    sarite.append(_sarita(tip, an, luna, "e deja înregistrată ca depusă"))
+                    continue
+                repo_control_fiscal_api.insert_depusa_extern(cur, tenant_id, an, luna, tip, acum, None, sursa="contabil_anterior")
+                marcate += 1
+        conn.commit()
+    return {"ok": True, "marcate": marcate, "sarite": sarite}
+
+
+def control_fiscal_anuleaza_marcare(tenant_id, corp, ctx):
+    """[08.10.2026, retest pct.10] „marcarea nu se poate modifica sau anula” — anularea: cad toate versiunile MARCATE ale perioadei;
+    o depunere prin iConta.eu nu se anulează de aici."""
+    from core import repo_control_fiscal_api
+    _uc_comun._schema_sau_404(ctx, tenant_id)
+    tip, an, luna = _perioada(corp)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur_dep = repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip)
+            if not cur_dep or cur_dep[1] not in SURSE_MARCATE:
+                raise _erori.Conflict("%s pe %02d/%d nu e o marcare — nu e nimic de anulat." % (tip.upper(), luna, an))
+            n = repo_control_fiscal_api.delete_marcari(cur, tenant_id, an, luna, tip)
+        conn.commit()
+    return {"ok": True, "anulate": n, "tip": tip, "an": an, "luna": luna}
+
+
 def control_fiscal_depusa_extern(tenant_id, corp, ctx):
     """[08.10.2026, decizia Costin U2] Marchează o declarație „depusă în afara iConta”, cu recipisa opțională.
 
@@ -116,13 +199,8 @@ def control_fiscal_depusa_extern(tenant_id, corp, ctx):
     import datetime
     from core import repo_control_fiscal_api
     _uc_comun._schema_sau_404(ctx, tenant_id)
-    tip = str(corp.get("tip") or "").strip().lower()
-    if tip not in TIPURI_DEPUSA_EXTERN:
-        raise _erori.DateInvalide("Tip de declarație necunoscut: %r." % corp.get("tip"))
-    an, luna = int(corp.get("an") or 0), int(corp.get("luna") or 0)
+    tip, an, luna = _perioada(corp)
     azi = azi_ro()
-    if not (2000 <= an <= azi.year and 1 <= luna <= 12):
-        raise _erori.DateInvalide("Perioadă invalidă: %s/%s." % (luna, an))
     try:
         data = datetime.date.fromisoformat(str(corp.get("data_depunere") or "")[:10])
     except ValueError:
@@ -135,8 +213,10 @@ def control_fiscal_depusa_extern(tenant_id, corp, ctx):
         raise _erori.DateInvalide("Numărul recipisei are peste 100 de caractere.")
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            if repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip):
-                raise _erori.Conflict("%s pe %02d/%d e deja înregistrată ca depusă." % (tip.upper(), luna, an))
+            cur_dep = repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip)
+            # [retest 08.10 pct.10] o MARCARE se poate modifica (versiune nouă); o depunere prin iConta.eu nu se suprascrie
+            if cur_dep and cur_dep[1] not in SURSE_MARCATE:
+                raise _erori.Conflict("%s pe %02d/%d e deja depusă prin iConta.eu." % (tip.upper(), luna, an))
             repo_control_fiscal_api.insert_depusa_extern(cur, tenant_id, an, luna, tip, data, recipisa)
         conn.commit()
     return {"ok": True, "tip": tip, "an": an, "luna": luna, "data_depunere": data.isoformat(), "recipisa": recipisa}

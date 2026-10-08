@@ -24,7 +24,7 @@ def test_helperii_de_rutare_exista():
 def test_tip_decont_A_la_luna_8_e_blocant():
     r = d300.Rezultat(an=2026, luna=8, prof={"tip_decont": "anual"})
     b = d300._blocante_pre_duk(r)
-    assert any("tip_decont=A" in m for m in b), b
+    assert any("Decontul anual se depune pentru luna 12" in m for m in b), b
 
 
 def test_genereaza_blocheaza_tip_decont_gresit_pre_duk(monkeypatch):
@@ -33,7 +33,7 @@ def test_genereaza_blocheaza_tip_decont_gresit_pre_duk(monkeypatch):
     monkeypatch.setattr(d300, "pull", lambda conn, schema, perioada: (prof, []))
     with pytest.raises(ValueError) as ei:
         d300.genereaza(None, "tenant_013", Perioada(2026, luna=8))
-    assert "tip_decont=A" in str(ei.value), str(ei.value)
+    assert "Decontul anual se depune pentru luna 12" in str(ei.value), str(ei.value)
 
 
 def test_marja_e_avertisment_nu_blocaj():

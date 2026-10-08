@@ -153,10 +153,15 @@ def test_stergerea_unei_facturi_redeschide_luna(conn):
     assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is False
 
 
-def test_stornarea_redeschide_luna(conn):
+def test_stornarea_redeschide_luna(conn, monkeypatch):
     """Stornarea e calea prin care se CORECTEAZĂ o factură emisă (nu există editare de sume). Trece
     prin `creeaza_factura`, deci cade sub aceeași regulă — verificat, nu presupus: era gata să scriu
-    în predare că editarea nu e acoperită, când de fapt editarea nu există."""
+    în predare că editarea nu e acoperită, când de fapt editarea nu există.
+
+    [retest 08.10 pct.11] Luna în curs nu se mai poate închide (`luna_in_curs`); storno-ul e datat AZI, deci luna lui e mereu în
+    curs. Rămâne starea moștenită — o lună curentă închisă înainte de regula din 08.10 — și pe ea storno-ul tot trebuie s-o redeschidă:
+    regula „lună încheiată” se suspendă numai pentru a construi acea stare."""
+    monkeypatch.setattr(_il, "luna_in_curs", lambda an, luna, azi=None: None)
     r = _fa.emite_factura(conn, [{"descriere": "x", "cont_venit": "707", "cantitate": 1, "pret_unitar": 80, "cota_tva": 21}],
                           tert_nume="CLIENT SRL", tert_cui="14399840",
                           data_emitere=date.today().isoformat(), moneda="RON", platitor_tva=True)

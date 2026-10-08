@@ -123,12 +123,12 @@ def erori_generare(prof, manual, calc):
     if not _cif(prof.get("cui")):
         er.append("CUI plătitor lipsă/invalid.")
     if not str(prof.get("den") or "").strip():
-        er.append("LIPSĂ denumire.")
+        er.append("Lipsă denumire.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa.")
+        er.append("Lipsă adresa.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+            er.append("Lipsă %s (declarant obligatoriu)." % c)
     obl = manual.get("obligatii") or []
     if not obl:
         er.append("D110 cere cel puțin o obligație (obligații[]).")

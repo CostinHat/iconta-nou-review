@@ -17,6 +17,25 @@ export const CULORI = {
   gri:    { dot:"var(--gri-semafor)", txt:"nu se poate verifica", bg:"var(--gri-fundal-semafor)" },
 };
 
+// [08.10.2026, retest pct.7] Eticheta rândului spune CAUZA, nu doar culoarea combinată: „restanță” numai cu restanțe; roșul venit din
+// verificarea contabilă e „neconcordanță”; nedeclaratul înainte de termen e „de urmărit”.
+export function etichetaRand(f) {
+  if ((f.lipsa || 0) > 0) return "restanță";
+  if ((f.contabil || []).some((c) => c && (c.stare === "rosu" || c.stare === "galben")) && f.stare !== "verde") return "neconcordanță";
+  if ((f.urmarit || 0) > 0) return "de urmărit";
+  return etichetaStare(f.stare, f.neclar);
+}
+
+// Contoarele de sus, din faptele numărate de server (`contoare`), aceleași pe lista Control fiscal și pe cardurile de pe ecranul principal.
+export function itemiContoare(c) {
+  return [
+    { n: c.restante, cls: "pct-rosu", txt: c.restante === 1 ? "cu restanță" : "cu restanțe" },
+    { n: c.neconcordante, cls: "pct-rosu", txt: c.neconcordante === 1 ? "cu neconcordanță contabilă" : "cu neconcordanțe contabile" },
+    { n: c.de_urmarit, cls: "pct-galben", txt: "cu declarații de urmărit" },
+    { n: c.nu_se_pot_verifica, cls: "pct-gri", txt: c.nu_se_pot_verifica === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
+  ];
+}
+
 // INVENTAR DECLARAT — paritatea 1 (RANDARE). Fiecare cheie din payload-ul `verificari_contabile` (vc)
 // trebuie sa aiba aici o destinatie: o sectiune randata, sau "via d.contabil", sau marcata contor. O cheie
 // noua produsa de backend fara intrare aici = EROARE in verificator (VERDICT_PARITATE, sub-regula randare),
@@ -83,7 +102,13 @@ function randConst(c) {
 // rand de declaratie cu termen (Restante / De urmarit / La zi) — poarta MOTIVUL pe orice culoare.
 function randDecl(arr, clasa, marcabil = false) {
   // [08.10, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.”
-  const marcare = (x) => !marcabil ? "" : `
+  // [retest 08.10 pct.10] o MARCARE („în afara iConta.eu” / „de contabilul anterior”) se poate modifica sau anula
+  const marcare = (x) => x.extern ? `
+      <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Modifică marcarea</button>
+      <button class="buton-secundar cf-extern-anuleaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza"
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Anulează marcarea</button>`
+    : (!marcabil || !x.luna) ? "" : `
       <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
         data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Marchează depusă în afara iConta.eu</button>`;
   return arr.map((x) => `
@@ -191,7 +216,11 @@ export function randeazaCorpVerdict(d, opt = {}) {
     ${neaplicabile.length || contraziceri.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>` : ""}
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
-    ${inainte.length ? `<div class="cf-grup-titlu">Înainte de preluare în iConta.eu — ${esc(d.luna_preluare || "")} (${inainte.length}, nu se numără la restanțe)</div><div class="cf-decl">${randDecl(inainte, "", true)}</div>` : ""}`;
+    ${inainte.length ? `<details class="dec-xml cf-inainte">
+        <summary class="cf-grup-titlu">Înainte de preluare în iConta.eu — ${esc(d.luna_preluare || "")} (${inainte.length}, nu se numără la restanțe)</summary>
+        ${inainte.some((x) => x.luna && !x.extern) ? `<div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
+          data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
+        <div class="cf-decl">${randDecl(inainte, "", true)}</div></details>` : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie).
   const sectIncrucisat = (() => {
@@ -279,6 +308,14 @@ export function randeazaCorpVerdict(d, opt = {}) {
 // Leaga evenimentele corpului dupa inserare (butoane remediu executabil + audit de preluare on-demand).
 // firma: { tenant_id, nume, reincarca? } — reincarca() e apelat dupa contabilizarea reusita, ca sa se
 // re-evalueze verdictul (constatarea trece pe verde). Fiecare apelant isi da propriul reincarca.
+// [retest 08.10 pct.10] după o marcare fereastra NU sare sus: reîncărcarea păstrează poziția de derulare
+async function reincarcaPePozitie(corp, firma) {
+  const c = corp.closest(".fereastra-corp") || document.scrollingElement;
+  const y = c ? c.scrollTop : 0;
+  if (typeof firma.reincarca === "function") await firma.reincarca();
+  if (c) c.scrollTop = y;
+}
+
 export function legaVerdict(corp, nav, firma) {
   // [08.10, decizia Costin U2] „depusă în afara iConta”: data depunerii (de pe recipisă) obligatorie, numărul recipisei opțional
   corp.querySelectorAll(".cf-extern-btn").forEach((b) => b.addEventListener("click", () => {
@@ -298,13 +335,32 @@ export function legaVerdict(corp, nav, firma) {
     const ok = f.querySelector(".cf-extern-salveaza"), nu = f.querySelector(".cf-extern-renunta");
     data.focus();
     nu.addEventListener("click", () => f.remove());
+    // [retest 08.10 pct.10] mesajul „Scrie data” dispare odată ce data e scrisă (rămânea după completare)
+    data.addEventListener("input", () => { const m = f.querySelector(".msg-in-formular"); if (m && data.value) m.remove(); });
     ok.addEventListener("click", async () => {
       if (!data.value) { arataMesaj(f, "Scrie data depunerii, de pe recipisă.", "avert"); data.focus(); return; }
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern`,
           { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna), data_depunere: data.value, recipisa: rec.value.trim() || null });
-        if (typeof firma.reincarca === "function") firma.reincarca();
+        await reincarcaPePozitie(corp, firma);
       } catch (e) { arataMesaj(f, e.mesaj || "Nu am putut marca declarația.", "eroare"); }
+    });
+  }));
+  corp.querySelectorAll(".cf-extern-anuleaza").forEach((b) => b.addEventListener("click", () => {
+    confirmaCaseta(b.parentElement, `Anulezi marcarea ${b.dataset.tip.toUpperCase()} ${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}? Declarația redevine nedepusă.`, async () => {
+      try {
+        await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern/anuleaza`, { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna) });
+        await reincarcaPePozitie(corp, firma);
+      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut anula marcarea.", "eroare"); }
+    });
+  }));
+  corp.querySelectorAll(".cf-anterior-toate").forEach((b) => b.addEventListener("click", () => {
+    const perioade = JSON.parse(b.dataset.perioade || "[]");
+    confirmaCaseta(b.parentElement, `Marchezi ${perioade.length} declarații ca depuse de contabilul anterior? Data depunerii nu se cunoaște; o poți completa apoi pe fiecare.`, async () => {
+      try {
+        await api.post(`/control-fiscal/${firma.tenant_id}/depuse-anterior`, { perioade });
+        await reincarcaPePozitie(corp, firma);
+      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut marca declarațiile.", "eroare"); }
     });
   }));
 

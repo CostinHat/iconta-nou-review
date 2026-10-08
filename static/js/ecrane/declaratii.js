@@ -477,14 +477,14 @@ async function randeazaClasificareD390(corp, nav) {
         <span class="dec-recl-suma">${bani(m.baza)} lei</span>
         <button class="btn-link dec-man-del" data-actiune="DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta dec-clasif-gol">—</div>`}
     <div class="dec-man-form" style="margin-top:8px">
-      <label class="camp" style="width:160px"><span class="camp-eticheta">Tip</span><select id="man-tip" class="camp-input">${ALEGE}<option value="A">Achiziție bunuri IC fără cod furnizor — NOTA 1 (A)</option><option value="P">Servicii prestate (P)</option><option value="S">Servicii primite (S)</option><option value="T">Triangulație (T)</option><option value="R">Agricol special (R)</option></select></label>
+      <label class="camp" style="width:160px"><span class="camp-eticheta">Tip</span><select id="man-tip" class="camp-input">${ALEGE}<option value="A">Achiziție bunuri IC fără cod furnizor — nota 1 (A)</option><option value="P">Servicii prestate (P)</option><option value="S">Servicii primite (S)</option><option value="T">Triangulație (T)</option><option value="R">Agricol special (R)</option></select></label>
       <label class="camp" style="width:100px"><span class="camp-eticheta">Țară</span><input id="man-tara" class="camp-input" placeholder="DE"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cod partener</span><input id="man-cod" class="camp-input" placeholder="fără prefix țară"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Denumire</span><input id="man-den" class="camp-input"></label>
       <label class="camp" style="width:110px"><span class="camp-eticheta">Bază (lei)</span><input id="man-baza" type="number" class="camp-input"></label>
       <button class="buton-secundar" id="man-add" data-actiune="POST /tenants/{tenant_id}/d390-clasificare/manual">+ adaugă</button>
     </div>
-    <p class="ecran-nota" style="margin-top:4px">Tip <b>A</b> (NOTA 1): achiziție intracomunitară de bunuri de la un furnizor UE care nu a comunicat un cod valid de TVA — completează Țara (statul membru din care s-au transportat bunurile) și lasă Codul gol.</p>
+    <p class="ecran-nota" style="margin-top:4px">Tip <b>A</b> (nota 1): achiziție intracomunitară de bunuri de la un furnizor UE care nu a comunicat un cod valid de TVA — completează Țara (statul membru din care s-au transportat bunurile) și lasă Codul gol.</p>
     <div id="dec-clasif-msg"></div>
     <p style="margin-top:8px"><button class="buton-primar" id="dec-regen">Regenerează D390</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
@@ -567,7 +567,7 @@ async function randeazaOperatiuniD301(corp, nav) {
       <label class="camp" style="width:200px"><span class="camp-eticheta">Denumire furnizor</span><input id="d301-partener_den" class="camp-input"></label>
       <button class="buton-secundar" id="d301-add" data-actiune="POST /tenants/{tenant_id}/d301-operatiuni">+ adaugă</button>
     </div>
-    <p class="ecran-nota" style="margin-top:2px">Furnizorul UE (țară + cod TVA) e opțional pentru D301, dar dacă îl completezi, achiziția apare AUTOMAT în D390 (bunuri tip 1/3 → cod A; servicii tip 5 → cod S). Fără țară, operațiunea nu intră în D390.</p>
+    <p class="ecran-nota" style="margin-top:2px">Furnizorul UE (țară + cod TVA) e opțional pentru D301, dar dacă îl completezi, achiziția apare automat în D390 (bunuri tip 1/3 → cod A; servicii tip 5 → cod S). Fără țară, operațiunea nu intră în D390.</p>
     <div class="camp-ajutor" id="d301-preview" style="margin-top:4px"></div>
     <div id="d301-msg"></div>
     <p style="margin-top:8px"><button class="buton-primar" id="d301-regen">Regenerează D301</button>

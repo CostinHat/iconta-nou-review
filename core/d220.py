@@ -110,11 +110,11 @@ def erori_generare(prof, manual):
     d = _declarant(prof, manual)
     for c in ("nume_declar", "prenume_declar"):
         if not str(d.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant/titular obligatoriu)." % c)
+            er.append("Lipsă %s (declarant/titular obligatoriu)." % c)
     if not _cif(manual.get("cif")):
         er.append("D220 cere cif (CNP persoana fizica).")
     if not str(manual.get("nume") or "").strip():
-        er.append("LIPSĂ nume contribuabil (nume+prenume PF).")
+        er.append("Lipsă nume contribuabil (nume+prenume PF).")
     act = manual.get("activitate")
     if not isinstance(act, dict) or not act:
         er.append("D220 cere `manual.activitate` (categ_venit, det_venit, forma_org, venit_brut, cheltuieli).")

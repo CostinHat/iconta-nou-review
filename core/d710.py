@@ -276,7 +276,7 @@ def erori_generare(prof):
     erori = []
     cui = (prof.get("cui") or "").strip()
     if not cui:
-        erori.append("LIPSĂ CUI (obligatoriu).")
+        erori.append("Lipsă CUI (obligatoriu).")
     else:
         # T1: checksum CUI validat PRE-DUK (sursa canonica core.identitate). Un CUI cu cifra de control
         # gresita / lungime / non-numeric era emis tacit -> DUK 'cui: CUI invalid'. Il prindem cu motiv exact.
@@ -284,9 +284,9 @@ def erori_generare(prof):
         if not ok:
             erori.append("CUI invalid (%s): %s." % (cui, motiv))
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă (obligatorie).")
+        erori.append("Lipsă denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
     return erori
 
 

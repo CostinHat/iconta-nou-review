@@ -19,7 +19,7 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc } from "../api.js?v=4242dc4353";
-import { randA as randConstatare } from "./control_verdict.js?v=90aae1066a";
+import { randA as randConstatare } from "./control_verdict.js?v=86b39e444e";
 
 function perioada(r) {
   return `${String(r.luna).padStart(2, "0")}/${r.an}`;
@@ -56,7 +56,7 @@ function blocNeverificate(firme) {
       <div class="cf-incr-temei">${esc((f.neverificat && f.neverificat.eroare) || "")}</div>
     </div>`).join("");
   return `<section class="sv-firma sv-firma--neverif">
-    <h3 class="sv-firma-nume">Firme pe care verificarea NU a rulat</h3>
+    <h3 class="sv-firma-nume">Firme pe care verificarea nu a rulat</h3>
     <div class="cf-incr-temei">Nu înseamnă «e în regulă» — înseamnă că nu s-a putut verifica.
       Cât timp cauza de mai jos rămâne, firmele astea nu sunt acoperite de nicio confruntare.</div>
     ${randuri}

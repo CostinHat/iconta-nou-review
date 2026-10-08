@@ -218,7 +218,7 @@ def erori_generare(prof):
     erori = []
     cui = (prof.get("cui") or "").strip()
     if not cui:
-        erori.append("LIPSĂ CUI (obligatoriu).")
+        erori.append("Lipsă CUI (obligatoriu).")
     else:
         # T1 (CATALOG_INVALIDITATE.md): checksum/format CUI validat PRE-DUK cu sursa canonica
         # core.identitate. Pana aici un CUI non-numeric / lungime gresita / cifra de control
@@ -227,9 +227,9 @@ def erori_generare(prof):
         if not valid:
             erori.append("D100: CUI firmă invalid (%s: %s). Corectează în Profil firmă." % (cui, motiv))
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă (obligatorie).")
+        erori.append("Lipsă denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori

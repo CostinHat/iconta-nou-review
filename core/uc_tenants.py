@@ -1497,6 +1497,7 @@ def chitanta_stinge(tenant_id, bon_id, c, ctx):
                 raise _erori.CerereGresita("documentul nu e in asteptare")
         rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "plata_furnizor",
                                              "suma": c.suma, "document": c.document or ("CHIT-%d" % bon_id),
+                                             "fel_document": "chitanța furnizorului",
                                              "partener": c.partener, "cui": c.cui})
         if rez.get("eroare"):
             raise _erori.CerereGresita(rez["eroare"])
@@ -1571,7 +1572,8 @@ def chitanta_emite(tenant_id, c, ctx):
             nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
         rez = casa_api.adauga(conn, schema, {"data": c.data,
                                              "categorie": "vanzare_fara_factura" if linii else "incasare_client",
-                                             "suma": c.suma, "document": "%s-%s" % (serie, nr),
+                                             "suma": c.suma, "document": "%s-%s" % (serie, nr), "fel_document": "chitanța",
+                                             "stinge": reprezentand,   # [retest 08.10 pct.19] „… și factura stinsă”
                                              "partener": client_nume, "cui": client_cui}, linii=linii)
         if rez.get("eroare"):
             raise _erori.CerereGresita(rez["eroare"])

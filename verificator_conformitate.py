@@ -1682,6 +1682,33 @@ for _i, _ln in enumerate(_ff.split("\n"), 1):
 if "grupeazaCarduri(vizibile)" not in _ff or "${vizibile.map((o) =>" in _ff:
     rap["grup_firma"].append(("firme.js", 0, "GRUP_FIRMA", "meniuFirma nu randează prin GRUPURI_FIRMA"))
 
+# --- ACTIUNI_RAND_LIBERE (DS cap.9 v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13): „acțiunile într-un meniu”. O celulă de
+#     tabel cu TREI sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>`, nu libere pe rând:
+#     butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe F2, ~1700 px).
+#     Mutația care o probează: `<details class="dec-xml"><summary>Acțiuni</summary>` scos din mijloace_ecran.js -> TOTAL > 0.
+#     LIMITĂ: vede celulele scrise ca `<td …>…</td>` literal într-un șablon; o celulă construită din bucăți (`"<td>" + x`) nu se vede.
+rap["actiuni_rand_libere"] = []
+for _fis, _txt in sorted(fisiere.items()):
+    for _m in re.finditer(r"<td\b[^>]*>(.*?)</td>", _txt, re.S):
+        if len(re.findall(r"<button\b", _m.group(1))) >= 3 and "<details" not in _m.group(1):
+            rap["actiuni_rand_libere"].append((_fis, _txt[:_m.start()].count("\n") + 1, "ACTIUNI_RAND", _m.group(1).strip()[:60]))
+
+# --- FER_LARG_STRIVIT (DS cap.9 v2.84, 08.10.2026, comanda Costin „Retest 08.10” pct.15): in fereastra larga (corp = coloana flex)
+#     niciun copil nu se strange sub continutul lui — altfel continutul curge peste fratii de dedesubt (D406: tabelul „Din ce e
+#     facuta declaratia” peste „Vezi XML-ul generat” si „Trimite in coada”) si un <details> inchis care creste lasa goluri mari.
+#     Cere: (a) regula generala `.fereastra.fer-larg .fereastra-corp > * { flex-shrink: 0; }`; (b) o regula `.fer-larg` care pune
+#     `flex: G 1 …` / `flex-shrink: 1` numai pe zonele care deruleaza ele insele (ZONE_STRANSE). Mutatia care o probeaza:
+#     `.fereastra.fer-larg .dec-xml { flex: 1 1 auto; … }` pusa la loc -> TOTAL > 0. LIMITA: vede `stil.css`, nu stilurile inline.
+rap["fer_larg_strivit"] = []
+_ZONE_STRANSE = {".mig-sold-tabel", ".rap-split", ".pac-text"}
+_css = _surse_css["stil.css"]
+if not re.search(r"\.fereastra\.fer-larg \.fereastra-corp > \* \{ flex-shrink: 0; \}", _css):
+    rap["fer_larg_strivit"].append(("stil.css", 0, "FER_LARG", "lipseste regula generala `.fereastra-corp > * { flex-shrink: 0; }`"))
+for _m in re.finditer(r"([^{}]*\.fer-larg[^{}]*)\{([^}]*)\}", _css):
+    _sel, _decl = _m.group(1).strip(), _m.group(2)
+    if re.search(r"(?<![-\w])flex\s*:\s*\d+\s+1\b|flex-shrink\s*:\s*1\b", _decl) and not any(z in _sel for z in _ZONE_STRANSE):
+        rap["fer_larg_strivit"].append(("stil.css", _css[:_m.start(2)].count("\n") + 1, "FER_LARG", _sel[-60:]))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

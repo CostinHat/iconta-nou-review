@@ -3,21 +3,22 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
+import { itemiContoare } from "./control_verdict.js?v=86b39e444e";   // [retest 08.10 pct.7] contoarele de sus
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4242dc4353";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=e0f9f54799";
-import { randeazaMigrare } from "./migrare.js?v=a059e2160d";
-import { randeazaControl } from "./control.js?v=a7b7e8d52b";
-import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=18368f80b7"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
+import { randeazaListaFirme } from "./firme.js?v=ddc8c9cccc";
+import { randeazaMigrare } from "./migrare.js?v=54978bb037";
+import { randeazaControl } from "./control.js?v=b30c085085";
+import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=380aa43977"; // [p17_activitate]
+import { randeazaSetari } from "./setari.js?v=eb25e8c5dc"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=e6153826af";
-import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
+import { randeazaValidat } from "./validat.js?v=3803bf7e3b";
+import { randeazaSupervizor } from "./supervizor.js?v=d07a63dba1"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
 import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
@@ -359,11 +360,7 @@ async function actualizeazaControl(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = _semaforCard([
-      { n: s.rosu, cls: "pct-rosu", txt: s.rosu === 1 ? "alertă fiscală" : "alerte fiscale" },
-      { n: s.galben, cls: "pct-galben", txt: "de urmărit" },
-      { n: s.gri, cls: "pct-gri", txt: s.gri === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
-    ], VERDICT_POZITIV.firme_toate, s.verde);
+    zona.innerHTML = _semaforCard(itemiContoare((r && r.contoare) || {}), VERDICT_POZITIV.firme_toate, s.verde);   // [retest 08.10 pct.7]
   } catch {}
 }
 

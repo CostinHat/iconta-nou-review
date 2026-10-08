@@ -60,8 +60,8 @@ def ruleaza(trimite=None, **override):
             if _poate_trimite(cheie, p["dedup_min"]):
                 subiect = "Acces anormal: user %s (%s tenanti, %s actiuni / %s min)" % (
                     u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
-                mesaj = ("Semnal automat (art.33): userul %s a atins %s tenanti distincti si %s actiuni "
-                         "in ultimele %s min (praguri %s tenanti / %s actiuni). NU s-a blocat nimic. Verifica manual."
+                mesaj = ("Semnal automat (art.33): utilizatorul %s a atins %s firme distincte și %s acțiuni "
+                         "în ultimele %s min (praguri %s firme / %s acțiuni). Nu s-a blocat nimic. Verifică manual."
                          % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
                 de_trimis.append((subiect, mesaj))
         # [P4] `c` nu mai scrie nimic: detectia e o citire, iar rezervarea si-a luat tranzactia ei.

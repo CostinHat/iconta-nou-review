@@ -107,7 +107,7 @@ def test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza():
     facturi = [{"directie": "primita", "total": 1090, "tva": 90}]  # 9% deductibil
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
     assert res.R.get("R75_1", 0) == 0 and res.R.get("R76_1", 0) == 0
-    assert any("9%" in a and "MANUAL" in a for a in res.avertismente)
+    assert any("9%" in a and "manual" in a for a in res.avertismente)
 
 
 @pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")

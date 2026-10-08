@@ -73,7 +73,7 @@ def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
     # transportat bunurile si COD GOL (A nu e in _CU_COD_OBLIG -> cod optional). Calea auto n-o poate
     # detecta (factura fara cod valid n-are camp de tara), deci se introduce manual de contabil.
     if tip not in ("A", "P", "S", "T", "R"):
-        erori.append(("tip", "Tip linie manuală: A (achiziție bunuri IC fără cod furnizor, NOTA 1) / "
+        erori.append(("tip", "Tip linie manuală: A (achiziție bunuri IC fără cod furnizor, nota 1) / "
                              "P / S / T / R (servicii/triangulație/agricol)."))
     if tara not in TARI_UE:
         erori.append(("tara", "Țara %r nu e în nomenclatorul UE." % tara))

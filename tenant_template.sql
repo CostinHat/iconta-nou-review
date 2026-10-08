@@ -964,6 +964,7 @@ INSERT INTO TENANT_PLACEHOLDER.plan_conturi (simbol, denumire, tip) VALUES
 ('4427', 'TVA colectată', 'Bifunctional'),
 ('4428', 'TVA neexigibilă', 'Bifunctional'),
 ('4428.01', 'TVA neexigibilă — achiziții fără factură (NIR)', 'Bifunctional'),
+('4428.02', 'TVA neexigibilă aferentă mărfurilor (preț de vânzare)', 'Bifunctional'),
 ('444', 'Impozitul pe venituri de natura salariilor', 'Bifunctional'),
 ('445', 'Subvenții', 'Bifunctional'),
 ('446', 'Alte impozite, taxe și vărsăminte asimilate', 'Bifunctional'),
@@ -1056,13 +1057,9 @@ INSERT INTO TENANT_PLACEHOLDER.plan_conturi (simbol, denumire, tip) VALUES
 ('767', 'Venituri din sconturi obținute', 'Bifunctional'),
 ('781', 'Venituri din provizioane și ajustări pentru depreciere', 'Bifunctional'),
 ('7814', 'Venituri din ajustări pentru deprecierea activelor circulante', 'Bifunctional'),
-('8051', 'Dobânzi de plătit', 'Bifunctional'),
-('731', 'Venituri din cotizațiile membrilor, contribuțiile bănești sau în natură ale membrilor și simpatizanților, din cote-părți primite potrivit statutului', 'Bifunctional'),
-('732', 'Venituri din taxele de înregistrare stabilite potrivit legislației în vigoare', 'Bifunctional'),
-('733', 'Venituri din donații, sume sau bunuri primite prin sponsorizare și ajutoare', 'Bifunctional'),
-('734', 'Venituri financiare rezultate din activitățile fără scop patrimonial', 'Bifunctional'),
-('736', 'Venituri din subvenții de exploatare', 'Bifunctional'),
-('738', 'Alte venituri din activitățile fără scop patrimonial', 'Bifunctional');
+('8051', 'Dobânzi de plătit', 'Bifunctional');
+-- [retest 08.10 pct.17] fără 731–738 (OMFP 3103/2017, entități fără scop patrimonial): nu sunt în planul unei societăți
+-- comerciale (OMFP 1802/2014), iar D406 le respinge. Firmele existente: core/migrare_retest_0810.py (numai unde nu sunt folosite).
 
 
 --

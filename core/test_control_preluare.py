@@ -170,12 +170,14 @@ def test_marcata_depusa_in_afara_iconta_iese_la_zi_cu_recipisa(firma, monkeypatc
     r = ucf.control_fiscal_depusa_extern(TID, {"tip": "D300", "an": 2026, "luna": 8, "data_depunere": "2026-09-24",
                                                "recipisa": "INTERNT-123"}, ctx)
     assert r["ok"] and r["tip"] == "d300"
-    with pytest.raises(erori.Conflict):               # nu peste o depunere existentă
-        ucf.control_fiscal_depusa_extern(TID, {"tip": "d300", "an": 2026, "luna": 8, "data_depunere": "2026-09-24"}, ctx)
+    # [retest 08.10 pct.10] „marcarea nu se poate modifica” — acum se poate: o marcare nouă peste o MARCARE e o versiune nouă
+    # (peste o depunere prin iConta.eu rămâne refuz 409: core/test_retest_0810_s6.py::test_pct10_…)
+    ucf.control_fiscal_depusa_extern(TID, {"tip": "d300", "an": 2026, "luna": 8, "data_depunere": "2026-09-24",
+                                           "recipisa": "INTERNT-124"}, ctx)
     ev = _evalueaza()
     la_zi = [x for x in ev["confirmate"] if (x["tip"], x["luna"]) == ("d300", 8)]
     assert la_zi and la_zi[0]["extern"]
-    assert la_zi[0]["motiv"] == "Depusă în afara iConta.eu 24.09.2026 la termen · recipisă INTERNT-123"
+    assert la_zi[0]["motiv"] == "Depusă în afara iConta.eu 24.09.2026 la termen · recipisă INTERNT-124"
     assert ("d300", 8) not in {(x["tip"], x["luna"]) for x in ev["inainte_de_preluare"]}
 
 

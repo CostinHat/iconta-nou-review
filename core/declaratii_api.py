@@ -429,7 +429,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         luna = body.get("luna")
         if not isinstance(luna, int) or luna < 1 or luna > 12:
             if luna is None and isinstance(trim_trimis, int):
-                erori.append("declarația %s se depune LUNAR pentru firma asta: trimite luna "
+                erori.append("declarația %s se depune lunar pentru firma asta: trimite luna "
                              "(1-12), nu trimestrul%s" % (tip, _pft.norma(tip, "lunar") or ""))
             elif luna_trimisa is None:
                 erori.append("luna invalidă: %r (aștept 1-12)" % (luna,))
@@ -437,7 +437,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         trim = body.get("trim")
         if not isinstance(trim, int) or trim < 1 or trim > 4:
             if trim is None and luna_trimisa is not None:
-                erori.append("firma depune %s TRIMESTRIAL: trimite trimestrul (1-4), nu luna%s"
+                erori.append("firma depune %s trimestrial: trimite trimestrul (1-4), nu luna%s"
                              % (tip, _pft.norma(tip, "trimestrial") or ""))
             elif trim_trimis is None:
                 erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
@@ -603,7 +603,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if tip == "d220":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitate"):
-            erori.append("d220 cere `manual.cif` (CNP) + `manual.activitate` (venit estimat PF)")
+            erori.append("D220 cere CNP-ul și activitatea (venitul estimat al persoanei fizice).")
 
     # d221 (venituri agricole pe norme de venit, MANUALA anuala): contribuabil + activitati agricole.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
@@ -651,7 +651,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if tip == "d710":
         obl = body.get("obligatii")
         if not isinstance(obl, list) or not obl:
-            erori.append("d710 cere `obligații` (lista de corecții, nevidă)")
+            erori.append("D710 cere cel puțin o obligație corectată.")
 
     return erori
 

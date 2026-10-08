@@ -56,6 +56,8 @@ TRASEE = [
       r"^/control-fiscal(/\{\}(?!/audit-preluare))?$",
       # [08.10.2026, decizia Costin U2] „depusă în afara iConta” scrie `declaratii_depuse`, tabela proprie a traseului
       r"^/control-fiscal/\{\}/depusa-extern$",
+      # [retest 08.10 pct.9-10] marcarea „depuse de contabilul anterior” și anularea unei marcări — tot `declaratii_depuse`
+      r"^/control-fiscal/\{\}/depuse-anterior$", r"^/control-fiscal/\{\}/depusa-extern/anuleaza$",
       r"^/termene$", r"^/tenants/\{\}/istoric-declaratii-import"],
      ["declaratii_coada", "declaratii_depuse"]),
     ("T02", "Factura emisă — creare, contabilizare, ieșiri",

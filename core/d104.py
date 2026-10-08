@@ -138,14 +138,14 @@ def erori_generare(prof, luna, manual):
     _d = _declarant(prof, manual)
     for k, et in (("nume", "declarant_nume"), ("prenume", "declarant_prenume"), ("functie", "declarant_functie")):
         if not str(_d.get(k) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % et)
+            er.append("Lipsă %s (declarant obligatoriu)." % et)
     aso = _asociere(prof, manual)
     if not _cif(aso.get("cui")):
         er.append("CUI asociere lipsă/invalid (manual.asociere.cui sau firma_profil).")
     if not str(aso.get("den") or "").strip():
-        er.append("LIPSĂ denumire asociere.")
+        er.append("Lipsă denumire asociere.")
     if not str(aso.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa asociere.")
+        er.append("Lipsă adresa asociere.")
     if manual.get("profit_pierd") is None:
         er.append("D104 cere profit_pierd (profit impozabil(+)/pierdere(-) al asocierii; input contabil).")
     asociati = manual.get("asociati") or []

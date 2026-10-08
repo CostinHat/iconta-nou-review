@@ -262,7 +262,7 @@ def test_k_nu_citeste_tva_neexigibil_al_nir_ului_fara_factura(lume):
     with _db.get_conn(SCH) as conn:
         from core import stocuri_api as s
         with conn.cursor() as cur:
-            for cont, d, c in (("371", 1210, 0), ("378", 0, 400), ("4428", 0, 210)):
+            for cont, d, c in (("371", 1210, 0), ("378", 0, 400), ("4428.02", 0, 210)):   # retest 08.10 pct.1: TVA-ul stocului pe analitic
                 cur.execute("INSERT INTO solduri_initiale (cont, sold_debitor, sold_creditor) VALUES (%s, %s, %s)", (cont, d, c))
             cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) VALUES ('2099-10-15', 'vanzare', 'facturi', 'validata') "
                         "RETURNING id")
@@ -305,7 +305,7 @@ def test_d406_analiticul_se_declara_pe_sintetic_si_trece_a_doua_cale(lume):
         ids = [e.text for e in ET.fromstring(xml).iter() if e.tag.rsplit("}", 1)[-1] == "AccountID"]
         assert ids and all(i.isdigit() for i in ids), ids                              # „numar intreg” — niciun punct
         strain = d406.pull(conn, SCH, 2099, 9)[8]
-        assert sorted(strain) == ["731", "732", "733", "734", "736", "738"]              # 4428.01 nu e „exclus din normă”
+        assert strain == []          # 4428.01 nu e „exclus din normă” (iar 731–738 nu mai sunt semănate — retest 08.10 pct.17)
         conts = {c.id: c for c in res.conturi}
         assert [k for k in conts if d406.sintetic_saft(k) == "4428"] == ["4428"]        # un singur cont, sinteticul
         conn.rollback()

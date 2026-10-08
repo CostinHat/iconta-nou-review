@@ -185,11 +185,11 @@ def registru(conn, schema, fel, an=None):
         "fapt", tip="registru_art321_" + fel,
         motiv=("Registrul %s, ținut potrivit art. 321 alin. (4) din Codul fiscal"
                % ("nontransferurilor" if fel == "nontransfer" else "bunurilor primite")),
-        temei_completitudine=("toate rândurile înscrise în `registre_art321` pentru felul %r%s, în "
+        temei_completitudine=("toate rândurile înscrise în registru%s, în "
                               "ordinea numărului de ordine. **Registrul cuprinde ce s-a înscris — "
                               "nu se derivă din facturi**, fiindcă operațiunile pe care le "
-                              "consemnează sunt mișcări de bunuri FĂRĂ vânzare"
-                              % (fel, (", exercițiul %d" % an) if an else ", toate exercițiile")),
+                              "consemnează sunt mișcări de bunuri fără vânzare"
+                              % ((" (exercițiul %d)" % an) if an else " (toate exercițiile)")),
         # Domeniul e OBIECTUL, nu perioada: norma nu cere reluarea numerotarii la 1 ianuarie, deci
         # un registru fara `an` nu e un fapt nedatat, e un fapt despre registrul intreg. `an` ramane
         # alaturi cand se cere filtrat, ca sa nu se piarda ce s-a intrebat.

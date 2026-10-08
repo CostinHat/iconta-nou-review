@@ -15,35 +15,11 @@ Rulabil: python3 -m core.expirare_cote. Rulat LUNAR din cron (ziua 1) - RAPORT, 
 import os
 
 from core import observare
-from core.common import COTE, cote_neconfirmate
+from core.common import COTE, ETICHETE_COTE, cote_neconfirmate
 
-# Eticheta umana pentru fiecare cheie din COTE. Acoperirea (ETICHETE == chei COTE) e pazita de test:
-# o valoare noua fara eticheta ar produce un mesaj sarac; o eticheta ramasa fara cheie = drift.
-ETICHETE = {
-    "impozit_micro": "Cota impozit micro (1%)",
-    "impozit_special_valoare_mare": "Cota impozit special bunuri de valoare mare (D216: 0,3% 2024-2025, 0,9% din 2026)",
-    "chirie_pf_forfait": "Cota cheltuieli forfetare chirie PF (20%, CF art.84^1 alin.3)",
-    "chirie_pf_impozit": "Cota impozit chirie PF retinut la sursa (10%, CF art.84^1 alin.5)",
-    "impozit_profit": "Cota impozit pe profit (16%)",
-    "tva_standard": "Cota standard TVA",
-    "tva_redusa": "Cota redusa TVA",
-    "tva_redusa_9": "Cota redusa TVA pentru fostele operatiuni de 9% - azi 11% (CF art.291 alin.2, comasare Legea 141/2025 de la 01.08.2025); 9% e doar istoric, nu se reconfirma",
-    "tva_redusa_5": "Cota redusa TVA pentru fostele operatiuni de 5% (carti, acces cultural) - azi 11% (CF art.291 alin.2 lit.g-h, Legea 141/2025 de la 01.08.2025); 5% e doar istoric, nu se reconfirma",
-    "impozit_dividend": "Cota impozit pe dividende (CF art.97 alin.7)",
-    "plafon_tva_incasare": "Plafonul TVA la incasare",
-    "plafon_mijloc_fix": "Plafonul de incadrare ca mijloc fix",
-    "plafon_sold_casa": "Plafonul soldului de casa",
-    "plafon_avans_decontare": "Plafonul avansului de decontare",
-    "cas": "Cota CAS (pensie)",
-    "cass": "Cota CASS (sanatate)",
-    "impozit_venit": "Cota impozit pe venit",
-    "cam": "Cota CAM (asiguratorie pentru munca)",
-    "salariu_minim": "Salariul minim brut",
-    "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabila)",
-    "plafon_facilitate_salariu_minim": "Plafonul facilitatii la salariul minim",
-    "tichet_masa_plafon": "Valoarea maxima a tichetului de masa",
-    "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
-}
+# Eticheta umana pentru fiecare cheie din COTE — tine de COTE, deci sta langa ea (`common.ETICHETE_COTE`, retest 08.10: si mesajul
+# `PerioadaIndisponibila` o foloseste, fara sa traga dupa sine modulul asta). Acoperirea (ETICHETE == chei COTE) e pazita de test.
+ETICHETE = ETICHETE_COTE
 
 
 def _prag_luni():

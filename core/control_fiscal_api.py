@@ -33,6 +33,26 @@ from core import repo_control_fiscal_api as _repo
 PRAG_URMARIT_ZILE = 30   # termen in <= 30 zile, nedepus -> galben
 
 
+def separa_neclar_inainte_de_preluare(neclar, preluare):
+    """(neclar, inainte) — [08.10.2026, retest pct.8] o NECUNOAȘTERE al cărei domeniu se încheie înaintea lunii preluării (D100 / D205
+    pe 2025 la o firmă preluată în 09/2026) nu e „Nu pot verifica” al iConta.eu: e dinaintea preluării și stă în grupul acela, cu
+    motivul ei. Domeniul vine pe intrare (`domeniu_pana`, „AAAA-LL”); o intrare fără domeniu rămâne unde era."""
+    if not preluare:
+        return neclar, []
+    prag = "%04d-%02d" % preluare
+    ramase, inainte = [], []
+    for x in neclar:
+        dp = str(x.get("domeniu_pana") or "")
+        if dp and dp < prag:
+            an = int(dp[:4])
+            inainte.append(dict(x, an=x.get("an") or an, luna=x.get("luna"),
+                                motiv="Perioadă dinaintea preluării în iConta.eu (%02d/%d) — %s" % (preluare[1], preluare[0],
+                                                                                                     x.get("motiv") or "")))
+        else:
+            ramase.append(x)
+    return ramase, inainte
+
+
 def separa_inainte_de_preluare(lipsa, urmarit, preluare):
     """(lipsa, urmarit, inainte) — obligațiile NEDEPUSE pe perioade dinaintea lunii preluării nu se numără la restanțe și nici la
     „de urmărit”: stau separat, fiecare cu motivul, și se pot marca „depusă în afara iConta”. Perioada unei declarații
@@ -328,8 +348,8 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                     "D100 nu se datorează pe %s %d — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
                     "microîntreprinderilor se declară numai pentru trimestrele cu venituri; declarația fără "
                     "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % (perioada_txt, a),
-                    temei_completitudine="d100_fapt: trimestru fără venituri ȘI fără facturi emise "
-                                         "(False), nu doar venituri 0 — ambiguu ar fi întors None")
+                    temei_completitudine="trimestrul nu are nici venituri, nici facturi emise — nu doar venituri 0; "
+                                         "dacă evidența nu putea spune, declarația ar fi rămas datorată")
                 return
             # True (are bază) sau None (nu se poate ști, ex. facturi necontabilizate) -> emit (reminder)
         adauga("D100", a, luna_final, perioada_txt, "d100")
@@ -493,7 +513,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                             "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
                             "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a),
                             temei_completitudine="lună calendaristică încheiată, confirmată doar pe "
-                                                 "ULTIMA lună închisă, fără documente primite de la "
+                                                 "ultima lună închisă, fără documente primite de la "
                                                  "ANAF și neînregistrate pe ea")
             else:
                 # None = luna DESCHISA -> BIFA decide (faptul nu se poate sti inca; cost asimetric: termen ascuns = amenda).
@@ -744,14 +764,14 @@ def depuneri_fara_obligatie(datorate, neaplicabile, neclar, depuse):
         if (t, an, luna) in neap_per or t in neap_tip:
             out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "contrazice",
                         "motiv_citat": _motiv(t, an, luna),
-                        "mesaj": ("Neconcordanță în iConta: %s pe perioada marcată %s e DEPUSĂ%s, deși "
+                        "mesaj": ("Neconcordanță în iConta: %s pe perioada marcată %s e depusă%s, deși "
                                   "motivul înregistrat spune că nu se datorează — cele două nu pot fi "
                                   "amândouă adevărate. Nu e o greșeală a ta și n-ai ce retrage: cel mai "
                                   "probabil motivul nostru e greșit." % (t.upper(), per, d_txt))})
         elif t in neclar_tip:
             out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "opinie",
                         "motiv_citat": _motiv(t, an, luna),
-                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s. Cineva a considerat că se "
+                        "mesaj": ("%s pe perioada marcată %s e depusă%s. Cineva a considerat că se "
                                   "datorează — e o informație în plus, nu un răspuns: nu spune nimic "
                                   "despre perioadele în care nu s-a depus."
                                   % (t.upper(), per, d_txt))})
@@ -950,8 +970,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         _repo.select_public_2(cur, tenant_id)
   # [F163v2] vederea = depunerea curentă (nr_depunere max)
         depuse = {}
-        for t, a, l, dd in cur.fetchall():
-            depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd
+        for t, a, l, dd, sursa in cur.fetchall():
+            # [retest 08.10 pct.9] „depusă de contabilul anterior” n-are dată cunoscută: rândul poartă data MARCĂRII, care nu se
+            # judecă față de termen (ar face orice declarație veche „depusă după termen”) — confirmată, fără dată
+            depuse[(t, a, l)] = None if sursa == "contabil_anterior" else (dd.date() if hasattr(dd, "date") else dd)
 
     lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
     # [08.10, decizia Costin U2] restanțele se numără de la luna preluării; ce e înainte stă separat, marcabil
@@ -961,14 +983,20 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         _fp = _rfp.fapte_preluare(_cur_p)
     preluare = _lp.efectiva(_fp["salvata"], _fp["creat_la"] or _creat_la, _fp["data_solduri"], _fp["prima_nota"])
     lipsa, urmarit, inainte_de_preluare = separa_inainte_de_preluare(lipsa, urmarit, preluare)
+    neclar, _neclar_inainte = separa_neclar_inainte_de_preluare(neclar, preluare)   # [retest 08.10 pct.8]
+    inainte_de_preluare += _neclar_inainte
     with conn_public.cursor() as _cur_e:
-        extern = {(t, a, l): rec for t, a, l, rec in _repo.select_depuse_extern(_cur_e, tenant_id)}
-    for e in confirmate + cu_intarziere:   # „depusă în afara iConta”, cu recipisa dacă s-a dat
+        extern = {(t, a, l): (rec, sursa) for t, a, l, rec, sursa in _repo.select_depuse_extern(_cur_e, tenant_id)}
+    for e in confirmate + cu_intarziere + inainte_de_preluare:   # marcate: „în afara iConta.eu” / „de contabilul anterior”
         k = (e["tip"], e["an"], e["luna"])
         if k in extern:
-            e["motiv"] = e["motiv"].replace("Depusă", "Depusă în afara iConta.eu", 1) + (
-                " · recipisă %s" % extern[k] if extern[k] else "")
-            e["extern"] = True
+            rec, sursa = extern[k]
+            if sursa == "contabil_anterior":
+                e["motiv"] = "Depusă de contabilul anterior (marcată în iConta.eu, fără dată de depunere)"
+            else:
+                e["motiv"] = (e.get("motiv") or "Depusă").replace("Depusă", "Depusă în afara iConta.eu", 1) + (
+                    " · recipisă %s" % rec if rec else "")
+            e["extern"] = sursa   # [retest 08.10 pct.10] marcarea se poate modifica / anula — ecranul o știe după asta
     # [P3 21.08.2026] Randurile sunt deja AFIRMATII normalizate (fel + motiv + domeniul lor).
     # Vechea normalizare le reconstruia cu doar {tip, motiv} — arunca exact felul si domeniul.
     neclar_m = list(neclar)
@@ -1017,10 +1045,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                 eroare="%s: %s" % (type(_e).__name__, _e)))
             reconciliere = {"an": an_r, "luna": luna_r, "stare": "rosu", "constatari": [dict(
                 _rupt,
-                stare="rosu", eticheta="Reconciliere surse<->declaratii - PUNTE RUPTA",
+                stare="rosu", eticheta="Reconcilierea surse-declarații nu a rulat",
                 mesaj=_rupt["motiv"],
-                temei=("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e să "
-                       "nu ridice. Un except->gri ar ascunde ruptura ca verdict permanent gri."),
+                temei=("Verificarea surse-declarații s-a oprit cu o eroare a aplicației, deci rezultatul ei "
+                       "lipsește. Se arată roșu, nu gri: un gri ar ascunde defectul ca verdict permanent."),
                 remediu=None)],
                 "limita": "Reconcilierea surse<->declarații nu a rulat.",
                 "modul": "control_incrucisat", "reguli": ""}

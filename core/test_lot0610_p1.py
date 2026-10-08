@@ -147,7 +147,7 @@ def test_descarcarea_lunii_are_o_singura_situatie_pe_toate_notele(conn):
     from core import stocuri_api as sa
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET metoda_stoc = 'global_valoric'")
-        for d, c, s, sursa in (("371", "401", 1000, "stocuri"), ("371", "378", 200, "stocuri"), ("371", "4428", 252, "stocuri"),
+        for d, c, s, sursa in (("371", "401", 1000, "stocuri"), ("371", "378", 200, "stocuri"), ("371", "4428.02", 252, "stocuri"),
                                ("5311", "707", 500, "horeca_z")):
             cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) VALUES ('2026-10-05','n',%s,'validata') RETURNING id", (sursa,))
             nid = cur.fetchone()[0]
@@ -171,7 +171,7 @@ def _metoda(conn, m):
 
 def _vanzare(conn, sursa, suma=500):
     with conn.cursor() as cur:
-        for d, c, s, src in (("371", "401", 1000, "stocuri"), ("371", "378", 200, "stocuri"), ("371", "4428", 252, "stocuri"),
+        for d, c, s, src in (("371", "401", 1000, "stocuri"), ("371", "378", 200, "stocuri"), ("371", "4428.02", 252, "stocuri"),
                              ("4111" if sursa == "facturi" else "5311", "707", suma, sursa)):
             cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) VALUES ('2026-10-05','n',%s,'validata') RETURNING id", (src,))
             nid = cur.fetchone()[0]

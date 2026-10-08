@@ -725,7 +725,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if fara_curs:
         _ids = ", ".join("#%s" % i for i in fara_curs if i is not None) or "(fără id)"
         res.avertismente.append(
-            "%d factură(i) în valută FĂRĂ curs BNR — EXCLUSE din decont (nu se pot exprima în lei): %s. "
+            "%d factură(i) în valută fără curs BNR — excluse din decont (nu se pot exprima în lei): %s. "
             "Completează cursul pe fiecare (ultimul curs comunicat până la data facturii); altfel suma nu "
             "intră în declarație (A1, Cod fiscal art. 290)." % (len(fara_curs), _ids))
     # Livrări TAXABILE fără rând valid pentru perioadă (19/5% etc): TVA-ul lor DISPARE din decont
@@ -733,25 +733,25 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # deci NU sunt auto-emise si NU trebuie adaugate manual acolo (ar invalida declaratia).
     if drop_l_tax_n:
         res.avertismente.append(
-            "%d linii livrare cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — TVA colectată NEDECLARATĂ "
-            "(sub-declarare). Cotele 19/5%% nu au rând acceptat de ANAF în decontul v12 — NU le adăuga manual "
+            "%d linii livrare cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — TVA colectată nedeclarată "
+            "(sub-declarare). Cotele 19/5%% nu au rând acceptat de ANAF în decontul v12 — nu le adăuga manual "
             "la R69/R71 (respinse); corectează cota facturii sau tratează ca regularizare (R16)."
             % (drop_l_tax_n, _f(drop_l_tax_b), _f(drop_l_tax_t)))
     for _b in zero_livr:
         res.avertismente.append(
             "Livrare cu cotă 0%% (bază %s lei) — nu se clasifică automat: decontul cere distincţia scutit "
-            "CU drept de deducere (R14, ex. export/art.294) vs scutit FĂRĂ drept (R15), iar natura scutirii "
-            "NU e capturată în factură. Clasific-o manual la R14/R15 (altfel nu apare în decont)."
+            "cu drept de deducere (R14, ex. export/art.294) vs scutit fără drept (R15), iar natura scutirii "
+            "nu e capturată în factură. Clasific-o manual la R14/R15 (altfel nu apare în decont)."
             % _f(_b))
     if drop_a_tax_n:
         res.avertismente.append(
-            "%d linii achiziție cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — deducere NEINCLUSĂ. "
-            "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — NU le adăuga manual la "
+            "%d linii achiziție cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — deducere neinclusă. "
+            "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — nu le adăuga manual la "
             "R74/R24 (respinse); corectează cota facturii sau tratează ca regularizare."
             % (drop_a_tax_n, _f(drop_a_tax_b), _f(drop_a_tax_t)))
     if drop_a_scutit_n:
         res.avertismente.append(
-            "%d linii achiziție marcate «exclusiv scutit» (bază %s lei, TVA %s lei) — TVA NEDEDUSĂ "
+            "%d linii achiziție marcate «exclusiv scutit» (bază %s lei, TVA %s lei) — TVA nededusă "
             "(art.300 alin.4: achiziții destinate exclusiv operațiunilor fără drept de deducere). "
             "Dacă destinația e greșită, corectează «destinație TVA» pe linie."
             % (drop_a_scutit_n, _f(drop_a_scutit_b), _f(drop_a_scutit_t)))
@@ -764,7 +764,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if achiz_331_0:
         res.avertismente.append(
             "%d achiziţii cu categorie art.331 (taxare inversă) dar cotă 0%% (bază %s lei) — cota aplicabilă "
-            "nu e capturată, deci rd.12/rd.25 (colectat+deductibil) NU se pot derivă. Declar-o manual la "
+            "nu e capturată, deci rd.12/rd.25 (colectat+deductibil) nu se pot derivă. Declar-o manual la "
             "R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont)."
             % (len(achiz_331_0), _f(sum(achiz_331_0, Decimal(0)))))
     if ti_ben_n:
@@ -774,15 +774,15 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             % (ti_ben_n, _f(ti_ben_baza), _f(ti_ben_tva)))
     if ded[9][0]:
         res.avertismente.append(
-            "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — NEINCLUSE automat: rândul deductibil 9%% "
-            "(Rd.25.1/R75 din structura v12) e RESPINS de validatorul DUK instalat 2026 (probat). NU există rând "
-            "deductibil 9%% valid pentru perioadă — NU-l declara MANUAL la R75 (respins); corectează cota sau "
+            "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — neincluse automat: rândul deductibil 9%% "
+            "(Rd.25.1/R75 din structura v12) e respins de validatorul DUK instalat 2026 (probat). Nu există rând "
+            "deductibil 9%% valid pentru perioadă — nu-l declara manual la R75 (respins); corectează cota sau "
             "tratează ca regularizare, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
     if orphan_ded >= 1:
         res.avertismente.append(
             "Achiziții cu TVA în antet neacoperit de rândurile pe cotă (%s lei) — ex. compensația "
-            "forfetară agricultor (art.315^1 al.17 CF): NU se auto-deduce (regim special, lipsă flag "
-            "Registrul agricultorilor), dar NU se pierde tacit. Declar-o MANUAL la rândul deductibil, "
+            "forfetară agricultor (art.315^1 al.17 CF): nu se auto-deduce (regim special, lipsă flag "
+            "Registrul agricultorilor), dar nu se pierde tacit. Declar-o manual la rândul deductibil, "
             "altfel TVA de plată e supraevaluată." % _f(orphan_ded))
     rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
     if axa_nedeclarata:
@@ -790,11 +790,11 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # cu facturile, ca sa poata fi completata — iar declaratia spune pe ce s-a sprijinit.
         _dir = sorted({x[1] for x in axa_nedeclarata})
         res.avertismente.append(
-            "%d facturi intracomunitare (%s) NU au axa bunuri/servicii înregistrată pe document "
-            "(facturi: %s) — sunt tratate ca BUNURI (rd.1/rd.5), așa cum se făcea înainte, iar "
+            "%d facturi intracomunitare (%s) nu au axa bunuri/servicii înregistrată pe document "
+            "(facturi: %s) — sunt tratate ca bunuri (rd.1/rd.5), așa cum se făcea înainte, iar "
             "reclasificarea D390 le mai poate schimba. Axa se înregistrează la introducere și se "
-            "ÎNGHEAȚĂ pe factură (R186); pentru facturile vechi ea nu se poate deduce din nimic, "
-            "deci NU s-a ghicit."
+            "îngheață pe factură (R186); pentru facturile vechi ea nu se poate deduce din nimic, "
+            "deci nu s-a ghicit."
             % (len(axa_nedeclarata), "/".join(_dir),
                ", ".join(str(x[0]) for x in axa_nedeclarata[:12])
                + (" …" if len(axa_nedeclarata) > 12 else "")))
@@ -803,14 +803,14 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _fpb = sum((x[1] for x in foreign_pos), Decimal(0))
         _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
         res.avertismente.append(
-            "%d facturi cu partener străin (%s) dar cotă internă POZITIVĂ (bază %s lei, TVA %s lei) — "
-            "probabil eroare: o operațiune IC/export nu poartă cotă internă. NU s-a inclus tacit în R9; "
+            "%d facturi cu partener străin (%s) dar cotă internă pozitivă (bază %s lei, TVA %s lei) — "
+            "probabil eroare: o operațiune IC/export nu poartă cotă internă. Nu s-a inclus tacit în R9; "
             "corectează cota (0%%) sau țara partenerului."
             % (len(foreign_pos), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
     if ic_livr_bunuri:
         res.avertismente.append(
             "Livrări intracomunitare de bunuri către UE (bază %s lei) — declarate la rd.1 (0%%, art.294 "
-            "alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică operațiunea ca serviciu "
+            "alin.2). Dacă sunt prestări de servicii intracomunitare, reclasifică operațiunea ca serviciu "
             "în panoul D390 (sursă unică) — se mută automat la rd.3." % _f(ic_livr_bunuri))
     if export_livr:
         res.note_rezultat.append(
@@ -819,7 +819,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if ic_ach_n:
         res.avertismente.append(
             "%d achiziții intracomunitare de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
-            "declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, "
+            "declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt servicii, "
             "reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 "
             "colectat + rd.20 deductibil."
             % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
@@ -842,7 +842,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _tipuri_tr = ", ".join(sorted({t for _d, t in tr_reclas}))
         res.avertismente.append(
             "%d operațiuni reclasificate T/R (%s) în D390 — maparea D300 pentru triangulație (T) / regim "
-            "special (R) NU e acoperită de acest lot: au rămas rutate numeric ca bunuri (rd.1). Verifică "
+            "special (R) nu e acoperită de acest lot: au rămas rutate numeric ca bunuri (rd.1). Verifică "
             "manual încadrarea în decont — limită declarată, nu omisiune tacită."
             % (len(tr_reclas), _tipuri_tr))
     res.note_rezultat.append("Rezultat TVA %s lei." % rez)
@@ -868,20 +868,20 @@ def erori_generare(prof):
     erori = []
     _cui = prof.get("cui")
     if not _digits(_cui):
-        erori.append("LIPS\u0102 CUI firm\u0103.")
+        erori.append("Lips\u0102 CUI firm\u0103.")
     else:
         _ok_cui, _motiv_cui = valideaza_cui(_cui)   # T1: cifra de control, pre-DUK
         if not _ok_cui:
             erori.append("CUI firm\u0103 invalid (%s): %s." % (_digits(_cui), _motiv_cui))
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPS\u0102 denumire firm\u0103.")
+        erori.append("Lips\u0102 denumire firm\u0103.")
     if not _clean_bc(prof.get("banca")):
-        erori.append("LIPS\u0102 banc\u0103 \u2014 obligatorie la D300.")
+        erori.append("Lips\u0102 banc\u0103 \u2014 obligatorie la D300.")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
-        erori.append("LIPS\u0102 cont/IBAN \u2014 obligatoriu la D300.")
+        erori.append("Lips\u0102 cont/IBAN \u2014 obligatoriu la D300.")
     _caen = _digits(prof.get("caen"))
     if not _caen:
-        erori.append("LIPS\u0102 CAEN \u2014 obligatoriu la D300.")
+        erori.append("Lips\u0102 CAEN \u2014 obligatoriu la D300.")
     elif len(_caen) != 4:
         erori.append("COD CAEN invalid: '%s' \u2014 trebuie 4 cifre (structura ANAF caen C(4))." % _caen)
     _pr = prof.get("pro_rata")   # T1: pro_rata prezent trebuie in [0,100]; absent = 100% (legitim)
@@ -890,10 +890,10 @@ def erori_generare(prof):
         try:
             _prv = float(numar_fiscal(_pr, "pro_rata"))
         except Exception:
-            erori.append("pro_rata invalid: %r \u2014 trebuie num\u0103r în [0,100]." % _pr)
+            erori.append("Pro-rata din Date firmă e invalidă: %r \u2014 trebuie un număr între 0 și 100." % _pr)
         else:
             if not (0.0 <= _prv <= 100.0):
-                erori.append("pro_rata în afară intervalului [0,100]: %s (structura ANAF pro_rata N(7.2))." % _prv)
+                erori.append("Pro-rata din Date firmă e în afara intervalului 0–100: %s (structura ANAF, N(7.2))." % _prv)
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori
@@ -907,11 +907,11 @@ def _blocante_pre_duk(res):
     tip = tip_decont(prof)
     erori = []
     if tip == "A" and luna != 12:
-        erori.append("tip_decont=A (anual) cere luna=12 (DUK regula R18).")
+        erori.append("Decontul anual se depune pentru luna 12 (DUK regula R18).")
     if tip == "S" and luna not in (6, 12):
-        erori.append("tip_decont=S (semestrial) cere luna 06 sau 12 (DUK regula R18).")
+        erori.append("Decontul semestrial se depune pentru luna 06 sau 12 (DUK regula R18).")
     if tip == "T" and luna not in (2, 3, 5, 6, 8, 9, 11, 12):
-        erori.append("tip_decont=T (trimestrial) cere luna în (02,03,05,06,08,09,11,12) (DUK regula R18).")
+        erori.append("Decontul trimestrial se depune pentru una din lunile 02, 03, 05, 06, 08, 09, 11, 12 (DUK regula R18).")
     return erori
 
 
@@ -1280,7 +1280,7 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
         res.nula_asumata = True
         if _nf:
             res.avertismente.append(
-                "DECLARAȚIE NULĂ ASUMATĂ: niciun rând declarat, dar există %d facturi contabilizabile (rezultat TVA zero) în "
+                "Declarație nulă asumată: niciun rând declarat, dar există %d facturi contabilizabile (rezultat TVA zero) în "
                 "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _nf)
         else:
             res.note_rezultat.append(

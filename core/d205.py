@@ -158,11 +158,11 @@ def calcul_d205(prof, an, beneficiari):
 def erori_generare(prof):
     erori = []
     if not (prof.get("cui") or "").strip():
-        erori.append("LIPSĂ CUI (obligatoriu).")
+        erori.append("Lipsă CUI (obligatoriu).")
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă (obligatorie).")
+        erori.append("Lipsă denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori

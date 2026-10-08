@@ -54,9 +54,9 @@ def test_temeiul_tva_nu_se_lipeste_pe_alte_declaratii():
     profit, d112 lunar din altul. Art. 322 lipit pe ele ar fi un temei FALS - mai rau decat niciunul.
     Se cere EGALITATE cu mesajul de baza, nu absenta unui subsir."""
     assert da.valideaza_cerere("d100", {"an": 2026, "luna": 9}, per_efectiv="trimestrial") == [
-        "firma depune d100 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"]
+        "firma depune d100 trimestrial: trimite trimestrul (1-4), nu luna"]
     assert da.valideaza_cerere("d112", {"an": 2026, "trim": 3}, per_efectiv="lunar") == [
-        "declarația d112 se depune LUNAR pentru firma asta: trimite luna (1-12), nu trimestrul"]
+        "declarația d112 se depune lunar pentru firma asta: trimite luna (1-12), nu trimestrul"]
 
 
 def test_temeiul_citat_se_rezolva_in_corpus():

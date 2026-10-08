@@ -92,13 +92,13 @@ def erori_generare(prof, an, manual):
     d = _declarant(prof, manual)
     for c in ("nume_declar", "prenume_declar"):
         if not str(d.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant/titular obligatoriu)." % c)
+            er.append("Lipsă %s (declarant/titular obligatoriu)." % c)
     if not _cif(manual.get("cif")):
         er.append("D221 cere cif (CNP/NIF contribuabil).")
     if not str(manual.get("nume_a") or "").strip():
-        er.append("LIPSĂ nume_a (nume+prenume / denumire contribuabil sau asociere).")
+        er.append("Lipsă nume_a (nume+prenume / denumire contribuabil sau asociere).")
     if not str(manual.get("adresa_a") or "").strip():
-        er.append("LIPSĂ adresa_a.")
+        er.append("Lipsă adresa_a.")
     forma = str(manual.get("forma_org") or "")
     if forma not in {"1", "2"}:
         er.append("forma_org invalid (1=individual / 2=asociere fără PJ).")

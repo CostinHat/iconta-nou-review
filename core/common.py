@@ -780,6 +780,35 @@ _deriva_data_out()
 DATA_START_SISTEM = date(2025, 1, 1)
 
 
+# Eticheta umana pentru fiecare cheie din COTE. Acoperirea (ETICHETE == chei COTE) e pazita de test:
+# o valoare noua fara eticheta ar produce un mesaj sarac; o eticheta ramasa fara cheie = drift.
+ETICHETE_COTE = {
+    "impozit_micro": "Cota impozit micro (1%)",
+    "impozit_special_valoare_mare": "Cota impozit special bunuri de valoare mare (D216: 0,3% 2024-2025, 0,9% din 2026)",
+    "chirie_pf_forfait": "Cota cheltuieli forfetare chirie PF (20%, CF art.84^1 alin.3)",
+    "chirie_pf_impozit": "Cota impozit chirie PF reținut la sursă (10%, CF art.84^1 alin.5)",
+    "impozit_profit": "Cota impozit pe profit (16%)",
+    "tva_standard": "Cota standard TVA",
+    "tva_redusa": "Cota redusă TVA",
+    "tva_redusa_9": "Cota redusă TVA pentru fostele operațiuni de 9% - azi 11% (CF art.291 alin.2, comasare Legea 141/2025 de la 01.08.2025); 9% e doar istoric, nu se reconfirmă",
+    "tva_redusa_5": "Cota redusă TVA pentru fostele operațiuni de 5% (cărți, acces cultural) - azi 11% (CF art.291 alin.2 lit.g-h, Legea 141/2025 de la 01.08.2025); 5% e doar istoric, nu se reconfirmă",
+    "impozit_dividend": "Cota impozit pe dividende (CF art.97 alin.7)",
+    "plafon_tva_incasare": "Plafonul TVA la încasare",
+    "plafon_mijloc_fix": "Plafonul de încadrare ca mijloc fix",
+    "plafon_sold_casa": "Plafonul soldului de casă",
+    "plafon_avans_decontare": "Plafonul avansului de decontare",
+    "cas": "Cota CAS (pensie)",
+    "cass": "Cota CASS (sănătate)",
+    "impozit_venit": "Cota impozit pe venit",
+    "cam": "Cota CAM (asiguratorie pentru muncă)",
+    "salariu_minim": "Salariul minim brut",
+    "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabilă)",
+    "plafon_facilitate_salariu_minim": "Plafonul facilității la salariul minim",
+    "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
+    "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
+}
+
+
 class PerioadaIndisponibila(ValueError):
     """Blocaj MOTIVAT (nu exceptie bruta): o cota ceruta de un calcul nu e definita pentru perioada ceruta
     (data ceruta e inainte de prima valoare cunoscuta a cotei). NU e defect de sistem - e LIMITA DECLARATA:
@@ -792,11 +821,11 @@ class PerioadaIndisponibila(ValueError):
         self.nume = nume
         self.la_data = _ca_data(la_data)
         self.prima_data = _ca_data(prima_data)
-        det = ("%s nu poate fi calculată: valoarea '%s' nu e definită înainte de %s (nu a fost verificată "
+        det = ("%s nu poate fi calculată: valoarea „%s” nu e definită înainte de %s (nu a fost verificată "
                "la sursă pentru perioade anterioare - nu se inventează retroactiv). Calculul e disponibil de "
-               "la %s; pentru perioade anterioare valoarea se completează în COTE la sursă (decizie de "
-               "dezvoltator)." % (self.la_data.isoformat(), nume, self.prima_data.isoformat(),
-                                  self.prima_data.isoformat()))
+               "la %s; pentru perioade anterioare valoarea se adaugă în registrul de parametri fiscali, "
+               "verificată la sursă (decizie de dezvoltator)." % (self.la_data.isoformat(), ETICHETE_COTE.get(nume, nume),   # [retest 08.10 pct.14] eticheta omului, nu cheia
+                                                                  self.prima_data.isoformat(), self.prima_data.isoformat()))
         super().__init__("PERIOADA_BLOCATA: " + det)
 
 

@@ -17,7 +17,7 @@ def test_nir_o_linie_21():
     assert r["tva_deductibila"] == D("21.00")
     assert [(n["debit"], n["credit"], n["suma"]) for n in r["note"]] == [
         ("371", "401", D("100.00")), ("4426", "401", D("21.00")),
-        ("371", "378", D("50.00")), ("371", "4428", D("31.50"))]
+        ("371", "378", D("50.00")), ("371", "4428.02", D("31.50"))]
 
 def test_nir_cantitati_si_cote():
     # 10 buc, cost 4, raft 6.05 (5 + 21%) -> cost 40, vanz 60.50, tva 10.50, adaos 10
@@ -141,7 +141,7 @@ def test_descarcare_exemplu_clasic():
     assert r["tva"] == D("285.00")
     assert r["total_371"] == D("1785.00")   # 371 se goleste complet
     assert [(n["debit"], n["credit"]) for n in r["note"]] == [
-        ("607", "371"), ("378", "371"), ("4428", "371")]
+        ("607", "371"), ("378", "371"), ("4428.02", "371")]
 
 def test_descarcare_partiala():
     # se vinde jumatate: rc707=750, tva=142.50

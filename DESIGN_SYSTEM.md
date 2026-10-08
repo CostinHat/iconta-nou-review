@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.82 · 8 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.84 · 8 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -12,6 +12,9 @@
 - Când se descoperă o inconsistență: STOP, se corectează, apoi se continuă. Zero datorie tehnică vizuală.
 - La orice decizie de schimbare de comportament se verifică TOATE locurile unde comportamentul vechi există, nu doar cel discutat.
 - Textele afișate folosesc diacritice românești complete; codul/comentariile/markerii — fără diacritice.
+- **Textul afișat e limba contabilului (v2.84, comanda Costin „Retest 08.10” pct.14):** fără identificatori de cod (`common.COTE`, `R3_1_1`,
+  `d100_fapt`, `False`/`None`, nume de coloană) și fără majuscule de accent („ATENTIE”, „NU”, „LIPSĂ”); un rând de cod D300 se spune
+  „rândul 5.1”, o cheie de cotă prin eticheta ei. Gard: `core/test_text_afisat_limbaj.py`.
 - Mesajele către utilizator sunt clare și strict folositoare: spun ce s-a întâmplat și ce are de făcut.
 
 ## 1. Butoane — set ÎNCHIS
@@ -131,6 +134,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - Tabelele PDF respectă aceleași reguli de aliniere ca HTML (cap. 4): stânga peste tot, sume la dreapta cu separator aliniat.
 - Preferință: tabele reportlab Table cu colWidths explicite (ca factura_pdf.py), nu drawString cu coordonate manuale.
+- **Antetul unui raport contabil PDF** (`documente_api.antet_raport`; v2.84, 08.10.2026, comanda Costin „Retest 08.10” pct.18) poartă
+  firma, CUI-ul ei și momentul generării: „<firma> · CUI <cui> — Generată la zz.ll.aaaa hh:mm” (ora României, `data_ro(…, "cu_ora")`).
+  O hârtie fără CUI nu se poate lega de firmă, iar una fără dată nu spune pe ce stare a evidenței s-a tras. Gard:
+  `core/test_retest_0810_s6.py::test_pct18_pdf_balanta_are_cui_si_data`.
 
 ## 8. Semafoare
 
@@ -152,6 +159,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   dă conținutul (`fit-content`), între 1000px și marginea ecranului (`100vw - 48px`); la 1920px tabelele Balanței, Mijloacelor fixe și
   Declarațiilor nu mai derulează lateral. Derularea laterală rămâne numai când tabelul e mai lat decât ecranul.
 - Nicio fereastră nu iese din ecran.
+- **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
+  sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
+  nu libere pe rând: butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe
+  F2, ~1700 px). Zero clase noi — e toggle-ul secundar al Declarațiilor (v2.54). Datele scurte (PIF) nu se rup pe două rânduri, iar
+  o listă lungă de luni se strânge în intervale („8 luni: 01–08/2026”). Gard: `ACTIUNI_RAND_LIBERE` în verificator.
 - **Închiderea (v2.64, `inchidereDialog` din `api.js`, comanda Costin 04.10.2026).** O fereastră INFORMATIVĂ — fără
   câmpuri de tastat (bun venit, anunț, lupa, ajutorul de dinainte de autentificare, paginile publice, previzualizări) — se închide din **X în antet** și cu
   **Esc**, prin mecanismul unic `inchidereDialog` din `api.js`: X-ul e `.nav-x` (pus de mecanism dacă lipsește), Esc
@@ -761,6 +773,17 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.84 (08.10.2026)** — lotul „Retest 08.10”: **cap.9** — în fereastra largă (corp = coloană flex) niciun copil direct nu se strânge
+sub conținutul lui; se strâng (și derulează ele) numai zonele declarate (`.mig-sold-tabel`, `.rap-split`, `.pac-text`); `.dec-xml` nu
+mai crește și nu mai e strivit (D406/D394: tabelul „Din ce e făcută” curgea peste „Vezi XML-ul generat”, subsol și „Trimite în coadă”;
+goluri mari între secțiuni). Gard: `FER_LARG_STRIVIT`. **cap.7** — antetul unui raport contabil PDF: firma · CUI · momentul generării
+(`documente_api.antet_raport`). **Textul afișat** (cap.0, „diacritice complete”, extins): nici identificatori de cod (`modul.atribut`,
+`nume_cu_underscore`, `COD_CU_UNDERSCORE`, `False/None`), nici majuscule de accent („ATENTIE”, „NU”) — gard `core/test_text_afisat_limbaj.py`
+pe textul serverului (inclusiv argumentele cu nume, atribuirile și `avertismente.append`) și pe ecranele JS. Antetele de tabel scrise
+cu majuscule devin `text-transform: uppercase` în CSS (`.ac-cap`), textul rămâne normal.
+**v2.83 (08.10.2026)** — lotul „Retest 08.10”: **cap.9** — acțiunile unui rând de tabel (trei sau mai multe butoane) stau într-un
+`<details class="dec-xml">` „Acțiuni”, nu libere pe rând (Mijloace fixe la ~1700 px derula lateral, acțiunile ieșeau din vedere, PIF-ul
+se rupea); lunile neînregistrate se strâng în intervale. Gard: `ACTIUNI_RAND_LIBERE`.
 **v2.82 (08.10.2026)** — lotul „Deciziile 08.10”, completările: **cap.6** — mesajul pus pe un container cu câmpuri merge într-un copil
 propriu (`.msg-in-formular`), nu le șterge (`api.js::arataMesaj`, mecanismul unic; gard `core/test_mesaj_in_formular.py`). Ecrane noi pe
 reguli existente, fără regulă nouă: balanța cu cinci egalități (cap.9 `fer-tabel`), grupul „Înainte de preluare” și formularul în-ecran

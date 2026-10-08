@@ -188,7 +188,7 @@ def adauga(conn, schema, an, luna, d):
         except Exception:  # noqa: BLE001 — derivarea nu trebuie să blocheze introducerea
             derivate = set()
         if rand in derivate and rand not in RANDURI_ADITIVE:
-            erori.append(("rand", "Rândul %s e deja DERIVAT automat din facturile perioadei "
+            erori.append(("rand", "Rândul %s e deja derivat automat din facturile perioadei "
                                   "(dublă numărare interzisă). Corectează facturile sau alege alt "
                                   "rând." % rand))
     if erori:

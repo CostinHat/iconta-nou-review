@@ -58,9 +58,9 @@ def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui_numeric") or "").strip():
-        erori.append("LIPSĂ CUI firmă.")
+        erori.append("Lipsă CUI firmă.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă.")
+        erori.append("Lipsă denumire firmă.")
     # regCom e OBLIGATORIU in S1005/S1003 (verificat la sursa: DUKIntegrator -v S1005 respinge XML-ul cu
     # "eroare atribut: regCom: atributul trebuie sa existe"). Fara aceasta poarta, genereaza emitea un
     # bilant FARA regCom - exact "XML respins de ANAF" pe care docstring-ul spune ca poarta il previne.

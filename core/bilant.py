@@ -8,6 +8,8 @@ Conventii:
 Valorile F* sunt intregi (lei), rotunjite aritmetic."""
 from decimal import Decimal, ROUND_HALF_UP
 
+from core.stocuri import CONT_TVA_STOC   # TVA-ul din prețul de raft: numai la rd.05 (decizia Costin 08.10, pct.1 la §6 S6)
+
 def _i(x):
     return int(Decimal(str(x or 0)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
@@ -32,6 +34,11 @@ def rd(rulaje, *prefixe):
 def rc(rulaje, *prefixe):
     return _pe_prefix(rulaje, prefixe, 1)
 
+def _fara_tva_stoc(s):
+    """Soldurile fără analiticul TVA-ului din prețul de raft (`stocuri.CONT_TVA_STOC`, 4428.02): el intră NUMAI la stocuri (rd.05)."""
+    return {k: v for k, v in s.items() if str(k) != CONT_TVA_STOC}
+
+
 def f10_din_balanta(s):
     """F10 bilant prescurtat micro (S1005). Intoarce dict rd->valoare (lei intregi).
     Randuri per formular oficial; sume algebrice cu ajustari (28x/29x/39x/49x/59x) scazute."""
@@ -46,7 +53,9 @@ def f10_din_balanta(s):
                   "341","345","346","347","351","354","356","357","358","361","371","381","4091")
             + sd(s, "308","348","368","388") - sc(s, "308","348","368","388")
             - sc(s, "378") - sc(s, "391","392","393","394","395","396","397","398")
-            - sc(s, "4428"))
+            # [08.10.2026, decizia Costin pct.1 la §6 S6] „din ct. 4428” = numai TVA-ul din prețul de raft, pe analiticul lui
+            - sc(s, CONT_TVA_STOC))
+    s = _fara_tva_stoc(s)   # de aici încolo (creanțe, datorii) analiticul stocului nu mai contează — o singură dată, la rd.05
     # creante (numai solduri debitoare pe conturile bifunctionale)
     # [08.10.2026, §6 pct.3] 4428 cu sold DEBITOR (TVA-ul NIR-urilor fără factură, 4428.01; achizițiile la TVA la încasare) e creanță —
     # OMFP 1802/2014, bilanțul prescurtat, rd.06 CREANȚE: „… + 4424 + din ct. 4428** + 444** …” (** = solduri debitoare)

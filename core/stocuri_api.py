@@ -229,7 +229,7 @@ def adauga_nir(conn, schema, nir):
                    "factură — prețurile de achiziție de pe articole trebuie să dea aceeași sumă." %
                    (_q2(rez["cost_baza_total"]), factura["eticheta"], net))
             return {"eroare": msg, "cod": "COST_DIFERIT_DE_FACTURA", "erori_campuri": [{"camp": "sn-factura", "mesaj": msg}]}
-        rez = {**rez, "note": [n for n in rez["note"] if n["debit"] == "371" and n["credit"] in ("378", "4428")]}
+        rez = {**rez, "note": [n for n in rez["note"] if n["debit"] == "371" and n["credit"] in ("378", _m.CONT_TVA_STOC)]}
         nir = {**nir, "furnizor": nir.get("furnizor") or factura.get("tert_nume"), "cui": nir.get("cui") or factura.get("tert_cui"),
                "factura_ref": nir.get("factura_ref") or factura["eticheta"]}
     articole = []
@@ -424,18 +424,17 @@ def descarca_luna(conn, schema, an, luna):
         doc_vechi = None
     with conn.cursor() as cur:
         si = {}
-        from core import nir_legare as _nl
-        for cont in ("371", "378", "4428"):
-            # [08.10, §6 pct.3] TVA-ul NIR-urilor fără factură (analiticul de achiziție al lui 4428) nu e TVA-ul din prețul de raft:
-            # nu intră în K (rulajele lui 4428 se citesc oricum pe cont EXACT, `_rulaj`)
+        # [08.10.2026, decizia Costin pct.1 la §6 S6] TVA-ul din prețul de raft stă pe analiticul lui (`stocuri.CONT_TVA_STOC`): K îl
+        # citește EXACT — nici TVA-ul la încasare (4428), nici al NIR-ului fără factură (4428.01) nu intră în stoc
+        for cont, conditie in (("371", "cont LIKE %s"), ("378", "cont LIKE %s"), (_m.CONT_TVA_STOC, "cont = %s")):
             cur.execute(f"""SELECT COALESCE(SUM(sold_debitor),0), COALESCE(SUM(sold_creditor),0)
-                            FROM {schema}.solduri_initiale WHERE cont LIKE %s AND cont <> %s""", (cont + "%", _nl.CONT_TVA_NIR))
+                            FROM {schema}.solduri_initiale WHERE {conditie}""", (cont + "%" if "LIKE" in conditie else cont,))
             d, c = cur.fetchone()
             si[cont] = Decimal(d or 0) - Decimal(c or 0)   # debitor pozitiv
         # rulaje cumulate de la inceputul anului pana la sfarsitul lunii
         rd_371 = _rulaj(cur, schema, "371", "debit", sfarsit, inceput_an)
         rc_378 = _rulaj(cur, schema, "378", "credit", sfarsit, inceput_an)
-        rc_4428 = _rulaj(cur, schema, "4428", "credit", sfarsit, inceput_an)
+        rc_4428 = _rulaj(cur, schema, _m.CONT_TVA_STOC, "credit", sfarsit, inceput_an)
         # vanzari de marfuri DOAR pe luna
         # [PIVOT 06.10.2026, comanda Costin §6.3 — supersedă nota din 05.10] Descărcarea globală rulează NUMAI la firma
         # global-valorică, unde ieșirile pe articol se refuză; deci vânzările din FACTURI (sursa `facturi`, cu sau fără articol)
@@ -445,14 +444,14 @@ def descarca_luna(conn, schema, an, luna):
         # folosim TVA neexigibila medie: tva = rc707 * (Si4428+Rc4428)/numitor-ul fara TVA
         # -> mai sigur: tva = rc707 * cota medie din stoc
     try:
-        k = _m.coeficient_k(-si["378"], rc_378, si["371"], rd_371, -si["4428"], rc_4428)
+        k = _m.coeficient_k(-si["378"], rc_378, si["371"], rd_371, -si[_m.CONT_TVA_STOC], rc_4428)
     except ValueError as e:
         return {"eroare": str(e)}
-    baza_stoc = (si["371"] + rd_371) - (-si["4428"] + rc_4428)
-    tva_stoc = -si["4428"] + rc_4428
+    baza_stoc = (si["371"] + rd_371) - (-si[_m.CONT_TVA_STOC] + rc_4428)
+    tva_stoc = -si[_m.CONT_TVA_STOC] + rc_4428
     tva_vanzari = (rc_707 * tva_stoc / baza_stoc).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) if baza_stoc else Decimal("0")
     rez = _m.descarcare_gv(rc_707, tva_vanzari, -si["378"], rc_378,
-                           si["371"], rd_371, -si["4428"], rc_4428)
+                           si["371"], rd_371, -si[_m.CONT_TVA_STOC], rc_4428)
     if not rez["note"]:
         if existente:   # rulajele de acum nu mai cer descărcare: ciornele de dinainte nu mai au temei
             with conn.cursor() as cur:

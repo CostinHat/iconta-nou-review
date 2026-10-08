@@ -46,9 +46,15 @@ class Sectiune:
     """
 
     def __init__(self, nume, atribut, chei=(), valori=(), fara_zero=False, monetare=(),
-                 proprietati=()):
+                 proprietati=(), element=None, ascunse=()):
         self.nume = nume
         self.atribut = atribut
+        # [08.10.2026, retest pct.5 + pct.14] Rândurile unei secțiuni-listă plecau cu NUMELE CÂMPURILOR din cod („partener_id”,
+        # „self_billing”, „nume1”) ca antete de tabel. `element` = numele dataclass-ului rândului (în modulul motorului), ca gardul să-i
+        # poată enumera câmpurile; `ascunse` = câmpurile care nu sunt pentru om (coduri interne, identificatori de structură). Orice alt
+        # câmp pleacă sub eticheta lui din `ETICHETE` — un câmp fără etichetă oprește poarta (core/test_declaratii_componente.py).
+        self.element = element
+        self.ascunse = tuple(ascunse)
         self.chei = tuple(chei)
         self.valori = tuple(valori)
         self.fara_zero = fara_zero
@@ -63,18 +69,42 @@ class Sectiune:
         self.proprietati = tuple(proprietati)
 
 
+#: [08.10.2026, retest pct.14] Eticheta pentru OM a fiecărui câmp care poate ajunge într-un tabel de componente. Sursa unică: ecranul
+#: primește antetul de aici, niciodată numele câmpului din cod.
+ETICHETE = {
+    # D100 / D710 / D112
+    "cod_oblig": "cod obligație", "suma_dat": "sumă datorată", "suma_plata": "sumă de plată", "cod_bugetar": "cod bugetar",
+    "scadenta": "scadență", "nr_evid": "număr de evidență", "cota": "cotă", "suma_dat_i": "datorat inițial",
+    "suma_dat_c": "datorat corectat", "suma_ded_i": "deductibil inițial", "suma_ded_c": "deductibil corectat",
+    "suma_plata_i": "de plată inițial", "suma_plata_c": "de plată corectat", "datorat": "datorat",
+    "nume": "nume", "brut": "venit brut", "baza_cas": "bază CAS", "cas": "CAS", "cass": "CASS", "impozit": "impozit",
+    # D205
+    "categ": "categorie de venit", "nume1": "beneficiar", "cif": "cod de identificare fiscală", "baza1": "bază", "imp1": "impozit",
+    "castig1": "câștig", "pierdere1": "pierdere", "divid_d": "dividende distribuite", "divid_p": "dividende plătite",
+    "tip_plata": "tip plată", "rezid": "rezident",
+    # D301
+    "tip": "tip", "nr_doc": "număr document", "data_doc": "data documentului", "val_valuta": "valoare în valută",
+    "tip_valuta": "valută", "curs": "curs", "baza": "bază", "tva": "TVA",
+    # D394 — seriile
+    "serieI": "serie", "nrI": "de la numărul", "nrF": "până la numărul",
+    # D406 — note și facturi
+    "id": "notă", "data": "data", "descriere": "descriere", "jurnal": "jurnal", "linii": "linii", "nr": "număr",
+    "partener_nume": "partener", "cont": "cont",
+}
+
+
 # HARTA. Numele coloanelor sunt pentru OM (deci cu diacritice); numele atributelor sunt ale codului.
 COMPONENTE = {
-    "d100": (Sectiune("Obligații de plată", "obligatii", monetare=("suma_dat",)),),
+    "d100": (Sectiune("Obligații de plată", "obligatii", monetare=("suma_dat",), element="Obligatie"),),
     # D710 nu e „D100 cu alt nume": `ObligatieRect` poarta suma INITIALA si cea CORECTATA, pe
     # fiecare latura, plus deducerile — iar suma care ajunge pe declaratie e o `@property`.
     "d710": (Sectiune("Obligații rectificate", "obligatii",
                       monetare=("suma_dat_i", "suma_dat_c", "suma_ded_i", "suma_ded_c",
                                 "suma_plata_i", "suma_plata_c"),
-                      proprietati=("suma_plata_i", "suma_plata_c")),),
+                      proprietati=("suma_plata_i", "suma_plata_c"), element="ObligatieRect"),),
     "d205": (Sectiune("Beneficiari", "beneficiari",
-                      monetare=("baza1", "imp1", "castig1", "pierdere1", "divid_d", "divid_p")),),
-    "d301": (Sectiune("Operațiuni", "operatiuni", monetare=("val_valuta", "baza", "tva")),),
+                      monetare=("baza1", "imp1", "castig1", "pierdere1", "divid_d", "divid_p"), element="Beneficiar"),),
+    "d301": (Sectiune("Operațiuni", "operatiuni", monetare=("val_valuta", "baza", "tva"), element="Operatiune"),),
     "d300": (Sectiune("Rânduri completate", "R",
                       chei=("rând",), valori=("valoare",), fara_zero=True,
                       monetare=("valoare",)),),
@@ -87,18 +117,20 @@ COMPONENTE = {
     "d394": (Sectiune("Operațiuni pe partener și cotă", "op1",
                       chei=("tip", "tip partener", "cotă", "CUI partener", "denumire partener"),
                       valori=("număr facturi", "bază", "TVA"), monetare=("bază", "TVA")),
-             Sectiune("Serii de facturi declarate", "serii"),),
+             Sectiune("Serii de facturi declarate", "serii", element=("tip", "serieI", "nrI", "nrF")),),
     # D406 poarta structuri de SAF-T pe care nu le-am confruntat camp cu camp; coloanele monetare
     # nu se declara din presupunere - se lasa nemarcate, si se spune aici de ce.
     # [R105, 30.08.2026] D112 a intrat aici in ziua in care motorul ei a capatat obiect de rezultat.
     # Doua sectiuni, fiindca declaratia are doua feluri de pozitii: ce datoreaza ANGAJATORUL la buget
     # (randurile `angajatorA`) si contributiile FIECARUI asigurat.
-    "d112": (Sectiune("Obligații de plată la buget", "obligatii", monetare=("datorat",)),
+    "d112": (Sectiune("Obligații de plată la buget", "obligatii", monetare=("datorat",), element="ObligatieD112"),
              Sectiune("Contribuțiile asiguraților", "asigurati",
-                      monetare=("brut", "baza_cas", "cas", "cass", "impozit"))),
-    "d406": (Sectiune("Note contabile", "note"),
-             Sectiune("Facturi de vânzare", "facturi_vanzare"),
-             Sectiune("Facturi de cumpărare", "facturi_cumparare"),),
+                      monetare=("brut", "baza_cas", "cas", "cass", "impozit"), element="AsiguratD112")),
+    # liniile notelor și ale facturilor pleacă normalizate la {cont, debit, credit} (`_linie`), indiferent de forma lor în motor
+    "d406": (Sectiune("Note contabile", "note", element="Nota"),
+             Sectiune("Facturi de vânzare", "facturi_vanzare", element="Factura", ascunse=("partener_id", "self_billing", "tip")),
+             Sectiune("Facturi de cumpărare", "facturi_cumparare", element="Factura",
+                      ascunse=("partener_id", "self_billing", "tip")),),
 }
 
 # Tipurile care NU-și pot desface cifra, fiecare cu motivul ȘI cu ce ar trebui făcut. Absența cu
@@ -128,14 +160,34 @@ def _simplu(v):
     return str(v)
 
 
-def _rand_din_lista(element, proprietati=()):
+def _linie(x):
+    """O linie cu cont (notă, factură, plată), în forma pe care o citește ecranul: {cont, debit, credit}. Linia de factură / plată are
+    `valoare` / `suma` și `sens` (C / D), nu `debit` / `credit` — citită direct, ieșea „707 · credit 0,00” (retest 08.10, pct.5)."""
+    d = {f.name: getattr(x, f.name) for f in dataclasses.fields(x)}
+    if "debit" in d or "credit" in d:
+        debit, credit = d.get("debit") or 0, d.get("credit") or 0
+    else:
+        suma = d.get("valoare", d.get("suma")) or 0
+        debit, credit = (suma, 0) if d.get("sens") == "D" else (0, suma)
+    return {"cont": d.get("cont"), "debit": _simplu(debit), "credit": _simplu(credit)}
+
+
+def _valoare_rand(v):
+    if isinstance(v, (list, tuple)) and v and all(dataclasses.is_dataclass(x) and hasattr(x, "cont") for x in v):
+        return [_linie(x) for x in v]
+    return _simplu(v)
+
+
+def _rand_din_lista(element, proprietati=(), ascunse=()):
     if dataclasses.is_dataclass(element) and not isinstance(element, type):
-        rand = {k: _simplu(v) for k, v in dataclasses.asdict(element).items()}
+        # câmp cu câmp (nu `asdict`, care ar transforma liniile în dicționare înainte de `_linie`)
+        rand = {ETICHETE.get(f.name, f.name): _valoare_rand(getattr(element, f.name))
+                for f in dataclasses.fields(element) if f.name not in ascunse}
         for p in proprietati:
-            rand[p] = _simplu(getattr(element, p))
+            rand[ETICHETE.get(p, p)] = _simplu(getattr(element, p))
         return rand
     if isinstance(element, dict):
-        return {str(k): _simplu(v) for k, v in element.items()}
+        return {ETICHETE.get(str(k), str(k)): _simplu(v) for k, v in element.items() if k not in ascunse}
     return {"valoare": _simplu(element)}
 
 
@@ -161,7 +213,7 @@ def _randuri(res, sec):
                        if any(v not in (0, 0.0, None, "") for n, v in r.items()
                               if n in sec.valori)]
         return randuri
-    return [_rand_din_lista(e, sec.proprietati) for e in sursa]
+    return [_rand_din_lista(e, sec.proprietati, sec.ascunse) for e in sursa]
 
 
 # Nomenclator INCHIS al acoperirii. E STRUCTURA, nu text: raspunsul rutei poarta unul din cele trei
@@ -189,6 +241,6 @@ def componente(tip, res):
         total += len(randuri)
         sectiuni.append({"nume": sec.nume, "total": len(randuri),
                          "aratate": min(len(randuri), LIMITA_RANDURI),
-                         "monetare": list(sec.monetare),
+                         "monetare": [ETICHETE.get(m, m) for m in sec.monetare],
                          "randuri": randuri[:LIMITA_RANDURI]})
     return {"acoperire": "completa", "sectiuni": sectiuni, "total": total}

@@ -38,7 +38,7 @@ def test_depunere_pe_perioada_neaplicabila_e_contrazicere():
         neclar=[],
         depuse={("d100", 2025, 12): Z})
     assert len(r) == 1 and r[0]["fel"] == "contrazice", r
-    assert "DEPUSĂ" in r[0]["mesaj"] and "nu pot fi amândouă adevărate" in r[0]["mesaj"]
+    assert "e depusă" in r[0]["mesaj"] and "nu pot fi amândouă adevărate" in r[0]["mesaj"]
     assert "T4 2025" in r[0]["motiv_citat"], "citatul nu poartă motivul contrazis"
 
 

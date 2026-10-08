@@ -38,6 +38,17 @@ def numar_cu_serie(serie, numar):
     return nr if (not s or nr.startswith(s)) else s + nr
 
 
+def numar_in_serie(serie, numar):
+    """Numărul de ordine al unui document ÎN SERIA LUI (int), sau None dacă n-are cifre. Inversa lui `numar_cu_serie`, cu aceeași regulă:
+    numărul unei facturi emise poate purta deja seria în față („F1A3” în seria „F1A” e numărul 3, nu 13). [08.10.2026, retest pct.6]
+    Forma veche lua toate cifrele din număr — inclusiv cele ale seriei."""
+    nr, s = str(numar if numar is not None else "").strip(), str(serie or "").strip()
+    if s and s != "-" and nr.upper().startswith(s.upper()):
+        nr = nr[len(s):]
+    cifre = "".join(ch for ch in nr if ch.isdigit())
+    return int(cifre) if cifre else None
+
+
 def data_ro(d, stil="scurt"):
     """Format romanesc canonic pentru DATE afisate utilizatorului — oglinda dataRo din api.js
     (DS cap.4). Sursa UNICA in backend; NU se reimplementeaza strftime('%d.%m.%Y') local.

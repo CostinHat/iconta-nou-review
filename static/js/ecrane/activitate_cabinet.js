@@ -104,11 +104,11 @@ export async function randeazaActivitateCabinet(corp, nav) {
       <div class="mig-intro">Jurnal cronologic — cine, ce și când (${jur.total || 0} evenimente)</div>
       <div class="mig-sold-tabel ac-tabel">
         <div class="mig-sold-rand ac-cap">
-          <span class="ac-cand">CÂND</span>
-          <span class="ac-cine">CINE</span>
-          <span class="ac-act">ACȚIUNE</span>
-          <span class="ac-decl">DECLARAȚIE / NOTĂ</span>
-          <span class="ac-firma">FIRMĂ</span>
+          <span class="ac-cand">Când</span>
+          <span class="ac-cine">Cine</span>
+          <span class="ac-act">Acțiune</span>
+          <span class="ac-decl">Declarație / notă</span>
+          <span class="ac-firma">Firmă</span>
         </div>
         ${ev.length ? randuriJurnal : `<div class="stare-goala">Nicio activitate în perioada aleasă.</div>`}
       </div>

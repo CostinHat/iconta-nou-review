@@ -157,12 +157,20 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
         note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma()})
     note += [
         {"debit": "371", "credit": "378", "suma": adaos_total, **_urma()},
-        {"debit": "371", "credit": "4428", "suma": tva_neex, **_urma()},
+        {"debit": "371", "credit": CONT_TVA_STOC, "suma": tva_neex, **_urma()},
     ]
     return {"linii": linii_out, "cost_total": cost_total, "cost_baza_total": _q(cost_baza_total),
             "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded),
             "adaos_total": adaos_total, "tva_neexigibila": tva_neex,
             "valoare_vanzare": _q(vanzare_total), "note": note}
+
+
+#: [08.10.2026, decizia Costin la §6 al lotului „Deciziile 08.10 §6”, pct.1, verbatim în DECIZII] „analitic propriu pentru TVA-ul din
+#: prețul de raft, cu migrarea soldurilor existente. În bilanț acesta se scade doar din stocuri (rd.05) și nu mai apare la datorii.”
+#: TVA-ul neexigibil din prețul cu amănuntul (global-valoric: `371 = 4428.02` la NIR, `4428.02 = 371` la descărcare) stă pe analiticul
+#: lui, separat de TVA-ul la încasare (sinteticul 4428) și de TVA-ul NIR-ului fără factură (4428.01). OMFP 1802/2014, bilanțul
+#: prescurtat, rd.05 STOCURI: „… 371 +/- 378 … - din ct. 4428”.
+CONT_TVA_STOC = "4428.02"
 
 
 def coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428):
@@ -195,7 +203,7 @@ def descarcare_gv(rc_707, tva_vanzari, si_378, rc_378, si_371, rd_371, si_4428, 
     note = [
         {"debit": "607", "credit": "371", "suma": cmv, **_urma()},
         {"debit": "378", "credit": "371", "suma": adaos, **_urma()},
-        {"debit": "4428", "credit": "371", "suma": tva, **_urma()},
+        {"debit": CONT_TVA_STOC, "credit": "371", "suma": tva, **_urma()},
     ]
     return {"k": k, "adaos": adaos, "cmv": cmv, "tva": tva,
             "total_371": _q(cmv + adaos + tva), "note": note}

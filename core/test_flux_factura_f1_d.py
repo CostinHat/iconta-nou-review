@@ -65,7 +65,7 @@ def _nota(conn, data, sursa, linii, status="validata", factura_id=None):
 
 def _stoc_global_valoric(conn):
     """Marfă intrată la preț de vânzare (GV): cost 1000, adaos 200, TVA neexigibilă 264 (21% din 1200+…)."""
-    _nota(conn, "2026-10-01", "stocuri", [("371", "401", 1000), ("371", "378", 200), ("371", "4428", 252)])
+    _nota(conn, "2026-10-01", "stocuri", [("371", "401", 1000), ("371", "378", 200), ("371", "4428.02", 252)])
 
 
 # ── HoReCa ────────────────────────────────────────────────────────────────────────────────────────────────────────────────

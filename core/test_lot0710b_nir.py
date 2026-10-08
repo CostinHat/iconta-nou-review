@@ -88,7 +88,7 @@ def test_la_pret_de_vanzare_raftul_gol_nu_e_zero(conn):
     assert [x["camp"] for x in r["erori_campuri"]] == ["nir-l0-pret_vanzare"]          # sub cost: tot lângă câmp
     r = s.adauga_nir(conn, _SCH, {"numar": "1", "data": "2099-10-07", "linii": [dict(_L, denumire="Marfa A", pret_vanzare=80)]})
     assert {d for d, _c, _s in _note(conn, r["inregistrari"])} == {"371", "4428.01"} and \
-        {c for _d, c, _s in _note(conn, r["inregistrari"])} == {"408", "378", "4428"}                    # prețul cu amănuntul; §6: 408
+        {c for _d, c, _s in _note(conn, r["inregistrari"])} == {"408", "378", "4428.02"}                 # prețul cu amănuntul; §6: 408; retest 08.10 pct.1: 4428.02
 
 
 def test_metoda_nedeclarata_se_cere_in_date_firma(conn):

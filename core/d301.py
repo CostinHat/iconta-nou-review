@@ -214,7 +214,7 @@ def erori_generare(prof):
     erori = []
     _cif = _NEDIGIT.sub("", prof.get("cui") or "")
     if not _cif:
-        erori.append("LIPSĂ CIF persoană impozabilă.")
+        erori.append("Lipsă CIF persoană impozabilă.")
     else:
         # T1: cifra de control + lungime (validator partajat core.identitate, read-only), nu doar
         # prezenta. Un CIF cu checksum gresit / supra-lung era emis TACIT (doar DUK il prindea, criptic).
@@ -225,11 +225,11 @@ def erori_generare(prof):
         elif len(_cif) > 13:
             erori.append("CIF %s depășește C(13) (structura ANAF d301)." % _cif)
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire.")
+        erori.append("Lipsă denumire.")
     if not _clean_bc(prof.get("banca")):
-        erori.append("LIPSĂ bancă (obligatorie la D301).")
+        erori.append("Lipsă bancă (obligatorie la D301).")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
-        erori.append("LIPSĂ cont (obligatoriu la D301).")
+        erori.append("Lipsă cont (obligatoriu la D301).")
     # [lotul 07.10 B, comanda Costin A.3] înregistrarea art.317 decide pers_inreg (1/2); neleasă -> se cere acum, o dată, în
     # Date firmă — nu se emite „1” în locul omului
     if prof.get("inreg_art317") is None:
@@ -415,14 +415,14 @@ def genereaza(conn, schema, perioada, manual=None):
     if any(int(o.get("tip") or 1) == 1 for o in ops) and _pers_inreg(prof) == "1":
         res.avertismente.append(
             "D301: există operațiune de Secțiunea 1 (achiziții IC de bunuri) dar firma nu are marcajul de "
-            "înregistrare art.317 în profil -> se emite pers_inreg=1. Secțiunea 1 se completează NUMAI de "
+            "înregistrare art.317 în Date firmă -> declarația se emite fără el. Secțiunea 1 se completează numai de "
             "persoanele înregistrate conform art.317 (OPANAF 592/2016). Confirmă înregistrarea art.317 în "
-            "profil (altfel declarația e contradictorie), sau reclasifică operatiunea.")
+            "Date firmă (altfel declarația e contradictorie), sau reclasifică operațiunea.")
     if _ic_prim:
         res.avertismente.append(
-            "Verifică: există %d achiziție(i) IC înregistrate ca facturi în perioada - asigură-te ca toate "
-            "sunt reflectate în operatiunile D301 (declarația se construiește din tabelul d301_operatiuni, "
-            "nu automat din facturi)." % len(_ic_prim))
+            "Verifică: există %d achiziție(i) IC înregistrate ca facturi în perioadă - asigură-te că toate "
+            "sunt reflectate în operațiunile D301 (declarația se construiește din operațiunile introduse în "
+            "ecranul D301, nu automat din facturi)." % len(_ic_prim))
     # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof), deci
     # verificarile prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator, T6
     # nr_doc>C(20)) nu ajungeau la contabil - primea eroarea bruta a validatorului la upload. Le cablam

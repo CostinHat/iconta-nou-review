@@ -139,7 +139,10 @@ function _blocStoc(d) {
 }
 
 // [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după
-// luna primei note.” Gol = propunerea (core/luna_preluare.py); de la ea se numără restanțele în Control fiscal.
+// luna primei note.” Nesalvată = propunerea (core/luna_preluare.py); de la ea se numără restanțele în Control fiscal.
+// [retest 08.10 pct.20] „câmpul arată «---------- ----»; vine completat cu propunerea (06/2026), fără textul «Gol = propunerea»”.
+// Câmpul arată luna efectivă (salvată, altfel propunerea); cât timp nu e schimbat, la salvare rămâne propunere (null), deci se
+// recalculează dacă se schimbă soldurile de preluare — completarea nu fixează tacit o valoare pe care omul n-a ales-o.
 function _blocPreluare(d) {
   const lp = (d.profil || {}).luna_preluare || {};
   const ro = (x) => (x ? `${x.slice(5, 7)}/${x.slice(0, 4)}` : "");
@@ -148,8 +151,8 @@ function _blocPreluare(d) {
     <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Luna preluării</span>
-        <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` Propunere: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""} Gol = propunerea.${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}</span>
-        <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.salvata || "")}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
+        <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` ${lp.salvata ? "Propunerea iConta.eu" : "Completată cu propunerea"}: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""}${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}</span>
+        <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.salvata || lp.propunere || "")}" data-propunere="${esc(lp.salvata ? "" : (lp.propunere || ""))}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
       </label>
     </div>`;
 }
@@ -218,7 +221,7 @@ const VECTOR = [
   // `core/test_ajutor_periodicitate_tva.py` compara cele doua texte RANDATE si pica daca diverg.
   { k: "tip_decont", e: "Periodicitate TVA", tip: "select",
     opt: [["", "\u2014"], ["lunar", "Lunar"], ["trimestrial", "Trimestrial"]],
-    aj: "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2. Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial." },
+    aj: "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) și nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2. Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial." },
   { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },
@@ -507,7 +510,9 @@ function _dateDinFormular(corp) {
   date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
   date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
   date.serie_chitanta = corp.querySelector("#df-serie_chitanta").value.trim() || null;   // [decizii 07.10 pct.5]
-  date.luna_preluare = corp.querySelector("#df-luna_preluare").value || null;   // [08.10 §6 pct.4] gol = propunerea
+  // [08.10 §6 pct.4 + retest 08.10 pct.20] propunerea neschimbată (sau câmpul golit) rămâne propunere: null, nu o valoare fixată
+  const _lp = corp.querySelector("#df-luna_preluare");
+  date.luna_preluare = (_lp.value && _lp.value !== _lp.dataset.propunere) ? _lp.value : null;
   if (corp.querySelector("#df-forma_juridica")) {
     date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
     date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;

@@ -581,7 +581,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           stare.className = "em-cui-stare";
           salveazaCiorna();
         } else {
-          stare.textContent = "cod TVA INVALID în VIES — scutirea intracomunitară nu se aplică";
+          stare.textContent = "cod TVA invalid în VIES — scutirea intracomunitară nu se aplică";
           stare.className = "em-cui-stare em-cui-rau";
         }
       } catch {
@@ -609,10 +609,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           box.id = "em-avert-inactiv";
           box.className = "em-avert-inactiv";
           box.innerHTML = `
-            <div class="em-avert-titlu">⚠ ATENȚIE: firmă INACTIVă fiscal la ANAF</div>
+            <div class="em-avert-titlu">⚠ Atenție: firmă inactivă fiscal la ANAF</div>
             <div class="em-avert-text">
               Dacă emiți factura către această firmă:<br>
-              • beneficiarul <b>NU își poate deduce cheltuiala și nici TVA-ul</b> de pe factura ta (art. 11 Cod fiscal);<br>
+              • beneficiarul <b>nu își poate deduce cheltuiala și nici TVA-ul</b> de pe factura ta (art. 11 Cod fiscal);<br>
               • o firmă inactivă poate fi în curs de dizolvare — există risc real de <b>neplată</b>;<br>
               • tranzacția poate atrage <b>controale ANAF</b>.<br>
               Verifică situația înainte de a continua. Poți emite, dar pe răspunderea ta.

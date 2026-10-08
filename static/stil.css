@@ -693,13 +693,12 @@ html, body {
 
 /* pe fereastra lărgită: corpul nu scrollează, doar tabelul ia spațiul rămas */
 .fereastra.fer-larg .fereastra-corp { overflow: auto; display: flex; flex-direction: column; }
-/* [layout/a11y] intr-o fereastra larga corpul e flex-column; un frate inalt (o lista lunga) NU trebuie sa
-   striveasca inputurile/select-urile copil-direct prin flex-shrink pana la inaltimea continutului
-   (dovedit: #pc-cauta din import plan conturi cadea 40px->20px). Coloana scrolleaza; controalele isi pastreaza
-   inaltimea. Doar copiii DIRECTI (main-axis vertical); inputurile din randuri flex nu-s atinse. */
-.fereastra.fer-larg .fereastra-corp > input:not([type=checkbox]):not([type=radio]):not([type=file]),
-.fereastra.fer-larg .fereastra-corp > select,
-.fereastra.fer-larg .fereastra-corp > textarea { flex-shrink: 0; }
+/* [layout/a11y; DS cap.9 v2.84, retest 08.10 pct.15] intr-o fereastra larga corpul e flex-column. NICIUN copil direct nu se
+   strange sub inaltimea continutului: corpul derulează. Dovedit de doua ori: #pc-cauta din import plan conturi cadea 40px->20px,
+   iar in Declaratii (D406/D394) „Din ce e facuta declaratia” se strangea si tabelul ei curgea peste „Vezi XML-ul generat”,
+   textul de subsol si „Trimite in coada”. Se strang (si deruleaza ele) numai zonele declarate mai jos: .mig-sold-tabel,
+   .rap-split, .pac-text — lista e pazita de verificator (FER_LARG_STRIVIT). */
+.fereastra.fer-larg .fereastra-corp > * { flex-shrink: 0; }
 .fereastra.fer-larg .mig-sold-tabel { max-height: none; flex: 1 1 auto; min-height: 100px; }
 .fereastra.fer-larg .mig-inapoi,
 .fereastra.fer-larg .mig-intro,
@@ -1045,7 +1044,7 @@ html, body {
 .ac-tabel .ac-rand, .ac-tabel .ac-cap {
   display:grid; grid-template-columns:130px 1fr 120px 1fr 1fr; gap:8px; align-items:center;
 }
-.ac-cap { font-size: var(--text-mic); letter-spacing:.04em; color:var(--gri); font-weight:600;   /* a11y: #8a8f98 = 3,3:1 (axe 06.10) */
+.ac-cap { font-size: var(--text-mic); text-transform:uppercase; letter-spacing:.04em; color:var(--gri); font-weight:600;   /* a11y: #8a8f98 = 3,3:1 (axe 06.10) */
           position:sticky; top:0; background:#fff; z-index:1; }
 .ac-cand { color:#5f5e5a; font-size:12.5px; }
 .ac-cine { font-weight:600; color:#22324f; }
@@ -1457,8 +1456,9 @@ html, body {
 .dec-xml { margin-bottom: 8px; }
 /* [a11y contrast 18.08.2026] --albastru #347ab8 = 3.86 pe panoul #e9edf3 (sub AA); scoped -> #2f6fa6 (4.53). */
 .dec-xml summary { cursor: pointer; font-size: var(--text-mic); color: #2f6fa6; }
-.fereastra.fer-larg .dec-xml { flex: 1 1 auto; min-height: 80px; display: flex; flex-direction: column; }
-.fereastra.fer-larg .dec-xml[open] .dec-xml-pre { flex: 1 1 auto; }
+/* [retest 08.10 pct.15] un <details> nu creste (inchis lasa goluri mari) si nu se strange (deschis, continutul lui curgea peste
+   fratii de dedesubt); XML-ul are inaltimea lui maxima si deruleaza in el (.dec-xml-pre). */
+.fereastra.fer-larg .dec-xml { flex: 0 0 auto; }
 .dec-xml-pre {
   margin: 8px 0 0;
   background: #1e2733; color: #d6e2ee;

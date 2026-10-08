@@ -42,5 +42,6 @@ def test_control_copil_direct_nu_e_strivit_in_fer_larg():
     """Controalele copil-direct ale unui .fer-larg .fereastra-corp (flex column) au flex-shrink:0 -> nu se
     strivesc vertical cand un frate (lista) e inalt."""
     s = _css()
-    assert re.search(r"\.fereastra\.fer-larg\s+\.fereastra-corp\s*>\s*input[^{]*\{[^}]*flex-shrink:\s*0", s), \
-        "lipseste flex-shrink:0 pe inputurile copil-direct din fereastra larga (bug #pc-cauta poate reveni)"
+    # [retest 08.10 pct.15] regula s-a generalizat de la inputuri la TOȚI copiii direcți (gard FER_LARG_STRIVIT în verificator)
+    assert re.search(r"\.fereastra\.fer-larg\s+\.fereastra-corp\s*>\s*\*\s*\{[^}]*flex-shrink:\s*0", s), \
+        "lipseste flex-shrink:0 pe copiii directi din fereastra larga (bug #pc-cauta poate reveni)"

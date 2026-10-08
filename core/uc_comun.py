@@ -264,6 +264,9 @@ def controale_inchidere(conn, schema, an, luna):
     with conn.cursor() as cur:
         ciorne = _ciorne_in_perioada(cur, schema, an, luna)
         facturi_desch = _facturi_neincheiate_in_perioada(cur, schema, an, luna)
+    in_curs = _il.luna_in_curs(an, luna)   # [retest 08.10 pct.11] o lună se închide după ce s-a încheiat
+    if in_curs:
+        blocaje.append(_ctl("LUNA_IN_CURS", in_curs))
     if ciorne:
         blocaje.append(_ctl("CIORNE", "%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel "
                                                  "rămân închise înăuntru și nu mai apar nicăieri" % ciorne))
@@ -271,7 +274,7 @@ def controale_inchidere(conn, schema, an, luna):
         blocaje.append(_ctl("FACTURI_NEINCHEIATE", "%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau ciornă de "
                         "recunoaștere); contabilizează-le sau recunoaște-le, altfel după închidere nu se mai poate — amândouă actele "
                         "cer o lună deschisă" % facturi_desch))
-    bl = _il.blocaj(conn, schema, an, luna)
+    bl = None if in_curs else _il.blocaj(conn, schema, an, luna)   # `blocaj` începe tot cu luna în curs — un singur rând, nu două
     if bl:
         blocaje.append(_ctl("EFACTURI", str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura."))
     from core import repo_contabilitate
@@ -279,6 +282,7 @@ def controale_inchidere(conn, schema, an, luna):
         repo_contabilitate.search_path_firma(cur, schema)
         lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _rmf.toate(cur), an, luna)
         sold_581 = -_mfr.sold_creditor_cont(cur, "581", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
+        sold_401 = -_mfr.sold_creditor_cont(cur, "401", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
     for x in lipsa:
         blocaje.append(_ctl("AMORTIZARE_NEINREGISTRATA", ("amortizarea lunii nu e înregistrată pe contul %s (%s lei după calcul); "
                             "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], x["rata"]))
@@ -288,6 +292,12 @@ def controale_inchidere(conn, schema, an, luna):
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
                             "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % sold_581,
                             cont="581", sold=str(sold_581)))
+    if sold_401 > 0:
+        # [08.10.2026, retest pct.12] „Semnal nou la închidere: furnizor cu sold debitor (F2: 401 D 500, fără factură).” 401 e cont de
+        # pasiv: un sold debitor înseamnă plăți fără factura furnizorului înregistrată (sau un avans care stă pe 401 în loc de 409).
+        semnale.append(_ctl("FURNIZORI_SOLD_DEBITOR", "contul 401 (furnizori) are sold DEBITOR %s lei la sfârșitul lunii: s-a plătit fără "
+                            "factura furnizorului înregistrată — înregistrează factura, sau trece plata ca avans (409)" % sold_401,
+                            cont="401", sold=str(sold_401)))
     return {"blocaje": blocaje, "semnale": semnale}
 
 
@@ -1084,7 +1094,7 @@ def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
     fapt = _af.afirmatie(
         "fapt", "DEZLEGARE_NOTA_FACTURA", motiv[:500],
         unde="nota #%s, factura #%s" % (nota_id, factura_id),
-        temei_completitudine="urma se scrie în ACEEAȘI tranzacție cu dezlegarea, deci nu poate "
+        temei_completitudine="urma se scrie în aceeași tranzacție cu dezlegarea, deci nu poate "
                              "exista dezlegare fără ea",
         nota_id=nota_id, factura_id=factura_id)
     with conn.cursor() as cur:

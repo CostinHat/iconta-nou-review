@@ -56,12 +56,12 @@ def aduna(luni, emise, recalculate, zile_lucratoare):
         n_recalc += int(not e_emisa)
 
     if n_emise and n_recalc:
-        temei = ("media pe %d luni: %d din statele EMISE (cifrele de pe fluturașii dați), %d "
+        temei = ("media pe %d luni: %d din statele emise (cifrele de pe fluturașii dați), %d "
                  "recalculate (lunile neemise)" % (n_emise + n_recalc, n_emise, n_recalc))
     elif n_emise:
-        temei = "media pe %d luni, toate din statele EMISE (cifrele de pe fluturașii dați)" % n_emise
+        temei = "media pe %d luni, toate din statele emise (cifrele de pe fluturașii dați)" % n_emise
     elif n_recalc:
-        temei = ("media pe %d luni RECALCULATE - niciuna dintre luni nu are stat emis, deci cifrele "
+        temei = ("media pe %d luni recalculate - niciuna dintre luni nu are stat emis, deci cifrele "
                  "pot diferi de ce s-a plătit efectiv" % n_recalc)
     else:
         temei = "nicio lună lucrată în intervalul cerut"

@@ -984,6 +984,11 @@ def calcul_d394(prof, perioada, date, manual=None):
             "(se declară în D390 - VIES)." % intracom)
     if nefacturabile:
         res.avertismente.append("%d facturi excluse din declarație (vezi mai sus)." % nefacturabile)
+    if date.get("fara_serie"):
+        n = len(date["fara_serie"])
+        res.avertismente.append("%s fără serie (%s): în D394 %s cu seria „-”. Seria o stabilește firma la emitere — completeaz-o pe "
+                                "factură." % ("O factură emisă" if n == 1 else "%d facturi emise" % n,
+                                             ", ".join("nr. %s" % x for x in date["fara_serie"][:10]), "apare" if n == 1 else "apar"))
     res.sinteza.append(   # [08.10, V5] sinteza cifrelor, nu avertisment
         "D394 %02d/%d: %d parteneri TVA RO, %d neînregistrați, %d UE, %d non-UE; %d operațiuni."
         % (luna, an, inf["nrCui1"], inf["nrCui2"], inf["nrCui3"], inf["nrCui4"], len(op1)))
@@ -1026,11 +1031,11 @@ def build_xml(res):
                                 "\"ADMINISTRATOR\". Completează reprezentantul în profilul firmei, nu lasa implicitul.")
         rep_den = "ADMINISTRATOR"
     if not rep_fct:
-        res.avertismente.append("D394: funcția reprezentantului (functie_reprez) lipsește din profil -> emisă "
+        res.avertismente.append("D394: funcția reprezentantului lipsește din Date firmă -> emisă "
                                 "implicit \"ADMINISTRATOR\". Completează în profil.")
         rep_fct = "ADMINISTRATOR"
     if not calitate:
-        res.avertismente.append("D394: calitatea întocmitorului (calitate_intocmit) lipsește din profil -> emisă "
+        res.avertismente.append("D394: calitatea întocmitorului lipsește din Date firmă -> emisă "
                                 "implicit \"ADMINISTRATOR\". Completează în profil.")
         calitate = "ADMINISTRATOR"
     # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
@@ -1153,7 +1158,7 @@ def valideaza(res):
     if not (1 <= res.luna <= 12):
         erori.append("Lună invalidă.")
     if not _NEDIGIT.sub("", prof.get("cui") or ""):
-        erori.append("LIPSĂ CUI declarant (obligatoriu).")
+        erori.append("Lipsă CUI declarant (obligatoriu).")
     else:
         # [T1/G-c1] CUI-ul PROPRIEI firme prezent-dar-invalid (checksum/lungime) -> DUK regula R6 il
         # respinge la depunere. Il verificam pre-DUK cu sursa canonica (core.identitate), nu doar non-gol.
@@ -1162,13 +1167,13 @@ def valideaza(res):
             erori.append("CUI declarant \"%s\" invalid (%s) - DUK regula R6 îl respinge; corectează CUI-ul "
                          "în profilul firmei." % (prof.get("cui"), _motiv))
     if not prof.get("caen"):
-        erori.append("LIPSĂ cod CAEN în profilul firmei (obligatoriu în D394).")
+        erori.append("Lipsă cod CAEN în profilul firmei (obligatoriu în D394).")
     if not prof.get("nume"):
-        erori.append("LIPSĂ denumire firmă.")
+        erori.append("Lipsă denumire firmă.")
     if not prof.get("adresa"):
-        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+        erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
     if not prof.get("telefon"):
-        erori.append("LIPSĂ telefon (obligatoriu în D394).")
+        erori.append("Lipsă telefon (obligatoriu în D394).")
     # [R102, 30.08.2026] R112.1 a validatorului, prinsa INAINTE de el: daca declaratia are
     # operatiuni de LIVRARE (L / LS / V), atunci cel putin unul din contoarele de facturi emise
     # trebuie sa fie strict pozitiv. Altfel XML-ul spune, in acelasi document, „am livrat" si
@@ -1184,7 +1189,7 @@ def valideaza(res):
                              or _inf.get("nrFacturi_terti")):
         erori.append("D394 declară livrări, dar numărul facturilor emise în perioadă e 0 — "
                      "validatorul ANAF respinge (DUK regula R112.1). Se numără doar facturile al căror "
-                     "NUMĂR conține cifre: verifică numerotarea facturilor emise din perioadă.")
+                     "număr conține cifre: verifică numerotarea facturilor emise din perioadă.")
     return erori
 
 
@@ -1293,6 +1298,7 @@ def pull(conn, schema, perioada):
                   "chitante_i2": chitante_i2, "casa_nelegate": casa_nelegate,
                   "serii": serii_emise(conn, schema, inceput, sfarsit),
                   "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
+                  "fara_serie": facturi_fara_serie(conn, inceput, sfarsit),
                   "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
 
 
@@ -1365,11 +1371,11 @@ def nr_facturi_emise(conn, inceput, sfarsit):
     seriei (min..max): la numerotare necontigua (45,46,50) spanul supra-numara (6 in loc de 3).
     Aceeasi populatie ca serii_emise (facturi emise cu cifre in numar) -> R131 pastrat
     (nrFacturi>0 <=> exista serieFacturi tip 2)."""
-    import re as _re
+    from core.pdf_util import numar_in_serie
     n = 0
     with conn.cursor() as cur:
         for (numar,) in _repo.select_facturi_2(cur, inceput, sfarsit):
-            if _re.sub(r"\D", "", str(numar or "")):
+            if numar_in_serie(None, numar) is not None:
                 n += 1
     return n
 
@@ -1379,14 +1385,13 @@ def serii_emise(conn, schema, inceput, sfarsit):
     R130/R131: nrFacturi > 0 <=> exista serieFacturi tip 2; tip 2 cere tip 1.
     Numarul se extrage din partea numerica a lui facturi.numar.
     [06.08.2026] Fereastra primita din pull (aliniata la perioada fiscala TVA), nu recalculata pe luna."""
-    import re as _re
+    from core.pdf_util import numar_in_serie
     out = {}
     with conn.cursor() as cur:
         for serie, numar in _repo.select_facturi_3(cur, inceput, sfarsit):
-            cifre = _re.sub(r"\D", "", str(numar or ""))
-            if not cifre:
+            n = numar_in_serie(serie, numar)   # [08.10.2026, retest pct.6] „F1A3” în seria F1A = 3 (forma veche: 13)
+            if n is None:
                 continue
-            n = int(cifre)
             if serie in out:
                 out[serie] = (min(out[serie][0], n), max(out[serie][1], n))
             else:
@@ -1394,13 +1399,20 @@ def serii_emise(conn, schema, inceput, sfarsit):
     return out
 
 
+def facturi_fara_serie(conn, inceput, sfarsit):
+    """[08.10.2026, retest pct.6] Numerele facturilor EMISE în perioadă fără serie: la ANAF ies în `serieFacturi` cu seria „-”. Se
+    semnalează (avertisment), nu se inventează o serie — seria o stabilește firma la emitere (OMFP 2634/2015 anexa 1 pct.24)."""
+    with conn.cursor() as cur:
+        return [numar for serie, numar in _repo.select_facturi_3(cur, inceput, sfarsit) if serie == "-"]
+
+
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui") or "").strip():
-        erori.append("LIPSĂ CUI firma.")
+        erori.append("Lipsă CUI firma.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firma.")
+        erori.append("Lipsă denumire firma.")
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori

@@ -264,7 +264,7 @@ def _facturi_ic(facturi):
             continue
         if len(cod) > 12:                            # T6: NU trunchia codO (trunchierea CORUPE VAT-ul)
             diag.append(dict(info, categorie="codO_lung",
-                             motiv="codO are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)))
+                             motiv="codO are %d caractere (max 12) - trunchierea ar corupe numărul de TVA" % len(cod)))
         else:
             st, mo = checksum_vies(tara, cod)
             if st == "invalid":
@@ -398,17 +398,17 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     for _dp in _domestic:
         if _dp.get("directie") == "primita" and not str(_dp.get("cui") or "").strip():
             res.avertismente.append(
-                "Factură PRIMITĂ fără CUI furnizor - %s: exclusă din D390. Dacă e achiziție "
+                "Factură primită fără CUI furnizor - %s: exclusă din D390. Dacă e achiziție "
                 "intracomunitară, adaugă codul de TVA al furnizorului (fără el nu poate fi "
                 "raportată la VIES)." % (_dp["den"] or "(fără denumire)"))
     for d in diag:
         _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "prefix":
-            res.avertismente.append("Partener EXCLUS - %s: %s. Verifică prefixul de țară (ex. DE/FR/IT)." % (_id, d["motiv"]))
+            res.avertismente.append("Partener exclus - %s: %s. Verifică prefixul de țară (ex. DE/FR/IT)." % (_id, d["motiv"]))
         elif d["categorie"] == "tara":
-            res.avertismente.append("Partener EXCLUS (țară mistypata) - %s: %s." % (_id, d["motiv"]))
+            res.avertismente.append("Partener exclus (țară mistypata) - %s: %s." % (_id, d["motiv"]))
         elif d["categorie"] == "checksum":
-            res.avertismente.append("ATENTIE cod TVA invalid - %s: %s." % (_id, d["motiv"]))
+            res.avertismente.append("Atenție cod TVA invalid - %s: %s." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             res.avertismente.append("codO prea lung - %s: %s." % (_id, d["motiv"]))
     # [Q1a] aceeasi operatiune a primit baza din AMBELE surse (factura + manual/D301) -> bazele
@@ -417,7 +417,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         if "factura" in _ss and "manual/D301" in _ss:
             _tp, _tr, _cd, _dn = _ks
             res.avertismente.append(
-                "Posibilă DUBLĂ raportare - operațiunea (tip %s, %s%s, %s) apare ȘI ca factură ȘI "
+                "Posibilă dublă raportare - operațiunea (tip %s, %s%s, %s) apare și ca factură și "
                 "ca linie manuală/din ecranul D301; bazele se adună in D390. Verifică să nu fie "
                 "introdusă de două ori." % (_tp, _tr, _cd, _dn or "(fără denumire)"))
     _tel = str(prof.get("telefon") or "")
@@ -442,11 +442,11 @@ def valideaza(res):
         erori.append("Pentru an=2020, luna >= 2.")
     _cui = _NEDIGIT.sub("", prof.get("cui") or "")
     if not _cui:
-        erori.append("LIPSĂ CUI firma (obligatoriu).")
+        erori.append("Lipsă CUI firma (obligatoriu).")
     elif len(_cui) > 10:
         erori.append("CUI firma are %d cifre (max 10, N(10)) - clamparea ar corupe identitatea; corectează." % len(_cui))
     if not (prof.get("nume")):
-        erori.append("LIPSĂ denumire firma.")
+        erori.append("Lipsă denumire firma.")
     # codO obligatoriu pentru L,T,P,R. NOTA: catalogul/tura ziceau "DUK cere codO doar pt L,T,P (nu R)";
     # proba DUK boundary 10.08.2026 CONTRAZICE: R fara codO e respins de validatorul instalat prin
     # DUK regula R24.2 ("o tranzactie de tip R trebuie sa aibe codO completat"), pe langa cerinta pt L,T,P. Deci codO
@@ -463,7 +463,7 @@ def valideaza(res):
     for d in getattr(res, "diag", []):
         _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "tara":
-            erori.append("Partener %s: %s. Operatiunea NU se poate declara până nu corectezi țară - nu dispare tacit." % (_id, d["motiv"]))
+            erori.append("Partener %s: %s. Operatiunea nu se poate declara până nu corectezi țară - nu dispare tacit." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             erori.append("Partener %s: %s." % (_id, d["motiv"]))
     # totalPlata_A coerent
@@ -775,9 +775,9 @@ def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui") or "").strip():
-        erori.append("LIPSĂ CUI firma.")
+        erori.append("Lipsă CUI firma.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firma.")
+        erori.append("Lipsă denumire firma.")
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori
@@ -814,7 +814,7 @@ def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
     # [audit] excluderi D301->D390 auditabile (motiv + temei citat, semnal pe temei neconfirmat / lipsa tara)
     for _ex in excluse_d301(conn, schema, an, luna):
         _pre = "\u26a0 " if _ex["semnal"] else ""
-        res.avertismente.append("%sOperatiune D301 EXCLUSA din D390 - %s: %s (%s)."
+        res.avertismente.append("%sOperatiune D301 exclusă din D390 - %s: %s (%s)."
                                 % (_pre, _ex["id"], _ex["motiv"], _ex["temei"]))
     return res
 
