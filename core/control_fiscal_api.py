@@ -33,22 +33,6 @@ from core import repo_control_fiscal_api as _repo
 PRAG_URMARIT_ZILE = 30   # termen in <= 30 zile, nedepus -> galben
 
 
-def luna_preluarii(creat_la, data_solduri=None):
-    """[08.10.2026, decizia Costin U2] „Control fiscal: restanțele se numără doar de la luna de preluare a firmei în iConta.”
-
-    LUNA PRELUĂRII, (an, luna): ziua de după data soldurilor de preluare (`solduri_initiale.data_referinta` — soldurile sunt
-    „la” acea dată, deci evidența în iConta începe a doua zi), iar fără ea luna în care firma a fost adăugată în iConta
-    (`tenants.creat_la`, același „în iConta din” pe care îl folosește auditul de preluare). None dacă nu se știe niciuna.
-    *INTERPRETARE CU TEMEI (de produs, nu fiscală):* aplicația nu ține o dată de preluare separată; cele două date sunt singurele
-    fapte care o descriu. De reconfirmat dacă se adaugă un câmp explicit."""
-    if data_solduri:
-        z = data_solduri + datetime.timedelta(days=1)
-        return (z.year, z.month)
-    if creat_la:
-        return (creat_la.year, creat_la.month)
-    return None
-
-
 def separa_inainte_de_preluare(lipsa, urmarit, preluare):
     """(lipsa, urmarit, inainte) — obligațiile NEDEPUSE pe perioade dinaintea lunii preluării nu se numără la restanțe și nici la
     „de urmărit”: stau separat, fiecare cu motivul, și se pot marca „depusă în afara iConta”. Perioada unei declarații
@@ -971,9 +955,11 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
 
     lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
     # [08.10, decizia Costin U2] restanțele se numără de la luna preluării; ce e înainte stă separat, marcabil
+    # [08.10 §6 pct.4] luna EFECTIVĂ: cea din Date firmă, altfel propunerea (dedusă, plafonată la luna primei note) — `luna_preluare`
+    from core import luna_preluare as _lp, repo_firma_profil as _rfp
     with conn_schema.cursor() as _cur_p:
-        _ds = _repo.select_solduri_initiale(_cur_p)
-    preluare = luna_preluarii(_creat_la, _ds[0] if _ds else None)
+        _fp = _rfp.fapte_preluare(_cur_p)
+    preluare = _lp.efectiva(_fp["salvata"], _fp["creat_la"] or _creat_la, _fp["data_solduri"], _fp["prima_nota"])
     lipsa, urmarit, inainte_de_preluare = separa_inainte_de_preluare(lipsa, urmarit, preluare)
     with conn_public.cursor() as _cur_e:
         extern = {(t, a, l): rec for t, a, l, rec in _repo.select_depuse_extern(_cur_e, tenant_id)}

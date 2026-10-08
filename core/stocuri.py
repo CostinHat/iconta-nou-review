@@ -64,7 +64,7 @@ def _repartizeaza(linii, transport, taxe):
     return baze, reparti, transport, taxe
 
 
-def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446"):
+def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426"):
     """[lotul 07.10 B, C10] NIR la firma cu stocul la COST (cantitativ-valoric, CMP — `core.metoda_stoc`): marfa intră la costul
     de achiziție (cu accesoriul repartizat), fără adaos și fără TVA neexigibilă — prețul de raft nu se cere și nu se verifică.
     Temei: OMFP 1802/2014 pct.286 alin.(1) — ieșirile se evaluează la cost (CMP / FIFO), iar pct.287 alin.(1)-(2): „Metoda aleasă
@@ -78,8 +78,10 @@ def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446"):
         tva_ded += _q(cost_baza * _d(l["cota_tva"]) / 100)
         linii_out.append({**l, "cost_baza": cost_baza, "landed": land, "cost": _q(cost_baza + land)})
     cost_baza_total = _q(sum(baze, Decimal("0")))
-    note = [{"debit": "371", "credit": "401", "suma": cost_baza_total, **_urma(TEMEI_COST)},
-            {"debit": "4426", "credit": "401", "suma": _q(tva_ded), **_urma(TEMEI_COST)}]
+    # [08.10.2026, decizia Costin §6 pct.1 + pct.3] NIR-ul FĂRĂ factură: 371 = 408 și TVA pe 4428 (analiticul de achiziție) = 408 —
+    # apelantul (`stocuri_api.adauga_nir`) dă conturile; implicit, NIR-ul cu factură: 371 = 401, 4426 = 401.
+    note = [{"debit": "371", "credit": cont_furnizor, "suma": cost_baza_total, **_urma(TEMEI_COST)},
+            {"debit": cont_tva, "credit": cont_furnizor, "suma": _q(tva_ded), **_urma(TEMEI_COST)}]
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma(TEMEI_COST)})
     if taxe > 0:
@@ -90,7 +92,7 @@ def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446"):
 
 
 def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
-          cont_transport="401", cont_taxe="446"):
+          cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426"):
     """NIR global-valoric. linii: [{denumire, cantitate, pret_achizitie (unitar, fara TVA),
     pret_vanzare (unitar, cu TVA), cota_tva?}].
     transport/taxe: cost accesoriu (landed cost) care se CAPITALIZEAZA in costul de
@@ -145,9 +147,9 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
     tva_neex = _q(sum(x["tva_neexigibila"] for x in linii_out))
     cost_total = _q(cost_baza_total + accesoriu)
     adaos_total = _q(vanzare_total - tva_neex - cost_total)
-    note = [
-        {"debit": "371", "credit": "401", "suma": _q(cost_baza_total), **_urma()},
-        {"debit": "4426", "credit": "401", "suma": _q(tva_ded), **_urma()},
+    note = [   # [08.10, §6 pct.1 + pct.3] fără factură: 371 = 408, 4428.01 = 408 (vezi `nir_cost`)
+        {"debit": "371", "credit": cont_furnizor, "suma": _q(cost_baza_total), **_urma()},
+        {"debit": cont_tva, "credit": cont_furnizor, "suma": _q(tva_ded), **_urma()},
     ]
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma()})

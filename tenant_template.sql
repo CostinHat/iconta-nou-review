@@ -963,6 +963,7 @@ INSERT INTO TENANT_PLACEHOLDER.plan_conturi (simbol, denumire, tip) VALUES
 ('4426', 'TVA deductibilă', 'Bifunctional'),
 ('4427', 'TVA colectată', 'Bifunctional'),
 ('4428', 'TVA neexigibilă', 'Bifunctional'),
+('4428.01', 'TVA neexigibilă — achiziții fără factură (NIR)', 'Bifunctional'),
 ('444', 'Impozitul pe venituri de natura salariilor', 'Bifunctional'),
 ('445', 'Subvenții', 'Bifunctional'),
 ('446', 'Alte impozite, taxe și vărsăminte asimilate', 'Bifunctional'),
@@ -2848,3 +2849,6 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.elemente_salariale (
     CONSTRAINT elemente_salariale_ore_ck CHECK ((tip = 'ore_suplimentare') = (ore IS NOT NULL))
 );
 CREATE INDEX IF NOT EXISTS elemente_salariale_luna_ix ON TENANT_PLACEHOLDER.elemente_salariale (an, luna, salariat_id);
+
+-- [08.10.2026, decizia Costin §6 pct.4] luna preluării, editabilă în Date firmă (mirror core/migrare_decizii_0810_s6.py)
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_preluare date;

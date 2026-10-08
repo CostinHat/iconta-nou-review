@@ -52,7 +52,7 @@ def _rulaje_independente(conn, schema, an, luna):
     nici o a doua definitie a ferestrei nu se poate scrie: divergenta lor tacuta E defectul
     R165. De-aia regula sta intr-un al treilea loc, neutru. SQL-ul ramane al ei — independenta
     celei de-a doua cai e in CALCUL, nu in perioada."""
-    from core.common import fereastra_d406 as _fd
+    from core.common import fereastra_d406 as _fd, sintetic_saft as _sint
     with conn.cursor() as _c:
         _r = _repo.select_firma_profil(_c)
     _prof = {"platitor_tva": _r[0], "tip_decont": _r[1]} if _r else {}
@@ -65,6 +65,7 @@ def _rulaje_independente(conn, schema, an, luna):
     with conn.cursor() as cur:
         for cd, cc, suma in _repo.sql(cur, q, di, ds):
             s = Decimal(str(suma or 0))
+            cd, cc = _sint(cd) if cd else cd, _sint(cc) if cc else cc   # analiticul pe sinteticul lui, ca în SAF-T
             if cd:
                 deb[cd] = deb.get(cd, Decimal(0)) + s
             if cc:

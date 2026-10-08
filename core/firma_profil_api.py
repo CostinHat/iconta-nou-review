@@ -171,7 +171,8 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
 
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
-CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta")
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
+                                                                    "luna_preluare")   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
 
 
 def _instantaneu(conn):
@@ -369,6 +370,9 @@ def citeste_date(conn):
         if prof.get(k) is not None:
             prof[k] = str(prof[k])
     from core import capital_social as _cs
+    from core import luna_preluare as _lp, repo_firma_profil as _rfp
+    with conn.cursor() as cur:   # [08.10 §6 pct.4] luna preluării: salvată / propusă (dedusă, plafonată la prima notă) / efectivă
+        prof["luna_preluare"] = _lp.stare(_rfp.fapte_preluare(cur))
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
             "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
             "activitati_amef": [[k, v] for k, v in _activitati_amef().items()],
@@ -427,6 +431,19 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
                     "mesaj": "Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."}
         else:
             _val["serie_chitanta"] = _sc
+    # [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată
+    # după luna primei note.” Gol = propunerea (`luna_preluare.efectiva`).
+    if "luna_preluare" in (date or {}):
+        from core import luna_preluare as _lp, repo_firma_profil as _rfp
+        try:
+            _l = _lp.din_text(date.get("luna_preluare"))
+        except ValueError as e:
+            return {"ok": False, "camp": "luna_preluare", "mesaj": str(e)}
+        with conn.cursor() as _cur:
+            _er = _lp.eroare(_l, _rfp.fapte_preluare(_cur)["prima_nota"])
+        if _er:
+            return {"ok": False, "camp": "luna_preluare", "mesaj": _er}
+        _val["luna_preluare"] = _l
     # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
     if any(k in (date or {}) for k in CAMPURI_AMEF):
         from core.uc_comun import bifa as _bifa

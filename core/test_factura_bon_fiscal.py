@@ -98,9 +98,12 @@ def _factura(conn, numar, **marca):
     return r
 
 
-def _z_validat():
+def _z_validat(conn):
     from core import uc_tenants
-    uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    r = uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    with conn.cursor() as cur:   # [08.10.2026, R36] Z-ul tastat intră ciornă, ca notele automate; contabilul îl validează
+        cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r["nota_id"],))
+    return r
 
 
 # ── emiterea ───────────────────────────────────────────────────────────────────────────────────────────────
@@ -155,7 +158,7 @@ def test_factura_din_bon_nu_descarca_stocul(conn_b):
 def test_d300_numara_vanzarea_o_singura_data(conn_b):
     # Z: baza 1000 / TVA 210; factură din bon 100 / 21 + o factură obișnuită 100 / 21
     # MUTAȚIE: fără excluderea din repo_d300 -> 1200 / 252 -> pică (și calea a doua o blochează)
-    _z_validat()
+    _z_validat(conn_b)
     _factura(conn_b, "B20", bon_fiscal_nr="0042", bon_fiscal_data="2026-06-10")
     _factura(conn_b, "B21")
     _xml, res = _d300.genereaza(conn_b, _SCHEMA, Perioada(2026, luna=6))
@@ -166,7 +169,7 @@ def test_d300_numara_vanzarea_o_singura_data(conn_b):
 def test_d394_factura_in_op1_iar_op2_fara_suma_ei(conn_b):
     # OPANAF 2194/2025 lit.G: Î1 „cu excepția celor pentru care s-au emis facturi” — total 1210 - 121 = 1089;
     # factura rămâne în op1 (partener cu CUI). MUTAȚIE: fără scăderea din _op2_din_rapoarte_z -> total 1210 -> pică
-    _z_validat()
+    _z_validat(conn_b)
     _factura(conn_b, "B30", bon_fiscal_nr="0042", bon_fiscal_data="2026-06-10")
     xml, res = _d394.genereaza(conn_b, _SCHEMA, Perioada(2026, luna=6))
     rad = ET.fromstring(xml.split("?>", 1)[1])

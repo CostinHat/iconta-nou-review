@@ -1267,3 +1267,12 @@ def text_anaf(v, limita):
     limita e o eroare (TypeError), tocmai ca sa fie imposibil sa emiti text cu o limita ne-oficiala."""
     t = " ".join(str(v or "").split())      # normalizeaza spatiile multiple
     return t[:limita]
+
+
+def sintetic_saft(simbol):
+    """Contul sub care SAF-T (D406) declară un simbol din plan: sinteticul, fără analiticul de după punct ('4428.01' -> '4428').
+    Nomenclatorul oficial (anaf_surse/d406_nomenclatoare_anaf.properties) are numai sintetice, iar AccountID cu punct e respins
+    („numar intreg eronat”). Stă aici, neutru, ca `fereastra_d406`: generatorul (`d406`) și a doua cale (`d406_reconciliere`) o
+    folosesc amândouă fără ca a doua să importe din prima (`test_non_tautologie`)."""
+    simbol = str(simbol or "")
+    return simbol.split(".")[0] if "." in simbol else simbol

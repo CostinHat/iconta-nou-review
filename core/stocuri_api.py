@@ -201,8 +201,16 @@ def adauga_nir(conn, schema, nir):
             if _l.get("cota_tva") is None:
                 raise _m.RefuzLinie("Alege cota de TVA la «%s»." % (_l.get("denumire") or ""), _i, "cota_tva")
         motor = _m.nir_gv if metoda == _ms.GV else _m.nir_cost
+        # [08.10.2026, decizia Costin §6 pct.1 + pct.3] NIR-ul FĂRĂ factură: datoria e „factură nesosită” (408), iar TVA-ul stă
+        # neexigibil (4428, pe analiticul de achiziție) până la factură. OMFP 1802/2014, funcțiunea contului 408: „În creditul
+        # contului 408 «Furnizori - facturi nesosite» se înregistrează: – valoarea bunurilor aprovizionate … (… 371, …, 4428, …)”.
+        # Factura legată mută apoi 408 = 401 și 4428 -> 4426 (`nir_legare.note_factura_legata`).
+        from core import nir_legare as _nl
+        fara_factura = factura is None
         rez = motor(nir["linii"], transport=nir.get("transport", 0), taxe=nir.get("taxe", 0),
-                    cont_transport=nir.get("cont_transport") or "401", cont_taxe=nir.get("cont_taxe") or "446")
+                    cont_transport=nir.get("cont_transport") or "401", cont_taxe=nir.get("cont_taxe") or "446",
+                    cont_furnizor=_nl.CONT_NESOSITE if fara_factura else "401",
+                    cont_tva=_nl.CONT_TVA_NIR if fara_factura else "4426")
     except _m.RefuzLinie as e:
         return {"eroare": str(e), "erori_campuri": [{"camp": "nir-l%d-%s" % (e.linie, e.camp), "mesaj": str(e)}]}
     except (ValueError, KeyError) as e:
@@ -395,16 +403,33 @@ def descarca_luna(conn, schema, an, luna):
         cur.execute(f"""SELECT id FROM {schema}.inregistrari
                         WHERE numar = %s OR (sursa = 'stocuri' AND descriere = %s) ORDER BY id""", (cheie, descr))
         existente = [r[0] for r in cur.fetchall()]
+    # [08.10.2026, decizia Costin §6 pct.6] „Amortizarea și descărcarea GV: aceeași regulă ca T1 — înlocuire automată a ciornei
+    # nevalidate; ce e validat nu se atinge.” Ciornele (nevalidate sau respinse) ale descărcării de dinainte se înlocuiesc cu cea din
+    # rulajele de acum; dacă ies aceleași, rămân ele. O notă validată oprește refacerea, ca înainte.
+    from core import note_derivate as _nd
+    with conn.cursor() as cur:
+        respinse = [i for i in existente if _nd.respinsa(cur, schema, i)]
+        ciorne = [i for i in existente if i not in respinse and _nd.ciorna_nevalidata(cur, schema, i)]
+    validate = [i for i in existente if i not in respinse and i not in ciorne]
+    if validate:
+        return {"cod": "DEJA_DESCARCATA", "inregistrari_existente": validate,
+                "eroare": "Gestiunea pe %02d/%d e deja descărcată și validată (notele #%s) — nota validată nu se înlocuiește; o "
+                          "corectură se face printr-o altă notă." % (luna, an, ", #".join(str(x) for x in validate))}
     if existente:
-        return {"cod": "DEJA_DESCARCATA", "inregistrari_existente": existente,
-                "eroare": "Gestiunea pe %02d/%d e deja descărcată (notele #%s). Ca s-o refaci, șterge întâi acele ciorne "
-                          "din Registrul jurnal; o notă validată se corectează printr-o altă notă."
-                          % (luna, an, ", #".join(str(x) for x in existente))}
+        with conn.cursor() as cur:
+            from core import repo_contabilitate as _rc
+            doc_vechi = _rc.documentul_notei(cur, schema, existente[0])
+            _rc.punct_de_revenire(cur, "descarcare_ciorna")
+    else:
+        doc_vechi = None
     with conn.cursor() as cur:
         si = {}
+        from core import nir_legare as _nl
         for cont in ("371", "378", "4428"):
+            # [08.10, §6 pct.3] TVA-ul NIR-urilor fără factură (analiticul de achiziție al lui 4428) nu e TVA-ul din prețul de raft:
+            # nu intră în K (rulajele lui 4428 se citesc oricum pe cont EXACT, `_rulaj`)
             cur.execute(f"""SELECT COALESCE(SUM(sold_debitor),0), COALESCE(SUM(sold_creditor),0)
-                            FROM {schema}.solduri_initiale WHERE cont LIKE %s""", (cont + "%",))
+                            FROM {schema}.solduri_initiale WHERE cont LIKE %s AND cont <> %s""", (cont + "%", _nl.CONT_TVA_NIR))
             d, c = cur.fetchone()
             si[cont] = Decimal(d or 0) - Decimal(c or 0)   # debitor pozitiv
         # rulaje cumulate de la inceputul anului pana la sfarsitul lunii
@@ -429,6 +454,12 @@ def descarca_luna(conn, schema, an, luna):
     rez = _m.descarcare_gv(rc_707, tva_vanzari, -si["378"], rc_378,
                            si["371"], rd_371, -si["4428"], rc_4428)
     if not rez["note"]:
+        if existente:   # rulajele de acum nu mai cer descărcare: ciornele de dinainte nu mai au temei
+            with conn.cursor() as cur:
+                for i in respinse:
+                    _nd.sterge_respinsa(cur, schema, i)
+                for i in ciorne:
+                    _nd.sterge_ciorna_inlocuita(cur, schema, i)
         # [P8] FAPT despre luna, nu un mesaj: absenta vanzarilor e o constatare, si poarta perioada.
         return dict(_af.afirmatie(
             "fapt", "descarcare gestiune", "fără vânzări de mărfuri în luna", an=an, luna=luna,
@@ -437,10 +468,23 @@ def descarca_luna(conn, schema, an, luna):
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         import calendar
         ultima_zi = date(an, luna, calendar.monthrange(an, luna)[1])
-        ids = _noteaza(cur, schema, ultima_zi, descr, rez["note"], numar=cheie)
-        # [06.10.2026, comanda Costin §6.2] O descărcare = O situație de descărcare a gestiunii, pe toate notele ei
-        from core import documente_interne as _di
-        _di.genereaza(cur, schema, "situatie_descarcare", ultima_zi, ids)
+        ids = _noteaza(cur, schema, ultima_zi, descr, rez["note"], numar=cheie, document_ref=doc_vechi)
+        # [06.10.2026, comanda Costin §6.2] O descărcare = O situație de descărcare a gestiunii, pe toate notele ei; la înlocuire
+        # notele noi preiau situația celor înlocuite (numerotarea documentelor interne rămâne fără goluri)
+        if not doc_vechi:
+            from core import documente_interne as _di
+            _di.genereaza(cur, schema, "situatie_descarcare", ultima_zi, ids)
+        if existente:
+            from core import coada_api as _cq
+            if not respinse and _cq.amprente_note(cur, ciorne, schema) == _cq.amprente_note(cur, ids, schema):
+                _rc.revino_la(cur, "descarcare_ciorna")   # aceleași note: ciornele de dinainte sunt chiar descărcarea de acum
+                return {"cod": "DEJA_DESCARCATA", "inregistrari_existente": ciorne, "aceleasi_sume": True,
+                        "eroare": "Gestiunea pe %02d/%d e deja descărcată, cu aceleași sume (ciornele #%s) — nimic de înlocuit."
+                                  % (luna, an, ", #".join(str(x) for x in ciorne))}
+            for i in respinse:
+                _nd.sterge_respinsa(cur, schema, i)
+            for i in ciorne:
+                _nd.sterge_ciorna_inlocuita(cur, schema, i)
     return {"k": str(rez["k"].quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)), "cmv": str(rez["cmv"]),
             "adaos": str(rez["adaos"]), "tva": str(rez["tva"]),
-            "total_371": str(rez["total_371"]), "inregistrari": ids}
+            "total_371": str(rez["total_371"]), "inregistrari": ids, "inlocuite": existente}

@@ -104,7 +104,10 @@ BASELINE = {
     # [07.10.2026, retest R1] 5 -> 6: stornarea în roșu a unei intrări a cărei marfă a ieșit deja se refuză („stornarea intrării
     # … peste stocul …”) — refuz de FORMĂ, aceeași clasă cu „ieșire peste stoc” de lângă el (fișa nu poate deveni negativă);
     # un articol de lege n-are ce căuta pe el. Creșterea se înregistrează, nu se ascunde.
-    "core/stocuri_cv.py": 6,
+    # [08.10.2026, „Deciziile 08.10 §6” pct.2] 6 -> 8: mișcarea de VALOARE (`ajustare`, diferența de preț a facturii legate de NIR) se
+    # refuză cu cantitate nenulă și pe stoc zero — FORMĂ (o ajustare n-are cantitate) și invariant (pe stoc zero diferența merge pe
+    # 607, `nir_legare.plan_ajustare_cv`, nu în fișă), aceeași clasă cu „ieșire peste stoc”. Creșterea se înregistrează, nu se ascunde.
+    "core/stocuri_cv.py": 8,
     "core/tva_marja.py": 3,
     "core/tva_marja_turism.py": 7,
 }

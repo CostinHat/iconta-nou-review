@@ -14,6 +14,9 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
   try {
     const r = await api.post("/coada", corp);
     laSucces(r);
+    // [08.10.2026, decizia Costin §6 pct.7 — R36] ciornele perioadei nu opresc coada: avertismentul porții se arată după intrare
+    // (ecranul care se redesenează la succes îl arată el, din `r`; aici numai dacă zona a rămas pe ecran)
+    if (zona.isConnected && r && (r.avertismente_poarta || []).length) arataMesaj(zona, r.avertismente_poarta.join(" "), "avert");
     return r;
   } catch (e) {
     const det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};

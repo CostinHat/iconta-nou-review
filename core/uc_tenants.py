@@ -488,7 +488,9 @@ def firma_profil_date_salveaza(tenant_id, date, ctx):
     with db.get_conn(schema) as conn:
         r = _fp.salveaza_date(conn, date, tenant_id=tenant_id, user_id=ctx["uid"])   # [06.10.2026 §6.4] jurnalul cere autorul
     if not r.get("ok"):
-        raise _erori.DateInvalide(r.get("mesaj", "date invalide"))
+        # [08.10 §6 pct.4, generalizat] refuzul își numește câmpul (`camp`), iar ecranul îl pune lângă el (DS cap.6, G10)
+        _m = r.get("mesaj", "date invalide")
+        raise _erori.DateInvalide({"mesaj": _m, "erori_campuri": [{"camp": r["camp"], "mesaj": _m}]} if r.get("camp") else _m)
     return r
 
 
@@ -957,7 +959,7 @@ def bon_aproba(tenant_id, bon_id, b, ctx):
         # valorile articolelor sunt cu TVA inclus; scad TVA proportional
         factor = (b.total - b.tva) / b.total if b.total else 1
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_bon_validata(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}",
+            iid = repo_contabilitate.nota_bon_ciorna(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}",
                                                        _jurnal_api.eticheta_document("Bon fiscal", None, b.data, b.comerciant))[0]
             for l in b.linii:
                 repo_contabilitate.adauga_linie_credit_casa(cur, schema, iid, l.cont, round(l.valoare * factor, 2))
@@ -1009,9 +1011,24 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
         # [R42 (a)] Nota de amortizare se datează în ULTIMA zi a lunii cerute (lotul 07.10 pct.7: ziua 28 n-avea temei).
         _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(an, luna))
         ref = _date(an, luna, 1)
+        numar = f"AMORT-{an}-{luna:02d}"
+        ciorna_veche = doc_vechi = None
         with conn.cursor() as cur:
-            if repo_contabilitate.nota_de_amortizare(cur, schema, f"AMORT-{an}-{luna:02d}"):
-                raise _erori.CerereGresita("Amortizarea lunii e deja generată.")
+            # [08.10.2026, decizia Costin §6 pct.6] „Amortizarea și descărcarea GV: aceeași regulă ca T1 — înlocuire automată a ciornei
+            # nevalidate; ce e validat nu se atinge.” Nota respinsă se înlocuiește la fel (ca la stat, lotul 07.10 B C9).
+            from core import note_derivate as _nd
+            ex = repo_contabilitate.nota_de_amortizare(cur, schema, numar)
+            if ex:
+                if _nd.respinsa(cur, schema, ex[0]):
+                    doc_vechi = repo_contabilitate.documentul_notei(cur, schema, ex[0])
+                    _nd.sterge_respinsa(cur, schema, ex[0])
+                elif _nd.ciorna_nevalidata(cur, schema, ex[0]):
+                    ciorna_veche = ex[0]
+                    doc_vechi = repo_contabilitate.documentul_notei(cur, schema, ex[0])
+                    repo_contabilitate.punct_de_revenire(cur, "amortizare_ciorna")
+                else:
+                    raise _erori.CerereGresita("Amortizarea lunii e deja generată și validată (nota #%d) — nota validată nu se "
+                                               "înlocuiește; o corectură se face printr-o altă notă." % ex[0])
             mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
@@ -1028,13 +1045,23 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
                 raise _erori.DateInvalide(f"Amortizarea nu se poate genera pentru {den}: {e}")
             if rata > 0:
                 linii.append((cont_am or "2813", float(rata), den))
-        if not linii:
-            return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0}
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_amortizare_validata(cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}")[0]
+            if not linii:
+                if ciorna_veche:   # registrul nu mai are nimic de amortizat: ciorna veche nu mai are temei
+                    _nd.sterge_ciorna_inlocuita(cur, schema, ciorna_veche)
+                return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0, "inlocuita": ciorna_veche}
+            iid = repo_contabilitate.nota_amortizare_ciorna(
+                cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), numar, f"Amortizare {luna:02d}/{an}", doc_vechi)[0]
             for cont_am, rata, den in linii:
                 repo_contabilitate.adauga_linie_cheltuiala_amortizare(cur, schema, iid, cont_am, rata)
-    return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
+            if ciorna_veche:
+                from core import coada_api as _cq
+                if _cq.amprente_note(cur, [ciorna_veche], schema) == _cq.amprente_note(cur, [iid], schema):
+                    repo_contabilitate.revino_la(cur, "amortizare_ciorna")   # aceleași sume: ciorna e chiar registrul de acum
+                    return {"ok": True, "nota_id": ciorna_veche, "linii": len(linii), "deja_generata": True,
+                            "total": round(sum(r for _, r, _ in linii), 2)}
+                _nd.sterge_ciorna_inlocuita(cur, schema, ciorna_veche)
+    return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2), "inlocuita": ciorna_veche}
 
 
 def perioade_blocate_lista(tenant_id, ctx, an=None, luna=None):
@@ -1621,7 +1648,8 @@ def cabinet_balanta_date(tenant_id, an, luna, ctx):
     with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
         randuri = documente_api.balanta(conn, schema, an, luna)
         note_lunii = documente_api.note_lunii(conn, schema, an, luna)
-    return {"randuri": randuri, "note_lunii": note_lunii,
+        ciorne = documente_api.ciorne_balanta(conn, schema, an, luna)   # [08.10 §6 pct.7, R36] separat, cu indicator
+    return {"randuri": randuri, "note_lunii": note_lunii, "ciorne": ciorne,
             "totaluri": documente_api.totaluri_balanta(randuri),
             "inchidere": documente_api.inchidere_balanta(randuri)}
 
@@ -5109,10 +5137,7 @@ def horeca_raport_z(tenant_id, rz, ctx):
             _la_cost = _ms.citeste(cur, schema) == _ms.CV
             _desc_z = "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport)
             _doc_z = _jurnal_api.eticheta_document("Raport Z", nr_raport, rz.data, "casa %s" % nui)
-            if _la_cost:
-                iid = repo_contabilitate.nota_horeca_z_ciorna(cur, schema, rz.data, numar, _desc_z, _doc_z)[0]
-            else:
-                iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, _desc_z, _doc_z)[0]
+            iid = repo_contabilitate.nota_horeca_z_ciorna(cur, schema, rz.data, numar, _desc_z, _doc_z)[0]   # [§6 pct.7, R36]
             linii = []
             if rz.numerar: linii.append(("5311", "707", rz.numerar))
             if rz.card: linii.append(("5125", "707", rz.card))

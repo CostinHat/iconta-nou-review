@@ -63,12 +63,6 @@ def select_depuse_extern(cur, tenant_id):
     return cur.fetchall()
 
 
-def select_solduri_initiale(cur):
-    """[08.10, U2] Data soldurilor de preluare (cea mai recentă), sau None."""
-    cur.execute("SELECT max(data_referinta) FROM solduri_initiale")
-    return cur.fetchone()
-
-
 def select_depusa_curenta(cur, tenant_id, an, luna, tip):
     """[08.10, U2] Depunerea curentă pe (firmă, perioadă, tip), sau None."""
     cur.execute("SELECT data_depunere FROM public.declaratii_depuse_curente WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",

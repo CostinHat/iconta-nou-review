@@ -251,7 +251,13 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_contabilitate.search_path_firma (controale_inchidere) — W2, registrul MF citit pe schema firmei (era SQL direct);
     #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (poarta_d406_balanta) — V1, poarta D406 = rulajele balanței
     #     (fereastra D406 și câte ciorne explică diferența), două citiri NOI.
-    assert _apeluri_catre_repository() == 298
+    # [lotul „Deciziile 08.10 §6”, 08.10.2026] 298 -> 301, cu apelurile numite:
+    #   repo_contabilitate.documentul_notei (×2), punct_de_revenire, revino_la (tenant_amortizare) — §6 pct.6, clasa T1 (retest 08.10 pct.1): ciorna
+    #     nevalidată a amortizării se înlocuiește (SAVEPOINT retras la aceeași amprentă), iar nota nouă preia tabloul ei;
+    #   −1: repo_contabilitate.nota_horeca_z_validata (horeca_raport_z) scos — §6 pct.7 (R36), Z-ul tastat e ciornă la ambele metode;
+    #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (ciorne_in_perioada, din coada_adauga) — §6 pct.7, porțile
+    #     D300/D394/D390/D406 dau avertisment, nu blocaj, când perioada fiscală are ciorne: două citiri NOI. Total 298 -> 303.
+    assert _apeluri_catre_repository() == 303
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

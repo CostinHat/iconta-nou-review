@@ -362,6 +362,11 @@ def e_clasa_ambigua_tva(f, tva_incasare_firma):
             and not bool(tva_incasare_firma))
 
 
+def _ms_citeste(cur, schema):
+    from core import metoda_stoc as _ms
+    return _ms.citeste(cur, schema)
+
+
 def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont_cheltuiala=None):
     """Notele unei facturi, ca listă de dict {debit, credit, suma}. **PUR față de bază la scriere**:
     citește, nu scrie — tiparul NIR, unde validarea se termină înainte ca ceva să înceapă.
@@ -596,7 +601,10 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     # [decizia Costin 08.10.2026, pct.2] NIR-ul „fără factură” al aceleiași livrări: legarea se propune, alegerea e a omului
     from core import nir_legare as _nl
     nir_ales, alta_livrare = None, False
-    if _nl.se_aplica(cur, schema, f, note):
+    deja_legat = _nl.legat_de_factura(cur, schema, factura_id) if _nl.se_aplica(cur, schema, f, note) else None
+    if deja_legat:   # re-contare după respingere: NIR-ul ales la prima contare (forma nouă) rămâne legat
+        nir_ales = deja_legat
+    elif _nl.se_aplica(cur, schema, f, note):
         cands = _nl.candidati(cur, schema, f, data_nota)
         if cands:
             if nir_legat in (None, ""):
@@ -610,6 +618,20 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
                     raise RefuzContare(er[0], er[1], detalii={"camp": "nir-legat", "candidati": cands,
                                                               "propus": _nl.propus(cands), "factura_id": factura_id,
                                                               "alta_livrare": _nl.ALTA_LIVRARE})
+
+    # [08.10.2026, deciziile Costin §6 pct.1–3] NIR-ul în FORMA NOUĂ (datoria pe 408): factura nu mai încarcă 371 — închide 408, trece
+    # TVA-ul 4428 -> 4426 și scrie diferența de preț în perioada ei (`nir_legare.note_factura_legata`). Forma veche: stornarea de jos.
+    plan_cv = []
+    if nir_ales and nir_ales.get("forma_noua"):
+        cur.execute("SELECT id, inregistrari_ids FROM %snir WHERE id = %%s" % _p(schema), (nir_ales["id"],))
+        _n = cur.fetchone()
+        cost_nir, tva_nir = _nl.sume_nir(cur, schema, dict(_n) if isinstance(_n, dict) else {"id": _n[0], "inregistrari_ids": _n[1]})
+        net_marfa = sum(Decimal(str(n["suma"])) for n in note if n["debit"] == _nl.CONT_MARFA and n["credit"] == "401")
+        metoda = _ms_citeste(cur, schema)
+        if metoda == "cantitativ_valoric":
+            plan_cv = _nl.plan_ajustare_cv(cur, schema, nir_ales["id"], net_marfa - cost_nir, data_nota)
+        note = _nl.note_factura_legata(note, cost_nir, tva_nir, metoda,
+                                       d_607=sum((x[1] for x in plan_cv if not x[2]), Decimal(0)))
 
     # [DDD2] PLASA, ultima verificare înainte de scriere.
     candidate = candidate_fara_cheie(cur, schema, f)
@@ -633,13 +655,20 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
                     "VALUES (%%s,%%s,%%s,%%s)" % _p(schema),
                     (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
-    stornare_nir = _nl.leaga(cur, schema, nir_ales["id"], f, data_nota) if nir_ales else None
+    stornare_nir = None
+    if nir_ales and nir_ales.get("forma_noua"):
+        _nl.leaga_forma_noua(cur, schema, nir_ales["id"], f)
+        _nl.scrie_ajustari_cv(cur, schema, plan_cv, data_nota, iid, nir_ales["id"], factura_id,
+                              "Diferență de preț NIR %s / factura %s" % (nir_ales["numar"], (f.get("serie") or "") + str(f.get("numar") or "")))
+    elif nir_ales:
+        stornare_nir = _nl.leaga(cur, schema, nir_ales["id"], f, data_nota)
     out = {"stare": "contata", "inregistrare_id": iid,
            "tva_la_incasare": bool(prof.get("tvai")) or bool(f.get("furnizor_tva_incasare")),
            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])}
                      for n in note]}
     if nir_ales:
-        out["nir_legat"] = {"nir_id": nir_ales["id"], "numar": nir_ales["numar"], "stornare_id": stornare_nir}
+        out["nir_legat"] = {"nir_id": nir_ales["id"], "numar": nir_ales["numar"], "stornare_id": stornare_nir,
+                            "forma_noua": bool(nir_ales.get("forma_noua"))}
     if alta_livrare:
         out["alta_livrare"] = True
     if candidate:

@@ -667,7 +667,12 @@ def verifica_tva(conn, schema, an, luna):
         if _R_dep:
             R, sursa_declarat = _R_dep, "depus"
     necontate = facturi_necontabilizate(conn, schema, _de, _pana)
-    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
+    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424"))
+    # [08.10.2026, generalizarea §6 pct.3] semnalul „exigibilitate decalată” pe 4428 citește numai partea care NU e TVA-ul din prețul
+    # de raft (contrapartida 371, global-valoric) — altfel o firmă global-valorică primea gri cu o cauză falsă la fiecare NIR
+    with conn.cursor() as _cur:
+        _rd, _rc = _repo.select_rulaj_4428_fara_stoc(_cur, schema, _de, _pana)
+    rulaje["4428"] = {"debit": _d(_rd), "credit": _d(_rc)}
     constatari = compara_tva(R, rulaje, an, luna, necontate,
                              sursa_declarat=sursa_declarat,
                              patru_ochi=_patru_ochi_activ(conn, schema))

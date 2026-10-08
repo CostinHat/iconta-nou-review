@@ -213,6 +213,7 @@ def test_coada_cere_poarta_pentru_toate_declaratiile_de_tva(monkeypatch):
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
     monkeypatch.setattr(uq, "poarta_tva_balanta", lambda s, an, luna, trim=None: chemat.append(an) or {"cod": uq.COD_TVA_BALANTA,
                                                                                                     "mesaj": "m", "diferente": []})
+    monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)
     for tip in ("d300", "d394", "d390"):
         d = types.SimpleNamespace(tip=tip, tenant_id=1, an=2099, luna=10, trim=None, motiv_trecere=None,
                                   model_dump=lambda **k: {"tip": tip, "an": 2099, "luna": 10})

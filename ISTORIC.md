@@ -1879,3 +1879,23 @@ Opt mesaje Costin în aceeași zi, toate în același lot și același commit (v
 - **Găsite de proba de browser, la final**: „Salvează” fără dată ștergea formularul „depusă în afara iConta” — mesajul de stare rescria
   containerul; reparat în mecanismul unic (orice container cu câmpuri își primește mesajul într-un copil), cu gard în browser. axe pe
   Balanță: verdele „● se închide” pe rândul zebră la 4,12:1 (și înainte de lot) — zebra tabelelor folosește acum verdele închis (4,53:1).
+
+## 08.10.2026 — „Deciziile 08.10 §6”: NIR-ul fără factură pe 408, luna preluării în Date firmă, R36 — evidența e ce a validat un om
+
+Răspunsul lui Costin la §6 al lotului „Deciziile 08.10” (verbatim în DECIZII 08.10.2026), cu prioritate față de registrul de parametri
+fiscali. Un lot, o poartă, registrele în același commit (commitul care conține această intrare).
+
+- **NIR fără factură** (pct.1–3): NIR-ul scrie datoria pe 408 și TVA-ul pe 4428.01; factura legată închide 408 și trece TVA-ul în 4426
+  odată cu ea. Merge acum și la cantitativ-valoric, fără a doua intrare în stoc (datoria din 08.10 închisă). Diferența de preț intră în
+  luna facturii: 378 la global-valoric; la cantitativ-valoric ajustare de valoare în fișă (CMP nou) sau 607 pentru marfa deja vândută.
+  NIR-ul din exercițiul trecut se propune cât timp 408 e deschis, fără nicio scriere în exercițiul lui. NIR-urile vechi (F1: 2 și 3) se
+  leagă prin stornare, ca înainte.
+- **Poarta D300** compară cu 4426: NIR-ul singur R27_2 0 = 4426 0; după factură 116 ↔ 115,50. D406 cu NIR + factură: **valid** pe DUK.
+- **Luna preluării** (pct.4): câmp în Date firmă, cu propunerea alături (F3 -> 06/2026, măsurat pe producție), refuz lângă câmp după
+  luna primei note, jurnalizat; Control fiscal numără de la ea.
+- **R36** (pct.6–7): amortizarea, bonul aprobat și raportul Z tastat se scriau direct validate — acum intră ciornă; a doua generare
+  înlocuiește ciorna nevalidată, cea validată nu se atinge (și la descărcarea GV). Balanța arată numai validatul, iar ciornele apar cu
+  indicator (ecran și PDF). Porțile D300/D394/D390/D406 avertizează, nu blochează, când perioada are ciorne.
+- **Găsite pe drum și reparate pe clasă:** re-contarea după respingere; ajustarea din D406 Stocuri și din refacerea stocului; analiticul
+  cu punct în D406 (pe sintetic, ambele căi); semnalul fals pe 4428 la global-valoric; 4428 debitor lipsă din creanțele bilanțului;
+  refuzurile din Date firmă fără câmp. **Rămas, decizie cerută:** creditorul 4428 numărat de două ori în bilanț (datorie strictă).

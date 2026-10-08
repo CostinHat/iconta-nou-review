@@ -108,6 +108,12 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
                     (factura_id,))
         if cur.fetchone():
             return {"stare": "deja_intrat", "factura_id": factura_id, "linii": 0}
+        # [08.10.2026, decizia Costin §6 pct.1] factura LEGATĂ de un NIR „fără factură”: marfa a intrat în fișă prin NIR — „fără a
+        # doua intrare în stoc”
+        cur.execute(f"SELECT id FROM {schema}.nir WHERE factura_id = %s LIMIT 1", (factura_id,))
+        _nir = cur.fetchone()
+        if _nir:
+            return {"stare": "intrat_prin_nir", "factura_id": factura_id, "nir_id": _nir["id"], "linii": 0}
         cur.execute(f"""SELECT descriere, cantitate, pret_unitar FROM {schema}.factura_linii
                         WHERE factura_id=%s ORDER BY id""", (factura_id,))
         brute = []

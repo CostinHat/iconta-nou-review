@@ -86,10 +86,10 @@ def poarta_d406_balanta(schema, an, luna, res):
     trebuie să egaleze rulajele balanței pe lună; dacă nu, «Trimite în coadă» e blocat.”
 
     Rulajele BALANȚEI (`documente_api.balanta`, rulajele curente ale fiecărei luni din fereastra D406 — `common.fereastra_d406`),
-    adică exact ce vede contabilul pe ecranul Balanță: cu tot cu ciorne (balanța nu filtrează pe status, `scan_populatii_registre`).
-    D406 cuprinde numai notele VALIDATE, deci o lună cu ciorne nu intră în coadă până nu se validează (MĂSURAT pe F1 10/2026: notele
-    de bancă 106/107 — încasarea 6.938 și comisionul 15 — sunt ciornă; în balanță sunt, în D406 nu). Legarea cont cu cont pe notele
-    validate rămâne `d406_reconciliere` (la generare). Refuzul (sau None): {cod, mesaj, d406, balanta, diferenta, ciorne}."""
+    adică exact ce vede contabilul pe ecranul Balanță. [08.10.2026, decizia Costin §6 pct.7 — R36] balanța arată numai validatul, ca
+    D406: „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună, dau doar avertisment, nu blocaj.”
+    (`coada_adauga`, `ciorne_in_perioada`). Legarea cont cu cont pe notele validate rămâne `d406_reconciliere` (la generare).
+    Refuzul (sau None): {cod, mesaj, d406, balanta, diferenta, ciorne}."""
     from decimal import Decimal
     from core import documente_api as _doc
     from core.common import fereastra_d406 as _fd
@@ -114,11 +114,40 @@ def poarta_d406_balanta(schema, an, luna, res):
     mesaj = ("D406 nu intră în coadă: totalul notelor din GeneralLedgerEntries (%s lei) nu e rulajul balanței pe perioadă "
                       "(%s lei), diferență %s lei.%s" % (
                           "%.2f" % gl, "%.2f" % bal, "%.2f" % (gl - bal),
-                          (" În perioadă sunt %d notă(e) nevalidată(e): balanța le arată, D406 cuprinde numai notele validate — "
-                           "validează-le (sau șterge-le) din Registrul jurnal și generează din nou." % ciorne) if ciorne else ""))
+                          (" În perioadă sunt %d notă(e) nevalidată(e): nici balanța, nici D406 nu le cuprind până nu le validează "
+                           "un om." % ciorne) if ciorne else ""))
     return dict(_af.afirmatie("neconformitate", "declaratie_d406", mesaj, unde="perioada %s – %s" % (di.isoformat(), ds.isoformat()),
                               regula="totalul GeneralLedgerEntries = rulajul balanței pe fereastra D406"),
                 cod=COD_D406_BALANTA, d406="%.2f" % gl, balanta="%.2f" % bal, diferenta="%.2f" % (gl - bal), ciorne=ciorne, mesaj=mesaj)
+
+
+def ciorne_in_perioada(schema, an, luna):
+    """[08.10.2026, R36] Câte note NEvalidate are perioada fiscală a declarației (fereastra TVA = fereastra D406, `common.fereastra_d406`)."""
+    from core import repo_contabilitate
+    from core.common import fereastra_d406 as _fd
+    if not luna:
+        return 0
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            r = repo_contabilitate.profil_tva(cur)
+            di, ds = _fd({"platitor_tva": r[0], "tip_decont": r[1]} if r else {}, an, luna)
+            n = repo_contabilitate.note_nevalidate_in_interval(cur, di, ds)
+        conn.rollback()
+    return n
+
+
+MESAJ_CIORNE_POARTA = ("În perioadă sunt %d notă(e) nevalidată(e): comparația cu balanța s-a făcut pe notele validate, iar ciornele "
+                       "nu sunt în evidență până nu le validează un om. Declarația intră în coadă; validează ciornele înainte de "
+                       "depunere.")
+
+
+def decizie_poarta(refuz, ciorne):
+    """[08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în
+    lună, dau doar avertisment, nu blocaj.” (blocaj, avertisment): fără ciorne, refuzul porții blochează; cu ciorne, nimic nu
+    blochează, iar avertismentul spune câte sunt (și diferența, dacă a fost una). PURĂ."""
+    if not ciorne:
+        return refuz or None, None
+    return None, ((refuz.get("mesaj", "") + " ") if refuz else "") + MESAJ_CIORNE_POARTA % ciorne
 
 
 def coada_adauga(date, ctx):
@@ -150,15 +179,20 @@ def coada_adauga(date, ctx):
     # diferența pe conturi. Validatorul DUK verifică doar structura, nu cifrele.” — și „se aplică tuturor declarațiilor de TVA: D300,
     # D394, D390”. Comparația există o singură dată (`control_incrucisat.verifica_tva`: R17_2 <-> rulajul creditor 4427, R27_2 <->
     # rulajul debitor 4426, numai note validate, toleranța 1 leu); aici devine poartă. Fără portiță: `motiv_trecere` e pentru DUK.
-    if date.tip in DECLARATII_TVA:
-        _refuz_tva = poarta_tva_balanta(schema, date.an, date.luna, date.trim)
-        if _refuz_tva:
-            raise _erori.DateInvalide(_refuz_tva)
     # 1c) [08.10.2026, decizia Costin V1] D406: totalurile GeneralLedgerEntries = rulajele balanței pe perioadă, altfel blocat.
-    if date.tip == "d406":
-        _refuz_d406 = poarta_d406_balanta(schema, date.an, date.luna or (int(date.trim) * 3 if date.trim else None), res)
-        if _refuz_d406:
-            raise _erori.DateInvalide(_refuz_d406)
+    # [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
+    # dau doar avertisment, nu blocaj.” Fără ciorne, diferența blochează ca înainte; cu ciorne, intră în coadă cu avertismentul.
+    avertismente_poarta = []
+    if date.tip in DECLARATII_TVA or date.tip == "d406":
+        _ancora = date.luna or (int(date.trim) * 3 if date.trim else None)
+        _ciorne = ciorne_in_perioada(schema, date.an, _ancora)
+        _refuz = (poarta_tva_balanta(schema, date.an, date.luna, date.trim) if date.tip in DECLARATII_TVA
+                  else poarta_d406_balanta(schema, date.an, _ancora, res))
+        _blocaj, _avert = decizie_poarta(_refuz, _ciorne)
+        if _blocaj:
+            raise _erori.DateInvalide(_blocaj)
+        if _avert:
+            avertismente_poarta.append(_avert)
     # 2) POARTA: se VALIDEAZĂ ÎNAINTE de a intra în coadă (decizia lui Costin, 26.08.2026).
     #
     # Până azi coada primea orice se genera, iar validatorul rula abia când cineva deschidea
@@ -229,6 +263,8 @@ def coada_adauga(date, ctx):
             logging.getLogger("iconta").warning("verdict nepersistat la intrarea in coada (%s): %s",
                                                 r.get("coada_id"), _e)
     r["verdict"] = {"stare": _rez.get("stare"), "trecut_cu_motiv": _motiv or None}
+    if avertismente_poarta:
+        r["avertismente_poarta"] = avertismente_poarta
     # [p57_notif] notifica validatorii ca e ceva de validat
     if r.get("ok"):
         try:

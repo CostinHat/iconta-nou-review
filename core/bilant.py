@@ -48,7 +48,9 @@ def f10_din_balanta(s):
             - sc(s, "378") - sc(s, "391","392","393","394","395","396","397","398")
             - sc(s, "4428"))
     # creante (numai solduri debitoare pe conturile bifunctionale)
-    r[301] = (sd(s, "4092","411","413","418","425","4282","431","437","4382","441","4424",
+    # [08.10.2026, §6 pct.3] 4428 cu sold DEBITOR (TVA-ul NIR-urilor fără factură, 4428.01; achizițiile la TVA la încasare) e creanță —
+    # OMFP 1802/2014, bilanțul prescurtat, rd.06 CREANȚE: „… + 4424 + din ct. 4428** + 444** …” (** = solduri debitoare)
+    r[301] = (sd(s, "4092","411","413","418","425","4282","431","437","4382","441","4424","4428",
                    "444","445","446","447","4482","451","453","456","4582","461","4662","473","5187")
               - sc(s, "491","495","496"))
     r[302] = Decimal("0")  # creante din dividende interimare - rar la micro

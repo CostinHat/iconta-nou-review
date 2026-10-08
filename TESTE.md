@@ -45,6 +45,42 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Deciziile 08.10 §6 (răspunsul Costin la §6 al lotului „Deciziile 08.10”, comanda 08.10.2026)** — verbatim în DECIZII
+  08.10.2026 („Deciziile Costin la §6 al lotului «Deciziile 08.10»”). Prioritar față de registrul de parametri fiscali (comanda din aceeași
+  tură). O poartă completă la publicare, registrele în același commit; ZIP în `~/ghid_incoming/`; durata măsurată a fiecărei operații.
+  - ultim: S0–S6 pe disc, în commitul de închidere al lotului (registrele în el): `test_nir_408` 13, `test_r36_evidenta` 6,
+    `test_luna_preluare` 4, `test_control_preluare` 9 verzi; 32 de mutații ROȘII (inclusiv gardul de sesiune pe rândurile orfane); DUK D406 valid (NIR fără factură + factura legată);
+    poarta D300 R27_2 116 ↔ 4426 115,50; F3 propunere 06/2026 (producție, citire).
+  - urmator: S7 — poarta completă, four-way, migrarea pe producție, ZIP, raportul. STARE = IN LUCRU
+  - LISTA A CRESCUT PE DRUM (rescrisă aici DUPĂ execuție — abatere de la §2.1, declarată în raport §7):
+    S1b. Re-contarea facturii legate după respingere păstrează legarea (`nir_legare.legat_de_factura`); ajustarea orfană se înlocuiește;
+         `reface_factura` nu reface ajustarea ca ieșire; fișa arată „diferență de preț”; D406 Stocuri adună ajustarea cu semnul ei.
+    S3b. D406: analiticul cu punct (4428.01) se declară pe sintetic, în plan și pe linii (`common.sintetic_saft`, ambele căi); semnalul
+         „exigibilitate decalată” pe 4428 fără TVA-ul din prețul de raft (contrapartida 371).
+    S3c. Bilanțul: soldul debitor 4428 la creanțe rd.06 (OMFP 1802/2014 „din ct. 4428**”); dubla numărare a creditorului 4428 (stocuri +
+         datorii) -> datorie xfail strictă + decizie cerută.
+    S4b. Date firmă: refuzul serverului își numește câmpul (`erori_campuri`), ecranul îl pune lângă câmp — pe toată clasa.
+    S5b. R36 pe clasă: bonul aprobat și raportul Z tastat intră ciornă (ca amortizarea); mulțimea rutelor care scriu `validata` direct
+         e goală și gardată (`test_rol_pe_efect`).
+  - pasi:
+    S0. Măsurarea „înainte” (producție în tranzacție anulată + test): contarea NIR „fără factură” pe metode (GV, CV), NIR-urile deschise
+        pe F1, prima notă pe fiecare firmă (F3), balanța și porțile pe lunile cu ciorne, a doua generare a amortizării / descărcării GV.
+    S1. (pct.1 + pct.3) NIR fără factură: la NIR 371 = 408 (costul) și TVA pe 4428 (analitic de achiziție, ca să nu intre în K-ul GV);
+        la contarea facturii legate: 408 = 401 și 4426 = 4428, pe TOATE metodele (inclusiv cantitativ-valoric), fără a doua intrare în
+        stoc, fără refuz (`stocuri_api.adauga_nir`, `nir_legare`, `contare_facturi`, `stocuri.coeficient_k`). NIR-urile vechi (pe 401)
+        se leagă prin stornarea existentă. Închide `test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea` [citare-istorica: datoria
+        închisă de acest fir, înlocuită de `core/test_nir_408.py::test_cantitativ_valoric_o_singura_intrare_in_stoc`].
+    S2. (pct.2) NIR din exercițiul trecut propus la legare cât timp 408 e deschis; exercițiul închis nu se modifică, diferența de preț în
+        perioada facturii. TEMEI pct.68–69 OMFP 1802/2014, citat la sursă.
+    S3. (pct.3) Poarta D300 compară cu 4426 (4428 nu intră) — probă + DUK.
+    S4. (pct.4) Luna preluării în Date firmă: coloană (`firma_profil.luna_preluare`, migrare + tenant_template), propunerea dedusă,
+        refuz după luna primei note, jurnalizare (`firma_profil_jurnal`); Control fiscal citește câmpul; F3 recalculat.
+    S5. (pct.6) Amortizarea și descărcarea GV înlocuiesc automat ciorna nevalidată; validatul neatins (ca T1).
+    S6. (pct.7, R36) Balanța implicit validat, ciornele separat cu indicator; populația declarată; consumatorii balanței măsurați vechi→nou;
+        porțile D300/D394/D390/D406 validat cu validat, ciornele -> avertisment, nu blocaj; gard.
+    S7. Teste + mutații, probe pe portofoliu, unelte vizuale pe ecranele atinse, vecinătate, blocuri generate, registre, poartă,
+        four-way, migrare pe producție (după backup), ZIP, raportul cu duratele măsurate.
+    (pct.5 — recipisa rămâne număr: nicio schimbare de cod, consemnat în DECIZII.)
 - fir: **Deciziile 08.10 (răspunsul la §6 al lotului „Deciziile 07.10”, comanda Costin 08.10.2026)** — verbatim în DECIZII
   08.10.2026 („Deciziile Costin la §6 al lotului «Deciziile 07.10»”). O singură poartă completă, la publicarea finală, cu
   registrele în același commit (pct.5); ZIP `~/ghid_incoming/iconta_decizii_08_10.zip`.

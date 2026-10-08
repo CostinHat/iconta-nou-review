@@ -7,15 +7,15 @@ import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.20
 import { fluxConcediu } from "./flux_concediu.js?v=709cfc813e";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=92ab833f31";
 import { ecranRip } from "./rip_ecran.js?v=f9e35ff63e";
-import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";  /* [C11, 07.10.2026] bilanțul prin coadă */
+import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=e120e829b1";
 import { ecranEtransport } from "./etransport_ecran.js?v=108eff72eb";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=a059e2160d";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=46033e351d";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=ffeeb0ffc9";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=90aae1066a";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=b3176cc964";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=57540bb491";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=1b71314d2c";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -2242,7 +2242,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${esc(r.articol.denumire)}</div>
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
-            <div class="pf-frand-nume">${dataRo(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${cantitate(l.cantitate)} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pre\u021b " + pretUnitar(l.pret_unitar) + " lei" : ""}</div>
+            <div class="pf-frand-nume">${dataRo(l.data)} \u00b7 ${l.tip === "ajustare" ? `diferen\u021b\u0103 de pre\u021b ${bani(l.valoare)} lei` : `${l.tip === "intrare" ? "+" : "\u2212"}${cantitate(l.cantitate)} \u00b7 ${bani(l.valoare)} lei`}${l.pret_unitar ? " \u00b7 pre\u021b " + pretUnitar(l.pret_unitar) + " lei" : ""}</div>
             <div class="pf-frand-sub">sold ${cantitate(l.sold_cantitate)} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + pretUnitar(l.cmp) + " lei" : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
           </div></div>`).join("") || '<div class="stare-goala">Fără mișcări în fișă.</div>'}</div>`;
     } catch { arataMesaj(zona.querySelector("#cv-fisa-zona"), "Nu am putut încărca fisa.", "eroare"); }
@@ -4687,6 +4687,12 @@ async function ecranBalanta(corp, nav, t) {
 
   // Inchiderea e un OBIECT cu stare, nu o propozitie (DS cap.25.5), si are TREI stari: pe o luna
   // fara inregistrari nu s-a verificat nimic - nu se afirma ca „se inchide".
+  // [08.10.2026, decizia Costin §6 pct.7 — R36] „Balanța arată implicit doar validatul, iar ciornele apar separat, cu indicator.”
+  const casetaCiorne = (c) => {
+    const n = c ? (c.luna || 0) + (c.inainte || 0) : 0;
+    if (!n) return "";
+    return `<div class="caseta-info" id="b-ciorne"><div class="ci-mesaj"><b>${n} ${n === 1 ? "ciorn\u0103 nevalidat\u0103 nu intr\u0103" : "ciorne nevalidate nu intr\u0103"} \u00een balan\u021b\u0103</b> (${c.luna || 0} \u00een luna asta, ${c.inainte || 0} din lunile anterioare ale anului). Balan\u021ba arat\u0103 numai notele validate de un om; ciornele le vezi \u0219i le validezi \u00een Registrul jurnal.</div></div>`;
+  };
   const casetaInchidere = (inc) => {
     if (!inc) return "";
     const perechi = `<table class="fd-tabel" style="max-width:640px">
@@ -4735,10 +4741,11 @@ async function ecranBalanta(corp, nav, t) {
           </tbody></table>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Balan\u021b\u0103 de verificare</h2>
-      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${randuri.length} conturi \u00b7 rulajele lunii vin din ${b.note_lunii} ${b.note_lunii === 1 ? "not\u0103" : "note"} \u2014 acelea\u0219i pe care le arat\u0103 Registrul jurnal pe luna asta; notele lunilor anterioare stau \u00een \u201esume precedente\u201d
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${randuri.length} conturi \u00b7 rulajele lunii vin din ${b.note_lunii} ${b.note_lunii === 1 ? "not\u0103 validat\u0103" : "note validate"} \u2014 acelea\u0219i pe care le arat\u0103 Registrul jurnal pe luna asta, \u00een afar\u0103 de ciorne; notele lunilor anterioare stau \u00een \u201esume precedente\u201d
         <button class="buton-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="b-next">luna \u2192</button></p>
       ${casetaInchidere(b && b.inchidere)}
+      ${casetaCiorne(b && b.ciorne)}
       ${tabel}
       <p><button class="buton-primar" id="b-pdf">Descarc\u0103 PDF</button></p>
       <div id="b-mesaj"></div>`;

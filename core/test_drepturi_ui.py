@@ -153,7 +153,7 @@ def test_CALIBRARE_instrumentul_vede_lipsa_si_ramurile():
 # ── a doua treaptă: marcajul pe ELEMENTUL legat de handler (unde legătura se poate dovedi) ────────────
 # Clichet pe apelurile a căror legare nu se poate dovedi static (handler în altă funcție, selector calculat, element
 # construit cu createElement). Numărul nu are voie să crească; când scade, se coboară aici.
-_CLICHET_NELEGATE_PE_ELEMENT = 35   # 05.10.2026: salvarea poveștii (ciornă) legată de butonul ei
+_CLICHET_NELEGATE_PE_ELEMENT = 34   # 08.10.2026: „Salvează” din Date firmă leagă și vectorul + redenumirea (citirea câmpurilor scoasă din handler, `_dateDinFormular`); 05.10.2026: salvarea poveștii
 
 
 def test_marcajul_sta_pe_elementul_legat():

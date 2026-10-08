@@ -254,7 +254,9 @@ def test_generarea_d394_citeste_ambele_rute_si_e_valida(conn_z):
     r1 = uc_tenants.horeca_import_amef(1, (_XML_AMEF % 35).encode(), {"uid": 1})
     with conn_z.cursor() as cur:   # importul scrie ciornă; contabilul o validează
         cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r1["inregistrare_id"],))
-    uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    r2 = uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    with conn_z.cursor() as cur:   # [08.10.2026, R36] și Z-ul tastat intră ciornă; contabilul îl validează
+        cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r2["nota_id"],))
     xml, res = _d394.genereaza(conn_z, _SCHEMA, Perioada(2026, luna=6))
     (o,) = _op2(xml)
     # 2 case (NUI distincte), 35 + 42 bonuri; total 2450 (AMEF) + 1321 (tastat) = 3771
@@ -283,7 +285,9 @@ def test_raport_z_validat_fara_rand_amef_face_d394_sa_refuze_numit(conn_z):
 def test_a_doua_cale_recalculeaza_incasarile_din_tabelele_z(conn_z):
     from core import uc_tenants
     from core.d394_reconciliere import reconciliaza
-    uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    r2 = uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    with conn_z.cursor() as cur:   # [08.10.2026, R36] Z-ul tastat intră ciornă; validat
+        cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r2["nota_id"],))
     xml, res = _d394.genereaza(conn_z, _SCHEMA, Perioada(2026, luna=6))
     assert reconciliaza(conn_z, Perioada(2026, luna=6), res)["divergente"] == []
     # MUTAȚIE (pe rezultat, nu pe cod): o rubrică op2 agregată greșit în generator -> calea a doua o numește

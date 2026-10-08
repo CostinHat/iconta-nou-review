@@ -47,12 +47,28 @@ def test_de_urmarit_inseamna_30_de_zile():
 
 
 def test_luna_preluarii_din_soldurile_de_preluare_sau_din_data_adaugarii():
+    from core import luna_preluare as lp
     # decizia Costin U2: „restanțele se numără doar de la luna de preluare a firmei în iConta”
-    assert cf.luna_preluarii(datetime.date(2026, 9, 20)) == (2026, 9)
+    assert lp.deduse(datetime.date(2026, 9, 20)) == (2026, 9)
     # soldurile sunt „la” data lor: evidența în iConta începe a doua zi
-    assert cf.luna_preluarii(datetime.date(2026, 9, 20), datetime.date(2026, 6, 30)) == (2026, 7)
-    assert cf.luna_preluarii(None, datetime.date(2026, 8, 31)) == (2026, 9)
-    assert cf.luna_preluarii(None) is None
+    assert lp.deduse(datetime.date(2026, 9, 20), datetime.date(2026, 6, 30)) == (2026, 7)
+    assert lp.deduse(None, datetime.date(2026, 8, 31)) == (2026, 9)
+    assert lp.deduse(None) is None
+
+
+def test_propunerea_nu_trece_de_prima_nota_si_luna_salvata_castiga():
+    """[08.10 §6 pct.4] „cu valoarea dedusă ca propunere, dar niciodată după luna primei note. Recalculează propunerea pentru F3 (are
+    note din iunie).” F3: adăugată în octombrie, prima notă în iunie -> 06/2026. Luna salvată în Date firmă e cea efectivă; una după
+    prima notă se refuză. MUTAȚIE: `min(d, p)` -> `d` în `propunere` -> F3 rămâne 10/2026 -> pică."""
+    from core import luna_preluare as lp
+    f3 = dict(creat_la=datetime.date(2026, 10, 2), data_solduri=None, prima_nota=datetime.date(2026, 6, 15))
+    assert lp.propunere(**f3) == (2026, 6)
+    assert lp.efectiva(None, **f3) == (2026, 6)
+    assert lp.efectiva(datetime.date(2026, 4, 1), **f3) == (2026, 4)
+    assert lp.eroare(datetime.date(2026, 6, 1), f3["prima_nota"]) is None
+    assert lp.eroare(datetime.date(2026, 7, 1), f3["prima_nota"]) is not None           # 07/2026 e după prima notă
+    assert lp.propunere(datetime.date(2026, 10, 2)) == (2026, 10)                      # fără note: dedusa
+    assert lp.din_text("2026-06") == datetime.date(2026, 6, 1) and lp.din_text("") is None
 
 
 def test_perioadele_dinaintea_preluarii_nu_sunt_restante():
@@ -118,6 +134,10 @@ def firma():
             with c.cursor() as cur:
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
                 cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s", (TID,))
+                # contorul pe care `marcheaza_sursa_publica` îl ridică la scrierea în declaratii_depuse: altfel rămâne un rând
+                # care trimite la o firmă inexistentă (gardul de sesiune din `conftest.py`)
+                cur.execute("DELETE FROM public.firma_sursa_versiune WHERE tenant_id = %s", (TID,))
+                cur.execute("DELETE FROM public.supervizor_sursa WHERE tenant_id = %s", (TID,))
             c.commit()
 
 

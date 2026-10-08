@@ -1163,7 +1163,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 17 (din care schimba date: 9) · **refuzuri explicite:** 104
+**Clasa:** MECANIC · **rute:** 17 (din care schimba date: 9) · **refuzuri explicite:** 103
 
 **Cine:** drept fin: `poate_depune`, `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 9.**
 
@@ -1421,7 +1421,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T10 — Inventarierea
 
-**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 1) · **refuzuri explicite:** 27
+**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 1) · **refuzuri explicite:** 29
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 1.**
 
@@ -1741,11 +1741,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd` — garda `cere_drept` drept:poate_valida
 - `POST /tenants/{tenant_id}/reevaluare-imobilizare` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `afirmatii`, `d406_active`, `jurnal_api`, `mf_registru`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`, `uc_comun`
+**Module:** `afirmatii`, `coada_api`, `d406_active`, `jurnal_api`, `mf_registru`, `note_derivate`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `reevaluari` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `reevaluari` (INSERT)
 
-**Stari puse:** `contat`, `potrivit`, `validata`
+**Stari puse:** `aprobata`, `ciorna`, `contat`, `depusa`, `potrivit`, `respinsa`, `validata`
 
 **Firme care il pot exercita azi: 2** — `tenant_005`, `tenant_013`
 

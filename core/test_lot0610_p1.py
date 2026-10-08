@@ -117,7 +117,7 @@ def test_operatiunile_speciale_si_amortizarea_poarta_documentul_lor_numerotat_pe
     tip și pe an. MUTAȚIE: `_cu_document_intern` scos din `nota_facturi_ciorna` -> None -> pică."""
     from core import repo_contabilitate as rc
     with conn.cursor() as cur:
-        a1 = rc.nota_amortizare_validata(cur, SCH, datetime.date(2026, 10, 28), "AMORT-2026-10", "Amortizare 10/2026")[0]
+        a1 = rc.nota_amortizare_ciorna(cur, SCH, datetime.date(2026, 10, 28), "AMORT-2026-10", "Amortizare 10/2026")[0]
         n1 = rc.nota_facturi_ciorna(cur, SCH, "2026-10-06", "Leasing")[0]
         n2 = rc.nota_banca_ciorna(cur, SCH, "2026-10-07", "Reevaluare valută")[0]
         n3 = rc.nota_facturi_ciorna(cur, SCH, "2027-01-05", "Avans")[0]

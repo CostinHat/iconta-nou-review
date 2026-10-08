@@ -38,6 +38,12 @@ ABATERI = {
         "Decizia Costin 08.10.2026, W2 + W3: același refuz (422, aceeași afirmație „Luna … nu se poate închide.”), cu două chei în "
         "plus — `blocaje` (lista structurată, inclusiv AMORTIZARE_NEINREGISTRATA) și `semnale` (soldul 581 nenul) —, din "
         "`uc_comun.controale_inchidere`, sursa unică pentru poartă și pentru ecranul „Închidere lună”."),
+    ("firma_profil_date_salveaza", "r.get('mesaj', 'date invalide')"): (
+        "Deciziile Costin 08.10.2026 §6 pct.4 (luna preluării, refuz lângă câmp), generalizat: același refuz (422, același mesaj), "
+        "cu câmpul lui în `erori_campuri` când `salveaza_date` îl numește — ecranul Date firmă îl pune lângă câmp (DS cap.6, G10)."),
+    ("tenant_amortizare", "Amortizarea lunii e deja generată."): (
+        "Decizia Costin 08.10.2026 §6 pct.6 („aceeași regulă ca T1 — înlocuire automată a ciornei nevalidate; ce e validat nu se "
+        "atinge”): același cod (400) rămâne numai pentru nota VALIDATĂ, cu numărul ei; ciorna nevalidată sau respinsă se înlocuiește."),
     ("_adresa_e_libera", "EMAIL_EXISTA"): (
         "Testarea ca asistent, comanda Costin 04.10.2026 pct.3 (aceeași clasă): „Există deja un cont cu acest email. "
         "Autentifică-te…” i se spunea celui care își SCHIMBĂ adresa — e deja autentificat. Același cod (400), mesaj "
@@ -58,14 +64,12 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
-    ("coada_adauga", "_refuz_d406"): (
-        "Decizia Costin 08.10.2026, V1 (completarea 2 la U1): „totalurile GeneralLedgerEntries din D406 trebuie să egaleze rulajele "
-        "balanței pe lună; dacă nu, «Trimite în coadă» e blocat.” Refuz 422 structurat (D406_DIFERA_DE_BALANTA), cu totalul D406, "
-        "rulajul balanței pe fereastra D406 și câte note nevalidate explică diferența."),
-    ("coada_adauga", "_refuz_tva"): (
-        "Decizia Costin 08.10.2026, U1 (+ completarea: D300, D394, D390): „dacă rândurile de TVA colectată și deductibilă ale D300 nu "
-        "se potrivesc cu rulajele 4427 și 4426 ale lunii (toleranță: rotunjirea la leu), «Trimite în coadă» e blocat și se afișează "
-        "diferența pe conturi.” Refuz 422 structurat (TVA_DIFERA_DE_BALANTA), înaintea validatorului DUK."),
+    ("coada_adauga", "_blocaj"): (
+        "Deciziile Costin 08.10.2026, U1 (+ completarea: D300, D394, D390) și V1 (D406): „«Trimite în coadă» e blocat” când TVA-ul "
+        "D300 nu se potrivește cu rulajele 4427 / 4426 (TVA_DIFERA_DE_BALANTA), respectiv când totalurile GeneralLedgerEntries nu sunt "
+        "rulajele balanței (D406_DIFERA_DE_BALANTA). Refuz 422 structurat, înaintea validatorului DUK. [§6 pct.7, R36] „compară "
+        "validat cu validat; dacă există ciorne în lună, dau doar avertisment, nu blocaj” — cele două refuzuri au devenit unul "
+        "(`_blocaj`, din `decizie_poarta`), ridicat numai fără ciorne în perioadă."),
     ("factura_contabilizeaza", "_nl.detaliu_refuz(e)"): (
         "Decizia Costin 08.10.2026, pct.2: „la contarea facturii se propune legarea cu NIR-ul nelegat de la același furnizor "
         "(preselecție permisă — dedusă din date, vizibilă, modificabilă). Dacă contabilul nu leagă, confirmă explicit «altă "
@@ -221,6 +225,18 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("bon_aproba", "nota_bon_validata"): (
+        "nota_bon_ciorna",
+        "Decizia Costin 08.10.2026 §6 pct.7 (R36: „evidența = ce a validat un om”): nota bonului aprobat intră CIORNĂ — aceeași "
+        "scriere, alt status; validarea e actul separat."),
+    ("horeca_raport_z", "nota_horeca_z_validata"): (
+        "nota_horeca_z_ciorna",
+        "Decizia Costin 08.10.2026 §6 pct.7 (R36): raportul Z tastat intră CIORNĂ la ambele metode de stoc — cele două apeluri "
+        "(ciornă la cantitativ-valoric, validată în rest) devin unul."),
+    ("tenant_amortizare", "nota_amortizare_validata"): (
+        "nota_amortizare_ciorna",
+        "Deciziile Costin 08.10.2026 §6 pct.6 + pct.7 (R36 + clasa T1, retest 08.10 pct.1): nota de amortizare intră CIORNĂ și se înlocuiește cât e "
+        "nevalidată."),
     ("salarii_contare_scrie", "_date"): (
         "ultima_zi_a_lunii",
         "Lotul 07.10 pct.7 (comanda Costin 06.10.2026: „dacă nu are [temei], data e ultima zi a lunii”): data notei de salarii "

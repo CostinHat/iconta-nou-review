@@ -25,7 +25,7 @@ def _q4(v):
 
 
 def fisa_magazie(miscari, stoc_initial=None):
-    """miscari: [{tip: 'intrare'|'iesire', cantitate, pret_unitar? (doar la intrare),
+    """miscari: [{tip: 'intrare'|'iesire'|'ajustare' (de valoare, cantitate 0, `valoare`), cantitate, pret_unitar? (doar la intrare),
     data, document?}] in ordine cronologica.
     stoc_initial: {cantitate, valoare} sau None.
     Intoarce liniile fisei cu sold cantitate/valoare/CMP dupa fiecare miscare.
@@ -54,6 +54,18 @@ def fisa_magazie(miscari, stoc_initial=None):
                 val = Decimal("0.00")
             out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val),
                         "cmp": _q4(val / cant) if cant > 0 else None})
+            continue
+        if m["tip"] == "ajustare":
+            # [08.10.2026, decizia Costin §6 pct.2] DIFERENȚA DE PREȚ dintre NIR-ul „fără factură” și factura legată: o mișcare de
+            # VALOARE (cantitate 0), în perioada facturii; CMP-ul se recalculează din soldul de după ea. Pe stoc zero nu are pe ce sta
+            # (apelantul o duce atunci pe 607, nu în fișă).
+            if c != 0:
+                raise ValueError(f"ajustarea de valoare are cantitate 0: {m}")
+            if cant <= 0:
+                raise ValueError(f"ajustare de valoare pe stoc zero la {m.get('data')}")
+            v = _q(m["valoare"])
+            val += v
+            out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val), "cmp": _q4(val / cant)})
             continue
         if c <= 0:
             raise ValueError(f"cantitate invalida: {m}")

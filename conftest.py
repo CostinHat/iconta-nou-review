@@ -21,6 +21,8 @@ A doua incuietoare, cea tare, e la PostgreSQL: rolul `iconta_test_user` nu are `
 """
 import os
 
+import pytest
+
 CALE_TEST_ENV = os.path.expanduser("~/.iconta/test.env")
 
 
@@ -89,6 +91,41 @@ def pytest_sessionstart(session):
     with db.get_conn() as conn:
         montate = sonda_scrieri.instaleaza(conn)
     print("sonda de scrieri: montata pe %d tabele" % len(montate))
+
+
+def _randuri_orfane():
+    """{tabel: n} — rândurile din tabelele publice cu `tenant_id` care trimit la o firmă inexistentă (aceeași listă ca ștergerea
+    firmei, `tenant_stergere.TABELE_TENANT`, și ca cifra din PREDARE, `scripts/scan_predare_cifre.py`). None fără bază."""
+    try:
+        from core import db, tenant_stergere as ts
+        db.init_pool()
+        with db.get_conn() as conn, conn.cursor() as cur:
+            out = {}
+            for tabel in ts.TABELE_TENANT:
+                cur.execute('SELECT count(*) FROM public."%s" x WHERE x.tenant_id IS NOT NULL '
+                            'AND NOT EXISTS (SELECT 1 FROM public.tenants p WHERE p.id = x.tenant_id)' % tabel)
+                n = cur.fetchone()[0]
+                if n:
+                    out[tabel] = n
+            return out
+    except Exception:
+        return None
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _niciun_rand_orfan_lasat_de_suita():
+    """[08.10.2026] GARD: un test care scrie într-un tabel public cu un tenant SINTETIC își curăță TOT ce a produs scrierea — și
+    contoarele ridicate de triggere (`firma_sursa_versiune`, `supervizor_sursa`). Găsit pe lotul „Deciziile 08.10 §6”: rândul lui
+    990808 rămânea, iar cifra „rânduri care trimit la o firmă inexistentă” din PREDARE ieșea 1 sau 0 după ORDINEA testelor. Aici
+    se compară baza de la începutul și de la sfârșitul sesiunii, independent de ordine."""
+    inainte = _randuri_orfane()
+    yield
+    dupa = _randuri_orfane()
+    if inainte is None or dupa is None:
+        return
+    crescut = {t: (inainte.get(t, 0), n) for t, n in dupa.items() if n > inainte.get(t, 0)}
+    assert not crescut, ("suita a lăsat rânduri care trimit la o firmă inexistentă (tabel: înainte -> după): %s — un test care "
+                         "scrie cu tenant sintetic nu-și curăță contoarele" % crescut)
 
 
 def pytest_runtest_setup(item):

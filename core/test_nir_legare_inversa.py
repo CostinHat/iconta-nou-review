@@ -11,6 +11,8 @@ CE FACE IMPOSIBIL:
   * ca legarea să lase 371 / 401 / 4426 încărcate de două ori — după legare, soldurile sunt EXACT cele ale ordinii directe
     (NIR legat la creare, decizia 07.10 pct.2);
   * ca un NIR cu alt cost, de la alt furnizor, din alt exercițiu sau respins să fie propus / legat.
+[08.10 §6, deciziile Costin] Forma nouă (408 / 4428.01): legarea pe ambele metode, între exerciții cât timp 408 e deschis, cu
+diferența de preț în perioada facturii; forma veche (401): stornarea în roșu, numai în exercițiul curent.
 
 Schemă efemeră din `tenant_template.sql`, ștearsă la ieșire; date în 2099. Nimic în tabele partajate.
 """
@@ -120,30 +122,58 @@ def test_fara_alegere_contarea_se_refuza_structurat_si_nu_scrie_nimic(conn):
     assert _nr_note(conn) == inainte                       # nimic scris
 
 
+def _sold_net(r):
+    """{cont: sold net (debit − credit)} fără conturile închise."""
+    out = {k: Decimal(v[0]) - Decimal(v[1]) for k, v in r.items()}
+    return {k: str(v) for k, v in out.items() if v}
+
+
+def _forma_veche(conn, nir):
+    """NIR-ul în FORMA VECHE (scris înainte de 08.10 §6: 371 = 401, 4426 = 401) — ca NIR 2 / NIR 3 de pe F1."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE inregistrari_linii SET cont_credit = '401' WHERE inregistrare_id = ANY(%s) AND cont_credit = '408'",
+                    (nir["inregistrari"],))
+        cur.execute("UPDATE inregistrari_linii SET cont_debit = '4426' WHERE inregistrare_id = ANY(%s) AND cont_debit = '4428.01'",
+                    (nir["inregistrari"],))
+
+
 def test_legarea_aduce_soldurile_ordinii_directe(conn):
     """„Se elimină astfel dubla încărcare a lui 371.” Ordinea inversă cu legare = ordinea directă (NIR legat la creare), cont cu
-    cont. Stornarea e în ROȘU (OMFP 1802/2014 pct.69: „corectarea cu semnul minus a operațiunii inițiale (stornare în roșu)”) —
-    rulajul debitor al lui 371, pe care îl citește K, rămâne o singură dată costul. MUTAȚIE: `leaga` necheamat -> 371 D 1350 -> pică."""
-    # ordinea directă, la furnizorul B
+    cont, pe SOLDURI. [08.10 §6 pct.1–3] Forma nouă: NIR-ul pe 408 / 4428.01, factura închide 408 = 401 și trece TVA-ul 4428 -> 4426
+    (CF art.299 alin.(1) lit.a: deducerea cere factura) — nicio stornare; 371 debit o singură dată (K). MUTAȚIE: `note_factura_legata`
+    necheamată -> 371 D 1350 -> pică."""
     fb = _factura(conn, numar="FB1", cui=CUI_B)
     from core import stocuri_api as s
     rb = s.adauga_nir(conn, SCH, {"numar": "9", "data": "2099-10-07", "factura_id": fb, "linii": [dict(_L)]})
     directa = _solduri(conn, rb["inregistrari"] + [_conteaza(conn, fb)["inregistrare_id"]])
-    # ordinea inversă, la furnizorul A, cu legare
     n = _nir(conn)
     fa = _factura(conn)
     r = _conteaza(conn, fa, nir_legat=n["id"])
     ids, legat = _ids_nir(conn, n["id"])
     inversa = _solduri(conn, ids + [r["inregistrare_id"]])
-    assert inversa == directa
+    assert _sold_net(inversa) == _sold_net(directa)
+    assert inversa["371"] == ("800.00", "0")                                              # rulajul debitor citit de K: o dată
+    assert (inversa["408"], inversa["4428.01"]) == (("665.50", "665.50"), ("115.50", "115.50"))   # închise
+    assert legat == fa and r["nir_legat"]["stornare_id"] is None and r["nir_legat"]["forma_noua"] is True
+    assert r["linii"] == [{"debit": "408", "credit": "401", "suma": "665.50"}, {"debit": "4426", "credit": "4428.01", "suma": "115.50"}]
+    assert "nir_legat" not in _conteaza(conn, _factura(conn, numar="FP2"))   # a doua factură nu mai vede NIR-ul (e legat)
+
+
+def test_forma_veche_se_leaga_prin_stornare_in_rosu(conn):
+    """NIR-urile scrise înainte de 08.10 §6 (371 = 401) se leagă tot prin stornarea în ROȘU a costului lor — OMFP 1802/2014 pct.69:
+    „Înregistrarea stornării unei operațiuni contabile aferente exercițiului financiar curent se efectuează fie prin corectarea cu
+    semnul minus a operațiunii inițiale (stornare în roșu)…”. MUTAȚIE: `leaga` necheamat -> 371 D 1350 -> pică."""
+    n = _nir(conn)
+    _forma_veche(conn, n)
+    fa = _factura(conn)
+    r = _conteaza(conn, fa, nir_legat=n["id"])
+    ids, _l = _ids_nir(conn, n["id"])
+    inversa = _solduri(conn, ids + [r["inregistrare_id"]])
     assert inversa["371"] == ("800.00", "0") and inversa["401"] == ("0", "665.50") and inversa["4426"] == ("115.50", "0")
-    assert legat == fa and r["nir_legat"]["stornare_id"] in ids
     with conn.cursor() as cur:
         cur.execute("SELECT cont_debit, cont_credit, suma::text FROM inregistrari_linii WHERE inregistrare_id = %s ORDER BY id",
                     (r["nir_legat"]["stornare_id"],))
         assert cur.fetchall() == [("371", "401", "-550.00"), ("4426", "401", "-115.50")]   # roșu, nu negru
-    # a doua factură a aceluiași furnizor nu mai vede NIR-ul (e legat)
-    assert "nir_legat" not in _conteaza(conn, _factura(conn, numar="FP2"))
 
 
 def test_alta_livrare_confirmata_conteaza_normal_si_o_consemneaza(conn):
@@ -160,23 +190,35 @@ def test_alta_livrare_confirmata_conteaza_normal_si_o_consemneaza(conn):
     assert _ids_nir(conn, n["id"])[1] is None              # NIR-ul rămâne nelegat
 
 
-def test_costul_diferit_alt_furnizor_alt_exercitiu_nu_se_leaga(conn):
-    """Același cost (la ban), același furnizor (CUI), același exercițiu (pct.69: „exercițiului financiar curent”). MUTAȚIE:
-    filtrul de exercițiu scos din `candidati` -> NIR-ul din 2098 e propus -> pică."""
+def test_candidatii_forma_noua_intre_exercitii_forma_veche_numai_in_exercitiu(conn):
+    """[08.10 §6 pct.2] „NIR din exercițiul trecut: se propune la legare și între exerciții, cât timp 408 e deschis. Exercițiul închis
+    nu se modifică” — forma veche se stornează, deci numai în exercițiul curent (OMFP 1802/2014 pct.69: „aferente exercițiului
+    financiar curent”). Alt furnizor nu e candidat. Costul diferit: propus nu, dar legabil (diferența intră în perioada facturii).
+    MUTAȚIE: condiția de formă scoasă din `candidati` -> NIR-ul vechi din 2098 e propus -> pică."""
     from core import contare_facturi as cf, nir_legare as nl
-    n60 = _nir(conn, numar="1", pa=60)                    # alt cost
+    n60 = _nir(conn, numar="1", pa=60)                    # alt cost, forma nouă
     _nir(conn, numar="2", cui=CUI_B)                       # alt furnizor
-    _nir(conn, numar="3", data="2098-12-30")               # alt exercițiu
+    _nir(conn, numar="3", data="2098-12-30")               # exercițiul trecut, forma nouă: 408 deschis
+    _forma_veche(conn, _nir(conn, numar="4", data="2098-12-29"))   # exercițiul trecut, forma veche
     fid = _factura(conn)
     with pytest.raises(cf.RefuzContare) as e:
         _conteaza(conn, fid)
-    assert [c["numar"] for c in e.value.detalii["candidati"]] == ["1"] and e.value.detalii["propus"] is None
-    with pytest.raises(cf.RefuzContare) as e:
-        _conteaza(conn, fid, nir_legat=n60["id"])
-    assert e.value.cod == nl.COD_COST
+    assert sorted(c["numar"] for c in e.value.detalii["candidati"]) == ["1", "3"] and e.value.detalii["propus"] == 3
     with pytest.raises(cf.RefuzContare) as e:
         _conteaza(conn, fid, nir_legat=999999)
     assert e.value.cod == nl.COD_NELEGABIL
+    r = _conteaza(conn, fid, nir_legat=n60["id"])         # 600 pe NIR, 550 pe factură: −50 pe adaos (global-valoric)
+    assert {"debit": "378", "credit": "401", "suma": "-50.00"} in r["linii"]
+
+
+def test_forma_veche_cu_alt_cost_se_refuza(conn):
+    """Forma veche: costul NIR-ului = netul facturii, la ban (stornarea trebuie să fie exact operațiunea inițială)."""
+    from core import contare_facturi as cf, nir_legare as nl
+    n = _nir(conn, pa=60)
+    _forma_veche(conn, n)
+    with pytest.raises(cf.RefuzContare) as e:
+        _conteaza(conn, _factura(conn), nir_legat=n["id"])
+    assert e.value.cod == nl.COD_COST
 
 
 def test_nir_respins_nu_e_candidat(conn, monkeypatch):
@@ -190,18 +232,20 @@ def test_nir_respins_nu_e_candidat(conn, monkeypatch):
     assert "nir_legat" not in _conteaza(conn, fid) and n
 
 
-def test_la_cost_sau_pe_alt_cont_nu_se_cere_alegerea(conn):
-    """Numai global-valoric și numai factura care încarcă 371 (`facturi.ACHIZITIE["marfa"]`). La cantitativ-valoric factura face
-    ea însăși intrarea în fișă (datoria `test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea`)."""
-    from core import contare_facturi as cf
+def test_pe_alt_cont_nu_se_cere_alegerea_la_cost_se_cere(conn):
+    """Numai factura care încarcă 371 (`facturi.ACHIZITIE["marfa"]`). [08.10 §6 pct.1] La cantitativ-valoric: „aceeași alegere ca la
+    celelalte metode — la contarea facturii se leagă de NIR-ul deschis (408 = 401), fără a doua intrare în stoc. Fără refuz.”
+    MUTAȚIE: `METODE` înapoi la global-valoric -> la cost factura se contează tăcut peste NIR -> pică."""
+    from core import contare_facturi as cf, nir_legare as nl
     _nir(conn)
-    fid = _factura(conn)
     with cf.cursor_dict(conn) as cur:
-        r = cf.contabilizeaza(cur, SCH, fid, automat=False, cont_cheltuiala="628")
+        r = cf.contabilizeaza(cur, SCH, _factura(conn), automat=False, cont_cheltuiala="628")
     assert r["stare"] == "contata"
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET metoda_stoc = 'cantitativ_valoric'")
-    assert _conteaza(conn, _factura(conn, numar="FP2"))["stare"] == "contata"
+    with pytest.raises(cf.RefuzContare) as e:
+        _conteaza(conn, _factura(conn, numar="FP2"))
+    assert e.value.cod == nl.COD_DE_ALES
 
 
 _UBL = """<?xml version="1.0" encoding="UTF-8"?>

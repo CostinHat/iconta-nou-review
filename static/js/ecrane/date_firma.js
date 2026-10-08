@@ -138,12 +138,28 @@ function _blocStoc(d) {
     </div>`;
 }
 
+// [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după
+// luna primei note.” Gol = propunerea (core/luna_preluare.py); de la ea se numără restanțele în Control fiscal.
+function _blocPreluare(d) {
+  const lp = (d.profil || {}).luna_preluare || {};
+  const ro = (x) => (x ? `${x.slice(5, 7)}/${x.slice(0, 4)}` : "");
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Preluarea în iConta.eu</h2>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Luna preluării</span>
+        <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` Propunere: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""} Gol = propunerea.${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}</span>
+        <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.salvata || "")}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
+      </label>
+    </div>`;
+}
+
 // [06.10.2026, comanda Costin §6.4] „Orice modificare se jurnalizează (cine, când, valoare veche → nouă), inclusiv forma juridică
 // și capitalul, iar jurnalul e vizibil cabinetului.”
 const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
   metoda_stoc: "Metoda de stoc", serie_chitanta: "Seria chitanțelor", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
-  cont_venit_implicit: "Cont venit implicit" };
+  cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării" };
 // [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
 // aceleași liste pe care le randează formularul (`metode_stoc`, `forme_juridice`, `activitati_amef`, opțiunile periodicității),
 // iar „true” / „false” devin „da” / „nu”. O valoare fără etichetă cunoscută se arată așa cum e — nu se ghicește.
@@ -155,6 +171,7 @@ function _valoareJurnal(d, camp, x) {
   if (gasit) return esc(gasit[1]);
   if (x === "true" || x === true) return "da";
   if (x === "false" || x === false) return "nu";
+  if (camp === "luna_preluare" && /^\d{4}-\d{2}/.test(x)) return `${x.slice(5, 7)}/${x.slice(0, 4)}`;
   return esc(x);
 }
 function _blocJurnal(d) {
@@ -345,9 +362,10 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     ${_blocAmef(d)}
     ${_blocChitante(d)}
     ${_blocStoc(d)}
+    ${_blocPreluare(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
-      <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector">Salveaz\u0103</button>
+      <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector|PUT /tenants/{tenant_id}">Salveaz\u0103</button>
     </div>
     ${_blocJurnal(d)}
   `;
@@ -374,21 +392,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   corp.querySelector("#df-salveaza").addEventListener("click", async () => {
     const btn = corp.querySelector("#df-salveaza");
     const msg = corp.querySelector("#df-msg");
-    const date = {};
-    for (const c of CAMPURI) {
-      date[c.k] = (corp.querySelector(`#df-${c.k}`).value || "").trim();
-    }
-    date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
-    // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF
-    date.activitate_exceptata_amef = corp.querySelector("#df-activitate_exceptata_amef").value;   // [D394 Î2]
-    date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
-    date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
-    date.serie_chitanta = corp.querySelector("#df-serie_chitanta").value.trim() || null;   // [decizii 07.10 pct.5]
-    if (corp.querySelector("#df-forma_juridica")) {
-      date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
-      date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;
-      date.capital_varsat = (corp.querySelector("#df-capital_varsat").value || "").trim() || null;
-    }
+    const date = _dateDinFormular(corp);
     // validare preventiva in ecran: nu trimitem ca sa aflam de la server (DS cap.6)
     // [G10 cap.6 v2.30] validare preventiva CLIENT: colecteaza TOATE erorile de camp si le plaseaza fiecare
     // LANGA campul ei (eroareCamp), nu un mesaj generic sus si nu fail-fast. B (arataMesaj) ramane pentru
@@ -483,9 +487,33 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       }
       btn.disabled = false;
       btn.textContent = "Salveaz\u0103";
-      arataMesaj(msg, (e && e.mesaj) || "Nu am putut salva.", "eroare");
+      // [08.10 §6 pct.4, generalizat] refuzul serverului își numește câmpul: mesajul stă lângă el (DS cap.6, G10); fără câmp -> zona generală
+      const peCamp = ((e && e.erori_campuri) || []).filter((c) => eroareCamp(corp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : "df-" + c.camp, c.mesaj)).length;
+      if (!peCamp) arataMesaj(msg, (e && e.mesaj) || "Nu am putut salva.", "eroare");
     }
   });
+}
+
+// Câmpurile Date firmă, citite din formular (o singură citire; handlerul „Salvează” le trimite). [08.10.2026] scoasă din handler:
+// sonda drepturilor leagă un apel de butonul lui pe o fereastră de 80 de linii, iar citirea câmpurilor o depășea.
+function _dateDinFormular(corp) {
+  const date = {};
+  for (const c of CAMPURI) {
+    date[c.k] = (corp.querySelector(`#df-${c.k}`).value || "").trim();
+  }
+  date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
+  // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF
+  date.activitate_exceptata_amef = corp.querySelector("#df-activitate_exceptata_amef").value;   // [D394 Î2]
+  date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
+  date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
+  date.serie_chitanta = corp.querySelector("#df-serie_chitanta").value.trim() || null;   // [decizii 07.10 pct.5]
+  date.luna_preluare = corp.querySelector("#df-luna_preluare").value || null;   // [08.10 §6 pct.4] gol = propunerea
+  if (corp.querySelector("#df-forma_juridica")) {
+    date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
+    date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;
+    date.capital_varsat = (corp.querySelector("#df-capital_varsat").value || "").trim() || null;
+  }
+  return date;
 }
 
 function eticheta(k) {

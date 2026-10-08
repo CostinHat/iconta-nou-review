@@ -109,6 +109,9 @@ def _importa_ambele(conn):
     with conn.cursor() as cur:
         cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r1["inregistrare_id"],))
     r2 = uc_tenants.horeca_raport_z(1, _Z(), {"uid": 1})
+    # [08.10.2026, R36] și Z-ul tastat intră CIORNĂ („evidența = ce a validat un om”) — validat, ca importul
+    with conn.cursor() as cur:
+        cur.execute("UPDATE inregistrari SET status='validata' WHERE id=%s", (r2["nota_id"],))
     return r1, r2
 
 

@@ -7,7 +7,7 @@
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=4242dc4353";
-import { trimiteInCoada } from "./coada_trimite.js?v=c4e04a9676";
+import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -3686,11 +3686,11 @@ async function pas3(corp, nav) {
   if (btn) { btn.disabled = true; btn.textContent = "Se trimite…"; }
   const body = Object.assign(corpGenerare(), { tip: S.tip, inceput_la: S.inceput_la });   // [C2] același corp ca la pasul 2
   // [C1/C3] drumul comun al cozii; succesul (și după o confirmare a atenționărilor) desenează ecranul „Trimisă”
-  const r = await trimiteInCoada(corp.querySelector("#dec-coada-mesaj"), body, () => pas3Gata(corp, nav));
+  const r = await trimiteInCoada(corp.querySelector("#dec-coada-mesaj"), body, (r) => pas3Gata(corp, nav, r));
   if (!r && btn) { btn.disabled = false; btn.textContent = "Trimite în coadă →"; }
 }
 
-function pas3Gata(corp, nav) {
+function pas3Gata(corp, nav, r) {
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
     <div class="dec-gata">
@@ -3698,11 +3698,14 @@ function pas3Gata(corp, nav) {
       <div class="dec-gata-titlu">Trimisă în coada de validare</div>
       <div class="dec-gata-sub"><b>${S.tip.toUpperCase()}</b> · ${etPerioada()} a fost trimisă seniorului pentru validare.</div>
     </div>
+    <div id="dec-gata-avert"></div>
     <div class="dec-bara">
       <button class="buton-secundar" id="dec-alta" data-fara-actiune="navigare: alt tip de declarație">+ Altă declarație</button>
       <button class="buton-primar" id="dec-gata-ok">Gata</button>
     </div>
   `;
+  // [08.10.2026, decizia Costin §6 pct.7 — R36] ciornele perioadei: avertisment, nu blocaj — rămâne vizibil lângă confirmare
+  if (r && (r.avertismente_poarta || []).length) arataMesaj(corp.querySelector("#dec-gata-avert"), r.avertismente_poarta.join(" "), "avert");
   corp.querySelector("#dec-alta").addEventListener("click", () => randeazaDeclaratii(corp, nav));
   corp.querySelector("#dec-gata-ok").addEventListener("click", () => nav.acasa());
 }

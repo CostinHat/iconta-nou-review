@@ -170,8 +170,11 @@ def test_d2_nir_legat_scrie_numai_adaosul_si_tva_neexigibila(tx):
     assert "eroare" not in r, r
     assert _note(cur, r["inregistrari"]) == [("371", "378", "111.16"), ("371", "4428", "138.84")]
     assert (r["factura_id"], r["factura_ref"]) == (fid, "FP1")
-    r2 = s.adauga_nir(conn, SCH, {"numar": "2", "data": "2099-10-07", "linii": lin})       # nelegat: complet, ca înainte
-    assert [n[:2] for n in _note(cur, r2["inregistrari"])] == [("371", "401"), ("4426", "401"), ("371", "378"), ("371", "4428")]
+    r2 = s.adauga_nir(conn, SCH, {"numar": "2", "data": "2099-10-07", "linii": lin})       # nelegat: complet
+    # [decizia Costin 08.10 §6 pct.1 + pct.3] fără factură: datoria pe 408 („Furnizori - facturi nesosite”), TVA neexigibil pe
+    # analiticul de achiziție al lui 4428 până la factură — OMFP 1802/2014, funcțiunea contului 408: „În creditul contului 408 …
+    # se înregistrează: – valoarea bunurilor aprovizionate … (… 371, …, 4428, …)”
+    assert [n[:2] for n in _note(cur, r2["inregistrari"])] == [("371", "408"), ("4428.01", "408"), ("371", "378"), ("371", "4428")]
 
 
 def test_d2_nir_legat_refuzuri_numite(tx):

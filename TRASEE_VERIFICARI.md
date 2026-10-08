@@ -1689,12 +1689,13 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] amortizarea lunară se calculează din valoarea de intrare și durata rămasă, la data lunii
 - un mijloc fix complet amortizat nu mai produce amortizare
 - amortizarea contabilă și cea fiscală pot diferi — verifică dacă se disting, sau se calculează una singură
 - **scrie `validata` direct**, deci a primit rol azi. Verifică că nu se poate rula de două ori pe aceeași lună
+- [x] [08.10.2026, deciziile Costin §6 pct.6 + pct.7 — R36] nota intră **CIORNĂ** („evidența = ce a validat un om”); a doua rulare pe aceeași lună înlocuiește ciorna nevalidată (aceeași amprentă -> rămâne ea, același tablou), iar pe nota validată refuză (`test_amortizarea_intra_ciorna_si_se_inlocuieste_cat_e_nevalidata`, `test_amortizarea_validata_nu_se_atinge`)
 
 ### `PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd`
 
@@ -1775,6 +1776,7 @@ faptica, pe baza listelor de inventariere.
 *ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE/UPDATE) · chitante (INSERT/UPDATE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_casa`, `repo_contabilitate`*
 
 - [x] aprobarea produce evidență — de aceea a primit rol azi
+- [x] [08.10.2026, R36] nota bonului aprobat intră **CIORNĂ**: aprobarea scrie nota, validarea e actul separat al unui om (`core/test_rol_pe_efect.py`: mulțimea rutelor care scriu `validata` direct e goală)
 - bonul aprobat poartă legătura către imaginea din care a ieșit
 - cifrele aprobate coincid cu cele citite din imagine, sau diferența e consemnată ca modificată de om
 - un bon aprobat de două ori nu produce două note
@@ -1821,6 +1823,7 @@ faptica, pe baza listelor de inventariere.
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `import-amef`.** Ambele produc nota de raport Z; una are rol, cealaltă nu
 - dacă e introducere manuală a raportului Z, verifică: totalurile pe cote de TVA se adună la totalul general
 - dacă e aceeași operațiune pe două căi, e interdicția 15 — iar rolul diferit o face vizibilă
+- [x] [08.10.2026, R36] Z-ul tastat intră **CIORNĂ** la ambele metode de stoc, ca importul AMEF — cele două căi scriu acum aceeași stare (`core/test_rol_pe_efect.py`, `core/test_d300_rapoarte_z.py`)
 
 ### `POST /tenants/{tenant_id}/horeca/raport-z/{nota_id}/fara-marfa`
 

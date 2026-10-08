@@ -5,7 +5,7 @@
 înregistrat în luna asta"*, și dau trei răspunsuri:
 
   · **Fișa de cont** (14-6-22, ține locul Cărții mari) cere `status='validata'`;
-  · **balanța** (`documente_api.balanta`) nu filtrează pe status deloc;
+  · **balanța** (`documente_api.balanta`) nu filtra pe status deloc (până la R36, 08.10.2026: acum numai validatul);
   · **registrul-jurnal** (`GET /tenants/{id}/jurnal`, 14-1-1) nu filtrează, ba chiar duce `status`
     mai departe pe fiecare rând.
 
@@ -27,7 +27,7 @@ care amestecă două axe nu poate spune pe care din ele diferă.*
 #: `None` = registrul nu filtrează.
 PREDICAT_STATUS = {
     "fisa_cont": "validata",
-    "balanta": None,
+    "balanta": "validata",   # [08.10.2026, R36] „Balanța arată implicit doar validatul, iar ciornele apar separat, cu indicator.”
     "jurnal": None,
 }
 
@@ -37,11 +37,15 @@ PREDICAT_STATUS = {
 #: **R36**, care e o DECIZIE nedată. Până atunci, singurul lucru care s-a schimbat e că abaterea nu
 #: mai e invizibilă — și că propoziția care o justifica fals a fost scoasă din `fisa_cont`.
 ABATERI_DECLARATE = {
+    # [08.10.2026, decizia Costin §6 pct.7 — R36, verbatim în DECIZII] „evidența = ce a validat un om.” Abaterea e acum DECISĂ:
+    # registrele evidenței (fișa de cont, balanța) citesc numai notele validate; registrul-jurnal e lista de lucru pe care se
+    # validează, deci arată și ciornele, cu starea fiecăreia.
     "fisa_cont": (
-        "citește numai notele VALIDATE, deci o lună în care contabilul n-a validat încă apare "
-        "GOALĂ în Cartea mare, dar plină în balanță și în registrul-jurnal. Nu e o decizie luată: "
-        "e starea de azi, declarată până se răspunde la R36 — «evidența e ce a validat un om, sau "
-        "ce a înregistrat aplicația?». Până atunci, abaterea e vizibilă și gardată, nu justificată."),
+        "citește numai notele VALIDATE — R36 (08.10.2026): «evidența = ce a validat un om»; ciornele lunii stau în "
+        "registrul-jurnal, cu starea lor, până le validează un om."),
+    "balanta": (
+        "citește numai notele VALIDATE — R36 (08.10.2026): «Balanța arată implicit doar validatul, iar ciornele apar separat, "
+        "cu indicator» (`documente_api.ciorne_balanta`)."),
 }
 
 

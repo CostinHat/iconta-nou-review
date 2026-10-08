@@ -119,7 +119,8 @@ def reface_factura(conn, schema, factura_id):
         cur.execute(f"""SELECT o.tip, o.data, o.inregistrare_id, a.cont_stoc, a.cont_cheltuiala
                         FROM {schema}.miscari_stoc r JOIN {schema}.miscari_stoc o ON o.id = r.anuleaza_id
                         JOIN {schema}.articole a ON a.id = o.articol_id
-                        WHERE r.factura_id = %s ORDER BY o.id""", (factura_id,))
+                        WHERE r.factura_id = %s AND o.tip <> 'ajustare' ORDER BY o.id""", (factura_id,))
+        # [08.10 §6 pct.2] ajustarea de preț a unei facturi legate de NIR nu se reface aici: o rescrie contarea (`nir_legare`)
         stornate = [dict(x) for x in cur.fetchall()]
         if not stornate:
             return None

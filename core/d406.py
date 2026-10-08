@@ -377,6 +377,7 @@ def _d(x):
 # reconciliere, iar aceea nu are voie sa importe generatorul. Se re-exporta ca sa ramana
 # `d406.fereastra_d406` pentru cine o cheama pe drumul generatorului.
 from core.common import fereastra_d406        # noqa: E402  (re-export deliberat)
+from core.common import sintetic_saft         # noqa: E402  (analiticul pe sinteticul lui: generator + a doua cale)
 from core import repo_d406 as _repo
 from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 
@@ -805,15 +806,11 @@ def _masterfiles(res):
     M = ['  <MasterFiles>']
     M.append('    <GeneralLedgerAccounts>')
     for c in res.conturi:
-        # AccountID trebuie NUMERIC INTREG (validator: "numar intreg eronat" pe
-        # simboluri cu punct precum '401.05', '4111.01' - analiticele din
-        # migrare). SAF-T identifica contul dupa sintetic (AccountID); detalierea
-        # pe partener se face prin Customers/Suppliers (deja generate separat,
-        # linia ~466/484), nu prin conturi analitice in GeneralLedgerAccounts.
-        # cont_standard e deja radacina sintetica (ex. '401' pentru '401.05').
-        account_id = c.cont_standard if ("." in c.id and c.cont_standard) else c.id
+        # AccountID trebuie NUMERIC INTREG (validator: "numar intreg eronat" pe simboluri cu punct precum '401.05', '4111.01').
+        # SAF-T identifica contul dupa sintetic; analiticele sunt adunate in sinteticul lor la citire (`pull`, `sintetic_saft`),
+        # iar detalierea pe partener se face prin Customers/Suppliers.
         M.append('      <Account>')
-        M.append('        <AccountID>%s</AccountID>' % _esc(account_id))
+        M.append('        <AccountID>%s</AccountID>' % _esc(c.id))
         M.append('        <AccountDescription>%s</AccountDescription>' % _esc(_t(c.descriere, _LIM["d406"]["AccountDescription"])))
         M.append('        <StandardAccountID>%s</StandardAccountID>' % _esc(c.cont_standard or c.id))
         M.append('        <AccountType>%s</AccountType>' % _esc(c.tip))
@@ -1295,19 +1292,28 @@ def pull(conn, schema, an, luna):
             # ("ID-ul contului [731] trebuie sa se gaseasca in planul de conturi").
             # Filtram dupa nomenclatorul OFICIAL, nu dupa o lista scrisa de noi.
             oficial = plan_oficial(prof.get("baza_contabila"))
+            pe_sintetic, net_sintetic = {}, {}
             for r in cur.fetchall():
-                if oficial and r["simbol"] not in oficial:
-                    strain.append(r["simbol"])
-                    continue
-                # cont_standard = radacina sintetica ('401.05' -> '401'), nu simbolul
-                # intreg - dovedit gresit azi: era setat = simbol (identic cu id),
-                # deci pentru analitice ramanea tot cu punct -> AccountID respins
-                # ("numar intreg eronat"). SAF-T identifica contul dupa sintetic.
+                # [08.10.2026, §6 pct.3] ANALITICUL CU PUNCT ('4428.01', '401.05') se declară pe SINTETICUL lui: nomenclatorul
+                # oficial (d406_nomenclatoare_anaf.properties) are numai sintetice, iar AccountID cu punct e respins („numar intreg
+                # eronat”). Apartenența la normă se judecă pe sintetic; soldurile analiticelor se adună în el, iar liniile notelor
+                # poartă tot sinteticul (`sintetic_saft`) — altfel analiticul ar fi exclus din plan și citat pe linii.
                 simb = r["simbol"]
-                sintetic = simb.split(".")[0] if "." in simb else simb
-                conturi.append(Cont(id=simb, descriere=r["denumire"], cont_standard=sintetic,
-                                    tip=r["tip"], sold_inchidere_d=Decimal(str(r["sd"])),
-                                    sold_inchidere_c=Decimal(str(r["sc"]))))
+                sintetic = sintetic_saft(simb)
+                if oficial and sintetic not in oficial:
+                    strain.append(simb)
+                    continue
+                net = Decimal(str(r["sd"])) - Decimal(str(r["sc"]))
+                c = pe_sintetic.get(sintetic)
+                if c is None:
+                    c = pe_sintetic[sintetic] = Cont(id=sintetic, descriere=r["denumire"], cont_standard=sintetic, tip=r["tip"])
+                    conturi.append(c)
+                elif simb == sintetic:   # denumirea și tipul sunt ale sinteticului, nu ale primului analitic citit
+                    c.descriere, c.tip = r["denumire"], r["tip"]
+                net_sintetic[sintetic] = net_sintetic.get(sintetic, Decimal(0)) + net
+            for c in conturi:
+                v = net_sintetic[c.id]
+                c.sold_inchidere_d, c.sold_inchidere_c = (v, Decimal(0)) if v >= 0 else (Decimal(0), -v)
         except Exception as e:
             # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
             # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
@@ -1444,10 +1450,10 @@ def pull(conn, schema, an, luna):
                     nmap[r["id"]] = n
                 suma = Decimal(str(r["suma"] or 0))
                 pid = _partener_registration_number(r["tert_cui"], eticheta=r["tert_nume"]) if r["tert_cui"] else ""
-                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont_debit"] or "",
+                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=sintetic_saft(r["cont_debit"] or ""),
                                          descriere="", debit=suma, credit=Decimal("0"),
                                          cont_partener_id=pid))
-                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont_credit"] or "",
+                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=sintetic_saft(r["cont_credit"] or ""),
                                          descriere="", debit=Decimal("0"), credit=suma,
                                          cont_partener_id=pid))
             note = list(nmap.values())

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**739 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**742 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 702
+### `core/` — 705
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9280,6 +9280,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lot0710b_fapte_declaratii.py` — GARD — faptele din declarații pe care aplicația le punea în locul omului (lotul 07.10 B, comanda Costin A.2: „Restul îl
 - `core/test_lot0710b_nir.py` — GARD — NIR-ul urmează evaluarea stocului firmei (lotul 07.10 B, comanda Costin C10/C11).
 - `core/test_lot0710b_note_derivate.py` — GARD — nota derivată dintr-un document se corectează numai din documentul-sursă (lotul 07.10 B, decizia Costin C9).
+- `core/test_luna_preluare.py` — GARDA deciziei Costin 08.10.2026 §6 pct.4 (verbatim în DECIZII):
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -9301,6 +9302,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_monitor_fiscal.py` — —
 - `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
 - `core/test_neplatitor_tva_emitere.py` — GARD — factura emisă de o firmă NEplătitoare de TVA nu poartă taxa (lot 19 pct.4d, 02.10.2026).
+- `core/test_nir_408.py` — GARDA deciziilor Costin 08.10.2026 §6 pct.1–3 — NIR-ul „fără factură” pe 408, factura legată îl închide (verbatim în DECIZII 08.10.2026):
 - `core/test_nir_legare_inversa.py` — GARDA deciziei Costin 08.10.2026, pct.2 — D2 în ordinea inversă (verbatim în DECIZII 08.10.2026):
 - `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
 - `core/test_niveluri_feedback.py` — GARD P0 (07.09.2026) — cele patru niveluri de feedback nu pot deveni o scurtătură nesigură.
@@ -9379,6 +9381,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_pull_declaratii.py` — Teste pe pull() — granita COD <-> BAZA DE DATE pentru generatoarele de declaratii.
 - `core/test_q16_cor.py` — GARD Q16 — preview salariati imbogateste COR cu denumirea ocupatiei (nu doar codul).
 - `core/test_r191_amortizare_confruntata.py` — R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA in conturile 28xx.
+- `core/test_r36_evidenta.py` — GARDA deciziilor Costin 08.10.2026 §6 pct.6 + pct.7 (verbatim în DECIZII):
 - `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
 - `core/test_ramas.py` — GARDĂ anti-vacuu pe lista derivată a ce a rămas de făcut.
 - `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele
@@ -10593,7 +10596,7 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | gard | fișier | ce face imposibil | mutația | limita |
 |---|---|---|---|---|
 | factura de marfă peste un NIR „fără factură” cere alegerea | `core/test_nir_legare_inversa.py` (7, inclusiv calea SPV) | contarea tăcută a aceleiași livrări (371 / 401 / 4426 de două ori); legarea care lasă alte solduri decât ordinea directă; un NIR cu alt cost / alt furnizor / alt exercițiu / respins propus; factura SPV rămasă validată fără notă la refuz | M1c, M2, M3′, M4, M5, M6 -> ROȘU | numai global-valoric; NIR-ul din exercițiul trecut nu se leagă (decizie cerută) |
-| aceeași clasă la cantitativ-valoric, ținută ca datorie | `core/test_datorie.py::test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea` (xfail strict, `DID NOT RAISE` măsurat) | uitarea dublei încărcări la cost până la decizie | — (xfail: pică singur când se repară) | decizie cerută |
+| aceeași clasă la cantitativ-valoric, ținută ca datorie | `core/test_datorie.py::test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea` (xfail strict, `DID NOT RAISE` măsurat) [citare-istorica: datoria închisă 08.10.2026 de „Deciziile 08.10 §6” pct.1, testul pozitiv `core/test_nir_408.py::test_cantitativ_valoric_o_singura_intrare_in_stoc`] | uitarea dublei încărcări la cost până la decizie | — (xfail: pică singur când se repară) | decizie cerută |
 | verificarea mesajului înaintea suitei | `core/test_poarta_ordine.py` (4: structură + efect pe hook-ul adevărat) | pytest în `pre-commit`; suita chemată înaintea `verifica-mesaj`; un mesaj respins care pornește suita; commitul fără suită | M7, M8, M9 -> ROȘU | `git commit --no-verify` ocolește tot (ca înainte) |
 | notificarea de acțiune poartă elementul | `public.notificari_element_ck` (bază) + `core/test_notificari_element.py` (5) | o notificare `de_validat` / `respinsa` nerezolvată fără element (inclusiv `link` NULL — prins la prima rulare); rezerva `"validat"` în cod; „a fost respinsă” activă după retrimiterea declarației; o valoare `rezolvata` fără etichetă în clopoțel | M10–M14 -> ROȘU | — |
 | butonul cu elemente nu e aplatizat în timpul scrierii | `core/test_buton_blocat_structura.py` (chromium, modulul real) | rândul-buton / cardul / iconița rescrise ca text, elementul acțiunii detașat (rezultatul nemaiarătat — „Contează” rămânea după contare) | mutația ramurii `firstElementChild` -> ROȘU (0 copii, span detașat) | numai butonul ținut minte la `pointerdown` (mecanismul existent) |
@@ -10617,3 +10620,18 @@ input-urile precompletate (altă formă a aceluiași implicit).
 | C5 cu omonime numai în domeniul conexiunii = fals pozitiv, calibrat | `core/p5_clasificare.py::C5-NUMAI-OMONIM` + `core/test_val3_contracte.py::test_CALIBRARE_C5_numai_omonim_in_ambele_directii` | ca o primitivă reală ținută peste conexiune să fie înghițită de regula omonimelor | regula scoasă -> `test_clasa_C5_nu_creste` ROȘU (poarta lotului); primitivă neomonimă -> ACȚIUNE | rezolvarea pe nume rămâne oarbă la omonime (antetul scanerului) |
 | mesajul nu șterge câmpurile containerului | `core/test_mesaj_in_formular.py` (chromium, `api.js` real) | un `arataMesaj` pe formular / ecran care detașează câmpurile tastate | ramura câmpurilor scoasă din `arataMesaj` -> ROȘU (câmp detașat) | containerul fără câmpuri se rescrie ca înainte |
 | textul colorat pe zebra tabelelor ≥ 4,5:1 | `core/test_contrast_zebra.py::test_textul_colorat_pe_randul_zebra…` | verde (sau alt token de text) sub prag pe rândul impar | redefinirea `--verde` scoasă -> ROȘU (4,13) | numai tokenii numiți; o culoare hex inline o vede numai axe, pe ecranele scanate |
+
+## 08.10.2026 — „Deciziile 08.10 §6”: NIR pe 408, luna preluării, R36 (evidența = ce a validat un om) (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| NIR fără factură pe 408 / 4428.01, factura legată îl închide, pe ambele metode | `core/test_nir_408.py` (13) + `core/test_nir_legare_inversa.py` (rescris) | a doua intrare în stoc la cantitativ-valoric; diferența de preț pierdută sau în exercițiul NIR-ului; re-contarea după respingere care încarcă 371 a doua oară; ajustarea citită ca ieșire (D406 Stocuri, `reface_factura`); 4428.01 în K | M1–M10 (metode, ajustare, 607, între exerciții, `deja_legat`, semn D406, 408, `reface_factura`, orfan, K) -> ROȘU | costul NIR-ului fără transport / taxe (rămân pe 401 / 446) |
+| D406: analiticul se declară pe sintetic, ambele căi | `core/test_nir_408.py::test_d406_analiticul…` + `common.sintetic_saft` | AccountID cu punct; 4428.01 „exclus din normă” dar citat pe linii; a doua cale pe alt cont | liniile fără `sintetic_saft` -> ReconciliereD406; judecata pe simbol -> exclus -> ROȘU | DUK rulat în probă, nu în suită (gri fără validator instalat) |
+| poarta D300 pe 4426, fără TVA-ul NIR-ului | `core/test_nir_408.py::test_poarta_d300…` | TVA dedus fără factură (R27_2 0 vs 4426 115,50 -> roșu); semnalul 4428 pe TVA-ul din prețul de raft | NIR pe 4426 -> ROȘU; 4428 cu contrapartida 371 -> ROȘU | — |
+| bilanțul: 4428 debitor la creanțe | `core/test_nir_408.py::test_bilant…` | soldul debitor 4428 (TVA-ul NIR-ului, achizițiile la TVA la încasare) pierdut din bilanț | "4428" scos din r[301] -> ROȘU | creditorul 4428 numărat de două ori: **datorie** `test_datorie_bilant_4428_creditor_numarat_de_doua_ori` (xfail strict) |
+| luna preluării: propunere, refuz, jurnal, Control fiscal | `core/test_luna_preluare.py` (4) + `core/test_control_preluare.py` (9) | o lună după prima notă; o schimbare nejurnalizată; propunerea peste nota cea mai veche; refuzul fără câmp | eroarea scoasă / câmpul scos din jurnal / ruta fără `erori_campuri` / `min` scos -> ROȘU | „prima notă” = oricare stare (interpretare de produs) |
+| nicio rută nu produce evidență fără om | `core/test_rol_pe_efect.py` (mulțimea goală + calibrarea pe repository) | amortizarea / bonul / Z-ul (sau o rută nouă) scrise direct `validata` | oricare din cele trei înapoi pe `validata` -> ROȘU (M13, M17, M18) | sonda vede INSERT-ul literal (corp + repository), nu un status calculat |
+| T1 la amortizare și la descărcarea GV | `core/test_r36_evidenta.py` (3) | a doua notă peste o ciornă nevalidată; nota validată atinsă; un număr nou de document la înlocuire | ramura ciornei / refuzul pe validată / lista validatelor scoase -> ROȘU (M11, M12, M14) | — |
+| balanța = validatul, ciornele separat; porțile avertizează | `core/test_r36_evidenta.py` (3) + `core/test_populatii_registre.py` (rescris) | o ciornă în balanță; ciornele nevăzute; o poartă care blochează pe ciorne sau lasă o diferență fără ciorne | filtrul de status scos / `if True` în `decizie_poarta` -> ROȘU (M15, M16) | ciornele numărate pe anul balanței (nu pe exercițiile anterioare) |
+| nicio sesiune de teste nu lasă rânduri orfane în tabelele publice | `conftest.py::_niciun_rand_orfan_lasat_de_suita` (fixture de sesiune) + curățarea din `core/test_control_preluare.py` | un test cu tenant SINTETIC care lasă contorul `firma_sursa_versiune` / `supervizor_sursa` ridicat de trigger (cifra „rânduri care trimit la o firmă inexistentă” din PREDARE ieșea 0 sau 1 după ordinea testelor) | curățarea contorului scoasă -> ERROR la teardown `{'firma_sursa_versiune': (0, 1)}` | o scriere comisă și ștearsă în aceeași sesiune nu se vede (numai creșterea netă) |
+| „Salvează” din Date firmă își declară toate acțiunile | `core/test_drepturi_ui.py` (clichetul nelegate 35 -> 34) + `data-actiune` cu `PUT /tenants/{tenant_id}` | un apel legat de buton fără acțiunea lui pe buton | — (clichet coborât) | fereastra sondei e de 80 de linii; handlerul a fost scurtat (`_dateDinFormular`) |

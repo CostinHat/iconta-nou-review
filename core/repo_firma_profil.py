@@ -142,3 +142,16 @@ def seteaza_config_woocommerce(cur, schema, wc_url, wc_ck, wc_cs):
     cur.execute(f"""UPDATE {schema}.firma_profil
                         SET wc_url=%s, wc_ck=%s, wc_cs=%s""",
                 (wc_url, wc_ck, wc_cs))
+
+
+def fapte_preluare(cur):
+    """[08.10.2026 §6 pct.4] Faptele lunii preluării (`luna_preluare`): luna salvată, data adăugării firmei în iConta, data soldurilor
+    de preluare și data celei mai vechi note. Schema = cea din calea conexiunii."""
+    cur.execute("""SELECT (SELECT luna_preluare FROM firma_profil WHERE id = 1),
+                          (SELECT creat_la FROM public.tenants WHERE schema_name = current_schema()),
+                          (SELECT max(data_referinta) FROM solduri_initiale),
+                          (SELECT min(data) FROM inregistrari)""")
+    r = cur.fetchone()
+    v = list(r.values()) if isinstance(r, dict) else list(r)
+    c = v[1]
+    return {"salvata": v[0], "creat_la": c.date() if hasattr(c, "date") else c, "data_solduri": v[2], "prima_nota": v[3]}

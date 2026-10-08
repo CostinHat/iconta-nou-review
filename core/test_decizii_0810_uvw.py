@@ -80,7 +80,8 @@ def _nota(cur, data, linii, status="validata"):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_d406_intra_in_coada_numai_cand_GL_e_rulajul_balantei(conn):
     """Completarea 2, pct.1: „totalurile GeneralLedgerEntries din D406 trebuie să egaleze rulajele balanței pe lună; dacă nu, «Trimite
-    în coadă» e blocat.” Balanța arată și ciornele; D406 numai notele validate -> ciorna din lună blochează, cu numărul ei."""
+    în coadă» e blocat.” [08.10.2026, R36] balanța și D406 citesc amândouă numai validatul: ciorna nu creează diferență; o diferență
+    reală se raportează cu numărul ciornelor (care, în `coada_adauga`, o transformă în avertisment)."""
     import types
     from core import uc_coada as uq
     with conn.cursor() as cur:
@@ -91,9 +92,10 @@ def test_d406_intra_in_coada_numai_cand_GL_e_rulajul_balantei(conn):
     conn.commit()
     res = lambda *sume: types.SimpleNamespace(note=[types.SimpleNamespace(linii=[types.SimpleNamespace(debit=Decimal(x), credit=0)])
                                                     for x in sume])
-    r = uq.poarta_d406_balanta(SCH, 2099, 10, res(100))
-    assert (r["cod"], r["d406"], r["balanta"], r["diferenta"], r["ciorne"]) == ("D406_DIFERA_DE_BALANTA", "100.00", "150.00",
-                                                                                "-50.00", 1)
+    assert uq.poarta_d406_balanta(SCH, 2099, 10, res(100)) is None                    # validat cu validat: ciorna nu contează
+    r = uq.poarta_d406_balanta(SCH, 2099, 10, res(90))
+    assert (r["cod"], r["d406"], r["balanta"], r["diferenta"], r["ciorne"]) == ("D406_DIFERA_DE_BALANTA", "90.00", "100.00",
+                                                                                "-10.00", 1)
     with conn.cursor() as cur:
         cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (ciorna,))
     conn.commit()
@@ -108,6 +110,7 @@ def test_coada_cere_poarta_d406(monkeypatch):
     monkeypatch.setattr(declaratii_api, "genereaza", lambda c, s, tip, body: ("<x/>", types.SimpleNamespace(note=[], avertismente=[])))
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
     monkeypatch.setattr(uq, "poarta_d406_balanta", lambda s, an, luna, res: {"cod": uq.COD_D406_BALANTA, "mesaj": "m"})
+    monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)
     d = types.SimpleNamespace(tip="d406", tenant_id=1, an=2099, luna=10, trim=None, motiv_trecere=None,
                               model_dump=lambda **k: {"tip": "d406", "an": 2099, "luna": 10})
     with pytest.raises(erori.DateInvalide) as e:

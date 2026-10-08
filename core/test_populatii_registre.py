@@ -101,7 +101,8 @@ def test_ANTI_VACUU_abaterea_declarata_chiar_EXISTA():
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_o_ciorna_adaugata_MISCA_exact_registrele_care_o_declara():
-    """O notă în CIORNĂ intră în balanță și NU în fișa de cont — exact ce spune predicatul fiecăruia.
+    """O notă în CIORNĂ intră în registrul-jurnal și NU în balanță sau în fișa de cont — exact ce spune predicatul fiecăruia
+    ([08.10.2026, R36] „evidența = ce a validat un om”; balanța arată implicit doar validatul).
 
     Se cheamă **cititorii reali** (`documente_api.balanta`, `fisa_cont.fisa_cont`), nu se recitește
     SQL-ul: un gard care își scrie singur interogarea ar trece și dacă cititorul s-ar schimba."""
@@ -134,14 +135,15 @@ def test_o_ciorna_adaugata_MISCA_exact_registrele_care_o_declara():
             f1 = _fc.fisa_cont(conn, SCH, "371", AN, LUNA)
             p1 = _pr.populatii(conn, SCH, AN, LUNA)
 
-            assert len(p1["balanta"]) == len(p0["balanta"]) + 1, "ciorna n-a intrat în balanță"
+            assert len(p1["balanta"]) == len(p0["balanta"]), "ciorna A INTRAT în balanță (R36)"
             assert len(p1["jurnal"]) == len(p0["jurnal"]) + 1, "ciorna n-a intrat în registrul-jurnal"
             assert len(p1["fisa_cont"]) == len(p0["fisa_cont"]), "ciorna A INTRAT în fișa de cont"
 
             # și pe cititorii REALI, nu doar pe predicat:
             assert len(f1["randuri"]) == len(f0["randuri"]), (
                 "fișa de cont s-a mișcat la o ciornă — predicatul declarat nu mai e adevărat")
-            assert str(b1) != str(b0), "balanța NU s-a mișcat la o ciornă — predicatul e fals"
+            assert str(b1) == str(b0), "balanța s-a mișcat la o ciornă — predicatul declarat (R36) nu mai e adevărat"
+            assert len(b0) > 0, "balanța goală: comparația de mai sus n-ar spune nimic"
         finally:
             with conn.cursor() as cur:
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)

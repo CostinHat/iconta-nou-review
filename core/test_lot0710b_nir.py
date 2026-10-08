@@ -53,7 +53,8 @@ def test_la_cost_nir_intra_la_cost_fara_378_4428_si_in_fisa(conn):
     _metoda(conn, "cantitativ_valoric")
     r = s.adauga_nir(conn, _SCH, {"numar": "1", "data": "2099-10-07", "linii": [dict(_L, denumire="Marfa A", articol_nou=True)]})
     assert "eroare" not in r, r
-    assert _note(conn, r["inregistrari"]) == [("371", "401", "550.00"), ("4426", "401", "115.50")]   # OMFP 1802 pct.287
+    # OMFP 1802 pct.287 (la cost); [08.10 §6 pct.1 + pct.3] fără factură: datoria pe 408, TVA-ul pe 4428.01 până la factură
+    assert _note(conn, r["inregistrari"]) == [("371", "408", "550.00"), ("4428.01", "408", "115.50")]
     with conn.cursor() as cur:
         cur.execute("SELECT a.denumire, m.tip, m.cantitate::text, m.valoare::text FROM miscari_stoc m JOIN articole a ON a.id = m.articol_id")
         assert [tuple(x) for x in cur.fetchall()] == [("Marfa A", "intrare", "10.000", "550.00")]          # C11e: stocul o arată
@@ -86,8 +87,8 @@ def test_la_pret_de_vanzare_raftul_gol_nu_e_zero(conn):
     r = s.adauga_nir(conn, _SCH, {"numar": "1", "data": "2099-10-07", "linii": [dict(_L, denumire="Marfa A", pret_vanzare=60)]})
     assert [x["camp"] for x in r["erori_campuri"]] == ["nir-l0-pret_vanzare"]          # sub cost: tot lângă câmp
     r = s.adauga_nir(conn, _SCH, {"numar": "1", "data": "2099-10-07", "linii": [dict(_L, denumire="Marfa A", pret_vanzare=80)]})
-    assert {d for d, _c, _s in _note(conn, r["inregistrari"])} == {"371", "4426"} and \
-        {c for _d, c, _s in _note(conn, r["inregistrari"])} == {"401", "378", "4428"}                    # metoda prețului cu amănuntul
+    assert {d for d, _c, _s in _note(conn, r["inregistrari"])} == {"371", "4428.01"} and \
+        {c for _d, c, _s in _note(conn, r["inregistrari"])} == {"408", "378", "4428"}                    # prețul cu amănuntul; §6: 408
 
 
 def test_metoda_nedeclarata_se_cere_in_date_firma(conn):

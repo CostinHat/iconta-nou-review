@@ -35,6 +35,10 @@ def balanta(conn, schema, an, luna):
         la 1 ianuarie se completeaza cu soldurile finale ale lui decembrie); fara note in anii anteriori, ramane exact
         soldul introdus;
       * `tot_*` = TOTALUL SUMELOR = si + prec + rul; `sf_*` = soldul final, din totalul sumelor.
+
+    [08.10.2026, decizia Costin §6 pct.7 — R36, verbatim in DECIZII] „evidența = ce a validat un om. Balanța arată implicit doar
+    validatul, iar ciornele apar separat, cu indicator.” Toate cele cinci perechi citesc numai notele VALIDATE; ciornele lunii (si cele
+    de dinainte, inca nevalidate) le da `ciorne_balanta`, separat.
     """
     inceput_an = date(an, 1, 1)
     inceput = date(an, luna, 1)
@@ -49,11 +53,11 @@ def balanta(conn, schema, an, luna):
             linii AS (
                 SELECT l.cont_debit AS cont, l.suma AS deb, 0::numeric AS cred, i.data
                 FROM {schema}.inregistrari_linii l JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                WHERE i.data < %s
+                WHERE i.data < %s AND i.status = 'validata'
                 UNION ALL
                 SELECT l.cont_credit, 0, l.suma, i.data
                 FROM {schema}.inregistrari_linii l JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                WHERE i.data < %s
+                WHERE i.data < %s AND i.status = 'validata'
             ),
             r AS (SELECT cont,
                          SUM(deb) FILTER (WHERE data < %s) AS ant_d, SUM(cred) FILTER (WHERE data < %s) AS ant_c,
@@ -90,11 +94,24 @@ def balanta(conn, schema, an, luna):
         return randuri
 
 
+def ciorne_balanta(conn, schema, an, luna):
+    """[08.10.2026, R36] Indicatorul ciornelor, separat de balanță: notele NEvalidate ale lunii și cele de dinainte (din anul balanței),
+    care nu sunt în nicio coloană — {"luna": n, "inainte": n, "note": [id-uri, cel mult 50]}."""
+    inceput, sfarsit = date(an, luna, 1), date(an + (luna == 12), (luna % 12) + 1, 1)
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT id, data >= %s FROM {schema}.inregistrari WHERE status <> 'validata' AND data >= %s AND data < %s
+                        ORDER BY data, id""", (inceput, date(an, 1, 1), sfarsit))
+        rows = [tuple(r.values()) if isinstance(r, dict) else tuple(r) for r in cur.fetchall()]
+    return {"luna": sum(1 for _i, l in rows if l), "inainte": sum(1 for _i, l in rows if not l), "note": [i for i, _l in rows][:50]}
+
+
 def note_lunii(conn, schema, an, luna):
-    """Cate note are luna - aceeasi multime ca registrul-jurnal pe luna si ca rulajele curente ale balantei (W1)."""
+    """Cate note VALIDATE are luna - multimea rulajelor curente ale balantei (W1). [08.10.2026, R36] Registrul-jurnal pe luna arata
+    aceleasi note plus ciornele, cu starea lor; ciornele le numara `ciorne_balanta`."""
     sfarsit = date(an + (luna == 12), (luna % 12) + 1, 1)
     with conn.cursor() as cur:
-        cur.execute(f"SELECT COUNT(*) FROM {schema}.inregistrari WHERE data >= %s AND data < %s", (date(an, luna, 1), sfarsit))
+        cur.execute(f"SELECT COUNT(*) FROM {schema}.inregistrari WHERE data >= %s AND data < %s AND status = 'validata'",
+                    (date(an, luna, 1), sfarsit))
         r = cur.fetchone()
     return int(list(r.values())[0] if isinstance(r, dict) else r[0])
 
@@ -192,9 +209,14 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     st_cap = ParagraphStyle("cap", parent=stil["Normal"], fontName=fb, fontSize=8, textColor=_colors.white)
     st_cap_r = ParagraphStyle("capr", parent=st_cap, alignment=TA_RIGHT)
 
+    _ci = ciorne_balanta(conn, schema, an, luna)   # [08.10.2026, R36] numai validatul; ciornele numărate separat
+    _n_ci = _ci["luna"] + _ci["inainte"]
     el = [
         Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
         Paragraph(nume_firma, st_meta),
+        Paragraph("Cuprinde numai notele validate." + (" %d %s nu %s incluse." % (
+            _n_ci, "ciorn\u0103 nevalidat\u0103" if _n_ci == 1 else "ciorne nevalidate", "este" if _n_ci == 1 else "sunt")
+            if _n_ci else ""), st_meta),
         Spacer(1, 8),
     ]
 

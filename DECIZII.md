@@ -18456,3 +18456,137 @@ zebrei; mutația: 4,13). DS cap.15 v2.82.
   feedback) -> `arataMesaj(…, "eroare")` (DS cap.6).
 - **VERDICT_PARITATE (DS cap.20):** cheile sumarului încrucișat ieșiseră din tuplul literal (mutate în `ETICHETE_INCRUCISAT`), deci
   verificatorul nu le mai vedea pliate în `contabil`; bucla iterează din nou un tuplu literal, etichetele vin din dicționar.
+
+## 08.10.2026 — Deciziile Costin la §6 al lotului „Deciziile 08.10” (lotul „Deciziile 08.10 §6”)
+
+**Comanda, verbatim:** „Deciziile la §6 din RAPORT DECIZIILE_08_10:
+1. NIR fără factură → factură, la cantitativ-valoric: aceeași alegere ca la celelalte metode — la contarea facturii se leagă de NIR-ul
+deschis (408 = 401), fără a doua intrare în stoc. Fără refuz. Închide datoria test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea.
+2. NIR din exercițiul trecut: se propune la legare și între exerciții, cât timp 408 e deschis. Exercițiul închis nu se modifică;
+diferența de preț intră în perioada facturii. Textul din pct.69 OMFP 1802/2014 îl citești la sursă și îl pui în TEMEI.
+3. TVA din NIR fără factură: 4428 până la factură, apoi 4428 → 4426 la contarea facturii (CF art.299 alin.(1) lit.a). Poarta D300
+compară cu 4426.
+4. Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după luna primei note. Recalculează propunerea
+pentru F3 (are note din iunie). Schimbarea se jurnalizează.
+5. Recipisa: rămâne doar numărul. Fără PDF în acest lot.
+6. Amortizarea și descărcarea GV: aceeași regulă ca T1 — înlocuire automată a ciornei nevalidate; ce e validat nu se atinge.
+7. R36: evidența = ce a validat un om. Balanța arată implicit doar validatul, iar ciornele apar separat, cu indicator. Porțile
+D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună, dau doar avertisment, nu blocaj. Gardă pe această regulă.
+8. Înainte de execuție, listezi operațiile pe care le rulezi, fără estimări de durată. În raportul final dai durata măsurată exact pentru
+fiecare operație.
+9. La commitul de închidere: ZIP cu tot ce s-a schimbat (cod, documente noi, artefactele de măsurare), cu calea exactă în raport.
+Poți trece la următorul pas din listă.”
+
+**Și, în aceeași tură (verbatim):** „Aceste decizii au prioritate față de registrul de parametri fiscali: le execuți întâi, închizi cu
+commit, raport și ZIP, apoi continui registrul.”
+
+**Consecința pentru executor:** firul „Deciziile 08.10 §6” în TESTE.md (pașii S1–S7, cu lista de operații dată înainte de execuție);
+registrul unic de parametri fiscali + interdicția 26 (comanda anterioară, verbatim în intrarea următoare) începe după închiderea lui.
+Temeiul pct.2, citit la sursă (`anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`): pct.69 — „Înregistrarea stornării unei
+operațiuni contabile aferente exercițiului financiar curent se efectuează fie prin corectarea cu semnul minus a operațiunii inițiale
+(stornare în roșu), fie prin înregistrarea inversă a acesteia (stornare în negru), în funcție de politica contabilă și programele
+informatice utilizate.”; pct.68 alin.(1) — „Corectarea erorilor aferente exercițiilor financiare precedente nu determină modificarea
+situațiilor financiare ale acelor exerciții.”
+
+## 08.10.2026 — Comanda Costin: registrul unic de parametri fiscali și interdicția 26 (începe după lotul „Deciziile 08.10 §6”)
+
+**Comanda, verbatim:** „Tema următoare, începe după închiderea lotului curent: registrul unic de parametri fiscali în iConta și
+interdicția 26.
+1. Ținta: fiecare valoare fiscală folosită de iConta (cote, praguri, plafoane, termene, procente, sume fixe) stă într-un singur registru.
+Fiecare intrare are valoarea, temeiul (obiect Temei, citat verbatim din corpus), perioada de valabilitate (de la / până la) și starea
+(propus / verificat / aprobat, cu cine și când). Motoarele citesc doar din registru, după data operațiunii. Registrul existent COTE devine
+acest registru (se extinde, nu se face unul paralel); mecanismul `ancoreaza` se pliază pe el.
+2. Migrarea nu schimbă nicio valoare. Mută în registru constantele ancorate, dublurile (d101/d101g.COTA_STANDARD,
+cote_tva.COTA_STANDARD/REDUSA) și orice altă valoare fiscală din module, cu istoricul ei unde există. Inventarul se numără, nu se
+estimează. Dovada: declarațiile generate pe portofoliu înainte și după migrare sunt identice. După migrare, interdicția 1 se închide: o
+valoare fiscală nouă scrisă în afara registrului înroșește un gard.
+3. Detectarea schimbărilor din lege: săptămânal, automat pe server, se aduc formele consolidate oficiale (legislatie.just.ro) pentru actele
+din corpus care susțin un temei din registru. O formă nouă intră în corpus ca versiune nouă (cea veche arhivată, nu ștearsă). Pentru
+fiecare temei al cărui citat nu mai e verbatim în forma nouă se generează o propunere: parametrul, citatul vechi, textul nou, data de la
+care se aplică. O sursă care nu se poate aduce sau citi dă GRI, niciodată verde.
+4. Nimic nu se aplică automat. Propunerile se exportă într-un fișier pentru verificarea arhitectului; în registru intră doar propunerile
+cu verdictul APROB din fișierul de verificare al arhitectului (formatul de la verif_temeiuri.json, 01.10.2026). Ecranul de superadmin doar
+afișează propunerile și starea lor. O propunere fără verdict rămâne în așteptare. Superadminul primește alertă când apare o propunere.
+5. Calibrare în ambele direcții: detectarea prinde schimbări reale deja petrecute (HG 1045/2018, forma din 15.09 → 30.09.2026, creșă 770
+lei; art.291 CF modificat de la 01.08.2025) și nu generează propuneri pentru acte neschimbate.
+6. Dovada pe portofoliu: o declarație pe o perioadă dinaintea unei schimbări și una de după folosesc fiecare valoarea corectă (ex. D300
+iulie 2025 cu 19%, august 2025 cu 21%).
+7. După migrare, completezi registrul integral: fiecare parametru folosit de iConta primește temeiul (act, articol/alineat/literă, citat
+verbatim din corpus) și istoricul valorilor cu perioadele de valabilitate. Unde temeiul nu se găsește în corpus, intrarea rămâne marcată
+„fără temei”, fără valoare sau citat presupus. „Integral” înseamnă parametrii citiți de cod, nu toată legislația. Exportă tot registrul
+într-un singur fișier pentru verificarea arhitectului (formatul de la verif_temeiuri.json) și raportează calea; până la verdict, starea
+intrărilor rămâne „propus”.
+8. Interdicția 26 (o decizie luată comparând sau clasificând text) se reia acum, doar pe codul care ajunge la cifre: contări, TVA,
+declarații, salarii, stocuri. Perimetrul se derivă mecanic, nu se estimează. Fiecare decizie de felul ăsta (ex. cota sau tipul
+operațiunii dedus din denumire, partener clasificat după nume, regim dedus din text liber) se mută pe un câmp structurat cu valori fixe.
+Unde câmpul lipsește din date, se adaugă și se cere la introducere; nu se ghicește din text. Dovada pe portofoliu: o denumire scrisă
+altfel (diacritice, majuscule, greșeală de tastare) nu mai schimbă nicio cifră. Aparițiile din afara perimetrului rămân și se numără în
+raport. Interdicția 29 rămâne înghețată.
+9. Înainte de execuție, listează operațiile pe care urmează să le rulezi, fără durate estimate. În raportul final, durata măsurată a
+fiecărei operații efectuate. La commitul de închidere, un ZIP cu tot ce s-a schimbat (cod, documente noi, artefactele brute ale
+măsurătorilor, fișierul registrului), cu calea exactă raportată.”
+
+**Consecința pentru executor:** se execută DUPĂ lotul „Deciziile 08.10 §6” (prioritatea dată de Costin în aceeași tură); lista de
+operații a fost dată înainte de execuție (în conversație, apoi în firul din TESTE.md).
+
+## 08.10.2026 — Executarea lotului „Deciziile 08.10 §6”: forma contabilă, interpretările și ce a ieșit pe drum
+
+**pct.1–3 — forma NIR-ului fără factură.** La NIR: `371 = 408` (costul) și `4428.01 = 408` (TVA-ul), iar la global-valoric `371 = 378`
+și `371 = 4428` (prețul de raft), ca înainte (`stocuri_api.adauga_nir`, `stocuri.nir_cost` / `nir_gv`, parametrii `cont_furnizor` /
+`cont_tva`). La contarea facturii legate (`nir_legare.note_factura_legata`): `408 = 401` costul + TVA-ul NIR-ului și `4426 = 4428.01`
+TVA-ul (CF art.299 alin.(1) lit.a: deducerea cere factura); diferența de cost, cu data facturii: global-valoric `378 = 401`;
+cantitativ-valoric `371 = 401` și o mișcare de VALOARE în fișă (`miscari_stoc.tip = 'ajustare'`, cantitate 0, CMP recalculat), iar partea
+articolelor ieșite deja `607 = 401`; diferența de TVA `4426 = 401`. La TVA la încasare / taxare inversă: `408 = 401` costul, `408 = 4428.01`
+TVA-ul NIR-ului, iar TVA-ul facturii rămâne cum îl scrie factura. Temei: OMFP 1802/2014, funcțiunea contului 408 („În creditul contului
+408 «Furnizori - facturi nesosite» se înregistrează: – valoarea bunurilor aprovizionate … (301, 302, 303, 361, 371, 381, 4428, …)”).
+*INTERPRETARE CU TEMEI (de proces):* TVA-ul pe un **analitic** al lui 4428 (`4428.01`), nu pe sinteticul pe care stă TVA-ul din prețul de
+raft — altfel K (`stocuri.coeficient_k`, care citește rulajul creditor al lui 4428 pe cont EXACT) și bilanțul ar amesteca cele două.
+*Alternativa respinsă:* 4428 sintetic (decizia spune „4428”): `4426 = 4428` la factură ar fi intrat în rulajul creditor citit de K.
+NIR-urile din forma veche (pe 401, scrise înainte de azi — F1: NIR 2 și 3) se leagă tot prin stornarea în roșu, numai în exercițiul curent
+(pct.69 vorbește despre „exercițiul financiar curent”); forma nouă se leagă și între exerciții, fără nicio scriere în exercițiul NIR-ului
+(pct.68 alin.(1)). Datoria `test_datorie_nir_fara_factura_la_cost_dubleaza_intrarea` e închisă (testul pozitiv:
+`core/test_nir_408.py::test_cantitativ_valoric_o_singura_intrare_in_stoc`). **Limită:** costul NIR-ului fără transport și taxe (acestea
+rămân pe contul lor, 401 / 446).
+
+**pct.4 — luna preluării.** `firma_profil.luna_preluare` (migrare `core.migrare_decizii_0810_s6`), modulul pur `core/luna_preluare.py`
+(dedusă, propunere plafonată la luna primei note, efectivă = salvată altfel propunere, refuzul), citirea faptelor în
+`repo_firma_profil.fapte_preluare`; Control fiscal citește luna efectivă. *INTERPRETARE (de produs):* „prima notă” = nota cea mai veche
+din jurnal, oricare i-ar fi starea (și ciorna e scrisă în iConta). F3: propunerea iese 06/2026 (prima notă 15.06.2026) — măsurat pe
+producție, citire. Câmpul gol = propunerea; schimbarea intră în `firma_profil_jurnal` (`CAMPURI_JURNAL`).
+
+**pct.6 + pct.7 — o premisă greșită în întrebarea mea, corectată aici.** Întrebarea din raportul trecut (§6.6) spunea că amortizarea
+refuză „deja generată” și presupunea o ciornă de înlocuit. Măsurat azi: nota de amortizare se scria **direct `validata`**
+(`repo_contabilitate.nota_amortizare_validata`) — ciorna nu exista niciodată. R36 („evidența = ce a validat un om”) și pct.6 („înlocuire
+automată a ciornei nevalidate”) cer împreună ca nota de amortizare să intre CIORNĂ; aceeași clasă cuprindea bonul aprobat
+(`nota_bon_validata`) și raportul Z tastat la global-valoric (`nota_horeca_z_validata`) — toate trei scriu acum ciornă, iar
+`core/test_rol_pe_efect.py` cere ca mulțimea rutelor care scriu `validata` direct să rămână GOALĂ. *Alternativa respinsă:* păstrarea
+celor trei validate direct, cu R36 aplicat numai balanței — balanța ar fi arătat evidență pe care n-a validat-o niciun om. **Efect pe
+produs:** nota de amortizare, a bonului și a Z-ului tastat apar în coadă / în jurnal ca ciornă, de validat. Regula T1: a doua generare
+înlocuiește ciorna nevalidată sau respinsă (aceeași amprentă -> rămâne ea), preia documentul intern al celei înlocuite (fără goluri în
+numerotare), iar pe nota validată refuză.
+
+**pct.7 — balanța și porțile.** `documente_api.balanta` citește numai validatul; `ciorne_balanta` dă indicatorul (luna / lunile anterioare
+ale anului); ecranul îl arată în `.caseta-info`, PDF-ul îl scrie sub titlu. Populația declarată: `scan_populatii_registre` (fișa de cont
+și balanța pe validat; registrul-jurnal arată și ciornele, cu starea lor). Porțile: `uc_coada.decizie_poarta` — fără ciorne în perioada
+fiscală, diferența blochează ca înainte; cu ciorne, declarația intră în coadă cu avertismentul (diferența, dacă e, și numărul ciornelor).
+
+**Găsite pe drum, reparate pe clasă (CICLUL DE NECONFORMITATE):**
+- re-contarea facturii legate după o respingere ar fi încărcat 371 a doua oară (NIR-ul legat nu mai e candidat) -> `nir_legare.
+  legat_de_factura`; ajustarea orfană se înlocuiește, `stocuri_anulare.reface_factura` n-o reface ca ieșire;
+- `d406_stocuri.solduri` citea orice altceva decât „intrare” ca ieșire -> ajustarea se adună cu semnul ei;
+- D406 excludea analiticul cu punct din plan („nu aparține normei”) dar îl cita pe linii -> analiticul se declară pe sintetic, în plan și
+  pe linii (`common.sintetic_saft`, folosit de ambele căi — `test_non_tautologie` interzice a doua cale să importe generatorul). DUK: valid;
+- semnalul „exigibilitate decalată” pe 4428 numea TVA-ul din prețul de raft al firmei global-valorice ca exigibilitate decalată -> fără
+  contrapartida 371;
+- bilanțul (S1005) nu ducea soldul debitor al lui 4428 la creanțe (OMFP 1802/2014, bilanțul prescurtat, rd.06: „… + 4424 + din ct.
+  4428** + 444** …”) -> reparat; **și** număra soldul creditor 4428 de două ori (rd.05 „- din ct. 4428” ȘI rd.13 „4428***”) ->
+  **NU reparat**: separarea părții „aferente stocurilor” cere un analitic al TVA-ului din prețul de raft și migrarea soldurilor existente
+  — decizie cerută (raport §6), datorie strictă `test_datorie_bilant_4428_creditor_numarat_de_doua_ori`;
+- refuzurile din Date firmă ajungeau numai ca frază, deși `salveaza_date` numea câmpul -> `erori_campuri`, ecranul le pune lângă câmp.
+- setul de vecinătate de dinaintea porții a mai prins trei lucruri ale lotului: (1) `test_control_preluare` (lotul „Deciziile 08.10”)
+  lăsa contorul `firma_sursa_versiune` al tenantului sintetic 990808 -> curățat, cu gard de sesiune în `conftest.py` (creșterea netă
+  a rândurilor orfane pică suita, independent de ordinea testelor); (2) rândul adăugat în handlerul „Salvează” din Date firmă a scos
+  `POST /vector` din fereastra sondei drepturilor -> citirea câmpurilor extrasă în `_dateDinFormular`, iar butonul își declară și
+  `PUT /tenants/{tenant_id}` (`permis` cere una din acțiuni: nimeni nu pierde salvarea); (3) cele două refuzuri ale ajustării din
+  `stocuri_cv` sunt de FORMĂ / invariant — înregistrate în baseline-ul 77 și în CONFORMITATE §77 (136 -> 138), fără un articol care nu
+  li se potrivește.

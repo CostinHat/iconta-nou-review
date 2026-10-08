@@ -34,9 +34,10 @@ def id_nota_dupa_numar_2(cur, numar):
 
 
 def nota_de_amortizare(cur, schema, numar):
+    """(id,) al notei de amortizare a lunii (`AMORT-AAAA-LL`), sau None."""
     cur.execute(f"""
-                SELECT numar FROM {schema}.inregistrari
-                WHERE sursa = 'amortizare' AND numar = %s
+                SELECT id FROM {schema}.inregistrari
+                WHERE sursa = 'amortizare' AND numar = %s ORDER BY id
             """,
                 (numar,))
     return cur.fetchone()
@@ -125,10 +126,12 @@ def adauga_cont_in_plan(cur, simbol, denumire, tip):
                 (simbol, denumire, tip))
 
 
-def nota_bon_validata(cur, schema, data_, numar, descriere, document_ref=None):
+def nota_bon_ciorna(cur, schema, data_, numar, descriere, document_ref=None):
+    """[08.10.2026, decizia Costin §6 pct.7 — R36] „evidența = ce a validat un om”: nota bonului aprobat intră CIORNĂ; validarea e actul
+    separat (coada / jurnalul), ca la orice notă scrisă dintr-un document."""
     cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
-                VALUES (%s, %s, %s, 'bon', 'validata', %s) RETURNING id
+                VALUES (%s, %s, %s, 'bon', 'ciorna', %s) RETURNING id
             """,
                 (data_, numar, descriere, document_ref))
     return cur.fetchone()
@@ -165,13 +168,24 @@ def _cu_document_intern(cur, schema, tip, data_, rand):
     return rand
 
 
-def nota_amortizare_validata(cur, schema, data_, numar, descriere):
+def nota_amortizare_ciorna(cur, schema, data_, numar, descriere, document_ref=None):
+    """[08.10.2026, deciziile Costin §6 pct.6 + pct.7 — R36] nota de amortizare intră CIORNĂ („evidența = ce a validat un om”); o ciornă
+    nevalidată se înlocuiește la regenerare (clasa T1, retest 08.10 pct.1), cea validată nu se atinge (`uc_tenants.tenant_amortizare`). `document_ref` =
+    tabloul ciornei înlocuite: nota nouă îl preia, fără un număr nou (numerotarea documentelor interne rămâne fără goluri)."""
     cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'amortizare', 'validata') RETURNING id
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
+                VALUES (%s, %s, %s, 'amortizare', 'ciorna', %s) RETURNING id
             """,
-                (data_, numar, descriere))
-    return _cu_document_intern(cur, schema, "tablou_amortizare", data_, cur.fetchone())
+                (data_, numar, descriere, document_ref))
+    r = cur.fetchone()
+    return r if document_ref else _cu_document_intern(cur, schema, "tablou_amortizare", data_, r)
+
+
+def documentul_notei(cur, schema, nota_id):
+    """`document_ref` al notei, sau None."""
+    cur.execute(f"SELECT document_ref FROM {schema}.inregistrari WHERE id = %s", (nota_id,))
+    r = cur.fetchone()
+    return (r["document_ref"] if isinstance(r, dict) else r[0]) if r else None
 
 
 def adauga_linie_cheltuiala_amortizare(cur, schema, inregistrare_id, cont_debit, cont_credit):
@@ -206,18 +220,10 @@ def adauga_linie_4(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
-def nota_horeca_z_validata(cur, schema, data_, numar, descriere, document_ref=None):
-    cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
-                VALUES (%s, %s, %s, 'horeca_z', 'validata', %s) RETURNING id
-            """,
-                (data_, numar, descriere, document_ref))
-    return cur.fetchone()
-
-
 def nota_horeca_z_ciorna(cur, schema, data_, numar, descriere, document_ref=None):
-    """[decizii 07.10 pct.3] Raportul Z scris de mână la firma CANTITATIV-VALORICĂ: CIORNĂ — validarea cere descărcarea pe articol
-    (`z_descarcare`, poarta din `jurnal_api.valideaza`). La global-valoric rămâne `nota_horeca_z_validata`."""
+    """Raportul Z scris de mână intră CIORNĂ, la ambele metode de stoc: [08.10.2026, decizia Costin §6 pct.7 — R36] „evidența = ce a
+    validat un om”. La cantitativ-valoric validarea cere și descărcarea pe articol (decizii 07.10 pct.3; `z_descarcare`, poarta din
+    `jurnal_api.valideaza`)."""
     cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
                 VALUES (%s, %s, %s, 'horeca_z', 'ciorna', %s) RETURNING id

@@ -5,7 +5,7 @@ ProductCode, StockAccountNo?, ProductType, StockAccountCommodityCode, OwnerID,
 UOMPhysicalStock, UOMToUOMBaseConversionFactor, UnitPrice,
 OpeningStockQuantity, OpeningStockValue, ClosingStockQuantity,
 ClosingStockValue, StockCharacteristics{...}}.
-Sold = cumul miscari (intrare +, iesire -) pana la data; pret unitar mediu."""
+Sold = cumul miscari (intrare +, ajustare de valoare +/- cu semnul ei, iesire -) pana la data; pret unitar mediu."""
 from decimal import Decimal, ROUND_HALF_UP
 from xml.sax.saxutils import escape
 
@@ -16,11 +16,12 @@ def _d(x, q=B2):
     return Decimal(str(x or 0)).quantize(q, rounding=ROUND_HALF_UP)
 
 def solduri(miscari, data_start, data_end):
-    """miscari: [{data, tip intrare|iesire, cantitate, valoare}] pt. UN articol.
+    """miscari: [{data, tip intrare|iesire|ajustare, cantitate, valoare}] pt. UN articol.
     Returneaza cantitati/valori la deschidere (< data_start) si inchidere (<= data_end)."""
     oq = ov = cq = cv = Decimal("0")
     for m in miscari:
-        semn = 1 if m["tip"] == "intrare" else -1
+        # [08.10 §6 pct.2] `ajustare` = diferența de preț a facturii legate de NIR: cantitate 0, valoarea adunată cu semnul ei
+        semn = -1 if m["tip"] == "iesire" else 1
         q = Decimal(str(m["cantitate"])) * semn
         v = Decimal(str(m["valoare"])) * semn
         if m["data"] < data_start:

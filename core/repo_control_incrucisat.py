@@ -33,6 +33,19 @@ def select_inregistrari_linii(cur, schema, data_de, data_pana, conturi):
     return cur.fetchall()
 
 
+def select_rulaj_4428_fara_stoc(cur, schema, de, pana):
+    """(debit, credit) pe 4428 în fereastră, note validate, FĂRĂ liniile cu contrapartida 371: la global-valoric 371 = 4428 (NIR) și
+    4428 = 371 (descărcare) sunt TVA-ul din prețul de raft, nu exigibilitate decalată."""
+    cur.execute(f"""SELECT COALESCE(SUM(CASE WHEN l.cont_debit = '4428' THEN l.suma END), 0),
+                           COALESCE(SUM(CASE WHEN l.cont_credit = '4428' THEN l.suma END), 0)
+                    FROM {schema}.inregistrari_linii l
+                    JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                    WHERE i.data >= %s AND i.data < %s AND i.status = 'validata'
+                      AND ((l.cont_debit = '4428' AND l.cont_credit <> '371') OR (l.cont_credit = '4428' AND l.cont_debit <> '371'))""",
+                (de, pana))
+    return cur.fetchone()
+
+
 def select_inregistrari_linii_2(cur, schema, de, pana):
     cur.execute(f"""SELECT COALESCE(SUM(l.suma), 0)
                 FROM {schema}.inregistrari_linii l

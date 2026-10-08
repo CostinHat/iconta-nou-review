@@ -35,11 +35,10 @@ PIN_STARE_DIN_PARAMETRU = {
 
 # Mulțimea AȘTEPTATĂ a rutelor care produc evidență direct. Nu e sursa (aia e codul) — e martorul
 # care face schimbarea vizibilă. E1 + E4.
-ASTEPTAT_VALIDATA = {
-    ("POST", "/tenants/{tenant_id}/amortizare"),
-    ("POST", "/tenants/{tenant_id}/bonuri/{bon_id}/aproba"),
-    ("POST", "/tenants/{tenant_id}/horeca/raport-z"),
-}
+# [08.10.2026, decizia Costin §6 pct.7 — R36] „evidența = ce a validat un om.” Cele trei rute care scriau `validata` direct
+# (amortizarea, bonul aprobat, raportul Z tastat) scriu acum CIORNĂ; mulțimea e GOALĂ și trebuie să rămână goală: o rută nouă
+# care produce evidență fără om pică aici, cu rol sau fără.
+ASTEPTAT_VALIDATA = set()
 
 
 @pytest.fixture(scope="module")
@@ -80,7 +79,8 @@ def test_orice_ruta_care_atinge_credentiale_cere_rol(m):
 def test_ambele_sonde_gasesc_ceva(m):
     """Anti-vacuu: zero rute găsite ar face testele de mai sus adevărate despre o lume pe care
     sonda n-o vede."""
-    assert len(m["scriu_validata"]) >= 3, "sonda de evidență: %s" % sorted(m["scriu_validata"])
+    # [08.10.2026, R36] mulțimea „scriu validata” e goală prin decizie: anti-vacuul sondei de evidență e acum calibrarea
+    # `test_CALIBRARE_sonda_deosebeste_evidenta_de_ciorna` + `test_CALIBRARE_sonda_vede_validata_in_repository` (cazul real de dinainte)
     assert len(m["cu_credentiale"]) >= 3, "sonda de credențiale: %s" % sorted(m["cu_credentiale"])
 
 
@@ -101,6 +101,20 @@ def test_CALIBRARE_sonda_deosebeste_evidenta_de_ciorna():
     assert scan.scrie_validata(f["a"]) is True
     assert scan.scrie_validata(f["b"]) is False
     assert scan.scrie_validata(f["c"]) is False
+
+
+def test_CALIBRARE_sonda_vede_validata_in_repository():
+    """[08.10.2026, R36] Anti-vacuu pe forma REALĂ de dinainte: ruta nu scria SQL în corp, ci chema `repo_contabilitate.
+    nota_amortizare_validata` (INSERT … 'amortizare', 'validata'). Sonda trebuie să vadă apelul dintr-o rută în repository, altfel
+    mulțimea goală de mai sus ar fi goală fiindcă sonda e oarbă. MUTAȚIE: ciorna din repository înapoi pe 'validata' -> ruta
+    amortizării reapare în mulțime -> `test_multimea_celor_care_produc_evidenta_nu_se_schimba_tacut` pică."""
+    f = _f('def a(x):\n    repo_contabilitate.nota_amortizare_ciorna(cur, s, d, n, t)\n')
+    import inspect
+    from core import repo_contabilitate
+    sursa = inspect.getsource(repo_contabilitate.nota_amortizare_ciorna)
+    assert scan.scrie_validata(f["a"]) is False
+    v = _f(sursa.replace("'ciorna'", "'validata'"))["nota_amortizare_ciorna"]
+    assert scan.scrie_validata(v) is True
 
 
 def test_CALIBRARE_rolul_se_vede_si_din_CORP_nu_doar_din_decorator():
