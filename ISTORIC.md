@@ -1803,3 +1803,26 @@ Supersedează, pe partea de preselecție, intrarea „Ecranele scrise de mână�
 - Facilitatea de la salariul minim: condiția „venit realizat ≤ plafon” (OUG 89/2025 art.III lit.b) se aplică acum și în luna cu
   mărire de salariu; un salariat mărit la mijlocul lunii peste plafon nu mai primește facilitatea proratată pe luna aceea.
 - Contrast: textul secundar în gri deschis (ora notificărilor, rapoarte, ghid) trece pe griul de text (DS cap.15 v2.80).
+
+## 08.10.2026 — Ziua în care lotul „Deciziile 07.10” a ajuns în producție
+
+**Pentru contabil, ziua a schimbat ceva:** lotul scris pe 07.10 (D1–D5, R1–R2, S1–S4, intrarea de mai sus) a ajuns în aplicația din
+producție la 03:14 (commitul `876e87a2`, four-way închis), iar baza de producție a fost migrată după backup
+(`~/backups_db/iconta_v2_pre_decizii0710_20261008_0218.dump`). Ce vede contabilul de azi:
+
+- **Chitanțe**: niciuna din cele 5 firme nu mai are seria „CH” din oficiu (F1 o avea fără nicio chitanță emisă); prima chitanță cere
+  seria în Date firmă, la „Chitanțe”.
+- **Stocuri (F1, cantitativ-valoric)**: NIR 1, respins pe 07.10, apare „Respins la validare” cu motivul și „Refă NIR-ul”. Stocul Marfa A
+  rămâne **116 buc / 5.900,00** — NIR 1 n-a avut niciodată mișcare în fișă, deci n-a avut ce storna (cifra „105 / 5.350,00” din retest
+  așteaptă confirmarea lui Costin). Intrarea NIR 2 e legată de NIR-ul ei.
+- **Coada și clopoțelul**: titlurile documentelor sunt scurte (document · partener · număr de note — 12 elemente actualizate);
+  notificările „de validat” ale NIR 1 / NIR 2 și ale notelor F5 #3 / #4 apar „rezolvată: respinsă / validată”, iar „Nota #3 … a fost
+  respinsă” (F5, înlocuită de #4) apare „rezolvată: înlocuită” — rezolvată pe producție după migrare, cu funcția deja publicată, după un
+  al doilea backup (`iconta_v2_post_migrare_decizii0710_20261008_0315.dump`). Rămâne activă, corect, „NIR 1 a fost respins” (F1, de refăcut).
+- **Salarii (F5)**: statul de plată are „Prime, sporuri, ore supl.” pe fiecare salariat (nicio valoare introdusă încă); „Salariu — de la”
+  pornește cu ziua 1 a lunii lucrate.
+- **Nimic nu s-a recalculat retroactiv**: nicio notă, nicio declarație depusă și nicio cifră existentă nu s-a schimbat (stornările:
+  0; elementele de salariu: 0).
+- **Ce nu s-a putut lega**: patru notificări din 06.10 (44, 45, 46, 48) n-au id de element (dinaintea legăturii) — rămân fără stare,
+  toate citite.
+
