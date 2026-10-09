@@ -1946,3 +1946,12 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   ecranul o spune; antetul PDF: „Cod TVA RO…” la plătitor.
 - **Rămas, decizie cerută:** pct.8 (nereprodus pe cabinetul de test); cele două întrebări ale lotului trecut (nota 118, mesajele
   generatoarelor manuale).
+
+## 09.10.2026 — Neconformitate prinsă la migrarea „Retest 2”: nota de corecție respinsă storna stocul NIR-ului contat
+
+- **Producție, migrarea „Retest 2”** (rulată de Costin după backup): coloana `casa_operatiuni.storno_de` pe 5/5 scheme — ecranul Casă,
+  căzut între restartul lui d0abd48f și migrare, merge din nou. Notele 121/122: descrierea rescrisă; retrimiterea refuzată.
+- **Refuzul a arătat un defect**: respingerea notelor de refacere 121/122 (numai pentru descriere) stornase în fișa de magazie NIR 2 și
+  NIR 1, contate (notele 114–117 validate). Reparat în cod (DECIZII 09.10.2026, „Neconformitate: nota de corecție …”): stocul în
+  evidență nu se mai stornează la respingere; NIR-ul contat nu mai apare „respins” și nu se mai reface. Două teste noi, șase mutații roșii.
+- **Rămas, decizie cerută:** reparația celor două rânduri de stornare de pe tenant_049 și gardul „migrarea înainte de restart”.

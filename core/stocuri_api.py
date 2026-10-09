@@ -11,6 +11,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri as _m
 from core import sume_lei as _sl
+from core import stocuri_anulare as _an  # [neconformitatea 09.10.2026] definiția „în evidență”, una singură
 
 
 def _noteaza(cur, schema, data, descriere, note, document_ref=None, numar=None):
@@ -139,6 +140,12 @@ def _nir_de_refacut(cur, schema, nir_id):
     if r:
         return None, ("NIR_DEJA_REFACUT", "NIR-ul %s a fost deja refăcut (NIR-ul %s)." % (v["numar"], r["numar"]))
     note = note_nir(v)
+    # [neconformitatea 09.10.2026] un NIR cu notă validată e în evidență: refacerea i-ar dubla intrarea în stoc și pe 371
+    cur.execute(f"SELECT {_an.NIR_IN_EVIDENTA.format(s=schema)} FROM {schema}.nir n WHERE n.id = %s", (nid,))
+    r = cur.fetchone()
+    if (r[0] if not isinstance(r, dict) else list(r.values())[0]):
+        return None, ("NIR_IN_EVIDENTA", "NIR-ul %s are note validate, deci e în evidență: nu se reface. O greșeală în el se corectează "
+                                         "printr-o notă de corecție." % v["numar"])
     if not any(_nd.respinsa(cur, schema, i) for i in note):
         return None, ("NIR_NERESPINS", "Se reface numai un NIR respins la validare; NIR-ul %s nu e respins." % v["numar"])
     return {"id": v["id"], "numar": v["numar"], "note": note}, None
@@ -312,9 +319,12 @@ def note_nir(n):
 def stare_validare_nir(nirs, stari, refaceri):
     """[retest 07.10 R1] Starea NIR-ului în listă și în detaliu: „respins”, cu motivul (ultimul element din coadă al vreuneia din
     notele lui e `respinsa`), și NIR-ul care l-a refăcut, dacă există. `stari` = `coada_api.stari_note`; `refaceri` =
-    {nir_id_vechi: {id, numar, data}}. Notele unui NIR refăcut au fost scoase — elementele lor din coadă rămân ca istoric."""
+    {nir_id_vechi: {id, numar, data}}. Notele unui NIR refăcut au fost scoase — elementele lor din coadă rămân ca istoric.
+    [neconformitatea 09.10.2026] NIR-ul în evidență (`in_evidenta`, o notă a lui validată) nu e „respins”: nota de corecție
+    respinsă e a ei, nu a documentului."""
     for n in nirs:
-        resp = [stari[i] for i in note_nir(n) if (stari.get(i) or {}).get("stare_coada") == "respinsa"]
+        resp = [] if n.get("in_evidenta") else [stari[i] for i in note_nir(n)
+                                                 if (stari.get(i) or {}).get("stare_coada") == "respinsa"]
         n["respins"] = ({"motiv_respingere": resp[0].get("motiv_respingere"), "la": resp[0].get("la")} if resp else None)
         r = refaceri.get(n["id"])
         n["refacut_in"] = r["numar"] if r else None
@@ -332,8 +342,9 @@ def refaceri_nir(conn, schema, nir_ids):
 
 def lista_nir(conn, schema, an, luna):
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"""SELECT * FROM {schema}.nir
-                        WHERE date_trunc('month', data) = %s ORDER BY data, id""",
+        # [neconformitatea 09.10.2026] `in_evidenta`: NIR-ul cu notă validată nu e „respins” și nu se reface (stocuri_anulare)
+        cur.execute(f"""SELECT n.*, {_an.NIR_IN_EVIDENTA.format(s=schema)} AS in_evidenta FROM {schema}.nir n
+                        WHERE date_trunc('month', n.data) = %s ORDER BY n.data, n.id""",
                     (f"{an}-{luna:02d}-01",))
         out = []
         for r in cur.fetchall():
@@ -345,7 +356,7 @@ def lista_nir(conn, schema, an, luna):
 def nir_detaliu(conn, schema, nir_id):
     """[lotul 07.10 B, C11d] NIR-ul cu articolele și notele lui (din `inregistrari_ids`), sau None."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT * FROM {schema}.nir WHERE id = %s", (nir_id,))
+        cur.execute(f"SELECT n.*, {_an.NIR_IN_EVIDENTA.format(s=schema)} AS in_evidenta FROM {schema}.nir n WHERE n.id = %s", (nir_id,))
         n = cur.fetchone()
         if not n:
             return None

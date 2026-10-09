@@ -1,12 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **09.10.2026: lotul „Retest 2” (retestul în aplicație al lotului „Retest 08.10”, 20 de puncte: textul judecat pe ecran, rândul formularului, stornarea casei, planul de conturi, ciornele proprii) complet, registrele în același commit; urmează registrul de parametri fiscali de la R1**
+# PREDARE LANȚ — **09.10.2026: neconformitatea notei de corecție respinse (codul reparat, datele tenant_049 așteaptă decizia) după lotul „Retest 2” (retestul în aplicație al lotului „Retest 08.10”, 20 de puncte: textul judecat pe ecran, rândul formularului, stornarea casei, planul de conturi, ciornele proprii) complet, registrele în același commit; urmează registrul de parametri fiscali de la R1**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-09** (lotul „Retest 2” — comanda Costin 09.10.2026, verbatim în DECIZII, ÎNAINTEA commitului
   lotului), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `05ba1345` (HEAD de intrare: „Retest 08.10”). Registrele intră în COMMITUL LOTULUI (decizia Costin 08.10 pct.5), deci
+- **pe commit**: `d0abd48f` (HEAD de intrare: „Retest 2”; neconformitatea notei de corecție respinse, găsită la migrarea lui pe
+  producție, e reparată în codul commitului care conține această predare — datele tenant_049 așteaptă decizia, FRONTURI). Înainte: `05ba1345`. Registrele intră în COMMITUL LOTULUI (decizia Costin 08.10 pct.5), deci
   această predare e conținută de commitul lotului „Retest 2”; SHA-ul lui, four-way-ul și migrarea pe producție
   (`core.migrare_retest2`: coloana `casa_operatiuni.storno_de` + notele de refacere NIR 121/122 rescrise și retrimise) sunt în
   raportul turei. Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
@@ -62,6 +63,12 @@ aplicației**, nu „în așteptarea unei teme”:
 | **ce e permis fără să întrebi** | un **prag 1** găsit apăsând |
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
+
+- **DECIZIE CERUTĂ, URGENTĂ (09.10.2026, neconformitatea notei de corecție):** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
+  NIR 1, iar 371 ține 1.150 lei — stornările 8 și 9 din `miscari_stoc`, scrise greșit la respingerea notelor 121/122. Codul e reparat
+  (nu se mai poate repeta); datele NU. Propunerea (ștergerea celor două rânduri, apoi retrimiterea 121/122) e în DECIZII 09.10.2026;
+  scrierea ei a fost refuzată de permisiunile sesiunii — o rulează Costin sau o autorizează. Tot acolo: gardul „migrarea înainte de
+  restart” (clasa care a lăsat Casă căzută între restart și migrare) — LIPSĂ în GARZI 09.10.
 
 - **DECIZIE CERUTĂ (lotul „Retest 2”, raportul §6):** pct.8 — clic pe firmă în lista Control fiscal deschide, pe cabinetul de test,
   „Detaliu firmă” cu grupurile fiscale (nereprodus, captura `b8_click_firma.png` în ZIP): pe ce ecran / din ce loc a apărut meniul

@@ -18855,3 +18855,29 @@ verifica” în fiecare lună din mijlocul trimestrului (13 firme gri pe cabinet
 **Ce a ieșit pe drum (în afara planului, fiecare cu motiv):** „în afară” pus greșit de corectura în masă a diacriticelor din lotul
 trecut (5 locuri) — reparat și gardat; „LipsĂ” (d300, `LipsĂ`) — reparat și gardat; potrivirea abaterilor din `core/test_p7_uc.py`
 număra și perechile declarate adăugate pe același cod — corectată; baseline-ul de diacritice al mesajelor publicate coborât la real.
+
+## 09.10.2026 — Neconformitate: nota de corecție respinsă stornează stocul documentului contat (prinsă la migrarea „Retest 2”)
+
+**Ce s-a văzut.** La rularea `core.migrare_retest2` pe producție (de Costin, după backup `iconta_v2_pre_retest2_20261009_0928.dump`),
+retrimiterea notelor 121/122 (tenant_049) a fost refuzată: „documentul ei a fost respins la validare, iar mișcarea lui de stoc a fost
+stornată”. Citit în producție (numai citire): NIR 2 și NIR 1 au notele 114–117 VALIDATE; la 00:32–00:33 pe 09.10 s-au respins numai
+notele de refacere 121/122 (motivul: descrierea), iar respingerea a scris stornările 8 și 9 în `miscari_stoc` (−600, −550). Fișa de
+magazie arată 0, contul 371 ține 1.150 lei. Scanat pe toate schemele: numai aceste două rânduri.
+
+**Cauza.** `migrare_retest_0810.refa_nir_forma_veche` și `nir_legare.leaga` adaugă nota de corecție în `nir.inregistrari_ids`, deci în
+grupul `nir-<id>`; `coada_api.respinge` -> `stocuri_anulare.storneaza` stornează pe cheia documentului, fără să se uite dacă documentul
+e deja în evidență. Aceeași lipsă în `stocuri_api.stare_validare_nir` (NIR-ul contat afișat „respins”) și `_nir_de_refacut` (refacerea
+permisă — ar fi dublat intrarea pe 371 și în fișă).
+
+**Decizia (cod).** O mișcare de stoc ÎN EVIDENȚĂ nu se stornează la respingere: nota ei validată; fără notă proprie, o notă validată
+a documentului ei (NIR, factură). NIR-ul cu notă validată nu e „respins” și nu se reface. Temei: OMFP 1802/2014 pct.69 — corectarea unei
+operațiuni contate se face prin stornare, cu notă; aceeași regulă pe care Costin a dat-o pentru casă (Retest 2 pct.4). Alternativa
+respinsă: a scoate nota de corecție din grupul documentului — ar fi schimbat titlul și validarea în bloc din coadă (lotul 07.10 pct.9) și
+ar fi lăsat aceeași gaură pentru orice notă nouă adăugată unui document. Limita: decizia 07.10 R1 („respingerea anulează mișcarea de
+stoc”) rămâne pentru documentul încă nevalidat.
+
+**Reparația pe date — DECIZIE CERUTĂ (nu s-a făcut).** Propunerea: ștergerea rândurilor de stornare 8 și 9 din `tenant_049.miscari_stoc`
+(selectate cu aceeași definiție, `IN_EVIDENTA`), tipărite integral în jurnalul rulării, apoi retrimiterea notelor 121/122. Motivul
+ștergerii în locul unei contra-mișcări: sunt mișcări de sistem fără notă contabilă (371 n-a fost atins), iar modelul (`anuleaza_id`, unic)
+n-are formă pentru „stornarea unei stornări” — intrarea ar rămâne marcată stornată. Scrierea migrării care șterge din producție a fost
+refuzată de permisiunile sesiunii; o face Costin sau o autorizează explicit.

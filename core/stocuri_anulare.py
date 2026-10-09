@@ -28,6 +28,23 @@ from psycopg2.extras import RealDictCursor
 #: mișcările VII ale unui document: nici stornări, nici stornate deja
 _VII = "m.anuleaza_id IS NULL AND NOT EXISTS (SELECT 1 FROM {s}.miscari_stoc r WHERE r.anuleaza_id = m.id)"
 
+#: [neconformitatea 09.10.2026, migrarea Retest 2] Mișcarea `m` e ÎN EVIDENȚĂ: nota ei e validată; fără notă proprie (intrarea din
+#: NIR, intrarea din factura primită), o notă validată a documentului ei (`nir.inregistrari_ids`, notele cu `factura_id`). O mișcare
+#: în evidență NU se stornează la respingere: respingerea unei note de CORECȚIE adăugate ulterior la un document contat (refacerea
+#: NIR-ului pe 408, „Stornare cost NIR” la legarea facturii) respinge nota, nu documentul — altfel fișa de magazie iese din stoc
+#: marfa pe care contul 371 o ține în continuare (pățit pe tenant_049: notele 121/122 respinse au stornat NIR 2 și NIR 1, cu notele
+#: 114–117 validate). Aceeași regulă ca la casă (Retest 2 pct.4): ce e în evidență se corectează prin notă, nu se desface.
+#: O SINGURĂ definiție: stornarea (`miscari_vii`), reparația pe date (`migrare_retest2`).
+IN_EVIDENTA = ("EXISTS (SELECT 1 FROM {s}.inregistrari i WHERE i.status = 'validata' AND ("
+               "i.id = m.inregistrare_id"
+               " OR (m.inregistrare_id IS NULL AND m.nir_id IS NOT NULL AND EXISTS (SELECT 1 FROM {s}.nir n "
+               "WHERE n.id = m.nir_id AND n.inregistrari_ids @> to_jsonb(i.id)))"
+               " OR (m.inregistrare_id IS NULL AND m.factura_id IS NOT NULL AND i.factura_id = m.factura_id)))")
+
+#: NIR-ul `n` e în evidență: vreo notă a lui e validată (aceeași regulă, pe document: nu e „respins” și nu se reface)
+NIR_IN_EVIDENTA = ("EXISTS (SELECT 1 FROM {s}.inregistrari i WHERE i.status = 'validata' "
+                   "AND n.inregistrari_ids @> to_jsonb(i.id))")
+
 MESAJ_IESITA = ("Respingerea nu s-a făcut: %s a intrat în stoc, iar marfa a ieșit deja (%s). Stornarea intrării ar lăsa stocul "
                 "negativ. Anulează întâi ieșirile care au folosit-o, apoi respinge documentul.")
 
@@ -41,13 +58,14 @@ def _cheie(grup):
 
 
 def miscari_vii(cur, schema, grup, note_ids):
-    """Mișcările vii ale documentului (cheia de grup din coadă + notele lui)."""
+    """Mișcările vii ale documentului (cheia de grup din coadă + notele lui), fără cele în evidență (`IN_EVIDENTA`)."""
     col, val = _cheie(grup)
     if col:
         cond, arg = "m.%s = %%s" % col, val
     else:
         cond, arg = "m.inregistrare_id = ANY(%s)", [int(i) for i in note_ids or []]
-    cur.execute(("SELECT m.* FROM {s}.miscari_stoc m WHERE " + cond + " AND " + _VII + " ORDER BY m.id").format(s=schema), (arg,))
+    cur.execute(("SELECT m.* FROM {s}.miscari_stoc m WHERE " + cond + " AND " + _VII + " AND NOT " + IN_EVIDENTA
+                 + " ORDER BY m.id").format(s=schema), (arg,))
     return [dict(r) for r in cur.fetchall()]
 
 

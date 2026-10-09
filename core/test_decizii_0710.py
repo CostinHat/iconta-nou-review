@@ -258,6 +258,53 @@ def test_r1_respingerea_nir_storneaza_intrarea_si_il_marcheaza_respins(tx):
     assert c.respinge(conn, cid, str(valid), "x", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"] is False
 
 
+def test_r1_nota_de_corectie_respinsa_nu_storneaza_documentul_contat(tx):
+    """[neconformitatea 09.10.2026, prinsă pe producție la migrarea Retest 2] NIR-ul cu notele VALIDATE primește ulterior o notă
+    de corecție (refacerea pe 408 din `migrare_retest_0810`, „Stornare cost NIR” din `nir_legare.leaga` — amândouă o adaugă în
+    `nir.inregistrari_ids`, deci în grupul `nir-<id>`). Respingerea ei respinge NOTA, nu documentul: marfa e în evidență pe 371,
+    deci rămâne și în fișă (pe tenant_049, respingerea notelor 121/122 a scos din fișă NIR 2 și NIR 1, cu 371 = 1.150 lei).
+    NIR-ul nu devine „respins” și nu se reface (refacerea i-ar dubla intrarea). OMFP 1802/2014 pct.69: corectarea se face prin
+    stornare, cu notă — nu prin desfacerea în fișă a unei operațiuni contate.
+    MUTAȚIE: `AND NOT IN_EVIDENTA` scos din `stocuri_anulare.miscari_vii` -> stocul ajunge 0 -> pică."""
+    from core import coada_api as c, stocuri_api as s
+    conn, cur, tid, cab, asist, valid = tx
+    r, cid = _nir_cv_in_coada(conn, cur, tid, cab, asist)
+    _ca(cur, valid)
+    ap = c.aproba(conn, cid, str(valid), aprobat_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)   # tot documentul
+    assert ap["ok"], ap
+    cur.execute("SELECT count(*) FROM inregistrari WHERE id = ANY(%s) AND status = 'validata'", (r["inregistrari"],))
+    assert cur.fetchone()[0] == len(r["inregistrari"]) > 0
+    _ca(cur, asist)                                  # nota de corecție, adăugată la document cum o adaugă migrarea și legarea
+    cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status, document_ref) VALUES "
+                "('2099-10-07', 'REFACERE-NIR-%s', 'Refacere NIR nr. 1 fără factură', 'stocuri', 'ciorna', 'NIR nr 1') "
+                "RETURNING id" % r["id"])
+    corectie = cur.fetchone()[0]
+    cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '371', '401', -550)",
+                (corectie,))
+    cur.execute("UPDATE nir SET inregistrari_ids = inregistrari_ids || to_jsonb(%s::int) WHERE id = %s", (corectie, r["id"]))
+    el = c.pune_notele_in_coada(conn, cab, tid, asist)
+    assert len(el) == 1
+    cur.execute("SELECT payload->>'grup' FROM public.declaratii_coada WHERE id = %s", (el[0]["coada_id"],))
+    assert cur.fetchone()[0] == "nir-%s" % r["id"]   # în grupul documentului: exact drumul care a stornat pe producție
+    _ca(cur, valid)
+    rez = c.respinge(conn, el[0]["coada_id"], str(valid), "descrierea", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)
+    assert rez["ok"], rez
+    assert _stoc(cur) == ("10.000", "550.00")        # marfa contată rămâne în fișă
+    cur.execute("SELECT count(*) FROM miscari_stoc WHERE anuleaza_id IS NOT NULL")
+    assert cur.fetchone()[0] == 0
+    lst = s.stare_validare_nir(s.lista_nir(conn, SCH, 2099, 10), c.stari_note(conn, tid, r["inregistrari"] + [corectie]), {})
+    assert [(x["numar"], x["in_evidenta"], x["respins"]) for x in lst] == [("1", True, None)]
+    _ca(cur, asist)
+    nou = {"numar": "1", "data": "2099-10-07", "refacut_din_id": r["id"], "confirma_neschimbata": True,
+           "linii": [dict(_L, articol_id=r.get("articol_id") or _articol(cur))]}
+    assert s.adauga_nir(conn, SCH, nou)["cod"] == "NIR_IN_EVIDENTA"
+
+
+def _articol(cur, den="Marfa A"):
+    cur.execute("SELECT id FROM articole WHERE denumire = %s", (den,))
+    return cur.fetchone()[0]
+
+
 def test_r1_respingerea_se_refuza_cand_marfa_a_iesit_si_nu_scrie_nimic(tx):
     """MUTAȚIE: `ROLLBACK TO SAVEPOINT stornare` scos -> rândul de stornare rămâne scris -> pică."""
     from core import coada_api as c, stocuri_cv_api as cva
@@ -327,6 +374,38 @@ def test_r1_factura_stornata_isi_reface_intrarea_la_refacere(tx):
     assert sa.reface_factura(conn, SCH, fid)["stare"] == "intrat"
     assert _stoc(cur) == ("10.000", "550.00")
     assert sa.reface_factura(conn, SCH, fid) is None                      # o singură dată
+
+
+def test_r1_miscarea_in_evidenta_nu_se_storneaza_pe_niciuna_din_cele_trei_legaturi(tx):
+    """[neconformitatea 09.10.2026] `stocuri_anulare.IN_EVIDENTA`, pe fiecare legătură a mișcării cu nota ei: (1) nota proprie
+    (`inregistrare_id`) validată; (2) intrarea din NIR (fără notă proprie) — acoperită de testul notei de corecție; (3) intrarea din
+    factura primită (fără notă proprie), cu nota facturii validată. Contraproba: aceeași mișcare cu nota în CIORNĂ se stornează.
+    MUTAȚII: clauza (1) scoasă -> ieșirea contată se stornează -> pică; clauza (3) scoasă -> intrarea din factură se stornează."""
+    from core import stocuri_anulare as sa, stocuri_cv_api as cva
+    conn, cur, *_ = tx
+    _metoda(cur, "cantitativ_valoric")
+    fid = _factura_primita(cur)
+    cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) VALUES (%s,'Marfa A',10,55,21)",
+                (fid,))
+    assert cva.intrare_din_factura(conn, SCH, fid, "371", "2099-10-07")["stare"] == "intrat"
+
+    def nota(status, factura_id=None):
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id) VALUES ('2099-10-07', 'proba', 'stocuri', "
+                    "'ciorna', %s) RETURNING id", (factura_id,))
+        i = cur.fetchone()[0]
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '371', '401', 1)", (i,))
+        if status == "validata":
+            cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (i,))
+        return i
+    contare = nota("validata", fid)                                     # (3) nota facturii, validată
+    assert sa.storneaza(conn, SCH, "factura-%d" % fid, [contare], "x") == {"stornate": []}
+    assert _stoc(cur) == ("10.000", "550.00")
+    aid = _articol(cur)
+    for status, stornata in (("validata", False), ("ciorna", True)):    # (1) nota proprie; contraproba pe ciornă
+        n = nota(status)
+        cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, document, inregistrare_id) "
+                    "VALUES (%s, '2099-10-08', 'iesire', 1, 55, 'BC proba', %s)", (aid, n))
+        assert bool(sa.storneaza(conn, SCH, None, [n], "x")["stornate"]) is stornata, status
 
 
 # ── R2 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
