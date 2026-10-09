@@ -2177,27 +2177,8 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS numerotare_
 -- bon_flux_e9_v1
 ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS orientare smallint NOT NULL DEFAULT 0;
 
--- perioada_blocata_trigger_v1 (#66): blocheaza INSERT/UPDATE/DELETE pe luna inchisa
-
-CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata() RETURNS trigger AS $$
-DECLARE
-  d date;
-BEGIN
-  IF TG_OP = 'DELETE' THEN d := OLD.data; ELSE d := NEW.data; END IF;
-  IF EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
-             WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
-    RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
-      LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
-  END IF;
-  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata ON TENANT_PLACEHOLDER.inregistrari;
-CREATE TRIGGER trg_verifica_perioada_blocata
-BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.inregistrari
-FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata();
+-- perioada_blocata_trigger_v1 (#66): blocheaza INSERT/UPDATE/DELETE pe luna inchisa — funcția și triggerul pe `inregistrari`
+-- se definesc acum în blocul reguli_fond_v1 (sfârșitul fișierului), cu golul UPDATE închis (data veche). O singură definiție.
 
 -- perioada_blocata_rip_trigger_v1 (#67): blocheaza INSERT/UPDATE/DELETE pe rip_operatiuni pt luna inchisa
 
@@ -2855,3 +2836,111 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_prelua
 ALTER TABLE ONLY TENANT_PLACEHOLDER.casa_operatiuni
     ADD CONSTRAINT casa_operatiuni_storno_de_fkey FOREIGN KEY (storno_de) REFERENCES TENANT_PLACEHOLDER.casa_operatiuni(id);
 CREATE UNIQUE INDEX casa_operatiuni_storno_de_uq ON TENANT_PLACEHOLDER.casa_operatiuni (storno_de) WHERE storno_de IS NOT NULL;
+
+-- [reguli_fond_v1, 09.10.2026] regulile de fond în bază (comanda Costin pct.11) — SURSA: core/migrare_reguli_fond.py
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(nid integer) RETURNS boolean AS $$
+  -- rândul vizibil al cărui `xmin` e încă „in progress” poate fi numai al tranzacției curente (și al sub-tranzacțiilor ei, care au
+  -- identificatori MAI MARI decât ea); `xmin` e pe 32 de biți: se pune epoca curentă, iar numai un `xmin` cu peste 2^31 înaintea
+  -- tranzacției curente e din epoca anterioară; un rezultat negativ sau NULL (prea vechi) = nu e al tranzacției
+  SELECT COALESCE((
+    SELECT pg_xact_status(y::text::xid8) = 'in progress'
+      FROM (SELECT CASE WHEN x - c > 2147483648 THEN x - 4294967296 ELSE x END AS y
+              FROM (SELECT ((k.c >> 32) << 32) | i.xmin::text::bigint AS x, k.c
+                      FROM TENANT_PLACEHOLDER.inregistrari i, (SELECT pg_current_xact_id()::text::bigint AS c) k WHERE i.id = nid) t) u
+     WHERE y >= 0), false)
+$$ LANGUAGE sql VOLATILE;
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_nota() RETURNS trigger AS $$
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    IF OLD.status = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(OLD.id) THEN
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai șterge. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+    END IF;
+    RETURN OLD;
+  END IF;
+  IF TG_OP = 'UPDATE' AND OLD.status = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(OLD.id)
+     AND (NEW.data, NEW.numar, NEW.factura_id, NEW.document_ref, NEW.descriere, NEW.sursa, NEW.status)
+         IS DISTINCT FROM (OLD.data, OLD.numar, OLD.factura_id, OLD.document_ref, OLD.descriere, OLD.sursa, OLD.status) THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai modifică. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+  END IF;
+  IF NEW.status = 'validata' AND OLD.status IS DISTINCT FROM 'validata' AND COALESCE(btrim(NEW.document_ref), '') = ''
+     AND NOT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.facturi f WHERE f.id = NEW.factura_id) THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% n-are documentul justificativ: o notă nu se validează fără documentul din care provine.', NEW.id;
+  END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_nota ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_regula_nota BEFORE UPDATE OR DELETE ON TENANT_PLACEHOLDER.inregistrari
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_nota();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  FOREACH d IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.data END, CASE WHEN TG_OP <> 'DELETE' THEN NEW.data END] LOOP
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_verifica_perioada_blocata BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.inregistrari
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_linii_nota() RETURNS trigger AS $$
+DECLARE
+  nid integer; st text; d date;
+BEGIN
+  IF TG_OP <> 'DELETE' AND (COALESCE(btrim(NEW.cont_debit), '') = '' OR COALESCE(btrim(NEW.cont_credit), '') = '') THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Un rând de notă are nevoie de ambele conturi, debitor și creditor: debitul e egal cu creditul numai așa.';
+  END IF;
+  FOREACH nid IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.inregistrare_id END,
+                            CASE WHEN TG_OP <> 'DELETE' THEN NEW.inregistrare_id END] LOOP
+    CONTINUE WHEN nid IS NULL;
+    SELECT status, data INTO st, d FROM TENANT_PLACEHOLDER.inregistrari WHERE id = nid;
+    IF st = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(nid) THEN
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci rândurile ei nu se mai schimbă. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', nid;
+    END IF;
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_linii_nota ON TENANT_PLACEHOLDER.inregistrari_linii;
+CREATE TRIGGER trg_regula_linii_nota BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.inregistrari_linii
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_linii_nota();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.miscare_in_evidenta(mid integer) RETURNS boolean AS $$
+  SELECT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.miscari_stoc m WHERE m.id = mid AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.inregistrari i WHERE i.status = 'validata' AND (i.id = m.inregistrare_id OR (m.inregistrare_id IS NULL AND m.nir_id IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.nir n WHERE n.id = m.nir_id AND n.inregistrari_ids @> to_jsonb(i.id))) OR (m.inregistrare_id IS NULL AND m.factura_id IS NOT NULL AND i.factura_id = m.factura_id))))
+$$ LANGUAGE sql STABLE;
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_stoc() RETURNS trigger AS $$
+DECLARE
+  nota_tinta integer; st text;
+BEGIN
+  IF TG_OP <> 'INSERT' AND TENANT_PLACEHOLDER.miscare_in_evidenta(OLD.id) THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc „%” e a unui document contat: nu se modifică și nu se șterge. Se corectează printr-un document de corecție.', OLD.document;
+  END IF;
+  IF TG_OP <> 'DELETE' AND NEW.anuleaza_id IS NOT NULL AND TENANT_PLACEHOLDER.miscare_in_evidenta(NEW.anuleaza_id) THEN
+    SELECT inregistrare_id INTO nota_tinta FROM TENANT_PLACEHOLDER.miscari_stoc WHERE id = NEW.anuleaza_id;
+    SELECT status INTO st FROM TENANT_PLACEHOLDER.inregistrari WHERE id = NEW.inregistrare_id;
+    IF NEW.inregistrare_id IS NULL OR NEW.inregistrare_id IS NOT DISTINCT FROM nota_tinta OR st IS DISTINCT FROM 'ciorna' THEN
+      RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc #% e a unui document contat: se stornează numai cu un document de corecție (o notă nouă, în ciornă).', NEW.anuleaza_id;
+    END IF;
+  END IF;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_stoc ON TENANT_PLACEHOLDER.miscari_stoc;
+CREATE TRIGGER trg_regula_stoc BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.miscari_stoc
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_stoc();
+-- [reguli_fond_v1] sfârșit

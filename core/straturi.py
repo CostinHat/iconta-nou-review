@@ -700,6 +700,10 @@ REGISTRU = (
     D("core/audit_retentie.py", USE_CASE, None,
       "ACT de fundal (GDPR art.5): sterge din `audit_log` ce a depasit retentia, in tranzactia lui",
       "PLAN_HARDENING.md:840 — use-case-ul detine tranzactia si orchestreaza"),
+    D("core/migrari_registru.py", USE_CASE, None,
+      "ACT: rulatorul migrărilor și gardul „migrarea înainte de restart” (comanda Costin 09.10 pct.2); își deschide conexiunea și "
+      "scrie registrul `public.migrari_rulate` în tranzacția lui",
+      "PLAN_HARDENING.md:840 — use-case-ul detine tranzactia si orchestreaza"),
     D("core/audit_schema.py", USE_CASE, None,
       "ACT: auditorul de conformitate a schemelor tenant vs `tenant_template.sql`; ruleaza singur si isi deschide conexiunea",
       "PLAN_HARDENING.md:840 — use-case-ul detine tranzactia si orchestreaza"),

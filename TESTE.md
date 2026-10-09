@@ -45,6 +45,27 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Registrul deficiențelor + plasa împotriva regresiilor (comanda Costin 09.10.2026, verbatim în DECIZII)** — înaintea
+  registrului de parametri fiscali. Poarta o dată pe lot, la publicare.
+  - ultim: D1–D7 în commitul care conține această intrare: reparația tenant_049 (scriptul pentru Costin), gardul migrării în
+    post-commit, `DEFICIENTE.md` 1–198 + N1–N18 cu 167 de teste de capăt la capăt în poartă, cifrele de referință exportate,
+    regulile de fond în bază.
+  - urmator: Costin rulează `~/ghid_incoming/repara_tenant049.sh` (după commit; restartul e oprit până atunci); aprobarea cifrelor
+    de referință -> gardul lor; ordinea reparațiilor din DEFICIENTE.md (parțial / nerezolvată); apoi registrul de parametri fiscali
+    de la R1. STARE = BLOCAT: decizia lui Costin (ordinea, aprobarea cifrelor, interpretarea R3, propunerile de reguli noi)
+  - pasi:
+    D1. pct.1: `core/migrare_nota_corectie.py` — scoate stornările greșite (definiția `stocuri_anulare.IN_EVIDENTA`), le tipărește
+        integral, retrimite notele de refacere respinse; testat pe schemă efemeră; scriptul de rulare cu backup pentru Costin; după
+        rulare, proba pe ecran (fișa Marfa A față de soldul 371).
+    D2. pct.2: gard în post-commit — un commit care conține o migrare nerulată pe producție nu repornește aplicația: registru
+        `public.migrari_rulate`, migrările își scriu rularea, hook-ul confruntă migrările din commit cu registrul.
+    D3. pct.6–9, 13: `DEFICIENTE.md` (1–188, N1–N18) — starea fiecărui număr verificată pe aplicația de acum, commitul, ce lipsește;
+        gardul registrului (numerotare continuă, stări permise, „rezolvată” numai cu test de capăt la capăt existent).
+    D4. pct.8: testele de capăt la capăt în browser pentru deficiențele rezolvate, cu captură; intră în poartă (aplicația pornită din
+        worktree-ul commitului).
+    D5. pct.10: cifrele de referință F1–F5 (balanța, D300, D394, D406, D112) exportate în ~/ghid_incoming/ pentru aprobare.
+    D6. pct.11: reguli de fond în baza de date (triggere), cu inventarul celor existente; propunerile noi numai listate.
+    D7. Registrele, poarta, ZIP, raportul cu tabelul pentru toate numerele.
 - fir: **Respingerea notei de corecție a unui document contat îi stornează stocul (neconformitate găsită la migrarea Retest 2 pe
   producție, 09.10.2026)** — ciclul de neconformitate, înaintea registrului de parametri fiscali. Pe tenant_049, respingerea notelor
   de refacere 121/122 (doar pentru descriere) a stornat intrările NIR 2 și NIR 1 (mișcările 8, 9), deși notele NIR-urilor (114–117)

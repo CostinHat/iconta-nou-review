@@ -354,6 +354,10 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
         detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip() \
             if "PERIOADA_BLOCATA:" in msg else "perioada este blocată"
         return _JR(status_code=423, content={"detail": f"Perioada {detaliu}."})
+    # [reguli_fond_v1, 09.10.2026] regulile de fond din bază (core/migrare_reguli_fond.py) refuză cu textul pentru contabil, după eticheta
+    # `REGULA_CONTABILA:` — 409 (conflict cu starea evidenței), nu traceback 500
+    if "REGULA_CONTABILA:" in msg:
+        return _JR(status_code=409, content={"detail": msg.split("REGULA_CONTABILA:")[1].split("\n")[0].strip()})
     # [log_500_v1] traceback vizibil pt erori necunoscute inainte de re-raise
     logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
     raise exc

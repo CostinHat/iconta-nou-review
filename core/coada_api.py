@@ -573,16 +573,20 @@ def lista_coada(conn, cabinet_id, stare=None):
             grupate.append(d)
         for d in grupate:
             membri = d.pop("membri", None)
-            if membri and len(membri) > 1:
-                membri.sort(key=lambda m: m["id"])
-                d["nota"] = _payload_grup([(m["id"], m["nota"]) for m in membri])
-                d["id"] = membri[0]["id"]
-                d["membri_ids"] = [m["id"] for m in membri]
+            # [09.10.2026, deficiența 199] notele membrilor se citesc ÎNAINTE ca elementul-cap (`d`, el însuși membru) să-și primească
+            # payload-ul de grup — altfel, când capul nu e primul membru, amprenta lui era înlocuită cu a primului, iar „retrimisă:
+            # schimbată?” compara greșit (ordinea notelor din aceeași tranzacție e arbitrară, deci greșeala apărea la întâmplare)
+            # (aceeași clasă: și id-urile membrilor — capul e el însuși membru, iar `d["id"] = …` îi schimba id-ul în listă)
+            note_membri = [(m["id"], m["nota"]) for m in sorted(membri, key=lambda m: m["id"])] if membri and len(membri) > 1 else None
+            if note_membri:
+                d["nota"] = _payload_grup(note_membri)
+                d["id"] = note_membri[0][0]
+                d["membri_ids"] = [i for i, _n in note_membri]
             d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
             if d["fel"] == "nota" and d["stare"] == "la_senior":
                 # [S3] „cardul unei note retrimise arată «retrimisă după respingere», motivul respingerii anterioare și dacă
                 # nota s-a schimbat față de cea respinsă”
-                _m = [(m["id"], m["nota"]) for m in membri] if membri and len(membri) > 1 else [(d["id"], d.get("nota"))]
+                _m = note_membri or [(d["id"], d.get("nota"))]
                 d["retrimisa"] = retrimisa(cur, d["tenant_id"], _m)
         return grupate
 

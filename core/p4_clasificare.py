@@ -405,6 +405,25 @@ CLASIFICARE = {
             "se intoarce numita in `refuzate`, cu mesajul ei, iar celelalte raman aprobate: nu exista stare comuna intre ele, "
             "deci nicio aprobare pe jumatate (retest 08.10 pct.3).",
     },
+    "core/migrare_nota_corectie.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "ștergerea stornărilor greșite (schema cu schema) <-> rescrierea descrierii notelor de refacere NIR <-> retrimiterea lor "
+                  "la validare <-> notificarea validatorilor",
+        "de_ce":
+            "fiecare schemă e comisă SEPARAT, iar fiecare pas e idempotent: o a doua rulare nu mai găsește stornări peste o mișcare în "
+            "evidență (aceeași definiție, `stocuri_anulare.IN_EVIDENTA`) și nici note respinse pentru descriere. O cădere între pași "
+            "lasă o stare din care rularea următoare continuă; notificarea e best-effort, după commit. Niciun efect extern "
+            "(comanda Costin 09.10.2026, pct.1).",
+    },
+    "core/migrari_registru.py::__main__ -> main()": {
+        "clasa": NECRITIC,
+        "efecte": "migrarea rulată (tranzacțiile ei) <-> rândul ei în `public.migrari_rulate` <-> repornirea aplicației",
+        "de_ce":
+            "rândul se scrie numai DUPĂ ce migrarea a trecut (o excepție oprește înainte); o cădere între migrare și rând lasă migrarea "
+            "rulată dar neînregistrată — gardul rămâne fail-closed (restartul nu se face), iar rularea din nou e sigură fiindcă migrările "
+            "sunt idempotente. Repornirea vine ultima, numai dacă `verifica` spune că HEAD nu mai are nimic de rulat (comanda Costin "
+            "09.10.2026, pct.2).",
+    },
     "core/migrare_retest2.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "coloana `casa_operatiuni.storno_de` (+ cheia străină și unicitatea), schema cu schema <-> rescrierea descrierii "
@@ -872,6 +891,20 @@ INTEROGARE = "INTEROGARE"
 EFECT = "EFECT"
 
 EFECTE_EXTERNE = {
+    "core/migrari_registru.py:_git": {
+        "fel": INTEROGARE,
+        "ce_e": "citirea arborelui git (migrările și șablonul din commit)",
+        "verdict": "interogare locală, fără efect: citește arborele unui commit (`git ls-tree`, `git show`) ca să afle ce migrări și "
+                   "ce șablon poartă HEAD; un rollback n-are ce desface, iar baza nu e atinsă.",
+    },
+    "core/migrari_registru.py:_reporneste_daca_e_cazul": {
+        "fel": EFECT,
+        "ce_e": "repornirea serviciului `iconta-nou` după ultima migrare lipsă (gardul „migrarea înainte de restart”)",
+        "verdict":
+            "se face DUPĂ commitul rândului din registru și numai dacă `verifica` întoarce 0 pe HEAD; o repornire eșuată lasă "
+            "sentinela și tipărește comanda — starea bazei e deja completă, deci nu e nimic de desfăcut. Nu e un efect înăuntrul "
+            "tranzacției care scrie registrul (`_cu_registrul` a comis înainte).",
+    },
     "core/anaf_api.py:valideaza_cui": {
         "fel": INTEROGARE,
         "ce_e": "validarea unui CUI la serviciul public al ANAF",

@@ -38,6 +38,25 @@ CHEIE_MEDIU = "ICONTA_MEDIU"
 #: camp — un refuz fara iesire scrisa se ocoleste, nu se respecta.
 CALE_TEST_ENV = os.path.expanduser("~/.iconta/test.env")
 
+#: Unde stă acreditarea de PRODUCȚIE (aceeași convenție). O citesc four-way-ul (`scripts/toate_poarta_head.py`) și registrul
+#: migrărilor (`core.migrari_registru`, gardul „migrarea înainte de restart”, 09.10.2026).
+CALE_DB_ENV = os.path.expanduser("~/.iconta/db.env")
+
+
+def dsn_productie(cale=None):
+    """DSN-ul de producție (`DATABASE_URL`), citit din fișierul lui. `None` dacă nu se poate."""
+    import io
+    try:
+        for linie in io.open(cale or CALE_DB_ENV, encoding="utf-8"):
+            linie = linie.strip()
+            if linie.startswith("export "):
+                linie = linie[len("export "):]
+            if linie.startswith("DATABASE_URL="):
+                return linie.split("=", 1)[1].strip().strip('"').strip("'")
+    except Exception:
+        return None
+    return None
+
 
 #: Un motiv de refuz e un OBIECT cu campuri, nu o propozitie. Asa se poate asserta pe COD —
 #: structural —, nu cautand un subsir in proza refuzului. (METODA §23; si decizia din DS cap.25:

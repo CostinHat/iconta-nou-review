@@ -154,7 +154,7 @@ def test_jurnalul_si_coada_nu_pot_spune_lucruri_diferite(tx):
     from core import coada_api as c, jurnal_api as j
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
-    n1, n2 = _nota(conn, "Apă", 20), _nota(conn, "Gaz", 30)
+    n1, n2 = _nota(conn, "Apă", 20, doc="FCT apă 1"), _nota(conn, "Gaz", 30, doc="FCT gaz 1")   # [09.10, R3] cu documentul
     c.pune_notele_in_coada(conn, cab, tid, asist)
     _ca(cur, valid)
     assert j.valideaza(conn, SCH, n1)["ok"]

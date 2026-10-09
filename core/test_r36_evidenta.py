@@ -55,7 +55,8 @@ def lume():
 
 def _nota(conn, data, sursa, linii, status="validata"):
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) VALUES (%s, 'n', %s, %s) RETURNING id", (data, sursa, status))
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, document_ref) VALUES (%s, 'n', %s, %s, 'NC n') RETURNING id",
+                    (data, sursa, status))   # [09.10.2026, regulile de fond R3] nota validată are documentul justificativ
         nid = cur.fetchone()[0]
         for d, c, s in linii:
             cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, %s, %s)",

@@ -33,7 +33,8 @@ from scripts import scan_univers_sql as _u  # noqa: E402
 #: Măsurate la 15.09.2026. `D4b` scade prin SEPARARE (E2b), nu prin redefinirea cuvântului
 #: „amestec". Cele 18 rămase sunt ACTE — cron-uri, lucrători, sonde, conectori — care își dețin
 #: tranzacția fiindcă aia e treaba lor (`PLAN_HARDENING.md:840`).
-PLAFON_D4B = 18                        # 41 înainte de E2b
+PLAFON_D4B = 19                        # 41 înainte de E2b; 18 -> 19 la 09.10.2026: `core/migrari_registru.py`, rulatorul
+                                       # migrărilor (comanda Costin pct.2) — un ACT cu tranzacția lui, ca celelalte
 #: **ZERO, și rămâne zero.** Un depozit care își deschide singur conexiunea sau comite taie
 #: tranzacția apelantului în două (P4) — iar `db.get_conn` comite oricum la ieșirea din bloc.
 PLAFON_REPOSITORY_CU_CONEXIUNE = 0     # 32 înainte de E2b
@@ -85,7 +86,9 @@ def test_ANTI_VACUU_universul_e_cel_real():
     assert len(u) > 150, "doar %d module cu SQL — enumerarea s-a rupt" % len(u)
     mg = _u.migrari(u)
     # [Retest 2, 09.10.2026] 80 -> 81: `core/migrare_retest2.py` (coloana `casa_operatiuni.storno_de` + notele de refacere NIR)
-    assert 40 <= len(mg) <= 81, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [09.10.2026, comanda Costin pct.1 și pct.11] 81 -> 83: `core/migrare_nota_corectie.py` (reparația tenant_049) și
+    # `core/migrare_reguli_fond.py` (regulile de fond în bază)
+    assert 40 <= len(mg) <= 83, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

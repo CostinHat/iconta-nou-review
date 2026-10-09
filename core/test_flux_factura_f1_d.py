@@ -54,7 +54,8 @@ def conn():
 
 def _nota(conn, data, sursa, linii, status="validata", factura_id=None):
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id) VALUES (%s,'n',%s,%s,%s) RETURNING id",
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id, document_ref) VALUES (%s,'n',%s,%s,%s,'NC n') "
+                    "RETURNING id",   # [09.10.2026, regulile de fond R3] nota validată are documentul justificativ
                     (data, sursa, status, factura_id))
         nid = cur.fetchone()[0]
         for d, c, s in linii:

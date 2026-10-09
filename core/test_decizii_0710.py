@@ -300,6 +300,73 @@ def test_r1_nota_de_corectie_respinsa_nu_storneaza_documentul_contat(tx):
     assert s.adauga_nir(conn, SCH, nou)["cod"] == "NIR_IN_EVIDENTA"
 
 
+def test_r1_reparatia_pe_date_scoate_stornarea_gresita_si_retrimite_nota(tx):
+    """[09.10.2026, comanda Costin pct.1] „aprob ștergerea rândurilor 8 și 9 din miscari_stoc (mișcări de sistem fără notă
+    contabilă) … Apoi retrimite notele 121 și 122 la validare, cu descrierea în limbaj de contabil.” Starea din producție, refăcută:
+    NIR contat, nota de refacere respinsă pentru descriere („decizia Costin”), stornarea scrisă de codul vechi peste intrare.
+    `migrare_nota_corectie` scoate stornarea (stocul revine la 10 / 550,00, ca 371), întoarce rândul întreg (pentru jurnal) și
+    retrimite nota cu descrierea nouă; o stornare legitimă (NIR nevalidat) rămâne. A doua rulare nu mai găsește nimic.
+    MUTAȚII: definiția `IN_EVIDENTA` scoasă din selecție -> se șterge și stornarea legitimă -> pică; filtrul pe motiv scos ->
+    nota respinsă pentru altceva se retrimite -> pică."""
+    from core import coada_api as c, migrare_nota_corectie as m
+    conn, cur, tid, cab, asist, valid = tx
+    r, cid = _nir_cv_in_coada(conn, cur, tid, cab, asist)
+    _ca(cur, valid)
+    assert c.aproba(conn, cid, str(valid), aprobat_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
+    _ca(cur, asist)
+
+    def refacere(motiv, descriere="Refacere NIR 1 pe 408 (decizia Costin 08.10, pct.4)", nir=None):
+        nir = nir or r
+        cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status, document_ref) VALUES ('2099-10-07', "
+                    "'REFACERE-NIR-' || %s, %s, 'stocuri', 'ciorna', 'NIR nr 1') RETURNING id", (nir["id"], descriere))
+        n = cur.fetchone()[0]
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,'371','401',-550)", (n,))
+        cur.execute("UPDATE nir SET inregistrari_ids = inregistrari_ids || to_jsonb(%s::int) WHERE id = %s", (n, nir["id"]))
+        el = c.pune_notele_in_coada(conn, cab, tid, asist)
+        _ca(cur, valid)
+        assert c.respinge(conn, el[0]["coada_id"], str(valid), motiv, respins_de_id=valid, cabinet_id_apelant=cab,
+                          schema_nota=SCH)["ok"]
+        _ca(cur, asist)
+        return n
+    nota = refacere("Descrierea conține referințe interne („decizia Costin 08.10, pct.4”).")
+    cur.execute("SELECT id FROM miscari_stoc WHERE nir_id = %s", (r["id"],))
+    intrare = cur.fetchone()[0]
+    # starea de dinainte de regulile de fond (R5 ar refuza azi stornarea asta — exact cum trebuie): regula de stoc oprită numai cât
+    # se reconstituie starea veche și rulează reparația, ca pe producție, unde reparația vine ÎNAINTEA regulilor
+    cur.execute("ALTER TABLE miscari_stoc DISABLE TRIGGER trg_regula_stoc")
+    cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document, nir_id, anuleaza_id) "
+                "SELECT articol_id, '2099-10-09', tip, -cantitate, pret_unitar, -valoare, 'Stornare: NIR nr 1 (respins la validare)', "
+                "nir_id, id FROM miscari_stoc WHERE id = %s RETURNING id", (intrare,))
+    gresita = cur.fetchone()[0]                      # exact ce scrisese codul vechi (rândurile 8, 9 de pe tenant_049)
+    assert _stoc(cur) == ("0.000", "0.00")
+    r2, cid2 = _nir_cv_in_coada(conn, cur, tid, cab, asist, numar="2")      # contraproba: NIR nevalidat, respins -> stornare legitimă
+    _ca(cur, valid)
+    assert c.respinge(conn, cid2, str(valid), "NIR greșit", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
+    cur.execute("SELECT count(*) FROM miscari_stoc WHERE anuleaza_id IS NOT NULL")
+    assert cur.fetchone()[0] == 2
+
+    _ca(cur, asist)
+    r3, cid3 = _nir_cv_in_coada(conn, cur, tid, cab, asist, numar="3")   # NIR contat cu o refacere respinsă pentru ALTCEVA
+    _ca(cur, valid)
+    assert c.aproba(conn, cid3, str(valid), aprobat_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
+    _ca(cur, asist)
+    alta = refacere("Suma nu e cea din NIR.", descriere="Refacere NIR nr. 3 fără factură", nir=r3)
+
+    scoase = m.stornari_gresite(conn, SCH)
+    assert [x["id"] for x in scoase] == [gresita] and str(scoase[0]["valoare"]) == "-550.00" and scoase[0]["anuleaza_id"] == intrare
+    assert _stoc(cur) == ("20.000", "1100.00")       # NIR 1 contat înapoi în fișă (+ NIR 3); NIR 2 respins rămâne stornat
+    assert m.stornari_gresite(conn, SCH) == []
+    cur.execute("ALTER TABLE miscari_stoc ENABLE TRIGGER trg_regula_stoc")
+    rez = m.retrimite_refaceri(conn, SCH, tid, cab)
+    assert [(x[0], isinstance(x[2], int)) for x in rez] == [(nota, True)], rez   # `alta` (motivul e suma) nu se atinge
+    assert alta not in [x[0] for x in rez]
+    cur.execute("SELECT descriere FROM inregistrari WHERE id = %s", (nota,))
+    assert "decizia Costin" not in cur.fetchone()[0]
+    cur.execute("SELECT stare FROM public.declaratii_coada WHERE id = %s", (rez[0][2],))
+    assert cur.fetchone()[0] == "la_senior"
+    assert m.retrimite_refaceri(conn, SCH, tid, cab) == []                   # a doua rulare: nimic
+
+
 def _articol(cur, den="Marfa A"):
     cur.execute("SELECT id FROM articole WHERE denumire = %s", (den,))
     return cur.fetchone()[0]
@@ -390,8 +457,8 @@ def test_r1_miscarea_in_evidenta_nu_se_storneaza_pe_niciuna_din_cele_trei_legatu
     assert cva.intrare_din_factura(conn, SCH, fid, "371", "2099-10-07")["stare"] == "intrat"
 
     def nota(status, factura_id=None):
-        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id) VALUES ('2099-10-07', 'proba', 'stocuri', "
-                    "'ciorna', %s) RETURNING id", (factura_id,))
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id, document_ref) VALUES ('2099-10-07', 'proba', "
+                    "'stocuri', 'ciorna', %s, %s) RETURNING id", (factura_id, None if factura_id else "BC proba"))
         i = cur.fetchone()[0]
         cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '371', '401', 1)", (i,))
         if status == "validata":
@@ -452,25 +519,31 @@ def test_s4_notificarea_se_rezolva_cand_elementul_isi_schimba_starea(tx):
     from core import coada_api as c, notificari_api as nt, note_derivate as nd, jurnal_api as j
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
-    n1 = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100}])["id"]
-    n2 = j.creeaza(conn, SCH, "Telefon", "2099-10-05", [{"debit": "626", "credit": "401", "suma": 50}])["id"]
+    # [09.10.2026, regulile de fond R3] nota se validează numai cu documentul justificativ
+    n1 = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100}], document_ref="Contract chirie 1")["id"]
+    n2 = j.creeaza(conn, SCH, "Telefon", "2099-10-05", [{"debit": "626", "credit": "401", "suma": 50}], document_ref="FCT tel 1")["id"]
     el = {a["eticheta"]: a["coada_id"] for a in c.pune_notele_in_coada(conn, cab, tid, asist)}
-    c1, c2 = el["Notă · Chirie"], el["Notă · Telefon"]
+    c1 = next(v for k, v in el.items() if k.startswith("Notă · Chirie"))
+    c2 = next(v for k, v in el.items() if k.startswith("Notă · Telefon"))
+    # [09.10.2026] notificările sunt un tabel PARTAJAT: baza de test are deja necitite ale acelorași conturi (rulările plasei) —
+    # testul măsoară DIFERENȚA, nu presupune gol (CLAUDE.md, „Testele nu presupun gol un interval”)
+    v0, a0 = nt.contor(conn, valid)["necitite"], nt.contor(conn, asist)["necitite"]
     for cid in (c1, c2):
         nt.adauga(conn, valid, "de_validat", "de validat", link="validat:%d" % cid)
-    assert nt.contor(conn, valid)["necitite"] == 2
+    assert nt.contor(conn, valid)["necitite"] == v0 + 2
     _ca(cur, valid)
     assert c.aproba(conn, c1, str(valid), valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
     assert c.respinge(conn, c2, str(valid), "lipsește factura", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
     rez = {x["link"]: x["rezolvata"] for x in nt.lista(conn, valid)["notificari"]}
     assert (rez["validat:%d" % c1], rez["validat:%d" % c2]) == ("validat", "respins")
-    assert nt.contor(conn, valid)["necitite"] == 0 and nt.sumar(conn, valid)["necitite"] == 0
+    assert nt.contor(conn, valid)["necitite"] == v0 and nt.sumar(conn, valid)["necitite"] == v0
     # cel care a pregătit-o: „a fost respinsă” rămâne activă până când nota e ÎNLOCUITĂ
     nt.adauga(conn, asist, "respinsa", "a fost respinsă", link="jurnal:%d:%d:2099:10" % (tid, n2))
-    assert nt.contor(conn, asist)["necitite"] == 1
+    assert nt.contor(conn, asist)["necitite"] == a0 + 1
     assert nd.sterge_respinsa(cur, SCH, n2) == 1
-    assert [x["rezolvata"] for x in nt.lista(conn, asist)["notificari"] if x["tip"] == "respinsa"] == ["inlocuit"]
-    assert nt.contor(conn, asist)["necitite"] == 0
+    assert [x["rezolvata"] for x in nt.lista(conn, asist)["notificari"]
+            if x["tip"] == "respinsa" and x.get("link") == "jurnal:%d:%d:2099:10" % (tid, n2)] == ["inlocuit"]
+    assert nt.contor(conn, asist)["necitite"] == a0
     assert n1
 
 
@@ -522,6 +595,30 @@ def test_s3_nir_refacut_identic_cere_confirmare(tx):
     el = [x for x in c.lista_coada(conn, cab, "la_senior") if x["tenant_id"] == tid]
     assert el[0]["retrimisa"]["motiv_respingere"] == "NIR greșit" and el[0]["retrimisa"]["schimbata"] is False
 
+
+
+def test_199_retrimisa_compara_notele_documentului_oricare_ar_fi_capul_grupului(tx):
+    """[deficiența 199, 09.10.2026] Cardul NIR-ului refăcut spune dacă notele s-au schimbat față de cele respinse. Capul grupului din
+    listă e elementul cel mai NOU; când el nu era primul membru, `lista_coada` îi înlocuia nota cu payload-ul grupului ÎNAINTE de a
+    citi amprentele membrilor -> amprenta primului apărea de două ori, iar NIR-ul refăcut identic ieșea „schimbat”. Aici capul e
+    forțat să fie ultimul membru (cazul care strica), deci rezultatul nu mai depinde de ordinea întâmplătoare a notelor.
+    MUTAȚIE: amprentele citite după suprascriere (codul vechi) -> „schimbată” True -> pică."""
+    from core import coada_api as c, stocuri_api as s
+    conn, cur, tid, cab, asist, valid = tx
+    r, cid = _nir_cv_in_coada(conn, cur, tid, cab, asist)
+    _ca(cur, valid)
+    assert c.respinge(conn, cid, str(valid), "NIR greșit", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
+    _ca(cur, asist)
+    nou = {"numar": "1", "data": "2099-10-07", "refacut_din_id": r["id"], "confirma_neschimbata": True,
+           "linii": [dict(_L, articol_id=_articol(cur))]}
+    assert "eroare" not in s.adauga_nir(conn, SCH, nou)
+    el = c.pune_notele_in_coada(conn, cab, tid, asist)
+    ids = sorted(m for m, _p in c.membri_grup(cur, el[0]["coada_id"]))
+    assert len(el) == 1 and len(ids) == 2, (el, ids)
+    cur.execute("UPDATE public.declaratii_coada SET creat_la = now() + interval '1 second' WHERE id = %s", (ids[-1],))
+    lst = [x for x in c.lista_coada(conn, cab, "la_senior") if x["tenant_id"] == tid]
+    assert len(lst) == 1 and lst[0]["membri_ids"] == ids
+    assert (lst[0]["retrimisa"]["motiv_respingere"], lst[0]["retrimisa"]["schimbata"]) == ("NIR greșit", False)
 
 # ── D3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def _z(cur, numar="Z-1"):

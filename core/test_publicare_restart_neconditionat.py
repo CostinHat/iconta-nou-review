@@ -9,6 +9,10 @@ CADE daca:
   (a) dispare restartul lui iconta-nou din hook (procesul viu n-ar mai prelua HEAD), SAU
   (b) reapare orice inspectie a CONTINUTULUI commitului in hook (git diff / --name-only / extensii de fisier),
       adica orice mecanism care ar putea conditiona publicarea/restartul pe tipul a ceea ce s-a schimbat.
+
+PIVOT (09.10.2026, comanda Costin pct.2, verbatim in DECIZII): „Daca un commit contine o migrare nerulata pe productie, aplicatia
+nu reporneste.” SINGURA conditie admisa e `core.migrari_registru verifica` — pe STAREA productiei (registrul migrarilor, schemele
+firmelor fata de sablon), nu pe tipul commitului. Gardul cere acum si ca ea sa existe, inaintea restartului, si sa fie singura.
 """
 import os
 import re
@@ -51,3 +55,21 @@ def test_restartul_e_neconditionat_de_tipul_continutului():
     assert not gasite, (
         "post-commit inspecteaza tipul continutului ca sa decida publicarea/restartul "
         "(conditionare interzisa pe tip de commit, §2.3 pct.10): %s" % gasite)
+
+
+def test_singura_conditie_a_restartului_e_verificarea_migrarilor():
+    """[09.10.2026] Restartul sta SUB `core.migrari_registru verifica` (altfel codul ar porni peste o migrare nerulata — pățit cu
+    d0abd48f: ecranul Casă căzut), iar aceasta e singura conditie: niciun alt `if` nu inconjoara restartul.
+    MUTAȚIE: verificarea scoasa din hook -> pica; un al doilea `if` pe restart -> pica."""
+    t = _text()
+    m = re.search(r'^if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)   # linia executată, nu comentariul
+    i_ver = m.start() if m else -1
+    i_rs = t.find("systemctl restart iconta-nou >")
+    assert i_ver != -1, "post-commit nu mai verifica migrarile inaintea restartului (comanda Costin 09.10 pct.2)"
+    assert i_ver < i_rs, "verificarea migrarilor trebuie sa vina INAINTEA restartului"
+    bloc = t[i_ver:i_rs]
+    conditii = re.findall(r"^\s*(?:if|elif)\b", bloc, re.M)
+    assert re.search(r"^\s*if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta\.log 2>&1; then$", t, re.M), (
+        "linia restartului s-a schimbat: o conditie lipita de `sudo` ar conditiona restartul pe altceva decat migrarile")
+    assert len(conditii) == 2, ("restartul trebuie sa fie conditionat NUMAI de verificarea migrarilor (+ reusita lui sudo): %s"
+                                % conditii)

@@ -98,8 +98,10 @@ def _factura(conn, numar, data, directie="emisa", **kw):
 
 def _nota_bruta(conn, data, linii, factura_id=None, sursa="banca", status="validata"):
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO inregistrari (data, factura_id, descriere, sursa, status) "
-                    "VALUES (%s,%s,'proba',%s,%s) RETURNING id", (data, factura_id, sursa, status))
+        # [09.10.2026, regulile de fond R3] o notă validată are documentul justificativ: extrasul, când nu e legată de o factură
+        doc = "Extras de cont proba" if (status == "validata" and not factura_id) else None
+        cur.execute("INSERT INTO inregistrari (data, factura_id, descriere, sursa, status, document_ref) "
+                    "VALUES (%s,%s,'proba',%s,%s,%s) RETURNING id", (data, factura_id, sursa, status, doc))
         nid = cur.fetchone()[0]
         for d, c, s in linii:
             cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, "
@@ -558,9 +560,10 @@ def test_red_proof_fara_regula_trezoreriei_plata_redevine_contare(monkeypatch):
 
 # ═══════════════════════════════════════════════ GGG — actul de dezlegare
 def test_dezlegarea_rupe_legatura_unei_note_de_plata(conn):
+    # [09.10.2026, R1/R3] pe nota validată (comisă) dezlegarea e refuzată de bază; se probează pe ciornă
     r = _factura(conn, "G-DZ1", "2026-08-10", directie="primita")
     fid = r["factura_id"]
-    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid, status="ciorna")
     with _cf.cursor_dict(conn) as cur:
         assert _cf.dezleaga_nota(cur, "", nid) == fid
     with conn.cursor() as cur:
@@ -612,11 +615,12 @@ def test_dezlegarea_refuza_pe_luna_inchisa(conn, monkeypatch):
 
 
 def test_dupa_dezlegare_stergerea_facturii_TRECE(conn):
+    # [09.10.2026, R1/R3] pe nota validată (comisă) dezlegarea e refuzată de bază; se probează pe ciornă
     """Drumul întreg al lui R90: refuz → dezlegare → ștergere. Înainte de azi, pasul 3 era
     imposibil pentru o notă validată."""
     r = _factura(conn, "G-DZ4", "2026-08-10", directie="primita")
     fid = r["factura_id"]
-    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid, status="ciorna")
     with pytest.raises(_cf.RefuzContare) as e:
         _fa.sterge_factura(conn, fid)
     assert e.value.detalii["iesire"] == "dezleaga_nota"
@@ -647,7 +651,9 @@ def test_ruta_de_dezlegare_scrie_URMA_cu_ce_s_a_dezlegat(conn, monkeypatch):
     import json as _json
     r = _factura(conn, "G-RT2", "2026-08-10", directie="primita")
     fid = r["factura_id"]
-    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    # [09.10.2026, regulile de fond R1] dezlegarea schimbă `factura_id`: pe o notă VALIDATĂ (comisă) baza o refuză — corectura se face
+    # prin stornare; ruta se probează pe nota în ciornă
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid, status="ciorna")
     conn.commit()
     monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
     rez = main.jurnal_dezleaga(1, nid, {"motiv": "potrivire greșită la reconciliere"}, {"uid": 1})

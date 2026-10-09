@@ -67,8 +67,8 @@ def conn():
 
 
 def _nota(cur, data, linii, status="validata"):
-    cur.execute("INSERT INTO inregistrari (data, numar, descriere, status, sursa) VALUES (%s, 'UVW', 'proba', %s, 'manual') RETURNING id",
-                (data, status))
+    cur.execute("INSERT INTO inregistrari (data, numar, descriere, status, sursa, document_ref) VALUES (%s, 'UVW', 'proba', %s, 'manual', "
+                "'NC UVW') RETURNING id", (data, status))   # [09.10.2026, regulile de fond R3] nota validată are documentul justificativ
     iid = cur.fetchone()[0]
     for d, c, s in linii:
         cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, %s, %s)",

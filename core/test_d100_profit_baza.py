@@ -37,11 +37,11 @@ def _setup(cur, venituri, cheltuieli, regim="profit"):
                 "(1,'PROBA PROFIT SRL','14399840','Str 1','Buc','B','6202','BCR','RO49RNCB0000000000000001',"
                 "'%s',true,'L','Pop','Ion','administrator')" % regim)
     if venituri:
-        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere) VALUES ('2026-05-15','validata','t','V') RETURNING id")
+        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere,document_ref) VALUES ('2026-05-15','validata','t','V','FCT V') RETURNING id")
         iv = cur.fetchone()[0]
         cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'4111','704',%s)", (iv, venituri))
     if cheltuieli:
-        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere) VALUES ('2026-05-16','validata','t','C') RETURNING id")
+        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere,document_ref) VALUES ('2026-05-16','validata','t','C','FCT C') RETURNING id")
         ic = cur.fetchone()[0]
         cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'607','401',%s)", (ic, cheltuieli))
 

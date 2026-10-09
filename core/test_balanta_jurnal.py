@@ -52,8 +52,8 @@ def schema_doua_luni():
                         "('5311', 'Casa', 1000, 0), ('1012', 'Capital', 0, 1000)")
             for data, deb, cre, suma in (("2099-09-20", "4111", "704", 600), ("2099-10-02", "5311", "4111", 250),
                                          ("2099-10-15", "401", "5311", 40)):
-                cur.execute(f"INSERT INTO {SCH}.inregistrari (data, numar, descriere, status, sursa) VALUES "
-                            "(%s, 'W1', 'proba W1', 'validata', 'manual') RETURNING id", (data,))
+                cur.execute(f"INSERT INTO {SCH}.inregistrari (data, numar, descriere, status, sursa, document_ref) VALUES "
+                            "(%s, 'W1', 'proba W1', 'validata', 'manual', 'NC W1') RETURNING id", (data,))
                 cur.execute(f"INSERT INTO {SCH}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
                             "VALUES (%s, %s, %s, %s)", (cur.fetchone()[0], deb, cre, suma))
         conn.commit()

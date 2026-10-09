@@ -115,9 +115,9 @@ def test_o_ciorna_adaugata_MISCA_exact_registrele_care_o_declara():
         try:
             def _nota(status, suma):
                 with conn.cursor() as cur:
-                    cur.execute(f"""INSERT INTO {SCH}.inregistrari (data, numar, descriere, status, sursa)
-                                    VALUES ('2026-08-15', 'N1', 'proba R96', %s, 'manual')
-                                    RETURNING id""", (status,))
+                    cur.execute(f"""INSERT INTO {SCH}.inregistrari (data, numar, descriere, status, sursa, document_ref)
+                                    VALUES ('2026-08-15', 'N1', 'proba R96', %s, 'manual', 'NC N1')
+                                    RETURNING id""", (status,))   # [09.10.2026, regulile de fond R3] nota validată are documentul justificativ
                     iid = cur.fetchone()[0]
                     cur.execute(f"""INSERT INTO {SCH}.inregistrari_linii
                                     (inregistrare_id, cont_debit, cont_credit, suma)

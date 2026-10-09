@@ -1955,3 +1955,20 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   NIR 1, contate (notele 114–117 validate). Reparat în cod (DECIZII 09.10.2026, „Neconformitate: nota de corecție …”): stocul în
   evidență nu se mai stornează la respingere; NIR-ul contat nu mai apare „respins” și nu se mai reface. Două teste noi, șase mutații roșii.
 - **Rămas, decizie cerută:** reparația celor două rânduri de stornare de pe tenant_049 și gardul „migrarea înainte de restart”.
+
+## 09.10.2026 — Registrul deficiențelor și plasa împotriva regresiilor (comanda Costin)
+
+- **Registrul `DEFICIENTE.md`**: cele 187 + N1–N18 ale lui Costin, plus 188 (rândurile bilanțului) și 189–198 (găsite la verificare).
+  Fiecare număr verificat pe aplicația de acum: 161 rezolvate (fiecare cu test de capăt la capăt în browser, dovedit prin mutație),
+  4 parțiale, 11 nerezolvate, 8 „nu se aplică”, 19 neverificate; N-urile: 12 reale, 1 nereală, 5 neverificate.
+- **Plasa**: cele 167 de teste intră în poartă — aplicația pornește din ce se comite, pe baza de test; o deficiență rezolvată care
+  se strică oprește publicarea.
+- **Gardul migrării**: producția nu mai repornește pe un commit a cărui migrare n-a rulat (pățit cu ecranul Casă, dimineața).
+- **Regulile de fond în bază**: nota validată nu se mai modifică / șterge; luna blocată nu mai pierde note; nota nu se validează fără
+  document; stocul unui document contat nu se desface fără notă de corecție.
+- **Cifrele de referință F1–F5** (balanța, D300, D394, D406, D112) exportate pentru verificarea lui Costin.
+- **Rămas la Costin**: rularea scriptului tenant_049 (deblochează și restartul), aprobarea cifrelor, ordinea reparațiilor.
+- **Pe drum (09.10, seara):** forma finală a regulilor din bază, după suita completă — nota validată se poate construi complet în
+  tranzacția care o creează, apoi nu se mai atinge; documentul se cere la validare. Dezlegarea unei plăți VALIDATE de factura ei e
+  acum refuzată (corectura: stornare). Reparat și un defect al cozii (deficiența 199): cardul unui document retrimis putea spune greșit
+  că notele s-au schimbat.

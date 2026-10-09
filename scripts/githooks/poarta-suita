@@ -87,10 +87,29 @@ fi
 TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
 echo "[poarta] verificator: $TOT"
 case "$TOT" in
-    *"TOTAL: 0"*) echo "[poarta] OK - poarta verde, commit permis." ; exit 0 ;;
+    *"TOTAL: 0"*) : ;;
     *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
        { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
          echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
        } >> "$ROOT/.poarta_jurnal.log" ;
        exit 1 ;;
 esac
+
+# ── PLASA: testele de capat la capat ale deficientelor rezolvate (09.10.2026, comanda Costin pct.8) ──────────────
+# „Proba unei deficiente «rezolvate» e un test de capat la capat in browser [...] Testul ramane permanent in poarta.” si regula
+# de directie: „orice publicare la care pica o verificare a plasei nu se face”. Aplicatia porneste din INDEX (exact ce se
+# comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = commit respins, ca pytest-ul.
+echo "[poarta] plasa: testele de capat la capat ale deficientelor (browser, aplicatia din index)..."
+"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > /tmp/precommit_e2e.log 2>&1
+RC=$?
+tail -1 /tmp/precommit_e2e.log
+if [ "$RC" -ne 0 ]; then
+    { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
+      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      grep -E "^(FAILED|ERROR) " /tmp/precommit_e2e.log | sed "s/^/    /" | head -40
+    } >> "$ROOT/.poarta_jurnal.log"
+    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: /tmp/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
+    exit 1
+fi
+echo "[poarta] OK - poarta verde, commit permis."
+exit 0

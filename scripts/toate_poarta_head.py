@@ -61,8 +61,8 @@ sys.path.insert(0, RAD)
 
 from core import mediu_test as _mediu  # noqa: E402
 
-#: Unde sta acreditarea de productie. Aceeasi conventie ca `mediu_test.CALE_TEST_ENV`.
-CALE_DB_ENV = os.path.expanduser("~/.iconta/db.env")
+#: Unde sta acreditarea de productie — definita O DATA in `mediu_test` (o citeste si registrul migrarilor, 09.10.2026).
+from core.mediu_test import CALE_DB_ENV, dsn_productie  # noqa: E402,F401
 
 #: Unitatea care serveste. Numele ei e singurul lucru scris aici despre infrastructura; numarul de
 #: procese se CITESTE din ea, nu se scrie a doua oara.
@@ -198,20 +198,6 @@ def asteapta_si_judeca(citeste, asteptate, rabdare_sec=RABDARE_SEC, pas_sec=PAS_
 # ============================================================
 #  3. Baza de productie
 # ============================================================
-def dsn_productie():
-    """DSN-ul de productie, citit din fisierul lui. `None` daca nu se poate."""
-    try:
-        for linie in io.open(CALE_DB_ENV, encoding="utf-8"):
-            linie = linie.strip()
-            if linie.startswith("export "):
-                linie = linie[len("export "):]
-            if linie.startswith("DATABASE_URL="):
-                return linie.split("=", 1)[1].strip().strip('"').strip("'")
-    except Exception:
-        return None
-    return None
-
-
 def main(argv):
     if not argv:
         print("folosire: toate_poarta_head.py <sha>")

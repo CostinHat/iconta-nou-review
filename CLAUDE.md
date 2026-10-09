@@ -501,6 +501,21 @@ Fara titlu, raportul e incomplet.
     (cifra e un plafon inferior, si se SPUNE) / NEMASURABILA / NEINCEPUTA. Gardat de `core/test_conformitate.py`:
     o interdictie noua in plan fara sectiune, un camp obligatoriu gol sau o stare inventata opresc poarta.
 
+## 2.2.0 REGISTRUL DEFICIENTELOR SI PLASA (09.10.2026, comanda Costin pct.6–13, verbatim in DECIZII)
+
+- `DEFICIENTE.md` e registrul canonic al deficientelor gasite la testare: **orice deficienta noua primeste urmatorul numar de acolo**.
+  Starile sunt o multime inchisa (rezolvata / partial / nerezolvata / nu se aplica / neverificat; N-urile: reala / nu e reala /
+  neverificat), pazita de `core/test_deficiente.py`.
+- **„Rezolvata” = test de capat la capat in browser** (`frontend_test/e2e/e2e_*.py::test_def_<nr>_*`) care reface pasii contabilului,
+  verifica ecranul si cifrele si lasa captura, dovedit prin mutatie (`scripts/e2e_poarta.py --mutatie=`, aplicata pe COPIE). Fara
+  test, numarul e „neverificat”. Testele stau permanent in poarta (`scripts/githooks/poarta-suita` -> `scripts/e2e_poarta.py`, aplicatia
+  pornita din INDEX, pe baza de test): orice publicare la care pica plasa nu se face.
+- **Fiecare raport de lot are tabelul numar -> stare -> proba -> test pentru TOATE numerele atinse in lot** (sectiunea 3, PROBA).
+- Clasa unei deficiente o defineste Costin, din perspectiva contabilului; raportul listeaza toate drumurile gasite si metoda de
+  cautare (sectiunea 8), iar garda le acopera pe toate si pica daca apare un drum nou neacoperit.
+- Rularile de proba pe baza de test se SERIALIZEAZA (lacatul din `scripts/e2e_poarta.py`): pornirea aplicatiei face DDL pe toate
+  firmele, iar doua porniri in paralel peste o instanta care serveste s-au blocat intre procese (09.10.2026).
+
 ## 2.2.1 ACTUALIZAREA REGISTRELOR DUPA FIECARE EXECUTIE (04.08.2026, ceruta de Costin)
 
 DUPA FIECARE EXECUTIE (punct / cluster / task livrat), FARA sa ceara cineva, se actualizeaza TOT ce s-a schimbat:
@@ -679,6 +694,12 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
       (docs vs runtime, decisa de executor) a produs divergenta RUNNING!=HEAD (11.08.2026: RUNNING pe commitul
       de cod, HEAD avansat de un commit de DOCS) si e ELIMINATA din mecanism; gardata de
       core/test_publicare_restart_neconditionat.py (cade daca reapare orice inspectie de continut in hook).
+      **PIVOT 09.10.2026 (comanda Costin pct.2, verbatim in DECIZII): „Daca un commit contine o migrare nerulata pe productie,
+      aplicatia nu reporneste.”** Singura conditie admisa e STAREA productiei, nu tipul commitului: `core.migrari_registru verifica`
+      (fiecare `core/migrare_*.py` din HEAD are randul ei, cu amprenta continutului, in `public.migrari_rulate`, iar schemele
+      firmelor nu sunt in urma lui `tenant_template.sql`). Nerulat -> restart OPRIT, banner + `.git/RESTART_OPRIT_MIGRARE`; migrarile
+      se ruleaza cu `./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier>`, iar dupa ultima rulatorul reporneste.
+      Fail-closed: daca nu se poate sti, nu reporneste. Gardat de acelasi test (verificarea e singura conditie).
    5. **predare** = actualizeaza PREDARE_LANT.md. E fisierul de care depinde sesiunea urmatoare (constatare
       tura 17: DECIZII/GARZI/TESTE/ISTORIC s-au actualizat, dar PREDARE a lipsit din lista - exact ce conteaza
       pentru continuitate era singurul optional). Se SUPRASCRIE, nu se adauga: e fisier de STARE CURENTA, nu

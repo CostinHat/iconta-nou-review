@@ -18881,3 +18881,105 @@ stoc”) rămâne pentru documentul încă nevalidat.
 ștergerii în locul unei contra-mișcări: sunt mișcări de sistem fără notă contabilă (371 n-a fost atins), iar modelul (`anuleaza_id`, unic)
 n-are formă pentru „stornarea unei stornări” — intrarea ar rămâne marcată stornată. Scrierea migrării care șterge din producție a fost
 refuzată de permisiunile sesiunii; o face Costin sau o autorizează explicit.
+
+## 09.10.2026 — Comanda Costin: răspunsul la §6 („Neconformitate nota de corecție”, „Retest 2”) + registrul deficiențelor și plasa împotriva regresiilor
+
+Confirmată de Costin: „Confirm, e comanda mea. F1–F5 sunt firmele mele de test din Cabinet Test Sesiunea B SRL, cu date inventate,
+fără clienți reali; F1 e tenant_049, pe celelalte le găsești după nume. Poarta rulează o dată pe lot, la publicare. Pornește.”
+
+Verbatim:
+
+> Răspuns la §6 din raportul „Neconformitate nota de corecție” și la §6 din „Retest 2”, plus pasul următor.
+>
+> 1. Datele tenant_049: aprob ștergerea rândurilor 8 și 9 din miscari_stoc (mișcări de sistem fără notă contabilă), cu backup înainte și rândurile tipărite integral în jurnal. Apoi retrimite notele 121 și 122 la validare, cu descrierea în limbaj de contabil. Scrie scriptul; îl rulez eu cu „!”. După rulare, probă pe ecran: fișa Marfa A și soldul 371 se potrivesc.
+> 2. Clasa „cod publicat înaintea migrării”: gard în post-commit. Dacă un commit conține o migrare nerulată pe producție, aplicația nu repornește. Nu procedură scrisă.
+> 3. B8: îl retestez eu pe versiunea nouă; nu e nimic de făcut până atunci.
+> 4. Rândurile bilanțului (F10_0052, F10_0132 și restul) apar pe ecranul Bilanț, cu cifrele care se depun, nu doar verdictul. Intră în registru ca deficiența 188.
+> 5. Nota 118 rămâne neschimbată. Cele 271 de mesaje ale generatoarelor: campanie după registrul de parametri fiscali.
+>
+> Decizie de direcție (Costin, 09.10): după punctele 1–2, și înaintea registrului de parametri fiscali, construim registrul deficiențelor și plasa de siguranță împotriva regresiilor. Scopul: o deficiență rezolvată nu mai poate ajunge stricată în aplicație. Regula: orice publicare la care pică o verificare a plasei nu se face.
+>
+> 6. Fișierul ~/ghid_incoming/deficiente_04_09_10.md conține toate deficiențele găsite la testare și trimise ție între 04.10 și 09.10: 187 numerotate (1–187) și 18 observate, dar netrimise (N1–N18). Creează în depozit registrul DEFICIENTE.md, cu aceeași numerotare, plus 188 de la punctul 4.
+> 7. Pentru fiecare număr răspunde punctual cu una dintre stări: rezolvată / parțial / nerezolvată / nu se aplică, verificând pe aplicația de acum, nu din rapoarte vechi. Pune commit-ul care o rezolvă.
+> 8. Proba unei deficiențe „rezolvate” e un test de capăt la capăt în browser care reface pașii contabilului din deficiență și verifică ce apare pe ecran și cifrele, cu captură. Testul rămâne permanent în poartă. Un număr fără test nu e „rezolvată”, e „neverificat”.
+> 9. Unde starea e „nerezolvată” sau „parțial”, scrie ce lipsește. Nu repara în pasul ăsta; lista vine la mine ca să decidem ordinea. Pentru N1–N18 spune doar dacă sunt reale în aplicația de acum.
+> 10. Cifre de referință pe firmele de test F1–F5, pe lunile cu date: balanța, D300, D394, D406, D112 (rândurile și totalurile). Exportă-le într-un fișier în ~/ghid_incoming/, ca să le verific eu înainte să devină referință. După aprobare, orice diferență față de ele oprește publicarea. O schimbare voită se face doar cu aprobarea mea, consemnată în DECIZII.
+> 11. Reguli de fond puse în baza de date, nu în ecrane, ca să nu le poată ocoli niciun drum, nici unul viitor: o notă validată nu se modifică și nu se șterge, iar corectura se face doar prin stornare; o lună blocată nu primește note; fiecare notă are documentul-sursă; fiecare notă are debit egal cu credit; o mișcare de stoc a unui document contat nu se desface decât printr-un document de corecție. Propune-mi alte reguli de același fel pe care le găsești; nu le aplica fără confirmarea mea.
+> 12. Clasa unei deficiențe o definesc eu, din perspectiva contabilului. Pentru fiecare reparație listezi în raport toate drumurile găsite și metoda prin care le-ai căutat; garda le acoperă pe toate și pică dacă apare un drum nou neacoperit.
+> 13. De acum, orice deficiență nouă primește următorul număr din DEFICIENTE.md, iar fiecare raport de lot are tabelul număr → stare → probă → test pentru toate numerele atinse în lot.
+> 14. Raportul acestui pas: tabelul pentru toate numerele, lista regulilor din baza de date, fișierul cu cifrele de referință, operațiile listate fără estimări și durata măsurată a fiecăreia.
+> 15. La final: ZIP cu DEFICIENTE.md, testele, capturile și fișierul de cifre, în ~/ghid_incoming/, cu calea exactă în raport.
+>
+> Poți trece la următorul pas din listă.
+
+**Decizii închise de comandă:** nota 118 rămâne neschimbată; cele 271 de mesaje ale generatoarelor — campanie după registrul de
+parametri fiscali; B8 — retestat de Costin, nimic de făcut până atunci; rândurile bilanțului pe ecran = deficiența 188; gardul
+„migrare înainte de restart” = mecanism în post-commit, nu procedură. Poarta rulează o dată pe lot, la publicare.
+
+## 09.10.2026 — Executarea comenzii „registrul deficiențelor și plasa”: forma, interpretările, ce a ieșit pe drum
+
+**pct.1 (tenant_049).** `core/migrare_nota_corectie.py`: scoate stornările făcute la respingere peste o mișcare ÎN EVIDENȚĂ
+(`stocuri_anulare.IN_EVIDENTA`, aceeași definiție care oprește acum stornarea), tipărite întregi, apoi retrimite notele de refacere
+respinse PENTRU DESCRIERE (o notă respinsă pentru alt motiv nu se atinge). Se rulează pe producție de Costin, DUPĂ commitul lotului,
+cu `~/ghid_incoming/repara_tenant049.sh` (backup, baza registrului, reparația, regulile de fond — în ordinea asta, apoi verificarea).
+
+**pct.2 (gard, nu procedură) — PIVOT al regulii „restart NECONDIȚIONAT” (CLAUDE.md §2.3 pct.10, 11.08.2026).** Restartul din
+post-commit stă acum sub `core.migrari_registru verifica`: fiecare `core/migrare_*.py` din HEAD are rândul ei în
+`public.migrari_rulate` (amprenta conținutului), iar schemele firmelor nu sunt în urma șablonului din HEAD — tabele, coloane ȘI
+triggere (`audit_schema` extins). Nerulat -> restart OPRIT, banner, `.git/RESTART_OPRIT_MIGRARE`; rulatorul (`ruleaza --productie`)
+repornește după ultima migrare. Fail-closed. Intermediarul (restart orb) e superseded; restul regulii din 11.08 (nicio condiționare pe
+TIPUL commitului) rămâne și e păzit în același test. Limita: registrul pornește cu o BAZĂ (migrările din 39fde2bc, trecute ca rulate
+fără dovadă).
+
+**pct.6–9, 13 (registrul și plasa).** `DEFICIENTE.md` (1–198, N1–N18), gardat de `core/test_deficiente.py`. Plasa: 167 de teste de
+capăt la capăt în browser (`frontend_test/e2e/e2e_*.py`), fiecare dovedit prin mutație pe COPIA exportată (`--mutatie`), în poartă
+prin `scripts/e2e_poarta.py` (aplicația pornită din INDEX, port 8019, baza de test). Corecturi la integrare, decise de executor:
+69 / 76 / 79 / 97 -> „neverificat” (testul probează numai un caz al deficienței, sau reparația nu se poate muta pe copie), 178 ->
+„neverificat” (Costin îl retestează, pct.3). Constatările noi ale verificării au primit numerele 189–198 (nereparate, pct.9).
+*Pățit pe drum:* agenții de verificare porneau aplicații de probă în paralel; pornirea face DDL pe toate firmele, iar o pornire peste o
+instanță care servea s-a blocat cu ea într-un ciclu pe care Postgres nu-l vede (baza de test oprită ~40 min). Remediul e în rulator:
+lacăt exclusiv pe tot rulajul, SIGKILL după SIGTERM, refuz pe port ocupat.
+
+**pct.10 (cifrele de referință).** `scripts/cifre_referinta.py` pe producție, în sesiune READ-ONLY (`default_transaction_read_only`),
+pe drumul aplicației -> `~/ghid_incoming/cifre_referinta_F1_F5.{md,json}`. Gardul „diferență = publicare oprită” se leagă DUPĂ
+aprobarea lui Costin (cum cere comanda).
+
+**pct.11 (regulile de fond în bază) — `core/migrare_reguli_fond.py`, oglinda în `tenant_template.sql`, eticheta `REGULA_CONTABILA:`
+(409 în handlerul global).** R1 nota validată (și rândurile ei) nu se modifică / șterge; R2 luna blocată — închise două goluri ale
+triggerului vechi (mutarea unei note AFARĂ din luna blocată; rândurile notei, fără dată proprie); R3 nota nu se validează fără
+documentul justificativ, cu ACEEAȘI definiție ca aplicația (`jurnal_api.document_justificativ`: `document_ref`, altfel factura
+legată) — *prima formă cerea numai `document_ref` și ar fi oprit validarea oricărei note de factură; prins de proba blocului E
+înainte de publicare, reparat, cu test de paritate*; R4 debit = credit e garantat de model (rândul e o pereche) — regula păzește ce
+o mai poate strica, contul gol; R5 mișcarea de stoc în evidență nu se modifică / șterge și se stornează numai cu notă de corecție
+nouă, în ciornă. *INTERPRETARE de reconfirmat:* R3 se aplică la validare, nu la ciornă (ciorna e lucru în curs). Pe producție
+există 16 note validate fără document (F1 10, F2 4, F3 2), toate create înainte de 06.10 02:21 (documentul intern al notelor
+automate, 14fc0cb6) — istorie, regula nu le atinge. Alternativa respinsă: reguli în ecrane / în Python — exact ce comanda exclude
+(„ca să nu le poată ocoli niciun drum”).
+
+## 09.10.2026 — Regulile de fond: forma FINALĂ, după suita completă (supersedează detaliile R1/R3 din intrarea „Executarea comenzii «registrul deficiențelor și plasa»”)
+
+Suita completă (7.856 de teste) a arătat trei lucruri, iar forma regulilor s-a precizat — intrarea de mai sus rămâne, aceasta o
+supersedează pe punctele R1 și R3:
+
+- **R1 = „validată ÎNTR-O TRANZACȚIE ÎNCHEIATĂ”.** Construirea completă a notei în tranzacția care o creează (nota, rândurile,
+  documentul) nu e modificarea evidenței: nimeni n-a văzut-o încă. `nota_din_tranzactia_curenta(id)` = `xmin`-ul rândului e încă „in
+  progress” (`pg_xact_status`), deci al tranzacției curente sau al unei sub-tranzacții a ei. *Prima variantă* compara `xmin` cu
+  tranzacția de nivel superior și refuza pe nedrept rândurile scrise după un `ROLLBACK TO SAVEPOINT` (sub-tranzacție rămasă deschisă).
+  Epoca lui `xmin` (32 de biți) se reconstituie; o tranzacție prea veche (NULL) = nu e a tranzacției curente.
+- **R3 la actul de validare, imediat.** O variantă amânată la COMMIT (trigger de constrângere) a fost încercată și ABANDONATĂ:
+  evenimentele amânate opresc `DROP SCHEMA` în aceeași tranzacție (și o cascadă de conexiuni pierdute în teste). Documentul intern
+  se scrie la crearea ciornei (`documente_interne`), deci e acolo la validare. **Drumul rămas** — inserarea directă a unei note deja
+  validate — nu există azi în aplicație; `test_r3_drum_nou_insertia_directa_a_unei_note_validate` pică dacă apare (mutația F-12).
+- **Consecință vizibilă pentru contabil (decisă prin regula lui Costin, nu de executor):** dezlegarea unei note de PLATĂ validate de
+  factura ei (`contare_facturi.dezleaga`) e acum refuzată de bază — schimbă `factura_id` al unei note în evidență; corectura se face
+  prin stornare. Pe ciornă rămâne posibilă. Fixturile de test care inserau note validate fără document au primit documentul.
+- **Deficiența 199, reparată pe drum (în afara planului, cu motiv).** `coada_api.lista_coada` suprascria nota și id-ul
+  elementului-cap al unui document cu mai multe note ÎNAINTE de a citi membrii: cardul „retrimisă” putea spune greșit „schimbată”, iar
+  `membri_ids` putea repeta o notă — la întâmplare (ordinea notelor din aceeași tranzacție). Făcea testul S3 instabil, deci poarta
+  instabilă: ciclul de neconformitate cere oprire și reparare. Test determinist + două mutații. Validarea în bloc nu pierdea note
+  (fiecare id se extinde la grupul lui), deci efectul era numai pe text.
+
+**Adaos 09.10.2026, la poarta lotului:** plasa consuma `tenant_schema_seq` (o firmă sintetică = un număr de schemă), iar contorul e o
+cifră din PREDARE păzită de `test_predare_cifre` — prima poartă a lotului a picat pe 257 -> 270. Rulatorul plasei readuce acum
+contorul la valoarea de dinainte (mutația: fără readucere 270 -> 271, testul roșu). Testele care citeau notificările conturilor comune
+măsoară diferența, nu presupun gol (S4).

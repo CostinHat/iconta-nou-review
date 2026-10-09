@@ -72,8 +72,8 @@ def conn(monkeypatch):
 
 def _nota(conn, status="ciorna", data="2026-06-10"):
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) "
-                    "VALUES (%s,'x','manual',%s) RETURNING id", (data, status))
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, document_ref) "
+                    "VALUES (%s,'x','manual',%s,'NC x') RETURNING id", (data, status))   # [09.10.2026, regulile de fond R3] nota validată are documentul justificativ
         nid = cur.fetchone()[0]
         cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)"
                     " VALUES (%s,'6021','401',100)", (nid,))

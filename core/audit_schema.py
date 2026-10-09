@@ -110,9 +110,18 @@ def compara(ref, tenant):
 
 
 def are_drift_hard(drift):
-    """True daca exista drift pe directia HARD (template->tenant) = poarta pica."""
+    """True daca exista drift pe directia HARD (template->tenant) = poarta pica. [09.10.2026] Si TRIGGERELE lipsa: regulile de
+    fond traiesc in triggere (`core/migrare_reguli_fond.py`), iar un trigger pus in sablon fara migrare lasa firmele vechi fara
+    regula — acelasi drum ca o coloana lipsa (gardul „migrarea inainte de restart”, comanda Costin pct.2 si pct.12)."""
     return bool(drift["tabele_lipsa"] or drift["coloane_lipsa"]
-                or drift["tip_dif"] or drift["nullable_dif"])
+                or drift["tip_dif"] or drift["nullable_dif"] or drift.get("triggere_lipsa"))
+
+
+def _triggere(cur, schema):
+    """{(tabela, trigger)} — triggerele utilizatorului pe tabelele schemei (fara cele interne, ale cheilor straine)."""
+    cur.execute("SELECT c.relname, t.tgname FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid JOIN pg_namespace n "
+                "ON n.oid = c.relnamespace WHERE n.nspname = %s AND NOT t.tgisinternal", (schema,))
+    return {(r[0], r[1]) for r in cur.fetchall()}
 
 
 # ============================================================
@@ -159,11 +168,13 @@ def auditeaza(conn, schemas, template_sql):
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)
         cur.execute(sql)
         ref = _introspect(cur, SCHEMA_REF)
+        trg_ref = _triggere(cur, SCHEMA_REF)
         rapoarte = {}
         for s in schemas:
             if not db.schema_valida(s):
                 raise ValueError("schema invalidă: %r" % s)
             rapoarte[s] = compara(ref, _introspect(cur, s))
+            rapoarte[s]["triggere_lipsa"] = sorted("%s.%s" % x for x in trg_ref - _triggere(cur, s))
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)
     return rapoarte, ref
 
@@ -184,6 +195,8 @@ def _raporteaza(schema, drift, ref):
             out.append("     - %s" % t)
     for t, cols in sorted(drift["coloane_lipsa"].items()):
         out.append("  COLOANE lipsa in %s: %s" % (t, ", ".join(cols)))
+    if drift.get("triggere_lipsa"):
+        out.append("  TRIGGERE lipsa (in template, nu in tenant): %s" % ", ".join(drift["triggere_lipsa"]))
     for t, c, r_, t_ in drift["tip_dif"]:
         out.append("  TIP diferit %s.%s: template=%s tenant=%s" % (t, c, r_, t_))
     for t, c, r_, t_ in drift["nullable_dif"]:

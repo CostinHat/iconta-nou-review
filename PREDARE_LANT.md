@@ -1,16 +1,14 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **09.10.2026: neconformitatea notei de corecție respinse (codul reparat, datele tenant_049 așteaptă decizia) după lotul „Retest 2” (retestul în aplicație al lotului „Retest 08.10”, 20 de puncte: textul judecat pe ecran, rândul formularului, stornarea casei, planul de conturi, ciornele proprii) complet, registrele în același commit; urmează registrul de parametri fiscali de la R1**
+# PREDARE LANȚ — **09.10.2026: registrul deficiențelor (DEFICIENTE.md, 1–198 + N1–N18) și plasa de capăt la capăt în poartă (167 de teste), gardul migrării în post-commit, regulile de fond în bază, cifrele de referință F1–F5 exportate; restartul producției așteaptă scriptul lui Costin**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-09** (lotul „Retest 2” — comanda Costin 09.10.2026, verbatim în DECIZII, ÎNAINTEA commitului
-  lotului), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `d0abd48f` (HEAD de intrare: „Retest 2”; neconformitatea notei de corecție respinse, găsită la migrarea lui pe
-  producție, e reparată în codul commitului care conține această predare — datele tenant_049 așteaptă decizia, FRONTURI). Înainte: `05ba1345`. Registrele intră în COMMITUL LOTULUI (decizia Costin 08.10 pct.5), deci
-  această predare e conținută de commitul lotului „Retest 2”; SHA-ul lui, four-way-ul și migrarea pe producție
-  (`core.migrare_retest2`: coloana `casa_operatiuni.storno_de` + notele de refacere NIR 121/122 rescrise și retrimise) sunt în
-  raportul turei. Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
+- **ultima rescriere**: **2026-10-09** (seara; lotul „registrul deficiențelor și plasa” — comanda Costin 09.10.2026, verbatim în
+  DECIZII), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `39fde2bc` (HEAD de intrare). Commitul care conține această predare are SHA-ul în raport. **După el, producția NU
+  repornește** (gardul migrării, pct.2): Costin rulează `! bash ~/ghid_incoming/repara_tenant049.sh` (backup, baza registrului
+  migrărilor, reparația tenant_049, regulile de fond, verificarea) — după ultima migrare, rulatorul repornește aplicația.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -64,7 +62,15 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **DECIZIE CERUTĂ, URGENTĂ (09.10.2026, neconformitatea notei de corecție):** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
+- **RESTART OPRIT PÂNĂ LA SCRIPT (09.10.2026)**: `~/ghid_incoming/repara_tenant049.sh` — rulat de Costin după commitul lotului; până
+  atunci producția rulează `39fde2bc`. Jurnalul în `~/ghid_incoming/repara_tenant049.log`. După rulare: proba pe ecran cerută la pct.1
+  (fișa Marfa A față de soldul 371) — numai Costin o poate face pe producție (nu se creează sesiuni pentru utilizatorii producției).
+- **DECIZII CERUTE (raportul „Registrul deficiențelor”, §6):** ordinea reparațiilor din `DEFICIENTE.md` (stările parțial /
+  nerezolvată, cu ce lipsește); aprobarea cifrelor de referință (`~/ghid_incoming/cifre_referinta_F1_F5.md`) -> abia apoi gardul
+  „diferență = publicare oprită”; interpretarea R3 (documentul cerut la validare, nu la ciornă); propunerile de reguli de fond noi.
+- **Registrul de parametri fiscali**: rămâne la R1 (R0 pe disc, necomis), după deciziile de mai sus.
+
+- **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
   NIR 1, iar 371 ține 1.150 lei — stornările 8 și 9 din `miscari_stoc`, scrise greșit la respingerea notelor 121/122. Codul e reparat
   (nu se mai poate repeta); datele NU. Propunerea (ștergerea celor două rânduri, apoi retrimiterea 121/122) e în DECIZII 09.10.2026;
   scrierea ei a fost refuzată de permisiunile sesiunii — o rulează Costin sau o autorizează. Tot acolo: gardul „migrarea înainte de
@@ -389,7 +395,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **931** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **934** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1212** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -438,7 +444,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **49** | contorul `tenant_schema_seq` |
+| **270** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

@@ -117,12 +117,25 @@ fi
 # CLAUDE.md §2.3 pct.10: dupa orice publicare din lant, procesul viu incarca HEAD - fara exceptii,
 # fara liste de tipuri. Gardat de core/test_publicare_restart_neconditionat.py (cade daca reapare
 # orice conditionare pe continut). Esec = sentinela + banner, niciodata tacut (ca push-urile).
+#
+# [09.10.2026, comanda Costin pct.2 — PIVOT, singura conditie admisa] „Daca un commit contine o migrare nerulata pe productie,
+# aplicatia nu reporneste.” Conditia NU e pe tipul commitului, ci pe STAREA productiei: `core.migrari_registru verifica` confrunta
+# migrarile din HEAD cu registrul `public.migrari_rulate` si schemele firmelor cu `tenant_template.sql` din HEAD. FAIL-CLOSED: daca
+# nu se poate sti, nu reporneste. Rulatorul (`... ruleaza --productie <fisier>`) reporneste el, dupa ultima migrare lipsa.
+# Gardat de core/test_publicare_restart_neconditionat.py (verificarea e singura conditie; alta reaparuta -> pica).
 S_RS=".git/RESTART_ESUAT"; rm -f "$S_RS"
-if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta.log 2>&1; then
-    echo "[post-commit] iconta-nou restartat -> procesul viu preia $(git rev-parse --short HEAD)"
+S_MG=".git/RESTART_OPRIT_MIGRARE"; rm -f "$S_MG"
+if "$PWD/venv/bin/python" -m core.migrari_registru verifica "$HEAD_SHA" > /tmp/migrari_verifica.log 2>&1; then
+    if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta.log 2>&1; then
+        echo "[post-commit] iconta-nou restartat -> procesul viu preia $(git rev-parse --short HEAD)"
+    else
+        banner "iconta-nou (restart)" "$S_RS" "restart a esuat: $(tail -1 /tmp/restart_iconta.log 2>/dev/null)" \
+               "verifica sudoers (systemctl restart iconta-nou), apoi ruleaza: sudo systemctl restart iconta-nou"
+    fi
 else
-    banner "iconta-nou (restart)" "$S_RS" "restart a esuat: $(tail -1 /tmp/restart_iconta.log 2>/dev/null)" \
-           "verifica sudoers (systemctl restart iconta-nou), apoi ruleaza: sudo systemctl restart iconta-nou"
+    cat /tmp/migrari_verifica.log
+    banner "iconta-nou (restart OPRIT)" "$S_MG" "productia nu are inca migrarile commitului (lista de mai sus)" \
+           "ruleaza fiecare migrare listata: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier> — dupa ultima, rulatorul reporneste aplicatia"
 fi
 
 # ---------- 4. FOUR-WAY VERIFICAT, si push de RECUPERARE daca lipseste bratul remote ----------

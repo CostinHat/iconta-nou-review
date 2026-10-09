@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**748 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**751 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 711
+### `core/` — 714
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9149,6 +9149,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_declaratii_lot6_duk.py` — Lot 6 (final): Declaratia Unica D212, proba DUK cu validatorul OFICIAL ANAF.
 - `core/test_deconturi.py` — Gard pe plafonul neimpozabil al diurnei (motor pur core/deconturi.py).
 - `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
+- `core/test_deficiente.py` — GARD — registrul deficiențelor (`DEFICIENTE.md`) și plasa lui (comanda Costin 09.10.2026, pct.6–9 și 13, verbatim în DECIZII).
 - `core/test_dependente_masurate.py` — GARD — registrul de dependențe nu se poate depărta nici de măsurătoare, nici de document.
 - `core/test_dependente_ramuri.py` — GARD P2 — matricea de dependențe acoperă și RAMURILE pe care portofoliul de azi nu le atinge.
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
@@ -9298,6 +9299,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_migrare_cnp_ingrijit.py` — core/test_migrare_cnp_ingrijit.py — gard: fiecare schema de TENANT are coloana cnp_ingrijit (D_8/D_8a).
 - `core/test_migrare_ignorate_vizibil.py` — [Regula 6 + Regula 14.4] GARD: intrarile ignorate la validarea CUI (strat firme) ajung VIZIBIL pe ecran.
 - `core/test_migrare_program_national_cm.py` — core/test_migrare_program_national_cm.py — gard: fiecare schema de tenant are concedii_medicale.program_national (D_9a).
+- `core/test_migrari_registru.py` — GARD — codul nu repornește pe producție înaintea migrării lui (comanda Costin 09.10.2026, pct.2: „Dacă un commit conține o migrare
 - `core/test_mijloace_fixe_import_categorie.py` — Import mijloace fixe: cont de imobilizare lipsă NU se mai completează tacit cu 2131.
 - `core/test_mijloace_fixe_import_rezidual.py` — GARD — importul de mijloace fixe nu mai pune valoarea RĂMASĂ în `rezidual` (lot 19, defectul 6, 03.10.2026).
 - `core/test_module_nelegate.py` — CLICHET — module de producție din `core/` pe care nu le cheamă nimeni în afara testelor.
@@ -9408,6 +9410,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_registru_inventar.py` — GARD: registrul-inventar (14-1-2) — si mai ales defectul care l-ar face sa arate perfect.
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
+- `core/test_reguli_fond.py` — GARD — regulile de fond în BAZĂ (comanda Costin 09.10.2026, pct.11, verbatim în DECIZII; `core/migrare_reguli_fond.py`).
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
 - `core/test_retest2.py` — GARDA lotului „Retest 2” (comanda Costin 09.10.2026, verbatim în DECIZII) — retestul în aplicație al lotului „Retest 08.10”.
@@ -10688,3 +10691,15 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 |---|---|---|---|---|
 | mișcarea de stoc „în evidență” nu se stornează la respingere (`stocuri_anulare.IN_EVIDENTA`, o definiție) | `core/test_decizii_0710.py::test_r1_nota_de_corectie_respinsa_nu_storneaza_documentul_contat`, `…::test_r1_miscarea_in_evidenta_nu_se_storneaza_pe_niciuna_din_cele_trei_legaturi` | respingerea unei note adăugate ulterior la un document contat (refacerea pe 408, „Stornare cost NIR” la legare) scoate din fișă marfa pe care 371 o ține; NIR-ul contat afișat „respins” și refăcut (intrare dublă) | N-1 (filtrul scos), N-2 (`in_evidenta` ignorat la „respins”), N-3 (refacerea permisă), N-4b / N-5 / N-6 (fiecare clauză scoasă) -> ROȘU | „în evidență” = o notă VALIDATĂ; un document cu notele încă la validare se stornează în întregime la respingere, ca înainte (decizia 07.10 R1) |
 | **LIPSĂ — clasa „cod publicat înaintea migrării pe producție”** | — | — | — | post-commit repornește imediat; migrarea rămâne pas manual. Între restartul lui d0abd48f și rularea `core.migrare_retest2` ecranul Casă citea o coloană inexistentă. Decizie cerută (raportul, §6): gard în post-commit sau ordine scrisă |
+
+## 09.10.2026 — Registrul deficiențelor, plasa de capăt la capăt, gardul migrării, regulile de fond în bază (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| plasa de capăt la capăt în poartă | `scripts/e2e_poarta.py` + `scripts/githooks/poarta-suita` + `frontend_test/e2e/e2e_*.py` (167) | o deficiență „rezolvată” ajunsă din nou stricată pe ecran sau în cifre, publicată | fiecare test pică la mutația lui, pe copie (jurnalele în raport) | rulează pe baza de TEST, pe firme sintetice + firmele de test comune citite; regulile AI (12, 33) n-au probă deterministă; rularea în serie (lacăt) |
+| registrul deficiențelor | `core/test_deficiente.py` (5) | numerotare cu goluri; stare inventată; „rezolvată” fără commit sau fără test existent; test al plasei fără număr; poarta fără plasă | rând șters / stare fără test / pasul scos din poartă -> ROȘU | „rezolvată” spune că testul există și trece în poartă, nu că acoperă tot textul deficienței (de aceea 69/76/79/97 sunt „neverificat”) |
+| migrarea înainte de restart | `core/migrari_registru.py`, `core/test_migrari_registru.py` (7), `core/test_publicare_restart_neconditionat.py` | repornirea producției peste o migrare nerulată (și din commitul anterior), peste o coloană / tabelă / trigger din șablon lipsă; fail-open | D2-1…D2-8 -> ROȘU | baza registrului (39fde2bc) e fără dovadă; o migrare schimbată cosmetic cere `marcheaza` cu motiv |
+| regulile de fond în bază | `core/migrare_reguli_fond.py`, `core/test_reguli_fond.py` (7) | modificarea / ștergerea notei validate și a rândurilor ei; nota în / din luna blocată; validarea fără document justificativ; rândul cu cont gol; desfacerea stocului contat fără notă de corecție | F-1…F-12 -> ROȘU (forma finală) | R1 = validată într-o tranzacție ÎNCHEIATĂ (construirea în aceeași tranzacție e permisă); R3 la actul de validare — inserarea directă a unei note validate e păzită de un test pe cod (regex pe `INSERT … 'validata'`), nu de bază; o stare scrisă printr-un parametru (`%s`) nu se vede; notele vechi fără document rămân |
+| stornarea stocului numai pe ce nu e în evidență | `core/stocuri_anulare.py` (`IN_EVIDENTA`), `core/test_decizii_0710.py` | reparația pe date (`migrare_nota_corectie`) | D1-1, D1-2 -> ROȘU | — |
+| lista cozii citește membrii documentului înaintea capului (deficiența 199) | `core/test_decizii_0710.py::test_199_…` | cardul „retrimisă” care spune greșit „schimbată”; `membri_ids` cu o notă repetată | 199c, 199d -> ROȘU | numai `lista_coada`; tiparul „capul grupului modificat cât e citit ca membru” căutat (`d.pop("membri")`) — un singur loc |
+| plasa nu mută cifrele bazei de test | `scripts/e2e_poarta.py` (`_contor_schema`) + `core/test_predare_cifre.py` | o poartă care înroșește următoarea poartă: firmele sintetice consumau `tenant_schema_seq`, cifră arătată în PREDARE | readucerea scoasă -> contorul 270 -> 271, `test_predare_cifre` ROȘU | numai contorul de scheme; alte urme ale plasei pe baza de test (notificări pe conturile comune) nu sunt cifre din PREDARE — testele care le citesc măsoară diferența |
