@@ -29,8 +29,17 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4242dc4353";
-import { randA as randConstatare } from "./control_verdict.js?v=86b39e444e";
+import { randA as randConstatare } from "./control_verdict.js?v=a0acfd801a";
 import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { deschideFirma } from "./firme.js?v=ffea72127e";
+
+// [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
+// înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
+function rulajNota(n) {
+  const st = Number(n.rulaj_storno || 0);
+  const rj = n.rulaj != null ? n.rulaj : n.total;
+  return st ? `stornare −${bani(st)} lei · înregistrare ${bani(rj || 0)} lei` : `rulaj ${bani(rj || 0)} lei`;
+}
 
 function numeFirma(firme, tid) {
   const f = firme.find((x) => x.tenant_id === tid || x.id === tid);
@@ -93,6 +102,16 @@ function fmtPerioadaDecl(c) {
 // Din notificare, redesenarea venea cu `evidentiaza` = elementul tocmai respins, care nu mai e de validat — și ecranul spunea
 // „nu mai așteaptă validarea: a fost deja validat sau respins”, ca despre altcineva. Acum spune ce ai făcut tu.
 let _ultimaActiune = null;
+// [Retest 2 pct.14] „Confirmarea respingerii repetă tot titlul notei.” Confirmarea numește nota SCURT: documentul (sau data), nu
+// titlul întreg cu descrierea — titlul e deja pe card, deasupra.
+function numeScurt(c) {
+  const n = c.nota || {}, p = c.payload || {};
+  const doc = (n.document_ref || p.document_ref || "").trim();
+  const nr = (c.membri_ids || []).length;
+  if (nr > 1) return `cele ${nr} note ale documentului${doc ? " " + doc : ""}`;
+  const data = n.data || p.data;
+  return doc ? `nota (${doc})` : (data ? `nota din ${dataRo(data)}` : "nota");
+}
 function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, la: Date.now() }; }
 
 // [08.10.2026, U4] Titlul cozii = ce conține: „Note de validat”, „Declarații de validat”, „Declarații de depus” — părțile nevide,
@@ -161,7 +180,9 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div id="val-deDepus"></div>
     <div id="val-nevalidate"></div>
     <div class="mig-eroare" id="val-eroare"></div>
+    <div id="val-ciorne"></div>
   `;
+  ciorneleMele(corp.querySelector("#val-ciorne"), firme, nav);
   const z1 = corp.querySelector("#val-deValidat");
   const z2 = corp.querySelector("#val-deDepus");
   const z3 = corp.querySelector("#val-nevalidate");
@@ -240,6 +261,27 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 
 // [08.10.2026, decizia Costin pct.3 la §6 S6] „Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).”
 // Bara apare numai când există note pe care le poți valida; serverul trece fiecare notă prin aceeași aprobare și spune ce a refuzat.
+// [Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără căutare.”
+// La capătul ferestrei: notele tale încă în ciornă, pe firme, cu starea lor (trimisă la validare / respinsă cu motivul / netrimisă).
+async function ciorneleMele(zona, firme, nav) {
+  if (!zona) return;
+  let r;
+  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu am putut încărca notele tale în ciornă.", "eroare"); return; }
+  if (!r || !r.total) return;
+  const stare = (n) => n.in_coada === "la_senior" ? "trimisă la validare"
+    : (n.in_coada === "respinsa" ? `respinsă${n.motiv_respingere ? ": " + n.motiv_respingere : ""}` : "nevalidată, netrimisă");
+  zona.innerHTML = `<div class="cf-grup-titlu">Notele tale în ciornă (${r.total})</div>
+    <p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență. Se validează sau se șterg din Registrul jurnal al firmei.</p>
+    ${r.firme.map((f) => `<div class="val-ciorne-firma">
+      <div class="pf-frand-nume">${esc(f.firma)} <button class="btn-link" data-firma="${f.tenant_id}">Deschide firma</button></div>
+      <ul class="sa-jurnal">${f.note.map((n) => `<li>${esc(dataRo(n.data))} \u00b7 ${esc(n.descriere || "")} \u00b7 ${rulajNota(n)} \u00b7 ${esc(stare(n))}</li>`).join("")}</ul>
+    </div>`).join("")}`;
+  zona.querySelectorAll("[data-firma]").forEach((b) => b.addEventListener("click", () => {
+    const t = firme.find((x) => String(x.id) === b.dataset.firma);
+    if (t) deschideFirma(t, nav);
+  }));
+}
+
 function barMaiMulte(zN, corp, nav) {
   const bife = [...zN.querySelectorAll(".val-sel")];
   if (bife.length < 2) return;
@@ -297,8 +339,8 @@ function randNota(c, firme, corp, nav, perm) {
     <div class="val-info">
       <div class="val-titlu">${selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : ""}<b>${esc(c.eticheta || "Notă")}</b></div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
-      ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota NU s-a schimbat față de cea respinsă" : "schimbarea nu se poate compara (nota respinsă e dinaintea amprentei)"}</div>` : ""}
-      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · total ${bani(n.total || 0)} lei${n.document_ref ? "" : " · fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</div>
+      ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota nu s-a schimbat față de cea respinsă" : "nu se poate spune dacă nota s-a schimbat: cea respinsă e mai veche decât compararea notelor"}</div>` : ""}
+      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · ${rulajNota(n)}${n.document_ref ? "" : " · fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</div>
       <button type="button" class="btn-link val-vezi-nota">${(c.membri_ids || []).length > 1 ? "Vezi notele →" : "Vezi nota →"}</button>
     </div>
     <div class="val-actiuni">${actiuni}</div>`;
@@ -315,13 +357,13 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
   if (bResp) bResp.addEventListener("click", () => {
     dialogInput(nav, {
       titlu: "Respinge nota",
-      eticheta: `Motiv respingere pentru ${esc(c.eticheta || "notă")}:`,
+      eticheta: `Motivul respingerii pentru ${esc(numeScurt(c))}:`,   // [Retest 2 pct.14] nota numită scurt, titlul e deja pe card
       placeholder: "ex: lipsește factura; contul de cheltuială e greșit",
       // [lotul 07.10 B, C12e] butonul de confirmare arată ca butonul care l-a deschis (roșu plin), nu roz-pal „dezactivat”
       obligatoriu: true, buton: "Respinge", butonClasa: "buton-sters val-respinge",
       onConfirm: async (motiv) => {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
-        _confirma(c.membri_ids || [c.id], `Ai respins ${c.eticheta || "nota"}. Motivul („${motiv}”) apare lângă notă la cel care a pregătit-o.`);
+        _confirma(c.membri_ids || [c.id], `Ai respins ${numeScurt(c)}. Motivul („${motiv}”) apare lângă notă la cel care a pregătit-o.`);
         nav.inapoi(); if (dinDetaliu) nav.inapoi();
         randeazaValidat(corpLista, nav);
       },
@@ -333,7 +375,7 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
     const valideaza = async () => {
       try {
         await aprobaElement(c);
-        _confirma(c.membri_ids || [c.id], `Ai validat ${c.eticheta || "nota"}: a intrat în evidență.`);
+        _confirma(c.membri_ids || [c.id], `Ai validat ${numeScurt(c)}: a intrat în evidență.`);
         if (dinDetaliu) nav.inapoi();
         randeazaValidat(corpLista, nav);
       }
@@ -499,7 +541,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   if (act === "respinge") {
     dialogInput(nav, {
       titlu: "Respinge declarația",
-      eticheta: `Motiv respingere pentru ${(c.tip||"").toUpperCase()} (${perDecl}):`,
+      eticheta: `Motivul respingerii pentru ${(c.tip||"").toUpperCase()} (${perDecl}):`,
       placeholder: "ex: TVA necorelată cu jurnalul de vânzări",
       obligatoriu: true,
       buton: "Respinge",

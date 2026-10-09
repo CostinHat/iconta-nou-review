@@ -22,6 +22,7 @@ NON-TAUTOLOGIE (AST): NU importa/foloseste d205.calcul_d205 / d205.pull. Cotele:
 (registrul de lege). Divergenta = HARD-BLOCK care numeste beneficiarul si AMBELE valori.
 """
 
+from core.pdf_util import diferenta as _dif, bani as _bani   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
@@ -126,22 +127,19 @@ def verifica_reconciliere(conn, schema, perioada, res, manual=None):
         interne = all(d["camp"] == "consistenta_interna" for d in rap["divergente"])
         for d in rap["divergente"]:
             if d["camp"] == "consistenta_interna":
-                det.append("beneficiar %s: imp1=%d dar rate×baza1=%d (dif %d)"
-                           % (d["beneficiar"], d["imp1"], d["rate_baza"], d["imp1"] - d["rate_baza"]))
+                det.append(_dif("beneficiarul %s, impozitul reținut" % d["beneficiar"], d["imp1"], d["rate_baza"],
+                                sursa="introdus"))
             elif d["camp"].startswith("beneficiar LIPSA"):
-                det.append("beneficiar %s: %s (cale2 baza=%d imp=%d)"
-                           % (d["beneficiar"], d["camp"], d["cale2_baza"], d["cale2_imp"]))
+                det.append("beneficiarul %s lipsește din declarație (recalculat: baza %s, impozitul %s)"
+                           % (d["beneficiar"], _bani(d["cale2_baza"], "lei"), _bani(d["cale2_imp"], "lei")))
             else:
-                det.append("beneficiar %s %s: generator=%d vs cale2=%d (dif %d)"
-                           % (d["beneficiar"], d["camp"], d["generator"], d["cale2"], d["diferenta"]))
+                det.append(_dif("beneficiarul %s, %s" % (d["beneficiar"], d["camp"]), d["generator"], d["cale2"], d["diferenta"]))
         if interne:
             raise ReconciliereD205(
-                "D205 CONSISTENTA INTERNA (d1): impozitul retinut (imp1) NU este round(cota_dividend "
-                "x baza1) pentru un beneficiar MANUAL - regula fiscala invizibila DUK (care verifica "
-                "doar Timp=Σimp1, nu cota per beneficiar). Divergente: %s. Declaratia NU se genereaza - "
-                "corecteaza imp1 sau baza1." % "; ".join(det))
+                "D205: impozitul reținut introdus manual nu este cota de impozit pe dividende aplicată "
+                "bazei. Validatorul ANAF verifică numai totalul, nu fiecare beneficiar. Diferențe: %s. "
+                "Declarația nu se generează: corectează impozitul sau baza." % "; ".join(det))
         raise ReconciliereD205(
-            "D205 A DOUA CALE: baza/impozitul pe dividende ale generatorului NU se leaga de recalculul "
-            "independent din contul 457. Divergente: %s. Declaratia NU se genereaza - gardul nu alege "
-            "singur cine are dreptate; verifica agregarea si datele." % "; ".join(det))
+            "D205: baza și impozitul pe dividende din declarație nu se potrivesc cu recalculul făcut "
+            "separat din contul 457. Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % "; ".join(det))
     return rap

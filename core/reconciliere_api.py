@@ -216,7 +216,7 @@ def conteaza(conn, schema, linie_id, alocari=None):
                 _f = cur.fetchone()
                 if _f:
                     if _f["cota"] is None:
-                        raise ValueError("factura fara cota TVA pe linii - TVA la incasare nu se "
+                        raise ValueError("factura fără cota TVA pe linii - TVA la încasare nu se "
                                          "poate calcula (declara cota pe factura)")
                     _tva = _tv.tva_din_incasare(a["suma"], _f["cota"])
                     if _tva > 0:

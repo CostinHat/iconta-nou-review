@@ -41,7 +41,7 @@ def _are(cur, schema, tabel, coloana=None):
 def aplica(conn, schema):
     """Întoarce (nule_amef, nule_art317) — câte rânduri au devenit „neales” (pentru raportul migrării)."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         if not (_are(cur, schema, "firma_profil", "activitate_exceptata_amef") and _are(cur, schema, "firma_profil", "inreg_art317")):
             return (0, 0)

@@ -174,7 +174,7 @@ def incadreaza(ind_curent, ind_precedent):
     """
     if not ind_precedent:
         return ("nedeterminata",
-                "indicatorii exercițiului precedent nu se pot calcula, iar norma cere DOUĂ exerciții "
+                "indicatorii exercițiului precedent nu se pot calcula, iar norma cere două exerciții "
                 "consecutive (pct.13 alin.(2) și (3)); pe un singur an nu se poate încadra",
                 "fara_exercitiu_precedent")
     c = _incadrare_an(ind_curent)

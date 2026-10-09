@@ -121,11 +121,11 @@ def parse_xml(continut: str) -> dict:
     # `DataSet` cu `Body` nu e un flux BNR, si se spune.
     ns = root.tag[:root.tag.index("}") + 1] if root.tag.startswith("{") else ""
     if not root.tag.endswith("DataSet"):
-        raise FormatNecunoscut("radacina XML-ului nu e `DataSet`, ci %r — nu e un flux BNR"
+        raise FormatNecunoscut("fișierul primit de la BNR nu are forma cunoscută (începe cu %r, nu cu DataSet)"
                                % (root.tag,))
     body = root.find(f"{ns}Body")
     if body is None:
-        raise FormatNecunoscut("XML-ul BNR n-are `Body` (namespace citit: %r)" % (ns or "fara",))
+        raise FormatNecunoscut("fișierul primit de la BNR nu are secțiunea Body (spațiul de nume citit: %r)" % (ns or "fara",))
     rezultat = {}
     for cube in body.findall(f"{ns}Cube"):
         d_txt = cube.get("date")

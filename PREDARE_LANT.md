@@ -1,21 +1,22 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **08.10.2026: lotul „Retest 08.10” (24 de puncte: 4428.02, închiderea după lună, limba ecranelor, fereastra largă, 731–738) complet, registrele în același commit; urmează registrul de parametri fiscali de la R1**
+# PREDARE LANȚ — **09.10.2026: lotul „Retest 2” (retestul în aplicație al lotului „Retest 08.10”, 20 de puncte: textul judecat pe ecran, rândul formularului, stornarea casei, planul de conturi, ciornele proprii) complet, registrele în același commit; urmează registrul de parametri fiscali de la R1**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-08** (seara târziu, lotul „Retest 08.10” — deciziile Costin la §6 al „Deciziile 08.10 §6” +
-  constatările retestului, ÎNAINTEA commitului lotului), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `e07f46e6` (HEAD de intrare: „Deciziile 08.10 §6”). Registrele intră în COMMITUL LOTULUI (decizia Costin 08.10
-  pct.5), deci această predare e conținută de commitul lotului „Retest 08.10”; SHA-ul lui, four-way-ul și migrarea pe producție
-  (`core.migrare_retest_0810`) sunt în raportul turei. Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
+- **ultima rescriere**: **2026-10-09** (lotul „Retest 2” — comanda Costin 09.10.2026, verbatim în DECIZII, ÎNAINTEA commitului
+  lotului), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `05ba1345` (HEAD de intrare: „Retest 08.10”). Registrele intră în COMMITUL LOTULUI (decizia Costin 08.10 pct.5), deci
+  această predare e conținută de commitul lotului „Retest 2”; SHA-ul lui, four-way-ul și migrarea pe producție
+  (`core.migrare_retest2`: coloana `casa_operatiuni.storno_de` + notele de refacere NIR 121/122 rescrise și retrimise) sunt în
+  raportul turei. Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
 **O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII; pus pe
-pauză la R1 pentru lotul „Retest 08.10”, care l-a precedat la cererea lui Costin; R0 — `core/scan_registru.py`, `core/test_scan_registru.py`,
+pauză la R1 pentru loturile „Retest 08.10” și „Retest 2”, care l-au precedat la cererea lui Costin; R0 — `core/scan_registru.py`, `core/test_scan_registru.py`,
 `core/registru_fiscal.py` — e pe disc, NECOMIS, în afara commitului „Retest 08.10”). Tot restul e livrat, cu poartă completă, four-way și ZIP în
 `/home/costin/ghid_incoming/`. **O decizie așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 08.10 §6”, §6 — și FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
@@ -44,6 +45,7 @@ restul fronturilor sunt [EXTERN] sau restanțe scrise:
 | **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
 | **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **„Deciziile 07.10” + retesturile 07.10** (comenzile Costin 07.10, verbatim în DECIZII): D1 metodele de stoc nesuportate refuzate; D2 NIR legat de factura primită (numai 378/4428); D3 Z la cantitativ-valoric validat numai cu descărcare pe articol / „fără marfă”; D4 salariatul pe API și la import cu cele trei fapte cerute; D5 seria chitanței cerută; R1 respingerea stornează stocul (roșu), NIR-ul se reface; R2 titlul scurt al documentului; S1 prime / sporuri / ore suplimentare (brut, baze, D112 pe DUK, notă, fluturaș; lit.b pe venitul realizat); S2 „de la” = ziua 1 a lunii lucrate; S3 retrimiterea neschimbată cere confirmare, cardul o spune; S4 notificările rezolvate | `876e87a2` (+ registrele zilei, 08.10) | `iconta_decizii_07_10.zip` |
+| **„Retest 2”** (retestul în aplicație al „Retest 08.10”, comanda Costin 09.10, verbatim în DECIZII): textul judecat pe ECRAN (`core/limba_ecran.py` + `text_ecran_scan.py`, artefact păzit, 0 defecte pe 160+ ecrane; lexicon de diacritice derivat din corpus), rândul D300/D101 = rândul formularului, diferențele de reconciliere în cuvinte; „Înainte de preluare” rămâne deschis și pe rând; contoarele pe o regulă; casa: nota validată se stornează, nu se șterge; amortizarea până la ultima lună încheiată; jurnalul totalizează validatul; rulajul notei; D390 neplătitor pe lunile cu operațiuni; termen și perioadă pe rândurile dinaintea preluării; declarația nedepusă = semnal la închidere; ciornele proprii la vedere; ecranul „Plan de conturi”; confirmările scurte; D394 multi-cotă explicat; „Cod TVA RO…” în antetul PDF; verificarea TVA la trimestrial pe decontul trimestrului | (commitul lotului — raport) | `iconta_retest2.zip` |
 | **„Retest 08.10”** (deciziile Costin la §6 al „Deciziile 08.10 §6” + constatările 4–21, verbatim în DECIZII): TVA-ul din prețul de raft pe 4428.02 (bilanțul o dată, la rd.05); validarea mai multor note; NIR 2/3 F1 refăcute pe 408; D406 liniile + totalurile pe cotă, D394 numărul fără serie; Control fiscal: contoare, „înainte de preluare” pliat + „Marchează toate”, marcarea modificabilă / anulabilă; luna se închide după ce s-a încheiat; 401 debitor semnalat; MF cu meniu de acțiuni; limba ecranelor (gard nou); fereastra largă fără suprapuneri; „Rezumat”; 731–738 scoase; PDF balanță cu CUI + dată; nota de casă descrisă; luna preluării precompletată | commitul lotului (SHA în raport) | `iconta_retest_08_10.zip` |
 | **„Deciziile 08.10 §6”** (răspunsul Costin la §6, verbatim în DECIZII): NIR fără factură pe 408 / 4428.01 închis de factura legată, pe ambele metode și între exerciții; poarta D300 pe 4426; luna preluării în Date firmă; R36 — amortizarea, bonul și Z-ul tastat ciornă, balanța pe validat cu indicatorul ciornelor, porțile avertizează pe ciorne; pe drum: re-contarea, D406 cu analitic, semnalul 4428, bilanțul 4428 debitor | (raportul turei) | `iconta_decizii_08_10_s6.zip` |
 | **„Deciziile 08.10”** (opt mesaje Costin 08.10, verbatim în DECIZII): NIR „fără factură” apoi factura (global-valoric) cere alegerea; poarta verifică mesajul întâi; notificările fără element rezolvate; retestul (ciorna statului înlocuită, CAM pe toate veniturile, „retrimis după respingere”, „Refă NIR-ul”, starea de încasare, refuzul spre câmp, clopoțelul); porțile TVA (4427/4426) și D406 (= rulajele balanței) în coadă; Control fiscal de la luna preluării, „depusă în afara iConta”, „nedeclarat”, 30 de zile, cardul fără întârziere; balanța cu cinci egalități (rulajele lunii = jurnalul lunii); registrul MF (înregistrat / diferență / luni lipsă / catalog / plan) + închiderea lunii (card Zilnic, amortizarea obligatorie, semnalul 581); C&D la «Poate valida»; contul din afara planului legal | commitul care conține această predare (SHA în raport) | `iconta_decizii_08_10.zip` |
@@ -61,7 +63,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **DECIZIE CERUTĂ (lotul „Retest 08.10”, raportul §6):**
+- **DECIZIE CERUTĂ (lotul „Retest 2”, raportul §6):** pct.8 — clic pe firmă în lista Control fiscal deschide, pe cabinetul de test,
+  „Detaliu firmă” cu grupurile fiscale (nereprodus, captura `b8_click_firma.png` în ZIP): pe ce ecran / din ce loc a apărut meniul
+  general al firmei? Fără răspuns nu se schimbă nimic (nu se ghicește un defect).
+- **DECIZIE CERUTĂ (lotul „Retest 08.10”, raportul §6 — fără răspuns încă, repusă în raportul „Retest 2”):**
   1. **Nota 118 a F1 (chitanța CHF1-1) e validată**, cu descrierea veche („DANTE INTERNATIONAL SA”). Codul scrie de acum descrierea
      întreagă (felul, chitanța, factura stinsă, clientul); nota validată n-a fost rescrisă (istoria nu se atinge). De ales: rămâne așa,
      sau i se rescrie descrierea (numai textul, nu sumele).
@@ -100,6 +105,12 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
 
+- **Retest 2**: textul se judecă pe ECRANUL afișat (decizia Costin, pct.2) — orice lot care atinge ecrane reface
+  `frontend_test/vizual/text_ecran_scan.py --artefact` (gard `core/test_text_ecran.py`: UI-ul și instrumentul de acum, zero defecte);
+  regula E18: proba unui ecran atins = captura + fraza contabilului, altfel „neverificat”; perioadele în trei forme (`LL/AAAA`,
+  `T3/2026`, `2026`); un rând de declarație se numește cu rândul formularului (`d300_randuri`, `d101_randuri`); o operațiune de casă cu
+  notă validată se stornează (`POST …/casa/operatiuni/{id}/storneaza`); „la zi” = ultima lună încheiată; un `raise` care nu ajunge la
+  contabil poartă `# invariant-intern-ok: <motiv>` (plafon 27).
 - **Retest 08.10**: TVA-ul din prețul de raft pe `4428.02` (NIR GV `371 = 4428.02`, descărcarea inversă), bilanțul îl scade numai la rd.05;
   o lună (perioadă și evidența facturilor) se închide după ultima ei zi; închiderea evidenței facturilor numai din cardul „Închidere
   lună”; textul afișat fără cod / fără majuscule de accent (gard `core/test_text_afisat_limbaj.py`); în fereastra largă nu se strânge
@@ -371,8 +382,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **924** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1216** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **931** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1212** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

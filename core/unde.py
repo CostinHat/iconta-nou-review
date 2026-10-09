@@ -67,13 +67,13 @@ class Unde(TextStructurat):
     def __new__(cls, fel, id=None, detaliu=None):
         spec = FELURI_REFERENT.get(fel)
         if spec is None:
-            raise ValueError(
-                "fel de referent necunoscut %r; nomenclatorul e INCHIS: %s. Un fel nou se ADAUGA "
-                "aici, cu ce inseamna - altfel `unde` redevine text liber, doar cu mai multi pasi."
+            raise ValueError(  # invariant-intern-ok: nomenclatorul de referenți e cod
+                "fel de referent necunoscut %r; nomenclatorul e ÎNCHIS: %s. Un fel nou se ADAUGĂ "
+                "aici, cu ce înseamnă - altfel `unde` redevine text liber, doar cu mai mulți pasi."
                 % (fel, ", ".join(sorted(FELURI_REFERENT))))
         if id is None and not spec.get("id_optional"):
-            raise ValueError(
-                "referinta `%s` fara identitate: „%s" % (fel, spec["inseamna"])
+            raise ValueError(  # invariant-intern-ok: nomenclatorul de referenți e cod
+                "referință `%s` fără identitate: „%s" % (fel, spec["inseamna"])
                 + "\" e o CATEGORIE, nu o referinta. Contabilul nu poate deschide o categorie.")
         eticheta = spec["eticheta"]
         s = eticheta if spec.get("id_optional") and id is None else (eticheta % id)

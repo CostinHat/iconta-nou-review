@@ -47,7 +47,7 @@ def numar(v, strict=False):
         x = float(t)
     except ValueError:
         if strict:
-            raise ValueError("valoare numerica neinterpretabila: %r" % (v,))
+            raise ValueError("valoare numerică neinterpretabila: %r" % (v,))
         return 0.0
     return -x if neg else x
 
@@ -86,12 +86,12 @@ def numar_fiscal(x, camp=""):
     if x is None or (isinstance(x, str) and not x.strip()):
         return Decimal(0)
     if isinstance(x, bool):
-        raise ValueError("valoare fiscala booleana%s: %r" % (unde, x))
+        raise ValueError("valoare fiscală booleana%s: %r" % (unde, x))
     try:
         d = Decimal(str(x).strip())
     except (InvalidOperation, ValueError, TypeError):
-        raise ValueError("valoare fiscala invalida%s: %r "
+        raise ValueError("valoare fiscală invalidă%s: %r "
                          "(zecimalele se scriu cu punct, nu cu virgula)" % (unde, x))
     if not d.is_finite():
-        raise ValueError("valoare fiscala nefinita%s: %r" % (unde, x))
+        raise ValueError("valoare fiscală nefinita%s: %r" % (unde, x))
     return d

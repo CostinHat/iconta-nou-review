@@ -37,10 +37,10 @@ def verifica_regenerare(xml_regenerat, amprenta_depusa):
     Regula bazei nule: o amprenta depusa LIPSA (None/'') nu se interpreteaza ca 'coincide' - se semnaleaza."""
     if not amprenta_depusa:
         raise DeclaratieModificataDupaDepunere(
-            "amprenta depusa LIPSA - nu se poate confirma ca declaratia regenerata coincide cu cea depusa")
+            "conținutul declarației depuse nu s-a păstrat, deci nu se poate confirma că declarația generată acum e aceeași cu cea depusă")
     curenta = amprenta(xml_regenerat)
     if curenta != amprenta_depusa:
         raise DeclaratieModificataDupaDepunere(
-            "declaratia regenerata DIFERA de cea depusa: amprenta depusa %s..., curenta %s... - datele s-au "
-            "schimbat retroactiv sub o declaratie deja depusa" % (amprenta_depusa[:12], curenta[:12]))
+            "declarația generată acum diferă de cea depusă (semnătura celei depuse %s…, a celei de acum %s…): datele "
+            "s-au schimbat după depunere, sub o declarație deja depusă" % (amprenta_depusa[:12], curenta[:12]))
     return True

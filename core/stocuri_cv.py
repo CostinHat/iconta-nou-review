@@ -44,7 +44,7 @@ def fisa_magazie(miscari, stoc_initial=None):
             v = _q(m["valoare"])
             if m["tip"] == "intrare":
                 if cant + c < 0:
-                    raise ValueError(f"stornarea intrarii {-c} peste stocul {cant} la {m.get('data')}")
+                    raise ValueError(f"stornarea intrării {-c} peste stocul {cant} la {m.get('data')}")
                 cant += c
                 val += v
             else:
@@ -68,7 +68,7 @@ def fisa_magazie(miscari, stoc_initial=None):
             out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val), "cmp": _q4(val / cant)})
             continue
         if c <= 0:
-            raise ValueError(f"cantitate invalida: {m}")
+            raise ValueError(f"cantitate invalidă: {m}")
         if m["tip"] == "intrare":
             v = _q(c * _d(m["pret_unitar"]))
             cant += c

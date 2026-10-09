@@ -160,9 +160,9 @@ def erori_generare(prof, manual):
     if not str(manual.get("domiciliuFiscal") or "").strip():
         er.append("Lipsă domiciliu fiscal (domiciliuFiscal).")
     if not str(manual.get("nume_intocmit") or "").strip():
-        er.append("Lipsă nume intocmit (nume_intocmit) - obligatoriu.")
+        er.append("Lipsă nume întocmit (nume_intocmit) - obligatoriu.")
     if not str(manual.get("functia_intocmit") or "").strip():
-        er.append("Lipsă funcția intocmit (functia_intocmit) - obligatoriu.")
+        er.append("Lipsă funcția întocmit (functia_intocmit) - obligatoriu.")
     imob = manual.get("imobile") or []
     mob = manual.get("mobile") or []
     if not imob and not mob:

@@ -500,6 +500,9 @@ _JURNALE = {
 # se spune in avertisment, cu valoarea numita (acelasi tipar ca UM necunoscute, [B17]).
 _JURNAL_DIVERSE = ("DIVERSE", "alte")
 _ANTET_JURNAL = dict([(v[0], v[1]) for v in _JURNALE.values()] + [_JURNAL_DIVERSE])
+#: [Retest 2 pct.14] numele jurnalului pe ECRAN: JournalID-ul („FACTURI”) e al fișierului, contabilul citește „Facturi”
+ETICHETE_JURNAL = {"CASA": "Casă", "BANCA": "Bancă", "FACTURI": "Facturi", "SALARII": "Salarii", "AMORTIZARE": "Amortizare",
+                   "STOCURI": "Stocuri", "DIVERSE": "Diverse"}
 TIP_JURNAL = "GL"   # GL.7 Type, SAFcodeType(9): mecanismul de grupare; unul singur, nu se inventeaza
 
 
@@ -685,10 +688,13 @@ def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                    facturi_cumparare=facturi_cumparare or [],
                    plati=plati or [],
                    cote_tva=_cote_cu_folosite(cote_tva or COTE_TVA_STANDARD, facturi_vanzare))
-    res.sinteza.append("D406 v%s: %d conturi, %d clienți, %d furnizori, %d note, %d fact.vânz, %d fact.cump, %d plăți."   # [08.10, V5]
-                            % (SAFT_VERSION, len(conturi), len(clienti), len(furnizori), len(res.note),
-                               len(res.facturi_vanzare), len(res.facturi_cumparare), len(res.plati)))
-    res.sinteza.append("Validare finală: DUKIntegrator pe server (-v D406 fisier.xml $ $ an=%d luna=%d)." % (an, luna))   # [08.10, V5] informație, nu avertisment
+    # [08.10, V5] sinteza cifrelor; [Retest 2 pct.2] în cuvintele contabilului, fără prescurtări și fără comanda validatorului
+    from core.common import cate
+    res.sinteza.append("Fișierul SAF-T (structura %s) cuprinde: %s, %s, %s, %s, %s, %s, %s." % (
+        SAFT_VERSION, cate(len(conturi), "cont", "conturi"), cate(len(clienti), "client", "clienți"),
+        cate(len(furnizori), "furnizor", "furnizori"), cate(len(res.note), "notă contabilă", "note contabile"),
+        cate(len(res.facturi_vanzare), "factură de vânzare", "facturi de vânzare"),
+        cate(len(res.facturi_cumparare), "factură de cumpărare", "facturi de cumpărare"), cate(len(res.plati), "plată", "plăți")))
     # T3 (CATALOG_INVALIDITATE.md): o metoda de plata necunoscuta e inlocuita TACIT cu 03 (fara
     # numerar) de payment_method_anaf. Nu tacit: semnalam per plata valoarea exacta inlocuita.
     for _p in (plati or []):
@@ -717,7 +723,7 @@ def valideaza(res):
         erori.append("AccountID duplicat în planul de conturi.")
     for c in res.conturi:
         if c.tip not in ACCOUNT_TYPE:
-            erori.append("AccountType invalid pentru cont %s (trebuie Activ/Pasiv/Bifunctional)." % c.id)
+            erori.append("AccountType invalid pentru cont %s (trebuie Activ/Pasiv/Bifuncțional)." % c.id)
     # echilibru note: debit = credit pe fiecare notă
     for n in res.note:
         td = sum(l.debit for l in n.linii)
@@ -1644,7 +1650,7 @@ def genereaza(conn, schema, an, luna):
     for _c in res.conturi:
         if _c.tip not in ACCOUNT_TYPE:
             raise ValueError("D406: AccountType invalid pentru contul %s: %r (trebuie Activ/Pasiv/"
-                             "Bifunctional). Corectează tipul contului în planul de conturi." % (_c.id, _c.tip))
+                             "Bifuncțional). Corectează tipul contului în planul de conturi." % (_c.id, _c.tip))
     if strain:
         # Conturile din planul firmei care NU sunt in nomenclatorul normei declarate se EXCLUD (ANAF le
         # respinge: "ID-ul contului trebuie sa se gaseasca in planul de conturi"). NU tacit - le NUMIM in
@@ -1663,13 +1669,13 @@ def genereaza(conn, schema, an, luna):
     if um_necunoscute:
         _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
         res.avertismente.insert(0, "Atenție (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
-                                   "cu H87 (bucata) - nu tacit: o unitate greșită e eronata/respinsă la "
-                                   "ANAF. %s. Mapează unitatile în nomenclatorul UN/ECE Rec.20." % _detu)
+                                   "cu H87 (bucată) - nu tacit: o unitate greșită e eronată/respinsă la "
+                                   "ANAF. %s. Mapează unitățile în nomenclatorul UN/ECE Rec.20." % _detu)
     if cote_necunoscute:
         _detc = "; ".join("factura %s: cota %s%%" % (nrf, ct) for nrf, ct in cote_necunoscute)
         res.avertismente.insert(0, "Atenție (D406): cota(e) de TVA fără cod TaxCode de livrare în "
-                                   "nomenclator, înlocuită(e) tacit cu 310312 (taxare inversa) - date "
-                                   "greșite la ANAF. %s. Verifică cota facturii / actualizeaza "
+                                   "nomenclator, înlocuită(e) tacit cu 310312 (taxare inversă) - date "
+                                   "greșite la ANAF. %s. Verifică cota facturii / actualizează "
                                    "nomenclatorul de coduri de taxa." % _detc)
     if facturi_fara_curs:
         _detfc = ", ".join(facturi_fara_curs)

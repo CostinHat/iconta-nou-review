@@ -194,7 +194,7 @@ OBLIGATORII = {
     "banca": ("D300", "D301"),
     "iban": ("D300", "D301"),
     "telefon": ("D394",),
-    "reg_com": ("Bilant S1005",),
+    "reg_com": ("Bilanț S1005",),
     # [declarant_oblig 17.08.2026] nume+functia declarantului: DUK respinge campul gol al declarantului
     # (nume_declar/functie_declar) -> se cer EXPLICIT (ca regim_fiscal), nu se fabrica "ADMINISTRATOR" tacit.
     # [R101, 30.08.2026] `declarant_prenume` — structura ANAF a fiecareia din cele opt il cere
@@ -204,8 +204,8 @@ OBLIGATORII = {
     # ANULAT pe 30.08.2026, cu motivul: daca exista un declarant fara prenume, intrebarea e ce
     # se completeaza acolo, nu un motiv sa lasi campul liber. SURSA BATE DECIZIA.
     "declarant_prenume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394"),
-    "declarant_nume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
-    "declarant_functie": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
+    "declarant_nume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilanț"),
+    "declarant_functie": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilanț"),
 }
 
 
@@ -238,7 +238,7 @@ def erori_declarant(prof):
     # X literal, iar o buclă i-ar ascunde exact câmpurile pe care garda trebuie să le vadă.
     # *Măsurat: prima formă, cu buclă, făcea sonda să raporteze „nu oprește" despre un cod care
     # oprea — adică fix clasa pe care garda o păzește, produsă de reparația ei.*
-    _MESAJ = ("LIPSĂ %s (obligatoriu la ANAF: structura declarației îl cere, cu mesaj propriu de "
+    _MESAJ = ("Lipsă %s (obligatoriu la ANAF: structura declarației îl cere, cu mesaj propriu de "
               "eroare). Completează declarantul în Date firmă.")
     prof = prof or {}
     erori = []

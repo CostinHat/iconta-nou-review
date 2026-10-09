@@ -109,8 +109,8 @@ def test_ruptura_factura_ic_neintrodusa_refuza_cu_lista(conn):
     with pytest.raises(ValueError) as ei:
         d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
     msg = str(ei.value)
-    assert "achiziție" in msg and "FURNIZOR DE GMBH" in msg, msg
-    assert "neintroduse în operatiunile D301" in msg, msg
+    assert "achiziții intracomunitare" in msg and "FURNIZOR DE GMBH" in msg, msg
+    assert "neintroduse în operațiunile D301" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

@@ -229,7 +229,7 @@ TIPURI = {
 def tarie(tip):
     """Tăria unui tip. `None` = neatribuită încă. Ridică pe tip necunoscut — niciodată implicit."""
     if tip not in TIPURI:
-        raise TipNecunoscut(
+        raise TipNecunoscut(  # invariant-intern-ok: registrul de tipuri e cod
             "tip de constatare neînregistrat: %r. Un tip nou intră în `TIPURI` ÎMPREUNĂ cu tăria "
             "lui, altfel constatarea circulă fără să se știe dacă cere confirmare." % (tip,))
     t = TIPURI[tip].get("tarie")
@@ -268,7 +268,7 @@ def amprenta(constatare):
     """
     d = {k: constatare.get(k) for k in _CAMPURI_AMPRENTA if k in constatare}
     if "tip_constatare" not in d:
-        raise TipNecunoscut("constatare fără `tip_constatare` — nu i se poate calcula amprenta")
+        raise TipNecunoscut("constatare fără `tip_constatare` — nu i se poate calcula amprenta")  # invariant-intern-ok: constatarea e construită de cod
     tarie(d["tip_constatare"])   # ridică dacă tipul nu e înregistrat
     s = json.dumps(d, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(s.encode("utf-8")).hexdigest()[:32]
@@ -293,7 +293,7 @@ def _culege_firma(conn, schema, an, luna):
     brute = list(rez.get("constatari") or [])
     rulat = rez.get("orizontal_rulat")
     if rulat is None:
-        raise ValueError(
+        raise ValueError(  # invariant-intern-ok: contractul dintre module
             "`verifica_d390` n-a declarat `orizontal_rulat` — nu pot ști dacă axa orizontală a rulat "
             "sau doar n-a găsit nimic, iar un implicit ar transforma «n-am verificat» în «e curat»")
     # [02.09.2026] Perechile ANUALE ale D101 — DUPĂ verificarea contractului, nu înainte: dacă
@@ -426,7 +426,7 @@ def _domeniu_efectiv(firme, domeniu):
     if firme is None:
         return domeniu or DOMENIU
     if not (domeniu or "").strip():
-        raise ValueError(
+        raise ValueError(  # invariant-intern-ok: contractul dintre module
             "`firme` injectate fără `domeniu` scris: răspunsul ar purta criteriul întregului "
             "portofoliu («%s») despre o mulțime aleasă de altcineva. Numește ce ai dat." % DOMENIU)
     return domeniu

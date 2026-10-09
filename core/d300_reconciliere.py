@@ -38,6 +38,8 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca
 `d300.pull` in calea non-tva_la_incasare, care nu seteaza search_path).
 """
 
+from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
+from core.d300_randuri import rand_formular as _rand_formular
 from core import nomenclator_status_factura as _nsf
 from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
@@ -180,11 +182,11 @@ def _confrunta(R, col, ded, manual_keys):
                                "generator": gen, "cale2": cale2, "diferenta": gen - cale2})
 
     for cota, pre in _COLECTAT.items():
-        cmp("%s_1" % pre, R.get("%s_1" % pre, 0), col[cota][0], "colectat %d%% baza" % cota)
-        cmp("%s_2" % pre, R.get("%s_2" % pre, 0), col[cota][1], "colectat %d%% TVA" % cota)
+        cmp("%s_1" % pre, R.get("%s_1" % pre, 0), col[cota][0], "colectat %d%%, baza" % cota)
+        cmp("%s_2" % pre, R.get("%s_2" % pre, 0), col[cota][1], "colectat %d%%, TVA" % cota)
     for cota, pre in _DEDUCTIBIL.items():
-        cmp("%s_1" % pre, R.get("%s_1" % pre, 0), ded[cota][0], "deductibil %d%% baza" % cota)
-        cmp("%s_2" % pre, R.get("%s_2" % pre, 0), ded[cota][1], "deductibil %d%% TVA" % cota)
+        cmp("%s_1" % pre, R.get("%s_1" % pre, 0), ded[cota][0], "deductibil %d%%, baza" % cota)
+        cmp("%s_2" % pre, R.get("%s_2" % pre, 0), ded[cota][1], "deductibil %d%%, TVA" % cota)
     return divergente, sarite
 
 
@@ -225,11 +227,9 @@ def verifica_reconciliere(conn, perioada, res, manual=None):
     rap = reconciliaza(conn, perioada, res, manual)
     if rap["divergente"]:
         linii = "; ".join(
-            "%s (%s): generator=%d vs cale2=%d (dif %d)" %
-            (d["rand"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+            _dif("%s (%s)" % (_rand_formular(d["rand"]), d["eticheta"]), d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"])
         raise ReconciliereD300(
-            "D300 A DOUA CALE: totalurile generatorului NU se reconciliaza cu recalculul "
-            "independent din liniile brute. Divergente: %s. Declaratia NU se genereaza - "
-            "gardul nu alege singur cine are dreptate; verifica agregarea si datele." % linii)
+            "D300: totalurile din decont nu se potrivesc cu recalculul făcut separat din liniile "
+            "facturilor. Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

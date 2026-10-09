@@ -247,7 +247,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
         <option value="factura" selected>Factura</option>
         <option value="proforma">Proforma</option>
-        <option value="aviz">Aviz insotire</option>
+        <option value="aviz">Aviz de însoțire</option>
       </select>
       <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
       <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna facturii stă în browser; renunțarea n-are cerere la server" style="margin-left:8px">Renunță la factură</button>

@@ -38,11 +38,11 @@ def incarca_factura(conn, schema, factura_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         factura = _repo.factura_pentru_ubl(cur, schema, factura_id)
         if not factura:
-            raise ValueError("factura %s inexistenta in %s" % (factura_id, schema))
+            raise ValueError("factura %s inexistentă în %s" % (factura_id, schema))
         linii = _repo.linii_pentru_ubl(cur, schema, factura_id)
         furnizor = _repo.emitent_pentru_ubl(cur, schema)
     if not furnizor:
-        raise ValueError("firma_profil (emitent) neconfigurat in %s" % schema)
+        raise ValueError("Datele firmei emitente nu sunt completate: completează-le în Date firmă înainte de a trimite factura.")
     if not linii:
         raise ValueError("factura %s nu are linii" % factura_id)
     client = {

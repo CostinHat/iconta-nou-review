@@ -74,6 +74,6 @@ def livrare_aur(optiune_taxare, calitate_client, client_identificare):
         raise ValueError("identificarea clientului este obligatorie (art. 313 al. 10)")
     if optiune_taxare:
         if calitate_client != "PJ":
-            raise ValueError("optiunea de taxare permisa doar catre persoana impozabila (art. 313 al. 4-5)")
+            raise ValueError("opțiunea de taxare permisa doar către persoana impozabilă (art. 313 al. 4-5)")
         return "taxare_inversa"
     return "scutit"

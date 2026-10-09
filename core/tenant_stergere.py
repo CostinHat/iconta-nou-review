@@ -298,7 +298,7 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
             if ev["are"]:
                 raise PermissionError(
                     "Firma are evidență și nu se poate șterge: %s. "
-                    "O firmă care a produs documente se DEZACTIVEAZĂ, nu se șterge — "
+                    "O firmă care a produs documente se dezactivează, nu se șterge — "
                     "documentele rămân, firma iese din listă." % "; ".join(ev["motive"]))
         # URMA SE SCRIE ÎNAINTE de ștergeri, cât mai există de unde: numele, CUI-ul și schema
         # dispar odată cu rândul din `tenants`. `firme_scoase` NU e în `TABELE_TENANT` (vezi

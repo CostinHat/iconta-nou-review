@@ -1899,6 +1899,15 @@ class PlanContIn(BaseModel):  # [p95_plan_conturi]
     tip: Optional[str] = "Bifunctional"
 
 
+@app.delete("/tenants/{tenant_id}/plan-conturi/{simbol}")
+def tenant_plan_conturi_sterge(tenant_id: int, simbol: str, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[Retest 2 pct.13] Șterge un cont din plan; refuză contul folosit în note (decizia Costin O12) și sinteticul cu analitice."""
+    try:
+        return _uc_tenants.tenant_plan_conturi_sterge(tenant_id, simbol, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] adauga cont nou (analitic/nestandard)
 # [R55, 26.08.2026] Rolul e AICI, nu doar la validarea notei. Motivul, al lui Costin: refuzul pe
 # cont inexistent (R54) „nu apara nimic daca oricine poate adauga contul". Planul de conturi e
@@ -4698,6 +4707,15 @@ def eu_educatie(ctx=Depends(cere_cabinet)):
 class PatruOchiIn(BaseModel):
     activ: bool
 
+@app.get("/eu/ciorne")
+def eu_ciorne(ctx=Depends(cere_cabinet)):
+    """[Retest 2 pct.12] Notele ciornă ale utilizatorului, pe firmele la care are acces (citire)."""
+    try:
+        return _uc_eu.eu_ciorne(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/eu/patru-ochi")  # po_stare_v1
 def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
     """[po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement
@@ -5358,6 +5376,15 @@ def casa_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_
 def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.casa_sterge(tenant_id, op_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza")
+def casa_storneaza(tenant_id: int, op_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Stornarea unei operațiuni de casă cu notă validată (Retest 2, pct.4): operațiunea inversă în registru + nota ciornă în roșu."""
+    try:
+        return _uc_tenants.casa_storneaza(tenant_id, op_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

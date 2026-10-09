@@ -30,7 +30,7 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
     eveniment = (eveniment or "").strip()
     if tip == "cadou":
         if eveniment not in EVENIMENTE_CADOU:
-            return {"eroare": "evenimentul cadoului e obligatoriu (paste/craciun/8martie/1iunie/altul)"}
+            return {"eroare": "evenimentul cadoului e obligatoriu (paste/crăciun/8martie/1iunie/altul)"}
     elif tip == "cultural":
         # [TICHETE CULTURALE] Legea 165/2018 art.21(1): lunar (eveniment gol) SAU ocazional (pe eveniment).
         if eveniment not in ("", "ocazional"):

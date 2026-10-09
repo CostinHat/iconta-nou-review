@@ -117,7 +117,7 @@ def test_mutatie_livrare_pierduta_pica(conn_recon):
     with pytest.raises(ReconciliereD394) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "cota 21% tvaL" in msg and "generator=0" in msg and "cale2=210" in msg, msg
+    assert "cota 21%, livrări, TVA" in msg and "în declarație 0,00 lei," in msg and "recalculat 210,00 lei " in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -131,7 +131,7 @@ def test_mutatie_livrare_clasificata_la_achizitii_pica(conn_recon):
     with pytest.raises(ReconciliereD394) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "tvaL" in msg and "tvaA" in msg, msg
+    assert "livrări, TVA" in msg and "achiziții, TVA" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -143,7 +143,7 @@ def test_mutatie_semn_inversat_pica(conn_recon):
     with pytest.raises(ReconciliereD394) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "cota 21% tvaA" in msg and "generator=-168" in msg and "cale2=168" in msg, msg
+    assert "cota 21%, achiziții, TVA" in msg and "în declarație -168,00 lei," in msg and "recalculat 168,00 lei " in msg, msg
 
 
 # ============================================================

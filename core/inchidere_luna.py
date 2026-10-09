@@ -53,6 +53,15 @@ def luna_in_curs(an, luna, azi=None):
     return None
 
 
+def ultima_zi_incheiata(azi=None):
+    """Ultima zi a ultimei luni ÎNCHEIATE (aceeași regulă ca `luna_in_curs`). [Retest 2, pct.5] „amortizarea «calculată la zi»
+    include luna în curs (10/2026) […] Decizie: calculul merge până la ultima lună încheiată, aceeași regulă ca la închiderea lunii.”"""
+    import datetime
+    from core.common import azi_ro
+    azi = azi or azi_ro()
+    return azi.replace(day=1) - datetime.timedelta(days=1)
+
+
 def blocaj(conn, schema, an, luna):
     """Motivul pentru care luna NU se poate declara inchisa, sau None. Sursa unica: aceeasi sonda pe
     care o foloseste si semaforul (`d390.evidenta_incompleta`) - o singura definitie a „evidentei

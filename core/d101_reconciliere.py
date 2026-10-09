@@ -25,6 +25,7 @@ numeste randul si AMBELE valori; NU repara tacit (tipar DECIZII 05.08).
 
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
+from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
 from core import repo_d101_reconciliere as _repo
 
 
@@ -53,7 +54,7 @@ def _baza_contabila_independenta(conn, an):
             "P4": _q(ven_fin or 0), "P5": _q(chelt_fin or 0)}
 
 
-_ETICHETA = {"P1": "venituri exploatare", "P2": "cheltuieli exploatare",
+_ETICHETA = {"P1": "venituri din exploatare", "P2": "cheltuieli de exploatare",
              "P4": "venituri financiare", "P5": "cheltuieli financiare"}
 
 
@@ -77,11 +78,9 @@ def verifica_reconciliere(conn, schema, perioada, res, manual=None):
     de recalculul din balanta. Numeste randul si AMBELE valori. NU repara tacit."""
     rap = reconciliaza(conn, schema, perioada, res, manual)
     if rap["divergente"]:
-        linii = "; ".join("%s (%s): generator=%d vs cale2=%d (dif %d)" %
-                          (d["rand"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+        linii = "; ".join(_dif(d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
                           for d in rap["divergente"])
         raise ReconciliereD101(
-            "D101 A DOUA CALE (profit CONTABIL, nu impozabil): veniturile/cheltuielile din balanta "
-            "NU se leaga de recalculul independent. Divergente: %s. Declaratia NU se genereaza - "
-            "gardul nu alege singur cine are dreptate; verifica agregarea si notele." % linii)
+            "D101: veniturile și cheltuielile din declarație (profitul contabil, nu cel impozabil) nu se "
+            "potrivesc cu recalculul făcut separat din balanță. Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

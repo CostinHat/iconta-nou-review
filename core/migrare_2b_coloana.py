@@ -25,13 +25,13 @@ def are_coloana(cur, schema):
 def aplica(conn, schema):
     """Întoarce {completati, necompletati: [id], scoasa: bool}."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         if not are_coloana(cur, schema):
             return {"completati": 0, "necompletati": [], "scoasa": False}
         cur.execute('SELECT to_regclass(%s)', ('"%s".salariu_istoric' % schema,))
         if cur.fetchone()[0] is None:
-            raise ValueError("%s: tabela salariu_istoric lipsește — rulează întâi core.migrare_salariu_istoric" % schema)
+            raise ValueError("%s: tabela salariu_istoric lipsește — rulează întâi core.migrare_salariu_istoric" % schema)  # invariant-intern-ok: migrare rulată de operator
         cur.execute(f'''SELECT id FROM "{schema}".salariati sa
                         WHERE NOT EXISTS (SELECT 1 FROM "{schema}".salariu_istoric i WHERE i.salariat_id = sa.id)
                           AND (sa.data_angajare IS NULL OR sa.salariu_brut IS NULL)''')

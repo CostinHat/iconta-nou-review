@@ -21,7 +21,7 @@ ALTER TABLE "{s}".facturi ADD COLUMN IF NOT EXISTS tert_judet text;
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

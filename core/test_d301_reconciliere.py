@@ -129,7 +129,7 @@ def test_mutatie_operatiune_pierduta_din_agregare_pica(conn_recon):
     with pytest.raises(ReconciliereD301) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "baza2" in msg and "generator=2500" in msg and "cale2=0" in msg, msg   # ambele valori
+    assert "secțiunea 2, baza" in msg and "în declarație 2.500,00 lei," in msg and "recalculat 0,00 lei " in msg, msg   # ambele valori
 
 
 # ============================================================
@@ -145,8 +145,8 @@ def test_semantic_ron_curs_diferit_de_1_baza_supraevaluata_pica(conn_recon):
     with pytest.raises(ReconciliereD301) as ei:
         _d301.genereaza(conn_recon, _SCHEMA, per)
     msg = str(ei.value)
-    assert "generator=5000" in msg and "cale2=1000" in msg, msg
-    assert "baza1" in msg, msg
+    assert "în declarație 5.000,00 lei," in msg and "recalculat 1.000,00 lei " in msg, msg
+    assert "secțiunea 1, baza" in msg, msg
 
 
 # ============================================================

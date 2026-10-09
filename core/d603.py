@@ -148,11 +148,11 @@ def erori_generare(prof, manual):
     if not ds:
         er.append("dataSfarsit lipsă/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
     if tdi and tds and tdi >= tds:
-        er.append("dataInceput trebuie să fie mai mica decat dataSfarsit (DUK regula R36).")
+        er.append("dataInceput trebuie să fie mai mica decât dataSfarsit (DUK regula R36).")
     if not _data(manual.get("dataExceptare"))[0]:
         er.append("dataExceptare obligatorie/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
     if not str(manual.get("documente") or "").strip():
-        er.append("documente obligatoriu (documentele justificative ale exceptarii).")
+        er.append("documente obligatoriu (documentele justificative ale exceptării).")
     if int(manual.get("imputernicit") or 0) == 1:
         if not _data(manual.get("dataImputernicit"))[0]:
             er.append("imputernicit=1 => dataImputernicit obligatoriu/valid.")

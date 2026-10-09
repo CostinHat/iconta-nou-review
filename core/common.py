@@ -126,7 +126,7 @@ def fereastra_tva(perioada, tip):
     pentru trimestrial) de FEREASTRA DE DATE (trimestrul intreg). perioada.luna = ancora."""
     an, luna = perioada.an, perioada.luna
     if luna is None:
-        raise ValueError("fereastra_tva cere perioada.luna (ancora)")
+        raise ValueError("fereastra_tva cere perioada.luna (ancora)")  # invariant-intern-ok: argumentul apelantului, nu date introduse
     if tip == "L":
         sf = date(an + 1, 1, 1) if luna == 12 else date(an, luna + 1, 1)
         return date(an, luna, 1), sf
@@ -422,7 +422,7 @@ def problema(cod, nivel=BLOCANT, **campuri):
     Niciodată doar 'False' sau []: întotdeauna ce e greșit, ce se aștepta, temeiul.
     """
     if cod not in CODURI:
-        raise ValueError(f"cod de eroare neînregistrat în common.CODURI: {cod!r}")
+        raise ValueError(f"cod de eroare neînregistrat în common.CODURI: {cod!r}")  # invariant-intern-ok: registrul de coduri, eroare de program
     sablon, temei = CODURI[cod]
     # Câmpurile MONETARE se formatează canonic (1.234,56) DOAR pentru mesaj — șabloanele CODURI au deja
     # sufixul „lei", deci bani() fără monedă. Valorile brute rămân în return (folosite programatic de
@@ -807,6 +807,16 @@ ETICHETE_COTE = {
     "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
     "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
 }
+
+
+def cate(n, singular, plural):
+    """„1 linie”, „3 linii”, „20 de linii” — numeralul cu substantivul acordat (româna cere „de” de la 20 în sus, cu excepția
+    numerelor care se termină în 01–19). [Retest 2, pct.14] „«1 parteneri» în Rezumat D394”."""
+    n = int(n)
+    if n == 1:
+        return "1 %s" % singular
+    r = n % 100
+    return "%d %s%s" % (n, "de " if n and (r == 0 or r >= 20) else "", plural)
 
 
 class PerioadaIndisponibila(ValueError):
@@ -1231,7 +1241,7 @@ def cere_coloane(rand, chei, unde=""):
         raise ValueError(
             "coloane lipsa%s: %s. Randul citit din baza nu are aceste campuri - schema "
             "nu se potriveste cu ce asteapta codul (SELECT * nu semnaleaza asta singur)."
-            % ((" in %s" % unde) if unde else "", ", ".join(lipsa)))
+            % ((" în %s" % unde) if unde else "", ", ".join(lipsa)))
     return rand
 
 
@@ -1250,14 +1260,14 @@ def cere_coloane_cursor(cur, chei, unde=""):
     """
     col = {d[0] for d in (cur.description or ())}
     if not col:
-        raise ValueError("cursorul nu a intors coloane%s - query-ul n-a rulat?"
+        raise ValueError("cursorul nu a întors coloane%s - query-ul n-a rulat?"
                          % ((" la %s" % unde) if unde else ""))
     lipsa = [c for c in chei if c not in col]
     if lipsa:
         raise ValueError(
             "coloane lipsa%s: %s. Query-ul a reusit dar schema nu are aceste campuri - "
             "SELECT * nu semnaleaza asta singur, iar valorile ar deveni tacit zero."
-            % ((" in %s" % unde) if unde else "", ", ".join(lipsa)))
+            % ((" în %s" % unde) if unde else "", ", ".join(lipsa)))
     return True
 
 

@@ -121,7 +121,7 @@ export async function randeazaSetari(corp, nav) {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
         <div class="cap-titlu">Chei API ${semnAjutor("F005")}</div>
-        <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
+        <p class="mig-intro">Pentru conectarea altor aplicații la datele cabinetului. Cheia se afișează o singură dată.</p>
         <div id="set-chei-lista" data-actiune="GET /cabinet/api-chei"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
         <input id="set-cheie-nume" class="camp-input" type="text" placeholder="ex: integrare CRM">

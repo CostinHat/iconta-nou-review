@@ -19,7 +19,7 @@ def _strip(s):
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     n = 0
     with conn.cursor() as cur:
         cur.execute("SET search_path TO %s, public" % schema)

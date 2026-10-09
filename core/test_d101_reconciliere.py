@@ -83,7 +83,7 @@ def test_mutatie_venituri_gresite_pica(conn_recon):
     with pytest.raises(ReconciliereD101) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, Perioada(2026), res)
     msg = str(ei.value)
-    assert "P1 (venituri exploatare): generator=9999 vs cale2=1000" in msg, msg
+    assert "venituri din exploatare: în declarație 9.999,00 lei, recalculat 1.000,00 lei" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

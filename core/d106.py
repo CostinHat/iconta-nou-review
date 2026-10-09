@@ -115,26 +115,26 @@ def erori_generare(prof, manual):
             er.append("Lipsă %s (declarant obligatoriu)." % c)
     actionari = manual.get("actionari") or []
     if not actionari:
-        er.append("D106 cere cel puțin un actionar (actionari[]).")
+        er.append("D106 cere cel puțin un acționar (acționari[]).")
     vazute = set()
     for i, a in enumerate(actionari, 1):
         cif = _cif(a.get("cif"))
         if not (2 <= len(cif) <= 13):
-            er.append("Actionar %d: CIF (cif) invalid." % i)
+            er.append("Acționar %d: CIF (cif) invalid." % i)
         elif cif in vazute:
-            er.append("Actionar %d: CIF %s repetat (actionarii trebuie să fie unici)." % (i, cif))
+            er.append("Acționar %d: CIF %s repetat (acționarii trebuie să fie unici)." % (i, cif))
         else:
             vazute.add(cif)
         if not str(a.get("denumire") or "").strip():
-            er.append("Actionar %d: lipsă denumire (denAct)." % i)
+            er.append("Acționar %d: lipsă denumire (denAct)." % i)
         try:
             cota = float(str(a.get("cota")).replace(",", ".")) if a.get("cota") not in (None, "") else 0.0
         except ValueError:
             cota = -1
         if not (0 <= cota <= 100):
-            er.append("Actionar %d: cota de participare (cota) trebuie în 0..100." % i)
+            er.append("Acționar %d: cota de participare (cota) trebuie în 0..100." % i)
         if _i(a.get("dividend")) <= 0:
-            er.append("Actionar %d: dividend distribuit (dividend) trebuie > 0." % i)
+            er.append("Acționar %d: dividend distribuit (dividend) trebuie > 0." % i)
     return er
 
 

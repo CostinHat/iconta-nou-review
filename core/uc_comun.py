@@ -267,13 +267,14 @@ def controale_inchidere(conn, schema, an, luna):
     in_curs = _il.luna_in_curs(an, luna)   # [retest 08.10 pct.11] o lună se închide după ce s-a încheiat
     if in_curs:
         blocaje.append(_ctl("LUNA_IN_CURS", in_curs))
+    from core.common import cate as _cate
     if ciorne:
-        blocaje.append(_ctl("CIORNE", "%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel "
-                                                 "rămân închise înăuntru și nu mai apar nicăieri" % ciorne))
+        blocaje.append(_ctl("CIORNE", "%s în ciornă în perioadă; validează-le sau șterge-le din Jurnal, altfel "
+                                      "rămân închise înăuntru și nu mai apar nicăieri" % _cate(ciorne, "notă rămâne", "note rămân")))
     if facturi_desch:
-        blocaje.append(_ctl("FACTURI_NEINCHEIATE", "%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau ciornă de "
+        blocaje.append(_ctl("FACTURI_NEINCHEIATE", "%s din perioadă încă neîncheiate (ciornă sau ciornă de "
                         "recunoaștere); contabilizează-le sau recunoaște-le, altfel după închidere nu se mai poate — amândouă actele "
-                        "cer o lună deschisă" % facturi_desch))
+                        "cer o lună deschisă" % _cate(facturi_desch, "factură e", "facturi sunt")))
     bl = None if in_curs else _il.blocaj(conn, schema, an, luna)   # `blocaj` începe tot cu luna în curs — un singur rând, nu două
     if bl:
         blocaje.append(_ctl("EFACTURI", str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura."))
@@ -283,22 +284,58 @@ def controale_inchidere(conn, schema, an, luna):
         lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _rmf.toate(cur), an, luna)
         sold_581 = -_mfr.sold_creditor_cont(cur, "581", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
         sold_401 = -_mfr.sold_creditor_cont(cur, "401", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
+    from core.pdf_util import bani as _bani   # [Retest 2 pct.2] sumele semnalelor și blocajelor în forma românească
     for x in lipsa:
         blocaje.append(_ctl("AMORTIZARE_NEINREGISTRATA", ("amortizarea lunii nu e înregistrată pe contul %s (%s lei după calcul); "
-                            "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], x["rata"]))
+                            "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], _bani(x["rata"])))
                             if x.get("rata") is not None else ("amortizarea lunii nu se poate calcula pe contul %s: %s — corectează "
                             "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
     if sold_581:
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
-                            "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % sold_581,
+                            "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % _bani(sold_581),
                             cont="581", sold=str(sold_581)))
     if sold_401 > 0:
         # [08.10.2026, retest pct.12] „Semnal nou la închidere: furnizor cu sold debitor (F2: 401 D 500, fără factură).” 401 e cont de
         # pasiv: un sold debitor înseamnă plăți fără factura furnizorului înregistrată (sau un avans care stă pe 401 în loc de 409).
-        semnale.append(_ctl("FURNIZORI_SOLD_DEBITOR", "contul 401 (furnizori) are sold DEBITOR %s lei la sfârșitul lunii: s-a plătit fără "
-                            "factura furnizorului înregistrată — înregistrează factura, sau trece plata ca avans (409)" % sold_401,
+        semnale.append(_ctl("FURNIZORI_SOLD_DEBITOR", "contul 401 (furnizori) are sold debitor de %s lei la sfârșitul lunii: s-a plătit "
+                            "fără factura furnizorului înregistrată — înregistrează factura, sau trece plata ca avans (409)"
+                            % _bani(sold_401),
                             cont="401", sold=str(sold_401)))
+    if not in_curs:
+        semnale += [_ctl("DECLARATIE_NEDEPUSA", m, tip=t) for t, m in declaratii_nedepuse_cu_termen_in_luna(schema, an, luna)]
     return {"blocaje": blocaje, "semnale": semnale}
+
+
+def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
+    """[(tip, mesaj)] — [Retest 2 pct.11, comanda Costin 09.10.2026] „O declarație care are termenul în luna respectivă și nu e
+    depusă apare ca avertisment.” Avertisment, nu blocaj: depunerea e un act față de ANAF, nu o înregistrare a lunii. Sursa e
+    semaforul Control fiscal (`control_fiscal_api.evalueaza_firma`), aceeași listă de restanțe, filtrată pe termenul din lună; un
+    eșec de calcul se spune ca semnal, nu se înghite."""
+    import calendar as _cal
+    import datetime as _dt
+    from core import control_fiscal_api as _cf
+    from core.common import azi_ro
+    from core.pdf_util import data_ro as _data_ro
+    inceput, sfarsit = _dt.date(an, luna, 1), _dt.date(an, luna, _cal.monthrange(an, luna)[1])
+    try:
+        with db.get_conn() as cp:
+            with cp.cursor() as cur:
+                from core import repo_tenants as _rt
+                r = _rt.dupa_numele_schemei(cur, schema)
+            if not r:
+                return []
+            with db.get_conn(schema) as cs:
+                ev = _cf.evalueaza_firma(cs, cp, r[0], schema, azi or azi_ro(), cu_reconciliere=False)
+    except Exception as e:  # noqa: BLE001 — se spune, nu se tace (CLAUDE.md: try/except tăcut e mai grav decât o cădere)
+        return [("?", "nu pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, str(e).split("\n")[0][:160]))]
+    out = []
+    for d in sorted(list(ev.get("lipsa") or []) + list(ev.get("urmarit") or []), key=lambda x: (x.get("termen") or "", x.get("tip") or "")):
+        t = _dt.date.fromisoformat(str(d.get("termen"))[:10]) if d.get("termen") else None
+        if t and inceput <= t <= sfarsit:
+            out.append((d["tip"], "%s pentru %s, cu termen pe %s, nu e depusă — depune-o sau marchează-o depusă în Control fiscal"
+                        % (d["tip"].upper(), d.get("perioada") or _cf.perioada_canonica(d.get("an"), d.get("luna"), "luna"),
+                           _data_ro(t))))
+    return out
 
 
 def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id, tenant_id=None, coada_id=None):
@@ -317,7 +354,7 @@ def _link_element(coada_id):
     (`"validat"`, fără id) a produs notificări care nu se mai puteau rezolva (44, 45, 46, 48 pe producție); baza o refuză acum
     (`notificari_element_ck`, `core/migrare_decizii_0810.py`), iar aici lipsa elementului e o eroare, nu o legătură mai vagă."""
     if not coada_id:
-        raise ValueError("notificarea de acțiune cere elementul din coadă (coada_id lipsește)")
+        raise ValueError("notificarea de acțiune cere elementul din coadă (coada_id lipsește)")  # invariant-intern-ok: argumentul apelantului
     return "validat:%d" % int(coada_id)
 
 
@@ -871,7 +908,7 @@ def _cere_z_unic(cur, schema, numar):
     iid, data_ex, sursa = (r["id"], r["data"], r["sursa"]) if isinstance(r, dict) else r
     raise _erori.Conflict(MESAJ_Z_DUPLICAT % {
         "numar": numar, "data": data_ex, "id": iid,
-        "cum": "importata din fisier AMEF" if sursa == "amef" else "tastata"})
+        "cum": "importată din fișier AMEF" if sursa == "amef" else "tastată"})
 
 
 def _cere_an_luna(corp):
@@ -939,7 +976,7 @@ def _verificari_contabile(schema, an, luna):
             # verificator (VERDICT_COLAPSAT, stare-literal), si pe drept - un verdict carpit dupa
             # constructie are doua surse. A doua oara azi cand fac asta.
             _c = dict(_af.afirmatie("verificare_rupta", eticheta,
-                                    "NU pot verifica %s: %s" % (eticheta, _e),
+                                    "Nu pot verifica %s: %s" % (eticheta, str(_e).replace("PERIOADA_BLOCATA: ", "")),
                                     eroare="%s: %s" % (type(_e).__name__, _e)),
                       stare="gri", eticheta=eticheta, temei="Verificarea nu a rulat.",
                       remediu={"fel": "investigatie", "cauza": "Eroare la verificare.",

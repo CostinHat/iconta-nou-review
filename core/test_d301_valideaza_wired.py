@@ -49,7 +49,7 @@ def test_data_doc_gol_blocheaza_cu_motiv_exact(monkeypatch):
 def test_tip_out_of_nomenclator_blocheaza(monkeypatch):
     with pytest.raises(ValueError) as ei:
         _gen(monkeypatch, [_op(tip=9)])
-    assert "în afară nomenclatorului" in str(ei.value), str(ei.value)
+    assert "în afara nomenclatorului" in str(ei.value), str(ei.value)
 
 
 def test_valuta_out_of_nomenclator_blocheaza(monkeypatch):

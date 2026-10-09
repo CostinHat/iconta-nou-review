@@ -30,6 +30,9 @@ nu se vede.
 """
 import ast
 import glob
+import io
+import json
+import os
 import re
 
 from core.test_diacritice_afisate import _DIAC, _DISPLAY_KEYS, _TRIGGERE, _candidati, _cuvinte
@@ -38,6 +41,10 @@ CHEI = set(_DISPLAY_KEYS) | {"temei_completitudine"}
 LISTE_AFISATE = {"avertismente", "blocaje", "erori", "motive", "limite", "atentionari"}
 FARA_ECRAN = {"core/registru_interpretari.py", "core/p4_clasificare.py"}
 DECLARATII_CACHE = {"Declaratie", "_Dec"}
+#: [Retest 2, pct.2] rolul `raise X("…")`: mesajul unei excepții de domeniu ajunge pe ecran (refuzul, `DateInvalide(str(e))`).
+#: Excepțiile de PROGRAMATOR (invarianți interni) nu sunt text pentru contabil și nu se citesc.
+EXCEPTII_DEV = {"RuntimeError", "TypeError", "KeyError", "AssertionError", "AfirmatieIncompleta", "NotImplementedError",
+                "SystemExit", "ImportError", "AttributeError", "IndexError"}
 
 TRIGGERE = set(_TRIGGERE) | {"atentie", "apartin", "apartine", "apartinand", "incrucisat", "incrucisata", "incrucisate",
                              "verificari"}
@@ -47,7 +54,7 @@ ACRONIME = {"ANAF", "IBAN", "OMFP", "OPANAF", "SPV", "CUI", "CIF", "CNP", "TVA",
             "HORECA", "FIFO", "LIFO", "OSS", "IOSS", "NIR", "SEPA", "COR", "SAFT", "UBL", "CIUS", "BCR", "CEC", "DNF", "UIT", "SSM",
             "IMM", "ITM", "AMEF", "SMTP", "OAUTH", "HTML", "CSV", "UTC", "IBAN", "DIICOT", "WINMENTOR", "UNICEF", "CNAS", "FNUASS",
             "CAM", "CAS", "CMR", "RO", "AAAA", "XLSX", "GDPR", "ANRP", "IFRS", "AFSP", "HEAD", "ZIP", "SWIFT", "NACE",
-            "YYYY", "SUPPLY", "CORRECTION", "MSEST"}   # ultimele trei: elemente ale structurii XML D398/D399 (OSS), numite ca în ANAF   # + numerele romane din citări (art.LXVI), vezi `majuscule`
+            "YYYY", "SUPPLY", "CORRECTION", "MSEST", "IMCA", "DGRFP", "JPEG", "JPG", "PNG", "GIF", "WEBP"}   # ultimele trei: elemente ale structurii XML D398/D399 (OSS), numite ca în ANAF   # + numerele romane din citări (art.LXVI), vezi `majuscule`
 
 _SNAKE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
 _PUNCT = re.compile(r"\b(?!(?:art|alin|lit|pct|nr|ex|etc|resp|max|min|instr|rd|cf|cca|str|bl|sc|ap|et|jud|tel|cod|pag)\.)"
@@ -78,15 +85,47 @@ def _roluri_noi():
     return out
 
 
+#: [Retest 2 pct.2] un `raise` de domeniu al cărui mesaj NU ajunge la contabil (argumentul greșit al unui apelant, un registru
+#: din cod, pornirea serviciului) poartă pe linia lui `# invariant-intern-ok: <motiv>` — ca `# upsert-ok:`. Motivul e obligatoriu,
+#: iar numărul lor are plafon: un marcaj nou se adaugă conștient, cu plafonul ridicat aici, nu se strecoară.
+MARCAJ_INTERN = re.compile(r"#\s*invariant-intern-ok:\s*(\S.*)?$")
+PLAFON_INVARIANTE = 27
+
+
+def _intern(linii, n):
+    m = MARCAJ_INTERN.search(linii[n.lineno - 1]) if 0 < n.lineno <= len(linii) else None
+    return bool(m and m.group(1))
+
+
+def _sabloane(arb):
+    """[Retest 2] Numele legate de un text (`_MESAJ = ("Lipsă %s …")`, la nivel de modul sau de funcție): un mesaj construit
+    `_MESAJ % x` n-are literalul în apel, iar gardul nu-l vedea (instanța: „LIPSĂ numele declarantului”, firma_profil_api)."""
+    out = {}
+    for n in ast.walk(arb):
+        if (isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)
+                and isinstance(n.value, ast.Constant) and isinstance(n.value.value, str)):
+            out.setdefault(n.targets[0].id, []).append((n.value.lineno, n.value.value))
+    return out
+
+
+def _lit_cu_sabloane(node, sabloane):
+    return _lit(node) + [x for nm in ast.walk(node) if isinstance(nm, ast.Name) for x in sabloane.get(nm.id, [])]
+
+
 def roluri_din(src, fn="<sursa>"):
     out = []
     arb = ast.parse(src)
+    linii = src.splitlines()
+    sabloane = _sabloane(arb)
     for n in ast.walk(arb):
+        if (isinstance(n, ast.Raise) and isinstance(n.exc, ast.Call) and n.exc.args
+                and _nume_apel(n.exc.func) not in EXCEPTII_DEV and not _intern(linii, n)):
+            out += [(fn, ln, s) for ln, s in _lit_cu_sabloane(n.exc.args[0], sabloane)]
         if isinstance(n, ast.Call) and _nume_apel(n.func) not in DECLARATII_CACHE:
             out += [(fn, ln, s) for kw in n.keywords if kw.arg in CHEI for ln, s in _lit(kw.value)]
             f = n.func
             if isinstance(f, ast.Attribute) and f.attr in ("append", "insert") and _nume_apel(f.value) in LISTE_AFISATE:
-                out += [(fn, ln, s) for a in n.args for ln, s in _lit(a)]
+                out += [(fn, ln, s) for a in n.args for ln, s in _lit_cu_sabloane(a, sabloane)]
         if isinstance(n, (ast.Assign, ast.AugAssign)):
             tinte = n.targets if isinstance(n, ast.Assign) else [n.target]
             if any(isinstance(t, ast.Name) and t.id.lower() in CHEI for t in tinte):   # `limita = …`, `LIMITA = …`
@@ -123,11 +162,39 @@ def _e_proza(s):
         and not re.search(r"<[A-Za-z/!?]", s)
 
 
+#: [Retest 2, pct.2] lexiconul derivat din corpusul legislativ (`scripts/genereaza_lexicon_diacritice.py`): o formă ASCII care în
+#: legislație apare (practic) numai cu diacritice. Lista scrisă de mână (`TRIGGERE`) prindea câteva zeci de cuvinte; un text pe
+#: jumătate corectat („Ocupația … lucratoare”) trecea.
+LEXICON = json.load(io.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon_diacritice.json"), encoding="utf-8"))
+
+
 def fara_diacritice(s):
     if not _e_proza(s) or not any(c.islower() for c in s):
         return []
     cuv = set(_cuvinte(s))
-    return sorted(cuv & (TRIGGERE - AMBIGUE if any(c in _DIAC for c in s) else TRIGGERE))
+    return sorted((cuv & (TRIGGERE - AMBIGUE if any(c in _DIAC for c in s) else TRIGGERE)) | set(cuvinte_lexicon(s))
+                  | set(AFARA.findall(s)))
+
+
+#: [Retest 2 pct.2] „în afară” urmat de un substantiv e „în afara” („în afara României”, „în afara intervalului”); „în afară” stă
+#: numai înaintea lui „de” („în afară de”) sau la capăt de propoziție. Prinsă după corectarea în masă a diacriticelor din 09.10.
+AFARA = re.compile(r"\b[îÎ]n afară(?=\s+(?!de\b)[\wăâîșțĂÂÎȘȚ])")
+
+
+_CUV_INTREG = re.compile(r"[A-Za-zĂÂÎȘȚăâîșțŞŢşţ]+")
+
+
+def cuvinte_lexicon(s):
+    """Cuvintele ÎNTREGI, numai ASCII, pe care lexiconul le știe cu diacritice („străinătate” nu se taie în „str/in/tate”); nu și
+    cele lipite de cod (`_`, `.`, `=`, backtick)."""
+    out = []
+    for m in _CUV_INTREG.finditer(s):
+        w, a, b = m.group(0), m.start(), m.end()
+        if not w.isascii() or (a and s[a - 1] in "_.=`") or (b < len(s) and s[b] in "_.=`("):
+            continue
+        if w.lower() in LEXICON and (w.islower() or w == w.capitalize()):
+            out.append(w.lower())
+    return out
 
 
 def limbaj_de_cod(s):
@@ -140,10 +207,14 @@ def limbaj_de_cod(s):
             + _BACKTICK.findall(s2))
 
 
+#: [Retest 2] o majusculă cu diacritică ÎN cuvânt („LipsĂ”, scris „Lips\\u0102” — d300, prins la proba de ecran din 09.10)
+MAJ_IN_CUVANT = re.compile(r"\b[A-Za-zăâîșțĂÂÎȘȚ]*[a-zăâîșț][ĂÂÎȘȚŞŢ][A-Za-zăâîșțĂÂÎȘȚ]*\b")
+
+
 def majuscule(s):
     if not _e_proza(s):
         return []
-    return [m for m in _MAJ.findall(s) if e_accent(m)]
+    return [m for m in _MAJ.findall(s) if e_accent(m)] + MAJ_IN_CUVANT.findall(s)
 
 
 def e_accent(m):
@@ -172,6 +243,8 @@ def test_detectoarele_au_dinti():
     assert fara_diacritice("ATENTIE (D406): conturi care nu apartin normei")
     assert fara_diacritice("Unitate de măsură necunoscută; controlul incrucisat nu o vede")        # șir mixt
     assert not fara_diacritice("Factura sa nu are CUI, lipsa lui oprește declarația")              # „sa”/„lipsa” corecte
+    assert fara_diacritice("locul prestării în afară României") == ["în afară"]                    # Retest 2: „în afara”
+    assert not fara_diacritice("nimeni în afară de sondă și nimic în afară.")
     for s in ("Cota standard (common.COTE tva_standard) e valabilă", "d300 nu expune R3_1_1/R7_1_1 aici",
               "d100_fapt: trimestru fără venituri (False), nu None", "câmpurile partener_id și self_billing"):
         assert limbaj_de_cod(s), s
@@ -180,20 +253,46 @@ def test_detectoarele_au_dinti():
     assert majuscule("ATENTIE: conturi EXCLUSE") == ["ATENTIE", "EXCLUSE"]
     assert not majuscule("emis implicit „ADMINISTRATOR” — OPANAF 206/2025, CAEN, ANAF, SAF-T, CF art.LXVI, UE")
     assert majuscule("facturile NU apar ȘI în D394") == ["NU", "ȘI"]
+    assert majuscule("LipsĂ bancă — obligatorie la D300.") == ["LipsĂ"]                             # Retest 2
+    assert not majuscule("iConta.eu și eFactura")
+    assert crit_js("Se incarca…") and crit_js("Selecteaza firme"), "textul JS scris integral fără diacritice se vede"
+    src = "_M = ('LIPSĂ %s (x).')\ndef f():\n    erori.append(_M % 'a')\n"
+    assert {s for _fn, _ln, s in roluri_din(src)} >= {"LIPSĂ %s (x)."}, "mesajul din șablon se vede"
 
 
 def test_rolurile_noi_vad_limitele_verdictului():
     """Rolurile care lipseau, fiecare probat separat pe un fragment: argument cu nume, atribuire, `+=`, `avertismente.append`,
     cheia `temei_completitudine`; iar metadatele de cache (`Declaratie(motiv=)`) rămân pe dinafară."""
     src = ("_rezultat(x, limita='r1')\nlimita = 'r2'\nlimita += 'r3'\nres.avertismente.append('r4')\n"
-           "d = {'temei_completitudine': 'r5'}\nLIMITA = 'r6'\nDeclaratie(motiv='x1')\n")
-    assert sorted(s for _fn, _ln, s in roluri_din(src)) == ["r1", "r2", "r3", "r4", "r5", "r6"]
+           "d = {'temei_completitudine': 'r5'}\nLIMITA = 'r6'\nDeclaratie(motiv='x1')\nraise ValueError('r7')\n"
+           "raise RuntimeError('x2')\n")
+    assert sorted(s for _fn, _ln, s in roluri_din(src)) == ["r1", "r2", "r3", "r4", "r5", "r6", "r7"]
+
+
+def test_marcajul_intern_are_motiv_si_plafon():
+    """Marcajul care scoate un `raise` din judecată are motiv scris și nu se înmulțește pe tăcute."""
+    src = "raise ValueError('r1')  # invariant-intern-ok: argumentul apelantului\nraise ValueError('r2')  # invariant-intern-ok:\n"
+    assert [s for _fn, _ln, s in roluri_din(src)] == ["r2"], "fără motiv, marcajul nu scoate mesajul din judecată"
+    marcaje = []
+    for fn in sorted(glob.glob("core/*.py")) + ["main.py"]:
+        if not fn.split("/")[-1].startswith("test_"):
+            marcaje += ["%s:%d" % (fn, i) for i, ln in enumerate(open(fn, encoding="utf-8"), 1) if MARCAJ_INTERN.search(ln)]
+    goale = [m for m in marcaje if not MARCAJ_INTERN.search(open(m.split(":")[0], encoding="utf-8").read().splitlines()[int(m.split(":")[1]) - 1]).group(1)]
+    assert not goale, "marcaj fără motiv: %s" % goale
+    assert len(marcaje) <= PLAFON_INVARIANTE, "%d marcaje `invariant-intern-ok` (plafon %d):\n  %s" % (
+        len(marcaje), PLAFON_INVARIANTE, "\n  ".join(marcaje))
 
 
 def defecte_js():
     from core import test_diacritice_afisate as D
-    crit = lambda s: (majuscule(s) + [x for x in fara_diacritice(s) if any(c in _DIAC for c in s)]) or None   # noqa: E731
-    return [(fn, ln, rol, s, h) for fn in D._js_files() for ln, rol, s, h in D.scan_js_text(open(fn, encoding="utf-8").read(), crit)]
+    # [Retest 2, 09.10.2026] diacriticele se cer și în textele scrise integral fără ele („Selecteaza firme”, „Se incarca…”) — până
+    # azi se judecau numai șirurile care aveau deja o diacritică. Antetele de import (`cheie:antet`) sunt chei de format, nu text.
+    return [(fn, ln, rol, s, h) for fn in D._js_files() for ln, rol, s, h in D.scan_js_text(open(fn, encoding="utf-8").read(), crit_js)
+            if not rol.startswith("cheie:")]
+
+
+def crit_js(s):
+    return (majuscule(s) + fara_diacritice(s)) or None
 
 
 def test_ecranele_fara_majuscule_de_accent():

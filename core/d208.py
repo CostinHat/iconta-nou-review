@@ -171,7 +171,7 @@ def erori_generare(prof, manual):
     for k, t in enumerate(tz, 1):
         pre = "Tranzacția %d: " % k
         if not str(t.get("nr_act_notarial") or "").strip():
-            er.append(pre + "lipsă nr_act_notarial (identificatorul tranzactiei).")
+            er.append(pre + "lipsă nr_act_notarial (identificatorul tranzacției).")
         # structura ANAF D208 v1.0.0 (19.02.2024) poz.22-23: mod_transfer IN (1,2,3,4); 4 cere alt_mod_transfer, altfel interzis
         if str(t.get("mod_transfer") or "").strip() not in ("1", "2", "3", "4"):
             er.append(pre + "lipsă modalitatea de transfer (1 vânzare-cumpărare / 2 moștenire / 3 donație / 4 altă modalitate).")
@@ -189,7 +189,7 @@ def erori_generare(prof, manual):
             if not benef:
                 er.append(ipre + "niciun beneficiar (obligatoriu).")
             if not parti:
-                er.append(ipre + "nicio cealalta parte contractanta (obligatoriu).")
+                er.append(ipre + "nicio cealaltă parte contractantă (obligatoriu).")
             for b in benef:
                 if not (1 <= len(_cif(b.get("cui"))) <= 13):
                     er.append(ipre + "CUI/CNP beneficiar invalid.")
@@ -200,7 +200,7 @@ def erori_generare(prof, manual):
                 er.append(ipre + "suma cotelor beneficiarilor = %s (trebuie 100)." % _fmtnum(s_ben))
             s_p = sum(_num(p.get("cota")) for p in parti)
             if parti and round(s_p, 2) != 100:  # round-ok: verificare suma cote == 100
-                er.append(ipre + "suma cotelor cealalta parte = %s (trebuie 100)." % _fmtnum(s_p))
+                er.append(ipre + "suma cotelor cealaltă parte = %s (trebuie 100)." % _fmtnum(s_p))
     return er
 
 

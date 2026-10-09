@@ -47,7 +47,7 @@ _COLOANE = ("axa_ic",)
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         for ddl in _DDL:
             cur.execute(ddl.format(s=schema))

@@ -65,7 +65,7 @@ def relevanta_din(directie, declaratii_atinse):
         putut-o stabili nu se rotunjeste la `zero`.
     """
     if directie not in DIRECTII:
-        raise ValueError("directie necunoscuta %r; nomenclatorul e inchis: %s"
+        raise ValueError("direcție necunoscută %r; nomenclatorul e închis: %s"
                          % (directie, ", ".join(DIRECTII)))
     atinge = bool(declaratii_atinse)
     if atinge:
@@ -105,7 +105,7 @@ def confruntare(conn):
             if rau:
                 out.append(afirmatie(
                     "contradictie", tip="predictie_alerta",
-                    motiv="Eticheta prezisa nu se potriveste cu impactul masurat",
+                    motiv="Eticheta prezisa nu se potriveste cu impactul măsurat",
                     sursele=["clasificator: %s" % r["relevanta"],
                              "masuratoare %s: %s" % (r["masurat_la"], r["impact_masurat"]),
                              r["motiv_masurat"] or ""],
@@ -113,9 +113,9 @@ def confruntare(conn):
             else:
                 out.append(afirmatie(
                     "fapt", tip="predictie_alerta",
-                    motiv="Eticheta prezisa se potriveste cu impactul masurat",
-                    temei_completitudine=("confruntarea acopera alertele care AU o masuratoare "
-                                          "inregistrata; cele nemasurate nu se numara nici ca "
+                    motiv="Eticheta prezisa se potriveste cu impactul măsurat",
+                    temei_completitudine=("confruntarea acoperă alertele care AU o masuratoare "
+                                          "înregistrată; cele nemasurate nu se numără nici ca "
                                           "reusita, nici ca greseala"),
                     an=None, luna=None, unde=Unde("fisier", r["titlu"][:60]), **comun))
     return out

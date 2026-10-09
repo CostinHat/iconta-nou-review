@@ -116,7 +116,7 @@ def sql_functie(cale_rel, nume_functie):
     for f in ast.walk(_arbore(cale_rel)):
         if isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef)) and f.name == nume_functie:
             return sql_din_nod(cale_rel, f)
-    raise LookupError("%s n-are functia %s" % (cale_rel, nume_functie))
+    raise LookupError("%s n-are funcția %s" % (cale_rel, nume_functie))
 
 
 def sql_modul(cale_rel):
@@ -285,7 +285,7 @@ def functia(nume, cai=None):
             if isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef)) and f.name == nume:
                 if not e_inveli(f):
                     return cale, f
-    raise LookupError("functia %s nu s-a gasit cu corp in stratul de aplicatie" % nume)
+    raise LookupError("funcția %s nu s-a găsit cu corp în stratul de aplicație" % nume)
 
 
 def ruta_http(nume, cale="main.py"):
@@ -297,7 +297,7 @@ def ruta_http(nume, cale="main.py"):
     for f in ast.walk(_arbore(cale)):
         if isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef)) and f.name == nume:
             return f
-    raise LookupError("ruta %s nu e montata in %s" % (nume, cale))
+    raise LookupError("ruta %s nu e montata în %s" % (nume, cale))
 
 
 def cod_http(nume_clasa, cale="main.py"):
@@ -316,7 +316,7 @@ def cod_http(nume_clasa, cale="main.py"):
                     and isinstance(perechi[1], ast.Constant):
                 if perechi[0].attr == nume_clasa:
                     return perechi[1].value
-    raise LookupError("clasa %s nu are traducere in harta HTTP din %s" % (nume_clasa, cale))
+    raise LookupError("clasa %s nu are traducere în harta HTTP din %s" % (nume_clasa, cale))
 
 
 def sursa_functiei(nume):

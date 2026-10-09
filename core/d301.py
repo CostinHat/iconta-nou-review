@@ -197,7 +197,7 @@ def calcul_d301(prof, perioada, operatiuni_raw):
 
 #: [lotul 07.10 B] refuzul pentru înregistrarea art.317 neleasă (o singură formă: generatorul o pune, testul o compară)
 MESAJ_ART317_NEALES = ("Nedeclarat în Date firmă: firma e înregistrată în scopuri de TVA conform art. 317 CF? (Da/Nu, o singură dată "
-                       "— de aici iese pers_inreg din D301).")
+                       "— de aici se completează în D301 tipul persoanei înregistrate).")
 
 
 def erori_generare(prof):
@@ -221,7 +221,7 @@ def erori_generare(prof):
         # C(13) e latimea campului ANAF; validatorul respinge deja >10 cifre ("lungime").
         _ok_cif, _motiv_cif = valideaza_cui(prof.get("cui"))
         if not _ok_cif:
-            erori.append("CIF persoana impozabila invalid (%s): %s." % (_cif, _motiv_cif))
+            erori.append("CIF persoana impozabilă invalid (%s): %s." % (_cif, _motiv_cif))
         elif len(_cif) > 13:
             erori.append("CIF %s depășește C(13) (structura ANAF d301)." % _cif)
     if not str(prof.get("nume") or "").strip():
@@ -258,7 +258,7 @@ def _blocante_pre_duk(res):
         except (TypeError, ValueError):
             tip = None
         if tip not in TIPURI_OP:
-            b.append("Operatiunea %s: tip operațiune %r în afară nomenclatorului (permise 1..5); "
+            b.append("Operatiunea %s: tip operațiune %r în afara nomenclatorului (permise 1..5); "
                      "nu se reclasifică tacit în secțiunea 1." % (eticheta, tip_raw))
         # valuta: gol -> NU devine tacit EUR; altfel trebuie in nomenclatorul ancorat pe validator (T2/T3)
         val_raw = r.get("tip_valuta")
@@ -400,13 +400,13 @@ def genereaza(conn, schema, perioada, manual=None):
                         bani(_r0(float(f.get("total") or 0) - float(f.get("tva") or 0)), "lei"))
                     for f in _ic_prim[:10])
             raise ValueError(
-                "D301 pe zero, DAR există %d achiziție(i) intracomunitară(e) înregistrate ca FACTURI în "
-                "perioada, neintroduse în operatiunile D301: %s. Introdu-le în ecranul D301 înainte de "
-                "generare - obligația D301 se naste din achiziția IC, nu doar din tabelul manual." %
+                "D301 pe zero, dar în perioadă există achiziții intracomunitare înregistrate ca facturi și "
+                "neintroduse în operațiunile D301 (%d): %s. Introdu-le în ecranul D301 înainte de "
+                "generare: obligația D301 se naște din achiziția intracomunitară." %
                 (len(_ic_prim), _lst))
         raise ValueError(
             "D301 nu se generează pe zero: nicio operațiune cu exigibilitate în perioada. OPANAF 592/2016 - "
-            "decontul special se depune NUMAI pentru perioadele în care ia naștere exigibilitatea taxei.")
+            "decontul special se depune numai pentru perioadele în care ia naștere exigibilitatea taxei.")
     res = calcul_d301(prof, perioada, ops)
     # [Sectiunea 1 = art.317, OPANAF 592/2016 instr. I] Sectiunea 1 (achizitii IC de bunuri) "se completeaza
     # NUMAI de catre persoanele inregistrate conform art. 317". O operatiune tip 1 cu pers_inreg=1 (firma

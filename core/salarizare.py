@@ -55,8 +55,8 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     TEMEI: CF art.77 alin.(4) (scara degresiva 20/25/30/35/45%, prag salariu minim+2000) + alin.(10) lit.a (deducere 100 lei/copil scolarizat). nivel_sursa: REDARE (scara 45% pt 4+ din redare secundara noulcodfiscal, nu MO).
     """
     if la_data is None:
-        raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "
-                         "nu se ghiceste luna curenta - salariul minim depinde de luna venitului")
+        raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "  # invariant-intern-ok: argumentul apelantului
+                         "nu se ghiceste luna curentă - salariul minim depinde de luna venitului")
     if not functie_baza:
         return {"baza": _q(0), "tineri": _q(0), "copii": _q(0), "total": _q(0)}
     sm, _ = c.salariu_minim_luna(la_data)  # [#12] art.77(3): cea mai mica valoare din luna
@@ -87,10 +87,10 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # apelantii trec 0); cablarea completa = build-new (§PRODUS). Fara flag -> esec VIZIBIL, nu dublu.
     if _dec(copii_scoala) > 0 and not declaratie_copii:
         raise ValueError(
-            "Deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) se acorda DOAR pe baza declaratiei "
-            "prevazute de art.77 alin.(12)-(13): document de inscriere in invatamant + declaratia pe "
-            "propria raspundere a parintelui (la mai multi angajatori: si ca nu beneficiaza la altul). "
-            "Lipseste flag-ul declaratie_copii - nu se acorda tacit. Cablarea input-ului = build-new (§PRODUS).")
+            "Deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) se acordă numai pe baza declarației "
+            "prevăzute de art.77 alin.(12)-(13): document de înscriere în învățământ + declarația pe "
+            "propria răspundere a părintelui (la mai mulți angajatori: și că nu beneficiază la altul). "
+            "Câmpul „Declarația părintelui pentru copii” din fișa salariatului nu e bifat, deci deducerea nu se acordă.")
     copii = DEDUCERE_COPIL_SCOALA * _dec(copii_scoala)
 
     total = ded_baza + tineri + copii
@@ -133,8 +133,8 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_b
     (deducere 100 lei/copil scolarizat). nivel_sursa: REDARE (scara 45% pt 4+ din redare secundara
     noulcodfiscal, nu MO). Versionata in timp: o schimbare de scara -> varianta datata noua, nu 'if data'."""
     if la_data is None:
-        raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "
-                         "nu se ghiceste luna curenta - salariul minim depinde de luna venitului")
+        raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "  # invariant-intern-ok: argumentul apelantului
+                         "nu se ghiceste luna curentă - salariul minim depinde de luna venitului")
     fn, _ = c.alege_varianta(_VARIANTE_DEDUCERE, la_data)
     return fn(brut, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data, declaratie_copii=declaratie_copii)
 
@@ -494,8 +494,8 @@ def _procent_cm_l141_2025(cod, zile_episod, procent_accident=100):
         if zile_episod >= 15: return Decimal("0.75")   # lit.c + ziua 15 (decizie 02.08)
         return Decimal("0.75")                          # plasa (zile_episod >= 1)
     if cod == "10":
-        raise ValueError("cod 10 (reducere timp munca): formula speciala art. 19 - "
-                         "foloseste calcul_cm_cod10")
+        raise ValueError("cod 10 (reducere timp munca): formula speciala art. 19 - "  # invariant-intern-ok: ramura de calcul aleasă de apelant
+                         "folosește calcul_cm_cod10")
     if cod in ("02", "03", "04"):  # accidente munca/boala prof: 80% sau 100% (aviz ITM)
         return Decimal(str(procent_accident)) / 100
     if cod in ("05", "06", "07", "12", "14", "51"): return Decimal("1.00")  # infectocontagioase A/urgente/carantina/TBC/neoplazii-SIDA/izolare

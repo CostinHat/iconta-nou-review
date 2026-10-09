@@ -37,8 +37,8 @@ def calcul_import(valoare_vamala, procent_taxa_vamala=0, accize=0, accesorii=0,
     baza = baza_tva_import(vv, tv, accize, accesorii)
     tva = (baza * _d(cota_tva) / 100).quantize(B, rounding=ROUND_HALF_UP)
     if certificat_amanare and not platitor_tva:
-        raise ValueError("certificatul de amanare (art. 326(4)) e doar pentru "
-                         "persoane inregistrate in scopuri de TVA art. 316")
+        raise ValueError("certificatul de amânare (art. 326(4)) e doar pentru "
+                         "persoane înregistrate în scopuri de TVA art. 316")
     if certificat_amanare:
         mod = "decont"    # 4426=4427, D300 rd. 7+22
     elif platitor_tva:
@@ -51,8 +51,8 @@ def valideaza_export(tara_client, are_dovada_export):
     """Export scutit cu drept de deducere (art. 294 al. 1 lit. a-b):
     transport in afara UE dovedit cu declaratia vamala de export (DVE/EAD)."""
     if not (tara_client or "").strip():
-        raise ValueError("tara client obligatorie")
+        raise ValueError("țară client obligatorie")
     if not are_dovada_export:
-        raise ValueError("fara declaratia vamala de export (DVE) scutirea art. 294(1)a "
-                         "nu se justifica - factureaza cu TVA pana la obtinerea dovezii")
+        raise ValueError("fără declarația vamală de export (DVE) scutirea art. 294(1)a "
+                         "nu se justifica - facturează cu TVA până la obținerea dovezii")
     return True, "scutit cu drept de deducere - art. 294 alin. (1) lit. a) Cod fiscal (export)"

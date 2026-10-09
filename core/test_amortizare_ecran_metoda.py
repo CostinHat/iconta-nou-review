@@ -119,7 +119,10 @@ def test_ecran_mf_intoarce_amortizat_degresiv_nu_liniar(monkeypatch):
         monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: SCH)
         res = main.tenant_mijloace_fixe(1, ctx={"uid": 1})
         row = res["mijloace"][0]
-        azi = date.today()
+        # [Retest 2 pct.5, decizia Costin 09.10.2026] „calculul merge până la ultima lună încheiată, aceeași regulă ca la închiderea
+        # lunii” — nu până azi
+        from core.inchidere_luna import ultima_zi_incheiata
+        azi = ultima_zi_incheiata()
         deg = _d406.amortizat_la_data(_mf("degresiva"), azi)["amortizat"]
         lin = _liniar_la_data(100000, 0, 60, date(2025, 12, 20), azi)
         assert row["eroare"] is None, row

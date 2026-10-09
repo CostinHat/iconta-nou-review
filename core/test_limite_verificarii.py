@@ -44,7 +44,7 @@ def test_perimetrul_se_calculeaza_nu_se_scrie():
 def test_acoperirea_spune_si_ce_NU_compara():
     """O declarație de acoperire care spune doar ce face nu e o limită, e o reclamă."""
     t = " ".join(x["text"] for x in limite_verificarii(AZI) if x["fel"] == "acoperire")
-    assert "NU compar" in t and "SPV" in t, t
+    assert "Nu compar" in t and "SPV" in t, t   # [Retest 2 pct.2] fără majuscule de accent
 
 
 def test_limitele_verificatorilor_se_aduna_nu_se_repovestesc():

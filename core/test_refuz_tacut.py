@@ -44,7 +44,9 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
 # potriveste`, modul 3 — `POST` folosit ca citire).
 _SCRIERI_MUTE = 18
-_CITIRI_MUTE = 75
+_CITIRI_MUTE = 76
+# [Retest 2 pct.12, 09.10.2026] 75 -> 76: cardul „De validat” citește `/eu/ciorne` ca să numere ciornele contabilului; dacă citirea
+#   cade, cardul rămâne cu coada (badge — n-are voie să întrerupă omul), iar lista din fereastră spune eșecul cu `arataMesaj`.
 # [lotul 07.10 pct.8, 06.10.2026] 74 -> 75: clicul pe o notificare `jurnal:<firmă>:<notă>` citește lista firmelor ca să
 #   deschidă Registrul jurnal al firmei; dacă citirea cade, omul rămâne pe ecranul curent (forma ramurii `control-fiscal:`
 #   de lângă ea). E o citire de NAVIGARE, nu un refuz al unei scrieri.

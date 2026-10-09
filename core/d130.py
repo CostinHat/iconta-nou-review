@@ -87,7 +87,7 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not (2 <= len(_cif(manual.get("cui"))) <= 10):
-        er.append("Cod de identificare fiscala (cui) invalid — aștept 2..10 cifre.")
+        er.append("Cod de identificare fiscală (cui) invalid — aștept 2..10 cifre.")
     if not str(manual.get("denumire") or "").strip():
         er.append("Lipsă denumire plătitor (denumire).")
     for k, et in (("nume_declar", "nume"), ("prenume_declar", "prenume"),
@@ -95,7 +95,7 @@ def erori_generare(prof, manual):
         if not str(manual.get(k) or "").strip():
             er.append("Lipsă %s declarant (%s) — obligatoriu." % (et, k))
     if manual.get("cantitate_titei") in (None, ""):
-        er.append("Lipsă cantitate titei livrata (cantitate_titei).")
+        er.append("Lipsă cantitate țiței livrată (cantitate_titei).")
     if manual.get("impozit_datorat") in (None, ""):
         er.append("Lipsă impozit datorat (impozit_datorat).")
     if _suma(manual.get("impozit_datorat")) < 0 or _suma(manual.get("cantitate_titei")) < 0:

@@ -139,14 +139,14 @@ def descarca(conn, schema, corp):
         cur.execute(f"SELECT * FROM {schema}.retete WHERE id=%s", (corp["reteta_id"],))
         ret = cur.fetchone()
         if not ret:
-            raise ValueError("reteta inexistenta")
+            raise ValueError("reteta inexistentă")
         cur.execute(f"""SELECT l.*, a.denumire, a.cont_stoc, a.cont_cheltuiala
                         FROM {schema}.retete_linii l
                         JOIN {schema}.articole a ON a.id = l.articol_id
                         WHERE l.reteta_id=%s ORDER BY l.id""", (corp["reteta_id"],))
         linii_r = [dict(r) for r in cur.fetchall()]
         if not linii_r:
-            raise ValueError("reteta fara ingrediente")
+            raise ValueError("reteta fără ingrediente")
         import datetime as _dt
         d = corp.get("data") or _dt.date.today().isoformat()  # [gv_fix] fara data -> azi
         pentru_motor = []

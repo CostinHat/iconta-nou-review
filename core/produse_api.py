@@ -48,7 +48,7 @@ def cauta_dupa_denumire(conn, denumire):
     out["pret_unitar"] = float(out["pret_unitar"] or 0)
     if out["cota_tva"] is None:
         # produs incomplet in nomenclator: NU se ghiceste 21 (baza nula). 0 (scutit) NU e None.
-        raise ValueError("produs fara cota TVA in nomenclator: %r" % out.get("denumire"))
+        raise ValueError("produs fără cota TVA în nomenclator: %r" % out.get("denumire"))
     out["cota_tva"] = float(out["cota_tva"])
     return out
 
@@ -102,7 +102,7 @@ def creeaza(conn, denumire, um="buc", pret_unitar=0, cota_tva=None,
             # auto-match esuat: NU salvam un produs cu cota ghicita -> NEDETERMINAT (baza nula).
             # (0 = scutit/neplatitor NU e None -> se salveaza normal)
             return {"ok": False, "cod": "NEDETERMINAT", "denumire": d,
-                    "mesaj": rez.get("justificare") or "cota TVA nedeterminata"}
+                    "mesaj": rez.get("justificare") or "cota TVA nedeterminată"}
         cota_tva = rez["cota"]
         categorie = categorie or rez.get("categorie")
         justificare = justificare or rez.get("justificare")

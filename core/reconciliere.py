@@ -114,7 +114,7 @@ def potriveste_linie(linie, facturi_deschise):
         return dict(_af.afirmatie(
             "fapt", "reconciliere extras", f"match exact pe {len(combo)} facturi",
             unde=_Unde("linie_extras", cui, "suma %s" % suma),
-            temei_completitudine="documentele deschise ale partenerului, pe combinatie de solduri"),
+            temei_completitudine="documentele deschise ale partenerului, pe combinație de solduri"),
             status="verde",
             alocari=[{"factura_id": f["id"], "suma": _d(f["sold"])} for f in combo])
 
@@ -124,12 +124,12 @@ def potriveste_linie(linie, facturi_deschise):
             "fapt", "reconciliere extras",
             f"suma depășește soldul total; rest nealocat {rest}",
             unde=_Unde("linie_extras", cui, "suma %s" % suma),
-            temei_completitudine="soldurile deschise ale partenerului, insumate"),
+            temei_completitudine="soldurile deschise ale partenerului, însumate"),
             status="galben", alocari=alocari)
     return dict(_af.afirmatie(
         "fapt", "reconciliere extras", "alocare partiala FIFO",
         unde=_Unde("linie_extras", cui, "suma %s" % suma),
-        temei_completitudine="documentele deschise, alocate in ordinea vechimii (FIFO)"),
+        temei_completitudine="documentele deschise, alocate în ordinea vechimii (FIFO)"),
         status="galben", alocari=alocari)
 
 

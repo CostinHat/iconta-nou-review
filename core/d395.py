@@ -180,7 +180,7 @@ def erori_generare(prof, manual):
     # trimiteri
     trim = manual.get("trimiteri") or []
     if not trim:
-        er.append("Lipsă trimiteri (cel puțin o trimitere postala contra ramburs).")
+        er.append("Lipsă trimiteri (cel puțin o trimitere poștală contra ramburs).")
     vazute = set()
     for i, t in enumerate(trim, 1):
         er.extend(_err_trimitere(i, t))
@@ -193,7 +193,7 @@ def erori_generare(prof, manual):
     if l2:
         for k in ("nr_colete", "nr_colete_info", "nr_colete_taxa"):
             if not _cif(l2.get(k)):
-                er.append("lista2: lipsă %s (obligatoriu cand secțiunea sumar e prezenta)." % k)
+                er.append("lista2: lipsă %s (obligatoriu când secțiunea sumar e prezenta)." % k)
     return er
 
 

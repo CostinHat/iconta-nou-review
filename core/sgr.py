@@ -24,7 +24,7 @@ def _suma(nr_ambalaje=None, suma=None):
     elif nr_ambalaje:
         s = (GARANTIE_UNITARA * int(nr_ambalaje)).quantize(B, rounding=ROUND_HALF_UP)
     else:
-        raise ValueError("nr_ambalaje sau suma obligatoriu")
+        raise ValueError("Completează numărul de ambalaje sau suma garanției.")
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return s

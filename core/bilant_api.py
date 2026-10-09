@@ -104,7 +104,7 @@ def genereaza(conn, schema, an):
         av.append(f"Verificare: F(rd15)={f10c.get(15)} != J(rd49)={f10c.get(49)} - datorii>1an/provizioane/ven.avans pot explica diferenta.")
     _er = erori_generare(prof)
     if _er:
-        raise ValueError("Bilant nu se poate genera: " + " ".join(_er))
+        raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
     return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c), av
 
 
@@ -134,5 +134,5 @@ def genereaza_s1003(conn, schema, an):
     av.append("F20 an precedent necompletat - de completat manual dacă e cazul.")
     _er = erori_generare(prof)
     if _er:
-        raise ValueError("Bilant nu se poate genera: " + " ".join(_er))
+        raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
     return _b.xml_s1003(prof, an, f10p, f10c, {}, f20c), av

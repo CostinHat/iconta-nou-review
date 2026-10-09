@@ -236,7 +236,7 @@ def erori_generare(prof, manual):
     if _int(manual.get("luna_r")) is None:
         er.append("Lipsă perioada de raportare luna_r - DUK regula R3.")
     if moes == SCHEME_UE and _int(manual.get("e_int")) not in (0, 1):
-        er.append("e_int obligatoriu (0/1) cand moes_voes_imp=1 - DUK regula R5.1.")
+        er.append("e_int obligatoriu (0/1) când moes_voes_imp=1 - DUK regula R5.1.")
     ps, pe = _esc(manual.get("period_start_date")), _esc(manual.get("period_end_date"))
     if bool(ps) != bool(pe):
         er.append("period_start_date și period_end_date simultan nule sau nenule - DUK regula R6.1.")

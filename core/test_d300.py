@@ -501,9 +501,9 @@ def test_subdeclarare_e_avertisment_nu_constatare():
     iar 'Rezultat TVA' ramane in note_rezultat in acelasi rezultat (canale disjuncte)."""
     facturi = [{"directie": "emisa", "total": 1050, "tva": 50}]  # cota 5% -> sub-declarare
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
-    sub = [a for a in res.avertismente if "afară 21/11/9" in a and "sub-declarare" in a.lower()]
+    sub = [a for a in res.avertismente if "altă cotă decât 21/11/9" in a and "sub-declarare" in a.lower()]
     assert sub, "sub-declararea trebuie în avertismente: %r" % res.avertismente
-    assert not any("afară 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
+    assert not any("altă cotă decât 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
     assert any("Rezultat TVA" in c for c in res.note_rezultat), res.note_rezultat
     assert not any("Rezultat TVA" in a for a in res.avertismente), res.avertismente
 

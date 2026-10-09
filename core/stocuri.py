@@ -191,7 +191,7 @@ def descarcare_gv(rc_707, tva_vanzari, si_378, rc_378, si_371, rd_371, si_4428, 
     Intoarce nota % = 371 si detaliile."""
     rc_707 = _d(rc_707)
     if rc_707 < 0:
-        raise ValueError("rc_707 negativ")
+        raise ValueError("rc_707 negativ")  # invariant-intern-ok: invariant de calcul
     if rc_707 == 0:
         return {"k": None, "adaos": _q(0), "cmv": _q(0), "tva": _q(0), "note": []}
     k = coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)

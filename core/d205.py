@@ -214,11 +214,10 @@ def build_xml(res):
         b.rezid = _rezid(b.cif)
         if b.rezid != "1":
             raise ValueError(
-                "D205: beneficiarul %r (CNP/NIF %s) nu are CNP românesc valid = NEREZIDENT "
-                "(Rezid=2). Dividendele (tip_venit1=08) către nerezidenți NU se declară pe D205 "
-                "(DUK regula R32 admite Rezid=2 doar pt. tip_venit1 în 04,16,18,25-30); se "
-                "declară pe D207. În plus DUK regula R33 cere Stat_R (statul de rezidență), câmp "
-                "inexistent în tabelul `asociati`." % (
+                "D205: beneficiarul %r (CNP/NIF %s) nu are CNP românesc valid, deci e nerezident. "
+                "Dividendele plătite nerezidenților nu se declară pe D205 (DUK regula R32 admite "
+                "nerezidenți numai la tipurile de venit 04, 16, 18, 25-30), ci pe D207. În plus, "
+                "DUK regula R33 cere statul de rezidență, pe care fișa asociatului nu îl are." % (
                     b.nume1 or "necunoscut",
                     "".join(ch for ch in (b.cif or "") if ch.isdigit()) or "-"))
 
@@ -245,8 +244,8 @@ def build_xml(res):
         _cheie_cifr = "".join(ch for ch in (_b.cif or "") if ch.isdigit())
         if _cheie_cifr in _cifr_vazute:
             raise ValueError(
-                "D205: beneficiarul cu CNP %s apare de 2 ori - (tip_venit1+CNP) trebuie unic "
-                "(DUK regula R41b). Comasează sau corectează." % _cheie_cifr)
+                "D205: beneficiarul cu CNP %s apare de 2 ori la același tip de venit "
+                "(DUK regula R41b). Comasează rândurile sau corectează CNP-ul." % _cheie_cifr)
         _cifr_vazute.add(_cheie_cifr)
 
     # Tcastig/Tpierd, conform formulei oficiale, se calculeaza DOAR din

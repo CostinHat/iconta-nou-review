@@ -96,7 +96,7 @@ def test_cinci_egalitati_si_sold_final_neschimbat(schema_doua_luni):
         1000, 250, 40, 1250, 1210)
     inc = _doc.inchidere_balanta(list(bal.values()))
     assert inc["stare"] == "se_inchide" and [p["ce"] for p in inc["perechi"]] == [
-        "sold initial", "sume precedente", "rulaje curente", "total sume", "sold final"]
+        "sold inițial", "sume precedente", "rulaje curente", "total sume", "sold final"]
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

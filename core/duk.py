@@ -197,7 +197,7 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
                     r = (r + "\n" + fh.read()).strip()
         return r
 
-    _MARK_ESEC = ("cod eroare", "Erori la validare", "NoClassDefFound", "DECTag", "Exception in thread")
+    _MARK_ESEC = ("cod eroare", "Erori la validare", "NoClassDefFound", "DECTag", "Exception în thread")
     try:  # try/finally: continutul se citeste INAINTE de rmtree; tempdir-ul se curata mereu
         try:
             with open(xp, "w", encoding="utf-8") as fh:
@@ -225,7 +225,7 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
                 rez = _citeste()
                 out = (p.stdout or "") + "\n" + (p.stderr or "")
             except Exception as e:
-                return _gri(cheie, "Validator generatie noua: reincercarea cu DecValidation nou a esuat: %s." % e)
+                return _gri(cheie, "Validator generatie noua: reincercarea cu DecValidation nou a eșuat: %s." % e)
         # "ok"/gol in fisierul de rezultat = valid (dovedit 15.07 pe D394).
         if rez.lower() in ("", "ok", "ok."):
             rez = ""

@@ -180,11 +180,11 @@ def verifica(env=None):
     m = motive(env)
     if m:
         st = descrie(env)
-        raise MediuNedovedit(
-            "suita NU porneste: nu se poate dovedi ca mediul e de test.\n"
+        raise MediuNedovedit(  # invariant-intern-ok: pornirea suitei de teste
+            "suită NU pornește: nu se poate dovedi ca mediul e de test.\n"
             "  baza=%r utilizator=%r gazda=%r (din %s)\n"
             "  motive:\n%s\n"
-            "  Cum se porneste corect: cu ~/.iconta/test.env in mediu (ICONTA_MEDIU=test si DSN-ul "
+            "  Cum se pornește corect: cu ~/.iconta/test.env în mediu (ICONTA_MEDIU=test și DSN-ul "
             "bazei izolate). Frontiera adevarata e la PostgreSQL — rolul de test nu are CONNECT pe "
             "%s —, iar mesajul asta e doar prima incuietoare."
             % (st["dbname"], st["user"], st["host"], st["sursa"],

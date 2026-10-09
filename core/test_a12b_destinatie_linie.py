@@ -148,7 +148,7 @@ def test_A12b_destinatie_invalida_refuzata(conn):
         from core.repo_main import insert_factura_linii
         insert_factura_linii(cur, _SCH, fid, {"descriere": "x", "cantitate": 1,
                                               "pret_unitar": 100, "cota_tva": 21})
-        with pytest.raises(ValueError, match="destinatie"):
+        with pytest.raises(ValueError, match="destinație"):
             repo_facturi.actualizeaza_destinatii_linii(cur, _SCH, fid, ["inventata"])
     conn.rollback()
 

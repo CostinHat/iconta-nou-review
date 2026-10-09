@@ -74,7 +74,7 @@ def register(date):
         _versiune_termeni = _uc_comun._termeni_versiune(open(_uc_comun._TERMENI_PATH, encoding="utf-8").read())
     except OSError as _e:
         raise _erori.ServiciuIndisponibil("Termenii și condițiile nu se pot citi acum, deci acordul tău "
-                                 "nu s-ar putea consemna. Contul NU a fost creat. Încearcă din "
+                                 "nu s-ar putea consemna. Contul nu a fost creat. Încearcă din "
                                  "nou peste câteva minute.")
     # [P4] CONTUL ȘI DOVADA ACORDULUI, ÎN ACEEAȘI TRANZACȚIE.
     #

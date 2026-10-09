@@ -16,7 +16,7 @@ def test_reluare():
     assert r["procent_subventionat"] == "50.00"
 
 def test_subventie_peste_activ():
-    with pytest.raises(ValueError, match="depasi"):
+    with pytest.raises(ValueError, match="depăși"):
         m.reluare_lunara_investitii(100000, 150000, 1000)
 
 def test_invalid():

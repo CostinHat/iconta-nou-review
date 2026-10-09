@@ -62,7 +62,7 @@ def urmator_schema_name(conn, lat=3):
         nume = formeaza_schema_name(n, lat)
         cur.execute("SELECT 1 FROM information_schema.schemata WHERE schema_name = %s", (nume,))
         if cur.fetchone():
-            raise ValueError(
+            raise ValueError(  # invariant-intern-ok: secvența bazei, operator
                 "contorul de scheme a produs %r, care există deja — secvența %s a rămas în urma "
                 "bazei. Rulează `python3 -m core.migrare_schema_seq`." % (nume, SECVENTA_SCHEMA))
     return nume
@@ -371,7 +371,7 @@ def cere_denumire_scriibila(nume):
     if not any(ch.isalpha() for ch in nume):
         raise ValueError(
             "Denumirea firmei trebuie să conțină cel puțin o literă — am primit %r. Ea pleacă "
-            "mai departe pe declarații (câmpul `den` din D394) și pe antetul facturii, deci nu "
+            "mai departe pe declarații (de exemplu în D394) și pe antetul facturii, deci nu "
             "poate fi doar semne." % nume)
     return nume
 

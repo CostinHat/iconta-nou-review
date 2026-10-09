@@ -134,7 +134,7 @@ def erori_generare(prof, manual):
     fisa = manual.get("fisa")
     if cv == "7" and str(act.get("contracte") or "") == "3" and str(act.get("det_venit") or "") == "3":
         if not isinstance(fisa, dict) or not (fisa.get("camere")):
-            er.append("Cazare turistica (categ_venit=7, contracte=3, norma): cere `fisa` cu camere[].")
+            er.append("Cazare turistică (categ_venit=7, contracte=3, norma): cere `fisa` cu camere[].")
         else:
             nrc = int(act.get("nr_camere") or 0)
             if nrc and len(fisa.get("camere") or []) != nrc:

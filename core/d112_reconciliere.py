@@ -65,6 +65,7 @@ independent, pe aceeași regulă scrisă din lege, nu din `calcul_salariu`.
 LIMITE suplimentare: input partajat gresit (ambele cai citesc acelasi brut gresit) = §8.
 """
 
+from core.pdf_util import diferenta as _dif, bani as _bani   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] blocajul numeste regula
 import calendar as _cal
 from datetime import date as _date
@@ -145,15 +146,17 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             g = gen.get(sid)
             if g is None:
                 sarite.append(sid); continue   # generatorul nu l-a emis (ex. incetat) - skip LEGITIM
+            # [Retest 2 pct.2] contabilul recunoaște salariatul după nume și CNP, nu după id-ul din bază
+            cine = "%s (CNP %s)" % ((g.get("nume") or "").strip() or "fără nume", g.get("cnp") or "-")
             brut = _brut_la(cur, schema, sid, luna_sf)
             # --- SKIP-SUSPECT: date corupte pe un angajat EMIS (semnalat, nu tacut) ---
             if brut is None:
                 suspecte.append(dict(_af.afirmatie(
                     "neconformitate", "d112",
-                    "salariul brut lipsește (nici din istoric, nici din fișa salariatului) - "
-                    "generatorul emite contribuții pe 0",
-                    unde="salariatul %s" % sid, regula="salariu_brut_lipsa"),
-                    salariat=sid))
+                    "salariul brut lipsește (nici din istoric, nici din fișa salariatului), deci "
+                    "declarația ar avea contribuțiile 0",
+                    unde="salariatul %s" % cine, regula="salariu_brut_lipsa"),
+                    salariat=sid, cine=cine))
                 continue
             realizat = brut + variabile.get(sid, Decimal(0))   # [S1] venitul REALIZAT: contractual + elementele variabile
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
@@ -197,7 +200,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 reconciliati.append(sid)   # CAS+CASS emise pe baza ridicata - reconciliere COMPLETA
                 for camp in ("cas", "cass"):
                     if emis[camp] != exp[camp]:
-                        divergente.append({"salariat": sid, "camp": camp,
+                        divergente.append({"salariat": sid, "cine": cine, "camp": camp,
                                            "generator": emis[camp], "cale2": exp[camp], "diferenta": emis[camp] - exp[camp]})
                 continue
             # interpretare: incadrat_la_minim
@@ -218,17 +221,17 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 for camp in ("cas", "cass"):
                     got = _q(g.get(camp) or 0)  # rotunjire la intreg ca _d112int (valoarea EMISA la ANAF), nu trunchiere
                     if got != exp[camp]:
-                        divergente.append({"salariat": sid, "camp": camp,
+                        divergente.append({"salariat": sid, "cine": cine, "camp": camp,
                                            "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})
                 continue
             # --- SKIP-SUSPECT: sub minimul legal pentru angajat full-time luna intreaga ---
             if brut < sm:
                 suspecte.append(dict(_af.afirmatie(
                     "neconformitate", "d112",
-                    "brut %s SUB salariul minim %s pentru angajat full-time luna intreaga "
-                    "(sub pragul legal) - date probabil corupte" % (_q(brut), _q(sm)),
-                    unde="salariatul %s" % sid, regula="brut_sub_salariul_minim"),
-                    salariat=sid))
+                    "salariul brut %s e sub salariul minim %s, deși angajatul lucrează cu normă întreagă "
+                    "toată luna - datele sunt probabil greșite" % (_bani(_q(brut), "lei"), _bani(_q(sm), "lei")),
+                    unde="salariatul %s" % cine, regula="brut_sub_salariul_minim"),
+                    salariat=sid, cine=cine))
                 continue
             # --- SUB-CAZ 1b (05.08): angajat PESTE MINIM cu TICHETE DE MASA -> CAS reconciliabil, CASS numit-afara ---
             if are_tichete_masa:
@@ -236,7 +239,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 reconciliati_cas_doar.append(sid)
                 got = _q(g.get("cas") or 0)     # valoarea EMISA la ANAF (half-up ca _d112int), nu trunchiere
                 if got != exp_cas:
-                    divergente.append({"salariat": sid, "camp": "cas",
+                    divergente.append({"salariat": sid, "cine": cine, "camp": "cas",
                                        "generator": got, "cale2": exp_cas, "diferenta": got - exp_cas})
                 continue   # CASS emisa = brut x cota_cass + cass_tichete (d112.py:239) - NU se confrunta (limita declarata)
             # --- CAZ SIMPLU: recalcul independent (baza contributie = brut, facilitate 0) ---
@@ -245,7 +248,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             for camp in ("cas", "cass"):
                 got = _q(g.get(camp) or 0)  # rotunjire la intreg ca _d112int (valoarea EMISA la ANAF), nu trunchiere
                 if got != exp[camp]:
-                    divergente.append({"salariat": sid, "camp": camp,
+                    divergente.append({"salariat": sid, "cine": cine, "camp": camp,
                                        "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})
     return {"divergente": divergente, "suspecte": suspecte,
             "reconciliati": reconciliati, "reconciliati_cas_doar": reconciliati_cas_doar,
@@ -259,15 +262,13 @@ def verifica_reconciliere(conn, schema, an, luna, salariati_generator):
     rap = reconciliaza(conn, schema, an, luna, salariati_generator)
     parti = []
     if rap["divergente"]:
-        parti.append("DIVERGENTE (caz simplu): " + "; ".join(
-            "salariat %s %s: generator=%d vs cale2=%d (dif %d)" %
-            (d["salariat"], d["camp"], d["generator"], d["cale2"], d["diferenta"])
+        parti.append("contribuții care nu se potrivesc: " + "; ".join(
+            _dif("salariatul %s, %s" % (d.get("cine", d["salariat"]), d["camp"].upper()), d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"]))
     if rap["suspecte"]:
-        parti.append("SUSPECTE (date corupte, nu caz fiscal legitim): " + "; ".join(
-            "salariat %s: %s" % (s["salariat"], s["motiv"]) for s in rap["suspecte"]))
+        parti.append("date salariale de verificat (nu un caz fiscal legitim): " + "; ".join(
+            "salariatul %s: %s" % (s.get("cine", s["salariat"]), s["motiv"]) for s in rap["suspecte"]))
     if parti:
         raise ReconciliereD112(
-            "D112 A DOUA CALE: %s. Declaratia NU se genereaza - gardul nu alege singur cine are "
-            "dreptate si nu tace pe date corupte; verifica agregarea si datele." % " | ".join(parti))
+            "D112: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % " | ".join(parti))
     return rap

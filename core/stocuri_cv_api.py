@@ -443,7 +443,7 @@ def transfer(conn, schema, corp):
             return {"eroare": "cantitate invalidă"}
         disp = _stoc_locatie(cur, schema, a["id"], din)
         if cant > disp:
-            return {"eroare": f"transfer {cant} peste stocul {disp} la locatia sursa"}
+            return {"eroare": f"transfer {cant} peste stocul {disp} la locația sursă"}
         try:
             r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, cant)
         except ValueError as e:

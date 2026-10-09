@@ -53,6 +53,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca d301.pu
 care interogheaza d301_operatiuni fara a seta search_path).
 """
 
+from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 from core import repo_d301_reconciliere as _repo
@@ -124,11 +125,11 @@ def reconciliaza(conn, perioada, res):
 
     for t in TIPURI_OP:
         gb, gt = res.totaluri.get(t, (0, 0))
-        cmp("baza%d" % t, "sectiune %d baza" % t, int(gb), tot[t][0])
-        cmp("tva%d" % t, "sectiune %d TVA" % t, int(gt), tot[t][1])
+        cmp("baza%d" % t, "secțiunea %d, baza" % t, int(gb), tot[t][0])
+        cmp("tva%d" % t, "secțiunea %d, TVA" % t, int(gt), tot[t][1])
     # totalPlata_A = INT(sum baza1..5 + tva1..5) - recalculat independent
     tpa_cale2 = sum(tot[t][0] + tot[t][1] for t in TIPURI_OP)
-    cmp("totalPlata_A", "suma de control", int(res.total_plata_a), tpa_cale2)
+    cmp("totalPlata_A", "totalul de plată", int(res.total_plata_a), tpa_cale2)
 
     return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
@@ -140,12 +141,10 @@ def verifica_reconciliere(conn, perioada, res, manual=None):
     rap = reconciliaza(conn, perioada, res)
     if rap["divergente"]:
         linii = "; ".join(
-            "%s (%s): generator=%d vs cale2=%d (dif %d)" %
-            (d["sectiune"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+            _dif(d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"])
         raise ReconciliereD301(
-            "D301 A DOUA CALE: totalurile generatorului NU se reconciliaza cu recalculul "
-            "independent din operatiunile brute (regula baza=round(val_valuta x curs), "
-            "curs=1 pentru RON). Divergente: %s. Declaratia NU se genereaza - gardul nu "
-            "alege singur cine are dreptate; verifica agregarea si cursul stocat." % linii)
+            "D301: totalurile din decont nu se potrivesc cu recalculul făcut separat din "
+            "operațiuni (baza = valoarea în valută × curs, rotunjită; cursul 1 pentru lei). "
+            "Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

@@ -129,7 +129,7 @@ def test_mutatie_factura_pierduta_din_agregare_pica(conn_recon):
     with pytest.raises(ReconciliereD300) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "R9_2" in msg and "generator=0" in msg and "cale2=210" in msg, msg  # numeste AMBELE valori
+    assert "rândul 9, coloana TVA" in msg and "în declarație 0,00 lei," in msg and "recalculat 210,00 lei " in msg, msg  # numeste AMBELE valori
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -144,7 +144,7 @@ def test_mutatie_cota_in_bucket_gresit_pica(conn_recon):
     with pytest.raises(ReconciliereD300) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "R9_2" in msg and "R10_2" in msg, msg   # ambele randuri strig
+    assert "rândul 9, coloana TVA" in msg and "rândul 10, coloana TVA" in msg, msg   # ambele randuri strig
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -156,7 +156,7 @@ def test_mutatie_semn_inversat_pica(conn_recon):
     with pytest.raises(ReconciliereD300) as ei:
         verifica_reconciliere(conn_recon, per, res)
     msg = str(ei.value)
-    assert "R22_2" in msg and "generator=-105" in msg and "cale2=105" in msg, msg
+    assert "rândul 24, coloana TVA" in msg and "în declarație -105,00 lei," in msg and "recalculat 105,00 lei " in msg, msg
 
 
 # ============================================================

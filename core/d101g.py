@@ -140,7 +140,7 @@ def calcul_d101g(prof, an, intrari=None, cota=None, cod_obligatie=_COD_OBLIGATIE
     if P["P01"] > 0:
         P["P02a"] = g("P02a")
         if P["P02a"] > P["P02"]:
-            raise ValueError("D101G: P02a = %d > P02 = %d (DUK regula P02a<=P02 cand P01>0)." % (P["P02a"], P["P02"]))
+            raise ValueError("D101G: P02a = %d > P02 = %d (DUK regula P02a<=P02 când P01>0)." % (P["P02a"], P["P02"]))
     else:
         P["P02a"] = 0
     # rd.3 = rd.1 - rd.21 (profit impozabil aferent anului); rd.31 = pierderea anului (preia rd.11)
@@ -217,9 +217,9 @@ def erori_generare(prof):
     erori = []
     _cui = _cif(prof.get("cui"))
     if not _cui:
-        erori.append("Lipsă CUI persoana juridica responsabila (obligatoriu).")
+        erori.append("Lipsă CUI persoana juridică responsabilă (obligatoriu).")
     if not (prof.get("nume") or "").strip():
-        erori.append("Lipsă denumire persoana juridica responsabila (obligatorie).")
+        erori.append("Lipsă denumire persoana juridică responsabilă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
         erori.append("Lipsă adresa domiciliu fiscal (obligatorie).")
     _caen = (prof.get("caen") or "").strip()
@@ -313,7 +313,7 @@ def genereaza(conn, schema, perioada, manual=None):
     prof = dict(prof or {})
     prof.update(ident)
     if d_anulare == 1 and not temei:
-        raise ValueError("D101G: d_anulare=1 cere `temei` (DUK regula temei<>null cand d_anulare bifat).")
+        raise ValueError("D101G: la o declarație de anulare se completează și temeiul anulării; validatorul ANAF o respinge fără el.")
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))

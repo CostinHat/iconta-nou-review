@@ -267,13 +267,13 @@ def test_semafor_d390_contradictie_flag_false_dar_facturi_ic():
     # operatiuni_ic=False dar facturi IC (fapt True) -> semnal gri cu temei (nu blocare)
     v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
     rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
-    assert sum(1 for n in rez["neclar"] if n["tip"] == "d390" and "declară FĂRĂ" in n["motiv"]) == 1
+    assert sum(1 for n in rez["neclar"] if n["tip"] == "d390" and "declară fără" in n["motiv"]) == 1
 
 def test_semafor_d390_flag_false_fapt_false_nimic():
     v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
     rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: False)
     assert not any(d["tip"] == "d390" for d in rez["datorate"])
-    assert not any(n["tip"] == "d390" and "declară FĂRĂ" in n["motiv"] for n in rez["neclar"])
+    assert not any(n["tip"] == "d390" and "declară fără" in n["motiv"] for n in rez["neclar"])
 
 def test_semafor_d390_neplatitor_flag_false_nu_consulta_faptul():
     # POARTA (regresie tenant_001): neplatitor cu flag False -> D390 neaplicabil PRIN FORMA. Faptul NU se consulta

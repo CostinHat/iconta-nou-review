@@ -19,14 +19,14 @@ def test_cod_131_blocat_cu_motiv_data_i():
     with pytest.raises(ValueError) as ei:
         _gen("131")
     msg = str(ei.value)
-    assert "131" in msg and "Data_I" in msg and "neacceptat" in msg, msg
+    assert "131" in msg and "data încheierii exercițiului" in msg and "neacceptat" in msg, msg
 
 
 def test_cod_132_blocat_cu_motiv_data_i():
     with pytest.raises(ValueError) as ei:
         _gen("132")
     msg = str(ei.value)
-    assert "132" in msg and "Data_I" in msg, msg
+    assert "132" in msg and "data încheierii exercițiului" in msg, msg
 
 
 def test_mesajul_citeaza_regula_duk():

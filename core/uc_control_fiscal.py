@@ -53,13 +53,19 @@ def control_fiscal_portofoliu(ctx):
 def contoare_portofoliu(firme):
     """[08.10.2026, retest pct.7] Contoarele de sus = FAPTE numărate pe firme, nu culoarea combinată: „F1 și F5 arată «restanță» cu
     «0 restanțe», iar contorul de sus «0 de urmărit», deși detaliul F1 are 5 de urmărit. Nedeclaratul înainte de termen e «de urmărit»,
-    nu restanță.” O firmă poate intra în două (restanțe ȘI neconcordanțe); `sumar` (partiția pe culori) rămâne neschimbat."""
-    neconc = lambda f: any((c or {}).get("stare") in ("rosu", "galben") for c in (f.get("contabil") or []))
-    return {"restante": sum(1 for f in firme if (f.get("lipsa") or 0) > 0),
-            "de_urmarit": sum(1 for f in firme if (f.get("urmarit") or 0) > 0),
-            "neconcordante": sum(1 for f in firme if neconc(f)),
-            "nu_se_pot_verifica": sum(1 for f in firme if f.get("stare") == "gri"),
-            "la_zi": sum(1 for f in firme if f.get("stare") == "verde")}
+    nu restanță.” O firmă poate intra în două (restanțe ȘI neconcordanțe); `sumar` (partiția pe culori) rămâne neschimbat.
+    [Retest 2, 09.10.2026, pct.3] „contoarele de sus folosesc două reguli … Una dintre reguli, aplicată peste tot.” Regula unică e cea
+    a faptelor (de la pct.7): fiecare contor = firmele care AU faptul; „nu se pot verifica” = firma cu cel puțin un necunoscut
+    (declarație sau verificare contabilă gri) sau fără date la zi — nu starea principală gri (F5 avea 2 necunoscute și pică din
+    numărătoare); „la zi” = firma fără niciun fapt din celelalte patru."""
+    neconc = lambda f: any((c or {}).get("stare") in ("rosu", "galben") for c in (f.get("contabil") or []))   # noqa: E731
+    gri = lambda f: ((f.get("neclar") or 0) > 0 or any((c or {}).get("stare") == "gri" for c in (f.get("contabil") or []))   # noqa: E731
+                     or (f.get("prospetime") or {}).get("stare", "curent") != "curent")
+    fapte = {"restante": lambda f: (f.get("lipsa") or 0) > 0, "de_urmarit": lambda f: (f.get("urmarit") or 0) > 0,
+             "neconcordante": neconc, "nu_se_pot_verifica": gri}
+    out = {k: sum(1 for f in firme if p(f)) for k, p in fapte.items()}
+    out["la_zi"] = sum(1 for f in firme if not any(p(f) for p in fapte.values()))
+    return out
 
 
 def control_fiscal_audit_preluare(tenant_id, ctx):

@@ -115,8 +115,26 @@ def conturi_dupa_text(cur, tipar_simbol, tipar_denumire):
 
 
 def toate_conturile(cur):
-    cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol LIMIT 100")
+    """[Retest 2 pct.13] TOT planul (≈700 de conturi): ecranul planului de conturi îl arată întreg, cu analiticele sub sintetic.
+    Căutarea (`conturi_dupa_text`) rămâne plafonată."""
+    cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol")
     return cur.fetchall()
+
+
+def conturi_folosite(cur, simboluri=None):
+    """Simbolurile care apar pe o linie de notă (orice stare: o ciornă e tot evidență în lucru). [Retest 2 pct.13] „un cont folosit
+    în note nu se poate șterge” (decizia Costin O12)."""
+    if simboluri is None:
+        cur.execute("SELECT cont_debit FROM inregistrari_linii UNION SELECT cont_credit FROM inregistrari_linii")
+    else:
+        cur.execute("SELECT cont_debit FROM inregistrari_linii WHERE cont_debit = ANY(%s) "
+                    "UNION SELECT cont_credit FROM inregistrari_linii WHERE cont_credit = ANY(%s)", (list(simboluri), list(simboluri)))
+    return {r[0] for r in cur.fetchall()}
+
+
+def sterge_cont_din_plan(cur, simbol):
+    cur.execute("DELETE FROM plan_conturi WHERE simbol = %s", (simbol,))
+    return cur.rowcount
 
 
 # ── P7 · V2: scrierile, mutate din rute ──────────────────────────────

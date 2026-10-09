@@ -3,23 +3,23 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=86b39e444e";   // [retest 08.10 pct.7] contoarele de sus
+import { itemiContoare } from "./control_verdict.js?v=a0acfd801a";   // [retest 08.10 pct.7] contoarele de sus
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4242dc4353";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=ddc8c9cccc";
-import { randeazaMigrare } from "./migrare.js?v=54978bb037";
-import { randeazaControl } from "./control.js?v=b30c085085";
+import { randeazaListaFirme } from "./firme.js?v=ffea72127e";
+import { randeazaMigrare } from "./migrare.js?v=6eee7c6ea6";
+import { randeazaControl } from "./control.js?v=6cad94dd59";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=380aa43977"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=eb25e8c5dc"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=a131eb8e23"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=3803bf7e3b";
+import { randeazaValidat } from "./validat.js?v=dff603e22d";
 import { randeazaSupervizor } from "./supervizor.js?v=d07a63dba1"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
+import { randeazaAsistenti } from "./asistenti.js?v=56949c5709";
 import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
 
@@ -109,7 +109,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
       <span class="sa-desc">${eticheta}</span></button>`;
   }
   const cifre = [
-    cifra(t.create || 0, "pregatite", "activitate"),
+    cifra(t.create || 0, "preg\u0103tite", "activitate"),
     cifra(t.aprobate || 0, "validate", "activitate", (t.aprobate ? "var(--verde)" : null)),
     cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu)" : null)),
     cifra(t.depuse || 0, "depuse", "activitate", (t.depuse ? "var(--verde)" : null)),
@@ -438,6 +438,11 @@ async function actualizeazaValidat(grila) {
       if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> declaraț${nevalidate === 1 ? "ie neverificată, de deschis" : "ii neverificate, de deschis"}`;
     }
     zona.innerHTML = partNote ? `${partNote} · ${s}` : s;
+    // [Retest 2 pct.12] ciornele tale, numărate pe card: se văd fără căutare (lista e la capătul ferestrei)
+    try {
+      const rcm = await api.get("/eu/ciorne");
+      if (rcm && rcm.total) zona.innerHTML += ` · <b class="tip-figura">${rcm.total}</b> ${rcm.total === 1 ? "notă a ta în ciornă" : "note ale tale în ciornă"}`;
+    } catch (e) { /* cardul rămâne cu coada; lista din fereastră spune eșecul */ }
   } catch {}
 }
 
@@ -596,7 +601,7 @@ async function randeazaConsolidare(corp, nav) {
     <div class="pf-lista zebra-lista">
       ${cap}
       ${(d.firme || []).map((f) => rand(esc(f.nume), f.kpi)).join("")}
-      ${rand("TOTAL", d.total, true)}
+      ${rand("Total", d.total, true)}
     </div>`;
 }
 

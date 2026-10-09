@@ -52,7 +52,7 @@ UNIQUE = [
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         for tab, col in NOT_NULL:
             cur.execute(f'ALTER TABLE "{schema}".{tab} ALTER COLUMN {col} SET NOT NULL')

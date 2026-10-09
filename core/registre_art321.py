@@ -186,8 +186,8 @@ def registru(conn, schema, fel, an=None):
         motiv=("Registrul %s, ținut potrivit art. 321 alin. (4) din Codul fiscal"
                % ("nontransferurilor" if fel == "nontransfer" else "bunurilor primite")),
         temei_completitudine=("toate rândurile înscrise în registru%s, în "
-                              "ordinea numărului de ordine. **Registrul cuprinde ce s-a înscris — "
-                              "nu se derivă din facturi**, fiindcă operațiunile pe care le "
+                              "ordinea numărului de ordine. Registrul cuprinde ce s-a înscris — "
+                              "nu se derivă din facturi, fiindcă operațiunile pe care le "
                               "consemnează sunt mișcări de bunuri fără vânzare"
                               % ((" (exercițiul %d)" % an) if an else " (toate exercițiile)")),
         # Domeniul e OBIECTUL, nu perioada: norma nu cere reluarea numerotarii la 1 ianuarie, deci

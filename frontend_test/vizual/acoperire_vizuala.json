@@ -1,5 +1,5 @@
 {
- "ui_hash": "a622c3cadc06b11e",
+ "ui_hash": "4e2b4d9f09980917",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -252,6 +252,25 @@
    "axe_desktop": [],
    "apasare": {
     "vazute": 8,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "planconturi": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 341,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

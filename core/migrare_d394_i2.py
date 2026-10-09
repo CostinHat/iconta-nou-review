@@ -23,7 +23,7 @@ DDL = {
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         for tabel, ddl in DDL.items():
             cur.execute("SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name=%s",

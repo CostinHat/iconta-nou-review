@@ -181,9 +181,9 @@ def erori_generare(prof, manual):
     d_rec = _b(manual.get("d_rec"))
     ref = str(manual.get("reference_number") or "").strip()
     if d_rec == 1 and not ref:
-        er.append("Declarație rectificativa (d_rec=1) cere reference_number (R9.3).")
+        er.append("Declarație rectificativă (d_rec=1) cere reference_number (R9.3).")
     if d_rec == 0 and ref:
-        er.append("Declarație initiala (d_rec=0) nu poate contine reference_number (R9.1).")
+        er.append("Declarație inițială (d_rec=0) nu poate conține reference_number (R9.1).")
     if ref and not ref.upper().startswith("RO"):
         er.append("reference_number trebuie să înceapă cu 'RO' (R9.2).")
     if not str(manual.get("refunding_country") or "").strip():
@@ -234,7 +234,7 @@ def erori_generare(prof, manual):
             er.append("Achiziție %d: lipsă adresa furnizor UE (furnizor.strada)." % i)
         if _b(f.get("simplified_invoice", f.get("simplifiedInvoice"))) == 1:
             if not str(fz.get("vat_id") or fz.get("vatIdentificationNumber") or "").strip():
-                er.append("Achiziție %d simplificata: furnizorul cere vatIdentificationNumber." % i)
+                er.append("Achiziție %d simplificată: furnizorul cere vatIdentificationNumber." % i)
         if not _data_ok(f.get("issuing_date", f.get("issuingDate"))):
             er.append("Achiziție %d: issuing_date invalid (aștept yyyy-mm-dd sau dd.mm.yyyy)." % i)
     for i, f in enumerate(importuri, 1):

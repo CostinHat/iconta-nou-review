@@ -70,7 +70,7 @@ def test_discriminare_pe_tara_RO_zero_nu_autoclasifica():
     assert "R1_1" not in res.R, "livrarea 0% interna NU e livrare IC (rd.1)"
     assert "R14_1" not in res.R, "livrarea 0% interna NU e export (rd.14)"
     assert "R9_1" not in res.R, "0% NU cade în colectat cu cota"
-    assert any("R14/R15" in a for a in res.avertismente), \
+    assert any("rd.14 sau rd.15" in a for a in res.avertismente), \
         "livrarea 0% interna se semnaleaza per-linie pentru clasificare manuală R14/R15"
 
 

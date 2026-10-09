@@ -262,7 +262,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #     — pct.9, „Marchează toate ca depuse de contabilul anterior”: o perioadă deja depusă nu se marchează peste;
     #   repo_control_fiscal_api.select_depusa_curenta + delete_marcari (control_fiscal_anuleaza_marcare) — pct.10, marcarea se poate
     #     anula (numai marcările; o depunere din iConta.eu rămâne). Total 303 -> 307.
-    assert _apeluri_catre_repository() == 307
+    # [lotul „Retest 2”, 09.10.2026] 307 -> 312, cu apelurile numite (toate în ecranul planului de conturi, pct.13, decizia Costin O12):
+    #   repo_contabilitate.conturi_folosite (tenant_plan_conturi_lista) — lista spune care cont e folosit în note;
+    #   repo_contabilitate.denumirea_contului + conturi_folosite + toate_conturile + sterge_cont_din_plan
+    #     (tenant_plan_conturi_sterge) — ștergerea: contul există, nu e folosit în note, nu are analitice; abia apoi se șterge.
+    #   (citirea tenantului din `declaratii_nedepuse_cu_termen_in_luna`, pct.11, trece prin `repo_tenants` dintr-un ajutor, nu dintr-o rută.)
+    assert _apeluri_catre_repository() == 312
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

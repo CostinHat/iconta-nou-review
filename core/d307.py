@@ -86,7 +86,7 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI persoana impozabila lipsă/invalid.")
+        er.append("CUI persoana impozabilă lipsă/invalid.")
     if not str(prof.get("den") or "").strip():
         er.append("Lipsă denumire.")
     if not str(prof.get("adresa") or "").strip():

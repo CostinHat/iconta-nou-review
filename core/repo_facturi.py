@@ -130,7 +130,7 @@ def actualizeaza_destinatii_linii(cur, schema, fid, destinatii):
     for lid, dest in zip(ids, destinatii):
         d = (dest or "taxabil").strip()
         if d not in DESTINATII:
-            raise ValueError("destinatie TVA invalida: %r (permise: %s)"
+            raise ValueError("destinație TVA invalidă: %r (permise: %s)"
                              % (d, ", ".join(DESTINATII)))
         cur.execute(f"UPDATE {schema}.factura_linii SET destinatie_tva=%s WHERE id=%s",
                     (d, lid))

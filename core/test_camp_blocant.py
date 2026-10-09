@@ -24,7 +24,7 @@ from core import scan_camp_blocant as scan
 
 # Declarațiile din `OBLIGATORII` care NU sunt module de declarație (bilanțul n-are `genereaza`
 # în forma asta). Se numesc, ca să nu fie confundate cu o scăpare.
-NU_SUNT_MODULE = ("Bilant", "Bilant S1005")
+NU_SUNT_MODULE = ("Bilanț", "Bilanț S1005")
 
 # EXCEPȚII DECLARATE, fiecare cu motivul ei. O excepție fără motiv ar face garda o listă de tolerat.
 EXCEPTII = {

@@ -57,6 +57,8 @@ _PERMISE = {
     ("core/test_p4_fault_injection.py", "PAROLA_ATRIBUITA"): (5, "parola unei înregistrări făcute să EȘUEZE (cont șters de "
                                                                  "test) + jetoane OAuth false dintr-un răspuns simulat"),
     ("core/test_post_token_fara_conexiune.py", "PAROLA_ATRIBUITA"): (3, "jetoane OAuth false (`acc-…`, `ref-…`) ale serverului simulat"),
+    ("core/lexicon_diacritice.json", "PAROLA_ATRIBUITA"): (1, "perechea de lexicon `\"parola\": \"parolă\"` (forma fără diacritice "
+                                                            "a unui cuvânt, nu o parolă) — Retest 2, lexiconul derivat din corpus"),
     ("core/test_spv_conector.py", "PAROLA_ATRIBUITA"): (3, "jetoane de reîmprospătare false ale serverului simulat"),
     ("core/test_wave1_stare_partajata.py", "PAROLA_ATRIBUITA"): (1, "parolă GREȘITĂ intenționat (se numără logările eșuate)"),
     ("static/js/sesiune.js", "PAROLA_ATRIBUITA"): (2, "NUMELE cheilor din sessionStorage (`iconta_token`), nu valori"),

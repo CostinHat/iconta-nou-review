@@ -66,7 +66,7 @@ def balanta(conn, schema, an, luna):
                          SUM(deb) FILTER (WHERE data >= %s) AS rul_d, SUM(cred) FILTER (WHERE data >= %s) AS rul_c
                   FROM linii GROUP BY cont)
             SELECT COALESCE(si.cont, r.cont) AS cont,
-                   COALESCE(si.denumire, pc.denumire, '') AS denumire,
+                   COALESCE(pc.denumire, si.denumire, '') AS denumire,   -- [Retest 2 pct.2] planul firmei întâi (importul poate fi fără diacritice)
                    COALESCE(si.sd,0), COALESCE(si.sc,0), COALESCE(r.ant_d,0), COALESCE(r.ant_c,0),
                    COALESCE(r.prec_d,0), COALESCE(r.prec_c,0), COALESCE(r.rul_d,0), COALESCE(r.rul_c,0)
             FROM si FULL OUTER JOIN r ON r.cont = si.cont
@@ -125,7 +125,7 @@ def rulaje_cumulate(r, parte):
 
 # Cele trei perechi pe care o balanta de verificare trebuie sa le inchida. Constanta, nu literale
 # imprastiate: gardul citeste MULTIMEA, nu cauta un sir intr-un text (METODA §23).
-PERECHI_BALANTA = (("sold initial", "si_d", "si_c"),
+PERECHI_BALANTA = (("sold inițial", "si_d", "si_c"),   # [Retest 2 pct.2] cu diacritice — eticheta e text pe ecran și în PDF
                    ("sume precedente", "prec_d", "prec_c"),
                    ("rulaje curente", "rul_d", "rul_c"),
                    ("total sume", "tot_d", "tot_c"),
@@ -171,12 +171,17 @@ def inchidere_balanta(randuri):
     return {"stare": stare, "perechi": perechi, "randuri": len(randuri)}
 
 
-def antet_raport(nume_firma, cui, acum=None):
-    """Rândul de antet al unui raport contabil PDF (DS cap.7 v2.84): firma, CUI-ul ei și momentul generării (ora României)."""
+def antet_raport(nume_firma, cui, acum=None, platitor_tva=None):
+    """Rândul de antet al unui raport contabil PDF (DS cap.7 v2.84): firma, codul ei fiscal și momentul generării (ora României).
+    [Retest 2 pct.16] La plătitorul de TVA codul e „Cod TVA RO…” (CF art.318 alin.(1): „Codul de înregistrare în scopuri de TVA,
+    atribuit conform art. 316 și 317, are prefixul RO”), la neplătitor „CIF …” — aceeași regulă ca pe factură
+    (`factura_pdf.cod_fiscal_pe_factura`, sursa unică)."""
     import datetime
     import zoneinfo
+    from core.factura_pdf import cod_fiscal_pe_factura
     acum = acum or datetime.datetime.now(zoneinfo.ZoneInfo("Europe/Bucharest"))
-    firma = " · ".join(x for x in (nume_firma or "", ("CUI %s" % cui) if cui else "") if x)
+    et, cod = cod_fiscal_pe_factura(cui, platitor_tva)
+    firma = " · ".join(x for x in (nume_firma or "", ("%s %s" % (et, cod)) if cod else "") if x)
     from core.pdf_util import data_ro
     return "%s%sGenerată la %s" % (firma, " — " if firma else "", data_ro(acum, "cu_ora"))
 
@@ -194,9 +199,9 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
 
     randuri = balanta(conn, schema, an, luna)
     with conn.cursor() as _cur:
-        _cur.execute(f"SELECT culoare_factura, font_factura, cui FROM {schema}.firma_profil WHERE id = 1")
+        _cur.execute(f"SELECT culoare_factura, font_factura, cui, platitor_tva FROM {schema}.firma_profil WHERE id = 1")
         _prof = _cur.fetchone()
-    _cul_profil, _font_profil, _cui = (_prof if _prof else (None, None, None))
+    _cul_profil, _font_profil, _cui, _platitor = (_prof if _prof else (None, None, None, None))
     init_fonturi()
     fr, fb = font(_font_profil or "sans")
     try:
@@ -224,7 +229,7 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     el = [
         Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
         # [retest 08.10 pct.18, DS cap.7] „PDF balanță: CUI-ul firmei și data generării în antet.”
-        Paragraph(antet_raport(nume_firma, _cui), st_meta),
+        Paragraph(antet_raport(nume_firma, _cui, platitor_tva=_platitor), st_meta),
         Paragraph("Cuprinde numai notele validate." + (" %d %s nu %s incluse." % (
             _n_ci, "ciorn\u0103 nevalidat\u0103" if _n_ci == 1 else "ciorne nevalidate", "este" if _n_ci == 1 else "sunt")
             if _n_ci else ""), st_meta),
@@ -243,7 +248,7 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
             Paragraph((r["denumire"] or "")[:60], st_cell),
         ] + [Paragraph(_bani(v), st_cell_r) for v in vals])
     date_tab.append([
-        Paragraph("", st_cell), Paragraph("TOTAL", ParagraphStyle("totlbl", parent=st_cell, fontName=fb)),
+        Paragraph("", st_cell), Paragraph("Total", ParagraphStyle("totlbl", parent=st_cell, fontName=fb)),
     ] + [Paragraph(_bani(v), ParagraphStyle("totval", parent=st_cell_r, fontName=fb)) for v in tot])
 
     tabel = Table(date_tab, colWidths=[16 * _mm, 61 * _mm] + [20 * _mm] * len(_col), repeatRows=1)

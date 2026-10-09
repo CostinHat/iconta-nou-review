@@ -59,7 +59,7 @@ def test_nerezident_dividende_refuzat():
     with pytest.raises(ValueError) as ei:
         build_xml(res)
     msg = str(ei.value)
-    assert "NEREZIDENT" in msg and "R32" in msg, msg
+    assert "nerezident" in msg and "R32" in msg, msg
 
 
 def test_nerezident_pasaport_refuzat():

@@ -337,8 +337,8 @@ def calcul_d112(prof, salariati, an, luna):
                 "Completează-l în fisa salariatului, nu se emite D112 invalid." % _cnp_s)
         if not str(s.get("data_angajare") or "").strip():
             raise ValueError(
-                "D112: salariatul %s (CNP %s) are data_angajare necompletată - dataAng e obligatoriu în "
-                "D112 (XSD). Completeaz-o în fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
+                "D112: salariatul %s (CNP %s) nu are data angajării completată, iar ANAF o cere în "
+                "D112. Completeaz-o în fișa salariatului; declarația nu se generează fără ea." % (_nume_s, _cnp_s))
         brut = _d112int(s.get("brut")) + _venituri_adaugate(s)  # [D3] exces vacanta + [cadou 16.08] cadou taxabil + [S1] elemente variabile in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
@@ -477,8 +477,8 @@ def calcul_d112(prof, salariati, an, luna):
                 if _lipsa:
                     raise ValueError(
                         "D112: certificatul de concediu medical (salariat CNP %s) are câmpuri obligatorii goale: %s. "
-                        "AsiguratDType le cere use=required în d112_06082026.xsd - un XML cu ele goale e respins de "
-                        "ANAF. Completează-le în certificat (ecran Concedii medicale) - nu se emite D112 invalid."
+                        "ANAF le cere pe toate, iar o declarație cu ele goale e respinsă. "
+                        "Completează-le în certificat (ecranul Concedii medicale)."
                         % (s.get("cnp"), ", ".join(_lipsa)))
                 # [cod boala D_9, sursa = NOMENCLATORUL 9, 22.08.2026] Pana azi se valida contra
                 # enumerarii din XSD ('01'..'15'), cu fallback pe un interval GHICIT (1..15) cand
@@ -507,8 +507,8 @@ def calcul_d112(prof, salariati, an, luna):
                 if _ovf:
                     raise ValueError(
                         "D112: certificatul de concediu medical (salariat CNP %s) are câmpuri care depășesc "
-                        "lungimea maximă XSD: %s - se corectează în certificat (ecran Concedii medicale); "
-                        "identificatorii de certificat NU se trunchiază tacit, nu se emite D112 invalid."
+                        "lungimea admisă de ANAF: %s. Se corectează în certificat (ecranul Concedii medicale); "
+                        "aplicația nu scurtează singură seria sau numărul certificatului."
                         % (s.get("cnp"), ", ".join(_ovf)))
                 # [D1, lotul 07.10, 06.10.2026] atributele de identificare ale certificatului, IN ORDINEA din XML: (atribut, valoare)
                 _opt = [(_a, _v) for _a, _lbl, _v in _obl]
@@ -915,7 +915,7 @@ def pull(conn, schema, perioada):
         # [D2 02.08] tichete pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): nzl - CM - CO/deleg/absente/invoire (pontaj)
         # [D2/cap.23] tichetele cer pontaj CONFIRMAT
         if float(s.get("tichet_masa_valoare") or 0) > 0 and not _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]:
-            raise _per.PerioadaNeconfirmata("Tichetele de masa (D112)", an, luna, "pontaj", "HG 1045/2018 art.10(3)")
+            raise _per.PerioadaNeconfirmata("D112 (tichetele de masă)", an, luna, "pontaj", "HG 1045/2018 art.10(3)")
         _fara_t = _pontaj.zile_fara_tichet(conn, schema, s["id"], an, luna) if float(s.get("tichet_masa_valoare") or 0) > 0 else 0
         tichet_zile = max(_za - zile_cm_s - _fara_t, 0)   # [lot 19] pe zilele ACTIVE ale contractului
         # [D3 02.08] exces tichete vacanta peste plafonul ANUAL (6 sm) -> venit salarial in brut (cumulat an)

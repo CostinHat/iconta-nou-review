@@ -145,7 +145,7 @@ def erori_generare(prof, manual):
         er.append("activitate: sector obligatoriu pentru județ=40 (București).")
     asociati = manual.get("asociati") or []
     if not asociati:
-        er.append("D223 cere cel puțin un asociat (asociati[]).")
+        er.append("D223 cere cel puțin un asociat (asociați[]).")
     cifuri, suma_cota = [], Decimal(0)
     for i, a in enumerate(asociati, 1):
         if not str(a.get("nume_d") or "").strip():
@@ -166,7 +166,7 @@ def erori_generare(prof, manual):
     if asociati and suma_cota != Decimal(100):
         er.append("Suma cotelor de distribuire (%s) trebuie să fie 100." % suma_cota)
     if len(cifuri) != len(set(cifuri)):
-        er.append("Asociații au cif_d duplicat (cif_d = cheie unica).")
+        er.append("Asociații au cif_d duplicat (cif_d = cheie unică).")
     return er
 
 

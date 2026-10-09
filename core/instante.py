@@ -141,10 +141,10 @@ def confirma_blocaj(conn):
     desface serializarea in tacere — opreste pornirea, ca orice alta verificare din blocul asta.
     """
     if not blocaj_tinut(conn):
-        raise BlocajPierdut(
-            "[P6] blocajul de pornire NU mai e tinut la capatul sectiunii critice — ceva a incheiat "
-            "tranzactia intre timp (un `commit` intr-un apel chemat de aici). Instalarea "
-            "infrastructurii a rulat NESERIALIZAT, deci pornirea asta nu poate fi declarata sigura.")
+        raise BlocajPierdut(  # invariant-intern-ok: pornirea serviciului, jurnalul de sistem
+            "[P6] blocajul de pornire NU mai e ținut la capătul sectiunii critice — ceva a încheiat "
+            "tranzacția intre timp (un `commit` într-un apel chemat de aici). Instalarea "
+            "infrastructurii a rulat NESERIALIZAT, deci pornirea asta nu poate fi declarată sigura.")
 
 
 def retrage_liderul_mort(conn, rol):

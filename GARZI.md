@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**744 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**748 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 707
+### `core/` — 711
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8977,6 +8977,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d101_imca_ca_precedent.py` — core/test_d101_imca_ca_precedent.py — gard D101 IMCA eligibilitate (C-4 transa 3).
 - `core/test_d101_impozit_nededus.py` — GARD [02.09.2026, PRAG 1]: cheltuiala cu impozitul pe profit ramasa NEDEDUSA se SEMNALEAZA.
 - `core/test_d101_nr_evid_poz12.py` — core/test_d101_nr_evid_poz12.py — gard: nr_evid poz.1-2 = '11' (OPANAF 206/2025).
+- `core/test_d101_rand_formular.py` — GARD — rândul D101 numit pe ecran („rândul 8.1”) e rândul din FORMULARUL OPANAF 206/2025, nu numele atributului XML („P081”).
 - `core/test_d101_reconciliere.py` — core/test_d101_reconciliere.py — gardul A DOUA CALE D101 (05.08.2026, pas 5/6).
 - `core/test_d101_sponsorizare_075.py` — GARD D101 (16.08.2026, campanie rețeta D300, pas 6/8) — sponsorizare: limita 0.75% cifra de afaceri.
 - `core/test_d101_valori_pre_duk.py` — GARD (TURA 3, 10.08.2026): D101 surfaceaza PRE-DUK, cu motiv EXACT, valorile fiscale invalide
@@ -9047,6 +9048,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d300_profil_identitate.py` — TURA 3 / T1: erori_generare verifica pana acum doar NON-GOL pentru cui/caen/pro_rata.
 - `core/test_d300_r25_r12.py` — TURA 4 (CR-5/T8): oglinda rd.12 <-> rd.25 la taxare inversa PRIMITA (masuri de simplificare).
 - `core/test_d300_r31_manual.py` — GARD — D300 rd.34 (R31_2) acceptă ajustările introduse de contabil, iar rândurile manuale nu pot purta o coloană
+- `core/test_d300_rand_formular.py` — GARD — rândul din formularul D300 numit pe ecran e rândul din FORMULARUL ÎN VIGOARE, nu numărul din atributul XML.
 - `core/test_d300_rapoarte_z.py` — GARD — TVA-ul colectat din rapoartele Z intră în decontul D300 (lot 19 pct.4b, 02.10.2026).
 - `core/test_d300_reconciliere.py` — core/test_d300_reconciliere.py — gardul A DOUA CALE D300 (05.08.2026).
 - `core/test_d300_taxare_inversa_beneficiar.py` — Gard Task2 (10.08.2026): achizitiile cu taxare inversa PRIMITA nu mai dispar tacit din D300.
@@ -9408,6 +9410,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
+- `core/test_retest2.py` — GARDA lotului „Retest 2” (comanda Costin 09.10.2026, verbatim în DECIZII) — retestul în aplicație al lotului „Retest 08.10”.
 - `core/test_retest_0810.py` — GARDA retestului Costin din 08.10.2026 dimineața + completarea lui (verbatim în DECIZII 08.10.2026), pe backend:
 - `core/test_retest_0810_s6.py` — GARDA lotului „Retest 08.10” (comanda Costin 08.10.2026, verbatim în DECIZII) — deciziile la §6 S6 și constatările retestului.
 - `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
@@ -9471,6 +9474,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_testare_asistent.py` — GARD — constatările din testarea ca asistent (comanda Costin 04.10.2026), punctele 3 și 6 + invitația.
 - `core/test_teste_decuplate.py` — Garda PERMANENTA (29.07.2026): niciun test nu depinde de o firma PERSISTENTA din baza.
 - `core/test_text_afisat_limbaj.py` — core/test_text_afisat_limbaj.py — GARD: textul afișat contabilului e limbă română, nu limbaj de programator.
+- `core/test_text_ecran.py` — GARD — textul AFIȘAT pe ecrane e limba contabilului: scanul din browser e proaspăt și curat.
 - `core/test_text_structurat.py` — GARD — o subclasă de `str` care poartă structură se COPIAZĂ cu tot cu structura (comanda Costin 07.10.2026, C1).
 - `core/test_tichet_2025.py` — GARD B1/tichet 2025: valorile nominale ale tichetului de masa in 2025, verificate VERBATIM la sursa.
 - `core/test_tichet_cresa.py` — Tichete de cresa (Legea 165/2018 art.19). Tratament fiscal IDENTIC cu tichetul cultural: impozit 10% pe
@@ -10667,3 +10671,13 @@ asertează pe structură (AST, grupuri capturate, chei), nu pe „șir în text�
 nouă: R17c, R21c, R23c, R30c, R31c, R35c–R37c, toate ROȘII. Etichetele cotelor stau lângă `COTE` (`common.ETICHETE_COTE`): mesajul
 `PerioadaIndisponibila` nu mai trage `reverificare` în universul procesului (`test_stare_proces`). Afirmațiile noi (refuzul din
 validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte tipate (`test_afirmatii_tipate`).
+
+## 09.10.2026 — „Retest 2”: textul judecat pe ecran, rândul formularului, stornarea, planul de conturi (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| **textul afișat, citit din browser** (`core/limba_ecran.py` + `frontend_test/vizual/text_ecran_scan.py`, artefact `text_ecran.json`) | `core/test_text_ecran.py` (4) | o enumerare afișată brut („incasare_client”), o sumă cu punct, o dată ISO, o perioadă în a patra formă, „1 parteneri”, „fact.vânz”, „persistat”, o majusculă de accent sau un cuvânt fără diacritice pe un ecran scanat; un scan vechi (UI sau instrument schimbat) | detectorul de acord scos -> ROȘU (R2-2a); scanul nerefăcut după o schimbare de UI -> `ui_hash` diferit | rulează în afara suitei (app viu + browser); ecranele sunt ale firmelor de test; textul serverului schimbat fără schimbare de UI nu invalidează scanul (prima plasă rămâne gardul de sursă) |
+| gardul de sursă, extins (`core/test_text_afisat_limbaj.py`) | rolurile `raise X("…")`, șabloanele `_M % x`, majuscula cu diacritică în cuvânt, „în afară” + substantiv; marcajul `# invariant-intern-ok:` cu motiv și plafon 27 | un mesaj de excepție de domeniu cu cod / fără diacritice; „LipsĂ”; „în afară României”; un marcaj fără motiv sau înmulțit pe tăcute | R2-G1…G4 -> ROȘU | lexiconul nu vede o greșeală care e și un cuvânt corect („plata” articulat); invers, o formă articulată rară în corpusul legislativ dar obișnuită în aplicație („parola”) ar fi semnalată fals — se trece în `AMBIGUE` cu motivul, când apare |
+| rândul D300 = rândul formularului OPANAF 174/2026 | `core/test_d300_rand_formular.py` (4) | „rândul 17.2” pentru `R17_2`, „rd.26” pentru `R26_1` | R25↔R43 și R17 pe numerotarea XML -> ROȘU | rândurile fără loc în formularul de azi (cote vechi) se numesc prin eticheta oficială |
+| rândul D101 = rândul formularului OPANAF 206/2025 | `core/test_d101_rand_formular.py` (2) | „P081” pe ecran; P081 citit rd.81 | subrândul scos -> ROȘU | opt atribute neconfruntabile (text stricat la extragere / poziții intermediare), numite cu motivul |
+| lotul, punct cu punct | `core/test_retest2.py` (35) | contoarele pe două reguli; ștergerea operațiunii de casă cu notă validată; stornarea dublă; „la zi” cu luna în curs; totalul jurnalului cu ciorne; „total 0,00” la nota de stornare; D390 pe toate lunile la neplătitor; rândul „înainte de preluare” fără termen; declarația nedepusă nevăzută la închidere; ciornele proprii nevăzute; contul folosit șters; confirmarea cu tot titlul; RO lipsă în antet; decontul trimestrial generat pe luna din mijloc | R2-1…R2-16, R2-T, R2-4c, R2-2d/e -> ROȘU (toate) | regula de afișare din JS se păzește pe grupuri capturate din sursă, comportamentul în browser pe captură (raport) |

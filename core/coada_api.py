@@ -203,7 +203,8 @@ def eticheta_element(fel, tip, perioada, payload):
             # [retest 07.10 R2, comanda Costin] un document cu mai multe note se numește SCURT: „NIR nr 1 din 07.10.2026 · DANTE
             # INTERNATIONAL SA · 4 note” — documentul, partenerul, câte note. Descrierile (aceeași, repetată pe fiecare notă) nu
             # mai intră în titlu; notele se văd la „Vezi notele”.
-            return " · ".join(x for x in [doc or "Document", (p.get("partener") or "").strip(), "%d note" % len(descr)] if x)
+            from core.common import cate as _cate   # [Retest 2 pct.14] acordul numeralului
+            return " · ".join(x for x in [doc or "Document", (p.get("partener") or "").strip(), _cate(len(descr), "notă", "note")] if x)
         parti = ["Notă", descr[0]]
         # [lotul 07.10 pct.13] documentul nu se repetă când descrierea îl spune deja (fără diacritice, fără majuscule)
         if doc and _fara_diacritice(doc) not in _fara_diacritice(descr[0]) and _fara_diacritice(descr[0]) not in _fara_diacritice(doc):
@@ -234,6 +235,7 @@ def _payload_nota(n):
     doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
     p = {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
          "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
+         "rulaj": str(n.get("rulaj", n["total"])), "rulaj_storno": str(n.get("rulaj_storno") or 0),   # [Retest 2 pct.7]
          "partener": n.get("partener"), "stinge": n.get("stinge"),   # [08.10, U5]
          "grup": grup_nota(n["id"], n.get("grup_doc"))}
     # [retest 07.10 seara, S3] documentul notei, documentul pe care îl reface (NIR-ul refăcut: cel respins) și amprenta notei —
@@ -355,8 +357,29 @@ _SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.ti
                 "f.numar AS f_nr, f.data_emitere AS f_data, "
                 + _GRUP_DOC + " AS grup_doc, " + _PARTENER + " AS partener, " + _AMPRENTA + " AS amprenta, "
                 "(SELECT n.refacut_din_id FROM nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1) AS nir_refacut_din, "
-                "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total "
+                "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id) AS total, "
+                # [Retest 2, pct.7] rulajul notei pe cele două părți: stornarea (liniile cu minus) și înregistrarea (cu plus)
+                "(SELECT COALESCE(SUM(-l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id AND l.suma < 0) AS rulaj_storno, "
+                "(SELECT COALESCE(SUM(l.suma), 0) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id AND l.suma > 0) AS rulaj "
                 "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
+
+
+def ciorne_proprii(conn, tenant_id, uid):
+    """[Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără
+    căutare.” Notele CIORNĂ scrise de `uid` pe firmă, cu starea lor în coadă (`la_senior` = trimisă la validare, `respinsa` +
+    motivul, None = netrimisă: un validator nu-și trimite notele în coadă, le validează el). `conn` pe schema firmei."""
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.creat_de_id = %s ORDER BY i.data, i.id", (uid,))
+        note = [dict(n) for n in cur.fetchall()]
+        for n in note:
+            cur.execute("SELECT stare, motiv_respingere FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' "
+                        "AND perioada = %s ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(n["id"])))
+            c = cur.fetchone()
+            n["in_coada"], n["motiv_respingere"] = (c["stare"], c["motiv_respingere"]) if c else (None, None)
+    return [{"id": n["id"], "data": n["data"].isoformat(), "descriere": n["descriere"], "document_ref": n["document_ref"],
+             "rulaj": float(n["rulaj"] or 0), "rulaj_storno": float(n["rulaj_storno"] or 0), "in_coada": n["in_coada"],
+             "motiv_respingere": n["motiv_respingere"]} for n in note]
 
 
 def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):

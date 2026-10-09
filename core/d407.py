@@ -198,15 +198,15 @@ def erori_generare(prof, manual):
         er.append("luna raportare trebuie să fie 6 sau 12 (DUK regula RLuna).")
     an = int(prof.get("an") or 0)
     if not (2025 <= an <= 2100):
-        er.append("an raportare în afară intervalului [2025, 2100] (DUK regula an).")
+        er.append("an raportare în afara intervalului [2025, 2100] (DUK regula an).")
     if not _int_in(manual.get("tip_doc"), (1, 2)):
-        er.append("tipDoc (tip_doc) obligatoriu 1 (polite) sau 2 (lista persoane).")
+        er.append("tipDoc (tip_doc) obligatoriu 1 (polițe) sau 2 (lista persoane).")
     try:
         d_rec = int(manual.get("d_rec") or 0)
     except (TypeError, ValueError):
         d_rec = -1
     if d_rec not in (0, 1):
-        er.append("d_rec obligatoriu 0 (initiala) sau 1 (rectificativa).")
+        er.append("d_rec obligatoriu 0 (inițială) sau 1 (rectificativă).")
     # --- antet declarant ---
     if not _cif_valid(manual.get("cif")):
         er.append("CIF declarant (cif) invalid - CUI sau CNP cu cheie de control "
@@ -214,7 +214,7 @@ def erori_generare(prof, manual):
     for camp, et in (("den", "Denumire declarant (den)"),
                      ("adresa", "Adresa declarant (adresa)"),
                      ("localitate", "Localitate (localitate)"),
-                     ("forma_j", "Forma juridica (forma_j)"),
+                     ("forma_j", "Forma juridică (forma_j)"),
                      ("nume", "Nume declarant/semnatar (nume)"),
                      ("functia", "Funcția (funcția)")):
         if not str(manual.get(camp) or "").strip():

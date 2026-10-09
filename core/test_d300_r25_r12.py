@@ -76,7 +76,7 @@ def test_MUTATIE_R12_fara_R25_ridica_in_genereaza(monkeypatch):
                        {"R12_1": 10000, "R12_2": 2100})
     m = str(ei.value)
     assert "DUK regula V19/V20" in m, m
-    assert "R12_2=2100" in m and "R25_2=0" in m, m   # numeste AMBELE valori
+    assert "coloana TVA: rândul 12 = 2100, rândul 26 = 0" in m, m   # numeste AMBELE valori
 
 
 # ---------------------------------------------------------------------------
@@ -100,7 +100,7 @@ def test_MUTATIE_R12_diferit_de_R25_helper():
     with pytest.raises(ValueError) as ei:
         _oglinda_r12_r25(_res_cu(R12_1=10000, R12_2=2100, R25_1=10000, R25_2=999))
     m = str(ei.value)
-    assert "R12_2=2100" in m and "R25_2=999" in m, m
+    assert "coloana TVA: rândul 12 = 2100, rândul 26 = 999" in m, m
 
 
 # ---------------------------------------------------------------------------

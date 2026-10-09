@@ -76,10 +76,10 @@ def _verifica_cor(conn, cod):
     cod = (str(cod).strip() if cod is not None else "")
     if not cod:
         # [#7] COR e OBLIGATORIU (necesar D112/REGES). Inainte "gol = permis" -> salariatul se salva fara COR.
-        raise ValueError("Ocupatia (cod COR) este obligatorie - alege ocupatia din lista (necesara D112/REGES).")
+        raise ValueError("Ocupația (cod COR) este obligatorie - alege ocupația din lista (necesară D112/REGES).")
     from core import cor_api
     if not cor_api.exista(conn, cod):
-        raise ValueError("cod COR inexistent in nomenclator: %s (alege din lista)" % cod)
+        raise ValueError("cod COR inexistent în nomenclator: %s (alege din lista)" % cod)
 
 
 def valideaza_salariat(date, la_creare=False):
@@ -119,7 +119,7 @@ def valideaza_salariat(date, la_creare=False):
         erori.append(("cor", "Ocupația (cod COR) este obligatorie (necesară în D112 și REGES)."))
     tn = date.get("tip_norma")
     if tn is not None and tn not in _NORME:
-        erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'partiala'."))
+        erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'parțială'."))
     # [decizia Costin 07.10, pct.4] pe calea API, aceeași regulă ca pe ecran: cele trei fapte se cer explicit la creare
     if la_creare:
         if tn is None:
@@ -544,8 +544,8 @@ def salveaza_concediu(conn, salariat_id, date):
             _ddac = None
         _maxu = 175 if (_ddac and _ddac <= _dtu.date(2020, 5, 29)) else 177
         if cod_urgenta is None or not (1 <= cod_urgenta <= _maxu):
-            raise ValueError("La codul 06 (urgenta medico-chirurgicala) completeaza codul de urgenta "
-                             "(1..%d, nomenclator HG 423/2020) - D112 il cere obligatoriu (campul D_11)." % _maxu)
+            raise ValueError("La codul 06 (urgență medico-chirurgicală) completează codul de urgență "
+                             "(1..%d, nomenclator HG 423/2020) - D112 îl cere obligatoriu." % _maxu)
     # [D_8/D_8a, regula DUK S97] cod 09/91/92 cer CNP copil, cod 17 cere CNP pacient oncologic. Validare
     # cifra de control (valideaza_cnp) - un CNP invalid NU intra (part 2). Restul codurilor: cnp_ingrijit=None.
     cnp_ingrijit = str(date.get("cnp_ingrijit") or "").strip() or None
@@ -554,8 +554,8 @@ def salveaza_concediu(conn, salariat_id, date):
         _okc, _motc = _vcnp(cnp_ingrijit or "")
         if not _okc:
             _cmp = "CNP-ul pacientului cu afectiuni oncologice" if cod == "17" else "CNP-ul copilului"
-            raise ValueError("La codul %s completeaza %s (persoana pentru care s-a eliberat certificatul) - "
-                             "D112 il cere obligatoriu, regula DUK S97: %s." % (cod, _cmp, _motc))
+            raise ValueError("La codul %s completează %s (persoana pentru care s-a eliberat certificatul) - "
+                             "D112 îl cere obligatoriu, regula DUK S97: %s." % (cod, _cmp, _motc))
     import datetime as _dtmod
     _di = date.get("data_inceput") or None
     if isinstance(_di, str) and _di:
@@ -574,7 +574,7 @@ def salveaza_concediu(conn, salariat_id, date):
 
     # [G9] Data de sfarsit e OBLIGATORIE (asterisc UI real): un CM fara sfarsit = perioada corupta in D112.
     if not (date.get("data_sfarsit") or None):
-        raise ValueError("Data de sfarsit a concediului medical e obligatorie (perioada CM = inceput->sfarsit; intra in D112).")
+        raise ValueError("Data de sfârșit a concediului medical e obligatorie (perioada CM = început->sfârșit; intra în D112).")
     # [lotul 4, 04.09.2026] ORDINEA. Pana azi, un cod inexistent, o data care nu e in calendar si un
     # sfarsit inaintea inceputului primeau, toate trei, mesajul despre VENITURILE PE 6 LUNI — fiindca
     # verificarea bazei de calcul rula inaintea formei campurilor. A patra instanta a clasei „refuzul
@@ -601,11 +601,11 @@ def salveaza_concediu(conn, salariat_id, date):
                          % (_dati["data_sfarsit"].isoformat(), _dati["data_inceput"].isoformat()))
     # Validare: baza de calcul trebuie sa fie reala (altfel brut 0 dar net pozitiv = imposibil)
     if _dec_pos(ven6) <= 0:
-        raise ValueError("Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata.")
+        raise ValueError("Veniturile brute pe 6 luni lipsesc sau sunt 0 - completează baza de calcul din statele de plata.")
     if zile6 <= 0:
-        raise ValueError("Zilele lucratoare din cele 6 luni lipsesc sau sunt 0.")
+        raise ValueError("Zilele lucrătoare din cele 6 luni lipsesc sau sunt 0.")
     if zile_cm <= 0:
-        raise ValueError("Zilele lucratoare CM trebuie sa fie cel putin 1.")
+        raise ValueError("Zilele lucrătoare CM trebuie să fie cel puțin 1.")
     # ===== [CM-episod] context de EPISOD — OUG 158/2005 art.17(1): indemnizatia se raporteaza la
     # fiecare EPISOD de boala, nu la certificatul izolat. Certificatul de continuare apartine
     # aceluiasi episod ca cel initial (transcriere de pe hartie, nu deductie). =====
@@ -614,14 +614,14 @@ def salveaza_concediu(conn, salariat_id, date):
         serie_ini = (str(date.get("serie_initiala") or "")).strip()
         numar_ini = (str(date.get("numar_initial") or "")).strip()
         if not serie_ini or not numar_ini:
-            raise ValueError("Certificat de continuare: introdu seria SI numarul certificatului INITIAL al "
-                             "episodului (sunt tiparite pe certificatul de continuare) - fara ele episodul nu se leaga.")
+            raise ValueError("Certificat de continuare: introdu și seria, și numărul certificatului inițial al "
+                             "episodului (sunt tipărite pe certificatul de continuare) - fără ele episodul nu se leagă.")
         with conn.cursor() as cur:
             cur.execute("SELECT data_inceput FROM concedii_medicale WHERE salariat_id=%s AND serie=%s "
                         "AND numar=%s ORDER BY data_inceput LIMIT 1", (salariat_id, serie_ini, numar_ini))
             _rini = cur.fetchone()
         if not _rini:
-            raise ValueError("Certificatul initial %s/%s nu exista pentru acest salariat - verifica seria/numarul "
+            raise ValueError("Certificatul inițial %s/%s nu există pentru acest salariat - verifică seria/numărul "
                              "certificatului anterior de pe certificatul de continuare." % (serie_ini, numar_ini))
         data_ini = _rini[0]
         prima_zi = False
@@ -670,7 +670,7 @@ def salveaza_concediu(conn, salariat_id, date):
                     _delta += (_rc["brut"] - Decimal(str(_bv or 0)))
                 _blocate.add("%02d/%d" % (_lu, _an))
         if _blocate:
-            _fn = "firma curenta"
+            _fn = "firma curentă"
             with conn.cursor() as cur:
                 cur.execute("SELECT nume FROM firma_profil LIMIT 1")
                 _fr = cur.fetchone()
@@ -678,17 +678,17 @@ def salveaza_concediu(conn, salariat_id, date):
                 _fn = _fr[0]
             _ll = ", ".join(sorted(_blocate))
             raise ValueError(
-                "Nu pot adauga certificatul de continuare: recalculul episodului ar modifica certificate din "
-                "perioade DEJA CONFIRMATE la %s (luna %s). Indemnizatia se calculeaza pe episodul intreg "
+                "Nu pot adăuga certificatul de continuare: recalculul episodului ar modifica certificate din "
+                "perioade deja confirmate la %s (luna %s). Indemnizația se calculează pe episodul întreg "
                 "(OUG 158/2005 art.17(1)): cu acest certificat episodul are %d zile, deci procentul certificatelor "
-                "anterioare creste de la 55%%/65%% la 75%% (+%s lei). Deschide perioada %s (deconfirma D112) SAU "
-                "depune D112 rectificativa pe luna %s, apoi readauga certificatul."
+                "anterioare crește de la 55%%/65%% la 75%% (+%s lei). Deschide perioada %s (anulează confirmarea D112) sau "
+                "depune D112 rectificativă pe luna %s, apoi adaugă din nou certificatul."
                 % (_fn, _ll, zile_episod, _delta.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), _ll, _ll))
 
     if cod == "10":  # [cod10] art. 19 OUG 158/2005: baza - venit realizat, plafon 25% din baza; integral FNUASS (art. 12)
         vr = date.get("venit_realizat")
         if vr in (None, ""):
-            raise ValueError("La codul 10 completeaza venitul brut realizat in noua situatie.")
+            raise ValueError("La codul 10 completează venitul brut realizat în noua situatie.")
         mz = (Decimal(str(ven6)) / Decimal(zile6)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         baza_per = (mz * Decimal(zile_cm)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         brut10 = _s.calcul_cm_cod10(baza_per, vr, la_data=la_data)
@@ -714,8 +714,8 @@ def salveaza_concediu(conn, salariat_id, date):
             int(_loc)
         except (TypeError, ValueError):
             raise ValueError(
-                "Locul prescrierii trebuie să fie codul NUMERIC de pe certificatul medical, nu un "
-                "text (primit: %r). El pleacă în D112 ca D_10, iar declarația nu acceptă acolo "
+                "Locul prescrierii trebuie să fie codul numeric de pe certificatul medical, nu un "
+                "text (primit: %r). El pleacă în D112, iar declarația nu acceptă acolo "
                 "decât un număr. Ia-l din certificat, de la rubrica locului prescrierii."
                 % (_loc,))
 

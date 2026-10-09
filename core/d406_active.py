@@ -52,6 +52,14 @@ def _norm_metoda(v):
         return "accelerata"
     return "liniara"
 
+#: [Retest 2 pct.2] metoda de amortizare în cuvinte (CF art.28) — ecranul nu afișează valoarea din bază („liniara”)
+ETICHETE_METODA = {"liniara": "liniară", "degresiva": "degresivă", "accelerata": "accelerată", "superaccelerata": "superaccelerată"}
+
+
+def eticheta_metoda(v):
+    return ETICHETE_METODA[_norm_metoda(v)]
+
+
 def _coef_degresiv(dnf_luni):
     """Coeficientul degresiv (CF art.28 alin.7): 1,5 (2-5 ani) / 2,0 (6-10 ani) / 2,5 (>10 ani)."""
     ani = Decimal(dnf_luni) / Decimal(12)

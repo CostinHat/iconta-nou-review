@@ -313,7 +313,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     axa_v = (str(axa_ic).strip().lower() or None) if axa_ic is not None else None
     if axa_v is not None and axa_v not in _AXE:
         raise ValueError("Axa operațiunii intracomunitare poate fi doar %s (primit: %r). Ea se "
-                         "înregistrează PE document și nu se mai schimbă după introducere."
+                         "înregistrează pe document și nu se mai schimbă după introducere."
                          % (" sau ".join(_AXE), axa_ic))
     tip_op_v = (tip_operatiune or "normal").strip().lower() or "normal"
     if tip_op_v not in ("normal", "avans", "regularizare_avans"):
@@ -926,7 +926,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
                                     platitor_tva=platitor_tva)
             if r.get("cota_tva") is None:
                 # auto-match esuat (AI indisponibil/nedeterminat): intrare incompleta, NU cota 21
-                raise ValueError("cota TVA nedeterminata pentru %r: nomenclatorul/AI nu a putut "
+                raise ValueError("cota TVA nedeterminată pentru %r: nomenclatorul/AI nu a putut "
                                  "stabili cota. Declara cota explicit pe linie."
                                  % (linie.get("descriere") or "",))
             linie["cota_tva"] = r["cota_tva"]
@@ -948,9 +948,9 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
             # nivel 3: BLOCARE (simetric cu blocajul de cota TVA), NU cadere tacuta pe default.
             if cont is None:
                 raise ValueError(
-                    "cont de venit nedeterminat pentru %r: denumirea nu se incadreaza clar "
-                    "(marfa/produse/servicii) si AI e indisponibil/nedeterminat. Declara "
-                    "cont_venit explicit pe linie." % (linie.get("descriere") or "",))
+                    "Contul de venit pentru %r nu se poate stabili: denumirea nu arată clar dacă e "
+                    "marfă, produs sau serviciu, iar asistentul nu a putut decide. Alege "
+                    "contul de venit pe linie." % (linie.get("descriere") or "",))
             linie["cont_venit"] = cont
         out.append(linie)
     return out
@@ -1023,7 +1023,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
         if _dcm > _d:
             raise ValueError(
                 "Data cursului (%s) e după data facturii (%s). Se folosește ultimul curs comunicat "
-                "PÂNĂ la data facturii — unul de după ea n-avea cum să fie cunoscut atunci."
+                "până la data facturii — unul de după ea n-avea cum să fie cunoscut atunci."
                 % (_dcm.isoformat(), _d.isoformat()))
         if not (curs_manual_de or "").strip():
             raise ValueError(
@@ -1108,7 +1108,7 @@ def storneaza(conn, factura_id):
     """
     orig = detalii_factura(conn, factura_id)
     if not orig:
-        raise ValueError("factura de stornat nu exista")
+        raise ValueError("factura de stornat nu există")
     if orig.get("directie") != "emisa":
         raise ValueError("se storneaza doar facturi emise")
     # linii negate

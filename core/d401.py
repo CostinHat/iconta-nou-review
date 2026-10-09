@@ -261,10 +261,10 @@ def erori_generare(prof, manual):
         if not str(manual.get(k) or "").strip():
             er.append("Lipsă %s." % lbl)
     if not _cif(manual.get("cif")):
-        er.append("cif primarie invalid (cifre).")
+        er.append("cif primărie invalid (cifre).")
     det = manual.get("detinatori") or []
     if not det:
-        er.append("Nicio pozitie detinator (detinatori).")
+        er.append("Nicio poziție deținător (deținători).")
     for i, d in enumerate(det, 1):
         er += _erori_detinator(i, d)
         for j, p in enumerate(d.get("proprietati") or [], 1):

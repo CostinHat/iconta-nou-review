@@ -168,7 +168,7 @@ def erori_generare(prof, manual):
         er.append("IBAN (cont_c) invalid - aștept RO + 22 caractere.")
     sec = manual.get("sectiuni") or []
     if not sec:
-        er.append("D200 cere cel puțin o sectiune de venit (sectiuni[]).")
+        er.append("D200 cere cel puțin o secțiune de venit (secțiuni[]).")
     for i, s in enumerate(sec, 1):
         c = int(_cif(s.get("categ_venit")) or 0)
         if not (1 <= c <= 14):
@@ -180,9 +180,9 @@ def erori_generare(prof, manual):
             er.append("Secțiunea %d: categ_venit=13 cere cif_orgJN." % i)
         if c == _CAT_14:
             if _i(s.get("castig")) <= 0 and _i(s.get("pierdere")) <= 0:
-                er.append("Secțiunea %d: categ_venit=14 cere castig>0 sau pierdere>0." % i)
+                er.append("Secțiunea %d: categ_venit=14 cere câștig>0 sau pierdere>0." % i)
         if c in _CAT_CG and _i(s.get("castig")) > 0 and _i(s.get("pierdere")) > 0:
-            er.append("Secțiunea %d: categ_venit=%d - castig și pierdere nu pot fi amandoua >0." % (i, c))
+            er.append("Secțiunea %d: categ_venit=%d - câștig și pierdere nu pot fi amândouă >0." % (i, c))
     return er
 
 

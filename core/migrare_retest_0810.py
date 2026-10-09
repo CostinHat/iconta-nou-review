@@ -22,10 +22,17 @@ from core import db
 from core.stocuri import CONT_TVA_STOC
 
 
+
+def descriere_refacere_nir(numar):
+    """Descrierea notei de refacere a unui NIR fără factură, în cuvintele contabilului. [Retest 2 pct.2] Prima formă purta proveniența
+    internă („decizia Costin 08.10, pct.4”) în descrierea notei, adică pe ecranul „Note de validat” și în registrul-jurnal."""
+    return ("Refacere NIR nr. %s fără factură: costul și TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 "
+            "(TVA neexigibilă), până la sosirea facturii" % numar)[:200]
+
 def plan_si_solduri_tva_stoc(conn, schema):
     """{"plan", "linii", "solduri", "raportat"} pentru o schemă; None dacă schema n-are `plan_conturi`."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute("SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name='plan_conturi'", (schema,))
         if not cur.fetchone():
@@ -91,8 +98,7 @@ def refa_nir_forma_veche(conn, schema):
                 cur.execute("INSERT INTO %sinregistrari (data, numar, descriere, sursa, status, document_ref, creat_de_id) "
                             "VALUES (%%s, %%s, %%s, 'stocuri', 'ciorna', %%s, %%s) RETURNING id" % s,
                             (n["data"], "REFACERE-NIR-%d" % n["id"],
-                             ("Refacere NIR %s pe 408 / 4428.01 (decizia Costin 08.10, pct.4): stornarea costului și a TVA-ului de pe 401, "
-                              "datoria pe 408 până la factură" % n["numar"])[:200],
+                             descriere_refacere_nir(n["numar"]),
                              _j.eticheta_document("NIR", n["numar"], n["data"]), autor))
                 nid = cur.fetchone()[0]
                 for d, c, suma in (("371", "401", -cost), ("4426", "401", -tva), ("371", _nl.CONT_NESOSITE, cost),
@@ -123,7 +129,7 @@ def scoate_conturi_73x(conn, schema):
     """{"scoase": [...], "folosite": {cont: [tabel.coloana, …]}, "in_plan_legal": [...]}; None dacă schema n-are `plan_conturi`."""
     from core import plan_legal
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute("SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name='plan_conturi'", (schema,))
         if not cur.fetchone():

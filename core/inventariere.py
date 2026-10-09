@@ -46,16 +46,16 @@ def pregateste_mf_plus(corp):
     from core import d406_active as _d406a
     v = _d(corp.get("valoare") or 0)
     if v <= 0:
-        raise ValueError("Valoarea mijlocului fix trebuie sa fie un numar pozitiv.")
+        raise ValueError("Valoarea mijlocului fix trebuie să fie un număr pozitiv.")
     try:
         dnf = int(corp.get("dnf_luni"))
     except (TypeError, ValueError):
         dnf = 0
     if dnf <= 0:
-        raise ValueError("Durata normala de functionare (luni) e obligatorie pentru amortizare.")
+        raise ValueError("Durata normala de funcționare (luni) e obligatorie pentru amortizare.")
     data_pif = corp.get("data_pif") or corp.get("data")
     if not data_pif:
-        raise ValueError("Data punerii in functiune e obligatorie.")
+        raise ValueError("Data punerii în funcțiune e obligatorie.")
     pif = data_pif if hasattr(data_pif, "year") else _date.fromisoformat(str(data_pif))
     cont_imo = (str(corp.get("cont_imobilizare") or "").strip() or "2131")
     metoda = _d406a._norm_metoda(corp.get("metoda") or "liniara")

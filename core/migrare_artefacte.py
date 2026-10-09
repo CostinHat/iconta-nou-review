@@ -55,7 +55,7 @@ CREATE INDEX IF NOT EXISTS artefacte_fel_cheie ON "{s}".artefacte_produse (fel, 
 def aplica(conn, schema):
     """Aplica DDL-ul idempotent pe o schema. Ridica daca numele e invalid."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

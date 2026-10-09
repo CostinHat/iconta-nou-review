@@ -45,6 +45,7 @@ from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen", "activitate_exceptata_amef")   # minimul citit de aici
 
+from core.common import cate as _cate   # [Retest 2 pct.14]
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -71,6 +72,20 @@ NS = "mfp:anaf:dgti:d394:declaratie:v5"
 # sectiunile op2 (tip_op2): I1 din rapoartele Z (02.10.2026), I2 din chitantele fara factura ale firmei exceptate de la
 # AMEF (03.10.2026) — vezi _op2_din_rapoarte_z / _op2_din_chitante.
 TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "N")
+
+#: [Retest 2 pct.2] numele codurilor pe ECRAN (tabelul „Din ce e făcută declarația”): XML-ul poartă codul, contabilul citește
+#: cuvântul. Legenda formularului (OPANAF 2194/2025, anexa 1, nota de subsol a listelor C–F): „Tip operaţiune: L - livrări, A -
+#: achiziţii, LS - livrări regim special, AS - achiziţii regim special, AÎ - achiziţii de la persoane impozabile care aplică sistemul
+#: de TVA la încasare, V - livrări cu taxare inversă, C - achiziţii cu taxare inversă”; N din instrucțiuni (anexa 2, secțiunea a 2-a
+#: pct.2): „achiziţii de bunuri/servicii de la persoane neînregistrate în scopuri de TVA”.
+ETICHETE_TIP = {"L": "livrări", "A": "achiziții", "LS": "livrări regim special", "AS": "achiziții regim special",
+                "AI": "achiziții cu TVA la încasare", "V": "livrări cu taxare inversă", "C": "achiziții cu taxare inversă",
+                "N": "achiziții de la persoane neînregistrate în scopuri de TVA"}
+#: tipul partenerului = cartușele C–F ale formularului
+ETICHETE_TIP_PARTENER = {1: "înregistrat în scopuri de TVA în România", 2: "neînregistrat în scopuri de TVA",
+                         3: "stabilit în alt stat membru UE", 4: "stabilit în afara UE"}
+#: tipul seriei (structura ANAF, <serieFacturi> „tip: 1 = alocate, 2 = emise, 3 = emise de beneficiari, 4 = emise de terti”)
+ETICHETE_TIP_SERIE = {1: "plajă alocată", 2: "facturi emise", 3: "emise de beneficiari", 4: "emise de terți"}
 
 # tip_partener (pct. 216/36)
 P_TVA_RO = 1      # persoana impozabila inregistrata in scopuri de TVA in Romania
@@ -596,9 +611,9 @@ def calcul_d394(prof, perioada, date, manual=None):
             # 3/4 -> livrare scutita cota 0 (LS) -> DUK trecea cu DATE GRESITE (cea mai grava
             # neconformitate D394). Nu-l emitem tacit: numim partenerul si motivul exact.
             raise ValueError(
-                "D394: partenerul \"%s\" are CUI \"%s\" cu prefix alfabetic care nu e cod de țară valid "
-                "-> CUI RO invalid, nu partener străin. Un CUI RO tastat greșit (cu litere) NU trebuie "
-                "raportat tacit ca partener străin (tip 3/4, cota 0). Corectează CUI-ul pe factura."
+                "D394: partenerul \"%s\" are CUI \"%s\" cu prefix alfabetic care nu e cod de țară valid: e "
+                "un CUI românesc greșit, nu partener străin. Un CUI românesc scris greșit (cu litere) nu se "
+                "raportează ca partener străin. Corectează CUI-ul pe factură."
                 % (f.get("nume") or "?", f.get("cui") or ""))
         # ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390 (VIES).
         # Ghid ANAF: "Nu se inscriu achizitiile intracomunitare de bunuri si servicii
@@ -980,8 +995,8 @@ def calcul_d394(prof, perioada, date, manual=None):
     res.avertismente = avert
     if intracom:
         res.avertismente.append(
-            "%d achiziții de la parteneri din UE/non-UE — nu intră în D394 "
-            "(se declară în D390 - VIES)." % intracom)
+            "%s de la parteneri din UE sau din afara UE — nu intră în D394 "
+            "(se declară în D390 - VIES)." % _cate(intracom, "achiziție", "achiziții"))
     if nefacturabile:
         res.avertismente.append("%d facturi excluse din declarație (vezi mai sus)." % nefacturabile)
     if date.get("fara_serie"):
@@ -989,9 +1004,25 @@ def calcul_d394(prof, perioada, date, manual=None):
         res.avertismente.append("%s fără serie (%s): în D394 %s cu seria „-”. Seria o stabilește firma la emitere — completeaz-o pe "
                                 "factură." % ("O factură emisă" if n == 1 else "%d facturi emise" % n,
                                              ", ".join("nr. %s" % x for x in date["fara_serie"][:10]), "apare" if n == 1 else "apar"))
+    # [Retest 2 pct.15, comanda Costin 09.10.2026] „Rândul 11% arată «număr facturi 0», deși factura 2 are o linie de 11%.” E regula
+    # ANAF, nu o greșeală — OPANAF 2194/2025, anexa 2, secțiunea a 2-a pct.5: „Prin excepţie, în situaţia în care în cuprinsul unei
+    # facturi emise/primite există operaţiuni cu cote de TVA diferite, la rubrica «număr de facturi» se vor înscrie: valoarea 1 în
+    # dreptul operaţiunii cu valoarea cea mai mare a TVA şi valoarea 0 pentru restul operaţiunilor”. Se spune pe ecran, ca cifra 0 să
+    # nu pară o pierdere.
+    _multi = {}
+    for f in (date.get("facturi") or []):
+        if len(f.get("cote_factura") or []) > 1:
+            _multi[f.get("factura_id")] = f
+    for f in sorted(_multi.values(), key=lambda x: str(x.get("document"))):
+        alte = [c for c in f["cote_factura"] if c != f["cota_numarata"]]
+        res.sinteza.append("Factura %s are operațiuni pe cotele %s: se numără o singură dată, la cota cu TVA-ul cel mai mare (%d%%); "
+                           "la %s apare cu 0 facturi — OPANAF 2194/2025, instrucțiuni, secțiunea a 2-a pct.5."
+                           % (f.get("document"), ", ".join("%d%%" % c for c in f["cote_factura"]), f["cota_numarata"],
+                              ", ".join("%d%%" % c for c in alte)))
     res.sinteza.append(   # [08.10, V5] sinteza cifrelor, nu avertisment
-        "D394 %02d/%d: %d parteneri TVA RO, %d neînregistrați, %d UE, %d non-UE; %d operațiuni."
-        % (luna, an, inf["nrCui1"], inf["nrCui2"], inf["nrCui3"], inf["nrCui4"], len(op1)))
+        "D394 %02d/%d cuprinde: parteneri plătitori de TVA din România — %d; neînregistrați în scopuri de TVA — %d; din UE — %d; "
+        "din afara UE — %d; %s." % (luna, an, inf["nrCui1"], inf["nrCui2"], inf["nrCui3"], inf["nrCui4"],
+                                    _cate(len(op1), "operațiune", "operațiuni")))
     return res
 
 
@@ -1256,7 +1287,9 @@ def pull(conn, schema, perioada):
                  "furnizor_tva_incasare": bool(r["furnizor_tva_incasare"]),
                  # [R119, 02.09.2026] id-ul facturii traverseaza pana la rezultat, ca declaratia
                  # sa poata SPUNE ce a inclus. Era selectat in SQL si se pierdea chiar aici.
-                 "factura_id": r["id"]}
+                 "factura_id": r["id"],
+                 # [Retest 2 pct.15] documentul, ca nota despre factura cu mai multe cote s-o poată numi
+                 "document": str(r.get("numar") or "").strip() or "#%s" % r["id"]}   # `facturi.numar` conține deja seria
         pe_cota = {}
         for l in (r["linii"] or []):
             if l.get("cota") is None or l.get("baza") is None:
@@ -1272,7 +1305,8 @@ def pull(conn, schema, perioada):
             _cota_nrfact = max(_tva_cota, key=lambda c: (_tva_cota[c], c))
             for cota, baza in sorted(pe_cota.items()):
                 facturi.append(dict(comun, cota=cota, baza=baza, tva=_tva_cota[cota],
-                                    nrFact=(1 if cota == _cota_nrfact else 0)))
+                                    nrFact=(1 if cota == _cota_nrfact else 0),
+                                    cote_factura=sorted(pe_cota), cota_numarata=_cota_nrfact))
         else:
             # Factura fara linii (import / e-Factura fara detaliu): cota se deduce din
             # raportul tva/baza. ATENTIE la TAXARE INVERSA PRIMITA (tip C): documentul

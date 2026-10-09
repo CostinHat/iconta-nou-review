@@ -224,9 +224,9 @@ def bate(nume, durata_sec=None):
     productie - exact felul de reziduu care nu trebuie lasat in urma.)
     """
     if nume not in RITMURI:
-        raise ValueError(
-            "job necunoscut in heartbeat: %r. Adauga-l in cron.RITMURI cu pragul lui, "
-            "altfel nimic nu-i supravegheaza lipsa." % nume)
+        raise ValueError(  # invariant-intern-ok: jobul cron e cod, nu acțiune a contabilului
+            "job necunoscut în heartbeat: %r. Adaugă-l în cron.RITMURI cu pragul lui, "
+            "altfel nimic nu-i supraveghează lipsa." % nume)
     try:
         from core import db
         db.init_pool()          # nemascat - vezi nota din verifica_batai

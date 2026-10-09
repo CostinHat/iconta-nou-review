@@ -39,7 +39,7 @@ def eu_anunt_confirma(aid, ctx):
         r = repo_admin.confirma_anunt(cur, aid, ctx.get("firm"))
         conn.commit()
     if not r:
-        raise _erori.Inexistent("anunt inexistent")
+        raise _erori.Inexistent("anunț inexistent")
     return {"ok": True}
 
 
@@ -62,6 +62,23 @@ def eu_educatie(ctx):
         return {"ok": True, "educatii": []}
     with db.get_conn() as conn:
         return _asist.educatie_de_aratat(conn, ctx["firm"])
+
+
+def eu_ciorne(ctx):
+    """[Retest 2 pct.12] Notele ciornă ale utilizatorului, pe toate firmele la care are acces: {total, firme: [{tenant_id, firma,
+    note: [...]}]} — cardul „De validat” le numără, fereastra le listează (fără căutare)."""
+    uid = int(ctx["uid"])
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, uid)
+    out = []
+    for t in firme:
+        if not t.get("schema_name"):
+            continue
+        with db.get_conn(t["schema_name"]) as conn:
+            note = coada_api.ciorne_proprii(conn, t["id"], uid)
+        if note:
+            out.append({"tenant_id": t["id"], "firma": t["nume"], "note": note})
+    return {"total": sum(len(f["note"]) for f in out), "firme": out}
 
 
 def eu_patru_ochi_stare(ctx):

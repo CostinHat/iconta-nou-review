@@ -80,13 +80,13 @@ def valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport):
     + dovada transportului. Altfel -> regim normal cu TVA."""
     tara, _ = desparte_cod_tva(cod_tva_client)
     if tara == "RO":
-        raise ValueError("clientul e din RO - nu e livrare intracomunitara")
+        raise ValueError("clientul e din RO - nu e livrare intracomunitară")
     if not cod_valid_vies:
-        raise ValueError("cod TVA client INVALID in VIES - scutirea art. 294(2)a nu se "
-                         "aplica, factureaza cu TVA romanesc")
+        raise ValueError("codul de TVA al clientului e invalid în VIES - scutirea de la art. 294 alin.(2) lit.a nu se "
+                         "aplică, facturează cu TVA românesc")
     if not are_dovada_transport:
-        raise ValueError("fara dovada transportului in alt stat membru scutirea nu se "
-                         "aplica (art. 294(2)a) - factureaza cu TVA")
+        raise ValueError("fără dovada transportului în alt stat membru scutirea nu se "
+                         "aplică (art. 294(2)a) - facturează cu TVA")
     return True, "scutit cu drept de deducere - art. 294 alin. (2) lit. a) Cod fiscal (LIC)"
 
 def valideaza_prestare_ic(cod_tva_client, cod_valid_vies):
@@ -96,6 +96,6 @@ def valideaza_prestare_ic(cod_tva_client, cod_valid_vies):
     if tara == "RO":
         raise ValueError("clientul e din RO - regim normal")
     if not cod_valid_vies:
-        raise ValueError("cod TVA client INVALID in VIES - nu e PI dovedita, "
-                         "serviciul se factureaza cu TVA romanesc (B2C art. 278(3))")
+        raise ValueError("codul de TVA al clientului e invalid în VIES - nu e persoană impozabilă dovedită, "
+                         "serviciul se facturează cu TVA românesc (art. 278 alin.(3))")
     return True, "neimpozabil in RO - art. 278 alin. (2) Cod fiscal (locul = beneficiarul)"

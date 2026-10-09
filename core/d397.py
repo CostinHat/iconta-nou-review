@@ -175,11 +175,11 @@ def erori_generare(prof, manual):
             if not _data(a.get("data_acceptA")):
                 er.append("%s: lipsă data acceptare autoturism (data_acceptA)." % q)
             if not _data(a.get("data_accept_CA")):
-                er.append("%s: lipsă data acceptare conducator (data_accept_CA)." % q)
+                er.append("%s: lipsă data acceptare conducător (data_accept_CA)." % q)
             if not str(a.get("nume") or "").strip():
-                er.append("%s: lipsă nume conducator (nume)." % q)
+                er.append("%s: lipsă nume conducător (nume)." % q)
             if not _cnp_valid(a.get("cnp")):
-                er.append("%s: CNP conducator (cnp) invalid." % q)
+                er.append("%s: CNP conducător (cnp) invalid." % q)
             if not str(a.get("statut") or "").strip():
                 er.append("%s: lipsă statut (statut)." % q)
     return er

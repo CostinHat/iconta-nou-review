@@ -210,11 +210,11 @@ const VECTOR = [
   // prima optiune ca aleasa (default fabricat, Regula 4). `alege:true` -> campVector pune un placeholder
   // "\u2014 alege \u2014" cand valoarea lipseste, iar salvarea cere alegere explicita (nu trimite fabricat).
   { k: "regim_fiscal", e: "Regim fiscal", ob: true, alege: true, tip: "select",
-    opt: [["micro", "Microintreprindere (impozit pe venit)"], ["profit", "Impozit pe profit"]],
+    opt: [["micro", "Microîntreprindere (impozit pe venit)"], ["profit", "Impozit pe profit"]],
     aj: "Decide D100 (micro, trimestrial) sau D101 (profit, anual)." },
   { k: "platitor_tva", e: "\u00cenregistrat\u0103 \u00een scopuri de TVA", ob: true, alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
-    aj: "Din vectorul fiscal ANAF. Decide D300 si D394." },
+    aj: "Din vectorul fiscal ANAF. Decide D300 și D394." },
   // [cerinta Costin, 06.09.2026] Acelasi text de ajutor ca in `migrare.js`, VERBATIM de acolo —
   // aceeasi alegere pusa in doua ecrane nu are voie sa aiba criteriul intr-unul singur. Nu se
   // rescrie si nu se rezuma: un temei citat din memorie intra in corpus ca fapt.
@@ -229,7 +229,7 @@ const VECTOR = [
   // singură dată la prima folosire (D301 pers_inreg); salvarea vectorului îl păstrează nul, nu „Nu”
   { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select", neales: true,
     opt: [["nu", "Nu"], ["da", "Da"]],
-    aj: "\u00cenregistrare special\u0103 \u00een scopuri de TVA (art. 317 CF) pentru achizi\u021bii/livr\u0103ri intracomunitare la nepl\u0103titori. Decide D390 (VIES) \u0219i pers_inreg \u00een D301." },
+    aj: "\u00cenregistrare special\u0103 \u00een scopuri de TVA (art. 317 CF) pentru achizi\u021bii/livr\u0103ri intracomunitare la nepl\u0103titori. Decide D390 (VIES) \u0219i tipul persoanei \u00eenregistrate din D301." },
   // [tva_inceput] data inregistrarii in scopuri de TVA - EDITABILA, ceruta contabilului cand ANAF n-o are.
   // Vizibila DOAR la platitor (doarPlatitor). Fara ea, motorul da gri "necunoscut" pe D300/D394/D406 (regula 4).
   { k: "tva_data_inceput", e: "Data \u00eenregistr\u0103rii \u00een scopuri de TVA", tip: "data", doarPlatitor: true,
@@ -281,9 +281,9 @@ function _blocDenumire(t, profil) {
 
   const randAnaf = anaf
     ? `<p class="camp-ajutor">La ANAF: <strong>${esc(anaf)}</strong>${
-        t.nume_anaf_la ? ` (citit\u0103 la ${esc(String(t.nume_anaf_la).slice(0, 10))})` : ""}.
+        t.nume_anaf_la ? ` (citit\u0103 la ${esc(dataRo(String(t.nume_anaf_la).slice(0, 10)))})` : ""}.
        Dac\u0103 scrii altceva, alegerea se consemneaz\u0103 \u2014 cu cine a f\u0103cut-o \u0219i c\u00e2nd.</p>`
-    : `<p class="camp-ajutor">Pentru firma asta nu avem \u00eenc\u0103 denumirea de la ANAF, deci nu exist\u0103 cu ce s\u0103 difere. C\u00e2mpul e liber.</p>`;
+    : `<p class="camp-ajutor">Denumirea de la ANAF nu e \u00eenc\u0103 adus\u0103 pentru firma asta, deci nu avem cu ce o compara. Scrie denumirea din actele firmei.</p>`;
 
   const divergenta = (fiscal && nrm(fiscal) !== nrm(nume))
     ? `<div class="dec-avert" data-e1="denumire-firma">

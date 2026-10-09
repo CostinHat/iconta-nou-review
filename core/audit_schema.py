@@ -153,7 +153,7 @@ def auditeaza(conn, schemas, template_sql):
     schema din `schemas`, arunca referinta. Intoarce (rapoarte: {schema: drift}, ref_introspect).
     APELANTUL controleaza commit/rollback - se cheama sub ROLLBACK (ref e temporara)."""
     if not db.schema_valida(SCHEMA_REF):
-        raise ValueError("schema ref invalida")
+        raise ValueError("schema ref invalidă")
     sql = tp.parametrizeaza_template(template_sql, SCHEMA_REF)
     with conn.cursor() as cur:
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)
@@ -162,7 +162,7 @@ def auditeaza(conn, schemas, template_sql):
         rapoarte = {}
         for s in schemas:
             if not db.schema_valida(s):
-                raise ValueError("schema invalida: %r" % s)
+                raise ValueError("schema invalidă: %r" % s)
             rapoarte[s] = compara(ref, _introspect(cur, s))
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)
     return rapoarte, ref

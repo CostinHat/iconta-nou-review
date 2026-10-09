@@ -112,7 +112,7 @@ function randDecl(arr, clasa, marcabil = false) {
       <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
         data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Marchează depusă în afara iConta.eu</button>`;
   return arr.map((x) => `
-    <div class="cf-decl-item">
+    <div class="cf-decl-item" data-cheie="${esc(x.tip || "")}-${x.an || ""}-${x.luna || ""}">
       <div class="mig-sold-rand cf-rand-decl">
         <span class="mig-sold-cont">${esc((x.tip || "").toUpperCase())}</span>
         <span class="cf-perioada">${esc(x.perioada || "")}</span>
@@ -135,12 +135,16 @@ function randDecl(arr, clasa, marcabil = false) {
 // „2025-12" -> „12.2025": acelasi registru ca restul ecranului (termene, blocaje), nu ISO. Vazut
 // privind captura: „din 2025-12" statea langa „iul" in aceeasi lista, doua formate pentru acelasi fel
 // de lucru.
-const _luniAn = (s) => (/^\d{4}-\d{2}$/.test(s || "") ? `${s.slice(5)}.${s.slice(0, 4)}` : (s || ""));
+// [Retest 2, pct.14] „perioade în trei formate («iun», «T3», «03.2026», «04/2026»)” — DS cap.4 v2.85: luna „LL/AAAA”, trimestrul
+// „T3/2026”, anul „2026”. Perioada faptului vine gata de la server (`perioada`); domeniul unei necunoașteri se scrie la fel.
+const _luniAn = (s) => (/^\d{4}-\d{2}$/.test(s || "") ? `${s.slice(5)}/${s.slice(0, 4)}` : (s || ""));
 
 function domeniuAfirmatie(x) {
-  if (x.fel === "fapt") return x.luna ? `${String(x.luna).padStart(2, "0")}.${x.an}` : String(x.an || "");
+  if (x.fel === "fapt") return x.perioada || (x.luna ? `${String(x.luna).padStart(2, "0")}/${x.an}` : String(x.an || ""));
   if (x.fel === "necunoastere") {
-    const de = _luniAn(x.domeniu_de), pana = _luniAn(x.domeniu_pana);
+    const dd = x.domeniu_de || "", dp = x.domeniu_pana || "";
+    if (/^\d{4}-01$/.test(dd) && dp === `${dd.slice(0, 4)}-12`) return dd.slice(0, 4);   // un an întreg
+    const de = _luniAn(dd), pana = _luniAn(dp);
     if (de && pana) return de === pana ? de : `${de} – ${pana}`;
     return de ? `din ${de}` : "";
   }
@@ -226,11 +230,14 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const sectIncrucisat = (() => {
     const verificatori = [vc.tva_incrucisat, vc.d112_incrucisat, vc.d390_incrucisat].filter(Boolean);
     const cuFinding = verificatori.filter((v) => (v.constatari || []).length);
-    if (!cuFinding.length) return "";
+    // [Retest 2, pct.9] ce nu se aplică firmei (D390 față de D300 la un neplătitor) se spune explicit, nu se tace
+    const neaplic = verificatori.flatMap((v) => v.nu_se_aplica || []);
+    if (!cuFinding.length && !neaplic.length) return "";
     const worst = cuFinding.reduce((m, v) => ((RANG[v.stare] || 0) > (RANG[m] || 0) ? v.stare : m), "verde");
     const cls = worst === "rosu" ? "cf-rosu" : (worst === "galben" ? "cf-galben" : "");
     const blocuri = cuFinding.map((v) => (v.constatari || []).map(randConst).join("")
-      + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")).join("");
+      + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")).join("")
+      + neaplic.map((t) => `<div class="cf-incr-temei">${esc(t)}</div>`).join("");
     return `<div class="cf-grup-titlu ${cls}">Declarație vs contabilitate</div><div class="cf-decl">${blocuri}</div>`;
   })();
 
@@ -309,11 +316,21 @@ export function randeazaCorpVerdict(d, opt = {}) {
 // firma: { tenant_id, nume, reincarca? } — reincarca() e apelat dupa contabilizarea reusita, ca sa se
 // re-evalueze verdictul (constatarea trece pe verde). Fiecare apelant isi da propriul reincarca.
 // [retest 08.10 pct.10] după o marcare fereastra NU sare sus: reîncărcarea păstrează poziția de derulare
-async function reincarcaPePozitie(corp, firma) {
+// [Retest 2, 09.10.2026, pct.1] „după «Salvează» și după «Anulează marcarea», grupul «Înainte de preluare» se pliază singur și ecranul
+// sare departe de rând. […] Grupul rămâne cum l-a lăsat utilizatorul, iar ecranul rămâne pe rândul atins.” Reîncărcarea redesenează tot:
+// se țin minte grupurile deschise (clasă + indice) și locul RÂNDULUI atins pe ecran (cheia tip-an-lună), apoi se refac pe rândul regăsit
+// — nu pe un număr de pixeli, fiindcă rândurile de deasupra își pot schimba înălțimea.
+async function reincarcaPePozitie(corp, firma, atins) {
   const c = corp.closest(".fereastra-corp") || document.scrollingElement;
-  const y = c ? c.scrollTop : 0;
+  const cheieGrup = (d) => `${d.className}#${[...corp.querySelectorAll("details")].filter((x) => x.className === d.className).indexOf(d)}`;
+  const deschise = new Set([...corp.querySelectorAll("details")].filter((d) => d.open).map(cheieGrup));
+  const rand = atins && atins.closest("[data-cheie]");
+  const cheie = rand ? rand.dataset.cheie : null, y0 = rand ? rand.getBoundingClientRect().top : null, sus = c ? c.scrollTop : 0;
   if (typeof firma.reincarca === "function") await firma.reincarca();
-  if (c) c.scrollTop = y;
+  corp.querySelectorAll("details").forEach((d) => { if (deschise.has(cheieGrup(d))) d.open = true; });
+  const nou = cheie && [...corp.querySelectorAll("[data-cheie]")].find((e) => e.dataset.cheie === cheie);
+  if (c && nou) c.scrollTop += nou.getBoundingClientRect().top - y0;
+  else if (c) c.scrollTop = sus;
 }
 
 export function legaVerdict(corp, nav, firma) {
@@ -342,7 +359,7 @@ export function legaVerdict(corp, nav, firma) {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern`,
           { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna), data_depunere: data.value, recipisa: rec.value.trim() || null });
-        await reincarcaPePozitie(corp, firma);
+        await reincarcaPePozitie(corp, firma, b);
       } catch (e) { arataMesaj(f, e.mesaj || "Nu am putut marca declarația.", "eroare"); }
     });
   }));
@@ -350,7 +367,7 @@ export function legaVerdict(corp, nav, firma) {
     confirmaCaseta(b.parentElement, `Anulezi marcarea ${b.dataset.tip.toUpperCase()} ${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}? Declarația redevine nedepusă.`, async () => {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern/anuleaza`, { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna) });
-        await reincarcaPePozitie(corp, firma);
+        await reincarcaPePozitie(corp, firma, b);
       } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut anula marcarea.", "eroare"); }
     });
   }));
@@ -359,7 +376,7 @@ export function legaVerdict(corp, nav, firma) {
     confirmaCaseta(b.parentElement, `Marchezi ${perioade.length} declarații ca depuse de contabilul anterior? Data depunerii nu se cunoaște; o poți completa apoi pe fiecare.`, async () => {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depuse-anterior`, { perioade });
-        await reincarcaPePozitie(corp, firma);
+        await reincarcaPePozitie(corp, firma, b);
       } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut marca declarațiile.", "eroare"); }
     });
   }));

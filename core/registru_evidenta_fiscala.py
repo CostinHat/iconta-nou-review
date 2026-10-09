@@ -212,7 +212,7 @@ def compune_profit(P, totalizare="an", perioada=None):
     contrazice-o.
     """
     if totalizare not in TOTALIZARI:
-        raise ValueError("totalizare necunoscuta %r; norma admite: %s"
+        raise ValueError("totalizare necunoscută %r; norma admite: %s"
                          % (totalizare, ", ".join(TOTALIZARI)))
     sectiuni = []
     for cod, eticheta, temei, campuri in CATEGORII_PROFIT:
@@ -279,7 +279,7 @@ def valideaza_pf(date):
     """
     if date.get("categorie") not in CATEGORII_VENIT_PF:
         raise InregistrareIncompletaPF(
-            "categorie de venit necunoscuta %r; nomenclatorul (D220, categ_venit) e inchis: %s"
+            "categorie de venit necunoscută %r; categoriile din D220 sunt: %s"
             % (date.get("categorie"), ", ".join(str(k) for k in sorted(CATEGORII_VENIT_PF))),
             camp="categorie", temei=TEMEI_PF_CITARE)
     if date.get("mod_venit_net") not in MOD_VENIT_NET:
@@ -289,18 +289,18 @@ def valideaza_pf(date):
     for c in ("sursa_venit", "venit_brut"):
         if date.get(c) is None or (isinstance(date.get(c), str) and not date[c].strip()):
             raise InregistrareIncompletaPF(
-                "Registrul cere «%s», iar campul e gol. Norma: %s" % (c, TEMEI_PF_CITARE),
+                "Registrul cere «%s», iar câmpul e gol. Norma: %s" % (c, TEMEI_PF_CITARE),
                 camp=c, temei=TEMEI_PF_CITARE)
     cer = cheltuielile_se_inscriu(date["mod_venit_net"], date["categorie"])
     ch = date.get("cheltuieli_deductibile")
     if cer == "da" and (ch is None or (isinstance(ch, str) and not ch.strip())):
         raise InregistrareIncompletaPF(
-            "venitul net se stabileste in sistem real, deci cheltuielile deductibile se inscriu. "
-            "Zero e un raspuns valid («nu s-au avut cheltuieli»); gol nu e. Norma: %s" % TEMEI_PF_CITARE,
+            "venitul net se stabilește în sistem real, deci cheltuielile deductibile se inscriu. "
+            "Zero e un răspuns valid («nu s-au avut cheltuieli»); gol nu e. Norma: %s" % TEMEI_PF_CITARE,
             camp="cheltuieli_deductibile", temei=TEMEI_PF_CITARE)
     if cer == "nu" and ch not in (None, "", 0, "0"):
         raise InregistrareIncompletaPF(
-            "la norma de venit nu se inscriu cheltuieli in registru (art. 1 alin. (2)); a fost data "
+            "la norma de venit nu se înscriu cheltuieli în registru (art. 1 alin. (2)); a fost data "
             "valoarea %r" % ch, camp="cheltuieli_deductibile", temei=TEMEI_PF_CITARE)
     return cer
 
@@ -412,7 +412,7 @@ def poate_totaliza(totalizare):
     care stergea refuzul trecea verde. O decizie care se poate chema direct se poate si proba direct.
     """
     if totalizare not in TOTALIZARI:
-        raise ValueError("totalizare necunoscuta %r; norma admite: %s"
+        raise ValueError("totalizare necunoscută %r; norma admite: %s"
                          % (totalizare, ", ".join(TOTALIZARI)))
     if totalizare == "trimestru":
         return False, TRIMESTRU_NECONSTRUIT

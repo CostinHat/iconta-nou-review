@@ -27,6 +27,7 @@ se pun prin dict-ul `manual` (rânduri introduse de contabil), nu derivate din f
 #: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
 DENUMIRE_OFICIALA = 'Decont de TVA'
 
+from core.common import cate as _cate   # [Retest 2 pct.14]
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 from dataclasses import dataclass, field
@@ -86,6 +87,8 @@ RANDURI_FARA_COL2 = frozenset({"R1", "R2", "R3", "R4", "R13", "R14", "R15", "R26
 # ajustării anuale pe bază de pro rata definitivă ... precum şi diferenţele de taxă pe valoarea adăugată rezultate ca
 # urmare a ajustării taxei deductibile, cu semnul plus sau minus, după caz.” [Lot 19 defect 10, 03.10.2026]
 RANDURI_ADITIVE = frozenset({"R31"})
+
+from core.d300_randuri import RAND_FORMULAR, rand_formular   # noqa: F401 — [Retest 2 pct.2] sursa unică, modul neutru
 from core import repo_d300 as _repo
 _STATUS_FINAL = _nsf.clauza_sql("f")
 
@@ -201,6 +204,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             rd.7 colectat (R7_1/R7_2 + R7_1_1/R7_1_2) + oglindă rd.20 deductibil
             (R20_1/R20_2 + R20_1_1/R20_1_2), net zero, în loc de rd.5+rd.18. Vezi DECIZII 21.07 F125.
     """
+    _f = lambda x: format(int(x), ",").replace(",", ".")   # suma în lei întregi, cu punct la mii (mesajele și notele decontului)
     manual = manual or {}
     _bad = [k for k in manual if not str(k).startswith("R")]
     # FORMĂ — coloana inexistenta in structura ANAF (v. RANDURI_FARA_COL1/2): refuz vizibil, nu XML invalid
@@ -495,9 +499,9 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if _r13:
         if "R13_1" in manual:
             raise ValueError(
-                "D300 rd.13 (livrări taxare inversa): derivat AUTOMAT din facturi emise cu flag "
-                "taxare_inversa (=%d) ȘI introdus manual (R13_1) - dublă numărare. Pastreaza o singură "
-                "sursa: elimină R13_1 din manual SAU scoate taxare_inversa de pe facturi." % _r13)
+                "D300 rd.13 (livrări cu taxare inversă): calculat automat din facturile emise cu taxare "
+                "inversă (%s lei) și introdus și manual pe rândul 13 - dublă numărare. Păstrează o singură "
+                "sursă: șterge valoarea manuală de pe rândul 13 sau scoate taxarea inversă de pe facturi." % _f(_r13))
         R["R13_1"] = _r13
 
     # [Task2 10.08.2026] rd.12 colectat + rd.25 deductibil = beneficiar taxare inversa primita (art.331,
@@ -513,10 +517,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _dbl = sorted(k for k in ("R12_1", "R12_2", "R25_1", "R25_2") if k in manual)
         if _dbl:
             raise ValueError(
-                "D300 taxare inversa primită (rd.12/rd.25): derivată AUTOMAT din facturi primite cu flag "
-                "taxare_inversa (baza=%d, TVA=%d) ȘI introdusă manual (%s) - dublă numărare. Pastreaza o "
-                "singură sursa: elimină cheile din manual SAU scoate taxare_inversa de pe facturi."
-                % (_tib, _tit, ", ".join(_dbl)))
+                "D300 taxare inversă primită (rd.12/rd.26): calculată automat din facturile primite cu taxare "
+                "inversă (baza %s lei, TVA %s lei) și introdusă și manual (%s) - dublă numărare. Păstrează o "
+                "singură sursă: șterge valorile manuale sau scoate taxarea inversă de pe facturi."
+                % (_f(_tib), _f(_tit), ", ".join(map(rand_formular, _dbl))))
         R["R12_1"] = _tib; R["R12_2"] = _tit   # colectat (rd.12)
         R["R25_1"] = _tib; R["R25_2"] = _tit   # deductibil (rd.25)
 
@@ -527,24 +531,24 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if _r1:
         if "R1_1" in manual:
             raise ValueError(
-                "D300 rd.1 (livrări IC bunuri): derivat AUTOMAT din facturi emise către UE (tert_tara, "
-                "=%d) plus introdus manual (R1_1) - dublă numărare. Pastreaza o singură sursa." % _r1)
+                "D300 rd.1 (livrări intracomunitare de bunuri): calculat automat din facturile emise către "
+                "clienți din UE (%s lei) și introdus și manual pe rândul 1 - dublă numărare. Păstrează o singură sursă." % _f(_r1))
         R["R1_1"] = _r1
     _r14 = _int(export_livr)
     if _r14:
         if "R14_1" in manual:
             raise ValueError(
-                "D300 rd.14 (export/livrări scutite cu drept): derivat AUTOMAT din facturi emise către "
-                "non-UE (tert_tara, =%d) plus introdus manual (R14_1) - dublă numărare." % _r14)
+                "D300 rd.14 (export și livrări scutite cu drept de deducere): calculat automat din facturile "
+                "emise către clienți din afara UE (%s lei) și introdus și manual pe rândul 14 - dublă numărare." % _f(_r14))
         R["R14_1"] = _r14
     _r5b = _int(ic_ach_b); _r5t = _int(ic_ach_t)
     if _r5b or _r5t:
         _dbl_ic = sorted(k for k in ("R5_1", "R5_2", "R18_1", "R18_2") if k in manual)
         if _dbl_ic:
             raise ValueError(
-                "D300 achiziții IC bunuri (rd.5 colectat + rd.18 deductibil, taxare inversa): derivate "
-                "AUTOMAT din facturi primite din UE (tert_tara, baza=%d, TVA=%d) plus introduse manual "
-                "(%s) - dublă numărare. Pastreaza o singură sursa." % (_r5b, _r5t, ", ".join(_dbl_ic)))
+                "D300 achiziții intracomunitare de bunuri (rd.5 colectat și rd.20 deductibil, taxare inversă): "
+                "calculate automat din facturile primite din UE (baza %s lei, TVA %s lei) și introduse și "
+                "manual (%s) - dublă numărare. Păstrează o singură sursă." % (_f(_r5b), _f(_r5t), ", ".join(map(rand_formular, _dbl_ic))))
         R["R5_1"] = _r5b; R["R5_2"] = _r5t     # colectat (rd.5)
         R["R18_1"] = _r5b; R["R18_2"] = _r5t   # deductibil (rd.18) - oglinda rd.5, net zero (DUK V_7/V_8)
 
@@ -556,9 +560,9 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _dbl_p = sorted(k for k in ("R3_1", "R3_1_1") if k in manual)
         if _dbl_p:
             raise ValueError(
-                "D300 rd.3 (prestări servicii IC): derivat AUTOMAT din facturi emise către UE reclasificate "
-                "serviciu (P) în D390 (=%d) plus introdus manual (%s) - dublă numărare. Pastreaza o singură "
-                "sursa: reclasifică în panoul D390 SAU introdu manual, nu ambele." % (_r3, ", ".join(_dbl_p)))
+                "D300 rd.3 (prestări de servicii intracomunitare): calculat automat din facturile emise către "
+                "UE trecute la servicii în D390 (%s lei) și introdus și manual (%s) - dublă numărare. Păstrează "
+                "o singură sursă: reclasifică în panoul D390 sau introdu manual, nu amândouă." % (_f(_r3), ", ".join(map(rand_formular, _dbl_p))))
         R["R3_1"] = _r3
         R["R3_1_1"] = _r3                      # din care servicii IC (toata baza rd.3 e serviciu IC)
     # rd.7 colectat (primita tip S): R7_1/R7_2 + sub-rand rd.7.1 R7_1_1/R7_1_2, autolichidare la cota interna.
@@ -570,9 +574,9 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                                     "R20_1", "R20_2", "R20_1_1", "R20_1_2") if k in manual)
         if _dbl_s:
             raise ValueError(
-                "D300 achiziții servicii IC (rd.7 colectat + rd.20 deductibil, taxare inversa): derivate "
-                "AUTOMAT din facturi primite din UE reclasificate serviciu (S) în D390 (baza=%d, TVA=%d) plus "
-                "introduse manual (%s) - dublă numărare. Pastreaza o singură sursa." % (_r7b, _r7t, ", ".join(_dbl_s)))
+                "D300 achiziții intracomunitare de servicii (rd.7 colectat și rd.22 deductibil, taxare inversă): "
+                "calculate automat din facturile primite din UE trecute la servicii în D390 (baza %s lei, TVA "
+                "%s lei) și introduse și manual (%s) - dublă numărare. Păstrează o singură sursă." % (_f(_r7b), _f(_r7t), ", ".join(map(rand_formular, _dbl_s))))
         R["R7_1"] = _r7b; R["R7_2"] = _r7t         # colectat (rd.7)
         R["R7_1_1"] = _r7b; R["R7_1_2"] = _r7t     # din care servicii IC (rd.7.1)
         R["R20_1"] = _r7b; R["R20_2"] = _r7t       # deductibil (rd.20) - oglinda rd.7, net zero (DUK V_13/V_14)
@@ -611,10 +615,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     _necunoscute = [k for k in manual if k not in _aplicate]
     if _necunoscute:
         raise ValueError(
-            "D300: rânduri 'manual' neacceptate: %s. Un rând introdus de contabil care nu e în lista de "
-            "rânduri de intrare valide trebuie să producă eroare vizibilă, NU să dispară tacut din decont "
-            "(cauze: typo în numele randului; sau rând COMPUTAT care nu se setează manual - ex. R17/R27/R28/"
-            "R32/R33/R34/R37/R40/R41/R42). Dacă e un rând de intrare legitim, adaugă-l în allow-list." % sorted(_necunoscute))
+            "D300: rânduri introduse manual neacceptate: %s. Un rând introdus de contabil care nu e printre "
+            "rândurile completate manual se semnalează, nu dispare din decont fără să se spună (cauze: numele "
+            "rândului e greșit, sau rândul se calculează automat și nu se introduce - de exemplu rândurile 17, 27, "
+            "28, 32, 33, 34, 37, 40, 41, 42)." % ", ".join(sorted(_necunoscute)))
 
     # R27 = TOTAL TAXA DEDUCTIBILA (col.1 baza, col.2 TVA). Formula oficiala
     # (structura_D300_v12.0.0_10022026.pdf, randul 101-102):
@@ -707,8 +711,8 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if _r26:
         if "R26_1" in manual:
             raise ValueError(
-                "D300 rd.26 (achiziții scutite/neimpozabile): derivat AUTOMAT din achiziții cu cota 0%% "
-                "(=%d) ȘI introdus manual (R26_1) - dublă numărare. Pastreaza o singură sursa." % _r26)
+                "D300 rd.29 (achiziții scutite sau neimpozabile): calculat automat din achizițiile cu cota 0%% "
+                "(%s lei) și introdus și manual pe rândul 26 - dublă numărare. Păstrează o singură sursă." % _f(_r26))
         R["R26_1"] = _r26
 
     res = Rezultat(an=an, luna=luna, prof=prof)
@@ -719,7 +723,6 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # totalPlata_A = suma câmpurilor 27-124 (toate rândurile R emise)
     res.total_plata_a = sum(R.values())
 
-    _f = lambda x: format(int(x), ",").replace(",", ".")
     # [A1, 17.09.2026] Facturi in valuta EXCLUSE fiindca n-au curs BNR: nu intra tacit ca lei, dar
     # nici nu dispar in tacere. Semnalul NUMESTE facturile — corectia e sa li se puna cursul.
     if fara_curs:
@@ -733,50 +736,50 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # deci NU sunt auto-emise si NU trebuie adaugate manual acolo (ar invalida declaratia).
     if drop_l_tax_n:
         res.avertismente.append(
-            "%d linii livrare cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — TVA colectată nedeclarată "
-            "(sub-declarare). Cotele 19/5%% nu au rând acceptat de ANAF în decontul v12 — nu le adăuga manual "
-            "la R69/R71 (respinse); corectează cota facturii sau tratează ca regularizare (R16)."
-            % (drop_l_tax_n, _f(drop_l_tax_b), _f(drop_l_tax_t)))
+            "%s de livrare cu altă cotă decât 21/11/9 (bază %s lei, TVA %s lei) — TVA colectată nedeclarată "
+            "(sub-declarare). Cotele 19%% și 5%% nu au rând acceptat de ANAF în decontul de azi — nu le adăuga manual "
+            "pe rândurile vechi (sunt respinse); corectează cota facturii sau tratează ca regularizare (rd.16)."
+            % (_cate(drop_l_tax_n, "linie", "linii"), _f(drop_l_tax_b), _f(drop_l_tax_t)))
     for _b in zero_livr:
         res.avertismente.append(
             "Livrare cu cotă 0%% (bază %s lei) — nu se clasifică automat: decontul cere distincţia scutit "
-            "cu drept de deducere (R14, ex. export/art.294) vs scutit fără drept (R15), iar natura scutirii "
-            "nu e capturată în factură. Clasific-o manual la R14/R15 (altfel nu apare în decont)."
+            "cu drept de deducere (rd.14, de exemplu export, art.294) și scutit fără drept (rd.15), iar natura scutirii "
+            "nu e înregistrată pe factură. Clasific-o manual la rd.14 sau rd.15 (altfel nu apare în decont)."
             % _f(_b))
     if drop_a_tax_n:
         res.avertismente.append(
-            "%d linii achiziție cu cotă în afară 21/11/9 (bază %s lei, TVA %s lei) — deducere neinclusă. "
-            "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — nu le adăuga manual la "
-            "R74/R24 (respinse); corectează cota facturii sau tratează ca regularizare."
-            % (drop_a_tax_n, _f(drop_a_tax_b), _f(drop_a_tax_t)))
+            "%s de achiziție cu altă cotă decât 21/11/9 (bază %s lei, TVA %s lei) — deducere neinclusă. "
+            "Cotele 19%% și 5%% nu au rând deductibil acceptat de ANAF în decontul de azi — nu le adăuga manual pe "
+            "rândurile vechi (sunt respinse); corectează cota facturii sau tratează ca regularizare."
+            % (_cate(drop_a_tax_n, "linie", "linii"), _f(drop_a_tax_b), _f(drop_a_tax_t)))
     if drop_a_scutit_n:
         res.avertismente.append(
-            "%d linii achiziție marcate «exclusiv scutit» (bază %s lei, TVA %s lei) — TVA nededusă "
+            "%s de achiziție marcate «exclusiv scutit» (bază %s lei, TVA %s lei) — TVA nededusă "
             "(art.300 alin.4: achiziții destinate exclusiv operațiunilor fără drept de deducere). "
             "Dacă destinația e greșită, corectează «destinație TVA» pe linie."
-            % (drop_a_scutit_n, _f(drop_a_scutit_b), _f(drop_a_scutit_t)))
+            % (_cate(drop_a_scutit_n, "linie", "linii"), _f(drop_a_scutit_b), _f(drop_a_scutit_t)))
     if zero_achiz:
         res.avertismente.append(
-            "%d achiziţii cu cotă 0%% (bază %s lei) — raportate automat la R26 (scutite de taxă sau "
+            "%d achiziţii cu cotă 0%% (bază %s lei) — raportate automat la rd.29 (scutite de taxă sau "
             "neimpozabile), fără impact pe TVA. Verifică: dacă sunt achiziţii intracomunitare, "
-            "reclasifică-le la taxare inversă (R5/R18)."
+            "reclasifică-le la taxare inversă (rd.5 și rd.20)."
             % (len(zero_achiz), _f(sum(zero_achiz, Decimal(0)))))
     if achiz_331_0:
         res.avertismente.append(
             "%d achiziţii cu categorie art.331 (taxare inversă) dar cotă 0%% (bază %s lei) — cota aplicabilă "
-            "nu e capturată, deci rd.12/rd.25 (colectat+deductibil) nu se pot derivă. Declar-o manual la "
-            "R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont)."
+            "nu e capturată, deci rd.12 și rd.26 (colectat și deductibil) nu se pot calcula. Declar-o manual la "
+            "rd.12 și rd.26 sau completează cota (altfel taxarea inversă nu apare în decont)."
             % (len(achiz_331_0), _f(sum(achiz_331_0, Decimal(0)))))
     if ti_ben_n:
         res.note_rezultat.append(
             "%d achiziţii cu taxare inversă primită (bază %s lei, TVA %s lei) — derivate automat: rd.12 "
-            "colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont."
+            "colectat + rd.26 deductibil (net zero, art.331)."
             % (ti_ben_n, _f(ti_ben_baza), _f(ti_ben_tva)))
     if ded[9][0]:
         res.avertismente.append(
             "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — neincluse automat: rândul deductibil 9%% "
-            "(Rd.25.1/R75 din structura v12) e respins de validatorul DUK instalat 2026 (probat). Nu există rând "
-            "deductibil 9%% valid pentru perioadă — nu-l declara manual la R75 (respins); corectează cota sau "
+            "din structura ANAF e respins de validatorul instalat în 2026 (probat). Nu există rând "
+            "deductibil 9%% valid pentru perioadă — nu-l declara manual (e respins); corectează cota sau "
             "tratează ca regularizare, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
     if orphan_ded >= 1:
         res.avertismente.append(
@@ -790,12 +793,13 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # cu facturile, ca sa poata fi completata — iar declaratia spune pe ce s-a sprijinit.
         _dir = sorted({x[1] for x in axa_nedeclarata})
         res.avertismente.append(
-            "%d facturi intracomunitare (%s) nu au axa bunuri/servicii înregistrată pe document "
+            "%s (%s) nu au axa bunuri/servicii înregistrată pe document "
             "(facturi: %s) — sunt tratate ca bunuri (rd.1/rd.5), așa cum se făcea înainte, iar "
             "reclasificarea D390 le mai poate schimba. Axa se înregistrează la introducere și se "
-            "îngheață pe factură (R186); pentru facturile vechi ea nu se poate deduce din nimic, "
+            "îngheață pe factură; pentru facturile vechi ea nu se poate deduce din nimic, "
             "deci nu s-a ghicit."
-            % (len(axa_nedeclarata), "/".join(_dir),
+            % (_cate(len(axa_nedeclarata), "factură intracomunitară", "facturi intracomunitare"),
+               "/".join({"emisa": "emise", "primita": "primite"}.get(x, x) for x in _dir),   # [Retest 2 pct.14] nu cheia din bază
                ", ".join(str(x[0]) for x in axa_nedeclarata[:12])
                + (" …" if len(axa_nedeclarata) > 12 else "")))
 
@@ -804,7 +808,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
         res.avertismente.append(
             "%d facturi cu partener străin (%s) dar cotă internă pozitivă (bază %s lei, TVA %s lei) — "
-            "probabil eroare: o operațiune IC/export nu poartă cotă internă. Nu s-a inclus tacit în R9; "
+            "probabil eroare: o operațiune intracomunitară sau un export nu poartă cotă internă. Nu s-a inclus în rd.9; "
             "corectează cota (0%%) sau țara partenerului."
             % (len(foreign_pos), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
     if ic_livr_bunuri:
@@ -819,21 +823,21 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if ic_ach_n:
         res.avertismente.append(
             "%d achiziții intracomunitare de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
-            "declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt servicii, "
+            "declarate la rd.5 colectat + rd.20 deductibil (taxare inversă, net zero). Dacă sunt servicii, "
             "reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 "
-            "colectat + rd.20 deductibil."
+            "colectat + rd.22 deductibil."
             % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
     # [F125] Servicii IC reclasificate prin SURSA UNICA D390 (MUTATE, nu adaugate).
     if ic_prest_serv:
         res.note_rezultat.append(
             "Prestări de servicii intracomunitare către UE (bază %s lei) — reclasificate ca serviciu (P) în "
-            "D390, declarate la rd.3 + rd.3.1 (locul prestării în afară României, 0%%). Mutate din rd.1 "
+            "D390, declarate la rd.3 + rd.3.1 (locul prestării în afara României, 0%%). Mutate din rd.1 "
             "(livrări de bunuri), nu adăugate — fără dublă numărare." % _f(ic_prest_serv))
     if ic_serv_n:
         res.note_rezultat.append(
             "%d achiziții de servicii intracomunitare din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
-            "reclasificate ca serviciu (S) în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.20 "
-            "deductibil + rd.20.1 (taxare inversă, net zero). Mutate din rd.5+rd.18, nu adăugate."
+            "reclasificate ca serviciu în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.22 "
+            "deductibil + rd.22.1 (taxare inversă, net zero). Mutate din rd.5 și rd.20, nu adăugate."
             % (ic_serv_n, _f(ic_serv_b), _f(ic_serv_t), cota_std_ic))
     if tr_reclas:
         # LIMITA DECLARATA (marker ASCII intern MARKER_TR_D300_NEACOPERIT): T/R nu e axa bun-serviciu;
@@ -868,22 +872,22 @@ def erori_generare(prof):
     erori = []
     _cui = prof.get("cui")
     if not _digits(_cui):
-        erori.append("Lips\u0102 CUI firm\u0103.")
+        erori.append("Lips\u0103 CUI firm\u0103.")
     else:
         _ok_cui, _motiv_cui = valideaza_cui(_cui)   # T1: cifra de control, pre-DUK
         if not _ok_cui:
             erori.append("CUI firm\u0103 invalid (%s): %s." % (_digits(_cui), _motiv_cui))
     if not str(prof.get("nume") or "").strip():
-        erori.append("Lips\u0102 denumire firm\u0103.")
+        erori.append("Lips\u0103 denumire firm\u0103.")
     if not _clean_bc(prof.get("banca")):
-        erori.append("Lips\u0102 banc\u0103 \u2014 obligatorie la D300.")
+        erori.append("Lips\u0103 banc\u0103 \u2014 obligatorie la D300.")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
-        erori.append("Lips\u0102 cont/IBAN \u2014 obligatoriu la D300.")
+        erori.append("Lips\u0103 cont/IBAN \u2014 obligatoriu la D300.")
     _caen = _digits(prof.get("caen"))
     if not _caen:
-        erori.append("Lips\u0102 CAEN \u2014 obligatoriu la D300.")
+        erori.append("Lips\u0103 CAEN \u2014 obligatoriu la D300.")
     elif len(_caen) != 4:
-        erori.append("COD CAEN invalid: '%s' \u2014 trebuie 4 cifre (structura ANAF caen C(4))." % _caen)
+        erori.append("Cod CAEN invalid: '%s' \u2014 trebuie 4 cifre (structura ANAF caen C(4))." % _caen)
     _pr = prof.get("pro_rata")   # T1: pro_rata prezent trebuie in [0,100]; absent = 100% (legitim)
     if _pr is not None and str(_pr).strip():
         from core.numere import numar_fiscal
@@ -955,9 +959,9 @@ def _oglinda_r12_r25(res):
     r12_2 = R.get("R12_2", 0); r25_2 = R.get("R25_2", 0)
     if r12_1 != r25_1 or r12_2 != r25_2:
         raise ValueError(
-            "D300 oglindă taxare inversa rd.12<->rd.25 (măsuri de simplificare): colectatul rd.12 trebuie "
-            "oglindit integral de deductibilul rd.25 (net zero). R12_1=%d vs R25_1=%d (col.1); "
-            "R12_2=%d vs R25_2=%d (col.2). DUK regula V19/V20 (neimpusă de validatorul instalat)."
+            "D300, taxarea inversă (măsuri de simplificare): TVA colectată la rândul 12 trebuie oglindită "
+            "integral de TVA dedusă la rândul 26. Coloana Valoare: rândul 12 = %d, rândul 26 = %d; "
+            "coloana TVA: rândul 12 = %d, rândul 26 = %d. DUK regula V19/V20 (neimpusă de validatorul instalat)."
             % (r12_1, r25_1, r12_2, r25_2))
 
 
@@ -1284,6 +1288,6 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
                 "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _nf)
         else:
             res.note_rezultat.append(
-                "DECLARAȚIE NULĂ ASUMATĂ: nicio factură în perioadă şi niciun rând declarat. Un plătitor "
+                "Declarație nulă asumată: nicio factură în perioadă și niciun rând declarat. Un plătitor "
                 "depune nul pe luna fără activitate — depunerea nu se refuză, dar nulul e afirmat explicit.")
     return _xml, res

@@ -102,7 +102,7 @@ def principal_pentru_schema(conn, schema):
     with conn.cursor() as cur:
         r = _rt.dupa_numele_schemei(cur, schema)
     if not r:
-        raise ValueError("schema %s fara tenant public" % schema)
+        raise ValueError("schema %s fără tenant public" % schema)
     tid, afid = r
     return principal_firm(afid) if afid is not None else principal_tenant(tid)
 
@@ -122,7 +122,7 @@ def principal_din_rand(accounting_firm_id, tenant_id):
         return principal_firm(accounting_firm_id)
     if tenant_id is not None:
         return principal_tenant(tenant_id)
-    raise EroareSpv("rand spv_token fara principal (nici firm, nici tenant)")
+    raise EroareSpv("rând spv_token fără principal (nici firm, nici tenant)")  # invariant-intern-ok: integritatea tabelului de chei
 
 
 # ============================================================
@@ -133,7 +133,7 @@ def _fernet():
     from cryptography.fernet import Fernet
     cheie = os.environ.get("SPV_FERNET_KEY", "")
     if not cheie:
-        raise EroareSpv("SPV_FERNET_KEY lipseste din env — token-urile nu se stocheaza in clar")
+        raise EroareSpv("SPV_FERNET_KEY lipsește din env — token-urile nu se stochează în clar")  # invariant-intern-ok: configurarea serverului
     return Fernet(cheie.encode() if isinstance(cheie, str) else cheie)
 
 
@@ -197,7 +197,7 @@ def verifica_state(state, acum=None):
         raise EroareSpv("state invalid: %s" % r.get("mesaj", r.get("cod")))
     p = r["payload"]
     if p.get("scop") != "spv_state" or "pk" not in p or "pi" not in p:
-        raise EroareSpv("state cu scop gresit")
+        raise EroareSpv("state cu scop greșit")
     return Principal(p["pk"], int(p["pi"]))
 
 
@@ -226,7 +226,7 @@ def valori_din_raspuns_token(tok, acum=None):
     access = tok.get("access_token")
     refresh = tok.get("refresh_token")
     if not access or not refresh:
-        raise EroareSpv("raspuns /token fara access_token sau refresh_token")
+        raise EroareSpv("ANAF a răspuns fără cheile de acces, deci conectarea la SPV nu s-a încheiat. Încearcă din nou.")
     expires_in = int(tok.get("expires_in") or 0) or ACCES_IMPLICIT_SEC
     access_expira = datetime.fromtimestamp(acum + expires_in, tz=timezone.utc)
     refresh_expira = datetime.fromtimestamp(acum, tz=timezone.utc) + timedelta(days=REFRESH_DURATA_ZILE)
@@ -428,7 +428,7 @@ def reimprospateaza_token(token_row, acum=None):
             dezactiveaza_token(conn, token_row["id"])
             conn.commit()
         raise EroareSpvRefreshEsuat(
-            "refresh esuat pentru token %s — principalul reconecteaza SPV" % token_row["id"])
+            "refresh eșuat pentru token %s — principalul reconecteaza SPV" % token_row["id"])
 
     # serialul ramane cel cunoscut daca noul JWT nu-l expune
     if valori["serial_certificat"] == "NECONFIRMAT":

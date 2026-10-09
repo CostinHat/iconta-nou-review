@@ -34,6 +34,48 @@ METODE = ("get", "post", "put", "patch", "delete", "head", "options")
 
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ('_cere_z_unic', "MESAJ_Z_DUPLICAT % {'numar': numar, 'data': data_ex, 'id': iid, 'cum': 'importata din fisier AMEF' if sursa == 'amef' else 'tastata'}"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('banca_rec_reactiveaza', 'linia nu e ignorata'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('chitanta_stinge', 'documentul nu e in asteptare'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('eu_anunt_confirma', 'anunt inexistent'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('factura_primita_valideaza', 'factura a fost respinsa; nu se poate valida'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('factura_recunoaste', "'factura nu e o ciornă de recunoaștere (stare `%s`): actul e pentru facturile EMISE aduse prin import' % stare"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('factura_trimite_spv', "'Factura are deja o trimitere activa in SPV (%s).' % r.get('stare_existenta')"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('facturi_emite', 'Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('horeca_import_amef', "f'fisier AMEF invalid: {e}'"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('nota_tva_incasare', 'sens invalid (incasare/plata)'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('proforma_transforma', "f'deja transformat in factura #{r[1]}'"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('register', 'Termenii și condițiile nu se pot citi acum, deci acordul tău nu s-ar putea consemna. Contul NU a fost creat. Încearcă din nou peste câteva minute.'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('tenant_plan_conturi_adauga', "'Simbolul contului se scrie din cifre, cu separator pentru analitic (`.`, `_`, `-`, `/`) — am primit %r.' % simbol"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
+    ('wc_config', 'N-ai trimis niciun câmp. Cererea asta ar fi golit adresa magazinului și cheile lui, adică ar fi oprit canalul WooCommerce — dacă asta vrei, trimite explicit `url`, `ck` și `cs` goale.'): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
+        "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
     ("perioada_blocheaza", 'dict(\n                _af.afirmatie(\n                    "neconformitate", "inchidere_perioada",\n                    "Luna %02d/%04d nu se poate închide." % (luna, an),\n                    unde="perioada %02d/%04d" % (luna, an),\n                    regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "\n                           "înregistrat și validat"),\n                cod="PERIOADA_NU_SE_POATE_INCHIDE",\n                motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl)'): (
         "Decizia Costin 08.10.2026, W2 + W3: același refuz (422, aceeași afirmație „Luna … nu se poate închide.”), cu două chei în "
         "plus — `blocaje` (lista structurată, inclusiv AMORTIZARE_NEINREGISTRATA) și `semnale` (soldul 581 nenul) —, din "
@@ -71,6 +113,12 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("tenant_plan_conturi_adauga", "'Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — am primit %r.' % simbol"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.13 (decizia O12, prinsă la proba din ecran): „4111.” — un separator fără analitic "
+        "după el — intra în plan. Refuz numit (422): analiticul = sinteticul + separator + cifre."),
+    ("tenant_plan_conturi_adauga", "'Simbolul contului are cel mult 10 caractere — am primit %r (%d).' % (simbol, len(simbol))"): (
+        "Comanda Costin 09.10.2026, „Retest 2” pct.13: coloana `plan_conturi.simbol` e varchar(10); un simbol mai lung cădea în driver "
+        "(500). Refuz numit (422), cu lungimea."),
     ("coada_adauga", "_blocaj"): (
         "Deciziile Costin 08.10.2026, U1 (+ completarea: D300, D394, D390) și V1 (D406): „«Trimite în coadă» e blocat” când TVA-ul "
         "D300 nu se potrivește cu rulajele 4427 / 4426 (TVA_DIFERA_DE_BALANTA), respectiv când totalurile GeneralLedgerEntries nu sunt "
@@ -232,6 +280,10 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("tenant_mijloace_fixe", "today"): (
+        "azi_ro",
+        "Comanda Costin 09.10.2026, „Retest 2” pct.5 („calculul merge până la ultima lună încheiată, aceeași regulă ca la închiderea "
+        "lunii”): ziua României (`azi_ro`), ca `inchidere_luna.ultima_zi_incheiata`, nu ziua serverului."),
     ("bon_aproba", "nota_bon_validata"): (
         "nota_bon_ciorna",
         "Decizia Costin 08.10.2026 §6 pct.7 (R36: „evidența = ce a validat un om”): nota bonului aprobat intră CIORNĂ — aceeași "
@@ -652,7 +704,10 @@ def _fara_abateri(nume, ramase_v, ramase_n):
         v = [p for p in ramase_v if p[1] in tinte]
         # [retest 08.10] abaterea = ACELAȘI cod, alt mesaj: se numără perechile noi pe codul ei, nu toate perechile noi ale
         # funcției (la `coada_depune` mai rămâne una pe 422, scoasă abia de CODURI_ADAUGATE, mai jos)
-        n_cod = [p for p in ramase_n if v and p[0] == v[0][0]]
+        # [Retest 2, 09.10.2026] perechile noi DECLARATE (PERECHI_ADAUGATE, scoase mai jos) nu sunt perechea abaterii: altfel o funcție
+        # care are și o pereche adăugată pe același cod (`facturi_emite`: 422) n-ar mai putea purta nicio abatere de mesaj
+        _adaugate = {f for (r2, m2) in PERECHI_ADAUGATE if r2 == nume for f in _forme_mesaj(m2)}
+        n_cod = [p for p in ramase_n if v and p[0] == v[0][0] and p[1] not in _adaugate]
         if v and len(n_cod) == len(v):
             ramase_v = [p for p in ramase_v if p not in v]
             ramase_n = [p for p in ramase_n if p not in n_cod]

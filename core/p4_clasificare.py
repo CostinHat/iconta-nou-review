@@ -405,6 +405,16 @@ CLASIFICARE = {
             "se intoarce numita in `refuzate`, cu mesajul ei, iar celelalte raman aprobate: nu exista stare comuna intre ele, "
             "deci nicio aprobare pe jumatate (retest 08.10 pct.3).",
     },
+    "core/migrare_retest2.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "coloana `casa_operatiuni.storno_de` (+ cheia străină și unicitatea), schema cu schema <-> rescrierea descrierii "
+                  "notelor de refacere NIR <-> retrimiterea lor la validare <-> notificarea validatorilor",
+        "de_ce":
+            "fiecare schemă e comisă SEPARAT; coloana se adaugă numai dacă lipsește (idempotent); o notă se rescrie numai cât timp "
+            "descrierea ei mai poartă „decizia Costin” (a doua rulare n-o mai găsește) și se retrimite numai dacă ultimul ei element "
+            "din coadă e respins (`coada_api.retrimite_nota`, același drum ca butonul). Notificarea e best-effort, după commit. Niciun "
+            "efect extern (Retest 2, pct.2 și pct.4).",
+    },
     "core/migrare_retest_0810.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "analiticul 4428.02 + liniile/soldurile TVA-ului stocului, schema cu schema <-> scoaterea 731–738 nefolosite <-> "

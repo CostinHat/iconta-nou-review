@@ -35,11 +35,11 @@ def verifica_total_plata_a(tip, xml, res_total):
     """d100/d101/d205/d300/d394: totalPlata_A (int, N(15)) PARSAT din artefact == res.total_plata_a. Hard-block."""
     got = _iattr(xml, "totalPlata_A")
     if got is None:
-        raise ReconciliereEmis("%s: totalPlata_A absent din XML EMIS - artefactul nu contine totalul de plata" % tip)
+        raise ReconciliereEmis("%s: fișierul generat nu conține totalul de plată, deci nu se descarcă. E o eroare a aplicației: anunță echipa iConta." % tip.upper())
     if got != int(res_total):
         raise ReconciliereEmis(
-            "%s: total EMIS in artefact %d != res.total_plata_a %d - divergenta intre calcul si XML-ul livrat"
-            % (tip, got, int(res_total)))
+            "%s: totalul de plată din fișierul generat (%d) diferă de cel calculat (%d), deci fișierul nu se "
+            "descarcă. E o eroare a aplicației: anunță echipa iConta." % (tip.upper(), got, int(res_total)))
     return got
 
 
@@ -48,12 +48,13 @@ def verifica_d112(xml):
     Self-consistency lossless a artefactului: totalul de plata == suma obligatiilor lui. Hard-block pe divergenta."""
     tot = _iattr(xml, "totalPlata_A")
     if tot is None:
-        raise ReconciliereEmis("d112: totalPlata_A absent din XML EMIS")
+        raise ReconciliereEmis("D112: fișierul generat nu conține totalul de plată, deci nu se descarcă. E o eroare a aplicației: anunță echipa iConta.")
     dats = [int(m) for m in re.findall(r'A_datorat="(-?\d+)"', xml)]
     s = sum(dats)
     if tot != s:
         raise ReconciliereEmis(
-            "d112: totalPlata_A EMIS %d != SUMA A_datorat %d din artefact - totalul nu corespunde obligatiilor emise"
+            "D112: totalul de plată din fișierul generat (%d) diferă de suma obligațiilor din același fișier (%d), deci "
+            "fișierul nu se descarcă. E o eroare a aplicației: anunță echipa iConta."
             % (tot, s))
     return tot
 
@@ -72,5 +73,5 @@ def verifica_d406(xml):
         return None
     if Decimal(td) != Decimal(tc):
         raise ReconciliereEmis(
-            "d406: TotalDebit %s != TotalCredit %s in artefact - partida dubla rupta in XML-ul livrat" % (td, tc))
+            "d406: TotalDebit %s != TotalCredit %s în artefact - partida dublă ruptă în XML-ul livrat" % (td, tc))
     return td

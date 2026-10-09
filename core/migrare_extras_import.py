@@ -37,7 +37,7 @@ _DDL_OWNER = 'ALTER TABLE "{s}".extras_import OWNER TO iconta_user;'
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     import psycopg2 as _pg
     with conn.cursor() as cur:
         cur.execute(_DDL.format(s=schema))

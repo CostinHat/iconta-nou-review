@@ -29,6 +29,7 @@ PRECONDITIE: conn pozitionat pe schema tenantului (contractul d406.pull).
 """
 
 from decimal import Decimal, ROUND_HALF_UP
+from core.pdf_util import diferenta as _dif, bani as _bani   # [Retest 2 pct.2] diferența în cuvinte
 from core import repo_d406_reconciliere as _repo
 
 
@@ -113,16 +114,14 @@ def verifica_reconciliere(conn, schema, an, luna, res):
     parti = []
     if rap["dezechilibru"]:
         d = rap["dezechilibru"]
-        parti.append("DEZECHILIBRU dubla partida in SAF-T: Sdebit=%s vs Scredit=%s (dif %s)"
-                     % (d["debit"], d["credit"], d["diferenta"]))
+        parti.append("în fișierul SAF-T totalul debitelor (%s) diferă de totalul creditelor (%s), diferență %s"
+                     % (_bani(d["debit"], "lei"), _bani(d["credit"], "lei"), _bani(d["diferenta"], "lei")))
     if rap["divergente"]:
-        det = "; ".join("cont %s %s: saft=%s vs cale2=%s (dif %s)" %
-                        (x["cont"], x["latura"], x["saft"], x["cale2"], x["diferenta"])
+        det = "; ".join(_dif("contul %s, %s" % (x["cont"], x["latura"]), x["saft"], x["cale2"], x["diferenta"], sursa="în SAF-T")
                         for x in rap["divergente"][:20])
         supl = "" if len(rap["divergente"]) <= 20 else " (+%d)" % (len(rap["divergente"]) - 20)
-        parti.append("BALANTA per cont (SAF-T vs rulaje independente din inregistrari_linii): " + det + supl)
+        parti.append("rulajele pe conturi din SAF-T nu se potrivesc cu cele recalculate din notele contabile: " + det + supl)
     if parti:
         raise ReconciliereD406(
-            "D406 A DOUA CALE: %s. Declaratia NU se genereaza - gardul nu alege singur cine are "
-            "dreptate; verifica emisia GeneralLedgerEntries si notele." % " | ".join(parti))
+            "D406: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % " | ".join(parti))
     return rap

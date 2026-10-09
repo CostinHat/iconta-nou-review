@@ -133,9 +133,9 @@ def calcul_d119(an, luna, manual):
     suma_ded = _i(manual.get("suma_ded"))
     if suma_ded > suma_dat:
         raise ValueError(
-            "D119: Suma_ded (%d) > Suma_dat (%d). Validatorul oficial (DUK regula R15) NU accepta "
-            "Suma_dat < Suma_ded (Suma_rest trebuie >= 0, nicio combinatie nu trece). Declarația "
-            "se depune doar cand suma datorată >= suma dedusa." % (suma_ded, suma_dat))
+            "D119: suma dedusă (%d) e mai mare decât suma datorată (%d). Validatorul ANAF (DUK regula R15) nu "
+            "acceptă asta: restul de plată nu poate fi negativ. Declarația se depune numai când suma "
+            "datorată e cel puțin egală cu suma dedusă." % (suma_ded, suma_dat))
     suma_plata = suma_dat - suma_ded
     suma_rest = 0
     total = suma_dat + suma_ded + suma_plata + suma_rest
@@ -166,7 +166,7 @@ def erori_generare(prof, manual):
     er = []
     cui = _cif(manual.get("cif"))
     if not cui:
-        er.append("Lipsă cod de identificare fiscala (cif) al BNR.")
+        er.append("Lipsă cod de identificare fiscală (cif) al BNR.")
     else:
         ok, motiv = valideaza_cui(cui)
         if not ok:
@@ -191,7 +191,7 @@ def erori_generare(prof, manual):
     except (TypeError, ValueError):
         drec = -1
     if drec not in (0, 1):
-        er.append("d_rec obligatoriu 0 (initiala) sau 1 (rectificativa).")
+        er.append("d_rec obligatoriu 0 (inițială) sau 1 (rectificativă).")
     return er
 
 
@@ -235,7 +235,7 @@ def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an = int(perioada.an)
     if perioada.luna is None:
-        raise ValueError("D119 lunara: perioada.luna obligatoriu.")
+        raise ValueError("D119 lunară: perioada.luna obligatoriu.")  # invariant-intern-ok: argumentul apelantului
     luna = int(perioada.luna)
     if not (1 <= luna <= 12):
         raise ValueError("D119: lună invalidă: %r." % luna)

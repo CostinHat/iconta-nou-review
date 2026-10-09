@@ -45,7 +45,7 @@ def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj", la_data=None):
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c = _d(chirie)
     if c <= 0:
-        raise ValueError("chirie invalida")
+        raise ValueError("chirie invalidă")
     if proprietar == "pf":
         # [3d · CF art. 84^1 alin. (3),(4),(5)] venit net = brut - 20% cota forfetara; platitorul PJ
         # calculeaza si RETINE la sursa 10% pe venitul net, la momentul platii (impozit final).
@@ -73,7 +73,7 @@ def nota_chirie_incasata(chirie, cota_tva=None):
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c = _d(chirie)
     if c <= 0:
-        raise ValueError("chirie invalida")
+        raise ValueError("chirie invalidă")
     tva = _tva(c, cota_tva)
     linii = [("4111", "706", c)]
     if tva > 0:
@@ -88,7 +88,7 @@ def nota_refacturare(total_factura_furnizor, parte_refacturata, cota_tva=None):
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     tf, pr = _d(total_factura_furnizor), _d(parte_refacturata)
     if tf <= 0 or pr < 0 or pr > tf:
-        raise ValueError("valori invalide (partea refacturata <= total)")
+        raise ValueError("valori invalide (partea refacturată <= total)")
     proprie = tf - pr
     tva_proprie = _tva(proprie, cota_tva)
     tva_refact = _tva(pr, cota_tva)

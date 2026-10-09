@@ -167,7 +167,7 @@ async function deschideEditare(uid, corp, nav) {
   nav.deschide(`Editeaza \u2014 ${nume}`, (box) => {
     const sectiuneFirme = a.atribuire_relevanta
       ? `
-        <div class="asi-sectiune-titlu">Selecteaza firme</div>
+        <div class="asi-sectiune-titlu">Selectează firme</div>
         <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
         <label class="camp-eticheta" for="asi-cauta-firme">Caut\u0103 firma</label>
         <input id="asi-cauta-firme" class="camp-input" placeholder="Caută firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
@@ -346,7 +346,7 @@ function _asiRandeazaFereastra(d, c) {
       <select class="camp-input" data-per aria-label="Perioada" style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
-        <option value="luna">Luna curenta</option>
+        <option value="luna">Luna curentă</option>
         <option value="an">Anul curent</option>
       </select>
     </div>`;
@@ -354,7 +354,7 @@ function _asiRandeazaFereastra(d, c) {
   const calitate = cal ? `
     <div class="asi-sectiune-titlu">Calitate</div>
     <div style="display:flex;gap:10px;margin:8px 0 12px;">
-      <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Pregatite</div><div class="asi-cal-cifra">${cal.pregatite}</div></div>
+      <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Pregătite</div><div class="asi-cal-cifra">${cal.pregatite}</div></div>
       <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Aprobate</div><div class="asi-cal-cifra asi-cal-verde">${cal.aprobate}</div></div>
       <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Respinse</div><div class="asi-cal-cifra asi-cal-rosu">${cal.respinse} \u00b7 ${cal.rata_respins}%</div></div>
     </div>

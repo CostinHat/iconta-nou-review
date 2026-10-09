@@ -80,7 +80,7 @@ def test_mutatie_impozit_gresit_pica(conn_recon):
     res.beneficiari[0].imp1 = 1   # <- mutatie: impozit gresit pe primul beneficiar
     with pytest.raises(ReconciliereD205) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, Perioada(2026), res)
-    assert "impozit: generator=1 vs cale2=" in str(ei.value), str(ei.value)
+    assert "impozit: în declarație 1,00 lei, recalculat" in str(ei.value), str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -90,4 +90,4 @@ def test_mutatie_beneficiar_pierdut_pica(conn_recon):
     res.beneficiari = res.beneficiari[:1]   # <- mutatie: al doilea beneficiar dispare
     with pytest.raises(ReconciliereD205) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, Perioada(2026), res)
-    assert "beneficiar LIPSA" in str(ei.value), str(ei.value)
+    assert "lipsește din declarație" in str(ei.value), str(ei.value)

@@ -238,12 +238,12 @@ def respinge(tip, unde, regula, mesaj, **campuri):
     limba omului."""
     from core import afirmatii as _af
     if regula not in REGULI:
-        raise ValueError(
-            "regula %r nu e in nomenclator; cele declarate: %s. Un cod nou se ADAUGA in REGULI, cu "
-            "ce inseamna - altfel randorul primeste o categorie despre care nu stie nimic."
+        raise ValueError(  # invariant-intern-ok: nomenclatorul de reguli e cod
+            "regula %r nu e în nomenclator; cele declarate: %s. Un cod nou se ADAUGĂ în REGULI, cu "
+            "ce înseamnă - altfel randorul primește o categorie despre care nu știe nimic."
             % (regula, ", ".join(sorted(REGULI))))
     if unde is None or str(unde).strip() == "":
-        raise ValueError("respingerea cere domeniul: fara el, contabilul nu stie ce sa corecteze")
+        raise ValueError("respingerea cere domeniul: fără el, contabilul nu știe ce să corecteze")
     if not (mesaj or "").strip():
         raise ValueError("respingerea cere un text pentru om, nu doar codul %r" % regula)
     # DOMENIUL nu e mereu un rand. Prima forma cerea `rand`, si era peste-croita pe importurile din

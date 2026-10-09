@@ -74,4 +74,4 @@ def test_mesaj_format_la_zero_tranzactii():
     with pytest.raises(ValueError) as ei:
         parse_extras(b"gunoi fara nicio data sau suma\nalt rand\n", "x.csv")
     assert FORMAT_ASTEPTAT in str(ei.value)
-    assert "Debit+Credit" in str(ei.value)
+    assert "Debit și Credit" in str(ei.value)

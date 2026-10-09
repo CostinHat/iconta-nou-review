@@ -11,7 +11,7 @@ DDL = ('ALTER TABLE "{s}".firma_profil ADD COLUMN IF NOT EXISTS metoda_stoc text
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

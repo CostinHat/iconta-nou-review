@@ -118,8 +118,8 @@ def test_mutatie_sursa_pierde_factura_pica_via_rollback(conn_recon):
     with pytest.raises(ReconciliereD390) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 8, res)
     msg = str(ei.value)
-    assert "bazaL" in msg and "generator=2000" in msg and "cale2=0" in msg, msg
-    assert "nrOPI" in msg   # operatiunea pierduta apare si in numarul de operatiuni
+    assert "baza operațiunilor de tip L" in msg and "în declarație 2.000,00 lei," in msg and "recalculat 0,00 lei " in msg, msg
+    assert "numărul de operațiuni" in msg   # operatiunea pierduta apare si in numarul de operatiuni
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -134,7 +134,7 @@ def test_mutatie_generator_pierde_operatiune_din_rezumat_pica(conn_recon):
     with pytest.raises(ReconciliereD390) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 8, res)
     msg = str(ei.value)
-    assert "bazaA" in msg and "generator=0" in msg and "cale2=1500" in msg, msg
+    assert "baza operațiunilor de tip A" in msg and "în declarație 0,00 lei," in msg and "recalculat 1.500,00 lei " in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -147,7 +147,7 @@ def test_mutatie_baza_pe_tip_gresit_pica(conn_recon):
     with pytest.raises(ReconciliereD390) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 8, res)
     msg = str(ei.value)
-    assert "bazaL" in msg and "bazaT" in msg, msg
+    assert "baza operațiunilor de tip L" in msg and "baza operațiunilor de tip T" in msg, msg
 
 
 # ============================================================

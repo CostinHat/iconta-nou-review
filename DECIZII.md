@@ -18705,3 +18705,153 @@ câmp (din structura ANAF a fiecărei declarații) — o campanie separată, dec
 Majusculele și diacriticele din aceleași mesaje au fost reparate acum (36). (2) Etichetele cheilor din `COTE` stau lângă `COTE`
 (`common.ETICHETE_COTE`, `expirare_cote.ETICHETE` le reexportă): sursa lor e registrul, iar mesajul `PerioadaIndisponibila` le
 citește fără să depindă de modulul de expirare.
+
+## 09.10.2026 — Comanda Costin: retestul în aplicație al lotului „Retest 08.10” (05ba1345) — lotul „Retest 2”
+
+Primită ca text lipit, confirmată de Costin scris direct („Confirm, porneste”, 09.10.2026). Verbatim:
+
+„Retestul în aplicație al lotului 08.10 (05ba1345) a găsit defecte în puncte raportate ca livrate și defecte noi. Lotul acesta trece
+înaintea registrului de parametri fiscali. Fă totul într-o singură trecere, în ordinea pe care o alegi tu.
+
+A. Cerințe raportate ca livrate, care nu funcționează în aplicație
+1. Pct.10: după „Salvează” și după „Anulează marcarea”, grupul „Înainte de preluare” se pliază singur și ecranul sare departe de rând.
+Proba ta „derulare 0 -> 0” nu corespunde aplicației. Grupul rămâne cum l-a lăsat utilizatorul, iar ecranul rămâne pe rândul atins.
+2. Pct.14 nu e închis. Pe ecrane au rămas coduri interne și texte fără diacritice: „incasare_client”, „plata_furnizor”, „liniara”,
+„sold initial”, „Capital subscris varsat”, „Contă analitice/nestandard”, „D406 v2.4.9 … fact.vânz … -v D406 fisier.xml $ $ an=2026
+luna=10” (caseta Rezumat), „(decizia Costin 08.10, pct.4)” în descrierile notelor, „nota respinsă e dinaintea amprentei”, secțiunea
+„Declarație vs contabilitate” din Control fiscal („rânduri persistate”, „->”, „GRI, nu roșu”, paragraful „Verificat: …”),
+explicațiile din Date firmă („nu există cu ce să difere. Câmpul e liber”), „DEBITOR” cu majuscule și sumele „1000.00”, „500.00” în
+semnalele de închidere. Decizie: verificarea se face pe ecranul afișat, cu valorile din date și din enumerări, nu pe șirurile din
+codul sursă. Notele 121/122 se refac cu descrierea în limbaj de contabil și se retrimit la validare.
+3. Pct.7: contoarele de sus din Control fiscal folosesc două reguli. „De urmărit” numără orice firmă care are ceva de urmărit, „nu se
+pot verifica” numără doar starea principală (F5 lipsește). Suma dă 8 la 5 firme. Una dintre reguli, aplicată peste tot. Cifrele din
+proba raportului (13 / 7 / 4) nu se regăsesc pe ecran (14 / 5).
+
+B. Defecte noi
+4. Casă: o operațiune a cărei notă e validată (CHF1-1, nota 118) are buton „Șterge”. Decizie: o operațiune cu notă validată nu se
+șterge, se corectează prin stornare. Aceeași regulă pentru toate sursele de note.
+5. Mijloace fixe: amortizarea „calculată la zi” include luna în curs (10/2026), deci 4.200, iar diferența 1.800 contrazice textul „8
+luni: 01–08/2026”. Decizie: calculul merge până la ultima lună încheiată, aceeași regulă ca la închiderea lunii.
+6. Registru jurnal: „Total sume” include ciornele (16.066,50 față de 15.966,50 validat). Totalurile registrului se fac numai pe notele
+validate; ciornele se arată separat.
+7. Note de validat: „total 0,00 lei” la notele de stornare + reînregistrare. Se afișează rulajul notei.
+8. Control fiscal, lista de firme: click pe o firmă duce în meniul general al firmei, nu în detaliul ei fiscal.
+9. Control fiscal F3: firma depune D301, deci pare neplătitoare de TVA, iar verificarea D390 față de D300 n-are sens pentru ea.
+Verifică regimul de TVA și, unde D300 nu se aplică, afișează „nu se aplică”. Restanțele D390 arată pe ce se bazează (lunile cu
+operațiuni intracomunitare), ca D301.
+10. Control fiscal, grupul „Înainte de preluare”: D100 / D406 / D205 au „termen” fără dată, n-au perioada pe rând și n-au buton
+individual de marcare.
+11. Închidere lună: o declarație cu termenul în luna respectivă și nedepusă apare ca avertisment (nu blochează).
+12. Ciornele create de contabil nu apar în nicio coadă la vedere; le-am găsit doar în Registru jurnal. Trebuie să le vadă de undeva
+fără să le caute.
+13. Planul de conturi există doar ca import; nu are ecran de vizualizare și adăugare de analitice.
+14. Date afișate în format ISO („2026-10-05”) în D406 și Casă; jurnale scrise cu majuscule în D406; perioade în trei formate („iun”,
+„T3”, „03.2026”, „04/2026”); mesajele de confirmare la respingere repetă tot titlul notei; „1 parteneri” în Rezumat D394.
+
+C. De verificat la sursă
+15. D394: rândul la cota 11% are „număr facturi 0”, deși factura 2 are linie și la 11%. Verifică în instrucțiunile ANAF cum se numără
+o factură cu mai multe cote.
+16. CUI-ul firmelor plătitoare de TVA apare fără „RO” în antetul PDF-ului de balanță (F2).
+
+D. Probe care lipsesc
+17. Pct.1 (bilanț 4428), pct.17 (731–738 scoase) și pct.2: probă pe ecran, cu captura ecranului în care se vede rezultatul.
+
+E. Regula de probă, de acum înainte
+18. Pentru orice ecran atins, proba conține captura ecranului și o frază despre ce înțelege din el un contabil. Un test care trece fără
+captura ecranului se trece în tabel ca „neverificat”.
+
+F. Livrare
+19. Raportul cu tabelul cerință -> probă (1–19), cu „neverificat” unde lipsește proba, și durata măsurată a fiecărei operații.
+20. ZIP cu tot ce s-a schimbat (cod, documente, artefacte de măsurare) la commit-ul de închidere, în ~/ghid_incoming/, cu calea exactă în
+raport.
+
+După acest lot, reia registrul de parametri fiscali de unde ai rămas.”
+
+Decizia la O12 (text lipit, confirmat scris de Costin cu aceeași confirmare), verbatim: „La O12, dacă Design System-ul nu are tiparul:
+ecranul planului de conturi urmează tiparul registrelor existente — listă cu căutare după cont sau denumire, analiticele afișate sub
+contul sintetic, adăugare de analitic de către contabil, iar un cont folosit în note nu se poate șterge. Nu te opri pentru asta.”
+
+**Consecința pentru executor:** firul „Retest 2” în TESTE.md (operațiile O1–O17, date înainte de execuție); regula E18 se aplică de
+acum la orice raport (captura + fraza contabilului; fără captură = „neverificat”). Registrul de parametri fiscali se reia de la R1 după
+închidere.
+
+## 09.10.2026 — Executarea lotului „Retest 2”: forma, interpretările și ce a ieșit pe drum
+
+**pct.2 — textul se judecă pe ecran.** Instrumentul: `core/limba_ecran.py` (judecata) + `frontend_test/vizual/text_ecran_scan.py`
+(browserul: toate cardurile celor patru firme de test, desktopul cabinetului, D300 / D390 / D394 / D406 generate), artefact
+`frontend_test/vizual/text_ecran.json` păzit de `core/test_text_ecran.py` (UI-ul de acum, instrumentul de acum, zero defecte). Valorile
+introduse de om (nume, parteneri, articole, numere de document, textul extrasului bancar, descrierea notei MANUALE, simbolul contului,
+denumirea unui analitic) se scot din text înainte de judecată. Diacriticele vin dintr-un lexicon DERIVAT din corpusul legislativ
+(`scripts/genereaza_lexicon_diacritice.py`, 8494 de forme: numai documentele scrise cu diacritice; forma ASCII sub 0,5% din apariții,
+cea cu diacritice peste 95%; formele cu două citiri corecte — „plata”, „nota”, „suma” — rămân afară). *Alternativa respinsă:* lista
+scrisă de mână — prindea câteva zeci de cuvinte, iar un text pe jumătate corectat trecea. Gardul de sursă rămâne prima plasă și
+citește acum și mesajele excepțiilor de domeniu (`raise X("…")` ajunge pe ecran ca refuz), șabloanele (`_MESAJ % x`), majuscula cu
+diacritică în cuvânt („LipsĂ”) și „în afară” urmat de substantiv. Un `raise` care nu ajunge la contabil (argumentul greșit al unui
+apelant, un registru din cod, pornirea serviciului) poartă `# invariant-intern-ok: <motiv>`, cu plafon 27 (motivul obligatoriu).
+*Forma textelor:* diferențele porților de reconciliere — „în declarație 9.999,00 lei, recalculat 1.500,00 lei (diferență …)”
+(`pdf_util.diferenta`, sursa unică a celor nouă porți), salariatul numit cu numele și CNP-ul, nu cu id-ul din bază; codurile
+fișierului (tipul D394 / D390, tipul partenerului, tipul seriei, jurnalul SAF-T) în cuvintele legendei formularului.
+Notele 121/122: descrierea din sursa unică (`migrare_retest_0810.descriere_refacere_nir`, „Refacere NIR nr. 2 fără factură: costul și
+TVA-ul trec de pe 401 pe 408 (furnizori - facturi nesosite) și 4428.01 (TVA neexigibilă), până la sosirea facturii”) și retrimise la
+validare pe drumul aplicației (`coada_api.retrimite_nota`, în numele celui care le-a pregătit, cu notificarea validatorilor) —
+`core/migrare_retest2.note_refacere_nir`.
+
+**pct.2, găsit pe drum — rândul D300 numit greșit.** Mesajele și tabelul de componente numeau rândul după atributul XML („rd.26” pentru
+`R26_1`, „rândul 17.2” pentru `R17_2`). Formularul în vigoare (OPANAF 174/2026, anexa 1) a renumerotat de la vânzările la distanță
+(rd.17–18), atributele nu: `R17` = rd.19 „TOTAL TAXĂ COLECTATĂ”, `R26` = rd.29, `R31` = rd.34. Tabelul `d300_randuri.RAND_FORMULAR`
+(modul NEUTRU: îl citește și a doua cale, care nu are voie să importe generatorul), păzit de `core/test_d300_rand_formular.py`, care
+citește formularul. La fel D101 (`d101_randuri`, regula pozițională P081 = rd.8.1, păzită pe formularul OPANAF 206/2025; opt atribute
+neconfruntabile numite cu motivul).
+
+**pct.3** — regula unică a contoarelor: fiecare contor = firmele care AU faptul; „nu se pot verifica” = firma cu cel puțin un
+necunoscut (declarație sau verificare contabilă gri) sau fără date la zi, nu starea principală gri.
+
+**pct.4 — stornarea.** Temei: OMFP 1802/2014 pct.69 (corectarea cu semnul minus). Operațiune nouă în registru, cu suma cu minus,
+legată de cea inițială (`casa_operatiuni.storno_de`, unică), notă CIORNĂ cu liniile inițiale în roșu, în luna deschisă aleasă;
+chitanța legată se anulează, factura redevine neîncasată dacă nu mai are altă chitanță. Celelalte surse refuzau deja ștergerea notei
+validate (jurnalul, banca, factura) — casa era singura care o ștergea odată cu operațiunea.
+
+**pct.5** — „la zi” = `inchidere_luna.ultima_zi_incheiata` (aceeași frontieră ca închiderea), pe ziua României.
+
+**pct.8 — nereprodus.** Pe cabinetul de test, clic pe firmă în lista Control fiscal deschide „Detaliu firmă” cu grupurile fiscale (11
+grupuri, zero carduri din meniul general), și cu firmă activă, și fără. Captura în raport; întrebarea la §6.
+
+**pct.9** — D390 la neplătitorul art.317: numai lunile cu operațiuni intracomunitare (aceleași surse ca D301), cu faptul scris pe rând.
+Temei: OPANAF 705/2020 anexa 2 pct.1.2, „depun declaraţia recapitulativă numai pentru lunile calendaristice în care ia naştere
+exigibilitatea taxei”. „D300 față de contabilitate” și „D390 față de D300” spun „nu se aplică”, cu motivul.
+
+**pct.10** — necunoașterea dinaintea preluării se desface în perioadele declarației (an la D205 / D101, trimestru la D100 / D406),
+fiecare cu termenul (funcția de scadență — 28.02.2026 e sâmbătă, deci 02.03.2026) și butonul ei.
+
+**pct.11** — avertismentul la închidere vine din semaforul Control fiscal (aceeași listă de restanțe / de urmărit), filtrată pe
+termenul din lună. Avertisment, nu blocaj: depunerea e un act față de ANAF, nu o înregistrare a lunii. Un eșec de calcul se spune ca
+semnal, nu se înghite.
+
+**pct.12** — „Notele tale în ciornă” la capătul ferestrei „De validat” (pe firme, cu starea din coadă: trimisă la validare / respinsă
+cu motivul / netrimisă) și numărate pe cardul ei. *De ce acolo:* e fereastra în care contabilul se uită după ce are de validat; un
+validator nu-și trimite notele în coadă, deci fără lista asta ciornele lui nu se vedeau nicăieri.
+
+**pct.13** — ecranul „Plan de conturi” pe decizia O12 (card în grupul Firma, partida dublă). *Adăugat de mine, cu motiv:* un sintetic
+cu analitice în plan nu se șterge (analiticele ar rămâne fără părinte) — refuzul le numește.
+
+**pct.14** — „mesajele de confirmare la respingere repetă tot titlul notei”: atât confirmarea, cât și dialogul de respingere numesc
+nota SCURT (`validat.numeScurt`: documentul, altfel data; „cele N note ale documentului …” la un document cu mai multe note) — titlul
+întreg e deja pe card, deasupra. Datele în forma românească (D406, Casă, Bancă, D301), jurnalele SAF-T în cuvinte, perioadele în trei
+forme (DS cap.4 v2.85), numeralul acordat (`common.cate`).
+
+**pct.15 — nu e defect, e regula ANAF; ecranul o spune acum.** OPANAF 2194/2025, anexa 2, secțiunea a 2-a pct.5: „Prin excepţie, în
+situaţia în care în cuprinsul unei facturi emise/primite există operaţiuni cu cote de TVA diferite, la rubrica «număr de facturi» se
+vor înscrie: valoarea 1 în dreptul operaţiunii cu valoarea cea mai mare a TVA şi valoarea 0 pentru restul operaţiunilor”. Generatorul
+o aplica deja (`d394.pull`); „Rezumat” spune acum, pe factură, de ce cota mică arată 0.
+
+**pct.16** — antetul raportului PDF: „Cod TVA RO…” la plătitor, „CIF …” la neplătitor — CF art.318 alin.(1): „Codul de înregistrare
+în scopuri de TVA, atribuit conform art. 316 și 317, are prefixul RO”; aceeași regulă ca pe factură (`factura_pdf.cod_fiscal_pe_factura`).
+
+**Găsit la proba „după” — verificarea TVA la trimestrial.** „Declarație vs contabilitate” genera D300 pe luna evaluată; la decontul
+trimestrial, luna 10 e în T4, al cărui decont poartă eticheta 12 (DUK regula R18), deci firma trimestrială apărea „nu se poate
+verifica” în fiecare lună din mijlocul trimestrului (13 firme gri pe cabinetul de test). Decontul se generează acum pe perioada lui
+(ultima lună a ferestrei TVA), ca depunerea căutată.
+
+**Ce a ieșit pe drum (în afara planului, fiecare cu motiv):** „în afară” pus greșit de corectura în masă a diacriticelor din lotul
+trecut (5 locuri) — reparat și gardat; „LipsĂ” (d300, `LipsĂ`) — reparat și gardat; potrivirea abaterilor din `core/test_p7_uc.py`
+număra și perechile declarate adăugate pe același cod — corectată; baseline-ul de diacritice al mesajelor publicate coborât la real.

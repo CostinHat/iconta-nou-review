@@ -125,7 +125,7 @@ def erori_generare(prof, manual):
     if not str(manual.get("nume_c") or "").strip():
         er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("initiala_c") or "").strip():
-        er.append("Lipsă initiala tata (initiala_c).")
+        er.append("Lipsă inițială tată (initiala_c).")
     if not str(manual.get("prenume_c") or "").strip():
         er.append("Lipsă prenume contribuabil (prenume_c).")
     if not _cnp_valid(manual.get("cif_c")):

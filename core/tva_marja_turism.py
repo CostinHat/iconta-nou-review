@@ -22,9 +22,9 @@ def determina_regim(calitate_client, locuri, optiune_normal=False, intermediar=F
         return "intermediar"
     if optiune_normal:
         if calitate_client != "PJ":
-            raise ValueError("regim normal interzis: calator persoana fizica (art. 311 al. 10 lit. a)")
+            raise ValueError("regim normal interzis: călător persoana fizica (art. 311 al. 10 lit. a)")
         if any(l != "RO" for l in locuri):
-            raise ValueError("regim normal interzis: componente in afara Romaniei (art. 311 al. 10 lit. b)")
+            raise ValueError("regim normal interzis: componente în afara României (art. 311 al. 10 lit. b)")
         return "normal"
     return "special"
 

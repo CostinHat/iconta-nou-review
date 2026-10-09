@@ -263,7 +263,7 @@ def erori_generare(prof, manual):
     except (TypeError, ValueError):
         d_rec = -1
     if d_rec not in (0, 1):
-        er.append("d_rec obligatoriu 0 (initiala) sau 1 (rectificativa).")
+        er.append("d_rec obligatoriu 0 (inițială) sau 1 (rectificativă).")
 
     # --- beneficiari nerezidenti (sectiunea C) ---
     benefs = manual.get("beneficiari") or []
@@ -275,7 +275,7 @@ def erori_generare(prof, manual):
         if not str(b.get("nume") or "").strip():
             er.append(p + "lipsă Nume (nume).")
         if not _cnp_valid(b.get("cif_rom")):
-            er.append(p + "CIF_Rom (cif_rom) invalid - CNP/NIF Romania 13 cifre "
+            er.append(p + "CIF_Rom (cif_rom) invalid - CNP/NIF România 13 cifre "
                           "(DUK regula verificare cif(13)).")
         else:
             cifuri.append(_cif(b.get("cif_rom")))
@@ -294,7 +294,7 @@ def erori_generare(prof, manual):
                           "(interval de schema, minim 0).")
         nat = b.get("nationalitate")
         if nat and str(nat).strip().upper() not in _TARI:
-            er.append(p + "Nationalitate (nationalitate) neregasita în N3.")
+            er.append(p + "Naționalitate (naționalitate) neregăsită în N3.")
         if b.get("data_nasterii") and _parse_data(b.get("data_nasterii")) is None:
             er.append(p + "Data_nasterii format ZZ.LL.AAAA.")
         try:
@@ -320,14 +320,14 @@ def erori_generare(prof, manual):
             if di is None:
                 er.append(pv + "Data_I (data_i) obligatoriu, format ZZ.LL.AAAA.")
             elif di[0] > an:
-                er.append(pv + "anul din Data_I > anul raportarii "
+                er.append(pv + "anul din Data_I > anul raportării "
                                "(structuraXML_D402_2022; DUK nu o verifica).")
             ds = _parse_data(v.get("data_s"))
             if v.get("data_s") and ds is None:
                 er.append(pv + "Data_S format ZZ.LL.AAAA.")
             elif ds is not None:
                 if ds[0] != an:
-                    er.append(pv + "anul din Data_S <> anul raportarii (DUK regula R40).")
+                    er.append(pv + "anul din Data_S <> anul raportării (DUK regula R40).")
                 if di is not None and ds < di:
                     er.append(pv + "Data_S < Data_I (DUK regula R40).")
             if not _int_in(v.get("per_venit"), _PER_VENIT):

@@ -264,7 +264,9 @@ def test_pct8_necunoasterile_dinaintea_preluarii_trec_la_grupul_lor():
               {"tip": "d390", "motiv": "neclar acum", "domeniu_de": "2026-09", "domeniu_pana": "2026-09"},
               {"tip": "d205", "motiv": "fără domeniu"}]
     ramase, inainte = cf.separa_neclar_inainte_de_preluare(neclar, (2026, 9))
-    assert [x["tip"] for x in ramase] == ["d390", "d205"] and [(x["tip"], x["an"]) for x in inainte] == [("d100", 2025)]
+    # [Retest 2 pct.10, 09.10.2026] domeniul se desface în perioadele declarației: D100 trimestrial -> T1–T4/2025, câte un rând
+    assert [x["tip"] for x in ramase] == ["d390", "d205"]
+    assert [(x["tip"], x["an"], x["perioada"]) for x in inainte] == [("d100", 2025, "T%d/2025" % t) for t in (1, 2, 3, 4)]
     assert inainte[0]["motiv"].startswith("Perioadă dinaintea preluării în iConta.eu (09/2026)")
     assert cf.separa_neclar_inainte_de_preluare(neclar, None) == (neclar, [])
 
@@ -518,7 +520,7 @@ def test_pct18_pdf_balanta_are_cui_si_data(lume):
     from core import documente_api as d
     lume()
     assert d.antet_raport("RETEST SRL", "RO14399840", datetime.datetime(2026, 10, 8, 21, 5)) == \
-        "RETEST SRL · CUI RO14399840 — Generată la 08.10.2026 21:05"
+        "RETEST SRL · Cod TVA RO14399840 — Generată la 08.10.2026 21:05"   # [Retest 2 pct.16] eticheta ca pe factură
     with _db.get_conn() as c:
         with c.cursor() as cur:
             cur.execute("SET search_path TO %s, public" % SCH)
@@ -526,7 +528,7 @@ def test_pct18_pdf_balanta_are_cui_si_data(lume):
         c.rollback()
     import re
     text = "".join(p.extract_text() for p in pypdf.PdfReader(_io.BytesIO(pdf)).pages)
-    m = re.search(r"^(.+) · CUI (\S+) — Generată la (\d{2}\.\d{2}\.\d{4} \d{2}:\d{2})$", text, re.M)
+    m = re.search(r"^(.+) · Cod TVA (\S+) — Generată la (\d{2}\.\d{2}\.\d{4} \d{2}:\d{2})$", text, re.M)   # [Retest 2 pct.16]
     assert m and m.group(1, 2) == ("RETEST SRL", "RO14399840"), text[:300]
 
 

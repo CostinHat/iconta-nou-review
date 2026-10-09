@@ -47,7 +47,7 @@ export const STRATURI = [
   { cheie:"istoric_declaratii", actiune:"POST /tenants/{tenant_id}/istoric-declaratii-import", nr:8, titlu:"Istoric declarații", desc:"Ce s-a depus deja anul curent (ca să nu apară fals restanță)",
     ...CULORI_CARD.ardezie, construit:true,
     icon:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/>' },
-  { cheie:"plan_conturi", actiune:"POST /tenants/{tenant_id}/plan-conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice/nestandard, per firmă",
+  { cheie:"plan_conturi", actiune:"POST /tenants/{tenant_id}/plan-conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice sau nestandard, pentru firma aleasă",
     ...CULORI_CARD.violet, construit:true,
     icon:'<path d="M4 6h16M4 12h16M4 18h7"/>' },
 ];
@@ -676,7 +676,7 @@ const MODELE = {
   retete: { fisier: "model_retete.csv", antet: "reteta,pret vanzare,ingredient,cantitate",
     randuri: ["Ciorba de burta,25,Burta de vita,0.15", "Ciorba de burta,25,Smantana,0.05", "Salata de boeuf,18,Cartofi,0.20"] },
   rip: { fisier: "model_rip.csv", antet: "data,tip,explicatie,suma,categorie,metoda",
-    randuri: ["2026-01-10,incasare,Factura 1001 client,1500,venituri,banca", "2026-01-15,plata,Chirie spatiu ianuarie,600,cheltuieli,numerar"] },
+    randuri: ["2026-01-10,incasare,Factura 1001 client,1500,venituri,banca", "2026-01-15,plata,Chirie spațiu ianuarie,600,cheltuieli,numerar"] },
 };
 function _descarcaModelCSV(spec) {
   const continut = "\ufeff" + [spec.antet, ...spec.randuri].join("\r\n") + "\r\n";  // BOM: Excel citeste UTF-8
@@ -1649,7 +1649,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Asocia\u021bi", desc: "Nume, cot\u0103 % (D205)", strat: "asociati", fn: (c, n) => importAsociatiFirma(c, n, firma) },
     { titlu: "Mijloace fixe", desc: "Registru amortizare", strat: "mijloace_fixe", fn: (c, n) => importMijloaceFirma(c, n, firma) },
     { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", strat: "istoric_declaratii", fn: (c, n) => importIstoricFirma(c, n, firma) },
-    { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", strat: "plan_conturi", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
+    { titlu: "Plan de conturi", desc: "Conturi analitice sau nestandard", strat: "plan_conturi", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", actiune: "POST /tenants/{tenant_id}/articole-import", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", actiune: "POST /tenants/{tenant_id}/retete-import", fn: (c, n) => importReteteFirma(c, n, firma) },
   ];

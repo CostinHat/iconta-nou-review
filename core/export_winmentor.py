@@ -81,8 +81,8 @@ def encode_1250(text, unde=""):
         return t.encode("cp1250")
     except UnicodeEncodeError as e:
         ch = t[e.start:e.end]
-        raise ValueError("Caracter neencodabil in Windows-1250 (%r) la %s: %r. "
-                         "WinMentor ar respinge fisierul - corecteaza textul." % (ch, unde or "text", t[:60]))
+        raise ValueError("Caracter neencodabil în Windows-1250 (%r) la %s: %r. "
+                         "WinMentor ar respinge fișierul - corectează textul." % (ch, unde or "text", t[:60]))
 
 
 def cod_articol(descriere):
@@ -104,7 +104,7 @@ def _linii_valorizate(linii):
         pret = Decimal(str(l.get("pret_unitar") or 0))
         _ct = l.get("cota_tva")
         if _ct is None:
-            raise ValueError("linie fara cota TVA (%r): nu se poate exporta (WinMentor) - 0 (scutit) e "
+            raise ValueError("linie fără cota TVA (%r): nu se poate exporta (WinMentor) - 0 (scutit) e "
                              "valoare valida, absenta nu se ghiceste" % (l.get("descriere") or "",))
         cota = Decimal(str(_ct))
         tva = _q(cant * pret * cota / Decimal(100))

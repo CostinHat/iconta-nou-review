@@ -40,7 +40,7 @@ ALTER TABLE "{s}".efactura_primite ADD COLUMN IF NOT EXISTS cont_cheltuiala TEXT
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

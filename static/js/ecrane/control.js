@@ -4,7 +4,7 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=4242dc4353";  /* esc_nc27 */
-import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=86b39e444e";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=a0acfd801a";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -29,6 +29,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${k.neconcordante || 0} cu neconcordanțe contabile</span>
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.gri.dot}"></span>${k.nu_se_pot_verifica || 0} nu se pot verifica</span>
     </div>
+    <p class="ecran-nota">Din ${firme.length} ${firme.length === 1 ? "firmă" : "firme"}. Fiecare contor numără firmele care au faptul acela; o firmă cu mai multe apare în fiecare.</p>
     <div class="mig-lista" id="cf-lista"></div>
   `;
 

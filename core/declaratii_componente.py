@@ -29,6 +29,31 @@ import dataclasses
 import datetime
 import decimal
 
+from core.d101_randuri import rand_d101 as _rand_d101
+from core.d300_randuri import rand_formular as _rand_d300
+
+
+def _chei_d394(parti):
+    """(tip, tip partener, cotă, CUI, denumire) cu tipul și tipul partenerului în cuvinte, cota cu „%”. [Retest 2 pct.2]"""
+    from core.d394 import ETICHETE_TIP, ETICHETE_TIP_PARTENER
+    tip, tp, cota, *_ = list(parti) + [None, None, None]
+    return [ETICHETE_TIP.get(tip, tip), ETICHETE_TIP_PARTENER.get(tp, tp), "%s%%" % cota if cota is not None else None]
+
+
+def _tip_d390(tip):
+    from core.d390 import ETICHETE_TIP
+    return ETICHETE_TIP.get(tip, tip)
+
+
+def _serie_d394(tip):
+    from core.d394 import ETICHETE_TIP_SERIE
+    return ETICHETE_TIP_SERIE.get(tip, tip)
+
+
+def _jurnal_om(jid):
+    from core.d406 import ETICHETE_JURNAL   # leneș: harta de componente nu trage motorul D406 la import
+    return ETICHETE_JURNAL.get(jid, jid)
+
 # Peste atâtea rânduri o secțiune se taie — D406 poartă tot registrul-jurnal al lunii, iar un
 # răspuns de zeci de mii de rânduri nu e o compoziție, e o descărcare. Tăierea se DECLARĂ.
 LIMITA_RANDURI = 500
@@ -46,8 +71,14 @@ class Sectiune:
     """
 
     def __init__(self, nume, atribut, chei=(), valori=(), fara_zero=False, monetare=(),
-                 proprietati=(), element=None, ascunse=()):
+                 proprietati=(), element=None, ascunse=(), cheie_om=None, formate=None, chei_om=None):
         self.nume = nume
+        # [Retest 2 pct.2] cheia unui dicționar de rânduri e atributul XML („R17_2”, „P081”); pe ecran pleacă rândul formularului
+        # („rândul 19, coloana TVA”, „rândul 8.1”) — funcția vine din modulul de rânduri al declarației, sursa unică
+        self.cheie_om = cheie_om
+        self.chei_om = chei_om   # ca `cheie_om`, pe toate părțile unei chei-tuplu: (parti) -> [valori pentru om]
+        # [Retest 2 pct.14] valoarea unui câmp care e un cod al fișierului („FACTURI”) pleacă în cuvântul contabilului
+        self.formate = dict(formate or {})
         self.atribut = atribut
         # [08.10.2026, retest pct.5 + pct.14] Rândurile unei secțiuni-listă plecau cu NUMELE CÂMPURILOR din cod („partener_id”,
         # „self_billing”, „nume1”) ca antete de tabel. `element` = numele dataclass-ului rândului (în modulul motorului), ca gardul să-i
@@ -107,17 +138,17 @@ COMPONENTE = {
     "d301": (Sectiune("Operațiuni", "operatiuni", monetare=("val_valuta", "baza", "tva"), element="Operatiune"),),
     "d300": (Sectiune("Rânduri completate", "R",
                       chei=("rând",), valori=("valoare",), fara_zero=True,
-                      monetare=("valoare",)),),
-    "d101": (Sectiune("Poziții completate", "P",
-                      chei=("poziție",), valori=("valoare",), fara_zero=True,
-                      monetare=("valoare",)),),
+                      monetare=("valoare",), cheie_om=_rand_d300),),
+    "d101": (Sectiune("Rânduri completate", "P",
+                      chei=("rând",), valori=("valoare",), fara_zero=True,
+                      monetare=("valoare",), cheie_om=_rand_d101),),
     "d390": (Sectiune("Operațiuni intracomunitare", "ops",
                       chei=("tip", "țară", "cod partener", "denumire partener"),
-                      valori=("bază",), monetare=("bază",)),),
+                      valori=("bază",), monetare=("bază",), cheie_om=_tip_d390),),
     "d394": (Sectiune("Operațiuni pe partener și cotă", "op1",
                       chei=("tip", "tip partener", "cotă", "CUI partener", "denumire partener"),
-                      valori=("număr facturi", "bază", "TVA"), monetare=("bază", "TVA")),
-             Sectiune("Serii de facturi declarate", "serii", element=("tip", "serieI", "nrI", "nrF")),),
+                      valori=("număr facturi", "bază", "TVA"), monetare=("bază", "TVA"), chei_om=_chei_d394),
+             Sectiune("Serii de facturi declarate", "serii", element=("tip", "serieI", "nrI", "nrF"), formate={"tip": _serie_d394}),),
     # D406 poarta structuri de SAF-T pe care nu le-am confruntat camp cu camp; coloanele monetare
     # nu se declara din presupunere - se lasa nemarcate, si se spune aici de ce.
     # [R105, 30.08.2026] D112 a intrat aici in ziua in care motorul ei a capatat obiect de rezultat.
@@ -127,7 +158,7 @@ COMPONENTE = {
              Sectiune("Contribuțiile asiguraților", "asigurati",
                       monetare=("brut", "baza_cas", "cas", "cass", "impozit"), element="AsiguratD112")),
     # liniile notelor și ale facturilor pleacă normalizate la {cont, debit, credit} (`_linie`), indiferent de forma lor în motor
-    "d406": (Sectiune("Note contabile", "note", element="Nota"),
+    "d406": (Sectiune("Note contabile", "note", element="Nota", formate={"jurnal": _jurnal_om}),
              Sectiune("Facturi de vânzare", "facturi_vanzare", element="Factura", ascunse=("partener_id", "self_billing", "tip")),
              Sectiune("Facturi de cumpărare", "facturi_cumparare", element="Factura",
                       ascunse=("partener_id", "self_billing", "tip")),),
@@ -196,6 +227,11 @@ def _rand_din_dict(cheie, valoare, sec):
     parti = cheie if isinstance(cheie, tuple) else (cheie,)
     for i, nume in enumerate(sec.chei):
         rand[nume] = _simplu(parti[i]) if i < len(parti) else None
+    if sec.cheie_om and sec.chei:
+        rand[sec.chei[0]] = sec.cheie_om(parti[0])
+    if sec.chei_om:
+        for nume, v in zip(sec.chei, sec.chei_om(parti)):
+            rand[nume] = v
     vparti = valoare if isinstance(valoare, (list, tuple)) else (valoare,)
     for i, nume in enumerate(sec.valori):
         rand[nume] = _simplu(vparti[i]) if i < len(vparti) else None
@@ -213,7 +249,13 @@ def _randuri(res, sec):
                        if any(v not in (0, 0.0, None, "") for n, v in r.items()
                               if n in sec.valori)]
         return randuri
-    return [_rand_din_lista(e, sec.proprietati, sec.ascunse) for e in sursa]
+    randuri = [_rand_din_lista(e, sec.proprietati, sec.ascunse) for e in sursa]
+    for camp, f in sec.formate.items():
+        et = ETICHETE.get(camp, camp)
+        for r in randuri:
+            if et in r and r[et] is not None:
+                r[et] = f(r[et])
+    return randuri
 
 
 # Nomenclator INCHIS al acoperirii. E STRUCTURA, nu text: raspunsul rutei poarta unul din cele trei

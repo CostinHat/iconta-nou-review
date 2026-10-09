@@ -116,8 +116,8 @@ def test_ANTI_MORT_venit_scapat_de_generator_prin_rollback_ridica(conn_recon):
     with pytest.raises(ReconciliereD100) as ei:
         verifica_reconciliere(conn_recon, Perioada(2026, trim=3), res)
     msg = str(ei.value)
-    assert "generator=30 vs cale2=80" in msg, msg
-    assert "cod 121" in msg, msg
+    assert "în declarație 30,00 lei, recalculat 80,00 lei" in msg, msg
+    assert "codul 121" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -131,7 +131,7 @@ def test_ANTI_MORT_suma_dat_corupta_ridica(conn_recon):
     res.obligatii[0].suma_dat = 9999             # mutatie: obligatie gonflata fata de sursa
     with pytest.raises(ReconciliereD100) as ei:
         verifica_reconciliere(conn_recon, Perioada(2026, trim=3), res)
-    assert "generator=9999 vs cale2=30" in str(ei.value), str(ei.value)
+    assert "în declarație 9.999,00 lei, recalculat 30,00 lei" in str(ei.value), str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

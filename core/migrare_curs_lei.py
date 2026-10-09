@@ -26,7 +26,7 @@ from core import db
 def aplica(conn, schema):
     """Backfill pe o schema. Intoarce (ron_completate, valuta_ramase_nule)."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         # RON fara lei -> curs 1, lei = valoarea. `moneda` NULL istoric = RON (default coloanei).
         cur.execute(

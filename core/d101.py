@@ -65,7 +65,7 @@ def datoreaza_imca(vt, vs, curs_eur):
     depaseste 50.000.000 euro, la cursul de la inchiderea exercitiului financiar. TEMEI: CF art.18^1 alin.(1)."""
     c = Decimal(str(curs_eur))
     if c <= 0:
-        raise ValueError("curs_eur invalid (trebuie > 0)")
+        raise ValueError("cursul euro trebuie să fie mai mare decât zero")
     cifra_afaceri_lei = Decimal(str(vt)) - Decimal(str(vs))
     return (cifra_afaceri_lei / c) > PRAG_IMCA_EUR
 
@@ -180,7 +180,7 @@ def _erori_valori_p(g, P, cifra_afaceri=None):
     for parinte, copii in _SUBTOTAL_D101.items():
         suma = sum(g(c) for c in copii)
         if g(parinte) < suma:
-            erori.append("D101: %s = %d < suma sub-randurilor %s = %d (DUK regula %s>=%s)." % (
+            erori.append("D101: %s = %d < suma sub-rândurilor %s = %d (DUK regula %s>=%s)." % (
                 parinte, g(parinte), "+".join(copii), suma, parinte, "+".join(copii)))
     P41, P42, P43 = P["P41"], P["P42"], P["P43"]
     P422, P423 = P["P422"], P["P423"]
@@ -267,7 +267,7 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
         raise ValueError("D101 intrări necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
     cod_obligatie = str(cod_obligatie)
     if cod_obligatie not in _COD_OBLIGATIE_D101:
-        raise ValueError("D101: cod_obligatie invalid (%s): permise %s (DUK regula cod_obligatie=(102,103,104,105)). "
+        raise ValueError("D101: tipul de impozit pe profit (%s) nu e acceptat de validatorul ANAF; tipurile acceptate: %s. "
                          "Corectează tipul de impozit pe profit." % (cod_obligatie, sorted(_COD_OBLIGATIE_D101)))
     cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
     g = lambda k: _i(I.get(k, 0))
@@ -515,9 +515,10 @@ def genereaza(conn, schema, perioada, manual=None):
     profit_art18 = manual.pop("profit_art18", None)   # [3f] profit impozabil aferent activitatilor art.18 (5% la P412) -> se scade din baza de 16%
     if ca_prec not in (None, "") and Decimal(str(ca_prec)) > PRAG_IMCA_EUR and "P47" not in manual:
         raise ValueError(
-            "D101 IMCA (art.18^1 alin.1): cifra de afaceri an precedent %s EUR > 50.000.000 -> IMCA "
-            "datorată, dar P47 (=cota IMCA × (VT-Vs-I-A); 0,5%% în 2026, 1%% până în 2025) nu e furnizat. Declara P47 în date_extra (VT/Vs/I/A "
-            "nu se derivă automat din balanță) sau folosește calcul_d101(imca=...)." % ca_prec)
+            "D101, impozitul minim pe cifra de afaceri (IMCA, art.18^1 alin.(1)): cifra de afaceri din anul precedent, %s EUR, "
+            "depășește 50.000.000 EUR, deci IMCA e datorat, dar rândul 47 (cota IMCA × (VT-Vs-I-A); 0,5%% în 2026, 1%% până în "
+            "2025) nu e completat. Completează rândul 47 în datele suplimentare ale declarației: VT, Vs, I și A nu se "
+            "calculează automat din balanță." % ca_prec)
     prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:

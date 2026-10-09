@@ -24,6 +24,6 @@ def achizitie_de_la_agricultor(valoare, in_registru, procent=8):
     """Achizitie de la agricultor cu regim special. Compensatia e deductibila
     (alin. 17) doar daca agricultorul e in Registrul ANAF la data livrarii."""
     if not in_registru:
-        raise ValueError("agricultor neinscris in Registrul agricultorilor la data "
-                         "livrarii - compensatia NU este deductibila (art. 315^1 al. 17, norme)")
+        raise ValueError("agricultor neînscris în Registrul agricultorilor la data "
+                         "livrării - compensația nu este deductibilă (art. 315^1 alin.(17), norme)")
     return compensatie(valoare, procent)

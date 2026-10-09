@@ -42,5 +42,5 @@ def test_refacturare_totala():
     assert r["primire"] == [("461", "401", Decimal("1210.00"))]
 
 def test_invalid():
-    with pytest.raises(ValueError, match="refacturata"):
+    with pytest.raises(ValueError, match="refacturată"):
         m.nota_refacturare(1000, 1500, cota_tva=21)

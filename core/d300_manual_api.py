@@ -50,7 +50,7 @@ ETICHETE = {
     # --- COLECTATĂ ---
     "R1": "Livrări intracomunitare de bunuri, scutite conform art. 294 alin. (2) lit. a) și d) din Codul fiscal",
     "R2": "Regularizări livrări intracomunitare scutite conform art. 294 alin. (2) lit. a) și d) din Codul fiscal",
-    "R3": "Livrări de bunuri sau prestări de servicii pentru care locul livrării/prestării este în afară României, precum și livrări intracomunitare de bunuri scutite conform art. 294 alin. (2) lit. b) și c) din Codul fiscal",
+    "R3": "Livrări de bunuri sau prestări de servicii pentru care locul livrării/prestării este în afara României, precum și livrări intracomunitare de bunuri scutite conform art. 294 alin. (2) lit. b) și c) din Codul fiscal",
     "R4": "Regularizări privind prestările de servicii intracomunitare care nu beneficiază de scutire în statul membru în care taxa este datorată",
     "R5": "Achiziții intracomunitare de bunuri pentru care cumpărătorul este obligat la plată TVA (taxare inversă)",
     "R6": "Regularizări privind achizițiile intracomunitare de bunuri pentru care cumpărătorul este obligat la plată TVA (taxare inversă)",

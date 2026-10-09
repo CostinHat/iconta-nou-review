@@ -1924,3 +1924,25 @@ Comanda Costin (verbatim în DECIZII), 24 de puncte, 17 operații date înainte 
   felul, documentul, ce stinge și partenerul; „Luna preluării” vine completată cu propunerea.
 - **C&D** (pct.21): proba pe asistent fără «Poate valida» — buton inactiv, API 403, nimic scris.
 - **Rămas, decizie cerută:** descrierea notei 118 F1 (validată) — se păstrează sau se rescrie.
+
+## 09.10.2026 — „Retest 2”: retestul în aplicație al lotului „Retest 08.10” (20 de puncte, un lot, o poartă)
+
+Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; un commit, registrele în el.
+- **Limba ecranelor, judecată pe ecran** (pct.2): instrument nou care citește textul afișat în browser (160+ ecrane: cardurile celor
+  patru firme de test, desktopul cabinetului, D300/D390/D394/D406 generate) și îl judecă (cod, diacritice dintr-un lexicon derivat din
+  corpusul legislativ, majuscule, sume, date, perioade, acord, prescurtări, jargon); tot ce a prins, rescris. Gardul de sursă vede și
+  mesajele excepțiilor, șabloanele și „LipsĂ”. Rândurile D300/D101 se numesc cu rândul formularului (D300 numea greșit rândurile ≥ 17);
+  diferențele porților de reconciliere în cuvinte; notele 121/122 rescrise și retrimise la validare.
+- **Control fiscal** (pct.1, 3, 9, 10): „Înainte de preluare” rămâne deschis și pe rândul atins; contoarele pe o regulă; F3 neplătitor:
+  „nu se aplică” la D300 / D390 față de D300, restanțele D390 numai pe lunile cu operațiuni; termen și perioadă pe rândurile dinaintea
+  preluării. Pe drum: verificarea TVA la trimestrial genera decontul pe luna din mijloc (R18) — acum pe decontul trimestrului.
+- **Casă** (pct.4): o operațiune cu notă validată nu se mai șterge — se stornează (operațiune inversă + notă ciornă în roșu).
+- **Mijloace fixe / Registru jurnal / Note de validat** (pct.5–7): amortizarea până la ultima lună încheiată; totalurile pe validat,
+  ciornele separat; rulajul notei în loc de „total 0,00”.
+- **Închidere lună / ciorne / plan de conturi** (pct.11–13): declarația nedepusă cu termen în lună = semnal; „Notele tale în ciornă” în
+  „De validat”; ecranul „Plan de conturi” (căutare, analitice sub sintetic, adăugare, contul folosit nu se șterge).
+- **Formate și surse** (pct.14–16): date românești în D406 / Casă / Bancă, jurnalele D406 în cuvinte, perioadele în trei forme,
+  confirmările scurte, „1 partener”; D394: o factură cu două cote se numără o dată la cota cu TVA-ul mai mare (OPANAF 2194/2025 pct.5) —
+  ecranul o spune; antetul PDF: „Cod TVA RO…” la plătitor.
+- **Rămas, decizie cerută:** pct.8 (nereprodus pe cabinetul de test); cele două întrebări ale lotului trecut (nota 118, mesajele
+  generatoarelor manuale).

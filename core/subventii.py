@@ -43,7 +43,7 @@ def reluare_lunara_investitii(valoare_activ, subventie, amortizare_lunara):
     """4751 = 7584 proportional: amortizare x (subventie / valoare activ)."""
     va, sb, am = _d(valoare_activ), _d(subventie), _d(amortizare_lunara)
     if va <= 0 or sb <= 0 or am <= 0 or sb > va:
-        raise ValueError("valori invalide (subventia nu poate depasi valoarea)")
+        raise ValueError("valori invalide (subvenția nu poate depăși valoarea)")
     cota = (am * sb / va).quantize(B, rounding=ROUND_HALF_UP)
     return {"linii": [("4751", "7584", cota)], "reluare": cota,
             "procent_subventionat": str((sb / va * 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))}

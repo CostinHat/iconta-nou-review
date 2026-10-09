@@ -12,7 +12,7 @@ def consum_pe_portii(linii, portii):
     ValueError daca portii <= 0."""
     p = _d(portii)
     if p <= 0:
-        raise ValueError("numar de portii invalid")
+        raise ValueError("număr de porții invalid")
     rez = []
     total = Decimal("0")
     for l in linii:

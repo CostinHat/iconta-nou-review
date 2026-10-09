@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.84 · 8 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.85 · 9 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -95,6 +95,26 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Toate sumele afișate se trec prin `bani(v)` din api.js** (v2.1). SINGURUL formator monetar. Produce format românesc (1.234,56). INTERZIS `toFixed(2)` pe sume afișate (dă `1234.56`, nepotrivit), formatări locale sau concatenare brută. Excepții permise: `value` de `<input type="number">` și payload trimis la backend (acolo se cere punct zecimal). Moneda (`lei`/`RON`) se afișează când suma stă izolat sau unitatea nu e evidentă (total factură, fluturaș, indemnizație, sold); se omite în liste/tabele dense unde contextul o face redundantă (cost/porție, coloane cu antet monetar). `bani()` e mereu obligatoriu; moneda e contextuală. INTERZISE funcții locale de format monetar (`const fmt = …toLocaleString`) — dialect care produce formate divergente (0 vs 2 zecimale). Procentele NU folosesc `bani()` (ar da `19,00%`); pentru ele funcție separată (`pct`) sau `%` simplu. Pentru cifre de ansamblu rotunjite la leu (cockpit cabinet, cifrele firmei pe portalul client) → `baniRotund(v)` canonic (0 zecimale), NU dialect local. Orice `const X = …toLocaleString("ro-RO")` local (sub orice nume, nu doar `fmt`) e INTERZIS și prins de FMT_LOCAL. Cantități fără zecimale inutile. Procente compacte (11%).
 - **BACKEND (Python) — text destinat utilizatorului: aceeași regulă, alt limbaj** (v2.15, 22.07.2026). Orice sumă sau dată construită în backend care ajunge la utilizator (câmpurile `mesaj` / `temei` / `cauza` / `motiv` / `avert` / `descriere` / `actiune`, mesaje de eroare afișate, corp/subiect de email, text pe PDF) se formatează prin sursele canonice **`pdf_util.bani(x, mon)`** (sume, 1.234,56) și **`pdf_util.data_ro(d, stil)`** (date — oglinda Python a lui `dataRo`; stiluri `scurt`/`cu_ora`/`lung`/`zi_luna`). INTERZIS `f"{x} lei"` / `%d lei` brut, `str(sold)`, `strftime("%d.%m…")` local pentru afișare. Motiv: gărzile JS nu văd backendul — o sumă „40800.00 lei" sau o dată ISO brută trimisă din Python scapă complet controlului (dovedit F183, 22.07). Regula **BACKEND_UI_BRUT** în verificator (scanează `.py`). EXCEPTAT (nu e afișare): XML/SAF-T (ISO cerut de spec — etransport, D406), exporturi cu format al destinației (WinMentor), câmpuri de dată ISO în JSON API (formatate client-side prin `dataRo`), log-uri/print, valori unitare `:g` intenționate. Șabloanele `.format()` din `common.CODURI` se formatează CENTRAL în `common.problema()` (bani pe câmpurile din `MONEDA_CAMP`) — orice câmp monetar nou dintr-un șablon se adaugă acolo.
 - Etichetă și valoare pe același rând se separă clar (flex space-between + gap).
+- **Perioadele au TREI forme, una pe fel (v2.85, 09.10.2026, lotul „Retest 2” pct.14):** luna `LL/AAAA` (`07/2026`), trimestrul
+  `T3/2026`, anul `2026`. În backend: `control_fiscal_api.perioada_canonica(an, luna, fel)`; în ecran: `dataRo(…, "luna_an_numeric")`
+  și `T${trim}/${an}`. INTERZISE pe ecran „03.2026”, „iun 2026”, „T3 2026” / „T3” fără an. Textul narativ poate spune „iulie 2026”
+  (`luna_an`), nu o formă a treia.
+- **Textul de pe ecran se judecă pe ECRAN, nu în sursă (v2.85, Retest 2 pct.2)** — `core/limba_ecran.py` + `core/test_text_ecran.py`.
+  Decizia Costin: „verificarea se face pe ecranul afișat, cu valorile din date și din enumerări, nu pe șirurile din codul sursă”.
+  `core/limba_ecran.py` judecă textul citit din
+  browser (`frontend_test/vizual/text_ecran_scan.py`, toate cardurile firmelor de test, desktopul cabinetului și declarațiile
+  generate): cod (`nume_cu_underscore`, `modul.atribut`, `x=1`, `->`, proveniența internă — „decizia Costin”), diacritice (lexiconul
+  derivat din corpusul legislativ, `core/lexicon_diacritice.json`, și „în afară” urmat de substantiv), majuscule de accent, sumă cu
+  punct zecimal, dată ISO, perioadă în altă formă decât cele trei, acord („1 parteneri” — `common.cate`), prescurtări de programator
+  („fact.vânz”), jargon („persistat”, „amprenta”). Artefactul `frontend_test/vizual/text_ecran.json` (cu `ui_hash`) e păzit de
+  `core/test_text_ecran.py`. Gardul de sursă (`core/test_text_afisat_limbaj.py`) rămâne prima plasă și citește și mesajele
+  excepțiilor de domeniu (`raise ValueError("…")` ajunge pe ecran ca refuz); un `raise` care nu ajunge la contabil (argumentul
+  greșit al unui apelant, un registru din cod) poartă `# invariant-intern-ok: <motiv>`, cu plafon.
+- **Un rând de declarație se numește pe ecran cu RÂNDUL FORMULARULUI, nu cu atributul XML (v2.85).** D300: `d300_randuri.
+  rand_formular("R17_2")` → „rândul 19, coloana TVA” (formularul OPANAF 174/2026 a renumerotat de la rd.17, atributele XML nu);
+  D101: `d101_randuri.rand_d101("P081")` → „rândul 8.1”. Gărzi: `core/test_d300_rand_formular.py`, `core/test_d101_rand_formular.py`
+  (citesc formularul din `anaf_surse/`). Diferențele porților de reconciliere se scriu prin `pdf_util.diferenta` („în declarație
+  9.999,00 lei, recalculat 1.500,00 lei (diferență 8.499,00 lei)”), nu „generator=9999 vs cale2=1500”.
 
 ## 5. Casete de atenționare, confirmări și INPUT
 
@@ -283,6 +303,14 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Regim per concept: partidă dublă (`dubla`) = jurnal, balanță, bilanț, operațiuni speciale, stocuri (371/607), centre de cost. Partidă simplă (`simpla`) = RIP. Restul = `ambele` (declarații — un PFA datorează D112/D300/…, excluderea fină D100/D101/D406 o face `neaplicabile_forma` în ecran, nu ascunderea cardului; Casă — plafon Legea 70/2015 se aplică PFA). Un card care e „ambele" dar conține operațiuni de un singur regim se filtrează FIN în interior, NU se ascunde (ex. Casă: contarea 5311 e partidă dublă, plafonul e pentru toți).
 
 - **Grupuri în fereastra firmei (v2.71, 05.10.2026, comanda Costin).** Gard `GRUP_FIRMA`. Cardurile stau sub titluri de grup care urmează munca contabilului — Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma — dintr-o SINGURĂ sursă: `GRUPURI_FIRMA` (firme.js) dă cheile, titlurile și ordinea; fiecare card declară `grup` imediat după `regim`. Titlul grupului e `.pf-subtitlu` (h3), cardurile rămân în `.firme-optiuni`; `.firme-grup` e doar cârlig de structură. Un titlu fără niciun card vizibil (regim SRL/PFA) nu apare. Fără arbore în fereastra firmei: un singur nivel, titlu + carduri.
+
+- **Planul de conturi (v2.85, 09.10.2026, decizia Costin la „Retest 2” pct.13).** Card „Plan de conturi”, `regim: "dubla"`, grupul
+  Firma. Ecranul urmează tiparul registrelor: o căutare după cont sau denumire; analiticele afișate sub contul lor sintetic (sinteticul
+  apare când se potrivește el sau unul din analiticele lui); adăugarea unui analitic de către contabil (formularul de sus, sau „Adaugă
+  analitic” pe rândul sinteticului, care precompletează `4111.`); ștergerea refuzată pe server pentru un cont folosit în note (și
+  pentru un sintetic cu analitice), iar pe ecran butonul „Șterge” nici nu apare pe un cont folosit. Verbatim: „listă cu căutare după
+  cont sau denumire, analiticele afișate sub contul sintetic, adăugare de analitic de către contabil, iar un cont folosit în note nu se
+  poate șterge”. Gard: `core/test_retest2.py` (refuzul pe server, gruparea sub sintetic).
 
 ## 19. Consistența versiunii de modul la import — o singură instanță
 
@@ -773,6 +801,10 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.85 (09.10.2026)** — lotul „Retest 2”: **cap.4** — perioadele în trei forme (`LL/AAAA`, `T3/2026`, `2026`); textul de pe ecran
+judecat pe ecran (`core/limba_ecran.py` + `text_ecran_scan.py`, artefact păzit de `core/test_text_ecran.py`); rândul de declarație
+numit cu rândul formularului (D300, D101), diferențele de reconciliere prin `pdf_util.diferenta`; marcajul `# invariant-intern-ok:`
+pentru excepțiile care nu ajung la contabil. **cap.18** — ecranul „Plan de conturi” (decizia Costin O12).
 **v2.84 (08.10.2026)** — lotul „Retest 08.10”: **cap.9** — în fereastra largă (corp = coloană flex) niciun copil direct nu se strânge
 sub conținutul lui; se strâng (și derulează ele) numai zonele declarate (`.mig-sold-tabel`, `.rap-split`, `.pac-text`); `.dec-xml` nu
 mai crește și nu mai e strivit (D406/D394: tabelul „Din ce e făcută” curgea peste „Vezi XML-ul generat”, subsol și „Trimite în coadă”;

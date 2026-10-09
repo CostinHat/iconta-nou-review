@@ -111,7 +111,7 @@ def sarbatori_legale(an):
     duminică, +50 luni). EȘUEAZĂ ZGOMOTOS in afara [2024, 2099] — un an neacoperit trebuie
     sa dea eroare vizibila, nu rezultat gresit TACUT (cazul 2025)."""
     if not (_AN_MIN <= an <= _AN_MAX):
-        raise ValueError("sarbatori_legale: an %d neacoperit (valabil %d-%d). Extinde explicit."
+        raise ValueError("sarbatori_legale: an %d neacoperit (valabil %d-%d). Extinde explicit."  # invariant-intern-ok: tabelul de sărbători din cod
                          % (an, _AN_MIN, _AN_MAX))
     if an not in _cache_sarb:
         p = paste_ortodox(an)
@@ -199,7 +199,7 @@ def _data_nominala(tip, an, luna=None, trim=None):
     elif luna is not None:
         an_s, luna_s = _luna_urmatoare(an, luna)
     else:
-        raise ValueError("scadenta: lipsește luna sau trim pentru %r" % tip)
+        raise ValueError("scadență: lipsește luna sau trim pentru %r" % tip)
 
     if tip in _ULTIMA_ZI:
         zi = _ultima_zi_luna(an_s, luna_s)

@@ -159,8 +159,8 @@ def calcul_d100(prof, an, luna, obligatii):
         cod = str(o["cod_oblig"])
         cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
         if not cod_bug:
-            raise ValueError("D100: cod_oblig %r fără cont bugetar (nu e în nomenclatorul COD_BUGETAR); "
-                             "atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit." % cod)
+            raise ValueError("D100: obligația cu codul %r nu are cont bugetar în nomenclatorul aplicației, iar ANAF cere "
+                             "contul bugetar pe fiecare obligație; declarația nu se generează fără el." % cod)
         zi_s, luna_s, an_s = _scadenta_cod(cod, an, luna)
         # scadenta manuala (override): nr_evid EMBEDA scadenta (poz.12-17), verificata de DUK regula R16
         # fata de atributul scadenta - deci nr_evid TREBUIE derivat din ACEEASI data, nu din cea calculata
@@ -292,10 +292,10 @@ def build_xml(res):
         # - face imposibil un XML respins de validator (121 fara cota / cota pe alt cod).
         if str(o.cod_oblig) == "121":
             if str(o.cota) != "1":
-                raise ValueError("D100: cod_oblig 121 (micro) CERE cota=1 (are %r) - validator ERR cota micro." % (o.cota,))
+                raise ValueError("D100: la impozitul pe veniturile microîntreprinderilor (codul 121) cota se completează cu 1 (este %r); altfel validatorul ANAF respinge declarația." % (o.cota,))
             linie += ' cota=%s' % _esc(o.cota)
         elif o.cota:
-            raise ValueError("D100: cota se completează NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
+            raise ValueError("D100: cota se completează numai la impozitul pe veniturile microîntreprinderilor (codul 121); obligația cu codul %r are cota %r." % (o.cod_oblig, o.cota))
         linie += "/>"
         H.append(linie)
     H.append("</declaratie100>")

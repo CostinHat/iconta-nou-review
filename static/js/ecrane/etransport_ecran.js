@@ -51,7 +51,7 @@ export async function ecranEtransport(corp, nav, t) {
       ${sel(p + "-judet", "Județ *", JUDETE.map((j) => [j, j]))}
       ${inp(p + "-localitate", "Localitate *")}
       ${inp(p + "-strada", "Strada *")}
-      ${inp(p + "-numar", "Numar")}
+      ${inp(p + "-numar", "Număr")}
     </div>`;
 
   // un rand se randeaza DIN MODEL (bunuri[i]); id-urile = pozitia i (cap.24 regula 2). Fiecare rand are stergere.
@@ -150,7 +150,7 @@ export async function ecranEtransport(corp, nav, t) {
         <div class="pf-frand-nume" style="margin:12px 0 6px">Transport</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           ${inp("t-nr_vehicul", "Nr. vehicul *", "text", "", 'placeholder="B123ABC"')}
-          ${inp("t-nr_remorca1", "Nr. remorca")}
+          ${inp("t-nr_remorca1", "Nr. remorcă")}
           ${inp("t-cod_tara_org", "Tara transportator *", "text", "RO")}
           ${inp("t-cod_org", "CUI transportator *")}
           ${inp("t-denumire_org", "Denumire transportator *")}

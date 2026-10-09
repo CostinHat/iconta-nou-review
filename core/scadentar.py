@@ -93,7 +93,7 @@ def seteaza_optin(conn, activ):
             r = _repo.select_firma_profil_2(cur)
             if not (r and email_valid(r[0])):
                 return {"ok": False, "mesaj": "Completează un email valid al firmei "
-                        "(Reply-To) înainte de a activa notificările."}
+                        "(Reply-To) înainte de a activă notificările."}
         _repo.update_firma_profil(cur, activ)
     return {"ok": True, "activ": bool(activ)}
 

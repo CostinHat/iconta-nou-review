@@ -41,12 +41,12 @@ def se_aplica(categorie, valoare_fara_tva, furnizor_tva, beneficiar_tva, la_data
     ref = la_data or date.today()
     c = CATEGORII.get(categorie)
     if not c:
-        raise ValueError(f"categorie necunoscuta ({'|'.join(CATEGORII)})")
+        raise ValueError(f"categorie necunoscută ({'|'.join(CATEGORII)})")
     if not furnizor_tva or not beneficiar_tva:
-        raise ValueError("taxare inversa doar intre persoane inregistrate in scopuri "
+        raise ValueError("taxare inversă doar intre persoane înregistrate în scopuri "
                          "de TVA (art. 331 al. 1) - regim normal cu TVA")
     if c["expira"] and ref > c["expira"]:
-        raise ValueError(f"taxarea inversa pt. lit. {c['lit']}) a expirat la {c['expira']} - regim normal")
+        raise ValueError(f"taxarea inversă pentru lit. {c['lit']}) a expirat la {c['expira']} - regim normal")
     if c["prag"] and Decimal(str(valoare_fara_tva)) < c["prag"]:
         raise ValueError(f"sub pragul de {bani(c['prag'], 'lei')}/factura (lit. {c['lit']}) - regim normal cu TVA")
     return True, f"taxare inversa - art. 331 alin. (2) lit. {c['lit']}) Cod fiscal"

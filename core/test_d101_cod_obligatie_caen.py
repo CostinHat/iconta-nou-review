@@ -10,7 +10,7 @@ _BASE = {"P1": 200000, "P2": 100000, "P4": 0, "P5": 0}
 
 
 def test_cod_obligatie_out_of_nomenclator_raise():
-    with pytest.raises(ValueError, match="cod_obligatie invalid"):
+    with pytest.raises(ValueError, match="nu e acceptat"):
         d101.calcul_d101(_PROF, 2026, _BASE, cod_obligatie="999")
 
 

@@ -33,14 +33,14 @@ def test_b2_cod_oblig_lipsa_ridica_valueerror():
     """B2: cod_oblig absent -> ValueError (nu KeyError)."""
     with pytest.raises(ValueError) as ei:
         _gen([{"suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}])
-    assert "cod_oblig" in str(ei.value)
+    assert "codul obligației" in str(ei.value)
 
 
 def test_b2_cod_oblig_gol_ridica_valueerror():
     """cod_oblig='' (gol) tratat la fel ca lipsa -> ValueError."""
     with pytest.raises(ValueError) as ei:
         _gen([{"cod_oblig": "  ", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}])
-    assert "cod_oblig" in str(ei.value)
+    assert "codul obligației" in str(ei.value)
 
 
 def test_baseline_valid_inca_trece():

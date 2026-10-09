@@ -33,7 +33,7 @@ def test_lic_ok():
     assert ok and "294" in ment
 
 def test_lic_cod_invalid():
-    with pytest.raises(ValueError, match="INVALID in VIES"):
+    with pytest.raises(ValueError, match="invalid în VIES"):
         m.valideaza_lic("DE123456789", False, True)
 
 def test_lic_fara_transport():
@@ -49,5 +49,5 @@ def test_prestare_ok():
     assert ok and "278" in ment
 
 def test_prestare_cod_invalid():
-    with pytest.raises(ValueError, match="B2C"):
+    with pytest.raises(ValueError, match="art. 278 alin.\\(3\\)"):
         m.valideaza_prestare_ic("FR12345678901", False)

@@ -38,7 +38,7 @@ def duplicate(conn, schema):
 def aplica(conn, schema):
     """Creează indexul dacă nu există duplicate. Întoarce (creat: bool, duplicate: list)."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     dup = duplicate(conn, schema)
     if dup:
         return False, dup

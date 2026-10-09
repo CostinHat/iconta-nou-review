@@ -67,7 +67,7 @@ def test_gard_salveaza_paseaza_zile_episod():
     assert "zile_episod=zile_episod" in src, "salveaza_concediu nu mai paseaza zile_episod la calcul_cm"
     assert "prima_zi_din_episod=prima_zi" in src, "prima_zi_din_episod (diminuare/angajator o data) nu mai e pasat"
     # lock-ul perioadei confirmate cu instructiune (art.17(1) + lei)
-    assert "art.17(1)" in src and "rectificativa" in src, "mesajul de refuz pe perioada confirmata nu mai e instructiune"
+    assert "art.17(1)" in src and "rectificativă" in src, "mesajul de refuz pe perioada confirmata nu mai e instructiune"
 
 
 def test_art_xi_granita_pre_post_141():

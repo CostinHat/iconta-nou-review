@@ -48,7 +48,7 @@ def test_deducerea_personala_arata_exact_deducerea_personala(nume, kw):
     """Randul care se numeste «Deducere personala» poarta deducerea de baza, nu totalul."""
     r = _rand_ca_din_stat(**kw)
     randuri = sp.randuri_deducere(r)
-    pers = [v for et, v in randuri if et == "Deducere personala"]
+    pers = [v for et, v in randuri if et == "Deducere personală"]
     assert pers, "%s: niciun rand «Deducere personala» (randuri: %r)" % (nume, randuri)
     assert abs(pers[0] - r["deducere_baza"]) < 0.005, (
         "%s: randul «Deducere personala» arata %.2f, dar deducerea personala e %.2f"
@@ -96,5 +96,5 @@ def test_exemplar_vechi_nu_pretinde_ca_totalul_e_deducerea_personala():
     randuri = sp.randuri_deducere({"deducere": 1513.75})
     assert len(randuri) == 1
     et, val = randuri[0]
-    assert et != "Deducere personala", "eticheta falsa a supravietuit pe exemplarele vechi"
+    assert et != "Deducere personală", "eticheta falsa a supravietuit pe exemplarele vechi"
     assert "suplimentare" in et and abs(val - 1513.75) < 0.005

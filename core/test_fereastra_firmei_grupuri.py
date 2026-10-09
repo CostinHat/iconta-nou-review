@@ -62,4 +62,4 @@ def test_fereastra_firmei_are_titluri_cu_carduri_si_niciun_arbore(pg, regim):
     assert r["titluri"] == ["Zilnic", "Registre", "Raportări și declarații", "Operațiuni speciale", "Firma"], r
     assert all(n > 0 for n in r["carduri"]) and r["imbricate"] == 0 and r["inAfaraGrupurilor"] == 0, r
     # 33 de carduri: 22 „ambele”, 10 „dubla”, 1 „simpla” — [08.10.2026, decizia Costin U3] „Închidere lună” (ambele), în Zilnic
-    assert sum(r["carduri"]) == (32 if regim == "dubla" else 23), r
+    assert sum(r["carduri"]) == (33 if regim == "dubla" else 23), r   # [Retest 2 pct.13] + „Plan de conturi” (partida dublă)

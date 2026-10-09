@@ -43,5 +43,5 @@ def test_data_angajare_null_blocheaza(da):
     with pytest.raises(ValueError) as ei:
         d112._d112_genereaza(_prof(), [_sal(data_angajare=da)], 2026, 6)
     msg = str(ei.value)
-    assert "data_angajare" in msg or "dataAng" in msg, msg
+    assert "data angajării" in msg, msg   # [Retest 2 pct.2] limbaj de contabil, nu numele câmpului
     assert "POPESCU" in msg and "1900101410011" in msg, msg

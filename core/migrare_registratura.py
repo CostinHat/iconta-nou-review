@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS "{s}".registratura (
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

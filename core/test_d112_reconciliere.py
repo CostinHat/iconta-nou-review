@@ -141,7 +141,7 @@ def test_mutatie_cas_gresit_pica(conn_recon):
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
     msg = str(ei.value)
-    assert "salariat 1 cas" in msg and "generator=9999" in msg and "cale2=1500" in msg, msg
+    assert "salariatul SIMPLU (CNP 1900101410011), CAS" in msg and "în declarație 9.999,00 lei," in msg and "recalculat 1.500,00 lei " in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -153,7 +153,7 @@ def test_mutatie_cass_gresit_pica(conn_recon):
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
     msg = str(ei.value)
-    assert "salariat 2 cass" in msg and "generator=1" in msg and "cale2=800" in msg, msg
+    assert "salariatul SIMPLU (CNP 1900101410028), CASS" in msg and "în declarație 1,00 lei," in msg and "recalculat 800,00 lei " in msg, msg
 
 
 # ============================================================
@@ -173,7 +173,7 @@ def test_facilitate_la_minim_reconciliata_si_mutatie_pica(conn_recon):
             s["cas"] = 999   # <- mutatie: cas gresit pe facilitate
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "salariat 3 cas: generator=999 vs cale2=938" in str(ei.value), str(ei.value)
+    assert "salariatul MINIM (CNP 1900101410036), CAS: în declarație 999,00 lei, recalculat 938,00 lei" in str(ei.value), str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -204,7 +204,7 @@ def test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut(conn_recon):
     assert 4 not in rap["sarite"] and 4 not in rap["reconciliati"]
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "salariul brut lipsește" in str(ei.value) and "SUSPECTE" in str(ei.value)  # diacritice cap.6 (mesaj afisat)
+    assert "salariul brut lipsește" in str(ei.value) and "date salariale de verificat" in str(ei.value)  # diacritice cap.6 (mesaj afisat)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -219,7 +219,7 @@ def test_skip_suspect_brut_sub_minim_e_semnalat(conn_recon):
     assert 5 not in rap["reconciliati"] and 5 not in rap["sarite"]
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "SUB salariul minim" in str(ei.value)
+    assert "sub salariul minim" in str(ei.value)
 
 
 # ============================================================
@@ -255,7 +255,7 @@ def test_tichete_masa_cas_reconciliat_cass_ramane_afara(conn_recon):
             s["cas"] = 9999
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "salariat 7 cas" in str(ei.value) and "generator=9999" in str(ei.value) and "cale2=1500" in str(ei.value), str(ei.value)
+    assert "salariatul TICHETE (CNP 1900101410017), CAS" in str(ei.value) and "în declarație 9.999,00 lei," in str(ei.value) and "recalculat 1.500,00 lei " in str(ei.value), str(ei.value)
     # (c) MUTATIE pe cass -> NU pica (CASS numit-afara pentru tichete): limita declarata, nu omisiune tacuta
     _prof, sal2 = _d112.pull(conn_recon, _SCHEMA, Perioada(an=2026, luna=6))
     for s in sal2:
@@ -306,7 +306,7 @@ def test_part_time_sub_prag_reconciliat_pe_baza_ridicata(conn_recon):
             s["cas_min_pt"] = 9999   # <- mutatie: baza minima part-time gresita pe CAS
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "salariat 10 cas" in str(ei.value) and "generator=9999" in str(ei.value) and "cale2=938" in str(ei.value), str(ei.value)
+    assert "salariatul PTSUB (CNP 1900101410020), CAS" in str(ei.value) and "în declarație 9.999,00 lei," in str(ei.value) and "recalculat 938,00 lei " in str(ei.value), str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -328,4 +328,4 @@ def test_part_time_peste_prag_reconciliat_pe_brut(conn_recon):
             s["cas"] = 9999
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "salariat 11 cas" in str(ei.value) and "cale2=2000" in str(ei.value), str(ei.value)
+    assert "salariatul PTPESTE (CNP 1900101410021), CAS" in str(ei.value) and "recalculat 2.000,00 lei " in str(ei.value), str(ei.value)

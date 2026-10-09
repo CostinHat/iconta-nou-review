@@ -187,7 +187,8 @@ CREATE TABLE TENANT_PLACEHOLDER.casa_operatiuni (
     cui character varying(30),
     suma numeric(12,2) NOT NULL,
     inregistrare_id integer,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    storno_de integer   -- [Retest 2 pct.4] operațiunea stornată de aceasta (o operațiune cu notă validată nu se șterge, se stornează)
 );
 
 
@@ -2849,3 +2850,8 @@ CREATE INDEX IF NOT EXISTS elemente_salariale_luna_ix ON TENANT_PLACEHOLDER.elem
 
 -- [08.10.2026, decizia Costin §6 pct.4] luna preluării, editabilă în Date firmă (mirror core/migrare_decizii_0810_s6.py)
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_preluare date;
+
+-- [Retest 2 pct.4] stornarea operațiunii de casă: legătura spre operațiunea stornată (mirror: core/migrare_retest2.py)
+ALTER TABLE ONLY TENANT_PLACEHOLDER.casa_operatiuni
+    ADD CONSTRAINT casa_operatiuni_storno_de_fkey FOREIGN KEY (storno_de) REFERENCES TENANT_PLACEHOLDER.casa_operatiuni(id);
+CREATE UNIQUE INDEX casa_operatiuni_storno_de_uq ON TENANT_PLACEHOLDER.casa_operatiuni (storno_de) WHERE storno_de IS NOT NULL;

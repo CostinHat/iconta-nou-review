@@ -6,8 +6,8 @@ from io import BytesIO
 
 # [format_msg_v1] mesaj unic despre formatul asteptat, ridicat cand nu ies tranzactii.
 FORMAT_ASTEPTAT = (
-    "Format asteptat: coloane Data, Detalii, si fie Debit+Credit fie o coloana Suma "
-    "(cu semn). Separator , sau ; . Zecimale cu . sau ,"
+    "Formatul așteptat: coloanele Data, Detalii și fie Debit și Credit, fie o coloană Suma (cu semn). "
+    "Separatorul de coloane: virgulă sau punct și virgulă; zecimalele cu punct sau virgulă."
 )
 
 
@@ -196,5 +196,5 @@ def parse_extras(continut, nume_fisier=""):
     except Exception as e:
         raise ValueError(f"Nu am putut citi extrasul ({e}). {FORMAT_ASTEPTAT}")
     if not tranzactii:
-        raise ValueError(f"Nu am gasit tranzactii in extras. {FORMAT_ASTEPTAT}")
+        raise ValueError(f"Nu am găsit tranzacții în extras. {FORMAT_ASTEPTAT}")
     return tranzactii

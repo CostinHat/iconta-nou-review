@@ -146,7 +146,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă funcție declarant/semnatar (functie_d).")
     # act de instrainare (actInstrainare + dataAct obligatorii pe validator)
     if not str(manual.get("act_instrainare") or "").strip():
-        er.append("Lipsă act de instrainare (act_instrainare).")
+        er.append("Lipsă act de înstrăinare (act_instrainare).")
     da = str(manual.get("data_act") or "").strip()
     if not _DATA_RE.match(da):
         er.append("data_act obligatorie, format zz.ll.aaaa.")
@@ -155,11 +155,11 @@ def erori_generare(prof, manual):
         er.append("tara_rezidenta trebuie cod ISO-3166 numeric din 3 cifre (642=Romania).")
     d_rec = _int(manual.get("d_rec"), 0)
     if d_rec not in (0, 1):
-        er.append("d_rec trebuie 0 (initiala) sau 1 (rectificativa).")
+        er.append("d_rec trebuie 0 (inițială) sau 1 (rectificativă).")
     if d_rec == 1 and not str(manual.get("index_init") or "").strip():
-        er.append("Rectificativa (d_rec=1) cere index_init (DUK regula R_index_init).")
+        er.append("Rectificativă (d_rec=1) cere index_init (DUK regula R_index_init).")
     if d_rec == 0 and str(manual.get("index_init") or "").strip():
-        er.append("index_init se completează doar la rectificativa (DUK regula R_index_init).")
+        er.append("index_init se completează doar la rectificativă (DUK regula R_index_init).")
     an = _int(manual.get("an"))
     if an is None or not (2023 <= an <= 2100):
         er.append("an trebuie în intervalul 2023..2100.")

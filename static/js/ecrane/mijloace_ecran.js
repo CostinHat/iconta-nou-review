@@ -34,7 +34,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         `<p class="ecran-nota">Nu am putut încărca registrul de mijloace fixe${e && e.mesaj ? " — " + esc(e.mesaj) : ""}.</p>`;
       return;
     }
-    randeaza(date.mijloace || []);
+    randeaza(date.mijloace || [], date.calculat_pana_la || "");
   }
 
   // [08.10.2026, decizia Costin W2] „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de
@@ -54,7 +54,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       ${m.plan_lunar.map((p) => `<tr><td>${String(p.luna).padStart(2, "0")}/${p.an}</td><td class="fd-td-num">${bani(p.rata)}</td><td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td></tr>`).join("")}
       </tbody></table></details></td></tr>`;
 
-  function randeaza(lista) {
+  function randeaza(lista, pana) {
     const randuri = lista.map((m) => `
       <tr>
         <td>${esc(m.cod || "")}</td>
@@ -68,7 +68,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td class="fd-td-num">${inregistrat(m)}</td>
         <td class="fd-td-num">${diferenta(m)}</td>
         <td class="fd-td-num">${m.ramas != null ? bani(m.ramas) : "—"}</td>`}
-        <td>${esc(m.metoda || "")}</td>
+        <td>${esc(m.metoda_eticheta || "")}</td>
         <td style="white-space:nowrap">${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
         <td>${m.activ ? "activ" : "casat"}</td>
         <td>${m.activ ? `
@@ -83,14 +83,14 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      <p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> la zi (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
+      <p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
       <div id="mf-mesaj"></div>
       ${lista.length ? `
       <div style="overflow-x:auto">
         <table class="fd-tabel">
           <thead><tr>
             <th>Cod</th><th>Denumire</th><th>Cod din catalog</th><th class="fd-td-num">Durată</th>
-            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat)</th><th class="fd-td-num">Înregistrat (cont)</th>
+            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat, până la ${esc(pana)})</th><th class="fd-td-num">Înregistrat (cont, la ${esc(pana)})</th>
             <th class="fd-td-num">Diferență</th><th class="fd-td-num">Rămas</th>
             <th>Metodă</th><th>PIF</th><th>Stare</th><th>Acțiuni</th>
           </tr></thead>

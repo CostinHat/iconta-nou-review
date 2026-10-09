@@ -44,6 +44,7 @@ LIMITA DECLARATA (GARZI cat.4):
 PRECONDITIE: conn pozitionat pe schema tenantului (acelasi contract ca d394.pull).
 """
 
+from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
@@ -304,8 +305,8 @@ def _confrunta(rezumat2, cale2):
     for cota in sorted(cote):
         gen = rezumat2.get(cota, {})
         c2 = cale2.get(cota, {})
-        for camp, eticheta in (("bazaL", "livrari baza"), ("tvaL", "livrari TVA"),
-                               ("bazaA", "achizitii baza"), ("tvaA", "achizitii TVA")):
+        for camp, eticheta in (("bazaL", "livrări, baza"), ("tvaL", "livrări, TVA"),
+                               ("bazaA", "achiziții, baza"), ("tvaA", "achiziții, TVA")):
             g = int(gen.get(camp, 0) or 0)
             v = int(c2.get(camp, 0) or 0)
             if g != v:
@@ -341,11 +342,9 @@ def verifica_reconciliere(conn, perioada, res, manual=None):
     rap = reconciliaza(conn, perioada, res, manual)
     if rap["divergente"]:
         linii = "; ".join(
-            "cota %d%% %s (%s): generator=%d vs cale2=%d (dif %d)" %
-            (d["cota"], d["camp"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+            _dif("cota %d%%, %s" % (d["cota"], d["eticheta"]), d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"])
         raise ReconciliereD394(
-            "D394 A DOUA CALE: totalurile rezumat2 ale generatorului NU se reconciliaza cu "
-            "recalculul independent din liniile brute. Divergente: %s. Declaratia NU se genereaza "
-            "- gardul nu alege singur cine are dreptate; verifica agregarea si datele." % linii)
+            "D394: totalurile pe cote din declarație nu se potrivesc cu recalculul făcut separat "
+            "din liniile facturilor. Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

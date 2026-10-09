@@ -18,7 +18,7 @@ DDL_SCHEMA = [
 def aplica(conn, schema):
     """DDL-ul pe schema unei firme. False dacă schema n-are `plan_conturi`."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute("SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name='plan_conturi'", (schema,))
         if not cur.fetchone():

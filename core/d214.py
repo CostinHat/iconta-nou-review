@@ -138,9 +138,9 @@ def erori_generare(prof, manual):
     if nif and not _cif(manual.get("taraRezidenta")):
         er.append("cif_c e NIF nerezident: setează taraRezidenta cu codul ISO numeric al tarii de rezidență (DUK regula R8).")
     if not _data_act(manual):
-        er.append("Lipsă/format greșit data act instrainare (dataAct ZZ.LL.AAAA sau zi_act/luna_act/an_act).")
+        er.append("Lipsă/format greșit data act înstrăinare (dataAct ZZ.LL.AAAA sau zi_act/luna_act/an_act).")
     if not str(manual.get("actInstrainare") or "").strip():
-        er.append("Lipsă identificator act de instrainare (actInstrainare).")
+        er.append("Lipsă identificator act de înstrăinare (actInstrainare).")
     if str(manual.get("optiuneInstrainare") or "1") not in _OPTIUNI:
         er.append("optiuneInstrainare trebuie să fie 1 sau 2.")
     if not str(manual.get("numeD") or "").strip():

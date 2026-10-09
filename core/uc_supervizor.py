@@ -84,7 +84,7 @@ def supervizor_la_cerere(ctx):
     nerecalculate = sum(1 for x in randuri if x["prospetime"]["stare"] != _sc.CURENT)
     return {
         "an": azi.year, "luna": azi.month,
-        "domeniu": ("firmele la care are acces utilizatorul curent (%d), NU tot portofoliul; "
+        "domeniu": ("firmele la care ai acces (%d), nu tot portofoliul cabinetului; "
                     "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)),
         "firme": randuri,
         "rezumat": supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, "rezumat_din_randuri")

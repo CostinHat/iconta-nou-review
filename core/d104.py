@@ -150,14 +150,14 @@ def erori_generare(prof, luna, manual):
         er.append("D104 cere profit_pierd (profit impozabil(+)/pierdere(-) al asocierii; input contabil).")
     asociati = manual.get("asociati") or []
     if not asociati:
-        er.append("D104 cere cel puțin un asociat (asociati[]).")
+        er.append("D104 cere cel puțin un asociat (asociați[]).")
     cifuri = []
     for i, a in enumerate(asociati, 1):
         if not str(a.get("den") or "").strip():
             er.append("Asociat %d: lipsă denumire/nume (den1)." % i)
         cf = _cif(a.get("cif"))
         if not cf:
-            er.append("Asociat %d: lipsă cod de identificare fiscala (cif1)." % i)
+            er.append("Asociat %d: lipsă cod de identificare fiscală (cif1)." % i)
         else:
             cifuri.append(cf)
         try:
@@ -170,7 +170,7 @@ def erori_generare(prof, luna, manual):
             if _i(a.get(camp)) < 0:
                 er.append("Asociat %d: %s trebuie >= 0." % (i, camp))
     if len(cifuri) != len(set(cifuri)):
-        er.append("Asociații au cif1 duplicat (cif1 = cheie unica per SB).")
+        er.append("Asociații au cif1 duplicat (cif1 = cheie unică per SB).")
     return er
 
 

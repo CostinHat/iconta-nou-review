@@ -96,8 +96,8 @@ def genereaza_pain001(conn, schema, an, luna, data_executie=None, acum=None, num
         plati.append({"id": s["id"], "nume": s.get("nume") or "", "iban": iban, "net": net})
 
     if not plati:
-        raise ValueError("niciun salariat cu IBAN valid si net > 0 pe luna aceasta - nimic de platit "
-                         "(salariati fara IBAN: %s)" % (", ".join(fara_iban) or "-"))
+        raise ValueError("niciun salariat cu IBAN valid și net > 0 pe luna aceasta - nimic de plătit "
+                         "(salariați fără IBAN: %s)" % (", ".join(fara_iban) or "-"))
 
     total = sum(p["net"] for p in plati)
     nr = len(plati)
@@ -152,7 +152,7 @@ def genereaza_pain001(conn, schema, an, luna, data_executie=None, acum=None, num
     # GARANTIA: validare pe XSD-ul oficial inainte de a intoarce fisierul
     schema_xsd = etree.XMLSchema(etree.parse(XSD_PATH))
     if not schema_xsd.validate(etree.fromstring(xml)):
-        raise ValueError("XML pain.001 generat NU trece XSD-ul oficial: %s" % schema_xsd.error_log)
+        raise ValueError("fișierul de plată a salariilor (pain.001) nu respectă structura oficială: %s" % schema_xsd.error_log)
 
     meta = {
         "nr_plati": nr,

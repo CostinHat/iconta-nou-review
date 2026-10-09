@@ -38,7 +38,7 @@ def executa(conn, cabinet_id, confirmare, sters_de_user_id):
         cab = cur.fetchone()
         if not cab: raise ValueError("cabinet inexistent")
         if (confirmare or "").strip() != (cab["nume"] or "").strip():
-            raise ValueError("confirmare gresita: numele cabinetului nu se potriveste")
+            raise ValueError("confirmare greșită: numele cabinetului nu se potriveste")
         cur.execute("SELECT id, schema_name FROM public.tenants WHERE accounting_firm_id=%s", (cabinet_id,))
         tens = cur.fetchall()
         scheme = [t["schema_name"] for t in tens if t["schema_name"]]

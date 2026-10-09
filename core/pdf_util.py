@@ -18,6 +18,15 @@ def bani(x, mon=""):
     return f"{s} {mon}".strip()
 
 
+def diferenta(ce, declarat, recalculat, dif=None, sursa="în declarație"):
+    """[Retest 2 pct.2] Un rând de diferență al porților de reconciliere, în cuvintele contabilului: „TVA colectată 21%:
+    în declarație 9.999,00 lei, recalculat 1.500,00 lei (diferență 8.499,00 lei)” — nu „generator=9999 vs cale2=1500”. Sursa
+    unică pentru toate porțile (D100, D101, D112, D205, D300, D301, D390, D394, D406)."""
+    if dif is None:
+        dif = Decimal(str(declarat)) - Decimal(str(recalculat))
+    return "%s: %s %s, recalculat %s (diferență %s)" % (ce, sursa, bani(declarat, "lei"), bani(recalculat, "lei"), bani(dif, "lei"))
+
+
 def cantitate(x, um=""):
     """Cantitate pentru om: „2 buc”, „1,5 kg”, „0,125 l” — fără zecimalele de prisos ale coloanei NUMERIC(12,3) („x2.000”).
     Oglinda lui `cantitate()` din api.js (comanda Costin 05.10.2026 pct.9)."""

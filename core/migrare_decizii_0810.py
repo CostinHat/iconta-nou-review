@@ -86,7 +86,7 @@ DDL_SCHEMA = ['ALTER TABLE "{s}".mijloace_fixe ADD COLUMN IF NOT EXISTS cod_cata
 def aplica(conn, schema):
     """DDL-ul pe schema unei firme. False dacă schema n-are `mijloace_fixe`."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute("SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name='mijloace_fixe'", (schema,))
         if not cur.fetchone():

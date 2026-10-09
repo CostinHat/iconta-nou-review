@@ -37,7 +37,7 @@ _COLS = ["serie_initiala", "numar_initial", "este_continuare", "data_certificat_
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

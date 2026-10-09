@@ -68,7 +68,7 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
         return {"ok": False, "cod": "FEL_NECUNOSCUT",
                 "mesaj": "fel de artefact necunoscut: %r" % fel}
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     amp = amprenta(continut)
     with conn.cursor() as cur:
         cur.execute('SELECT COALESCE(max(exemplar), 0) + 1 FROM "%s".artefacte_produse '
@@ -94,7 +94,7 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
 def lista(conn, schema, fel=None, cheie=None):
     """Ce s-a produs, in ordine. Fara continut — ala se cere pe id."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     cond, val = [], []
     if fel:
         cond.append("fel = %s"); val.append(fel)

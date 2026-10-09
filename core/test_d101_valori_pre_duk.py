@@ -20,7 +20,7 @@ def test_p36_negativ_raise():
 
 
 def test_p8_sub_suma_subrandurilor_raise():
-    with pytest.raises(ValueError, match="P8.*suma sub-randurilor"):
+    with pytest.raises(ValueError, match="P8.*suma sub-rândurilor"):
         _gen(P8=10, P081=100000)
 
 

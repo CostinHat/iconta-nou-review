@@ -443,6 +443,8 @@ def test_ANTIVACUU_largirea_chiar_a_adus_module():
 # NU se schimbă regula (NF peste NOM), fiindcă asta ar muta exact aceste 7 nume în C și ar umfla
 # clichetul cu 15 false pozitive. Gaura e reală, dar AZI GOALĂ; ce se schimbă e că nu mai e tăcută.
 BOTEZ_BASELINE = {
+    ("d394.py", "ETICHETE_TIP_PARTENER"): "etichetele de ecran ale tipului de partener (cartușele C–F ale formularului D394) — nomenclator de afișare, nu valori fiscale (Retest 2, 09.10.2026)",
+    ("d394.py", "ETICHETE_TIP_SERIE"): "etichetele de ecran ale tipului de serie (<serieFacturi tip>: 1 alocate, 2 emise, 3 beneficiari, 4 terți) — nomenclator de afișare (Retest 2, 09.10.2026)",
     ("d201.py", "_CATEG_SALARII"): "cod de categorie de venit salarial (nomenclator ANAF)",
     ("d204.py", "_CATEG_VENIT"): "coduri de categorie de venit — nomenclator, nu cote",
     ("d212.py", "CATEG_VENIT_CAP11"): "coduri categ_venit ale subsectiunii I.1.1 (D212Validator Parameters_v7 + D212Pdf Pdf_v8) — nomenclator, nu cote (02.10.2026, D212 Etapa 2)",

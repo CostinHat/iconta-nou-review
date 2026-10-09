@@ -84,7 +84,8 @@ def test_ANTI_VACUU_universul_e_cel_real():
     u = _u.universul()
     assert len(u) > 150, "doar %d module cu SQL — enumerarea s-a rupt" % len(u)
     mg = _u.migrari(u)
-    assert 40 <= len(mg) <= 80, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [Retest 2, 09.10.2026] 80 -> 81: `core/migrare_retest2.py` (coloana `casa_operatiuni.storno_de` + notele de refacere NIR)
+    assert 40 <= len(mg) <= 81, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

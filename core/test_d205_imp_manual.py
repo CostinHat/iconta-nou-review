@@ -48,7 +48,7 @@ def test_manual_imp_gresit_ridica_fara_db():
         verifica_reconciliere(None, "s", Perioada(2026), res, man)
     msg = str(ei.value)
     assert _CNP in msg, msg
-    assert "imp1=9999 dar rate×baza1=1600" in msg, msg
+    assert "impozitul reținut: introdus 9.999,00 lei, recalculat 1.600,00 lei" in msg, msg
 
 
 def test_manual_imp_corect_nu_ridica_fara_db():

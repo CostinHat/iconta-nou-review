@@ -82,6 +82,13 @@ _TARA_XML = {}
 # Ancorele, structurate si pazite: core/nomenclatoare.py (ANCORE_NORMA) + core/test_nomenclator_pe_norma.py.
 # Proba pe validator: test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020.
 TIPURI = ("L", "T", "A", "P", "S", "R")
+#: [Retest 2 pct.2] numele tipului pe ECRAN — OPANAF 705/2020, instrucțiuni, coloana „Tipul operaţiunii”: „L - pentru livrări
+#: intracomunitare de bunuri către alte state membre; T - pentru livrări în cadrul unei operaţiuni triunghiulare; A - pentru achiziţii
+#: intracomunitare de bunuri […]; P - pentru prestările intracomunitare de servicii; S - pentru achiziţii intracomunitare de servicii;
+#: R - livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru agricultori.”
+ETICHETE_TIP = {"L": "livrări intracomunitare de bunuri", "T": "livrări în operațiuni triunghiulare",
+                "A": "achiziții intracomunitare de bunuri", "P": "prestări intracomunitare de servicii",
+                "S": "achiziții intracomunitare de servicii", "R": "livrări intracomunitare în regimul special pentru agricultori"}
 
 # Tipurile legale per DIRECTIE (OPANAF 705/2020: L/T/P/R = latura de livrare/prestare; A/S = latura de
 # achizitie). Sursa UNICA a regulii de tranzitie - importata si de d390_clasificare_api (write-side).
@@ -113,9 +120,8 @@ def _reclasificare_tip(directie, tara, cod, recl, tip_def):
     tip = recl.get((directie, tara, cod), tip_def)
     if tip != tip_def and tip not in TIPURI_DIRECTIE.get(directie, ()):
         raise ValueError(
-            "D390: reclasificare cu tip %r nepermis pentru direcția %s (permise: %s). Un tip din "
-            "d390_reclasificare nelegal pentru direcție trebuie să producă eroare vizibilă, nu să "
-            "revina tacit la %r (misclasificare)."
+            "D390: reclasificarea cu tipul %r nu e permisă pentru direcția %s (permise: %s). Un tip "
+            "nepermis se semnalează, nu se înlocuiește fără să se spună cu %r."
             % (tip, directie, "/".join(TIPURI_DIRECTIE.get(directie, ())), tip_def))
     return tip
 
@@ -418,14 +424,15 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
             _tp, _tr, _cd, _dn = _ks
             res.avertismente.append(
                 "Posibilă dublă raportare - operațiunea (tip %s, %s%s, %s) apare și ca factură și "
-                "ca linie manuală/din ecranul D301; bazele se adună in D390. Verifică să nu fie "
+                "ca linie manuală/din ecranul D301; bazele se adună în D390. Verifică să nu fie "
                 "introdusă de două ori." % (_tp, _tr, _cd, _dn or "(fără denumire)"))
     _tel = str(prof.get("telefon") or "")
     if len(_tel) > 15:
         res.avertismente.append("Telefon firma are %d caractere (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifică." % len(_tel))
     if not ops:
         res.avertismente.append("Nicio operațiune intracomunitară în lună — D390 se depune doar dacă există operațiuni.")
-    res.avertismente.append("Mapare automată: emisă->L, primită->A (bunuri). Servicii (P/S) și triangulație (T/R) = clasificare manuală.")
+    res.avertismente.append("Facturile intracomunitare intră automat ca bunuri: cele emise ca livrări (L), cele primite ca achiziții (A). "
+                            "Serviciile (P/S) și triangulația (T/R) se clasifică manual.")
     return res
 
 
@@ -463,7 +470,7 @@ def valideaza(res):
     for d in getattr(res, "diag", []):
         _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "tara":
-            erori.append("Partener %s: %s. Operatiunea nu se poate declara până nu corectezi țară - nu dispare tacit." % (_id, d["motiv"]))
+            erori.append("Partener %s: %s. Operațiunea nu se poate declara până nu corectezi țară - nu dispare tacit." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             erori.append("Partener %s: %s." % (_id, d["motiv"]))
     # totalPlata_A coerent
@@ -859,15 +866,15 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
             # D390 e pe zero desi D301 are operatiuni -> auto-derivarea nu le-a putut aduce (le lipseste
             # TARA furnizorului). Indrumam spre completarea furnizorului in ecranul D301 (nu 'nu ai operatiuni').
             raise ValueError(
-                "D390 pe zero, DAR există %d operațiune(i) intracomunitară(e) în D301 (d301_operatiuni) în "
-                "%02d/%d care nu au apărut în D390 — le lipsește ȚARA furnizorului. Completează țara (și, "
+                "D390 pe zero, dar în D301 există operațiuni intracomunitare (%d) în "
+                "%02d/%d care nu au apărut în D390: le lipsește țara furnizorului. Completează țara (și, "
                 "dacă există, codul de TVA) furnizorului pe fiecare operațiune din ecranul D301: achizițiile "
                 "de bunuri (tip 1/3) apar automat ca linii cod A, serviciile IC (tip 5) ca linii cod S. "
                 "(Operațiunile tip 2 — transport nou — și tip 4 se clasifică manual în D390 dacă e cazul.)"
                 % (_d301, luna, an))
         raise ValueError(
             "D390 nu se depune pe zero: luna %02d/%d nu are nicio operațiune intracomunitară. "
-            "Declarația recapitulativă se depune NUMAI pentru lunile în care ia naștere "
+            "Declarația recapitulativă se depune numai pentru lunile în care ia naștere "
             "exigibilitatea taxei (OPANAF 705/2020 pct. 1.2; art. 325 Cod fiscal). "
             "Dacă ar fi trebuit să existe operațiuni, verifică dacă facturile UE sunt "
             "introduse și dacă partenerii au cod de TVA valid." % (luna, an))

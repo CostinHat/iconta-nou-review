@@ -275,10 +275,10 @@ def erori_generare(prof, manual):
         if act["asociati"] and act["sum_cota"] != Decimal(100):
             er.append("%s: suma cotelor (%s) trebuie să fie 100." % (et, act["sum_cota"]))
         if act["sum_venit_d"] != act["net3"]:
-            er.append("%s: suma venit_d (%d) trebuie să fie egala cu venitul net net3 (%d)."
+            er.append("%s: suma venit_d (%d) trebuie să fie egală cu venitul net net3 (%d)."
                       % (et, act["sum_venit_d"], act["net3"]))
         if act["sum_pierd_d"] != act["pierd3"]:
-            er.append("%s: suma pierd_d (%d) trebuie să fie egala cu pierderea pierd3 (%d)."
+            er.append("%s: suma pierd_d (%d) trebuie să fie egală cu pierderea pierd3 (%d)."
                       % (et, act["sum_pierd_d"], act["pierd3"]))
     return er
 

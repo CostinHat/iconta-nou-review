@@ -356,12 +356,12 @@ def randuri_deducere(r):
 
     total = _ded_lei("deducere")
     if not any(k in r for k in ("deducere_baza", "deducere_tineri", "deducere_copii")):
-        return [("Deducere personala si suplimentare (total)", total)]
-    randuri = [("Deducere personala", _ded_lei("deducere_baza"))]
+        return [("Deducere personală și suplimentare (total)", total)]
+    randuri = [("Deducere personală", _ded_lei("deducere_baza"))]
     if _ded_lei("deducere_tineri"):
-        randuri.append(("Deducere suplimentara, tineri sub 26 de ani", _ded_lei("deducere_tineri")))
+        randuri.append(("Deducere suplimentară, tineri sub 26 de ani", _ded_lei("deducere_tineri")))
     if _ded_lei("deducere_copii"):
-        randuri.append(("Deducere suplimentara, copii scolarizati", _ded_lei("deducere_copii")))
+        randuri.append(("Deducere suplimentară, copii școlarizați", _ded_lei("deducere_copii")))
     return randuri
 
 # Randurile compozitiei se disting prin FEL, nu prin eticheta. Un gard care ar intreba
@@ -446,7 +446,7 @@ def compozitie_fluturas(r):
         ("CASS (10%)", -_n("cass"), FEL_LINIE),
         *[(e, v, FEL_LINIE) for e, v in randuri_deducere(r)],
         ("Impozit pe venit", -_n("impozit_salariu"), FEL_LINIE),
-        ("SALARIU NET", _n("net"), FEL_TOTAL),
+        ("Salariu net", _n("net"), FEL_TOTAL),   # [Retest 2 pct.2] rândul îngroșat se vede din `FEL_TOTAL`, nu din majuscule
     ]
     cm_zile = int(_n("cm_zile"))
     if cm_zile:
@@ -484,7 +484,7 @@ def compozitie_fluturas(r):
         total_disp = (float(r["total_disponibil"]) if r.get("total_disponibil") is not None
                       else _n("net") + val_tichete)
         linii.append(("Total tichete (pe card)", val_tichete, FEL_LINIE))
-        linii.append(("TOTAL DISPONIBIL (net + tichete)", total_disp, FEL_TOTAL))
+        linii.append(("Total disponibil (net + tichete)", total_disp, FEL_TOTAL))
 
     # Ce plateste ANGAJATORUL. Sub tabel pe hartie, sub compozitie pe ecran - nu se scade din net,
     # si de-aia nu sta in coloana care reconciliaza la net.

@@ -155,7 +155,7 @@ def erori_generare(prof, manual, calc):
             er.append("d_temei=1 cere banca (pentru restituire).")
     else:
         if calc["sigma_dif_rest"] != 0:
-            er.append("d_temei=0 dar există diferente de restituit (suma dif_rest!=0); setează d_temei=1 + IBAN/banca.")
+            er.append("d_temei=0 dar există diferențe de restituit (suma dif_rest!=0); setează d_temei=1 + IBAN/banca.")
     return er
 
 

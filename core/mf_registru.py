@@ -15,7 +15,6 @@ TEORETIC = `d406_active.amortizat_la_data` / `amortizare_luna` — același calc
 CATALOGUL = HG 2139/2004 (anaf_surse/hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt): codul de clasificare și plaja
 duratei normale, în ani.
 """
-import datetime as _dt
 import io
 import os
 import re
@@ -168,8 +167,10 @@ def amortizare_lunii_neinregistrata(cur, rows, an, luna):
 def registru(cur, rows, azi=None):
     """Rândurile registrului (din `repo_mijloace_fixe.toate`) cu amortizarea teoretică, cea înregistrată, diferența, lunile
     neînregistrate, durata, codul din catalog și planul lunar."""
-    from core import d406_active as _a
-    azi = azi or _dt.date.today()
+    from core import d406_active as _a, inchidere_luna as _il
+    from core.common import azi_ro
+    azi = azi or azi_ro()   # ziua României, ca `ultima_zi_incheiata` și închiderea lunii
+    pana = _il.ultima_zi_incheiata(azi)   # [Retest 2 pct.5] calculul și soldul înregistrat: până la ultima lună încheiată
     mfs = [_mf_dict(r) for r in rows]
     cod_cat = {r[0]: (r[13] if len(r) > 13 else None) for r in rows}
     cat = catalog()
@@ -177,7 +178,7 @@ def registru(cur, rows, azi=None):
     for m in mfs:
         if m["activ"]:
             pe_cont.setdefault(m["cont_amortizare"], []).append(m["id"])
-    sold = {c: sold_creditor_cont(cur, c, azi) for c in pe_cont}
+    sold = {c: sold_creditor_cont(cur, c, pana) for c in pe_cont}
     inreg = {c: luni_inregistrate(cur, c) for c in pe_cont}
     acoperite = {c: luni_acoperite_de_soldul_initial([m for m in mfs if m["activ"] and m["cont_amortizare"] == c],
                                                      sold_initial_cont(cur, c)) for c in pe_cont}
@@ -188,7 +189,7 @@ def registru(cur, rows, azi=None):
              "catalog": cat.get(str(cod_cat.get(m["id"]) or "").rstrip(".")), "durata_luni": m["dnf_luni"]}
         if m["activ"]:
             try:
-                t = _a.amortizat_la_data(m, azi)
+                t = _a.amortizat_la_data(m, pana)
                 e["amortizat_teoretic"], e["ramas"] = str(t["amortizat"]), str(t["ramas"])
                 plan = plan_lunar(m, inreg[m["cont_amortizare"]], azi, acoperite[m["cont_amortizare"]])
                 e["plan_lunar"] = [{"an": a, "luna": l, "rata": str(r), "stare": s} for a, l, r, s in plan]
@@ -201,6 +202,7 @@ def registru(cur, rows, azi=None):
             except (ValueError, KeyError) as ex:
                 e["eroare"] = str(ex)
         out.append(dict(m, valoare=str(m["valoare"]), rezidual=str(m["rezidual"]),
+                        metoda_eticheta=_a.eticheta_metoda(m.get("metoda")),   # [Retest 2 pct.2]
                         data_pif=str(m["data_pif"]) if m["data_pif"] else None, reevaluari=None,
                         amortizat=e["amortizat_teoretic"], **e))
     return out

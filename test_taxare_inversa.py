@@ -37,7 +37,7 @@ def test_cladiri_fara_expirare():
     assert ok
 
 def test_categorie_gresita():
-    with pytest.raises(ValueError, match="necunoscuta"):
+    with pytest.raises(ValueError, match="necunoscută"):
         m.se_aplica("altceva", 1, True, True, AZI)
 
 def test_tva_beneficiar():

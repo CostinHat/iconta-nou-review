@@ -134,8 +134,8 @@ export async function ecranRip(corp, nav, t) {
           `<br>${esc(m.denumire)}: intrare ${m.valoare_intrare} \u2212 amortizare ${m.amortizare_cumulata} = <b>${m.valoare_ramasa}</b> lei`).join("");
         zonaMsg.innerHTML = `<div class="pf-frand" style="display:block">
           <div class="pf-frand-nume">Registru-inventar \u00b7 31.12.${d.an}</div>
-          <div class="pf-frand-sub">Mijloace fixe (valoare ramasa): <b>${d.total_mijloace_fixe}</b> lei${mf}
-          <br>Disponibilitati (RIP validat): <b>${d.disponibilitati}</b> lei
+          <div class="pf-frand-sub">Mijloace fixe (valoare rămasă): <b>${d.total_mijloace_fixe}</b> lei${mf}
+          <br>Disponibilități (RIP validat): <b>${d.disponibilitati}</b> lei
           <br><b class="tip-total">Total activ: ${bani(d.total_activ)} lei</b></div></div>`;
       } catch (e) { arataMesaj(zonaMsg, e.mesaj || e.message || "eroare", "eroare"); }
     });

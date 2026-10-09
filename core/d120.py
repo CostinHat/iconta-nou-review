@@ -138,7 +138,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă funcție declarant (functie_declar).")
     d_rec = str(manual.get("d_rec", "0")).strip()
     if d_rec not in ("0", "1"):
-        er.append("d_rec (tip rectificativa) trebuie 0 sau 1.")
+        er.append("d_rec (tip rectificativă) trebuie 0 sau 1.")
     acc = _accize_dict(manual)
     for k, v in acc.items():
         if k not in ACCIZE_FIELDS:

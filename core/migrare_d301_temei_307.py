@@ -20,7 +20,7 @@ DDL_DROP = 'ALTER TABLE "{s}".d301_operatiuni DROP COLUMN IF EXISTS d390_confirm
 
 def aplica(conn, schema):
     if not db.schema_valida(schema):
-        raise ValueError("schema invalida: %r" % schema)
+        raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(DDL_ADD.format(s=schema))
         cur.execute(DDL_DROP.format(s=schema))

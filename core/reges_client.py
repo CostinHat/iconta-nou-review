@@ -54,7 +54,7 @@ def mesaj_inregistrare_salariat(salariat, author_id, user, **kw):
     """salariat: {cnp, nume, prenume, adresa, nationalitate?, tara?, tip_act?}."""
     e = escape
     if not salariat.get("cnp") or not salariat.get("nume"):
-        raise ValueError("cnp si nume obligatorii")
+        raise ValueError("cnp și nume obligatorii")
     corp = f"""    <Info>
         <Adresa>{e(salariat.get('adresa') or '-')}</Adresa>
         <Cnp>{e(str(salariat['cnp']))}</Cnp>
@@ -76,7 +76,7 @@ def mesaj_adaugare_contract(contract, referinta_salariat, author_id, user, **kw)
     e = escape
     for c in ("numar", "data_contract", "data_inceput", "salariu", "cor"):
         if not contract.get(c):
-            raise ValueError(f"camp obligatoriu lipsa: {c}")
+            raise ValueError(f"câmp obligatoriu lipsă: {c}")
     corp = f"""    <Continut>
         <ReferintaSalariat>
             <Id>{referinta_salariat}</Id>

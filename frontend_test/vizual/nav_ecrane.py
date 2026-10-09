@@ -85,6 +85,7 @@ def ecran_banca(pg): _ecran_shell(pg, "fa-banca")
 def ecran_rapoarte(pg): _ecran_shell(pg, "fa-rapoarte")
 def ecran_etransport(pg): _ecran_shell(pg, "fa-etransport")
 def ecran_centrecost(pg): _ecran_shell(pg, "fa-centrecost")
+def ecran_planconturi(pg): _ecran_shell(pg, "fa-planconturi")   # [Retest 2 pct.13, decizia Costin O12]
 def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
 def ecran_operatiuni(pg): _ecran_shell(pg, "fa-operatiuni")  # [LOTUL 13, R145] JS atins
 
@@ -233,6 +234,7 @@ ECRANE = [
     ("rapoarte", ecran_rapoarte),
     ("etransport", ecran_etransport),
     ("centrecost", ecran_centrecost),
+    ("planconturi", ecran_planconturi),
     ("casa", ecran_casa),
     ("verificari", ecran_verificari),
     ("datefirma", ecran_datefirma),

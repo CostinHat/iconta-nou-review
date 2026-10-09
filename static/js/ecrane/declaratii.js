@@ -15,6 +15,7 @@ const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
 const TRIM = ["T1 (ian-mar)","T2 (apr-iun)","T3 (iul-sep)","T4 (oct-dec)"];
+const LUNI_TRIM = ["ian–mar", "apr–iun", "iul–sep", "oct–dec"];   // [Retest 2 pct.14] lunile trimestrului, după „T3/2026”
 
 // stare ecran
 let S = null;
@@ -541,7 +542,7 @@ async function randeazaOperatiuniD301(corp, nav) {
               : (furnizor ? ` <span class="mig-cnp-ok">→ D390 cod ${o.d390_cod}</span>` : ""))
           : ` <span class="ecran-nota">(nu intră în D390 — ${o.tip === 2 ? "mijloc de transport nou" : "art. 307 alin. (3)/(5)/(6)"})</span>${temei307}`;
         return `<div class="dec-man-rand">
-        <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
+        <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(dataRo(o.data_doc)) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
         <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>
         <button class="btn-link dec-d301-del" data-actiune="DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}" data-id="${o.id}">șterge</button></div>`;
       }).join("")
@@ -3656,7 +3657,7 @@ export function _blocComponente(c) {
     const coloane = Object.keys(s.randuri[0] || {});
     const mon = new Set(s.monetare || []);
     const celula = (r, k) => (r[k] == null ? "" : (typeof r[k] === "object" ? celulaObiect(r[k])
-      : (mon.has(k) ? bani(r[k]) : esc(String(r[k])))));
+      : (mon.has(k) ? bani(r[k]) : (/^\d{4}-\d{2}-\d{2}$/.test(String(r[k])) ? dataRo(r[k]) : esc(String(r[k]))))));   // [Retest 2 pct.14] data în forma românească
     return `<div style="margin-top:10px">
         <div class="camp-eticheta">${esc(s.nume)} \u2014 ${s.total} ${s.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}${s.aratate < s.total ? `, se arat\u0103 primele ${s.aratate}` : ""}</div>
         <table class="fd-tabel">
@@ -3713,7 +3714,7 @@ function pas3Gata(corp, nav, r) {
 function etPerioada() {
   const per = S.periodicitate[S.tip];
   if (per === "anual") return `anul ${S.an}`;
-  if (per === "trimestrial") return `${TRIM[S.trim-1]} ${S.an}`;   // TRIM = etichete de trimestru, fara echivalent dataRo (legitim)
+  if (per === "trimestrial") return `T${S.trim}/${S.an} (${LUNI_TRIM[S.trim - 1]})`;   // [Retest 2 pct.14] DS cap.4 v2.85: „T3/2026”
   // [G3] eticheta luna-an prin dataRo canonic (nu LUNI[S.luna-1] local); LUNI ramane pentru picker
   return dataRo(`${S.an}-${String(S.luna).padStart(2, "0")}`, "luna_an");
 }

@@ -51,6 +51,7 @@ deja curate), inainte de / impreuna cu poarta-zero. `conn` e pozitionat pe schem
 (genereaza primeste `schema`, iar SQL-ul e schema-calificat - independent de search_path).
 """
 
+from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
@@ -255,12 +256,12 @@ def reconciliaza(conn, schema, an, luna, res, manual=None, reclasificari=None):
                                "diferenta": int(gen) - int(cale2)})
 
     for tip in _TIPURI:
-        cmp("baza%s" % tip, "baza tip %s" % tip,
+        cmp("baza%s" % tip, "baza operațiunilor de tip %s" % tip,
             (rezumat_g.get(tip, 0) if isinstance(rezumat_g, dict) else getattr(rezumat_g, tip, 0)),
             rez2[tip])
-    cmp("nrOPI", "numar operatiuni", _res_camp(res, "nr_opi", 0), nr2)
-    cmp("total_baza", "total baze", _res_camp(res, "total_baza", 0), tot2)
-    cmp("totalPlata_A", "totalPlata_A", _res_camp(res, "total_plata_a", 0), plata2)
+    cmp("nrOPI", "numărul de operațiuni", _res_camp(res, "nr_opi", 0), nr2)
+    cmp("total_baza", "totalul bazelor", _res_camp(res, "total_baza", 0), tot2)
+    cmp("totalPlata_A", "totalul de plată", _res_camp(res, "total_plata_a", 0), plata2)
 
     return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
@@ -271,12 +272,9 @@ def verifica_reconciliere(conn, schema, an, luna, res, manual=None, reclasificar
     rap = reconciliaza(conn, schema, an, luna, res, manual, reclasificari)
     if rap["divergente"]:
         linii = "; ".join(
-            "%s (%s): generator=%d vs cale2=%d (dif %d)" %
-            (d["camp"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+            _dif(d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"])
         raise ReconciliereD390(
-            "D390 A DOUA CALE: rezumatul generatorului NU se reconciliaza cu recalculul independent "
-            "din facturile intracomunitare (aggregation-loss). Divergente: %s. Declaratia NU se "
-            "genereaza - gardul nu alege singur cine are dreptate; verifica agregarea (factura "
-            "scapata din pull/suma, baza pe tip gresit, dublare) si datele." % linii)
+            "D390: rezumatul declarației nu se potrivește cu recalculul făcut separat din facturile "
+            "intracomunitare (o factură lipsă, o bază pe tipul greșit sau o dublare). Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

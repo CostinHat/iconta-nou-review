@@ -33,10 +33,37 @@ from core import repo_control_fiscal_api as _repo
 PRAG_URMARIT_ZILE = 30   # termen in <= 30 zile, nedepus -> galben
 
 
+#: periodicitatea declarațiilor care pot ajunge în „Înainte de preluare” ca NECUNOAȘTERE pe un an (existența firmei, dividendele):
+#: anuale (D205, D101), trimestriale (D100; D406 la neplătitor — singurul caz în care D406 ajunge aici), altfel lunare.
+_PERIODICITATE_NECLAR = {"d205": "an", "d101": "an", "d100": "trim", "d406": "trim"}
+
+
+def perioada_canonica(an, luna, fel):
+    """Perioada unei declarații, în forma ecranelor (DS cap.4 v2.85): luna „LL/AAAA”, trimestrul „T3/2026”, anul „2026”.
+    [Retest 2, pct.14] „perioade în trei formate («iun», «T3», «03.2026», «04/2026»)” — una, produsă aici."""
+    if fel == "an":
+        return "%d" % an
+    if fel == "trim":
+        return "T%d/%d" % ((int(luna) + 2) // 3, an)
+    return "%02d/%d" % (int(luna), an)
+
+
+def _fel_din_text(txt):
+    t = str(txt or "")
+    if t.startswith("anual") or t.isdigit():
+        return "an"
+    if len(t) == 2 and t[0] == "T" and t[1].isdigit():
+        return "trim"
+    return "luna"
+
+
 def separa_neclar_inainte_de_preluare(neclar, preluare):
     """(neclar, inainte) — [08.10.2026, retest pct.8] o NECUNOAȘTERE al cărei domeniu se încheie înaintea lunii preluării (D100 / D205
     pe 2025 la o firmă preluată în 09/2026) nu e „Nu pot verifica” al iConta.eu: e dinaintea preluării și stă în grupul acela, cu
-    motivul ei. Domeniul vine pe intrare (`domeniu_pana`, „AAAA-LL”); o intrare fără domeniu rămâne unde era."""
+    motivul ei. Domeniul vine pe intrare (`domeniu_pana`, „AAAA-LL”); o intrare fără domeniu rămâne unde era.
+    [Retest 2, pct.10] „D100 / D406 / D205 au «termen» fără dată, n-au perioada pe rând și n-au buton individual de marcare.” Domeniul
+    se desface în PERIOADELE declarației (an / trimestru / lună, `_PERIODICITATE_NECLAR`), fiecare rând cu perioada, termenul și
+    (prin `luna`) butonul de marcare — ca rândurile obligațiilor."""
     if not preluare:
         return neclar, []
     prag = "%04d-%02d" % preluare
@@ -44,10 +71,19 @@ def separa_neclar_inainte_de_preluare(neclar, preluare):
     for x in neclar:
         dp = str(x.get("domeniu_pana") or "")
         if dp and dp < prag:
-            an = int(dp[:4])
-            inainte.append(dict(x, an=x.get("an") or an, luna=x.get("luna"),
-                                motiv="Perioadă dinaintea preluării în iConta.eu (%02d/%d) — %s" % (preluare[1], preluare[0],
-                                                                                                     x.get("motiv") or "")))
+            dd = str(x.get("domeniu_de") or dp)
+            fel = _PERIODICITATE_NECLAR.get(x.get("tip"), "luna")
+            pas = {"an": 12, "trim": 3}.get(fel, 1)
+            a, m = int(dd[:4]), int(dd[5:7])
+            m = ((m - 1) // pas + 1) * pas          # luna de ancoră a perioadei (3/6/9/12, 12 la an)
+            while "%04d-%02d" % (a, m) <= dp and (a, m) < tuple(preluare):
+                inainte.append(dict(x, an=a, luna=m, perioada=perioada_canonica(a, m, fel),
+                                    termen=_termen(a, m, tip=x.get("tip")).isoformat(),
+                                    motiv="Perioadă dinaintea preluării în iConta.eu (%02d/%d) — %s" % (preluare[1], preluare[0],
+                                                                                                         x.get("motiv") or "")))
+                m += pas
+                if m > 12:
+                    a, m = a + 1, m - 12
         else:
             ramase.append(x)
     return ramase, inainte
@@ -212,7 +248,7 @@ def ic_fapt_din_db(conn, schema, an):
     return False
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None, d390_luni_neplatitor=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -264,13 +300,15 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
 
     # [tip_lowercase] tip = CHEIE de join (canonic lowercase, ca dispecerul/CHEIE_DUK); forma ANAF
     # uppercase traieste in CHEIE_DUK + se face upper() DOAR la randare, nu in coloana. Vezi DECIZII.
-    def adauga(tip, a, luna_perioada, perioada_txt, tip_scad, incert=False):
+    def adauga(tip, a, luna_perioada, perioada_txt, tip_scad, incert=False, fapt=None):
         term = _termen(a, luna_perioada, tip=tip_scad)
         if _in_fereastra(term):
             item = {"tip": tip.lower(), "an": a, "luna": luna_perioada,
-                    "termen": term.isoformat(), "perioada": perioada_txt}
+                    "termen": term.isoformat(), "perioada": perioada_canonica(a, luna_perioada, _fel_din_text(perioada_txt))}
             if incert:
                 item["incert"] = True   # [P4] perioada DESCHISA (D390 posibil, nu ferm) -> marcaj gri-semafor in UI
+            if fapt:
+                item["fapt"] = fapt     # [Retest 2 pct.9] pe ce se bazează obligația (ca la D301)
             datorate.append(item)
 
     # [P3 / R2′ 21.08.2026] Fiecare producator isi NUMESTE felul afirmatiei; nu se deduce din campuri.
@@ -305,10 +343,11 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         neaplicabile.append(_af.afirmatie("statut", tip.lower(), motiv,
                                           statut=statut, statut_din=statut_din))
 
-    def neaplic_fapt(tip, a, luna_p, motiv, temei_completitudine):
+    def neaplic_fapt(tip, a, luna_p, motiv, temei_completitudine, fel="luna"):
         """Fapt constatat pe o perioada ANUME. Temeiul completitudinii e OBLIGATORIU: un fapt negativ
         („nicio operatiune IC in luna") se sprijina pe ce ne face sa credem ca am vazut tot."""
         neaplicabile.append(_af.afirmatie("fapt", tip.lower(), motiv, an=a, luna=luna_p,
+                                          perioada=perioada_canonica(a, luna_p, fel),   # [Retest 2 pct.14]
                                           temei_completitudine=temei_completitudine))
 
     # [C - regula 4] declaratie de EXISTENTA (D100/D101/D406-neplatitor): o RESTANTA pe un an in care NU pot
@@ -345,11 +384,11 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         if d100_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
             if d100_fapt(a, luna_final) is False:
                 neaplic_fapt("D100", a, luna_final,
-                    "D100 nu se datorează pe %s %d — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
+                    "D100 nu se datorează pe %s — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
                     "microîntreprinderilor se declară numai pentru trimestrele cu venituri; declarația fără "
-                    "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % (perioada_txt, a),
+                    "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % perioada_canonica(a, luna_final, "trim"),
                     temei_completitudine="trimestrul nu are nici venituri, nici facturi emise — nu doar venituri 0; "
-                                         "dacă evidența nu putea spune, declarația ar fi rămas datorată")
+                                         "dacă evidența nu putea spune, declarația ar fi rămas datorată", fel="trim")
                 return
             # True (are bază) sau None (nu se poate ști, ex. facturi necontabilizate) -> emit (reminder)
         adauga("D100", a, luna_final, perioada_txt, "d100")
@@ -493,7 +532,8 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 continue                        # in afara ferestrei -> nici nu intrebam faptul (economie interogari)
             fapt = d390_fapt(a, m)
             if fapt is True:
-                adauga("D390", a, m, _LUNI_NUME[m], "d390")     # datorat, INDIFERENT de bifa
+                adauga("D390", a, m, _LUNI_NUME[m], "d390",     # datorat, INDIFERENT de bifa
+                       fapt=f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}")
                 if operatiuni_ic is False:
                     contradictie.append((a, m))                 # profil "fara IC" vs facturi IC reale -> semnal
             elif fapt is False:
@@ -509,9 +549,9 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                         gri_luna("D390", a, m, _inc)
                     else:
                         neaplic_fapt("D390", a, m,
-                            "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune numai "
+                            "D390 nu se datorează pe %s — nicio operațiune intracomunitară în lună. Se depune numai "
                             "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
-                            "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a),
+                            "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % perioada_canonica(a, m, "luna"),
                             temei_completitudine="lună calendaristică încheiată, confirmată doar pe "
                                                  "ultima lună închisă, fără documente primite de la "
                                                  "ANAF și neînregistrate pe ea")
@@ -522,15 +562,15 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                         adauga("D390", a, m, _LUNI_NUME[m], "d390", incert=True)   # [P4] perioada deschisa = posibil, nu ferm
                     else:
                         gri_luna("D390", a, m,
-                                 "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
-                                 "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
+                                 "Perioada %s încă deschisă — nu pot stabili încă exigibilitatea "
+                                 "operațiunilor intracomunitare." % perioada_canonica(a, m, "luna"))
                 elif operatiuni_ic is None:      # profil necompletat -> gri necompletat (doar semafor)
                     if jos is None:
                         gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
                 # operatiuni_ic False + luna deschisa -> profil declara fara IC -> nu emitem
         if contradictie:                        # [contradictie] operatiuni_ic=False vs facturi IC reale -> semnal, nu blocare (ca F185)
-            luni_txt = ", ".join("%s %d" % (_LUNI_NUME[m], a) for (a, m) in contradictie)
-            gri_contradictie("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
+            luni_txt = ", ".join(perioada_canonica(a, m, "luna") for (a, m) in contradictie)
+            gri_contradictie("D390", "Profilul firmei declară fără operațiuni intracomunitare, dar există facturi "
                         "intracomunitare în perioada %s. Verificați Vectorul fiscal (operațiuni intracomunitare) — "
                         "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt,
                              sursele="Vectorul fiscal (operațiuni intracomunitare) vs facturile "
@@ -541,8 +581,17 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         # Decizie pe FLAG, fara DB -> nu atinge tabele care pot lipsi la un tenant de partida simpla (ex. d301_operatiuni).
         if operatiuni_ic is None:
             gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
-        elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat, altfel gri
-            if inreg_art317:
+        elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat (pe lunile cu fapt), altfel gri
+            if inreg_art317 and d390_luni_neplatitor:
+                # [Retest 2, pct.9] „Restanțele D390 arată pe ce se bazează (lunile cu operațiuni intracomunitare), ca D301.”
+                # Pe FAPT, din aceleași surse ca D301 (d301_operatiuni + facturile IC primite): D390 se depune numai pentru lunile în
+                # care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2).
+                _luni = {}
+                for a, m in per_luni:
+                    if m in _luni.setdefault(a, d390_luni_neplatitor(a)):
+                        adauga("D390", a, m, _LUNI_NUME[m], "d390",
+                               fapt=f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}")
+            elif inreg_art317:
                 for a, m in per_luni:
                     adauga("D390", a, m, _LUNI_NUME[m], "d390")
             else:
@@ -573,14 +622,14 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None, d390_luni_neplatitor=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
     Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara callback-uri de fapt
     (matricea de 64 il apara). d390_fapt/d112_fapt/existenta_fapt/d100_fapt = callback-uri pe fapt, date de
     evalueaza_firma (are conn_schema); None in teste/matrice."""
     return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
                               existenta_fapt=existenta_fapt, d100_fapt=d100_fapt,
-                              d390_incomplet=d390_incomplet)
+                              d390_incomplet=d390_incomplet, d390_luni_neplatitor=d390_luni_neplatitor)
 
 
 def _dmy(iso):
@@ -608,7 +657,7 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
     if term205 <= limita:
         suma, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
         if suma > 0:
-            datorate.append({"tip": "d205", "an": Y, "luna": 12, "perioada": f"anual {Y}",
+            datorate.append({"tip": "d205", "an": Y, "luna": 12, "perioada": perioada_canonica(Y, 12, "an"),
                              "termen": term205.isoformat(),
                              "fapt": f"dividende distribuite în {Y} (rulaj cont 457)"})
         elif are_note:
@@ -651,9 +700,9 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
             if m in luni_an.get(a, set()):
                 term = scadente.scadenta_data("d301", a, luna=m)
                 if term <= limita:
-                    datorate.append({"tip": "d301", "an": a, "luna": m, "perioada": _LUNI_NUME[m],
+                    datorate.append({"tip": "d301", "an": a, "luna": m, "perioada": perioada_canonica(a, m, "luna"),
                                      "termen": term.isoformat(),
-                                     "fapt": f"operațiuni intracomunitare înregistrate în {_LUNI_NUME[m]} {a}"})
+                                     "fapt": f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}"})
                     vreo = True
         if not vreo:
             # [absenta_observatie 20.08.2026] NU „nu se datorează", ci „nu pot verifica". Tabelul gol
@@ -843,7 +892,7 @@ def limite_verificarii(azi, jos=None, sus_zile=PRAG_URMARIT_ZILE, vc=None, inchi
     out = [
         {"fel": "acoperire",
          "text": "Compar obligațiile cu evidența din iConta și cu declarațiile înregistrate aici. "
-                 "NU compar cu ce are ANAF în SPV: o declarație depusă direct la ANAF și "
+                 "Nu compar cu ce are ANAF în SPV: o declarație depusă direct la ANAF și "
                  "neînregistrată în aplicație nu apare ca depusă — o marchezi «depusă în afara iConta.eu»."},
         {"fel": "perimetru",
          "text": "Am privit perioada %s → %s. Surse: facturile, notele validate, e-Factura primită "
@@ -952,9 +1001,12 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # [21.08.2026] Inainte de a AFIRMA ca o luna n-a avut operatiuni IC, intrebam daca evidenta lunii
     # e completa cat putem sti (e-Facturi descarcate si neinregistrate). Poarta intarita, nu convertita.
     _d390_incomplet = lambda a, l: _d390.evidenta_incompleta_sau_neinchisa(conn_schema, schema, a, l)
+    # [Retest 2 pct.9] neplătitorul înregistrat art.317: lunile cu operațiuni IC, din aceleași surse ca D301
+    _d390_luni_neplat = lambda a: (_ci_sal.d301_luni_operatiuni(conn_schema, schema, a)   # noqa: E731
+                                   | _ci_sal.d301_luni_facturi_ic(conn_schema, schema, a))
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
                               existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt,
-                              d390_incomplet=_d390_incomplet)
+                              d390_incomplet=_d390_incomplet, d390_luni_neplatitor=_d390_luni_neplat)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

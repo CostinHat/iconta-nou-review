@@ -50,6 +50,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca `d100.p
 nu seteaza search_path - conn vine din db.get_conn(tenant)).
 """
 
+from core.pdf_util import diferenta as _dif, bani as _bani   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -167,8 +168,8 @@ def reconciliaza(conn, perioada, res, manual=None):
     if gen != suma_cale2:
         divergente.append({
             "cod_oblig": cod_oblig,
-            "eticheta": "impozit %s (cod %s), baza=%d x cota=%s%%" % (
-                regim, cod_oblig, _q(baza), procent),
+            "eticheta": "impozitul %s (codul %s), baza %s × cota %s%%" % (
+                regim, cod_oblig, _bani(_q(baza), "lei"), ("%s" % Decimal(procent).normalize()).replace(".", ",")),
             "generator": gen, "cale2": suma_cale2, "diferenta": gen - suma_cale2})
     return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
@@ -180,11 +181,9 @@ def verifica_reconciliere(conn, perioada, res, manual=None):
     rap = reconciliaza(conn, perioada, res, manual)
     if rap["divergente"]:
         linii = "; ".join(
-            "cod %s (%s): generator=%d vs cale2=%d (dif %d)" %
-            (d["cod_oblig"], d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
+            _dif(d["eticheta"], d["generator"], d["cale2"], d["diferenta"])
             for d in rap["divergente"])
         raise ReconciliereD100(
-            "D100 A DOUA CALE: obligatia generatorului NU se reconciliaza cu recalculul independent "
-            "al bazei din sursa (venituri cont 70x, note validate). Divergente: %s. Declaratia NU se "
-            "genereaza - gardul nu alege singur cine are dreptate; verifica agregarea si notele." % linii)
+            "D100: impozitul din declarație nu se potrivește cu recalculul făcut separat din veniturile "
+            "din conturile 70x (note validate). Diferențe: %s. Declarația nu se generează: aplicația nu alege singură care dintre cele două calcule e corect. Verifică datele perioadei; dacă sunt corecte, anunță echipa iConta." % linii)
     return rap

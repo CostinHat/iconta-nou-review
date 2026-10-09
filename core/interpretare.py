@@ -67,7 +67,7 @@ class Interpretare:
                  temei_legat=None):
         def cere(v, nume, explic):
             if not (v or "").strip() if isinstance(v, str) or v is None else not v:
-                raise InterpretareIncompleta("interpretarea %r fara `%s`: %s" % (cheie, nume, explic))
+                raise InterpretareIncompleta("interpretarea %r fără `%s`: %s" % (cheie, nume, explic))  # invariant-intern-ok: registrul de interpretări, verificat la încărcare
 
         cere(cheie, "cheie", "fara nume nu poate fi ceruta de nimeni")
         cere(text_citat, "text_citat",
@@ -80,23 +80,23 @@ class Interpretare:
 
         if forma not in INCERTITUDINI:
             raise InterpretareIncompleta(
-                "forma de incertitudine %r nu e in nomenclator; cele declarate: %s. Daca alegerea ta "
-                "nu incape in niciuna, e semn ca nu legea a lasat loc."
+                "forma de incertitudine %r nu e în nomenclator; cele declarate: %s. Dacă alegerea ta "
+                "nu incape în niciuna, e semn ca nu legea a lăsat loc."
                 % (forma, ", ".join(sorted(INCERTITUDINI))))
 
         v = list(variante or [])
         if len(v) < 2:
-            raise InterpretareIncompleta(
-                "interpretarea %r are %d variante. O interpretare FARA variantele enumerate nu e o "
-                "interpretare, e o valoare deghizata: daca nu poti numi CEALALTA varianta, legea nu "
-                "lasa loc si ce ai facut e o citire, nu o alegere." % (cheie, len(v)))
+            raise InterpretareIncompleta(  # invariant-intern-ok: registrul de interpretări, verificat la încărcare
+                "interpretarea %r are %d variante. O interpretare FĂRĂ variantele enumerate nu e o "
+                "interpretare, e o valoare deghizata: dacă nu poți numi CEALALTĂ varianta, legea nu "
+                "lasa loc și ce ai făcut e o citire, nu o alegere." % (cheie, len(v)))
         nume_var = [x[0] for x in v]
         if ales not in nume_var:
             raise InterpretareIncompleta(
-                "varianta aleasa %r nu e printre cele enumerate (%s) - atunci lista nu descrie "
-                "spatiul real al alegerii." % (ales, ", ".join(nume_var)))
+                "varianta aleasă %r nu e printre cele enumerate (%s) - atunci lista nu descrie "
+                "spațiul real al alegerii." % (ales, ", ".join(nume_var)))
         if arbitru_confirma is False and not (arbitru_spune or "").strip():
-            raise InterpretareIncompleta(
+            raise InterpretareIncompleta(  # invariant-intern-ok: registrul de interpretări, verificat la încărcare
                 "interpretarea %r spune ca arbitrul o CONTRAZICE, dar nu spune CE zice. Un dezacord "
                 "nedocumentat e un dezacord ascuns (P8)." % cheie)
 

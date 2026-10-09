@@ -181,9 +181,9 @@ def erori_generare(prof, manual):
         er.append("Lipsă adresa declarant (adresa_declarant).")
     # OBLIGATORII pe radacina (dovedit pe DUK: 'atributul trebuie sa existe').
     if not str(manual.get("functia_intocmit") or "").strip():
-        er.append("Lipsă funcția intocmit (functia_intocmit) - obligatoriu.")
+        er.append("Lipsă funcția întocmit (functia_intocmit) - obligatoriu.")
     if not str(manual.get("den_intocmit") or "").strip():
-        er.append("Lipsă nume intocmit (den_intocmit) - obligatoriu.")
+        er.append("Lipsă nume întocmit (den_intocmit) - obligatoriu.")
     contracte = manual.get("contracte") or []
     if not contracte:
         er.append("D114 nu se depune pe zero: cel putin un <contracte> (lucrator) e obligatoriu.")

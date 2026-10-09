@@ -314,7 +314,7 @@ def educatie_de_aratat(conn, cabinet_id):
     if posibil and not activ and nr > vazut_la:
         educatii.append({
             "cheie": "patru-ochi",
-            "titlu": "Validare in doi (patru ochi)",
+            "titlu": "Validare în doi (patru ochi)",
             "nr_validatori": nr,
         })
     return {"ok": True, "educatii": educatii}

@@ -21,5 +21,5 @@ def test_achizitie_in_registru():
     assert r["compensatie"] == Decimal("240.00")
 
 def test_achizitie_neinscris():
-    with pytest.raises(ValueError, match="NU este deductibila"):
+    with pytest.raises(ValueError, match="nu este deductibilă"):
         m.achizitie_de_la_agricultor(3000, False)

@@ -380,7 +380,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
     panou = document.createElement("div");
     panou.className = "clopot-panou";
     panou.id = "nav-clopot-panou";
-    panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se incarca…</div></div>`;
+    panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se încarcă…</div></div>`;
     ecran.appendChild(panou);
     const { api } = await import("./api.js?v=4242dc4353");
     let date;
@@ -407,7 +407,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=3803bf7e3b");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=dff603e22d");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu am putut deschide De validat:", e); }
@@ -417,7 +417,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=4242dc4353");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=ddc8c9cccc");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=ffea72127e");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -431,7 +431,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js?v=b30c085085");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
+              const { randeazaControl } = await import("./ecrane/control.js?v=6cad94dd59");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu am putut deschide control fiscal:", e); }
           }

@@ -109,7 +109,7 @@ def test_mutatie_suma_alterata_pica(conn_recon):
     with pytest.raises(ReconciliereD406) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, res)
     msg = str(ei.value)
-    assert "cont 4111 debit" in msg and "cale2=1000.00" in msg, msg
+    assert "contul 4111, debit" in msg and "recalculat 1.000,00 lei " in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -120,7 +120,7 @@ def test_mutatie_general_ledger_gol_pica(conn_recon):
     with pytest.raises(ReconciliereD406) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, res)
     msg = str(ei.value)
-    assert "cont 4111" in msg and "saft=0.00" in msg, msg
+    assert "contul 4111" in msg and "în SAF-T 0,00 lei" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -138,4 +138,4 @@ def test_mutatie_dezechilibru_dubla_partida_pica(conn_recon):
             break
     with pytest.raises(ReconciliereD406) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, res)
-    assert "DEZECHILIBRU dubla partida" in str(ei.value), str(ei.value)
+    assert "totalul debitelor" in str(ei.value), str(ei.value)

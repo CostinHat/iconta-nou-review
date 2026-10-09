@@ -27,7 +27,11 @@ MODUL = "registru_inventar"
 
 #: Nomenclator INCHIS. Norma numeste exact trei ocazii la care se intocmeste registrul; nu e o
 #: enumerare exemplificativa, e lista lor.
+from core.pdf_util import bani as _bani   # [Retest 2 pct.2]
 MOMENTE = ("inceput_activitate", "sfarsit_exercitiu", "incetare_activitate")
+#: [Retest 2 pct.2] momentul inventarierii în cuvinte (ecranul nu afișează cheia „sfarsit_exercitiu”)
+ETICHETE_MOMENT = {"inceput_activitate": "la începutul activității", "sfarsit_exercitiu": "la sfârșitul exercițiului",
+                   "incetare_activitate": "la încetarea activității"}
 
 TEMEI_OBLIGATIE = Temei(
     "Lege", 82, 1991, art="20",
@@ -89,6 +93,9 @@ TEMEI_MOMENTE = Temei(
 #: `valideaza`. `cont` nu e o coloana a formularului, dar norma cere elementele *detaliat pe fiecare
 #: cont de activ si de pasiv*, deci contul e ce face randul identificabil, nu o eticheta in plus.
 CAMPURI_CERUTE = ("cont", "element", "valoare_contabila", "valoare_inventar")
+#: [Retest 2 pct.2] numele coloanelor registrului, cum le citește contabilul (mesajul nu arată cheia câmpului)
+ETICHETE_CAMP = {"cont": "contul", "element": "elementul inventariat", "valoare_contabila": "valoarea contabilă",
+                 "valoare_inventar": "valoarea de inventar", "cauza": "cauza diferenței"}
 
 
 class InregistrareIncompleta(ValueError):
@@ -127,12 +134,12 @@ def valideaza(date):
     for c in CAMPURI_CERUTE:
         if _gol(date.get(c)):
             raise InregistrareIncompleta(
-                "Registrul-inventar cere «%s», iar campul e gol. Norma: %s" % (c, TEMEI_CONTINUT),
+                "Registrul-inventar cere %s, iar câmpul e gol. Norma: %s" % (ETICHETE_CAMP.get(c, c), TEMEI_CONTINUT),
                 camp=c, temei=str(TEMEI_CONTINUT))
     if date.get("momentul") not in MOMENTE:
         raise InregistrareIncompleta(
-            "moment necunoscut %r; norma numeste exact trei: %s"
-            % (date.get("momentul"), ", ".join(MOMENTE)), camp="momentul",
+            "Momentul inventarierii nu e unul din cele trei prevăzute de normă: %s."
+            % ", ".join(ETICHETE_MOMENT[m] for m in MOMENTE), camp="momentul",
             # `TEMEI_MOMENTE`, nu `TEMEI_CONTINUT`: aici nu se refuza un camp din CONTINUTUL
             # registrului, ci un moment pe care norma nu-l prevede. Doua refuzuri diferite, doua
             # temeiuri diferite — iar cel gresit ar trimite cititorul la alt paragraf.
@@ -140,8 +147,8 @@ def valideaza(date):
     d = diferenta(date["valoare_contabila"], date["valoare_inventar"])
     if d != 0 and _gol(date.get("cauza")):
         raise InregistrareIncompleta(
-            "randul are o diferenta de %s, iar coloana 6 cere cauza ei. O diferenta fara cauza e un "
-            "plus sau un minus pe care nu-l explica nimeni. Norma: %s" % (d, TEMEI_CONTINUT),
+            "Rândul are o diferență de %s lei, iar coloana 6 cere cauza ei. O diferență fără cauză e un "
+            "plus sau un minus pe care nu-l explică nimeni. Norma: %s" % (_bani(d), TEMEI_CONTINUT),
             camp="cauza", temei=str(TEMEI_CONTINUT))
     return d
 
@@ -210,11 +217,11 @@ def registru(conn, schema, exercitiu, momentul="sfarsit_exercitiu"):
         "fapt", tip="registru_inventar",
         motiv="Registrul-inventar (cod 14-1-2), ținut potrivit art. 20 din Legea 82/1991",
         temei_completitudine=(
-            "toate rândurile înscrise în registru pentru exercițiul %d, momentul %s, în "
-            "ordinea numărului curent. **Cuprinde ce s-a inventariat și s-a înscris** — coloana 4 "
+            "toate rândurile înscrise în registru pentru exercițiul %d, inventarierea %s, în "
+            "ordinea numărului curent. Cuprinde ce s-a inventariat și s-a înscris — coloana 4 "
             "(valoarea de inventar) vine din numărarea faptică, nu din balanță, deci un registru "
             "gol nu înseamnă «nicio diferență», înseamnă «nicio inventariere înscrisă»"
-            % (exercitiu, momentul)),
+            % (exercitiu, ETICHETE_MOMENT.get(momentul, momentul))),
         an=exercitiu, luna=None, unde=Unde("registru", "inventar"),
         **{
         "momentul": momentul,

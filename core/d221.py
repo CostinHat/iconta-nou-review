@@ -115,7 +115,7 @@ def erori_generare(prof, an, manual):
         else:
             locuri.append(loc)
         if str(a.get("optiune") or "0") not in {"0", "1"}:
-            er.append("Activitate %d: optiune invalidă (0/1)." % i)
+            er.append("Activitate %d: opțiune invalidă (0/1)." % i)
         produse = a.get("produse") or []
         if not produse:
             er.append("Activitate %d: cere cel puțin un produs (produse[])." % i)
@@ -134,7 +134,7 @@ def erori_generare(prof, an, manual):
         if len(coduri) != len(set(coduri)):
             er.append("Activitate %d: codp duplicat (unic în cadrul unei activități)." % i)
     if len(locuri) != len(set(locuri)):
-        er.append("localitate duplicata intre activități (trebuie unica).")
+        er.append("localitate duplicată intre activități (trebuie unică).")
     asociati = manual.get("asociati") or []
     if forma == "1" and asociati:
         er.append("forma_org=1 (individual): nu se completează asociati.")
@@ -168,7 +168,7 @@ def erori_generare(prof, an, manual):
     # bloc imputernicit all-or-nothing
     imp = [str((manual.get("imputernicit") or {}).get(k) or "").strip() for k in ("den_r", "cif_r", "adresa_r")]
     if any(imp) and not all(imp):
-        er.append("Imputernicit: den_r, cif_r și adresa_r trebuie completate impreuna (all-or-nothing).")
+        er.append("Împuternicit: den_r, cif_r și adresa_r trebuie completate împreună (all-or-nothing).")
     return er
 
 

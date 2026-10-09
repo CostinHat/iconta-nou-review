@@ -139,6 +139,6 @@ def test_cele_cinci_perechi_sunt_cele_din_norma():
 
     OMFP 2634/2015 anexa 2, Balanța de verificare cu cinci egalități (cod 14-6-30/a): „soldurile inițiale …; totalul sumelor
     debitoare și creditoare ale lunii precedente …; rulajele curente …; totalul sumelor …; soldurile finale”."""
-    assert [p[0] for p in da.PERECHI_BALANTA] == ["sold initial", "sume precedente", "rulaje curente", "total sume", "sold final"]
+    assert [p[0] for p in da.PERECHI_BALANTA] == ["sold inițial", "sume precedente", "rulaje curente", "total sume", "sold final"]
     assert {p[1] for p in da.PERECHI_BALANTA} == {"si_d", "prec_d", "rul_d", "tot_d", "sf_d"}
     assert {p[2] for p in da.PERECHI_BALANTA} == {"si_c", "prec_c", "rul_c", "tot_c", "sf_c"}

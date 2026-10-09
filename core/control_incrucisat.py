@@ -55,6 +55,15 @@ TOLERANTA = Decimal("1")  # 1 leu: D300 rotunjeste la leu, contabilitatea are ba
 MODUL = "control_incrucisat"
 
 
+
+from core.common import cate as _cate   # [Retest 2 pct.14]
+
+def _fara_eticheta(e):
+    """Mesajul unei excepții, fără eticheta de protocol `PERIOADA_BLOCATA:` (o taie și handlerul global, main.py). [Retest 2 pct.2]"""
+    return str(e).replace("PERIOADA_BLOCATA: ", "")
+
+
+
 def declara(tip, sursa_declarat):
     """[08.10.2026, decizia Costin U2] „Fără nicio declarație, mesajul e «nedeclarat», nu «diferă de contabilitate».”
 
@@ -70,6 +79,11 @@ REGULI = "2026.2"
 
 def _d(v):
     return Decimal(str(v or 0))
+
+
+def _rand_formular(rand):
+    from core.d300_randuri import rand_formular   # [Retest 2 pct.2] rândul din formular, nu atributul XML
+    return rand_formular(rand)
 
 
 def _lei(x):
@@ -252,9 +266,9 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
     Ciorna nu intra in rulaj si NU inchide constatarea: verdele vine dupa patru-ochi."""
     necontate = necontate or []
     # [interdictia 32] DIN CE s-a comparat, spus o data si folosit in ambele temeiuri de mai jos.
-    _de_unde = ("din rândurile DEPUSE, persistate la depunere" if sursa_declarat == "depus"
-                else "REGENERAT acum — nu s-a păstrat ce s-a depus, deci comparația e evidența "
-                     "de azi față de decontul care S-AR genera azi")
+    _de_unde = ("din rândurile salvate la depunere" if sursa_declarat == "depus"
+                else "recalculat acum — ce s-a depus nu s-a păstrat, deci se compară evidența de azi cu decontul "
+                     "care s-ar genera azi")
     # TVA deductibilă = R27_2 (TOTAL taxă deductibilă), NU R31_2 (care e doar AJUSTAREA
     # pro-rata, goala la pro_rata 100%). Bug dovedit 16.07.2026: pe tenant_002 D300
     # declara corect R27_2=210 (achizitie ORANGE), dar comparatia pe R31_2=0 vs 4426=210
@@ -273,7 +287,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
         fara_nota = [f for f in grup if not f.get("are_ciorna")]
         cu_ciorna = [f for f in grup if f.get("are_ciorna")]
         tva_grup = sum(_d(f.get("tva")) for f in grup)
-        temei = (f"D300 rând {rand} ({_de_unde}; facturi {fel} în lună, art. 281 CF) vs "
+        temei = (f"D300 {_rand_formular(rand)} ({_de_unde}; facturi {fel} în lună, art. 281 CF) față de "
                  f"rulaj {sens} cont {cont} pe lună, numai note validate "
                  f"(ciorna e propunere, nu evidență).")
         mesaj = (f"{eticheta}: {declara('D300', sursa_declarat)} {_lei(decl)}, contul {cont} are {_lei(contabil)} "
@@ -359,7 +373,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
         if decl == 0 and contabil == 0:
             continue
         dif = decl - contabil
-        temei = (f"D300 rând {rand} ({_de_unde}; rezultatul decontului, sold la sfârșitul perioadei fiscale) vs "
+        temei = (f"D300 {_rand_formular(rand)} ({_de_unde}; rezultatul decontului, sold la sfârșitul perioadei fiscale) față de "
                  f"rulaj {sens} cont {cont}, numai note validate. Reconciliază rezultatul, nu doar "
                  f"totalurile colectată/deductibilă.")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
@@ -447,13 +461,13 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
         contabil = _d(rulaje.get(cont, {}).get("credit", 0))
         dif = decl - contabil
         cod_txt = "+".join(coduri)
-        de_unde = ("din XML-ul DEPUS, persistat la depunere" if sursa_declarat == "depus"
-                   else "din XML-ul REGENERAT acum — nu s-a păstrat ce s-a depus, deci comparația "
-                        "e evidența de azi față de declarația care S-AR genera azi")
-        temei = (f"D112 angajatorA cod {cod_txt} ({de_unde}) vs "
+        de_unde = ("din declarația depusă, salvată la depunere" if sursa_declarat == "depus"
+                   else "recalculată acum — ce s-a depus nu s-a păstrat, deci se compară evidența de azi cu declarația "
+                        "care s-ar genera azi")
+        temei = (f"D112, obligațiile angajatorului cu codul {cod_txt} ({de_unde}), față de "
                  f"rulaj credit cont {cont} pe lună, numai note validate. "
                  f"Toleranță {_lei(tol)}: D112 rotunjește la leu, evidența ține bani "
-                 f"({nr_salariati} salariați × 0,5 lei).")
+                 f"({_cate(nr_salariati, 'salariat', 'salariați')} × 0,5 lei).")
         # [interdictia 32] DIN CE s-a comparat e un FAPT despre constatare, deci e camp - nu doar o
         # fraza in temei. Un consumator (ecran, gard, raport) trebuie sa poata intreba structura,
         # nu sa caute un cuvant intr-o proza destinata omului.
@@ -575,7 +589,7 @@ def verifica_d112(conn, schema, an, luna):
             actiune = "Completează profilul firmei și salariații, apoi reîncearcă."
         return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
                     "d112", "Salarii", "D112 nu s-a putut genera.",
-                    f"NU pot verifica salariile: declarația nu se poate calcula ({e}).", an, luna,
+                    f"Nu pot verifica salariile: declarația nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
@@ -625,9 +639,24 @@ def verifica_tva(conn, schema, an, luna):
     if _prof.get("platitor_tva") is False:
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [], "facturi_necontabilizate": [],
                 "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
+                # [Retest 2 pct.9] spus pe ecran, nu tăcut
+                "nu_se_aplica": ["D300 față de contabilitate: nu se aplică — firma nu e plătitoare de TVA, deci nu depune decontul D300."],
                 "modul": MODUL, "reguli": REGULI}
     try:
-        _xml, res = _d300.genereaza(conn, schema, Perioada(an, luna=luna))
+        # [Retest 2, 09.10.2026] Decontul se generează pe perioada LUI, nu pe luna evaluată: la trimestrial, luna 10 e în T4, al cărui
+        # decont poartă eticheta 12 (DUK regula R18: „Decontul trimestrial se depune pentru una din lunile …”). Generat pe luna 10, cădea
+        # în R18 și firma trimestrială apărea „nu se poate verifica” în fiecare lună din mijlocul trimestrului.
+        from datetime import timedelta as _td
+        try:
+            _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(_prof))
+            _per_decont = Perioada((_sf - _td(days=1)).year, luna=(_sf - _td(days=1)).month)
+        except ValueError:
+            _inc = _sf = None                      # tipul decontului necompletat: generarea spune ea de ce nu se poate
+            _per_decont = Perioada(an, luna=luna)
+        _xml, res = _d300.genereaza(conn, schema, _per_decont)
+        if _inc is None:
+            _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(_prof))
+        _ult = _sf - _td(days=1)
     except Exception as e:
         from core.perioada import PerioadaNeconfirmata
         if isinstance(e, PerioadaNeconfirmata):
@@ -643,7 +672,7 @@ def verifica_tva(conn, schema, an, luna):
         return {"an": an, "luna": luna, "stare": "gri",
                 "constatari": [_gri_liber(
                     "d300", "TVA", "D300 nu s-a putut genera.",
-                    f"NU pot verifica TVA: decontul nu se poate calcula ({e}).", an, luna,
+                    f"Nu pot verifica TVA-ul: decontul nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "facturi_necontabilizate": [],
                 "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
@@ -652,14 +681,12 @@ def verifica_tva(conn, schema, an, luna):
     # FEREASTRA FISCALA (3a): rulajele si facturile se compara pe ACEEASI fereastra ca D300 - pentru
     # trimestriali D300 agrega tot trimestrul (fereastra_tva), deci comparatia cu O luna calendaristica
     # dadea rosu fals garantat. Foloseste perioada fiscala TVA din vectorul firmei (tip_decont).
-    _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(_prof))
+    # (fereastra `_inc`/`_sf` și ultima ei lună `_ult` sunt calculate mai sus, odată cu generarea)
     _de, _pana = _inc.isoformat(), _sf.isoformat()
     # [interdictia 32 / R40] Intai ce s-a DEPUS. Cheia depunerii NU e luna curenta, ci ULTIMA LUNA A
     # FERESTREI TVA: pentru trimestriali, coada scrie luna 3/6/9/12 (eticheta decontului), nu luna
     # calendaristica. Fereastra e semi-deschisa [inceput, sfarsit), deci ultima luna e sfarsit-1 zi.
     # Fara corectia asta, cautarea ar rata sistematic exact firmele trimestriale - si ar rata TACUT.
-    from datetime import timedelta as _td
-    _ult = _sf - _td(days=1)
     _gasit_dep, _randuri_dep = _d300_depus_randuri(conn, schema, _ult.year, _ult.month)
     sursa_declarat = "regenerat"
     if _gasit_dep and _randuri_dep:
@@ -833,7 +860,7 @@ def compara_d390(baze, ic_facturi, patru_ochi=True):
                 remediu={"fel": "investigatie",
                     "cauza": ("Operațiuni IC în evidența validată care nu apar în D390 — mai puțin sigur "
                               "decât inversul (poate fi decalaj de perioadă: nota validată în această "
-                              "fereastră, recapitulativa cu altă cadență, sau operațiune neraportată încă)."),
+                              "fereastră, recapitulativă cu altă cadență, sau operațiune neraportată încă)."),
                     "actiune": ("Verifică dacă operațiunile trebuie raportate la VIES pentru această "
                                 "perioadă sau au fost/urmează a fi raportate în altă recapitulativă."),
                     "facturi": []}))
@@ -907,7 +934,7 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
             "d390", "D390 vs D300 depus" + per_sufix,
             ("Declarație-vs-declarație: D390 bază IC vs D300 depus (rânduri persistate). "
              "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
-            "Nu există D300 depus în fereastră — nu pot compara recapitulativa cu decontul.",
+            "Nu există D300 depus în fereastră — nu pot compara declarația recapitulativă (D390) cu decontul.",
             "declarațiile D300 depuse prin aplicație, în fereastra TVA")]
     if randuri is None:
         return [_absenta_libera(
@@ -936,7 +963,7 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
                       "derivat (dublă numărare, refuzată). Absența lui înseamnă că la generare nu "
                       "erau facturi IC înregistrate — nu că n-au existat operațiuni.")
         temei = (f"Declarație-vs-declarație: D390 bază {cheie} față de D300 depus, {_rand_om} "
-                 f"(rândurile salvate la depunere). D390 = recapitulativa VIES, sursă mai autoritară.{absent_txt}")
+                 f"(rândurile salvate la depunere). D390 = declarația recapitulativă VIES, sursă mai autoritară.{absent_txt}")
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
                 mesaj=f"{eticheta}: D390 și D300 depus coincid ({_lei(decl)}).", temei=temei, remediu=None))
@@ -1022,10 +1049,10 @@ def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
     if rec_d300 is None:
         constatari.append(_absenta_libera(
             "d390", "D390 vs D300 depus",
-            ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
-             "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
-             "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
-            "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
+            ("Declarație față de declarație: baza D390 a operațiunilor intracomunitare față de rândurile intracomunitare ale "
+             "D300 efectiv depus (salvate la depunere). Niciun D300 nu e încă depus prin aplicație, deci comparația devine "
+             "posibilă după prima depunere. E o absență, nu o diferență — de aceea nu e semnalată cu roșu."),
+            "Nicio depunere D300 prin aplicație — nu am cu ce compara declarația recapitulativă (D390).",
             "depunerile D300 persistate prin aplicație"))
     else:
         an_d, luna_d, randuri_d = rec_d300
@@ -1082,7 +1109,7 @@ def verifica_d390(conn, schema, an, luna):
                 # ca supervizorul sa nu citeasca „n-am verificat" drept „n-am ce semnala".
                 "orizontal_rulat": False, "constatari": [_gri_liber(
                     "d390", "Intracomunitar", "D390 nu s-a putut genera.",
-                    f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
+                    f"Nu pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({_fara_eticheta(e)}).",
                     an, luna,
                     {"fel": "investigatie", "cauza": _cauza, "actiune": _actiune, "facturi": []})],
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
@@ -1093,7 +1120,15 @@ def verifica_d390(conn, schema, an, luna):
     # Fereastra PROPRIE (nu luna curentă — D300 se depune în luna următoare, altfel permanent gri):
     # cea mai recentă perioadă cu D300 depus. Baza D390 se RECALCULEAZĂ pe acea perioadă, ca ambele
     # laturi să fie ACEEAȘI perioadă (comparație reală, nu perioade diferite). Perioada = afișată explicit.
-    constatari += orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna)
+    # [Retest 2, pct.9] „firma depune D301, deci pare neplătitoare de TVA, iar verificarea D390 față de D300 n-are sens pentru ea.
+    # […] unde D300 nu se aplică, afișează «nu se aplică».” Neplătitorul (art.317) nu depune D300: confruntarea nu rulează.
+    with conn.cursor() as cur:
+        _rp = _repo.select_firma_profil(cur, schema)
+    nu_se_aplica = []
+    if _rp is not None and _rp[0] is False:
+        nu_se_aplica.append("D390 față de D300 depus: nu se aplică — firma nu e plătitoare de TVA, deci nu depune decontul D300.")
+    else:
+        constatari += orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna)
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
     elif any(c["stare"] == "gri" for c in constatari):
@@ -1103,7 +1138,7 @@ def verifica_d390(conn, schema, an, luna):
     necontate_tot = sum(1 for d in ("emisa", "primita")
                         for f in ic_facturi.get(d, []) if not f.get("contabilizata"))
     return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
-            "orizontal_rulat": True, "constatari": constatari,
+            "orizontal_rulat": not nu_se_aplica, "constatari": constatari, "nu_se_aplica": nu_se_aplica,
 
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, automat din facturi) față de (1) evidența "
                        f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) și (2) D300 "
@@ -1139,7 +1174,7 @@ def _gri_cota_tva(an, luna, motiv):
     return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
                 "d300", "Cotă TVA facturi emise",
                 "Conformitatea cotei TVA nu s-a putut evalua.",
-                f"NU pot verifica cota TVA a facturilor emise: {motiv}", an, luna,
+                f"Nu pot verifica cota TVA a facturilor emise: {motiv}", an, luna,
                 {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
                  "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
                  "facturi": []})],
@@ -1325,7 +1360,7 @@ def _thunk_d100(conn, schema, an, luna):
     prof, venituri, cheltuieli = _g.pull(conn, schema, per)
     obligatii, _ = _g.deriva_obligatii(prof, venituri, cheltuieli, a2, l2)
     if not obligatii:
-        raise _SkipSubiect("D100 fara obligatie (venituri cont 70x = 0) - nimic de reconciliat.")
+        raise _SkipSubiect("D100 fără obligație (venituri cont 70x = 0) - nimic de reconciliat.")
     res = _g.calcul_d100(prof, a2, l2, obligatii)
     return lambda: _r.reconciliaza(conn, per, res, None)
 
@@ -1356,7 +1391,7 @@ def _thunk_d205(conn, schema, an, luna):
     # replica de aici împărțea după cotele actuale și ar fi divergit FALS de generator pe orice firmă cu o cesiune.
     prof, beneficiari = _g.pull_beneficiari(conn, schema, per)
     if not beneficiari:
-        raise _SkipSubiect("D205 fara dividende platite (cont 457) - nimic de reconciliat.")
+        raise _SkipSubiect("D205 fără dividende plătite (cont 457) - nimic de reconciliat.")
     res = _g.calcul_d205(prof, per.an, beneficiari)
     return lambda: _r.reconciliaza(conn, schema, per, res, None)
 
@@ -1612,7 +1647,7 @@ def reconciliaza_declaratii(conn, schema, an, luna):
         plan.append(("d300", "D300 (decont TVA)", _thunk_d300))
         plan.append(("d394", "D394 (informativa TVA)", _thunk_d394))
         if operatiuni_ic is True:
-            plan.append(("d390", "D390 (recapitulativa IC)", _thunk_d390))
+            plan.append(("d390", "D390 (declarația recapitulativă)", _thunk_d390))
     if platitor is False and _d301_are_ops(conn, schema, an, luna):
         plan.append(("d301", "D301 (TVA neinregistrati)", _thunk_d301))
     if are_sal:

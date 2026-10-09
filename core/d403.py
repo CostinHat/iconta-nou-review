@@ -331,7 +331,7 @@ def erori_generare(prof, manual):
     except (TypeError, ValueError):
         d_rec = -1
     if d_rec not in (0, 1):
-        er.append("d_rec obligatoriu 0 (initiala) sau 1 (rectificativa).")
+        er.append("d_rec obligatoriu 0 (inițială) sau 1 (rectificativă).")
 
     polite = _polite(manual)
     if not polite:
@@ -362,7 +362,7 @@ def erori_generare(prof, manual):
         if pol.get("data_i_polita") and di is None:
             er.append(pp + "data_i_polita format ZZ.LL.AAAA.")
         elif di is not None and di[0] > an:
-            er.append(pp + "anul din data_i_polita > anul raportarii (DUK regula R33).")
+            er.append(pp + "anul din data_i_polita > anul raportării (DUK regula R33).")
 
         pers = _persoane(pol)
         if not pers:
@@ -425,14 +425,14 @@ def erori_generare(prof, manual):
                 er.append(pb + "Calit_pers<>1: stare_ben trebuie să fie null (DUK regula R79.2).")
             nat = b.get("nationalitate")
             if nat and str(nat).strip().upper() not in _NATIONALITATI:
-                er.append(pb + "Nationalitate neregasita în nomenclator.")
+                er.append(pb + "Naționalitate neregăsită în nomenclator.")
             if b.get("data_nasterii") and _parse_data(b.get("data_nasterii")) is None:
                 er.append(pb + "Data_nasterii format ZZ.LL.AAAA.")
             if calit in (1, 3, 4) and stat and stat != "RO":
                 raportabila = True
         if pers and not raportabila:
             er.append(pp + "trebuie o persoana cu Stat_SR<>RO și Calit_pers în (1,3,4) "
-                           "(persoana raportabila; DUK regula polita).")
+                           "(persoana raportabilă; DUK regula polita).")
 
         for ei, ev in enumerate(_evenimente(pol), 1):
             pe = pp + "eveniment #%d: " % ei

@@ -130,14 +130,14 @@ def erori_generare(prof, manual):
     if not str(manual.get("nume_c") or "").strip():
         er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("initiala_c") or "").strip():
-        er.append("Lipsă initiala tata (initiala_c).")
+        er.append("Lipsă inițială tată (initiala_c).")
     if not str(manual.get("prenume_c") or "").strip():
         er.append("Lipsă prenume contribuabil (prenume_c).")
     if not _cnp_valid(manual.get("cif_c")):
         er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control).")
     sect = manual.get("sectiuni") or []
     if not sect:
-        er.append("Lipsă sectiuni de venit (sectiuni) - minim o pereche (țară, categorie).")
+        er.append("Lipsă secțiuni de venit (secțiuni) - minim o pereche (țară, categorie).")
     vazute = set()
     for i, s in enumerate(sect, 1):
         categ = _int(s.get("categ_venit"))
@@ -148,7 +148,7 @@ def erori_generare(prof, manual):
             er.append("Secțiunea %d: lipsă statul (cod țară ISO-3166 numeric)." % i)
         if categ is not None and tara is not None:
             if (tara, categ) in vazute:
-                er.append("Secțiunea %d: perechea (statul=%s, categ_venit=%s) duplicata - trebuie unica."
+                er.append("Secțiunea %d: perechea (statul=%s, categ_venit=%s) duplicată - trebuie unica."
                           % (i, tara, categ))
             vazute.add((tara, categ))
         if _int(s.get("imp2")) and categ != _CATEG_SALARII:

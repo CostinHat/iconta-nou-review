@@ -74,7 +74,7 @@ def select_facturi(cur, inceput, sfarsit):
     # si rezumat2 supra-declarate fata de D300 rd.9. Se adauga acelasi filtru de status ca D300 (sursa
     # unica `nomenclator_status_factura`: ciorna/de_preluat/descarcata/anulata/stornata excluse).
     cur.execute("""
-                    SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti,
+                    SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti, f.serie, f.numar,
                            f.moneda, f.curs_bnr, f.total_lei, f.tva_lei,
                            COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tva_incasare,
                            f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,

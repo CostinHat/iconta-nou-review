@@ -139,8 +139,8 @@ def _localitate(judet_code, oras, adresa="", eticheta="firma"):
         if m:
             return "SECTOR" + m.group(1)
         raise EDateIncomplete(
-            "Localitate incompleta (%s): firma e in Bucuresti dar lipseste sectorul "
-            "(SECTOR1..6) in adresa. Completeaza sectorul inainte de trimitere." % eticheta)
+            "Localitate incompletă (%s): firma e în București dar lipsește sectorul "
+            "(SECTOR1..6) în adresa. Completează sectorul înainte de trimitere." % eticheta)
     return oras or "-"
 
 
