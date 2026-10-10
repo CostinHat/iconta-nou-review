@@ -84,6 +84,11 @@ BASELINE = {
     # valul use-case. Sunt praguri OPERATIONALE (anti-abuz), din aceeasi familie cu `PRAG_ESECURI`
     # si `FEREASTRA_ESECURI_SEC`, cele doua care formau clichetul de pana acum.
     "stare_partajata.py": 4,
+    # [R1 registrul unic, 10.10.2026] 0 -> 1: `cont_valid.apropiate(..., n=3)` — numărul de conturi sugerate la un refuz, prag
+    #     OPERAȚIONAL. Fișierul a intrat în domeniu fiindcă registrul VEDE mai mult: valoarea 3 (`d212.COTA_TRANSFER_PANA_3_ANI`,
+    #     CF art.111 alin.(1) lit.a) a intrat în `COTE` cu constantele ancorate, iar un implicit egal cu o valoare din registru aduce
+    #     modulul în scan (`_poarta_valoare_de_registru`). Nu e o cifră nouă — aceeași clasă ca E1 de mai sus.
+    "cont_valid.py": 1,
     "curs_bnr.py": 2,
     "intrastat.py": 1,
     # [DECIZII 65, 22.09.2026] `verifica_vies(timeout=15)` — timeout de retea (tehnic, nu fiscal).

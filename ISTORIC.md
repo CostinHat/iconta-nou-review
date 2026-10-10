@@ -2055,3 +2055,20 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   excepții 14 -> 15; gardul jurnalului TVA vedea în `woocommerce._importa` un `UPDATE firma_profil` lângă argumentul `platitor_tva`
   (scrierea datei citirii mutată în `_marcheaza_citirea`); antetul predării n-avea un SHA la „pe commit”. Reparate, recomis.
 
+
+## 10.10.2026 (seara) — Registrul unic de parametri fiscali, R0 + R1 (comanda Costin 08.10.2026)
+
+Reluat după „Răspunsul §6” (`11a03cb8`), la „Poți trece la următorul pas din listă”. R1 spart înainte de execuție în R1a–R1d (TESTE.md).
+- `common.ancoreaza` scrie în `COTE` (32 de constante ancorate devin intrări ale registrului; `CONSTANTE_ANCORATE` șters); temeiul fără
+  `data_in` se refuză — `PLAFON_CRESA_BAZA` primește 2019-01-01 (Legea 165/2018 art.34, verbatim în corpus).
+- `common.registru_complet()` + `module_care_ancoreaza()` (AST): registrul întreg nu mai depinde de ordinea importurilor; cititorii lui și
+  `core/conftest.py` îl cheamă.
+- R0 comis: `core/scan_registru.py` (inventarul: registrul 55 de chei / 71 de intrări, în afara lui ancorat 36 · sursat 33 · proză 40 ·
+  nesursat 129, +1 față de `11a03cb8`: `cont_valid.py:44`) și `core/registru_fiscal.py` (starea derivată, verdictele APROB, exportul în forma `verif_temeiuri.json`).
+- Gărzile registrului întreg, aplicate celor 32: etichete, vigoarea articolelor (15 articole măsurate pe formele din corpus), 4 id-uri de
+  portal verificate pe portal, forma a 4 surse, populațiile reverificării; clichetul constantelor: `cont_valid.py` +1 (operațional).
+- Pe drum: registrul număra drept cititor al propriilor intrări (plafonul de creșă ieșea „DEPUS”) — reparat în `consumatori_temei`;
+  `gen_index` dădea sursă lui `PORTAL_IDS.json` — reparat, cu gard.
+- Poarta întâi a respins (1 failed / 7979 passed, pytest 68m59s): `test_refuzuri` — al doilea refuz din `ancoreaza` (temeiul fără
+  `data_in`) e un refuz fără temei într-un modul care citează legea; e de FORMĂ, notat lângă el, clichetul `common.py` 16 -> 17 și
+  cifra normei 77 (CONFORMITATE) 138 -> 139, cu data.

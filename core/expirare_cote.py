@@ -15,7 +15,7 @@ Rulabil: python3 -m core.expirare_cote. Rulat LUNAR din cron (ziua 1) - RAPORT, 
 import os
 
 from core import observare
-from core.common import COTE, ETICHETE_COTE, cote_neconfirmate
+from core.common import ETICHETE_COTE, cote_neconfirmate, registru_complet
 
 # Eticheta umana pentru fiecare cheie din COTE — tine de COTE, deci sta langa ea (`common.ETICHETE_COTE`, retest 08.10: si mesajul
 # `PerioadaIndisponibila` o foloseste, fara sa traga dupa sine modulul asta). Acoperirea (ETICHETE == chei COTE) e pazita de test.
@@ -33,8 +33,9 @@ def acoperire_lipsa():
     """(chei COTE FARA eticheta, etichete FARA cheie COTE). Gol = acoperire completa. Garda: raportul
     e util doar daca fiecare valoare are eticheta umana; o eticheta fara cheie (drift) = registrul s-a
     schimbat si nimeni n-a aliniat."""
-    fara_eticheta = sorted(n for n in COTE if n not in ETICHETE)
-    eticheta_straina = sorted(n for n in ETICHETE if n not in COTE)
+    cote = registru_complet()   # R1: registrul întreg, cu constantele ancorate
+    fara_eticheta = sorted(n for n in cote if n not in ETICHETE)
+    eticheta_straina = sorted(n for n in ETICHETE if n not in cote)
     return fara_eticheta, eticheta_straina
 
 

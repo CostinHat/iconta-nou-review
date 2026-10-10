@@ -20,6 +20,13 @@ os.environ.setdefault("ANAF_REDIRECT_URI", "https://iconta.eu/anaf/oauth/callbac
 
 import pytest  # noqa: E402
 
+# R1, registrul unic de parametri fiscali (10.10.2026): constantele ancorate intră în `common.COTE` la importul modulului lor. Suita
+# îl vede ÎNTREG de la început, oricare ar fi ordinea testelor — altfel un gard pe registrul întreg ar trece singur și ar pica în
+# suită (sau invers), după cine a importat ce înaintea lui.
+from core import common as _common  # noqa: E402
+
+_common.registru_complet()
+
 
 @pytest.fixture(autouse=True)
 def _fara_anaf_la_emitere(monkeypatch, request):

@@ -1,21 +1,20 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **10.10.2026: lotul „Răspunsul §6” — cifrele F1–F5 aprobate opresc publicarea la orice diferență, D406 blochează ca TVA-ul, vocea a treia pe toată clasa, clicul legat după o cerere măsurat și reparat (220), R193 închisă (C5 = 0) + 221–224 (magazinul, contul neplătitorului) găsite pe drum**
+# PREDARE LANȚ — **10.10.2026: registrul unic de parametri fiscali, R1 — `ancoreaza` scrie în `COTE` (al doilea dicționar dispare), registrul complet oricare ar fi importurile, starea și exportul intrărilor; urmează R2 (amprentele „înainte”)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-10** (ziua; lotul „Răspunsul §6” — comanda Costin 10.10.2026, verbatim în DECIZII), pe secțiunile de
-  stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `dc5e44df` (cel de dinaintea lotului, pe care producția rula de la 10:13:13); lotul „Răspunsul §6” e în commitul
-  care conține această predare — SHA-ul și four-way-ul în raport.
+- **ultima rescriere**: **2026-10-10** (seara; pasul R1 al registrului unic — comanda Costin 08.10.2026, verbatim în DECIZII), pe
+  secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `11a03cb8` (lotul „Răspunsul §6”, pe care producția rula de la 14:56:10; four-way închis); R1 e în commitul care
+  conține această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII; pus pe
-pauză la R1 pentru loturile „Retest 08.10” și „Retest 2”, care l-au precedat la cererea lui Costin; R0 — `core/scan_registru.py`, `core/test_scan_registru.py`,
-`core/registru_fiscal.py` — e pe disc, NECOMIS, în afara commitului „Retest 08.10”). Tot restul e livrat, cu poartă completă, four-way și ZIP în
+**O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII), în
+execuție: R0 și R1 comise (commitul care conține această predare), urmează R2. Tot restul e livrat, cu poartă completă, four-way și ZIP în
 `/home/costin/ghid_incoming/`. **O decizie așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 08.10 §6”, §6 — și FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
 
@@ -71,7 +70,7 @@ aplicației**, nu „în așteptarea unei teme”:
   fișiere în `frontend_test/` + `scripts/` (lista în raport; cele 7 din `core/` sunt legitime: adresa aplicației în linkuri, sonda producției, agenda). `scan_casete.py` trecut pe `PROBA_BAZA` (8011) în lot; restul așteaptă
   regula: implicitul tuturor = instanța de probă (cu producția numai cerută explicit), sau rămâne cum e.
 - **Deciziile cerute de raportul „Registrul deficiențelor” (09.10, §6) — ÎNCHISE** de comanda „Retestul plasei” (DECIZII 09.10.2026).
-- **Registrul de parametri fiscali**: **pasul următor din agendă** (`core.agenda.urmatorul_pas()` -> R1); R0 pe disc, necomis.
+- **Registrul de parametri fiscali**: în execuție — R0 + R1 comise; **pasul următor din agendă** (`core.agenda.urmatorul_pas()`) -> R2.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
   NIR 1, iar 371 ține 1.150 lei — stornările 8 și 9 din `miscari_stoc`, scrise greșit la respingerea notelor 121/122. Codul e reparat
@@ -174,9 +173,8 @@ aplicației**, nu „în așteptarea unei teme”:
 
 1. **Ritualul de început** (CLAUDE.md §5): `pwd; hostname; git log --oneline -1; git rev-parse --is-inside-work-tree;
    ./venv/bin/python -m core.agenda` — trebuie `/home/costin/iconta_nou`, `iconta-prod`, arbore git valid.
-2. **Comanda deschisă** (pasul următor din agendă după „Răspunsul §6”): registrul unic de parametri fiscali + interdicția 26 (DECIZII 08.10.2026, „Comanda Costin: registrul unic …”).
-   Pașii R0–R16 sunt în TESTE.md („În lucru acum”, al doilea fir); **se reia de la R1**: R0 (`core/scan_registru.py` + testul lui,
-   `core/registru_fiscal.py`) e pe disc, necomis — se citește întâi, se comite cu R1.
+2. **Comanda deschisă**: registrul unic de parametri fiscali + interdicția 26 (DECIZII 08.10.2026, „Comanda Costin: registrul unic …”).
+   Pașii R0–R16 sunt în TESTE.md („În lucru acum”, al doilea fir); R0 + R1 comise (DECIZII 10.10.2026, „R1”), **se reia de la R2**.
    **Fără o comandă a lui Costin nu se pornește nimic altceva** (secțiunea de mai sus). Cu o comandă: firul se scrie întâi în TESTE.md
    („În lucru acum”, cu pașii), decizia în DECIZII.md (verbatim), apoi codul.
 3. **Fiecare temă se încheie la fel**: gard + mutație (backup cu `cp`, niciodată `git checkout`; `__pycache__` curățat) + probă pe
@@ -187,6 +185,11 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(10.10.2026, R1) Constantele ancorate sunt intrări în `COTE`** (cheia „<modul>.<NUME>”): `ancoreaza` refuză un temei fără `data_in`.
+  Orice cititor al registrului ÎNTREG cheamă `common.registru_complet()`, nu `COTE` direct — altfel vede doar ce s-a importat înaintea
+  lui. Gărzile registrului întreg (etichete, vigoarea articolului, id de portal, forma sursei, reverificarea) se aplică și unei constante
+  ancorate noi: una nouă cere eticheta, măsurarea articolului (`scripts/vigoare_articol.py`), id-ul actului în `PORTAL_IDS.json`.
 
 - **(10.10.2026, „Răspunsul §6”) Poarta citește PRODUCȚIA**: treapta „cifrele de referință” confruntă F1–F5 de pe producție (read-only)
   cu `scripts/cifre_referinta_aprobate.json`. O notă nouă pusă de Costin pe F1–F5 la retest OPREȘTE publicarea — ieșirea e aprobarea
@@ -418,7 +421,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **940** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1215** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |

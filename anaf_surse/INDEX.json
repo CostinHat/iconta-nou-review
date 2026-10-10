@@ -289,6 +289,13 @@
       "tip_forma": "consolidat_la_zi",
       "acopera": [
         {
+          "cota": "bacsis.COTA_IMPOZIT",
+          "data_in": "2023-01-01",
+          "valoare": "10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.64"
+        },
+        {
           "cota": "cam",
           "data_in": "2018-01-01",
           "valoare": "0.0225",
@@ -324,6 +331,132 @@
           "temei": "CF / art.84^1"
         },
         {
+          "cota": "cote_tva.COTA_REDUSA",
+          "data_in": "2025-08-01",
+          "valoare": "11",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.291"
+        },
+        {
+          "cota": "cote_tva.COTA_STANDARD",
+          "data_in": "2025-08-01",
+          "valoare": "21",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.291"
+        },
+        {
+          "cota": "d101.COTA_STANDARD",
+          "data_in": "2016-01-01",
+          "valoare": "16",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.17"
+        },
+        {
+          "cota": "d101.PRAG_IMCA_EUR",
+          "data_in": "2024-01-01",
+          "valoare": "50000000",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.18^1"
+        },
+        {
+          "cota": "d101g.COTA_STANDARD",
+          "data_in": "2016-01-01",
+          "valoare": "16",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.17"
+        },
+        {
+          "cota": "d212.COTA_FORFETARA_CEDARE",
+          "data_in": "2024-01-01",
+          "valoare": "20",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.84"
+        },
+        {
+          "cota": "d212.COTA_FORFETARA_DPI",
+          "data_in": "2018-03-23",
+          "valoare": "40",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.72^1"
+        },
+        {
+          "cota": "d212.COTA_IMPOZIT_NORMA",
+          "data_in": "2025-01-01",
+          "valoare": "10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.69^2"
+        },
+        {
+          "cota": "d212.COTA_IMPOZIT_VENIT",
+          "data_in": "2018-01-01",
+          "valoare": "10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.64"
+        },
+        {
+          "cota": "d212.COTA_MOSTENIRE",
+          "data_in": "2016-01-01",
+          "valoare": "1",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.111"
+        },
+        {
+          "cota": "d212.COTA_PREMII",
+          "data_in": "2018-01-01",
+          "valoare": "10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.110"
+        },
+        {
+          "cota": "d212.COTA_TRANSFER_PANA_3_ANI",
+          "data_in": "2023-01-01",
+          "valoare": "3",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.111"
+        },
+        {
+          "cota": "d212.COTA_TRANSFER_PESTE_3_ANI",
+          "data_in": "2023-01-01",
+          "valoare": "1",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.111"
+        },
+        {
+          "cota": "d212.PENSIE_NEIMPOZABIL_LUNAR",
+          "data_in": "2024-10-01",
+          "valoare": "3000",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.100"
+        },
+        {
+          "cota": "d212.PLAFON_JOCURI_NEIMPOZABIL",
+          "data_in": "2022-08-01",
+          "valoare": "66750",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.110"
+        },
+        {
+          "cota": "d212.PREMIU_NEIMPOZABIL",
+          "data_in": "2018-01-01",
+          "valoare": "600",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.110"
+        },
+        {
+          "cota": "d212.PROCENT_COMPENSARE_INVESTITII",
+          "data_in": "2024-01-01",
+          "valoare": "70",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.119"
+        },
+        {
+          "cota": "d212.PROCENT_COMPENSARE_PIERDERE",
+          "data_in": "2024-01-01",
+          "valoare": "70",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.118"
+        },
+        {
           "cota": "impozit_dividend",
           "data_in": "2026-01-01",
           "valoare": "0.16",
@@ -357,6 +490,20 @@
           "valoare": "0.10",
           "nivel_sursa": "MO",
           "temei": "CF / art.78"
+        },
+        {
+          "cota": "salarizare.PRAG_VENIT_DEDUCERE",
+          "data_in": "2023-01-01",
+          "valoare": "2000",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.77"
+        },
+        {
+          "cota": "taxare_inversa.PRAG_ELECTRONICE",
+          "data_in": "2016-01-03",
+          "valoare": "22500",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.331"
         }
       ]
     },
@@ -461,6 +608,16 @@
       "acopera": []
     },
     "d214": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d216_brosura_impozit_special_anaf.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d216_brosura_impozit_special_anaf.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -601,6 +758,11 @@
       "acopera": []
     },
     "d406_schema_anaf.xlsx": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "duk_instalat.json": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -1330,8 +1492,16 @@
     },
     "legea_165_2018_consolidat.txt": {
       "exista": true,
-      "tip_forma": null,
-      "acopera": []
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "common.PLAFON_CRESA_BAZA",
+          "data_in": "2019-01-01",
+          "valoare": "450",
+          "nivel_sursa": "MO",
+          "temei": "Legea 165/2018 art.19"
+        }
+      ]
     },
     "legea_165_2018_mf_2024.pdf": {
       "exista": true,
@@ -1509,16 +1679,12 @@
     "legea_244_2024.html": {
       "exista": true,
       "tip_forma": "forma_la_data",
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_244_2024.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_265_2022.html": {
       "exista": true,
@@ -1876,6 +2042,55 @@
       "tip_forma": "forma_la_data",
       "acopera": [
         {
+          "cota": "casa.PLAFON_INCASARE_PJ",
+          "data_in": "2023-11-11",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.3"
+        },
+        {
+          "cota": "casa.PLAFON_INCASARE_PJ_CC",
+          "data_in": "2023-11-11",
+          "valoare": "10000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.3"
+        },
+        {
+          "cota": "casa.PLAFON_PF",
+          "data_in": "2023-12-15",
+          "valoare": "10000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.4"
+        },
+        {
+          "cota": "casa.PLAFON_PLATA_CC_TOTAL",
+          "data_in": "2023-11-11",
+          "valoare": "10000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.3"
+        },
+        {
+          "cota": "casa.PLAFON_PLATA_PJ",
+          "data_in": "2023-11-11",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.3"
+        },
+        {
+          "cota": "casa.PLAFON_PLATA_PJ_TOTAL",
+          "data_in": "2023-11-11",
+          "valoare": "10000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.3"
+        },
+        {
+          "cota": "casa.PLAFON_SOLD_ZI_CC",
+          "data_in": "2023-12-15",
+          "valoare": "500000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art.4^2"
+        },
+        {
           "cota": "plafon_sold_casa",
           "data_in": "2015-05-09",
           "valoare": "50000",
@@ -1975,6 +2190,26 @@
       "acopera": []
     },
     "legea_98_2016.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "mf_ghid_coduri_facturi_efactura_v2_9.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "mf_ghid_coduri_facturi_efactura_v2_9.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "mf_ghid_coduri_facturi_efactura_v2_9.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "mf_ghid_coduri_facturi_efactura_v2_9.txt.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2632,8 +2867,16 @@
     },
     "opanaf_2194_2025_d394.txt": {
       "exista": true,
-      "tip_forma": null,
-      "acopera": []
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "d394.COTE",
+          "data_in": "2025-08-01",
+          "valoare": "(0, 5, 9, 11, 19, 20, 21, 24)",
+          "nivel_sursa": "MO",
+          "temei": "OPANAF 2194/2025 art."
+        }
+      ]
     },
     "opanaf_2736_2025_d212.txt": {
       "exista": true,
@@ -3622,8 +3865,16 @@
     },
     "ordin_2736_2025__anexa_306268.html": {
       "exista": true,
-      "tip_forma": null,
-      "acopera": []
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "d212.ZILE_AN_NORMA",
+          "data_in": "2026-01-01",
+          "valoare": "365",
+          "nivel_sursa": "MO",
+          "temei": "OPANAF 2736/2025 art."
+        }
+      ]
     },
     "ordin_2736_2025__anexa_306268.html.sha256": {
       "exista": true,
@@ -4898,8 +5149,16 @@
     },
     "oug_24_2026_contributie_solidaritate.txt": {
       "exista": true,
-      "tip_forma": null,
-      "acopera": []
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "d100_pozitia_116.PRAG_BRENT_USD",
+          "data_in": "2026-04-03",
+          "valoare": "70",
+          "nivel_sursa": "MO",
+          "temei": "OUG 24/2026 art.2"
+        }
+      ]
     },
     "oug_24_2026_contributie_solidaritate.txt.sha256": {
       "exista": true,
@@ -5221,6 +5480,46 @@
       "tip_forma": null,
       "acopera": []
     },
+    "saga_manual_topic32_iesiri_lei.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic32_iesiri_lei.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic32_iesiri_lei.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic32_iesiri_lei.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic76_import_date.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic76_import_date.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic76_import_date.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "saga_manual_topic76_import_date.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "structuraXML_D402_2022.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -5302,6 +5601,16 @@
       "acopera": []
     },
     "structura_D177_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D204_12022019.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D204_12022019.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -5397,6 +5706,36 @@
       "acopera": []
     },
     "versiuni.xml": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_facturi_clienti_rev1_2.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_facturi_clienti_rev1_2.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_facturi_clienti_rev1_2.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_facturi_clienti_rev1_2.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_portal_d394_infocm.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "winmentor_portal_d394_infocm.txt.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []

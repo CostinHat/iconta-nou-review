@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**760 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**763 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 723
+### `core/` — 726
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8822,6 +8822,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/scan_populatii_registre.py` — core/scan_populatii_registre.py — CE MULȚIME DE NOTE citește fiecare registru obligatoriu, pe aceeași lună.
 - `core/scan_provenienta.py` — core/scan_provenienta.py — de unde vine fiecare fisier din corpus. (23.08.2026)
 - `core/scan_refuz_tacut.py` — core/scan_refuz_tacut.py — cate refuzuri ale serverului nu ajung la om.
+- `core/scan_registru.py` — core/scan_registru.py — INVENTARUL registrului unic de parametri fiscali: ce e în registru și ce stă încă în afara lui.
 - `core/scan_respingeri.py` — core/scan_respingeri.py — ce coduri de respingere sunt CHIAR FOLOSITE in module?
 - `core/scan_rol_pe_efect.py` — core/scan_rol_pe_efect.py — INSTRUMENT: ce face fiecare rută, ca să se poată cere rolul după
 - `core/scan_simetrie_denumire.py` — Instrumentul simetriei de scriere a denumirii unei firme (R81, decis 28.08.2026).
@@ -9413,6 +9414,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_registre_art321.py` — GARD: cele doua registre ale art. 321 alin. (4) CF — ce le tine sa nu se strice tacut.
 - `core/test_registru_evidenta_fiscala.py` — GARD: registrul de evidenta fiscala — si mai ales ca nu devine un AL DOILEA calcul al aceluiasi an.
 - `core/test_registru_exceptii.py` — GARDĂ peste REGISTRUL DE EXCEPȚII al clichetului de afirmații. (P8, 22.08.2026)
+- `core/test_registru_fiscal.py` — GĂRZI R1 — registrul unic de parametri fiscali (`common.COTE`), comanda Costin 08.10.2026 (verbatim în DECIZII).
 - `core/test_registru_functionalitati.py` — Garda de integritate a FUNCTIONALITATI.csv (registrul canonic al functionalitatilor).
 - `core/test_registru_inventar.py` — GARD: registrul-inventar (14-1-2) — si mai ales defectul care l-ar face sa arate perfect.
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
@@ -9451,6 +9453,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_scadente.py` — Teste pentru scadentarul per declaratie (core/scadente.py), sursa unica de termene.
 - `core/test_scan_instrumente.py` — Garda instrumentului de FAZA 4 (`scripts/scan_instrumente.py`).
 - `core/test_scan_js_texte.py` — CALIBRAREA instrumentului JS — scrisă ÎNAINTE de prima măsurătoare, nu după.
+- `core/test_scan_registru.py` — GARDA instrumentului de inventar al registrului unic de parametri fiscali (`core/scan_registru.py`).
 - `core/test_schema_coloane.py` — Garda: coloanele referite in SQL EXISTA in schema reala a tabelelor tenant.
 - `core/test_scrieri_pana_in_declaratie.py` — Rutele care scriu în tabele din care se ridică declarații — probate PÂNĂ ÎN RÂNDUL DECLARAȚIEI.
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
@@ -10753,3 +10756,13 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | refuzul emiterii ajunge la contabil (422), nu ca 500 | `core/test_refuz_generator_422.py::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500` + `core/woocommerce.py` (comanda refuzată numită, celelalte importate) + plasa `e2e_magazin.py::test_def_224_…` | un apel `emite_factura`/`creeaza_factura` din use-case fără traducerea `ValueError`; o comandă refuzată care oprește sincronizarea | `except ValueError` scos din `_importa` -> roșu (și în browser: „eroare 500”) | numai familia emiterii; alte refuzuri `ValueError` neprinse ies tot prin handlerul global (500) |
 | harta casetelor din Control fiscal declară grupul „Înainte de preluare” | `frontend_test/vizual/harta_casete.py` (intrarea `inainte_de_preluare`) + `frontend_test/vizual/scan_casete.py` (titlul `— perioadă (N, …)`, rândurile din `<details>`) + `core/test_harta_casete.py` | un grup randat pe ecran fără așteptare scrisă (grupul exista din 08.10, artefactul nu se regenerase de la 21.08 — nepotrivirea nu se vedea) | titlul din hartă schimbat -> 2 roșii | artefactul se regenerează numai când un lot atinge ecranul (scanarea vizuală), deci un grup nou e prins la prima scanare, nu la commit |
 | plasa: 220–224 | `frontend_test/e2e/e2e_bloc_e.py::test_def_220_…`, `frontend_test/e2e/e2e_magazin.py::test_def_221…224` (magazinul ținut de un server HTTP local) | revenirea oricăreia dintre cele cinci deficiențe | câte o mutație pe copie, roșie (raportul lotului) | magazinul e simulat local: răspunsul unui WooCommerce real (paginare, alte câmpuri) nu e probat |
+
+## 10.10.2026 — Registrul unic de parametri fiscali, R1 (comanda Costin 08.10.2026)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| un singur registru: fiecare constantă ancorată e intrare în `COTE` | `core/common.py` (`ancoreaza` scrie în `COTE`; refuză temeiul fără `data_in` și a doua valoare) + `core/test_registru_fiscal.py::test_un_singur_registru_…` + `core/test_fiscalos_s2.py::test_s2_ancoreaza_refuza_…` | al doilea dicționar de (valoare, temei); o ancorare fără dată de valabilitate | `COTE[nume] = …` scos -> roșu (colectarea crapă: `KeyError` la `temei_ancorat`); verificarea `data_in` scoasă -> roșu | literalul ancorat trăiește încă în modulul lui, o singură intrare, fără istoric (R4); `agenda` citește `COTE` din textul lui `common.py`, deci resetarea propagată a bifelor nu vede o constantă ancorată schimbată — până la R4 |
+| registrul complet oricare ar fi ordinea importurilor | `core/common.py` (`module_care_ancoreaza` din AST, `registru_complet`) + cititorii registrului întreg + `core/conftest.py` + `core/test_registru_fiscal.py::test_registrul_e_complet_si_intr_un_interpretor_proaspat` | un gard pe registrul întreg care trece singur și pică în suită (sau invers); raportul lunar fără constantele ancorate | importurile scoase din `registru_complet` -> roșu (interpretor proaspăt: 0 în loc de 32) | un cititor nou al registrului întreg care citește `COTE` direct în loc de `registru_complet()` nu e prins mecanic — în suită îl acoperă `conftest` |
+| starea derivată, numai verdictul APROB, exportul în forma fișierului de verificare | `core/registru_fiscal.py` + `core/test_registru_fiscal.py` (stare / verdicte / export / `cota` pe ancorate) | o intrare „aprobată” fără verdict; un CORECTEAZA citit ca aprobare; un export fără constantele ancorate | verdictul ignorat -> roșu; filtrul APROB scos -> roșu; ancoratele scoase din export -> roșu | „verificat” = confirmarea executorului la sursă (interpretare de proces, DECIZII 10.10.2026) |
+| registrul nu e cititorul propriilor intrări | `core/consumatori_temei.py` (`nume_legate` exclude `COTE`) + `core/test_reverificare.py::test_ANTI_VACUU_si_distributia_pinata` | o constantă ancorată clasificată „DEPUS” fiindcă orice cititor al registrului devine consumatorul ei | excluderea lui `COTE` scoasă -> roșu (distribuția se mută: plafonul de creșă STABIL/DEPUS); căile `COTE.<modul>.<NUME>` neurmate -> roșu (`test_orice_temei_cu_frecventa_citibila_are_un_consumator`) | — |
+| fișierele de evidență ale corpusului n-au sursă | `anaf_surse/gen_index.py` (`_sursa_forma`: `.json` fără sursă) + `core/test_corpus_surse.py::test_fisierele_de_evidenta_ale_corpusului_n_au_sursa` | `PORTAL_IDS.json` etichetat „static.anaf.ro, inițială” fiindcă a fost atins azi | INDEX regenerat fără excludere -> roșu (văzut pe 10.10.2026) | mutația se vede numai în ziua în care un `.json` e atins (regula e pe data fișierului) |

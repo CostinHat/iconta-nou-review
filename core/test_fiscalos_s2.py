@@ -23,19 +23,11 @@ import pytest
 from core import (bacsis, casa, common, cote_tva, d100_pozitia_116, d101, d101g, d394, expirare_cote,
                   salarizare, scan_citate, taxare_inversa)
 
-# Registrul `common.CONSTANTE_ANCORATE` se umple la IMPORT. Parametrizarea generică de mai jos îl citește la colectare, deci
+# Constantele ancorate intră în registru (`common.COTE`, cheia „<modul>.<NUME>”; până la R1, 10.10.2026, `CONSTANTE_ANCORATE`) la IMPORT. Parametrizarea generică de mai jos îl citește la colectare, deci
 # un modul neimportat aici își scotea constantele din verificare când testul rula singur (d212 — Etapa 2 și 3 — lipsea din
 # lista de sus; în suita completă îl importa alt test, ascunzând golul). Modulele se derivă din cod, nu se enumeră.
-import glob as _glob  # noqa: E402
-import importlib as _importlib  # noqa: E402
-import os as _os  # noqa: E402
-
-_ANCORATOARE = sorted(
-    _os.path.basename(f)[:-3] for f in _glob.glob(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "*.py"))
-    if not _os.path.basename(f).startswith("test_") and _os.path.basename(f) != "common.py"
-    and re.search(r"\bancoreaza\b", open(f, encoding="utf-8").read()))
-for _m in _ANCORATOARE:
-    _importlib.import_module("core." + _m)
+_ANCORATOARE = common.module_care_ancoreaza()
+common.registru_complet()
 
 # nume -> (modul, valoare, (tip, nr, an, art, alin, lit)) - temeiul APROBAT in verif_temeiuri.json, re-verificat.
 APROBATE = {
@@ -74,8 +66,8 @@ def _campuri(t):
 def test_s2_constanta_ancorata_pe_temeiul_aprobat(nume):
     # MUTATIE: lit="b" -> "a" la casa.PLAFON_INCASARE_PJ_CC -> pica pe campuri; citat stricat -> pica pe verbatim.
     modul, valoare, campuri = APROBATE[nume]
-    assert nume in common.CONSTANTE_ANCORATE, "%s nu e ancorata (common.ancoreaza)" % nume
-    v, t = common.CONSTANTE_ANCORATE[nume]
+    assert nume in common.ancorate(), "%s nu e ancorata (common.ancoreaza)" % nume
+    v, t = common.ancorata(nume)
     assert getattr(modul, nume.split(".", 1)[1]) == v == valoare
     assert _campuri(t) == campuri, "%s: temei %s, aprobat %r" % (nume, t, campuri)
     assert t.nivel_sursa == "MO" and t.verificat_la == date(2026, 10, 1)
@@ -94,11 +86,11 @@ def _forme_legale(v):
     return forme
 
 
-@pytest.mark.parametrize("nume", sorted(common.CONSTANTE_ANCORATE))
+@pytest.mark.parametrize("nume", sorted(common.ancorate()))
 def test_s2_valoarea_e_in_propriul_citat(nume):
     # GENERIC: orice constanta ancorata (si una adaugata maine) isi poarta valoarea in citatul temeiului.
     # MUTATIE: casa.PLAFON_PF Decimal("10000") -> Decimal("15000") -> "15.000 lei" nu e in citat -> pica.
-    v, t = common.CONSTANTE_ANCORATE[nume]
+    v, t = common.ancorata(nume)
     valori = [x for x in (v if isinstance(v, tuple) else (v,)) if x != 0]   # 0 = structura (TIP_COTA_ZERO)
     for x in valori:
         assert any(re.search(re.escape(f) + r"(?![0-9])", t.text_citat) for f in _forme_legale(x)), (
@@ -169,7 +161,7 @@ def test_s2_mesajul_de_casa_citeaza_litera_plafonului_aplicat(ops, cc, cod, cons
     pr = [p for p in casa.verifica_plafon(ops, cash_and_carry=cc, la_data=date(2026, 6, 1)) if p["cod"] == cod]
     assert pr, "plafonul %s nu s-a declansat" % cod
     t = common.temei_ancorat(constanta)
-    assert Decimal(str(pr[0]["asteptat"])) == common.CONSTANTE_ANCORATE[constanta][0]
+    assert Decimal(str(pr[0]["asteptat"])) == common.ancorata(constanta)[0]
     assert re.search(r"art\. %s alin\. \(%s\)" % (re.escape(t.art), t.alin), pr[0]["temei"]), (cod, pr[0]["temei"])
     if t.lit:
         assert re.search(r"lit\. %s\)" % t.lit, pr[0]["temei"]), (cod, pr[0]["temei"], t)
@@ -177,15 +169,23 @@ def test_s2_mesajul_de_casa_citeaza_litera_plafonului_aplicat(ops, cc, cod, cons
 
 def test_s2_ancoreaza_refuza_doua_surse_si_temei_neobiect():
     # MUTATIE: scoate verificarea `vechi[0] != valoare` -> a doua ancorare cu alta valoare trece -> pica.
+    # R1 (10.10.2026): și temeiul fără `data_in` — o intrare de registru care nu spune de când e valabilă nu se selectează după dată.
+    # MUTAȚIE: verificarea `data_in is None` scoasă -> ancorarea fără dată trece -> pică.
     nume = "test_s2.__SINTETIC__"
     try:
-        assert common.ancoreaza(nume, 1, common.Temei("CF", art="1")) == 1
+        assert common.ancoreaza(nume, 1, common.Temei("CF", art="1", data_in="2020-01-01")) == 1
+        assert common.COTE[nume] == [(date(2020, 1, 1), 1, common.COTE[nume][0][2])], "ancorarea nu scrie în registru"
+        assert common.ancoreaza(nume, 1, common.Temei("CF", art="1", data_in="2020-01-01")) == 1   # aceeași valoare: idempotent
         with pytest.raises(ValueError):
-            common.ancoreaza(nume, 2, common.Temei("CF", art="1"))
+            common.ancoreaza(nume, 2, common.Temei("CF", art="1", data_in="2020-01-01"))
         with pytest.raises(TypeError):
             common.ancoreaza(nume + "2", 1, "CF art.1")
+        with pytest.raises(ValueError):
+            common.ancoreaza(nume + "3", 1, common.Temei("CF", art="1"))
+        assert nume + "3" not in common.COTE
     finally:
-        common.CONSTANTE_ANCORATE.pop(nume, None)
+        for k in (nume, nume + "2", nume + "3"):
+            common.COTE.pop(k, None)
 
 
 @pytest.mark.parametrize("nume,cheie", [
@@ -199,7 +199,7 @@ def test_s2_geamana_din_registru_nu_diverge(nume, cheie):
     # venit, scrierea in doua locuri a ramas (mutarea in registru = campania interdictiei 1 / R26). Pana atunci,
     # divergenta e imposibila: procentul de modul == valoarea CURENTA a cheii, si ambele pe acelasi articol.
     # MUTATIE: cote_tva.COTA_REDUSA 11 -> 9 -> 9/100 != 0.11 -> pica (citatul ar pica si el: „11%").
-    v, t = common.CONSTANTE_ANCORATE[nume]
+    v, t = common.ancorata(nume)
     vc, tc = common.cota(cheie, date(2026, 10, 1))
     assert Decimal(str(v)) / 100 == vc, "%s=%s, dar COTE[%s]=%s" % (nume, v, cheie, vc)
     assert (t.art, t.alin) == (tc.art, tc.alin), "%s pe %s, COTE[%s] pe %s" % (nume, t, cheie, tc)
@@ -207,5 +207,5 @@ def test_s2_geamana_din_registru_nu_diverge(nume, cheie):
 
 def test_s2_fiecare_modul_care_ancoreaza_e_in_registru():
     # gardul de mai sus nu are voie să depindă de ordinea în care alte teste importă modulele
-    prefixe = {k.split(".", 1)[0] for k in common.CONSTANTE_ANCORATE}
+    prefixe = {k.split(".", 1)[0] for k in common.ancorate()}
     assert _ANCORATOARE.count("d212") == 1 and set(_ANCORATOARE) <= prefixe, set(_ANCORATOARE) - prefixe

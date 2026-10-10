@@ -19171,3 +19171,56 @@ se rezolvă după nume, numai când numele e unic; `conn`/`cur`/`schema`/`ctx` n
 **`rezolvată pe commit` în CONFORMITATE (R193).** Registrele intră în commitul lotului (decizia 08.10 pct.5), deci o restanță rezolvată
 în el nu-și poate purta SHA-ul: `test_conformitate` primește, ca `test_deficiente`, marcajul „commitul care conține această intrare”;
 orice SHA scris trebuie în continuare să existe (mutație: un SHA inventat -> pică).
+
+## 10.10.2026 — Registrul unic de parametri fiscali, R1: `ancoreaza` scrie în `COTE`, starea și exportul (executarea comenzii din 08.10.2026)
+
+**Ce s-a hotărât (de executor, pe textul comenzii).** Comanda (verbatim în intrarea din 08.10.2026), pct.1: „Registrul existent COTE
+devine acest registru (se extinde, nu se face unul paralel); mecanismul `ancoreaza` se pliază pe el.” Măsurat pe `11a03cb8`:
+`ancoreaza` ținea 32 de constante într-un al doilea dicționar (`common.CONSTANTE_ANCORATE`, Pachet FiscalOS §2, 01.10.2026), umplut la
+import. Din R1, `ancoreaza(nume, valoare, temei)` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)` și întoarce tot
+valoarea — deci consumatorul o vede la fel, iar `cota(nume, data)` o selectează ca pe oricare alta. Dicționarul al doilea a dispărut;
+`ancorata(nume)` / `ancorate()` / `temei_ancorat(nume)` citesc registrul.
+- **Temeiul fără `data_in` se refuză.** O intrare de registru care nu spune de când e valabilă nu se poate alege după data operațiunii.
+  Singura fără dată era `common.PLAFON_CRESA_BAZA`: primește 2019-01-01, din Legea 165/2018 art.34, verbatim în corpus
+  (`anaf_surse/legea_165_2018_consolidat.txt`): „Prezenta lege intră în vigoare la data de 1 ianuarie 2019”; art.19 alin.(1) nu are
+  niciun marcaj de modificare în forma consolidată (`scripts/vigoare_articol.py`).
+- **Registrul complet nu depinde de ordinea importurilor.** `common.registru_complet()` importă modulele care CHEAMĂ `ancoreaza`
+  (derivate din arborele sintactic — un modul care doar pomenește cuvântul nu contează); îl cheamă cititorii registrului întreg
+  (`cote_neconfirmate`, `cote_volatile_fara_mo`, `expirare_cote.acoperire_lipsa`, `dependenti_act`, `scan_constante`,
+  `scan_valoare_in_citat`, `scan_registru`, `registru_fiscal`, `anaf_surse/gen_index.py`) și `core/conftest.py` la pornirea suitei.
+- **Starea unei intrări se derivă** (`core/registru_fiscal.py`, R0 comis acum): `aprobat` = verdictul APROB al arhitectului pe
+  `COTE/<nume>@<data_in>` din `registru_fiscal_verdicte.json` (cine și când din verdict); `verificat` = citat + `verificat_la` +
+  `de_cine`; `propus` = orice altceva. *INTERPRETARE CU TEMEI (de proces):* „verificat” = confirmarea executorului la sursă (forma pe
+  care registrul o avea deja), „aprobat” = verdictul arhitectului (pct.4). *Alternativa respinsă:* o stare scrisă de mână pe fiecare
+  intrare — a doua sursă de adevăr lângă `verificat_la`. *De reconfirmat* dacă „verificat” trebuie să însemne altceva.
+- **Exportul** are câmpurile fișierului de verificare (`verif_temeiuri.json`, citit pe 10.10.2026: parametru, unde_in_cod,
+  folosire_in_iconta, verdict, temei_final, atom, verbatim, valabilitate) plus valoarea și starea; verdictul gol, de completat.
+  Exportul integral pentru arhitect e R11 (după ce R6/R7 completează temeiurile).
+
+**Ce a cerut registrul unic de la gărzile registrului întreg (aceleași reguli pentru cele 32 de intrări noi):** etichete umane
+(`ETICHETE_COTE`, din citatul fiecăreia); articolele lor măsurate la sursă pentru interdicția 50 (`scripts/vigoare_articol.py` pe formele
+din corpus — toate confirmările din 01–03.10.2026 sunt ulterioare ultimei modificări); id-urile de portal ale celor patru acte noi în
+registru, verificate pe portal după titlul paginii (Legea 165/2018 202623, OPANAF 2194/2025 302310 — pagina n-are anexele, OPANAF
+2736/2025 305848, OUG 24/2026 309088); forma surselor (`gen_index.TIP_FORMA`) pentru cele patru fișiere.
+
+**Trei lucruri ieșite pe drum, reparate:**
+1. *Graful de consumatori număra registrul drept cititor.* `consumatori_temei.nume_legate` caută structurile modulului care țin același
+   obiect; `COTE` ține acum și obiectele ancorate, deci orice cititor al registrului (orice declarație) devenea consumatorul plafonului
+   de creșă — clasificat fals „DEPUS / 6 luni”. Registrul însuși se exclude: din el se citește după NUME (`cota`), nu după obiect.
+2. *`gen_index` atribuia sursă fișierelor proprii de evidență.* Regula „atins azi -> static.anaf.ro / inițială” l-a etichetat pe
+   `PORTAL_IDS.json`. Un `.json` al corpusului e scris de noi, nu adus: n-are sursă. Gard în `core/test_corpus_surse.py`.
+3. *Populațiile din `test_reverificare`.* „Din registru” însemna „sub podeaua globală până azi”; constantele ancorate n-au fost niciodată
+   sub ea, deci referința lor rămâne cadența de afară (`PRIMESC_PRAG_PESTE_PODEA` neschimbat, 14). De acum `cote_neconfirmate` le
+   citește din registru și le aplică podeaua (regula 1), adică le verifică mai des.
+
+**Clichetul constantelor nesursate:** `cont_valid.py` 0 -> 1 (`n=3`, numărul de sugestii — operațional). Fișierul a intrat în domeniu
+fiindcă valoarea 3 (`d212.COTA_TRANSFER_PANA_3_ANI`) e acum în registru, iar un implicit egal cu o valoare din registru aduce modulul în
+scan — aceeași clasă cu E1 (14.09): instrumentul vede mai mult, nu s-a scris o cifră nouă.
+
+**Limita, declarată:** literalul constantelor ancorate trăiește încă în modulul lor, cu o singură intrare și fără istoric; `agenda`
+(resetarea propagată a bifelor) citește `COTE` din textul lui `common.py`, deci nu vede o schimbare a unei constante ancorate. R4 le
+mută în declarația registrului, cu istoricul lor.
+
+*Completare (aceeași zi, după respingerea porții):* refuzul `ancoreaza` pe temeiul fără `data_in` e un refuz de FORMĂ (o eroare de program:
+intrarea de registru are nevoie de data ei), nu o regulă fiscală — notat lângă el; clichetul refuzurilor fără temei pe `core/common.py`
+16 -> 17, cifra normei 77 în CONFORMITATE 138 -> 139, datată.

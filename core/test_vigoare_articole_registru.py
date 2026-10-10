@@ -47,6 +47,26 @@ MODIFICARI = {
     # toate articolele ei. Refuzul e în direcția sigură (nu inventează un „STABIL"), dar motivul pe
     # care îl dă e fals — v. R111.
     ("Ordin 1604/2025", "1"): None,
+    # [R1, 10.10.2026] constantele ancorate au intrat în registru (`common.ancoreaza` scrie în COTE) — articolele lor, măsurate la
+    # sursă cu `scripts/vigoare_articol.py` pe formele din corpus (CF amprenta 2393786755c97dc5, Legea 70/2015 661b016484f74b52,
+    # Legea 165/2018 52dde38076983b91, OUG 24/2026 2f502e5f0d81ed0f); data = cel mai recent marcaj „modificat la” din articol:
+    ("CF", "18^1"): datetime.date(2026, 2, 25),        # alin.(5) modificat la 25-02-2026
+    ("CF", "64"): datetime.date(2018, 3, 23),          # alin.(1) modificat la 23-03-2018
+    ("CF", "69^2"): None,
+    ("CF", "72^1"): datetime.date(2018, 3, 23),        # capitolul II^1 completat (OUG 18/2018) la 23-03-2018
+    ("CF", "77"): datetime.date(2023, 1, 1),           # articolul modificat (OG 16/2022 pct.40) la 01-01-2023
+    ("CF", "84"): datetime.date(2026, 1, 1),           # alin.(1) și (3) modificate la 01-01-2026
+    ("CF", "100"): None,
+    ("CF", "110"): datetime.date(2025, 8, 1),          # alin.(2), (2^2) modificate la 01-08-2025
+    ("CF", "111"): datetime.date(2024, 12, 5),         # lit.d modificată la 05-12-2024
+    ("CF", "118"): datetime.date(2025, 1, 1),          # lit.b modificată la 01-01-2025
+    ("CF", "119"): datetime.date(2024, 1, 1),          # alin.(2), (3) modificate la 01-01-2024
+    ("CF", "331"): datetime.date(2023, 1, 1),          # lit.e teza introductivă modificată la 01-01-2023
+    ("Legea 70/2015", "3"): datetime.date(2023, 12, 15),   # lit.e modificată la 15-12-2023
+    ("Legea 70/2015", "4"): datetime.date(2023, 12, 15),   # alin.(1), (4) modificate la 15-12-2023
+    ("Legea 70/2015", "4^2"): datetime.date(2023, 12, 15), # alin.(1) modificat la 15-12-2023
+    ("Legea 165/2018", "19"): None,
+    ("OUG 24/2026", "2"): None,
 }
 
 # Un `Temei` care citează un act MODIFICATOR plus un număr de articol al Codului fiscal se citește ca

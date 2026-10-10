@@ -2,7 +2,10 @@
 """Corpus (2): genereaza manifestul anaf_surse/INDEX.json din COTE (temeiuri MO cu url local) + tabela
 tip_forma per fisier. INDEX = harta fisier -> {tip_forma, cote acoperite}. Deterministic (sortare stabila)."""
 import io, json, os
-from core.common import COTE
+from core.common import registru_complet
+
+# R1 (10.10.2026): registrul ÎNTREG, cu constantele ancorate (intră în COTE la importul modulului lor).
+COTE = registru_complet()
 
 # tabela manuala: tipul formei fiecarui fisier-sursa local.
 #   consolidat_la_zi  = forma consolidata la zi -> contine DOAR valoarea in vigoare acum (garda 2 refuza
@@ -64,6 +67,11 @@ TIP_FORMA = {
     "omfp_2634_2015_anexa2_norme_specifice.html": "consolidat_la_zi",
     "omfp_2634_2015_anexa3_modele.html": "consolidat_la_zi",           # indemnizatie deplasare interna 23 lei de la 01.04.2023
         # act punctual (facilitate salariu minim + plafon 2026)
+    # R1 (10.10.2026): fișierele constantelor ancorate, intrate în registru —
+    "legea_165_2018_consolidat.txt": "consolidat_la_zi",    # forma consolidată (ultima consolidare 01.12.2025); 450 lei n-are succesor
+    "opanaf_2194_2025_d394.txt": "forma_la_data",           # ordinul ANAF publicat (PDF), aplicabil de la 01.08.2025 (art.III)
+    "ordin_2736_2025__anexa_306268.html": "forma_la_data",  # anexa ordinului din 23.12.2025, documentul separat de pe portal
+    "oug_24_2026_contributie_solidaritate.txt": "forma_la_data",  # forma din MO a OUG 24/2026 (portal 309088), act punctual
 }
 
 SURSE = "anaf_surse"
@@ -116,6 +124,11 @@ def _sursa_forma(fname):
     """(sursa, forma, nota) pentru intrarile NOI de azi; (None, None, None) altfel. Override > detectie."""
     if fname in _FORMA_OVR:
         return _FORMA_OVR[fname]
+    # Fisierele de EVIDENTA ale corpusului (INDEX.json, PORTAL_IDS.json, PROVENIENTA.json, duk_instalat.json) sunt scrise de noi, nu
+    # aduse de undeva: n-au sursa si nici forma. Regula „nou azi -> static.anaf.ro / initiala” le eticheta fals cand erau atinse azi
+    # (vazut 10.10.2026: PORTAL_IDS.json -> „static.anaf.ro, initiala”). Corpusul nu are surse .json — un act vine ca html/pdf/txt.
+    if fname.lower().endswith(".json"):
+        return None, None, None
     cale = os.path.join(SURSE, fname)
     try:
         nou = os.path.getmtime(cale) >= _AZI0

@@ -177,7 +177,9 @@ def test_cele_patru_cote_de_TVA_sunt_VOLATIL():
     assert not rele, "temeiuri pe art. 291 care nu sunt VOLATIL: %s" % rele
     nume = {n for n, intrari in COTE.items()
             for it in intrari if getattr(it[2], "art", None) == "291"}
-    assert nume == {"tva_standard", "tva_redusa", "tva_redusa_9", "tva_redusa_5"}, (
+    # R1 (10.10.2026): + cele două procente întregi din `cote_tva` (constante ancorate, intrate în registru) — tot pe art. 291
+    assert nume == {"tva_standard", "tva_redusa", "tva_redusa_9", "tva_redusa_5",
+                    "cote_tva.COTA_STANDARD", "cote_tva.COTA_REDUSA"}, (
         "mulțimea cotelor sprijinite pe art. 291 s-a mutat: %s" % sorted(nume))
 
 

@@ -109,9 +109,10 @@ def _modul_si_atribut(cale):
     parti = str(cale or "").split(".")
     if len(parti) < 2:
         return None
-    # `common.CONSTANTE_ANCORATE` (Pachet FiscalOS §2, 01.10.2026): cheia e „<modul>.<NUME>", deci calea e
-    # `CONSTANTE_ANCORATE.casa.PLAFON_PF[1]` — temeiul unei constante de MODUL, citit prin numele constantei.
-    if parti[0] == "CONSTANTE_ANCORATE" and len(parti) >= 3:
+    # Constantele ancorate stau în registru sub cheia „<modul>.<NUME>" (`common.ancoreaza`, R1 10.10.2026; până atunci în
+    # `CONSTANTE_ANCORATE`), deci calea e `COTE.casa.PLAFON_PF[0][2]` — temeiul unei constante de MODUL, citit prin numele ei.
+    # O cheie istorică a registrului n-are punct (`COTE.cas[0][2]`) și rămâne a lui `dependenti_act`.
+    if parti[0] == "COTE" and len(parti) >= 3:
         parti = parti[1:]
     modul, atribut = parti[0], parti[1].split("[")[0]
     if not modul or not atribut or modul == "COTE":
@@ -120,9 +121,9 @@ def _modul_si_atribut(cale):
 
 
 def _valoare_ancorata(cale):
-    """Valoarea din `common.CONSTANTE_ANCORATE` pt o cale `CONSTANTE_ANCORATE.<modul>.<NUME>[1]`, altfel None."""
+    """Valoarea unei constante ancorate pt o cale `COTE.<modul>.<NUME>[0][2]`, altfel None."""
     parti = str(cale or "").split(".")
-    if len(parti) < 3 or parti[0] != "CONSTANTE_ANCORATE":
+    if len(parti) < 3 or parti[0] != "COTE":
         return None
     from core import common
     try:
@@ -130,8 +131,10 @@ def _valoare_ancorata(cale):
         importlib.import_module("core." + parti[1])
     except ImportError:
         return None
-    r = common.CONSTANTE_ANCORATE.get("%s.%s" % (parti[1], parti[2].split("[")[0]))
-    return r[0] if r else None
+    try:
+        return common.ancorata("%s.%s" % (parti[1], parti[2].split("[")[0]))[0]
+    except KeyError:
+        return None
 
 
 def _contine(valoare, tinta, adancime=0):
@@ -159,8 +162,12 @@ def nume_legate(modul, temei):
         m = importlib.import_module("core." + modul[:-3])
     except Exception:  # noqa: BLE001
         return set()
+    from core import common
+    # Registrul însuși (`COTE`, oriunde e importat) ține, din R1 (10.10.2026), și obiectele constantelor ancorate — dar nu e un
+    # cititor al lor: din registru se citește prin `cota(nume, data)`, după NUME. Văzut 10.10.2026: `common.PLAFON_CRESA_BAZA`
+    # ieșea „DEPUS”, fiindcă orice cititor al lui `COTE` (deci orice declarație) devenea consumatorul plafonului de creșă.
     return {a for a in dir(m)
-            if not a.startswith("_") and _contine(getattr(m, a, None), temei)}
+            if not a.startswith("_") and getattr(m, a, None) is not common.COTE and _contine(getattr(m, a, None), temei)}
 
 
 def consumatori(cale, temei=None, radacina=None):

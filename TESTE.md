@@ -184,8 +184,21 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   după lotul „Deciziile 08.10 §6” (e07f46e6). Lista de operații (16) dată înainte de execuție; durata fiecăreia măsurată.
   - ultim: ritualul (agenda curată, agenda_drift: niciun drift); inventarul MĂSURAT: `COTE` 23 chei / 39 intrări, `CONSTANTE_ANCORATE`
     32, `scan_constante` A 108 / B 417 / C 127 (51 fișiere) / D 72 / E 39 (artefact `inventar_registru_inainte.json`, în ZIP).
-  - urmator: R1 (R0 — `core/scan_registru.py` + testul lui — scris, necomis: lucru pe disc, pus pe pauză pentru „Retest 08.10”).
-    STARE = IN LUCRU (pe pauză până la închiderea „Retest 08.10”)
+  - ultim (10.10.2026): R0 + R1a–R1d în commitul care conține această intrare (SHA în raport) — `ancoreaza` scrie în `COTE`
+    (55 de chei, din care 32 ancorate / 71 de intrări), `registru_complet`, `core/registru_fiscal.py` (stare / verdicte / export),
+    `core/test_registru_fiscal.py` (11) + recalibrările gărzilor registrului întreg (DECIZII 10.10.2026, „R1”); 8 mutații roșii.
+  - urmator: R2 (amprentele „înainte” ale declarațiilor pe portofoliu, `scripts/amprente_declaratii.py`). STARE = IN LUCRU
+  - R1 SPART ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1 — lista crește întâi): măsurat pe 11a03cb8, `ancoreaza` ține 32 de constante în
+    `CONSTANTE_ANCORATE` (al doilea dicționar), umplut la IMPORT — iar 30 de locuri citesc registrul întreg (`COTE.items()` & co.).
+    R1a. `common.ancoreaza` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)`; refuz fără `data_in`, refuz la a doua
+         valoare; `CONSTANTE_ANCORATE` dispare, `temei_ancorat` citește `COTE`. `PLAFON_CRESA_BAZA` primește `data_in` 2019-01-01
+         (Legea 165/2018 art.34, verbatim în corpus).
+    R1b. Registrul complet nu depinde de ordinea importurilor: `common.registru_complet()` importă modulele care ancorează (derivate din
+         sursă); îl cheamă cititorii registrului întreg din cod și `core/conftest.py` la pornirea suitei.
+    R1c. Cititorii registrului întreg (expirare_cote, dependenti_act, scan_constante, scan_valoare_in_citat, consumatori_temei,
+         p6_clasificare, testele generice) văd intrările ancorate ca pe oricare alta — fiecare adaptare numită în raport.
+    R1d. `core/registru_fiscal.py`: starea derivată (propus / verificat / aprobat, cu cine și când), exportul în formatul
+         `verif_temeiuri.json`, verdictele APROB citite numai din fișierul versionat; teste + mutații; R0 comis cu R1.
   - pasi (fiecare cu commit, aplicația funcțională după fiecare):
     R0. Instrumentul inventarului (`core/scan_registru.py`): numără valorile fiscale din registru și din afara lui (ancorate, clasele
         A/C/E ale `scan_constante`, dublurile), pe fișier; artefactul JSON „înainte”.

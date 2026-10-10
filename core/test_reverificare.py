@@ -268,8 +268,14 @@ def test_nicio_valoare_nu_devine_verificata_MAI_RAR():
 
     Populația din afara registrului nu se ascunde: se numără separat și se pinează."""
     inv = R.inventar(_AZI)
-    din_registru = [x for x in inv if x["cale"].startswith("COTE.")]
-    afara = [x for x in inv if not x["cale"].startswith("COTE.")]
+    # R1 (10.10.2026): constantele ancorate au intrat în `COTE` (cheia „<modul>.<NUME>”, calea `COTE.<modul>.<NUME>[0][2]`). Podeaua
+    # nu le-a acoperit niciodată până azi, deci referința lor „de azi” rămâne cadența din afara registrului: se numără cu `afara`.
+    # De acum, `cote_neconfirmate` le citește din registru și le aplică podeaua (regula 1: un prag peste ea se ignoră) — adică le
+    # verifică MAI DES decât înainte, nu mai rar.
+    def _istoric(x):
+        return x["cale"].startswith("COTE.") and "." not in x["cale"][len("COTE."):].split("[")[0]
+    din_registru = [x for x in inv if _istoric(x)]
+    afara = [x for x in inv if not _istoric(x)]
     assert din_registru and afara, "[anti-vacuu] una din populații e goală — s-a rupt împărțirea"
 
     d = R.fata_de_pragul_global(inv=din_registru, azi=_AZI)

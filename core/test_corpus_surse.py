@@ -156,3 +156,14 @@ def test_orice_fisier_legat_de_o_cota_are_tip_forma():
     assert not lipsa, (
         "fisiere legate de cote, fara tip_forma declarat in gen_index.TIP_FORMA:\n  "
         + "\n  ".join("%s  <- %s" % (f, ", ".join(c[:3])) for f, c in sorted(lipsa.items())))
+
+
+def test_fisierele_de_evidenta_ale_corpusului_n_au_sursa():
+    """10.10.2026: `gen_index` dădea „sursa: static.anaf.ro, forma: initiala” oricărui fișier atins azi — și lui `PORTAL_IDS.json`, pe
+    care îl scriem noi. Un fișier de evidență (`.json`) nu e adus de nicăieri. MUTAȚIE: excluderea `.json` scoasă din `_sursa_forma`
+    și INDEX regenerat în ziua în care un `.json` se atinge -> pică."""
+    m = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "anaf_surse", "INDEX.json"),
+                       encoding="utf-8"))
+    rele = {k: (v.get("sursa"), v.get("forma")) for k, v in m["fisiere"].items()
+            if k.lower().endswith(".json") and (v.get("sursa") or v.get("forma"))}
+    assert not rele, "fișiere de evidență cu sursă/formă atribuite: %s" % rele

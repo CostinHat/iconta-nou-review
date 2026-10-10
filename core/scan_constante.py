@@ -405,7 +405,8 @@ def _valori_de_registru():
     """Valorile CURENTE din registrul de cote, ca intregi si ca procente. Citite din `common.COTE`,
     nu scrise aici - altfel ar fi chiar constanta nesursata pe care o cautam."""
     try:
-        from core.common import COTE
+        from core.common import registru_complet
+        COTE = registru_complet()   # R1: registrul întreg, cu constantele ancorate
     except Exception:
         return set()
     out = set()

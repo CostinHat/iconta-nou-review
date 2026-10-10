@@ -91,6 +91,26 @@
       "id": 275745,
       "text_integral": true,
       "nota": "02.10.2026: id_portal din PROVENIENTA (forma consolidata adusa de FiscalOS); citat de COTE impozit_special_valoare_mare (0,3% 2024-2025)"
+    },
+    "Legea 165/2018": {
+      "id": 202623,
+      "text_integral": true,
+      "nota": "10.10.2026 (R1 registrul unic): id verificat pe portal — pagina DetaliiDocument/202623 are titlul «LEGE 165 10/07/2018»; găsit prin RezultateCautare?titlu=165%2F2018; citat de constanta ancorată common.PLAFON_CRESA_BAZA, intrată în COTE; text măsurat 10.10.2026: 108 titluri «Articolul N» în pagină"
+    },
+    "OPANAF 2194/2025": {
+      "id": 302310,
+      "text_integral": false,
+      "nota": "10.10.2026 (R1 registrul unic): id verificat pe portal — pagina DetaliiDocument/302310 are titlul «ORDIN 2194 11/09/2025»; găsit prin RezultateCautare?titlu=2194%2F2025; citat de constanta ancorată d394.COTE, intrată în COTE; text măsurat 10.10.2026: pagina are numai articolele I–IV ale ordinului; anexele («Anexa nr. 1*)», «Anexa nr. 2») nu sunt în ea — lista cotelor (cartușul I pct.4.1) se citește din PDF-ul ANAF din corpus, opanaf_2194_2025_d394.txt"
+    },
+    "OPANAF 2736/2025": {
+      "id": 305848,
+      "text_integral": true,
+      "nota": "10.10.2026 (R1 registrul unic): id verificat pe portal — pagina DetaliiDocument/305848 are titlul «ORDIN 2736 23/12/2025»; legat din pagina din corpus ordin_2736_2025.html (PROVENIENTA: FISC-014); anexa e documentul separat 306268; citat de constanta ancorată d212.ZILE_AN_NORMA, intrată în COTE; text măsurat 10.10.2026: 16 titluri «Articolul N» în pagină"
+    },
+    "OUG 24/2026": {
+      "id": 309088,
+      "text_integral": true,
+      "nota": "10.10.2026 (R1 registrul unic): id verificat pe portal — pagina DetaliiDocument/309088 are titlul «ORD DE URGENTA 24 03/04/2026»; id din PROVENIENTA (DetaliiDocumentAfis/309088); citat de constanta ancorată d100_pozitia_116.PRAG_BRENT_USD, intrată în COTE; text măsurat 10.10.2026: 18 titluri «Articolul N» în pagină"
     }
   }
 }

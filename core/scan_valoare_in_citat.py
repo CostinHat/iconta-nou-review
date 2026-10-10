@@ -107,7 +107,7 @@ def inventar(radacina=None):
     """[(cheie, data_in, valoare, temei, justificat)] pentru fiecare intrare din registrul de cote."""
     from core import common as c
     out = []
-    for cheie, intrari in sorted(c.COTE.items()):
+    for cheie, intrari in sorted(c.registru_complet().items()):   # R1: registrul întreg, cu constantele ancorate
         for intrare in intrari:
             if not isinstance(intrare, (list, tuple)) or len(intrare) < 3:
                 continue

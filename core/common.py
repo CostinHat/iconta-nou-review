@@ -581,32 +581,78 @@ def _ca_data(x):
     return date.fromisoformat(str(x))
 
 
-#: Constante fiscale de MODUL ancorate pe temei: "<modul>.<NUME>" -> (valoare, Temei). Pachet FiscalOS §2
-#: (01.10.2026). DE CE NU in COTE: valorile astea nu au istoric versionat in cod (un plafon de casa, un prag
-#: de taxare inversa), iar mutarea lor in registru ar schimba tipul la fiecare consumator. Le lipsea doar
-#: TEMEIUL ca obiect - asa ca scan_constante le numara nesursate, iar scan_citate nu le putea verifica
-#: verbatim. `ancoreaza` le da obiectul fara sa le schimbe valoarea sau tipul.
-CONSTANTE_ANCORATE = {}
-
-
 def ancoreaza(nume, valoare, temei):
-    """Intoarce `valoare` NESCHIMBATA si o inregistreaza in CONSTANTE_ANCORATE cu temeiul ei.
+    """Intoarce `valoare` NESCHIMBATA si o scrie in registrul unic `COTE`, sub `"<modul>.<NUME>"`, cu temeiul ei.
 
-    Forma de folosire (temeiul SCRIS IN ACEEASI EXPRESIE, ca scanerele AST sa-l vada ca stramos al
-    literalului): `PLAFON_PF = c.ancoreaza("casa.PLAFON_PF", Decimal("10000"), c.Temei(...))`.
-    Un nume deja ancorat cu alta valoare = doua surse de adevar -> refuz (fail-loud), nu suprascriere."""
+    Comanda Costin 08.10.2026 (registrul unic, pct.1, verbatim in DECIZII): „Registrul existent COTE devine acest registru (se
+    extinde, nu se face unul paralel); mecanismul `ancoreaza` se pliaza pe el.” Pana la R1 (10.10.2026) constantele ancorate
+    stateau intr-un al doilea dictionar (`CONSTANTE_ANCORATE`, Pachet FiscalOS §2, 01.10.2026), pe motiv ca n-au istoric si ca
+    mutarea in registru le-ar schimba tipul la consumatori. Niciunul nu tine: o intrare de registru are si fara istoric o data de la
+    care e valabila (`temei.data_in`), iar `ancoreaza` intoarce tot valoarea, deci consumatorul o vede la fel.
+
+    Forma de folosire (temeiul SCRIS IN ACEEASI EXPRESIE, ca scanerele AST sa-l vada ca stramos al literalului):
+    `PLAFON_PF = c.ancoreaza("casa.PLAFON_PF", Decimal("10000"), c.Temei(..., data_in="2023-12-15"))`.
+    Refuza (fail-loud): temeiul care nu e `Temei`; temeiul fara `data_in` (o intrare de registru fara data de la care e valabila nu
+    se poate selecta dupa data operatiunii); un nume deja in registru cu alta valoare (doua surse de adevar)."""
     if not isinstance(temei, Temei):
         raise TypeError("ancoreaza(%s): temeiul trebuie sa fie Temei, nu %s" % (nume, type(temei).__name__))
-    vechi = CONSTANTE_ANCORATE.get(nume)
-    if vechi is not None and vechi[0] != valoare:
-        raise ValueError("ancoreaza(%s): deja ancorata cu %r, acum %r" % (nume, vechi[0], valoare))
-    CONSTANTE_ANCORATE[nume] = (valoare, temei)
+    if temei.data_in is None:   # refuz de FORMĂ, fără temei legal: intrarea de registru are nevoie de data ei (eroare de program)
+        raise ValueError("%s: temeiul nu spune de când e valabilă valoarea (data intrării în vigoare)" % nume)
+    vechi = COTE.get(nume)
+    if vechi is not None and any(v != valoare for _d, v, _t in vechi):
+        raise ValueError("%s: e deja în registru cu %r, acum %r — două surse de adevăr" % (nume, vechi[0][1], valoare))
+    COTE[nume] = [(temei.data_in, valoare, temei)]
     return valoare
+
+
+def ancorata(nume):
+    """(valoare, temei) ale unei constante ancorate, din registru (KeyError daca nu e in registru - nu se inventeaza)."""
+    if "." not in nume:
+        raise KeyError(nume)
+    _d, v, t = COTE[nume][-1]
+    return v, t
 
 
 def temei_ancorat(nume):
     """Temeiul unei constante ancorate (KeyError daca nu e ancorata - nu se inventeaza)."""
-    return CONSTANTE_ANCORATE[nume][1]
+    return ancorata(nume)[1]
+
+
+def ancorate():
+    """{"<modul>.<NUME>": (valoare, temei)} - intrarile registrului scrise de `ancoreaza` (cheia lor are punct; cheile istorice nu)."""
+    return {k: ancorata(k) for k in COTE if "." in k}
+
+
+def module_care_ancoreaza():
+    """Modulele din `core/` care CHEAMA `ancoreaza` (din arborele sintactic: un apel `ancoreaza(...)`, `c.ancoreaza(...)` sau printr-un
+    alias `ancoreaza as _anc`), nu cele care doar il pomenesc. Derivate din sursa, nu enumerate."""
+    import ast as _ast
+    import glob as _glob
+    import os as _os
+    d = _os.path.dirname(_os.path.abspath(__file__))
+    out = []
+    for f in sorted(_glob.glob(_os.path.join(d, "*.py"))):
+        m = _os.path.basename(f)[:-3]
+        if m.startswith("test_") or m == "common":
+            continue
+        src = open(f, encoding="utf-8").read()
+        if "ancoreaza" not in src:
+            continue
+        arb = _ast.parse(src)
+        nume = {"ancoreaza"} | {a.asname for n in _ast.walk(arb) if isinstance(n, _ast.ImportFrom)
+                                for a in n.names if a.name == "ancoreaza" and a.asname}
+        if any(isinstance(n, _ast.Call) and getattr(n.func, "attr", getattr(n.func, "id", None)) in nume for n in _ast.walk(arb)):
+            out.append(m)
+    return out
+
+
+def registru_complet():
+    """`COTE` cu TOATE intrarile, oricare ar fi ordinea importurilor: constantele ancorate intra in registru la importul modulului lor,
+    deci un cititor al registrului intreg care ruleaza inaintea acelui import le-ar rata."""
+    import importlib as _importlib
+    for m in module_care_ancoreaza():
+        _importlib.import_module("core." + m)
+    return COTE
 
 
 # ============================================================
@@ -806,6 +852,39 @@ ETICHETE_COTE = {
     "plafon_facilitate_salariu_minim": "Plafonul facilității la salariul minim",
     "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
     "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
+    # constantele ancorate (`ancoreaza`, cheia „<modul>.<NUME>”), în registru din R1 (10.10.2026); eticheta spune ce e, din citatul ei
+    "bacsis.COTA_IMPOZIT": "Cota impozitului pe bacșișul distribuit salariaților (10%, venit din alte surse)",
+    "casa.PLAFON_INCASARE_PJ": "Plafonul zilnic de încasare în numerar de la o persoană juridică (5.000 lei)",
+    "casa.PLAFON_INCASARE_PJ_CC": "Plafonul zilnic de încasare în numerar al magazinelor cash and carry (10.000 lei)",
+    "casa.PLAFON_PF": "Plafonul zilnic de încasare / plată în numerar către / de la o persoană fizică (10.000 lei)",
+    "casa.PLAFON_PLATA_CC_TOTAL": "Plafonul zilnic total de plăți în numerar către magazinele cash and carry (10.000 lei)",
+    "casa.PLAFON_PLATA_PJ": "Plafonul zilnic de plată în numerar către o persoană juridică (5.000 lei)",
+    "casa.PLAFON_PLATA_PJ_TOTAL": "Plafonul zilnic total de plăți în numerar către persoane juridice (10.000 lei)",
+    "casa.PLAFON_SOLD_ZI_CC": "Plafonul soldului de casă la sfârșitul zilei, cash and carry (500.000 lei)",
+    "common.PLAFON_CRESA_BAZA": "Nivelul maxim lunar al tichetelor de creșă, fără indexare (450 lei/copil)",
+    "cote_tva.COTA_REDUSA": "Cota redusă de TVA, ca procent întreg (11%)",
+    "cote_tva.COTA_STANDARD": "Cota standard de TVA, ca procent întreg (21%)",
+    "d100_pozitia_116.PRAG_BRENT_USD": "Pragul prețului Brent peste care se datorează contribuția de solidaritate (70 USD/baril)",
+    "d101.COTA_STANDARD": "Cota impozitului pe profit în D101, ca procent întreg (16%)",
+    "d101.PRAG_IMCA_EUR": "Pragul cifrei de afaceri pentru impozitul minim pe cifra de afaceri (50.000.000 euro)",
+    "d101g.COTA_STANDARD": "Cota impozitului pe profit în D101 la grup fiscal, ca procent întreg (16%)",
+    "d212.COTA_FORFETARA_CEDARE": "Cota cheltuielilor forfetare la cedarea folosinței bunurilor, D212 (20%)",
+    "d212.COTA_FORFETARA_DPI": "Cota cheltuielilor forfetare la drepturile de proprietate intelectuală, D212 (40%)",
+    "d212.COTA_IMPOZIT_NORMA": "Cota impozitului pe norma de venit, D212 (10%)",
+    "d212.COTA_IMPOZIT_VENIT": "Cota impozitului pe venit, D212 (10%)",
+    "d212.COTA_MOSTENIRE": "Cota impozitului la dezbaterea succesiunii după termen (1%)",
+    "d212.COTA_PREMII": "Cota impozitului pe premii (10%)",
+    "d212.COTA_TRANSFER_PANA_3_ANI": "Cota impozitului la transferul imobilelor deținute până la 3 ani (3%)",
+    "d212.COTA_TRANSFER_PESTE_3_ANI": "Cota impozitului la transferul imobilelor deținute peste 3 ani (1%)",
+    "d212.PENSIE_NEIMPOZABIL_LUNAR": "Suma neimpozabilă lunară din pensie (3.000 lei)",
+    "d212.PLAFON_JOCURI_NEIMPOZABIL": "Suma neimpozabilă a câștigurilor din jocuri de noroc (66.750 lei)",
+    "d212.PREMIU_NEIMPOZABIL": "Suma neimpozabilă a unui premiu (600 lei)",
+    "d212.PROCENT_COMPENSARE_INVESTITII": "Limita de recuperare a pierderii din investiții din câștigurile anilor următori (70%)",
+    "d212.PROCENT_COMPENSARE_PIERDERE": "Limita de compensare a pierderii fiscale din veniturile anilor următori (70%)",
+    "d212.ZILE_AN_NORMA": "Numărul de zile al anului la proratarea normei de venit (365)",
+    "d394.COTE": "Cotele de TVA acceptate în D394",
+    "salarizare.PRAG_VENIT_DEDUCERE": "Pragul venitului peste salariul minim până la care se acordă deducerea personală de bază (2.000 lei)",
+    "taxare_inversa.PRAG_ELECTRONICE": "Pragul de la care se aplică taxarea inversă la telefoane mobile, circuite integrate, console, tablete și laptopuri (22.500 lei)",
 }
 
 
@@ -942,8 +1021,11 @@ _FERESTRE_CRESA = [
         lant_acte="MO 830/30.09.2026; art.2: se aplică și pentru februarie 2027 și martie 2027")),
 ]
 # baza legala, inainte de indexare (si cap-ul in afara ferestrelor documentate)
+# data_in 2019-01-01: Legea 165/2018 art.34, verbatim in corpus (`anaf_surse/legea_165_2018_consolidat.txt`): „Prezenta lege intră
+# în vigoare la data de 1 ianuarie 2019”; art.19 alin.(1) n-are nicio modificare consemnată în forma consolidată (citit 10.10.2026).
 PLAFON_CRESA_BAZA = ancoreaza("common.PLAFON_CRESA_BAZA", Decimal("450"), Temei(
-    "Legea", 165, 2018, art="19", alin="1", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO",
+    "Legea", 165, 2018, art="19", alin="1", data_in="2019-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS",
+    nivel_sursa="MO",
     url="anaf_surse/legea_165_2018_consolidat.txt",
     text_citat=("Nivelul maxim al sumelor acordate sub forma tichetelor de creșă nu poate depăși suma de 450 de lei "
                 "pentru o lună, pentru fiecare copil aflat la creșă.")))
@@ -985,7 +1067,7 @@ def cote_volatile_fara_mo(la_data=None):
     if la_data is None:
         la_data = date.today()
     out = []
-    for nume, intrari in COTE.items():
+    for nume, intrari in registru_complet().items():   # R1: și constantele ancorate, oricare ar fi importurile
         if not intrari:
             continue
         d, _v, t = max(intrari, key=lambda iv: iv[0])  # valoarea CURENTA = data_in cea mai mare (COTE e ordonat descrescator, dar nu ne bazam pe ordine)
@@ -1174,7 +1256,7 @@ def cote_neconfirmate(luni=6, la_data=None, prag_pentru=None):
     """
     la_data = la_data or date.today()
     rez = []
-    for nume in COTE:
+    for nume in registru_complet():   # R1: și constantele ancorate, oricare ar fi importurile
         din, valoare, temei = sorted(COTE[nume], key=lambda r: r[0], reverse=True)[0]
         prag_luni, sursa = luni, "global"
         if prag_pentru is not None:

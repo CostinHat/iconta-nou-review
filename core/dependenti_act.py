@@ -37,7 +37,7 @@ def harta_articol_cote():
     """{(tip, nr, an, art): {chei COTE care îl citează}}"""
     from core import common as c
     out = collections.defaultdict(set)
-    for cheie, intrari in c.COTE.items():
+    for cheie, intrari in c.registru_complet().items():   # R1: registrul întreg, cu constantele ancorate
         for it in intrari:
             if not isinstance(it, (list, tuple)) or len(it) < 3:
                 continue
