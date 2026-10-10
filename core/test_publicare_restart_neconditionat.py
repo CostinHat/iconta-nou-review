@@ -73,3 +73,25 @@ def test_singura_conditie_a_restartului_e_verificarea_migrarilor():
         "linia restartului s-a schimbat: o conditie lipita de `sudo` ar conditiona restartul pe altceva decat migrarile")
     assert len(conditii) == 2, ("restartul trebuie sa fie conditionat NUMAI de verificarea migrarilor (+ reusita lui sudo): %s"
                                 % conditii)
+
+
+def test_statica_se_publica_numai_odata_cu_restartul():
+    """[10.10.2026, lotul „Retestul plasei”] Cu restartul oprit de o migrare nerulată, post-commit publica totuși statica: JS-ul
+    commitului nou ajungea în browser peste backendul vechi (445f9932 servit de procesul pe 60c716d1). Statica se publică NUMAI pe
+    ramura în care procesul viu preia același commit — sub verificarea migrărilor, înaintea restartului —, iar rulatorul migrărilor
+    o publică înaintea restartului lui. MUTAȚIE: apelul mutat înaintea verificării -> pică; publicarea scoasă din rulator -> pică."""
+    t = _text()
+    m = re.search(r'^if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)
+    i_rs = t.find("systemctl restart iconta-nou >")
+    apeluri = [x.start() for x in re.finditer(r"^\s*publica_statica\b(?!\(\))", t, re.M)]
+    assert len(apeluri) == 1 and m and m.start() < apeluri[0] < i_rs, (
+        "statica trebuie publicată o singură dată, între verificarea migrărilor și restart: %s" % apeluri)
+    directe = [x.start() for x in re.finditer(r"scripts/publica_static\.py >", t)]
+    f = t.find("publica_statica() {")
+    assert len(directe) == 1 and f < directe[0] < t.find("\n}", f), "publica_static.py chemat în afara funcției publica_statica"
+    import inspect
+    from core import migrari_registru as mr
+    src = inspect.getsource(mr._reporneste_daca_e_cazul)
+    apel = re.search(r'subprocess\.run\(\[sys\.executable, os\.path\.join\(RAD, "scripts", "publica_static\.py"\)\]', src)
+    assert apel and apel.start() < src.find('"systemctl", "restart"'), (
+        "rulatorul migrărilor trebuie să publice statica ÎNAINTEA restartului")

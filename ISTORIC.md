@@ -2002,3 +2002,13 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   lunii (adăugate la 197) — reparate, cu mutație.
 - **Cifrele de referință** regenerate (aceleași amprente): perioadele trimestriale ca T3/2026, instrucțiunea ANAF pentru factura cu mai
   multe cote citată cuvânt cu cuvânt (`anaf_surse/opanaf_2194_2025_d394.txt`, rândurile 1221–1224).
+
+## 10.10.2026, dimineața — neconformitate în publicare, după commitul `445f9932` (commitul care conține această intrare)
+
+- Commitul lotului „Retestul plasei” (`445f9932`, poartă verde: 7907 passed / 9 skipped / 15 xfailed, verificator TOTAL 0, plasa
+  210/210) a fost împins (origin, public, backup/lant-2026-10-10); restartul a rămas oprit, cum trebuia (migrarea R6–R10 nerulată pe
+  producție). DAR post-commit a publicat statica înaintea verificării migrărilor: de la 04:56 producția servește JS-ul lui `445f9932`
+  peste procesul pornit pe `60c716d1`. Aceeași fereastră a existat pe 09.10, cât a așteptat `repara_tenant049.sh`.
+- Reparat: statica se publică numai pe ramura în care procesul viu preia același commit; rulatorul migrărilor o publică înaintea
+  restartului lui. Gard nou, cu două mutații roșii. Producția nu s-a atins din sesiune (o republicare a staticii vechi e o scriere pe
+  producție): fereastra se închide când Costin rulează `reguli_fond_2_productie.sh` (restartul aduce procesul pe HEAD).

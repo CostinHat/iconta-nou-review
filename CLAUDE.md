@@ -700,6 +700,9 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
       firmelor nu sunt in urma lui `tenant_template.sql`). Nerulat -> restart OPRIT, banner + `.git/RESTART_OPRIT_MIGRARE`; migrarile
       se ruleaza cu `./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier>`, iar dupa ultima rulatorul reporneste.
       Fail-closed: daca nu se poate sti, nu reporneste. Gardat de acelasi test (verificarea e singura conditie).
+      **Statica se publica NUMAI odata cu restartul (10.10.2026):** cu restartul oprit, post-commit nu publica statica (JS-ul
+      commitului nou ar fi ajuns peste backendul vechi — vazut la 445f9932); rulatorul migrarilor o publica inaintea restartului lui.
+      Gardat de `core/test_publicare_restart_neconditionat.py::test_statica_se_publica_numai_odata_cu_restartul`.
    5. **predare** = actualizeaza PREDARE_LANT.md. E fisierul de care depinde sesiunea urmatoare (constatare
       tura 17: DECIZII/GARZI/TESTE/ISTORIC s-au actualizat, dar PREDARE a lipsit din lista - exact ce conteaza
       pentru continuitate era singurul optional). Se SUPRASCRIE, nu se adauga: e fisier de STARE CURENTA, nu

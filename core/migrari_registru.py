@@ -165,6 +165,14 @@ def _reporneste_daca_e_cazul(productie):
     if cod != 0:
         print("restartul rămâne oprit — HEAD %s mai are de rulat:\n  %s" % (head[:8], "\n  ".join(linii)))
         return
+    # [10.10.2026, lotul „Retestul plasei”] statica HEAD-ului se publică ÎNAINTEA restartului, aici: cu restartul oprit, post-commit n-o
+    # mai publică (ar fi ajuns JS-ul commitului peste backendul vechi), deci procesul nou ar porni altfel pe statica commitului anterior
+    ps = subprocess.run([sys.executable, os.path.join(RAD, "scripts", "publica_static.py")], capture_output=True, text=True, cwd=RAD)
+    if ps.returncode != 0:
+        print("restartul rămâne oprit — statica lui %s nu s-a publicat (%s); rulează: ./venv/bin/python scripts/publica_static.py, "
+              "apoi: sudo systemctl restart iconta-nou" % (head[:8], (ps.stdout or ps.stderr).strip().splitlines()[-1:] or "?"))
+        return
+    print("statica publicată: %s" % ((ps.stdout or "").strip().splitlines()[-1:] or ["?"])[0])
     r = subprocess.run(["sudo", "-n", "systemctl", "restart", "iconta-nou"], capture_output=True, text=True)
     if r.returncode == 0:
         os.remove(SENTINELA)

@@ -95,7 +95,7 @@ else
            "verifica ramura; NU se forteaza din hook - muta backup-ul manual, constient"
 fi
 
-# ---------- 2b. PUBLICAREA STATICULUI (R118) ----------
+# ---------- 2b. PUBLICAREA STATICULUI (R118) — făcută la pasul 3, NUMAI odată cu restartul ----------
 # CE SE SERVESTE nu mai e CE E IN LUCRU: /static se monteaza din ../iconta_publicat/static, scris
 # de aici, din HEAD. Deci un .js ajunge la un browser DOAR dupa ce a trecut poarta si a intrat in
 # commit. Publicarea are propria poarta de sintaxa (node --check pe fiecare .js) si REFUZA sa
@@ -104,12 +104,17 @@ fi
 # ORDINEA CONTEAZA: publicarea vine INAINTE de restart. Invers, procesul nou ar porni pe statica
 # veche, iar Python-ul si JS-ul ar descrie doua versiuni diferite ale aplicatiei. Esec = sentinela
 # + banner, ca la push-uri; NICIODATA tacut.
+# [10.10.2026, lotul „Retestul plasei”] ...si se publică NUMAI când procesul viu preia același commit: cu restartul oprit de o migrare
+# nerulată, statica nouă ajungea peste backendul vechi (văzut la 445f9932: JS-ul commitului servit de procesul pe 60c716d1). Cu
+# restartul oprit, statica rămâne a commitului care rulează; rulatorul migrărilor o publică înaintea restartului lui.
 S_PS=".git/PUBLICARE_STATIC_ESUATA"; rm -f "$S_PS"
-if "$PWD/venv/bin/python" scripts/publica_static.py > /tmp/publica_static.log 2>&1; then
-    echo "[post-commit] static publicat: $(tail -1 /tmp/publica_static.log)"
-else
-    banner "static publicat" "$S_PS" "publicarea staticului a esuat: $(tail -1 /tmp/publica_static.log 2>/dev/null)"            "citeste /tmp/publica_static.log (de obicei: un .js care nu se parseaza), repara, apoi: ./venv/bin/python scripts/publica_static.py"
-fi
+publica_statica() {
+    if "$PWD/venv/bin/python" scripts/publica_static.py > /tmp/publica_static.log 2>&1; then
+        echo "[post-commit] static publicat: $(tail -1 /tmp/publica_static.log)"
+    else
+        banner "static publicat" "$S_PS" "publicarea staticului a esuat: $(tail -1 /tmp/publica_static.log 2>/dev/null)"            "citeste /tmp/publica_static.log (de obicei: un .js care nu se parseaza), repara, apoi: ./venv/bin/python scripts/publica_static.py"
+    fi
+}
 
 # ---------- 3. restart NECONDITIONAT: procesul viu preia HEAD dupa ORICE publicare ----------
 # NU se inspecteaza tipul commitului (runtime / docs / CSV / JS). Conditionarea pe tip a produs
@@ -126,6 +131,7 @@ fi
 S_RS=".git/RESTART_ESUAT"; rm -f "$S_RS"
 S_MG=".git/RESTART_OPRIT_MIGRARE"; rm -f "$S_MG"
 if "$PWD/venv/bin/python" -m core.migrari_registru verifica "$HEAD_SHA" > /tmp/migrari_verifica.log 2>&1; then
+    publica_statica   # statica commitului, înaintea restartului (pasul 2b)
     if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta.log 2>&1; then
         echo "[post-commit] iconta-nou restartat -> procesul viu preia $(git rev-parse --short HEAD)"
     else
@@ -134,6 +140,7 @@ if "$PWD/venv/bin/python" -m core.migrari_registru verifica "$HEAD_SHA" > /tmp/m
     fi
 else
     cat /tmp/migrari_verifica.log
+    echo "[post-commit] static NEpublicat: procesul viu ramane pe commitul anterior pana la migrare; rulatorul publica statica inaintea restartului"
     banner "iconta-nou (restart OPRIT)" "$S_MG" "productia nu are inca migrarile commitului (lista de mai sus)" \
            "ruleaza fiecare migrare listata: ./venv/bin/python -m core.migrari_registru ruleaza --productie <fisier> — dupa ultima, rulatorul reporneste aplicatia"
 fi

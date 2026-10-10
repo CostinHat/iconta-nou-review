@@ -19075,3 +19075,14 @@ presupunea că diferența se poate închide singură; la TVA nu se poate. **D406
 construiește din notele validate, ca balanța. **Limita:** extinderea la D406 nu e făcută; e ridicată la §6 al raportului lotului ca
 decizie („D406 sub R36”). **Alternativa respinsă:** blocaj pe orice ciornă în lună (fără diferență) — ar opri depunerea pe o lună în
 care ciornele nu ating TVA-ul.
+
+## 10.10.2026 — Statica se publică numai odată cu restartul (neconformitate în publicare, după `445f9932`)
+
+**Ce s-a văzut:** post-commit publica statica (pasul 2b) înaintea verificării migrărilor (pasul 3). Cu o migrare nerulată pe producție,
+restartul se oprea, dar JS-ul commitului nou era deja servit, peste procesul viu de pe commitul anterior (`445f9932` peste `60c716d1`,
+de la 04:56). **Decizia (executor, sub regula existentă „publicarea vine înaintea restartului”, care presupunea că restartul urmează):**
+statica se publică numai pe ramura în care procesul viu preia același commit; rulatorul migrărilor o publică înaintea restartului lui,
+iar dacă publicarea eșuează, nu repornește. **Alternativa respinsă:** publicarea staticii și cu restartul oprit, cu backendul vechi
+„compatibil înapoi” — nimic nu garantează compatibilitatea, iar un ecran nou peste o rută veche e exact divergența pe care o oprim.
+**Limita:** fereastra deschisă la 04:56 nu s-a închis din sesiune (republicarea staticii vechi ar fi o scriere pe producție); se
+închide la rularea `reguli_fond_2_productie.sh`. Norma stă în CLAUDE.md §2.3 pct.10 și în gardul din `core/test_publicare_restart_neconditionat.py`.

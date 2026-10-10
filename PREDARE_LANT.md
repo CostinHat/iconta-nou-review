@@ -64,7 +64,9 @@ aplicației**, nu „în așteptarea unei teme”:
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
 - **RESTART OPRIT PÂNĂ LA SCRIPT (10.10.2026)**: `~/ghid_incoming/reguli_fond_2_productie.sh` — rulat de Costin după commitul lotului;
-  până atunci producția rulează `60c716d1`. Jurnalul în `~/ghid_incoming/reguli_fond_2_productie.log`. (Scriptul din 09.10,
+  până atunci procesul de producție rulează `60c716d1`, **dar statica servită e a lui `445f9932` (publicată la 04:56 de post-commit,
+  înaintea reparației „statica numai odată cu restartul”)** — fereastră de nepotrivire JS/backend, închisă de script (restartul aduce
+  procesul pe HEAD, iar rulatorul publică statica HEAD-ului înaintea lui). Jurnalul în `~/ghid_incoming/reguli_fond_2_productie.log`. (Scriptul din 09.10,
   `repara_tenant049.sh`, a rulat — ISTORIC 09.10 seara.)
 - **DECIZII CERUTE (raportul „Retestul plasei”, §6)** — lista numerotată e acolo; pe scurt: R193 (mutarea întrebării AI înaintea
   conexiunii, 10 căi — refactor de scop); ordinea cardurilor de pe pagina principală (203); vocea „nu pot”; nota F2 #5 (amortizare,
