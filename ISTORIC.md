@@ -2012,3 +2012,15 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
 - Reparat: statica se publică numai pe ramura în care procesul viu preia același commit; rulatorul migrărilor o publică înaintea
   restartului lui. Gard nou, cu două mutații roșii. Producția nu s-a atins din sesiune (o republicare a staticii vechi e o scriere pe
   producție): fereastra se închide când Costin rulează `reguli_fond_2_productie.sh` (restartul aduce procesul pe HEAD).
+
+## 10.10.2026, 06:49 — migrarea R6–R10 pe producție (Costin), restartul pe `6f2a8d26`
+
+- Costin a rulat `~/ghid_incoming/reguli_fond_2_productie.sh`: backup (`iconta_v2_pre_reguli_fond_2_20261010_0649.dump`), înainte —
+  niciun articol cu stoc negativ, nicio declarație cu sursa „iconta” (extern 1, test 1); migrarea pe 5/5 scheme + triggerul de pe
+  `public.declaratii_depuse`; rulatorul a publicat statica lui `6f2a8d26` și a repornit aplicația (06:49:28) — prima rulare reală a
+  reparației „statica numai odată cu restartul”. Verificare: cele 8 triggere pe 5 scheme (al declarațiilor pe 1), gardul `verifica`
+  rc=0. Four-way: HEAD = origin/main = backup/lant-2026-10-10 = RUNNING = `6f2a8d26`.
+- Commitul de registre de după migrare (07:xx) n-a trecut poarta: plasa 209/210 — `test_def_96_raportul_z_nu_se_valideaza_fara_descarcare`,
+  clicul pe „Validează” din jurnal pierdut (nicio cerere la server). Aceeași clasă ca 58: butoanele jurnalului se legau după
+  `await legaBlocareLuna(...)`, care încă aștepta prima cerere. Reparat: jurnalul nu mai așteaptă blocarea, „Închidere lună” își leagă
+  navigarea înaintea cererilor; gard structural, două mutații roșii; 96, 58 și testele cu „Închidere lună” trec.

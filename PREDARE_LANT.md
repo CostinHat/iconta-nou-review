@@ -6,9 +6,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-10-10** (noaptea; lotul „Retestul plasei” — comanda Costin 09.10.2026 seara, verbatim în DECIZII), pe
   secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `60c716d1` (HEAD de intrare). Commitul care conține această predare are SHA-ul în raport. **După el, producția NU
-  repornește** (gardul migrării): Costin rulează `! bash ~/ghid_incoming/reguli_fond_2_productie.sh` (backup, verificarea dinainte,
-  `core/migrare_reguli_fond_2.py` prin rulator, verificarea triggerelor) — după migrare, rulatorul repornește aplicația.
+- **pe commit**: `6f2a8d26` (lotul `445f9932` + reparația publicării). Producția rulează `6f2a8d26` de la 06:49:28 (restart făcut de
+  rulatorul migrărilor, după scriptul lui Costin); four-way închis. Commitul care conține această predare are SHA-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -63,11 +62,9 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-- **RESTART OPRIT PÂNĂ LA SCRIPT (10.10.2026)**: `~/ghid_incoming/reguli_fond_2_productie.sh` — rulat de Costin după commitul lotului;
-  până atunci procesul de producție rulează `60c716d1`, **dar statica servită e a lui `445f9932` (publicată la 04:56 de post-commit,
-  înaintea reparației „statica numai odată cu restartul”)** — fereastră de nepotrivire JS/backend, închisă de script (restartul aduce
-  procesul pe HEAD, iar rulatorul publică statica HEAD-ului înaintea lui). Jurnalul în `~/ghid_incoming/reguli_fond_2_productie.log`. (Scriptul din 09.10,
-  `repara_tenant049.sh`, a rulat — ISTORIC 09.10 seara.)
+- **RESTARTUL OPRIT — ÎNCHIS (10.10.2026, 06:49)**: Costin a rulat `~/ghid_incoming/reguli_fond_2_productie.sh` — backup
+  `iconta_v2_pre_reguli_fond_2_20261010_0649.dump`, regulile R6–R10 pe 5/5 scheme + triggerul declarațiilor, rulatorul a publicat
+  statica lui `6f2a8d26` și a repornit aplicația (06:49:28). Fereastra de nepotrivire JS/backend (04:56–06:49) s-a închis.
 - **DECIZII CERUTE (raportul „Retestul plasei”, §6)** — lista numerotată e acolo; pe scurt: R193 (mutarea întrebării AI înaintea
   conexiunii, 10 căi — refactor de scop); ordinea cardurilor de pe pagina principală (203); vocea „nu pot”; nota F2 #5 (amortizare,
   validată pe codul vechi); notele F5 pe 11/2026; aprobarea cifrelor F1 10/2026 și a rândului D394 multi-cotă; D406 sub R36.
@@ -409,7 +406,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **935** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1211** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1212** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

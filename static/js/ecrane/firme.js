@@ -4080,6 +4080,9 @@ async function ecranInchidereLuna(corp, nav, t) {
       <p><button class="buton-primar" id="il-lock"></button></p>` : ""}
       <h3 class="pf-subtitlu">Evidența facturilor</h3>
       <div id="il-facturi"><p class="ecran-nota">Se încarcă…</p></div>`;
+    // [proba plasei, 58/96] navigarea se leagă ÎNAINTEA cererilor ecranului: un clic dat cât ele rulează nu se pierde
+    corp.querySelector("#il-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#il-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     const zm = corp.querySelector("#il-mesaj");
     const zf = corp.querySelector("#il-facturi");
     try { zf.innerHTML = facturiDin(await api.get(`/tenants/${t.id}/facturi/perioada?an=${an}&luna=${luna}`)); }
@@ -4113,8 +4116,6 @@ async function ecranInchidereLuna(corp, nav, t) {
       try { await api.post(`/tenants/${t.id}/facturi/perioada/redeschide`, { an, luna }); deseneaza(); }
       catch (e) { arataMesaj(zm, (e && e.mesaj) || "Eroare.", "eroare"); }
     }, { textOk: "Redeschide" }));
-    corp.querySelector("#il-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
-    corp.querySelector("#il-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
   };
   deseneaza();
 }
@@ -4253,7 +4254,9 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>${totalizare}`;
     const zonaMesaj = corp.querySelector("#j-mesaj");
-    await legaBlocareLuna(corp.querySelector("#j-lock"), zonaMesaj, t, an, luna, deseneaza);   // [08.10, U3] o singură copie
+    // [08.10, U3] o singură copie. NU se așteaptă (rezultatul nu e folosit aici): butoanele jurnalului de mai jos se leagă imediat —
+    // un clic dat cât blocarea își citește starea se pierdea (proba plasei, 58 și 96)
+    legaBlocareLuna(corp.querySelector("#j-lock"), zonaMesaj, t, an, luna, deseneaza);
     const eroare = (e, txt) => { arataMesaj(zonaMesaj, (e && e.mesaj) || txt, "eroare"); };
     corp.querySelector("#j-prev").addEventListener("click", () => { inEditare = null; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { inEditare = null; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });

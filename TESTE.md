@@ -53,7 +53,8 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     prima formă a R6 excepta greșit `de_preluat` (prinsă de gardul nomenclatorului); R193 — întrebarea AI ține conexiunea pe 10 căi
     (scanerele nu vedeau clientul SDK; termen 60 s pus, clichet C5 = 10, refactorul = decizie la §6); clicul pierdut la Bilanț și
     navigarea jurnalului care aștepta controalele (prinse de plasă, reparate, cu mutație).
-  - urmator: decizia lui Costin pe §6 al raportului lotului. STARE = BLOCAT: decizii la §6 (R193, ordinea cardurilor, D406 sub R36, …)
+  - urmator: decizia lui Costin pe §6 al raportului lotului (migrarea pe producție rulată 10.10 06:49). STARE = BLOCAT: decizii la §6
+    (R193, D406 sub R36, ordinea cardurilor, vocea „nu pot”, nota F2 #5, notele F5 11/2026, aprobarea cifrelor F1)
   - pasi:
     L1. pct.2 — 4, 5, 11, 32, 120 (+210), 156, 173, 181, 33: pentru fiecare, test de capăt la capăt care reproduce EXACT situația
         descrisă de Costin și pică pe aplicația de acum (cel vechi, care trecea pe defect, se înlocuiește); apoi reparația, testul trece.
