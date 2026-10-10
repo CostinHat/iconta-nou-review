@@ -108,8 +108,19 @@ def _restante_desc(lipsa):
 # iar `abateri_termeni` verifică textul DUPĂ generare (un model poate ignora o instrucțiune).
 TERMENI_PACHET = ("venituri", "cheltuieli", "rezultat")
 _SINONIME_INTERZISE = re.compile(r"(?i)\b(?:încas\w*|incas\w*|câștig\w*|castig\w*|bani\s+intra\w*|cifr[ăa]\s+de\s+afaceri|"
-                                 r"(?:a|au)\s+intrat\s+în\s+cont)")
+                                 r"(?:a|au|s-a|s-au)\s+intrat\b)")   # [deficiența 12] „tot ce a intrat ca venit” = încasare, nu venit
 _RESTANTE = re.compile(r"(?i)\b(?:restan\w*|nedepus\w*|termen(?:ul|e|ele)?\s+dep[aă][sș]\w*|întârzier\w*|intarzier\w*)")
+# [retestul Costin 09.10.2026, deficiența 32: „povestea lunii păstrează laude nesusținute de cifre”] Pachetul are cifrele UNEI luni:
+# nicio comparație cu alte luni, niciun reper. O calificare („excelentă”, „creștere”, „felicitări”) nu se sprijină pe nimic din el.
+_LAUDE = re.compile(r"(?i)\b(?:excelen\w*|extraordinar\w*|remarcabil\w*|impresionan\w*|fantastic\w*|minunat\w*|superb\w*|"
+                    r"felicit\w*|bravo|succes\w*|reu[sș]i\w*|performan\w*|solid\w*|s[aă]n[aă]to[sș]\w*|prosper\w*|record\w*|"
+                    r"frumo[sa]\w*|(?:foarte|deosebit\s+de)\s+bun\w*|cre[sș]te\w*|cre[sș]cut\w*|[iî]mbun[aă]t[aă]\w*|mai\s+bun\w*|"
+                    r"[iî]ncuraj\w*|optimis\w*|lăudabil\w*|laudabil\w*|perfect\w*|admirabil\w*|str[aă]lucit\w*)")
+# [retestul Costin 09.10.2026, deficiența 33: „povestea scrie fals «în septembrie nu a fost nicio declarație de depus»”; deficiența 209:
+# „Povestea lunii: spune doar ce reiese din cifre și nimic despre declarații”] Declarațiile depuse stau în tabelul pachetului și al
+# emailului; povestea nu vorbește despre declarații deloc — nici despre ce s-a depus, nici despre ce era de depus.
+_DECLARATII = re.compile(r"(?i)declara[tț]i|\bD\s?\d{3}\b")
+_PROPOZITIE = re.compile(r"(?<=[.!?…])\s+")
 _SUMA_LEI = re.compile(r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:,\d{1,2})?)\s*(?:de\s+)?lei\b", re.I)
 
 
@@ -140,11 +151,42 @@ def abateri_termeni(text, rz):
         out.append("termen: pierdere (pachetul arată profit)")
     if _RESTANTE.search(text or ""):   # [lot 06.10 pct.16, decizia A] nu în povestea pentru client
         out.append("restanțe: povestea pentru client nu pomenește declarațiile restante (decizia A)")
+    out += sorted({"laudă nesusținută de cifre: %s" % m.group(0).lower() for m in _LAUDE.finditer(text or "")})   # [deficiența 32]
+    out += ["declarații: „%s” (povestea nu vorbește despre declarații)" % p for p in _propozitii_fara_sursa(text, rz, numai_declaratii=True)]
     return out
 
 
+def _propozitii_fara_sursa(text, rz, numai_declaratii=False):
+    """Propozițiile textului care spun ce povestea nu are voie să spună: o laudă nesusținută de cifre (deficiența 32) sau orice
+    afirmație despre declarații (deficiențele 33 + 209)."""
+    out = []
+    for p in (x.strip() for ln in (text or "").split("\n") for x in _PROPOZITIE.split(ln)):
+        if not p:
+            continue
+        despre_declaratii = bool(_DECLARATII.search(p))
+        if despre_declaratii or (not numai_declaratii and _LAUDE.search(p)):
+            out.append(p)
+    return out
+
+
+def scoate_afirmatii_fara_sursa(text, rz):
+    """[deficiențele 32 + 33, retestul Costin 09.10.2026] Textul generat FĂRĂ propozițiile pe care pachetul nu le susține (laude,
+    afirmații despre declarații nedepuse), și lista lor. Promptul le interzice și o reîncercare le numește, dar un model poate ignora
+    o instrucțiune de două ori: ce ajunge în editor nu le mai conține — imposibil, nu improbabil. Rândurile textului se păstrează."""
+    scoase = _propozitii_fara_sursa(text, rz)
+    if not scoase:
+        return text, []
+    linii = []
+    for ln in (text or "").split("\n"):
+        pastrate = [x for x in _PROPOZITIE.split(ln) if x.strip() and x.strip() not in scoase]
+        linii.append(" ".join(x.strip() for x in pastrate) if ln.strip() else ln)
+    curat = re.sub(r"\n{3,}", "\n\n", "\n".join(linii)).strip()
+    return curat, scoase
+
+
 def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
-    depuse = ", ".join(rz["declaratii_depuse"]) if rz["declaratii_depuse"] else "nicio declaratie"
+    # [deficiențele 33 + 209] „Declarații depuse: nicio declarație” devenea „nu a fost nicio declarație de depus”, iar Costin: „spune doar
+    # ce reiese din cifre și nimic despre declarații”. Promptul nu mai primește declarațiile deloc (ele stau în tabelul pachetului).
     # [lot 06.10 pct.16, decizia A a lui Costin] „Restanțele declarațiilor nu apar în povestea trimisă clientului.” Promptul
     # nu le mai primește (parametrul rămâne pentru semnătură, nefolosit), iar `abateri_termeni` prinde un text care le pomenește.
     del restante_desc
@@ -153,11 +195,10 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
                        % "; ".join(corectie)) if corectie else "")
     return (
         "Esti contabilul firmei si scrii un scurt rezumat lunar pentru patronul firmei, "
-        "in limba romana, pe intelesul unui om care NU e contabil. Ton cald, profesional, clar. "
+        "in limba romana, pe intelesul unui om care NU e contabil. Ton profesional, sobru, clar. "
         "2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
         "Date despre %s, luna %s %d (exact cum apar in pachetul lunar pe care patronul il vede alaturi):\n"
-        "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat inainte de impozit: %s (%s)\n"
-        "- Declaratii depuse la ANAF: %s\n\n"
+        "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat inainte de impozit: %s (%s)\n\n"
         "TERMENII SI CIFRELE (obligatoriu): foloseste EXACT cuvintele «venituri», «cheltuieli» si «rezultat», cu sumele "
         "de mai sus, scrise la fel. Veniturile NU sunt «incasari» (banii intrati in cont sunt alt lucru) si NU sunt "
         "«castig»; nu spune «a castigat», «a incasat», «bani intrati», «cifra de afaceri». Rezultatul il numesti "
@@ -166,10 +207,13 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
         "Scrie povestea lunii: cum a mers firma, ce inseamna rezultatul in termeni simpli. "
         "Daca rezultatul e pierdere, explica fara alarmism. "
         "Nu vorbi despre declaratii restante, nedepuse sau termene depasite si nu afirma ca firma e «la zi»: "
-        "situatia declaratiilor o discuta contabilul separat. "
+        "situatia declaratiilor o discuta contabilul separat. Nu scrie nimic despre declaratii — nici ce s-a depus, nici ce era "
+        "sau nu era de depus: povestea spune numai ce reiese din cifrele de mai sus. "
+        "NU lauda si NU califica luna (fara «excelenta», «foarte buna», «felicitari», «crestere», «performanta», «succes»): "
+        "pachetul are cifrele unei singure luni, fara comparatie cu alte luni — spui cifrele si ce inseamna, atat. "
         "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata.%s"
     ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an,
-         _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ, depuse,
+         _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ,
          calificativ, corectie_linie)
 
 
@@ -194,7 +238,9 @@ def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
                 break
     except Exception as e:
         return {"ok": False, "cod": "AI_EROARE", "mesaj": str(e), "rezumat": rz}
-    return {"ok": True, "text": text, "rezumat": rz, "restante": restante_desc, "abateri": abateri}
+    text, scoase = scoate_afirmatii_fara_sursa(text, rz)   # [deficiențele 32 + 33] ce nu se sprijină pe pachet nu ajunge în editor
+    abateri = abateri_termeni(text, rz)
+    return {"ok": True, "text": text, "rezumat": rz, "restante": restante_desc, "abateri": abateri, "scoase": scoase}
 
 
 # ---------- CRUD poveste ----------

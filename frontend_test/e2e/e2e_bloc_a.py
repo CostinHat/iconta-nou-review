@@ -14,14 +14,14 @@ import io
 import re
 import time
 
-from conftest import _db, _ecran, sql, cui_cu_control, PREFIX_FIRMA
+from conftest import ai_pregateste, ai_prompturi, _db, _ecran, sql, cui_cu_control, PREFIX_FIRMA
 
 ecran_cont = contextlib.contextmanager(_ecran)
 AZI = _dt.date.today()
 T_PANIFICATIE = 4784          # tenant_001, „Panificatie Salarii Speciale SRL” — are salariați; doar citire
 T_COMERT = 4838               # tenant_003, „Comert Micro TVA SRL” — doar citire (lista de firme)
 SERIE = "E2EA"
-PRODUS = "Consultanta contabila E2E"
+PRODUS = "Servicii de consultanță contabilă E2E"   # „Servicii” clasifică linia pe 704 fără AI (plasa rulează cu AI simulat)
 ARTICOL = "Marfa E2E Bloc A"
 CLIENT = {"#em-cui": "14399840", "#em-nume": "DANTE INTERNATIONAL SA", "#em-adresa": "Șos. Virtuții 148, București"}
 
@@ -328,7 +328,8 @@ def test_def_3_email_client_al_unui_cont_cu_alt_rol_e_refuzat_pe_camp(patron):
 def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
     """4. Bun venit: fereastra se închide doar de la butonul de jos; lipsesc X și Esc.
     Pașii contabilului: la prima intrare apare „Bun venit”, cu X în antet; Esc o închide; la o nouă primă intrare, X o închide.
-    Închiderea o marchează văzută (nu reapare)."""
+    Închiderea o marchează văzută (nu reapare). [retestul Costin 09.10: testul vechi trecea pe defect — proba doar „Bun venit”]
+    Aceeași prezentare, deschisă din semnul „?” al barei („Prezentarea aplicației”), se închide și ea cu Esc."""
     with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a:
         with ecran_cont(browser, request, a["email"]) as e:
             pg = e.pg
@@ -348,6 +349,13 @@ def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
             pg.click(".bun-venit-antet .nav-x")
             pg.wait_for_selector(".bun-venit-overlay", state="detached", timeout=10000)
             e.captura("dupa_x")
+            # [retestul Costin 09.10] aceeași prezentare, deschisă din semnul „?” al barei („Prezentarea aplicației”): Esc o închide
+            pg.click("#nav-ghid")
+            pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
+            e.captura("prezentarea_deschisa")
+            pg.keyboard.press("Escape")
+            pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
+            e.captura("prezentarea_dupa_esc")
 
 
 def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser, request, patron):
@@ -374,6 +382,22 @@ def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser,
     patron.captura("admin")
     assert pasi_admin[0] == "Firme", pasi_admin
     assert "Firme" not in pasi_asist and "Vector fiscal" in pasi_asist, pasi_asist
+    # [retestul Costin 09.10] „Ana vede în catalog funcții de administrator”: catalogul „Ce cuprinde aplicația” al asistentului nu
+    # are funcțiile administratorului de cabinet, nici pe ale platformei; administratorul cabinetului le are pe ale lui
+    ADMIN_CABINET = {"Chei API publice per cabinet", "Contabilii și asistenții cabinetului", "Exportul datelor cabinetului, din aplicație"}
+    PLATFORMA = {"Suspendare cabinet", "Alerte sănătate server"}
+    with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
+        e.acasa()
+        e.pg.click("#nav-ghid")
+        e.pg.wait_for_selector(".fereastra .ans-grupa-lista li", timeout=20000)
+        cat_asist = set(e.pg.eval_on_selector_all(".fereastra .ans-grupa-lista li",
+                                                  "els => els.filter(x => x.offsetParent !== null).map(x => x.childNodes[0].textContent.trim())"))
+        e.captura("catalog_asistent")
+    cat_admin = set(patron.pg.eval_on_selector_all(".fereastra .ans-grupa-lista li",
+                                                   "els => els.filter(x => x.offsetParent !== null).map(x => x.childNodes[0].textContent.trim())"))
+    assert len(cat_asist) > 50 and "Generare contracte" in cat_asist, "anti-vacuu: catalogul asistentului n-a fost citit"
+    assert not (ADMIN_CABINET | PLATFORMA) & cat_asist, sorted((ADMIN_CABINET | PLATFORMA) & cat_asist)
+    assert ADMIN_CABINET <= cat_admin and not PLATFORMA & cat_admin, (sorted(ADMIN_CABINET - cat_admin), sorted(PLATFORMA & cat_admin))
 
 
 def test_def_6_contorul_asistenti_nu_numara_administratorul(browser, request):
@@ -392,13 +416,14 @@ def test_def_6_contorul_asistenti_nu_numara_administratorul(browser, request):
 
 def test_def_7_bun_venit_fara_termenul_de_48_de_ore(browser, request):
     """7. Bun venit: textul „se rezolvă în maximum 48 de ore” e un angajament public nedecis.
-    Pașii contabilului: la prima intrare citește „Bun venit”: fraza despre Suport rămâne, fără niciun termen de rezolvare."""
+    Pașii contabilului: la prima intrare citește „Bun venit”: fraza despre cardul „Raportează” (fost „Suport”, deficiența 202) rămâne,
+    fără niciun termen de rezolvare."""
     with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a, ecran_cont(browser, request, a["email"]) as e:
         e.pg.goto(e_baza(), wait_until="domcontentloaded")
         e.pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
         txt = e.pg.inner_text(".bun-venit-overlay")
         e.captura()
-        fraza = [p for p in txt.split("\n") if "cardul Suport" in p]
+        fraza = [p for p in txt.split("\n") if "cardul „Raportează”" in p]   # [deficiența 202] cardul se numește „Raportează”
         assert fraza, txt[:400]
         assert "48 de ore" not in txt and not re.search(r"\b\d+\s+(?:de\s+)?(?:ore|zile)\b", fraza[0]), fraza
 
@@ -452,7 +477,8 @@ def test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica(browser, request, 
 def test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul(browser, request, patron, firma_e2e):
     """9. Drepturi: asistentul putea emite chitanțe și certifica bonuri, dar nu vedea PDF-ul chitanței, poza bonului și fluturașul.
     Pașii contabilului: asistentul cu „Poate pregăti” deschide o factură emisă -> „Emite chitanță” -> „PDF chitanță”: PDF-ul se
-    deschide; în Salariați (firmă cu salariați alocată) apasă „Fluturaș”: PDF-ul vine. (Fotografia bonului NU e în test — vezi registru.)"""
+    deschide; în Salariați (firmă cu salariați alocată) apasă „Fluturaș”: PDF-ul vine; fotografia unui bon al firmei (din directorul de
+    bonuri al plasei, separat de producție — `ICONTA_BON_DIR`, comanda 09.10 pct.7) vine și ea, ca imagine."""
     pregateste_firma(patron, firma_e2e)
     f = emite_api(patron, firma_e2e)
     with cont_asistent(firme=(firma_e2e["tenant_id"], T_PANIFICATIE)) as a, ecran_cont(browser, request, a["email"]) as e:
@@ -472,6 +498,20 @@ def test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul(browser, request, patr
             pg.click("[data-flut] >> nth=0")
         _pdf_ok(e, rr)
         e.captura("fluturas")
+        # [retestul 09.10, pct.7: directorul separat al bonurilor] fotografia bonului, pe drumul ecranului (`pozaUrl`: cererea imaginii)
+        import os as _os
+        bid = sql('INSERT INTO "%s".bonuri (comerciant, data, total, nr_imagini, tip) VALUES (\'Magazin Probă E2E\', CURRENT_DATE, 12.10, 1, '
+                  "'bon') RETURNING id" % firma_e2e["schema"])[0][0]
+        d = _os.path.join(_os.environ["ICONTA_BON_DIR"], firma_e2e["schema"], str(bid))
+        _os.makedirs(d, exist_ok=True)
+        jpeg = bytes.fromhex("ffd8ffe000104a46494600010100000100010000ffdb004300080606070605080707070909080a0c140d0c0b0b0c1912130f141d1a1f1e1d1a1c"
+                             "1c20242e2720222c231c1c2837292c30313434341f27393d38323c2e333432ffc0000b080001000101011100ffc4001f0000010501010101"
+                             "010100000000000000000102030405060708090a0bffda0008010100003f00d2cf20ffd9")
+        open(_os.path.join(d, "img_1.jpg"), "wb").write(jpeg)
+        st, tip, n = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
+          const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = await x.arrayBuffer();
+          return [x.status, x.headers.get('content-type'), b.byteLength]; }""", "/tenants/%d/bonuri/%d/imagine/1" % (firma_e2e["tenant_id"], bid))
+        assert st == 200 and (tip or "").startswith("image/") and n == len(jpeg), (st, tip, n)
 
 
 def test_def_10_schimbarea_regimului_de_tva_e_jurnalizata(browser, request, patron, firma_e2e):
@@ -509,6 +549,8 @@ def test_def_11_reges_trimiterea_la_poate_depune_credentialele_la_administrator(
             e.firma("Panificatie Salarii Speciale")
             _card(e, "salariati", "[data-flut]")
             r = {s: _vizibile(e.pg, s) for s in ("[data-reges]", "#sp-reges-poll", "#sp-reges-cfg")}
+            # [retestul Costin 09.10] textul nu trimite la un buton pe care contul nu-l are („Chei REGES” e al administratorului)
+            r["text_chei"] = "Chei REGES" in e.fereastra()
             e.captura("depune" if a.get("depune") else "pregatire")
             return r
     with cont_asistent(firme=(T_PANIFICATIE,)) as a:
@@ -516,8 +558,9 @@ def test_def_11_reges_trimiterea_la_poate_depune_credentialele_la_administrator(
     with cont_asistent(firme=(T_PANIFICATIE,), depune=True, eticheta="depune") as a:
         a["depune"] = True
         cu_depunere = numara(a)
-    assert doar_pregatire == {"[data-reges]": 0, "#sp-reges-poll": 0, "#sp-reges-cfg": 0}, doar_pregatire
+    assert doar_pregatire == {"[data-reges]": 0, "#sp-reges-poll": 0, "#sp-reges-cfg": 0, "text_chei": False}, doar_pregatire
     assert cu_depunere["[data-reges]"] > 0 and cu_depunere["#sp-reges-poll"] == 1 and cu_depunere["#sp-reges-cfg"] == 0, cu_depunere
+    assert cu_depunere["text_chei"] is False, "asistentului i se spune să configureze „Chei REGES”, buton pe care nu-l are"
 
 
 # ── 05.10 — Povestea lunii, Asistenți, meniu, Pachete ──────────────────────────────────────────────────────────────────────
@@ -551,6 +594,43 @@ def test_def_14_fara_drept_povestea_explica_de_ce_lipsesc_butoanele(browser, req
         motiv = pg.inner_text(".pacm .drept-motiv")
         e.captura()
         assert "«Poate pregăti»" in motiv and "«Poate valida»" in motiv and "Asistenți" in motiv, motiv
+
+
+def test_def_142_cd_cere_poate_valida(browser, request, patron, firma_e2e):
+    """142. Mijloace fixe: C&D schimbabil de asistentul junior.
+    [partea rămasă, registrul: „nu există un cont numai cu «Poate pregăti» pe care să se arate că butonul C&D e ascuns sau refuzat”]
+    Pașii: un mijloc fix în registrul firmei -> asistentul NUMAI cu „Poate pregăti”, cu firma alocată, deschide Mijloace fixe ->
+    „Acțiuni”: „C&D: nu” nu i se oferă (decizia Costin 08.10 W4: „schimbă regimul fiscal al activului și cere «Poate valida»”), iar
+    cererea directă pe aceeași rută e refuzată și bifa rămâne „nu”. Contabilul-șef, pe același activ, are butonul."""
+    from decimal import Decimal
+    from core import db, repo_mijloace_fixe
+    with db.get_conn(firma_e2e["schema"]) as c:
+        with c.cursor() as cur:
+            mid = repo_mijloace_fixe.adauga_cu_reevaluare(cur, firma_e2e["schema"], "MF142", "Utilaj de probă MF142", "2131", "2813",
+                                                          Decimal("3000"), Decimal(0), 36, "2026-05-10", "liniara")[0]
+        c.commit()
+    sel = "button[data-cd='%s']" % mid
+
+    def deschide(e):
+        e.firma(firma_e2e["nume"])
+        e.pg.click("#fa-mijloace")
+        e.pg.wait_for_selector(sel, state="attached", timeout=20000)
+        e.pg.evaluate("(s) => document.querySelector(s).closest('details').open = true", sel)
+
+    with cont_asistent(firme=(firma_e2e["tenant_id"],), eticheta="junior142") as a, ecran_cont(browser, request, a["email"]) as e:
+        deschide(e)
+        st = e.pg.evaluate("""(s) => { const b = document.querySelector(s);
+          return {vizibil: b.offsetParent !== null, refuzat: b.classList.contains('drept-refuzat')}; }""", sel)
+        e.captura("asistent")
+        assert st == {"vizibil": False, "refuzat": True}, st
+        cod = e.pg.evaluate("""async ([u]) => { const t = sessionStorage.getItem('iconta_token');
+          const x = await fetch(u, {method: 'PUT', headers: {'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json'},
+            body: JSON.stringify({destinatie_cd: 'da'})}); return x.status; }""",
+                            ["/tenants/%d/mijloace-fixe/%d/destinatie-cd" % (firma_e2e["tenant_id"], mid)])
+        assert cod == 403, cod
+    assert sql('SELECT destinatie_cd FROM "%s".mijloace_fixe WHERE id = %%s' % firma_e2e["schema"], (mid,)) == [(False,)]
+    deschide(patron)
+    assert patron.pg.locator(sel).is_visible()
 
 
 def test_def_15_administratorul_apare_cu_toate_drepturile(browser, request):
@@ -632,11 +712,8 @@ def test_def_31_povestea_fara_marcaje_in_caseta_si_in_email(patron, firma_e2e):
     assert "**" not in text and "__" not in text and not text.startswith("#") and "*bine*" not in text, text
 
 
-def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_e2e):
-    """32. Povestea lunii: rezultatul înainte de impozit numit „profit”, cu laudă nesusținută.
-    Pașii contabilului: într-o lună cu venituri 1.000 lei (4111=704) și nota impozitului 160 lei (691=441), pachetul arată
-    „Rezultat înainte de impozit 1.000,00 lei (profit)”, cheltuielile 0,00 (impozitul nu e cheltuială a rezultatului dinainte de
-    impozit), iar emailul folosește aceeași etichetă."""
+def _luna_32(patron, firma_e2e):
+    """Luna cu venituri 1.000 lei (4111=704) și nota impozitului 160 lei (691=441), validate; o singură dată pe firmă."""
     s = firma_e2e["schema"]
     pregateste_firma(patron, firma_e2e)
     luna = _dt.date(2026, 7, 15)
@@ -646,6 +723,31 @@ def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_
                          {"descriere": desc, "data": luna.isoformat(), "document_ref": "PV E2E 32",
                           "linii": [{"debit": d, "credit": c, "suma": suma}]}), "nota " + desc)
             _ok(_api(patron, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma_e2e["tenant_id"], r["id"])), "validare " + desc)
+    return luna
+
+
+FAPT_32 = ("Veniturile lunii au fost de 1.000,00 lei, cheltuielile de 0,00 lei, iar rezultatul înainte de impozit este de "
+           "1.000,00 lei (profit).")
+
+
+def _genereaza_povestea(patron):
+    pg = patron.pg
+    pg.click("#pacm-gen")
+    pg.wait_for_function("() => document.querySelector('#pacm-gen').textContent.includes('Generează cu AI') "
+                         "&& document.querySelector('#pacm-text').value.trim() !== ''", timeout=30000)
+    return pg.input_value("#pacm-text"), pg.inner_text("#pacm-abateri")
+
+
+def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_e2e):
+    """32. Povestea lunii: rezultatul înainte de impozit numit „profit”, cu laudă nesusținută.
+    Pașii contabilului: într-o lună cu venituri 1.000 lei (4111=704) și nota impozitului 160 lei (691=441), pachetul arată
+    „Rezultat înainte de impozit 1.000,00 lei (profit)”, cheltuielile 0,00 (impozitul nu e cheltuială a rezultatului dinainte de
+    impozit), iar emailul folosește aceeași etichetă.
+    [retestul Costin 09.10, cuvânt cu cuvânt] „povestea lunii păstrează laude nesusținute de cifre.” Pașii: modelul (simulat în
+    plasă) scrie de ambele dăți „o lună excelentă, cu o creștere remarcabilă” -> „Generează cu AI”: în editor ajunge numai
+    propoziția cu cifrele; ecranul spune ce a scos; promptul nu mai cere „ton cald” și interzice calificarea.
+    [testul vechi trecea pe defect: nu genera povestea deloc — verifica numai eticheta rezultatului]"""
+    luna = _luna_32(patron, firma_e2e)
     _pachet(patron, firma_e2e, luna.year, luna.month)
     pg = patron.pg
     rez = pg.eval_on_selector_all(".pac-rezumat .pac-rez-rand", "els => els.map(e => e.innerText.replace(/\\s+/g, ' ').trim())")
@@ -653,11 +755,354 @@ def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_
     assert "Venituri 1.000,00 lei" in rez and "Cheltuieli 0,00 lei" in rez, rez
     assert "Rezultat înainte de impozit 1.000,00 lei (profit)" in rez, rez
     _deschide_povestea(patron)
+    lauda = "Iulie a fost o lună excelentă pentru firmă, cu o creștere remarcabilă a activității."
+    ai_pregateste(lauda + " " + FAPT_32, "Felicitări pentru rezultat! " + FAPT_32)
+    text, mesaj = _genereaza_povestea(patron)
+    patron.captura("poveste_generata")
+    assert text == FAPT_32, text
+    assert "Am scos din textul generat 1 propoziție" in mesaj and "Felicitări pentru rezultat!" in mesaj, mesaj
+    pr = ai_prompturi()
+    assert len(pr) == 2 and "laudă nesusținută de cifre: excelentă" in pr[1]["prompt"], [x["prompt"][-400:] for x in pr]
+    assert "Ton cald" not in pr[0]["prompt"] and "NU lauda" in pr[0]["prompt"], pr[0]["prompt"][:600]
     pg.click("#pacm-vezi")
     pg.wait_for_function("() => document.querySelector('#pacm-preview').innerText.includes('Cheltuieli')", timeout=20000)
     mail = re.sub(r"\s+", " ", pg.inner_text("#pacm-preview"))
     patron.captura("email")
     assert "Rezultat înainte de impozit 1.000,00 lei (profit)" in mail, mail[:600]
+
+
+def test_def_12_parafraza_de_incasare_e_prinsa_si_numita(patron, firma_e2e):
+    """12. Povestea lunii: AI confundă venituri, încasări și câștig.
+    [partea rămasă, registrul: „Parafraza «tot ce a intrat ca venit s-a transformat în rezultat» … trece nevăzută — framing de
+    încasare, neprins de abateri. În plus nu există test e2e determinist”] Pașii: modelul (simulat în plasă) scrie de ambele dăți
+    „Tot ce a intrat ca venit s-a transformat în rezultat.” -> „Generează cu AI”: a doua cerere către model numește abaterea, iar
+    editorul o arată („termen: a intrat”) înainte de aprobare."""
+    luna = _luna_32(patron, firma_e2e)
+    _pachet(patron, firma_e2e, luna.year, luna.month)
+    _deschide_povestea(patron)
+    parafraza = "Tot ce a intrat ca venit s-a transformat în rezultat."
+    ai_pregateste(FAPT_32 + " " + parafraza, FAPT_32 + " " + parafraza)
+    text, mesaj = _genereaza_povestea(patron)
+    patron.captura("poveste_generata")
+    assert "textul generat se abate de la pachet" in mesaj and "termen: a intrat" in mesaj, mesaj
+    pr = ai_prompturi()
+    assert len(pr) == 2 and "termen: a intrat" in pr[1]["prompt"], [x["prompt"][-300:] for x in pr]
+
+
+def _prezentarea(e):
+    e.acasa()
+    e.pg.click("#nav-ghid")
+    e.pg.wait_for_selector(".fereastra .ans-grupe .ans-grupa", timeout=30000)
+    e.pg.wait_for_timeout(400)
+
+
+def test_def_198_salutul_de_la_intrare_are_diacritice(patron):
+    """198. Desktopul contabilului-șef: mesajul „Buna, Dobrescu!” e fără diacritice.
+    Pașii: contabilul-șef are notificări necitite -> intră în aplicație: caseta de bun-venit spune „Bună, <prenume>!” (prenumele, ca
+    salutul desktopului), iar rândul notificărilor are diacritice („declarații depuse”, „notificări”)."""
+    pg = patron.pg
+    uid, prenume = sql("SELECT id, coalesce(prenume, '') FROM public.users WHERE email = 'patron@prisma-cont.test'")[0]
+    nid = sql("INSERT INTO public.notificari (user_id, tip, text, citit, creat_la) VALUES (%s, 'depusa', 'Probă 198', false, now()) "
+              "RETURNING id", (uid,))[0][0]
+    try:
+        patron.acasa()   # context nou de browser: caseta apare o dată pe sesiune
+        pg.wait_for_selector(".sumar-toast", timeout=15000)
+        cap = pg.inner_text(".sumar-toast-cap")
+        corp = pg.inner_text(".sumar-toast-corp")
+        patron.captura("salut")
+    finally:
+        sql("DELETE FROM public.notificari WHERE id = %s", (nid,))
+    assert cap.startswith("Bună, ") and cap.endswith("!"), cap
+    if prenume:
+        assert cap == "Bună, %s!" % prenume, (cap, prenume)
+    assert "declaratie" not in corp and "notificari" not in corp, corp
+
+
+def test_def_191_versiunea_noua_se_poate_apasa_cu_o_fereastra_deschisa(patron):
+    """191. Bara de stare: butonul „Versiune nouă” nu se poate apăsa cât e deschisă o fereastră — stratul ferestrei îl acoperă.
+    Pașii: pagina principală -> se deschide o fereastră (Firme) -> se publică o versiune nouă (amprenta publicării se schimbă) -> la
+    revenirea în filă apare „Versiune nouă · reîncarcă”: butonul e deasupra stratului ferestrei (el primește apăsarea în punctul lui)."""
+    import json as _json
+    pg = patron.pg
+    patron.acasa()
+    pg.click("button.cab-card:has([data-cheie='firme'])")
+    pg.wait_for_selector(".fereastra-overlay", timeout=20000)
+    pg.route("**/static/.publicat.json*", lambda r: r.fulfill(status=200, content_type="application/json",
+                                                              body=_json.dumps({"la": "proba-191-versiune-noua"})))
+    pg.evaluate("() => document.dispatchEvent(new Event('visibilitychange'))")
+    pg.wait_for_selector(".versiune-noua", timeout=20000)
+    sus = pg.evaluate("""() => { const b = document.querySelector('.versiune-noua'); const r = b.getBoundingClientRect();
+      const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return {ok: !!e && b.contains(e), e: e && e.className}; }""")
+    patron.captura("versiune")
+    pg.unroute("**/static/.publicat.json*")
+    assert sus["ok"], sus
+
+
+def _coada(e):
+    e.acasa()
+    e.pg.click("button.cab-card:has([data-cheie='validat'])")
+    e.pg.wait_for_selector(".fereastra:last-of-type .cf-grup-titlu", timeout=60000)
+    e.pg.wait_for_timeout(800)
+
+
+def test_def_193_cardurile_cozii_au_latimea_ferestrei(patron):
+    """193. Coadă: cardurile „De depus” (D300) sunt înghesuite pe o coloană îngustă.
+    Pașii: ecran de 1700 × 1000 -> cardul „De depus” / „De validat” -> în fiecare card de declarație textul (declarația, firma,
+    termenul, „Vezi declarația…”) are cel puțin 300 px — nu e strivit de butoane într-o coloană îngustă —, iar butoanele stau în
+    card (niciunul nu iese peste marginea lui); la fel pe telefon (390 px)."""
+    pg = patron.pg
+    masoara = """() => { const f = [...document.querySelectorAll('.fereastra')].pop();
+      return [...f.querySelectorAll('.val-card')].map(v => { const r = v.getBoundingClientRect(); const t = v.firstElementChild.getBoundingClientRect();
+        const iese = [...v.querySelectorAll('button')].filter(b => { const x = b.getBoundingClientRect(); return x.right > r.right + 1 || x.left < r.left - 1; }).length;
+        return {card: Math.round(r.width), text: Math.round(t.width), iese, t: v.innerText.slice(0, 40)}; }); }"""
+    for lat, inalt in ((1700, 1000), (390, 844)):
+        pg.set_viewport_size({"width": lat, "height": inalt})
+        _coada(patron)
+        m = pg.evaluate(masoara)
+        patron.captura("coada_%d" % lat)
+        assert m, "anti-vacuu: nicio declarație în coadă"
+        rele = [x for x in m if x["text"] < min(300, x["card"] - 30) or x["iese"]]
+        assert not rele, (lat, rele)
+        # perioada declarației în forma DS v2.85 cap.4 („T4/2026”, „08/2026”), nu „trim. IV 2026” (văzut pe captura testului)
+        decl = [x for x in m if re.match(r"\s*D\d{3}\b", x["t"])]   # cardurile de DECLARAȚIE (notele din coadă n-au perioadă)
+        assert decl, "anti-vacuu: niciun card de declarație în coadă: %s" % m
+        assert not [x for x in decl if "trim." in x["t"]] and all(re.search(r"T[1-4]/20\d\d|\d\d/20\d\d|\b20\d\d\b", x["t"]) for x in decl), decl
+    pg.set_viewport_size({"width": 1700, "height": 1000})
+
+
+def test_def_217_coada_nu_se_contrazice_despre_validarea_in_doi(browser, request, patron, firma_e2e):
+    """217. Coada: textul „validarea în doi nu e pornită” contrazice notele de validat de pe același ecran.
+    Pașii: asistentul scrie o notă pe firma alocată (intră la validare) -> contabilul-șef (validarea în doi a declarațiilor nepornită)
+    deschide coada: „Note de validat (N)” sus, iar textul spune că notele asistenților se validează și că validarea în doi privește
+    declarațiile — nu „validarea în doi nu e pornită” fără ce anume."""
+    pregateste_firma(patron, firma_e2e)
+    with cont_asistent(firme=(firma_e2e["tenant_id"],)) as a, ecran_cont(browser, request, a["email"]) as e:   # „Poate pregăti”, fără validare
+        e.acasa()
+        nota = _ok(_api(e, "POST", "/tenants/%d/jurnal" % firma_e2e["tenant_id"],
+                        {"data": AZI.isoformat(), "descriere": "Nota D217", "document_ref": "D217",
+                         "linii": [{"debit": "5311", "credit": "4111", "suma": 17}]}), "nota asistentului")
+    try:
+        _coada(patron)
+        f = patron.fereastra()
+        patron.captura("coada")
+    finally:
+        sql('DELETE FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nota["id"],))
+    assert "note de validat (" in f.lower(), f[:800]   # titlul grupului e cu majuscule din CSS
+    assert "validarea în doi nu e pornită" not in f and "Notele de mai sus le-au pregătit asistenții" in f, f[:800]
+
+
+def test_def_200_prezentarea_fara_goluri_intre_grupe(patron):
+    """200. Prezentarea aplicației: coloane inegale, goluri mari.
+    Pașii: ecran de 1700 × 1000 -> „?” din bara de sus -> „Ce cuprinde aplicația”: sub fiecare grupă urmează, la cel mult 30 px,
+    grupa de dedesubt (sau capătul secțiunii) — fără goluri mari sub grupele scurte, iar coloanele se termină la cel mult 60 px
+    una de alta."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": 1700, "height": 1000})
+    _prezentarea(patron)
+    m = pg.evaluate("""() => { const z = document.querySelector('.fereastra .ans-grupe'); const zr = z.getBoundingClientRect();
+      const bx = [...z.querySelectorAll('.ans-grupa')].flatMap(g => [...g.getClientRects()]).map(r => ({l: r.left, r: r.right, t: r.top, b: r.bottom}));
+      const goluri = bx.map(g => { const jos = bx.filter(o => o !== g && o.t >= g.b - 1 && o.l < g.r - 1 && o.r > g.l + 1).map(o => o.t);
+        return Math.round((jos.length ? Math.min(...jos) : zr.bottom) - g.b); });
+      const col = {}; bx.forEach(g => { const k = Math.round(g.l); col[k] = Math.max(col[k] || 0, g.b); });
+      const fund = Object.values(col);
+      return {gol_max: Math.max(...goluri), coloane: fund.length, diferenta: Math.round(Math.max(...fund) - Math.min(...fund))}; }""")
+    pg.eval_on_selector(".fereastra .ans-grupe", "e => e.scrollIntoView({block: 'start'})")
+    patron.captura("prezentarea")
+    assert m["gol_max"] <= 30 and m["diferenta"] <= 60, m
+
+
+def test_def_201_prezentarea_vorbeste_limba_contabilului(patron):
+    """201. Prezentarea aplicației: limbaj de programator (pull->push, F163v2, „Dispatch”, v9) și titluri fără diacritice („Facturare
+    si e-Factura”).
+    Pașii: „?” din bara de sus -> „Ce cuprinde aplicația”: titlurile grupelor au diacritice („Facturare și e-Factura”, „Stocuri, bancă
+    și casă”, „Cabinet și portal client”), iar niciun nume nu are „->”, coduri F…, versiuni „v9”, jargon englezesc."""
+    from core import ansamblu
+    pg = patron.pg
+    _prezentarea(patron)
+    titluri = pg.eval_on_selector_all(".fereastra .ans-grupa-titlu", "els => els.map(e => e.childNodes[0].textContent.trim())")
+    nume = pg.eval_on_selector_all(".fereastra .ans-grupa-lista li", "els => els.map(e => e.childNodes[0].textContent.trim())")
+    patron.captura("catalog")
+    assert "Facturare și e-Factura" in titluri and "Stocuri, bancă și casă" in titluri and "Cabinet și portal client" in titluri, titluri
+    assert len(nume) > 100, len(nume)
+    rele = [(x, ansamblu.limbaj_tehnic(x)) for x in titluri + nume if ansamblu.limbaj_tehnic(x)]
+    assert not rele, rele
+
+
+def test_def_202_prezentarea_trimite_la_cardul_care_exista(patron, asistent):
+    """202. Prezentarea aplicației trimite la „cardul Suport”; cardul se numește „Raportează”.
+    Pașii: contabilul-șef și asistentul -> „?” -> prezentarea trimite la cardul „Raportează”, iar pe pagina principală a fiecăruia
+    există un card cu exact acest nume."""
+    for e in (patron, asistent):
+        _prezentarea(e)
+        text = e.pg.inner_text(".fereastra .ans-continut")
+        assert "cardul „Raportează”" in text and "cardul Suport" not in text, text[:400]
+        e.acasa()
+        carduri = e.pg.eval_on_selector_all(".cab-card-titlu, .asi-nod-titlu, .asi-nod", "els => els.map(x => x.innerText.trim())")
+        e.captura("desktop")
+        assert any(c.split("\n")[0] == "Raportează" for c in carduri), carduri
+
+
+#: [deficiența 203] ordinea cardurilor cabinetului după lucrul zilnic: întâi ce cere acțiune azi (de validat, restanțe, scadențe), apoi
+#: lucrul pe firme și ziua, apoi lunarul, apoi echipa și contul, la urmă sesizările
+ORDINE_CABINET = ["validat", "control", "termene", "firme", "brief", "activitate", "pachete", "supervizor", "capacitate",
+                  "consolidare", "asistenti", "setari", "raport"]
+
+
+def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
+    """203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor =
+    ecranele din spate.
+    Pașii: contabilul-șef -> pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
+    control fiscal, termene, firme …, la urmă Raportează) -> cifra cardului Firme = firmele active din ecranul Firme; contoarele
+    cardului Control fiscal = contoarele ecranului Control fiscal; „N note de validat” = „Note de validat (N)” din fereastra cozii."""
+    import re as _r
+    pg = patron.pg
+    patron.acasa()
+    pg.wait_for_function("() => !document.querySelector('.cab-grila').innerText.includes('se încarcă')", timeout=60000)
+    pg.wait_for_timeout(1500)
+    card = pg.evaluate("""() => [...document.querySelectorAll('.cab-grila button.cab-card')].map(b => ({
+        cheie: (b.querySelector('[data-cheie]') || {}).dataset ? b.querySelector('[data-cheie]').dataset.cheie : null,
+        titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText}))""")
+    patron.captura("desktop")
+    chei = [c["cheie"] for c in card]
+    assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
+    raport = [c for c in card if c["cheie"] == "raport"]
+    assert raport and raport[0]["titlu"].strip() == "Raportează", raport
+    sint = {c["cheie"]: c["sinteza"] for c in card}
+    firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
+    pg.click("button.cab-card:has([data-cheie='firme'])")
+    pg.wait_for_timeout(600)
+    if pg.query_selector("#opt-existente"):
+        pg.click("#opt-existente")
+    pg.wait_for_selector("#firme-lista .firme-rand-linie", timeout=30000)
+    pg.wait_for_timeout(800)
+    firme_ecran = pg.locator("#firme-lista .firme-rand-linie").count()
+    assert firme_card == firme_ecran, (sint["firme"], firme_ecran)
+    patron.acasa()
+    pg.wait_for_function("() => !document.querySelector('[data-cheie=control]').innerText.includes('se încarcă')", timeout=120000)
+    ctrl_card = pg.inner_text("[data-cheie=control]")
+    pg.click("button.cab-card:has([data-cheie='control'])")
+    pg.wait_for_selector(".cf-sumar .cf-pastila", timeout=120000)
+    pastile = pg.eval_on_selector_all(".fereastra:last-of-type .cf-sumar .cf-pastila", "els => els.map(e => e.innerText.trim())")
+    # fiecare contor nenul de pe ecran are pe card aceeași cifră, pe rândul cu aceeași etichetă (ultimele două cuvinte)
+    randuri_card = [x.strip() for x in ctrl_card.split("\n") if x.strip()]
+    for p in pastile:
+        n, et = _r.match(r"(\d+)\s+(.*)", p).groups()
+        if int(n) == 0:
+            continue
+        coada = " ".join(et.split()[-2:])
+        pe_card = [x for x in randuri_card if x.endswith(coada)]
+        assert pe_card and pe_card[0].split()[0] == n, (p, randuri_card)
+    patron.acasa()
+    pg.wait_for_function("() => /\\d/.test(document.querySelector('[data-cheie=validat]').innerText)", timeout=60000)
+    val_card = pg.inner_text("[data-cheie=validat]")
+    pg.click("button.cab-card:has([data-cheie='validat'])")
+    pg.wait_for_selector(".fereastra:last-of-type .cf-grup-titlu", timeout=60000)
+    pg.wait_for_timeout(800)
+    titluri = pg.eval_on_selector_all(".fereastra:last-of-type .cf-grup-titlu", "els => els.map(e => e.textContent.trim())")
+    patron.captura("coada")
+    for eticheta_card, grup in ((r"(\d+) note? de validat", "Note de validat"), (r"(\d+) declarații? de validat", "De validat"),
+                                (r"(\d+) declarații? de depus", "De depus")):
+        m = _r.search(eticheta_card, val_card)
+        if m:
+            g = [t for t in titluri if t.startswith(grup + " (")]
+            assert g and g[0] == "%s (%s)" % (grup, m.group(1)), (val_card, titluri)
+
+
+def test_def_207_ecranele_generale_pornesc_pe_firma_in_lucru(patron, asistent, firma_e2e):
+    """207. Pachete lunare: câmpul „Firmă” nu vine cu firma în lucru.
+    Pașii: deschide firma (bara de jos: „În lucru: <firma>”) -> ecranul principal -> Pachete lunare: câmpul „Firmă” e firma în lucru,
+    iar „Continuă” e activ -> asistentul (al cărui ecran principal are și Declarații, ecran general de același fel): deschide firma
+    -> Declarații: câmpul „Firmă” e firma în lucru."""
+    from core import asistenti_api, db
+    with db.get_conn() as c:
+        r = asistenti_api.atribuie_firma(c, firma_e2e["cabinet_id"], sql("SELECT id FROM public.users WHERE email = "
+                                                                          "'asistent@prisma-cont.test'")[0][0], firma_e2e["tenant_id"])
+        c.commit()
+    assert r.get("ok"), r
+    pg = patron.pg
+    pregateste_firma(patron, firma_e2e)
+    patron.firma(firma_e2e["nume"])
+    patron.acasa()
+    pg.click("button.cab-card:has([data-cheie='pachete'])")
+    pg.wait_for_selector("#pac-firma", timeout=20000)
+    alese = pg.evaluate("() => [document.querySelector('#pac-firma').value, document.querySelector('#pac-continua').disabled]")
+    patron.captura("pachete")
+    assert alese == [str(firma_e2e["tenant_id"]), False], alese
+    asistent.firma(firma_e2e["nume"])
+    asistent.acasa()
+    asistent.pg.click(".asi-nod[data-nod='declaratii']")
+    asistent.pg.wait_for_selector("#dec-firma", timeout=20000)
+    dec = asistent.pg.input_value("#dec-firma")
+    asistent.captura("declaratii")
+    assert dec == str(firma_e2e["tenant_id"]), dec
+
+
+def test_def_208_fereastra_povestii_e_de_lucru_nu_de_mesaj(patron, firma_e2e):
+    """208. Povestea lunii: fereastra și caseta de text prea mici.
+    Pașii: ecran de 1700 × 1000 -> Pachete lunare -> firma -> luna -> „Scrie povestea”: fereastra ține cât un document (cel puțin
+    900 px lățime și 70% din înălțimea ecranului), iar caseta de text ocupă cea mai mare parte din ea (cel puțin 55% din înălțimea
+    ecranului) — și când povestea e goală; pe telefon (390 px) fereastra încape în ecran."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": 1700, "height": 1000})
+    luna = _luna_32(patron, firma_e2e)
+    _pachet(patron, firma_e2e, luna.year, luna.month)
+    _deschide_povestea(patron)
+    m = pg.evaluate("""() => { const f = document.querySelector('.pacm').getBoundingClientRect(),
+        t = document.querySelector('#pacm-text').getBoundingClientRect();
+        return {fer_l: Math.round(f.width), fer_h: Math.round(f.height), text_h: Math.round(t.height), vh: innerHeight}; }""")
+    patron.captura("desktop")
+    assert m["fer_l"] >= 900 and m["fer_h"] >= 0.7 * m["vh"] and m["text_h"] >= 0.55 * m["vh"], m
+    pg.set_viewport_size({"width": 390, "height": 844})
+    pg.wait_for_timeout(200)
+    t = pg.evaluate("() => { const f = document.querySelector('.pacm').getBoundingClientRect(); return [f.left, f.right, f.top, f.bottom, innerWidth, innerHeight]; }")
+    patron.captura("telefon")
+    pg.set_viewport_size({"width": 1700, "height": 1000})
+    assert t[0] >= 0 and t[1] <= t[4] and t[2] >= 0 and t[3] <= t[5], t
+
+
+def test_def_209_povestea_nu_vorbeste_despre_declaratii(patron, firma_e2e):
+    """209. Povestea lunii: spune doar ce reiese din cifre și nimic despre declarații.
+    Pașii: luna are o declarație depusă (D300, marcată depusă) -> modelul (simulat în plasă) scrie de ambele dăți „Firma a depus
+    decontul de TVA (D300) la termen.” -> „Generează cu AI”: în editor ajunge numai propoziția cu cifrele; promptul nu primește
+    declarațiile depuse; tabelul pachetului le arată în continuare."""
+    luna = _luna_32(patron, firma_e2e)
+    sql("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, sursa) VALUES (%s, %s, %s, 'd300', 'iconta') "
+        "ON CONFLICT DO NOTHING", (firma_e2e["tenant_id"], luna.year, luna.month))
+    try:
+        _pachet(patron, firma_e2e, luna.year, luna.month)
+        rez = patron.pg.eval_on_selector_all(".pac-rezumat .pac-rez-rand", "els => els.map(e => e.innerText.replace(/\\s+/g, ' ').trim())")
+        _deschide_povestea(patron)
+        despre = "Firma a depus decontul de TVA (D300) la termen."
+        ai_pregateste(FAPT_32 + " " + despre, despre + " " + FAPT_32)
+        text, mesaj = _genereaza_povestea(patron)
+        patron.captura("poveste_generata")
+    finally:
+        sql("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd300'", (firma_e2e["tenant_id"],))
+    assert any("D300" in r for r in rez), rez
+    assert text == FAPT_32, text
+    assert despre in mesaj, mesaj
+    pr = ai_prompturi()
+    assert pr and "D300" not in pr[0]["prompt"], pr[0]["prompt"][:900]   # a doua cerere citează propoziția de corectat, nu date
+
+
+def test_def_33_povestea_nu_afirma_ce_era_de_depus(patron, firma_e2e):
+    """33. Povestea lunii: clientului i se comunicau restanțele (decizia A: rămân alertă la cabinet).
+    [retestul Costin 09.10, cuvânt cu cuvânt] „povestea scrie fals «în septembrie nu a fost nicio declarație de depus».” Cauza:
+    promptul spunea „Declarații depuse la ANAF: nicio declarație”, iar modelul o citea „nimic de depus”. Pașii: luna fără nicio
+    declarație depusă -> modelul (simulat) scrie de ambele dăți „în iulie nu a fost nicio declarație de depus” -> „Generează cu AI”:
+    propoziția nu ajunge în editor, iar promptul nu mai poartă rândul „nicio declarație”."""
+    luna = _luna_32(patron, firma_e2e)
+    _pachet(patron, firma_e2e, luna.year, luna.month)
+    _deschide_povestea(patron)
+    fals = "În iulie nu a fost nicio declarație de depus."
+    ai_pregateste(FAPT_32 + "\n\n" + fals, fals + " " + FAPT_32)
+    text, mesaj = _genereaza_povestea(patron)
+    patron.captura("poveste_generata")
+    assert text == FAPT_32 and "declarați" not in text.lower(), text
+    assert fals in mesaj, mesaj
+    pr = ai_prompturi()
+    assert pr and all("nicio declaratie" not in x["prompt"].lower() for x in pr), [x["prompt"][:700] for x in pr]
+    assert "Nu scrie nimic despre declaratii" in pr[0]["prompt"], pr[0]["prompt"][:900]
 
 
 # ── 05.10 — factura F1 ──────────────────────────────────────────────────────────────────────────────────────────────────────

@@ -44,6 +44,10 @@ def _env_test():
                 k, v = linie.split("=", 1)
                 env[k.strip()] = v.strip().strip('"').strip("'")
     env.pop("BREVO_API_KEY", None)               # nimic trimis în afară din probă
+    # [comanda Costin 09.10.2026 pct.7] AI simulat: nicio cerere spre model; testele pregătesc răspunsurile (`core.ai_client`)
+    env.pop("ANTHROPIC_API_KEY", None)
+    env["ICONTA_AI_SIMULAT"] = os.path.join(TEMP, "ai_simulat")
+    env["ICONTA_BON_DIR"] = os.path.join(TEMP, "bonuri")   # [pct.7, deficiența 9] pozele bonurilor de probă nu stau lângă cele reale
     return env
 
 
@@ -154,6 +158,8 @@ def _main(argv):
             open(cale, "w", encoding="utf-8").write(text.replace(mu["ancora"], mu["inlocuire"], 1))
             print("[e2e] MUTAȚIE aplicată pe copie: %s" % mu["fisier"])
     env = _env_test()
+    os.makedirs(env["ICONTA_AI_SIMULAT"], exist_ok=True)
+    os.makedirs(env["ICONTA_BON_DIR"], exist_ok=True)
     sys.path.insert(0, RAD)
     contor = _contor_schema(env)
     py = os.path.join(RAD, "venv", "bin", "python")

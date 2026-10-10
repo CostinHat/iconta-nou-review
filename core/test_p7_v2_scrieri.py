@@ -267,7 +267,14 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_contabilitate.denumirea_contului + conturi_folosite + toate_conturile + sterge_cont_din_plan
     #     (tenant_plan_conturi_sterge) — ștergerea: contul există, nu e folosit în note, nu are analitice; abia apoi se șterge.
     #   (citirea tenantului din `declaratii_nedepuse_cu_termen_in_luna`, pct.11, trece prin `repo_tenants` dintr-un ajutor, nu dintr-o rută.)
-    assert _apeluri_catre_repository() == 312
+    # [lotul „Retestul plasei”, 09.10.2026] 312 -> 313, cu apelul numit: repo_contabilitate.profil_tva (uc_comun.
+    #   _tva_balanta_sau_nu_se_aplica) — deficiența 211, coerența TVA față de balanță se spune „nu se aplică” la neplătitor: întâi se
+    #   citește dacă firma e plătitoare de TVA. Pas NOU, citire.
+    # [același lot] 313 -> 316, cu apelurile numite (planul de conturi, deficiențele 218 și 219):
+    #   repo_contabilitate.conturi_cu_sold_initial (tenant_plan_conturi_lista + tenant_plan_conturi_sterge) — „niciun cont cu sold nu se
+    #     șterge”: lista nu oferă „Șterge”, serverul refuză; repo_contabilitate.conturi_dupa_inceputul_simbolului (tenant_plan_conturi_lista)
+    #     — „căutarea după simbol potrivește începutul”. Citiri NOI. (Lista citea planul de două ori fără căutare: o citire, refolosită.)
+    assert _apeluri_catre_repository() == 316
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -1,6 +1,6 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=4242dc4353";
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=2561dbfd34";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 
 export async function randeazaSetari(corp, nav) {
   const u = sesiune.user() || {};
@@ -331,7 +331,7 @@ async function _incarcaChei(corp) {
       ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
-    confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.", async () => {
+    confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicațiile care o folosesc nu vor mai avea acces.", async () => {
       try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
       catch (e) {
         b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());

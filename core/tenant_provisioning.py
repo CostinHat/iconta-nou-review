@@ -10,6 +10,7 @@ Pur (testabil fără DB): formeaza_schema_name, parametrizeaza_template.
 DB (se dovedește pe server): creeaza_schema, provision_tenant.
 """
 from __future__ import annotations
+from core.db import SchemaInvalida as _SchemaInvalida
 import re
 
 from core import db
@@ -104,7 +105,7 @@ def creeaza_schema(conn, schema_noua, sql_template):
     """Rulează SQL-ul parametrizat care creează schema + tabelele. Nu face commit
     (lasă tranzacția deschisă pentru provision_tenant)."""
     if not db.schema_valida(schema_noua):
-        raise ValueError("schema invalidă: %r" % schema_noua)
+        raise _SchemaInvalida(schema_noua)
     sql = parametrizeaza_template(sql_template, schema_noua)
     with conn.cursor() as cur:
         cur.execute(sql)

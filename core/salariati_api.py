@@ -574,7 +574,7 @@ def salveaza_concediu(conn, salariat_id, date):
 
     # [G9] Data de sfarsit e OBLIGATORIE (asterisc UI real): un CM fara sfarsit = perioada corupta in D112.
     if not (date.get("data_sfarsit") or None):
-        raise ValueError("Data de sfârșit a concediului medical e obligatorie (perioada CM = început->sfârșit; intra în D112).")
+        raise ValueError("Data de sfârșit a concediului medical e obligatorie (perioada concediului medical, de la început până la sfârșit, intră în D112).")
     # [lotul 4, 04.09.2026] ORDINEA. Pana azi, un cod inexistent, o data care nu e in calendar si un
     # sfarsit inaintea inceputului primeau, toate trei, mesajul despre VENITURILE PE 6 LUNI — fiindca
     # verificarea bazei de calcul rula inaintea formei campurilor. A patra instanta a clasei „refuzul

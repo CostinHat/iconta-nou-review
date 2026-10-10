@@ -12,10 +12,10 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=4242dc4353";
-import { STRATURI } from "./migrare.js?v=6eee7c6ea6";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=2561dbfd34";
+import { STRATURI } from "./migrare.js?v=8ab6ac6aa1";
 import { permis } from "../drepturi.js?v=df020d220f";
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 
 function _firHTML(pasi) {
   return pasi.map((st) =>
@@ -28,7 +28,7 @@ function _firHTML(pasi) {
 function _grupeHTML(grupe) {
   return grupe.map((gr) => {
     const li = gr.functii.map((f) =>
-      `<li>${esc(f.nume)}${f.are_ajutor && f.id ? " " + semnAjutor(f.id) : ""}</li>`
+      `<li${f.actiune ? ` data-actiune="${esc(f.actiune)}"` : ""}>${esc(f.nume)}${f.are_ajutor && f.id ? " " + semnAjutor(f.id) : ""}</li>`
     ).join("");
     return `<div class="ans-grupa"><h4 class="ans-grupa-titlu">${esc(gr.titlu)}` +
       `<span class="ans-grupa-nr">${gr.functii.length}</span></h4>` +
@@ -74,7 +74,7 @@ async function _corpAnsamblu(corp, primaLogare) {
   corp.innerHTML =
     `<div class="ans-continut">` +
       (primaLogare ? intro : "") +
-      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul Suport.</p>` +
+      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul „Raportează” de pe pagina principală.</p>` +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
         : _sectiuneFir(asistent, pasi)) +
@@ -93,9 +93,13 @@ async function _corpAnsamblu(corp, primaLogare) {
 }
 
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)
+// [deficiența 4, retestul Costin 09.10] fereastra se închide și cu Esc, prin mecanismul unic al dialogurilor (`inchidereDialog`):
+// e o fereastră de citit, fără nimic de pierdut; X-ul ei rămâne cel al navigatorului
 export function deschideAnsamblu() {
   if (!window._navGlobal) return;
-  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _corpAnsamblu(corp, false); }, { nivel: "cabinet" });
+  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _corpAnsamblu(corp, false); }, { nivel: "cabinet", lat: "larg" });   // [200] o hartă: lată, ca grupele să stea pe coloane
+  const fer = [...document.querySelectorAll(".fereastra")].pop();
+  if (fer) inchidereDialog(fer, () => { if (fer.isConnected) window._navGlobal.inapoi(); });
 }
 
 // pagina de BUN-VENIT (o data, la prima logare) — overlay peste desktop, inainte de operare.

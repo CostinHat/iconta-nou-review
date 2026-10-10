@@ -1972,3 +1972,33 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   tranzacția care o creează, apoi nu se mai atinge; documentul se cere la validare. Dezlegarea unei plăți VALIDATE de factura ei e
   acum refuzată (corectura: stornare). Reparat și un defect al cozii (deficiența 199): cardul unui document retrimis putea spune greșit
   că notele s-au schimbat.
+
+## 09.10.2026, seara — tenant_049 reparat pe producție; four-way închis; lotul „Retestul plasei” pornit
+
+- Costin a rulat `~/ghid_incoming/repara_tenant049.sh`: stornările 8 și 9 scoase, notele 121/122 retrimise (coada 11402/11403), regulile
+  de fond pe 5/5 scheme, registrul migrărilor (84 bază + 2 rulate), aplicația repornită pe 60c716d1. Proba de la pct.1: fișa Marfa A =
+  371 = 6.450,00 (verificarea tipărită de script aduna greșit ieșirile și omitea soldul inițial — cifrele corecte, din bază, confirmate
+  de Costin). Four-way: HEAD = origin/main = backup = RUNNING = 60c716d1.
+- Comanda „Retestul plasei” (verbatim în DECIZII): retestul lui Costin a găsit stricate 8 numere pe care plasa le marca „rezolvată” — testele
+  acelea treceau pe defect și se înlocuiesc; 200–219 adăugate.
+
+## 09–10.10.2026 — Lotul „Retestul plasei” (comanda Costin, verbatim în DECIZII) — commitul care conține această intrare
+
+- **pct.2 — cele nouă numere găsite stricate de Costin** (4, 5, 11, 32, 120, 156, 173, 181 și 33): fiecare are acum un test de capăt la
+  capăt care reface situația din retest și pica pe aplicația de dinainte; testele vechi, care treceau pe defect, s-au înlocuit. 120 și
+  210 au cerut un PIVOT peste R36 (DECIZII): la D300 / D394 / D390 o diferență față de balanță blochează și cu ciorne în lună.
+- **Parțialele 12, 159, 162, 172 și 188–219** închise (205 „nu se aplică” — deducerea e corectă la sursă); **neverificatele 9, 76, 79,
+  97, 142, 149, 184, 199** probate în browser, fiecare cu mutația lui roșie. Infrastructura cerută la pct.7: directorul bonurilor
+  plasei (`ICONTA_BON_DIR`, refuzat în afara testului) și AI-ul simulat (`ICONTA_AI_SIMULAT`).
+- **Regulile de fond a, c, d, e, f** în bază (R6–R10, `core/migrare_reguli_fond_2.py`); pe producție le rulează Costin
+  (`~/ghid_incoming/reguli_fond_2_productie.sh`), iar până atunci aplicația nu repornește pe acest commit. Temeiurile a) și f), citate
+  din `anaf_surse/`, în DECIZII.
+- **Ce a ieșit pe drum, toate tratate în lot:** prima formă a R6 lăsa ștergibile facturile `de_preluat` (starea emiterii din aplicație) —
+  prinsă de gardul nomenclatorului, lista stă acum în `nomenclator_status_factura.STERGIBILE`; respingerea unui NIR a cărui marfă a ieșit
+  primea refuzul brut al bazei (R8), acum tradus în STOC_IESIT; **R193** — scanerele P4/P5 nu vedeau clientul SDK-ului AI, deci zece căi
+  care cer un răspuns modelului cu o conexiune din pool ținută erau invizibile, iar clientul n-avea termen (10 minute implicit): termen
+  60 s, scanerele văd clientul, clichetul C5 = 10 exact, refactorul cerut ca decizie; plasa a prins două defecte de ecran — primul clic
+  pe „Validează” / „Descarcă XML” din Bilanț se pierdea (fereastra se micșora sub cursor) și navigarea jurnalului aștepta controalele
+  lunii (adăugate la 197) — reparate, cu mutație.
+- **Cifrele de referință** regenerate (aceleași amprente): perioadele trimestriale ca T3/2026, instrucțiunea ANAF pentru factura cu mai
+  multe cote citată cuvânt cu cuvânt (`anaf_surse/opanaf_2194_2025_d394.txt`, rândurile 1221–1224).

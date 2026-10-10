@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js?v=4242dc4353";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt } from "../api.js?v=2561dbfd34";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -117,7 +117,7 @@ function formularAdauga(corp, tenantId, reincarca) {
   const inputDen = zona.querySelector("#pr-den");
   const preview = zona.querySelector("#pr-cota-preview");
   const selCota = zona.querySelector("#pr-cota");
-  inputDen.focus();
+  focusFaraSalt(inputDen);
 
   // potrivire AI live (debounce), doar daca utilizatorul nu a ales manual cota
   let timer = null, ultimaDenum = "";
@@ -145,7 +145,7 @@ function formularAdauga(corp, tenantId, reincarca) {
   zona.querySelector("#pr-anuleaza").addEventListener("click", () => { zona.innerHTML = ""; });
   zona.querySelector("#pr-salveaza").addEventListener("click", async () => {
     const denumire = inputDen.value.trim();
-    if (!denumire) { arataMesaj(preview, "Completează denumirea produsului sau serviciului.", "eroare"); inputDen.focus(); return; }
+    if (!denumire) { arataMesaj(preview, "Completează denumirea produsului sau serviciului.", "eroare"); focusFaraSalt(inputDen); return; }
     const payload = {
       denumire,
       um: zona.querySelector("#pr-um").value.trim() || "buc",
@@ -161,7 +161,7 @@ function formularAdauga(corp, tenantId, reincarca) {
     } catch (e) {
       /* [catch_tacut 27.07.2026] o salvare esuata parea reusita: formularul
          se golea, omul credea ca s-a salvat. DS cap.6 - niciodata tacere. */
-      arataMesaj(zona, (e && e.mesaj) || "Nu am putut salva. Incearca din nou.", "eroare");
+      arataMesaj(zona, (e && e.mesaj) || "Nu am putut salva. Încearcă din nou.", "eroare");
     }
   });
 }

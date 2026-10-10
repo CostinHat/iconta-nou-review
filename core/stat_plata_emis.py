@@ -24,6 +24,7 @@ CE NU POATE SPUNE. Amprenta nu știe dacă fluturașul a fost PREDAT salariatulu
 emis. Predarea e un al doilea act, necablat azi (nu există canal de livrare în aplicație). Până
 atunci, «emis» e cea mai tare afirmație pe care o poate face.
 """
+from core.db import SchemaInvalida as _SchemaInvalida
 import json
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -63,7 +64,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_state_plata_sal_luna_ex
 def aplica(conn, schema):
     """Idempotent. Mirror în tenant_template.sql; tenanții existenți prin `-m core.migrare_stat_emis`."""
     if not db.schema_valida(schema):
-        raise ValueError("schema invalidă: %r" % schema)
+        raise _SchemaInvalida(schema)
     with conn.cursor() as cur:
         cur.execute(DDL.format(s=schema))
 

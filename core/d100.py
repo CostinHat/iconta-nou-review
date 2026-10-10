@@ -238,8 +238,8 @@ def erori_generare(prof):
 def build_xml(res):
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D100: declarantul (nume/funcție) lipsește din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+        res.avertismente.append("D100: declarantul (nume/funcție) lipsește din profil — se trece implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     # [31.08.2026] ABSENȚĂ DECLARATĂ, nu tăcere. OPANAF 602/2026 a adăugat poziția 116
     # «Contribuție de solidaritate» în nomenclatorul obligațiilor D100, declarabilă LUNAR. Nu o
     # construim (zero firme purtătoare, deci zero instanțe pe care s-o probăm) — dar nici nu tăcem:
@@ -408,7 +408,7 @@ def genereaza(conn, schema, perioada, manual=None):
         _hint = (" Există %d facturi emise necontabilizate în perioada - contabilizează-le întâi." % _nf) if _nf else ""
         if _avert_profit == "LOSS":
             raise ValueError("D100 nu se depune pe zero: profit cumulat de la 01.01 = %d nu depășește ce s-a "
-                             "impozitat deja = %d (pierdere sau profit sub cumulatul anterior) -> fără avans de "
+                             "impozitat deja = %d (pierdere sau profit sub cumulatul anterior), deci nu e avans de "
                              "impozit pe profit acest trimestru (art.41). Regularizarea se face la D101."
                              % (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli)))))
         raise ValueError("D100 nu se depune pe zero: nicio obligație (venituri contabilizate cont 70x = 0)." + _hint)

@@ -11,31 +11,31 @@ _DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_DEFAULT = os.path.join(_DIR, "FUNCTIONALITATI.csv")
 LOGIN_DEFAULT = os.path.join(_DIR, "static", "js", "ecrane", "login.js")
 
-GRUPE = ["Contabilitate", "Fiscalitate", "Control fiscal", "Facturare si e-Factura",
-         "Salarizare", "Stocuri, banca si casa", "Cabinet si portal client"]
+GRUPE = ["Contabilitate", "Fiscalitate", "Control fiscal", "Facturare și e-Factura",
+         "Salarizare", "Stocuri, bancă și casă", "Cabinet și portal client"]
 ICON = {"Contabilitate": "brief", "Fiscalitate": "declaratii", "Control fiscal": "shield",
-        "Facturare si e-Factura": "facturi", "Salarizare": "users",
-        "Stocuri, banca si casa": "building", "Cabinet si portal client": "documente"}
-COMASAT = ("Import la preluarea firmei", "Cabinet si portal client")
+        "Facturare și e-Factura": "facturi", "Salarizare": "users",
+        "Stocuri, bancă și casă": "building", "Cabinet și portal client": "documente"}
+COMASAT = ("Import la preluarea firmei", "Cabinet și portal client")
 
 # --- REGULI DE REPARTIZARE (explicite, versionate) ---
 # override manual de grupa (peste keyword), decis cu fondatorul
-EXPLICIT = {"F164": "Control fiscal", "F108": "Cabinet si portal client", "F002": "Contabilitate",
-    "F023": "Fiscalitate", "F025": "Fiscalitate", "F048": "Facturare si e-Factura",
-    "F044": "Facturare si e-Factura", "F049": "Fiscalitate", "F057": "Contabilitate",
-    "F062": "Cabinet si portal client", "F071": "Contabilitate", "F077": "Contabilitate",
-    "F093": "Cabinet si portal client", "F102": "Facturare si e-Factura", "F114": "Cabinet si portal client",
-    "F115": "Cabinet si portal client", "F144": "Contabilitate", "F145": "Contabilitate",
-    "F147": "Cabinet si portal client", "F152": "Cabinet si portal client", "F028": "Fiscalitate",
-    "F081": "Control fiscal", "F009": "Contabilitate", "F182": "Facturare si e-Factura",
-    "F187": "Facturare si e-Factura",
-    "F188": "Cabinet si portal client",  # onboarding/setup firma; override 10.08 (Lot 0) ca fixul
+EXPLICIT = {"F061": "Contabilitate", "F016": "Cabinet și portal client", "F143": "Contabilitate", "F164": "Control fiscal", "F108": "Cabinet și portal client", "F002": "Contabilitate",
+    "F023": "Fiscalitate", "F025": "Fiscalitate", "F048": "Facturare și e-Factura",
+    "F044": "Facturare și e-Factura", "F049": "Fiscalitate", "F057": "Contabilitate",
+    "F062": "Cabinet și portal client", "F071": "Contabilitate", "F077": "Contabilitate",
+    "F093": "Cabinet și portal client", "F102": "Facturare și e-Factura", "F114": "Cabinet și portal client",
+    "F115": "Cabinet și portal client", "F144": "Contabilitate", "F145": "Contabilitate",
+    "F147": "Cabinet și portal client", "F152": "Cabinet și portal client", "F028": "Fiscalitate",
+    "F081": "Control fiscal", "F009": "Contabilitate", "F182": "Facturare și e-Factura",
+    "F187": "Facturare și e-Factura",
+    "F188": "Cabinet și portal client",  # onboarding/setup firma; override 10.08 (Lot 0) ca fixul
                                           # de descriere (scos "cont gratuit") sa nu-i mute grupa vizibila
-    "F204": "Cabinet si portal client", "F205": "Cabinet si portal client",
+    "F204": "Cabinet și portal client", "F205": "Cabinet și portal client",
     # [modal_la_zi 11.08] functii LIVE vizibile in UI, mutate din EXCLUDE in lista publica:
-    "F083": "Cabinet si portal client",   # sinteza zilnica pe email (card + email)
-    "F113": "Cabinet si portal client",   # PWA (aplicatie instalabila pe mobil)
-    "F199": "Cabinet si portal client",
+    "F083": "Cabinet și portal client",   # sinteza zilnica pe email (card + email)
+    "F113": "Cabinet și portal client",   # PWA (aplicatie instalabila pe mobil)
+    "F199": "Cabinet și portal client",
     "F253": "Fiscalitate"}  # [curatenie lot18] achizitie de la neinregistrat (D394 op. N, regim TVA special)
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
@@ -61,11 +61,11 @@ def _e_migrare(idc, nume):
 def _keyword(s):
     if re.search(r"control|semafor|verdict|incrucis|paritate|tipare|vector fiscal|verificatoare de coeren|prag.*intrastat|audit.*preluar", s): return "Control fiscal"
     if re.search(r"salar|reges|concedi|fluturas|pontaj|tichet|cadou|beneficii|drepturi de autor|\bcda\b|zilieri|cenzori|adeverint|\bcor\b", s): return "Salarizare"
-    if re.search(r"stoc|gestiun|inventar|barcode|cod.*bare|reteta|articol|\bnir\b|banca|extras|reconcil|\bcasa\b|amef|raport z|bon fisc|numerar|credite banc", s): return "Stocuri, banca si casa"
-    if re.search(r"factur|proform|aviz|emitere|e-?factur|efactur|\bspv\b|model factura|link de plata|serie doc|chitant|e-transport|etransport|comodat|intracomunitar", s): return "Facturare si e-Factura"
+    if re.search(r"stoc|gestiun|inventar|barcode|cod.*bare|reteta|articol|\bnir\b|banca|extras|reconcil|\bcasa\b|amef|raport z|bon fisc|numerar|credite banc", s): return "Stocuri, bancă și casă"
+    if re.search(r"factur|proform|aviz|emitere|e-?factur|efactur|\bspv\b|model factura|link de plata|serie doc|chitant|e-transport|etransport|comodat|intracomunitar", s): return "Facturare și e-Factura"
     if re.search(r"declarati|d100|d101|d112|d205|d212|d300|d301|d390|d394|d406|d710|saf-?t|cota|cotelor|\btva\b|curs valutar|\bbnr\b|impozit|intrastat|taxare inversa|regim special", s): return "Fiscalitate"
     if re.search(r"nota|note contab|monografi|plan.*cont|inregistr|solduri|balanta|jurnal|bilant|motor contab|carte mare|inchidere|leasing|decont|diurna|sponsoriz|subventi|provizion|reevaluar|perisabil|productie|\bsgr\b|\bong\b|amortiz|mijloace fixe|bacsis|obiecte de inventar|lichidar", s): return "Contabilitate"
-    if re.search(r"portal|povest|asistent|cabinet|recomand|pachete|capacitate|suspend|documente|solicitar|magic|kpi client|forecast|scadent|api public|chei api", s): return "Cabinet si portal client"
+    if re.search(r"portal|povest|asistent|cabinet|recomand|pachete|capacitate|suspend|documente|solicitar|magic|kpi client|forecast|scadent|api public|chei api", s): return "Cabinet și portal client"
     return None
 
 def repartizeaza(csv_path=CSV_DEFAULT):

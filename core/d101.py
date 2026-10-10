@@ -437,8 +437,8 @@ def build_xml(res):
     elementului unic <declaratie101>, care se inchide self-fara-copii."""
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D101: declarantul (nume/funcție) lipsește din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+        res.avertismente.append("D101: declarantul (nume/funcție) lipsește din profil — se trece implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     an = res.an
     cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
     scad_luna, scad_an = _scadenta(an)

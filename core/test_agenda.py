@@ -547,10 +547,11 @@ _MARCAJ_ISTORIC = re.compile(r"\[citare-istorica:\s*\S")   # cere MOTIV nevid du
 
 
 def _teste_colectabile():
-    """Numele COLECTATE de pytest: def test_ in core/test_*.py + numele fisierelor test_*.py (citari de fisier)."""
+    """Numele COLECTATE de pytest: def test_ in core/test_*.py + numele fisierelor test_*.py (citari de fisier) — și testele plasei
+    (`frontend_test/e2e/e2e_*.py`, colectate de `scripts/e2e_poarta.py` în aceeași poartă; Retestul plasei, 09.10.2026)."""
     import ast as _ast
     cun = set()
-    for f in sorted((_RAD / "core").glob("test_*.py")):
+    for f in sorted((_RAD / "core").glob("test_*.py")) + sorted((_RAD / "frontend_test" / "e2e").glob("e2e_*.py")):
         cun.add(f.stem)
         try:
             tree = _ast.parse(f.read_text(encoding="utf-8"))

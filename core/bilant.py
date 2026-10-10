@@ -250,3 +250,18 @@ def xml_s1003(prof, an, f10p, f10c, f20p, f20c):
     x = x.replace("<Bilant1005", "<Bilant1003").replace("</Bilant1005>", "</Bilant1003>")
     x = x.replace('tipBIL="UU"', 'tipBIL="BS"')
     return x
+
+
+def randuri_din_xml(xml):
+    """[deficiența 188, retestul Costin 09.10.2026: „rândurile bilanțului (F10_0052, F10_0132 și restul) apar pe ecranul Bilanț, cu cifrele
+    care se depun, nu doar verdictul”] Rândurile CITITE din XML-ul care se depune (nu recalculate): [{formular, rand, cod_precedent,
+    an_precedent, cod_curent, an_curent}], în ordinea formularului. Codul atributului e `F<formular>_<rând pe 3 cifre><coloana>`
+    (1 = an precedent, 2 = an curent — `xml_s1005`)."""
+    import re as _re
+    out = {}
+    for f, r, col, v in _re.findall(r'\b(F\d\d)_(\d{3})([12])="(-?\d+)"', xml or ""):
+        d = out.setdefault((f, int(r)), {"formular": f, "rand": int(r), "cod_precedent": "%s_%s1" % (f, r), "an_precedent": 0,
+                                          "cod_curent": "%s_%s2" % (f, r), "an_curent": 0})
+        d["an_precedent" if col == "1" else "an_curent"] = int(v)
+    return [out[k] for k in sorted(out)]
+

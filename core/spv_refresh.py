@@ -91,7 +91,7 @@ def _alerteaza_esecuri(esecuri):
     subiect = "Refresh token SPV esuat (%d)" % len(esecuri)
     mesaj = ("Reîmprospătarea automată a eșuat pentru %d token-uri SPV. Cabinetele afectate "
              "riscă să se deconecteze de la SPV și să fie nevoite să se reconecteze din aplicație "
-             "(Setări -> Conectare SPV). Detaliu:\n\n%s" % (len(esecuri), linii))
+             "(Setări › Conectare SPV). Detaliu:\n\n%s" % (len(esecuri), linii))
     try:
         from core import observare
         observare._trimite_brevo(subiect, mesaj)

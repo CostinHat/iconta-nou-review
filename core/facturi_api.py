@@ -705,6 +705,18 @@ def sterge_factura(conn, factura_id):
             "evidență. Corecția unei facturi contabilizate se face prin STORNO — un al doilea "
             "document, care își produce propria notă." % n["id"],
             detalii={"inregistrare_id": n["id"], "iesire": "storno"})
+    # [Retestul plasei 09.10.2026, regula a (R6) — CF art.330 alin.(1)] o factură EMISĂ nu se șterge, nici fără notă: se corectează prin
+    # stornare. Baza o refuză oricum (`trg_regula_factura_emisa`); aici refuzul e numit, cu ieșirea lui, din aceeași sursă a stărilor.
+    from core import nomenclator_status_factura as _nsf
+    with conn.cursor() as cur:
+        cur.execute("SELECT directie, COALESCE(tip, %s), COALESCE(status, %s), COALESCE(serie, '') || numar FROM facturi WHERE id = %s",
+                    (_nsf.TIP_IMPLICIT, _nsf.IMPLICITA, factura_id))
+        _f = cur.fetchone()
+    if _f and _f[0] == "emisa" and _f[1] == _nsf.TIP_IMPLICIT and _f[2] not in _nsf.STERGIBILE:
+        raise _cf.RefuzContare(
+            "FACTURA_EMISA",
+            "Factura %s e emisă, deci nu se șterge: se corectează prin factură de stornare (CF art.330 alin.(1))." % _f[3],
+            detalii={"iesire": "storno"})
     _d = _luna_facturii(conn, factura_id)
     with conn.cursor() as cur:
         cur.execute("DELETE FROM facturi WHERE id = %s", (factura_id,))

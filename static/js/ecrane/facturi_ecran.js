@@ -3,10 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile } from "../api.js?v=4242dc4353";  /* esc_nc27 */
-import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=985798193f";
-import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=91b74060b8";
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { randeazaEmitere } from "./emitere_ecran.js?v=10e1ea7d76";
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -19,7 +19,7 @@ export function randeazaFacturi(corp, nav, tenantId, opt = {}) {
 function meniuFacturi(corp, nav, tenantId, opt) {
   if (nav.setInapoi) nav.setInapoi(undefined);
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
-  const titluInapoi = opt.titluInapoi || "Inapoi";
+  const titluInapoi = opt.titluInapoi || "Înapoi";
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi ${semnAjutor("F126")}</h2>
     <p class="pf-intro">Ce vrei s\u0103 faci?</p>
@@ -713,13 +713,13 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           <div class="em-rezultat" id="fd-email-rez"></div>
         </div>`;
       const inp = zonaEmail.querySelector("#fd-email-input");
-      inp.focus();
+      focusFaraSalt(inp);
       zonaEmail.querySelector("#fd-email-send").addEventListener("click", async () => {
         const rez = zonaEmail.querySelector("#fd-email-rez");
         const send = zonaEmail.querySelector("#fd-email-send");
         const email = (inp.value || "").trim();
         if (!email || email.indexOf("@") < 1 || email.indexOf(".") < 0) {
-          rez.textContent = "Introdu o adres\u0103 valid\u0103."; rez.className = "em-rezultat em-rau"; inp.focus(); return;
+          rez.textContent = "Introdu o adres\u0103 valid\u0103."; rez.className = "em-rezultat em-rau"; focusFaraSalt(inp); return;
         }
         send.disabled = true; send.textContent = "Se trimite\u2026";
         try {
@@ -739,7 +739,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=ffea72127e");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=bb0c77ef82");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });

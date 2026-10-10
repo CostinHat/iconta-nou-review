@@ -137,7 +137,8 @@ def test_cota_schimbata_se_consemneaza_doar_cand_difera(conn):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_factura_stearsa_ia_cu_ea_jurnalul_cotei_si_migrarea_repara_legatura_veche(conn):
-    """O factură necontată se poate șterge (`facturi_api` — `DELETE FROM facturi`); jurnalul cotei e atributul liniilor ei, deci
+    """O factură ciornă se poate șterge (`facturi_api` — `DELETE FROM facturi`; cea emisă nu — regula a, R6); jurnalul cotei e
+    atributul liniilor ei, deci
     pleacă odată cu ea, ca `factura_linii` (ON DELETE CASCADE). Fără asta ștergerea ar cădea pe cheia străină (500).
     Tabelele create înainte de reparație (test 35, producție 5) au legătura fără CASCADE: migrarea o reface.
     MUTAȚIE: `ON DELETE CASCADE` scos din migrare -> ștergerea pică pe cheia străină -> pică."""
@@ -151,7 +152,8 @@ def test_factura_stearsa_ia_cu_ea_jurnalul_cotei_si_migrarea_repara_legatura_vec
     m.aplica(conn, SCH)
     assert m.verifica(conn, SCH)
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva) VALUES ('ZT9', '2026-10-05', 'emisa', 0, 0) RETURNING id")
+        cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, status) "
+                    "VALUES ('ZT9', '2026-10-05', 'emisa', 0, 0, 'ciorna') RETURNING id")
         fid = cur.fetchone()[0]
         assert repo_facturi.jurnalizeaza_cota_aleasa(cur, fid, [{"descriere": "x", "cota_propusa": 21, "cota_tva": 11}], 7) == 1
         cur.execute("DELETE FROM facturi WHERE id = %s", (fid,))

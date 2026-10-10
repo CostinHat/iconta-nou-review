@@ -2,8 +2,8 @@
 // Atașează automat token-ul (Bearer), tratează erorile uniform.
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
-import { sesiune } from "./sesiune.js?v=416ae1edca";
-import { ceraReautentificare } from "./reautentificare.js?v=d92049fa3e";  // [05.10.2026] 401 cu sesiune = parola peste ecran
+import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
+import { ceraReautentificare } from "./reautentificare.js?v=67acba6dc6";  // [05.10.2026] 401 cu sesiune = parola peste ecran
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
 // automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se
@@ -131,10 +131,11 @@ async function _cere(metoda, cale, corp) {
   if (!r.ok) {
     const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
                      detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
-    _refuzNevazut(eroare, metoda);   // [refuz_vazut_v1]
+    _refuzNevazut(eroare, metoda, cale);   // [refuz_vazut_v1]
     _butonSpreEcran(eroare, cale);   // [lotul 07.10 pct.2]
     throw eroare;
   }
+  if (metoda !== "GET") _refuzDepasit(cale);   // [deficiența 190] aceeași acțiune a reușit: refuzul de dinainte nu mai e adevărat
   return date;
 }
 
@@ -162,11 +163,12 @@ async function _cere(metoda, cale, corp) {
 //   - **nu prinde refuzurile care nu trec prin `api.*`.**
 const _REFUZ_ASTEPTARE_MS = 700;
 
-function _bannerRefuz(mesaj) {
+function _bannerRefuz(mesaj, cale) {
   const vechi = document.getElementById("refuz-nevazut");
   if (vechi) vechi.remove();
   const d = document.createElement("div");
   d.id = "refuz-nevazut";
+  if (cale) d.dataset.ruta = String(cale).split("?")[0];
   d.setAttribute("role", "alert");
   d.setAttribute("aria-live", "assertive");
   d.className = "refuz-nevazut";   // stilul trăiește în `stil.css`, nu aici (DS: raza din token)
@@ -213,15 +215,24 @@ function _butonSpreEcran(eroare, cale) {
   setTimeout(async () => { if (!(await pune())) setTimeout(pune, _REFUZ_ASTEPTARE_MS + 50); }, 30);
 }
 
-function _refuzNevazut(eroare, metoda) {
+function _refuzNevazut(eroare, metoda, cale) {
   if (metoda === "GET") return;
   const m = String((eroare && eroare.mesaj) || "").trim();
   if (!m) return;
   setTimeout(() => {
     const text = document.body ? (document.body.innerText || "") : "";
     if (text.indexOf(m) >= 0) return;   // cineva l-a arătat deja — nu dublăm
-    _bannerRefuz(m);
+    _bannerRefuz(m, cale);
   }, _REFUZ_ASTEPTARE_MS);
+}
+
+// [deficiența 190, proba blocului C: „D710 cere cel puțin o obligație corectată.” de la prima generare rămânea pe ecran după „Trimisă
+// în coada de validare”] Bannerul de refuz ține minte ruta refuzată (fără parametrii din `?`); o scriere reușită pe aceeași rută îl
+// scoate — refuzul a fost depășit, iar un mesaj de eroare lângă confirmarea succesului ar spune două lucruri opuse.
+function _ruta(cale) { return String(cale || "").split("?")[0]; }
+function _refuzDepasit(cale) {
+  const b = document.getElementById("refuz-nevazut");
+  if (b && b.dataset.ruta === _ruta(cale)) b.remove();
 }
 
 // ── [R131, 04.09.2026] O DESCARCARE care esueaza spune DE CE ────────────────────────────
@@ -299,10 +310,11 @@ async function _cereForm(cale, formData) {
   if (!r.ok) {
     const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
                      detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
-    _refuzNevazut(eroare, "POST");   // [refuz_vazut_v1] cereForm e mereu POST
+    _refuzNevazut(eroare, "POST", cale);   // [refuz_vazut_v1] cereForm e mereu POST
     _butonSpreEcran(eroare, cale);   // [lotul 07.10 pct.2]
     throw eroare;
   }
+  _refuzDepasit(cale);   // [deficiența 190]
   return date;
 }
 
@@ -461,6 +473,24 @@ document.addEventListener("keydown", (e) => {
   e.preventDefault();
   _stivaDialog[_stivaDialog.length - 1].inchide();
 });
+// [deficiența 159, retestul Costin 09.10.2026 — „după «Salvează» … ecranul tot sare: rândul atins urcă”] `el.focus()` derulează
+// elementul în CENTRUL zonei când nu se vede întreg: un formular deschis sub un rând de jos al listei mută lista cu sute de pixeli
+// (măsurat: 475 px la „Marchează depusă”). Focusul se mută FĂRĂ derulare, iar zona se mișcă doar cât să se vadă elementul
+// (`nearest`: zero dacă se vede deja). Gard `core/test_focus_fara_salt.py`: niciun `.focus(` fără `preventScroll` în static/js.
+// Măsurat în proba lui 159: la câmpul de dată (input de tip „date”) Chromium IGNORĂ `preventScroll` (focusul trece în sub-câmpul intern, care
+// derulează) — deci derularea strămoșilor se ține minte înainte și se reface după, iar abia apoi `nearest`.
+export function focusFaraSalt(el) {
+  if (!el) return;
+  const pozitii = [];
+  for (let p = el.parentElement; p; p = p.parentElement) pozitii.push([p, p.scrollTop, p.scrollLeft]);
+  const doc = document.scrollingElement;
+  const docPoz = doc ? [doc.scrollTop, doc.scrollLeft] : null;
+  el.focus({ preventScroll: true });
+  for (const [p, sus, st] of pozitii) { if (p.scrollTop !== sus) p.scrollTop = sus; if (p.scrollLeft !== st) p.scrollLeft = st; }
+  if (doc && docPoz && (doc.scrollTop !== docPoz[0] || doc.scrollLeft !== docPoz[1])) { doc.scrollTop = docPoz[0]; doc.scrollLeft = docPoz[1]; }
+  if (el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
 export function inchidereDialog(ov, inchide, antet) {
   const scoate = () => { const i = _stivaDialog.indexOf(intrare); if (i >= 0) _stivaDialog.splice(i, 1); };
   // Intrarea iese din stivă abia când fereastra chiar a plecat (scoasă SAU ascunsă): o închidere care eșuează

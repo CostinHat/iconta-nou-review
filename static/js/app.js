@@ -43,15 +43,15 @@ function _bannerLoginBine(txt) {
 window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
-import { sesiune } from "./sesiune.js?v=416ae1edca";
-import { api, arataMesaj } from "./api.js?v=4242dc4353";
-import { ecranBunVenit } from "./ecrane/ansamblu.js?v=899abda4ce";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=1dc4c0feb5";
-import { creeazaNavigator } from "./navigator.js?v=ffb1a8b92b";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=7dd3fc7228";
-import { desktopAsistent } from "./ecrane/asistent.js?v=ee32b34e6d";
+import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
+import { api, arataMesaj } from "./api.js?v=2561dbfd34";
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=12aa9d3248";  // [bun_venit_v1]
+import { ecranLogin } from "./ecrane/login.js?v=8602824f26";
+import { creeazaNavigator } from "./navigator.js?v=ae9a14d427";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=69a37a2757";
+import { desktopAsistent } from "./ecrane/asistent.js?v=79f0a6ed1a";
 import { desktopPortal } from "./ecrane/portal.js?v=c960a5963f";
-import { desktopAdmin } from "./ecrane/admin.js?v=adaa1e0195"; // [p37_admin_desktop]
+import { desktopAdmin } from "./ecrane/admin.js?v=8d78001a23"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
@@ -138,11 +138,11 @@ async function randeaza() {
       body: JSON.stringify({ token: _mag }) })
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
-        if (!ok) { randeaza(); _bannerLoginEroare(d.detail || "Linkul de logare a expirat sau a fost deja folosit. Intra in cont cu emailul si parola, sau cere un link nou."); return; }
+        if (!ok) { randeaza(); _bannerLoginEroare(d.detail || "Linkul de logare a expirat sau a fost deja folosit. Intră în cont cu emailul și parola, sau cere un link nou."); return; }
         sesiune.intra(d.token, d.user);
         location.reload();
       })
-      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut finaliza logarea prin link (probabil o problema de retea). Reincearca, sau intra cu emailul si parola."); });
+      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut finaliza logarea prin link (probabil o problemă de rețea). Reîncearcă, sau intră cu emailul și parola."); });
     return;
   }
   /* [R62, 26.08.2026] Confirmarea schimbarii de adresa. Ruta si gardul ei existau de ieri;

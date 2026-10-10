@@ -8,7 +8,7 @@
 // și `propus`), iar `cuLegareaNir` arată caseta-poartă (DS cap.5 v2.14: două alegeri care merg amândouă înainte) și retrimite
 // cu alegerea. Preselecția = `propus` (DS cap.17 v2.79: dedusă din date — același furnizor, același cost —, vizibilă, schimbabilă);
 // fără propunere, „— alege —”.
-import { esc, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=4242dc4353";
+import { esc, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=2561dbfd34";
 
 // Refuzul care cere alegerea NIR-ului (oricare din codurile alegerii: de ales, nelegabil, cost diferit) — poartă candidații.
 export function refuzLegareNir(e) {
@@ -25,7 +25,7 @@ export function alegeLegareaNir(zona, d, actiune) {
         <div class="cp-mesaj">${esc(d.mesaj || "")}</div>
         <label class="camp"><span class="camp-eticheta">NIR-ul acestei livrări<span class="oblig">*</span></span>
           <span class="camp-ajutor">${d.propus ? "Propus din date: același furnizor și același cost fără TVA ca factura. Îl poți schimba." : "Niciun NIR nu are costul facturii — alege-l pe cel al livrării, sau confirmă „altă livrare”."}</span>
-          <select class="camp-input" id="nir-legat" aria-label="NIR-ul acestei livrari">${d.propus ? "" : ALEGE}${opt}</select></label>
+          <select class="camp-input" id="nir-legat" aria-label="NIR-ul acestei livrări">${d.propus ? "" : ALEGE}${opt}</select></label>
         <div class="cp-butoane">
           <button class="buton-primar" id="nir-leaga" data-actiune="${esc(actiune)}">Leagă de NIR-ul ales</button>
           <button class="buton-secundar" id="nir-alta" data-actiune="${esc(actiune)}">Altă livrare — nu e niciunul</button>

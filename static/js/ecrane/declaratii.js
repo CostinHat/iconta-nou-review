@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=4242dc4353";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=2561dbfd34";
 import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
@@ -103,6 +103,9 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
   try {
     const t = await api.get("/tenants");
     S.firme = Array.isArray(t) ? t : (t.tenants || t.firme || []);
+    // [deficiența 207, aceeași clasă] ecranul general pornește pe firma în lucru, dacă e în lista contului
+    const inLucru = !S.tenant_id && nav && nav.firmaInLucruId ? nav.firmaInLucruId() : null;
+    if (inLucru && S.firme.some((fr) => fr.id === inLucru)) S.tenant_id = inLucru;
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;

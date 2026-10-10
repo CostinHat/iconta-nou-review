@@ -70,20 +70,25 @@ def separa_neclar_inainte_de_preluare(neclar, preluare):
     ramase, inainte = [], []
     for x in neclar:
         dp = str(x.get("domeniu_pana") or "")
-        if dp and dp < prag:
-            dd = str(x.get("domeniu_de") or dp)
+        dd = str(x.get("domeniu_de") or dp)
+        # [deficiența 212: „D100 T1–T2/2026 în alt grup decât D406 T1/2026, deși sunt aceeași perioadă”] un domeniu care ÎNCEPE înaintea
+        # preluării se desface și când trece peste ea: perioadele dinainte merg în grupul preluării (ca D406 T1/2026), restul rămâne
+        # „Nu pot verifica”, cu domeniul de la luna preluării
+        if dp and dd and dd < prag:
             fel = _PERIODICITATE_NECLAR.get(x.get("tip"), "luna")
             pas = {"an": 12, "trim": 3}.get(fel, 1)
             a, m = int(dd[:4]), int(dd[5:7])
             m = ((m - 1) // pas + 1) * pas          # luna de ancoră a perioadei (3/6/9/12, 12 la an)
             while "%04d-%02d" % (a, m) <= dp and (a, m) < tuple(preluare):
+                # rândul nu repetă necunoașterea de după preluare („nu pot demonstra …”): pentru o perioadă dinainte, ce contează e
+                # depunerea, pe care contabilul o marchează (explicația e sub titlul grupului — deficiența 212)
                 inainte.append(dict(x, an=a, luna=m, perioada=perioada_canonica(a, m, fel),
-                                    termen=_termen(a, m, tip=x.get("tip")).isoformat(),
-                                    motiv="Perioadă dinaintea preluării în iConta.eu (%02d/%d) — %s" % (preluare[1], preluare[0],
-                                                                                                         x.get("motiv") or "")))
+                                    termen=_termen(a, m, tip=x.get("tip")).isoformat(), motiv=""))
                 m += pas
                 if m > 12:
                     a, m = a + 1, m - 12
+            if dp >= prag:
+                ramase.append(dict(x, domeniu_de=prag))
         else:
             ramase.append(x)
     return ramase, inainte
@@ -95,15 +100,17 @@ def separa_inainte_de_preluare(lipsa, urmarit, preluare):
     trimestriale/anuale e luna ei de ancoră (3/6/9/12), deci un trimestru care cuprinde luna preluării SE numără."""
     if not preluare:
         return lipsa, urmarit, []
-    txt = "%02d/%d" % (preluare[1], preluare[0])
     inainte = []
+
+    # [deficiența 212, retestul Costin 09.10: „«Înainte de preluare»: text la persoana întâi, repetat pe fiecare rând”] explicația grupului
+    # („nu se numără la restanțe; dacă a fost depusă în afara iConta.eu, marcheaz-o”) stă O DATĂ, sub titlul grupului (ecranul); rândul
+    # păstrează doar faptul lui, dacă are unul
 
     def _imparte(lst):
         rest = []
         for e in lst:
             if (e["an"], e.get("luna") or 12) < preluare:
-                inainte.append(dict(e, motiv=("Perioadă dinaintea preluării în iConta.eu (%s) — nu se numără la restanțe. Dacă "
-                                              "a fost depusă în afara iConta.eu, marcheaz-o." % txt)))
+                inainte.append(dict(e, motiv=e.get("motiv") or ""))
             else:
                 rest.append(e)
         return rest
@@ -1046,6 +1053,12 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             if sursa == "contabil_anterior":
                 e["motiv"] = "Depusă de contabilul anterior (marcată în iConta.eu, fără dată de depunere)"
             else:
+                # [deficiența 194, probele blocurilor F și E: „rândul marcat «depusă în afara iConta.eu» își păstrează textul «nu pot
+                # verifica…» / «necunoscut declarat: nu pot demonstra…»”] un rând venit din „Nu pot verifica” (D205 / D100 dinaintea
+                # preluării) n-avea „Depusă” în motiv: marcarea se lipea la un text care o contrazicea. Marcarea îl înlocuiește.
+                if not str(e.get("motiv") or "").startswith("Depusă"):
+                    dd = depuse.get(k)
+                    e["motiv"] = "Depusă" + ((" " + _dmy(dd.isoformat())) if dd else "")
                 e["motiv"] = (e.get("motiv") or "Depusă").replace("Depusă", "Depusă în afara iConta.eu", 1) + (
                     " · recipisă %s" % rec if rec else "")
             e["extern"] = sursa   # [retest 08.10 pct.10] marcarea se poate modifica / anula — ecranul o știe după asta

@@ -753,6 +753,38 @@ def test_def_76_datele_citite_de_server_sunt_cerute_de_formular(patron, firma_cv
     assert any(cr == "5121" and s == "1000.00" for _d, cr, s in linii), linii
 
 
+def test_def_76_fiecare_cheie_citita_de_server_are_campul_pe_ecran(patron, firma_cv):
+    """76. Formulare: 33 de date citite de server nu erau cerute de formular.
+    [partea rămasă, registrul: „celelalte câmpuri — numai testul de cod. Rămâne de probat în browser restul”] Pașii, pe TOATE
+    formularele din Operațiuni speciale: deschide formularul -> pentru fiecare câmp declarat, alege ramura lui (opțiunea selectului de
+    care depinde) -> câmpul e pe ecran și vizibil; iar fiecare cheie pe care ruta o citește (`scan_formulare_operatiuni`, aceeași
+    analiză ca gardul de cod și verificatorul) are câmpul ei în formular — în afara celor două declarate în afara ecranului."""
+    import sys as _sys
+    _sys.path.insert(0, "scripts")
+    import scan_formulare_operatiuni as sc
+    js, main, uc = sc._citeste("static/js/ecrane/operatiuni_ecran.js"), sc._citeste("main.py"), sc._citeste("core/uc_tenants.py")
+    assert not sc.chei_fara_camp(js, main, uc) - set(sc.CHEI_IN_AFARA_ECRANULUI), "chei citite de server fără câmp"
+    pg = patron.pg
+    import re as _re
+    titluri = {m.group(1): m.group(2) for m in _re.finditer(r'cheie: "([^"]+)", titlu: "([^"]+)", ruta: "', js)}
+    nevazute, verificate = [], 0
+    for cheie, _ruta, campuri in sc.formulare(js):
+        _operatiune(patron, firma_cv["nume"], titluri[cheie])
+        for c in campuri:
+            if c["tip"] == "multi":
+                continue
+            if c["cond"]:
+                sel, valori = c["cond"]
+                pg.select_option("#op-%s" % sel, valori[0])
+                pg.dispatch_event("#op-%s" % sel, "change")
+            if not pg.is_visible("#op-%s" % c["nume"]):
+                nevazute.append("%s › %s" % (titluri[cheie], c["nume"]))
+            verificate += 1
+    patron.captura("ultimul_formular")
+    assert verificate >= 60, verificate
+    assert not nevazute, nevazute
+
+
 # ================================================================ 77 — preselecția permisă (cazul uzual / dedus)
 def test_def_77_preselectia_uzuala_si_dedusa_vizibila(patron):
     """77. Formulare: regula DS cap.17 aplicată prea strict.
@@ -810,6 +842,31 @@ def test_def_79_da_nu_din_schema_cerute_la_prima_folosire(patron, firma_gv):
     pg.click("#dec-continua")
     pg.wait_for_function("() => document.body.innerText.includes('art. 317 CF?')", timeout=60000)
     patron.captura("d301")
+
+
+def test_def_97_api_cere_norma_functia_de_baza_si_scutirea(patron, firma_cv):
+    """97. Salariați: prin API/import trebuie cerute funcția de bază, scutirea și norma.
+    [partea rămasă, registrul: „drumul API nu are ecran”] Pașii, pe drumul API (aceeași rută pe care o cheamă ecranul „+ Salariat nou”,
+    dar fără câmpurile pe care formularul le cere): POST salariat fără norma, funcția de bază și scutirea -> refuz care le numește, nimic
+    scris; cu ele -> salariatul se scrie."""
+    pg = patron.pg
+    patron.acasa()
+    tid = firma_cv["tenant_id"]
+    cnp = _cnp("285071541002")
+    corp = {"nume": "Ionescu", "prenume": "Dan", "cnp": cnp, "data_angajare": "2026-09-01", "salariu_brut": 5000, "cor": "251401"}
+    st, r = pg.evaluate("""async ([u, b]) => { const t = sessionStorage.getItem('iconta_token');
+      const x = await fetch(u, {method: 'POST', headers: {'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json'},
+        body: JSON.stringify(b)}); return [x.status, await x.text()]; }""", ["/tenants/%d/salariati" % tid, corp])
+    assert st == 422, (st, r[:400])
+    campuri = {e[0] if isinstance(e, list) else e.get("camp") for e in (json.loads(r)["detail"].get("erori_campuri") or [])}
+    assert {"tip_norma", "functie_baza", "scutit_contrib_minim"} <= campuri, r[:800]
+    assert sql('SELECT count(*) FROM "%s".salariati WHERE cnp = %%s' % firma_cv["schema"], (cnp,))[0][0] == 0
+    corp.update({"tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False, "persoane_intretinere": 0})
+    st, r = pg.evaluate("""async ([u, b]) => { const t = sessionStorage.getItem('iconta_token');
+      const x = await fetch(u, {method: 'POST', headers: {'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json'},
+        body: JSON.stringify(b)}); return [x.status, await x.text()]; }""", ["/tenants/%d/salariati" % tid, corp])
+    assert st == 200, (st, r[:400])
+    sql('DELETE FROM "%s".salariati WHERE cnp = %%s' % firma_cv["schema"], (cnp,))   # firma e partajată de celelalte teste
 
 
 # ================================================================ 96 — raportul Z la cantitativ-valoric
@@ -912,9 +969,20 @@ def salariat_gv(firma_gv):
     return r
 
 
-def _contabilizeaza_statul(ecran, firma):
+def _salarii_luna_incheiata(ecran, firma):
+    """Salariați pe ultima lună încheiată — [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat, iar ecranul se
+    deschide pe luna curentă: o lună înapoi."""
     pg = ecran.pg
     _deschide(ecran, firma["nume"], "salariati", "#sp-contare")
+    trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
+    pg.click("#sp-prev")
+    pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+                         arg="Luna %02d/%d" % (trecuta.month, trecuta.year), timeout=30000)
+
+
+def _contabilizeaza_statul(ecran, firma):
+    pg = ecran.pg
+    _salarii_luna_incheiata(ecran, firma)
     pg.click("#sp-contare")
     try:
         pg.wait_for_selector("#sp-contare-scrie", timeout=30000)
@@ -961,7 +1029,7 @@ def test_def_81_nota_de_salarii_respinsa_se_reface_din_stat(asistent, patron, fi
         c.commit()
     assert r.get("ok", True) is not False, r
     pg = asistent.pg
-    _deschide(asistent, firma_gv["nume"], "salariati", "#sp-contare")
+    _salarii_luna_incheiata(asistent, firma_gv)
     pg.wait_for_function("() => (document.querySelector('#sp-contare-zona') || {innerText: ''}).innerText.includes('nu din Registrul-jurnal')",
                          timeout=15000)
     assert "lipsește pontajul" in pg.inner_text("#sp-contare-zona")
@@ -1039,8 +1107,9 @@ def _trimite_si_asteapta(ecran):
 def test_def_73_d390_intra_in_coada_fara_eroare_500(patron):
     """73. D390: eroare 500, nu intra în coadă.
     Pașii: „Distributie Profit IC” (achiziție intracomunitară din DE în 08/2026) -> Declarații -> D390, august 2026 -> Continuă
-    -> „Trimite în coadă →”: declarația intră în coadă („Trimisă în coada de validare”), fără nicio cerere 5xx (înainte:
-    `POST /coada` = 500 la copierea avertismentelor cu locul facturii)."""
+    -> „Trimite în coadă →”: serverul răspunde fără nicio cerere 5xx (înainte: `POST /coada` = 500 la copierea avertismentelor cu
+    locul facturii). [retestul 09.10, deficiențele 120 + 210] Pe datele acestei firme (TVA-ul D390/D300 diferă de 4427/4426 pe notele
+    validate, iar în lună stau 2 ciorne), răspunsul corect e REFUZUL structurat al porții TVA — fără ciorne în perioadă ar fi intrat."""
     tid = 4839
     peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
     try:
@@ -1048,11 +1117,31 @@ def test_def_73_d390_intra_in_coada_fara_eroare_500(patron):
         _trimite_si_asteapta(patron)
         patron.captura()
         t = patron.fereastra()
-        assert "Trimisă în coada de validare" in t, t[:1200]
-        assert sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd390' AND id > %s",
-                   (tid, peste))[0][0] == 1
+        intrata = sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd390' AND id > %s",
+                      (tid, peste))[0][0]
+        assert ("Trimisă în coada de validare" in t and intrata == 1) or (
+            "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in t and intrata == 0), t[-1500:]
     finally:
         _curata_coada(tid, peste)
+
+
+def test_def_189_ecranul_cozii_nu_se_contrazice(patron):
+    """189. Coadă/D390: pe ecranul de succes al trimiterii D390 în coadă, avertismentul începe cu „Declarația nu intră în coadă: …” și se
+    termină cu „Declarația intră în coadă” — text contradictoriu.
+    Pașii: „Distributie Profit IC” (diferență de TVA față de balanță + 2 ciorne în 08/2026) -> Declarații -> D390, august 2026 ->
+    „Trimite în coadă →”: ecranul spune UN lucru — fie refuzul, fie intrarea cu avertismentul ciornelor —, niciodată amândouă."""
+    tid = 4839
+    peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
+    try:
+        _declaratie_pas1(patron, "Distributie Profit IC", "d390", 2026, luna=8)
+        _trimite_si_asteapta(patron)
+        patron.captura()
+        t = patron.fereastra()
+    finally:
+        _curata_coada(tid, peste)
+    refuz = "nu intră în coadă" in t
+    intrare = "Trimisă în coada de validare" in t or "Declarația intră în coadă" in t
+    assert refuz != intrare, t[-1500:]
 
 
 def test_def_74_declaratia_cu_formular_manual_intra_in_coada(patron):
@@ -1080,6 +1169,34 @@ def test_def_74_declaratia_cu_formular_manual_intra_in_coada(patron):
         assert len(r) == 1 and "150" in (r[0][0] or ""), r
     finally:
         _curata_coada(tid, peste)
+
+
+def test_def_190_eroarea_primei_generari_nu_ramane_dupa_trimitere(patron):
+    """190. D710: mesajul de eroare „D710 cere cel puțin o obligație corectată.” de la prima generare rămâne pe ecran după „Trimisă în
+    coada de validare”.
+    Pașii: „Comert Micro TVA” -> Declarații -> D710 -> Continuă (prima generare: „D710 cere cel puțin o obligație corectată.”) ->
+    obligația (121, 100 -> 150, 1%) -> „+ adaugă” -> „Regenerează D710” -> „Trimite în coadă →”: ecranul „Trimisă în coada de
+    validare” nu mai poartă eroarea primei generări — nici în fereastră, nici în altă parte a paginii."""
+    tid = 4838
+    peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
+    pg = patron.pg
+    try:
+        _declaratie_pas1(patron, "Comert Micro TVA", "d710", 2026, luna=9, trim=3)
+        pg.wait_for_selector("#d710-cod", timeout=60000)
+        inainte = pg.inner_text("body")
+        pg.select_option("#d710-cod", "121")
+        pg.fill("#d710-i", "100")
+        pg.fill("#d710-c", "150")
+        pg.fill("#d710-cota", "1")
+        pg.click("#d710-add")
+        pg.click("#d710-regen")
+        _trimite_si_asteapta(patron)
+        patron.captura()
+        dupa = pg.inner_text("body")
+    finally:
+        _curata_coada(tid, peste)
+    assert "cel puțin o obligație corectată" in inainte, "anti-vacuu: prima generare n-a spus eroarea"
+    assert "Trimisă în coada de validare" in dupa and "cel puțin o obligație corectată" not in dupa, dupa[-1500:]
 
 
 # ================================================================ 95 — NIR legat de factura primită (global-valoric)

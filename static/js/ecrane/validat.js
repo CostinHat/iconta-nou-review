@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta } from "../api.js?v=4242dc4353";
-import { randA as randConstatare } from "./control_verdict.js?v=a0acfd801a";
-import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { deschideFirma } from "./firme.js?v=ffea72127e";
+import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { randA as randConstatare } from "./control_verdict.js?v=29ab225927";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { deschideFirma } from "./firme.js?v=bb0c77ef82";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -87,14 +87,14 @@ function uidCurent() {
   return u && u.id != null ? String(u.id) : null;
 }
 
-// [perioada_declarata_v1] perioada DECLARATĂ (nu scadența): "august 2026" lunar, "trim. III 2026" trimestrial,
-// "anul 2026" anual. Fallback pe c.perioada (scadența) doar dacă payload-ul nu are an (intrări vechi).
-const _ROM = ["", "I", "II", "III", "IV"];
+// [perioada_declarata_v1] perioada DECLARATĂ (nu scadența), în cele trei forme din DS v2.85 cap.4: „08/2026” lunar, „T3/2026”
+// trimestrial, „2026” anual (până la retestul 09.10 cardul cozii scria „trim. IV 2026” și „august 2026”). Fallback pe c.perioada
+// (scadența) doar dacă payload-ul nu are an (intrări vechi).
 function fmtPerioadaDecl(c) {
   const an = c.p_an, luna = c.p_luna, trim = c.p_trim;
-  if (an && luna) return dataRo(`${an}-${String(luna).padStart(2, "0")}`, "luna_an"); // "august 2026"
-  if (an && trim) return `trim. ${_ROM[trim] || trim} ${an}`;                          // "trim. III 2026"
-  if (an) return `anul ${an}`;
+  if (an && luna) return dataRo(`${an}-${String(luna).padStart(2, "0")}`, "luna_an_numeric"); // „08/2026”
+  if (an && trim) return `T${trim}/${an}`;                                                        // „T3/2026”
+  if (an) return String(an);
   return c.perioada || "—";
 }
 
@@ -166,7 +166,11 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat."
     : (patruOchiPolitica
       ? "Validarea în doi e pornită, dar suspendată: ești singurul validator din cabinet, așa că pregătești și depui singur. Reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)."
-      : "Declarațiile le pregătești și le depui tu (validarea în doi nu e pornită). Cele din listă așteaptă depunerea.");
+      : (noteDeValidat.length
+        // [deficiența 217, retestul Costin 09.10: „textul «validarea în doi nu e pornită» contrazice notele de validat de pe același
+        // ecran”] validarea în doi privește DECLARAȚIILE; notele pregătite de asistenți se validează întotdeauna — textul o spune
+        ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi. Declarațiile le depui tu — validarea în doi a declarațiilor nu e pornită."
+        : "Declarațiile le pregătești și le depui tu (validarea în doi a declarațiilor nu e pornită). Cele din listă așteaptă depunerea."));
   // [08.10.2026, decizia Costin U4] „Fereastra cu note de validat se numește «De depus». Titlul trebuie să spună ce conține.” Titlul
   // venea din cardul de pe desktop (calculat o dată, fără note), iar navigatorul îl punea ca <h2>. Acum ecranul își scrie titlul din
   // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
@@ -704,7 +708,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
         er.textContent = goale.length === 1
           ? "O constatare n-are motiv scris."
           : `${goale.length} constatări n-au motiv scris.`;
-        goale[0].focus();
+        focusFaraSalt(goale[0]);
         return;
       }
       btn.disabled = true;
@@ -744,12 +748,12 @@ function dialogInput(nav, opt) {
     `;
     const input = corp.querySelector("#dlg-input");
     const er = corp.querySelector("#dlg-eroare");
-    input.focus();
+    focusFaraSalt(input);
     const confirma = async () => {
       const val = input.value.trim();
       if (opt.obligatoriu && !val) {
         er.textContent = "Câmpul e obligatoriu.";
-        input.focus();
+        focusFaraSalt(input);
         return;
       }
       const btn = corp.querySelector("#dlg-ok");

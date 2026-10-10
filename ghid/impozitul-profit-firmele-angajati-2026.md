@@ -25,6 +25,6 @@ Numărul de angajați ai firmei nu apare, în sursele verificate pentru acest su
 
 ## Ce face iConta.eu
 
-Trebuie spus deschis unde se termină ce a putut fi verificat: acest subiect nu ține de funcționalitatea de bilanț (F013), ci de **F027 — Declarația D101 + IMCA**. Verificat direct în cod: nu există nicio ramură de calcul legată de numărul de angajați (`grep -n "angajat" aplicația` → 0 rezultate) — impozitul pe profit și IMCA se calculează la fel, indiferent dacă firma are sau nu personal angajat. Dacă întrebarea vizează de fapt condiția de a avea cel puțin un salariat pentru cota redusă de impozitare la **microîntreprinderi** (un regim diferit de impozitul pe profit), aceasta nu are azi o funcționalitate dedicată identificată în dosarul de cercetare al acestui ghid — nu putem confirma aici acest aspect.
+Trebuie spus deschis unde se termină ce a putut fi verificat: acest subiect nu ține de funcționalitatea de bilanț (F013), ci de **F027 — Declarația D101 și IMCA**. Verificat direct în cod: nu există nicio ramură de calcul legată de numărul de angajați (`grep -n "angajat" aplicația` → 0 rezultate) — impozitul pe profit și IMCA se calculează la fel, indiferent dacă firma are sau nu personal angajat. Dacă întrebarea vizează de fapt condiția de a avea cel puțin un salariat pentru cota redusă de impozitare la **microîntreprinderi** (un regim diferit de impozitul pe profit), aceasta nu are azi o funcționalitate dedicată identificată în dosarul de cercetare al acestui ghid — nu putem confirma aici acest aspect.
 
 [iConta.eu](/)

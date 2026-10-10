@@ -286,8 +286,8 @@ def calcul_d112(prof, salariati, an, luna):
     pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
     func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        av.append("D112: declarantul (nume/funcție) lipsește din profil -> emis implicit "
-                  "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+        av.append("D112: declarantul (nume/funcție) lipsește din profil — se trece implicit "
+                  "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     if not cui_f:
         av.append("CUI firmă lipsă — completează Profil firmă.")
     if caen_f == "0000":

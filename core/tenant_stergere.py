@@ -45,6 +45,7 @@ CE NU FACE, declarat:
   - **nu repară orfanii deja existenți** (cei 65+2 din R50, ai unor firme dispărute înainte de
     calea asta). Ei n-au tenant, deci nu se pot scoate pe firmă.
 """
+from core.db import SchemaInvalida as _SchemaInvalida
 import glob
 import os
 import shutil
@@ -53,7 +54,6 @@ import psycopg2.extras as _E
 
 from core import db
 
-BON_DIR_BAZA = os.path.expanduser("~/iconta_date/bonuri")
 EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
 
 # ── CE SE CURĂȚĂ ─────────────────────────────────────────────────────────────
@@ -168,7 +168,7 @@ def evidenta(conn, tenant_id, schema=None):
             if n:
                 motive.append("%d %s" % (n, eticheta))
         if not db.schema_valida(schema):
-            raise ValueError("schema invalidă: %r" % schema)
+            raise _SchemaInvalida(schema)
         cur.execute("""SELECT table_name FROM information_schema.tables
                        WHERE table_schema=%s AND table_type='BASE TABLE'""", (schema,))
         are_tabela = {r["table_name"] for r in cur.fetchall()}
@@ -182,7 +182,7 @@ def evidenta(conn, tenant_id, schema=None):
             if n:
                 motive.append("%d %s" % (n, eticheta))
     if nedecis:
-        motive.append("nu pot decide: lipsesc din schema %s tabelele %s"
+        motive.append("nu pot decide: în evidența firmei (%s) lipsesc tabelele %s"
                       % (schema, ", ".join(nedecis)))
     return {"are": bool(motive), "detalii": detalii, "motive": motive, "nedecis": nedecis}
 
@@ -290,7 +290,7 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
         f = _firma(cur, tenant_id, blocheaza=True)
         schema = f["schema_name"]
         if not db.schema_valida(schema):
-            raise ValueError("schema invalidă: %r" % schema)
+            raise _SchemaInvalida(schema)
         if motiv == "scoatere_firma":
             if (confirmare or "").strip() != (f["cui"] or "").strip():
                 raise ValueError("confirmare greșită: scrie CUI-ul firmei, exact cum apare în listă")
@@ -345,7 +345,8 @@ def sterge_fisiere(schema):
     """Fișierele firmei de pe disc. Se cheamă DUPĂ ce tranzacția a fost comisă: un `rmtree` nu
     se dă înapoi, iar o tranzacție întoarsă ar lăsa firma în bază fără bonurile ei."""
     n = 0
-    d = os.path.join(BON_DIR_BAZA, schema)
+    from core.common import dir_bonuri as _dir_bonuri
+    d = os.path.join(_dir_bonuri(), schema)
     if os.path.isdir(d):
         shutil.rmtree(d, ignore_errors=True)
         n += 1

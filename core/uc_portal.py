@@ -331,7 +331,7 @@ def portal_bon_sterge(bon_id, tenant_id, ctx):
     with db.get_conn() as conn, conn.cursor() as cur:
         if not repo_casa.sterge_bonul_extras(cur, t['schema_name'], bon_id):
             raise _erori.Inexistent("bon inexistent sau deja trimis")
-    dir_bon = _os.path.join(_os.path.expanduser(_uc_comun.BON_DIR_BAZA), t["schema_name"], str(bon_id))
+    dir_bon = _os.path.join(_common.dir_bonuri(), t["schema_name"], str(bon_id))
     if _os.path.isdir(dir_bon):
         _shutil.rmtree(dir_bon, ignore_errors=True)
     return {"ok": True}
@@ -433,14 +433,14 @@ def portal_bon(fisiere, tenant_id, ctx):
         with conn.cursor() as cur:
             for (vechi_id,) in repo_casa.sterge_bonurile_extrase_vechi(cur, schema):
                 import shutil as _shutil
-                d = _os.path.join(_os.path.expanduser(_uc_comun.BON_DIR_BAZA), schema, str(vechi_id))
+                d = _os.path.join(_common.dir_bonuri(), schema, str(vechi_id))
                 if _os.path.isdir(d):
                     _shutil.rmtree(d, ignore_errors=True)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
             bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), int(date.get("orientare") or 0) % 360)[0]
-    dir_bon = _os.path.join(_os.path.expanduser(_uc_comun.BON_DIR_BAZA), schema, str(bon_id))
+    dir_bon = _os.path.join(_common.dir_bonuri(), schema, str(bon_id))
     _os.makedirs(dir_bon, exist_ok=True)
     _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
     for i, (b, mt) in enumerate(imagini, 1):

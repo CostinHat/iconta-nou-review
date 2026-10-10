@@ -171,7 +171,7 @@ def erori_generare(prof):
 def build_xml(res):
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D205: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+        res.avertismente.append("D205: declarantul (nume/funcție) lipsește din profil — se trece implicit "
                                 "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     if not res.beneficiari:
         raise ValueError("D205 fără niciun beneficiar de venit - nu se generează "

@@ -265,6 +265,16 @@ CLASIFICARE = {
     #  niciunul din cele trei rezultate; motivul, per cale
     # ======================================================================
 
+    "POST /tenants/{tenant_id}/vanzare-ic": {
+        "clasa": NECRITIC,
+        "efecte": "factura intracomunitară (un singur domeniu care scrie, prin `emite_factura`) <-> întrebarea AI pentru cota unui "
+                  "produs nou, în același domeniu; verificarea VIES înainte, în afara oricărei conexiuni",
+        "de_ce":
+            "un singur domeniu scrie; externele din el sunt o INTEROGARE (modelul AI nu păstrează nimic, `EFECTE_EXTERNE`) și, numai "
+            "pe plasă, jurnalul AI-ului simulat. Un eșec al întrebării întoarce „cota nedeterminată” (`cote_tva.potriveste_cota`), "
+            "care se cere apoi explicit pe linie — nimic nu rămâne scris pe jumătate. Calea a devenit candidat pe 09.10.2026, când scanerele au învățat clientul SDK-ului Anthropic — nu "
+            "fiindcă s-ar fi schimbat ceva în ea. Ce rămâne e durata (conexiunea ținută peste apel): clasa C5, datorie în GARZI.",
+    },
     "POST /coada": {
         "clasa": NECRITIC,
         "efecte": "elementul intra in coada <-> verdictul validatorului <-> notificarea validatorilor",
@@ -891,6 +901,21 @@ INTEROGARE = "INTEROGARE"
 EFECT = "EFECT"
 
 EFECTE_EXTERNE = {
+    "core/ai_client.py:genereaza_text": {
+        "fel": INTEROGARE,
+        "ce_e": "cererea către modelul AI (Anthropic): text propus (cota TVA a unui produs, povestea lunii, tiparele)",
+        "verdict": "nu lasă nimic la celălalt capăt: e o întrebare, nu un act; un rollback la noi n-are ce desface acolo. Ce rămâne e "
+                   "DURATA — conexiunea ținută peste apelul de rețea pe zece căi (clasa C5 din registrul P5, văzută abia după ce "
+                   "scanerele au învățat clientul SDK-ului, 09.10.2026); e datorie scrisă în GARZI, nu proprietate a tranzacției.",
+    },
+    "core/ai_client.py:_raspuns_simulat": {
+        "fel": EFECT,
+        "ce_e": "AI-ul simulat al plasei: jurnalul prompturilor și coada răspunsurilor pregătite (comanda Costin 09.10.2026, pct.7)",
+        "verdict": "scrie numai în directorul plasei (`ICONTA_AI_SIMULAT`), pe care `_director_simulat` îl refuză pe orice mediu care nu e "
+                   "de test (`mediu_test.motive`); pe producție ramura nu există. Un rollback nu desface rândul de jurnal, dar jurnalul "
+                   "e proba plasei (ce prompt a plecat), nu un fapt al firmei — iar un prompt scris pentru o cerere anulată e exact ce "
+                   "trebuie văzut.",
+    },
     "core/migrari_registru.py:_git": {
         "fel": INTEROGARE,
         "ce_e": "citirea arborelui git (migrările și șablonul din commit)",

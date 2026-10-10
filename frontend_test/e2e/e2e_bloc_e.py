@@ -185,7 +185,8 @@ def _asteapta_text(ecran, text, timeout=30000):
 
 
 _GATA = {"#il-prev": "() => (document.querySelector('#il-stare-perioada') || {}).textContent && (document.querySelector('#il-controale') || {}).innerText",
-         "#j-prev": "() => (document.querySelector('#j-lock') || {}).textContent"}
+         "#j-prev": "() => (document.querySelector('#j-lock') || {}).textContent",
+         "#s-prev": "() => { const x = document.querySelector('#s-situatie'); return x && !x.innerText.startsWith('Se încarcă'); }"}
 
 
 def _la_luna(ecran, buton_inapoi, an, luna):
@@ -314,7 +315,9 @@ def test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc(patron, firma):
     pg.wait_for_function("() => (document.querySelector('#il-controale') || {}).innerText?.includes('Nimic nu oprește închiderea')",
                          timeout=60000)
     pg.wait_for_selector("#il-fac-inchide", timeout=30000)
-    assert not pg.is_disabled("#il-lock") and pg.inner_text("#il-lock") == "Blochează luna"
+    # blocarea se activează după ce sosesc controalele lunii (citite fără să țină ecranul — proba plasei, 58)
+    pg.wait_for_function("() => { const b = document.querySelector('#il-lock'); return b && !b.disabled; }", timeout=30000)
+    assert pg.inner_text("#il-lock") == "Blochează luna"
     patron.captura("luna_incheiata")
     _card(patron, firma, "facturi", "#fac-istoric")
     pg.click("#fac-istoric")
@@ -835,6 +838,36 @@ def test_def_163_texte_fara_limbaj_de_programator(patron, firma, facturi_emise):
     assert not any(defecte.values()), defecte
 
 
+def test_def_184_formatele_pe_declaratii_si_casa(patron, firma, facturi_emise):
+    """184. Formate: date ISO, jurnale majuscule, perioade în patru formate, „1 parteneri”, mesaje de respingere lungi.
+    [partea rămasă, registrul: „fără test: cere generarea D406/D394 pe o firmă comună (scriere)”; acum pe firma sintetică a rulării]
+    Pașii: firma cu facturile emise în luna curentă -> D394 și D406 generate, cu componentele deschise (XML-ul lăsat deoparte) -> Casă:
+    textul judecat de aceeași măsură ca ecranele (`core.limba_ecran.defecte`), pe cele patru feluri ale deficienței — nicio dată ISO,
+    nicio perioadă în altă formă decât LL/AAAA, T3/2026 sau anul, niciun „1 parteneri”, niciun cuvânt (numele unui jurnal) în
+    majuscule. (Respingerea numită scurt: `e2e_bloc_c.py::test_def_91_respingerea_e_confirmata_pe_ecran`.)"""
+    from core import limba_ecran
+    # notele facturilor validate: D406 are atunci jurnale (GeneralLedgerEntries), deci numele lor ajung pe ecran
+    _valideaza_note(firma, [i for (i,) in sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' AND factura_id IS NOT NULL'
+                                              % firma["schema"])])
+    pg = patron.pg
+    feluri = {"data", "perioada", "acord", "majuscule"}
+    gasite = {}
+    for tip in ("d394", "d406"):
+        _declaratie(patron, firma, tip, AZI.year, AZI.month)
+        pg.evaluate("() => document.querySelectorAll('details.dec-xml').forEach((d) => { if (!d.innerText.includes('<?xml')) d.open = true; })")
+        t = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const p = [...f.querySelectorAll('pre.dec-xml-pre')];"
+                        " p.forEach((x) => { x.style.display = 'none'; }); const t = f.innerText; p.forEach((x) => { x.style.display = ''; }); return t; }")
+        assert "Din ce e făcută declarația" in t, t[:300]
+        if tip == "d406":
+            assert "Jurnal" in t or "jurnal" in t, t[:600]          # jurnalele SAF-T apar pe ecran, numite în cuvinte
+        gasite[tip] = [d for d in limba_ecran.defecte(t) if d[0] in feluri]
+        patron.captura(tip)
+    _card(patron, firma, "casa", "#c-toggle")
+    pg.wait_for_timeout(800)
+    gasite["casa"] = [d for d in limba_ecran.defecte(patron.fereastra()) if d[0] in feluri]
+    assert not any(gasite.values()), gasite
+
+
 # ------------------------------------------------------------------------------------------------ Control fiscal (148, 156, 157, 158, 159)
 
 @pytest.fixture()
@@ -852,8 +885,77 @@ def preluata_07(firma):
         sql('UPDATE "%s".firma_profil SET luna_preluare = NULL WHERE id = 1' % firma["schema"])
 
 
+@pytest.fixture()
+def preluata_07_fara_activitate():
+    """O firmă proprie a testului (`conftest.firma_noua`), completată ca `firma` și preluată în 07/2026, FĂRĂ niciun document în 2026.
+    De ce nu `firma`: facturile altor probe din 10/2026 dovedesc existența firmei în 2026, iar atunci D100 T1/T2 2026, fără venituri,
+    nu se mai datorează (`control_fiscal_api.d100_fapt`, „fără venituri în trimestru”) — nu mai sunt în grupul „Înainte de preluare”.
+    Situația din retest (212) e a anului nedovedit, deci proba îi cere firma ei."""
+    from conftest import firma_noua
+    from core import db, firma_profil_api as fp
+    gen = firma_noua()
+    f = _completeaza(next(gen), "cantitativ_valoric")
+    try:
+        with db.get_conn(f["schema"]) as c:
+            r = fp.salveaza_date(c, {"luna_preluare": "2026-07"}, tenant_id=f["tenant_id"], user_id=_uid())
+            assert r.get("ok"), r
+            c.commit()
+        yield f
+    finally:
+        gen.close()
+
+
 def _control(ecran, f):
     _card(ecran, f, "control", ".cf-stare-mare")
+
+
+def test_def_159_marcarea_nu_muta_ecranul_de_pe_rand(patron, preluata_07):
+    """159. Control fiscal: marcarea — mesajul rămânea, fereastra sărea, nu se putea modifica/anula.
+    [partea rămasă, registrul: „rândul atins urcă cu ~100 px (y 451 -> 351 …)”] Cauza, măsurată: focusul pe câmpul de dată derula
+    câmpul în CENTRUL zonei când formularul se deschidea sub marginea de jos (D100 T4/2025, rândul jos pe ecran: 827 -> 352 px).
+    Pașii: firma preluată în 07/2026 -> Control fiscal -> „Înainte de preluare” -> rândul D100 T4/2025 adus la marginea de jos ->
+    „Marchează depusă în afara iConta.eu”: rândul se mișcă cel mult cât să se vadă formularul, iar câmpul de dată are focusul ->
+    data, „Salvează”: rândul rămâne unde era -> „Anulează marcarea”, confirmă: la fel."""
+    pg = patron.pg
+    _control(patron, preluata_07)
+    pg.click("details.cf-inainte > summary")
+    rand = ".fereastra:last-of-type [data-cheie='d100-2025-12']"
+    pg.wait_for_selector(rand + " .cf-extern-btn", timeout=30000)
+    pg.eval_on_selector(rand + " .cf-extern-btn", "e => e.scrollIntoView({block: 'end'})")
+    y = lambda: pg.eval_on_selector(rand, "e => Math.round(e.getBoundingClientRect().top)")   # noqa: E731
+    y0 = y()
+    patron.captura("inainte")
+    pg.eval_on_selector(rand + " .cf-extern-btn", "b => b.click()")   # clicul omului, pe loc (clicul Playwright aduce ținta în centru)
+    pg.wait_for_selector(rand + " .cf-extern-form input[type=date]", timeout=10000)
+    pg.wait_for_timeout(300)
+    form = pg.eval_on_selector(rand + " .cf-extern-form", "f => { const c = f.closest('.fereastra-corp').getBoundingClientRect();"
+                               " const r = f.getBoundingClientRect(); return {h: Math.round(r.height), jos: Math.round(r.bottom),"
+                               " zona: Math.round(c.bottom), focus: document.activeElement === f.querySelector('input[type=date]')}; }")
+    y1 = y()
+    patron.captura("formular")
+    assert form["focus"] and form["jos"] <= form["zona"] + 1, form
+    assert y0 - y1 <= form["h"] + 16, "rândul a sărit la deschiderea formularului: %s -> %s px (formularul are %s px)" % (y0, y1, form["h"])
+    pg.fill(rand + " .cf-extern-form input[type=date]", "2026-02-20")
+    pg.click(rand + " .cf-extern-salveaza")
+    pg.wait_for_selector(rand + " .cf-extern-anuleaza", timeout=60000)
+    y2 = y()
+    assert abs(y2 - y1) <= 4, "rândul a sărit după „Salvează”: %s -> %s px" % (y1, y2)
+    pg.click(rand + " .cf-extern-anuleaza")
+    # caseta de confirmare apare sub rând; aplicația o aduce în vedere cu derulare minimă (`aduInVedere`, `nearest`, lină) —
+    # clicul vine după ce s-a oprit derularea, ca Playwright să nu mai mute el ținta în centru
+    pg.wait_for_function("() => { const b = document.querySelector('#ca-ok'); if (!b) return false; const r = b.getBoundingClientRect();"
+                         " const c = b.closest('.fereastra-corp').getBoundingClientRect(); const t = Math.round(r.top);"
+                         " const ok = r.bottom <= c.bottom + 1 && window._caY === t; window._caY = t; return ok; }", timeout=10000,
+                         polling=200)
+    caseta = pg.eval_on_selector("#caseta-atentie-activa", "e => Math.round(e.getBoundingClientRect().height)")
+    y3 = y()
+    assert y1 - y3 <= caseta + 16, "rândul a sărit la „Anulează marcarea”: %s -> %s px (caseta are %s px)" % (y1, y3, caseta)
+    pg.click("#ca-ok")
+    pg.wait_for_function("(s) => { const r = document.querySelector(s); return r && !r.querySelector('.cf-extern-anuleaza'); }",
+                         arg=rand, timeout=60000)
+    y4 = y()
+    patron.captura("dupa_anulare")
+    assert abs(y4 - y3) <= 4, "rândul a sărit după confirmarea anulării: %s -> %s px" % (y3, y4)
 
 
 def test_def_157_d100_d205_2025_sunt_inainte_de_preluare(patron, preluata_07):
@@ -907,6 +1009,69 @@ def _marcheaza(pg, cheie):
     item = pg.locator("details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie)
     item.scroll_into_view_if_needed()
     return item
+
+
+def test_def_212_inainte_de_preluare_o_explicatie_si_perioadele_impreuna(patron, preluata_07_fara_activitate):
+    """212. Control fiscal, „Înainte de preluare”: text la persoana întâi, repetat pe fiecare rând; D100 T1–T2/2026 în alt grup decât
+    D406 T1/2026, deși sunt aceeași perioadă.
+    Pașii: firma preluată în 07/2026 -> Control fiscal -> „Înainte de preluare”: explicația grupului apare o dată, sub titlu; niciun rând
+    n-o repetă și niciun rând nu vorbește la persoana întâi („nu pot …”); D100 T1/2026 și T2/2026 (perioade dinaintea preluării)
+    sunt în grupul acesta, nu la „Nu pot verifica”."""
+    pg = patron.pg
+    _control(patron, preluata_07_fara_activitate)
+    pg.click("details.cf-inainte > summary")
+    pg.wait_for_selector("details.cf-inainte .cf-decl-item", timeout=30000)
+    g = pg.evaluate("""() => { const d = document.querySelector('details.cf-inainte');
+      return {explicatii: [...d.querySelectorAll(':scope > .cf-incr-temei')].map(e => e.innerText),
+              randuri: [...d.querySelectorAll('.cf-decl-item')].map(e => ({cheie: e.dataset.cheie, text: e.innerText}))}; }""")
+    patron.captura("inainte")
+    assert len(g["explicatii"]) == 1 and "nu se numără la restanțe" in g["explicatii"][0], g["explicatii"]
+    assert not [r for r in g["randuri"] if "dinaintea preluării" in r["text"] or _re.search(r"(?i)\bnu pot\b", r["text"])], g["randuri"]
+    chei = {r["cheie"] for r in g["randuri"]}
+    assert {"d100-2026-3", "d100-2026-6"} <= chei, sorted(chei)
+
+
+def test_def_213_confirmarea_anularii_spune_perioada_randului(patron, preluata_07):
+    """213. Confirmarea anulării marcării scrie „D406 03/2026” pentru T1/2026.
+    Pașii: firma preluată în 07/2026 -> Control fiscal -> „Înainte de preluare” -> D100 T4/2025 marcată depusă -> „Anulează marcarea”:
+    întrebarea spune „Anulezi marcarea D100 T4/2025?” (perioada rândului), nu „D100 12/2025”."""
+    pg = patron.pg
+    _control(patron, preluata_07)
+    pg.click("details.cf-inainte > summary")
+    cheie = "d100-2025-12"
+    item = _marcheaza(pg, cheie)
+    item.locator(".cf-extern-btn").click()
+    item.locator(".cf-extern-form input[type=date]").fill("2026-01-20")
+    item.locator(".cf-extern-salveaza").click()
+    sel = "details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie
+    pg.wait_for_selector(sel + " .cf-extern-anuleaza", timeout=60000)
+    pg.click(sel + " .cf-extern-anuleaza")
+    pg.wait_for_selector("#caseta-atentie-activa", timeout=10000)
+    txt = pg.inner_text("#caseta-atentie-activa")
+    patron.captura("confirmare")
+    assert "Anulezi marcarea D100 T4/2025?" in txt and "12/2025" not in txt, txt
+
+
+def test_def_194_randul_marcat_spune_doar_ca_e_depus(patron, preluata_07):
+    """194. Control fiscal: rândul marcat „depusă în afara iConta.eu” își păstrează textul „nu pot verifica…” / „necunoscut declarat: nu
+    pot demonstra…” (D205, D100 2025); marcarea se vede doar din butoane și din „· recipisă …”.
+    Pașii: firma preluată în 07/2026 -> Control fiscal -> „Înainte de preluare” -> D205 2025 și D100 T4/2025: „Marchează depusă în afara
+    iConta.eu” (data 20.03.2026 / 20.01.2026) -> rândul spune „Depusă în afara iConta.eu 20.03.2026 …” și nu mai spune „nu pot
+    verifica” / „nu pot demonstra” / „necunoscut”."""
+    pg = patron.pg
+    _control(patron, preluata_07)
+    pg.click("details.cf-inainte > summary")
+    for cheie, data in (("d205-2025-12", "2026-03-20"), ("d100-2025-12", "2026-01-20")):
+        item = _marcheaza(pg, cheie)
+        item.locator(".cf-extern-btn").click()
+        item.locator(".cf-extern-form input[type=date]").fill(data)
+        item.locator(".cf-extern-salveaza").click()
+        pg.wait_for_selector("details.cf-inainte .cf-decl-item[data-cheie='%s'] .cf-extern-anuleaza" % cheie, timeout=60000)
+        txt = pg.locator("details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie).inner_text()
+        zi = "%s.%s.%s" % (data[8:10], data[5:7], data[:4])
+        assert ("Depusă în afara iConta.eu %s" % zi) in txt, txt
+        assert not _re.search(r"(?i)nu pot verifica|nu pot demonstra|necunoscut", txt), txt
+    patron.captura("marcate")
 
 
 def test_def_148_recipisa_doar_numar(patron, preluata_07):
@@ -983,6 +1148,31 @@ def _mijloace(ecran, f):
     _card(ecran, f, "mijloace", "table.fd-tabel")
 
 
+def test_def_162_mijloace_fixe_nu_deruleaza_lateral_la_1700(patron, firma_gv):
+    """162. Mijloace fixe: derulare laterală la ~1700 px, PIF tăiat, acțiuni ascunse.
+    [partea rămasă, registrul: „la fereastra de 1700 px tabelul Mijloace fixe tot derulează lateral: scrollWidth 1743 > clientWidth
+    1604 … antetele numerice lungi au white-space: nowrap … (conținutul «neînregistrate: N luni: …» tot nowrap)”] Pașii: ecran de
+    1700 px -> firma cu un mijloc fix cu luni neînregistrate -> Mijloace fixe: tabelul încape în fereastră (nicio derulare laterală),
+    cu meniul „Acțiuni” închis și deschis; antetul „Amortizat (calculat, până la …)” se rupe pe rânduri, cifrele rămân pe un rând."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": 1700, "height": 1000})
+    _mf(firma_gv, "MF162", "12000", 24, "2026-01-10")
+    _mijloace(patron, firma_gv)
+    pg.wait_for_selector(".fereastra:last-of-type table.fd-tabel tbody tr", timeout=30000)
+    masura = ("() => { const t = [...document.querySelectorAll('.fereastra')].pop().querySelector('table.fd-tabel');"
+              " let c = t.parentElement; while (c && c.scrollWidth <= c.clientWidth && c !== document.body) c = c.parentElement;"
+              " const z = t.closest('.fereastra-corp'); const th = [...t.querySelectorAll('thead th')];"
+              " return {lat: z.scrollWidth, vizibil: z.clientWidth, derulant: c && c !== document.body ? [c.tagName, c.className, c.scrollWidth, c.clientWidth] : null,"
+              " antet: th.map(h => [h.innerText.replace(/\\s+/g, ' ').trim().slice(0, 30), Math.round(h.getBoundingClientRect().width)])}; }")
+    m = pg.evaluate(masura)
+    patron.captura("inchis")
+    assert m["lat"] <= m["vizibil"] and m["derulant"] is None, m
+    pg.locator(".fereastra:last-of-type table.fd-tabel details.dec-xml > summary").first.click()
+    m2 = pg.evaluate(masura)
+    patron.captura("actiuni_deschise")
+    assert m2["lat"] <= m2["vizibil"] and m2["derulant"] is None, m2
+
+
 def test_def_170_c_si_d_cere_poate_valida(patron, junior, firma_gv):
     """170. Mijloace fixe: C&D „Poate valida” — lipsea proba pe utilizator fără drept.
     Pașii: asistentul („Poate pregăti”, fără „Poate valida”) deschide Mijloace fixe -> în meniul „Acțiuni” nu are butonul „C&D: da/nu”,
@@ -1018,6 +1208,71 @@ def test_def_170_c_si_d_cere_poate_valida(patron, junior, firma_gv):
 
 def _note_amortizare(f, an, luna):
     return sql('SELECT id, status FROM "%s".inregistrari WHERE numar = %%s ORDER BY id' % f["schema"], ("AMORT-%d-%02d" % (an, luna),))
+
+
+def test_def_214_nota_de_amortizare_ultima_zi_si_documentul_ei(patron, firma):
+    """214. Nota de amortizare: datată 28.09 în loc de ultima zi a lunii; „Document justificativ: nederivat”.
+    Pașii: firma cu un mijloc fix (PIF 10.05.2026) -> Registrul jurnal, 07/2026 -> „Generează amortizarea”: nota e datată 31.07.2026, iar
+    rândul ei arată documentul justificativ (tabloul de amortizare), nu „nederivat” -> o notă de amortizare scrisă de codul vechi
+    (06/2026, ziua 28, fără document) arată și ea „Tabloul de amortizare AMORT-2026-06” (derivat la citire, ca registrul)."""
+    f = firma
+    pg = patron.pg
+    _mf(f, "MF214", "6000", 60, "2026-05-10")
+    veche = sql('INSERT INTO "%s".inregistrari (data, numar, descriere, sursa, status) VALUES (\'2026-06-28\', \'AMORT-2026-06\', '
+                "'Amortizare 06/2026', 'amortizare', 'ciorna') RETURNING id" % f["schema"])[0][0]
+    sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, \'6811\', \'2813\', 100)'
+        % f["schema"], (veche,))
+    try:
+        _card(patron, f, "jurnal", "#j-amort")
+        _la_luna(patron, "#j-prev", 2026, 7)
+        pg.click("#j-amort")
+        for _ in range(60):
+            if _note_amortizare(f, 2026, 7):
+                break
+            pg.wait_for_timeout(500)
+        n = _note_amortizare(f, 2026, 7)
+        assert len(n) == 1, n
+        assert str(sql('SELECT data FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (n[0][0],))[0][0]) == "2026-07-31"
+        pg.wait_for_selector("[data-nota-id='%d']" % n[0][0], timeout=30000)
+        rand = pg.inner_text("[data-nota-id='%d']" % n[0][0])
+        patron.captura("amortizare_07")
+        assert "31.07.2026" in rand and "nederivat" not in rand and "Document justificativ:" in rand, rand
+        pg.click("#j-prev")   # o lună înapoi, din 07/2026
+        _asteapta_text(patron, "Luna 06/2026")
+        pg.wait_for_selector("[data-nota-id='%d']" % veche, timeout=30000)
+        rand_v = pg.inner_text("[data-nota-id='%d']" % veche)
+        patron.captura("amortizare_veche")
+        assert "Document justificativ: Tabloul de amortizare AMORT-2026-06" in rand_v, rand_v
+    finally:
+        sql('DELETE FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (veche,))
+
+
+def test_def_215_inchiderea_semnaleaza_amortizarea_lunilor_anterioare(patron, firma_gv):
+    """215. Închidere lună: lunile anterioare cu amortizare neînregistrată nu apar ca semnal.
+    Pașii: firma cu mijlocul fix MF215 (PIF 10.03.2026, 3.000 lei, 30 de luni -> 100 lei/lună din 04/2026), fără nicio notă de
+    amortizare -> Închidere lună -> luna trecută: sub „Semnale” apare „amortizarea lunilor anterioare nu e înregistrată pe contul
+    2813: … luni (04–…/2026)”, cu suma după calcul; nu e printre ce oprește închiderea (acolo e numai luna însăși)."""
+    f = firma_gv
+    pg = patron.pg
+    mid = _mf(f, "MF215", "3000", 30, "2026-03-10")
+    trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
+    try:
+        _card(patron, f, "inchidere", "#il-prev")
+        _la_luna(patron, "#il-prev", trecuta.year, trecuta.month)
+        pg.wait_for_function("() => { const z = [...document.querySelectorAll('.fereastra')].pop().querySelector('#il-controale');"
+                             " return z && z.querySelector('.caseta-info, .caseta-atentie'); }", timeout=90000)
+        zona = pg.inner_text(".fereastra:last-of-type #il-controale")
+        patron.captura("inchidere")
+    finally:
+        sql('DELETE FROM "%s".mijloace_fixe WHERE id = %%s' % f["schema"], (mid,))
+    semnale = zona.split("Semnale (", 1)[1] if "Semnale (" in zona else ""
+    assert "amortizarea lunilor anterioare nu e înregistrată pe contul 2813" in semnale, zona
+    # intervalul: începe cel târziu în aprilie (MF215 intră în funcțiune în martie; firma poate avea și active mai vechi, ale altor
+    # probe) și se termină în luna dinaintea celei închise
+    m = _re.search(r"amortizarea lunilor anterioare[^:]*: \d+ luni \((\d{2})–(\d{2})/(\d{4})\)", semnale)
+    assert m and int(m.group(1)) <= 4 and (int(m.group(3)), int(m.group(2))) == ((trecuta.replace(day=1) - _dt.timedelta(days=1)).year,
+                                                                                (trecuta.replace(day=1) - _dt.timedelta(days=1)).month), zona
+    assert "amortizarea lunilor anterioare" not in zona.split("Semnale (", 1)[0], zona
 
 
 def test_def_149_amortizarea_ciorna_se_inlocuieste_validata_nu(patron, firma_gv):
@@ -1068,6 +1323,81 @@ def test_def_149_amortizarea_ciorna_se_inlocuieste_validata_nu(patron, firma_gv)
 
 # ------------------------------------------------------------------------------------------------ Bilanț (151)
 
+def _vanzare_validata(f, data, pret):
+    """O vânzare de marfă: factura emisă cu venitul pe 707 (`facturi_api.emite_factura`, nota ei automată, sursa „facturi”), nota
+    validată — descărcarea citește numai notele validate."""
+    from core import db, facturi_api
+    with db.get_conn(f["schema"]) as c:   # seria de facturare a firmei (Date firmă), ca la orice emitere
+        if not facturi_api.serie_facturi(c):
+            assert facturi_api.seteaza_numerotare(c, serie="GV149", numar_start=1)["ok"]
+            c.commit()
+    with db.get_conn(f["schema"]) as c:
+        r = facturi_api.emite_factura(c, [{"descriere": "Marfa vanduta", "cantitate": 1, "pret_unitar": pret, "cota_tva": 21,
+                                            "cont_venit": "707"}], tert_nume="Client 149 SRL", tert_cui=cui_cu_control(36000149),
+                                      data_emitere=data, status="emisa")
+        assert r.get("ok"), r
+        c.commit()
+    note = [x[0] for x in sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s' % f["schema"], (r["factura_id"],))]
+    assert note, "factura emisă n-are notă"
+    _valideaza_note(f, note)
+
+
+def _note_descarcare(f, an, luna):
+    return sql('SELECT id, status FROM "%s".inregistrari WHERE numar = %%s ORDER BY id' % f["schema"], ("DESC-GV-%d-%02d" % (an, luna),))
+
+
+def test_def_149_descarcarea_gv_ciorna_se_inlocuieste_validata_nu(patron, firma_gv):
+    """149. Amortizare/gestiune: ciorna nevalidată se înlocuiește; validatul nu se atinge.
+    [partea rămasă, registrul: „jumătatea DESCĂRCĂRII GV nu se poate proba azi … triggerul regula_nota refuză validarea notei de
+    contare a unei facturi”; regula primește acum nota legată de factură] Pașii (global-valoric, 06/2026): NIR validat (10 × 50, preț
+    de raft 80) și o vânzare validată (100 lei pe 707) -> Stocuri, 06/2026, „Descarcă gestiunea lunii”: ciorne -> încă o vânzare
+    validată și din nou: ciornele de dinainte s-au înlocuit (alte note, aceeași cheie, niciuna rămasă în plus) -> notele se validează
+    -> încă o vânzare și din nou: refuz „deja descărcată și validată”, notele validate rămân aceleași."""
+    f = firma_gv
+    _nir(f, "E149D", "2026-06-03", "Furnizor 149 SRL", cui_cu_control(36000150), 10, 50, pret_vanzare=80)
+    _vanzare_validata(f, "2026-06-10", 100)
+    pg = patron.pg
+    _card(patron, f, "stocuri", "#s-desc")
+    _la_luna(patron, "#s-prev", 2026, 6)
+
+    def descarca():
+        pg.click("#s-desc")
+        pg.click("#ca-ok")
+        pg.wait_for_function("() => (document.querySelector('#s-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=60000)
+        return pg.inner_text("#s-mesaj")
+    m1 = descarca()
+    n1 = _note_descarcare(f, 2026, 6)
+    assert n1 and {s for _i, s in n1} == {"ciorna"}, (m1, n1)
+    _vanzare_validata(f, "2026-06-12", 60)
+    _card(patron, f, "stocuri", "#s-desc")
+    _la_luna(patron, "#s-prev", 2026, 6)
+    m2 = descarca()
+    n2 = _note_descarcare(f, 2026, 6)
+    patron.captura("inlocuita")
+    assert len(n2) == len(n1) and {i for i, _s in n2}.isdisjoint({i for i, _s in n1}), (m2, n1, n2)
+    _valideaza_note(f, [i for i, _s in n2])
+    _vanzare_validata(f, "2026-06-15", 40)
+    _card(patron, f, "stocuri", "#s-desc")
+    _la_luna(patron, "#s-prev", 2026, 6)
+    m3 = descarca()
+    patron.captura("validata_refuz")
+    assert "deja descărcată și validată" in m3, m3
+    assert _note_descarcare(f, 2026, 6) == [(i, "validata") for i, _s in n2]
+
+
+def _bilant(ecran, f, an, tip):
+    """Bilanț -> anul și tipul, după ce ecranul a terminat de încărcat categoria de mărime a anului ales (ca omul care vede ecranul).
+    Primul clic pe un buton după asta nu are voie să se piardă: părăsirea câmpului „An” reîncărca o categorie deja încărcată, iar
+    fereastra (centrată) se micșora sub cursor — „Descarcă XML” / „Validează” fără nicio cerere (prins de plasă, 151/188)."""
+    pg = ecran.pg
+    _card(ecran, f, "bilant", "#bl-an")
+    pg.fill("#bl-an", str(an))
+    pg.dispatch_event("#bl-an", "change")
+    pg.wait_for_function("() => { const z = document.querySelector('#bl-categorie'); return z && !z.hasAttribute('aria-busy') && "
+                         "z.innerText.trim() !== '' && !z.innerText.includes('Se calculează'); }", timeout=90000)
+    pg.select_option("#bl-tip", tip)
+
+
 def test_def_151_bilant_4428_numai_la_stocuri(patron, firma_gv):
     """151. Bilanț: 4428 (preț de raft) apărea și la datorii; analitic propriu, doar la stocuri rd.05.
     Pașii contabilului (global-valoric): NIR fără factură din 11/2024, 10 buc × 55 lei, preț de raft 80 lei, validat (371 = 800,00;
@@ -1076,10 +1406,7 @@ def test_def_151_bilant_4428_numai_la_stocuri(patron, firma_gv):
     cui = cui_cu_control(37000151)
     _nir(firma_gv, "E151", "2024-11-12", "Furnizor 151 SRL", cui, 10, 55, pret_vanzare=80)
     pg = patron.pg
-    _card(patron, firma_gv, "bilant", "#bl-an")
-    pg.fill("#bl-an", "2024")
-    pg.dispatch_event("#bl-an", "change")
-    pg.select_option("#bl-tip", "s1005")
+    _bilant(patron, firma_gv, 2024, "s1005")
     with pg.expect_response(lambda r: "/s1005-xml" in r.url, timeout=90000) as rsp:
         with pg.expect_download(timeout=90000):
             pg.click("#bl-xml")
@@ -1088,3 +1415,31 @@ def test_def_151_bilant_4428_numai_la_stocuri(patron, firma_gv):
     assert a.get("F10_0052") == "550", a
     assert a.get("F10_0132") == "666", a
     patron.captura("bilant_2024_xml")
+
+
+def test_def_188_randurile_bilantului_pe_ecran_cu_cifrele_care_se_depun(patron, firma_gv):
+    """188. Bilanț: rândurile bilanțului (F10_0052, F10_0132 și restul) apar pe ecranul Bilanț, cu cifrele care se depun, nu doar
+    verdictul. Pașii: firma global-valorică cu un NIR validat în 11/2024 -> Bilanț, 2024, S1005 -> „Validează”: sub verdict, tabelul
+    „Ce se depune” are rândul 5 (stocuri) și rândul 13 (datorii), iar FIECARE rând de pe ecran poartă exact cifrele din XML-ul care se
+    descarcă (an precedent / an curent), fără rânduri în plus sau în minus."""
+    cui = cui_cu_control(37000188)
+    _nir(firma_gv, "E188", "2024-11-14", "Furnizor 188 SRL", cui, 4, 50, pret_vanzare=70)
+    pg = patron.pg
+    _bilant(patron, firma_gv, 2024, "s1005")
+    pg.click("#bl-val")
+    pg.wait_for_selector("#bl-randuri tbody tr", timeout=120000)
+    ecran = pg.evaluate("""() => [...document.querySelectorAll('#bl-randuri tbody tr')].map(tr =>
+      [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))""")
+    patron.captura("bilant_randuri")
+    with pg.expect_response(lambda r: "/s1005-xml" in r.url, timeout=90000) as rsp:
+        with pg.expect_download(timeout=90000):
+            pg.click("#bl-xml")
+    xml = rsp.value.json()["xml"]
+    din_xml = {}
+    for f, r, col, v in _re.findall(r'\b(F\d\d)_(\d{3})([12])="(-?\d+)"', xml):
+        din_xml.setdefault((f, int(r)), ["0", "0"])[int(col) - 1] = v
+    bani = lambda t: str(int(round(float(t.replace(".", "").replace(",", ".").replace("\u2212", "-") or 0))))
+    pe_ecran = {(f, int(r.split()[-1])): (bani(p), bani(c)) for f, r, p, c in ecran}
+    din_xml = {k: tuple(v) for k, v in din_xml.items()}
+    assert ("F10", 5) in pe_ecran and ("F10", 13) in pe_ecran, ecran
+    assert pe_ecran == din_xml, sorted(set(pe_ecran.items()) ^ set(din_xml.items()))

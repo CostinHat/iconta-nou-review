@@ -32,6 +32,8 @@ Expus ca:
   - test in suita (test_audit_schema.py): pica la drift template->tenant (poarta la dev);
   - CLI on-demand: `python3 -m core.audit_schema` (tiparul migrare_*._main), inspectie pe prod.
 """
+from core.db import SchemaInvalida as _SchemaInvalida
+from core.db import SchemaInvalida as _SchemaInvalida
 from core import db, tenant_provisioning as tp
 
 MODUL = "audit_schema"
@@ -162,7 +164,7 @@ def auditeaza(conn, schemas, template_sql):
     schema din `schemas`, arunca referinta. Intoarce (rapoarte: {schema: drift}, ref_introspect).
     APELANTUL controleaza commit/rollback - se cheama sub ROLLBACK (ref e temporara)."""
     if not db.schema_valida(SCHEMA_REF):
-        raise ValueError("schema ref invalidă")
+        raise _SchemaInvalida(SCHEMA_REF)
     sql = tp.parametrizeaza_template(template_sql, SCHEMA_REF)
     with conn.cursor() as cur:
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)
@@ -172,7 +174,7 @@ def auditeaza(conn, schemas, template_sql):
         rapoarte = {}
         for s in schemas:
             if not db.schema_valida(s):
-                raise ValueError("schema invalidă: %r" % s)
+                raise _SchemaInvalida(s)
             rapoarte[s] = compara(ref, _introspect(cur, s))
             rapoarte[s]["triggere_lipsa"] = sorted("%s.%s" % x for x in trg_ref - _triggere(cur, s))
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_REF)

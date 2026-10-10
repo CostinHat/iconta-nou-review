@@ -149,7 +149,20 @@ def test_stergerea_unei_facturi_redeschide_luna(conn):
         nota = _cf.contare_existenta(cur, "", r["factura_id"])
     assert _ja.sterge(conn, SCHEMA, nota["id"])["ok"] is True
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
-    _fa.sterge_factura(conn, r["factura_id"])
+    # [Retestul plasei, regula a (R6) — CF art.330 alin.(1)] nici fără notă factura EMISĂ nu se șterge: refuz numit, nimic schimbat
+    with _pt.raises(_cf.RefuzContare) as e:
+        _fa.sterge_factura(conn, r["factura_id"])
+    assert (e.value.cod, e.value.detalii["iesire"]) == ("FACTURA_EMISA", "storno")
+    assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is True
+    # proprietatea testului, pe documentul care SE poate șterge — ciorna: ștergerea ei de-confirmă luna
+    c = _fa.creeaza_factura(conn, "ZC1", "2026-06-21", "emisa", [{"descriere": "y", "cantitate": 1, "pret_unitar": 10, "cota_tva": 21}],
+                            tert_nume="CLIENT SRL", tert_cui="14399840", status="ciorna")
+    with _cf.cursor_dict(conn) as cur:   # și ciorna își are nota automată (R87): întâi nota ciornă, ca pe drumul aplicației
+        nota_c = _cf.contare_existenta(cur, "", c["factura_id"])
+    if nota_c:
+        assert _ja.sterge(conn, SCHEMA, nota_c["id"])["ok"] is True
+    _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
+    _fa.sterge_factura(conn, c["factura_id"])
     assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is False
 
 

@@ -915,6 +915,7 @@ Fiecare rând de mai jos e o datorie **cunoscută, măsurată și declarată**, 
 | 4 | căi C5 rămase la **P5** | 6 | cinci rute de fișier sub `SINCRON-MARGINIT` (threadpool, I/O local — nu extern) + jobul de recurente sub `FUNDAL`; fiecare cu verdict scris | capitolul P5 |
 | 5 | **R178** — la 10 cereri de portofoliu simultane, conexiunile ating `ICONTA_POOL_MAX=10` | rezervă 0 | e o proprietate a **configurației**, măsurată; mărirea pool-ului ar ascunde-o, nu ar rezolva-o | `CONFORMITATE.md` |
 | 6 | **R183** — `spv_conector.apel_anaf` ține conexiunea peste apelul extern | — | **proprietatea** e reparată (R180); ce rămâne e **durata**, aceeași clasă cu R178, și se închide împreună cu ea | `CONFORMITATE.md` |
+| 7 | **R193** — întrebarea către modelul AI ține conexiunea din pool, pe **10** căi; măsurătoarea P5 nu vedea clientul SDK-ului (09.10.2026) | 10 căi C5 (`CLICHET_C5`, exact) | durata e mărginită de azi (60 s, `ai_client.TERMEN_SECUNDE`); mutarea întrebării înaintea conexiunii e decizie de scop | `CONFORMITATE.md` R193 |
 
 *Restanțele de produs care nu țin de întărire (**R69**, **R121**, **R174**–**R177**) rămân unde
 erau, în `CONFORMITATE.md`. Închiderea planului nu le atinge și nu le reclasifică.*

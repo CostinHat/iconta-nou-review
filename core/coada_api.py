@@ -232,7 +232,8 @@ def _payload_nota(n):
     document."""
     from core import jurnal_api as _j
     d = n["data"]
-    doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"))
+    doc = _j.document_justificativ(n["document_ref"], n.get("f_tip"), n.get("f_serie"), n.get("f_nr"), n.get("f_data"),
+                                   n.get("sursa"), n.get("numar"))   # [deficiența 214] același document ca jurnalul
     p = {"inregistrare_id": n["id"], "data": d.isoformat(), "descriere": n["descriere"], "sursa": n["sursa"],
          "document_ref": doc, "total": str(n["total"]), "_an": d.year, "_luna": d.month,
          "rulaj": str(n.get("rulaj", n["total"])), "rulaj_storno": str(n.get("rulaj_storno") or 0),   # [Retest 2 pct.7]
@@ -353,7 +354,7 @@ _PARTENER = ("COALESCE(f.tert_nume, (SELECT f2.tert_nume FROM miscari_stoc ms JO
 _AMPRENTA = ("md5(i.data::text || ':' || COALESCE((SELECT string_agg(l.cont_debit || '/' || l.cont_credit || '/' || l.suma::text, ';' "
              "ORDER BY l.cont_debit, l.cont_credit, l.suma) FROM inregistrari_linii l WHERE l.inregistrare_id = i.id), ''))")
 
-_SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
+_SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.numar, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, "
                 "f.numar AS f_nr, f.data_emitere AS f_data, "
                 + _GRUP_DOC + " AS grup_doc, " + _PARTENER + " AS partener, " + _AMPRENTA + " AS amprenta, "
                 "(SELECT n.refacut_din_id FROM nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1) AS nir_refacut_din, "

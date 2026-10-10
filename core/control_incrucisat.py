@@ -612,7 +612,7 @@ def verifica_d112(conn, schema, an, luna):
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
 
-            "limita": ("Verificat: totalurile din XML-ul D112 (cod 602/412+458/432+459/480) vs "
+            "limita": ("Verificat: totalurile D112 (impozitul pe venit, CAS, CASS și contribuția asiguratorie pentru muncă) față de "
                        "conturile 444/4315/4316/436, numai note validate. "
                        "Neverificat: brutul (421) — D112 raportează baza de contribuții, "
                        "nu brutul contabil; pe lunile cu concedii medicale diverg legitim. "
@@ -715,11 +715,11 @@ def verifica_tva(conn, schema, an, luna):
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,
 
-        "limita": (("Verificat: D300 depus (rândurile persistate la depunere) vs conturile "
+        "limita": (("Verificat: D300 depus (rândurile salvate la depunere) față de conturile "
                     "4427/4426. " if sursa_declarat == "depus" else
                     "Verificat: D300 regenerat acum din facturile lunii — nu s-a păstrat ce s-a "
                     "depus, deci comparația e evidența de azi față de decontul care s-ar genera "
-                    "azi — vs conturile 4427/4426. ") +
+                    "azi — față de conturile 4427/4426. ") +
                    "Evidența = note validate; ciornele nu intră în rulaj. "
                    "Neverificat: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
                    "(necesită SPV)."),
@@ -764,7 +764,8 @@ def _fereastra_tva(tip_dec, an, luna):
     if t == "t" or "trim" in t:
         tri = (luna - 1) // 3
         luni = [tri * 3 + 1, tri * 3 + 2, tri * 3 + 3]
-        eticheta = "trimestrul %d/%d" % (tri + 1, an)
+        from core.control_fiscal_api import perioada_canonica   # forma ecranelor, „T4/2026” (DS cap.4; detectorul de text, 10.10)
+        eticheta = perioada_canonica(an, luni[-1], "trim")   # luna de ancoră a trimestrului (ultima)
     elif t == "s" or "sem" in t:
         sem = (luna - 1) // 6
         luni = list(range(sem * 6 + 1, sem * 6 + 7))
@@ -823,7 +824,7 @@ def compara_d390(baze, ic_facturi, patru_ochi=True):
         temei = (f"D390 baza {cheie} (facturi intracomunitare, auto — art. 325 Cod fiscal, declarația "
                  f"recapitulativă) vs evidența contabilă validată a acelorași facturi ({art}; "
                  f"OMFP 1802/2014). Numai note validate — ciorna e propunere, nu dovadă. "
-                 f"Limită: numai bunuri IC, nu servicii (P/S); nu se compară cu D300 depus (nepersistat).")
+                 f"Limită: numai bunuri intracomunitare, nu servicii; nu se compară cu D300 depus.")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contab,
                 "diferenta": dif, "temei": temei, "sursa_declarat": SURSA_D390}
         # ambele 0 -> nimic de raportat
@@ -932,17 +933,18 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
     if not gasit:
         return [_absenta_libera(
             "d390", "D390 vs D300 depus" + per_sufix,
-            ("Declarație-vs-declarație: D390 bază IC vs D300 depus (rânduri persistate). "
-             "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
+            ("Declarație față de declarație: baza intracomunitară din D390 față de D300 depus (rândurile salvate la depunere). "
+             "Niciun D300 nu e depus prin aplicație în perioada TVA, deci nu e nimic de comparat. E o absență, nu o "
+             "diferență — de aceea nu e semnalată cu roșu."),
             "Nu există D300 depus în fereastră — nu pot compara declarația recapitulativă (D390) cu decontul.",
             "declarațiile D300 depuse prin aplicație, în fereastra TVA")]
     if randuri is None:
         return [_absenta_libera(
             "d390", "D390 vs D300 depus" + per_sufix,
-            ("D300 din fereastră a fost depus fără rânduri persistate (depunere anterioară "
-             "persistării rândurilor sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
-            "D300 depus fără rânduri persistate — nu pot compara.",
-            "rândurile persistate ale D300 depus din fereastră")]
+            ("D300 din perioadă a fost depus fără rândurile salvate (o depunere de dinainte ca aplicația să le "
+             "păstreze, sau un import). Lipsa datelor nu e o diferență — de aceea nu e semnalată cu roșu."),
+            "D300 depus fără rândurile salvate — nu pot compara.",
+            "rândurile salvate ale D300 depus în perioadă")]
     R = (randuri or {}).get("R") or {}
     rez = []
     for eticheta, cheie, rand in D390_D300_PERECHI:
@@ -962,7 +964,7 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
                       "facturi la generare; în lipsa lor poate fi introdus manual, dar nu peste cel "
                       "derivat (dublă numărare, refuzată). Absența lui înseamnă că la generare nu "
                       "erau facturi IC înregistrate — nu că n-au existat operațiuni.")
-        temei = (f"Declarație-vs-declarație: D390 bază {cheie} față de D300 depus, {_rand_om} "
+        temei = (f"Declarație față de declarație: D390 bază {cheie} față de D300 depus, {_rand_om} "
                  f"(rândurile salvate la depunere). D390 = declarația recapitulativă VIES, sursă mai autoritară.{absent_txt}")
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
@@ -1053,7 +1055,7 @@ def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
              "D300 efectiv depus (salvate la depunere). Niciun D300 nu e încă depus prin aplicație, deci comparația devine "
              "posibilă după prima depunere. E o absență, nu o diferență — de aceea nu e semnalată cu roșu."),
             "Nicio depunere D300 prin aplicație — nu am cu ce compara declarația recapitulativă (D390).",
-            "depunerile D300 persistate prin aplicație"))
+            "depunerile D300 prin aplicație, cu rândurile salvate"))
     else:
         an_d, luna_d, randuri_d = rec_d300
         luni_d, _de_d, _pana_d, eticheta_d = _fereastra_tva(tip_dec, an_d, luna_d)
@@ -1068,7 +1070,7 @@ def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
         except Exception as e:
             constatari += _stampileaza([_gri_liber(
                 "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
-                "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
+                "Declarație față de declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
                 "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
                 an, luna)], TIP_D390_VS_D300)
     return constatari
@@ -1083,6 +1085,15 @@ def verifica_d390(conn, schema, an, luna):
         row = _repo.select_firma_profil_2(cur, schema)
     tip_dec = row[0] if row else None
     luni, data_de, data_pana, fereastra = _fereastra_tva(tip_dec, an, luna)
+    # [Retest 2, pct.9] „unde D300 nu se aplică, afișează «nu se aplică».” Neplătitorul (art.317) nu depune D300: confruntarea nu rulează.
+    # [deficiența 195, proba blocului F: „pe o firmă fără declarant, rândul «D390 față de D300: nu se aplică» lipsește; în locul lui apare
+    # «D390 nu se poate genera: lipsă declarant»”] neaplicarea nu depinde de generarea D390 — se stabilește înaintea ei și se spune
+    # și când D390 nu se poate calcula
+    with conn.cursor() as cur:
+        _rp = _repo.select_firma_profil(cur, schema)
+    nu_se_aplica = []
+    if _rp is not None and _rp[0] is False:
+        nu_se_aplica.append("D390 față de D300 depus: nu se aplică — firma nu e plătitoare de TVA, deci nu depune decontul D300.")
     try:
         baze = {"L": 0, "A": 0}
         for m in luni:
@@ -1113,21 +1124,15 @@ def verifica_d390(conn, schema, an, luna):
                     an, luna,
                     {"fel": "investigatie", "cauza": _cauza, "actiune": _actiune, "facturi": []})],
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
-                "modul": MODUL, "reguli": REGULI}
+                "nu_se_aplica": nu_se_aplica, "modul": MODUL, "reguli": REGULI}
     ic_facturi = facturi_ic(conn, schema, data_de, data_pana)
     constatari = compara_d390(baze, ic_facturi, patru_ochi=_patru_ochi_activ(conn, schema))
     # [F163 D-vs-D real, deblocat F198] A TREIA sursă: D390 vs D300 DEPUS (randuri persistate).
     # Fereastra PROPRIE (nu luna curentă — D300 se depune în luna următoare, altfel permanent gri):
     # cea mai recentă perioadă cu D300 depus. Baza D390 se RECALCULEAZĂ pe acea perioadă, ca ambele
     # laturi să fie ACEEAȘI perioadă (comparație reală, nu perioade diferite). Perioada = afișată explicit.
-    # [Retest 2, pct.9] „firma depune D301, deci pare neplătitoare de TVA, iar verificarea D390 față de D300 n-are sens pentru ea.
-    # […] unde D300 nu se aplică, afișează «nu se aplică».” Neplătitorul (art.317) nu depune D300: confruntarea nu rulează.
-    with conn.cursor() as cur:
-        _rp = _repo.select_firma_profil(cur, schema)
-    nu_se_aplica = []
-    if _rp is not None and _rp[0] is False:
-        nu_se_aplica.append("D390 față de D300 depus: nu se aplică — firma nu e plătitoare de TVA, deci nu depune decontul D300.")
-    else:
+    # [Retest 2, pct.9] „firma depune D301, deci pare neplătitoare de TVA, iar verificarea D390 față de D300 n-are sens pentru ea.”
+    if not nu_se_aplica:
         constatari += orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna)
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
@@ -1238,7 +1243,7 @@ def constatare_cota_tva(linii, an, luna):
               "clasificarea de produs (dacă produsul chiar cere cota standard).")
     if nedeterminabile:
         # linia sarita nu se ascunde: verdictul ramane pe ce s-a putut verifica, dar spune ce n-a intrat.
-        limita += (" %d linie/linii cu cotă neparsabilă — neverificate (verdictul acoperă doar liniile cu "
+        limita += (" %d linie/linii cu o cotă care nu se poate citi — neverificate (verdictul acoperă doar liniile cu "
                    "cotă citibilă)." % nedeterminabile)
 
     if not gresite:
@@ -1822,9 +1827,9 @@ def _orizontal_d101(conn, schema, _an_curent):
                         (TIP_D101_VS_691, "D101 vs contabilitate (cont 691)")):
             rez += _stampileaza([_absenta_libera(
                 "d101", "%s — %d" % (et, an),
-                ("Confruntare declarație-vs-sursă-independentă pe anul %d. Niciun D101 depus prin "
-                 "aplicație pe anul ăsta -> nu am ce confrunta. GRI, nu roșu: absența unei depuneri "
-                 "nu e o divergență." % an),
+                ("Confruntarea declarației cu o sursă independentă, pe anul %d. Niciun D101 nu e depus prin "
+                 "aplicație pe anul ăsta, deci nu am ce confrunta. Lipsa unei depuneri nu e o diferență — de "
+                 "aceea nu e semnalată cu roșu." % an),
                 "Niciun D101 depus prin aplicație pe %d — nu pot confrunta nimic." % an,
                 "declarațiile D101 depuse prin aplicație, pe anul %d" % an)], tip)
         return rez
@@ -1833,10 +1838,10 @@ def _orizontal_d101(conn, schema, _an_curent):
                         (TIP_D101_VS_691, "D101 vs contabilitate (cont 691)")):
             rez += _stampileaza([_absenta_libera(
                 "d101", "%s — %d" % (et, an),
-                "D101 depus fără rânduri persistate (depunere anterioară persistării sau import "
-                "istoric). GRI, nu roșu — absența datelor nu e divergență.",
-                "D101 depus pe %d, dar fără rânduri persistate — nu pot confrunta." % an,
-                "rândurile persistate ale D101 depus pe %d" % an)], tip)
+                "D101 depus fără rândurile salvate (o depunere de dinainte ca aplicația să le păstreze, sau un "
+                "import). Lipsa datelor nu e o diferență — de aceea nu e semnalată cu roșu.",
+                "D101 depus pe %d, dar fără rândurile salvate — nu pot confrunta." % an,
+                "rândurile salvate ale D101 depus pe %d" % an)], tip)
         return rez
 
     _a, _l, r101 = cu_randuri[-1]
@@ -1865,6 +1870,7 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
     **EXCEPȚIA DE GRUP, tot verbatim:** *„În cazul membrilor unui grup fiscal în domeniul
     impozitului pe profit, rândurile 41.2, 48, 50, 52 și 53 din formular nu se completează."* Deci
     pe `d_grup=1` perechea **tace** — nu e verde, nu e gri: nu se aplică."""
+    from core.control_fiscal_api import perioada_canonica as _pc   # „T1/2025” (DS cap.4), nu „trim 1” / „trimestrul 1”
     eticheta = "D101 rd.50 vs D100 depuse — %d" % an
     temei = ("OPANAF 206/2025, instrucțiunile formularului 101, rândul 50: sumele declarate "
              "trimestrial prin formularul 100, la rândul «Suma de plată». Confruntă ce a scris "
@@ -1890,16 +1896,16 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
         return [_gri_liber(
             "d101", eticheta,
             temei + " Trimestre fără depunere D100 văzută de aplicație: %s."
-            % ", ".join("trim %d" % (l // 3) for l in lipsa),
-            "Nu pot confrunta: nu văd depunerea D100 pe %s din %d. Un trimestru pe care aplicația "
+            % ", ".join(_pc(an, l, "trim") for l in lipsa),
+            "Nu pot confrunta: nu văd depunerea D100 pe %s. Un trimestru pe care aplicația "
             "nu l-a văzut poate să nu fi fost datorat, sau să fi fost depus pe altă cale — iar "
             "diferența ar fi atunci a măsurătorii mele, nu a declarației."
-            % (", ".join("trimestrul %d" % (l // 3) for l in lipsa), an), an, 12)]
+            % ", ".join(_pc(an, l, "trim") for l in lipsa), an, 12)]
     if fara:
         return [_gri_liber(
             "d101", eticheta,
-            temei + " %d din %d depuneri D100 n-au rânduri persistate." % (fara, len(dep)),
-            "Nu pot confrunta: %d din %d depuneri D100 pe %d n-au rânduri persistate, deci suma "
+            temei + " %d din %d depuneri D100 n-au rândurile salvate." % (fara, len(dep)),
+            "Nu pot confrunta: %d din %d depuneri D100 pe %d n-au rândurile salvate, deci suma "
             "lor nu se poate citi. O depunere fără rânduri nu e o depunere cu zero."
             % (fara, len(dep), an), an, 12)]
     dif = p50 - suma
@@ -2069,11 +2075,11 @@ def _orizontal_d300_vs_d394(conn, schema):
     if per is None:
         return [_absenta_libera(
             "d394", "D300 vs D394 (taxare inversă)",
-            ("Verificare de DERIVĂ între două declarații DEPUSE, pe aceeași perioadă. Nu există nicio "
-             "perioadă în care D300 și D394 să fie amândouă depuse prin aplicație cu rânduri "
-             "persistate -> comparația devine posibilă după prima astfel de pereche. GRI, nu roșu."),
+            ("Verificarea dintre două declarații depuse, pe aceeași perioadă. Nu există nicio perioadă în care "
+             "D300 și D394 să fie amândouă depuse prin aplicație, cu rândurile salvate, deci comparația devine "
+             "posibilă după prima astfel de pereche. E o absență, nu o diferență — de aceea nu e semnalată cu roșu."),
             "Nu există o perioadă cu ambele declarații depuse prin aplicație — nu pot compara.",
-            "perechile D300+D394 depuse prin aplicație, cu rânduri persistate")]
+            "perechile D300 și D394 depuse prin aplicație, cu rândurile salvate")]
 
     an, luna, r300, r394 = per
     eticheta = "D300 rd.12 vs D394 taxare inversă — %02d/%d" % (luna, an)
@@ -2185,9 +2191,9 @@ def _orizontal_efactura_vs_d394(conn, schema):
         return [_absenta_libera(
             "d394", "e-Factura vs D394",
             ("Confruntare între ce a plecat la ANAF prin e-Factura și ce s-a declarat în D394 — "
-             "singura pereche pe surse independente. Niciun D394 depus prin aplicație care să-și "
-             "expună facturile incluse -> comparația devine posibilă de la prima depunere de după "
-             "R119. GRI, nu roșu."),
+             "singura pereche pe surse independente. Niciun D394 nu e depus prin aplicație cu facturile "
+             "incluse salvate, deci comparația devine posibilă de la prima astfel de depunere. E o absență, "
+             "nu o diferență — de aceea nu e semnalată cu roșu."),
             "Niciun D394 depus care să-și expună facturile — nu pot confrunta.",
             "declarațiile D394 depuse prin aplicație, cu facturile incluse expuse")]
 

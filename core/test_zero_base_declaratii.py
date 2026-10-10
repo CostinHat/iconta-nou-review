@@ -57,7 +57,8 @@ def test_d100_pe_zero_refuza(sch):
     with pytest.raises(ValueError, match="nu se depune pe zero"):
         d100.genereaza(sch, SCH, Perioada(2026, trim=3))
     # si fara facturi (nil) tot se refuza - D100 nil nu e depozitabil
-    with sch.cursor() as cur:
+    with sch.cursor() as cur:   # [R6] factura emisă nu se șterge: „fără facturi” = o firmă în care n-a fost emisă niciuna
+        cur.execute("UPDATE facturi SET status = 'ciorna'")
         cur.execute("DELETE FROM facturi")
     with pytest.raises(ValueError, match="nu se depune pe zero"):
         d100.genereaza(sch, SCH, Perioada(2026, trim=3))

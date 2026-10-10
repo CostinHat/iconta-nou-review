@@ -88,7 +88,8 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [Retest 2, 09.10.2026] 80 -> 81: `core/migrare_retest2.py` (coloana `casa_operatiuni.storno_de` + notele de refacere NIR)
     # [09.10.2026, comanda Costin pct.1 și pct.11] 81 -> 83: `core/migrare_nota_corectie.py` (reparația tenant_049) și
     # `core/migrare_reguli_fond.py` (regulile de fond în bază)
-    assert 40 <= len(mg) <= 83, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [09.10.2026, „Retestul plasei” pct.6] 83 -> 84: `core/migrare_reguli_fond_2.py` (regulile de fond a, c, d, e, f)
+    assert 40 <= len(mg) <= 84, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

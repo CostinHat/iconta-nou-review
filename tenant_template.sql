@@ -2944,3 +2944,124 @@ DROP TRIGGER IF EXISTS trg_regula_stoc ON TENANT_PLACEHOLDER.miscari_stoc;
 CREATE TRIGGER trg_regula_stoc BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.miscari_stoc
   FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_stoc();
 -- [reguli_fond_v1] sfârșit
+-- [reguli_fond_v2, 09.10.2026] regulile de fond a, c, d, e, f (comanda Costin „Retestul plasei” pct.6) — SURSA: core/migrare_reguli_fond_2.py
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_factura_emisa() RETURNS trigger AS $$
+BEGIN
+  IF OLD.directie = 'emisa' AND COALESCE(OLD.tip, 'factura') = 'factura' AND COALESCE(OLD.status, 'emisa') NOT IN ('ciorna') THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Factura % e emisă, deci nu se șterge: se corectează prin factură de stornare (CF art.330 alin.(1)).',
+      COALESCE(OLD.serie, '') || OLD.numar;
+  END IF;
+  RETURN OLD;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_factura_emisa ON TENANT_PLACEHOLDER.facturi;
+CREATE TRIGGER trg_regula_factura_emisa BEFORE DELETE ON TENANT_PLACEHOLDER.facturi
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_factura_emisa();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.efect_stoc(tip text, cantitate numeric) RETURNS numeric AS $$
+  SELECT CASE WHEN tip = 'intrare' THEN cantitate WHEN tip = 'iesire' THEN -cantitate ELSE 0 END
+$$ LANGUAGE sql IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_stoc_nenegativ() RETURNS trigger AS $$
+DECLARE
+  delta numeric := 0; art integer; q numeric;
+BEGIN
+  IF TG_OP <> 'INSERT' THEN delta := delta - TENANT_PLACEHOLDER.efect_stoc(OLD.tip, OLD.cantitate); art := OLD.articol_id; END IF;
+  IF TG_OP <> 'DELETE' THEN delta := delta + TENANT_PLACEHOLDER.efect_stoc(NEW.tip, NEW.cantitate); art := NEW.articol_id; END IF;
+  IF TG_OP = 'UPDATE' AND OLD.articol_id IS DISTINCT FROM NEW.articol_id THEN
+    delta := -TENANT_PLACEHOLDER.efect_stoc(OLD.tip, OLD.cantitate); art := OLD.articol_id;   -- articolul vechi pierde mișcarea întreagă
+  END IF;
+  IF delta < 0 THEN
+    SELECT COALESCE(SUM(TENANT_PLACEHOLDER.efect_stoc(m.tip, m.cantitate)), 0) INTO q FROM TENANT_PLACEHOLDER.miscari_stoc m WHERE m.articol_id = art;
+    IF q + delta < 0 THEN
+      RAISE EXCEPTION 'REGULA_CONTABILA: Stocul articolului #% ar deveni negativ (% după mișcarea „%”): o ieșire nu poate scoate mai mult decât e în stoc.',
+        art, q + delta, COALESCE(CASE WHEN TG_OP = 'DELETE' THEN OLD.document ELSE NEW.document END, 'fără document');
+    END IF;
+  END IF;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_stoc_nenegativ ON TENANT_PLACEHOLDER.miscari_stoc;
+CREATE TRIGGER trg_regula_stoc_nenegativ BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.miscari_stoc
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_stoc_nenegativ();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_chitanta() RETURNS trigger AS $$
+BEGIN
+  RAISE EXCEPTION 'REGULA_CONTABILA: Chitanța % nr. % e emisă, deci nu se șterge: se anulează și se păstrează (OMFP 2634/2015, Anexa 1 pct.15).',
+    OLD.serie, OLD.numar;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_regula_chitanta ON TENANT_PLACEHOLDER.chitante;
+CREATE TRIGGER trg_regula_chitanta BEFORE DELETE ON TENANT_PLACEHOLDER.chitante
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_chitanta();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_facturi() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  FOREACH d IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.data_emitere END, CASE WHEN TG_OP <> 'DELETE' THEN NEW.data_emitere END] LOOP
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_perioada_blocata_facturi ON TENANT_PLACEHOLDER.facturi;
+CREATE TRIGGER trg_perioada_blocata_facturi BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.facturi
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_facturi();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_miscari_stoc() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  FOREACH d IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.data END, CASE WHEN TG_OP <> 'DELETE' THEN NEW.data END] LOOP
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_perioada_blocata_miscari_stoc ON TENANT_PLACEHOLDER.miscari_stoc;
+CREATE TRIGGER trg_perioada_blocata_miscari_stoc BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.miscari_stoc
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_miscari_stoc();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_casa_operatiuni() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  FOREACH d IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.data END, CASE WHEN TG_OP <> 'DELETE' THEN NEW.data END] LOOP
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_perioada_blocata_casa_operatiuni ON TENANT_PLACEHOLDER.casa_operatiuni;
+CREATE TRIGGER trg_perioada_blocata_casa_operatiuni BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.casa_operatiuni
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_casa_operatiuni();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_chitante() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  FOREACH d IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN OLD.data END, CASE WHEN TG_OP <> 'DELETE' THEN NEW.data END] LOOP
+    IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
+               WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+      RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+        LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+    END IF;
+  END LOOP;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_perioada_blocata_chitante ON TENANT_PLACEHOLDER.chitante;
+CREATE TRIGGER trg_perioada_blocata_chitante BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.chitante
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_chitante();
+-- [reguli_fond_v2] sfârșit

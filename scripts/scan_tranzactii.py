@@ -124,6 +124,7 @@ EXTERN_APEL = {
     "copytree": "FS", "extractall": "FS", "savefig": "FS",
     "NamedTemporaryFile": "FS", "mkstemp": "FS", "mkdtemp": "FS",
     "urlopen": "RETEA", "urlretrieve": "RETEA",
+    "Anthropic": "RETEA",   # [Retestul plasei, 09.10.2026] clientul SDK-ului Anthropic (vezi `scan_blocante.BLOCANT_APEL`)
     "sendmail": "EMAIL", "SMTP": "EMAIL", "SMTP_SSL": "EMAIL",
     "Popen": "SUBPROC", "check_output": "SUBPROC", "check_call": "SUBPROC",
     "add_task": "JOB", "create_task": "JOB", "Thread": "JOB", "submit": "JOB",

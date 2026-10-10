@@ -202,6 +202,9 @@ def test_paritate_control_fiscal(client, teren):
                         "urmarit": len(r.get("urmarit") or []),
                         "neclar": len(r.get("neclar") or []),
                         "contabil": contabil})
+    from core.uc_control_fiscal import motiv_neverificabil   # [deficiența 173] câmp DERIVAT din rând, același predicat ca contorul
+    for x in inainte:
+        x["neverificabil"] = motiv_neverificabil(x)
     got = _fara_prospetime(din_model)
     assert [x["stare"] for x in got] == [x["stare"] for x in inainte], "verdictele diferă"
     assert got == inainte

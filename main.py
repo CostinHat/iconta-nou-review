@@ -6418,19 +6418,13 @@ def ansamblu_aplicatie(ctx=Depends(cere_context)):
     per functionalitate (core/ajutor.py). Firul de intrare (pasii de migrare) e in front
     (STRATURI, migrare.js). Autentificat: orice rol logat."""
     from genereaza_grupe_functii import repartizeaza
-    from core import ajutor as _aj
+    from core import ajutor as _aj, ansamblu as _ans
     import csv as _csv
     grupe = repartizeaza()  # [{titlu, icon, functii:[nume sortate]}]
     rows = list(_csv.reader(open("FUNCTIONALITATI.csv", encoding="utf-8-sig")))[1:]
-    nume2id = {r[0].strip(): r[2].strip() for r in rows if len(r) > 2}
-    cu = _aj.cu_ajutor()
-    out = []
-    for gr in grupe:
-        ff = [{"nume": n, "id": nume2id.get(n),
-               "are_ajutor": bool(nume2id.get(n) and nume2id.get(n) in cu)}
-              for n in gr["functii"]]
-        out.append({"titlu": gr["titlu"], "icon": gr["icon"], "functii": ff})
-    return {"grupe": out}
+    randuri = {r[0].strip(): (r[2].strip(), r[3].strip()) for r in rows if len(r) > 3}
+    # [deficiența 5] catalogul după rol: platforma numai administratorului ei; cabinetul își poartă ruta (drepturi.js o ascunde)
+    return {"grupe": _ans.functii(grupe, randuri, ctx.get("rol"), _aj.cu_ajutor())}
 
 
 @app.post("/cont/bun-venit-vazut")

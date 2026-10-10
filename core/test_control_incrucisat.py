@@ -273,7 +273,7 @@ def test_d390_temei_si_limita_pe_fiecare_constatare():
     r = compara_d390({"L": 0, "A": 500}, ic)
     for c in r:
         assert "art. 325" in c["temei"]                 # temei legal recapitulativă
-        assert "numai bunuri IC" in c["temei"]              # limită explicită servicii
+        assert "numai bunuri intracomunitare" in c["temei"]   # limită explicită servicii (172: fără „IC”)
         assert "D300 depus" in c["temei"]               # limită explicită D-vs-D
 
 
@@ -286,7 +286,7 @@ def test_fereastra_trimestrial_trei_luni():
     # firmă trimestrială: luna 8 -> trimestrul 3 (iul-sep), fereastră [07-01, 10-01)
     luni, de, pana, et = _fereastra_tva("trimestrial", 2026, 8)
     assert luni == [7, 8, 9] and de == "2026-07-01" and pana == "2026-10-01"
-    assert "trimestrul 3" in et
+    assert et == "T3/2026"   # forma ecranelor (DS cap.4; detectorul de text, 10.10)
 
 
 def test_fereastra_trimestrial_decembrie_trece_anul():
@@ -336,7 +336,7 @@ def test_linie_cota_neparsabila_declarata_in_limita_nu_gri_global():
     r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 21),     # corecta -> verde
                              _linie(2, _date(2025, 9, 10), "N/A")], 2025, 9)  # neparsabila -> sarita
     assert r["stare"] == "verde"                                    # NU gri global
-    assert "neparsabil" in r["limita"] and "1 linie" in r["limita"]
+    assert "nu se poate citi" in r["limita"] and "1 linie" in r["limita"]   # 172: fără „neparsabil”
 
 def test_mix_prinde_doar_linia_gresita():
     # factura 1: 19% gresit; factura 2: 21% corect; factura 3: 9% redus (ignorat)
@@ -398,7 +398,7 @@ def test_dvsd_gri_pe_randuri_null():
     # D300 depus dar fără rânduri persistate (pre-F198 / import) -> GRI, nu roșu
     r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=None)
     assert len(r) == 1 and r[0]["stare"] == "gri"
-    assert "fără rânduri persistate" in r[0]["mesaj"]
+    assert "fără rândurile salvate" in r[0]["mesaj"]   # 172: fără „rânduri persistate”
 
 
 def test_dvsd_gri_pe_zero_depuneri():
@@ -494,7 +494,7 @@ def test_fereastra_tva_reconstruieste_trimestrul_din_luna_depusa():
     # D300 trimestrial se depune cu luna = ultima luna a trimestrului (coada_api: trim*3). Fereastra
     # D-vs-D reconstruieste cele 3 luni din acea luna -> baza D390 recalculata pe TOT trimestrul.
     luni, de, pana, et = _fereastra_tva("trimestrial", 2026, 6)
-    assert luni == [4, 5, 6] and et == "trimestrul 2/2026"
+    assert luni == [4, 5, 6] and et == "T2/2026"
     assert de == "2026-04-01" and pana == "2026-07-01"
 
 

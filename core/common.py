@@ -1315,3 +1315,21 @@ def sintetic_saft(simbol):
     folosesc amândouă fără ca a doua să importe din prima (`test_non_tautologie`)."""
     simbol = str(simbol or "")
     return simbol.split(".")[0] if "." in simbol else simbol
+
+
+def dir_bonuri():
+    """[comanda Costin 09.10.2026 pct.7, „director separat pentru bonuri” — deficiența 9] Directorul pozelor bonurilor: SURSA UNICĂ (era
+    scris de patru ori: gdpr_export, gdpr_sterge, tenant_stergere, uc_comun). Producția: `~/iconta_date/bonuri/<schema>/`. Plasa își
+    are directorul ei (`ICONTA_BON_DIR`, pus de `scripts/e2e_poarta.py`): schemele firmelor de test (`tenant_NNN`) se pot suprapune
+    cu ale producției, deci poza unei probe nu are voie să cadă lângă bonurile reale. Pe un mediu care nu se dovedește de test,
+    cheia e refuzată."""
+    d = os.environ.get("ICONTA_BON_DIR")
+    if d:
+        from core import mediu_test
+        m = mediu_test.motive()
+        if m:
+            raise RuntimeError("ICONTA_BON_DIR e setat pe un mediu care nu e de test (%s)"
+                               % ", ".join(x.cod for x in m))
+        return d
+    return os.path.expanduser("~/iconta_date/bonuri")
+

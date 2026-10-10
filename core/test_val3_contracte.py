@@ -35,7 +35,14 @@ from core import uc_comun as _uc_comun
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #: clichet pe clasa C5 din registrul P5. NU cerinta — clichet: poate cobori, nu poate urca.
-CLICHET_C5 = 0
+#: [Retestul plasei, 09.10.2026] 0 -> 10 — MĂSURĂTOARE CORECTATĂ, nu regresie: scanerele nu vedeau clientul SDK-ului Anthropic
+#: (`client.messages.create`, lanț de atribute), deci zece căi care cer un răspuns modelului AI cu o conexiune din pool ținută erau
+#: invizibile. Le-a scos la iveală AI-ul simulat al plasei (scrie fișiere, pe care scanerul le vede). Cele zece, numite:
+#: POST /api/v1/firme/{id}/facturi, POST /tenants/{id}/facturi/emite, POST /pachete/{id}/genereaza, POST /portal/bon,
+#: POST /tenants/{id}/produse, POST /tenants/{id}/produse/potriveste, POST /tenants/{id}/facturi/{fid}/transforma, GET /tipare/ai,
+#: POST /tenants/{id}/vanzare-ic, POST /tenants/{id}/woocommerce/sincronizeaza. Durata e mărginită de azi (`ai_client.TERMEN_SECUNDE`,
+#: 60 s; înainte, 10 minute implicit). Mutarea întrebării în afara conexiunii e datorie în GARZI și decizie de scop la Costin.
+CLICHET_C5 = 10
 
 
 # ============================================================
@@ -56,6 +63,10 @@ def test_clasa_C5_nu_creste():
     assert n["ACTION_REQUIRED"] <= CLICHET_C5, (
         "cai C5 in crestere: %d > %d. Fiecare inseamna o conexiune din cele zece, tinuta pe toata "
         "durata unui apel extern." % (n["ACTION_REQUIRED"], CLICHET_C5))
+    # [09.10.2026] și în jos: o scădere fără reparație înseamnă că scanerul a orbit din nou (ca înainte, la clientul SDK-ului AI)
+    assert n["ACTION_REQUIRED"] == CLICHET_C5, (
+        "cai C5 mai putine: %d < %d — daca ai mutat un apel extern in afara conexiunii, coboara clichetul; altfel scanerul nu "
+        "mai vede ceva" % (n["ACTION_REQUIRED"], CLICHET_C5))
 
 
 def test_anti_vacuum_detectorul_chiar_vede_codul():

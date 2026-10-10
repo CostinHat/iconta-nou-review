@@ -191,7 +191,7 @@ def _verifica_categorie(mf, metoda, pif):
             temei = ("CF art.28 alin.8^1 (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
                      "(animale/plantații), active NOI puse în funcțiune în 2026")
         raise ValueError(
-            "MF %s (cont %s -> categorie '%s'): metoda '%s' nu e permisă de lege; permise: %s. Temei: %s."
+            "Mijlocul fix %s (contul %s, categoria „%s”): metoda '%s' nu e permisă de lege; permise: %s. Temei: %s."
             % (mf.get("cod"), cont, categorie, metoda,
                (", ".join(sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
 

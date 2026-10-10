@@ -47,7 +47,25 @@ def control_fiscal_portofoliu(ctx):
                     "contabil": d.get("contabil") or [],
                     "prospetime": {"stare": st.get("stare") or _fr.LIPSESTE,
                                    "calculat_la": st.get("calculat_la")}})
+    for f in out:   # [deficiența 173] rândul spune exact ce numără contorul „nu se pot verifica” (același predicat)
+        f["neverificabil"] = motiv_neverificabil(f)
     return {"firme": out, "sumar": sumar, "contoare": contoare_portofoliu(out)}
+
+
+def motiv_neverificabil(f):
+    """[retestul Costin 09.10, deficiența 173: „«3 nu se pot verifica», lista arată 2”] De ce firma intră în contorul „nu se pot
+    verifica” — textul de pe rândul ei — sau None. ACELAȘI predicat ca `contoare_portofoliu`: un rând nu poate fi numărat fără să
+    spună de ce, iar unul care o spune e numărat."""
+    pr = (f.get("prospetime") or {}).get("stare", "curent")
+    if pr != "curent":
+        return "în recalculare — rezumatul nu e încă la zi (date schimbate sau o versiune nouă a aplicației)"
+    parti = []
+    if (f.get("neclar") or 0) > 0:
+        parti.append("%d declarați%s" % (f["neclar"], "e nu se poate verifica" if f["neclar"] == 1 else "i nu se pot verifica"))
+    gri = [(c or {}).get("eticheta") for c in (f.get("contabil") or []) if (c or {}).get("stare") == "gri"]
+    if gri:
+        parti.append("nu se poate verifica: " + ", ".join(str(x) for x in gri if x))
+    return " · ".join(parti) or None
 
 
 def contoare_portofoliu(firme):
@@ -59,8 +77,7 @@ def contoare_portofoliu(firme):
     (declarație sau verificare contabilă gri) sau fără date la zi — nu starea principală gri (F5 avea 2 necunoscute și pică din
     numărătoare); „la zi” = firma fără niciun fapt din celelalte patru."""
     neconc = lambda f: any((c or {}).get("stare") in ("rosu", "galben") for c in (f.get("contabil") or []))   # noqa: E731
-    gri = lambda f: ((f.get("neclar") or 0) > 0 or any((c or {}).get("stare") == "gri" for c in (f.get("contabil") or []))   # noqa: E731
-                     or (f.get("prospetime") or {}).get("stare", "curent") != "curent")
+    gri = lambda f: motiv_neverificabil(f) is not None   # noqa: E731 — același predicat ca textul rândului (deficiența 173)
     fapte = {"restante": lambda f: (f.get("lipsa") or 0) > 0, "de_urmarit": lambda f: (f.get("urmarit") or 0) > 0,
              "neconcordante": neconc, "nu_se_pot_verifica": gri}
     out = {k: sum(1 for f in firme if p(f)) for k, p in fapte.items()}

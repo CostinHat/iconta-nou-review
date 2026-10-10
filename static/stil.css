@@ -833,11 +833,15 @@ html, body {
 
 
 /* ---------- DE VALIDAT ---------- */
+/* [deficiența 193, proba blocului C: „cardurile «De depus» sunt înghesuite pe o coloană îngustă”] în grilă (1fr auto auto) coloana
+   textului lua ce rămânea după butoane: 92 px, iar „Renunță” ieșea peste card. Rândul curge: textul are cel puțin 320 px, insigna
+   și butoanele trec dedesubt când nu mai e loc. */
 .val-card {
-  display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
+  display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center;
   padding: 13px 14px; border: 1px solid #eef0f3; border-radius: 10px; margin-bottom: 8px;
   background: #fff;
 }
+.val-card > :first-child { flex: 1 1 320px; min-width: 0; }
 .val-titlu { font-size: var(--text-mic); color: #1f2937; }
 .val-sub { font-size: 12.5px; color: #6a7585; margin-top: 2px; }
 .val-coer { font-size: 12.5px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
@@ -853,7 +857,7 @@ html, body {
 .val-trece:hover { background: #f6e9cf; }
 .val-valideaza { background: var(--albastru); color: var(--alb); }
 .val-valideaza:hover { background: var(--albastru-inchis); }
-.val-actiuni { display: flex; gap: 7px; }
+.val-actiuni { display: flex; flex-wrap: wrap; gap: 7px; }
 .val-btn {
   padding: 7px 14px; border-radius: 8px; border: none; font-family: inherit; font-size: var(--text-mic);
   font-weight: 600; cursor: pointer; white-space: nowrap;
@@ -888,6 +892,9 @@ html, body {
   border: 1px solid #b9c2cf; border-radius: 999px;
   background: #eef4fd; color: #1f3a5f;
   font-size: var(--text-mic); font-weight: 600; cursor: pointer;
+  /* [deficiența 191] deasupra stratului ferestrei (`.fereastra-overlay`, z-index 100): reîncărcarea rămâne la îndemână și cu o
+     fereastră deschisă — butonul își păstrează paza lui (cu un formular început nu reîncarcă, spune de ce) */
+  position: relative; z-index: 101;
 }
 .versiune-noua-text { font-weight: 600; }
 .versiune-noua:hover { background: #e2ecfb; }
@@ -1613,12 +1620,15 @@ html, body {
   position: fixed; inset: 0; z-index: 300;
   background: rgba(20, 30, 45, 0.55);
   display: flex; align-items: center; justify-content: center;
-  padding: 24px;
+  padding: 32px;
   animation: pacm-fade 0.12s ease-out;
 }
 @keyframes pacm-fade { from { opacity: 0; } to { opacity: 1; } }
+/* [deficiența 208, retestul Costin 09.10: „fereastra și caseta de text prea mici”] fereastra poveștii e un document de scris, nu un
+   mesaj: înălțimea e a ecranului (nu a conținutului — cu povestea goală se strângea la 600 px, caseta la 368 px), lățimea e de
+   document. O SINGURĂ regulă (era scrisă de două ori: [p65] 720 px + [p66] 900 px / min-height 60vh). */
 .pacm {
-  width: 100%; max-width: 720px; max-height: calc(100vh - 48px);
+  width: 100%; max-width: 1100px; height: calc(100vh - 64px); max-height: calc(100vh - 64px);
   background: var(--alb); border-radius: 10px;
   box-shadow: 0 8px 40px rgba(20,30,45,0.3);
   display: flex; flex-direction: column; overflow: hidden;
@@ -1660,18 +1670,7 @@ html, body {
 .pacm-bara .buton-primar, .pacm-bara .buton-secundar { padding: 8px 14px; font-size: var(--text-mic); }
 
 
-/* [p66_pacmodal_mare] */
-/* fereastra MARE pentru poveste - contabilul nu e inghesuit */
-.pacm-overlay { padding: 32px; }
-.pacm {
-  max-width: 900px;
-  width: 100%;
-  /* min-height da lantului flex:1 o inaltime definita de umplut; max-height doar limiteaza,
-     asa modalul nu e fortat la ecran plin cand povestea e scurta. 60vh < max-height mereu. */
-  min-height: 60vh;
-  max-height: calc(100vh - 48px);
-}
-.pacm-corp { flex: 1 1 auto; }
+/* [p66_pacmodal_mare] fereastra MARE pentru poveste — mărimea e în regula `.pacm` de mai sus (deficiența 208) */
 .pacm-editor { padding: 26px 34px; }
 .pacm-text {
   font-size: var(--text);
@@ -1934,7 +1933,10 @@ html, body {
 .val-evidentiat { outline: 2px solid var(--galben); outline-offset: 2px; }
 .df-jurnal td, .df-jurnal th { overflow-wrap: anywhere; word-break: break-word; }
 .df-jurnal th:nth-child(1) { width: 18%; } .df-jurnal th:nth-child(2) { width: 18%; } .df-jurnal th:nth-child(3) { width: 20%; }
-.fd-td-num, .fd-tabel thead th.fd-td-num, .fd-tabel thead th.fd-td-num { text-align: right; white-space: nowrap; }
+.fd-td-num, .fd-tabel thead th.fd-td-num { text-align: right; white-space: nowrap; }
+/* [deficiența 162, DS cap.9 v2.86] pe un rând stau CIFRELE; antetul unei coloane numerice și nota de sub cifră se rup pe rânduri —
+   altfel un antet lung („Amortizat (calculat, până la 09/2026)”, 335 px) lățește tabelul până la derulare laterală */
+.fd-tabel thead th.fd-td-num, .fd-td-num .tip-desc { white-space: normal; }
 .fd-td-um { color: var(--gri); }
 .fd-td-den { font-weight: 500; }
 .fd-totaluri { max-width: 320px; margin-left: auto; background: #fff; border: 1px solid var(--linie);
@@ -2561,8 +2563,14 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ans-pas-desc { display: block; color: #5a6b7c; }
 .ans-fir-unde { font-size: 12.5px; color: #5a6b7c; margin: 0 0 10px; line-height: 1.5;
   background: #f7fafd; border: 1px solid #e6ebf1; border-radius: 8px; padding: 8px 10px; }
-.ans-grupe { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
-.ans-grupa { border: 1px solid #e6ebf1; border-radius: 9px; padding: 10px 12px; }
+/* [deficiența 200, retestul Costin 09.10: „coloane inegale, goluri mari”] grupele au lungimi foarte diferite (Fiscalitate ~45 de rânduri,
+   altele ~10): în grilă, rândul lua înălțimea grupei celei mai lungi și lăsa sub cele scurte goluri de până la 969 px. În coloane
+   (ca un ziar) grupele curg una sub alta; o grupă lungă poate continua în coloana următoare (marginea ei se repetă), titlul nu
+   rămâne singur la capăt de coloană. */
+.ans-grupe { columns: 230px; column-gap: 14px; }
+.ans-grupa { border: 1px solid #e6ebf1; border-radius: 9px; padding: 10px 12px; margin: 0 0 14px;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.ans-grupa-titlu { break-after: avoid; }
 .ans-grupa-titlu { font-size: 13.5px; font-weight: 700; color: #17324d; margin: 0 0 7px;
   display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 /* [04.10.2026] `--gri` (text secundar), nu #8a97a6: pe #f1f5f9 acela dădea contrast sub 4,5:1 (axe color-contrast pe bun-venit) */

@@ -1058,15 +1058,15 @@ def build_xml(res):
     rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie")
     calitate = prof.get("declarant_functie") or prof.get("reprezentant_functie")
     if not rep_den:
-        res.avertismente.append("D394: numele reprezentantului (denR) lipsește din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completează reprezentantul în profilul firmei, nu lasa implicitul.")
+        res.avertismente.append("D394: numele reprezentantului (denR) lipsește din profil — se trece implicit "
+                                "\"ADMINISTRATOR\". Completează reprezentantul în profilul firmei, nu lăsa implicitul.")
         rep_den = "ADMINISTRATOR"
     if not rep_fct:
-        res.avertismente.append("D394: funcția reprezentantului lipsește din Date firmă -> emisă "
+        res.avertismente.append("D394: funcția reprezentantului lipsește din Date firmă — se trece "
                                 "implicit \"ADMINISTRATOR\". Completează în profil.")
         rep_fct = "ADMINISTRATOR"
     if not calitate:
-        res.avertismente.append("D394: calitatea întocmitorului lipsește din Date firmă -> emisă "
+        res.avertismente.append("D394: calitatea întocmitorului lipsește din Date firmă — se trece "
                                 "implicit \"ADMINISTRATOR\". Completează în profil.")
         calitate = "ADMINISTRATOR"
     # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
@@ -1147,9 +1147,9 @@ def build_xml(res):
             # acopera tacit cu "40" (Bucuresti) - se anunta o singura data.
             _jud = jud_siruta(prof.get("judet"))
             if not _jud:
-                if not any("judP emis implicit" in a for a in res.avertismente):
-                    res.avertismente.append("D394: județul firmei lipsește din profil -> judP emis implicit "
-                                            "\"40\" (București) pentru partenerii neînregistrați fără cod. "
+                if not any("se trece implicit codul de județ" in a for a in res.avertismente):
+                    res.avertismente.append("D394: județul firmei lipsește din profil — pentru partenerii neînregistrați fără cod se trece "
+                                            "implicit codul de județ „40” (București). "
                                             "Completează județul în profil.")
                 _jud = "40"
             at = ' taraP="RO" judP="%s"' % _jud

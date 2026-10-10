@@ -90,6 +90,7 @@ export const sesiune = {
     }
     sessionStorage.removeItem(CHEIE_TOKEN);
     sessionStorage.removeItem(CHEIE_USER);
+    sessionStorage.removeItem("iconta_firma_in_lucru");   // [deficiența 207] firma în lucru e a sesiunii, nu a tabului
     _anunta();
   },
 

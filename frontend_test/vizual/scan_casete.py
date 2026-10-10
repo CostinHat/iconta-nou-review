@@ -76,7 +76,7 @@ def _deschide(pg, nume):
     pg.get_by_text("Firme", exact=True).first.click(timeout=8000); pg.wait_for_timeout(350)
     pg.get_by_text("Firme existente", exact=False).first.click(timeout=8000)
     pg.wait_for_selector("button.firme-rand", timeout=10000)
-    pg.get_by_text(nume, exact=False).first.click(timeout=8000)
+    pg.locator("button.firme-rand", has_text=nume).first.click(timeout=8000)   # nu bara „În lucru” (deficiența 207)
     pg.wait_for_selector("[id^='fa-']", timeout=10000); pg.wait_for_timeout(250)
     pg.click("#fa-control")
     pg.wait_for_selector(".fereastra-corp .cf-grup-titlu, .fereastra-corp .mig-gata-titlu", timeout=20000)

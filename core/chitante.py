@@ -119,7 +119,7 @@ def pdf_chitanta(emitent, ch):
         Paragraph("CUI: %s%s" % (emitent.get("cui") or "-",
                   (" · " + emitent["adresa"]) if emitent.get("adresa") else ""), mic),
         Spacer(1, 8 * mm),
-        Paragraph("CHITANȚA seria %s nr. %s" % (ch["serie"], ch["numar"]), titlu),
+        Paragraph("CHITANȚĂ seria %s nr. %s" % (ch["serie"], ch["numar"]), titlu),
         Paragraph("din data de %s" % ch["data"], mic),
         Spacer(1, 6 * mm),
         Paragraph("Am primit de la <b>%s</b>%s" % (

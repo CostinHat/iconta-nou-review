@@ -73,8 +73,10 @@ def _note(conn, numar):
 # ── pct.6: amortizarea ──────────────────────────────────────────────────────────────────────────────────────────────────────
 @pytest.fixture()
 def amortizare(lume, monkeypatch):
-    from core import auth_api, uc_tenants
+    from core import auth_api, uc_tenants, common
+    import datetime as _d
     monkeypatch.setattr(auth_api, "schema_tenant", lambda conn, uid, tid: SCH)
+    monkeypatch.setattr(common, "azi_ro", lambda: _d.date(2100, 1, 10))   # [deficiența 216] 10/2099 = lună încheiată
     with _db.get_conn() as c:
         with c.cursor() as cur:
             cur.execute("INSERT INTO %s.mijloace_fixe (denumire, cont_imobilizare, cont_amortizare, valoare, dnf_luni, data_pif, metoda, "
@@ -176,8 +178,24 @@ def test_portile_cu_ciorne_avertizeaza_fara_ciorne_blocheaza():
     assert uq.decizie_poarta(refuz, 0) == (refuz, None)
     assert uq.decizie_poarta(None, 0) == (None, None)
     blocaj, avert = uq.decizie_poarta(refuz, 2)
-    assert (blocaj, avert) == (None, refuz["mesaj"] + " " + uq.MESAJ_CIORNE_POARTA % 2)    # diferența + numărul ciornelor
+    # diferența + numărul ciornelor; [deficiența 189] fără „nu intră în coadă” în fața unui avertisment care o lasă să intre
+    assert (blocaj, avert) == (None, "Diferență față de balanță: diferență 7,00 lei. " + uq.MESAJ_CIORNE_POARTA % 2)
+    assert "nu intră în coadă" not in avert
     assert uq.decizie_poarta(None, 1) == (None, uq.MESAJ_CIORNE_POARTA % 1)
+
+
+def test_poarta_tva_blocheaza_diferenta_si_cu_ciorne_in_perioada():
+    """[PIVOT 09.10.2026, deficiențele 120 + 210, retestul Costin: „D300 F1 10/2026 se poate trimite deși 4426 are 241,50
+    neincluși”] D300 / D394 / D390 se generează din documente: ciornele nu schimbă declarația, deci diferența față de evidența
+    validată blochează și când în perioadă stau ciorne; ciornele fără diferență dau numai avertisment. MUTAȚIE: ramura `tva and refuz`
+    scoasă -> cu ciorne trece -> pică."""
+    from core import uc_coada as uq
+    refuz = {"cod": uq.COD_TVA_BALANTA, "mesaj": "Declarația nu intră în coadă: contul 4426 are 241.50."}
+    blocaj, avert = uq.decizie_poarta(refuz, 2, tva=True)
+    assert avert is None and blocaj["cod"] == uq.COD_TVA_BALANTA and blocaj["ciorne"] == 2, blocaj
+    assert blocaj["mesaj"] == refuz["mesaj"] + uq.MESAJ_CIORNE_BLOCAJ_TVA % 2
+    assert uq.decizie_poarta(None, 2, tva=True) == (None, uq.MESAJ_CIORNE_POARTA % 2)
+    assert uq.decizie_poarta(refuz, 0, tva=True) == (refuz, None)
 
 
 def test_ciornele_perioadei_se_numara_pe_fereastra_declaratiei(lume):

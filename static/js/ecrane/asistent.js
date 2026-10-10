@@ -12,19 +12,19 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=a0acfd801a";   // [retest 08.10 pct.7] contoarele de sus
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=4242dc4353";
+import { itemiContoare } from "./control_verdict.js?v=29ab225927";   // [retest 08.10 pct.7] contoarele de sus
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
-import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaControl } from "./control.js?v=6cad94dd59";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { randeazaControl } from "./control.js?v=ad497d96e3";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=dff603e22d";
-import { randeazaListaFirme } from "./firme.js?v=ffea72127e";
+import { randeazaValidat } from "./validat.js?v=f25e1ed56e";
+import { randeazaListaFirme } from "./firme.js?v=bb0c77ef82";
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=1aa6de59e6"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=a131eb8e23"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaPachete } from "./pachete.js?v=593b54babb"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=b535bb1ddc"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=fdcd88308f"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -53,7 +53,7 @@ const NODURI = {
     deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },
   raport: { titlu: "Raportează", icon: "suport", ...CULORI_CARD.ardezie,   // [05.10.2026] „report” nu mai e în ICOANE (v2.7) — desena gol
     sinteza: "Raportează o problemă către iConta.eu",
-    deschide: (nav) => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)) },
+    deschide: (nav) => nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav)) },
   recomanda: { titlu: "Recomandă", icon: "gift", ...CULORI_CARD.chihlimbar,
     sinteza: "Invită un cabinet în iConta.eu",
     deschide: (nav) => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)) },

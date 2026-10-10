@@ -37,3 +37,18 @@ def test_sm_plus_51_a_doua_treapta_19_00():
 def test_sm_exact_deducere_integrala():
     # la sm exact (4325), fără reducere de treaptă -> 20% x 4325 = 865,00
     assert _baza(4325) == 865.00, "deducere(sm)=%r (așteptat 865,00 = 20%%)" % _baza(4325)
+
+
+def test_205_suma_deducerii_nu_se_rotunjeste():
+    """[deficiența 205, retestul Costin 09.10.2026: „deducerea personală 562,25 (la 05.10 era 562); verifică la sursă rotunjirea”]
+    Brut 5.000 lei în 10/2026 (salariul minim 4.325 lei), fără persoane în întreținere: 5.000 = salariul minim + 675 lei, treapta
+    „salariul minim + 651 lei … + 700 lei” = 13,00% -> 13% × 4.325 = 562,25 lei, fără rotunjire. MUTAȚIE: suma rotunjită la leu -> pică."""
+    import datetime as _d
+    from decimal import Decimal as _D
+    from core import salarizare as _s
+    r = _s.deducere_personala(5000, la_data=_d.date(2026, 10, 1))
+    # CF art.77 alin.(4): „deducerile personale de bază se stabilesc potrivit următorului tabel … salariul minim + 651 lei / salariul
+    # minim + 700 lei … 13,00%” (procent din salariul minim) — textul nu rotunjește suma; singura rotunjire din art.77 e a PERIOADEI
+    # (alin.(8): „Perioada se rotunjește la luni întregi”). Rotunjirea la leu e a BAZEI impozitului (HG 1/2016 pct.4, Titlul IV).
+    assert r["baza"] == _D("562.25") and r["total"] == _D("562.25"), r
+

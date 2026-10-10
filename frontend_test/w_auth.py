@@ -115,7 +115,8 @@ def deschide_firma(pg, nume=FIRMA_IMPLICITA):
     pg.get_by_text("Firme existente", exact=False).first.click(timeout=8000)
     pg.wait_for_selector("button.firme-rand", timeout=10000)
     pg.wait_for_timeout(300)
-    pg.get_by_text(nume, exact=False).first.click(timeout=8000)
+    # rândul din LISTA firmelor: de la deficiența 207, bara „În lucru: <firma>” poartă și ea numele, iar un text liber o nimerea pe ea
+    pg.locator("button.firme-rand", has_text=nume).first.click(timeout=8000)
     pg.wait_for_selector("#fa-import, #fa-datefirma", timeout=12000)
     pg.wait_for_timeout(400)
 

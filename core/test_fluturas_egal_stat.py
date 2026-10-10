@@ -223,8 +223,9 @@ def test_corectia_se_vede_pe_hartie():
             conn.rollback()
         t1 = re.sub(r"[\s ]+", " ", PdfReader(_B(pdf1)).pages[0].extract_text() or "")
         t2 = re.sub(r"[\s ]+", " ", PdfReader(_B(pdf2)).pages[0].extract_text() or "")
-        assert "CORECȚIE" not in t1, "primul exemplar se anunță drept corecție"
-        assert "CORECȚIE" in t2, (
+        # [Retestul plasei, 172/204: textul fluturașului fără majuscule de afiș] corecția se anunță în cuvânt, în bold
+        assert "Corecție — exemplarul" not in t1, "primul exemplar se anunță drept corecție"
+        assert "Corecție — exemplarul 2" in t2, (
             "al doilea exemplar nu se anunță ca fiind corecție — omul are acasă un fluturaș și nu "
             "poate ști care dintre cele două ține. Text: %.300s" % t2)
         assert "exemplarul 1" in t2, (

@@ -80,7 +80,7 @@ def test_reprezentant_prezent_fara_avertisment():
     res = calcul_d394(_prof(), Perioada(2026, luna=6), {"facturi": []})
     build_xml(res)
     txt = " ".join(res.avertismente)
-    assert "emis implicit" not in txt and "judP emis implicit" not in txt
+    assert "se trece implicit" not in txt
 
 
 def test_judet_lipsa_partener_neinreg_avertisment():
@@ -92,7 +92,7 @@ def test_judet_lipsa_partener_neinreg_avertisment():
     res = calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []}, manual)
     xml = build_xml(res)
     assert 'judP="40"' in xml, "judP implicit încă emis (DUK cere campul)"
-    assert any("judP emis implicit" in a for a in res.avertismente), "implicitul judP trebuie ANUNTAT"
+    assert any("se trece implicit codul de județ „40”" in a for a in res.avertismente), "implicitul judP trebuie ANUNTAT"
 
 
 # ============================================================

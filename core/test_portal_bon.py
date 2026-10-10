@@ -15,7 +15,7 @@ apelul la furnizorul de AI (R155, 05.09.2026 — refuzul cade înainte, deci și
 puțin). Aia nu se vede din cod de răspuns: proba numără dacă furnizorul a fost chemat.
 
 CURĂȚENIE: schemă efemeră, `db.get_conn` întors spre aceeași conexiune, `rollback` la final. Pozele
-merg într-un director temporar — `BON_DIR_BAZA` e mutat pe durata probei, altfel ar scrie în
+merg într-un director temporar — `ICONTA_BON_DIR` (`common.dir_bonuri`) e mutat pe durata probei, altfel ar scrie în
 depozitul real.
 """
 from __future__ import annotations
@@ -26,7 +26,6 @@ import json
 import pytest
 
 from core import db as _db
-from core import uc_comun as _uc_comun
 
 SCH = "ztest_portal_bon"
 # Octeții care fac un PNG să fie PNG (`core/common.tip_imagine` citește semnătura, nu numele).
@@ -95,7 +94,7 @@ def env(monkeypatch, tmp_path):
             yield _ConnProxy(conn)
 
         monkeypatch.setattr(_db, "get_conn", _fake)
-        monkeypatch.setattr(_uc_comun, "BON_DIR_BAZA", str(tmp_path / "bonuri"))
+        monkeypatch.setenv("ICONTA_BON_DIR", str(tmp_path / "bonuri"))   # [deficiența 9] directorul bonurilor, din sursa unică
 
         chemari = []
 

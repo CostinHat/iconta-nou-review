@@ -79,8 +79,9 @@ def test_perioadele_dinaintea_preluarii_nu_sunt_restante():
     assert [(x["tip"], x["luna"]) for x in l] == [("d300", 9)]
     assert [(x["tip"], x["luna"]) for x in u] == [("d100", 9)]
     assert sorted((x["tip"], x["an"]) for x in inainte) == [("d101", 2025), ("d300", 2026)]
-    assert {x["motiv"] for x in inainte} == {"Perioadă dinaintea preluării în iConta.eu (09/2026) — nu se numără la restanțe. "
-                                             "Dacă a fost depusă în afara iConta.eu, marcheaz-o."}
+    # [deficiența 212, retestul Costin 09.10: „text … repetat pe fiecare rând”] explicația stă o dată, sub titlul grupului (ecranul);
+    # rândul își păstrează doar faptul lui (aici: niciunul)
+    assert {x["motiv"] for x in inainte} == {""}
     assert cf.separa_inainte_de_preluare(lipsa, urmarit, None)[2] == []
 
 

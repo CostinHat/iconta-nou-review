@@ -38,16 +38,16 @@ import re
 from core.test_diacritice_afisate import _DIAC, _DISPLAY_KEYS, _TRIGGERE, _candidati, _cuvinte
 
 CHEI = set(_DISPLAY_KEYS) | {"temei_completitudine"}
-LISTE_AFISATE = {"avertismente", "blocaje", "erori", "motive", "limite", "atentionari"}
+LISTE_AFISATE = {"avertismente", "blocaje", "erori", "motive", "limite", "atentionari", "av"}   # `av`: d112 / bilanț (172)
 FARA_ECRAN = {"core/registru_interpretari.py", "core/p4_clasificare.py"}
 DECLARATII_CACHE = {"Declaratie", "_Dec"}
 #: [Retest 2, pct.2] rolul `raise X("…")`: mesajul unei excepții de domeniu ajunge pe ecran (refuzul, `DateInvalide(str(e))`).
 #: Excepțiile de PROGRAMATOR (invarianți interni) nu sunt text pentru contabil și nu se citesc.
 EXCEPTII_DEV = {"RuntimeError", "TypeError", "KeyError", "AssertionError", "AfirmatieIncompleta", "NotImplementedError",
-                "SystemExit", "ImportError", "AttributeError", "IndexError"}
+                "SystemExit", "ImportError", "AttributeError", "IndexError", "SchemaInvalida", "_SchemaInvalida"}
 
 TRIGGERE = set(_TRIGGERE) | {"atentie", "apartin", "apartine", "apartinand", "incrucisat", "incrucisata", "incrucisate",
-                             "verificari"}
+                             "verificari", "buna"}   # „Buna, Dobrescu!” (deficiența 198)
 AMBIGUE = {"sa", "tine", "lipsa", "afara", "cheltuiala", "exista"}   # „în afara”, „cheltuiala X”, „a exista” — corecte
 ACRONIME = {"ANAF", "IBAN", "OMFP", "OPANAF", "SPV", "CUI", "CIF", "CNP", "TVA", "DUK", "XML", "XSD", "PDF", "SAGA", "BNR", "CASS",
             "OUG", "CAEN", "EORI", "EUR", "RON", "USD", "REVISAL", "REGES", "INTRASTAT", "VIES", "HTTP", "JSON", "ONRC", "PFA", "SRL",
@@ -222,11 +222,31 @@ def e_accent(m):
     return m not in ACRONIME and not re.fullmatch(r"[IVXLCDM]+", m) and (len(m) >= 4 or m in SCURTE)
 
 
+def jargon(s):
+    """[deficiența 172, retestul Costin 09.10.2026: „limbajul de programator a rămas … «rânduri persistate», «-> nimic de comparat.
+    GRI, nu roșu»”] Aceleași forme pe care le judecă ecranul (`core/limba_ecran.py`: jargonul de dezvoltator, săgeata `->`, stările
+    interne „GRI”/„NEVERIFICAT”, trimiterile la proveniența internă) — o singură listă, citită de amândouă. Gardul de sursă nu le
+    căuta, deci textele care apar pe ecran numai pe o ramură rară (o depunere fără rânduri salvate) treceau de el."""
+    if not _e_proza(s):
+        return []
+    from core import limba_ecran as _le   # import târziu: limba_ecran citește constantele de aici
+    return _le._JARGON.findall(s) + _le._SAGEATA.findall(s) + _le._INTERN.findall(s)
+
+
+#: [deficiența 172] migrările rulează din terminal (operatorul, `python -m core.migrari_registru ruleaza`), nu pe ecranul contabilului;
+#: textele lor nu se judecă la jargon („schema invalidă” e pentru operator). Și: o migrare deja rulată NU se rescrie — registrul o
+#: cheiază pe amprenta conținutului (`core.migrari_registru`), deci o corectură de text ar cere rularea ei din nou pe producție.
+def _e_migrare(fn):
+    return os.path.basename(fn).startswith("migrare_")
+
+
 def defecte():
     out = []
     toate = texte_afisate()
     for fn, ln, s in toate:
-        for fel, f in (("diacritice", fara_diacritice), ("cod", limbaj_de_cod), ("majuscule", majuscule)):
+        for fel, f in (("diacritice", fara_diacritice), ("cod", limbaj_de_cod), ("majuscule", majuscule), ("jargon", jargon)):
+            if fel == "jargon" and _e_migrare(fn):
+                continue
             gasit = f(s)
             if gasit:
                 out.append((fn, ln, fel, gasit, s))
@@ -305,3 +325,67 @@ def test_textul_afisat_e_limba_romana():
     gasite = defecte()
     raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
     assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
+
+
+#: [deficiența 204, retestul Costin 09.10.2026: „Fluturașul: titlul «Fluturas» fără diacritice”] textul pus în documentele PDF
+#: (`Paragraph`, `drawString`) — fluturașul, chitanța, factura — nu trecea prin niciun rol de mai sus.
+PDF_APELURI = {"Paragraph", "drawString", "drawCentredString", "drawRightString"}
+#: titlul formularului tipizat se scrie cu majuscule, ca pe model (chitanța: OMFP 2634/2015, formularul 14-4-1 „CHITANȚĂ”) — nu e accent
+TITLURI_FORMULAR = {"CHITANȚĂ"}
+
+
+def texte_pdf():
+    out = []
+    for fn in sorted(glob.glob("core/*.py")):
+        if fn.split("/")[-1].startswith("test_"):
+            continue
+        arb = ast.parse(open(fn, encoding="utf-8").read())
+        chei = ({id(n.slice) for n in ast.walk(arb) if isinstance(n, ast.Subscript)}   # `c["mentiuni"]` e o cheie, nu text
+                | {id(a) for n in ast.walk(arb) if isinstance(n, ast.Call) and _nume_apel(n.func) == "get" for a in n.args})
+        for n in ast.walk(arb):
+            if isinstance(n, ast.Call) and _nume_apel(n.func) in PDF_APELURI:
+                out += [(fn, x.lineno, x.value) for a in n.args for x in ast.walk(a)
+                        if isinstance(x, ast.Constant) and isinstance(x.value, str) and id(x) not in chei and len(x.value) > 3]
+    return out
+
+
+def test_textul_din_pdf_e_limba_romana():
+    """MUTAȚIE: „Fluturaș” -> „Fluturas” în titlul fluturașului -> pică."""
+    texte = texte_pdf()
+    assert [s for _f, _l, s in texte if s.startswith("Fluturaș de salariu")], "anti-vacuu: titlul fluturașului nu e printre textele PDF"
+    rele = [(fn, ln, g, s[:90]) for fn, ln, s in texte
+            for g in [fara_diacritice(s) + cuvinte_lexicon(s) + [m for m in majuscule(s) if m not in TITLURI_FORMULAR] + jargon(s)] if g]
+    assert not rele, "Text din PDF fără diacritice / cu majuscule de accent / jargon:\n" + "\n".join("  %s:%d %s <- %r" % r for r in rele)
+
+
+#: [deficiența 198, retestul Costin 09.10.2026: „«Buna, Dobrescu!» e fără diacritice”] gardul JS de mai sus citește textul din șabloanele
+#: de ecran; un literal pus într-o variabilă sau într-un obiect („Buna, ” + nume; `depusa: "1 declaratie depusa"`) nu trecea prin el.
+#: Aici: orice literal JS care arată a proză (începe cu majusculă sau cifră, are spații, fără marcaj de cod).
+_LIT_JS = re.compile(r'"((?:[^"\\\n]|\\.){4,})"|\'((?:[^\'\\\n]|\\.){4,})\'|`([^`$\n]{4,})`')
+_PROZA_JS = re.compile(r"[A-ZĂÂÎȘȚ0-9][^{}<>#_=\\$|]*")
+#: literale care nu sunt proză românească: un nume de font, rânduri de exemplu dintr-un fișier CSV de import, „pentru tine” (corect)
+PROZA_JS_NU = {"Georgia, \"Times New Roman\", serif", "Multi-client, multi-utilizator, drepturi pe rol.", "Ce s-a depus la ANAF pentru tine"}
+
+
+def proza_js_fara_diacritice():
+    out = []
+    for fn in sorted(glob.glob("static/js/**/*.js", recursive=True)):
+        for i, ln in enumerate(io.open(fn, encoding="utf-8"), 1):
+            for m in _LIT_JS.finditer(ln.split("// ", 1)[0]):
+                s = (m.group(1) or m.group(2) or m.group(3)).strip()
+                if (not re.search(r"[A-Za-zĂÂÎȘȚăâîșț]{3,}", s) or not _PROZA_JS.fullmatch(s) or re.match(r"^(GET|POST|PUT|DELETE|PATCH) ", s)
+                        or s in PROZA_JS_NU or re.match(r"^[\w .\-]+,[\w .\-]+,", s)):   # ultima: rând CSV de exemplu
+                    continue
+                g = fara_diacritice(s) + cuvinte_lexicon(s)
+                if not g and len(s.split()) <= 3:   # un fragment scurt („Buna, ”) nu e „proză” pentru `fara_diacritice`: cuvânt cu cuvânt
+                    g = [w.lower() for w in _CUV_INTREG.findall(s) if w.isascii() and w.lower() in (TRIGGERE - AMBIGUE)]
+                if g:
+                    out.append((fn, i, sorted(set(g)), s[:90]))
+    return out
+
+
+def test_literalele_js_in_proza_au_diacritice():
+    """MUTAȚIE: „Bună, ” -> „Buna, ” în salutul de la logare -> pică."""
+    rele = proza_js_fara_diacritice()
+    assert not rele, "Text JS fără diacritice:\n" + "\n".join("  %s:%d %s <- %r" % r for r in rele)
+

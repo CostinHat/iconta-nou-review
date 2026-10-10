@@ -18,8 +18,8 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc } from "../api.js?v=4242dc4353";
-import { randA as randConstatare } from "./control_verdict.js?v=a0acfd801a";
+import { api, esc } from "../api.js?v=2561dbfd34";
+import { randA as randConstatare } from "./control_verdict.js?v=29ab225927";
 
 function perioada(r) {
   return `${String(r.luna).padStart(2, "0")}/${r.an}`;

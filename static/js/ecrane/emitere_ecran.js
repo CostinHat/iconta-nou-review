@@ -7,8 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta } from "../api.js?v=4242dc4353";
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=05e032b67b";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
@@ -747,7 +747,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         </div>
       </div>`;
     const inp = rez.querySelector("#em-serie-noua");
-    inp.focus();
+    focusFaraSalt(inp);
     rez.querySelector("#em-serie-si-emite").addEventListener("click", async () => {
       curataEroriCamp(rez);
       const serie = inp.value.trim();
@@ -785,7 +785,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         </div>`;
       zona.querySelector("#em-curs-ok").addEventListener("click", () => {
         const v = parseFloat(zona.querySelector("#em-curs-val").value);
-        if (!v || v <= 0) { zona.querySelector("#em-curs-val").focus(); return; }
+        if (!v || v <= 0) { focusFaraSalt(zona.querySelector("#em-curs-val")); return; }
         trimiteEmitere(v);
       });
     });

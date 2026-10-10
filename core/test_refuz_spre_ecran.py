@@ -65,4 +65,4 @@ def test_ecranul_tinta_aduce_campul_in_vedere_si_ii_da_focus():
     """Plumbul până la ecran: butonul trimite `camp`, Date firmă îl caută și îi dă focus. MUTAȚIE: `_tinta.focus()` scos -> pică."""
     dest = io.open(os.path.join(_RAD, "static", "js", "ecrane", "ecran_destinatie.js"), encoding="utf-8").read()
     assert dest.count("opt.camp || null") == 1 and dest.count("randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })") == 1
-    assert _DF.count("_tinta.focus()") == 1 and _DF.count("scrollIntoView") >= 1
+    assert _DF.count("focusFaraSalt(_tinta)") == 1 and _DF.count("scrollIntoView") >= 1   # [159] focusul fără salt (api.js)

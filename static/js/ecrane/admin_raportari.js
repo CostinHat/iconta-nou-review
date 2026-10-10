@@ -5,7 +5,7 @@
 //          POST /raportari/{id}/citit, POST /raportari/{id}/pentru-admin,
 //          POST /raportari/mesaj/{mid}/imagine.
 
-import { api, esc } from "../api.js?v=4242dc4353";
+import { api, esc } from "../api.js?v=2561dbfd34";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",
               "iul.","aug.","sep.","oct.","noi.","dec."];

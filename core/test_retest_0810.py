@@ -69,7 +69,9 @@ def test_ciorna_cu_alte_sume_se_inlocuieste_cu_nota_statului_de_acum(conn, monke
     """„când statul se schimbă și există o ciornă nevalidată pentru aceeași lună, contabilizarea o înlocuiește cu nota din statul de
     acum”. MUTAȚIE: ramura `ciorna_nevalidata` scoasă din `salarii_contare_scrie` (întoarce DEJA_CONTATA) -> ciorna veche rămâne
     -> pică."""
-    from core import uc_tenants as uc, uc_comun, salarii_contare as sc
+    from core import uc_tenants as uc, uc_comun, salarii_contare as sc, common
+    import datetime as _d
+    monkeypatch.setattr(common, "azi_ro", lambda: _d.date(2100, 1, 10))   # [deficiența 216] 10/2099 trebuie să fie o lună încheiată
     with conn.cursor() as cur:   # ciorna #1 de pe producție: scrisă din statul de dinainte, ziua 28, fără autor
         cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status) VALUES ('2099-10-28', 'SAL 10/2099', "
                     "'Stat de plata 10/2099', 'salarii', 'ciorna') RETURNING id")

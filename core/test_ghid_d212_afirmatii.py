@@ -49,7 +49,7 @@ def _texte():
             yield "ghid/" + f, io.open(os.path.join(GHID, f), encoding="utf-8").read()
     csv = io.open(os.path.join(RAD, "FUNCTIONALITATI.csv"), encoding="utf-8").read()
     i = csv.index("Declarația D212 (declarația unică)")
-    yield "FUNCTIONALITATI.csv (F246)", csv[i:csv.index("\nMijloace fixe (registru active)", i)]
+    yield "FUNCTIONALITATI.csv (F246)", csv[i:csv.index("\nMijloace fixe (registrul activelor)", i)]
 
 
 def gaseste(text):

@@ -23,6 +23,7 @@ Documentul unei mișcări (aceeași cheie ca în coadă, `coada_api._GRUP_DOC`):
 from datetime import date as _date
 from decimal import Decimal
 
+import psycopg2 as _pg
 from psycopg2.extras import RealDictCursor
 
 #: mișcările VII ale unui document: nici stornări, nici stornate deja
@@ -57,6 +58,9 @@ def _cheie(grup):
     return None, None
 
 
+#: începutul refuzului regulii de stoc din bază (R8, `core/migrare_reguli_fond_2.py`); `core/test_reguli_fond_2.py` ține legătura
+MARCAJ_STOC_NEGATIV = "REGULA_CONTABILA: Stocul articolului"
+
 def miscari_vii(cur, schema, grup, note_ids):
     """Mișcările vii ale documentului (cheia de grup din coadă + notele lui), fără cele în evidență (`IN_EVIDENTA`)."""
     col, val = _cheie(grup)
@@ -79,26 +83,37 @@ def storneaza(conn, schema, grup, note_ids, motiv):
         azi = _date.today()
         noi = []
         cur.execute("SAVEPOINT stornare")   # un refuz nu lasă nimic scris, oricine ar fi apelantul
+
+        def refuz(aid):
+            cur.execute("ROLLBACK TO SAVEPOINT stornare")
+            cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (aid,))
+            den = (cur.fetchone() or {}).get("denumire") or "articolul"
+            doc = next((m.get("document") for m in miscari if m["articol_id"] == aid), None) or "documentul"
+            return {"eroare": MESAJ_IESITA % (doc, den)}
         for m in miscari:
             d = max(azi, m["data"])
             doc = ("Stornare: %s (respins la validare)" % (m.get("document") or "mișcare #%s" % m["id"]))[:100]
-            cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
-                                inregistrare_id, locatie, factura_id, nir_id, anuleaza_id)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                        (m["articol_id"], d, m["tip"], -Decimal(str(m["cantitate"])), m.get("pret_unitar"),
-                         -Decimal(str(m["valoare"])), doc, m.get("inregistrare_id"), m.get("locatie"), m.get("factura_id"),
-                         m.get("nir_id"), m["id"]))
+            try:
+                cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
+                                    inregistrare_id, locatie, factura_id, nir_id, anuleaza_id)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                            (m["articol_id"], d, m["tip"], -Decimal(str(m["cantitate"])), m.get("pret_unitar"),
+                             -Decimal(str(m["valoare"])), doc, m.get("inregistrare_id"), m.get("locatie"), m.get("factura_id"),
+                             m.get("nir_id"), m["id"]))
+            except _pg.errors.RaiseException as e:
+                # [Retestul plasei, regula d (R8) în bază] stocul net ar deveni negativ: baza refuză chiar rândul, înaintea fișei de
+                # mai jos — același refuz, cu nimic scris (altfel tranzacția apelantului rămânea abandonată)
+                if MARCAJ_STOC_NEGATIV not in str(e):
+                    raise
+                return refuz(m["articol_id"])
             noi.append(cur.fetchone()["id"])
-        # fișa fiecărui articol atins se recalculează cu stornările: o intrare a cărei marfă a ieșit deja nu se poate storna
+        # fișa fiecărui articol atins se recalculează cu stornările: o intrare a cărei marfă a ieșit deja nu se poate storna (fișa e
+        # cronologică — stricteța ei trece de regula din bază, care vede numai stocul net)
         for aid in sorted({m["articol_id"] for m in miscari}):
             try:
                 _cv.fisa_magazie(repo_stocuri.miscari_ale_articolului(cur, schema, aid))
             except ValueError:
-                cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (aid,))
-                den = (cur.fetchone() or {}).get("denumire") or "articolul"
-                doc = next((m.get("document") for m in miscari if m["articol_id"] == aid), None) or "documentul"
-                cur.execute("ROLLBACK TO SAVEPOINT stornare")
-                return {"eroare": MESAJ_IESITA % (doc, den)}
+                return refuz(aid)
         cur.execute("RELEASE SAVEPOINT stornare")
     return {"stornate": noi}
 

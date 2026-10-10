@@ -78,6 +78,9 @@ def _factura_cu_doua_note(conn, cur):
     cur.execute("UPDATE inregistrari SET sursa='stocuri' WHERE id=%s", (n_iesire,))
     cur.execute("INSERT INTO articole (denumire) VALUES ('Marfa ZT') RETURNING id")
     aid = cur.fetchone()[0]
+    # [Retestul plasei, regula d (R8)] marfa vândută a intrat întâi în stoc — altfel baza refuză ieșirea (stoc negativ)
+    cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, document) "
+                "VALUES (%s, '2026-10-01', 'intrare', 2, 80, 'NIR ZT')", (aid,))
     cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, inregistrare_id, factura_id) "
                 "VALUES (%s, '2026-10-05', 'iesire', 2, 80, %s, %s)", (aid, n_iesire, fid))
     return fid, n_contare, n_iesire

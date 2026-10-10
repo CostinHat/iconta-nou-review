@@ -288,7 +288,7 @@ def genereaza_pdf(profil, factura):
         curs = factura.get("curs_bnr")
         curs_s = (f"{Decimal(str(curs)):.4f}".replace(".", ",")) if curs else ""
         vb = [
-            [Paragraph("<b>Conversie in lei (art. 319 Cod fiscal)</b>",
+            [Paragraph("<b>Conversie în lei (art. 319 Cod fiscal)</b>",
                        ParagraphStyle("vt", parent=st_cell, fontName=font_b))],
         ] + ([] if neplatitor else [
             [Paragraph("TVA \u00een lei: <b>%s</b>" % _bani(factura.get("tva_lei"), "lei"), st_cell)],

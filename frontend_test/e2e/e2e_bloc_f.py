@@ -303,6 +303,76 @@ def test_def_179_neplatitorul_vede_nu_se_aplica_si_temeiul_restantei_d390(patron
     assert "D390 față de D300 depus: nu se aplică — firma nu e plătitoare de TVA" in patron.fereastra()
 
 
+def test_def_195_nu_se_aplica_si_fara_declarant(patron, firma_e2e):
+    """195. Control fiscal: pe o firmă fără declarant, rândul „D390 față de D300: nu se aplică” lipsește; în locul lui apare „D390 nu se
+    poate genera: lipsă declarant”.
+    Pașii: firmă nouă, neplătitoare de TVA, fără declarant în Date firmă -> Control fiscal: „D390 față de D300 depus: nu se aplică —
+    firma nu e plătitoare de TVA” e pe ecran, chiar dacă D390 nu se poate calcula."""
+    s = firma_e2e["schema"]
+    vechi = sql('SELECT platitor_tva, declarant_nume FROM "%s".firma_profil WHERE id = 1' % s)[0]
+    sql('UPDATE "%s".firma_profil SET platitor_tva = false, declarant_nume = NULL WHERE id = 1' % s)
+    try:
+        _detaliu_fiscal(patron, firma_e2e["nume"])
+        text = patron.fereastra()
+        patron.captura(intreaga=True)
+    finally:
+        sql('UPDATE "%s".firma_profil SET platitor_tva = %%s, declarant_nume = %%s WHERE id = 1' % s, tuple(vechi))
+    assert "D390 față de D300 depus: nu se aplică — firma nu e plătitoare de TVA" in text, text[-2500:]
+
+
+def test_def_196_d390_dinaintea_preluarii_isi_pastreaza_faptul(patron):
+    """196. Control fiscal: rândurile D390 dinaintea preluării pierd faptul pe care se sprijină (de ex. „operațiuni intracomunitare
+    înregistrate în 06/2026”) — au doar motivul generic al preluării, deși faptul e în răspunsul serverului.
+    Pașii: „Achizitii IC Neplatitor SRL” (preluată în 08/2026, achiziții intracomunitare în 06/2026) -> Control fiscal -> „Înainte de
+    preluare”: rândul D390 06/2026 spune „operațiuni intracomunitare înregistrate în 06/2026”."""
+    pg = patron.pg
+    _detaliu_fiscal(patron, FIRMA_IC_NEPLATITOARE)
+    pg.click(_fata(pg) + " details.cf-inainte > summary")
+    rand = _fata(pg) + " details.cf-inainte .cf-decl-item[data-cheie='d390-2026-6']"
+    pg.wait_for_selector(rand, timeout=30000)
+    txt = pg.inner_text(rand)
+    patron.captura()
+    assert "operațiuni intracomunitare înregistrate în 06/2026" in txt, txt
+
+
+def test_def_197_blocheaza_luna_inactiv_cat_timp_ceva_opreste_inchiderea(patron):
+    """197. Închidere lună: „Blochează luna” e activ deși „Ce oprește închiderea” are un blocaj (22 de ciorne pe Comert Micro TVA).
+    Pașii: „Comert Micro TVA SRL” -> Închidere lună -> pe luna curentă și pe cele două dinainte: oriunde „Ce oprește închiderea” are
+    ceva, „Blochează luna” e inactiv și spune de ce — și rămâne inactiv după ce ecranul s-a terminat de desenat."""
+    pg = patron.pg
+    patron.firma(FIRMA_TVA)
+    pg.click("#fa-inchidere")
+    pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
+    gata = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
+            " return z && z.querySelector('.caseta-info, .caseta-atentie'); }")
+    vazute = []
+    for i in range(3):
+        pg.wait_for_function(gata, timeout=90000)
+        pg.wait_for_timeout(1500)   # ce se mai desenează după controale (dreptul, legarea blocării) a avut timp să ruleze
+        st = pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const b = f.querySelector('#il-lock');
+          const z = f.querySelector('#il-controale');
+          return {luna: f.querySelector('.pf-intro').innerText.slice(0, 40), blocaj: !!z.querySelector('.caseta-atentie'),
+                  activ: !!b && b.isConnected && !b.disabled && !b.hidden && b.offsetParent !== null, text: b ? b.innerText : null}; }""")
+        vazute.append(st)
+        if i < 2:
+            pg.click(_fata(pg) + " #il-prev")
+            pg.wait_for_timeout(300)
+    patron.captura()
+    assert any(v["blocaj"] for v in vazute), ("anti-vacuu: nicio lună cu blocaj", vazute)
+    assert not [v for v in vazute if v["blocaj"] and v["activ"] and "Deblochează" not in (v["text"] or "")], vazute
+    # al doilea loc al butonului: antetul Registrului jurnal, pe luna curentă
+    azi = _azi()
+    st, r = _api(patron, "/tenants/%s/perioade-blocate?an=%d&luna=%d" % (_tenant(FIRMA_TVA)[0], azi.year, azi.month))
+    patron.firma(FIRMA_TVA)
+    pg.click("#fa-jurnal")
+    pg.wait_for_selector(_fata(pg) + " #j-lock", timeout=30000)
+    pg.wait_for_timeout(1500)
+    j = pg.evaluate("() => { const b = [...document.querySelectorAll('.fereastra')].pop().querySelector('#j-lock'); return b ? {text: b.innerText, dez: b.disabled} : null; }")
+    patron.captura("jurnal")
+    if j and (r.get("controale") or {}).get("blocaje") and "Deblochează" not in j["text"]:
+        assert j["dez"], (j, r["controale"]["blocaje"][:2])
+
+
 # ── 180 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 def test_def_180_inainte_de_preluare_rand_cu_perioada_termen_si_buton(patron):
@@ -331,43 +401,95 @@ def test_def_180_inainte_de_preluare_rand_cu_perioada_termen_si_buton(patron):
 
 # ── 181 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-def test_def_181_inchiderea_lunii_avertizeaza_declaratia_nedepusa_cu_termen_in_luna(patron):
+def test_def_181_inchiderea_lunii_avertizeaza_declaratiile_lunii_nedepuse(patron, firma_e2e):
     """181. Închidere lună: fără avertisment pentru declarații nedepuse cu termen în lună.
-    Pașii contabilului: „Comert Micro TVA SRL” -> Închidere lună -> luna încheiată în care cade termenul unei declarații nedepuse ->
-    sub „Semnale” apare declarația, perioada și termenul; nu e printre ce oprește închiderea."""
-    tid = _tenant(FIRMA_TVA)[0]
-    pg = patron.pg
+    [retestul Costin 09.10, cuvânt cu cuvânt] „pe F2 09/2026 nu apare avertismentul pentru declarațiile nedepuse.” Situația F2: plătitoare
+    de TVA cu decont trimestrial, impozit pe profit, preluată în luna închisă; declarațiile perioadei care se încheie cu luna închisă
+    (D300 / D394 / D406 pe T3/2026) au termenul în luna URMĂTOARE, deci regula „termen în lună” nu le vedea — nimic nu avertiza la
+    închidere. Pașii: firma cu acest profil -> Închidere lună -> luna trecută -> sub „Semnale” apare fiecare declarație nedepusă a
+    perioadei care se încheie cu luna, cu perioada și termenul ei; nu e printre ce oprește închiderea.
+    [testul vechi trecea pe defect: căuta numai o declarație cu termen în lună, pe o firmă care avea una]"""
+    tid, pg = firma_e2e["tenant_id"], patron.pg
+    luna_inch = _azi().replace(day=1) - _dt.timedelta(days=1)
     patron.acasa()
+    st, r = _api(patron, "/tenants/%d/vector" % tid, "POST",
+                 {"regim_fiscal": "profit", "platitor_tva": True, "operatiuni_ic": False, "inreg_art317": False,
+                  "tip_decont": "trimestrial" if luna_inch.month % 3 == 0 else "lunar", "tva_data_inceput": "2025-01-01"})
+    assert st == 200 and (r or {}).get("ok") is not False, (st, r)
+    st, r = _api(patron, "/tenants/%d/firma-profil/date" % tid, "POST", {"luna_preluare": luna_inch.strftime("%Y-%m")})
+    assert st == 200, (st, r)
     st, d = _api(patron, "/control-fiscal/%s" % tid)
     assert st == 200, st
-    incheiata = _azi().replace(day=1) - _dt.timedelta(days=1)
-    nedepuse = sorted([x for x in (d.get("lipsa") or []) + (d.get("urmarit") or []) if x.get("termen")
-                       and x["termen"][:7] <= incheiata.strftime("%Y-%m")], key=lambda x: x["termen"], reverse=True)
-    assert nedepuse, "firma de test n-are nicio declarație nedepusă cu termen într-o lună încheiată"
-    luna = nedepuse[0]["termen"][:7]
-    asteptate = [x for x in nedepuse if x["termen"][:7] == luna]
-    patron.firma(FIRMA_TVA)
+    ale_lunii = [x for x in (d.get("lipsa") or []) + (d.get("urmarit") or [])
+                 if (x.get("an"), x.get("luna")) == (luna_inch.year, luna_inch.month)]
+    assert any(x["tip"] == "d300" for x in ale_lunii), ("profilul F2 n-a produs D300-ul perioadei", d.get("urmarit"), d.get("lipsa"))
+    patron.firma(firma_e2e["nume"])
     pg.click("#fa-inchidere")
     pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
-    an_c, l_c = _dt.date.today().year, _dt.date.today().month
-    pasi = (an_c * 12 + l_c) - (int(luna[:4]) * 12 + int(luna[5:7]))
     gata = ("(l) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
             " return f.querySelector('.pf-intro').innerText.includes('Luna ' + l) && z && z.querySelector('.caseta-info, .caseta-atentie'); }")
-    a_c, l_c = an_c, l_c
-    for _ in range(pasi):   # „← luna” abia după ce luna afișată și-a terminat controalele (butoanele se leagă la capătul desenării)
-        pg.wait_for_function(gata, arg="%02d/%d" % (l_c, a_c), timeout=90000)
-        pg.click(_fata(pg) + " #il-prev")
-        a_c, l_c = (a_c - 1, 12) if l_c == 1 else (a_c, l_c - 1)
-    pg.wait_for_function(gata, arg="%s/%s" % (luna[5:7], luna[:4]), timeout=90000)
+    azi = _dt.date.today()
+    pg.wait_for_function(gata, arg="%02d/%d" % (azi.month, azi.year), timeout=90000)
+    pg.click(_fata(pg) + " #il-prev")
+    pg.wait_for_function(gata, arg=luna_inch.strftime("%m/%Y"), timeout=90000)
     patron.captura()
     zona = pg.inner_text(_fata(pg) + " #il-controale")
     semnale = zona.split("Semnale (", 1)[1] if "Semnale (" in zona else ""
-    for x in asteptate:
+    for x in ale_lunii:
         t = _dt.date.fromisoformat(x["termen"][:10]).strftime("%d.%m.%Y")
         fraza = "%s pentru %s, cu termen pe %s, nu e depusă" % (x["tip"].upper(), x["perioada"], t)
         assert fraza in semnale, "lipsește semnalul „%s” în: %s" % (fraza, zona)
-        opreste = zona.split("Semnale (", 1)[0]
-        assert fraza not in opreste, "declarația nedepusă blochează închiderea: %s" % zona
+        assert fraza not in zona.split("Semnale (", 1)[0], "declarația nedepusă blochează închiderea: %s" % zona
+
+
+def test_def_172_control_fiscal_vorbeste_limba_contabilului(patron, firma_e2e):
+    """172. Texte: limbajul de programator a rămas (incasare_client, plata_furnizor, liniara, sold initial, Rezumat D406, „decizia Costin”).
+    [partea rămasă, registrul: „Încă în textele care ajung pe ecran în Control fiscal … «(rânduri persistate) … -> nimic de comparat.
+    GRI, nu roșu.», «-> nu am ce confrunta. GRI, nu roșu», limitele «Verificat: D300 depus (rândurile persistate la depunere)» și
+    «Verificat: totalurile din XML-ul D112 (cod 602/412+458/432+459/480)» … Verificat în cod, nu în browser.”] Pașii: firmă plătitoare
+    de TVA, cu impozit pe profit, fără nicio declarație depusă prin aplicație (ramura „nu am cu ce compara”) -> Control fiscal, cu
+    toate grupurile deschise -> textul ferestrei, judecat cu regulile ecranului (`core/limba_ecran.py`), nu are jargon de
+    programator, săgeți sau stări interne („GRI”, „rânduri persistate”, „->”); „Nu există o perioadă cu ambele declarații depuse”
+    apare (ramura e chiar pe ecran)."""
+    from core import limba_ecran
+    from e2e_bloc_e import _completeaza
+    tid, pg = firma_e2e["tenant_id"], patron.pg
+    _completeaza(firma_e2e, "global_valoric")   # Date firmă complete: declarațiile se pot genera, deci verificările chiar rulează
+    patron.acasa()
+    st, r = _api(patron, "/tenants/%d/vector" % tid, "POST", {"regim_fiscal": "profit", "platitor_tva": True, "operatiuni_ic": True,
+                 "inreg_art317": True, "tip_decont": "lunar", "tva_data_inceput": "2025-01-01"})
+    assert st == 200 and (r or {}).get("ok") is not False, (st, r)
+    # D300 depus prin aplicație pe luna trecută, fără rândurile salvate (o depunere de dinainte ca aplicația să le păstreze)
+    luna = _azi().replace(day=1) - _dt.timedelta(days=1)
+    sql("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, sursa, randuri) VALUES (%s, %s, %s, 'd300', 'iconta', NULL)",
+        (tid, luna.year, luna.month))
+    try:
+        patron.firma(firma_e2e["nume"])
+        pg.click("#fa-control")
+        pg.wait_for_selector(_fata(pg) + " .cf-stare-mare", timeout=90000)
+        pg.evaluate("() => [...document.querySelectorAll('.fereastra:last-of-type details')].forEach(d => { d.open = true; })")
+        pg.wait_for_timeout(300)
+        text = pg.inner_text(_fata(pg))
+        patron.captura()
+    finally:
+        sql("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd300'", (tid,))
+    assert "D300 depus fără rândurile salvate — nu pot compara." in text, text[-3000:]
+    rele = [d for d in limba_ecran.defecte(text, date_excluse=(firma_e2e["nume"],)) if d[0] in ("cod", "jargon")]
+    assert not rele, rele
+
+
+def test_def_211_tva_fata_de_balanta_nu_se_aplica_la_neplatitor(patron):
+    """211. Control fiscal, firmă neplătitoare de TVA: „TVA vs sold balanță” cu bulină verde; trebuie „nu se aplică”.
+    Pașii: „Coafor Micro Neplatitor SRL” (neplătitoare de TVA) -> Control fiscal -> „Coerență TVA (balanță)”: spune „nu se aplică —
+    firma nu e plătitoare de TVA”, fără bulină verde."""
+    pg = patron.pg
+    _detaliu_fiscal(patron, FIRMA_NEPLATITOARE)
+    sect = pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop();
+      const t = [...f.querySelectorAll('.cf-grup-titlu')].find(x => x.textContent.trim().startsWith('Coerență TVA'));
+      if (!t) return null; const d = t.nextElementSibling;
+      return {text: d.innerText, verde: [...d.querySelectorAll('.cf-verif-dot')].length}; }""")
+    patron.captura()
+    assert sect and "nu se aplică" in sect["text"] and sect["verde"] == 0, sect
 
 
 # ── 182 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -438,6 +560,64 @@ def test_def_183_planul_de_conturi_are_ecran_cu_cautare_analitic_si_stergere_paz
     st, r = _api(patron, "/tenants/%s/plan-conturi/4111.07" % tid, "DELETE")
     assert st >= 400, "serverul a șters un cont folosit în note: %s %s" % (st, r)
     patron.captura("folosit")
+
+
+def _plan(patron, firma_e2e, cauta):
+    pg = patron.pg
+    patron.firma(firma_e2e["nume"])
+    pg.click("#fa-planconturi")
+    f = _fata(pg)
+    pg.wait_for_selector(f + " #pcf-lista .pf-frand", timeout=30000)
+    pg.fill(f + " #pcf-cauta", cauta)
+    pg.wait_for_timeout(300)
+    return f
+
+
+def test_def_218_sinteticele_legale_si_conturile_cu_sold_nu_se_sterg(patron, firma_e2e):
+    """218. Plan de conturi: „Șterge” pe conturile sintetice din planul legal și pe conturi cu sold (1012). Sinteticele legale nu se
+    șterg; niciun cont cu sold sau rulaj nu se șterge.
+    Pașii: firma cu sold inițial pe 1012 -> Plan de conturi -> „1012” și „4111” (sintetice ale planului general): fără „Șterge”; un
+    analitic nou, nefolosit și fără sold, are „Șterge” -> cererea directă de ștergere a lui 1012 e refuzată, cu motivul."""
+    pg = patron.pg
+    patron.acasa()   # sesiunea (sessionStorage) există numai pe pagina aplicației
+    tid, s = firma_e2e["tenant_id"], firma_e2e["schema"]
+    sql('INSERT INTO "%s".solduri_initiale (cont, sold_debitor, sold_creditor, data_referinta) VALUES (\'1012\', 0, 200, \'2026-01-01\')'
+        % s)
+    try:
+        for an in ("4111.21", "4111.22"):
+            st, r = _api(patron, "/tenants/%s/plan-conturi" % tid, "POST", {"simbol": an, "denumire": "Analitic 218"})
+            assert st == 200, (st, r)
+        sql('INSERT INTO "%s".solduri_initiale (cont, sold_debitor, sold_creditor, data_referinta) VALUES (\'4111.22\', 50, 0, '
+            '\'2026-01-01\')' % s)
+        f = _plan(patron, firma_e2e, "")
+        stare = pg.evaluate("""(ss) => ss.map(x => { const r = document.querySelector(`#pcf-lista [data-simbol='${x}']`);
+            return [x, !!r, !!(r && r.querySelector('[data-sterge]'))]; })""", ["1012", "4111", "611", "4111.21", "4111.22"])
+        patron.captura("plan")
+        # 611: sintetic legal fără sold, fără analitice și nefolosit — nu se șterge NUMAI fiindcă e în planul legal;
+        # 4111.22: analitic al firmei, cu sold inițial — nu se șterge NUMAI fiindcă are sold
+        assert stare == [["1012", True, False], ["4111", True, False], ["611", True, False], ["4111.21", True, True],
+                         ["4111.22", True, False]], stare
+        st, r = _api(patron, "/tenants/%s/plan-conturi/1012" % tid, "DELETE")
+        assert st == 409 and "nu se poate șterge" in str(r), (st, r)
+    finally:
+        sql('DELETE FROM "%s".solduri_initiale WHERE cont IN (\'1012\', \'4111.22\')' % s)
+        for an in ("4111.21", "4111.22"):
+            _api(patron, "/tenants/%s/plan-conturi/%s" % (tid, an), "DELETE")
+
+
+def test_def_219_cautarea_dupa_simbol_potriveste_inceputul(patron, firma_e2e):
+    """219. Plan de conturi: căutarea „73” găsește și 473; căutarea după simbol potrivește începutul.
+    Pașii: Plan de conturi -> caută „11” (planul are 117/1171, care încep cu 11, și 4111/5311/411, care îl conțin în interior —
+    „73” nu mai discriminează: 731–738 au ieșit din plan, 05ba1345): în listă sunt numai conturile care încep cu 11; caută „clienți”:
+    se caută în denumire."""
+    pg = patron.pg
+    f = _plan(patron, firma_e2e, "11")
+    simboluri = pg.eval_on_selector_all(f + " #pcf-lista .pf-frand", "es => es.map(e => e.dataset.simbol)")
+    patron.captura("cauta_11")
+    assert "117" in simboluri and all(x.startswith("11") for x in simboluri), simboluri   # 4111 / 5311 nu
+    pg.fill(f + " #pcf-cauta", "clienți")
+    pg.wait_for_timeout(300)
+    assert "4111" in pg.eval_on_selector_all(f + " #pcf-lista .pf-frand", "es => es.map(e => e.dataset.simbol)")
 
 
 # ── 186 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

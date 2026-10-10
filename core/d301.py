@@ -317,7 +317,7 @@ def build_xml(res):
     # [regula 4 - fara default tacit] nume/functie declarant sunt DA (obligatorii); cand lipsesc emitem
     # un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D301: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+        res.avertismente.append("D301: declarantul (nume/funcție) lipsește din profil — se trece implicit "
                                 "\"ADMINISTRATOR\". Completează declarantul în profilul firmei.")
     cif = _NEDIGIT.sub("", prof.get("cui") or "")
     den = prof.get("nume") or ""
@@ -415,7 +415,7 @@ def genereaza(conn, schema, perioada, manual=None):
     if any(int(o.get("tip") or 1) == 1 for o in ops) and _pers_inreg(prof) == "1":
         res.avertismente.append(
             "D301: există operațiune de Secțiunea 1 (achiziții IC de bunuri) dar firma nu are marcajul de "
-            "înregistrare art.317 în Date firmă -> declarația se emite fără el. Secțiunea 1 se completează numai de "
+            "înregistrare art.317 în Date firmă, deci declarația se emite fără el. Secțiunea 1 se completează numai de "
             "persoanele înregistrate conform art.317 (OPANAF 592/2016). Confirmă înregistrarea art.317 în "
             "Date firmă (altfel declarația e contradictorie), sau reclasifică operațiunea.")
     if _ic_prim:

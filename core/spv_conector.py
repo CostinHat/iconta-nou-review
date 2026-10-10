@@ -102,7 +102,7 @@ def principal_pentru_schema(conn, schema):
     with conn.cursor() as cur:
         r = _rt.dupa_numele_schemei(cur, schema)
     if not r:
-        raise ValueError("schema %s fără tenant public" % schema)
+        raise ValueError("firma cu evidența %s nu mai există în lista firmelor" % schema)
     tid, afid = r
     return principal_firm(afid) if afid is not None else principal_tenant(tid)
 

@@ -111,9 +111,12 @@ def test_reconciliere_curata_pe_date_corecte_si_genereaza_trece(conn_recon):
 def test_mutatie_sursa_pierde_factura_pica_via_rollback(conn_recon):
     """Declaratia se genereaza cu F1 (DE, L=2000). Apoi F1 dispare din SURSA (DELETE in tranzactie,
     anulat de ROLLBACK-ul fixturii). Recalculul independent vede L=0, dar declaratia inca declara
-    2000 -> divergenta sursa<->declaratie -> RAISE care numeste AMBELE valori."""
+    2000 -> divergenta sursa<->declaratie -> RAISE care numeste AMBELE valori.
+    [Retestul plasei, regula a (R6)] factura emisă nu se mai poate șterge nici în tranzacție — defectul simulat („sursa pierde
+    factura”) e dezactivarea regulii în tranzacția anulată, nu o ștergere permisă."""
     _, res = _d390.genereaza(conn_recon, _SCHEMA, 2026, 8)
     with conn_recon.cursor() as cur:
+        cur.execute("ALTER TABLE %s.facturi DISABLE TRIGGER trg_regula_factura_emisa" % _SCHEMA)   # anulat de ROLLBACK
         cur.execute("DELETE FROM %s.facturi WHERE numar = 'F1'" % _SCHEMA)   # <- IC dropped from source
     with pytest.raises(ReconciliereD390) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 8, res)

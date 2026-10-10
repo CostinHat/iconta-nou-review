@@ -93,15 +93,16 @@ def genereaza(conn, schema, an):
         av.append("Nr. Reg. Com. lipsă în Profil firma (câmp obligatoriu S1005).")
     if not prof.get("declarant_nume"):
         # [declarant thread 3] Regula 4: fara fabricare tacita a administratorului
-        av.append("Bilant: declarantul (administrator) lipsește din profil -> emis implicit "
-                  "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+        av.append("Bilanț: declarantul (administrator) lipsește din profil — se trece implicit "
+                  "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     f10c = _b.f10_din_balanta(s_fin)
     f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_din_rulaje(rl)
     f20p = {}
     av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual dacă e cazul.")
     if f10c.get(15) != f10c.get(49):
-        av.append(f"Verificare: F(rd15)={f10c.get(15)} != J(rd49)={f10c.get(49)} - datorii>1an/provizioane/ven.avans pot explica diferenta.")
+        av.append(f"Verificare: rândul 15 (F) = {f10c.get(15)} diferă de rândul 49 (J) = {f10c.get(49)} — datoriile peste un an, "
+                  "provizioanele sau veniturile în avans pot explica diferența.")
     _er = erori_generare(prof)
     if _er:
         raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))

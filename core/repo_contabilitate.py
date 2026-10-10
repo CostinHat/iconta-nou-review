@@ -106,6 +106,13 @@ def perioade_blocate(cur, schema):
     return cur.fetchall()
 
 
+def conturi_dupa_inceputul_simbolului(cur, prefix):
+    """[deficiența 219] Conturile al căror simbol ÎNCEPE cu prefixul („73” -> 7xx din clasa 73…, nu 473)."""
+    cur.execute("SELECT simbol, denumire, tip FROM plan_conturi WHERE simbol LIKE %s ORDER BY simbol LIMIT 100",
+                (prefix.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%",))
+    return cur.fetchall()
+
+
 def conturi_dupa_text(cur, tipar_simbol, tipar_denumire):
     cur.execute(
         "SELECT simbol, denumire, tip FROM plan_conturi "
@@ -119,6 +126,13 @@ def toate_conturile(cur):
     Căutarea (`conturi_dupa_text`) rămâne plafonată."""
     cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol")
     return cur.fetchall()
+
+
+def conturi_cu_sold_initial(cur, simboluri):
+    """[deficiența 218] Simbolurile cu sold inițial (de preluare) nenul — un cont cu sold nu se șterge din plan."""
+    cur.execute("SELECT DISTINCT cont FROM solduri_initiale WHERE cont = ANY(%s) AND (sold_debitor <> 0 OR sold_creditor <> 0)",
+                (list(simboluri),))
+    return {r[0] for r in cur.fetchall()}
 
 
 def conturi_folosite(cur, simboluri=None):

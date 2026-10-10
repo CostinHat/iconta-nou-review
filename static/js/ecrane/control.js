@@ -3,8 +3,8 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc } from "../api.js?v=4242dc4353";  /* esc_nc27 */
-import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=a0acfd801a";  // renderer unic al verdictului (DS cap.20)
+import { api, esc } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
+import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=29ab225927";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -45,11 +45,14 @@ export async function randeazaControl(corp, nav, tidAuto) {
   firme.forEach((f) => {
     const col = CULORI[f.stare] || CULORI.gri;
     // [08.10.2026, retest pct.7] detaliul numără faptele (restanțe, de urmărit, neverificabile), nu repetă culoarea
+    // [deficiențele 156/173, retestul Costin 09.10] „nu se poate verifica” vine de la server (același predicat ca contorul de sus), iar
+    // verificările contabile gri sunt spuse acolo — aici rămân numai cele cu constatare (roșu / galben)
     const fapte = [(f.lipsa || 0) ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}` : "",
       (f.urmarit || 0) ? `${f.urmarit} de urmărit` : "",
-      (f.neclar || 0) ? `${f.neclar} declarați${f.neclar === 1 ? "e nu se poate verifica" : "i nu se pot verifica"}` : ""].filter(Boolean);
+      f.neverificabil ? esc(f.neverificabil) : ""].filter(Boolean);
     let detaliu = fapte.length ? fapte.join(" · ") : (f.stare === "verde" ? VERDICT_POZITIV.control_firma : "");
-    if ((f.contabil || []).length) detaliu += " · " + f.contabil.map((c) => (c && c.eticheta) || c).join(" · ");
+    const cuConstatare = (f.contabil || []).filter((c) => !(c && c.stare === "gri"));
+    if (cuConstatare.length) detaliu += (detaliu ? " · " : "") + cuConstatare.map((c) => esc((c && c.eticheta) || c)).join(" · ");
     const rand = document.createElement("button");
     rand.className = "mig-frand";
     rand.innerHTML = `

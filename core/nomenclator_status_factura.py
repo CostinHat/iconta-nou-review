@@ -125,6 +125,18 @@ def clauza_sql(alias="f", coloana="status"):
     return "COALESCE(%s%s, '%s') NOT IN (%s)" % (pref, coloana, IMPLICITA, lista)
 
 
+#: [Retestul plasei 09.10.2026, regula a (R6) — CF art.330 alin.(1)] Stările în care o factură EMISĂ se poate ȘTERGE: numai ciorna
+#: („nefinalizată — nu s-a emis nimic”). Orice altă stare e un document emis (inclusiv `de_preluat`, starea emiterii din aplicație, și
+#: `anulata`/`stornata`, care se păstrează) și se corectează prin stornare, nu se șterge.
+STERGIBILE = ("ciorna",)
+
+
+def clauza_sql_nestergibila(prefix="OLD.", coloana="status"):
+    """Fragmentul SQL (pentru triggerul R6) adevărat când factura NU se poate șterge, generat din `STERGIBILE`."""
+    lista = ", ".join("'%s'" % s for s in STERGIBILE)
+    return "COALESCE(%s%s, '%s') NOT IN (%s)" % (prefix, coloana, IMPLICITA, lista)
+
+
 def clauza_tip_document(alias="f", coloana="tip"):
     """Fragmentul SQL care păstrează doar DOCUMENTELE FISCALE: `tip = 'factura'`.
 

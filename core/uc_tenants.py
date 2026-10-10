@@ -76,7 +76,7 @@ def tenant_scoatere_previzualizare(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/scoatere`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return tenant_stergere.previzualizare(conn, tenant_id)
 
 
@@ -84,7 +84,7 @@ def tenant_nume_ales(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nume-ales`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return tenant_provisioning.alege_denumirea(conn, tenant_id, date.alege, ctx["uid"])
         except ValueError as e:
@@ -95,7 +95,7 @@ def tenant_scoate(tenant_id, confirmare, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             r = tenant_stergere.sterge(conn, tenant_id, "scoatere_firma", ctx["uid"],
                                        confirmare=confirmare)
@@ -113,7 +113,7 @@ def tenant_detalii(tenant_id, ctx):
     with db.get_conn() as conn:
         # verific accesul (schema_tenant întoarce None dacă userul n-are acces)
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
     return d
 
@@ -122,7 +122,7 @@ def client_acces_lista(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/client-acces`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             return {"clienti": repo_utilizatori.conturi_client_ale_firmei(cur, tenant_id)}
 
@@ -131,7 +131,7 @@ def client_acces_revoca(tenant_id, user_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/client-acces/{user_id}`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             repo_utilizatori.dezactiveaza_clientul_firmei(cur, user_id, tenant_id)
             _uc_comun._urma_portal(cur, tenant_id, "acces_retras",
@@ -143,7 +143,7 @@ def acces_portal_preview(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/acces-portal`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             row = repo_utilizatori.primul_client_al_firmei(cur, tenant_id)
             # [F-preview] identitatea tenantului previzualizat: nume_tenant + tenant_are_cabinet
@@ -163,7 +163,7 @@ def tenant_actualizeaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [R77] `ctx["uid"]` nu e decorativ: o redenumire care se departeaza de denumirea de la
         # ANAF se consemneaza ca alegere deliberata, iar o alegere fara autor nu e o alegere.
         #
@@ -187,15 +187,38 @@ def tenant_plan_conturi_lista(tenant_id, q, ctx):
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            if q:
+            tot = repo_contabilitate.toate_conturile(cur)   # planul întreg: lista fără căutare și analiticele fiecărui cont
+            if q and q.strip()[:1].isdigit():
+                # [deficiența 219, retestul Costin 09.10: „căutarea «73» găsește și 473; căutarea după simbol potrivește începutul”]
+                rows = repo_contabilitate.conturi_dupa_inceputul_simbolului(cur, q.strip())
+            elif q:
                 rows = repo_contabilitate.conturi_dupa_text(cur, f"%{q}%", f"%{q}%")
             else:
-                rows = repo_contabilitate.toate_conturile(cur)
+                rows = tot
             from core import plan_legal as _pl   # [08.10, V3] contul din afara planului legal se vede ca atare
             afara = set(_pl.in_afara(cur, schema, [r[0] for r in rows]))
             folosite = repo_contabilitate.conturi_folosite(cur, [r[0] for r in rows])   # [Retest 2 pct.13]
+            cu_sold = repo_contabilitate.conturi_cu_sold_initial(cur, [r[0] for r in rows])   # [deficiența 218]
+    toate = [x[0] for x in tot]
     return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2], "in_afara_planului": r[0] in afara,
-                         "sintetic": sintetic_al(r[0]), "folosit": r[0] in folosite} for r in rows]}
+                         "sintetic": sintetic_al(r[0]), "folosit": r[0] in folosite,
+                         "nu_se_sterge": motiv_nestergere(r[0], folosite, cu_sold, afara, toate)} for r in rows]}
+
+
+def motiv_nestergere(simbol, folosite, cu_sold, afara, toate):
+    """[Retest 2 pct.13, decizia Costin O12: „un cont folosit în note nu se poate șterge”; deficiența 218, retestul Costin 09.10.2026:
+    „Sinteticele legale nu se șterg; niciun cont cu sold sau rulaj nu se șterge.”] De ce contul NU se șterge din plan, sau None.
+    O SINGURĂ regulă, pentru listă (ecranul nu oferă „Șterge”) și pentru ștergere (serverul refuză)."""
+    if simbol in folosite:
+        return "apare în note contabile (are rulaj), deci evidența îl folosește"
+    if simbol in cu_sold:
+        return "are sold inițial (de preluare)"
+    if sintetic_al(simbol) is None and simbol not in afara:
+        return "e cont sintetic din planul de conturi general — sinteticele legale nu se șterg"
+    copii = [c for c in toate if sintetic_al(c) == simbol]
+    if copii:
+        return "are analitice în plan (%s); șterge-le întâi pe ele" % ", ".join(copii[:10])
+    return None
 
 
 #: [Retest 2 pct.13] separatorii analiticului — aceiași pe care îi acceptă adăugarea (`tenant_plan_conturi_adauga`)
@@ -219,12 +242,12 @@ def tenant_plan_conturi_sterge(tenant_id, simbol, ctx):
             den = repo_contabilitate.denumirea_contului(cur, simbol)
             if not den:
                 raise _erori.Inexistent("Contul %s nu e în planul firmei." % simbol)
-            if repo_contabilitate.conturi_folosite(cur, [simbol]):
-                raise _erori.Conflict("Contul %s („%s”) apare în note contabile, deci nu se poate șterge: evidența îl folosește."
-                                      % (simbol, den[0]))
-            copii = [r[0] for r in repo_contabilitate.toate_conturile(cur) if sintetic_al(r[0]) == simbol]
-            if copii:
-                raise _erori.Conflict("Contul %s are analitice în plan (%s); șterge-le întâi pe ele." % (simbol, ", ".join(copii[:10])))
+            from core import plan_legal as _pl
+            motiv = motiv_nestergere(simbol, repo_contabilitate.conturi_folosite(cur, [simbol]),
+                                     repo_contabilitate.conturi_cu_sold_initial(cur, [simbol]), set(_pl.in_afara(cur, schema, [simbol])),
+                                     [r[0] for r in repo_contabilitate.toate_conturile(cur)])
+            if motiv:
+                raise _erori.Conflict("Contul %s („%s”) nu se poate șterge: %s." % (simbol, den[0], motiv))
             repo_contabilitate.sterge_cont_din_plan(cur, simbol)
         conn.commit()
     return {"ok": True, "simbol": simbol}
@@ -955,7 +978,7 @@ def cabinet_urme_portal(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/urme-portal`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             urme = [dict(x) for x in repo_utilizatori.urme_portal_ale_firmei(cur, tenant_id)]
     return {"urme": urme, "nr": len(urme)}
@@ -966,7 +989,7 @@ def bonuri_de_verificat(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
                        "data": r[3].isoformat() if r[3] else None,
@@ -987,7 +1010,7 @@ def bon_aproba(tenant_id, bon_id, b, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:  # bon_flux_e1b_v1
             rt = repo_casa.tipul_bonului(cur, schema, bon_id)
             if not rt:
@@ -1027,6 +1050,8 @@ def salarii_contare_propunere(tenant_id, an, luna, ctx):
         r = repo_contabilitate.id_nota_dupa_numar(cur, p["document_ref"])
     p["deja_contata"] = bool(r)
     p["nota_id"] = r[0] if r else None
+    from core import inchidere_luna as _il   # [deficiența 216] ecranul spune de ce nota nu se scrie încă, în loc să ofere butonul
+    p["neincheiata"] = _il.luna_in_curs(an, luna)
     # [validare_note, comanda Costin 06.10.2026 pct.1] statul de plată arată unde e nota în coada de validare
     if r:
         from core import coada_api as _coada
@@ -1045,11 +1070,12 @@ def salarii_contare_propunere(tenant_id, an, luna, ctx):
 def tenant_amortizare(tenant_id, an, luna, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/amortizare`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)   # [lotul 7] `luna=13` dadea `500`, pe o ruta care scrie EVIDENTA
+    _uc_comun._cere_luna_incheiata(an, luna, "Amortizarea lunii")   # [deficiența 216, aceeași clasă]
     from datetime import date as _date
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [R42 (a)] Nota de amortizare se datează în ULTIMA zi a lunii cerute (lotul 07.10 pct.7: ziua 28 n-avea temei).
         _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(an, luna))
         ref = _date(an, luna, 1)
@@ -1113,7 +1139,7 @@ def perioade_blocate_lista(tenant_id, ctx, an=None, luna=None):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             out = {"blocate": [{"an": r[0], "luna": r[1]} for r in repo_contabilitate.perioade_blocate(cur, schema)]}
         if an and luna:
@@ -1128,7 +1154,7 @@ def perioada_blocheaza(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [08.10.2026, W2 + W3] controalele închiderii, o singură definiție (și pentru ecranul „Închidere lună”)
         ctl = _uc_comun.controale_inchidere(conn, schema, an, luna)
         if ctl["blocaje"]:
@@ -1169,7 +1195,7 @@ def perioada_deblocheaza(tenant_id, an, luna, motiv, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             repo_contabilitate.deblocheaza_perioada(cur, schema, an, luna)
         _ui.scrie(conn, schema, an, luna, "redeschisa", ctx["uid"], motiv.strip())
@@ -1185,7 +1211,7 @@ def perioade_istoric(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"istoric": _ui.istoric(conn, schema, an, luna)}
 
 
@@ -1196,7 +1222,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             # [14-1-1] `nr_curent` se numara de la 1 IANUARIE, nu de la inceputul lunii: norma cere
             # "numarul curent al operatiunilor inregistrate incepand de la 1 ianuarie ... pana la
@@ -1211,13 +1237,23 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                     note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
                                  "factura_id": fid, "document_ref": dref,   # scris de om (editorul îl arată)
-                                 "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data),
+                                 "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data, sursa, nr),
                                  "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
                                            "centru_cost_id": cc_id, "centru_nume": cc_nume})
                 tot[status == "validata"] += Decimal(str(suma))
             for _nid, _st in _j.facturi_stinse(cur, schema, list(note)).items():   # [08.10, U5] chitanța: factura pe care o stinge
                 note[_nid]["stinge"] = _st
+            # [deficiența 192, proba blocului C: „notele care vin din NIR și din raportul Z arată «Editează» și «Șterge», deși serverul
+            # le refuză”] ciorna derivată dintr-un document spune ecranului ce n-o să meargă — aceeași regulă ca refuzul
+            # (`jurnal_api.editeaza` / `sterge`, `note_derivate`), nu o listă a ecranului
+            from core import note_derivate as _nd
+            for _nid, _n in note.items():
+                if _n["status"] == "ciorna":
+                    _doc = _nd.documentul_sursa(cur, schema, _nid)
+                    if _doc:
+                        _n["derivata"] = {"fel": _doc[0], "se_sterge": _doc[0] not in _nd.FARA_STERGERE,
+                                          "unde": _nd.mesaj_refuz(_nid, _doc)}
     # [14-1-1] "Sumele debitoare si sumele creditoare se totalizeaza lunar." In partida dubla fiecare
     # linie e simultan debit si credit, deci cele doua totaluri sunt egale prin constructie - se dau
     # amandoua, cum cere formularul, nu unul singur.
@@ -1244,7 +1280,7 @@ def tenant_stat_plata(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     with db.get_conn(schema) as conn:  # helper-ele (pontaj/perioada) folosesc nume necalificate -> search_path pe tenant
         # [get_safe_v1 20.08.2026] AICI se chema _snapshot_stat_plata() -> INSERT + commit pe un GET.
         # Efect: simpla deschidere a ecranului Salariati scria un rand per salariat si il comitea
@@ -1307,7 +1343,7 @@ def tenant_plata_salarii_preview(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         cur = conn.cursor()
         nf = (repo_tenants.nume_dupa_id_2(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
@@ -1511,7 +1547,7 @@ def bon_facturi_candidate(tenant_id, bon_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_casa.cui_si_total_bon(cur, schema, bon_id)
             if not r:
@@ -1532,7 +1568,7 @@ def chitanta_stinge(tenant_id, bon_id, c, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_casa.tip_si_status_bon(cur, schema, bon_id)
             if not r:
@@ -1692,7 +1728,7 @@ def cabinet_balanta_date(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
         randuri = documente_api.balanta(conn, schema, an, luna)
         note_lunii = documente_api.note_lunii(conn, schema, an, luna)
@@ -1711,7 +1747,7 @@ def registru_fiscal_citeste(tenant_id, an, varianta, totalizare, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         if varianta == "venituri_pf":
             return _ref.registru_pf(conn, schema, an)
         try:
@@ -1735,7 +1771,7 @@ def registru_fiscal_adauga(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return _ref.adauga_pf(conn, schema, int(an), corp)
         except _ref.InregistrareIncompletaPF as e:
@@ -1756,7 +1792,7 @@ def registru_inventar_citeste(tenant_id, exercitiu, momentul, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _ri.registru(conn, schema, exercitiu, momentul)
 
 
@@ -1766,7 +1802,7 @@ def registru_inventar_propunere(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     # [lotul 3] `luna=13` intorcea `{"an": 2026, "luna": 13, "randuri": []}` — adica repeta luna
     # imposibila inapoi, ca si cum ar fi o perioada goala.
     _uc_comun._cere_perioada(an, luna)
@@ -1785,7 +1821,7 @@ def registru_inventar_adauga(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return _ri.adauga(conn, schema, int(exercitiu), corp)
         except _ri.InregistrareIncompleta as e:
@@ -1803,7 +1839,7 @@ def registre_art321_citeste(tenant_id, fel, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _r.registru(conn, schema, fel, an)
 
 
@@ -1815,7 +1851,7 @@ def registre_art321_adauga(tenant_id, fel, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return _r.adauga(conn, schema, fel, corp)
         except _r.InregistrareIncompleta as e:
@@ -1922,7 +1958,7 @@ def banca_rec_lista(tenant_id, status, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"linii": _rec.lista(conn, schema, status)}
 
 
@@ -1932,7 +1968,7 @@ def banca_rec_conteaza(tenant_id, linie_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _rec.conteaza(conn, schema, linie_id, corp.get("alocari"))
     if rez is None:
         raise _erori.Inexistent("linie inexistentă")
@@ -1947,7 +1983,7 @@ def banca_rec_facturi(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"facturi": _rec.facturi_deschise_detalii(conn, schema)}
 
 
@@ -1962,7 +1998,7 @@ def rapoarte_comerciale(tenant_id, de, pana, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"vanzari": _rc.vanzari_pe_partener(conn, schema, de, pana),
                 "durata_incasare": _rc.durata_medie_incasare(conn, schema, de, pana),
                 "parteneri": _rc.lista_parteneri(conn, schema),
@@ -1977,7 +2013,7 @@ def rapoarte_comerciale_fisa(tenant_id, cui, de, pana, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _rc.fisa_partener(conn, schema, cui, de, pana)
 
 
@@ -1987,7 +2023,7 @@ def rapoarte_salvate_lista(tenant_id, tip_raport, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"variante": _rc.variante(conn, schema, tip_raport)}
 
 
@@ -1997,7 +2033,7 @@ def rapoarte_salvate_creeaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _rc.salveaza_varianta(conn, schema, corp.get("tip_raport", "comercial"),
                                     corp.get("nume"), corp.get("filtru"), ctx["uid"])
     if not rez.get("ok"):
@@ -2014,7 +2050,7 @@ def rapoarte_salvate_sterge(tenant_id, vid, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _rc.sterge_varianta(conn, schema, vid)
     if not rez.get("ok"):
         raise _erori.Inexistent("variantă inexistentă")
@@ -2030,7 +2066,7 @@ def registratura_lista(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _reg.lista(conn, schema, an)
 
 
@@ -2049,7 +2085,7 @@ def registratura_creeaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _reg.inregistreaza(conn, schema, corp, ctx["uid"])
     if not rez.get("ok"):
         mesaje = {"DIRECTIE_INVALIDA": "directie invalida (intrare/iesire)",
@@ -2064,7 +2100,7 @@ def contracte_sabloane_lista(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"sabloane": _ct.lista_sabloane(conn, schema)}
 
 
@@ -2074,7 +2110,7 @@ def contracte_sabloane_salveaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _ct.salveaza_sablon(conn, schema, corp.get("id"), corp.get("nume"),
                                   corp.get("continut"), ctx["uid"])
     if not rez.get("ok"):
@@ -2093,7 +2129,7 @@ def contracte_sabloane_sterge(tenant_id, sid, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _ct.sterge_sablon(conn, schema, sid)
     if not rez.get("ok"):
         raise _erori.Inexistent("sablon inexistent")
@@ -2106,7 +2142,7 @@ def centre_cost_lista(tenant_id, doar_active, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"centre": _cc.lista(conn, schema, doar_active=doar_active)}
 
 
@@ -2116,7 +2152,7 @@ def centre_cost_adauga(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         r = _cc.adauga(conn, schema, corp.get("nume"))
         if r.get("eroare"):
             raise _erori.CerereGresita(r["eroare"])
@@ -2129,7 +2165,7 @@ def centre_cost_activ(tenant_id, centru_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             activ = _uc_comun.bifa(corp, "activ", True)
         except ValueError as e:
@@ -2151,7 +2187,7 @@ def centre_cost_raport(tenant_id, de, pana, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _cc.raport_realizat(conn, schema, de, pana)
 
 
@@ -2162,7 +2198,7 @@ def centre_cost_varianta(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _cc.raport_varianta(conn, schema, an)
 
 
@@ -2175,7 +2211,7 @@ def centre_cost_buget(tenant_id, centru_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         r = _cc.seteaza_buget(conn, schema, centru_id, an,
                               corp.get("buget_cheltuieli"), corp.get("buget_venituri"))
         if r is None:
@@ -2190,7 +2226,7 @@ def banca_rec_ignora(tenant_id, linie_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_banca.ignora_linia_de_extras(cur, schema, linie_id)
         conn.commit()
@@ -2294,7 +2330,7 @@ def casa_registru(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _c.registru(conn, schema, an, luna)
 
 
@@ -2304,7 +2340,7 @@ def casa_adauga(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _c.adauga(conn, schema, corp)
     if rez.get("eroare"):
         raise _erori.CerereGresita(rez["eroare"])
@@ -2317,7 +2353,7 @@ def casa_sterge(tenant_id, op_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _c.sterge(conn, schema, op_id)
     if rez is None:
         raise _erori.Inexistent("operațiune inexistentă")
@@ -2332,7 +2368,7 @@ def casa_storneaza(tenant_id, op_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         data = (corp or {}).get("data")
         _uc_comun._cere_luna_deschisa(conn, schema, data)
         rez = _c.storneaza(conn, schema, op_id, data)
@@ -2350,7 +2386,7 @@ def stocuri_lista(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         nirs = _s.lista_nir(conn, schema, an, luna)
         # [retest 07.10 R1] NIR-ul respins rămâne în listă, marcat, cu motivul (și NIR-ul care l-a refăcut)
         from core import coada_api as _coada
@@ -2365,7 +2401,7 @@ def stocuri_adauga(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.adauga_nir(conn, schema, corp)
         if rez.get("cod") == "NESCHIMBATA":   # [S3] NIR-ul refăcut identic cu cel respins: confirmare, nimic scris
             conn.rollback()
@@ -2385,7 +2421,7 @@ def stocuri_nir_detaliu(tenant_id, nir_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.nir_detaliu(conn, schema, nir_id)
         if rez is None:
             raise _erori.Inexistent("NIR inexistent")
@@ -2404,7 +2440,7 @@ def stocuri_descarcare(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.descarca_luna(conn, schema, an, luna)
     if rez.get("eroare"):
         if rez.get("ecran"):   # [lotul 07.10 pct.2] refuzul care trimite în alt ecran rămâne structurat (butonul spre el)
@@ -2419,7 +2455,7 @@ def cv_articole(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [05.10.2026, comanda Costin pct.10] ecranul Stocuri arată Rețete numai la firma HoReCa (sau care are rețete)
         return {"articole": _s.articole(conn, schema), "retete_vizibile": _s.retete_vizibile(conn, schema)}
 
@@ -2430,7 +2466,7 @@ def cv_fisa(tenant_id, articol_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.fisa(conn, schema, articol_id)
     if rez is None:
         raise _erori.Inexistent("articol inexistent")
@@ -2443,7 +2479,7 @@ def cv_intrare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             rez = _s.intrare(conn, schema, corp)
         except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
@@ -2459,7 +2495,7 @@ def cv_iesire(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             rez = _s.iesire(conn, schema, corp)
         except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
@@ -2477,7 +2513,7 @@ def cv_inventar(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return _s.inventar(conn, schema, corp)
         except (ValueError, KeyError) as e:      # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
@@ -2497,7 +2533,7 @@ def cv_locatii(tenant_id, articol_id, ctx):
                 if not repo_stocuri.articolul_exista(_cur, articol_id):
                     raise _erori.Inexistent("articol inexistent")
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"locatii": _s.stoc_pe_locatii(conn, schema, articol_id)}
 
 
@@ -2507,7 +2543,7 @@ def cv_transfer(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             rez = _s.transfer(conn, schema, corp)
         except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
@@ -2525,7 +2561,7 @@ def cv_reclasificare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             rez = _s.reclasificare(conn, schema, corp)
         except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
@@ -2543,7 +2579,7 @@ def cv_analitica(tenant_id, zile_inert, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _s.analitica(conn, schema, zile_inert)
 
 
@@ -2553,7 +2589,7 @@ def cv_nivel_minim(tenant_id, articol_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.set_nivel_minim(conn, schema, articol_id, corp.get("nivel_minim"))
     if rez is None:
         raise _erori.Inexistent("articol inexistent")
@@ -2568,7 +2604,7 @@ def cv_barcode_gaseste(tenant_id, cod, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         a = _s.gaseste_barcode(conn, schema, cod)
     if a is None:
         raise _erori.Inexistent("niciun articol cu acest cod de bare")
@@ -2581,7 +2617,7 @@ def cv_barcode_set(tenant_id, articol_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _s.set_barcode(conn, schema, articol_id, corp.get("barcode"))
     if rez is None:
         raise _erori.Inexistent("articol inexistent")
@@ -2597,7 +2633,7 @@ def cabinet_categorie_marime(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     with db.get_conn(schema) as conn:
         return _cm.categorie(conn, schema, an)
 
@@ -2609,7 +2645,7 @@ def s1005_xml(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             xml, av = _ba.genereaza(conn, schema, an)
         except ValueError as e:
@@ -2627,7 +2663,7 @@ def s1005_valideaza(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             xml, av = _ba.genereaza(conn, schema, an)
         except ValueError as e:
@@ -2660,7 +2696,8 @@ def s1005_valideaza(tenant_id, an, ctx):
     except Exception as _e:
         import logging
         logging.getLogger("iconta").warning("[R45] artefact s1005 nepastrat: %s", _e)
-    return {"ok": ok, "erori": erori, "avertismente": av,
+    from core import bilant as _bil   # [deficiența 188] rândurile care se depun, citite din XML-ul validat
+    return {"ok": ok, "erori": erori, "avertismente": av, "randuri": _bil.randuri_din_xml(xml),
             "xml_b64": base64.b64encode(xml.encode()).decode()}
 
 
@@ -2671,7 +2708,7 @@ def s1003_xml(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             xml, av = _ba.genereaza_s1003(conn, schema, an)
         except ValueError as e:
@@ -2689,7 +2726,7 @@ def s1003_valideaza(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             xml, av = _ba.genereaza_s1003(conn, schema, an)
         except ValueError as e:
@@ -2721,7 +2758,8 @@ def s1003_valideaza(tenant_id, an, ctx):
     except Exception as _e:
         import logging
         logging.getLogger("iconta").warning("[R45] artefact s1003 nepastrat: %s", _e)
-    return {"ok": ok, "erori": erori, "avertismente": av,
+    from core import bilant as _bil   # [deficiența 188] rândurile care se depun, citite din XML-ul validat
+    return {"ok": ok, "erori": erori, "avertismente": av, "randuri": _bil.randuri_din_xml(xml),
             "xml_b64": base64.b64encode(xml.encode()).decode()}
 
 
@@ -2731,7 +2769,7 @@ def retete_lista(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _r.lista(conn, schema)
 
 
@@ -2741,7 +2779,7 @@ def retete_salveaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         r = _r.salveaza(conn, schema, corp)
     if r.get("eroare"):
         _ec = r.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca facturi-recurente/emitere
@@ -2755,7 +2793,7 @@ def retete_sterge(tenant_id, reteta_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return _r.sterge(conn, schema, reteta_id)
 
 
@@ -2765,7 +2803,7 @@ def retete_descarca(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return _r.descarca(conn, schema, corp)
         except (ValueError, KeyError) as e:      # [lotul 7] corp gol dadea `500`
@@ -2779,7 +2817,7 @@ def verificare_stocuri(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             arts = [dict(r) for r in repo_stocuri.articole_cu_cont(cur, schema)]
             val_cv = {}
@@ -2809,7 +2847,7 @@ def etransport_xml(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             r = repo_firma_profil.cui_firma(cur, schema) or {}
     cui = re.sub(r"\D", "", r.get("cui") or "")
@@ -2818,7 +2856,7 @@ def etransport_xml(tenant_id, corp, ctx):
     lipsa = _e.campuri_required_lipsa(corp)
     if lipsa:
         raise _erori.DateInvalide({"cod": "CAMPURI_LIPSA",
-                "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
+                "mesaj": "Câmpuri obligatorii lipsă (structura eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
                 "campuri": lipsa})
     try:
         xml = _e.xml_notificare(cui, corp)
@@ -2836,7 +2874,7 @@ def etransport_trimite(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r0 = repo_firma_profil.cui_firma_2(cur, schema)
     cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
@@ -2845,7 +2883,7 @@ def etransport_trimite(tenant_id, corp, ctx):
     lipsa = _egen.campuri_required_lipsa(corp)
     if lipsa:
         raise _erori.DateInvalide({"cod": "CAMPURI_LIPSA",
-                "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
+                "mesaj": "Câmpuri obligatorii lipsă (structura eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
                 "campuri": lipsa})
     try:
         xml = _egen.xml_notificare(cui, corp)
@@ -2866,7 +2904,7 @@ def etransport_trimiteri_lista(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rows = repo_declaratii.trimiteri_etransport(cur, schema)
     azi = _date.today()
@@ -2888,7 +2926,7 @@ def banca_rec_reactiveaza(tenant_id, linie_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_banca.readuce_linia_de_extras(cur, schema, linie_id)
         conn.commit()
@@ -2903,7 +2941,7 @@ def factura_recunoaste(tenant_id, factura_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_facturi.stare_pentru_recunoastere(cur, schema, factura_id)
         if not r:
@@ -2942,7 +2980,7 @@ def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False, nir_id=No
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         from core import coada_api as _cq, note_derivate as _nd
         with conn.cursor() as _c0:   # [S3] notele respinse ale facturii (contarea + ieșirile), înainte de refacere
             _resp = [i for i in _cq.ciornele_documentului(_c0, schema, "factura-%d" % int(factura_id)) if _nd.respinsa(_c0, schema, i)]
@@ -2987,7 +3025,7 @@ def vanzare_marja(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
@@ -3023,7 +3061,7 @@ def vanzare_marja_turism(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
@@ -3073,7 +3111,7 @@ def vanzare_aur_investitii(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             ok, motiv = _m.este_aur_investitii(corp["tip"], corp["puritate"],
@@ -3108,7 +3146,7 @@ def achizitie_agricultor(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.achizitie_de_la_agricultor(corp["valoare"], _uc_comun.bifa(corp, "agricultor_in_registru"))
@@ -3135,7 +3173,7 @@ def vanzare_agricultor(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.compensatie(corp["pret"])
@@ -3158,7 +3196,7 @@ def cabinet_fisa_cont(tenant_id, an, cont, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     with db.get_conn(schema) as conn:
         conturi = _fc.conturi_cu_miscare(conn, schema, an, luna)
         fisa = None
@@ -3190,7 +3228,7 @@ def jurnal_marja(tenant_id, tip, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rows = repo_contabilitate.linii_pentru_jurnal_marja(cur, schema, "%" + marker + "%", luna)
     note = {}
@@ -3222,7 +3260,7 @@ def calcul_cm_endpoint(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     # [lotul 4, 04.09.2026] Trei defecte, toate aici. `{}` cadea cu `KeyError` NEPRINS (`500`);
     # `luna=13` mergea pana la capat si intorcea o indemnizatie calculata — cu alta baza, fiindca
     # fereastra de 6 luni se muta —, iar `zile_lucratoare_cm=-5` trecea tacut, cu `brut 0`. *O
@@ -3286,7 +3324,7 @@ def factura_trimite_spv(tenant_id, factura_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     mediu = os.environ.get("EFACTURA_MEDIU", "prod")
     try:
         r = _eft.trimite(schema, factura_id, principal, mediu=mediu)
@@ -3312,7 +3350,7 @@ def facturi_trimiteri_spv(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rows = repo_efactura.ultima_trimitere_per_factura(cur, schema)
     return {str(r[0]): {"stare": r[1], "index_incarcare": r[2], "error_message": r[3]} for r in rows}
@@ -3324,7 +3362,7 @@ def facturi_primite_lista(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         out = []
         with conn.cursor() as cur:
             rows = repo_efactura.primite_in_asteptare(cur, schema)
@@ -3352,7 +3390,7 @@ def factura_primita_xml(tenant_id, primita_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_efactura.xml_brut(cur, schema, primita_id)
     if not r:
@@ -3368,7 +3406,7 @@ def factura_primita_respinge(tenant_id, primita_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_efactura.starea_primitei_blocata(cur, schema, primita_id)
             if not r:
@@ -3385,7 +3423,7 @@ def reges_config(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         if corp.get("mediu", "test") not in ("test", "prod"):
             raise _erori.DateInvalide(nomenclator_cerut("mediu", "test|prod"))
         # [lotul 7] Corpul gol cadea mai jos, pe `corp["username"]`, cu `KeyError` neprins.
@@ -3418,7 +3456,7 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
             rand = repo_firma_profil.platitor_tva(cur, schema)
@@ -3472,7 +3510,7 @@ def achizitie_ic(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         from core import facturi_api as _fa
         try:
@@ -3556,7 +3594,7 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
@@ -3601,7 +3639,7 @@ def import_extracomunitar(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
             rand = repo_firma_profil.platitor_tva_2(cur, schema)
@@ -3652,7 +3690,7 @@ def export_extracomunitar(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             ok, ment = _ie.valideaza_export(corp.get("tara_client"),
@@ -3684,7 +3722,7 @@ def nota_tva_incasare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         sens = corp.get("sens")
         if sens not in ("incasare", "plata"):
@@ -3738,7 +3776,7 @@ def reevaluare_valuta(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             data = _date.fromisoformat(corp["data"])
@@ -3788,7 +3826,7 @@ def nota_leasing(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
         try:
@@ -3827,7 +3865,7 @@ def nota_credit(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         tip = corp.get("tip", "lung")
@@ -3869,7 +3907,7 @@ def nota_avans(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         dest = corp.get("destinatie", "stocuri")
@@ -3937,7 +3975,7 @@ def achizitie_necorporala(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
         if tip not in TIPURI:
@@ -4025,7 +4063,7 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie", "reevaluare")
         try:
@@ -4096,7 +4134,7 @@ def nota_provizion_ep(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         act = corp.get("actiune", "constituire")
@@ -4137,7 +4175,7 @@ def nota_productie(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
@@ -4171,7 +4209,7 @@ def nota_obiect_inventar(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
@@ -4210,7 +4248,7 @@ def nota_asociati(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         info = {}
@@ -4258,7 +4296,7 @@ def nota_sponsorizare_ep(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod", "contract"))
@@ -4290,7 +4328,7 @@ def nota_subventie(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
@@ -4327,7 +4365,7 @@ def nota_chirie(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         note = []  # [(descriere, linii)]
@@ -4377,7 +4415,7 @@ def nota_decont_deplasare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
@@ -4419,7 +4457,7 @@ def nota_bacsis(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
@@ -4451,7 +4489,7 @@ def nota_sgr(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
@@ -4494,7 +4532,7 @@ def nota_perisabilitati(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
@@ -4523,7 +4561,7 @@ def nota_contract_special(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
@@ -4609,7 +4647,7 @@ def nota_inventariere(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         mf_id = None
@@ -4684,7 +4722,7 @@ def nota_lichidare(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         info = {}
@@ -4724,7 +4762,7 @@ def nota_ong(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie", "venit")
         try:
@@ -4752,7 +4790,7 @@ def tenant_activare(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/activare`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn:
         if not _uc_comun._acces_pentru_activare(conn, ctx["rol"], ctx.get("firm"), tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             return tenant_stergere.comuta_activ(conn, tenant_id, date.activ, ctx["uid"])
         except ValueError as e:
@@ -4770,7 +4808,7 @@ def client_acces_creeaza(tenant_id, date, ctx):
     tok = "ml_" + secrets.token_urlsafe(32)   # [P4] se pregătește înainte: intră cu contul
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             _ex = repo_utilizatori.contul_dupa_email(cur, email)
@@ -5031,6 +5069,7 @@ def proforma_transforma(tenant_id, factura_id, ctx):
 def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salarii-contare`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
+    _uc_comun._cere_luna_incheiata(an, luna, "Salariile lunii")   # [deficiența 216]
     from core import salarii_contare as _sc
     schema = _uc_comun._schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -5115,7 +5154,7 @@ def horeca_import_amef(tenant_id, continut, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [R61] Poarta de perioada lipsea DOAR aici, iar asta era pe dos: ruta fara rol era si
         # cea fara poarta. O nota intr-o luna inchisa e aceeasi clasa indiferent ca e ciorna.
         _uc_comun._cere_luna_deschisa(conn, schema, rz["data"])
@@ -5169,7 +5208,7 @@ def horeca_raport_z(tenant_id, rz, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, rz.data)   # [R42 (a)] nota poartă data raportului Z
         nui = (rz.nui or "").strip()
         nr_raport = (rz.nr_raport or "").strip()
@@ -5256,7 +5295,7 @@ def tenant_fluturas(tenant_id, salariat_id, an, luna, ctx):
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         cur = conn.cursor()
         nf = (repo_tenants.nume_dupa_id(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # fluturas_pdf foloseste nume necalificate -> search_path pe tenant
@@ -5313,7 +5352,7 @@ def tenant_plata_salarii_fisier(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         cur = conn.cursor()
         nf = (repo_tenants.nume_dupa_id_3(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
@@ -5347,7 +5386,7 @@ def cabinet_bon_imagine(tenant_id, bon_id, n, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     cale = _uc_comun._bon_imagine_cale(schema, bon_id, n)
     if not cale:
         raise _erori.Inexistent("imagine inexistentă")
@@ -5379,7 +5418,7 @@ def cabinet_documente_balanta(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + detalii pe conn public
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
     with db.get_conn(schema) as conn:  # balanta_pdf foloseste nume necalificate -> search_path pe tenant
         pdf = documente_api.balanta_pdf(conn, schema, an, luna, (d or {}).get("nume") or "")
@@ -5402,7 +5441,7 @@ def banca_rec_import(tenant_id, continut, nume_fisier, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # [C5] `continut` -> hash de fisier -> idempotenta la reimport (extras_import). Raspunsul poarta
         # {"linii":[...]} sau {"deja_importat":True,"nr_linii":N,"linii":[]} pentru mesajul vizibil.
         return _uc_comun._raspuns(_rec.importa_extras(conn, schema, tranzactii, nume_fisier or "", continut))
@@ -5415,7 +5454,7 @@ def contracte_genereaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             pdf = _ct.genereaza_pdf(conn, schema, corp.get("sablon_id"), corp)
         except ValueError as e:   # [R66 (c)]
@@ -5432,7 +5471,7 @@ def export_saga_factura(tenant_id, factura_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         date_f = _xs.date_factura(conn, schema, factura_id)
     if date_f is None:
         raise _erori.Inexistent("factură inexistentă sau nu e emisă")
@@ -5451,7 +5490,7 @@ def export_saga_luna(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         ids = _xs.facturi_emise_luna(conn, schema, an, luna)
         if not ids:
             raise _erori.Inexistent("nicio factură emisă în luna aleasă")
@@ -5481,7 +5520,7 @@ def export_winmentor_luna(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
             fisiere = _wm.export_luna(conn, schema, an, luna)
         except ValueError as e:  # caracter neencodabil cp1250 -> nu scrie byte gresit tacit
@@ -5507,7 +5546,7 @@ def jurnal_creeaza(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         return _uc_comun._jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii"),
                                                 corp.get("document_ref")))
@@ -5520,7 +5559,7 @@ def jurnal_editeaza(tenant_id, nota_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
         # [lotul 07.10 pct.5] data se poate corecta din editor: luna NOUĂ trebuie și ea să fie deschisă (o notă nu se mută
         # într-o lună închisă — R42 (a), aceeași poartă ca la creare)
@@ -5538,7 +5577,7 @@ def jurnal_sterge(tenant_id, nota_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
         return _uc_comun._jurnal_rez(_j.sterge(conn, schema, nota_id))
 
@@ -5559,7 +5598,7 @@ def jurnal_dezleaga(tenant_id, nota_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         # P15, prin helperul canonic — același pe care îl cheamă editarea, ștergerea și validarea
         # unei note care există. Dezlegarea schimbă soldul facturii, deci e o modificare a lunii.
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
@@ -5591,7 +5630,7 @@ def jurnal_valideaza(tenant_id, nota_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
         rez = _j.valideaza(conn, schema, nota_id)
         if isinstance(rez, dict) and rez.get("ok"):
@@ -5626,7 +5665,7 @@ def d406_active_xml(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             # [R190, etapa 2 lotul I, 15.09.2026] ORDINEA: se cer RANDURILE, abia apoi coloanele.
             # `cur.description` descrie ultima interogare EXECUTATA — iar cea care o executa e chiar
@@ -5670,7 +5709,7 @@ def d406_stocuri_xml(tenant_id, data_start, data_end, cui, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rows = repo_stocuri.miscari_pentru_d406(cur, schema, de)
     grupat = {}
@@ -5694,7 +5733,7 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             r = repo_efactura.primita_pentru_validare(cur, schema, primita_id)
             if not r:
@@ -5725,7 +5764,7 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
             try:
                 f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
             except Exception as e:
-                raise _erori.DateInvalide("XML neparsabil: %s" % str(e)[:200])
+                raise _erori.DateInvalide("XML-ul nu se poate citi: %s" % str(e)[:200])
             fid, _nou = _uc_comun._factura_din_parsat(cur, schema, f)   # leaga si factura existenta (dedup)
             fid_final = repo_efactura.marcheaza_primita_validata(cur, schema, fid, cont or None, primita_id)[0]
             # [B1 D300] optiuni de clasificare pe factura primita, alese de contabil la validare:
@@ -5802,7 +5841,7 @@ def decontare_valuta(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             data = _date.fromisoformat(corp["data"])
@@ -5873,7 +5912,7 @@ def reges_trimite_salariat(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             chei = repo_salariati.chei_reges(cur, tenant_id)
             if not chei:
@@ -5910,7 +5949,7 @@ def reges_poll(tenant_id, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             chei = repo_salariati.chei_reges_fara_autor(cur, tenant_id)
             if not chei:
@@ -5947,7 +5986,7 @@ def verifica_vies_ep(tenant_id, cod_tva, ctx):
     from core import intracomunitar as _ic
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     try:
         return _ic.verifica_vies(cod_tva)
     except ValueError as e:
@@ -5965,7 +6004,7 @@ def vanzare_ic(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
     # [lotul 8, 04.09.2026] Citirea campului era INAUNTRUL `try`-ului care prinde `Exception`,
     # deci un camp lipsa iesea ca „VIES indisponibil: 'cod_tva_client'" — o afirmatie falsa
@@ -5989,7 +6028,7 @@ def vanzare_ic(tenant_id, corp, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             # [R186/R187, 16.09.2026] TIPUL se valideaza contra nomenclatorului, nu se citeste cu
@@ -6052,7 +6091,7 @@ def intrastat_praguri(tenant_id, an, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         intro, exped = {}, {}
         with conn.cursor() as cur:
             for directie, cui, luna, baza in repo_facturi.emise_pe_luni_pentru_intrastat(cur, schema, an):
@@ -6077,7 +6116,7 @@ def intrastat_praguri(tenant_id, an, ctx):
 def tenant_creeaza(date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants`; docstringul ei a ramas in stratul HTTP."""
     if _uc_comun._TENANT_TEMPLATE is None:
-        raise _erori.EsecIntern("template tenant indisponibil pe server")
+        raise _erori.EsecIntern("Șablonul pentru o firmă nouă lipsește pe server — anunță administratorul platformei.")
     # [comanda Costin 04.10.2026 pct.3] Emailul clientului se judecă ÎNAINTE de orice scriere. Până azi ecranul crea
     # firma și abia apoi trimitea adresa la `client-acces`: o adresă refuzată lăsa în urmă o firmă creată fără
     # portal, iar refuzul cădea într-un rând gri de sub CUI. Aceeași regulă ca la `client-acces` (o singură funcție).
@@ -6122,7 +6161,7 @@ def banca_parse_extras(tenant_id, continut, nume_fisier, ctx):
         _crono.marca("conexiune")
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     _crono.marca("acces")
     continut = continut
     _crono.marca("citire_fisier")
@@ -6150,7 +6189,7 @@ def import_efactura(tenant_id, fisiere, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
-            raise _erori.Inexistent("tenant inexistent sau fără acces")
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rand = repo_firma_profil.cui_firma_3(cur, schema)
             if not rand or not rand[0]:

@@ -279,7 +279,9 @@ def test_pct10_inainte_de_preluare_cu_termen_perioada_si_rand():
 # ── pct.11 (B11) ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_pct11_declaratia_nedepusa_cu_termen_in_luna_e_avertisment(monkeypatch):
     """„O declarație care are termenul în luna respectivă și nu e depusă apare ca avertisment.” Restanța D300 pentru 08/2026, cu
-    termen 25.09.2026, apare la închiderea lui 09/2026; cea cu termen în octombrie nu. MUTAȚIE: filtrul pe termen scos -> pică."""
+    termen 25.09.2026, apare la închiderea lui 09/2026; la fel D112 a lunii 09/2026, cu termen în octombrie (deficiența 181, retestul
+    Costin 09.10: „pe F2 09/2026 nu apare avertismentul pentru declarațiile nedepuse” — declarația PERIOADEI care se încheie cu luna);
+    cea a lui 10/2026 nu. MUTAȚIE: filtrul pe termen scos -> pică; filtrul pe perioadă scos -> pică."""
     from core import uc_comun, control_fiscal_api as cf
 
     class _C:
@@ -291,9 +293,11 @@ def test_pct11_declaratia_nedepusa_cu_termen_in_luna_e_avertisment(monkeypatch):
     monkeypatch.setattr(uc_comun.db, "get_conn", lambda *a, **k: _C())
     monkeypatch.setattr(cf, "evalueaza_firma", lambda *a, **k: {
         "lipsa": [{"tip": "d300", "an": 2026, "luna": 8, "perioada": "08/2026", "termen": "2026-09-25"}],
-        "urmarit": [{"tip": "d112", "an": 2026, "luna": 9, "perioada": "09/2026", "termen": "2026-10-25"}]})
+        "urmarit": [{"tip": "d112", "an": 2026, "luna": 9, "perioada": "09/2026", "termen": "2026-10-25"},
+                    {"tip": "d112", "an": 2026, "luna": 10, "perioada": "10/2026", "termen": "2026-11-25"}]})
     r = uc_comun.declaratii_nedepuse_cu_termen_in_luna("x", 2026, 9, azi=datetime.date(2026, 10, 9))
-    assert r == [("d300", "D300 pentru 08/2026, cu termen pe 25.09.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal")]
+    assert r == [("d300", "D300 pentru 08/2026, cu termen pe 25.09.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal"),
+                 ("d112", "D112 pentru 09/2026, cu termen pe 25.10.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal")]
 
 
 # ── pct.12 (B12) ────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -336,8 +340,12 @@ def test_pct13_planul_de_conturi_analitice_sub_sintetic_si_stergerea(lume, monke
     assert (lista["4111.01"]["sintetic"], lista["4111.01"]["folosit"], lista["4111.02"]["folosit"]) == ("4111", True, False)
     with pytest.raises(erori.Conflict, match="apare în note contabile"):
         ut.tenant_plan_conturi_sterge(1, "4111.01", ctx)
-    with pytest.raises(erori.Conflict, match="are analitice în plan"):
+    # [deficiența 218] sinteticele planului legal nu se șterg — întâi regula asta, apoi analiticele
+    with pytest.raises(erori.Conflict, match="sinteticele legale nu se șterg"):
         ut.tenant_plan_conturi_sterge(1, "4111", ctx)
+    # regula, pe un sintetic din AFARA planului legal (în planul general orice 411x e legal), cu analitic sub el
+    assert ut.motiv_nestergere("4119", set(), set(), {"4119"}, ["4119", "4119.01"]).startswith("are analitice în plan (4119.01)")
+    assert ut.motiv_nestergere("4119", set(), set(), {"4119"}, ["4119"]) is None              # fără analitice: se șterge
     assert ut.tenant_plan_conturi_sterge(1, "4111.02", ctx) == {"ok": True, "simbol": "4111.02"}
     js = io.open("static/js/ecrane/firme.js", encoding="utf-8").read()
     assert re.findall(r'cheie: "(planconturi)", regim: "(\w+)", grup: "(\w+)"', js) == [("planconturi", "dubla", "firma")]

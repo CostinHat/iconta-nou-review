@@ -338,12 +338,21 @@ def test_aspectele_fara_dependenta_de_timp_NU_se_invalideaza_la_schimbarea_zilei
 
 def test_epoca_e_declarata_per_aspect_nu_ghicita():
     """Granularitatea temporală e o proprietate SCRISĂ a aspectului, iar cele grele o au."""
-    assert FR.epoca_pentru("solduri", datetime.date(2026, 9, 8)) == ""
-    assert FR.epoca_pentru("termene", datetime.date(2026, 9, 8)) == "2026-09-08"
-    assert FR.epoca_pentru("control_fiscal", datetime.date(2026, 9, 8)) == "2026-09-08"
+    assert FR.epoca_pentru("solduri", datetime.date(2026, 9, 8)) == "@" + FR.COD
+    assert FR.epoca_pentru("termene", datetime.date(2026, 9, 8)) == "2026-09-08@" + FR.COD
+    assert FR.epoca_pentru("control_fiscal", datetime.date(2026, 9, 8)) == "2026-09-08@" + FR.COD
     for a in FR.ASPECTE_GRELE:
         assert FR.ASPECTE[a]["timp"] is not None, (
             "%s primește `azi` la calcul, deci trebuie să declare o granularitate de timp" % a)
+
+
+def test_epoca_poarta_amprenta_codului_care_a_calculat():
+    """[deficiența 156, retestul Costin 09.10: „F3: lista «5 restanțe · 3 de urmărit», detaliul 3 și 2”] Un rezumat calculat de
+    codul de dinainte de o publicare nu mai e „curent” după ea, chiar dacă datele firmei nu s-au schimbat: epoca poartă amprenta
+    surselor `core/` + `main.py` (mutația pe plasă, e2e_casa test_def_156, probează lista)."""
+    assert len(FR.COD) == 12 and FR.COD == FR._amprenta_cod()
+    for a in FR.ASPECTE:
+        assert FR.epoca_pentru(a, datetime.date(2026, 9, 8)).endswith("@" + FR.COD), a
 
 
 # ============================================================================

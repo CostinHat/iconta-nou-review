@@ -979,8 +979,8 @@ def build_xml(res):
     prof = res.prof
     tip = tip_decont(prof)
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D300: declarantul (nume/funcție) lipsește din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+        res.avertismente.append("D300: declarantul (nume/funcție) lipsește din profil — se trece implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     cui = _digits(prof.get("cui"))
     den = prof.get("nume") or ""
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip() or den

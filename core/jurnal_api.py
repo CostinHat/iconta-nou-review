@@ -306,13 +306,16 @@ def valideaza(conn, schema, nota_id):
     return {"ok": True}
 
 
-def document_justificativ(document_ref, fel, serie, numar, data):
+def document_justificativ(document_ref, fel, serie, numar, data, sursa=None, numar_nota=None):
     """Coloana 3 din Registrul-jurnal (OMFP 2634/2015, cod 14-1-1): *„felul, numărul și data
     documentului justificativ care stă la baza operațiunilor (factura, chitanța etc.)"*.
 
     Se DERIVĂ, nu se fabrică. Trei căi, în ordine:
       1. `document_ref` scris explicit pe notă — se ia ca atare;
       2. factura legată prin `factura_id` — se compune „Factură <serie><număr> din <data>";
+      2b. [deficiența 214, retestul Costin 09.10: „Nota de amortizare … «Document justificativ: nederivat»”] nota de amortizare are
+          documentul ei prin construcție — tabloul de amortizare al lunii, numit de numărul notei (`AMORT-AAAA-LL`); notele scrise
+          înainte ca tabloul să primească număr intern (`document_ref` gol) îl primesc la citire;
       3. nimic din care s-o derivi -> **None**, adică lipsă vizibilă.
 
     A treia e importantă: un registru care ar completa un document inexistent ar face exact ce am
@@ -320,6 +323,8 @@ def document_justificativ(document_ref, fel, serie, numar, data):
     """
     if document_ref:
         return str(document_ref).strip() or None
+    if sursa == "amortizare" and numar_nota:
+        return "Tabloul de amortizare %s" % numar_nota
     if numar is None:
         return None
     return eticheta_factura(fel, serie, numar, data)

@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=4242dc4353";
+import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=2561dbfd34";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -151,7 +151,7 @@ export async function ecranEtransport(corp, nav, t) {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           ${inp("t-nr_vehicul", "Nr. vehicul *", "text", "", 'placeholder="B123ABC"')}
           ${inp("t-nr_remorca1", "Nr. remorcă")}
-          ${inp("t-cod_tara_org", "Tara transportator *", "text", "RO")}
+          ${inp("t-cod_tara_org", "Țara transportatorului *", "text", "RO")}
           ${inp("t-cod_org", "CUI transportator *")}
           ${inp("t-denumire_org", "Denumire transportator *")}
           ${inp("t-data", "Data transport *", "date", ziAzi)}

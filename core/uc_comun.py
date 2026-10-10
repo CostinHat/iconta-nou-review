@@ -195,7 +195,7 @@ def _schema_sau_404(ctx, tenant_id):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     return schema
 
 
@@ -281,7 +281,9 @@ def controale_inchidere(conn, schema, an, luna):
     from core import repo_contabilitate
     with conn.cursor() as cur:
         repo_contabilitate.search_path_firma(cur, schema)
-        lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _rmf.toate(cur), an, luna)
+        _mf_toate = _rmf.toate(cur)
+        lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _mf_toate, an, luna)
+        anterioare = _mfr.luni_anterioare_neinregistrate(cur, _mf_toate, an, luna)   # [deficiența 215]
         sold_581 = -_mfr.sold_creditor_cont(cur, "581", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
         sold_401 = -_mfr.sold_creditor_cont(cur, "401", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
     from core.pdf_util import bani as _bani   # [Retest 2 pct.2] sumele semnalelor și blocajelor în forma românească
@@ -290,6 +292,12 @@ def controale_inchidere(conn, schema, an, luna):
                             "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], _bani(x["rata"])))
                             if x.get("rata") is not None else ("amortizarea lunii nu se poate calcula pe contul %s: %s — corectează "
                             "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
+    for x in anterioare:
+        # [deficiența 215] semnal, nu blocaj: luna închisă acum își are amortizarea; cele dinainte se generează pe fiecare lună
+        semnale.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare nu e înregistrată pe contul %s: %d %s "
+                            "(%s), %s lei după calcul — generează-o din Registrul jurnal („Generează amortizarea”), lună cu lună, și "
+                            "valideaz-o" % (x["cont"], len(x["luni"]), "lună" if len(x["luni"]) == 1 else "luni",
+                                             _mfr.luni_ca_interval(x["luni"]), _bani(x["total"])), cont=x["cont"]))
     if sold_581:
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
                             "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % _bani(sold_581),
@@ -309,8 +317,11 @@ def controale_inchidere(conn, schema, an, luna):
 def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
     """[(tip, mesaj)] — [Retest 2 pct.11, comanda Costin 09.10.2026] „O declarație care are termenul în luna respectivă și nu e
     depusă apare ca avertisment.” Avertisment, nu blocaj: depunerea e un act față de ANAF, nu o înregistrare a lunii. Sursa e
-    semaforul Control fiscal (`control_fiscal_api.evalueaza_firma`), aceeași listă de restanțe, filtrată pe termenul din lună; un
-    eșec de calcul se spune ca semnal, nu se înghite."""
+    semaforul Control fiscal (`control_fiscal_api.evalueaza_firma`), aceeași listă de restanțe, filtrată pe lună; un eșec de calcul
+    se spune ca semnal, nu se înghite.
+    [retestul Costin 09.10, deficiența 181: „pe F2 09/2026 nu apare avertismentul pentru declarațiile nedepuse”] Pe lângă termenul din
+    lună, intră și declarațiile PERIOADEI care se încheie cu luna (D300 / D394 / D406 pe T3/2026 la închiderea lui 09/2026): termenul
+    lor e în luna următoare, deci filtrul pe termen singur nu le vedea niciodată la închidere."""
     import calendar as _cal
     import datetime as _dt
     from core import control_fiscal_api as _cf
@@ -331,7 +342,7 @@ def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
     out = []
     for d in sorted(list(ev.get("lipsa") or []) + list(ev.get("urmarit") or []), key=lambda x: (x.get("termen") or "", x.get("tip") or "")):
         t = _dt.date.fromisoformat(str(d.get("termen"))[:10]) if d.get("termen") else None
-        if t and inceput <= t <= sfarsit:
+        if (t and inceput <= t <= sfarsit) or (d.get("an"), d.get("luna")) == (an, luna):
             out.append((d["tip"], "%s pentru %s, cu termen pe %s, nu e depusă — depune-o sau marchează-o depusă în Control fiscal"
                         % (d["tip"].upper(), d.get("perioada") or _cf.perioada_canonica(d.get("an"), d.get("luna"), "luna"),
                            _data_ro(t))))
@@ -511,6 +522,16 @@ def ultima_zi_a_lunii(an, luna):
     return _d(int(an), int(luna), _cal.monthrange(int(an), int(luna))[1])
 
 
+def _cere_luna_incheiata(an, luna, ce):
+    """[deficiența 216, retestul Costin 09.10.2026: „Note de salarii contate pe luni neîncheiate (F5 10/2026 ciornă, 11/2026 validată)”]
+    O notă care închide o lună — salariile ei, amortizarea ei — se scrie după ce luna s-a încheiat: aceeași regulă ca închiderea
+    lunii (decizia Costin 08.10.2026 pct.11, `inchidere_luna.luna_in_curs`, sursa unică). Refuzul spune ce și de când se poate."""
+    from core import inchidere_luna as _il
+    motiv = _il.luna_in_curs(an, luna)
+    if motiv:
+        raise _erori.CerereGresita("%s %02d/%d se contează după ce luna se încheie: %s" % (ce, luna, an, motiv))
+
+
 def _cere_luna_deschisa(conn, schema, data):
     """[R42 (a), 25.08.2026] P15 pe o notă NOUĂ, nu doar pe una existentă.
 
@@ -618,7 +639,7 @@ def _schema_cabinet_sau_404(ctx, tenant_id):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     return schema
 
 
@@ -674,7 +695,7 @@ def _perioada_an(de, pana):
 def _rip_ctx(conn, ctx, tenant_id):
     schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     return schema
 
 
@@ -687,7 +708,6 @@ def _rip_ctx(conn, ctx, tenant_id):
 # E1, in `public.cereri_ritm`, fiindca numararea trebuia sa fie una singura pe doua procese).
 # ============================================================================================
 
-BON_DIR_BAZA = "~/iconta_date/bonuri"
 
 
 STARE_CIORNA = "ciorna"
@@ -932,6 +952,20 @@ def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
             "bonuri_neverificate": bonuri_vechi, "ciorne_casa": ciorne}
 
 
+def _tva_balanta_sau_nu_se_aplica(schema, bal):
+    """[deficiența 211, retestul Costin 09.10: „Control fiscal, firmă neplătitoare de TVA: «TVA vs sold balanță» cu bulină verde; trebuie
+    «nu se aplică»”] Coerența brută 4427/4426 are subiect numai la plătitorul de TVA — ca D300 față de contabilitate (Retest 2 pct.9,
+    `control_incrucisat.verifica_tva`). Neplătitorul primește „nu se aplică”, spus, nu un verde fără subiect."""
+    from core import repo_contabilitate, verificatoare as _vf
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            r = repo_contabilitate.profil_tva(cur)
+        conn.rollback()
+    if r is not None and r[0] is False:
+        return {"nu_se_aplica": "TVA față de soldul balanței: nu se aplică — firma nu e plătitoare de TVA."}
+    return _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0))
+
+
 def _verificari_contabile(schema, an, luna):
     from core import verificatoare as _vf
     from datetime import date as _date
@@ -998,7 +1032,7 @@ def _verificari_contabile(schema, an, luna):
         "echilibru": _ep.verdict_echilibru(_ledger, _vf.verifica_balanta(bal),
                                            "%04d-%02d" % (an, luna)),
         "trezorerie": _vf.verifica_trezorerie(bal),
-        "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
+        "tva": _tva_balanta_sau_nu_se_aplica(schema, bal),
         "note": len(note),
     }
     try:  # verif_doc_pozate_v1
@@ -1025,7 +1059,7 @@ def _tenant_pentru_documente(ctx, tenant_id):  # bon_cabinet_v1
 
 def _bon_imagine_cale(schema, bon_id, n):
     import os as _os, glob as _glob
-    cai = sorted(_glob.glob(_os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(int(bon_id)), "img_%d.*" % int(n))))
+    cai = sorted(_glob.glob(_os.path.join(_common.dir_bonuri(), schema, str(int(bon_id)), "img_%d.*" % int(n))))
     return cai[0] if cai else None
 
 

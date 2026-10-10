@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate } from "../api.js?v=4242dc4353";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt } from "../api.js?v=2561dbfd34";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -16,7 +16,7 @@ function _consumaMigMesaj(corp) {
   arataMesaj(z, _migMesaj, "ok");
   _migMesaj = "";
 }
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] meniul de import fără niciun pas permis spune de ce */
 
 // [drepturi_rol 04.10.2026] `actiune` = ruta care FACE pasul (METODĂ /cale, ca în main.py). Ghidul de bun venit
@@ -1601,7 +1601,7 @@ function importPlanConturiFirma(corp, nav, firma) {
       if (!denumire) { inpD.classList.add("camp-invalid"); inpD.setAttribute("aria-invalid", "true"); }
       eroare.textContent = (!simbol && !denumire) ? "Completează simbolul și denumirea contului."
         : (!simbol ? "Completează simbolul contului (ex. 4428)." : "Completează denumirea contului.");
-      (!simbol ? inpS : inpD).focus();
+      focusFaraSalt(!simbol ? inpS : inpD);
       return;
     }
     try {
@@ -1611,7 +1611,7 @@ function importPlanConturiFirma(corp, nav, firma) {
       // [08.10, V3] „un cont care nu e în planul legal nu se poate crea … fără avertisment”
       if (rs && rs.avertisment) arataMesaj(eroare, rs.avertisment.motiv || "Cont în afara planului legal.", "avert");
     } catch (e) {
-      if (e && e.cod === 409) { inpS.classList.add("camp-invalid"); inpS.setAttribute("aria-invalid", "true"); inpS.focus(); }
+      if (e && e.cod === 409) { inpS.classList.add("camp-invalid"); inpS.setAttribute("aria-invalid", "true"); focusFaraSalt(inpS); }
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
     }
   });

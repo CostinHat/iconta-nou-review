@@ -1,21 +1,21 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile } from "../api.js?v=4242dc4353";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=2561dbfd34";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=b0919887cf";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=9d8ed45291";
+import { randeazaFacturi } from "./facturi_ecran.js?v=f9a07f166d";
 import { ecranRip } from "./rip_ecran.js?v=509758b443";
 import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=e120e829b1";
-import { ecranEtransport } from "./etransport_ecran.js?v=0071af6847";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=6eee7c6ea6";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=1aa6de59e6";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=a0acfd801a";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=b44b9bd2c8";  // [produse_firma_v1]
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=5a6de7a5f6";
+import { ecranEtransport } from "./etransport_ecran.js?v=cdd672d195";
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=8ab6ac6aa1";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=b535bb1ddc";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=29ab225927";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=39f2a185f5";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=ef417ce42e";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=f6304b3159";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=6037af3c77";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -390,7 +390,7 @@ function _randDivergentaNume(corp, nav, t) {
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)
 export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — deschide fisa firmei
-  nav.setFirmaInLucru(t.nume || "");
+  nav.setFirmaInLucru(t.nume || "", t.id);
   nav.deschide((t.nume || "Firmă") + " \u00b7 CUI " + (t.cui || ""), (corp) => meniuFirma(corp, nav, t), { lat: "larg" });
 }
 
@@ -1245,7 +1245,8 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
       <div id="sp-susp-zona"></div>
       <div id="sp-elem-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
-      ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
+      ${/* [deficiența 11, retestul Costin 09.10] caseta numai cui vede „Răspunsuri REGES”; trimiterea la „Chei REGES” numai cui are butonul */ ""}
+      ${!regesOk && permis("POST /tenants/{tenant_id}/reges-poll") ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. ${permis("POST /tenants/{tenant_id}/reges-config") ? "Configurează-le cu butonul „Chei REGES”." : "Le configurează administratorul cabinetului."}</span></div>` : ""}
       ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
@@ -1306,8 +1307,11 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
                <button class="buton-primar" id="sp-contare-scrie" style="margin-top:8px" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Recontabilizează statul</button>`
             : `<span class="${p.validare && p.validare.stare_coada === "la_senior" ? "caseta-info" : "tip-micut"}" style="display:block"><span class="ci-mesaj">${p.validare && p.validare.stare_coada === "la_senior" ? `Nota #${p.nota_id} e la validare în cabinet.`
               : (p.validare && p.validare.stare_coada === "aprobata" ? `Nota #${p.nota_id} e validată.` : `Nota există deja în jurnal (ciornă #${p.nota_id}).`)}${p.divergente.length ? " Diferențele de mai sus se recalculează la fiecare deschidere: rămân afișate până când nota și declarația au aceleași cifre." : ""}</span></span>`)
-          : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
-             <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`}</p>
+          : (p.neincheiata
+            // [deficiența 216, retestul Costin 09.10] nota salariilor se scrie după ce luna s-a încheiat — serverul o refuză înainte
+            ? `<span class="caseta-info" style="display:block"><span class="ci-mesaj">Nota salariilor se scrie după ce luna se încheie: ${esc(p.neincheiata)}</span></span>`
+            : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
+             <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`)}</p>
       </div>`;
       const b = corp.querySelector("#sp-contare-scrie");
       if (b) b.addEventListener("click", async () => {
@@ -1430,7 +1434,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-primar" id="vac-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="vac-cancel">Renunță</button></div>
         <div id="vac-msg"></div>`;
-      const inp = corp.querySelector("#vac-input"); inp.focus(); inp.select();
+      const inp = corp.querySelector("#vac-input"); focusFaraSalt(inp); inp.select();
       corp.querySelector("#vac-cancel").addEventListener("click", () => { zonaVac.innerHTML = ""; });
       corp.querySelector("#vac-save").addEventListener("click", async () => {
         const valoare = parseFloat(inp.value) || 0;
@@ -1454,7 +1458,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-secundar" id="cadou-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Neimpozabil ≤ 300 lei/eveniment pentru evenimente legale; peste 300 sau alt eveniment = semnalat ca taxabil.</div>
         <div id="cadou-msg"></div>`;
-      corp.querySelector("#cadou-input").focus();
+      focusFaraSalt(corp.querySelector("#cadou-input"));
       corp.querySelector("#cadou-cancel").addEventListener("click", () => { zonaCadou.innerHTML = ""; });
       corp.querySelector("#cadou-save").addEventListener("click", async () => {
         if (cereAlegerile(corp, ["#cadou-ev"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
@@ -1478,7 +1482,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-secundar" id="cresa-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Plafon lunar pe copil: Legea 165/2018 art.19, indexat semestrial prin ordin (HG 1045/2018 art.33) — se verifică la salvare pe luna aleasă; valoare multiplu de 10.</div>
         <div id="cresa-msg"></div>`;
-      corp.querySelector("#cresa-input").focus();
+      focusFaraSalt(corp.querySelector("#cresa-input"));
       corp.querySelector("#cresa-cancel").addEventListener("click", () => { zonaCresa.innerHTML = ""; });
       corp.querySelector("#cresa-save").addEventListener("click", async () => {
         const valoare = parseFloat(corp.querySelector("#cresa-input").value) || 0;
@@ -1502,7 +1506,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-secundar" id="cult-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Valoare nominală multiplu de 10 lei (Legea 165/2018 art.22); plafon lunar/eveniment indexat semestrial. Lunile din fereastra neconfirmată la sursă (oct.2025–mar.2026) sunt blocate.</div>
         <div id="cult-msg"></div>`;
-      corp.querySelector("#cult-input").focus();
+      focusFaraSalt(corp.querySelector("#cult-input"));
       corp.querySelector("#cult-cancel").addEventListener("click", () => { zonaCult.innerHTML = ""; });
       corp.querySelector("#cult-save").addEventListener("click", async () => {
         const valoare = parseFloat(corp.querySelector("#cult-input").value) || 0;
@@ -1524,7 +1528,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-secundar" id="iban-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">IBAN românesc (RO + 22 caractere); gol = fără plată pe card.</div>
         <div id="iban-msg"></div>`;
-      const inp = corp.querySelector("#iban-input"); inp.focus();
+      const inp = corp.querySelector("#iban-input"); focusFaraSalt(inp);
       corp.querySelector("#iban-cancel").addEventListener("click", () => { zonaIban.innerHTML = ""; });
       corp.querySelector("#iban-save").addEventListener("click", async () => {
         const iban = inp.value.trim().replace(/\s/g, "").toUpperCase();
@@ -1555,7 +1559,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <div class="camp-eticheta" style="color:var(--gri)">Salariul de bază brut lunar (lei), din contractul de muncă (mai mare ca 0). „De la" = data de când se aplică: o mărire creează o intrare nouă în istoric, iar statul de plată împarte luna pe zile între salariul vechi și cel nou.</div>
         <div id="salariu-msg"></div>
         <div id="salariu-istoric" class="camp-eticheta" style="margin-top:6px"></div>`;
-      corp.querySelector("#salariu-input").focus();
+      focusFaraSalt(corp.querySelector("#salariu-input"));
       // [salariul în timp, decizia Costin 04.10.2026] istoricul vizibil: ce date sunt deja ocupate
       api.get(`/tenants/${t.id}/salariati/${sid}`).then((d) => {
         const ist = (d && d.istoric_salariu) || [];
@@ -1607,7 +1611,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <button class="buton-secundar" id="incet-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare nu se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
         <div id="incet-msg"></div>`;
-      corp.querySelector("#incet-input").focus();
+      focusFaraSalt(corp.querySelector("#incet-input"));
       corp.querySelector("#incet-cancel").addEventListener("click", () => { zonaIncet.innerHTML = ""; });
       corp.querySelector("#incet-save").addEventListener("click", async () => {
         const data_incetare = corp.querySelector("#incet-input").value || null;
@@ -1647,7 +1651,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         <p style="margin-top:8px"><button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
           <button class="buton-secundar" id="ed-cancel" style="margin-left:6px">Renunță</button></p>
         <div id="ed-msg"></div></div>`;
-      corp.querySelector("#ed-nume").focus();
+      focusFaraSalt(corp.querySelector("#ed-nume"));
       corp.querySelector("#ed-cancel").addEventListener("click", () => { zonaDate.innerHTML = ""; });
       corp.querySelector("#ed-save").addEventListener("click", async () => {
         const msg = corp.querySelector("#ed-msg");
@@ -2063,7 +2067,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       // articolele necontorizate = faptic gol, NU e eroare; eroare per-linie doar la valoare invalida).
       const linii = [...z.querySelectorAll(".cvi-faptic")]
         .map((i) => ({ articol_id: parseInt(i.dataset.aid), faptic: i.value.trim() === "" ? null : i.value.trim() }));
-      if (!linii.some((l) => l.faptic !== null)) { arataMesaj(zonaM, "Completeaza stocul faptic la cel putin un articol.", "avert"); return; }
+      if (!linii.some((l) => l.faptic !== null)) { arataMesaj(zonaM, "Completează stocul faptic la cel puțin un articol.", "avert"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/inventar`,
           { data: val("#cv-data"), linii });
@@ -2174,7 +2178,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           <p style="margin-top:8px"><button class="buton-primar" id="im-fin" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Finalizează inventarul (note ciorne)</button></p>
         </div>`;
       const scan = z.querySelector("#im-scan");
-      scan.focus();
+      focusFaraSalt(scan);
       const adauga = async () => {
         const q = scan.value.trim();
         if (!q) return;
@@ -2652,7 +2656,7 @@ async function ecranRegistruInventar(corp, nav, t) {
       corp.querySelector("#ri-element").value = p.element;
       corp.querySelector("#ri-valoare_contabila").value = p.valoare_contabila;
       // coloana 4 se lasa goala INTENTIONAT — vezi comentariul de deasupra ecranului
-      corp.querySelector("#ri-valoare_inventar").focus();
+      focusFaraSalt(corp.querySelector("#ri-valoare_inventar"));
     }));
 
     const arataDif = () => {
@@ -2874,15 +2878,24 @@ async function ecranBilant(corp, nav, t) {
       <div id="bl-coada-mesaj"></div>`;
     const rez = corp.querySelector("#bl-rez");
     const zonaCat = corp.querySelector("#bl-categorie");
+    // [proba plasei, 151/188: primul clic pe „Validează” / „Descarcă XML” se pierdea] părăsirea câmpului „An” emite din nou `change`, cu
+    // aceeași valoare; caseta categoriei era înlocuită cu „Se calculează…”, fereastra (centrată) se micșora, iar butonul fugea între
+    // apăsarea și ridicarea mouse-ului. Categoria se cere numai pentru un an NOU, iar caseta veche rămâne până sosește cea nouă.
+    let anCategorie = null;
     const cereCategoria = async () => {
-      zonaCat.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103 categoria de m\u0103rime...</p>`;
+      const an = corp.querySelector("#bl-an").value;
+      if (an === anCategorie) return;
+      anCategorie = an;
+      if (!zonaCat.innerHTML.trim()) zonaCat.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103 categoria de m\u0103rime...</p>`;
+      zonaCat.setAttribute("aria-busy", "true");
       try {
-        const an = corp.querySelector("#bl-an").value;
-        zonaCat.innerHTML = _casetaCategorie(await api.get(`/tenants/${t.id}/categorie-marime?an=${an}`));
+        const c = await api.get(`/tenants/${t.id}/categorie-marime?an=${an}`);
+        if (an === anCategorie) zonaCat.innerHTML = _casetaCategorie(c);   // un an schimbat între timp își aduce propria casetă
       } catch (e) {
+        anCategorie = null;
         zonaCat.innerHTML = "";
         arataMesaj(zonaCat, (e && e.mesaj) || "Nu am putut calcula categoria de m\u0103rime.", "eroare");
-      }
+      } finally { zonaCat.removeAttribute("aria-busy"); }
     };
     corp.querySelector("#bl-an").addEventListener("change", cereCategoria);
     cereCategoria();
@@ -2896,10 +2909,16 @@ async function ecranBilant(corp, nav, t) {
         const sem = r.ok
           ? `<span style="color:var(--verde);font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:var(--rosu);font-weight:600">\u25cf Erori la validare</span>`;
+        // [deficiența 188] rândurile care se depun, cu cifrele lor, citite din XML-ul validat (nu doar verdictul)
+        const randuri = (r.randuri || []).map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${x.rand}</td>`
+          + `<td class="fd-td-num">${bani(x.an_precedent)}</td><td class="fd-td-num">${bani(x.an_curent)}</td></tr>`).join("");
         rez.innerHTML = `<p>${sem}</p>` +
           (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
-            ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
+            ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "") +
+          (randuri ? `<h3 class="pf-subtitlu">Ce se depune — ${(r.randuri || []).length} rânduri cu valoare</h3>
+            <table class="fd-tabel" id="bl-randuri"><thead><tr><th>Formular</th><th>Rândul</th><th class="fd-td-num">An precedent</th>`
+            + `<th class="fd-td-num">An curent</th></tr></thead><tbody>${randuri}</tbody></table>` : "");
       } catch (e) { arataMesaj(rez, e.mesaj || "eroare", "eroare"); }
     });
     // [decizia Costin 07.10.2026, C11] bilanțul trece prin coadă (pregătit → validat → depus), cu drepturile declarațiilor:
@@ -4012,6 +4031,25 @@ async function legaBlocareLuna(bLock, zonaMesaj, t, an, luna, dupa) {
       dupa();
     } catch (e) { arataMesaj(zonaMesaj, (e && e.mesaj) || "eroare", "eroare"); }
   });
+  // [08.10.2026, retest pct.11 + deficiența 197, proba blocului F: „«Blochează luna» e activ deși «Ce oprește închiderea» are un blocaj
+  // (22 de ciorne pe Comert Micro TVA)”] cât timp ceva oprește închiderea (sau controalele n-au putut fi citite), butonul de blocare e
+  // inactiv și spune de ce — AICI, o dată, pentru ambele locuri în care apare (Închidere lună și antetul Registrului jurnal; poarta
+  // stătea numai în primul). Serverul refuză oricum (uc_comun.controale_inchidere).
+  // Citirea NU se așteaptă: ecranul își leagă restul butoanelor (← luna / luna →) imediat, iar unul apăsat între timp nu se pierde
+  // (proba plasei, 58: navigarea jurnalului aștepta după a doua cerere). Până sosesc controalele, blocarea e inactivă.
+  if (!lunaBlocata) {
+    bLock.disabled = true;
+    bLock.title = "Se citesc controalele lunii…";
+    api.get(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`).then((r) => {
+      const ctl = (r || {}).controale;
+      if (ctl && !(ctl.blocaje || []).length) { bLock.disabled = false; bLock.title = ""; return; }
+      bLock.title = ctl ? `Rezolvă întâi ce oprește închiderea (${ctl.blocaje.length}): ${ctl.blocaje.map((x) => x.mesaj).join(" · ")}`
+        : "Controalele lunii nu au putut fi citite.";
+    }).catch((e) => {
+      bLock.title = "Controalele lunii nu au putut fi citite.";
+      arataMesaj(zonaMesaj, `Controalele lunii nu s-au putut citi, deci luna nu se poate bloca acum: ${(e && e.mesaj) || "eroare"}`, "eroare");
+    });
+  }
   return lunaBlocata;
 }
 
@@ -4053,13 +4091,7 @@ async function ecranInchidereLuna(corp, nav, t) {
       try { ctl = (await api.get(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`)).controale; }
       catch (e) { arataMesaj(zc, "Nu am putut citi controalele lunii" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + " — reîncearcă.", "eroare"); }
       const bLock = corp.querySelector("#il-lock");
-      const blocata = await legaBlocareLuna(bLock, zm, t, an, luna, deseneaza);
-      // [08.10.2026, retest pct.11] „«Blochează luna» e activ deși există blocaje” — cât timp ceva oprește închiderea (sau controalele
-      // n-au putut fi citite), butonul de blocare e inactiv; serverul refuză oricum (uc_comun.controale_inchidere).
-      if (!blocata && bLock.isConnected && (!ctl || ctl.blocaje.length)) {
-        bLock.disabled = true;
-        bLock.title = ctl ? "Rezolvă întâi ce oprește închiderea (lista de mai jos)." : "Controalele lunii nu au putut fi citite.";
-      }
+      const blocata = await legaBlocareLuna(bLock, zm, t, an, luna, deseneaza);   // poarta „ceva oprește închiderea” e în ea (197)
       corp.querySelector("#il-stare-perioada").textContent = blocata
         ? "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg."
         : "Luna e deschisă. Blocarea verifică întâi controalele de mai jos.";
@@ -4138,10 +4170,14 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         ? `<div class="caseta-atentie jn-respinsa"><div class="ca-mesaj">Respinsă la validare: ${esc(v.motiv_respingere || "fără motiv")}. Corecteaz-o, apoi trimite-o din nou.</div></div>`
         : (laValidare ? `<div class="pf-frand-sub">La validare în cabinet: nu se modifică până nu e validată sau respinsă.</div>` : "");
       // [lotul 07.10 pct.6] nota la validare nu se editează și nu se șterge (serverul refuză oricum: cabinetul validează ce a văzut)
+      // [deficiența 192] ciorna derivată dintr-un document (NIR, raport Z, stoc, amortizare …) nu se editează din jurnal, iar cea
+      // indicată din alt tabel nu se șterge de aici — serverul le refuză; ecranul nu le oferă și spune unde se corectează
+      const der = n.derivata;
       const butoane = n.status === "ciorna" ? `
-        <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>${laValidare ? "" : `
-        <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>
-        <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>`}${respinsa ? `
+        <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>${laValidare ? "" : `${der ? "" : `
+        <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>`}${der && !der.se_sterge ? "" : `
+        <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>`}`}${der && !laValidare ? `
+        <div class="pf-frand-sub jn-derivata">${esc(der.unde)}</div>` : ""}${respinsa ? `
         <button class="buton-secundar" data-retrimite="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">Trimite din nou la validare</button>` : ""}${inAfaraCozii && !poateValida ? `
         <button class="buton-secundar" data-retrimite="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">Trimite la validare</button>` : ""}` : "";
       return `
@@ -4269,7 +4305,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi această ciornă?", async () => {  // audit_cab_lot2_v1
         try { await api.del(`/tenants/${t.id}/jurnal/${b.dataset.del}`); deseneaza(); }
-        catch (e) { eroare(e, "Eroare la stergere"); }
+        catch (e) { eroare(e, "Eroare la ștergere"); }
       }, { textOk: "Șterge" });
     }));
     corp.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => {
@@ -4331,7 +4367,7 @@ async function ecranPlanConturi(corp, nav, t) {
   catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca planul de conturi.</p>`; return; }
   corp.innerHTML = `
     <h2 class="pf-titlu">Plan de conturi</h2>
-    <p class="pf-intro">Conturile firmei: sinteticele din planul general și analiticele adăugate de tine, sub contul lor. Un cont folosit în note nu se poate șterge.</p>
+    <p class="pf-intro">Conturile firmei: sinteticele din planul general și analiticele adăugate de tine, sub contul lor. Nu se șterg: sinteticele planului general, contul cu rulaj în note sau cu sold inițial și contul care are analitice.</p>
     <input type="text" class="camp-input" id="pcf-cauta" aria-label="Caută cont" placeholder="Caută după cont sau denumire…" style="width:100%;max-width:520px;margin-bottom:10px">
     <div class="mig-eticheta">Adaugă analitic</div>
     <span class="camp-ajutor">Analiticul se scrie după contul sintetic, cu punct: 4111.01, 401.07.</span>
@@ -4351,11 +4387,15 @@ async function ecranPlanConturi(corp, nav, t) {
         <div class="pf-frand-sub">${analitic ? "analitic" : "sintetic"}${c.folosit ? " \u00b7 folosit în note" : ""}${c.in_afara_planului ? " \u00b7 în afara planului legal al normei firmei" : ""}</div>
       </div>
       ${analitic ? "" : `<button class="btn-link" data-analitic="${esc(c.simbol)}" data-fara-actiune="completează formularul de mai sus; Adaugă poartă acțiunea">Adaugă analitic</button>`}
-      ${c.folosit ? "" : `<button class="btn-link" data-sterge="${esc(c.simbol)}" data-actiune="DELETE /tenants/{tenant_id}/plan-conturi/{simbol}">Șterge</button>`}
+      ${c.nu_se_sterge ? "" : `<button class="btn-link" data-sterge="${esc(c.simbol)}" data-actiune="DELETE /tenants/{tenant_id}/plan-conturi/{simbol}">Șterge</button>`}
     </div>`;
   const deseneaza = () => {
     const q = campCautare.value.trim().toLowerCase();
-    const potriveste = (c) => !q || c.simbol.toLowerCase().includes(q) || (c.denumire || "").toLowerCase().includes(q);
+    // [deficiența 219, retestul Costin 09.10: „căutarea «73» găsește și 473; căutarea după simbol potrivește începutul”] un text care
+    // începe cu cifră e un simbol: se potrivește începutul lui; altfel se caută în denumire (și în simbol)
+    const dupaSimbol = /^\d/.test(q);
+    const potriveste = (c) => !q || (dupaSimbol ? c.simbol.toLowerCase().startsWith(q)
+      : (c.simbol.toLowerCase().includes(q) || (c.denumire || "").toLowerCase().includes(q)));
     const sintetice = conturi.filter((c) => !c.sintetic);
     const analitice = conturi.filter((c) => c.sintetic);
     const sub = (s) => analitice.filter((a) => a.sintetic === s);
@@ -4370,7 +4410,7 @@ async function ecranPlanConturi(corp, nav, t) {
     const html = blocuri.join("") + orfane.join("");
     lista.innerHTML = html || `<div class="stare-goala">Niciun cont cu „${esc(campCautare.value.trim())}” în simbol sau denumire. Caută după alt termen, sau adaugă contul mai sus.</div>`;
     lista.querySelectorAll("[data-analitic]").forEach((b) => b.addEventListener("click", () => {
-      inpS.value = b.dataset.analitic + "."; inpD.focus();
+      inpS.value = b.dataset.analitic + "."; focusFaraSalt(inpD);
     }));
     lista.querySelectorAll("[data-sterge]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, `Ștergi contul ${b.dataset.sterge} din planul firmei?`, async () => {
@@ -5067,13 +5107,13 @@ async function ecranRegistratura(corp, nav, t) {
       <div class="panou" style="margin-bottom:14px">
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Direcție <span class="oblig">*</span></label>
-          <select class="camp-input" id="rg-dir" aria-label="Directie inregistrare" style="max-width:200px">
+          <select class="camp-input" id="rg-dir" aria-label="Direcția înregistrării" style="max-width:200px">
             <option value="intrare">Intrare</option>
             <option value="iesire">Ieșire</option></select>
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Data</label>
-          <input type="date" class="camp-input" id="rg-data" aria-label="Data inregistrare" style="max-width:200px" value="${dataIso()}">
+          <input type="date" class="camp-input" id="rg-data" aria-label="Data înregistrării" style="max-width:200px" value="${dataIso()}">
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label for="rg-desc" class="camp-eticheta">Descriere <span class="oblig">*</span></label>
@@ -5299,7 +5339,7 @@ async function ecranAccesClient(corp, nav, t) {
       msg.textContent = "Se trimite...";
       try {
         await api.post(`/tenants/${t.id}/client-acces`, { email, nume: corp.querySelector("#ac-nume").value.trim() });
-        mesajSucces = "Invitatie trimisa pe " + email + ".";
+        mesajSucces = "Invitație trimisă pe " + email + ".";
         randeazaPrincipal();
       } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
     });

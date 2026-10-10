@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj } from "../api.js?v=4242dc4353";
+import { api, dataRo, esc, arataMesaj } from "../api.js?v=2561dbfd34";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -23,6 +23,9 @@ export async function randeazaPachete(corp, nav) {
   try {
     const t = await api.get("/tenants");
     S.firme = Array.isArray(t) ? t : (t.tenants || []);
+    // [deficiența 207] pornește pe firma în lucru (cea deschisă ultima), dacă e în lista contului
+    const inLucru = nav && nav.firmaInLucruId ? nav.firmaInLucruId() : null;
+    if (inLucru && S.firme.some((fr) => fr.id === inLucru)) S.tenant_id = inLucru;
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;
     return;
@@ -194,9 +197,15 @@ function deschideModal(corp, nav) {
         ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare();
         arataMesaj(stareEl, "Generată de AI — citește, editează și aprobă.", "info");
         // [comanda Costin 05.10.2026 pct.1] ce a scris AI-ul altfel decât pachetul (termen sau sumă) — de corectat înainte de aprobare
-        arataMesaj(abateriEl, (r.abateri && r.abateri.length)
+        // [deficiențele 32 + 33, retestul Costin 09.10] propozițiile fără sursă în pachet (laude, afirmații despre declarații) au fost
+        // scoase din text înainte de editor — ecranul spune care, ca omul să știe ce n-a ajuns
+        const scoase = (r.scoase && r.scoase.length)
+          ? "Am scos din textul generat " + r.scoase.length + (r.scoase.length === 1 ? " propoziție" : " propoziții")
+            + " fără sursă în pachet: " + r.scoase.map((x) => "„" + x + "”").join(" ") + " "
+          : "";
+        arataMesaj(abateriEl, scoase + ((r.abateri && r.abateri.length)
           ? "Atenție — textul generat se abate de la pachet (" + r.abateri.join("; ") + "). Corectează înainte de aprobare: pachetul spune venituri, cheltuieli și rezultat."
-          : "", "avert");
+          : ""), "avert");
       }
       else if (r && r.cod === "AI_INDISPONIBIL") { arataMesaj(stareEl, "AI indisponibil (cheie lipsă). Scrie manual.", "eroare"); }
       else { arataMesaj(stareEl, "Nu am putut genera. " + ((r && r.mesaj) || ""), "eroare"); }

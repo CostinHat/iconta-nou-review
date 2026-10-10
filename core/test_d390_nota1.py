@@ -54,7 +54,7 @@ def test_declarant_prezent_fara_avertisment():
     f = [{"cui": "DE811569869", "nume": "PARTENER DE", "directie": "emisa", "total": 1000, "tva": 0}]
     res = calcul_d390(_prof(), 2026, 6, f)
     build_xml(res)
-    assert not any("emis implicit" in a for a in res.avertismente)
+    assert not any("se trece implicit" in a for a in res.avertismente)
 
 
 # ============================================================

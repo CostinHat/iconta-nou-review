@@ -18983,3 +18983,95 @@ supersedează pe punctele R1 și R3:
 cifră din PREDARE păzită de `test_predare_cifre` — prima poartă a lotului a picat pe 257 -> 270. Rulatorul plasei readuce acum
 contorul la valoarea de dinainte (mutația: fără readucere 270 -> 271, testul roșu). Testele care citeau notificările conturilor comune
 măsoară diferența, nu presupun gol (S4).
+
+## 09.10.2026 — Comanda Costin: răspunsul la §6 al raportului „Registrul deficiențelor și plasa” (60c716d1) — lotul „Retestul plasei”
+
+Confirmată de Costin: „confirm comanda”. Verbatim:
+
+> Răspuns la §6 din raportul „Registrul deficiențelor și plasa” (60c716d1). Scriptul tenant_049 a rulat: fișa Marfa A = 371 = 6.450,00, confirmat.
+>
+> 1. Cifrele de referință: aprobate, cu excepțiile:
+>    a. F1 10/2026 (balanță, D300, D406): nu se îngheață până nu validez notele 121 și 122 (coada 11402/11403). După validare le regenerezi și mi le trimiți pentru aprobare.
+>    b. D394, factura cu două cote numărată o singură dată la cota cea mai mare: citează textul instrucțiunii cuvânt cu cuvânt din sursa ANAF (fișier și rând). Până atunci, rândul nu intră în referință.
+>    c. Perioadele firmelor cu decont trimestrial se afișează ca trimestru (T3/2026), nu ca ultima lună (F2 D300 „09/2026”, F5 D406 „12/2026”).
+>    d. F5 are note de salarii validate pe 11/2026, o lună neîncepută. Referința rămâne; defectul e deficiența 216.
+> 2. Plasa a marcat „rezolvată” deficiențe pe care retestul meu de azi în aplicație le-a găsit stricate: 4 (fereastra „Prezentarea aplicației” nu se închide cu Esc), 5 (Ana vede în catalog funcții de administrator), 11 (Anei i se spune să configureze „Chei REGES”, buton pe care nu-l are), 32 (povestea lunii păstrează laude nesusținute de cifre), 120 (D300 F1 10/2026 se poate trimite deși 4426 are 241,50 neincluși), 156 (F3: lista „5 restanțe · 3 de urmărit”, detaliul 3 și 2), 173 („3 nu se pot verifica”, lista arată 2), 181 (pe F2 09/2026 nu apare avertismentul pentru declarațiile nedepuse). La 33 (neverificat la tine): povestea scrie fals „în septembrie nu a fost nicio declarație de depus”. Pentru fiecare: testul tău trebuie să reproducă exact situația descrisă aici și să pice pe aplicația de acum. Apoi repari, iar testul trece. Un test care trecea pe defect se înlocuiește.
+> 3. Deficiențe noi din retestul meu, de adăugat în DEFICIENTE.md ca 200–219 (după 199 al tău):
+>    200. Prezentarea aplicației: coloane inegale, goluri mari.
+>    201. Prezentarea aplicației: limbaj de programator (pull->push, F163v2, „Dispatch”, v9) și titluri fără diacritice („Facturare si e-Factura”).
+>    202. Prezentarea aplicației trimite la „cardul Suport”; cardul se numește „Raportează”.
+>    203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor = ecranele din spate.
+>    204. Fluturașul: titlul „Fluturas” fără diacritice.
+>    205. Fluturașul: deducerea personală 562,25 (la 05.10 era 562); verifică la sursă rotunjirea.
+>    206. Fluturașul: rândul „Facilitate salariu minim … 0,00” apare și când nu se aplică.
+>    207. Pachete lunare: câmpul „Firmă” nu vine cu firma în lucru.
+>    208. Povestea lunii: fereastra și caseta de text prea mici.
+>    209. Povestea lunii: spune doar ce reiese din cifre și nimic despre declarații.
+>    210. D300: garda D300 față de balanță nu mai blochează trimiterea (regresie a lui 120).
+>    211. Control fiscal, firmă neplătitoare de TVA: „TVA vs sold balanță” cu bulină verde; trebuie „nu se aplică”.
+>    212. Control fiscal, „Înainte de preluare”: text la persoana întâi, repetat pe fiecare rând; D100 T1–T2/2026 în alt grup decât D406 T1/2026, deși sunt aceeași perioadă.
+>    213. Confirmarea anulării marcării scrie „D406 03/2026” pentru T1/2026.
+>    214. Nota de amortizare: datată 28.09 în loc de ultima zi a lunii; „Document justificativ: nederivat”.
+>    215. Închidere lună: lunile anterioare cu amortizare neînregistrată nu apar ca semnal.
+>    216. Note de salarii contate pe luni neîncheiate (F5 10/2026 ciornă, 11/2026 validată).
+>    217. Coada: textul „validarea în doi nu e pornită” contrazice notele de validat de pe același ecran.
+>    218. Plan de conturi: „Șterge” pe conturile sintetice din planul legal și pe conturi cu sold (1012). Sinteticele legale nu se șterg; niciun cont cu sold sau rulaj nu se șterge.
+>    219. Plan de conturi: căutarea „73” găsește și 473; căutarea după simbol potrivește începutul.
+> 4. Ordinea: întâi pct.2 (stările greșite ale plasei), apoi parțialele 12, 159, 162, 172, apoi 188–219, apoi transformarea neverificatelor 9, 76, 79, 97, 142, 149, 184, 199 în probă. Împărțirea pe pași o alegi tu.
+> 5. Interpretările R1 și R3, cu consecința „dezlegarea unei plăți validate se refuză, corectura prin stornare”: aprobate.
+> 6. Regulile noi a–f: aprobate toate. La a) și f) citează temeiul din sursă în DECIZII.
+> 7. Infrastructura de test: director de bonuri separat și AI simulat în plasă, aprobate.
+> 8. Fiecare raport de lot: tabel număr → stare → probă → test pentru toate numerele atinse; operațiile listate fără estimări și durata măsurată a fiecăreia.
+> 9. La final: ZIP cu tot ce s-a schimbat (cod, teste, capturi, registre, cifre de referință regenerate), în ~/ghid_incoming/, cu calea exactă în raport.
+>
+> Poți trece la următorul pas din listă.
+
+**Decizii închise:** cifrele de referință aprobate cu excepțiile a–d; R1 („validată într-o tranzacție încheiată”) și R3 (documentul la validare)
+aprobate, cu consecința dezlegării refuzate pe plățile validate; regulile noi a–f aprobate (temeiul a și f citat în DECIZII la
+implementare); infrastructura de test (bonuri separate, AI simulat) aprobată.
+
+## 09.10.2026 — Lotul „Retestul plasei”, pct.6: temeiul regulilor de fond a) și f), citat din sursă
+
+**Decizia (a lui Costin, pct.6):** „Regulile noi a–f: aprobate toate. La a) și f) citează temeiul din sursă în DECIZII.” Implementarea
+stă în `core/migrare_reguli_fond_2.py` (R6–R10; b) există deja ca index unic). Aici, numai temeiul, din fișierele din `anaf_surse/`.
+
+**a) — R6: factura emisă nu se șterge, se corectează.** `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, rândul 8238, CF art.330 alin.(1)
+lit.a)–b), verbatim: „Corectarea informațiilor înscrise în facturi sau în alte documente care țin loc de factură se efectuează astfel:
+a) în cazul în care factura nu a fost transmisă către beneficiar, aceasta se anulează și se emite o nouă factură; ... b) în cazul în
+care factura a fost transmisă beneficiarului, fie se emite o nouă factură care trebuie să cuprindă, pe de o parte, informațiile din
+factura inițială, numărul și data facturii corectate, valorile cu semnul minus sau, după caz, o mențiune din care să rezulte că
+valorile respective sunt negative, iar, pe de altă parte, informațiile și valorile corecte, fie se emite o nouă factură conținând
+informațiile și valorile corecte și concomitent se emite o factură cu valorile cu semnul minus [...]”. Niciuna din cele două căi nu
+șterge factura: la a) se anulează (rămâne, cu starea ei), la b) se emite stornarea. **Limita:** se poate șterge numai ciorna
+(„nefinalizată — nu s-a emis nimic”, `nomenclator_status_factura.STERGIBILE`, din care se generează clauza triggerului); orice altă
+stare a unei facturi emise — inclusiv `de_preluat`, starea în care `emite_factura` produce factura emisă din aplicație, și `anulata` /
+`stornata` — e document emis și se păstrează. Prima formă a regulii, în acest lot, excepta și `de_preluat`, crezând-o importul
+nerecunoscut; a prins-o `core/test_status_factura_un_loc.py` (listă de stări scrisă în afara nomenclatorului) înainte de commit.
+Ruta `DELETE /tenants/{id}/facturi/{id}` (fără buton pe ecran) refuză acum o factură emisă necontată cu refuzul numit
+`FACTURA_EMISA` (409, ieșirea „storno”, `facturi_api.sterge_factura`, din aceeași listă `STERGIBILE`); baza e gardul final.
+**Alternativa respinsă:** refuzul numai în Python (`facturi_api`) — ocolibil de orice drum care scrie direct în tabel.
+
+**f) — R10: chitanța emisă nu se șterge, se anulează și se păstrează.** `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`, rândul 79,
+OMFP 2634/2015 Anexa 1 pct.15, verbatim: „În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe
+baza cărora se primește, se eliberează sau se justifică numerarul, ori al altor documente pentru care normele de utilizare prevăd
+asemenea restricții, documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv.” Chitanța e documentul
+pe baza căruia se primește numerarul. **Limita:** anularea însăși (coloana `chitante.anulata`, pusă de `casa_api` la stornarea operațiunii
+de casă, `core/casa_api.py:193`) rămâne pe drumul aplicației; baza refuză numai DELETE. **Alternativa respinsă:** ștergerea permisă pentru chitanța „greșită imediat după emitere” — textul nu face
+nicio excepție de timp.
+
+## 09.10.2026 — PIVOT R36 la declarațiile de TVA (supersedează parțial intrarea „08.10.2026 … §6 pct.7 — R36”)
+
+**Ce supersedează:** R36, decizia Costin din 08.10 §6 pct.7: „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există
+ciorne în lună, dau doar avertisment, nu blocaj.” **Ce a răsturnat-o:** retestul lui Costin din 09.10 (comanda „Retestul plasei”
+pct.2, deficiențele 120 și 210): „D300 F1 10/2026 se poate trimite deși 4426 are 241,50 neincluși”; „garda D300 față de balanță nu mai
+blochează trimiterea (regresie a lui 120)”. Regresia era chiar R36: pe F1 10/2026 erau ciorne în lună (notele 121/122), deci diferența
+devenea avertisment.
+
+**Final:** pentru D300 / D394 / D390, o DIFERENȚĂ față de balanță blochează și cu ciorne în perioadă; mesajul spune câte ciorne sunt și
+că, dacă ele corectează diferența, se validează și se generează din nou (`uc_coada.decizie_poarta(..., tva=True)`,
+`MESAJ_CIORNE_BLOCAJ_TVA`). Ciornele fără diferență dau tot avertisment. **Temeiul raționamentului (nu normă fiscală):** D300/D394/D390
+se generează din documente (facturi), nu din note, deci validarea ciornelor nu schimbă declarația — schimbă balanța. Avertismentul R36
+presupunea că diferența se poate închide singură; la TVA nu se poate. **D406 rămâne sub R36** (avertisment cu ciorne): el se
+construiește din notele validate, ca balanța. **Limita:** extinderea la D406 nu e făcută; e ridicată la §6 al raportului lotului ca
+decizie („D406 sub R36”). **Alternativa respinsă:** blocaj pe orice ciornă în lună (fără diferență) — ar opri depunerea pe o lună în
+care ciornele nu ating TVA-ul.

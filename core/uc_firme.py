@@ -17,5 +17,5 @@ def firma_verificari(tenant_id, an, luna, ctx):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise _erori.Inexistent("tenant inexistent sau fără acces")
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     return _uc_comun._verificari_contabile(schema, an, luna)  # cf_verificari_v1

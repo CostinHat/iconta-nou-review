@@ -127,7 +127,7 @@ TIPURI = {
             "**DAR, aplicând criteriul lui până la capăt, am găsit o explicație legitimă pe care NU "
             "o pot exclude din date:** un D100 depus **în afara aplicației** nu intră în suma din "
             "dreapta, iar diferența ar fi atunci a măsurătorii mele, nu a declarației. Am închis ce "
-            "se putea închide — o depunere fără rânduri persistate dă GRI, nu roșu —, dar absența "
+            "se putea închide — o depunere fără rândurile salvate se arată gri (nu se poate verifica), nu roșu —, dar absența "
             "unei depuneri făcute pe altă cale nu se vede de aici. *Îi ridic asta ca întrebare; "
             "până răspunde, tăria rămâne cea dată de el, fiindcă atribuirea e a lui, nu a mea.*",
     },

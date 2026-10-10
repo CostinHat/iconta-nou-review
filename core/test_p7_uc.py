@@ -362,6 +362,22 @@ APELURI_EXTRASE_IN_AJUTOR = {
         "Comanda Costin „Retest 08.10” pct.16: „D406: caseta «Rezumat» nu se vede” — `sinteza` intrase numai în răspunsul "
         "generării, iar ecranul cheamă validarea. Câmpurile rezultatului (avertismente, note_rezultat, sinteza, operatiuni, "
         "componente) se asamblează acum într-o singură funcție, `uc_declaratii.campuri_rezultat`, chemată de amândouă rutele.")),
+    "_verificari_contabile": (("core/uc_comun.py", "_tva_balanta_sau_nu_se_aplica"), (
+        "Deficiența 211 (retestul Costin 09.10.2026): „Control fiscal, firmă neplătitoare de TVA: «TVA vs sold balanță» cu bulină "
+        "verde; trebuie «nu se aplică»”. Coerența brută 4427/4426 se calculează acum într-o funcție care întâi citește dacă firma e "
+        "plătitoare de TVA (`_tva_balanta_sau_nu_se_aplica`) — aceleași apeluri `coerenta_tva` și `get` pe balanță, mutate acolo.")),
+    "_bon_imagine_cale": (("core/common.py", "dir_bonuri"), (
+        "Deficiența 9 + comanda Costin 09.10.2026 pct.7 („director de bonuri separat”): calea pozelor bonurilor era scrisă de patru ori "
+        "(`os.path.expanduser(\"~/iconta_date/bonuri\")`); acum stă într-un singur loc, `common.dir_bonuri`, care o mută pe mediul "
+        "de test (`ICONTA_BON_DIR`) și refuză mutarea pe producție. Același `expanduser`, mutat acolo.")),
+    "portal_bon": (("core/common.py", "dir_bonuri"), (
+        "Deficiența 9 + comanda Costin 09.10.2026 pct.7 („director de bonuri separat”): calea pozelor bonurilor era scrisă de patru ori "
+        "(`os.path.expanduser(\"~/iconta_date/bonuri\")`); acum stă într-un singur loc, `common.dir_bonuri`, care o mută pe mediul "
+        "de test (`ICONTA_BON_DIR`) și refuză mutarea pe producție. Același `expanduser`, mutat acolo.")),
+    "portal_bon_sterge": (("core/common.py", "dir_bonuri"), (
+        "Deficiența 9 + comanda Costin 09.10.2026 pct.7 („director de bonuri separat”): calea pozelor bonurilor era scrisă de patru ori "
+        "(`os.path.expanduser(\"~/iconta_date/bonuri\")`); acum stă într-un singur loc, `common.dir_bonuri`, care o mută pe mediul "
+        "de test (`ICONTA_BON_DIR`) și refuză mutarea pe producție. Același `expanduser`, mutat acolo.")),
     "tenant_mijloace_fixe": (("core/mf_registru.py", "registru"), (
         "Decizia Costin 08.10.2026, W2: „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de "
         "calculul teoretic, cu lunile neînregistrate … durata, codul din catalog și planul lunar”. Rândul registrului se construiește "
@@ -694,8 +710,41 @@ def _forme_mesaj(msg_repr):
     return forme
 
 
+#: [deficiența 172, retestul Costin 09.10.2026 — limbajul de programator în textul afișat] o frază rescrisă PESTE TOT unde apare: același
+#: refuz, același cod, în toate funcțiile care îl ridicau; mesajul vechi -> (mesajul nou, motivul). Se aplică numai perechilor
+#: (cod, mesaj vechi) care au, pe ACELAȘI cod, perechea (cod, mesaj nou).
+MESAJE_RESCRISE = {
+    "'tenant inexistent sau fără acces'": ("'Firma nu există sau nu ai acces la ea.'",
+        "Deficiența 172 (retestul Costin 09.10.2026): „tenant” e jargon de programator pe ecranul contabilului; același 404."),
+    "'template tenant indisponibil pe server'": ("'Șablonul pentru o firmă nouă lipsește pe server — anunță administratorul platformei.'",
+        "Deficiența 172: același refuz, aceeași clasă de eroare, fără „template tenant”."),
+    "'XML neparsabil: %s' % str(e)[:200]": ("'XML-ul nu se poate citi: %s' % str(e)[:200]",
+        "Deficiența 172: același 422, fără „neparsabil”."),
+}
+
+
+#: [deficiența 172] un FRAGMENT rescris într-un refuz structurat (dict cu `mesaj`): perechea veche, cu fragmentul înlocuit, e perechea nouă
+FRAGMENTE_RESCRISE = {
+    "Câmpuri obligatorii lipsă (schema eTransport): ": ("Câmpuri obligatorii lipsă (structura eTransport): ",
+        "Deficiența 172: același 422 structurat (CAMPURI_LIPSA), fără „schema”."),
+}
+
+
 def _fara_abateri(nume, ramase_v, ramase_n):
     """Scoate abaterile DECLARATE — fiecare cu motivul ei, sus in fisier."""
+    for vechi, (nou, _motiv) in FRAGMENTE_RESCRISE.items():
+        for p in [p for p in ramase_v if vechi in p[1]]:
+            pereche = [q for q in ramase_n if q[0] == p[0] and q[1] == p[1].replace(vechi, nou)]
+            if pereche:
+                ramase_v = [x for x in ramase_v if x != p]
+                ramase_n = [x for x in ramase_n if x != pereche[0]]
+    for vechi, (nou, _motiv) in MESAJE_RESCRISE.items():
+        fv, fn = _forme_mesaj(vechi), _forme_mesaj(nou)
+        for p in [p for p in ramase_v if p[1] in fv]:
+            pereche = [q for q in ramase_n if q[0] == p[0] and q[1] in fn]
+            if pereche:
+                ramase_v = [x for x in ramase_v if x != p]
+                ramase_n = [x for x in ramase_n if x != pereche[0]]
     for (rut, mesaj), _motiv in ABATERI.items():
         if rut != nume:
             continue
@@ -844,8 +893,11 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
                 acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
         # [08.10.2026] corpul EXTRAS într-un ajutor: creditul = apelurile pe care ajutorul chiar le face (vezi tabelul de sus)
         if nume in APELURI_EXTRASE_IN_AJUTOR and acum.get(APELURI_EXTRASE_IN_AJUTOR[nume][0][1]):
+            # creditul se dă PE APEL efectiv al ajutorului (ca la BIFA_INLOCUIRI): `portal_bon` cheamă `dir_bonuri` de două ori, cum
+            # chema înainte `expanduser` (deficiența 9)
+            _n_apel = acum[APELURI_EXTRASE_IN_AJUTOR[nume][0][1]]
             for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
-                acum[k] = acum.get(k, 0) + v
+                acum[k] = acum.get(k, 0) + v * _n_apel
         # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
         # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
         # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.

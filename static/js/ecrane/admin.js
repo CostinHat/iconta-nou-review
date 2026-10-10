@@ -2,8 +2,8 @@
 // Spatiu separat de cabinet: doar functiile de administrare iConta.
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
-import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=4242dc4353";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt } from "../api.js?v=2561dbfd34";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=f421966906";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=db921cefb0";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=0692c239ea";
@@ -183,7 +183,7 @@ async function incarcaPropuneri(corp) {
       ta2.dispatchEvent(new Event("input"));
       try { await api.post(`/admin/alerte-fiscale/${a.id}/tratat`, {}); } catch {}
       b.closest(".panou").remove();
-      ta2.focus();
+      focusFaraSalt(ta2);
     });
   });
 }

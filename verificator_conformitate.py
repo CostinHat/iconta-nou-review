@@ -1709,6 +1709,36 @@ for _m in re.finditer(r"([^{}]*\.fer-larg[^{}]*)\{([^}]*)\}", _css):
     if re.search(r"(?<![-\w])flex\s*:\s*\d+\s+1\b|flex-shrink\s*:\s*1\b", _decl) and not any(z in _sel for z in _ZONE_STRANSE):
         rap["fer_larg_strivit"].append(("stil.css", _css[:_m.start(2)].count("\n") + 1, "FER_LARG", _sel[-60:]))
 
+# --- FOCUS_CU_SALT (DS cap.9 v2.86, 09.10.2026, retestul Costin, deficiența 159): „ecranul tot sare: rândul atins urcă”. `.focus()`
+#     derulează elementul în CENTRUL zonei când nu se vede întreg (la „Marchează depusă”: 475 px), iar la `<input type="date">`
+#     Chromium ignoră chiar și `preventScroll`. Focusul trece prin `api.focusFaraSalt` (ține minte derularea strămoșilor, o reface,
+#     apoi `nearest`) sau, unde `api.js` nu se poate importa, prin `.focus({ preventScroll: true })`. Mutația care o probează: un
+#     `x.focus()` pus într-un ecran -> TOTAL > 0. LIMITĂ: vede apelurile scrise `.focus(`; un `el["focus"]()` nu se vede.
+rap["focus_cu_salt"] = []
+for _fis, _txt in sorted(fisiere.items()):
+    for _i, _ln in enumerate(_txt.split("\n"), 1):
+        if re.search(r"\.focus\((?!\{\s*preventScroll:\s*true\s*\})", _ln.split("//", 1)[0]):
+            rap["focus_cu_salt"].append((_fis, _i, "FOCUS", _ln.strip()[:60]))
+
+# --- ANTET_NUMERIC_NOWRAP (DS cap.9 v2.86, 09.10.2026, retestul Costin, deficiența 162): la 1700 px Mijloace fixe derula lateral
+#     (scrollWidth 1752 > clientWidth 1604) fiindcă antetele coloanelor numerice nu se rupeau (`white-space: nowrap`: „Amortizat
+#     (calculat, până la 09/2026)” 335 px). Pe un rând stau CIFRELE; antetul și nota de sub cifră (`.tip-desc`) se rup. Cere regula
+#     `.fd-tabel thead th.fd-td-num, .fd-td-num .tip-desc { white-space: normal; }` în stil.css. Mutația: regula scoasă -> TOTAL > 0.
+#     LIMITĂ: vede `stil.css`; un antet numeric cu `white-space: nowrap` inline în șablon nu se vede.
+rap["antet_numeric_nowrap"] = []
+if not re.search(r"\.fd-tabel thead th\.fd-td-num, \.fd-td-num \.tip-desc \{ white-space: normal; \}", _surse_css["stil.css"]):
+    rap["antet_numeric_nowrap"].append(("stil.css", 0, "ANTET_NUM", "lipsește regula: antetul numeric și nota se rup pe rânduri"))
+
+# --- FEREASTRA_SCRIS (DS cap.9 v2.86, 09.10.2026, retestul Costin, deficiența 208): „fereastra și caseta de text prea mici”. Fereastra
+#     poveștii (`.pacm`) e un document de scris: înălțimea e a ecranului (`height: calc(100vh - …)`), nu a conținutului — cu povestea
+#     goală se strângea la 600 px. Regula e scrisă O SINGURĂ dată (erau două blocuri `.pacm`, 720 px și 900 px, care se contraziceau).
+#     Mutația: `height:` scos sau al doilea bloc `.pacm {` pus la loc -> TOTAL > 0. LIMITĂ: vede numai `.pacm`.
+rap["fereastra_scris"] = []
+_blocuri_pacm = re.findall(r"(?m)^\.pacm \{([^}]*)\}", _surse_css["stil.css"])
+if len(_blocuri_pacm) != 1 or not re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0] if _blocuri_pacm else ""):
+    rap["fereastra_scris"].append(("stil.css", 0, "PACM", "%d blocuri `.pacm`, înălțimea ecranului: %s" % (
+        len(_blocuri_pacm), bool(_blocuri_pacm and re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0])))))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

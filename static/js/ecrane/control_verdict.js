@@ -6,8 +6,8 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=4242dc4353";
-import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=91b74060b8";
+import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -105,12 +105,12 @@ function randDecl(arr, clasa, marcabil = false) {
   // [retest 08.10 pct.10] o MARCARE („în afara iConta.eu” / „de contabilul anterior”) se poate modifica sau anula
   const marcare = (x) => x.extern ? `
       <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
-        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Modifică marcarea</button>
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}" data-perioada="${esc(x.perioada || "")}">Modifică marcarea</button>
       <button class="buton-secundar cf-extern-anuleaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza"
-        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Anulează marcarea</button>`
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}" data-perioada="${esc(x.perioada || "")}">Anulează marcarea</button>`
     : (!marcabil || !x.luna) ? "" : `
       <button class="buton-secundar cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern"
-        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}">Marchează depusă în afara iConta.eu</button>`;
+        data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}" data-perioada="${esc(x.perioada || "")}">Marchează depusă în afara iConta.eu</button>`;
   return arr.map((x) => `
     <div class="cf-decl-item" data-cheie="${esc(x.tip || "")}-${x.an || ""}-${x.luna || ""}">
       <div class="mig-sold-rand cf-rand-decl">
@@ -222,6 +222,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
     ${inainte.length ? `<details class="dec-xml cf-inainte">
         <summary class="cf-grup-titlu">Înainte de preluare în iConta.eu — ${esc(d.luna_preluare || "")} (${inainte.length}, nu se numără la restanțe)</summary>
+        <p class="cf-incr-temei">Perioade dinaintea preluării firmei în iConta.eu (${esc(d.luna_preluare || "")}): declarațiile lor nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
         ${inainte.some((x) => x.luna && !x.extern) ? `<div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
           data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
         <div class="cf-decl">${randDecl(inainte, "", true)}</div></details>` : ""}`;
@@ -255,6 +256,8 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const sectTva = (() => {
     const t = vc.tva;
     if (!t) return "";
+    // [deficiența 211] neplătitorul de TVA: verificarea nu are subiect — se spune, gri, fără bulină verde
+    if (t.nu_se_aplica) return `<div class="cf-grup-titlu">Coerență TVA (balanță)</div><div class="cf-decl"><div class="cf-incr-temei">${esc(t.nu_se_aplica)}</div></div>`;
     const ok = (t.suma === 0 || !!t.rezultat);
     const det = `${t.rezultat === "de_plata" ? "de plată" : (t.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(t.suma || 0)} lei`;
     return `<div class="cf-grup-titlu">Coerență TVA (balanță)</div><div class="cf-decl">${randVerif("TVA vs sold balanță", ok, det)}</div>`;
@@ -333,12 +336,18 @@ async function reincarcaPePozitie(corp, firma, atins) {
   else if (c) c.scrollTop = sus;
 }
 
+// [deficiența 213, retestul Costin 09.10: „confirmarea anulării marcării scrie «D406 03/2026» pentru T1/2026”] perioada rândului, așa cum
+// o scrie rândul („T1/2026”, „2025”, „08/2026” — DS v2.85 cap.4), nu luna de ancoră a declarației
+function perioadaButonului(b) {
+  return b.dataset.perioada || `${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}`;
+}
+
 export function legaVerdict(corp, nav, firma) {
   // [08.10, decizia Costin U2] „depusă în afara iConta”: data depunerii (de pe recipisă) obligatorie, numărul recipisei opțional
   corp.querySelectorAll(".cf-extern-btn").forEach((b) => b.addEventListener("click", () => {
     const item = b.closest(".cf-decl-item");
     if (item.querySelector(".cf-extern-form")) return;
-    const per = `${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}`;
+    const per = perioadaButonului(b);
     const f = document.createElement("div");
     f.className = "cf-extern-form";
     f.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px";
@@ -350,12 +359,12 @@ export function legaVerdict(corp, nav, firma) {
     item.appendChild(f);
     const data = f.querySelector("input[type=date]"), rec = f.querySelector("input[type=text]");
     const ok = f.querySelector(".cf-extern-salveaza"), nu = f.querySelector(".cf-extern-renunta");
-    data.focus();
+    focusFaraSalt(data);
     nu.addEventListener("click", () => f.remove());
     // [retest 08.10 pct.10] mesajul „Scrie data” dispare odată ce data e scrisă (rămânea după completare)
     data.addEventListener("input", () => { const m = f.querySelector(".msg-in-formular"); if (m && data.value) m.remove(); });
     ok.addEventListener("click", async () => {
-      if (!data.value) { arataMesaj(f, "Scrie data depunerii, de pe recipisă.", "avert"); data.focus(); return; }
+      if (!data.value) { arataMesaj(f, "Scrie data depunerii, de pe recipisă.", "avert"); focusFaraSalt(data); return; }
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern`,
           { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna), data_depunere: data.value, recipisa: rec.value.trim() || null });
@@ -364,7 +373,7 @@ export function legaVerdict(corp, nav, firma) {
     });
   }));
   corp.querySelectorAll(".cf-extern-anuleaza").forEach((b) => b.addEventListener("click", () => {
-    confirmaCaseta(b.parentElement, `Anulezi marcarea ${b.dataset.tip.toUpperCase()} ${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}? Declarația redevine nedepusă.`, async () => {
+    confirmaCaseta(b.parentElement, `Anulezi marcarea ${b.dataset.tip.toUpperCase()} ${perioadaButonului(b)}? Declarația redevine nedepusă.`, async () => {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern/anuleaza`, { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna) });
         await reincarcaPePozitie(corp, firma, b);

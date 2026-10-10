@@ -441,7 +441,8 @@ def compozitie_fluturas(r):
     linii = [
         ("Salariu brut", _n("brut"), FEL_LINIE),
         *randuri_brut(r),
-        ("Facilitate salariu minim (netaxabilă)", _n("facilitate"), FEL_LINIE),
+        # [deficiența 206, retestul Costin 09.10: „rândul «Facilitate salariu minim … 0,00» apare și când nu se aplică”] numai când se aplică
+        *([("Facilitate salariu minim (netaxabilă)", _n("facilitate"), FEL_LINIE)] if _n("facilitate") else []),
         ("CAS (25%)", -_n("cas"), FEL_LINIE),
         ("CASS (10%)", -_n("cass"), FEL_LINIE),
         *[(e, v, FEL_LINIE) for e, v in randuri_deducere(r)],
@@ -546,7 +547,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     st_val_b = ParagraphStyle("valb", parent=st_val, fontName=fb, fontSize=11)
 
     el = [
-        Paragraph(f"Fluturas de salariu — {luna:02d}/{an}", st_titlu),
+        Paragraph(f"Fluturaș de salariu — {luna:02d}/{an}", st_titlu),
         Paragraph(nume_firma, st_meta),
         Paragraph(f"Salariat: {r.get('nume') or ''}", st_meta),
     ]
@@ -557,7 +558,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         _cand = _data_ro(_ex.get("emis_la"))
         _cand = (" din " + _cand) if _cand else ""
         el.append(Paragraph(
-            "CORECȚIE — exemplarul %d, care înlocuiește exemplarul %d%s. Suma corectă e cea de mai jos."
+            "<b>Corecție</b> — exemplarul %d, care înlocuiește exemplarul %d%s. Suma corectă e cea de mai jos."
             % (int(_ex["exemplar"]), int(_ex["exemplar"]) - 1, _cand),
             ParagraphStyle("cor", parent=st_meta, fontName=fb,
                            textColor=_colors.HexColor("#b91c1c"))))

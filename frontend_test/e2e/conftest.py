@@ -119,6 +119,24 @@ def asistent(browser, request):
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 
+def ai_pregateste(*raspunsuri):
+    """[comanda Costin 09.10.2026 pct.7, AI simulat în plasă] Răspunsurile pe care „modelul” le dă, în ordine, aplicației de probă
+    (`core.ai_client`, `ICONTA_AI_SIMULAT`, pus de `scripts/e2e_poarta.py`); jurnalul prompturilor se golește. Întoarce directorul."""
+    import json
+    d = os.environ["ICONTA_AI_SIMULAT"]
+    json.dump(list(raspunsuri), open(os.path.join(d, "raspunsuri.json"), "w", encoding="utf-8"), ensure_ascii=False)
+    if os.path.exists(os.path.join(d, "prompturi.jsonl")):
+        os.remove(os.path.join(d, "prompturi.jsonl"))
+    return d
+
+
+def ai_prompturi():
+    """Ce a primit „modelul” de la ultima `ai_pregateste`, în ordine."""
+    import json
+    cale = os.path.join(os.environ["ICONTA_AI_SIMULAT"], "prompturi.jsonl")
+    return [json.loads(x) for x in open(cale, encoding="utf-8")] if os.path.exists(cale) else []
+
+
 def cui_cu_control(baza8):
     """CUI valid din 8 cifre de bază + cifra de control (algoritmul oficial, CLAUDE.md „Date de test”) — verificat, nu inventat."""
     from core.tenant_provisioning import cui_valid
@@ -151,16 +169,12 @@ def _scoate_firmele_e2e(tenant_id=None):
     curatenie.scoate(db, firme)
 
 
-@pytest.fixture(scope="module")
-def firma_e2e():
-    """{tenant_id, schema, nume, cabinet_id}: o firmă NOUĂ a cabinetului de test, creată pe drumul aplicației (`provision_tenant`),
-    scoasă la final. Testele care scriu date scriu aici, nu pe firmele de test comune. UNA PE FIȘIER (09.10.2026, prins la prima
-    rulare integrală a plasei): o firmă pe toată rularea lăsa un bloc să moștenească starea altuia (seria de facturi dusă la 9 de
-    blocul C refuza „numărul de start 1” al blocului E) — fiecare fișier își are firma lui, ca atunci când e rulat singur."""
+def firma_noua():
+    """O firmă NOUĂ a cabinetului de test, creată pe drumul aplicației (`provision_tenant`) și trecută în registrul de curățenie:
+    {tenant_id, schema, nume, cabinet_id}. Generator: cine o cere o scoate la final (`_scoate_firmele_e2e(tenant_id)`)."""
     import io as _io
     import time as _t
     from core import tenant_provisioning as tp
-    _scoate_firmele_e2e()
     db = _db()
     nume = "%s %d SRL" % (PREFIX_FIRMA, int(_t.time() * 1000) % 10000000)
     rad = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -174,8 +188,20 @@ def firma_e2e():
     os.makedirs(os.path.dirname(curatenie.registru_firme()), exist_ok=True)
     with open(curatenie.registru_firme(), "a") as f:          # rulatorul o scoate încă o dată după oprirea aplicației
         f.write("%s %s\n" % (r["tenant_id"], r["schema_name"]))
-    yield {"tenant_id": r["tenant_id"], "schema": r["schema_name"], "nume": nume, "cabinet_id": cab}
-    _scoate_firmele_e2e(r["tenant_id"])
+    try:
+        yield {"tenant_id": r["tenant_id"], "schema": r["schema_name"], "nume": nume, "cabinet_id": cab}
+    finally:
+        _scoate_firmele_e2e(r["tenant_id"])
+
+
+@pytest.fixture(scope="module")
+def firma_e2e():
+    """{tenant_id, schema, nume, cabinet_id}: o firmă NOUĂ a cabinetului de test (`firma_noua`), scoasă la final. Testele care scriu
+    date scriu aici, nu pe firmele de test comune. UNA PE FIȘIER (09.10.2026, prins la prima rulare integrală a plasei): o firmă pe
+    toată rularea lăsa un bloc să moștenească starea altuia (seria de facturi dusă la 9 de blocul C refuza „numărul de start 1” al
+    blocului E) — fiecare fișier își are firma lui, ca atunci când e rulat singur."""
+    _scoate_firmele_e2e()
+    yield from firma_noua()
 
 
 CONTURI_COMUNE = ("patron@prisma-cont.test", "asistent@prisma-cont.test")

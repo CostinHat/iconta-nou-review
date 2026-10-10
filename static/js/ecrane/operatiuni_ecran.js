@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=4242dc4353";
+import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=2561dbfd34";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -72,7 +72,7 @@ const REGISTRU = [
     // numai pe cele doua operatii de regularizare.
     C("data_livrare", "Data livrării/prestării", "data",
       { cond: { camp: "operatie", val: ["regularizare_platit", "regularizare_incasat"] },
-        ajutor: "Regularizarea aplica cota in vigoare la data livrarii, nu la data regularizarii (art. 291 alin. 6)." }),
+        ajutor: "Regularizarea aplică cota în vigoare la data livrării, nu la data regularizării (art. 291 alin. 6)." }),
     C("destinatie", "Destinație", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizări"],["imobilizari_necorporale","Imobilizări necorporale"]], cond: { camp: "operatie", val: ["avans_platit", "regularizare_platit"] } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 

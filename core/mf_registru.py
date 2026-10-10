@@ -164,6 +164,41 @@ def amortizare_lunii_neinregistrata(cur, rows, an, luna):
                             and (an, luna) not in luni_acoperite_de_soldul_initial(mfs[c], sold_initial_cont(cur, c))]
 
 
+def luni_anterioare_neinregistrate(cur, rows, an, luna):
+    """[deficiența 215, retestul Costin 09.10: „Închidere lună: lunile anterioare cu amortizare neînregistrată nu apar ca semnal”]
+    [{cont, luni: [(an, luna)…], total}] — lunile DINAINTEA lunii (an, luna), de la prima lună de amortizare a registrului, în care
+    rata unui cont de amortizare nu e înregistrată (aceeași regulă ca blocajul lunii: `amortizare_lunii_neinregistrata`)."""
+    pifuri = [m["data_pif"] for m in (_mf_dict(r) for r in rows) if m["activ"] and m["data_pif"] and m["dnf_luni"]]
+    if not pifuri:
+        return []
+    p = min(pifuri)
+    p = p if hasattr(p, "year") else __import__("datetime").date.fromisoformat(str(p)[:10])
+    a, l = (p.year + 1, 1) if p.month == 12 else (p.year, p.month + 1)   # amortizarea începe în luna de după punerea în funcțiune
+    pe_cont = {}
+    while (a, l) < (an, luna):
+        for x in amortizare_lunii_neinregistrata(cur, rows, a, l):
+            if x.get("rata") is None:
+                continue
+            d = pe_cont.setdefault(x["cont"], {"cont": x["cont"], "luni": [], "total": Decimal(0)})
+            d["luni"].append((a, l))
+            d["total"] += Decimal(str(x["rata"]))
+        a, l = (a + 1, 1) if l == 12 else (a, l + 1)
+    return [pe_cont[c] for c in sorted(pe_cont)]
+
+
+def luni_ca_interval(luni):
+    """[(2026, 5), (2026, 6), (2026, 7), (2026, 9)] -> „05–07/2026, 09/2026” (lunile consecutive se strâng, ca pe ecranul Mijloace fixe)."""
+    out, i = [], 0
+    while i < len(luni):
+        j = i
+        while j + 1 < len(luni) and (luni[j + 1][0] * 12 + luni[j + 1][1]) == (luni[j][0] * 12 + luni[j][1]) + 1:
+            j += 1
+        (a1, l1), (a2, l2) = luni[i], luni[j]
+        out.append("%02d/%d" % (l1, a1) if i == j else ("%02d–%02d/%d" % (l1, l2, a1) if a1 == a2 else "%02d/%d–%02d/%d" % (l1, a1, l2, a2)))
+        i = j + 1
+    return ", ".join(out)
+
+
 def registru(cur, rows, azi=None):
     """Rândurile registrului (din `repo_mijloace_fixe.toate`) cu amortizarea teoretică, cea înregistrată, diferența, lunile
     neînregistrate, durata, codul din catalog și planul lunar."""

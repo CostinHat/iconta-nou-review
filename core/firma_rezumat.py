@@ -62,8 +62,10 @@ care se schimbă des se recalculează des. Ce se câștigă e că **cererea inte
 pentru portofoliu** — plătește o dată, per firmă, per schimbare.
 """
 from __future__ import annotations
+from core.db import SchemaInvalida as _SchemaInvalida
 
 import json
+import os
 
 from core import cron as _cron
 from core.cache_declarat import Declaratie as _Dec
@@ -284,17 +286,42 @@ def aspecte_ale_tabelei(tabela):
                   if tabela in d["tabele"] or tabela in d["tabele_public"])
 
 
+def _amprenta_cod():
+    """Amprenta codului care calculează rezumatele: sha256 peste `core/*.py` și `main.py`, citită o dată, la încărcarea modulului."""
+    import glob
+    import hashlib
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    h = hashlib.sha256()
+    for f in sorted(glob.glob(os.path.join(rad, "core", "*.py"))) + [os.path.join(rad, "main.py")]:
+        if os.path.basename(f).startswith("test_"):
+            continue
+        try:
+            with open(f, "rb") as fh:
+                h.update(fh.read())
+        except OSError:
+            continue
+    return h.hexdigest()[:12]
+
+
+#: [deficiențele 156/173, retestul Costin 09.10.2026] Un rezumat calculat de ALT cod nu descrie ce ar calcula codul de acum: după
+#: publicarea de la 11:01, lista Control fiscal arăta „5 restanțe · 3 de urmărit” (codul vechi), detaliul „3 și 2” (codul nou) — iar
+#: rândul vechi rămânea „curent”, fiindcă nicio sursă nu se schimbase. Amprenta codului intră în EPOCĂ: aceeași cheie de egalitate
+#: care invalidează rezultatul de ieri invalidează și pe cel al codului de ieri. (Orice schimbare de cod invalidează tot; recalcularea
+#: e declarată „în recalculare”, nu ascunsă — interdicția modulului, aplicată și codului.)
+COD = _amprenta_cod()
+
+
 def epoca_pentru(aspect, azi):
-    """Eticheta de timp pentru care e valabil un rezultat. `''` = nu depinde de ceas.
+    """Eticheta de timp ȘI de cod pentru care e valabil un rezultat (`@<amprenta codului>`; fără timp = numai codul).
 
     E un ȘIR, nu o dată, fiindcă e o CHEIE de egalitate, nu o valoare de comparat: prospețimea
     întreabă „e aceeași epocă?", nu „e mai nouă?"."""
     t = ASPECTE.get(aspect, {}).get("timp")
     if t == "zi":
-        return azi.strftime("%Y-%m-%d")
+        return "%s@%s" % (azi.strftime("%Y-%m-%d"), COD)
     if t == "luna":
-        return azi.strftime("%Y-%m")
-    return ""
+        return "%s@%s" % (azi.strftime("%Y-%m"), COD)
+    return "@" + COD
 
 
 # ============================================================================
@@ -484,7 +511,7 @@ def leaga_triggerele_firma(conn, schema, tenant_id):
     Întoarce câte triggere a pus, ca migrarea să poată fi VERIFICATĂ, nu doar rulată."""
     from core import db as _db
     if not _db.schema_valida(schema):
-        raise ValueError("schema invalidă: %r" % schema)
+        raise _SchemaInvalida(schema)
     puse = 0
     with conn.cursor() as cur:
         cur.execute("INSERT INTO public.firma_sursa_versiune (tenant_id, tabela) "

@@ -36,6 +36,14 @@ def schema_valida(schema):
     return bool(schema) and bool(_SCHEMA_OK.match(schema))
 
 
+class SchemaInvalida(ValueError):
+    """Invariant de PROGRAMATOR: numele schemei vine din cod (tenants.schema_name), nu de la om, și trebuie să fie sigur de pus în
+    SQL. Rămâne `ValueError` pentru apelanții care o prind așa; mesajul nu e text pentru contabil (`core/test_text_afisat_limbaj.py`,
+    `EXCEPTII_DEV` — deficiența 172, retestul Costin 09.10.2026)."""
+    def __init__(self, schema):
+        super().__init__("numele schemei nu e sigur pentru SQL: %r" % (schema,))
+
+
 # ============================================================
 #  CONFIG — DB_* din env (ca aplicația veche), DATABASE_URL preferat.
 # ============================================================
@@ -135,7 +143,7 @@ def get_conn(schema=None):
             xml, res = d300.genereaza(conn, ctx.schema, an, luna)
     """
     if schema is not None and not schema_valida(schema):
-        raise ValueError("schema invalidă: %r" % schema)
+        raise SchemaInvalida(schema)
     p = pool()
     # [P5, 10.09.2026] Reperele despart AȘTEPTAREA de EXECUȚIE. Inerte fără `ICONTA_CRONOMETRU=1`
     # — v. `core/cronometru.py`. Importul e local ca `db` să rămână fără dependențe la import.

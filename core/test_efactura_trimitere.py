@@ -227,4 +227,4 @@ def test_principalul_unei_scheme_INEXISTENTE_e_refuzat_nu_ghicit():
     with _db.get_conn() as conn:
         with pytest.raises(ValueError) as e:
             sc.principal_pentru_schema(conn, "ztest_schema_care_nu_exista")
-    assert str(e.value).count("fără tenant public") == 1
+    assert str(e.value).count("nu mai există în lista firmelor") == 1   # [deficiența 172] mesajul în limba contabilului

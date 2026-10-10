@@ -99,6 +99,9 @@ BLOCANT_APEL = {
     "execute": "DB", "executemany": "DB", "fetchone": "DB", "fetchall": "DB", "fetchmany": "DB",
     # rețea
     "urlopen": "RETEA", "urlretrieve": "RETEA",
+    # [Retestul plasei, 09.10.2026] clientul SDK-ului Anthropic: `client.messages.create` (lanț de atribute) nu se vede ca apel de
+    # rețea, deci funcția care construiește clientul și îl cheamă în același corp se marchează la construire (`ai_client`)
+    "Anthropic": "RETEA",
     "sendmail": "RETEA", "SMTP": "RETEA", "SMTP_SSL": "RETEA",
     # subproces
     "Popen": "SUBPROC", "check_output": "SUBPROC", "check_call": "SUBPROC",

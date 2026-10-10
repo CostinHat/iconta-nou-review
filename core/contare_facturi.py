@@ -73,7 +73,7 @@ class RefuzContare(Exception):
     (clichetul 50 / METODA §23).
 
     Felurile: `INEXISTENTA` · `NU_E_DOCUMENT_FISCAL` · `LUNA_INCHISA` · `FARA_COTA` ·
-    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z) ·
+    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `FACTURA_EMISA` (regula a, R6: nu se șterge, se stornează) · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z) ·
     `NIR_DE_LEGAT` / `NIR_NELEGABIL` / `COST_DIFERIT_DE_FACTURA` (NIR-ul „fără factură” al livrării, decizia 08.10 pct.2).
     """
 

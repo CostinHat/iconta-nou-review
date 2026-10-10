@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**751 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**756 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 714
+### `core/` — 719
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8866,6 +8866,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_anaf_api.py` — Teste core/anaf_api.py — freeze best-effort al statutului ANAF pe factura.
 - `core/test_ancore_in_cod.py` — GARD PESTE GĂRZI (21.08.2026): ancora unui gard trăiește în COD, nu în PROZĂ.
 - `core/test_ancore_rute.py` — GARD [R80, 27.08.2026]: clasa de rute despre care detectorul din R70 nu poate afirma nimic
+- `core/test_ansamblu.py` — GARD — catalogul „Ce cuprinde aplicația” după rol (deficiența 5, retestul Costin 09.10.2026: „Ana vede în catalog funcții de
 - `core/test_api_public.py` — —
 - `core/test_aplicabilitate_o_singura_sursa.py` — GARD R94 (06.09.2026) — aplicabilitatea se decide INTR-UN SINGUR LOC, iar poarta o consulta.
 - `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
@@ -9212,6 +9213,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
 - `core/test_flux_factura_f1_c.py` — GARDA pasului C din comanda Costin 05.10.2026 („fluxul de factură pe F1”, pct.6–9), pe schemă efemeră din `tenant_template.sql`.
 - `core/test_flux_factura_f1_d.py` — GARDA pasului D din comanda Costin 05.10.2026 („fluxul de factură pe F1”, pct.10–11), pe schemă efemeră.
+- `core/test_focus_fara_salt.py` — [deficiența 159, retestul Costin 09.10.2026 — „ecranul tot sare: rândul atins urcă cu ~100 px”] `el.focus()` fără `preventScroll`
 - `core/test_formulare_operatiuni_campuri.py` — GARD — nicio opțiune a unui formular din ecranul Operațiuni nu poate fi imposibil de trimis cu succes
 - `core/test_four_way_cardinalitate.py` — Bratul four-way nu se poate inchide pe o multime INCOMPLETA.
 - `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
@@ -9367,6 +9369,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
 - `core/test_post_token_fara_conexiune.py` — core/test_post_token_fara_conexiune.py — rotatia tokenului nu mai tine o conexiune din pool.
+- `core/test_poveste_sursa.py` — Povestea lunii: ce nu se sprijină pe pachet nu ajunge în editor (deficiențele 32 + 33, retestul Costin 09.10.2026), și AI-ul simulat
 - `core/test_poveste_termeni.py` — GARD — povestea lunii folosește termenii și cifrele pachetului; emailul arată cifrele (comanda Costin 05.10.2026, pct.1 și 7).
 - `core/test_prag_mijloc_fix_unic.py` — GARD [01.09.2026, R108]: pragul de încadrare ca mijloc fix are o SINGURĂ sursă.
 - `core/test_prag_per_articol.py` — GARD [01.09.2026, R109]: pragul de reverificare e per articol, dar nicio cotă nu iese din pază.
@@ -9411,11 +9414,13 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
 - `core/test_reguli_fond.py` — GARD — regulile de fond în BAZĂ (comanda Costin 09.10.2026, pct.11, verbatim în DECIZII; `core/migrare_reguli_fond.py`).
+- `core/test_reguli_fond_2.py` — GARD — regulile de fond a, c, d, e, f în BAZĂ (comanda Costin 09.10.2026, „Retestul plasei” pct.6, verbatim în DECIZII;
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
 - `core/test_retest2.py` — GARDA lotului „Retest 2” (comanda Costin 09.10.2026, verbatim în DECIZII) — retestul în aplicație al lotului „Retest 08.10”.
 - `core/test_retest_0810.py` — GARDA retestului Costin din 08.10.2026 dimineața + completarea lui (verbatim în DECIZII 08.10.2026), pe backend:
 - `core/test_retest_0810_s6.py` — GARDA lotului „Retest 08.10” (comanda Costin 08.10.2026, verbatim în DECIZII) — deciziile la §6 S6 și constatările retestului.
+- `core/test_retestul_plasei.py` — Lotul „Retestul plasei” (comanda Costin 09.10.2026, verbatim în DECIZII) — probele fără browser ale reparațiilor din lot.
 - `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
 - `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
 - `core/test_ritm_partajat.py` — E1 — ritmul se numără O SINGURĂ DATĂ, pe amândouă procesele, și nu se golește la repornire.
@@ -10703,3 +10708,23 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | stornarea stocului numai pe ce nu e în evidență | `core/stocuri_anulare.py` (`IN_EVIDENTA`), `core/test_decizii_0710.py` | reparația pe date (`migrare_nota_corectie`) | D1-1, D1-2 -> ROȘU | — |
 | lista cozii citește membrii documentului înaintea capului (deficiența 199) | `core/test_decizii_0710.py::test_199_…` | cardul „retrimisă” care spune greșit „schimbată”; `membri_ids` cu o notă repetată | 199c, 199d -> ROȘU | numai `lista_coada`; tiparul „capul grupului modificat cât e citit ca membru” căutat (`d.pop("membri")`) — un singur loc |
 | plasa nu mută cifrele bazei de test | `scripts/e2e_poarta.py` (`_contor_schema`) + `core/test_predare_cifre.py` | o poartă care înroșește următoarea poartă: firmele sintetice consumau `tenant_schema_seq`, cifră arătată în PREDARE | readucerea scoasă -> contorul 270 -> 271, `test_predare_cifre` ROȘU | numai contorul de scheme; alte urme ale plasei pe baza de test (notificări pe conturile comune) nu sunt cifre din PREDARE — testele care le citesc măsoară diferența |
+
+## 09.10.2026 — „Retestul plasei”: deficiențele găsite stricate de Costin, 200–219, regulile de fond a–f, AI simulat (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| regulile de fond a, c, d, e, f în bază (R6–R10) | `core/migrare_reguli_fond_2.py`, oglinda în `tenant_template.sql`, `core/test_reguli_fond_2.py` (6) | ștergerea facturii emise (orice stare în afară de ciornă, din `nomenclator_status_factura.STERGIBILE`), a chitanței emise, a declarației depuse prin iConta.eu (și modificarea ei, în afară de recipisă); stocul net negativ al unui articol; factura / mișcarea de stoc / operațiunea de casă / chitanța într-o lună blocată | triggerul R6 cu `de_preluat` ștergibil în șablon -> ROȘU; `de_preluat` în STERGIBILE -> oglinda ROȘU | R8 vede stocul NET pe toate locațiile, nu fișa cronologică (aceea rămâne în Python, `stocuri_cv.fisa_magazie`); R7 pe baza de test e activ numai cu `iconta.regula_declaratii = 'activa'`; pe producție rulează numai după `reguli_fond_2_productie.sh` (Costin) |
+| lista stărilor ștergibile ale facturii stă în nomenclator | `core/nomenclator_status_factura.py` (`STERGIBILE`, `clauza_sql_nestergibila`) + `core/test_status_factura_un_loc.py` | o listă de stări scrisă de mână în SQL-ul unei reguli (prima formă a R6 excepta greșit `de_preluat`, starea emiterii din aplicație — prinsă de acest gard înainte de commit) | vezi rândul de sus | — |
+| ștergerea facturii emise e un refuz numit, nu eroarea bazei | `core/facturi_api.py` (`sterge_factura`: `FACTURA_EMISA`, din `nomenclator_status_factura.STERGIBILE`) + `core/test_inchidere_luna.py::test_stergerea_unei_facturi_redeschide_luna` | o factură emisă fără notă ajunsă la `DELETE`: 500 / tranzacție abandonată în locul refuzului „se corectează prin stornare” | refuzul scos -> ROȘU | — |
+| refuzul de stoc al bazei devine refuzul numit al respingerii | `core/stocuri_anulare.py` (`MARCAJ_STOC_NEGATIV`, traducerea în `storneaza`) | respingerea unui NIR a cărui marfă a ieșit: tranzacție abandonată / 409 brut în loc de „STOC_IESIT”, cu nimic scris | traducerea scoasă -> `test_r1_respingerea_se_refuza_cand_marfa_a_iesit…` ROȘU | — |
+| scanerele văd clientul SDK-ului AI | `scripts/scan_blocante.py`, `scripts/scan_tranzactii.py` („Anthropic” = rețea) + `core/test_val3_contracte.py` (clichet C5 EXACT, în ambele direcții) + `core/test_tranzactii_clasificate.py` | o cale nouă care cere un răspuns modelului cu o conexiune din pool ținută, nevăzută; scanerul orbit din nou (C5 coboară fără reparație) | recunoașterea scoasă din `scan_blocante` -> clichet ROȘU; din `scan_tranzactii` -> `test_niciun_verdict_de_efect_nu_ramane_fara_loc` ROȘU | vede constructorul `Anthropic(...)`, nu orice client HTTP construit altfel |
+| **PARȚIAL — datorie R193: întrebarea AI cu conexiunea ținută (clasa C5, 10 căi)** | `core/test_val3_contracte.py` (`CLICHET_C5 = 10`, lista numită acolo) | creșterea peste 10 | — | cele 10 căi (emiterea facturii și surorile ei prin `cote_tva.potriveste_cota`, povestea lunii, bonul din portal, tiparele) țin conexiunea pe durata cererii către model; de azi cererea are termen (`ai_client.TERMEN_SECUNDE` = 60 s; înainte 10 minute). Mutarea întrebării în afara conexiunii = decizie de scop (raportul lotului, §6) |
+| termenul cererii către model | `core/ai_client.py` (`TERMEN_SECUNDE`) + `core/test_blocante_clasificate.py` (C6 nu se aprinde pe codul real) | un client AI fără termen (așteptare de până la 10 minute) | `timeout=` scos -> C6 aprins, `test_detectorii_aprinsi…` ROȘU | — |
+| AI simulat în plasă, refuzat în afara testului | `core/ai_client.py` (`_director_simulat`, `_raspuns_simulat`) + `core/test_poveste_sursa.py` | un răspuns de model inventat pe producție; plasa dependentă de cheia reală | — (proba: `test_ai_simulat_consuma_raspunsurile…`) | — |
+| directorul bonurilor are o singură sursă | `core/common.py` (`dir_bonuri`) + `core/test_retestul_plasei.py::test_9_…` | a doua definiție a căii; o poză de probă lângă bonurile reale; `ICONTA_BON_DIR` pe producție | a doua definiție -> ROȘU; refuzul scos -> ROȘU | — |
+| propozițiile fără sursă scoase din povestea lunii | `core/pachete_api.py` (`scoate_afirmatii_fara_sursa`) + `core/test_poveste_sursa.py` | o laudă sau o afirmație despre declarații ajunsă în textul trimis clientului | (în proba lotului, raportul §3) | judecă propoziția după vocabular, nu după sens |
+| focusul nu derulează ecranul | `static/js/api.js` (`focusFaraSalt`) + `core/test_focus_fara_salt.py` + regula `FOCUS_CU_SALT` din verificator | un `.focus()` care sare lista (deficiența 159) | un `x.focus()` adăugat -> ROȘU | — |
+| textul afișat: jargon, PDF, literalele JS | `core/test_text_afisat_limbaj.py` (`jargon`, `texte_pdf`, `proza_js_fara_diacritice`) | „tenant”, „schema” etc. în mesaje; „Fluturas” pe hârtie; proză JS fără diacritice | „Fluturaș” -> „Fluturas” -> ROȘU | migrările sunt exceptate (textul lor nu ajunge la contabil) |
+| plasa: testele care reproduc retestul (4, 5, 11, 32, 33, 120, 156, 173, 181, 210) și cele noi (12, 159, 162, 172, 188–219, 9, 76, 79, 97, 142, 149, 184, 199) | testele de capăt la capăt `def_<nr>` din `frontend_test/e2e/` (câte unul pe număr, numit în DEFICIENTE.md) | o deficiență închisă azi, din nou stricată pe ecran | câte o mutație per număr, jurnalul în raportul lotului (§3) | un test vechi care trecea pe defect s-a înlocuit (pct.2 al comenzii) |
+| primul clic pe Bilanț nu se pierde (clasa „câmpul părăsit reîncarcă o zonă și mută butonul sub cursor”) | `static/js/ecrane/firme.js` (`ecranBilant.cereCategoria`: categoria se cere numai pentru un an NOU, caseta veche rămâne până sosește cea nouă) + `frontend_test/e2e/e2e_bloc_e.py::test_def_151_bilant_4428_numai_la_stocuri`, `frontend_test/e2e/e2e_bloc_e.py::test_def_188_randurile_bilantului_pe_ecran_cu_cifrele_care_se_depun` (`_bilant`) | contabilul scrie anul și apasă direct „Validează” / „Descarcă XML”: părăsirea câmpului reîncărca categoria, fereastra centrată se micșora, clicul cădea alături, fără nicio cerere | reîncărcarea + micșorarea puse la loc -> 151 și 188 ROȘU | căutarea clasei (`change` pe câmp text/număr/dată legat prin `("#id")`, care pune un text `ecran-nota`) a găsit numai instanța asta; ascultătorii legați printr-o variabilă nu sunt acoperiți de căutare |
+| navigarea jurnalului nu așteaptă controalele lunii | `static/js/ecrane/firme.js` (`legaBlocareLuna`: citirea controalelor nu mai e așteptată; blocarea stă inactivă până sosesc) + `frontend_test/e2e/e2e_bloc_b.py::test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare`, `frontend_test/e2e/e2e_bloc_e.py::test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc` | „← luna” / „luna →” apăsat în primele momente se pierdea (butoanele se legau după a doua cerere, adăugată la 197) | așteptarea pusă la loc -> 58 ROȘU | celelalte ecrane care leagă butoane după un `await` nu sunt măsurate |

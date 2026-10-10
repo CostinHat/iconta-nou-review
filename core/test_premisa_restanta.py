@@ -133,5 +133,8 @@ def test_firma_grea_nicio_restanta_nesustinuta(cui_grea):
         assert nesustinute == [], "restante nesustinute ramase: %s" % nesustinute
         # si: cel putin un verdict GRI "necunoscut declarat" trebuie sa apara (D100 T4-2025 fara activitate 2025)
         # [retest 08.10 pct.8] un necunoscut dinaintea lunii preluării stă în grupul „Înainte de preluare”, cu motivul păstrat
-        assert any("necunoscut declarat" in (n.get("motiv") or "") for n in ev["neclar"] + ev.get("inainte_de_preluare", [])), \
+        # [deficiența 212] rândurile dinaintea preluării nu mai repetă necunoașterea (explicația e a grupului): vin din „Nu pot
+        # verifica” când își poartă domeniul
+        assert any("necunoscut declarat" in (n.get("motiv") or "") for n in ev["neclar"]) or any(
+            n.get("domeniu_pana") for n in ev.get("inainte_de_preluare", [])), \
             "asteptam macar un GRI 'necunoscut declarat' pe firma grea"

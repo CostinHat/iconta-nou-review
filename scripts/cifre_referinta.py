@@ -66,10 +66,19 @@ def _luni_cu_stat(cur, schema):
 
 
 def _eticheta(fereastra):
-    """Luna-etichetă a perioadei (ultima lună a ferestrei): așa se depune trimestrialul (3/6/9/12)."""
-    _inc, sf = fereastra
+    """Luna-etichetă a perioadei (ultima lună a ferestrei): așa se depune trimestrialul (3/6/9/12) — plus felul perioadei, după
+    lungimea ferestrei (o lună / un trimestru / un an), pentru afișarea canonică."""
+    inc, sf = fereastra
     ultima = sf - _dt.timedelta(days=1)
-    return ultima.year, ultima.month
+    n = (ultima.year - inc.year) * 12 + ultima.month - inc.month + 1
+    return ultima.year, ultima.month, {3: "trim", 12: "an"}.get(n, "luna")
+
+
+def _per(a, m, fel):
+    """[Comanda Costin 09.10, pct.1 c] „firmele trimestriale își afișează perioada ca T3/2026” — forma ecranelor (DS cap.4),
+    produsă de aceeași funcție ca pe ecran (`control_fiscal_api.perioada_canonica`), nu reconstruită aici."""
+    from core.control_fiscal_api import perioada_canonica
+    return perioada_canonica(a, m, fel)
 
 
 def _incearca(f):
@@ -111,15 +120,15 @@ def firma(conn, schema):
     if err:
         out["D300"] = out["D394"] = "refuz: " + err
         per_tva = []
-    for a, m in per_tva:
+    for a, m, fel in per_tva:
         r, err = _incearca(lambda: d300.genereaza(conn, schema, Perioada(a, luna=m)))
         _anuleaza(conn, schema)
-        out["D300"]["%02d/%04d" % (m, a)] = {"refuz": err} if err else {
+        out["D300"][_per(a, m, fel)] = {"refuz": err} if err else {
             "randuri": {"%s (%s)" % (k, rand_formular(k)): v for k, v in sorted(_atribute(r[0]).items()) if re.match(r"^R\d", k)},
             "amprenta": _amprenta(r[0])}
         r, err = _incearca(lambda: d394.genereaza(conn, schema, Perioada(a, luna=m)))
         _anuleaza(conn, schema)
-        out["D394"]["%02d/%04d" % (m, a)] = {"refuz": err} if err else {
+        out["D394"][_per(a, m, fel)] = {"refuz": err} if err else {
             "antet": {k: v for k, v in _atribute(r[0]).items() if k.startswith(("tot", "nr", "op_", "tip_D394", "sistemTVA"))},
             "rezumat1": re.findall(r"<rezumat1\b([^>]*)>", r[0]), "rezumat2": re.findall(r"<rezumat2\b([^>]*)>", r[0]),
             "amprenta": _amprenta(r[0])}
@@ -129,14 +138,14 @@ def firma(conn, schema):
     if err:
         out["D406"] = "refuz: " + err
         per_saft = []
-    for a, m in per_saft:
+    for a, m, fel in per_saft:
         r, err = _incearca(lambda: d406.genereaza(conn, schema, a, m))
         _anuleaza(conn, schema)
         if err:
-            out["D406"]["%02d/%04d" % (m, a)] = {"refuz": err}
+            out["D406"][_per(a, m, fel)] = {"refuz": err}
             continue
         x = r[0]
-        out["D406"]["%02d/%04d" % (m, a)] = {
+        out["D406"][_per(a, m, fel)] = {
             "GeneralLedgerEntries": {t: (re.search(r"<GeneralLedgerEntries>.*?<%s>([^<]*)</%s>" % (t, t), x, re.S) or [None, None])[1]
                                      for t in ("NumberOfEntries", "TotalDebit", "TotalCredit")},
             "jurnale": re.findall(r"<Journal>\s*<JournalID>([^<]*)</JournalID>", x),
@@ -152,10 +161,25 @@ def firma(conn, schema):
     return out
 
 
+#: [Comanda Costin 09.10 „Retestul plasei”, pct.1 b] „rândul D394 cu mai multe cote intră în referință abia după ce se citează
+#: instrucțiunea ANAF cuvânt cu cuvânt (fișier + rând)”. Citatul se ia din fișier, la rândurile numite — nu se copiază aici.
+CITAT_D394_MULTICOTA = ("anaf_surse/opanaf_2194_2025_d394.txt", 1221, 1224)
+
+
+def _citat(fisier, de, pana):
+    with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), fisier), encoding="utf-8") as f:
+        t = " ".join(r.strip() for r in f.readlines()[de - 1:pana])
+    return t[:t.index(".", t.index("cotei de TVA cea mai mare")) + 1]        # fraza se încheie pe ultimul rând; restul lui e alt caz (taxarea inversă)
+
+
 def _md(rez):
+    fis, de, pana = CITAT_D394_MULTICOTA
     L = ["# Cifre de referință F1–F5 — de verificat de Costin înainte să devină referință (comanda 09.10.2026, pct.10)", "",
          "Generat %s, pe producție, în sesiune read-only, pe drumul aplicației. „refuz” = textul cu care generatorul refuză perioada."
-         % _dt.datetime.now().strftime("%d.%m.%Y %H:%M"), ""]
+         % _dt.datetime.now().strftime("%d.%m.%Y %H:%M"), "",
+         "Perioadele trimestriale apar ca T3/2026, lunile ca LL/AAAA (forma ecranelor, DS cap.4).", "",
+         "**D394, factura cu mai multe cote** (`nrFact` din `rezumat1`/`rezumat2`) — instrucțiunea ANAF, cuvânt cu cuvânt, "
+         "`%s`, rândurile %d–%d:" % (fis, de, pana), "", "> " + _citat(fis, de, pana), ""]
     for nume, f in rez.items():
         L += ["## %s" % nume, "", "Lunile cu date: %s" % ", ".join(f["luni"]), ""]
         for luna, rows in f["balanta"].items():

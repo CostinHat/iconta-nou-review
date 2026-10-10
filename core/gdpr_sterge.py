@@ -6,7 +6,6 @@ import os
 import psycopg2.extras as _E
 from core import tenant_stergere  # [R72] o singura cale de stergere a unei firme
 
-BON_DIR_BAZA = os.path.expanduser("~/iconta_date/bonuri")
 EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
 NU_SE_STERGE = ("backup Storage Box: dump integral, stergere selectiva imposibila tehnic, expira in 30 zile (retentie off-site)")
 

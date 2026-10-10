@@ -495,8 +495,8 @@ def build_xml(res):
     _dnume = prof.get("declarant_nume")
     _dfct = prof.get("declarant_functie")
     if not (_dnume and _dfct):
-        res.avertismente.append("D390: declarantul (nume/funcție) lipsește din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei, nu lasa implicitul.")
+        res.avertismente.append("D390: declarantul (nume/funcție) lipsește din profil — se trece implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei, nu lăsa implicitul.")
     _dnume = _dnume or "ADMINISTRATOR"
     _dpren = prof.get("declarant_prenume") or "-"
     _dfct = _dfct or "ADMINISTRATOR"

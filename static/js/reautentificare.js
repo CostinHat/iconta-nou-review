@@ -5,7 +5,7 @@
 // de la zero și factura dispărea. Acum: fereastra de aici (același email, doar parola), token nou fără redesenare
 // (`sesiune.reinnoieste`), iar cererea care a primit 401 se reia. „Ieși din cont” rămâne o alegere a omului, nu o urmare.
 // Mai multe cereri care primesc 401 deodată așteaptă ACEEAȘI fereastră (o singură promisiune).
-import { sesiune } from "./sesiune.js?v=416ae1edca";
+import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
 
 let _inCurs = null;
 
@@ -47,7 +47,7 @@ function _deschide() {
     const iesi = () => gata(false);
     const continua = async () => {
       eroare.textContent = "";
-      if (!parola.value) { eroare.textContent = "Scrie parola."; parola.focus(); return; }
+      if (!parola.value) { eroare.textContent = "Scrie parola."; parola.focus({ preventScroll: true }); return; }
       btn.disabled = true;
       try {
         const r = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" },
@@ -74,6 +74,6 @@ function _deschide() {
     ov.querySelector("#reaut-iesi").addEventListener("click", iesi);
     btn.addEventListener("click", continua);
     parola.addEventListener("keydown", (e) => { if (e.key === "Enter") continua(); });
-    setTimeout(() => parola.focus(), 0);
+    setTimeout(() => parola.focus({ preventScroll: true }), 0);
   });
 }

@@ -18,7 +18,9 @@ import pytest
 from conftest import _ecran, cui_cu_control, sql
 
 AZI = _dt.date.today()
-LUNA = (AZI.year, AZI.month)
+# [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat: probele de salarii lucrează pe ultima lună încheiată
+_TRECUTA = AZI.replace(day=1) - _dt.timedelta(days=1)
+LUNA = (_TRECUTA.year, _TRECUTA.month)
 
 
 # ── date pe drumul aplicației ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -851,9 +853,14 @@ def _salariat(firma, brut="4650"):
 
 
 def _stat(e, firma):
+    """Salariați -> statul de plată al lunii `LUNA` (ultima lună încheiată: ecranul se deschide pe luna curentă, se merge o lună înapoi)."""
     _deschide_firma(e, firma["nume"])
     e.pg.click("#fa-salariati")
     e.pg.wait_for_selector("#sp-contare", timeout=30000)
+    if (AZI.year, AZI.month) != LUNA:
+        e.pg.click("#sp-prev")
+        e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+                               arg="Luna %02d/%d" % (LUNA[1], LUNA[0]), timeout=30000)
 
 
 def _propunere(e):
@@ -898,6 +905,64 @@ def test_def_38_fluturasul_nota_si_d112_aceleasi_sume(patron, firma_e2e):
     assert "Contul 421 se soldează exact cu netul fluturașilor (%s lei)" % sub.split("net ")[1].split(" ")[0] in patron.fereastra()
 
 
+def _text_fluturas(patron, firma):
+    """Salariata cu brut 4.650 lei (peste plafonul facilității) -> Salariați -> „Fluturaș”: textul PDF-ului (citit întreg, din același URL)."""
+    import base64
+    import io as _io
+    from pypdf import PdfReader
+    _salariat(firma)
+    pg = patron.pg
+    _stat(patron, firma)
+    with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
+        pg.click("[data-flut] >> nth=0")
+    r = rr.value
+    assert r.status == 200, r.status
+    b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
+      const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = new Uint8Array(await x.arrayBuffer());
+      let s = ''; for (const c of b) s += String.fromCharCode(c); return btoa(s); }""", r.url)
+    patron.captura("fluturas")
+    return "\n".join(p.extract_text() for p in PdfReader(_io.BytesIO(base64.b64decode(b64))).pages)
+
+
+def test_def_216_nota_salariilor_lunii_in_curs_nu_se_scrie(patron, firma_e2e):
+    """216. Note de salarii contate pe luni neîncheiate (F5 10/2026 ciornă, 11/2026 validată).
+    Pașii: Salariați -> statul lunii CURENTE (neîncheiată) -> „Contabilizează statul”: propunerea se vede, dar în locul lui „Scrie nota
+    ciornă” ecranul spune „Nota salariilor se scrie după ce luna se încheie …”; cererea directă e refuzată; pe luna trecută (încheiată)
+    butonul e acolo."""
+    _salariat(firma_e2e)
+    pg = patron.pg
+    _deschide_firma(patron, firma_e2e["nume"])
+    pg.click("#fa-salariati")
+    pg.wait_for_selector("#sp-contare", timeout=30000)
+    _propunere(patron)
+    zona = pg.inner_text("#sp-contare-zona")
+    patron.captura("luna_curenta")
+    assert pg.query_selector("#sp-contare-scrie") is None and "Nota salariilor se scrie după ce luna se încheie" in zona, zona[-600:]
+    st, r = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
+      const x = await fetch(u, {method: 'POST', headers: {'Authorization': 'Bearer ' + t}}); return [x.status, await x.text()]; }""",
+                        "/tenants/%d/salarii-contare?an=%d&luna=%d" % (firma_e2e["tenant_id"], AZI.year, AZI.month))
+    assert st >= 400 and "se contează după ce luna se încheie" in r, (st, r[:300])
+    _stat(patron, firma_e2e)
+    p = _propunere(patron)
+    assert p.get("deja_contata") or pg.query_selector("#sp-contare-scrie"), "pe luna încheiată butonul lipsește"
+
+
+def test_def_204_titlul_fluturasului_are_diacritice(patron, firma_e2e):
+    """204. Fluturașul: titlul „Fluturas” fără diacritice.
+    Pașii: Salariați -> „Fluturaș”: PDF-ul are titlul „Fluturaș de salariu — LL/AAAA”."""
+    text = _text_fluturas(patron, firma_e2e)
+    assert "Fluturaș de salariu" in text and "Fluturas " not in text, text[:500]
+
+
+def test_def_206_facilitatea_numai_cand_se_aplica(patron, firma_e2e):
+    """206. Fluturașul: rândul „Facilitate salariu minim … 0,00” apare și când nu se aplică.
+    Pașii: salariata cu brut 4.650 lei (peste plafonul facilității) -> Salariați -> „Fluturaș”: PDF-ul NU are rândul „Facilitate
+    salariu minim”; CAS și salariul net sunt pe el."""
+    text = _text_fluturas(patron, firma_e2e)
+    assert "Facilitate salariu minim" not in text, text[:1500]
+    assert "CAS (25%)" in text and "Salariu net" in text, text[:1500]
+
+
 def test_def_39_mesajul_spune_ce_a_verificat_fara_toleranta(patron, firma_e2e):
     """39. Salarii: mesajul „coincide în limita de toleranță” acoperea fals diferența.
     Pașii contabilului: „Contabilizează statul” pe o lună care se soldează: mesajul spune ce s-a verificat („Contul 421 se soldează
@@ -931,6 +996,7 @@ def test_def_49_nota_de_salarii_pe_ultima_zi_a_lunii(ana, firma_e2e):
     _fereastra_firmei(ana)
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
+    _mergi_la_luna(ana, *LUNA)   # jurnalul se deschide pe luna curentă; nota e în ultima lună încheiată
     rand = pg.locator(".pf-frand", has_text="Salariile lunii %02d/%d" % (LUNA[1], LUNA[0])).first
     rand.wait_for(timeout=20000)
     rand.scroll_into_view_if_needed()

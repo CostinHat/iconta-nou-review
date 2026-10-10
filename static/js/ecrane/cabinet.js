@@ -3,21 +3,21 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=a0acfd801a";   // [retest 08.10 pct.7] contoarele de sus
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4242dc4353";  /* esc_nc27 */
+import { itemiContoare } from "./control_verdict.js?v=29ab225927";   // [retest 08.10 pct.7] contoarele de sus
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
-import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=ffea72127e";
-import { randeazaMigrare } from "./migrare.js?v=6eee7c6ea6";
-import { randeazaControl } from "./control.js?v=6cad94dd59";
+import { randeazaListaFirme } from "./firme.js?v=bb0c77ef82";
+import { randeazaMigrare } from "./migrare.js?v=8ab6ac6aa1";
+import { randeazaControl } from "./control.js?v=ad497d96e3";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=380aa43977"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=a131eb8e23"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=fdcd88308f"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=f7bc6064e2"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=593b54babb"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=dff603e22d";
+import { randeazaValidat } from "./validat.js?v=f25e1ed56e";
 import { randeazaSupervizor } from "./supervizor.js?v=d07a63dba1"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=56949c5709";
 import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
@@ -36,29 +36,27 @@ function inLucru(titlu) {
 }
 
 // definiția celor 9 carduri (sinteză = text inițial; unele se actualizează din date live)
-const DEF = [  /* cab_ordine_v2 */
-  { cheie:"firme",     titlu:"Firme",          icon:"building",  ...CULORI_CARD.albastru,
-    sinteza:"se încarcă…", actiune:inLucru("Firme") },
+const DEF = [  /* cab_ordine_v3 — [deficiența 203, retestul Costin 09.10: „cardurile trebuie ordonate după lucrul zilnic”] întâi ce
+   cere acțiune azi (de validat, restanțe, scadențe), apoi lucrul pe firme și ziua, apoi lunarul, echipa și contul, la urmă sesizările;
+   ordinea e păzită de `frontend_test/e2e/e2e_bloc_a.py::ORDINE_CABINET` */
   { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
     sinteza:'<b class="tip-figura">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
-  // [supervizor 01.09.2026] Al doilea declansator, langa cronul de 08:00. NU dubleaza cardul de
-  // control fiscal: acela e vertical (fiecare declaratie fata de propria sursa), asta e ORIZONTAL
-  // (declaratie contra declaratie). Sinteza e statica si nu minte: cifra ar cere o rulare la
-  // randarea desktopului, iar rularea e chiar ce face ecranul cand il deschizi.
-  { cheie:"supervizor", titlu:"Supervizor",    icon:"trend",     ...CULORI_CARD.violet,
-    sinteza:"Confruntarea dintre declarații, pe firmele tale",
-    actiune:inLucru("Supervizor") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
   { cheie:"termene",   titlu:"Termene",        icon:"calendar",  ...CULORI_CARD.verde,
     sinteza:"Următoarea scadență: …", actiune:inLucru("Termene") },
+  { cheie:"firme",     titlu:"Firme",          icon:"building",  ...CULORI_CARD.albastru,
+    sinteza:"se încarcă…", actiune:inLucru("Firme") },
   { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     ...CULORI_CARD.violet,
     sinteza:"Vezi prioritățile zilei", actiune:inLucru("Sinteza zilei") },
   { cheie:"activitate", titlu:"Activitate",     icon: "activitate",    ...CULORI_CARD.piersica,
     sinteza:"Activitate recentă", actiune:inLucru("Activitate") },
   { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      ...CULORI_CARD.albastru,
     sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
+  { cheie:"supervizor", titlu:"Supervizor",    icon:"trend",     ...CULORI_CARD.violet,
+    sinteza:"Confruntarea dintre declarații, pe firmele tale",
+    actiune:inLucru("Supervizor") },
   { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     ...CULORI_CARD.verde,
     sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") },
   { cheie:"consolidare", titlu:"Consolidare", icon: "consolidare", ...CULORI_CARD.ardezie,
@@ -67,8 +65,8 @@ const DEF = [  /* cab_ordine_v2 */
     sinteza:'<b class="tip-figura">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  { cheie:"raport",    titlu:"Suport",     icon: "suport",    ...CULORI_CARD.verde,
-    sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
+  { cheie:"raport",    titlu:"Raportează", icon: "suport",    ...CULORI_CARD.verde,
+    sinteza:"Raportează o problemă către iConta.eu", actiune:inLucru("Raportează") },
 ];
 
 // [coada_vizibila_mono_v1] titlul ferestrei cozii urmează starea patru-ochi (actualizat de actualizeazaValidat):
@@ -536,7 +534,7 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
       } catch (e) {
         /* [catch_scriere 27.07.2026] setarea patru-ochi nesalvata parea salvata:
            elementul disparea oricum. Control intern - nu are voie sa taca. */
-        arataMesaj(el, (e && e.mesaj) || "Nu am putut salva setarea. Incearca din nou.", "eroare");
+        arataMesaj(el, (e && e.mesaj) || "Nu am putut salva setarea. Încearcă din nou.", "eroare");
       }
     }, { textOk: efectiv ? "Dezactiveaz\u0103" : "Opre\u0219te de tot" });
   });

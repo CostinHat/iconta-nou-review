@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.85 · 9 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.86 · 9 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -184,6 +184,20 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   nu libere pe rând: butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe
   F2, ~1700 px). Zero clase noi — e toggle-ul secundar al Declarațiilor (v2.54). Datele scurte (PIF) nu se rup pe două rânduri, iar
   o listă lungă de luni se strânge în intervale („8 luni: 01–08/2026”). Gard: `ACTIUNI_RAND_LIBERE` în verificator.
+- **Pe un rând stau cifrele, nu antetele (v2.86, 09.10.2026, deficiența 162).** `.fd-td-num` ține cifra pe un rând; antetul coloanei
+  numerice și nota de sub cifră (`.tip-desc`, ex. „neînregistrate: 8 luni: 02–09/2026”) se rup pe rânduri — un antet lung ținut pe un
+  rând („Amortizat (calculat, până la 09/2026)”, 335 px) lățea Mijloacele fixe până la derulare laterală la 1700 px. Gard:
+  `ANTET_NUMERIC_NOWRAP`.
+- **Anunțul „Versiune nouă” stă deasupra ferestrelor (v2.86, 09.10.2026, deficiența 191).** `.versiune-noua` are `z-index: 101`,
+  peste stratul ferestrei (`.fereastra-overlay`, 100): reîncărcarea rămâne la îndemână și cu o fereastră deschisă (cu un formular
+  început butonul nu reîncarcă, spune de ce). Gard: `frontend_test/e2e/e2e_bloc_a.py::test_def_191_…` (elementul din punctul
+  butonului e butonul).
+- **Fereastra de scris are înălțimea ecranului (v2.86, 09.10.2026, deficiența 208).** Povestea lunii (`.pacm`) e un document: fereastra
+  ține `calc(100vh - 64px)` și până la 1100 px lățime, caseta de text umple restul — și când povestea e goală (până atunci fereastra
+  se strângea după conținut la 600 px, caseta la 368 px). Gard: `FEREASTRA_SCRIS`.
+- **Focusul nu mută ecranul (v2.86, 09.10.2026, deficiența 159).** Un câmp care primește focusul după o apăsare (formularul deschis sub
+  un rând, câmpul vinovat al unei validări) îl primește prin `api.focusFaraSalt`: fără derulare, apoi zona se mișcă numai cât să se vadă
+  câmpul. `.focus()` simplu centrează câmpul (la „Marchează depusă” lista sărea 475 px). Gard: `FOCUS_CU_SALT`.
 - **Închiderea (v2.64, `inchidereDialog` din `api.js`, comanda Costin 04.10.2026).** O fereastră INFORMATIVĂ — fără
   câmpuri de tastat (bun venit, anunț, lupa, ajutorul de dinainte de autentificare, paginile publice, previzualizări) — se închide din **X în antet** și cu
   **Esc**, prin mecanismul unic `inchidereDialog` din `api.js`: X-ul e `.nav-x` (pus de mecanism dacă lipsește), Esc
@@ -801,6 +815,13 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.86 (09.10.2026)** — lotul „Retestul plasei”: **cap.9** — **focusul nu mută ecranul** (deficiența 159): un câmp deschis sub
+un rând primește focusul prin `api.focusFaraSalt` — fără derulare, apoi zona se mișcă doar cât să se vadă câmpul (`nearest`); la
+`<input type="date">` Chromium ignoră `preventScroll`, deci derularea strămoșilor se ține minte și se reface. Gard: `FOCUS_CU_SALT`
++ `core/test_focus_fara_salt.py`. **cap.9** — **într-un tabel, pe un rând stau cifrele, nu antetele** (deficiența 162): antetul unei
+coloane numerice și nota de sub cifră (`.tip-desc`) se rup pe rânduri; la 1700 px Mijloace fixe nu mai derulează lateral. Gard:
+`ANTET_NUMERIC_NOWRAP`. **cap.9** — **fereastra de scris (povestea lunii) are înălțimea ecranului** (deficiența 208): `.pacm`
+`height: calc(100vh - 64px)`, lățime de document (până la 1100 px), o singură regulă. Gard: `FEREASTRA_SCRIS`.
 **v2.85 (09.10.2026)** — lotul „Retest 2”: **cap.4** — perioadele în trei forme (`LL/AAAA`, `T3/2026`, `2026`); textul de pe ecran
 judecat pe ecran (`core/limba_ecran.py` + `text_ecran_scan.py`, artefact păzit de `core/test_text_ecran.py`); rândul de declarație
 numit cu rândul formularului (D300, D101), diferențele de reconciliere prin `pdf_util.diferenta`; marcajul `# invariant-intern-ok:`

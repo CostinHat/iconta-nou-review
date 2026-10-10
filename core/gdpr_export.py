@@ -5,7 +5,6 @@ zip-uri e-Factura). Intoarce bytes ZIP.
 Citeste cu nume CALIFICAT schema.tabela (NU depinde de search_path)."""
 import io, os, json, glob, zipfile, base64, datetime, decimal
 
-BON_DIR_BAZA = os.path.expanduser("~/iconta_date/bonuri")
 EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
 
 def _default(o):
@@ -51,7 +50,8 @@ def export_cabinet(conn, cabinet_id):
                     zf.writestr("%s/tabele/%s.json" % (schema, tb["table_name"]), _j(rows))
                 manifest["tenants"].append({"tenant_id": t["id"], "schema": schema,
                                             "nume": t.get("nume"), "tabele": len(tbls)})
-                bon_root = os.path.join(BON_DIR_BAZA, schema)
+                from core.common import dir_bonuri as _dir_bonuri
+                bon_root = os.path.join(_dir_bonuri(), schema)
                 for f in glob.glob(os.path.join(bon_root, "**", "*"), recursive=True):
                     if os.path.isfile(f):
                         zf.write(f, "%s/fisiere/bonuri/%s" % (schema, os.path.relpath(f, bon_root)))

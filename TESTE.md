@@ -45,6 +45,24 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Retestul plasei (comanda Costin 09.10.2026 seara, verbatim în DECIZII)** — ordinea dată de Costin (pct.4).
+  - ultim: L1–L6 în commitul care conține această intrare: cele 9 numere găsite stricate au teste care le reproduc (cele vechi, care
+    treceau pe defect, înlocuite) și sunt reparate; 12, 159, 162, 172 închise; 188–219 închise (205 „nu se aplică”); neverificatele 9,
+    76, 79, 97, 142, 149, 184, 199 probate în browser, cu mutație roșie fiecare; regulile a–f în bază (R6–R10, migrarea pe producție o
+    rulează Costin: `~/ghid_incoming/reguli_fond_2_productie.sh`); cifrele de referință cu excepțiile b și c aplicate. Ieșite pe drum:
+    prima formă a R6 excepta greșit `de_preluat` (prinsă de gardul nomenclatorului); R193 — întrebarea AI ține conexiunea pe 10 căi
+    (scanerele nu vedeau clientul SDK; termen 60 s pus, clichet C5 = 10, refactorul = decizie la §6); clicul pierdut la Bilanț și
+    navigarea jurnalului care aștepta controalele (prinse de plasă, reparate, cu mutație).
+  - urmator: decizia lui Costin pe §6 al raportului lotului. STARE = BLOCAT: decizii la §6 (R193, ordinea cardurilor, D406 sub R36, …)
+  - pasi:
+    L1. pct.2 — 4, 5, 11, 32, 120 (+210), 156, 173, 181, 33: pentru fiecare, test de capăt la capăt care reproduce EXACT situația
+        descrisă de Costin și pică pe aplicația de acum (cel vechi, care trecea pe defect, se înlocuiește); apoi reparația, testul trece.
+    L2. parțialele 12, 159, 162, 172 (12/33 cu AI simulat în plasă — pct.7).
+    L3. 188–219, în ordinea numerelor, câte un pas pe grup de ecran.
+    L4. neverificatele 9 (director de bonuri separat — pct.7), 76, 79, 97, 142, 149, 184, 199 -> probă.
+    L5. regulile de fond noi a–f (pct.6), cu temeiul a și f citat în DECIZII.
+    L6. cifrele de referință (pct.1: F1 10/2026 după validarea 121/122; D394 multi-cotă cu textul ANAF citat; trimestrul ca T3/2026);
+        registrele, poarta, ZIP, raportul cu tabelul pentru toate numerele atinse și duratele.
 - fir: **Registrul deficiențelor + plasa împotriva regresiilor (comanda Costin 09.10.2026, verbatim în DECIZII)** — înaintea
   registrului de parametri fiscali. Poarta o dată pe lot, la publicare.
   - ultim: D1–D7 în commitul care conține această intrare: reparația tenant_049 (scriptul pentru Costin), gardul migrării în

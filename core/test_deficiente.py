@@ -20,6 +20,8 @@ import subprocess
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STARI = {"rezolvată", "parțial", "nerezolvată", "nu se aplică", "neverificat"}
 STARI_N = {"reală", "nu e reală", "neverificat"}
+#: [CLAUDE.md §2.3 pct.10] rândul rezolvat în commitul care îl conține
+AUTO_COMMIT = "commitul care conține această intrare"
 CU_MOTIV = {"parțial", "nerezolvată", "nu se aplică", "reală"}
 NR_N = 18
 
@@ -84,6 +86,8 @@ def test_rezolvata_are_commit_si_test_de_capat_la_capat():
             if t not in teste.get(r["nr"], []):
                 rele.append("%s: testul %s nu există în plasă" % (r["nr"], t))
         c = re.findall(r"`([0-9a-f]{7,40})`", r["commit"])
+        if not c and r["commit"].strip() == AUTO_COMMIT:
+            continue   # CLAUDE.md §2.3 pct.10: registrul nu poate purta SHA-ul commitului care îl conține
         if not c:
             rele.append("%s: rezolvată fără commit" % r["nr"])
         for sha in c:

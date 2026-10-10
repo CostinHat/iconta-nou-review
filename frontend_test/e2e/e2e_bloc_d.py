@@ -283,6 +283,34 @@ def test_def_111_cardul_nir_refacut_spune_retrimis_dupa_respingere(patron, firma
     assert "nota s-a schimbat față de cea respinsă" in text, text
 
 
+def test_def_199_nir_refacut_identic_nu_apare_schimbat(patron, firma_cv):
+    """199. Coadă: cardul unui document retrimis după respingere (ex. NIR refăcut) putea spune greșit că notele s-au schimbat față de
+    cele respinse; lista de note a documentului putea repeta o notă — la întâmplare, după ordinea notelor din aceeași tranzacție.
+    [partea rămasă, registrul: „fără test de capăt la capăt în browser”] Pașii: NIR D199 respins cu motiv -> refăcut IDENTIC (aceeași
+    cantitate și preț, confirmat „neschimbat”) -> notele intră în coadă; capul grupului e notă cea mai nouă, iar aici ea e ultimul
+    membru (ordinea care strica, fixată ca să nu depindă de noroc) -> contabilul-șef deschide coada: cardul spune „nota nu s-a schimbat
+    față de cea respinsă”, iar notele documentului apar fiecare o singură dată."""
+    from core import coada_api
+    _nir_respins(firma_cv, "D199", "Marfa D199", "lipsește factura D199")
+    vechi = sql("SELECT id FROM \"%s\".nir WHERE numar = 'D199'" % firma_cv["schema"])[0][0]
+    aid = sql("SELECT id FROM \"%s\".articole WHERE denumire = 'Marfa D199'" % firma_cv["schema"])[0][0]
+    _nir_cv(firma_cv, "D199", None, refacut_din=vechi, articol_id=aid, confirma_neschimbata=True)
+    el = [a for a in _in_coada(firma_cv) if "NIR nr D199 " in a["eticheta"]]
+    assert len(el) == 1, el
+    with _db().get_conn() as c, c.cursor() as cur:
+        ids = sorted(m for m, _p in coada_api.membri_grup(cur, el[0]["coada_id"]))
+    assert len(ids) >= 2, ids
+    sql("UPDATE public.declaratii_coada SET creat_la = now() + interval '1 second' WHERE id = %s", (ids[-1],))
+    _coada(patron)
+    card = _card_coada(patron, firma_cv, "NIR nr D199 ")
+    text = card.inner_text()
+    membri = card.get_attribute("data-coada-ids").split(",")
+    patron.captura()
+    assert card.count() == 1, text
+    assert "nota nu s-a schimbat față de cea respinsă" in text, text
+    assert len(membri) == len(set(membri)) and sorted(map(int, membri)) == ids, (membri, ids)
+
+
 def test_def_101_titlul_documentului_in_coada_e_scurt(patron, firma_gv):
     """101. Coadă: titlul repeta numele NIR-ului la fiecare notă.
     Pașii contabilului: asistentul salvează un NIR la preț de vânzare (4 note: 371=408, 4428=408, 371=378, 371=4428) -> contabilul-șef
@@ -975,6 +1003,33 @@ def _jurnal(ecran, firma):
     ecran.pg.wait_for_selector(".fereastra:last-of-type [data-nota-id]", timeout=30000)
 
 
+def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
+    """192. Registru jurnal: notele care vin din NIR și din raportul Z arată „Editează” și „Șterge”, deși serverul le refuză.
+    Pașii: contabilul-șef salvează NIR-ul D192 (fără factură, 2 × 50 lei) -> Registru jurnal: notele NIR-ului (ciorne) n-au
+    „Editează” și n-au „Șterge” (NIR-ul le indică din alt tabel) și spun unde se corectează („în Stoc › NIR-urile lunii”); o notă
+    manuală ciornă are în continuare amândouă -> cererea directă de ștergere a notei NIR e refuzată (serverul, neschimbat)."""
+    tid = firma_gv["tenant_id"]
+    st, r = _api(PATRON, "POST", "/tenants/%d/stocuri/nir" % tid,
+                 {"numar": "D192", "data": AZI.isoformat(), "furnizor": "Furnizor D192 SRL", "factura_id": None,
+                  "linii": [{"denumire": "Marfa D192", "cantitate": 2, "pret_achizitie": 50, "pret_vanzare": 80, "cota_tva": 21}]})
+    assert st == 200 and r.get("inregistrari"), (st, r)
+    nir_ids = r["inregistrari"]
+    st, m = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid, {"data": AZI.isoformat(), "descriere": "Manuala D192", "document_ref": "D192",
+                                                            "linii": [{"debit": "5311", "credit": "4111", "suma": 10}]})
+    assert st == 200 and m.get("id"), (st, m)
+    pg = patron.pg
+    _jurnal(patron, firma_gv)
+    stare = pg.evaluate("""(ids) => ids.map(i => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
+        return r ? {id: i, edit: !!r.querySelector('[data-edit]'), del: !!r.querySelector('[data-del]'), text: r.innerText} : {id: i, lipsa: true}; })""",
+                        nir_ids + [m["id"]])
+    patron.captura()
+    *nir, manuala = stare
+    assert all(not x.get("lipsa") and not x["edit"] and not x["del"] and "NIR-urile lunii" in x["text"] for x in nir), nir
+    assert manuala["edit"] and manuala["del"], manuala
+    st, rr = _api(PATRON, "DELETE", "/tenants/%d/jurnal/%d" % (tid, nir_ids[0]))
+    assert st >= 400 or (rr or {}).get("eroare"), (st, rr)
+
+
 def test_def_104_retrimiterea_notei_neschimbate_cere_confirmare(asistent, firma_gv):
     """104. Coadă: retrimiterea unei note identice cu cea respinsă fără avertisment.
     Pașii contabilului: nota asistentului e respinsă („lipsește contractul D104”) -> asistentul, în Registru jurnal, pe notă
@@ -1082,17 +1137,53 @@ def _trimite_declaratia(ecran):
     return ecran.fereastra()
 
 
-def test_def_120_d300_nu_intra_in_coada_cand_difera_de_4427(patron, firma_tva):
-    """120. Declarații TVA: D300, D394, D390 din aceeași sursă ca balanța, cu gardă 4427/4426.
-    Pașii contabilului: luna trecută are o notă validată 4111 = 4427 de 50,00 lei fără factură -> Declarații -> D300 pe luna trecută ->
-    „Trimite în coadă”: refuzat, cu diferența pe cont („contul 4427 are 50.00, diferență …”), nu intră în coadă."""
-    _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=12).isoformat(), "4111", "4427", 50, "TVA fara factura D120")
-    _genereaza(patron, firma_tva, "d300", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
-    text = _trimite_declaratia(patron)
-    patron.captura()
-    assert "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in text, text[:2000]
-    assert "contul 4427 are 50.00" in text, text[:2000]
-    assert not sql("SELECT id FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd300'", (firma_tva["tenant_id"],))
+def test_def_120_d300_nu_intra_in_coada_cand_4426_are_tva_neinclus_chiar_cu_ciorne_in_luna(patron, firma_tva):
+    """120. Declarații TVA: D300, D394, D390 din aceeași sursă ca balanța, cu gardă 4427/4426. (și 210: garda nu mai bloca)
+    [retestul Costin 09.10, cuvânt cu cuvânt] „D300 F1 10/2026 se poate trimite deși 4426 are 241,50 neincluși.” Situația F1: NIR-urile
+    fără factură validate pe 4426 = 401 (115,50 + 126,00), D300 regenerat din documente cu deductibila 0, iar în lună stăteau notele de
+    corecție în ciornă (121/122) — iar o ciornă în perioadă făcea din blocaj doar avertisment (R36). Pașii: luna trecută are nota
+    validată 4426 = 401 de 241,50 și o ciornă -> Declarații -> D300 pe luna trecută -> „Trimite în coadă”: refuzat, cu diferența pe
+    cont („contul 4426 are 241.50”) și ciorna numită; nu intră în coadă.
+    [testul vechi trecea pe defect: avea diferența pe 4427, dar nicio ciornă în lună]"""
+    tid = firma_tva["tenant_id"]
+    _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=7).isoformat(), "4426", "401", 241.50, "NIR fara factura D120")
+    st, r = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid,
+                 {"data": LUNA_TRECUTA.replace(day=9).isoformat(), "descriere": "Plata furnizor ciorna D120", "document_ref": "DP-D120",
+                  "linii": [{"debit": "401", "credit": "5311", "suma": 100}]})
+    assert st == 200 and r.get("id"), (st, r)
+    try:
+        _genereaza(patron, firma_tva, "d300", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
+        text = _trimite_declaratia(patron)
+        patron.captura()
+        assert "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in text, text[:2000]
+        assert "contul 4426 are 241.50" in text, text[:2000]
+        assert "nevalidat" in text, text[:2000]
+        assert not sql("SELECT id FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd300'", (tid,))
+    finally:
+        _api(PATRON, "DELETE", "/tenants/%d/jurnal/%d" % (tid, r["id"]))
+
+
+def test_def_210_d394_nu_intra_in_coada_cu_diferenta_tva_si_ciorne_in_luna(patron, firma_tva):
+    """210. D300: garda D300 față de balanță nu mai blochează trimiterea (regresie a lui 120).
+    Regresia venea din regula R36 (ciornă în perioadă -> numai avertisment), comună tuturor declarațiilor de TVA. Pașii: luna trecută are
+    TVA deductibilă validată pe 4426 pe care documentele nu o au (din testul 120) și o ciornă -> D394 pe luna trecută -> „Trimite în
+    coadă”: refuzat pe aceeași diferență; nu intră în coadă."""
+    tid = firma_tva["tenant_id"]
+    if not sql('SELECT 1 FROM "%s".inregistrari WHERE descriere = %%s' % firma_tva["schema"], ("NIR fara factura D120",)):
+        _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=7).isoformat(), "4426", "401", 241.50, "NIR fara factura D120")
+    st, r = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid,
+                 {"data": LUNA_TRECUTA.replace(day=9).isoformat(), "descriere": "Plata furnizor ciorna D210", "document_ref": "DP-D210",
+                  "linii": [{"debit": "401", "credit": "5311", "suma": 100}]})
+    assert st == 200 and r.get("id"), (st, r)
+    try:
+        _genereaza(patron, firma_tva, "d394", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
+        text = _trimite_declaratia(patron)
+        patron.captura()
+        assert "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in text, text[:2000]
+        assert "contul 4426 are 241.50" in text, text[:2000]
+        assert not sql("SELECT id FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd394'", (tid,))
+    finally:
+        _api(PATRON, "DELETE", "/tenants/%d/jurnal/%d" % (tid, r["id"]))
 
 
 def test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste(asistent, patron, firma_tva):

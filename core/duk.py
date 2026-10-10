@@ -152,7 +152,7 @@ def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
                     cwd=DIST_SAFT, capture_output=True, text=True, timeout=timeout)
         except Exception as e:
             return _gri("D406", "Validatorul SAF-T nu a putut fi rulat: %s." % e)
-        temei = "DUKIntegrator_AnLunaUI -v D406 (validator SAF-T, pachet oficial ANAF)."
+        temei = "Validatorul oficial ANAF pentru SAF-T (D406), din pachetul DUKIntegrator."
         rez = ""
         for f in (lp, xp + ".err.txt"):
             if os.path.exists(f):

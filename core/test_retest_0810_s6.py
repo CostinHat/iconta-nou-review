@@ -268,8 +268,19 @@ def test_pct8_necunoasterile_dinaintea_preluarii_trec_la_grupul_lor():
     # [Retest 2 pct.10, 09.10.2026] domeniul se desface în perioadele declarației: D100 trimestrial -> T1–T4/2025, câte un rând
     assert [x["tip"] for x in ramase] == ["d390", "d205"]
     assert [(x["tip"], x["an"], x["perioada"]) for x in inainte] == [("d100", 2025, "T%d/2025" % t) for t in (1, 2, 3, 4)]
-    assert inainte[0]["motiv"].startswith("Perioadă dinaintea preluării în iConta.eu (09/2026)")
+    assert {x["motiv"] for x in inainte} == {""}   # [deficiența 212] explicația e a grupului, nu a fiecărui rând
     assert cf.separa_neclar_inainte_de_preluare(neclar, None) == (neclar, [])
+
+
+def test_212_domeniul_care_trece_peste_preluare_se_desface():
+    """[deficiența 212, retestul Costin 09.10: „D100 T1–T2/2026 în alt grup decât D406 T1/2026, deși sunt aceeași perioadă”] Un
+    domeniu 2026-01…2026-12 la o firmă preluată în 07/2026: T1 și T2 merg în grupul preluării, restul rămâne „Nu pot verifica”, cu
+    domeniul de la 07/2026. MUTAȚIE: condiția veche (numai domeniile încheiate înaintea preluării) -> D100 rămâne întreg -> pică."""
+    from core import control_fiscal_api as cf
+    ramase, inainte = cf.separa_neclar_inainte_de_preluare(
+        [{"tip": "d100", "motiv": "necunoscut 2026", "domeniu_de": "2026-01", "domeniu_pana": "2026-12"}], (2026, 7))
+    assert [(x["perioada"], x["motiv"]) for x in inainte] == [("T1/2026", ""), ("T2/2026", "")]
+    assert [(x["tip"], x["domeniu_de"], x["motiv"]) for x in ramase] == [("d100", "2026-07", "necunoscut 2026")]
 
 
 TID_SINTETIC = 990811
@@ -384,7 +395,12 @@ def test_pct11_inchiderea_are_un_singur_loc_cardul():
                for p in sorted(glob.glob("static/js/ecrane/*.js"))}
     assert {f: n for f, n in apeluri.items() if n} == {"firme.js": 2}
     firme = js("static/js/ecrane/firme.js")
-    assert re.search(r"if \(!blocata && bLock\.isConnected && \(!ctl \|\| ctl\.blocaje\.length\)\) \{\s*bLock\.disabled = true;", firme)
+    # [deficiența 197] poarta stă în `legaBlocareLuna` — sursa ambelor butoane (Închidere lună și antetul Registrului jurnal)
+    fn = firme[firme.index("async function legaBlocareLuna"):firme.index("async function ecranInchidereLuna")]
+    # blocarea e inactivă până sosesc controalele și se activează NUMAI fără blocaje (citirea nu ține ecranul — proba plasei, 58)
+    assert re.search(r"if \(!lunaBlocata\) \{\s*bLock\.disabled = true;", fn)
+    assert re.search(r"if \(ctl && !\(ctl\.blocaje \|\| \[\]\)\.length\) \{ bLock\.disabled = false;", fn)
+    assert len(re.findall(r"legaBlocareLuna\(", firme)) == 3   # definiția + cele două butoane
 
 
 # ── pct.12 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────

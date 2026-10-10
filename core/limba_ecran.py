@@ -43,7 +43,7 @@ _SUMA = re.compile(r"(?<![\d.,])\d{3,}\.\d{2}(?![\d.,])")
 _DATA = re.compile(r"\b(?:19|20)\d\d-[01]\d-[0-3]\d\b")
 _PER_PUNCT = re.compile(r"(?<![\d.])(?:0[1-9]|1[0-2])\.(?:19|20)\d\d\b")
 _PER_LUNA = re.compile(r"\b(?:ian|feb|mar|apr|iun|iul|aug|sep|oct|noi|dec)\.? (?:19|20)\d\d\b")
-_PER_TRIM = re.compile(r"\bT[1-4](?!/(?:19|20)\d\d)\b")
+_PER_TRIM = re.compile(r"\bT[1-4](?!/(?:19|20)\d\d)\b|\btrim(?:\.|estrul)\s+(?:I{1,3}|IV|[1-4])\b")   # + „trim. IV 2026” (cardul cozii, 09.10)
 _ABREV = re.compile(r"\b(?!(?:art|alin|lit|pct|nr|rd|ex|cf|str|jud|tel)\.)[a-zăâîșț]{2,5}\.[a-zăâîșț]{3,6}\b")
 #: jargon de programator găsit pe ecrane (retest 09.10): ce înseamnă pentru dezvoltator, nu pentru contabil
 _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|hash|upsert|fallback|tenant|schema|cache|null|None|"

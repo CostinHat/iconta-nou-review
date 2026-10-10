@@ -62,7 +62,7 @@ def migrare_istoric_status(ctx):
 def migrare_importa(date, ctx):
     """[P7 · use-case] Corpul rutei `/migrare/importa`; docstringul ei a ramas in stratul HTTP."""
     if _uc_comun._TENANT_TEMPLATE is None:
-        raise _erori.EsecIntern("template tenant indisponibil pe server")
+        raise _erori.EsecIntern("Șablonul pentru o firmă nouă lipsește pe server — anunță administratorul platformei.")
     creat, erori = [], []
     _de_precompletat = []          # [(schema_name, cui)] — ANAF se cheamă abia după bloc
     with db.get_conn() as conn:
