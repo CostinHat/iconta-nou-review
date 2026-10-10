@@ -504,6 +504,9 @@ Fara titlu, raportul e incomplet.
 ## 2.2.0 REGISTRUL DEFICIENTELOR SI PLASA (09.10.2026, comanda Costin pct.6–13, verbatim in DECIZII)
 
 - `DEFICIENTE.md` e registrul canonic al deficientelor gasite la testare: **orice deficienta noua primeste urmatorul numar de acolo**.
+  **Numerele simple sunt ale lui Costin; o deficienta gasita de Code primeste prefixul C** (C1, C2, ..., in ordine; testul ei
+  `test_def_c<n>_...`) — decizia Costin 10.10.2026, verbatim in DECIZII: „De acum, defectele găsite de tine primesc prefixul C, iar
+  numerele simple rămân ale mele.” Fostele 220–226 ale lui Code sunt C1–C7.
   Starile sunt o multime inchisa (rezolvata / partial / nerezolvata / nu se aplica / neverificat; N-urile: reala / nu e reala /
   neverificat), pazita de `core/test_deficiente.py`.
 - **„Rezolvata” = test de capat la capat in browser** (`frontend_test/e2e/e2e_*.py::test_def_<nr>_*`) care reface pasii contabilului,

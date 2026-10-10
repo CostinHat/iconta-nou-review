@@ -130,7 +130,7 @@ def test_gardul_chiar_gaseste_generatoarele_pazite():
         "api_public.genereaza nu ridica ValueError - daca apare aici, gardul face fals-pozitive"
 
 
-#: [10.10.2026, deficiența 224 generalizată] emiterea și crearea unei facturi refuză motivat cu `ValueError` (cod partener, serie,
+#: [10.10.2026, deficiența C7 generalizată] emiterea și crearea unei facturi refuză motivat cu `ValueError` (cod partener, serie,
 #: cotă sau cont nedeterminat); ruta din magazin o lăsa să iasă ca 500 „eroare 500”. Măsurat pe tot `core/` + `main.py`: 5 apeluri
 #: neprinse (`vanzare_ic` și patru achiziții, în `uc_tenants`), toate reparate. `facturi_api` e biblioteca însăși: refuzul ei urcă
 #: la apelant, care îl traduce.

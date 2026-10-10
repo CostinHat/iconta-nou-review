@@ -114,11 +114,11 @@ ABATERI = {
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
     ("achizitie_ic", "str(e)"): (
-        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+        "Deficiența C7 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
     ("achizitie_necorporala", "str(e)"): (
-        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+        "Deficiența C7 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
     ("achizitie_neinregistrat", "str(e)"): (
-        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+        "Deficiența C7 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
     ("tenant_plan_conturi_adauga", "'Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — s-a primit %r.' % simbol"): (
         "Comanda Costin 09.10.2026, „Retest 2” pct.13 (decizia O12, prinsă la proba din ecran): „4111.” — un separator fără analitic "
         "după el — intra în plan. Refuz numit (422): analiticul = sinteticul + separator + cifre."),
@@ -343,6 +343,11 @@ APELURI_INLOCUITE = {
         "_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
     ("portal_adauga_acces", "HTTPException"): (
         "_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+    ("declaratii_tipuri", "get"): (
+        "periodicitate_firma",
+        "Deficiența C2 (10.10.2026): selectorul oferea D406 lunar neplătitorului (OPANAF 1783/2021 anexa 4 pct.3: trimestrial). "
+        "`_vec.get(\"tip_decont\")` nu mai e citit în use-case: `periodicitate_firma` primește vectorul întreg și citește din el "
+        "`tip_decont` ȘI `platitor_tva` (`common.perioada_d406_tip`) — aceeași citire, plus plătitorul."),
     ("portal_revoca_acces", "dezactiveaza_contul"): (
         "dezactiveaza_contul_client",
         "B3 (17.09.2026, audit A1): portalul dezactiva un cont NEscoped — un client titular stingea "

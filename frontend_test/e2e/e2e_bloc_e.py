@@ -20,7 +20,7 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, cui_cu_control, sql
+from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
 
 IBAN_PROBA = "RO49AAAA1B31007593840000"   # IBAN-ul exemplu ECBS pentru România (cifrele de control valide)
 AZI = _dt.date.today()
@@ -329,8 +329,8 @@ def test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc(patron, firma):
     patron.captura("istoric_facturi_fara_inchidere")
 
 
-def test_def_220_clicul_pe_evidenta_facturilor_nu_se_pierde_cat_se_citesc_controalele(patron, firma):
-    """220. Închidere lună: „Închide evidența facturilor” apare pe ecran, dar un clic dat cât se citesc controalele lunii se pierde.
+def test_def_c3_clicul_pe_evidenta_facturilor_nu_se_pierde_cat_se_citesc_controalele(patron, firma):
+    """C3 (fostă 220). Închidere lună: „Închide evidența facturilor” apare pe ecran, dar un clic dat cât se citesc controalele lunii se pierde.
     [comanda Costin 10.10.2026 pct.8, verbatim: „Un clic al contabilului nu se pierde nicăieri.”] Butonul se lega după cererile
     controalelor și ale blocării lunii (`static/js/ecrane/firme.js`, „Închidere lună”). Cursa se face deterministă: cererea
     controalelor (`/perioade-blocate`) e întârziată 4 s în pagină. Pașii contabilului: Închidere lună -> luna trecută -> apasă
@@ -398,9 +398,7 @@ def test_def_150_evidenta_e_ce_a_validat_un_om(patron, firma):
         # poarta: D300 07/2026 în coadă — avertisment, nu blocaj
         _card(patron, firma, "declaratii", "#dec-tip")
         pg.select_option("#dec-tip", "d300")
-        pg.fill("#dec-an", "2026")
-        pg.dispatch_event("#dec-an", "change")
-        pg.select_option("#dec-luna", "7")
+        alege_perioada(pg, 2026, 7)
         pg.click("#dec-continua")
         pg.wait_for_selector("#dec-trimite, #dec-gol-da", timeout=60000)
         pg.click("#dec-gol-da" if pg.locator("#dec-gol-da").count() else "#dec-trimite")
@@ -703,12 +701,7 @@ def _declaratie(ecran, f, tip, an, luna):
     pg = ecran.pg
     _card(ecran, f, "declaratii", "#dec-tip")
     pg.select_option("#dec-tip", tip)
-    pg.fill("#dec-an", str(an))
-    pg.dispatch_event("#dec-an", "change")
-    if pg.locator("#dec-luna").count():
-        pg.select_option("#dec-luna", str(luna))
-    else:
-        pg.select_option("#dec-trim", str((luna - 1) // 3 + 1))
+    alege_perioada(pg, an, luna)
     pg.click("#dec-continua")
     pg.wait_for_selector("details.dec-xml summary:text('Vezi XML-ul generat')", timeout=90000)
 

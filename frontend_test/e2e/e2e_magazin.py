@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Magazinul online și emiterea la o firmă NEplătitoare de TVA — deficiențele 221–223, găsite pe 10.10.2026 de proba R193
+"""Magazinul online și emiterea la o firmă NEplătitoare de TVA — deficiențele C4–C6 (foste 221–223), găsite pe 10.10.2026 de proba R193
 (`core/test_r193_model_fara_conexiune.py`), probate în browser pe o firmă nouă a rulării.
 
 Magazinul WooCommerce e ținut de un server HTTP local, pornit de test (`/wp-json/wc/v3/orders`): aplicația îl citește exact ca pe
@@ -85,8 +85,8 @@ def _comanda(nr, denumire="Servicii de mentenanță site", total="250.00"):
             "line_items": [{"name": denumire, "quantity": 1, "total": total}]}
 
 
-def test_def_221_comenzile_magazinului_devin_facturi(patron, firma_neplatitoare, magazin):
-    """221. Magazin online: nicio comandă nu se importa — fiecare factură era refuzată pe codul fiscal al clientului.
+def test_def_c4_comenzile_magazinului_devin_facturi(patron, firma_neplatitoare, magazin):
+    """C4 (fostă 221). Magazin online: nicio comandă nu se importa — fiecare factură era refuzată pe codul fiscal al clientului.
     O comandă din magazin vine de la o persoană fizică fără cod fiscal: importul o declară (`tert_pf=True`), dar emiterea nu dădea
     declarația mai departe la crearea facturii, care cerea a doua oară codul și refuza. Pașii contabilului: firma cu magazinul
     configurat -> Magazin online -> „Sincronizează acum” -> „1 facturi importate”, iar factura clientului Ana Pop există, fără cod.
@@ -98,8 +98,8 @@ def test_def_221_comenzile_magazinului_devin_facturi(patron, firma_neplatitoare,
     assert sql('SELECT tert_nume, tert_cui FROM "%s".facturi WHERE sursa_externa = \'WC-601\'' % f["schema"]) == [("Ana Pop", None)]
 
 
-def test_def_222_factura_din_magazin_a_neplatitorului_nu_poarta_tva(patron, firma_neplatitoare, magazin):
-    """222. Magazin online, firmă neplătitoare: factura importată ar fi purtat TVA.
+def test_def_c5_factura_din_magazin_a_neplatitorului_nu_poarta_tva(patron, firma_neplatitoare, magazin):
+    """C5 (fostă 222). Magazin online, firmă neplătitoare: factura importată ar fi purtat TVA.
     Importul nu dădea emiterii statutul de plătitor al firmei, deci emiterea lua implicitul „plătitoare” — iar o linie de produs nou
     primea cota 21% (CF art.310 alin.(10) lit.b): neplătitorul „nu are voie să menționeze taxa pe factură”). Pașii contabilului:
     firma neplătitoare -> Magazin online -> „Sincronizează acum” -> linia facturii are cota 0 și TVA 0.
@@ -114,8 +114,8 @@ def test_def_222_factura_din_magazin_a_neplatitorului_nu_poarta_tva(patron, firm
     assert rand == [(0, "0.00")], rand
 
 
-def test_def_223_neplatitorul_primeste_contul_de_venit_de_la_asistent(patron, firma_neplatitoare):
-    """223. Emitere, firmă neplătitoare: contul de venit al unei linii fără cuvânt-cheie era refuzat cu „asistentul nu a putut
+def test_def_c6_neplatitorul_primeste_contul_de_venit_de_la_asistent(patron, firma_neplatitoare):
+    """C6 (fostă 223). Emitere, firmă neplătitoare: contul de venit al unei linii fără cuvânt-cheie era refuzat cu „asistentul nu a putut
     decide”, fără ca asistentul să fi fost întrebat. Decizia 64 (22.09): regula pe cuvinte-cheie, apoi asistentul, apoi blocarea —
     la orice firmă; la neplătitor întrebarea se punea cu „neplătitor”, pe care potrivirea cotei îl scurtcircuitează la 0, fără felul
     venitului. Pașii contabilului: firma neplătitoare -> Facturi -> „Emite factură” -> client și linia „Mentenanță platformă web”
@@ -147,8 +147,8 @@ def test_def_223_neplatitorul_primeste_contul_de_venit_de_la_asistent(patron, fi
     assert len(ai_prompturi()) == 1, ai_prompturi()
 
 
-def test_def_224_comanda_refuzata_nu_opreste_sincronizarea(patron, firma_neplatitoare, magazin):
-    """224. Magazin online: o comandă pe care emiterea o refuză oprea sincronizarea cu „eroare 500”, iar comenzile de după ea nu se
+def test_def_c7_comanda_refuzata_nu_opreste_sincronizarea(patron, firma_neplatitoare, magazin):
+    """C7 (fostă 224). Magazin online: o comandă pe care emiterea o refuză oprea sincronizarea cu „eroare 500”, iar comenzile de după ea nu se
     mai importau. Pașii contabilului: magazinul are două comenzi — 603 „Abonament platformă online” (asistentul nu răspunde, deci
     contul de venit nu se poate stabili) și 604 „Servicii de mentenanță site” -> „Sincronizează acum” -> „1 facturi importate”, iar
     sub ea: „Comanda 603 n-a devenit factură: Contul de venit … Se reîncearcă la sincronizarea următoare.” Data ultimei citiri nu

@@ -111,13 +111,20 @@ def fereastra_d406(prof, an, luna):
     Ajutoarele sunt cele ale decontului (`perioada_tva_tip` + `fereastra_tva`), pe care D300 le
     foloseste din 06.08.2026. Ce e propriu lui D406 e MAPAREA: S si A cad pe T.
     """
+    return fereastra_tva(Perioada(an, luna=luna), perioada_d406_tip(prof))
+
+
+def perioada_d406_tip(prof):
+    """"L" / "T" — perioada de raportare SAF-T a firmei (OPANAF 1783/2021 anexa 4): pct. 2 — D406 se transmite „lunar sau trimestrial,
+    urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată”, iar cine are TVA pe semestru sau an „transmit Declaraţia
+    informativă D406 trimestrial”; pct. 3 — „Contribuabilii care nu sunt înregistraţi în scopuri de TVA transmit Declaraţia informativă
+    D406 trimestrial”. SURSA UNICĂ (deficiența C2, 10.10.2026): fereastra datelor (`fereastra_d406`) ȘI periodicitatea din selector și
+    din dispecer (`declaratii_api.periodicitate_firma`) — până azi selectorul oferea D406 lunar neplătitorului. ValueError (vector TVA
+    incomplet) la plătitorul fără perioadă fiscală, ca `perioada_tva_tip`."""
     if not (prof or {}).get("platitor_tva"):
-        tip = "T"                      # pct. 3
-    else:
-        tip = perioada_tva_tip(prof)
-        if tip in ("S", "A"):
-            tip = "T"                  # pct. 2, teza a doua
-    return fereastra_tva(Perioada(an, luna=luna), tip)
+        return "T"                     # pct. 3
+    tip = perioada_tva_tip(prof)
+    return "T" if tip in ("S", "A") else tip      # pct. 2, teza a doua
 
 
 def fereastra_tva(perioada, tip):

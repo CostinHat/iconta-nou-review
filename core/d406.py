@@ -1031,8 +1031,12 @@ def _gl_entries(res):
             _jact = _jid
         G.append('      <Transaction>')
         G.append('        <TransactionID>%s</TransactionID>' % _esc(n.id))
-        G.append('        <Period>%d</Period>' % res.luna)
-        G.append('        <PeriodYear>%d</PeriodYear>' % res.an)
+        # [C1, 10.10.2026] GL.10 `Period` = „Perioada contabilă” a TRANZACȚIEI — luna datei ei (= GLPostingDate), nu luna cerută:
+        # fișierul trimestrial acoperă perioadele contabile PeriodStart..PeriodEnd (S.SC.5/S.SC.7, luni), iar nota din 28.11 e în 11.
+        # INTERPRETARE CU TEMEI (`d406_schema_anaf.xlsx`: aceeași „perioadă contabilă” în antet și în GL.10; DUK nu le confruntă);
+        # alternativa respinsă: luna cerută (pe T4 cerut pe 10, nota din decembrie ieșea în perioada 10). De reconfirmat la o normă ANAF.
+        G.append('        <Period>%d</Period>' % n.data.month)
+        G.append('        <PeriodYear>%d</PeriodYear>' % n.data.year)
         G.append('        <TransactionDate>%s</TransactionDate>' % _d(n.data))
         G.append('        <Description>%s</Description>' % _esc(_t(n.descriere, _LIM["d406"]["Description"])))
         G.append('        <SystemEntryDate>%s</SystemEntryDate>' % _d(n.data))

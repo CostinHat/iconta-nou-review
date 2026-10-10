@@ -3495,7 +3495,7 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
             #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
             # `_tert_pl` s-a înghețat înaintea blocului — v. nota de la începutul rutei
-            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                            linii=[{"descriere": descr[:200], "cantitate": 1,
                                                    "pret_unitar": str(val), "cota_tva": cota}],
@@ -3570,7 +3570,7 @@ def achizitie_ic(tenant_id, corp, ctx):
             tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
             #    (taxare inversa la beneficiar) -> linie cota 0 -> total=val, tva=0 -> baza D390 = val.
-            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                            linii=[{"descriere": descr[:200], "cantitate": 1,
                                                    "pret_unitar": str(val), "cota_tva": 0}],
@@ -3634,7 +3634,7 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
             # `tert_pf=True` (23.08.2026): pana azi lipsa codului era declarata DOAR in comentariul de
             # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
             # o persoana neinregistrata E cazul legitim fara cod - acum o spune CODUL, nu proza.
-            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                            linii=[{"descriere": descr[:200], "cantitate": 1,
                                                    "pret_unitar": str(val), "cota_tva": 0}],
@@ -4030,7 +4030,7 @@ def achizitie_necorporala(tenant_id, corp, ctx):
             # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
             # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
             # `_tert_pl` s-a înghețat înaintea blocului (TVA deductibilă -> furnizor plătitor)
-            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                            linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
                                                    "pret_unitar": str(val), "cota_tva": cota}],
@@ -6098,7 +6098,7 @@ def vanzare_ic(tenant_id, corp, ctx):
         from core import facturi_api as _fa_vic
         with conn.cursor() as cur:
             tranzactie.fixeaza_schema(cur, schema)   # emite_factura foloseste INSERT necalificat
-        try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+        try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
             fres = _fa_vic.emite_factura(
                 # [R193] contul de venit al liniei e cel ales mai sus (și pus pe notă), nu unul cerut modelului cu conexiunea ținută
                 conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),

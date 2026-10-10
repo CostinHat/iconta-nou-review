@@ -2072,3 +2072,26 @@ Reluat după „Răspunsul §6” (`11a03cb8`), la „Poți trece la următorul 
 - Poarta întâi a respins (1 failed / 7979 passed, pytest 68m59s): `test_refuzuri` — al doilea refuz din `ancoreaza` (temeiul fără
   `data_in`) e un refuz fără temei într-un modul care citează legea; e de FORMĂ, notat lângă el, clichetul `common.py` 16 -> 17 și
   cifra normei 77 (CONFORMITATE) 138 -> 139, cu data.
+
+## 10.10.2026 (seara) — D406: perioada tranzacției și periodicitatea neplătitorului (C1, C2); numerotarea C; referința F5 D406 T4/2026 aprobată
+
+Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2026 seara (verbatim în DECIZII), pct.1 și 2.
+- Găsit la R2 (amprentele „înainte”, `scripts/amprente_declaratii.py`, pe producție read-only): F5 primea D406 pe luni, deși e
+  neplătitoare. Două neconformități, tratate pe ciclu (firul registrului suspendat):
+  - C1 (fostă 225): `Transaction/Period` purta luna cerută; acum luna datei notei (F5 T4/2026: nota din 28.11 în perioada 11, nu 12).
+  - C2 (fostă 226): `common.perioada_d406_tip` — sursa unică pentru fereastra SAF-T, selector, dispecer și semafor (neplătitorul și S/A
+    trimestrial, OPANAF 1783/2021 anexa 4 pct.2–3). Pe producție: F3, F4, F5 vedeau D406 lunar; nimic în coadă sau depus pe ele.
+- Referința F1–F5: singura diferență (F5 D406 T4/2026) aprobată de Costin („Aprob — Costin, 10.10.2026”), noul fișier scris cu
+  `--scrie-referinta`, amprenta în DECIZII.
+- Numerotarea: deficiențele găsite de Code au prefixul C (225->C1, 226->C2, 220–224 -> C3–C7, ca 220–225 să fie ale lui Costin);
+  regula în CLAUDE.md §2.2.0 și DEFICIENTE.md, gardul `core/test_deficiente.py` (C continuu, testele `test_def_c<n>`, 3 mutații roșii).
+  Deficiențele 220–225 ale lui Costin intră în registru, „neverificat” până la lotul lor.
+- Uneltele vizuale pe o instanță proaspătă, pe baza de test (nu pe 8010): Declarații axe 0, mobil fără revărsare; `ui_hash` neschimbat.
+- Poarta întâi a respins (pytest 7990 passed / 9 skipped / 15 xfailed; verificator 0; cifre identice; plasa 1 failed / 216 passed):
+  `e2e_bloc_d::test_def_136` cerea D406 pe 09/2026 pentru o firmă nouă, neplătitoare — după C2 ecranul arată „Trimestru”, iar
+  helperul completa numai „Lună”, deci s-a generat trimestrul implicit (T4). Aplicația corectă, testul nu. Clasa: trei helperi
+  (blocurile c, d, e) și două alegeri directe; perioada se alege acum numai prin `conftest.alege_perioada`, gard
+  `core/test_e2e_perioada.py` (5 mutații roșii).
+- A doua poartă a respins (4 failed / 7989 passed): gardul nou asertase pe text (`"alege_perioada(" in fișier`) — `test_garzi_pe_text`
+  (un fișier nou pornește de la zero) și clichetul din PREDARE. Rescris pe AST (apelurile și argumentele lor constante); înainte de
+  a treia poartă, subsetul gărzilor-meta (agenda, clichete, conformitate, deficiențe, inventar, text, predare, temeiuri) rulat separat.

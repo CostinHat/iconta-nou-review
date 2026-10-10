@@ -45,10 +45,51 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Comanda Costin 10.10.2026 seara (răspunsul la §6 „D406 — perioada tranzacției”, verbatim în DECIZII)** — aprobarea amprentei F5
+  D406 T4/2026, numerotarea C, deficiențele 220–225, curățenia /tmp, raportul punctual, ZIP; apoi „următorul pas din listă” (R2a).
+  - ultim: E1 în commitul care conține această intrare (referința aprobată, numerotarea C, lotul D406).
+  - urmator: E2. STARE = IN LUCRU
+  - pasi:
+    E1. pct.1+2 — DECIZII: comanda verbatim + „Aprob — Costin, 10.10.2026” + amprenta noii referințe (`cifre_referinta.py --productie
+        --scrie-referinta`); numerotarea: deficiențele găsite de Code primesc prefixul C (225->C1, 226->C2; 220–224, tot ale lui Code,
+        -> C3–C7, ca 220–225 să fie ale lui Costin) în DEFICIENTE.md, în numele testelor `test_def_c<n>_…` și în comentariile din cod;
+        regula în CLAUDE.md §2.2.0 + antetul DEFICIENTE + `core/test_deficiente.py` (C continuu de la C1, testele `test_def_c<n>`);
+        uneltele vizuale pe ecranul Declarații; commitul lotului D406 (poarta completă).
+    E2. pct.3 — 220–225 în DEFICIENTE.md; pentru fiecare: reproducerea pe aplicația de acum (test de capăt la capăt care pică), cauza,
+        clasa, reparația, testul verde + mutația: 220 roșu înainte de termen (Control fiscal); 221 „An precedent” al bilanțului;
+        222 „Trimite în coadă” fără tip + confirmarea „ok” brută; 223 catalogul lui Ana (parțialul 5); 224 cardul Control fiscal semafor
+        cu 4 lumini și numărul de firme (regula în DESIGN_SYSTEM.md + verificator); 225 cardul „Suport” în locul lui „Raportează”, la
+        ambele roluri. Uneltele vizuale pe ecranele atinse. Commitul lotului (poarta completă).
+    E3. pct.4 — /tmp/claude-1000: directoarele vechi șterse, sesiunea curentă păstrată (listate înainte, cu dimensiunea).
+    E4. pct.5+6 — raportul punctual (220–225, C1–C7, cifre de referință, R193, vocea din Control fiscal, clicurile pierdute) și ZIP-ul
+        în ~/ghid_incoming/.
+- fir: **D406 — perioada tranzacției și periodicitatea neplătitorului (neconformitate găsită la R2, 10.10.2026; CICLUL: firul
+  registrului suspendat)** — amprentele R2 pe producție au arătat F5 (neplătitor, fereastra SAF-T T4/2026) cu D406 cerut pe luni.
+  Măsurat: (A) `core/d406.py:1034` scrie `Transaction/Period` = luna CERUTĂ pentru toate tranzacțiile ferestrei (F5 T4/2026: nota din
+  28.11 declarată în perioada 12; cerută pe 10 -> perioada 10), deși antetul aceluiași fișier spune perioadele contabile 10–12
+  (schema ANAF S.SC.5/S.SC.7, GL.10 „Perioada contabilă”); (B) `declaratii_api.periodicitate_firma` dă D406 „lunar” neplătitorului
+  (OPANAF 1783/2021 anexa 4 pct.3: trimestrial) și „semestrial”/„anual” pentru S/A (pct.2 teza a doua: trimestrial) — selectorul și
+  dispecerul; producție 3/5 firme (F3, F4, F5), test 2/20 (tenant_014, tenant_048).
+  - ultim (10.10.2026): D1–D3 pe disc, necomise (WIP salvat: `wip/2026-10-10-1935`): perioada tranzacției din data notei; `common.perioada_d406_tip`
+    sursa unică (fereastra, selectorul, dispecerul, semaforul); DEFICIENTE C1, C2 (foste 225, 226) cu teste e2e verzi și mutațiile lor roșii.
+    Referința aprobată: o singură diferență, F5 D406 T4/2026 (`166d4301…` -> `896a1b24…`).
+  - ultim (10.10.2026, seara): D4 — aprobat de Costin („Aprob — Costin, 10.10.2026”), referința scrisă; D5 în commitul care conține această intrare.
+  - urmator: — (închis). STARE = ÎNCHIS
+  - pasi:
+    D1. (A) `d406.py`: `Period`/`PeriodYear` ale tranzacției din data notei (= `GLPostingDate`), INTERPRETARE CU TEMEI în cod (antetul
+        și GL.10 folosesc aceeași „perioadă contabilă”); test unitar pe o fereastră trimestrială cu note în 3 luni + mutație; DUK valid.
+    D2. (B) o singură sursă pentru periodicitatea D406: `common.perioada_d406_tip(prof)` (pct.2–3), folosită de `fereastra_d406` ȘI de
+        `declaratii_api.periodicitate_firma` (care primește profilul: platitor_tva + tip_decont); apelanții (selectorul, dispecerul)
+        transmit profilul; test + mutație.
+    D3. DEFICIENTE C1 (A, fostă 225) și C2 (B, fostă 226): teste de capăt la capăt (selectorul neplătitorului oferă D406 trimestrial; fișierul trimestrial
+        are perioada fiecărei tranzacții), mutații prin `scripts/e2e_poarta.py --mutatie=`.
+    D4. Referința aprobată: amprenta F5 D406 T4/2026 se schimbă (singura; celelalte calculate identice) -> STOP înaintea commitului,
+        aprobarea lui Costin (comanda 10.10.2026 pct.1); după aprobare: `--scrie-referinta` + DECIZII cu amprenta.
+    D5. Registrele, poarta, four-way; firul registrului reia la R2 (R2a portofoliul — pe disc; R2b apelurile generatoarelor din suită).
 - fir: **Răspunsul §6 (comanda Costin 10.10.2026, verbatim în DECIZII)** — după „Retestul plasei” (dc5e44df).
   - ultim: S1–S6 în commitul care conține această intrare: referința F1–F5 în poartă (fail-closed); D406 blochează ca TVA-ul; vocea a
     treia pe toată clasa (356 -> 6 declarate, gard pe toate literalele); clicul legat după o cerere măsurat pe toate ecranele (2 -> 0,
-    deficiența 220); R193 închisă (C5 10 -> 0, proba cu conexiunile numărate). Ieșite pe drum și închise în lot (S5b–S5d): 221–224
+    deficiența C3, fostă 220); R193 închisă (C5 10 -> 0, proba cu conexiunile numărate). Ieșite pe drum și închise în lot (S5b–S5d): C4–C7 (foste 221–224)
     (magazinul: `tert_pf` netransmis, plătitorul implicit, comanda refuzată ca 500; contul de venit al neplătitorului), clasa
     „parametru netransmis” (3, gard), refuzul emiterii neprins în 5 use-case-uri (gard), cronul recurentelor pe faze.
   - urmator: următorul pas din agendă (`core.agenda`), cum cere comanda („Poți trece la următorul pas din listă”). STARE = ÎNCHIS
@@ -187,7 +228,8 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim (10.10.2026): R0 + R1a–R1d în commitul care conține această intrare (SHA în raport) — `ancoreaza` scrie în `COTE`
     (55 de chei, din care 32 ancorate / 71 de intrări), `registru_complet`, `core/registru_fiscal.py` (stare / verdicte / export),
     `core/test_registru_fiscal.py` (11) + recalibrările gărzilor registrului întreg (DECIZII 10.10.2026, „R1”); 8 mutații roșii.
-  - urmator: R2 (amprentele „înainte” ale declarațiilor pe portofoliu, `scripts/amprente_declaratii.py`). STARE = IN LUCRU
+  - urmator: R2a (amprentele „înainte” ale declarațiilor pe portofoliu, `scripts/amprente_declaratii.py`). STARE = BLOCAT: după firul
+    comenzii din 10.10.2026 seara (E1–E4), care e întâi în listă
   - R1 SPART ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1 — lista crește întâi): măsurat pe 11a03cb8, `ancoreaza` ține 32 de constante în
     `CONSTANTE_ANCORATE` (al doilea dicționar), umplut la IMPORT — iar 30 de locuri citesc registrul întreg (`COTE.items()` & co.).
     R1a. `common.ancoreaza` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)`; refuz fără `data_in`, refuz la a doua
@@ -207,6 +249,14 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
         registrului în formatul `verif_temeiuri.json`; citirea verdictelor APROB. Gărzi + mutații.
     R2. Amprentele „înainte”: toate declarațiile generabile pe portofoliu (baza de test; producția în tranzacție anulată), XML
         normalizat + SHA (`scripts/amprente_declaratii.py`), artefact.
+        R2 CRESCUT ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1): măsurat, pe portofoliu se generează numai periodicele cu date (producție 36 XML
+        din 260 de cereri, test 198 din 1321); declarațiile cu formular (D212, D110, D104 …) refuză fără formular, iar valorile lor se
+        mută la R4–R7. Deci:
+        R2a. Portofoliul: fiecare tip × perioadă cu date, pe drumul aplicației, read-only, + amprenta DATELOR firmei (baza de test se
+             schimbă între R2 și R8: la R8 „înainte” rulează dintr-un worktree al commitului R2, pe aceleași date).
+             Unealta + gardul ei (4 teste, 4 mutații roșii) în commitul lotului D406 (10.10.2026); artefactul „înainte” rămâne de luat
+             pe commitul care o conține, după lotul 220–225.
+        R2b. Suita: amprenta fiecărui apel de generator din `pytest` (formularele completate de teste), pe test, artefact.
     R3. Dublurile: `d101/d101g.COTA_STANDARD` -> `impozit_profit`; `cote_tva.COTA_STANDARD/REDUSA` -> `tva_standard`/`tva_redusa`;
         consumatorii citesc `cota(nume, data_operatiunii)`.
     R4. Constantele ancorate (32), grupate pe modul (casa, d212, salarizare, bacsis, d100, d394, taxare_inversa, creșa): intrări

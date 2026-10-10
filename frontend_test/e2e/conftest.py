@@ -169,6 +169,23 @@ def _scoate_firmele_e2e(tenant_id=None):
     curatenie.scoate(db, firme)
 
 
+def alege_perioada(pg, an, luna=None, trim=None, zona=""):
+    """Pasul 1 al Declarațiilor: anul și perioada, după selectorul pe care îl arată aplicația pentru firma și tipul alese — luna, sau
+    trimestrul ei când declarația e trimestrială (D406 la neplătitor, deficiența C2). Cerută o perioadă și fără niciun selector, pică:
+    altfel s-ar genera în tăcere perioada implicită a ecranului, nu cea cerută (prins 10.10.2026: test_def_136 cerea 09/2026 și a primit
+    T4). Singurul loc din plasă care alege perioada — `core/test_e2e_perioada.py`."""
+    pg.fill(zona + "#dec-an", str(an))
+    pg.dispatch_event(zona + "#dec-an", "change")
+    if luna is None and trim is None:
+        return
+    if luna is not None and pg.locator(zona + "#dec-luna").count():
+        pg.select_option(zona + "#dec-luna", str(luna))
+    elif pg.locator(zona + "#dec-trim").count():
+        pg.select_option(zona + "#dec-trim", str(trim or (luna - 1) // 3 + 1))
+    else:
+        raise AssertionError("perioada cerută (luna %s, trim %s) fără selector pe ecran" % (luna, trim))
+
+
 def firma_noua():
     """O firmă NOUĂ a cabinetului de test, creată pe drumul aplicației (`provision_tenant`) și trecută în registrul de curățenie:
     {tenant_id, schema, nume, cabinet_id}. Generator: cine o cere o scoate la final (`_scoate_firmele_e2e(tenant_id)`)."""

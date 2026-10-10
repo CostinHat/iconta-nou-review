@@ -377,19 +377,21 @@ def periodicitate(tip):
 _TVA_PERIODIC = _pft.SET_TVA_DECONT
 
 
-def periodicitate_firma(tip, tip_decont=None):
-    """Periodicitatea AFISATA in selector. Pt setul TVA-decont (d300/d394/d406) urmeaza tip_decont-ul
-    firmei (L->lunar, T->trimestrial), ca semaforul (emite_tva); altfel mapul static. Fara tip_decont
-    cunoscut -> static. #2 plimbare vizuala 14.08.2026 (afisa 'lunar' si pt firme trimestriale)."""
+def periodicitate_firma(tip, prof=None):
+    """Periodicitatea AFISATA in selector si ceruta de dispecer. `prof` = vectorul fiscal al firmei (cel putin `tip_decont` si
+    `platitor_tva`). D300/D394 urmeaza tip_decont-ul (L->lunar, T->trimestrial), ca semaforul (emite_tva); D406 urmeaza perioada
+    SAF-T (`common.perioada_d406_tip` — sursa unica cu fereastra datelor: neplatitorul si S/A depun trimestrial, OPANAF 1783/2021
+    anexa 4 pct.2-3; deficienta C2, 10.10.2026: neplatitorului i se oferea D406 lunar). Fara profil sau cu vectorul TVA incomplet
+    -> mapul static (generatorul refuza apoi cu motivul lui). #2 plimbare vizuala 14.08.2026 (afisa 'lunar' si pt firme trimestriale)."""
     baza = periodicitate(tip)
-    if tip in _TVA_PERIODIC and tip_decont:
-        try:
-            from core.common import perioada_tva_tip, DECONT_LUNG
-            d = perioada_tva_tip({"tip_decont": tip_decont})
-            return DECONT_LUNG.get(d, baza)
-        except ValueError:
-            return baza
-    return baza
+    if tip not in _TVA_PERIODIC or prof is None:
+        return baza
+    from core.common import perioada_tva_tip, perioada_d406_tip, DECONT_LUNG
+    try:
+        d = perioada_d406_tip(prof) if tip == "d406" else perioada_tva_tip(prof)
+    except ValueError:
+        return baza
+    return DECONT_LUNG.get(d, baza)
 
 
 # ============================================================
@@ -671,9 +673,9 @@ def genereaza(conn, schema, tip, body):
     per_ef = None
     if tip in _TVA_PERIODIC:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip_decont FROM firma_profil WHERE id = 1")
+            cur.execute("SELECT tip_decont, platitor_tva FROM firma_profil WHERE id = 1")
             _rd = cur.fetchone()
-        per_ef = periodicitate_firma(tip, _rd[0] if _rd else None)
+        per_ef = periodicitate_firma(tip, {"tip_decont": _rd[0], "platitor_tva": _rd[1]} if _rd else None)
     erori = valideaza_cerere(tip, body, per_ef)
     if erori:
         raise ValueError("; ".join(erori))

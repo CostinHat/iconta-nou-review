@@ -157,6 +157,17 @@ def test_d406_platitor_tip_decont_None_gri():
     assert "d406" in {n["tip"] for n in rez["neclar"]}
 
 
+def test_d406_platitor_semestrial_sau_anual_trimestrial_datorat():
+    """Deficienta C2 (10.10.2026): OPANAF 1783/2021 anexa 4 pct.2 teza a doua — „Contribuabilii care au ca perioadă fiscală
+    aplicabilă pentru taxa pe valoarea adăugată semestrul sau anul transmit Declaraţia informativă D406 trimestrial”. Semaforul dădea
+    „gri, nesuportat”, ca decontului S/A. MUTATIE: D406 emis cu `perioada_tva_tip` -> S/A ies gri -> pica."""
+    for td in ("S", "A", "semestrial"):
+        rez = cf.declaratii_datorate({"platitor_tva": True, "tip_decont": td}, are_salariati=False, azi=date(2026, 2, 1))
+        assert ("d406", 2025, 12) in _chei(rez["datorate"]), td          # T4 2025, termen 31 ian 2026
+        assert "d406" not in {n["tip"] for n in rez["neclar"]}, td
+        assert not any(k[0] == "d406" and k[2] in (10, 11) for k in _chei(rez["datorate"])), td   # trimestrial, nu lunar
+
+
 def test_d406_platitor_None_gri():
     rez = cf.declaratii_datorate({"platitor_tva": None}, are_salariati=False, azi=date(2026, 6, 1))
     assert "d406" in {n["tip"] for n in rez["neclar"]}

@@ -2,7 +2,8 @@
 """GARD — registrul deficiențelor (`DEFICIENTE.md`) și plasa lui (comanda Costin 09.10.2026, pct.6–9 și 13, verbatim în DECIZII).
 
   · numerotarea e continuă (1..ultimul, fără goluri sau dubluri) și N1–N18 sunt toate acolo: „orice deficiență nouă primește
-    următorul număr din DEFICIENTE.md”;
+    următorul număr din DEFICIENTE.md”; deficiențele găsite de Code au prefixul C, continuu de la C1 (decizia Costin 10.10.2026: „De
+    acum, defectele găsite de tine primesc prefixul C, iar numerele simple rămân ale mele”);
   · starea e din mulțimea închisă; `parțial` / `nerezolvată` / `nu se aplică` spun ce lipsește (motivul);
   · `rezolvată` are commitul (existent în git) ȘI testul de capăt la capăt numit, care există ca funcție `test_def_<nr>_…` într-un
     `frontend_test/e2e/e2e_*.py`: „Un număr fără test nu e «rezolvată», e «neverificat»”;
@@ -31,7 +32,7 @@ def randuri(text=None):
     text = text if text is not None else io.open(os.path.join(_RAD, "DEFICIENTE.md"), encoding="utf-8").read()
     out = []
     for ln in text.splitlines():
-        m = re.match(r"^\| (\d+|N\d+) \|(.*)\|\s*$", ln)
+        m = re.match(r"^\| (\d+|N\d+|C\d+) \|(.*)\|\s*$", ln)
         if not m:
             continue
         cel = [c.strip() for c in m.group(2).split("|")]
@@ -46,7 +47,7 @@ def plasa_e2e():
     for f in sorted(glob.glob(os.path.join(_RAD, "frontend_test", "e2e", "e2e_*.py"))):
         for n in ast.walk(ast.parse(io.open(f, encoding="utf-8").read())):
             if isinstance(n, ast.FunctionDef):
-                m = re.match(r"^test_def_(\d+|n\d+)_", n.name)
+                m = re.match(r"^test_def_(\d+|n\d+|c\d+)_", n.name)
                 if m:
                     out.setdefault(m.group(1).upper(), []).append("%s::%s" % (os.path.relpath(f, _RAD), n.name))
     return out
@@ -59,6 +60,9 @@ def test_numerotarea_e_continua_si_completa():
     assert num == list(range(1, max(num) + 1)), "numerotarea 1..%d are goluri sau dubluri" % max(num)
     assert max(num) >= 188, "anti-vacuu: registrul trebuie să aibă cel puțin 1–188"
     assert [x for x in nr if x.startswith("N")] == ["N%d" % i for i in range(1, NR_N + 1)]
+    c = [x for x in nr if x.startswith("C")]
+    assert c == ["C%d" % i for i in range(1, len(c) + 1)], "numerotarea C are goluri, dubluri sau e în altă ordine: %s" % c
+    assert len(c) >= 7, "anti-vacuu: C1–C7 (fostele 220–226 ale lui Code) trebuie să fie acolo"
 
 
 def test_starea_e_din_multimea_inchisa_si_cu_motiv():

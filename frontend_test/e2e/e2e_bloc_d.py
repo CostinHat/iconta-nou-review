@@ -13,7 +13,7 @@ import urllib.request
 
 import pytest
 
-from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, cui_cu_control, sql
+from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
@@ -944,10 +944,7 @@ def _genereaza(ecran, firma, tip, an, luna):
     ecran.firma(firma["nume"])
     _deschide(ecran, "#fa-declaratii", "Pasul 1 din 3")
     pg.select_option(".fereastra:last-of-type #dec-tip", tip)
-    pg.fill(".fereastra:last-of-type #dec-an", str(an))
-    pg.dispatch_event(".fereastra:last-of-type #dec-an", "change")
-    if pg.query_selector(".fereastra:last-of-type #dec-luna"):
-        pg.select_option(".fereastra:last-of-type #dec-luna", str(luna))
+    alege_perioada(pg, an, luna, zona=".fereastra:last-of-type ")
     pg.click(".fereastra:last-of-type #dec-continua")
     pg.wait_for_function("() => { const t = [...document.querySelectorAll('.fereastra')].pop().innerText; "
                          "return t.includes('Pasul 2 din 3 — verifică') || !!document.querySelector('.fereastra:last-of-type .dec-eroare'); }",

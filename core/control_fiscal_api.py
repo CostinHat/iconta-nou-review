@@ -24,7 +24,7 @@ import datetime
 from core import afirmatii as _af   # [P3] afirmatiile despre datele firmei sunt obiecte, nu siruri
 
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
-from core.common import azi_ro, pastila_firma, perioada_tva_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
+from core.common import azi_ro, pastila_firma, perioada_tva_tip, perioada_d406_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 from core import repo_control_fiscal_api as _repo
 
@@ -400,7 +400,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
             # True (are bază) sau None (nu se poate ști, ex. facturi necontabilizate) -> emit (reminder)
         adauga("D100", a, luna_final, perioada_txt, "d100")
 
-    def emite_tva(tip, tip_scad, cauza_periodicitate, marginit=False):
+    def emite_tva(tip, tip_scad, cauza_periodicitate, marginit=False, perioada=perioada_tva_tip):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont). tip_decont necunoscut la
         un platitor -> gri cu cauza (principiul D3). [B1] marginit=True (D300/D394): sare perioadele DE
         DINAINTE de inregistrarea in scopuri de TVA (tva_inreg, fapt ANAF) - nu sunt restante, nu apar deloc."""
@@ -411,7 +411,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         # cuvant respingea litera -> gri "necompletat" la TOTI platitorii seed. Normalizam prin acelasi
         # perioada_tva_tip ca generatoarele (imun la ambele conventii).
         try:
-            d = perioada_tva_tip({"tip_decont": tip_decont})    # "T"/"L"/"S"/"A" sau ridica
+            d = perioada({"tip_decont": tip_decont, "platitor_tva": True})    # "T"/"L"/"S"/"A" sau ridica
         except ValueError:
             gri_fereastra(tip, cauza_periodicitate)
             return
@@ -621,7 +621,10 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     elif platitor_tva is None:
         gri_fereastra("D406", "Plătitor de TVA necompletat — nu se poate ști periodicitatea D406.")
     elif platitor_tva:
-        emite_tva("D406", "d406", "Tip decont TVA necompletat — nu se poate ști periodicitatea D406.", marginit=True)
+        # [C2, 10.10.2026] perioada SAF-T din sursa unică (`common.perioada_d406_tip`): S/A depun D406 trimestrial (pct.2 teza a
+        # doua) — până azi ieșea „gri, nesuportat”, ca decontul S/A.
+        emite_tva("D406", "d406", "Tip decont TVA necompletat — nu se poate ști periodicitatea D406.", marginit=True,
+                  perioada=perioada_d406_tip)
     else:
         for a, tri, lf in per_trim:   # neplatitor de TVA (partida dubla) -> trimestrial
             _adauga_existenta("D406", a, lf, f"T{tri}", "d406")

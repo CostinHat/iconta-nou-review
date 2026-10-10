@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, cui_cu_control, sql
+from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
 
 AZI = _dt.date.today()
 
@@ -1087,12 +1087,7 @@ def _declaratie_pas1(ecran, firma, tip, an, luna=None, trim=None):
     _deschide(ecran, firma, "declaratii", "#dec-tip")
     pg.select_option("#dec-tip", tip)
     pg.wait_for_selector("#dec-an", timeout=10000)
-    pg.fill("#dec-an", str(an))
-    pg.dispatch_event("#dec-an", "change")
-    if luna and pg.locator("#dec-luna").count():
-        pg.select_option("#dec-luna", str(luna))
-    if trim and pg.locator("#dec-trim").count():
-        pg.select_option("#dec-trim", str(trim))
+    alege_perioada(pg, an, luna, trim)
     pg.click("#dec-continua")
 
 

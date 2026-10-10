@@ -210,3 +210,29 @@ def test_ruta_de_validare_ia_perioada_de_pe_rezultat():
         assert "res" in referinte, (
             "`%s` ajunge la validator fara sa treaca prin rezultatul generatorului; "
             "asa a stat D406 nevalidat (R166). Nume gasite: %s" % (cheie, sorted(referinte)))
+
+
+# ── C1: fiecare tranzactie isi declara PROPRIA perioada contabila, nu luna ceruta ──
+def test_tranzactia_isi_declara_perioada_contabila_a_datei_ei():
+    """Deficienta C1 (10.10.2026). Fisierul trimestrial acopera perioadele contabile 10, 11 si 12 (antetul, S.SC.5/S.SC.7:
+    „Prima / Ultima perioadă contabilă acoperită de SAF”), iar GL.10 `Period` = „Perioada contabilă” a tranzactiei. Pana azi,
+    fiecare tranzactie purta luna CERUTA: pe F5 T4/2026, nota din 28.11 iesea in perioada 12 (ceruta pe 10 -> perioada 10).
+    INTERPRETARE CU TEMEI: aceeasi „perioadă contabilă” in antet si in GL.10; validatorul DUK nu le confrunta.
+    MUTATIE: `Period` inapoi pe `res.luna` -> nota din octombrie iese in perioada 12 -> pica."""
+    import re
+    from decimal import Decimal
+
+    def _nota(nid, zi):
+        n = m.Nota(id=nid, data=zi, descriere="Probă %s" % nid)
+        n.linii = [m.LinieNota(record_id="1", cont="5311", descriere="", debit=Decimal("100")),
+                   m.LinieNota(record_id="2", cont="5121", descriere="", credit=Decimal("100"))]
+        return n
+
+    class _Res:
+        an, luna = 2026, 12
+        prof = {"cui": "RO1234567897", "nume": "Probă SRL"}
+        note = [_nota("1", date(2026, 10, 5)), _nota("2", date(2026, 11, 28)), _nota("3", date(2026, 12, 31)),
+                _nota("4", date(2027, 1, 2))]      # an diferit: anul perioadei vine tot din data notei
+    x = "\n".join(m._gl_entries(_Res()))
+    gasit = re.findall(r"<TransactionID>(\d)</TransactionID>\s*<Period>(\d+)</Period>\s*<PeriodYear>(\d+)</PeriodYear>", x)
+    assert gasit == [("1", "10", "2026"), ("2", "11", "2026"), ("3", "12", "2026"), ("4", "1", "2027")], gasit

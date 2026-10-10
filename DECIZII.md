@@ -19224,3 +19224,58 @@ mută în declarația registrului, cu istoricul lor.
 *Completare (aceeași zi, după respingerea porții):* refuzul `ancoreaza` pe temeiul fără `data_in` e un refuz de FORMĂ (o eroare de program:
 intrarea de registru are nevoie de data ei), nu o regulă fiscală — notat lângă el; clichetul refuzurilor fără temei pe `core/common.py`
 16 -> 17, cifra normei 77 în CONFORMITATE 138 -> 139, datată.
+
+## 10.10.2026 — Răspunsul lui Costin la §6 al raportului „D406 — perioada tranzacției”: aprobarea referinței F5 D406 T4/2026, numerotarea C, deficiențele 220–225
+
+**Comanda, verbatim:**
+
+> 1. Aprob amprenta nouă F5 D406 T4/2026 (166d4301… → 896a1b24…): nota din 28.11.2026 se declară în perioada contabilă 11. Scrie în DECIZII.md: „Aprob — Costin, 10.10.2026”. Comite lotul D406.
+>
+> 2. Numerotare: 220–225 sunt deja ocupate de deficiențele mele (vezi punctul 3). Redenumește defectele tale 225→C1 și 226→C2, în DEFICIENTE.md și în numele testelor. De acum, defectele găsite de tine primesc prefixul C, iar numerele simple rămân ale mele.
+>
+> 3. Deficiențe noi, de trecut în DEFICIENTE.md și de rezolvat:
+>    220 – Control fiscal: declarațiile apar cu roșu încă dinainte de termen. Roșu înseamnă termen depășit.
+>    221 – Bilanț: coloana „An precedent” e copiată din anul curent (grav, cifre greșite în declarație).
+>    222 – „Trimite în coadă” e activ fără tip de declarație ales; mesajul de confirmare apare ca o casetă brută „ok”.
+>    223 – Utilizatorul junior (Ana Asistent) vede în catalog funcții de administrator. Catalogul trebuie să arate doar ce poate folosi rolul lui. Acesta e și parțialul nr. 5 rămas deschis.
+>    224 – Cardul Control fiscal devine semafor cu 4 lumini, cu numărul de firme în fiecare stare (aprobat).
+>    225 – Cardul „Suport” înlocuiește „Raportează”, la ambele roluri (aprobat).
+>
+> 4. Curăță directoarele vechi din /tmp/claude-1000. Păstrează sesiunea curentă.
+>
+> 5. În raport, răspunde punctual pentru fiecare deficiență din comanda de azi dimineață și din aceasta (220–225, C1, C2, cifre de referință, R193, vocea din Control fiscal, clicurile pierdute): rezolvată sau nu, cu proba.
+>
+> 6. La final: ZIP cu tot ce s-a schimbat (cod, documente, artefacte de măsurare), cu calea exactă în raport.
+>
+> Poți trece la următorul pas din listă.
+
+**pct.1 — referința F1–F5, schimbare aprobată.** Aprob — Costin, 10.10.2026. Singura diferență: F5 (tenant_053) D406 T4/2026, amprenta
+`166d430199681a857ede294974d4e4ef4da99d18ec6c97d8fc4e3d1f524be926` -> `896a1b24585c2063f7e5f0ac9c90bfab80f55c8fc3c188be8dd6b5ada5a933b7`
+(nota din 28.11.2026 declarată în perioada contabilă 11, nu 12). Noul `scripts/cifre_referinta_aprobate.json`, amprenta sha256:
+`f91da8def6690fdda1bf09bc7e4d67bcea51ee2b83883250c736338c8284673d`.
+
+**Lotul D406 (C1, C2) — ce s-a decis și pe ce temei.** C1: `Transaction/Period` = luna datei notei — INTERPRETARE CU TEMEI
+(`d406_schema_anaf.xlsx`: S.SC.5/S.SC.7 „Prima / Ultima perioadă contabilă acoperită de SAF”, scrise ca luni; GL.10 `Period` „Perioada
+contabilă”); alternativa respinsă: luna cerută (aceeași notă iese în perioada 10, 11 sau 12 după luna aleasă). DUK nu arbitrează. De
+reconfirmat dacă apare o normă ANAF care transează. C2: periodicitatea D406 dintr-o singură sursă, `common.perioada_d406_tip` (OPANAF
+1783/2021 anexa 4 pct.2–3: S, A și neplătitorii — trimestrial), folosită de fereastra datelor, de selector, de dispecer și de semafor;
+alternativa respinsă: o mapare locală în selector (a doua sursă, exact divergența găsită). Norma trăiește în `core/common.py` și în gărzile
+din GARZI.md (10.10.2026 — D406).
+
+**pct.2 — numerotarea; contradicție ridicată, rezolvată după regula dată.** Comanda spune că 220–225 sunt ale lui Costin și că „defectele
+găsite de tine primesc prefixul C, iar numerele simple rămân ale mele”. În registru, 220–224 erau deja ocupate — tot de deficiențe găsite
+de Code (220 clicul pierdut la „Închidere lună”, 221–224 magazinul și emiterea neplătitorului, toate „Găsită de …” în rândul lor). Ca
+numerele 220–225 să fie libere pentru deficiențele lui Costin, aplicând regula lui: 225 -> C1 și 226 -> C2 (cum cere comanda), iar
+220–224 -> C3–C7, în ordine. Alternativa respinsă: deficiențele noi ale lui Costin pe 227–232 (contrazice „220–225 sunt deja ocupate de
+deficiențele mele”). Limita: intrările din DECIZII/ISTORIC de dinainte (append-only) le numesc încă 220–226; corespondența e tabelul de
+mai jos, iar DEFICIENTE.md o poartă pe fiecare rând C.
+
+| vechi | nou | | vechi | nou |
+|---|---|---|---|---|
+| 225 | C1 | | 222 | C5 |
+| 226 | C2 | | 223 | C6 |
+| 220 | C3 | | 224 | C7 |
+| 221 | C4 | | | |
+
+Norma (prefixul C pentru deficiențele găsite de Code; numerele simple ale lui Costin) trăiește în CLAUDE.md §2.2.0 și în antetul
+DEFICIENTE.md, păzită de `core/test_deficiente.py`.
