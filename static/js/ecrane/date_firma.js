@@ -322,7 +322,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     ]);
   } catch (e) {
     corp.innerHTML = `<div id="df-msg"></div>`;
-    arataMesaj(corp.querySelector("#df-msg"), (e && e.mesaj) || "Nu am putut citi datele firmei.", "eroare");
+    arataMesaj(corp.querySelector("#df-msg"), (e && e.mesaj) || "Nu s-au putut citi datele firmei.", "eroare");
     return;
   }
 
@@ -449,7 +449,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     let pas = 0;
     try {
       // [LOTUL 11, 04.09.2026] ORDINEA E REPARAȚIA. Până azi redenumirea pleca PRIMA: dacă
-      // datele erau apoi refuzate, omul citea „Nu am putut salva" pe un ecran în care firma
+      // datele erau apoi refuzate, omul citea „Nu s-a putut salva" pe un ecran în care firma
       // TOCMAI fusese redenumită. Măsurat apăsând, cu formularul umplut cu semne:
       // `PUT /tenants/4838` → 200, `POST /firma-profil/date` → 422. Refuz pe ecran, denumire
       // schimbată în bBază, în două tabele, si de acolo pe `den` din D394.
@@ -477,7 +477,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       }
     } catch (e) {
       // [LOTUL 11] Mesajul spune CE a apucat să intre. `pas === 2` = profilul și vectorul sunt
-      // înregistrate și a căzut DOAR redenumirea — acolo „Nu am putut salva" ar fi o afirmație
+      // înregistrate și a căzut DOAR redenumirea — acolo „Nu s-a putut salva" ar fi o afirmație
       // falsă despre date. *Actul rămâne cu confirmarea lui vizibilă pe calea de reușită (DS
       // cap.27): un `try` propriu pentru redenumire ar fi mutat confirmarea din blocul actului.*
       if (pas === 2) {
@@ -492,7 +492,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       btn.textContent = "Salveaz\u0103";
       // [08.10 §6 pct.4, generalizat] refuzul serverului își numește câmpul: mesajul stă lângă el (DS cap.6, G10); fără câmp -> zona generală
       const peCamp = ((e && e.erori_campuri) || []).filter((c) => eroareCamp(corp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : "df-" + c.camp, c.mesaj)).length;
-      if (!peCamp) arataMesaj(msg, (e && e.mesaj) || "Nu am putut salva.", "eroare");
+      if (!peCamp) arataMesaj(msg, (e && e.mesaj) || "Nu s-a putut salva.", "eroare");
     }
   });
 }

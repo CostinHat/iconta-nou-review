@@ -12,6 +12,8 @@ scrie cade, nu scrie (se vede în export). Firmele de test sunt ale cabinetului 
 09.10.2026: „cu date inventate, fără clienți reali”).
 
 Uz: python scripts/cifre_referinta.py --productie <iesire_fara_extensie>   -> <iesire>.md (de citit) + <iesire>.json (complet)
+    python scripts/cifre_referinta.py --productie --verifica                 -> 0 identic / 1 diferă / 2 nu s-a putut (poarta)
+    python scripts/cifre_referinta.py --productie --scrie-referinta          -> referința nouă (numai cu aprobarea lui Costin)
 """
 import datetime as _dt
 import hashlib
@@ -25,7 +27,13 @@ sys.path.insert(0, RAD)
 CABINET = "Cabinet Test Sesiunea B SRL"
 _ATRIB = re.compile(r'([A-Za-z_][A-Za-z0-9_]*)="([^"]*)"')
 #: părți care se schimbă la fiecare generare și nu sunt cifre (data generării); se scot înaintea amprentei
-_VOLATIL = [re.compile(p) for p in (r'<DateCreated>[^<]*</DateCreated>', r'data_generare="[^"]*"')]
+# [10.10.2026] și `AuditFileDateCreated` din antetul SAF-T (D406): pe 10.10, cifrele aprobate pe 09.10 ieșeau identice, iar amprenta
+# D406 diferea NUMAI prin data generării (dovedit: cu data pusă la 09.10, toate cele 6 amprente = cele aprobate — DECIZII 10.10.2026)
+_VOLATIL = [re.compile(p) for p in (r'<DateCreated>[^<]*</DateCreated>', r'data_generare="[^"]*"',
+                                     r'<AuditFileDateCreated>[^<]*</AuditFileDateCreated>')]
+#: referința APROBATĂ de Costin (comanda 10.10.2026 pct.1: „orice diferență față de referință oprește publicarea”), înghețată în depozit;
+#: o schimbare voită cere aprobarea lui, consemnată în DECIZII cu amprenta noului fișier (`scripts/githooks/verifica-mesaj`)
+REFERINTA = os.path.join(RAD, "scripts", "cifre_referinta_aprobate.json")
 
 
 def _amprenta(xml):
@@ -214,12 +222,8 @@ def _md(rez):
     return "\n".join(L) + "\n"
 
 
-def main(argv):
-    if "--productie" in argv:
-        from core import mediu_test
-        os.environ["DATABASE_URL"] = mediu_test.dsn_productie()
-    os.environ["PGOPTIONS"] = "-c default_transaction_read_only=on"
-    iesire = [a for a in argv if not a.startswith("--")][0]
+def culege():
+    """{firma: cifre} pe producție — conexiunile pornesc read-only, iar fiecare o confirmă înainte de citire."""
     from core import db
     db.init_pool()
     rez = {}
@@ -238,10 +242,73 @@ def main(argv):
                 assert cur.fetchone()[0] == "on", "sesiunea nu e read-only — refuz"
             rez["%s (%s)" % (nume, schema)] = firma(conn, schema)
             conn.rollback()
+    return json.loads(json.dumps(rez, ensure_ascii=False, default=str))   # aceeași formă ca fișierul (numere, texte)
+
+
+def diferente(ref, acum, cale=""):
+    """[(cale, în referință, acum)] — fiecare loc în care cifrele de acum diferă de referință (chei lipsă sau noi incluse)."""
+    if isinstance(ref, dict) and isinstance(acum, dict):
+        out = []
+        for k in sorted(set(ref) | set(acum)):
+            if k not in acum:
+                out.append((cale + "/" + k, ref[k], "(lipsă)"))
+            elif k not in ref:
+                out.append((cale + "/" + k, "(nu era)", acum[k]))
+            else:
+                out += diferente(ref[k], acum[k], cale + "/" + k)
+        return out
+    if isinstance(ref, list) and isinstance(acum, list):   # rândurile balanței pe cont, restul pe poziție — diferența numește locul
+        cheie = (lambda r, i: str(r.get("cont"))) if all(isinstance(r, dict) and "cont" in r for r in ref + acum) else (lambda r, i: str(i))
+        return diferente({cheie(r, i): r for i, r in enumerate(ref)}, {cheie(r, i): r for i, r in enumerate(acum)}, cale)
+    return [] if ref == acum else [(cale, ref, acum)]
+
+
+def verifica(referinta=REFERINTA):
+    """0 = cifrele de acum sunt EXACT referința; 1 = diferă (lista tipărită); 2 = nu s-au putut calcula (fail-closed: nu se publică)."""
+    try:
+        ref = json.load(open(referinta, encoding="utf-8"))
+        acum = culege()
+    except Exception as e:  # noqa: BLE001 — orice eșec al măsurătorii oprește publicarea, numit
+        print("[cifre] NU s-au putut calcula cifrele de referință (%s: %s) — publicarea se oprește (fail-closed)" % (type(e).__name__, e))
+        return 2
+    dif = diferente(ref, acum)
+    if not dif:
+        print("[cifre] identice cu referința aprobată (%d firme)" % len(ref))
+        return 0
+    print("[cifre] %d diferențe față de referința aprobată — publicarea se oprește:" % len(dif))
+    for c, a, b in dif[:40]:
+        print("   %s: %s -> %s" % (c, str(a)[:120], str(b)[:120]))
+    print("[cifre] O schimbare voită: aprobarea lui Costin, consemnată în DECIZII cu amprenta noii referințe "
+          "(`python scripts/cifre_referinta.py --productie --scrie-referinta`).")
+    return 1
+
+
+def amprenta_fisier(cale=REFERINTA):
+    return hashlib.sha256(open(cale, "rb").read()).hexdigest()
+
+
+def main(argv):
+    if "--productie" in argv:
+        from core import mediu_test
+        dsn = mediu_test.dsn_productie()
+        if not dsn:   # fail-closed: fără baza de producție, cifrele nu se pot confrunta, deci nu se publică
+            print("[cifre] DSN-ul de producție nu se poate citi (%s) — refuz" % mediu_test.CALE_DB_ENV)
+            return 2
+        os.environ["DATABASE_URL"] = dsn
+    os.environ["PGOPTIONS"] = "-c default_transaction_read_only=on"
+    if "--verifica" in argv:
+        return verifica()
+    rez = culege()
+    if "--scrie-referinta" in argv:   # o schimbare VOITĂ a referinței: numai cu aprobarea lui Costin (DECIZII, cu amprenta tipărită aici)
+        json.dump(rez, open(REFERINTA, "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)
+        print("referința scrisă: %s — amprenta %s" % (os.path.relpath(REFERINTA, RAD), amprenta_fisier()))
+        return 0
+    iesire = [a for a in argv if not a.startswith("--")][0]
     json.dump(rez, open(iesire + ".json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
     open(iesire + ".md", "w", encoding="utf-8").write(_md(rez))
     print("scris: %s.md, %s.json (%d firme)" % (iesire, iesire, len(rez)))
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(main(sys.argv[1:]))

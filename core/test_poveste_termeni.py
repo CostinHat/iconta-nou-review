@@ -60,7 +60,7 @@ def _genereaza(monkeypatch, texte):
     monkeypatch.setattr(P, "rezumat_luna", lambda *a, **k: dict(RZ))
     import core.control_fiscal_api as cf
     monkeypatch.setattr(cf, "evalueaza_firma", lambda *a, **k: {"lipsa": []})
-    return P.genereaza_poveste(None, None, 1, 2026, 8, "s"), ai
+    return P.genereaza_poveste(P.date_poveste(None, None, 1, 2026, 8, "s"), 2026, 8), ai
 
 
 def test_generarea_reincearca_o_data_cu_abaterile_numite(monkeypatch):

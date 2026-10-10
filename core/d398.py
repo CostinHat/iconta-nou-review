@@ -248,7 +248,7 @@ def erori_generare(prof, manual):
     for i, m in enumerate(manual.get("ms") or [], 1):
         stat = _esc(m.get("mscon_state")).upper()
         if not _STAT_OK.match(stat):
-            er.append("MS[%d]: mscon_state invalid (aștept 2 litere)." % i)
+            er.append("MS[%d]: mscon_state invalid (se așteaptă 2 litere)." % i)
         if stat in state_vazute:
             er.append("MS[%d]: mscon_state %s duplicat - DUK regula R14." % (i, stat))
         state_vazute.add(stat)

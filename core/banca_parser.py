@@ -194,7 +194,7 @@ def parse_extras(continut, nume_fisier=""):
     except ValueError:
         raise
     except Exception as e:
-        raise ValueError(f"Nu am putut citi extrasul ({e}). {FORMAT_ASTEPTAT}")
+        raise ValueError(f"Nu s-a putut citi extrasul ({e}). {FORMAT_ASTEPTAT}")
     if not tranzactii:
-        raise ValueError(f"Nu am găsit tranzacții în extras. {FORMAT_ASTEPTAT}")
+        raise ValueError(f"Nu s-au găsit tranzacții în extras. {FORMAT_ASTEPTAT}")
     return tranzactii

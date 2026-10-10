@@ -115,7 +115,7 @@ def asistenti_semafor(zile, ctx):
     """[P7 · use-case] Corpul rutei `/asistenti/echipa/semafor`; docstringul ei a ramas in stratul HTTP."""
     if zile < 1:
         raise _erori.DateInvalide("Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
-                                     "am primit %d." % zile)
+                                     "s-a primit %d." % zile)
     cabinet_id = _uc_comun._cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.semafor_echipa(conn, cabinet_id, zile)
@@ -125,7 +125,7 @@ def asistenti_erori(zile, ctx):
     """[P7 · use-case] Corpul rutei `/asistenti/echipa/erori`; docstringul ei a ramas in stratul HTTP."""
     if zile < 1:
         raise _erori.DateInvalide("Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
-                                     "am primit %d." % zile)
+                                     "s-a primit %d." % zile)
     cabinet_id = _uc_comun._cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.erori_echipa(conn, cabinet_id, zile)

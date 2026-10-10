@@ -78,7 +78,7 @@ export async function randeazaAdminSanatate(corp, nav) {
       api.get("/admin/sanatate/istoric?ore=24"),
     ]);
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca sănătatea serverului.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca sănătatea serverului.</p>`;
     return;
   }
   const srv = d.server || {};
@@ -151,7 +151,7 @@ export async function randeazaAdminSanatate(corp, nav) {
       const r = await api.post("/admin/sanatate/test-alerta", {});
       arataMesaj(corp.querySelector("#san-test-msg"), `Alert\u0103 de test trimis\u0103 la ${r.trimis_catre}. Verific\u0103 inboxul.`, "ok");
     } catch {
-      arataMesaj(corp.querySelector("#san-test-msg"), "Nu am putut trimite alerta de test.", "eroare");
+      arataMesaj(corp.querySelector("#san-test-msg"), "Nu s-a putut trimite alerta de test.", "eroare");
     }
     bTest.disabled = false;
   });

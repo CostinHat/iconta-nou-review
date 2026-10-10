@@ -229,7 +229,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         elif len(_k) == 3:
             _recl_flat[_k] = _v
         else:
-            raise ValueError("D300: cheie 'reclasificări' invalidă %r - aștept (an,luna,direcție,țară,cod) "
+            raise ValueError("D300: cheie 'reclasificări' invalidă %r - se așteaptă (an,luna,direcție,țară,cod) "
                              "sau (direcție,țară,cod)." % (_k,))
 
     def _recl_luna(an_f, luna_f):

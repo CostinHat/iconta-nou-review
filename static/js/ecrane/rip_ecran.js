@@ -23,7 +23,7 @@ export async function ecranRip(corp, nav, t) {
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
-    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca registrul.</p>`; return; }
+    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca registrul.</p>`; return; }
     const ziAzi = dataIso();
 
     const randuri = !(reg.operatiuni || []).length

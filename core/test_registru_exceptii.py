@@ -29,7 +29,9 @@ from core import scan_afirmatii as s
 # Ridicat 5 -> 6 pe 22.08, DELIBERAT si cu motivul in DECIZII: `cote_tva.potriveste_cota` e un
 # protocol intre functii, verificat la sursa ca nu ajunge la niciun randor. O ridicare fara
 # motiv scris ar transforma registrul in portita pe care cele trei zavoare o inchid.
-MARIME_MAXIMA = 6
+# [10.10.2026, R193] 6 -> 5: excepția `cote_tva.potriveste_cota` a rămas fără sit (refuzul s-a mutat în `cote_tva._fara_model`,
+# în afara scopului scanerului), deci s-a scos — iar plafonul coboară odată cu ea, cum cere clichetul.
+MARIME_MAXIMA = 5
 
 
 @pytest.fixture(scope="module")

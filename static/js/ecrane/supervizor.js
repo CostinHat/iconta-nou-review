@@ -19,7 +19,7 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc } from "../api.js?v=2561dbfd34";
-import { randA as randConstatare } from "./control_verdict.js?v=29ab225927";
+import { randA as randConstatare } from "./control_verdict.js?v=700c9a6bd0";
 
 function perioada(r) {
   return `${String(r.luna).padStart(2, "0")}/${r.an}`;
@@ -91,7 +91,7 @@ export async function randeazaSupervizor(corp, nav) {
     // Eroarea de încărcare merge la `.ecran-nota`, NU la starea de conținut gol (DS cap.6):
     // aceea e o listă cu zero rânduri, care spune ce lipsește și pe unde se iese. Aici n-am
     // aflat nimic, deci n-am cum să afirm că e gol. Verificatorul păzește exact confuzia asta.
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut rula supervizorul: `
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut rula supervizorul: `
       + `${esc((e && e.mesaj) || "eroare necunoscută")}. Constatările NU sunt «zero» — sunt `
       + `necunoscute.</p>`;
     return;

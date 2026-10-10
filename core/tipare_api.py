@@ -78,13 +78,13 @@ def tipare(conn, cabinet_id):
 # ============================================================
 #  F120 — strat AI generativ peste agregatele de mai sus
 # ============================================================
-def analiza_ai(conn, cabinet_id):
-    """[F120] Analiza generativa: citeste agregatele deterministe (tipare) si cere lui Claude o
+def analiza_ai(date):
+    """[F120] Analiza generativa: primeste agregatele deterministe (`tipare`, citite de apelant) si cere lui Claude o
     explicatie a tiparelor + recomandari CONCRETE. GROUNDED strict pe datele furnizate (fara cifre
     inventate). Refoloseste core.ai_client (model ales de proiect). Fallback curat daca AI indisponibil
-    sau nu-s date - apelantul afiseaza mesajul, nu crapa ecranul."""
+    sau nu-s date - apelantul afiseaza mesajul, nu crapa ecranul.
+    [R193, 10.10.2026] Nu primeste conexiune: agregatele se citesc inainte, iar modelul se intreaba cu pool-ul liber."""
     from core import ai_client
-    date = tipare(conn, cabinet_id)
     if not date.get("are_date"):
         return {"disponibil": False, "motiv": "Nu există încă respingeri de analizat."}
     if not ai_client.disponibil():
@@ -109,5 +109,5 @@ def analiza_ai(conn, cabinet_id):
     try:
         text = ai_client.genereaza_text(prompt, sistem=sistem, max_tokens=1000, temperatura=0.4)
     except Exception as e:
-        return {"disponibil": False, "motiv": "Nu am putut genera analiza acum (%s)." % type(e).__name__}
+        return {"disponibil": False, "motiv": "Nu s-a putut genera analiza acum (%s)." % type(e).__name__}
     return {"disponibil": True, "analiza": ai_client.text_simplu(text)}   # [lot 06.10 pct.14] fără marcaje brute pe ecran

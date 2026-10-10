@@ -72,7 +72,7 @@ def test_depunere_pe_neclar_e_opinie_nu_stingere():
     stinge — și mesajul spune EXPLICIT ce nu dovedește."""
     r = depuneri_fara_obligatie(
         datorate=[], neaplicabile=[],
-        neclar=[{"tip": "d300", "motiv": "nu pot demonstra de când e firma înregistrată în scopuri de TVA"}],
+        neclar=[{"tip": "d300", "motiv": "nu se poate demonstra de când e firma înregistrată în scopuri de TVA"}],
         depuse={("d300", 2026, 6): Z})
     assert len(r) == 1 and r[0]["fel"] == "opinie", r
     assert "nu spune nimic despre perioadele în care nu s-a depus" in r[0]["mesaj"]
@@ -109,7 +109,7 @@ def test_toate_cele_trei_ramuri_sunt_exercitate():
     r = depuneri_fara_obligatie(
         datorate=[{"tip": "d112", "an": 2026, "luna": 6, "termen": "2026-07-25"}],
         neaplicabile=[_neap("d100", "fără venituri în trimestru", 2026, 6)],
-        neclar=[{"tip": "d205", "motiv": "nu pot verifica"}],
+        neclar=[{"tip": "d205", "motiv": "nu se poate verifica"}],
         depuse={("d112", 2026, 6): Z, ("d100", 2026, 6): Z, ("d205", 2025, 12): Z,
                 ("d394", 2020, 1): Z})
     fel = sorted(x["fel"] for x in r)

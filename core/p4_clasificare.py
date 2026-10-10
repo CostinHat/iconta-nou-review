@@ -267,13 +267,14 @@ CLASIFICARE = {
 
     "POST /tenants/{tenant_id}/vanzare-ic": {
         "clasa": NECRITIC,
-        "efecte": "factura intracomunitară (un singur domeniu care scrie, prin `emite_factura`) <-> întrebarea AI pentru cota unui "
-                  "produs nou, în același domeniu; verificarea VIES înainte, în afara oricărei conexiuni",
+        "efecte": "factura intracomunitară (un singur domeniu care scrie, prin `emite_factura`) și nota ei, în același domeniu; "
+                  "verificarea VIES înainte, în afara oricărei conexiuni",
         "de_ce":
             "un singur domeniu scrie; externele din el sunt o INTEROGARE (modelul AI nu păstrează nimic, `EFECTE_EXTERNE`) și, numai "
             "pe plasă, jurnalul AI-ului simulat. Un eșec al întrebării întoarce „cota nedeterminată” (`cote_tva.potriveste_cota`), "
             "care se cere apoi explicit pe linie — nimic nu rămâne scris pe jumătate. Calea a devenit candidat pe 09.10.2026, când scanerele au învățat clientul SDK-ului Anthropic — nu "
-            "fiindcă s-ar fi schimbat ceva în ea. Ce rămâne e durata (conexiunea ținută peste apel): clasa C5, datorie în GARZI.",
+            "fiindcă s-ar fi schimbat ceva în ea. [R193, 10.10.2026] Modelul nu mai e întrebat deloc pe calea asta: linia facturii poartă "
+            "contul de venit ales de contabil (același ca pe notă), deci n-are ce cere; rămâne candidat prin scrierile ei compuse.",
     },
     "POST /coada": {
         "clasa": NECRITIC,
@@ -907,6 +908,10 @@ EFECTE_EXTERNE = {
         "verdict": "nu lasă nimic la celălalt capăt: e o întrebare, nu un act; un rollback la noi n-are ce desface acolo. Ce rămâne e "
                    "DURATA — conexiunea ținută peste apelul de rețea pe zece căi (clasa C5 din registrul P5, văzută abia după ce "
                    "scanerele au învățat clientul SDK-ului, 09.10.2026); e datorie scrisă în GARZI, nu proprietate a tranzacției.",
+        "reparat": "[R193, comanda Costin 10.10.2026 pct.2: „cele 10 căi care cer un răspuns AI ținând o conexiune la bază se mută înaintea conexiunii”] Întrebarea nu se mai pune cu scrieri necomise: emiterea (ecran, API, proforma, vânzarea IC, magazinul, "
+                   "facturile recurente) primește răspunsurile cerute după o citire scurtă și înaintea tranzacției "
+                   "(`uc_comun._intreaba_modelul`, `cote_tva.intreaba`); vânzarea IC nu mai întreabă deloc — contul de venit al liniei e cel "
+                   "ales de contabil.",
     },
     "core/ai_client.py:_raspuns_simulat": {
         "fel": EFECT,
@@ -915,6 +920,8 @@ EFECTE_EXTERNE = {
                    "de test (`mediu_test.motive`); pe producție ramura nu există. Un rollback nu desface rândul de jurnal, dar jurnalul "
                    "e proba plasei (ce prompt a plecat), nu un fapt al firmei — iar un prompt scris pentru o cerere anulată e exact ce "
                    "trebuie văzut.",
+        "reparat": "[R193, comanda Costin 10.10.2026 pct.2: „cele 10 căi care cer un răspuns AI ținând o conexiune la bază se mută înaintea conexiunii”] AI-ul simulat scrie acolo unde e chemat modelul, iar modelul nu mai e chemat din nicio tranzacție cu "
+                   "scrieri (vezi `genereaza_text`): jurnalul plasei se scrie acum cu pool-ul liber, în afara oricărui domeniu.",
     },
     "core/migrari_registru.py:_git": {
         "fel": INTEROGARE,
@@ -953,6 +960,9 @@ EFECTE_EXTERNE = {
             "traieste in tranzactia apelantului din 04.09.2026: `_salveaza_cache` isi deschide "
             "conexiunea lui, cu motivul scris langa cod. Cache-ul TREBUIE sa supravietuiasca "
             "esecului actului care l-a declansat, altfel fiecare incercare re-descarca de la BNR.",
+        "reparat": "[R193, comanda Costin 10.10.2026 pct.2: „cele 10 căi care cer un răspuns AI ținând o conexiune la bază se mută înaintea conexiunii”] Locul ramas era cronul facturilor recurente: `emite_scadente` primea conexiunea apelantului si aducea cursul "
+                   "cu ea in mana, dupa scrierile abonamentului anterior. Acum isi ia singur conexiunile, pe faze (citire scurta -> curs si "
+                   "model fara conexiune -> emitere care reciteste abonamentele).",
     },
     "core/monitor_fiscal.py:ruleaza": {
         "fel": INTEROGARE,

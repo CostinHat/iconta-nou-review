@@ -214,7 +214,7 @@ def test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc(pin):
 
 def test_CALIBRARE_un_mesaj_de_eroare_e_recunoscut():
     """Excepția din proprietate. Un mesaj de eroare nu poate fi produs de starea normală."""
-    assert _s.fel_ancorei("Nu am putut încărca registrul") == "mesaj_de_rau"
+    assert _s.fel_ancorei("Nu s-a putut încărca registrul") == "mesaj_de_rau"
     assert _s.fel_ancorei("declarantul lipsește din profil") == "mesaj_de_rau"
 
 

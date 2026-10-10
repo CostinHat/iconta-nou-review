@@ -9,7 +9,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
     nav.setInapoi(undefined);
     corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
     let cfg = { configurat: false, url: null };
-    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); } catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca starea magazinului online.</p>`; return; }
+    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); } catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca starea magazinului online.</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Magazin online</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
@@ -28,7 +28,9 @@ export async function ecranMagazin(corp, nav, tenantId) {
       try {
         const r = await api.post(`/tenants/${tenantId}/woocommerce/sincronizeaza`, {});
         const n = (r.importate || []).length;
-        zona.innerHTML = `<span style="color:var(--verde)">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
+        zona.innerHTML = `<span style="color:var(--verde)">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`
+          // [10.10.2026] comanda pe care emiterea o refuză rămâne neimportată, cu motivul; se reîncearcă la sincronizarea următoare
+          + (r.refuzate || []).map((x) => `<br><span class="msg-eroare" data-comanda-refuzata="${esc(x.comanda)}">Comanda ${esc(x.comanda)} n-a devenit factură: ${esc(x.motiv)} Se reîncearcă la sincronizarea următoare.</span>`).join("");
       } catch (e) { zona.innerHTML = `<span style="color:var(--rosu)">${esc(e.mesaj || "eroare")}</span>`; }
     });
   }

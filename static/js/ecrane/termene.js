@@ -2,7 +2,7 @@
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
 import { api, dataRo } from "../api.js?v=2561dbfd34";
-import { deschideFirma } from "./firme.js?v=8fc3bd020b";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=15b7548994";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -24,7 +24,7 @@ export async function randeazaTermene(corp, nav) {
   try {
     date = await api.get("/termene");
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca termenele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca termenele.</p>`;
     return;
   }
   const grupuri = date.grupuri || [];
@@ -77,7 +77,7 @@ function randeazaNeevaluate(corp, neeval) {
   if (!neeval || !neeval.length) return;
   const bloc = document.createElement("div");
   bloc.innerHTML = `
-    <p class="mig-intro">Nu am putut evalua ${neeval.length} ${neeval.length === 1 ? "firmă" : "firme"} — apar aici ca să nu dispară tăcut din listă.</p>
+    <p class="mig-intro">${neeval.length === 1 ? "O firmă nu a putut fi evaluată" : neeval.length + " firme nu au putut fi evaluate"} — apar aici ca să nu dispară tăcut din listă.</p>
     <div class="mig-lista"></div>
   `;
   const l = bloc.querySelector(".mig-lista");

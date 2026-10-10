@@ -56,7 +56,7 @@ def perioada_tva_tip(prof):
     raw = str((prof or {}).get("tip_decont") or "").strip().lower()
     if not raw:
         raise ValueError(
-            "Perioada fiscală TVA nu e completată în Vectorul fiscal — fără ea nu pot ști la ce "
+            "Perioada fiscală TVA nu e completată în Vectorul fiscal — fără ea nu se poate ști la ce "
             "interval se depun decontul de TVA (D300/D394) și fișierul SAF-T (D406). Alege "
             "lunar sau trimestrial la Date firmă → Vector fiscal.")
     if raw in ("l", "t", "s", "a"):

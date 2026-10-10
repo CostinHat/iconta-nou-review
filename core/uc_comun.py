@@ -50,7 +50,7 @@ def bifa(corp, cheie, implicit=_OBLIGATORIU):
         return True
     if s in ("false", "0", "nu"):
         return False
-    raise ValueError("Câmpul %s acceptă doar da sau nu; am primit %r." % (cheie, v))
+    raise ValueError("Câmpul %s acceptă doar da sau nu; s-a primit %r." % (cheie, v))
 from fastapi.responses import JSONResponse as _JSONResponse
 import core.notificari_api as _notif
 from core import erori as _erori
@@ -74,11 +74,11 @@ def _cere_perioada(an=None, luna=None, exercitiu=None, camp_an="an"):
     "nimic_de_verificat"`. *„Nu exista date pentru luna asta" si „luna asta nu exista" nu sunt
     acelasi lucru, iar a doua nu se repara cautand mai bine.*"""
     if luna is not None and not (1 <= luna <= 12):
-        raise _erori.DateInvalide("luna invalidă: %r (aștept 1-12)" % (luna,))
+        raise _erori.DateInvalide("luna invalidă: %r (se așteaptă 1-12)" % (luna,))
     if an is not None and not (1990 <= an <= 2100):
-        raise _erori.DateInvalide("%s invalid: %r (aștept 1990-2100)" % (camp_an, an))
+        raise _erori.DateInvalide("%s invalid: %r (se așteaptă 1990-2100)" % (camp_an, an))
     if exercitiu is not None and not (1990 <= exercitiu <= 2100):
-        raise _erori.DateInvalide("exercițiu invalid: %r (aștept 1990-2100)" % (exercitiu,))
+        raise _erori.DateInvalide("exercițiu invalid: %r (se așteaptă 1990-2100)" % (exercitiu,))
 
 
 def _mesaj_intrare(e):
@@ -338,7 +338,7 @@ def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
             with db.get_conn(schema) as cs:
                 ev = _cf.evalueaza_firma(cs, cp, r[0], schema, azi or azi_ro(), cu_reconciliere=False)
     except Exception as e:  # noqa: BLE001 — se spune, nu se tace (CLAUDE.md: try/except tăcut e mai grav decât o cădere)
-        return [("?", "nu pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, str(e).split("\n")[0][:160]))]
+        return [("?", "nu se pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, str(e).split("\n")[0][:160]))]
     out = []
     for d in sorted(list(ev.get("lipsa") or []) + list(ev.get("urmarit") or []), key=lambda x: (x.get("termen") or "", x.get("tip") or "")):
         t = _dt.date.fromisoformat(str(d.get("termen"))[:10]) if d.get("termen") else None
@@ -805,8 +805,8 @@ def _constatare_esuata(eticheta, nume, e, an, luna):
     care decide. Doua straturi: GRI = principal (il vede contabilul); log = secundar (sa se vada daca pica
     SISTEMATIC). Vezi DECIZII 23.07. Intoarce constatarea (apelantul o pune unde e vizibila)."""
     _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
-    return _flag_constatare("gri", eticheta, "Nu am putut verifica %s." % nume,
-        "Verificarea a eșuat (%s). GRI înseamnă 'nu am putut verifica', NU 'curat' — o constatare reală "
+    return _flag_constatare("gri", eticheta, "Nu s-a putut verifica %s." % nume,
+        "Verificarea a eșuat (%s). GRI înseamnă 'nu s-a putut verifica', NU 'curat' — o constatare reală "
         "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
 
 
@@ -822,6 +822,19 @@ def _platitor_tva_tert(cui, tara="RO"):
         _obs.esec_secundar("platitor TVA beneficiar la emitere", e)
         return None
     return bool(r[0]["platitor_tva"]) if r and r[0].get("gasit") else None
+
+
+def _intreaba_modelul(schema, linii):
+    """[R193, comanda Costin 10.10.2026 pct.2, verbatim: „R193: da, cele 10 căi care cer un răspuns AI ținând o conexiune la bază se
+    mută înaintea conexiunii.”] Întrebarea către model pentru liniile unei facturi, ÎNAINTEA tranzacției de emitere — ca
+    `_preincalzeste_cursul` pentru BNR. Faza 1, tranzacție scurtă: statutul de plătitor și ce linii cer răspunsul
+    (`facturi_api.intrebari_model`). Apoi întrebarea, cu pool-ul liber (`cote_tva.intreaba`, termen `ai_client.TERMEN_SECUNDE`).
+    Tranzacția de emitere recitește plătitorul; răspunsurile sunt cheiate pe el, deci unul dat pe altă premisă nu se folosește."""
+    from core import cote_tva, facturi_api
+    with db.get_conn(schema) as conn:
+        platitor = _platitor_tva_firma(conn)
+        de_intrebat = facturi_api.intrebari_model(conn, linii, platitor)
+    return cote_tva.intreaba(de_intrebat, platitor)
 
 
 def _preincalzeste_cursul(moneda, data_emitere):
@@ -903,10 +916,10 @@ def _interval_cerut(valoare, nume, minim, maxim, unitate):
     try:
         v = int(valoare)
     except (TypeError, ValueError):
-        raise _erori.DateInvalide("%s trebuie să fie un număr întreg de %s. Am primit %r."
+        raise _erori.DateInvalide("%s trebuie să fie un număr întreg de %s. S-a primit %r."
                             % (nume, unitate, valoare))
     if v < minim or v > maxim:
-        raise _erori.DateInvalide("%s se cere între %d și %d %s. Am primit %d."
+        raise _erori.DateInvalide("%s se cere între %d și %d %s. S-a primit %d."
                             % (nume, minim, maxim, unitate, v))
     return v
 
@@ -1010,7 +1023,7 @@ def _verificari_contabile(schema, an, luna):
             # verificator (VERDICT_COLAPSAT, stare-literal), si pe drept - un verdict carpit dupa
             # constructie are doua surse. A doua oara azi cand fac asta.
             _c = dict(_af.afirmatie("verificare_rupta", eticheta,
-                                    "Nu pot verifica %s: %s" % (eticheta, str(_e).replace("PERIOADA_BLOCATA: ", "")),
+                                    "Nu se poate verifica %s: %s" % (eticheta, str(_e).replace("PERIOADA_BLOCATA: ", "")),
                                     eroare="%s: %s" % (type(_e).__name__, _e)),
                       stare="gri", eticheta=eticheta, temei="Verificarea nu a rulat.",
                       remediu={"fel": "investigatie", "cauza": "Eroare la verificare.",

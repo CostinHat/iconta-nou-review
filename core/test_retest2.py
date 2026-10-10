@@ -264,7 +264,7 @@ def test_pct10_inainte_de_preluare_cu_termen_perioada_si_rand():
     """„D100 / D406 / D205 au «termen» fără dată, n-au perioada pe rând și n-au buton individual de marcare.” Domeniul D205 pe 2025
     se desface în perioada lui (anul), cu termenul (ultima zi a lui februarie) și luna de marcare. MUTAȚIE: `termen` scos -> pică."""
     from core.control_fiscal_api import separa_neclar_inainte_de_preluare
-    neclar = [{"tip": "d205", "domeniu_de": "2025-01", "domeniu_pana": "2025-12", "motiv": "nu pot verifica"},
+    neclar = [{"tip": "d205", "domeniu_de": "2025-01", "domeniu_pana": "2025-12", "motiv": "nu se poate verifica"},
               {"tip": "d100", "domeniu_de": "2025-01", "domeniu_pana": "2025-06", "motiv": "x"}]
     ramase, inainte = separa_neclar_inainte_de_preluare(neclar, (2026, 9))
     assert ramase == []

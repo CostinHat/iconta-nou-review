@@ -34,4 +34,5 @@ def tipare_ai_panou(ctx):
     if not cab:
         raise _erori.CerereGresita(FARA_CABINET)
     with db.get_conn() as conn:
-        return tipare_api.analiza_ai(conn, cab)
+        date = tipare_api.tipare(conn, cab)
+    return tipare_api.analiza_ai(date)   # [R193] modelul, cu conexiunea închisă

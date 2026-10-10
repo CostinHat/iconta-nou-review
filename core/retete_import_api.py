@@ -55,7 +55,7 @@ def extrage(continut, nume_fisier=""):
     i_ing = _gaseste_col(antet, "ingredient", "articol", "materie")
     i_cant = _gaseste_col(antet, "cantitate", "cant", "consum")
     if i_ret < 0 or i_ing < 0 or i_cant < 0:
-        raise ValueError("nu găsesc coloanele Rețeta / Ingredient / Cantitate")
+        raise ValueError("nu se găsesc coloanele Rețeta / Ingredient / Cantitate")
     grup = {}
     ordine = []
     for r in randuri[1:]:

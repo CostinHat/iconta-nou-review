@@ -79,6 +79,14 @@ def sincronizeaza(schema):
             _uc_cb.asigura_cursul(_f["moneda"], _dt.date.fromisoformat(_f["data"]))
         except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica importul
             pass
+    # [R193, comanda Costin 10.10.2026 pct.2] Modelul AI, tot INAINTE de tranzactia de emitere: o citire scurta spune ce linii cer
+    # raspunsul lui (produs nou, cont de venit nedecis din denumire), apoi intrebarea se pune cu pool-ul liber.
+    from core import cote_tva, uc_comun as _uc
+    with db.get_conn(schema) as conn:
+        platitor = _uc._platitor_tva_firma(conn)
+        de_intrebat = [d for _c in lista_c
+                       for d in facturi_api.intrebari_model(conn, comanda_in_factura(_c)["linii"], platitor)]
+    raspunsuri_ai = cote_tva.intreaba(de_intrebat, platitor)
     # ── FAZA 2: tranzactie scurta, cu REVALIDARE ────────────────────────────────────────
     importate, sarite = [], 0
     with db.get_conn(schema) as conn:
@@ -88,12 +96,17 @@ def sincronizeaza(schema):
         # scrie nimic — acelasi raspuns ca atunci cand n-a fost niciodata.
         if not config(conn, schema):
             return {"eroare": "WooCommerce neconfigurat"}
-        return _importa(conn, schema, lista_c, facturi_api, importate, sarite)
+        return _importa(conn, schema, lista_c, facturi_api, importate, sarite, raspunsuri_ai)
 
 
-def _importa(conn, schema, lista_c, facturi_api, importate, sarite):
+def _importa(conn, schema, lista_c, facturi_api, importate, sarite, raspunsuri_ai=None):
     """Bucla de emitere, pe conexiunea fazei a doua. `deja_importata` ramane REVALIDAREA per
-    comanda: una intrata intre timp de alta rulare se sare, ca inainte."""
+    comanda: una intrata intre timp de alta rulare se sare, ca inainte. Statutul de platitor TVA se RECITESTE aici, din profilul
+    firmei: pana pe 10.10.2026 emiterea nu-l primea deloc, deci lua implicitul `True` — o firma neplatitoare ar fi facturat cu TVA
+    (CF art.310 alin.(10) lit.b), aceeasi clasa reparata la lot 19 pct.4d pe ruta din ecran."""
+    from core import uc_comun as _uc
+    platitor = _uc._platitor_tva_firma(conn)
+    refuzate = []
     for c in lista_c:
         f = comanda_in_factura(c)
         if not f["linii"]:
@@ -105,23 +118,41 @@ def _importa(conn, schema, lista_c, facturi_api, importate, sarite):
         # `tert_pf=True` DECLARAT, nu deduc: o comanda din magazinul online vine de la o persoana
         # fizica fara cod fiscal. Daca WooCommerce incepe sa trimita si CUI de firma, aici se
         # citeste codul si se scoate exceptia - pana atunci, tacerea ar fi fost o presupunere.
-        rez = facturi_api.emite_factura(conn, f["linii"],
-                                        tert_nume=f["tert_nume"],
-                                        data_emitere=f["data"],
-                                        moneda=f["moneda"],
-                                        tert_pf=True)
+        try:
+            rez = facturi_api.emite_factura(conn, f["linii"],
+                                            tert_nume=f["tert_nume"],
+                                            data_emitere=f["data"],
+                                            moneda=f["moneda"],
+                                            tert_pf=True, platitor_tva=platitor, raspunsuri_ai=raspunsuri_ai)
+        except ValueError as e:
+            # [10.10.2026] Refuzul emiterii (cota sau contul nedeterminat, o linie incompleta) iesea ca „eroare 500” si oprea
+            # sincronizarea la prima comanda refuzata. Acum comanda ramane neimportata, cu motivul pe ecran, iar celelalte merg mai
+            # departe. Rollback-ul anuleaza si SET-ul schemei facut in tranzactia lui, deci se reface.
+            conn.rollback()
+            with conn.cursor() as cur:
+                cur.execute(f"SET search_path TO {schema}")
+            from core import migrare_api as _mig
+            refuzate.append(_mig.respinge("woocommerce", "comanda %s" % f["sursa_numar"], "emitere_refuzata", str(e),
+                                          comanda=f["sursa_numar"]))
+            continue
         with conn.cursor() as cur:
             cur.execute(f"UPDATE {schema}.facturi SET sursa_externa=%s WHERE id=%s",
                         ("WC-" + f["sursa_numar"], rez["factura_id"]))
         conn.commit()
         importate.append({"comanda": f["sursa_numar"], "factura_id": rez["factura_id"],
                           "total": rez.get("total")})
+    if not refuzate:   # o comanda refuzata se reincearca la sincronizarea urmatoare: data citirii nu trece peste ea
+        _marcheaza_citirea(conn, schema)
+    conn.commit()
+    return {"importate": importate, "sarite": sarite, "refuzate": refuzate}
+
+
+def _marcheaza_citirea(conn, schema):
+    """Data ultimei citiri a magazinului (filtrul `after` al citirii urmatoare)."""
     import datetime
     with conn.cursor() as cur:
         cur.execute(f"UPDATE {schema}.firma_profil SET wc_ultima_sinc=%s",
                     (datetime.date.today().isoformat(),))
-    conn.commit()
-    return {"importate": importate, "sarite": sarite}
 
 
 def _main():

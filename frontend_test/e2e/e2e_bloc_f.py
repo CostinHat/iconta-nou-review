@@ -473,7 +473,7 @@ def test_def_172_control_fiscal_vorbeste_limba_contabilului(patron, firma_e2e):
         patron.captura()
     finally:
         sql("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd300'", (tid,))
-    assert "D300 depus fără rândurile salvate — nu pot compara." in text, text[-3000:]
+    assert "D300 depus fără rândurile salvate — nu se poate compara." in text, text[-3000:]
     rele = [d for d in limba_ecran.defecte(text, date_excluse=(firma_e2e["nume"],)) if d[0] in ("cod", "jargon")]
     assert not rele, rele
 

@@ -417,7 +417,7 @@ def portal_bon(fisiere, tenant_id, ctx):
         text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         date = _json.loads(text)
     except Exception:
-        raise _erori.DateInvalide("nu am putut citi bonul; încearcă o poză mai clară")
+        raise _erori.DateInvalide("nu s-a putut citi bonul; încearcă o poză mai clară")
     avertismente = []
     if date.get("bon_complet") is False:
         avertismente.append("Documentul pare incomplet sau greu lizibil \u00een poz\u0103. Fotografiaz\u0103-l \u00eentreg, cu lumin\u0103 bun\u0103 \u0219i totalul vizibil.")  # bon_flux_e3b_v1
@@ -431,11 +431,12 @@ def portal_bon(fisiere, tenant_id, ctx):
     schema = t["schema_name"]
     with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
         with conn.cursor() as cur:
-            for (vechi_id,) in repo_casa.sterge_bonurile_extrase_vechi(cur, schema):
-                import shutil as _shutil
-                d = _os.path.join(_common.dir_bonuri(), schema, str(vechi_id))
-                if _os.path.isdir(d):
-                    _shutil.rmtree(d, ignore_errors=True)
+            vechi = [v for (v,) in repo_casa.sterge_bonurile_extrase_vechi(cur, schema)]
+    import shutil as _shutil
+    for vechi_id in vechi:   # [R193] pozele se șterg după ce conexiunea s-a întors în pool, nu cu ea în mână
+        d = _os.path.join(_common.dir_bonuri(), schema, str(vechi_id))
+        if _os.path.isdir(d):
+            _shutil.rmtree(d, ignore_errors=True)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1

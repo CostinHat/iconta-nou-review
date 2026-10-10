@@ -104,7 +104,7 @@ def extrage(continut, nume_fisier=""):
     i_luna = _gaseste_col(antet, "luna", "lună", "perioada", "perioadă")
     i_data = _gaseste_col(antet, "depunere", "depus", "data")
     if i_tip < 0:
-        raise ValueError("nu găsesc coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut")
+        raise ValueError("nu se găsește coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut")
 
     out = []
     for i, r in enumerate(randuri[1:], start=2):

@@ -114,7 +114,7 @@ def _err_trimitere(i, t):
         er.append("%s: lipsă nr_doc." % p)
     d = str(t.get("data_doc") or "").strip()
     if not _DATA_OK.match(d):
-        er.append("%s: data_doc invalid ('%s') - aștept zz.ll.aaaa." % (p, d))
+        er.append("%s: data_doc invalid ('%s') - se așteaptă zz.ll.aaaa." % (p, d))
     if _num(t.get("val_ramb")) in ("", "0"):
         er.append("%s: val_ramb lipsă sau 0." % p)
     if not str(t.get("den_expeditor") or "").strip():

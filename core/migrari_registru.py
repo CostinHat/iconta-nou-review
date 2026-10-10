@@ -144,7 +144,7 @@ def _env_productie():
     from core import mediu_test as _m
     url = _m.dsn_productie()
     if not url:
-        raise SystemExit("nu găsesc DATABASE_URL în %s" % _m.CALE_DB_ENV)
+        raise SystemExit("nu se găsește DATABASE_URL în %s" % _m.CALE_DB_ENV)
     os.environ["DATABASE_URL"] = url
 
 

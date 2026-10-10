@@ -45,6 +45,29 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Răspunsul §6 (comanda Costin 10.10.2026, verbatim în DECIZII)** — după „Retestul plasei” (dc5e44df).
+  - ultim: S1–S6 în commitul care conține această intrare: referința F1–F5 în poartă (fail-closed); D406 blochează ca TVA-ul; vocea a
+    treia pe toată clasa (356 -> 6 declarate, gard pe toate literalele); clicul legat după o cerere măsurat pe toate ecranele (2 -> 0,
+    deficiența 220); R193 închisă (C5 10 -> 0, proba cu conexiunile numărate). Ieșite pe drum și închise în lot (S5b–S5d): 221–224
+    (magazinul: `tert_pf` netransmis, plătitorul implicit, comanda refuzată ca 500; contul de venit al neplătitorului), clasa
+    „parametru netransmis” (3, gard), refuzul emiterii neprins în 5 use-case-uri (gard), cronul recurentelor pe faze.
+  - urmator: următorul pas din agendă (`core.agenda`), cum cere comanda („Poți trece la următorul pas din listă”). STARE = ÎNCHIS
+  - pasi:
+    S1. pct.1 — referința înghețată în depozit (`scripts/cifre_referinta_aprobate.json`, cifrele aprobate; amprenta D406 fără
+        `AuditFileDateCreated`) + `scripts/cifre_referinta.py --verifica` (producția, read-only, fail-closed) legat în
+        `scripts/githooks/poarta-suita`; schimbarea referinței cere în același commit o intrare DECIZII cu amprenta noii referințe
+        (commit-msg); gard + mutații.
+    S2. pct.3 — `uc_coada.decizie_poarta`: D406 blochează la diferență și cu ciorne (ca TVA-ul); teste unitar + e2e; mutație.
+    S3. pct.5 — vocea a treia: detector „voce întâia persoană” în `core/limba_ecran.py` + `core/test_text_afisat_limbaj.py`; rescrierea
+        tuturor textelor afișate („nu pot …”, „n-am putut …”, „măsurătorii mele” …); scanarea textului pe ecrane.
+    S4. pct.8 — clasa „butoane legate după o cerere așteptată”: detector pe `static/js` (handler legat după un `await` pe un element
+        desenat înaintea lui), măsurat pe toate ecranele; reparat peste tot; gard pe zero; e2e unde clicul se poate reproduce.
+    S5. pct.2 — R193: întrebarea AI înaintea conexiunii pe cele 10 căi; `CLICHET_C5` coborât la 0; verdictele P4 rămase fără loc scoase.
+    S5b. [ieșit din proba R193, scris aici după execuție — raportat la §7] 221: `emite_factura` dă `tert_pf` lui `creeaza_factura`;
+        clasa „parametru netransmis” măsurată pe tot codul (3), reparată, gard `core/test_parametru_transmis.py`.
+    S5c. [idem] 222 + 223: magazinul citește plătitorul din profil; întrebarea pentru contul de venit e independentă de TVA (decizia 64).
+    S5d. [idem] 224: comanda refuzată nu oprește sincronizarea; refuzul emiterii tradus (422) în toate use-case-urile, gard.
+    S6. registrele, artefactele vizuale, poarta, ZIP, raportul (pct.9).
 - fir: **Retestul plasei (comanda Costin 09.10.2026 seara, verbatim în DECIZII)** — ordinea dată de Costin (pct.4).
   - ultim: L1–L6 în commitul care conține această intrare: cele 9 numere găsite stricate au teste care le reproduc (cele vechi, care
     treceau pe defect, înlocuite) și sunt reparate; 12, 159, 162, 172 închise; 188–219 închise (205 „nu se aplică”); neverificatele 9,
@@ -53,8 +76,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     prima formă a R6 excepta greșit `de_preluat` (prinsă de gardul nomenclatorului); R193 — întrebarea AI ține conexiunea pe 10 căi
     (scanerele nu vedeau clientul SDK; termen 60 s pus, clichet C5 = 10, refactorul = decizie la §6); clicul pierdut la Bilanț și
     navigarea jurnalului care aștepta controalele (prinse de plasă, reparate, cu mutație).
-  - urmator: decizia lui Costin pe §6 al raportului lotului (migrarea pe producție rulată 10.10 06:49). STARE = BLOCAT: decizii la §6
-    (R193, D406 sub R36, ordinea cardurilor, vocea „nu pot”, nota F2 #5, notele F5 11/2026, aprobarea cifrelor F1)
+  - urmator: — (deciziile §6 date de Costin pe 10.10.2026, executate în firul „Răspunsul §6”). STARE = ÎNCHIS
   - pasi:
     L1. pct.2 — 4, 5, 11, 32, 120 (+210), 156, 173, 181, 33: pentru fiecare, test de capăt la capăt care reproduce EXACT situația
         descrisă de Costin și pică pe aplicația de acum (cel vechi, care trecea pe defect, se înlocuiește); apoi reparația, testul trece.
@@ -69,9 +91,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: D1–D7 în commitul care conține această intrare: reparația tenant_049 (scriptul pentru Costin), gardul migrării în
     post-commit, `DEFICIENTE.md` 1–198 + N1–N18 cu 167 de teste de capăt la capăt în poartă, cifrele de referință exportate,
     regulile de fond în bază.
-  - urmator: Costin rulează `~/ghid_incoming/repara_tenant049.sh` (după commit; restartul e oprit până atunci); aprobarea cifrelor
-    de referință -> gardul lor; ordinea reparațiilor din DEFICIENTE.md (parțial / nerezolvată); apoi registrul de parametri fiscali
-    de la R1. STARE = BLOCAT: decizia lui Costin (ordinea, aprobarea cifrelor, interpretarea R3, propunerile de reguli noi)
+  - urmator: — (închis: reparația tenant_049 rulată de Costin pe 09.10; ordinea dată în „Retestul plasei”, 09.10; cifrele de
+    referință aprobate și gardul lor legat în „Răspunsul §6”, 10.10). Rămâne registrul de parametri fiscali, de la R1 (firul lui).
+    STARE = ÎNCHIS
   - pasi:
     D1. pct.1: `core/migrare_nota_corectie.py` — scoate stornările greșite (definiția `stocuri_anulare.IN_EVIDENTA`), le tipărește
         integral, retrimite notele de refacere respinse; testat pe schemă efemeră; scriptul de rulare cu backup pentru Costin; după
@@ -94,9 +116,8 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     `miscari_vii`, `lista_nir`, `nir_detaliu`, `stare_validare_nir`, `_nir_de_refacut`; teste în `core/test_decizii_0710.py`
     (`test_r1_nota_de_corectie_respinsa_nu_storneaza_documentul_contat`, `test_r1_miscarea_in_evidenta_nu_se_storneaza_pe_niciuna_din_cele_trei_legaturi`),
     mutații N-1…N-6 roșii (N-4 a supraviețuit întâi -> al doilea test).
-  - urmator: N4. STARE = BLOCAT: reparația pe datele de producție (cele două rânduri de stornare de pe tenant_049) e decizia lui
-    Costin — scrierea migrării care șterge din producție a fost refuzată de permisiuni; varianta propusă e în DECIZII 09.10.2026
-    („Neconformitate: nota de corecție respinsă …”) și în raport, §6.
+  - urmator: — (închis: reparația datelor tenant_049 scrisă în lotul „Registrul deficiențelor”, `60c716d1`, rulată de Costin pe
+    09.10 cu `~/ghid_incoming/repara_tenant049.sh`; închiderea consemnată în PREDARE_LANT, „FRONTURI”, 10.10). STARE = ÎNCHIS
   - pasi:
     N1. `stocuri_anulare`: o definiție SQL a mișcării „în evidență” (nota ei validată; fără notă proprie — o notă validată a
         documentului ei, NIR sau factură); `miscari_vii` o exclude, deci `storneaza` nu mai atinge stocul unui document contat.
@@ -114,7 +135,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     unelte vizuale, registrele, poarta și migrarea pe producție în commitul care conține această intrare (SHA în raport, §11). Teste:
     `core/test_retest2.py` (35), `core/test_text_ecran.py` (4), `core/test_d300_rand_formular.py` (4), `core/test_d101_rand_formular.py`
     (2), `core/test_text_afisat_limbaj.py` (extins).
-  - urmator: O17 (ZIP + raportul), apoi firul registrului de parametri fiscali de la R1. STARE = IN LUCRU (O17)
+  - urmator: — (închis: lotul publicat în `d0abd48f`, ZIP `~/ghid_incoming/iconta_retest2.zip`; constatat 10.10 la închiderea firelor). STARE = ÎNCHIS
   - pasi (operațiile date înainte de execuție; un commit la închidere, registrele în el):
     O2. Măsurarea „înainte” pe ecran, cu capturi, pentru 1–17.
     O3. A1: grupul „Înainte de preluare” rămâne cum l-a lăsat omul; ecranul rămâne pe rândul atins (Salvează, Anulează marcarea).
@@ -139,7 +160,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: O1–O16 — toate cele 21 de puncte cu cod, gărzi și mutații (R1–R38 + reluările R17c…R37c, toate roșii; R3 și R16 echivalente, înlocuite de
     R3b / R16b), probele „înainte” / „după” în browser (1700×1000), registrele, poarta și migrările pe producție în commitul care
     conține această intrare (SHA în raport, §11). Teste: `core/test_retest_0810_s6.py` (31), `core/test_text_afisat_limbaj.py` (4).
-  - urmator: O17 (ZIP + raportul), apoi firul de mai jos de la R1. STARE = IN LUCRU (O17)
+  - urmator: — (închis: lotul publicat în `05ba1345`; constatat 10.10 la închiderea firelor). STARE = ÎNCHIS
   - pasi (operațiile date înainte de execuție; un commit la închidere, registrele în el):
     O2. Măsurarea „înainte” pe producție (rollback) + test, pentru fiecare constatare 4–21, cu output brut.
     O3. pct.1 bilanț 4428: analitic pentru TVA-ul din prețul de raft (NIR GV, descărcare, K), migrarea soldurilor, rd.05 numai; datoria
@@ -200,7 +221,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: S0–S6 pe disc, în commitul de închidere al lotului (registrele în el): `test_nir_408` 13, `test_r36_evidenta` 6,
     `test_luna_preluare` 4, `test_control_preluare` 9 verzi; 32 de mutații ROȘII (inclusiv gardul de sesiune pe rândurile orfane); DUK D406 valid (NIR fără factură + factura legată);
     poarta D300 R27_2 116 ↔ 4426 115,50; F3 propunere 06/2026 (producție, citire).
-  - urmator: S7 — poarta completă, four-way, migrarea pe producție, ZIP, raportul. STARE = IN LUCRU
+  - urmator: — (închis: lotul publicat în `e07f46e6`; constatat 10.10 la închiderea firelor). STARE = ÎNCHIS
   - LISTA A CRESCUT PE DRUM (rescrisă aici DUPĂ execuție — abatere de la §2.1, declarată în raport §7):
     S1b. Re-contarea facturii legate după respingere păstrează legarea (`nir_legare.legat_de_factura`); ajustarea orfană se înlocuiește;
          `reface_factura` nu reface ajustarea ca ieșire; fișa arată „diferență de preț”; D406 Stocuri adună ajustarea cu semnul ei.

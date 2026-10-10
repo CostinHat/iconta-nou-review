@@ -55,7 +55,7 @@ function _deschide() {
         let d = null;
         try { d = await r.json(); } catch { d = null; }
         if (!r.ok || !d || !d.token) {
-          eroare.textContent = (d && (d.detail || d.mesaj)) || "Nu am putut verifica parola. Reîncearcă.";
+          eroare.textContent = (d && (d.detail || d.mesaj)) || "Nu s-a putut verifica parola. Reîncearcă.";
           btn.disabled = false;
           return;
         }

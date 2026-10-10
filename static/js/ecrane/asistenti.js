@@ -26,7 +26,7 @@ export async function randeazaAsistenti(corp, nav) {
   try {
     date = await api.get("/asistenti");
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca asistenții.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca asistenții.</p>`;
     return;
   }
   const actori = (date && date.actori) || [];
@@ -154,7 +154,7 @@ function randActor(a, corp, nav) {
 async function deschideEditare(uid, corp, nav) {
   let d;
   try { d = await api.get(`/asistenti/${uid}`); }
-  catch { nav.deschide("Asistent", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca asistentul.</p>'; }); return; }
+  catch { nav.deschide("Asistent", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu s-a putut încărca asistentul.</p>'; }); return; }
   if (!d.ok) return;
   const a = d.actor;
   const firme = d.firme || [];
@@ -253,7 +253,7 @@ async function deschideEditare(uid, corp, nav) {
         // dintr-un buton disparut. Trecerea granitei nu e tacuta - DECIZII 20.08.2026.
         if (_rp && _rp.patru_ochi_intra_in_vigoare)
           arataMesaj(corp, "Validarea \u00een doi intr\u0103 acum \u00een vigoare: de aici \u00eenainte, cine preg\u0103te\u0219te o declara\u021bie nu o mai poate aproba singur. Declara\u021biile deja \u00een coad\u0103 trec la al doilea validator.", "ok");
-      } catch { err.textContent = "Nu am putut salva. Încearcă din nou."; }
+      } catch { err.textContent = "Nu s-a putut salva. Încearcă din nou."; }
     };
     box.querySelector("#asi-salveaza").onclick = () => {
       err.textContent = "";
@@ -277,13 +277,13 @@ async function deschideEditare(uid, corp, nav) {
     if (bDez) bDez.onclick = () => {
       confirmaCaseta(bDez.parentElement || bDez, `Dezactivezi ${esc(nume)}? Rămâne în istoric, dar nu mai are acces.`, async () => {
         try { await api.post(`/asistenti/${uid}/dezactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
-        catch { err.textContent = "Nu am putut dezactiva."; }
+        catch { err.textContent = "Nu s-a putut dezactiva."; }
       }, { textOk: "Dezactivează" });
     };
     const bReact = box.querySelector("#asi-reactiveaza");
     if (bReact) bReact.onclick = async () => {
       try { await api.post(`/asistenti/${uid}/reactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
-      catch { err.textContent = "Nu am putut reactiva."; }
+      catch { err.textContent = "Nu s-a putut reactiva."; }
     };
   });
 }
@@ -301,7 +301,7 @@ async function deschideVizualizare(uid, nav) {
 
   let d0;
   try { d0 = await api.get(`/asistenti/${uid}/activitate`); }
-  catch { nav.deschide("Fișa asistentului", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca fișa.</p>'; }); return; }
+  catch { nav.deschide("Fișa asistentului", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu s-a putut încărca fișa.</p>'; }); return; }
   if (!d0.ok) return;
   const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || `#${d0.actor.id}`;
 
@@ -421,7 +421,7 @@ async function _asiBannerEchipa(corp, nav) {
 async function deschideEchipaErori(nav) {
   let d;
   try { d = await api.get("/asistenti/echipa/erori"); }
-  catch { nav.deschide("Erori echipă", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca erorile.</p>'; }); return; }
+  catch { nav.deschide("Erori echipă", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu s-au putut încărca erorile.</p>'; }); return; }
   if (!d.ok) return;
   nav.deschide("Erori — echipa", (box) => {
     const lst = d.asistenti || [];

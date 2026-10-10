@@ -294,8 +294,8 @@ def _culege_firma(conn, schema, an, luna):
     rulat = rez.get("orizontal_rulat")
     if rulat is None:
         raise ValueError(  # invariant-intern-ok: contractul dintre module
-            "`verifica_d390` n-a declarat `orizontal_rulat` — nu pot ști dacă axa orizontală a rulat "
-            "sau doar n-a găsit nimic, iar un implicit ar transforma «n-am verificat» în «e curat»")
+            "`verifica_d390` n-a declarat `orizontal_rulat` — nu se poate ști dacă axa orizontală a rulat "
+            "sau doar n-a găsit nimic, iar un implicit ar transforma «nu s-a verificat» în «e curat»")
     # [02.09.2026] Perechile ANUALE ale D101 — DUPĂ verificarea contractului, nu înainte: dacă
     # `verifica_d390` a rupt contractul, nu se mai face muncă, se ridică. Se culeg separat fiindcă
     # au altă perioadă: `verifica_d390` e pe fereastra TVA, identitatea D101 e pe AN.

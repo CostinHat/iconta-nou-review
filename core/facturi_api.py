@@ -48,7 +48,7 @@ def _data_ceruta(camp, valoare):
     try:
         return _d.date.fromisoformat(str(valoare).strip())
     except ValueError:
-        raise ValueError("%s: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ, cu o zi care "
+        raise ValueError("%s: %r nu e o dată din calendar. Se așteaptă forma AAAA-LL-ZZ, cu o zi care "
                          "există în luna aia." % (camp, valoare))
 
 
@@ -480,17 +480,17 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     # întorcea `200` cu listă goală — „nu există facturi așa" arăta identic cu „direcția asta
     # nu există", exact clasa scoasă din `GET /coada` în lotul 1.
     if luna is not None and not (1 <= luna <= 12):
-        raise ValueError("luna invalidă: %r (aștept 1-12)" % (luna,))
+        raise ValueError("luna invalidă: %r (se așteaptă 1-12)" % (luna,))
     if an is not None and not (1990 <= an <= 2100):
-        raise ValueError("an invalid: %r (aștept 1990-2100)" % (an,))
+        raise ValueError("an invalid: %r (se așteaptă 1990-2100)" % (an,))
     if directie is not None and directie not in DIRECTII:
         raise ValueError("direcție necunoscută: %r (direcțiile facturii: %s)"
                          % (directie, ", ".join(DIRECTII)))
     if limit is not None and limit < 0:
-        raise ValueError("limit invalid: %r (aștept un număr pozitiv, sau nimic pentru tot)"
+        raise ValueError("limit invalid: %r (se așteaptă un număr pozitiv, sau nimic pentru tot)"
                          % (limit,))
     if offset is not None and offset < 0:
-        raise ValueError("offset invalid: %r (aștept un număr pozitiv sau 0)" % (offset,))
+        raise ValueError("offset invalid: %r (se așteaptă un număr pozitiv sau 0)" % (offset,))
     cond, val = [], []
     if an is not None and luna is not None:
         inceput = "%04d-%02d-01" % (an, luna)
@@ -891,7 +891,7 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
         except (TypeError, ValueError):
             return {"ok": False, "mesaj": "Numărul de start: %r nu e un număr întreg." % (numar_start,)}
         if _n < 1:
-            return {"ok": False, "mesaj": "Numărul de start trebuie să fie cel puțin 1; am primit "
+            return {"ok": False, "mesaj": "Numărul de start trebuie să fie cel puțin 1; s-a primit "
                                           "%s. Numerotarea documentelor pornește de la 1, nu de la "
                                           "zero sau de la un număr negativ (%s)."
                                           % (_n, NUMEROTARE_SECVENTIALA)}
@@ -905,7 +905,7 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
         seturi.append("urmator_numar_factura = %s"); val.append(_n)
     if not seturi:
         return {"ok": False, "mesaj": "Nu ai trimis nici seria, nici numărul de "
-                                      "start, deci n-am ce schimba în numerotarea "
+                                      "start, deci nu e nimic de schimbat în numerotarea "
                                       "facturilor."}
     seturi.append("numerotare_configurata = true")  # numerotare_configurata_v1
     with conn.cursor() as cur:
@@ -913,11 +913,35 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
     return {"ok": True}
 
 
-def _potriveste_linii(conn, linii, platitor_tva=True):
+def intrebari_model(conn, linii, platitor_tva=True):
+    """[R193, comanda Costin 10.10.2026 pct.2] Faza de CITIRE a emiterii: denumirile pentru care `_potriveste_linii` va avea nevoie
+    de răspunsul modelului — linia fără cotă al cărei produs nu e în nomenclator (`produse_api.de_intrebat`), și linia fără cont de
+    venit a cărei denumire nu-i spune felul (nivelul 2 de mai jos). Aceeași regulă ca acolo, de-aia stă lângă ea. Apelantul pune
+    întrebarea cu pool-ul liber (`cote_tva.intreaba`) și trimite răspunsurile emiterii (`raspunsuri_ai=`).
+    Întrebarea pentru cont e `(denumire, True)` la orice emitent: felul venitului (marfă / produs / serviciu) nu depinde de TVA.
+    Până pe 10.10.2026 neplătitorul o primea cu `platitor_tva=False`, pe care `potriveste_cota` îl scurtcircuitează la cota 0 fără
+    „tip” — deci nivelul 2 al deciziei 64 (22.09) nu rula la el, iar refuzul spunea că „asistentul nu a putut decide”."""
+    from core import produse_api
+    from core import facturi as _fc
+    out = []
+    for l in linii or ():
+        if not isinstance(l, dict):
+            continue   # forma greșită o refuză validarea emiterii, cu mesajul ei
+        d = str(l.get("descriere") or "").strip()
+        if l.get("cota_tva") is None and platitor_tva:
+            out += produse_api.de_intrebat(conn, d)
+        if d and not str(l.get("cont_venit") or "").strip() and not _fc.tip_din_denumire(d):
+            out.append((d, True))
+    return list(dict.fromkeys(out))
+
+
+def _potriveste_linii(conn, linii, platitor_tva=True, raspunsuri_ai=None):
     """Pentru fiecare linie fara cota_tva, o potriveste (nomenclator/AI) si o
     salveaza in nomenclator. Determina si contul de venit PE LINIE din denumire
     (#11: marfa->707/produse->701/serviciu->704, OMFP 1802/2014), editabil ulterior.
-    Intoarce liniile cu cota + cont_venit completate."""
+    Intoarce liniile cu cota + cont_venit completate.
+    [R193] Raspunsul modelului vine din `raspunsuri_ai` (`intrebari_model` + `cote_tva.intreaba`, inaintea conexiunii); aici nu
+    se intreaba modelul. Un raspuns lipsa e cota/contul NEDETERMINAT, cu refuzul de mai jos."""
     from core import produse_api, cote_tva
     from core import facturi as _fc
     # [22.09.2026, DECIZII 64] contul de venit NU mai cade tacit pe default-ul firmei:
@@ -935,7 +959,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
             r = produse_api.creeaza(conn, linie.get("descriere", ""),
                                     um=linie.get("um", "buc"),
                                     pret_unitar=linie.get("pret_unitar", 0),
-                                    platitor_tva=platitor_tva)
+                                    platitor_tva=platitor_tva, raspunsuri=raspunsuri_ai)
             if r.get("cota_tva") is None:
                 # auto-match esuat (AI indisponibil/nedeterminat): intrare incompleta, NU cota 21
                 raise ValueError("cota TVA nedeterminată pentru %r: nomenclatorul/AI nu a putut "
@@ -951,7 +975,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
             # nivel 2: AI, cand e disponibil, pentru denumiri fara cuvant-cheie clar
             if cont is None:
                 try:
-                    rez = cote_tva.potriveste_cota(linie.get("descriere", ""), platitor_tva=platitor_tva)
+                    rez = cote_tva.raspuns(raspunsuri_ai, linie.get("descriere", ""), True)   # felul venitului nu depinde de TVA
                     tip = rez.get("tip") if rez.get("ok") else None
                     if tip:
                         cont = _fc.VENIT.get(tip)
@@ -973,10 +997,12 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
-                  bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None):
+                  bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None,
+                  raspunsuri_ai=None):
     """
     Emite o factura noua (directie=emisa):
-      - potriveste cota pe liniile fara cota (nomenclator/AI)
+      - potriveste cota pe liniile fara cota (nomenclator / raspunsurile modelului, cerute INAINTEA conexiunii:
+        `intrebari_model` -> `cote_tva.intreaba` -> `raspunsuri_ai=`, R193)
       - numeroteaza automat (serie + urmator_numar din firma_profil)
       - salveaza + incrementeaza contorul
     Intoarce {ok, factura_id, numar, serie, total, tva}.
@@ -994,7 +1020,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     cere_cod_partener(tert_cui, tert_pf, tert_nume)
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
-    linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)
+    linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva, raspunsuri_ai=raspunsuri_ai)   # R193: modelul, întrebat înainte
     if tip == "factura" and not str(bon_fiscal_nr or "").strip() and pleaca_marfa is not False:
         verifica_marfa_si_metoda(conn, linii, pleaca_marfa)   # [06.10.2026 §6.3] o singură descărcare pe ieșire
     # [C1] rezervare ATOMICĂ a numărului (UPDATE ... +1 RETURNING), nu citire-apoi-increment.
@@ -1083,7 +1109,10 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                         # (creeaza pune cursul 1); valută→cursul calculat mai sus.
                         curs=(None if (moneda or "RON").upper() == "RON" else _curs),
                         data_curs=_dcurs, curs_sursa=_sursa,
-                        bon_fiscal_nr=bon_fiscal_nr, bon_fiscal_data=bon_fiscal_data)   # [decizia A 02.10]
+                        bon_fiscal_nr=bon_fiscal_nr, bon_fiscal_data=bon_fiscal_data,   # [decizia A 02.10]
+                        # [10.10.2026] `tert_pf` se oprea aici: `cere_cod_partener` de mai sus il primea, `creeaza_factura` nu, deci
+                        # refuza a doua oara partenerul persoana fizica fara cod — orice comanda din magazin (`woocommerce._importa`).
+                        tert_pf=tert_pf)
     _fid = r["factura_id"]
     # setez seria pe factura. [C1] contorul a fost DEJA incrementat atomic de `_rezerva_numar` la
     # inceput — nu se mai incrementeaza aici (dublul increment ar sari numere).

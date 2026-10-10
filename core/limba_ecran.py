@@ -16,6 +16,8 @@ Felurile de defect (fiecare cu fragmentul găsit):
   data         — o dată ISO („2026-10-05”) în text;
   perioada     — o perioadă în altă formă decât „LL/AAAA” (luna) sau „T3/2026” (trimestrul): „03.2026”, „iun 2026”, „T3 2026”;
   acord        — „1 parteneri”, „1 facturi” (numeral 1 cu plural);
+  voce         — aplicația vorbește la persoana întâi („nu pot verifica”, „n-am putut citi”, „am primit %r”); se scrie la a treia
+                 („nu se poate verifica”) — comanda Costin 10.10.2026 pct.5, pe toată clasa;
   abreviere    — prescurtări de programator („fact.vânz”), nu cele legale („art.”, „alin.”, „nr.”);
   jargon       — cuvinte de dezvoltator („rânduri persistate”, „amprenta notei”, „null”).
 LIMITĂ declarată: un text greșit care nu are nicio formă de mai sus („Câmpul e liber”, „Contă analitice”) nu se prinde aici — de aceea
@@ -50,6 +52,12 @@ _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|ha
                      r"True|False|stub|parsabil[aăe]?|neparsabil[aăe]?)\b", re.I)
 _ACORD = re.compile(r"\b1 (?:parteneri|facturi|note|conturi|clienți|furnizori|operațiuni|luni|zile|rânduri|declarații|firme|linii|"
                     r"documente|perioade|salariați|articole)\b")
+#: [comanda Costin 10.10.2026 pct.5: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate verifica …»), pe
+#: toată clasa.”] Persoana întâi a aplicației. „nu pot fi …” e persoana a treia plural („două firme nu pot avea”) — nu intră.
+VOCE = re.compile(r"(?i)(?:(?:^|[.:;—–(,«„“\x22'>\n]\s*|\b(?:deci|dar|iar|că|încă|atunci|ea|el)\s+)nu pot(?!\s+fi\b)(?=\s+[a-zăâîșț])"
+                  r"|(?<![\w-])(?:nu (?:le|o|-l) pot|n-am putut|nu am putut|nu văd|nu știu|nu stiu|nu reușesc|măsurătorii mele|verificarea mea|"
+                  r"am scos|am găsit|am verificat|am calculat|am refuzat|am citit|am numărat|am primit|am notat|am trimis|ți-am|nu acuz|"
+                  r"nu găsesc|nu am găsit|n-am ce|n-am verificat|pot doar|aștept)(?![\w]))")
 EXCEPTII_ACRONIM = {"RO", "UE", "CF", "MF", "PF", "PJ", "IC", "ID", "OK", "TVA", "CNP", "CUI", "CIF", "IBAN", "PDF", "XML", "BNR", "SPV",
                     "ANAF", "DUK", "SAGA", "CAEN", "OMFP", "OPANAF", "CASS", "CAS", "CAM", "UIT", "COR", "REGES", "NIR", "SRL", "SA",
                     "PFA", "II", "IF", "ONG", "C&D", "CD", "ZIP", "CSV", "GDPR", "HG", "OUG", "MO", "AMEF", "HORECA", "SAF", "SAFT",
@@ -85,7 +93,7 @@ def defecte(text, date_excluse=()):
     out = []
     for fel, rx in (("cod", _SNAKE), ("cod", _COD_MARE), ("cod", _PUNCT), ("cod", _ATRIB), ("cod", _SAGEATA), ("cod", _INTERN),
                     ("abreviere", _ABREV), ("jargon", _JARGON), ("suma", _SUMA), ("data", _DATA), ("perioada", _PER_PUNCT), ("perioada", _PER_LUNA), ("perioada", _PER_TRIM),
-                    ("acord", _ACORD)):
+                    ("acord", _ACORD), ("voce", VOCE)):
         out += [(fel, m.group(0)) for m in rx.finditer(t)]
     are_diac = any(c in "ăâîșțşţĂÂÎȘȚŞŢ" for c in t)
     for m in _CUV.finditer(t):

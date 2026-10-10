@@ -185,7 +185,7 @@ b.addEventListener("click", async () => {
     await api.post(`/tenants/${t.id}/activare`, { activ: false });
     nav.acasa();
   } catch (e) {
-    arataMesaj(zm, "Nu am putut dezactiva firma.", "eroare");
+    arataMesaj(zm, "Nu s-a putut dezactiva firma.", "eroare");
   }
 });
 """

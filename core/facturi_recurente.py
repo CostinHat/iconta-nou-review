@@ -37,9 +37,9 @@ def adauga(conn, schema, corp):
     try:
         zi = int(_zi) if _zi not in (None, "") else 1
     except (TypeError, ValueError):
-        return {"eroare": "Ziua emiterii: %r nu e un număr. Aștept o zi între 1 și 28." % (_zi,),
+        return {"eroare": "Ziua emiterii: %r nu e un număr. Se așteaptă o zi între 1 și 28." % (_zi,),
                 "erori_campuri": [{"camp": "fr-zi_emitere",
-                                   "mesaj": "aștept un număr între 1 și 28"}]}
+                                   "mesaj": "se așteaptă un număr între 1 și 28"}]}
     if not 1 <= zi <= 28:
         return {"eroare": "Ziua emiterii trebuie să fie între 1 și 28."}
     # [cap.24 regula 2] validare per-linie AUTORITARA: un rand incomplet se raporteaza langa campul lui
@@ -99,45 +99,51 @@ def de_emis(sabloane, azi=None):
     return rezultat
 
 
-def emite_scadente(conn, schema, azi=None):
-    """Emite facturile scadente pentru un tenant. Intoarce lista emisa."""
+def emite_scadente(schema, azi=None):
+    """Emite facturile scadente pentru un tenant. Intoarce lista emisa.
+
+    [R193, comanda Costin 10.10.2026 pct.2] Pe faze, ca `woocommerce.sincronizeaza`: (1) o citire scurta — abonamentele scadente,
+    statutul de platitor TVA, ce linii cer raspunsul modelului; (2) cursul BNR si intrebarea catre model, fara conexiune; (3) emiterea,
+    pe o conexiune noua, care RECITESTE abonamentele (unul emis intre timp de alta rulare nu se mai emite). Pana azi functia primea
+    conexiunea de la apelant si intreba modelul cu ea in mana; iar statutul de platitor cadea tacit pe `True` daca citirea lui esua
+    (`except: rollback`) — o firma neplatitoare ar fi facturat cu TVA. Acum citirea e cea a rutelor (`_platitor_tva_firma`), fara
+    plasa: daca nu se poate citi, nu se emite."""
+    from core import cote_tva, db, uc_comun as _uc
     from core import uc_curs_bnr as _uc_cb
-    from core import facturi_api
     azi = azi or datetime.date.today()
-    emise = []
-    _scadente = de_emis(lista(conn, schema), azi)
+    with db.get_conn(schema) as conn:
+        _scadente = de_emis(lista(conn, schema), azi)
+        platitor = _uc._platitor_tva_firma(conn)
+        de_intrebat = [d for _s in _scadente for d in facturi_api.intrebari_model(conn, _s["linii"], platitor)]
+    if not _scadente:
+        return []
     # [P5 val 3, 11.09.2026] Cursul BNR se aduce ACUM, pentru toate monedele lotului: `curs_pentru`
-    # decide pe cache, iar descarcarea n-are ce cauta in mijlocul emiterii. Monedele se stiu din
-    # abonamentele deja citite, deci nu se cere nimic in plus de la baza.
+    # decide pe cache, iar descarcarea n-are ce cauta in mijlocul emiterii.
     for _m in {(_s.get("moneda") or "RON") for _s in _scadente}:
         try:
             _uc_cb.asigura_cursul(_m, azi)
         except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica emiterea
             pass
-    for s in _scadente:
-        try:
-            with conn.cursor() as cur:
-                cur.execute(f"SET search_path TO {schema}")
-            platitor = True
+    raspunsuri_ai = cote_tva.intreaba(de_intrebat, platitor)
+    emise = []
+    with db.get_conn(schema) as conn:
+        platitor = _uc._platitor_tva_firma(conn)
+        for s in de_emis(lista(conn, schema), azi):   # REVALIDARE: scadente si acum
             try:
+                with conn.cursor() as cur:   # un rollback de mai jos anuleaza si SET-ul facut in tranzactia lui
+                    cur.execute(f"SET search_path TO {schema}")
+                r = facturi_api.emite_factura(conn, s["linii"], client_id=s.get("client_id"),
+                        tert_nume=s.get("tert_nume"), tert_cui=s.get("tert_cui"),
+                        data_emitere=azi.isoformat(), moneda=s.get("moneda") or "RON",
+                        platitor_tva=platitor, raspunsuri_ai=raspunsuri_ai)
                 with conn.cursor() as cur:
-                    cur.execute("SELECT platitor_tva FROM firma_profil LIMIT 1")
-                    r = cur.fetchone()
-                    platitor = bool(r[0]) if r and r[0] is not None else True
-            except Exception:
+                    cur.execute(f"UPDATE {schema}.facturi_recurente SET ultima_emitere=%s WHERE id=%s",
+                                (azi, s["id"]))
+                conn.commit()
+                emise.append({"sablon": s["id"], "factura": r.get("numar")})
+            except Exception as e:
                 conn.rollback()
-            r = facturi_api.emite_factura(conn, s["linii"], client_id=s.get("client_id"),
-                    tert_nume=s.get("tert_nume"), tert_cui=s.get("tert_cui"),
-                    data_emitere=azi.isoformat(), moneda=s.get("moneda") or "RON",
-                    platitor_tva=platitor)
-            with conn.cursor() as cur:
-                cur.execute(f"UPDATE {schema}.facturi_recurente SET ultima_emitere=%s WHERE id=%s",
-                            (azi, s["id"]))
-            conn.commit()
-            emise.append({"sablon": s["id"], "factura": r.get("numar")})
-        except Exception as e:
-            conn.rollback()
-            emise.append({"sablon": s["id"], "eroare": str(e)})
+                emise.append({"sablon": s["id"], "eroare": str(e)})
     return emise
 
 
@@ -151,10 +157,9 @@ def _main():
             scheme = [r[0] for r in cur.fetchall()]
     total = []
     for sch in scheme:
-        with db.get_conn() as conn:
-            rez = emite_scadente(conn, sch)
-            if rez:
-                total.append({sch: rez})
+        rez = emite_scadente(sch)
+        if rez:
+            total.append({sch: rez})
     print(datetime.datetime.now().isoformat(), "facturi recurente:", total or "nimic de emis")
 
 

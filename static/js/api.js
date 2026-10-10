@@ -3,7 +3,7 @@
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
 import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
-import { ceraReautentificare } from "./reautentificare.js?v=67acba6dc6";  // [05.10.2026] 401 cu sesiune = parola peste ecran
+import { ceraReautentificare } from "./reautentificare.js?v=412d466675";  // [05.10.2026] 401 cu sesiune = parola peste ecran
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
 // automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se

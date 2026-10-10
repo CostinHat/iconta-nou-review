@@ -181,6 +181,43 @@ def _nedeterminat(motiv):
             "justificare": motiv, "incredere": "mica", "sursa": "nedeterminat"}
 
 
+def _fara_model(denum, platitor_tva):
+    """Răspunsurile care nu cer modelul: denumirea goală și emitentul neplătitor (cota 0 prin lege). `None` = trebuie întrebat."""
+    if not denum:
+        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsă"}
+    if not platitor_tva:
+        return {"ok": True, "cota": 0, "categorie": "neplatitor_tva",
+                "justificare": "Firma nu este platitoare de TVA.",
+                "incredere": "mare", "sursa": "regula"}
+    return None
+
+
+def intreaba(denumiri, platitor_tva=True):
+    """[R193, comanda Costin 10.10.2026 pct.2, verbatim: „R193: da, cele 10 căi care cer un răspuns AI ținând o conexiune la bază se
+    mută înaintea conexiunii.”] Întrebarea către model, pusă cu pool-ul liber: `{(denumire, plătitor TVA): răspunsul}`. Cheia poartă
+    și statutul de plătitor, ca tranzacția de după (care îl recitește) să nu folosească un răspuns dat pe altă premisă. Un element
+    poate fi și perechea `(denumire, plătitor)` — `facturi_api.intrebari_model` o dă pentru contul de venit, care nu depinde de TVA."""
+    out = {}
+    for x in denumiri or ():
+        d, p = x if isinstance(x, tuple) else (x, platitor_tva)
+        d = (d or "").strip()
+        if d and (d, bool(p)) not in out:
+            out[(d, bool(p))] = potriveste_cota(d, platitor_tva=p)
+    return out
+
+
+def raspuns(raspunsuri, denumire, platitor_tva=True):
+    """Răspunsul pregătit de `intreaba` pentru o denumire — ce citește codul care ține o conexiune. Nu întreabă modelul: un răspuns
+    lipsă (denumire apărută între citire și emitere) e cota NEDETERMINATĂ, ca la un model indisponibil, nu o întrebare sub conexiune."""
+    denum = (denumire or "").strip()
+    fara_model = _fara_model(denum, platitor_tva)
+    if fara_model is not None:
+        return fara_model
+    r = (raspunsuri or {}).get((denum, bool(platitor_tva)))
+    return r if r is not None else _nedeterminat("Cota TVA nu s-a putut determina pentru această denumire. "
+                                                 "Declară cota explicit pe linie.")
+
+
 def potriveste_cota(denumire, platitor_tva=True):
     """  [p96_potriveste]
     Potriveste denumirea unui produs/serviciu cu cota TVA corecta, folosind
@@ -200,13 +237,9 @@ def potriveste_cota(denumire, platitor_tva=True):
     inmoaie ca sa se potriveasca unui text. Legat de `test_granite_cota.py` TEMA D.
     """
     denum = (denumire or "").strip()
-    if not denum:
-        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsă"}
-
-    if not platitor_tva:
-        return {"ok": True, "cota": 0, "categorie": "neplatitor_tva",
-                "justificare": "Firma nu este platitoare de TVA.",
-                "incredere": "mare", "sursa": "regula"}
+    fara_model = _fara_model(denum, platitor_tva)
+    if fara_model is not None:
+        return fara_model
 
     import json
     try:

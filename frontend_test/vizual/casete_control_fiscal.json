@@ -2,19 +2,20 @@
  "firma": "Panificatie Salarii Speciale SRL",
  "payload": {
   "contabil_etichete": [
-   "Salarii declarate diferă de contabilitate"
+   "Salarii nedeclarate"
   ],
   "contabil_total": 1,
-  "datorate": 8,
+  "datorate": 12,
   "depuse": 0,
   "lungimi": {
    "confirmate": 0,
    "cu_intarziere": 0,
+   "inainte_de_preluare": 4,
    "limite": 7,
    "lipsa": 6,
    "neaplicabile": 2,
-   "neclar": 5,
-   "urmarit": 2
+   "neclar": 3,
+   "urmarit": 4
   },
   "perechi_tip_perioada": {
    "confirmate": [],
@@ -22,33 +23,33 @@
    "lipsa": [
     [
      "d112",
-     "ian"
+     "03/2026"
     ],
     [
      "d112",
-     "feb"
+     "04/2026"
     ],
     [
      "d112",
-     "mar"
+     "05/2026"
     ],
     [
      "d112",
-     "apr"
+     "06/2026"
     ],
     [
      "d112",
-     "mai"
+     "07/2026"
     ],
     [
      "d112",
-     "iun"
+     "08/2026"
     ]
    ],
    "neaplicabile": [
     [
      "d390",
-     null
+     "09/2026"
     ],
     [
      "d301",
@@ -65,26 +66,26 @@
      null
     ],
     [
-     "d101",
-     null
-    ],
-    [
      "d406",
-     null
-    ],
-    [
-     "d205",
      null
     ]
    ],
    "urmarit": [
     [
      "d300",
-     "iul"
+     "09/2026"
+    ],
+    [
+     "d394",
+     "09/2026"
     ],
     [
      "d112",
-     "iul"
+     "09/2026"
+    ],
+    [
+     "d406",
+     "09/2026"
     ]
    ]
   },
@@ -157,6 +158,22 @@
      "perioada",
      "termen",
      "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
     ]
    ]
   },
@@ -168,6 +185,7 @@
       "fel",
       "luna",
       "motiv",
+      "perioada",
       "temei_completitudine",
       "tip"
      ],
@@ -214,26 +232,6 @@
       "tip"
      ],
      "fel": "necunoastere"
-    },
-    {
-     "chei": [
-      "domeniu_de",
-      "domeniu_pana",
-      "fel",
-      "motiv",
-      "tip"
-     ],
-     "fel": "necunoastere"
-    },
-    {
-     "chei": [
-      "domeniu_de",
-      "domeniu_pana",
-      "fel",
-      "motiv",
-      "tip"
-     ],
-     "fel": "necunoastere"
     }
    ]
   },
@@ -244,6 +242,7 @@
    "d390_incrucisat",
    "documente_pozate",
    "echilibru",
+   "note",
    "tva",
    "tva_incrucisat"
   ],
@@ -263,19 +262,24 @@
     "titlu": "Restanțe"
    },
    {
-    "contor": 2,
-    "randuri": 2,
+    "contor": 4,
+    "randuri": 4,
     "titlu": "De urmărit"
    },
    {
-    "contor": 5,
-    "randuri": 5,
-    "titlu": "Nu pot verifica"
+    "contor": 3,
+    "randuri": 3,
+    "titlu": "Nu se poate verifica"
    },
    {
     "contor": 2,
     "randuri": 2,
     "titlu": "Nu se datorează"
+   },
+   {
+    "contor": 4,
+    "randuri": 4,
+    "titlu": "Înainte de preluare în iConta.eu"
    },
    {
     "contor": null,

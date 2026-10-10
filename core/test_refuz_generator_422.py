@@ -128,3 +128,42 @@ def test_gardul_chiar_gaseste_generatoarele_pazite():
     assert _ridica_valueerror("bilant_api", "genereaza_s1003")
     assert not _ridica_valueerror("api_public", "genereaza"), \
         "api_public.genereaza nu ridica ValueError - daca apare aici, gardul face fals-pozitive"
+
+
+#: [10.10.2026, deficiența 224 generalizată] emiterea și crearea unei facturi refuză motivat cu `ValueError` (cod partener, serie,
+#: cotă sau cont nedeterminat); ruta din magazin o lăsa să iasă ca 500 „eroare 500”. Măsurat pe tot `core/` + `main.py`: 5 apeluri
+#: neprinse (`vanzare_ic` și patru achiziții, în `uc_tenants`), toate reparate. `facturi_api` e biblioteca însăși: refuzul ei urcă
+#: la apelant, care îl traduce.
+_EMITERE = ("emite_factura", "creeaza_factura")
+
+
+def _apeluri_emitere_neprinse():
+    import glob
+    out = []
+    for f in sorted(glob.glob(os.path.join(_RAD, "core", "*.py"))) + [_MAIN]:
+        nume_f = os.path.basename(f)
+        if nume_f.startswith("test_") or nume_f == "facturi_api.py":
+            continue
+        a = ast.parse(open(f, encoding="utf-8").read())
+        par = {c: n for n in ast.walk(a) for c in ast.iter_child_nodes(n)}
+        for n in ast.walk(a):
+            if not (isinstance(n, ast.Call) and isinstance(n.func, (ast.Attribute, ast.Name))
+                    and (n.func.attr if isinstance(n.func, ast.Attribute) else n.func.id) in _EMITERE):
+                continue
+            p, prins = par.get(n), False
+            while p is not None and not prins:
+                if isinstance(p, ast.Try):
+                    for h in p.handlers:
+                        tipuri = [] if h.type is None else (h.type.elts if isinstance(h.type, ast.Tuple) else [h.type])
+                        prins = prins or h.type is None or any(isinstance(x, ast.Name) and x.id in ("ValueError", "Exception")
+                                                               for x in tipuri)
+                p = par.get(p)
+            if not prins:
+                out.append("%s:%d" % (os.path.relpath(f, _RAD), n.lineno))
+    return out
+
+
+def test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500():
+    """MUTAȚIE: `except ValueError` scos din `woocommerce._importa` sau din `uc_tenants.vanzare_ic` -> pică, numind locul."""
+    neprinse = _apeluri_emitere_neprinse()
+    assert not neprinse, "Emitere fără traducerea refuzului (ar ieși 500): %s" % neprinse

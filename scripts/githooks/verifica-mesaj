@@ -63,6 +63,21 @@ fi
 #
 # CE PAZESTE, declarat: ca mesajul POARTA un rezumat. Nu poate verifica daca diff-ul a fost inteles —
 # aia ramane disciplina. Dar face imposibil sa treaca TACUT.
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: REFERINTA CIFRELOR F1–F5 SE SCHIMBA NUMAI CU APROBAREA LUI COSTIN, CONSEMNATA IN DECIZII (10.10.2026, comanda Costin pct.1).
+# „O schimbare voită se face doar cu aprobarea mea, consemnată în DECIZII.” Un commit care atinge `scripts/cifre_referinta_aprobate.json`
+# trebuie să adauge în DECIZII.md (în același commit) amprenta sha256 a noului fișier — legătura dintre aprobare și cifrele aprobate.
+# Nu poate verifica cine a aprobat (aia e intrarea din DECIZII, cu verbatimul lui); face imposibil ca referința să se schimbe TĂCUT.
+REF_CIFRE="scripts/cifre_referinta_aprobate.json"
+if git diff --cached --name-only | grep -qx "$REF_CIFRE"; then
+    AMPR=$(git show ":$REF_CIFRE" 2>/dev/null | sha256sum | cut -d' ' -f1)
+    if [ -z "$AMPR" ] || ! git diff --cached -U0 -- DECIZII.md | grep -E '^\+' | grep -q "$AMPR"; then
+        echo "[commit-msg] RESPINS: referinta cifrelor F1–F5 ($REF_CIFRE) se schimba, dar DECIZII.md nu consemneaza in acest commit"
+        echo "[commit-msg]   amprenta noului fisier ($AMPR). O schimbare voita cere aprobarea lui Costin, scrisa in DECIZII cu amprenta."
+        exit 1
+    fi
+fi
+
 NORMATIVE=$(git diff --cached --name-only | grep -E '^(PLAN_[A-Z_]+\.md|CONFORMITATE\.md|METODA_VERIFICARE\.md|CLAUDE\.md|MEMORY\.md|ARHITECT\.md)$' || true)
 if [ -n "$NORMATIVE" ]; then
     if ! grep -qE '^# diff-citit:.{20,}' "$MSG"; then

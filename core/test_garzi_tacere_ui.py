@@ -154,8 +154,8 @@ def test_b6_b12_load_esec_stare_de_eroare():
     """B6/B13 (admin_activitate) + B12 (control): `catch {}` la load -> panou golit / verdict fals-curat,
     indistinct de gol/curat real. Fix: stare-goala de eroare + return."""
     _skip_daca_lipsa()
-    assert "Nu am putut încărca istoricul cabinetului" in _read("static/js/ecrane/admin_activitate.js"), "B6/B13 nereparat"
-    assert "Nu am putut încărca controlul fiscal" in _read("static/js/ecrane/control.js"), "B12 nereparat"
+    assert "Nu s-a putut încărca istoricul cabinetului" in _read("static/js/ecrane/admin_activitate.js"), "B6/B13 nereparat"
+    assert "Nu s-a putut încărca controlul fiscal" in _read("static/js/ecrane/control.js"), "B12 nereparat"
 
 
 def test_b10_b11_input_gol_cu_mesaj():
@@ -171,5 +171,5 @@ def test_b15_b16_actiune_esec_cu_mesaj():
     """B15 (admin_raportari inchide) + B16 (raporteaza raspuns-in-fir): `catch { btn.disabled=false }`
     reactiva butonul fara mesaj. Fix: mesaj inline la esec."""
     _skip_daca_lipsa()
-    assert "Nu am putut închide sesizarea" in _read("static/js/ecrane/admin_raportari.js"), "B15 nereparat"
-    assert "Nu am putut trimite răspunsul" in _read("static/js/ecrane/raporteaza.js"), "B16 nereparat"
+    assert "Nu s-a putut închide sesizarea" in _read("static/js/ecrane/admin_raportari.js"), "B15 nereparat"
+    assert "Nu s-a putut trimite răspunsul" in _read("static/js/ecrane/raporteaza.js"), "B16 nereparat"

@@ -95,6 +95,24 @@ case "$TOT" in
        exit 1 ;;
 esac
 
+# ── CIFRELE DE REFERINTA ALE FIRMELOR F1–F5 (10.10.2026, comanda Costin pct.1) ────────────────────────────────────────
+# „Cifrele de referință [...] aprobate integral [...] Leagă gardul «orice diferență față de referință oprește publicarea». O schimbare
+# voită se face doar cu aprobarea mea, consemnată în DECIZII.” Codul care se comite calculează balanța, D300, D394, D406 și D112 ale
+# firmelor de test din producție (sesiune READ-ONLY, pe drumul aplicației) și le confruntă cu `scripts/cifre_referinta_aprobate.json`.
+# Orice diferență -> RESPINS; orice eșec al măsurătorii -> RESPINS (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
+echo "[poarta] cifrele de referinta F1–F5 (productie, read-only) fata de referinta aprobata..."
+"$PY" scripts/cifre_referinta.py --productie --verifica > /tmp/precommit_cifre.log 2>&1
+RC=$?
+tail -1 /tmp/precommit_cifre.log
+if [ "$RC" -ne 0 ]; then
+    { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
+      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      head -20 /tmp/precommit_cifre.log | sed "s/^/    /"
+    } >> "$ROOT/.poarta_jurnal.log"
+    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: /tmp/precommit_cifre.log"
+    exit 1
+fi
+
 # ── PLASA: testele de capat la capat ale deficientelor rezolvate (09.10.2026, comanda Costin pct.8) ──────────────
 # „Proba unei deficiente «rezolvate» e un test de capat la capat in browser [...] Testul ramane permanent in poarta.” si regula
 # de directie: „orice publicare la care pica o verificare a plasei nu se face”. Aplicatia porneste din INDEX (exact ce se

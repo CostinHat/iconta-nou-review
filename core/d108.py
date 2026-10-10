@@ -156,9 +156,9 @@ def erori_generare(prof, manual):
             er.append("Lipsă %s reprezentant legal (%s)." % (c, c))
     tip = _tip(manual)
     if tip == "infiintare" and _parse_data(manual.get("datai")) is None:
-        er.append("Înființare: data înființării (datai) lipsă/invalidă - aștept ZZ.LL.AAAA.")
+        er.append("Înființare: data înființării (datai) lipsă/invalidă - se așteaptă ZZ.LL.AAAA.")
     if tip == "desfiintare" and _parse_data(manual.get("dataincetarii")) is None:
-        er.append("Desființare: data desființării (dataincetarii) lipsă/invalidă - aștept ZZ.LL.AAAA.")
+        er.append("Desființare: data desființării (dataincetarii) lipsă/invalidă - se așteaptă ZZ.LL.AAAA.")
     if tip == "anual":
         try:
             int(manual.get("an"))

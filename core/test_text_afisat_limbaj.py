@@ -389,3 +389,123 @@ def test_literalele_js_in_proza_au_diacritice():
     rele = proza_js_fara_diacritice()
     assert not rele, "Text JS fără diacritice:\n" + "\n".join("  %s:%d %s <- %r" % r for r in rele)
 
+
+
+# ── Vocea aplicației: persoana a treia (comanda Costin 10.10.2026 pct.5) ─────────────────────────────────────────────────────────
+#: [comanda Costin 10.10.2026 pct.5, verbatim: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate
+#: verifica …»), pe toată clasa.”] Clasa = orice literal din aplicație (Python și JS) în care aplicația vorbește la persoana întâi
+#: (`limba_ecran.VOCE`). Se judecă TOATE literalele, nu doar pozițiile de afișare cunoscute: un mesaj ajunge pe ecran și prin
+#: variabile, excepții și răspunsuri JSON. Excepțiile de mai jos nu sunt vocea aplicației; fiecare are motivul scris și trebuie să
+#: mai existe (o excepție rămasă fără obiect pică testul).
+VOCE_NU_E_APLICATIA = {
+    ("core/chitante.py", "Am primit"): "textul formularului 14-4-1 „Chitanță” (OMFP 2634/2015): vorbește casierul care semnează",
+    ("core/supervizor.py", "am găsit"): "`motiv_tarie` — nota lui Costin din 02.09.2026, citată verbatim; metadată, nu se afișează",
+    ("core/supervizor.py", "NU o pot"): "aceeași notă verbatim (supervizor `motiv_tarie`)",
+    ("core/supervizor.py", "măsurătorii mele"): "aceeași notă verbatim (supervizor `motiv_tarie`)",
+    ("static/js/ecrane/login.js", "Am citit"): "bifa de la înregistrare: vorbește utilizatorul („Am citit și accept Termenii”)",
+    ("static/js/ecrane/migrare.js", "aștept"): "exemplul din câmpul de notă al contabilului („Ex: aștept balanțele de la 2 clienți”)",
+}
+
+
+def literale_js(src):
+    """[(poziție, text)] — toate literalele de șir din JS; șabloanele `…${…}…` se desfac pe bucățile de text (interpolarea devine „…”),
+    inclusiv șabloanele imbricate; comentariile nu sunt literale."""
+    out, n = [], len(src)
+
+    def cod(i, inchide):
+        adanc = 0
+        while i < n:
+            c = src[i]
+            if src.startswith("//", i):
+                j = src.find("\n", i)
+                i = n if j < 0 else j
+            elif src.startswith("/*", i):
+                j = src.find("*/", i + 2)
+                i = n if j < 0 else j + 2
+            elif c in "\"'":
+                j = i + 1
+                while j < n and src[j] != c and src[j] != "\n":
+                    j += 2 if src[j] == "\\" else 1
+                out.append((i, src[i + 1:j]))
+                i = j + 1
+            elif c == "`":
+                i = sablon(i + 1)
+            elif c == "{":
+                adanc, i = adanc + 1, i + 1
+            elif c == "}":
+                if inchide and adanc == 0:
+                    return i + 1
+                adanc, i = adanc - 1, i + 1
+            else:
+                i += 1
+        return i
+
+    def sablon(i):
+        inceput, bucati, buc = i, [], i
+        while i < n:
+            if src[i] == "\\":
+                i += 2
+            elif src[i] == "`":
+                out.append((inceput, "…".join(bucati + [src[buc:i]])))
+                return i + 1
+            elif src.startswith("${", i):
+                bucati.append(src[buc:i])
+                i = cod(i + 2, True)
+                buc = i
+            else:
+                i += 1
+        out.append((inceput, "…".join(bucati + [src[buc:]])))
+        return n
+
+    cod(0, False)
+    return out
+
+
+def voce_in_sursa(fn, src):
+    """[(fișier, linie, fragment, text)] — literalele la persoana întâi dintr-o sursă (Python: constantele de șir fără docstringuri)."""
+    from core import limba_ecran as _le
+    from core.test_diacritice_afisate import _decode_js
+    out = []
+    if fn.endswith(".py"):
+        arb = ast.parse(src)
+        doc = {id(x.body[0].value) for x in ast.walk(arb) if isinstance(x, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+               and x.body and isinstance(x.body[0], ast.Expr) and isinstance(x.body[0].value, ast.Constant)}
+        lit = [(x.lineno, x.value) for x in ast.walk(arb) if isinstance(x, ast.Constant) and isinstance(x.value, str) and id(x) not in doc]
+    else:
+        lit = [(src.count("\n", 0, p) + 1, _decode_js(s)) for p, s in literale_js(src)]
+    for ln, s in lit:
+        out += [(fn, ln, m.group(0).lstrip(" .:;—–(,«„“\"'>\n"), s) for m in _le.VOCE.finditer(s)]
+    return out
+
+
+def voce_aplicatie():
+    fis = [f for f in sorted(glob.glob("core/*.py")) + ["main.py"]
+           if not os.path.basename(f).startswith("test_") and f != "core/limba_ecran.py"]   # limba_ecran ține detectorul însuși
+    fis += sorted(glob.glob("static/js/**/*.js", recursive=True))
+    return [v for fn in fis for v in voce_in_sursa(fn, io.open(fn, encoding="utf-8").read())]
+
+
+def test_aplicatia_vorbeste_la_persoana_a_treia():
+    """MUTAȚIE: „Nu se poate verifica (” -> „Nu pot verifica (” în titlul grupului din Control fiscal -> pică; la fel „Nu s-a putut
+    încărca registrul” -> „Nu am putut încărca registrul” într-un mesaj Python."""
+    gasite = voce_aplicatie()
+    rele = [g for g in gasite if (g[0], g[2]) not in VOCE_NU_E_APLICATIA]
+    assert not rele, "Text la persoana întâi (se scrie la persoana a treia: „nu se poate …”, „nu s-a putut …”):\n" + "\n".join(
+        "  %s:%d «%s» <- %r" % (fn, ln, fr, s[:110]) for fn, ln, fr, s in rele)
+    fara_obiect = set(VOCE_NU_E_APLICATIA) - {(g[0], g[2]) for g in gasite}
+    assert not fara_obiect, "excepții de voce fără obiect (textul s-a schimbat — scoate-le): %s" % sorted(fara_obiect)
+
+
+def test_detectorul_de_voce_are_dinti():
+    """Exemplele din aplicație dinaintea rescrierii sunt prinse; persoana a treia și pluralul „nu pot fi” trec."""
+    from core import limba_ecran as _le
+    for s in ('<div class="cf-grup-titlu">Nu pot verifica (3)</div>', "D300 depus fără rândurile salvate — nu pot compara.",
+              "Nu am putut încărca registrul.", "n-am putut verifica", "Ți-am trimis un link", "Am scos din textul generat",
+              "se așteaptă ZZ.LL.AAAA; aștept forma corectă", "nu găsesc coloana cu denumirea"):
+        assert _le.VOCE.search(s), s
+    for s in ("Nu se poate verifica (3)", "Două firme nu pot avea același CUI", "rânduri nu pot fi salvate", "Nu s-a putut încărca",
+              "Un link de confirmare a fost trimis"):
+        assert not _le.VOCE.search(s), s
+    src_js = 'const a = `x ${b ? `<p>Nu pot verifica</p>` : ""}`; // nu pot în comentariu\n'
+    assert [fr for _f, _l, fr, _s in voce_in_sursa("x.js", src_js)] == ["Nu pot"], "șablonul imbricat se vede, comentariul nu"
+    assert [fr for _f, _l, fr, _s in voce_in_sursa("x.py", '"""nu pot în docstring"""\nM = "Nu am putut citi"\n')] == ["Nu am putut"]

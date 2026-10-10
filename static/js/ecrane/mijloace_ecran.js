@@ -31,7 +31,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       date = await api.get(`/tenants/${tenantId}/mijloace-fixe`);
     } catch (e) {
       corp.innerHTML = `<h2 class="pf-titlu">Mijloace fixe</h2>` +
-        `<p class="ecran-nota">Nu am putut încărca registrul de mijloace fixe${e && e.mesaj ? " — " + esc(e.mesaj) : ""}.</p>`;
+        `<p class="ecran-nota">Nu s-a putut încărca registrul de mijloace fixe${e && e.mesaj ? " — " + esc(e.mesaj) : ""}.</p>`;
       return;
     }
     randeaza(date.mijloace || [], date.calculat_pana_la || "");
@@ -107,7 +107,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         const r = await api.put(`/tenants/${tenantId}/mijloace-fixe/${id}/cod-catalog`, { cod_catalog: corp.querySelector(`#mf-catalog-${id}`).value.trim() });
         await incarca();
         if (r && (r.afirmatii || []).length) arataMesaj(corp.querySelector("#mf-mesaj"), r.afirmatii.map((a) => a.mesaj).join(" "), "avert");
-      } catch (e) { arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut salva codul din catalog.", "eroare"); }
+      } catch (e) { arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut salva codul din catalog.", "eroare"); }
     }));
 
     corp.querySelectorAll("[data-caseaza]").forEach((b) => b.addEventListener("click", () => {
@@ -122,7 +122,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
             arataMesaj(zona, "Casare înregistrată (ciornă). O validezi din Registru jurnal.", "info");
             await incarca();
           } catch (e) {
-            arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut casa mijlocul fix.", "eroare");
+            arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut casa mijlocul fix.", "eroare");
           }
         }, { textOk: "Casează" });
     }));
@@ -134,7 +134,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
           { destinatie_cd: b.dataset.cdVal !== "1" });
         await incarca();
       } catch (e) {
-        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut schimba destinația C&D.", "eroare");
+        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut schimba destinația C&D.", "eroare");
       }
     }));
 
@@ -152,7 +152,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         arataMesaj(zona, "Reevaluare înregistrată (ciornă). O validezi din Registru jurnal.", "info");
         await incarca();
       } catch (e) {
-        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut reevalua mijlocul fix.", "eroare");
+        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut reevalua mijlocul fix.", "eroare");
       }
     }));
   }

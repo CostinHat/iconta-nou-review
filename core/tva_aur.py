@@ -35,7 +35,7 @@ def _numar(x, nume):
     try:
         return _d(x), None
     except (InvalidOperation, ValueError, TypeError):
-        return None, "%s trebuie să fie un număr (am primit %r)" % (nume, x)
+        return None, "%s trebuie să fie un număr (s-a primit %r)" % (nume, x)
 
 
 def este_aur_investitii(tip, puritate, an_emisie=None, pret=None, valoare_aur=None):

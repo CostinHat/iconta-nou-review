@@ -149,10 +149,10 @@ def verifica_balanta(conn, schema):
     rows = _rows_solduri_initiale(conn, schema)
     if rows is None:
         return [_gri(et, temei,
-                     "Balanța de deschidere nu a fost importată — nu pot verifica echilibrul.",
+                     "Balanța de deschidere nu a fost importată — nu se poate verifica echilibrul.",
                      "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia auditul.")]
     if not rows:
-        return [_gri(et, temei, "Balanța de deschidere e goală — nu pot verifica echilibrul.",
+        return [_gri(et, temei, "Balanța de deschidere e goală — nu se poate verifica echilibrul.",
                      "Importă o balanță cu conturi, apoi reia auditul.")]
     ok, td, tc, dif = verifica_echilibru(rows)
     if ok:
@@ -177,7 +177,7 @@ def verifica_parteneri(conn, schema):
         cur.execute("SELECT to_regclass(%s)", (schema + ".solduri_parteneri",))
         if cur.fetchone()[0] is None:
             return [_gri(et, temei,
-                         "Soldurile pe parteneri nu au fost importate — nu pot verifica defalcarea.",
+                         "Soldurile pe parteneri nu au fost importate — nu se poate verifica defalcarea.",
                          "Importă soldurile pe parteneri (Migrare › Solduri parteneri), apoi reia auditul.")]
         cur.execute(f"SELECT cont, sold_debitor, sold_creditor FROM {schema}.solduri_parteneri")
         randuri = [{"cont": c, "debit": sd, "credit": sc} for c, sd, sc in cur.fetchall()]
@@ -201,7 +201,7 @@ def constatare_parteneri(rez_coerenta):
         if r["coincide"] is None:
             out.append(_gri(et, temei,
                             f"Contul {cont}: parteneri {_lei(r['suma_parteneri'])}, dar balanța nu are "
-                            f"acest sold — nu pot compara.",
+                            f"acest sold — nu se poate compara.",
                             "Importă balanța de deschidere care conține contul, apoi reia."))
         elif r["coincide"]:
             out.append(_verde(et, temei,
@@ -227,7 +227,7 @@ def verifica_istoric_fiscal(conn, schema, tenant_id, conn_public):
     rows = _rows_solduri_initiale(conn, schema)
     if rows is None:
         return [_gri(et, temei,
-                     "Balanța de deschidere nu a fost importată — nu pot lega soldurile fiscale de istoric.",
+                     "Balanța de deschidere nu a fost importată — nu se pot lega soldurile fiscale de istoric.",
                      "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia.")]
     with conn_public.cursor() as cur:
         cur.execute("SELECT DISTINCT tip FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] pe vedere (DISTINCT tip e agnostic la versiuni, dar consistent)
@@ -250,7 +250,7 @@ def constatare_istoric_fiscal(net, tipuri_depuse):
     out = []
     if not tipuri_depuse:
         out.append(_gri(et, temei,
-                        "Istoricul declarațiilor nu a fost importat — nu pot confirma ce s-a depus înainte "
+                        "Istoricul declarațiilor nu a fost importat — nu se poate confirma ce s-a depus înainte "
                         "de preluare.",
                         "Importă istoricul declarațiilor (Migrare › Istoric declarații), apoi reia."))
     for cont, decl, denum in CONT_DECL_FISCAL:
@@ -292,7 +292,7 @@ def verifica_rip(conn, schema):
         inc, plati, n, neclas = cur.fetchone()
     if not n:
         return [_gri(et, temei,
-                     "Registrul de încasări-plăți nu are nicio operațiune validată — nu pot verifica coerența.",
+                     "Registrul de încasări-plăți nu are nicio operațiune validată — nu se poate verifica coerența.",
                      "Importă registrul (Migrare › RIP) sau introdu operațiuni și validează-le, apoi reia auditul.",
                      cauza="Fără operațiuni RIP validate la partidă simplă nu există ce corela.")]
     return constatare_rip(inc, plati, n, neclas)
@@ -355,11 +355,11 @@ def _audit_regim_nedeterminat(e):
     sarite = [d for s, d in _VERIFICAT_DESC if s in toate]
     return {"stare": "gri",
             "constatari": [_gri("regim nedeterminabil",
-                "Auditul aplica straturi diferite dupa regim (SRL partida dubla / PFA partida simpla); fara "
-                "regim nu stiu care se aplica, deci nu pot rula auditul complet.",
-                "Nu am putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %d straturi nerulate." % len(sarite),
+                "Auditul aplică straturi diferite după regim (SRL partidă dublă / PFA partidă simplă); fără "
+                "regim nu se știe care se aplică, deci nu se poate rula auditul complet.",
+                "Nu s-a putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %d straturi nerulate." % len(sarite),
                 "Verifică tipul firmei (SRL/PFA) în Date firmă, apoi reia auditul.",
-                cauza="Nu pot citi tipul firmei din Date firmă (%s)." % e)],
+                cauza="Nu se poate citi tipul firmei din Date firmă (%s)." % e)],
             "coerent": 0, "divergent": 0, "neverificat": 1,
             "limita": ("Audit NErulat: regimul (SRL/PFA) nu s-a putut determina. Straturi nerulate: %s. "
                        "Lipsa lor e vizibilă prin gri, nu tăcută." % ", ".join(sarite)),
@@ -395,7 +395,7 @@ def audit(conn, schema, tenant_id, conn_public):
             constatari += fn(*args)
         except Exception as e:  # izolare: un check picat nu ascunde restul
             constatari.append(_gri(fn.__name__, "Verificarea nu a rulat.",
-                                    f"NU pot rula verificarea ({e}).",
+                                    f"NU se poate rula verificarea ({e}).",
                                     "Reîncearcă; dacă persistă, verifică datele preluate ale firmei.",
                                     cauza="Eroare la verificare."))
     coerent = [c for c in constatari if c["stare"] == "verde"]

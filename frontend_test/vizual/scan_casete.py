@@ -23,7 +23,9 @@ from core import db, auth_api  # noqa: E402
 import psycopg2.extras as _E  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 
-BAZA = "http://127.0.0.1:8010"
+# [10.10.2026] adresa din `PROBA_BAZA`, cu instanța de PROBĂ (8011, baza de test) implicită — ca restul uneltelor. Până azi era
+# fixată pe 8010, adică pe producție: sesiunea se emite din baza de test, deci rularea n-ar fi avut ce vedea acolo.
+BAZA = os.environ.get("PROBA_BAZA", "http://127.0.0.1:8011")
 ARTEFACT = os.path.join(_HERE, "casete_control_fiscal.json")
 UTILIZATOR = "patron@prisma-cont.test"
 
@@ -33,9 +35,10 @@ CITESTE = """() => {
   const out = [];
   for (const t of document.querySelectorAll(".fereastra-corp .cf-grup-titlu")) {
     const txt = norm(t.textContent);
-    const m = txt.match(/^(.*?)\\s*\\((\\d+)\\)$/);
-    // grupul de randuri = urmatorul .cf-decl frate
-    let n = null, el = t.nextElementSibling;
+    // [10.10.2026] și forma „Titlu — perioadă (N, precizare)” a grupului pliat „Înainte de preluare” (control_verdict.js)
+    const m = txt.match(/^(.*?)(?:\\s+—\\s+[^()]*?)?\\s*\\((\\d+)(?:,[^)]*)?\\)$/);
+    // grupul de randuri = urmatorul .cf-decl frate; la un grup pliat (<summary>), .cf-decl din același <details>
+    let n = null, el = t.tagName === "SUMMARY" ? t.parentElement.querySelector(":scope > .cf-decl") : t.nextElementSibling;
     if (el && el.classList.contains("cf-decl")) {
       n = el.querySelectorAll(".cf-decl-item, .cf-incr-rand, .cf-verif").length;
     }
@@ -117,7 +120,7 @@ def main():
             "depuse": d.get("depuse"),
             "lungimi": {k: len(d.get(k) or []) for k in
                         ("lipsa", "urmarit", "neclar", "neaplicabile", "cu_intarziere", "confirmate",
-                         "limite")},
+                         "limite", "inainte_de_preluare")},
             "contabil_total": len(d.get("contabil") or []) if isinstance(d.get("contabil"), list) else None,
             "contabil_etichete": [c.get("eticheta") for c in (d.get("contabil") or [])
                                   if isinstance(c, dict)],

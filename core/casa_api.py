@@ -67,7 +67,7 @@ def adauga(conn, schema, op, linii=None):
         try:
             _dt.date.fromisoformat(str(_d)[:10])
         except ValueError:
-            return {"eroare": "Data operațiunii: %r nu e o dată din calendar. Aștept forma "
+            return {"eroare": "Data operațiunii: %r nu e o dată din calendar. Se așteaptă forma "
                               "AAAA-LL-ZZ, cu o zi care există în luna aia." % (_d,)}
     cat = op.get("categorie")
     if cat not in CONTURI:

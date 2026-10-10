@@ -4,7 +4,7 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
-import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=29ab225927";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=700c9a6bd0";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -13,7 +13,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
   try {
     date = await api.get("/control-fiscal");
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca controlul fiscal.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca controlul fiscal.</p>`;
     return;
   }
   const firme = date.firme || [];
@@ -87,7 +87,7 @@ async function detaliuFirma(corp, nav, firma) {
   try {
     d = await api.get(`/control-fiscal/${firma.tenant_id}`);
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca controlul fiscal. Reîncearcă.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca controlul fiscal. Reîncearcă.</p>`;
     return;
   }
   const col = CULORI[d.stare] || CULORI.gri;

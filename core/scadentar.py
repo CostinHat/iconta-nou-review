@@ -109,7 +109,7 @@ def seteaza_supapa(conn, factura_id, stop=False, amanata_pana=None):
         try:
             _d.date.fromisoformat(str(amanata_pana).strip())
         except ValueError:
-            raise ValueError("data amânării: %r nu e o dată din calendar. Aștept forma "
+            raise ValueError("data amânării: %r nu e o dată din calendar. Se așteaptă forma "
                              "AAAA-LL-ZZ." % (amanata_pana,))
     with conn.cursor() as cur:
         _repo.update_facturi(cur, factura_id, stop, amanata_pana)

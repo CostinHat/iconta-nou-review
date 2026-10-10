@@ -165,7 +165,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă adresa contribuabil (adresa_i).")
     cont = str(manual.get("cont_c") or "").replace(" ", "").upper()
     if cont and not _IBAN_OK.match(cont):
-        er.append("IBAN (cont_c) invalid - aștept RO + 22 caractere.")
+        er.append("IBAN (cont_c) invalid - se așteaptă RO + 22 caractere.")
     sec = manual.get("sectiuni") or []
     if not sec:
         er.append("D200 cere cel puțin o secțiune de venit (secțiuni[]).")

@@ -127,7 +127,7 @@ def extrage(continut, nume_fisier=""):
     i_camo = _gaseste_col(antet, "cont amort", "cont_amort", "amortizare cont")
     i_cd = _gaseste_col(antet, "cercetare", "c&d", "destinat cd", "destinatie cd", "destinatie_cd")   # [lot 19 d11]
     if i_den < 0:
-        raise ValueError("nu găsesc coloana denumire mijloc fix - fișier nerecunoscut")
+        raise ValueError("nu se găsește coloana denumire mijloc fix - fișier nerecunoscut")
 
     out = []
     for idx, r in enumerate(randuri[1:], start=1):

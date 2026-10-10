@@ -107,7 +107,7 @@ def reset_parola_cere(date):
             link = baza + "/#reset=" + token
             nume = (u.get("prenume") or u.get("nume") or "").strip()
             html = ("<p>Buna%s,</p>"
-                    "<p>Am primit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
+                    "<p>A sosit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
                     "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
                     "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
                     "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"

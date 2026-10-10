@@ -1065,7 +1065,7 @@ def _termene_una_firma(f, ctx, azi):
                 # luni se citeste ca fapt permanent.
                 _n = _af.afirmatie(
                     "necunoastere", "obligații fiscale",
-                    "Vector fiscal necompletat — nu pot evalua obligațiile firmei.",
+                    "Vector fiscal necompletat — nu se pot evalua obligațiile firmei.",
                     domeniu_de=azi.isoformat(), domeniu_pana=azi.isoformat())
                 _n["tenant_id"] = tid
                 _n["nume"] = f.get("nume")
@@ -1096,8 +1096,8 @@ def _termene_una_firma(f, ctx, azi):
         # `eroare` sta in obiect pentru diagnostic; pe ecran ramane `cauza`, in limba omului.
         _n = _af.afirmatie(
             "verificare_rupta", "obligații fiscale",
-            "Nu am putut evalua această firmă acum — a apărut o eroare internă. "
-            "Am notat-o; reîncearcă mai târziu sau anunță suportul.",
+            "Nu s-a putut evalua această firmă acum — a apărut o eroare internă. "
+            "A fost notată; reîncearcă mai târziu sau anunță suportul.",
             eroare="%s: %s" % (type(e).__name__, e))
         _n["tenant_id"] = tid
         _n["nume"] = f.get("nume")

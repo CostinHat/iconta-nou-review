@@ -329,6 +329,27 @@ def test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc(patron, firma):
     patron.captura("istoric_facturi_fara_inchidere")
 
 
+def test_def_220_clicul_pe_evidenta_facturilor_nu_se_pierde_cat_se_citesc_controalele(patron, firma):
+    """220. Închidere lună: „Închide evidența facturilor” apare pe ecran, dar un clic dat cât se citesc controalele lunii se pierde.
+    [comanda Costin 10.10.2026 pct.8, verbatim: „Un clic al contabilului nu se pierde nicăieri.”] Butonul se lega după cererile
+    controalelor și ale blocării lunii (`static/js/ecrane/firme.js`, „Închidere lună”). Cursa se face deterministă: cererea
+    controalelor (`/perioade-blocate`) e întârziată 4 s în pagină. Pașii contabilului: Închidere lună -> luna trecută -> apasă
+    „Închide evidența facturilor” imediat ce apare, cât controalele încă se încarcă -> caseta de confirmare apare. MUTAȚIE: legarea
+    mutată înapoi după `await legaBlocareLuna` -> clicul nu face nimic -> pică (gardul de formă: `core/test_legari_await.py`)."""
+    pg = patron.pg
+    _inchidere(patron, firma)
+    pg.evaluate("""() => { const f = window.fetch; window.fetch = (u, o) => String(u).includes('perioade-blocate')
+      ? new Promise((r) => setTimeout(r, 4000)).then(() => f(u, o)) : f(u, o); }""")
+    pg.click("#il-prev")
+    pg.wait_for_selector("#il-fac-inchide", timeout=30000)
+    pg.click("#il-fac-inchide")
+    pg.wait_for_selector("#caseta-atentie-activa", timeout=2500)
+    assert "Închizi evidența facturilor lunii?" in pg.inner_text("#caseta-atentie-activa")
+    assert not pg.inner_text("#il-controale").strip(), "controalele sosiseră deja — clicul nu a fost dat în timpul cererii"
+    patron.captura("confirmare_in_timpul_cererii")
+    pg.click("#ca-nu")
+
+
 def test_def_161_semnal_furnizor_cu_sold_debitor(patron, firma):
     """161. Închidere lună: lipsea semnalul pentru furnizor cu sold debitor.
     Pașii contabilului: în 07/2026 s-a plătit un furnizor (401 = 5121, 500 lei) fără factura lui înregistrată -> Închidere lună pe
@@ -960,11 +981,11 @@ def test_def_159_marcarea_nu_muta_ecranul_de_pe_rand(patron, preluata_07):
 
 def test_def_157_d100_d205_2025_sunt_inainte_de_preluare(patron, preluata_07):
     """157. Control fiscal: D100/D205 2025 la „Nu pot verifica”.
-    Pașii contabilului: firma preluată în 07/2026 -> Control fiscal -> D100 și D205 pe 2025 nu mai sunt la „Nu pot verifica”: stau în
+    Pașii contabilului: firma preluată în 07/2026 -> Control fiscal -> D100 și D205 pe 2025 nu mai sunt la „Nu se poate verifica”: stau în
     grupul „Înainte de preluare în iConta.eu”, fiecare cu perioada lui (T1/2025 … T4/2025, 2025) și termenul."""
     pg = patron.pg
     _control(patron, preluata_07)
-    neclar = pg.evaluate("() => { const t = [...document.querySelectorAll('.cf-grup-titlu')].find((x) => x.textContent.trim().startsWith('Nu pot verifica'));"
+    neclar = pg.evaluate("() => { const t = [...document.querySelectorAll('.cf-grup-titlu')].find((x) => x.textContent.trim().startsWith('Nu se poate verifica'));"
                          " return t ? t.nextElementSibling.innerText : ''; }")
     assert not _re.search(r"D100[\s\S]{0,40}2025|D205[\s\S]{0,40}2025", neclar), neclar
     pg.click("details.cf-inainte > summary")
@@ -1016,7 +1037,7 @@ def test_def_212_inainte_de_preluare_o_explicatie_si_perioadele_impreuna(patron,
     D406 T1/2026, deși sunt aceeași perioadă.
     Pașii: firma preluată în 07/2026 -> Control fiscal -> „Înainte de preluare”: explicația grupului apare o dată, sub titlu; niciun rând
     n-o repetă și niciun rând nu vorbește la persoana întâi („nu pot …”); D100 T1/2026 și T2/2026 (perioade dinaintea preluării)
-    sunt în grupul acesta, nu la „Nu pot verifica”."""
+    sunt în grupul acesta, nu la „Nu se poate verifica”."""
     pg = patron.pg
     _control(patron, preluata_07_fara_activitate)
     pg.click("details.cf-inainte > summary")

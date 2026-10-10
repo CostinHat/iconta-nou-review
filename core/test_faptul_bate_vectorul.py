@@ -98,7 +98,7 @@ def test_documente_in_asteptare_impiedica_afirmarea_absentei():
     """Trei e-Facturi descărcate și neînregistrate pe iulie → nu pot spune «nu s-a datorat pe iulie»."""
     m = d390.evidenta_incompleta(_Conn([("t",), (3,)]), "tenant_x", 2026, 7)
     assert m and "3 e-Facturi" in m and "07.2026" in m, m
-    assert "nu pot confirma" in m
+    assert "nu se poate confirma" in m
 
 
 def test_fara_documente_in_asteptare_poarta_ramane_deschisa():
@@ -122,7 +122,7 @@ def test_semaforul_pune_gri_nu_neaplicabil_cand_evidenta_e_incompleta():
                               d390_fapt=lambda a, l: False,
                               d390_incomplet=lambda a, l: "două documente în așteptare pe %02d" % l)
     tipuri_neclar = [n for n in r["neclar"] if n["tip"] == "d390"]
-    assert tipuri_neclar, "D390 n-a ajuns în «nu pot verifica»: %s" % r["neclar"]
+    assert tipuri_neclar, "D390 n-a ajuns în «nu se poate verifica»: %s" % r["neclar"]
     assert "așteptare" in (tipuri_neclar[0].get("cauza") or tipuri_neclar[0].get("motiv") or "")
     assert not [n for n in r["neaplicabile"] if n["tip"] == "d390"], \
         "a rămas și în «nu se datorează» — cele două nu pot fi amândouă"

@@ -391,18 +391,18 @@ def _motiv_omenesc(e):
     if t == "missing":
         return "lipsește"
     if t.startswith("int_"):
-        return "aștept un număr întreg, am primit %r" % (intrare,)
+        return "se așteaptă un număr întreg, s-a primit %r" % (intrare,)
     if t.startswith("float_") or t.startswith("decimal_"):
-        return "aștept un număr, am primit %r" % (intrare,)
+        return "se așteaptă un număr, s-a primit %r" % (intrare,)
     if t.startswith("bool_"):
-        return "aștept da/nu, am primit %r" % (intrare,)
+        return "se așteaptă da/nu, s-a primit %r" % (intrare,)
     if t.startswith("date_") or t.startswith("datetime_"):
-        return "aștept o dată (AAAA-LL-ZZ), am primit %r" % (intrare,)
+        return "se așteaptă o dată (AAAA-LL-ZZ), s-a primit %r" % (intrare,)
     if t in ("list_type", "dict_type", "model_attributes_type"):
-        return "forma trimisă nu e cea așteptată (am primit %r)" % (intrare,)
+        return "forma trimisă nu e cea așteptată (s-a primit %r)" % (intrare,)
     if t == "string_type":
-        return "aștept text, am primit %r" % (intrare,)
-    return "%s (am primit %r)" % (e.get("msg", "valoare invalidă"), intrare)
+        return "se așteaptă text, s-a primit %r" % (intrare,)
+    return "%s (s-a primit %r)" % (e.get("msg", "valoare invalidă"), intrare)
 
 
 @app.exception_handler(_RVE)
@@ -1771,7 +1771,7 @@ def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drept
         raise HTTPException(400, f"fișier ilizibil: {e}")
     if not cui_uri:
         # [lotul 6] „0 rezultate" arata identic cu „fisierul n-a fost citit".
-        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun cod fiscal. "
+        raise HTTPException(422, "Din fișierul %s nu s-a putut citi niciun cod fiscal. "
                                  "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
                                  "— un fișier necitit nu e un fișier gol."
                                  % (fisier.filename or "trimis",))
@@ -1792,7 +1792,7 @@ def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drep
         raise HTTPException(400, str(e))
     if not cui_uri:
         # [lotul 6] idem — aceeasi clasa, a doua cale.
-        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun cod fiscal. "
+        raise HTTPException(422, "Din fișierul %s nu s-a putut citi niciun cod fiscal. "
                                  "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
                                  "— un fișier necitit nu e un fișier gol."
                                  % (fisier.filename or "trimis",))
@@ -2604,7 +2604,7 @@ def util_zile_lucratoare(start: str, end: str, ctx=Depends(cere_context)):
         _s, _e = _d.fromisoformat(start), _d.fromisoformat(end)
     except ValueError:
         raise HTTPException(422, "Datele de început și de sfârșit se scriu ca AAAA-LL-ZZ, cu zile "
-                                 "care există în calendar — am primit %r și %r." % (start, end))
+                                 "care există în calendar — s-a primit %r și %r." % (start, end))
     # [lotul 7] Un interval INVERSAT intorcea `{"zile": 0}` — o cifra, adica un raspuns. Iar cifra
     # asta intra in calculul indemnizatiei de concediu medical (auto-calcul CM, OUG 158/2005
     # art.10): „0 zile lucratoare" si „intervalul e scris invers" nu sunt acelasi lucru.

@@ -146,7 +146,7 @@ def _erori_beneficiar(b, idx):
     # DUK regula R33.1: rezident RO (fara stat_resedinta_B) -> cif_B = CNP 13 cifre
     if not stat_res:
         if not _cnp_valid(b.get("cif_B")):
-            er.append("%s CNP (cif_B) invalid pentru rezident RO - aștept 13 cifre cu cifra de control (R33.1)." % p)
+            er.append("%s CNP (cif_B) invalid pentru rezident RO - se așteaptă 13 cifre cu cifra de control (R33.1)." % p)
     else:
         # DUK regula stat_resedinta_B: trebuie diferit de RO
         if stat_res == "RO":
@@ -154,7 +154,7 @@ def _erori_beneficiar(b, idx):
         if not str(b.get("cif_B") or "").strip():
             er.append("%s lipsă cod de identificare fiscala (cif_B)." % p)
     if not _data(b.get("data_nasterii_B")):
-        er.append("%s data nasterii (data_nasterii_B) invalidă - aștept zz.ll.aaaa." % p)
+        er.append("%s data nasterii (data_nasterii_B) invalidă - se așteaptă zz.ll.aaaa." % p)
     if not str(b.get("actId_B") or "").strip():
         er.append("%s lipsă serie și număr act de identitate (actId_B)." % p)
     if not str(b.get("adresa_B") or "").strip():
@@ -176,7 +176,7 @@ def erori_generare(prof, manual):
     if not str(manual.get("den_E") or "").strip():
         er.append("Lipsă denumire entitate raportoare (den_E).")
     if not (2 <= len(_cif(manual.get("cif"))) <= 10):
-        er.append("CIF entitate raportoare (cif) invalid - aștept 2-10 cifre.")
+        er.append("CIF entitate raportoare (cif) invalid - se așteaptă 2-10 cifre.")
     if not _judet(manual.get("judet_E")):
         er.append("Lipsă județ entitate (judet_E) - cod numeric de județ.")
     if _judet(manual.get("judet_E")) == _JUDET_BUCURESTI and not str(manual.get("sector_E") or "").strip():
@@ -199,7 +199,7 @@ def erori_generare(prof, manual):
     if not str(manual.get("den_F") or "").strip():
         er.append("Lipsă denumire fiduciar (den_F).")
     if not (2 <= len(_cif(manual.get("cif_F"))) <= 10):
-        er.append("CIF fiduciar (cif_F) invalid - aștept 2-10 cifre.")
+        er.append("CIF fiduciar (cif_F) invalid - se așteaptă 2-10 cifre.")
     if not _judet(manual.get("judet_F")):
         er.append("Lipsă județ fiduciar (judet_F) - cod numeric de județ.")
     if _judet(manual.get("judet_F")) == _JUDET_BUCURESTI and not str(manual.get("sector_F") or "").strip():
@@ -212,7 +212,7 @@ def erori_generare(prof, manual):
     if not str(manual.get("nr_contract") or "").strip():
         er.append("Lipsă numărul contractului de fiducie (nr_contract).")
     if not _data(manual.get("data_contract")):
-        er.append("Data contractului de fiducie (data_contract) invalidă - aștept zz.ll.aaaa.")
+        er.append("Data contractului de fiducie (data_contract) invalidă - se așteaptă zz.ll.aaaa.")
     # D. beneficiari reali
     benef = manual.get("beneficiari") or []
     if not benef:

@@ -17,7 +17,7 @@ async function randeaza(corp, nav) {
     const r = await api.get("/admin/activitate/cabinete");
     cabinete = (r && r.cabinete) || [];
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca activitatea.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea.</p>`;
     return;
   }
   if (!cabinete.length) {
@@ -115,7 +115,7 @@ async function deschideTimeline(corp, cabinet) {
     const r = await api.get(`/admin/activitate/cabinet/${cabinet.id}`);
     activitate = (r && r.activitate) || [];
   } catch (e) {
-    zona.innerHTML = `<div class="ecran-nota">Nu am putut încărca istoricul cabinetului. Reîncearcă.</div>`;
+    zona.innerHTML = `<div class="ecran-nota">Nu s-a putut încărca istoricul cabinetului. Reîncearcă.</div>`;
     return;
   }
   if (!activitate.length) {

@@ -46,11 +46,11 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
 import { api, arataMesaj } from "./api.js?v=2561dbfd34";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=12aa9d3248";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=8602824f26";
-import { creeazaNavigator } from "./navigator.js?v=ae9a14d427";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=69a37a2757";
+import { ecranLogin } from "./ecrane/login.js?v=f09f7a3d4e";
+import { creeazaNavigator } from "./navigator.js?v=cf99012ad3";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=9b882f770b";
 import { desktopAsistent } from "./ecrane/asistent.js?v=79f0a6ed1a";
-import { desktopPortal } from "./ecrane/portal.js?v=c960a5963f";
+import { desktopPortal } from "./ecrane/portal.js?v=385b370f93";
 import { desktopAdmin } from "./ecrane/admin.js?v=8d78001a23"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
@@ -142,7 +142,7 @@ async function randeaza() {
         sesiune.intra(d.token, d.user);
         location.reload();
       })
-      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut finaliza logarea prin link (probabil o problemă de rețea). Reîncearcă, sau intră cu emailul și parola."); });
+      .catch(() => { randeaza(); _bannerLoginEroare("Nu s-a putut finaliza logarea prin link (probabil o problemă de rețea). Reîncearcă, sau intră cu emailul și parola."); });
     return;
   }
   /* [R62, 26.08.2026] Confirmarea schimbarii de adresa. Ruta si gardul ei existau de ieri;
@@ -158,11 +158,11 @@ async function randeaza() {
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
         randeaza();
-        if (!ok) { _bannerLoginEroare(d.detail || "Nu am putut confirma adresa."); return; }
+        if (!ok) { _bannerLoginEroare(d.detail || "Nu s-a putut confirma adresa."); return; }
         _bannerLoginBine("Adresa a fost schimbată în <b>" + (d.email || "adresa nouă")
           + "</b>. De acum intri în portal cu ea.");
       })
-      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut confirma adresa (probabil o problemă de rețea). Deschide din nou linkul din email."); });
+      .catch(() => { randeaza(); _bannerLoginEroare("Nu s-a putut confirma adresa (probabil o problemă de rețea). Deschide din nou linkul din email."); });
     return;
   }
   const _hp = new URLSearchParams(location.hash.slice(1));  /* [F-preview] #acces=<token>&u=<json user> */

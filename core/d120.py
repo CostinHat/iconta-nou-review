@@ -123,7 +123,7 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not (2 <= len(_cif(manual.get("cif"))) <= 10):
-        er.append("CIF firma (cif) invalid - aștept 2..10 cifre.")
+        er.append("CIF firma (cif) invalid - se așteaptă 2..10 cifre.")
     if not str(manual.get("den") or "").strip():
         er.append("Lipsă denumire contribuabil (den).")
     if not str(manual.get("adresa") or "").strip():

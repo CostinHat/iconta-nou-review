@@ -410,7 +410,7 @@ export function ecranLogin(radacina) {
         sesiune.intra(r.token, r.user);
       } catch (e) {
         b.disabled = false;
-        arataMesaj(modal.querySelector("#cc-msg"), e.mesaj || "Nu am putut intra \u00een cont. \u00cencearc\u0103 autentificarea.", "eroare");
+        arataMesaj(modal.querySelector("#cc-msg"), e.mesaj || "Nu s-a putut intra \u00een cont. \u00cencearc\u0103 autentificarea.", "eroare");
       }
     });
   }
@@ -491,7 +491,7 @@ export function ecranLogin(radacina) {
           }
         }
       } catch {
-        cuiInfo.textContent = "Nu am putut verifica automat la ANAF acum. Poți continua, completează datele manual mai jos.";
+        cuiInfo.textContent = "Nu s-a putut verifica automat la ANAF acum. Poți continua, completează datele manual mai jos.";
         cuiInfo.style.color = "#616161";
       }
       cuiBtn.disabled = false;
@@ -555,7 +555,7 @@ export function ecranLogin(radacina) {
         });
         sesiune.intra(r.token, r.user);
       } catch (e) {
-        arataEroare(e.mesaj || "Nu am putut crea contul.");
+        arataEroare(e.mesaj || "Nu s-a putut crea contul.");
         buton.disabled = false;
         buton.textContent = "Creează cont";
       }

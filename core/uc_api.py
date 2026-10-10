@@ -101,6 +101,7 @@ def apiv1_factura_emite(tenant_id, corp, actx):
             "camp": "marfa_pleaca_cu_factura",
             "valori": {"true": "marfa pleacă acum — se descarcă gestiunea în aceeași tranzacție",
                        "false": "marfa nu pleacă acum — factura e doar fiscală, stocul rămâne"}})
+    _ai = _uc_comun._intreaba_modelul(schema, _linii)   # [R193] modelul, înaintea tranzacției de emitere
     with db.get_conn(schema) as conn:
         # [lot 2, 03.09.2026] Ruta din ecran traducea de mult `ValueError` in `422`; asta nu —
         # deci `linii=[]` sau un cod de partener lipsa ieseau catre integrator ca
@@ -124,6 +125,7 @@ def apiv1_factura_emite(tenant_id, corp, actx):
                 # atare. Un `integer` de utilizator ar fi trebuit sa inventeze unul.
                 curs_manual_de="cheie API a cabinetului %s" % actx["firm"],
                 tip=_tip,
+                raspunsuri_ai=_ai,
             )
         except facturi_api.LiniiIncomplete as e:
             raise _erori.DateInvalide({"cod": "LINII_INCOMPLETE",

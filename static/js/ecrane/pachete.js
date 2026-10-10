@@ -27,7 +27,7 @@ export async function randeazaPachete(corp, nav) {
     const inLucru = nav && nav.firmaInLucruId ? nav.firmaInLucruId() : null;
     if (inLucru && S.firme.some((fr) => fr.id === inLucru)) S.tenant_id = inLucru;
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca firmele.</p>`;
     return;
   }
   pasAlegere(corp, nav);
@@ -87,9 +87,9 @@ async function pasLucru(corp, nav) {
     else { S.text = ""; S.status = null; }
   } catch (e) {
     // [R156, 05.09.2026] Serverul refuza precis (`an invalid: -99999999 (aștept 1990-2100)`,
-    // din `_cere_perioada`), iar ecranul il inlocuia cu „Nu am putut încărca datele.” — adica
-    // spunea „n-am putut” despre ceva ce aplicatia STIA. `api.js` pune mesajul in `e.mesaj`.
-    corp.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Nu am putut încărca datele.")}</p>
+    // din `_cere_perioada`), iar ecranul il inlocuia cu „Nu s-au putut încărca datele.” — adica
+    // spunea „nu s-a putut” despre ceva ce aplicatia STIA. `api.js` pune mesajul in `e.mesaj`.
+    corp.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Nu s-au putut încărca datele.")}</p>
       `;
     return;
   }
@@ -200,7 +200,7 @@ function deschideModal(corp, nav) {
         // [deficiențele 32 + 33, retestul Costin 09.10] propozițiile fără sursă în pachet (laude, afirmații despre declarații) au fost
         // scoase din text înainte de editor — ecranul spune care, ca omul să știe ce n-a ajuns
         const scoase = (r.scoase && r.scoase.length)
-          ? "Am scos din textul generat " + r.scoase.length + (r.scoase.length === 1 ? " propoziție" : " propoziții")
+          ? "Din textul generat " + (r.scoase.length === 1 ? "s-a scos o propoziție" : "s-au scos " + r.scoase.length + " propoziții")
             + " fără sursă în pachet: " + r.scoase.map((x) => "„" + x + "”").join(" ") + " "
           : "";
         arataMesaj(abateriEl, scoase + ((r.abateri && r.abateri.length)
@@ -208,7 +208,7 @@ function deschideModal(corp, nav) {
           : ""), "avert");
       }
       else if (r && r.cod === "AI_INDISPONIBIL") { arataMesaj(stareEl, "AI indisponibil (cheie lipsă). Scrie manual.", "eroare"); }
-      else { arataMesaj(stareEl, "Nu am putut genera. " + ((r && r.mesaj) || ""), "eroare"); }
+      else { arataMesaj(stareEl, "Nu s-a putut genera. " + ((r && r.mesaj) || ""), "eroare"); }
     } catch { arataMesaj(stareEl, "Eroare la generare.", "eroare"); }
     btn.disabled = false; btn.textContent = "✨ Generează cu AI";
   });
@@ -225,7 +225,7 @@ function deschideModal(corp, nav) {
         const r = await api.get(`/pachete/${S.tenant_id}/preview?an=${S.an}&luna=${S.luna}&text=${encodeURIComponent(ta.value)}`);
         preview.innerHTML = (r && r.html) || "";
       } catch (e) {
-        preview.innerHTML = `<div class="pacm-mail">${esc((e && e.mesaj) || "Nu am putut încărca previzualizarea.")}</div>`;
+        preview.innerHTML = `<div class="pacm-mail">${esc((e && e.mesaj) || "Nu s-a putut încărca previzualizarea.")}</div>`;
       }
     } else {
       editor.style.display = "block"; preview.style.display = "none";
@@ -251,7 +251,7 @@ function deschideModal(corp, nav) {
       if (r && r.ok) { arataMesaj(stareEl, "Trimis la " + r.email + " ✓", "ok"); }
     } catch (e) {
       // api.js impacheteaza HTTPException(400, detail) in e.mesaj (via _mesajEroare); nu exista e.detail.
-      arataMesaj(stareEl, (e && e.mesaj) || "Nu am putut trimite. Verifică emailul firmei și aprobarea.", "eroare");
+      arataMesaj(stareEl, (e && e.mesaj) || "Nu s-a putut trimite. Verifică emailul firmei și aprobarea.", "eroare");
     }
     btnTrimite.disabled = false; btnTrimite.textContent = "Trimite";
   });
@@ -272,9 +272,9 @@ async function _salveaza(text, status, stareEl, cerere) {  // audit_cab_lot1_v1 
   try {
     const r = await cerere(text);
     if (r && r.ok) { S.status = status; S.text = text; return true; }
-    if (stareEl) arataMesaj(stareEl, (r && r.mesaj) || "Nu am putut salva.", "eroare");
+    if (stareEl) arataMesaj(stareEl, (r && r.mesaj) || "Nu s-a putut salva.", "eroare");
     return false;
-  } catch (e) { if (stareEl) arataMesaj(stareEl, (e && e.mesaj) || "Nu am putut salva.", "eroare"); return false; }
+  } catch (e) { if (stareEl) arataMesaj(stareEl, (e && e.mesaj) || "Nu s-a putut salva.", "eroare"); return false; }
 }
 
 // audit_cab_lot1_v1

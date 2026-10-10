@@ -62,7 +62,7 @@ def extrage(continut, nume_fisier=""):
     i_cont = _gaseste_col(antet, "cont stoc", "cont_stoc")
     i_ch = _gaseste_col(antet, "cont cheltuiala", "cont_cheltuiala")
     if i_den < 0:
-        raise ValueError("nu găsesc coloana cu denumirea articolului")
+        raise ValueError("nu se găsește coloana cu denumirea articolului")
     rez = []
     for r in randuri[1:]:
         den = str(r[i_den] if i_den < len(r) else "").strip()

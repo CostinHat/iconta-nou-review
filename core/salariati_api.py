@@ -147,7 +147,7 @@ def valideaza_salariat(date, la_creare=False):
     iban = date.get("iban")
     if iban is not None and str(iban).strip():
         if not iban_valid(iban):
-            erori.append(("iban", "IBAN invalid (aștept IBAN românesc: RO + 22 caractere, cifra de control corectă)."))
+            erori.append(("iban", "IBAN invalid (se așteaptă IBAN românesc: RO + 22 caractere, cifra de control corectă)."))
     # data_incetare (optional) >= data_angajare - contract activ o perioada coerenta (backstop: CHECK in DB)
     di, da = date.get("data_incetare"), date.get("data_angajare")
     if di is not None and str(di).strip() and da is not None and str(da).strip():
@@ -592,7 +592,7 @@ def salveaza_concediu(conn, salariat_id, date):
         try:
             _dati[_camp] = _dtmod.date.fromisoformat(str(_v)[:10])
         except ValueError:
-            raise ValueError("%s: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ, cu o zi "
+            raise ValueError("%s: %r nu e o dată din calendar. Se așteaptă forma AAAA-LL-ZZ, cu o zi "
                              "care există în luna aia." % (_camp.replace("_", " "), _v))
     if ("data_inceput" in _dati and "data_sfarsit" in _dati
             and _dati["data_sfarsit"] < _dati["data_inceput"]):
@@ -678,7 +678,7 @@ def salveaza_concediu(conn, salariat_id, date):
                 _fn = _fr[0]
             _ll = ", ".join(sorted(_blocate))
             raise ValueError(
-                "Nu pot adăuga certificatul de continuare: recalculul episodului ar modifica certificate din "
+                "Nu se poate adăuga certificatul de continuare: recalculul episodului ar modifica certificate din "
                 "perioade deja confirmate la %s (luna %s). Indemnizația se calculează pe episodul întreg "
                 "(OUG 158/2005 art.17(1)): cu acest certificat episodul are %d zile, deci procentul certificatelor "
                 "anterioare crește de la 55%%/65%% la 75%% (+%s lei). Deschide perioada %s (anulează confirmarea D112) sau "

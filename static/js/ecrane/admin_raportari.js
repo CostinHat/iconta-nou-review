@@ -87,7 +87,7 @@ async function incarcaLista(corp, nav) {
     const date = await api.get("/raportari/admin");
     _toate = Array.isArray(date) ? date : (date.raportari || []);
   } catch {
-    corp.querySelector("#rap-lista").innerHTML = `<p class="ecran-nota">Nu am putut încărca sesizările.</p>`;
+    corp.querySelector("#rap-lista").innerHTML = `<p class="ecran-nota">Nu s-au putut încărca sesizările.</p>`;
     return;
   }
   randeazaLista(corp, nav);
@@ -149,7 +149,7 @@ async function deschideSesizare(corp, nav, id) {
   try {
     d = await api.get(`/raportari/${id}`);
   } catch {
-    fir.innerHTML = `<p class="ecran-nota">Nu am putut încărca sesizarea.</p>`;
+    fir.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca sesizarea.</p>`;
     return;
   }
   const cap = d.raportare || d;
@@ -194,7 +194,7 @@ async function deschideSesizare(corp, nav, id) {
   if (bInc) bInc.addEventListener("click", async () => {
     bInc.disabled = true;
     try { await api.post(`/raportari/${id}/stare`, { stare: "inchisa" }); await incarcaLista(corp, nav); fir.innerHTML = `<div class="rap-gol">Sesizare \u00eenchis\u0103.</div>`; }
-    catch { bInc.disabled = false; bInc.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu am putut închide sesizarea. Reîncearcă.</span>'); }
+    catch { bInc.disabled = false; bInc.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu s-a putut închide sesizarea. Reîncearcă.</span>'); }
   });
 }
 
@@ -250,7 +250,7 @@ async function trimiteRaspuns(corp, nav, id, fir) {
   } catch {
     btn.disabled = false; btn.textContent = "Trimite";
     btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-    btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut trimite răspunsul.</span>');
+    btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu s-a putut trimite răspunsul.</span>');
     return;
   }
   await incarcaLista(corp, nav);
@@ -262,7 +262,7 @@ async function mutaSesizare(corp, nav, id, valoare) {
     await api.post(`/raportari/${id}/pentru-admin`, { valoare });
   } catch {
     corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-    corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Nu am putut muta sesizarea.</p>');
+    corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Nu s-a putut muta sesizarea.</p>');
     return;
   }
   _activ = null;

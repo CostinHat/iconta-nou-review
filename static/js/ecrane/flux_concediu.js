@@ -38,7 +38,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     try {
       const r = await api.get(`/tenants/${t.id}/salariati/${sal.id}/concedii`);
       lista = (r && r.concedii) || [];
-    } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca concediile medicale.</p>`; return; }
+    } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca concediile medicale.</p>`; return; }
 
     const randuriLista = !lista.length
       ? `<div class="stare-goala">Niciun concediu medical \u00eenregistrat.</div>`
@@ -224,7 +224,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         if (dupaSalvare) dupaSalvare();
       } catch (e) {
         btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";
-        rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "Nu am putut salva concediul.")}</span>`;
+        rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "Nu s-a putut salva concediul.")}</span>`;
       }
     });
   }

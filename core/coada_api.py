@@ -814,7 +814,7 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
                     "mesaj": "element de coadă negăsit (sau alt cabinet)"}
         if not poate_tranzitiona(st, "aproba"):
             return {"ok": False, "cod": "STARE_GRESITA",
-                    "mesaj": "nu pot aproba din starea '%s'" % st}
+                    "mesaj": "nu se poate aproba din starea '%s'" % st}
         # [patch_coada_user_id] patru-ochi pe ID (fallback pe text)
         _vinovat = (
             (creat_de_id is not None and aprobat_de_id is not None
@@ -922,7 +922,7 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_a
                     "mesaj": "element de coadă negăsit (sau alt cabinet)"}
         if not poate_tranzitiona(st, "respinge"):
             return {"ok": False, "cod": "STARE_GRESITA",
-                    "mesaj": "nu pot respinge din starea '%s'" % st}
+                    "mesaj": "nu se poate respinge din starea '%s'" % st}
         membri = membri_grup(cur, coada_id) or []
         ids = [m[0] for m in membri] or [coada_id]   # [lotul 07.10 pct.9] tot documentul
         note_ids = [int((p or {}).get("inregistrare_id") or 0) for _i, p in membri if (p or {}).get("inregistrare_id")]
@@ -996,7 +996,7 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
             return {"ok": False, "cod": "STARE_GRESITA", "mesaj": "o notă contabilă nu se depune; se validează"}
         if not poate_tranzitiona(r["stare"], "depune"):
             return {"ok": False, "cod": "STARE_GRESITA",
-                    "mesaj": "nu pot depune din starea '%s'" % r["stare"]}
+                    "mesaj": "nu se poate depune din starea '%s'" % r["stare"]}
         # [R41] Depunerea e tranzitia IREVERSIBILA - `depusa` n-are nicio iesire in TRANZITII.
         # Poarta e cu atat mai necesara aici: dupa ea nu se mai poate reveni prin nicio ruta.
         refuz = _poarta_verdict(conn, coada_id, "depune", motiv_trecere, depus_de_id)

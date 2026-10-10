@@ -1,0 +1,1599 @@
+{
+ "F1 Comert Stoc SRL (tenant_049)": {
+  "D112": {
+   "09/2026": {
+    "amprenta": "df6aec14d8d1c2e100f2eb34b429908f44ceff512b9c7a1d9bf1cb5c62271ca5",
+    "angajatorB": [
+     {
+      "B_brutSalarii": "13900",
+      "B_cnp": "3",
+      "B_pensie": "3",
+      "B_sal": "3",
+      "B_sanatate": "3"
+     }
+    ],
+    "asigurati": 3,
+    "obligatii (angajatorA)": [
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "602",
+      "A_datorat": "688",
+      "A_deductibil": "0",
+      "A_plata": "688",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "412",
+      "A_datorat": "3475",
+      "A_deductibil": "0",
+      "A_plata": "3475",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "432",
+      "A_datorat": "1390",
+      "A_deductibil": "0",
+      "A_plata": "1390",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "20470300XX",
+      "A_codOblig": "480",
+      "A_datorat": "313",
+      "A_deductibil": "0",
+      "A_plata": "313",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "458",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "459",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     }
+    ]
+   }
+  },
+  "D300": {
+   "09/2026": {
+    "amprenta": "8fe63bc401e39205ff6ae84b4606be619095430ec194237bcd54ad5a11f12cca",
+    "randuri": {
+     "R17_1 (rândul 19, coloana Valoare)": "1000",
+     "R17_2 (rândul 19, coloana TVA)": "210",
+     "R22_1 (rândul 24, coloana Valoare)": "1000",
+     "R22_2 (rândul 24, coloana TVA)": "210",
+     "R27_1 (rândul 30, coloana Valoare)": "1000",
+     "R27_2 (rândul 30, coloana TVA)": "210",
+     "R28_2 (rândul 31, coloana TVA)": "210",
+     "R32_2 (rândul 35, coloana TVA)": "210",
+     "R9_1 (rândul 9, coloana Valoare)": "1000",
+     "R9_2 (rândul 9, coloana TVA)": "210"
+    }
+   },
+   "10/2026": {
+    "amprenta": "acc524e7e3b9bf7699f9a1f363dfb0ae0926ac8220f25d432c56fe1585bd0516",
+    "randuri": {
+     "R10_1 (rândul 10, coloana Valoare)": "800",
+     "R10_2 (rândul 10, coloana TVA)": "88",
+     "R17_1 (rândul 19, coloana Valoare)": "6000",
+     "R17_2 (rândul 19, coloana TVA)": "1180",
+     "R34_2 (rândul 37, coloana TVA)": "1180",
+     "R37_2 (rândul 40, coloana TVA)": "1180",
+     "R41_2 (rândul 44, coloana TVA)": "1180",
+     "R9_1 (rândul 9, coloana Valoare)": "5200",
+     "R9_2 (rândul 9, coloana TVA)": "1092"
+    }
+   }
+  },
+  "D394": {
+   "09/2026": {
+    "amprenta": "d4748ad985fecc0fcd2a21ac983effb4f9aba9555c9f40a58b5c6296b6d21b51",
+    "antet": {
+     "op_efectuate": "1",
+     "sistemTVA": "0",
+     "tip_D394": "L",
+     "totalPlata_A": "2002"
+    },
+    "rezumat1": [
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"1000\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"1000\" facturiA=\"1\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"210\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"210\"/"
+    ],
+    "rezumat2": [
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"1000\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"1000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"210\" tvaAI=\"0\" tvaL=\"210\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+    ]
+   },
+   "10/2026": {
+    "amprenta": "87ea98f8cedfeebf543f0377bbb63f0e8dc1f7fd4e64124ebd98368452da6db5",
+    "antet": {
+     "op_efectuate": "1",
+     "sistemTVA": "0",
+     "tip_D394": "L",
+     "totalPlata_A": "6001"
+    },
+    "rezumat1": [
+     " tip_partener=\"1\" cota=\"11\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5200\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1092\"/"
+    ],
+    "rezumat2": [
+     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5200\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1092\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+    ]
+   }
+  },
+  "D406": {
+   "09/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "6",
+     "TotalCredit": "25106.00",
+     "TotalDebit": "25106.00"
+    },
+    "amprenta": "bec0082b00c65d6151ae118ba59932ffb4fe154f50e8d224f184c1e84ca54c07",
+    "facturi_emise": 1,
+    "facturi_primite": 1,
+    "jurnale": [
+     "BANCA",
+     "FACTURI",
+     "SALARII",
+     "STOCURI"
+    ]
+   },
+   "10/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "13",
+     "TotalCredit": "15966.50",
+     "TotalDebit": "15966.50"
+    },
+    "amprenta": "120a0ae039f60a554527b6850843695d170efaa708011a9f9379fba559c49183",
+    "facturi_emise": 2,
+    "facturi_primite": 0,
+    "jurnale": [
+     "BANCA",
+     "CASA",
+     "FACTURI",
+     "STOCURI"
+    ]
+   }
+  },
+  "balanta": {
+   "09/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 13800.0,
+     "sf_d": 0.0,
+     "si_c": 13800.0,
+     "si_d": 0.0,
+     "tot_c": 13800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 500.0,
+     "rul_d": 1000.0,
+     "sf_c": 0.0,
+     "sf_d": 5500.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 500.0,
+     "tot_d": 6000.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1210.0,
+     "rul_d": 1210.0,
+     "sf_c": 3000.0,
+     "sf_d": 0.0,
+     "si_c": 3000.0,
+     "si_d": 0.0,
+     "tot_c": 4210.0,
+     "tot_d": 1210.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1210.0,
+     "rul_d": 1210.0,
+     "sf_c": 0.0,
+     "sf_d": 2000.0,
+     "si_c": 0.0,
+     "si_d": 2000.0,
+     "tot_c": 1210.0,
+     "tot_d": 3210.0
+    },
+    {
+     "cont": "421",
+     "denumire": "Personal - salarii datorate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 13900.0,
+     "rul_d": 5553.0,
+     "sf_c": 8347.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 13900.0,
+     "tot_d": 5553.0
+    },
+    {
+     "cont": "4315",
+     "denumire": "Contribuția de asigurări sociale",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 3475.0,
+     "rul_d": 0.0,
+     "sf_c": 3475.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 3475.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4316",
+     "denumire": "Contribuția de asigurări sociale de sănătate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1390.0,
+     "rul_d": 0.0,
+     "sf_c": 1390.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1390.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "436",
+     "denumire": "Contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 313.0,
+     "rul_d": 0.0,
+     "sf_c": 313.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 313.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4426",
+     "denumire": "TVA deductibilă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 210.0,
+     "sf_c": 0.0,
+     "sf_d": 210.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 210.0
+    },
+    {
+     "cont": "4427",
+     "denumire": "TVA colectată",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 210.0,
+     "rul_d": 0.0,
+     "sf_c": 210.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 210.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "444",
+     "denumire": "Impozitul pe venituri de natura salariilor",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 688.0,
+     "rul_d": 0.0,
+     "sf_c": 688.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 688.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1210.0,
+     "rul_d": 1210.0,
+     "sf_c": 0.0,
+     "sf_d": 10000.0,
+     "si_c": 0.0,
+     "si_d": 10000.0,
+     "tot_c": 1210.0,
+     "tot_d": 11210.0
+    },
+    {
+     "cont": "607",
+     "denumire": "Cheltuieli privind mărfurile",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 500.0,
+     "sf_c": 0.0,
+     "sf_d": 500.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 500.0
+    },
+    {
+     "cont": "641",
+     "denumire": "Cheltuieli cu salariile personalului",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 13900.0,
+     "sf_c": 0.0,
+     "sf_d": 13900.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 13900.0
+    },
+    {
+     "cont": "646",
+     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 313.0,
+     "sf_c": 0.0,
+     "sf_d": 313.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 313.0
+    },
+    {
+     "cont": "707",
+     "denumire": "Venituri din vânzarea mărfurilor",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1000.0,
+     "rul_d": 0.0,
+     "sf_c": 1000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1000.0,
+     "tot_d": 0.0
+    }
+   ],
+   "10/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 13800.0,
+     "sf_d": 0.0,
+     "si_c": 13800.0,
+     "si_d": 0.0,
+     "tot_c": 13800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 500.0,
+     "prec_d": 1000.0,
+     "rul_c": 200.0,
+     "rul_d": 1150.0,
+     "sf_c": 0.0,
+     "sf_d": 6450.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 700.0,
+     "tot_d": 7150.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 1210.0,
+     "prec_d": 1210.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 3000.0,
+     "sf_d": 0.0,
+     "si_c": 3000.0,
+     "si_d": 0.0,
+     "tot_c": 4210.0,
+     "tot_d": 1210.0
+    },
+    {
+     "cont": "408",
+     "denumire": "Furnizori - facturi nesosite",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1391.5,
+     "rul_d": 0.0,
+     "sf_c": 1391.5,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1391.5,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 1210.0,
+     "prec_d": 1210.0,
+     "rul_c": 7180.0,
+     "rul_d": 7180.0,
+     "sf_c": 0.0,
+     "sf_d": 2000.0,
+     "si_c": 0.0,
+     "si_d": 2000.0,
+     "tot_c": 8390.0,
+     "tot_d": 10390.0
+    },
+    {
+     "cont": "421",
+     "denumire": "Personal - salarii datorate",
+     "prec_c": 13900.0,
+     "prec_d": 5553.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 8347.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 13900.0,
+     "tot_d": 5553.0
+    },
+    {
+     "cont": "4315",
+     "denumire": "Contribuția de asigurări sociale",
+     "prec_c": 3475.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 3475.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 3475.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4316",
+     "denumire": "Contribuția de asigurări sociale de sănătate",
+     "prec_c": 1390.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 1390.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1390.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "436",
+     "denumire": "Contribuția asiguratorie pentru muncă",
+     "prec_c": 313.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 313.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 313.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4426",
+     "denumire": "TVA deductibilă",
+     "prec_c": 0.0,
+     "prec_d": 210.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 210.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 210.0
+    },
+    {
+     "cont": "4427",
+     "denumire": "TVA colectată",
+     "prec_c": 210.0,
+     "prec_d": 0.0,
+     "rul_c": 1180.0,
+     "rul_d": 0.0,
+     "sf_c": 1390.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1390.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4428.01",
+     "denumire": "TVA neexigibilă — achiziții fără factură (NIR)",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 241.5,
+     "sf_c": 0.0,
+     "sf_d": 241.5,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 241.5
+    },
+    {
+     "cont": "444",
+     "denumire": "Impozitul pe venituri de natura salariilor",
+     "prec_c": 688.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 688.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 688.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 1210.0,
+     "prec_d": 1210.0,
+     "rul_c": 15.0,
+     "rul_d": 6938.0,
+     "sf_c": 0.0,
+     "sf_d": 16923.0,
+     "si_c": 0.0,
+     "si_d": 10000.0,
+     "tot_c": 1225.0,
+     "tot_d": 18148.0
+    },
+    {
+     "cont": "5311",
+     "denumire": "Casa în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 242.0,
+     "sf_c": 0.0,
+     "sf_d": 242.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 242.0
+    },
+    {
+     "cont": "607",
+     "denumire": "Cheltuieli privind mărfurile",
+     "prec_c": 0.0,
+     "prec_d": 500.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 700.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 700.0
+    },
+    {
+     "cont": "627",
+     "denumire": "Cheltuieli cu serviciile bancare și asimilate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 15.0,
+     "sf_c": 0.0,
+     "sf_d": 15.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 15.0
+    },
+    {
+     "cont": "641",
+     "denumire": "Cheltuieli cu salariile personalului",
+     "prec_c": 0.0,
+     "prec_d": 13900.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 13900.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 13900.0
+    },
+    {
+     "cont": "646",
+     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 313.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 313.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 313.0
+    },
+    {
+     "cont": "707",
+     "denumire": "Venituri din vânzarea mărfurilor",
+     "prec_c": 1000.0,
+     "prec_d": 0.0,
+     "rul_c": 6000.0,
+     "rul_d": 0.0,
+     "sf_c": 7000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 7000.0,
+     "tot_d": 0.0
+    }
+   ]
+  },
+  "luni": [
+   "09/2026",
+   "10/2026"
+  ]
+ },
+ "F2 Profit Amortizare SRL (tenant_050)": {
+  "D112": {},
+  "D300": {
+   "T3/2026": {
+    "amprenta": "8f5d7958957ee0d6bafd233eaa21de440331d65011dbd700ebefb57a7f960826",
+    "randuri": {
+     "R17_1 (rândul 19, coloana Valoare)": "5000",
+     "R17_2 (rândul 19, coloana TVA)": "1050",
+     "R34_2 (rândul 37, coloana TVA)": "1050",
+     "R37_2 (rândul 40, coloana TVA)": "1050",
+     "R41_2 (rândul 44, coloana TVA)": "1050",
+     "R9_1 (rândul 9, coloana Valoare)": "5000",
+     "R9_2 (rândul 9, coloana TVA)": "1050"
+    }
+   }
+  },
+  "D394": {
+   "T3/2026": {
+    "amprenta": "ebb1565d7ffcf32f19dae021f87140f9cf007dfa4e9db5609430aae065025353",
+    "antet": {
+     "op_efectuate": "1",
+     "sistemTVA": "0",
+     "tip_D394": "T",
+     "totalPlata_A": "5001"
+    },
+    "rezumat1": [
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5000\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1050\"/"
+    ],
+    "rezumat2": [
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1050\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+    ]
+   }
+  },
+  "D406": {
+   "T3/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "4",
+     "TotalCredit": "7750.00",
+     "TotalDebit": "7750.00"
+    },
+    "amprenta": "2acece2a283c813db8e2cd3f32d625b4517020ca7c111916e46095f4d55712af",
+    "facturi_emise": 1,
+    "facturi_primite": 0,
+    "jurnale": [
+     "AMORTIZARE",
+     "CASA",
+     "FACTURI"
+    ]
+   }
+  },
+  "balanta": {
+   "09/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 2400.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 2400.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 500.0,
+     "sf_c": 0.0,
+     "sf_d": 500.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 500.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 6050.0,
+     "sf_c": 0.0,
+     "sf_d": 6050.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 6050.0
+    },
+    {
+     "cont": "4427",
+     "denumire": "TVA colectată",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1050.0,
+     "rul_d": 0.0,
+     "sf_c": 1050.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1050.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "5311",
+     "denumire": "Casa în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 500.0,
+     "rul_d": 1000.0,
+     "sf_c": 0.0,
+     "sf_d": 500.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 500.0,
+     "tot_d": 1000.0
+    },
+    {
+     "cont": "581",
+     "denumire": "Viramente interne",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1000.0,
+     "rul_d": 0.0,
+     "sf_c": 1000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 200.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 200.0
+    },
+    {
+     "cont": "704",
+     "denumire": "Venituri din servicii prestate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 5000.0,
+     "rul_d": 0.0,
+     "sf_c": 5000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 5000.0,
+     "tot_d": 0.0
+    }
+   ]
+  },
+  "luni": [
+   "09/2026"
+  ]
+ },
+ "F3 Intracomunitar SRL (tenant_051)": {
+  "D112": {},
+  "D300": "nu se aplică: neplătitor de TVA",
+  "D394": "nu se aplică: neplătitor de TVA",
+  "D406": {
+   "T2/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "2",
+     "TotalCredit": "9075.00",
+     "TotalDebit": "9075.00"
+    },
+    "amprenta": "a11edd684c4c9edeb417390760cf97d8c901813e2ef37c77516e62035af07e0b",
+    "facturi_emise": 0,
+    "facturi_primite": 2,
+    "jurnale": [
+     "FACTURI"
+    ]
+   }
+  },
+  "balanta": {
+   "06/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 4800.0,
+     "sf_d": 0.0,
+     "si_c": 4800.0,
+     "si_d": 0.0,
+     "tot_c": 4800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 6050.0,
+     "sf_c": 0.0,
+     "sf_d": 6050.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 6050.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 7500.0,
+     "rul_d": 0.0,
+     "sf_c": 7500.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 7500.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "446",
+     "denumire": "Alte impozite, taxe și vărsăminte asimilate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1575.0,
+     "rul_d": 0.0,
+     "sf_c": 1575.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1575.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "628",
+     "denumire": "Alte cheltuieli cu serviciile executate de terți",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 3025.0,
+     "sf_c": 0.0,
+     "sf_d": 3025.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 3025.0
+    }
+   ]
+  },
+  "luni": [
+   "06/2026"
+  ]
+ },
+ "F4 PFA Sistem Real (tenant_052)": {
+  "D112": {},
+  "D300": "nu se aplică: neplătitor de TVA",
+  "D394": "nu se aplică: neplătitor de TVA",
+  "D406": {},
+  "balanta": {},
+  "luni": []
+ },
+ "F5 SRL Salariati SRL (tenant_053)": {
+  "D112": {
+   "09/2026": {
+    "amprenta": "bb4a7b2273407d3dbb54e6584b7be6c035e8508d64c0534d4dad237adfc11363",
+    "angajatorB": [
+     {
+      "B_brutSalarii": "11000",
+      "B_cnp": "2",
+      "B_pensie": "2",
+      "B_sal": "2",
+      "B_sanatate": "2"
+     }
+    ],
+    "asigurati": 2,
+    "obligatii (angajatorA)": [
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "602",
+      "A_datorat": "646",
+      "A_deductibil": "0",
+      "A_plata": "646",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "412",
+      "A_datorat": "2750",
+      "A_deductibil": "0",
+      "A_plata": "2750",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "432",
+      "A_datorat": "1100",
+      "A_deductibil": "0",
+      "A_plata": "1100",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "20470300XX",
+      "A_codOblig": "480",
+      "A_datorat": "248",
+      "A_deductibil": "0",
+      "A_plata": "248",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "458",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "459",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     }
+    ]
+   },
+   "10/2026": {
+    "amprenta": "5070565c37861ad3a3146066bada85f251d37d2dc8649e308be54ea67968bd83",
+    "angajatorB": [
+     {
+      "B_brutSalarii": "12045",
+      "B_cnp": "2",
+      "B_pensie": "2",
+      "B_sal": "2",
+      "B_sanatate": "2"
+     }
+    ],
+    "asigurati": 2,
+    "obligatii (angajatorA)": [
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "602",
+      "A_datorat": "727",
+      "A_deductibil": "0",
+      "A_plata": "727",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "412",
+      "A_datorat": "3011",
+      "A_deductibil": "0",
+      "A_plata": "3011",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "432",
+      "A_datorat": "1205",
+      "A_deductibil": "0",
+      "A_plata": "1205",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "20470300XX",
+      "A_codOblig": "480",
+      "A_datorat": "271",
+      "A_deductibil": "0",
+      "A_plata": "271",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "458",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "459",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     }
+    ]
+   },
+   "11/2026": {
+    "amprenta": "3b9b6463510e73b01798b573780b36714410a542944914b5b2cd76e2bc6c3f3f",
+    "angajatorB": [
+     {
+      "B_brutSalarii": "12000",
+      "B_cnp": "2",
+      "B_pensie": "2",
+      "B_sal": "2",
+      "B_sanatate": "2"
+     }
+    ],
+    "asigurati": 2,
+    "obligatii (angajatorA)": [
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "602",
+      "A_datorat": "724",
+      "A_deductibil": "0",
+      "A_plata": "724",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "412",
+      "A_datorat": "3000",
+      "A_deductibil": "0",
+      "A_plata": "3000",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "432",
+      "A_datorat": "1200",
+      "A_deductibil": "0",
+      "A_plata": "1200",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "20470300XX",
+      "A_codOblig": "480",
+      "A_datorat": "270",
+      "A_deductibil": "0",
+      "A_plata": "270",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "458",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     },
+     {
+      "A_codBugetar": "5503XXXXXX",
+      "A_codOblig": "459",
+      "A_datorat": "0",
+      "A_deductibil": "0",
+      "A_plata": "0",
+      "A_scutit": "0"
+     }
+    ]
+   }
+  },
+  "D300": "nu se aplică: neplătitor de TVA",
+  "D394": "nu se aplică: neplătitor de TVA",
+  "D406": {
+   "T3/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "1",
+     "TotalCredit": "15744.00",
+     "TotalDebit": "15744.00"
+    },
+    "amprenta": "fef406442c1dc759ac3114829a2d0f6538ea979b031855df78f3fd636f6bcf2e",
+    "facturi_emise": 0,
+    "facturi_primite": 0,
+    "jurnale": [
+     "SALARII"
+    ]
+   },
+   "T4/2026": {
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "1",
+     "TotalCredit": "17194.00",
+     "TotalDebit": "17194.00"
+    },
+    "amprenta": "166d430199681a857ede294974d4e4ef4da99d18ec6c97d8fc4e3d1f524be926",
+    "facturi_emise": 0,
+    "facturi_primite": 0,
+    "jurnale": [
+     "SALARII"
+    ]
+   }
+  },
+  "balanta": {
+   "09/2026": [
+    {
+     "cont": "421",
+     "denumire": "Personal - salarii datorate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 11000.0,
+     "rul_d": 4496.0,
+     "sf_c": 6504.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 11000.0,
+     "tot_d": 4496.0
+    },
+    {
+     "cont": "4315",
+     "denumire": "Contribuția de asigurări sociale",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 2750.0,
+     "rul_d": 0.0,
+     "sf_c": 2750.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 2750.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4316",
+     "denumire": "Contribuția de asigurări sociale de sănătate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 1100.0,
+     "rul_d": 0.0,
+     "sf_c": 1100.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1100.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "436",
+     "denumire": "Contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 248.0,
+     "rul_d": 0.0,
+     "sf_c": 248.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 248.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "444",
+     "denumire": "Impozitul pe venituri de natura salariilor",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 646.0,
+     "rul_d": 0.0,
+     "sf_c": 646.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 646.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "641",
+     "denumire": "Cheltuieli cu salariile personalului",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 11000.0,
+     "sf_c": 0.0,
+     "sf_d": 11000.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 11000.0
+    },
+    {
+     "cont": "646",
+     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 248.0,
+     "sf_c": 0.0,
+     "sf_d": 248.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 248.0
+    }
+   ],
+   "10/2026": [
+    {
+     "cont": "421",
+     "denumire": "Personal - salarii datorate",
+     "prec_c": 11000.0,
+     "prec_d": 4496.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 6504.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 11000.0,
+     "tot_d": 4496.0
+    },
+    {
+     "cont": "4315",
+     "denumire": "Contribuția de asigurări sociale",
+     "prec_c": 2750.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 2750.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 2750.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4316",
+     "denumire": "Contribuția de asigurări sociale de sănătate",
+     "prec_c": 1100.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 1100.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1100.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "436",
+     "denumire": "Contribuția asiguratorie pentru muncă",
+     "prec_c": 248.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 248.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 248.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "444",
+     "denumire": "Impozitul pe venituri de natura salariilor",
+     "prec_c": 646.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 646.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 646.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "641",
+     "denumire": "Cheltuieli cu salariile personalului",
+     "prec_c": 0.0,
+     "prec_d": 11000.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 11000.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 11000.0
+    },
+    {
+     "cont": "646",
+     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 248.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 248.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 248.0
+    }
+   ],
+   "11/2026": [
+    {
+     "cont": "421",
+     "denumire": "Personal - salarii datorate",
+     "prec_c": 11000.0,
+     "prec_d": 4496.0,
+     "rul_c": 12000.0,
+     "rul_d": 4924.0,
+     "sf_c": 13580.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 23000.0,
+     "tot_d": 9420.0
+    },
+    {
+     "cont": "4315",
+     "denumire": "Contribuția de asigurări sociale",
+     "prec_c": 2750.0,
+     "prec_d": 0.0,
+     "rul_c": 3000.0,
+     "rul_d": 0.0,
+     "sf_c": 5750.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 5750.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4316",
+     "denumire": "Contribuția de asigurări sociale de sănătate",
+     "prec_c": 1100.0,
+     "prec_d": 0.0,
+     "rul_c": 1200.0,
+     "rul_d": 0.0,
+     "sf_c": 2300.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 2300.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "436",
+     "denumire": "Contribuția asiguratorie pentru muncă",
+     "prec_c": 248.0,
+     "prec_d": 0.0,
+     "rul_c": 270.0,
+     "rul_d": 0.0,
+     "sf_c": 518.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 518.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "444",
+     "denumire": "Impozitul pe venituri de natura salariilor",
+     "prec_c": 646.0,
+     "prec_d": 0.0,
+     "rul_c": 724.0,
+     "rul_d": 0.0,
+     "sf_c": 1370.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1370.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "641",
+     "denumire": "Cheltuieli cu salariile personalului",
+     "prec_c": 0.0,
+     "prec_d": 11000.0,
+     "rul_c": 0.0,
+     "rul_d": 12000.0,
+     "sf_c": 0.0,
+     "sf_d": 23000.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 23000.0
+    },
+    {
+     "cont": "646",
+     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
+     "prec_c": 0.0,
+     "prec_d": 248.0,
+     "rul_c": 0.0,
+     "rul_d": 270.0,
+     "sf_c": 0.0,
+     "sf_d": 518.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 518.0
+    }
+   ]
+  },
+  "luni": [
+   "09/2026",
+   "10/2026",
+   "11/2026"
+  ]
+ }
+}

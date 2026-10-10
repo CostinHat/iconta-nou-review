@@ -43,7 +43,7 @@ export async function randeazaAdminAnalytics(corp, nav) {
   try {
     d = await api.get("/admin/analytics?zile=30");
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca cifrele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca cifrele.</p>`;
     return;
   }
   corp.innerHTML = `

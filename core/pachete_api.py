@@ -217,15 +217,23 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
          calificativ, corectie_linie)
 
 
-def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
-    """Cheama AI sa scrie un draft. Daca AI indisponibil -> intoarce ok=False, motiv.
-    schema: numele schemei firmei (pentru control_fiscal_api.evalueaza_firma -> restante)."""
+def date_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
+    """[R193, comanda Costin 10.10.2026 pct.2] Faza de CITIRE a poveștii: pachetul lunii și restanțele (schema: numele schemei
+    firmei, pentru control_fiscal_api.evalueaza_firma). Întrebarea către model (`genereaza_poveste`) se pune după, fără conexiune.
+    Fără model configurat, restanțele nu se mai calculează: n-ar avea cine să le folosească."""
     rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
     if not ai_client.disponibil():
-        return {"ok": False, "cod": "AI_INDISPONIBIL", "rezumat": rz}
+        return {"rezumat": rz, "restante": None}
     from core import control_fiscal_api as _cf
     ev = _cf.evalueaza_firma(conn_schema, conn_public, tenant_id, schema)
-    restante_desc = _restante_desc(ev.get("lipsa"))
+    return {"rezumat": rz, "restante": _restante_desc(ev.get("lipsa"))}
+
+
+def genereaza_poveste(date, an, luna):
+    """Cheama AI sa scrie un draft, din ce a citit `date_poveste` — fara nicio conexiune. Daca AI indisponibil -> ok=False, motiv."""
+    rz, restante_desc = date["rezumat"], date["restante"]
+    if not ai_client.disponibil():
+        return {"ok": False, "cod": "AI_INDISPONIBIL", "rezumat": rz}
     # o generare + o singură reîncercare, cu abaterile numite; dacă tot rămân, textul pleacă la editor CU ele (ecranul le
     # arată) — aprobarea nu se blochează: textul aprobat e al contabilului (CLAUDE.md §8, DECIZII 05.10.2026)
     abateri = None

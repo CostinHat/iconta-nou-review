@@ -141,35 +141,21 @@ MESAJ_CIORNE_POARTA = ("În perioadă sunt %d notă(e) nevalidată(e): comparaț
                        "depunere.")
 
 
-MESAJ_CIORNE_BLOCAJ_TVA = (" În perioadă sunt și %d notă(e) nevalidată(e): dacă ele corectează diferența, validează-le și generează "
-                           "din nou — până atunci evidența e cea validată, iar declarația nu se potrivește cu ea.")
+MESAJ_CIORNE_BLOCAJ = (" În perioadă sunt și %d notă(e) nevalidată(e): dacă ele corectează diferența, validează-le și generează "
+                       "din nou — până atunci evidența e cea validată, iar declarația nu se potrivește cu ea.")
 
 
-def decizie_poarta(refuz, ciorne, tva=False):
-    """[08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în
-    lună, dau doar avertisment, nu blocaj.” (blocaj, avertisment): fără ciorne, refuzul porții blochează; cu ciorne, nimic nu
-    blochează, iar avertismentul spune câte sunt (și diferența, dacă a fost una). PURĂ.
-    [PIVOT 09.10.2026, retestul Costin, deficiențele 120 + 210: „D300 F1 10/2026 se poate trimite deși 4426 are 241,50 neincluși”;
-    „garda D300 față de balanță nu mai blochează trimiterea”] Pentru declarațiile de TVA (`tva=True`) o DIFERENȚĂ blochează și cu
-    ciorne în perioadă: D300 / D394 / D390 se generează din DOCUMENTE, nu din note, deci ciornele nu le schimbă — diferența dintre
-    declarație și evidența validată rămâne aceeași până le validează un om. Ciornele fără diferență dau tot avertisment. D406 se
-    construiește din notele validate (ca balanța), deci R36 rămâne pentru el neschimbată."""
-    if not ciorne:
-        return refuz or None, None
-    if tva and refuz:
-        return dict(refuz, mesaj=refuz.get("mesaj", "") + MESAJ_CIORNE_BLOCAJ_TVA % ciorne, ciorne=ciorne), None
-    return None, ((_constatarea(refuz.get("mesaj", "")) + " ") if refuz else "") + MESAJ_CIORNE_POARTA % ciorne
-
-
-def _constatarea(mesaj):
-    """[deficiența 189, proba blocului C: avertismentul de pe ecranul de succes începea cu „Declarația nu intră în coadă: …” și se
-    termina cu „Declarația intră în coadă”] Când refuzul devine avertisment (R36, ciorne în perioadă), rămâne constatarea, fără
-    verdictul de refuz din fața ei."""
-    for pref in ("Declarația nu intră în coadă: ", "D406 nu intră în coadă: "):
-        if mesaj.startswith(pref):
-            rest = mesaj[len(pref):]
-            return "Diferență față de balanță: " + rest[:1].lower() + rest[1:]
-    return mesaj
+def decizie_poarta(refuz, ciorne):
+    """(blocaj, avertisment) pentru porțile D300 / D394 / D390 / D406 față de balanță. PURĂ.
+    [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
+    dau doar avertisment, nu blocaj.”
+    [PIVOT 09.10.2026, retestul Costin, deficiențele 120 + 210] la D300 / D394 / D390 o DIFERENȚĂ blochează și cu ciorne în perioadă.
+    [PIVOT 10.10.2026, comanda Costin pct.3: „D406: blocajul la o diferență față de balanță se extinde și la D406, inclusiv când luna
+    are ciorne, ca la D300/D394/D390.”] Deci acum, la toate patru: o diferență blochează, iar mesajul numește și ciornele (dacă ele
+    corectează diferența, se validează și se generează din nou); ciornele FĂRĂ diferență dau numai avertisment."""
+    if refuz:
+        return (dict(refuz, mesaj=refuz.get("mesaj", "") + MESAJ_CIORNE_BLOCAJ % ciorne, ciorne=ciorne) if ciorne else refuz), None
+    return None, (MESAJ_CIORNE_POARTA % ciorne if ciorne else None)
 
 
 def coada_adauga(date, ctx):
@@ -204,14 +190,14 @@ def coada_adauga(date, ctx):
     # 1c) [08.10.2026, decizia Costin V1] D406: totalurile GeneralLedgerEntries = rulajele balanței pe perioadă, altfel blocat.
     # [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
     # dau doar avertisment, nu blocaj.” Fără ciorne, diferența blochează ca înainte; cu ciorne, intră în coadă cu avertismentul.
-    # [PIVOT 09.10.2026, deficiențele 120 + 210] la declarațiile de TVA diferența blochează și cu ciorne (`decizie_poarta`, tva=True).
+    # [PIVOT 09.10.2026, deficiențele 120 + 210; PIVOT 10.10.2026, comanda Costin pct.3] diferența blochează și cu ciorne, la toate patru.
     avertismente_poarta = []
     if date.tip in DECLARATII_TVA or date.tip == "d406":
         _ancora = date.luna or (int(date.trim) * 3 if date.trim else None)
         _ciorne = ciorne_in_perioada(schema, date.an, _ancora)
         _refuz = (poarta_tva_balanta(schema, date.an, date.luna, date.trim) if date.tip in DECLARATII_TVA
                   else poarta_d406_balanta(schema, date.an, _ancora, res))
-        _blocaj, _avert = decizie_poarta(_refuz, _ciorne, tva=date.tip in DECLARATII_TVA)
+        _blocaj, _avert = decizie_poarta(_refuz, _ciorne)
         if _blocaj:
             raise _erori.DateInvalide(_blocaj)
         if _avert:

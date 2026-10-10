@@ -29,9 +29,9 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
-import { randA as randConstatare } from "./control_verdict.js?v=29ab225927";
+import { randA as randConstatare } from "./control_verdict.js?v=700c9a6bd0";
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { deschideFirma } from "./firme.js?v=8fc3bd020b";
+import { deschideFirma } from "./firme.js?v=15b7548994";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -144,7 +144,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     patruOchi = !!(rpo && rpo.efectiv);
     patruOchiPolitica = !!(rpo && rpo.activ);
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca coada.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca coada.</p>`;
     return;
   }
   // [validare_note 06.10.2026, comanda Costin pct.1] coada poartă și NOTELE pregătite de asistenți (`fel: "nota"`). Ele se
@@ -270,7 +270,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 async function ciorneleMele(zona, firme, nav) {
   if (!zona) return;
   let r;
-  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu am putut încărca notele tale în ciornă.", "eroare"); return; }
+  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu s-au putut încărca notele tale în ciornă.", "eroare"); return; }
   if (!r || !r.total) return;
   const stare = (n) => n.in_coada === "la_senior" ? "trimisă la validare"
     : (n.in_coada === "respinsa" ? `respinsă${n.motiv_respingere ? ": " + n.motiv_respingere : ""}` : "nevalidată, netrimisă");
@@ -310,7 +310,7 @@ function barMaiMulte(zN, corp, nav) {
         + (refuz.length ? ` Nu s-au validat ${refuz.length}: ${refuz.map((x) => x.mesaj).join(" · ")}` : ""));
       randeazaValidat(corp, nav);
     } catch (e) {
-      arataMesaj(bara.querySelector("#val-mai-multe-msg"), (e && e.mesaj) || "Nu am putut valida notele selectate.", "eroare");
+      arataMesaj(bara.querySelector("#val-mai-multe-msg"), (e && e.mesaj) || "Nu s-au putut valida notele selectate.", "eroare");
       actualizeaza();
     }
   });
@@ -400,7 +400,7 @@ async function deschideNota(c, nav, ctx = {}) {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă nota…</p>`;
     let d;
     try { d = await api.get(`/coada/${c.id}/continut`); }
-    catch (e) { corp.innerHTML = `<div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut încărca nota.")}</div>`; return; }
+    catch (e) { corp.innerHTML = `<div class="dec-eroare">${esc((e && e.mesaj) || "Nu s-a putut încărca nota.")}</div>`; return; }
     // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
     const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
     corp.innerHTML = note.map(({ nota: n, linii }) => `
@@ -439,7 +439,7 @@ async function deschideContinut(c, nav, corpLista) {
     let d;
     try { d = await api.get(`/coada/${c.id}/continut`); }
     catch (e) {
-      corp.innerHTML = `<div class="dec-eroare">Nu am putut \u00eencarca con\u021binutul: ${esc((e && e.mesaj) || "eroare")}</div>`;
+      corp.innerHTML = `<div class="dec-eroare">Nu s-a putut \u00eencarca con\u021binutul: ${esc((e && e.mesaj) || "eroare")}</div>`;
       return;
     }
     const xml = d.xml_b64 ? (function(){ try { return decodeURIComponent(escape(atob(d.xml_b64))); } catch(e){ return ""; } })() : "";
@@ -448,7 +448,7 @@ async function deschideContinut(c, nav, corpLista) {
       ? `<div class="dec-ok">Validat cu DUKIntegrator (validatorul oficial ANAF, rulat local), f\u0103r\u0103 erori.</div>`
       : (stare === "erori"
           ? `<div class="dec-eroare"><div class="dec-avert-cap">DUKIntegrator (validatorul ANAF, local) a g\u0103sit ${d.severitate === "atentionare" ? "aten\u021bion\u0103ri" : "erori"}</div><pre class="dec-xml-pre">${esc(d.erori || "")}</pre></div>`
-          : `<div class="dec-avert"><div class="dec-avert-cap">Nu am putut valida cu DUKIntegrator</div><ul><li>${esc(d.temei || "")}</li><li>${esc(d.limita || "")}</li></ul></div>`);
+          : `<div class="dec-avert"><div class="dec-avert-cap">Nu s-a putut valida cu DUKIntegrator</div><ul><li>${esc(d.temei || "")}</li><li>${esc(d.limita || "")}</li></ul></div>`);
     const av = d.avertismente || [];
     const avert = av.length
       ? `<div class="caseta-atentie"><b>Avertismente (${av.length})</b><ul>${av.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`
@@ -721,7 +721,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
         await api.post(`/coada/${c.id}/depune`, Object.assign({}, corpBaza, { confirmari }));
       } catch (e) {
         btn.disabled = false;
-        arataMesaj(er, (e && e.mesaj) || "Nu am putut depune. Încearcă din nou.", "eroare");
+        arataMesaj(er, (e && e.mesaj) || "Nu s-a putut depune. Încearcă din nou.", "eroare");
         return;
       }
       // [DS cap.27 / E2] Aceeasi caseta ca pe drumul fara constatari — v. `casetaDepusa`.

@@ -3,25 +3,25 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=29ab225927";   // [retest 08.10 pct.7] contoarele de sus
+import { itemiContoare } from "./control_verdict.js?v=700c9a6bd0";   // [retest 08.10 pct.7] contoarele de sus
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=8fc3bd020b";
-import { randeazaMigrare } from "./migrare.js?v=8ab6ac6aa1";
-import { randeazaControl } from "./control.js?v=ad497d96e3";
-import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=380aa43977"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=fdcd88308f"; // [p28_setari]
-import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=593b54babb"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=f25e1ed56e";
-import { randeazaSupervizor } from "./supervizor.js?v=d07a63dba1"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=56949c5709";
-import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
-import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
+import { randeazaListaFirme } from "./firme.js?v=15b7548994";
+import { randeazaMigrare } from "./migrare.js?v=00548d5fca";
+import { randeazaControl } from "./control.js?v=b53f36ab3d";
+import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=74572648b0"; // [p17_activitate]
+import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari]
+import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
+import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
+import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
+import { randeazaTermene } from "./termene.js?v=d4437aae0c";
+import { randeazaValidat } from "./validat.js?v=f25b959e6d";
+import { randeazaSupervizor } from "./supervizor.js?v=e4014eea6b"; // [supervizor] rulare LA CERERE
+import { randeazaAsistenti } from "./asistenti.js?v=71d1c61bbe";
+import { randeazaCapacitate } from "./capacitate.js?v=b4e5a3063e"; // [p71_capacitate]
+import { randeazaTipare } from "./tipare.js?v=450a80b613"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
 function svg(nume, culoare) {
@@ -94,7 +94,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   try { cen = await api.get("/asistenti/echipa/centralizator" + sfx); } catch { _eroareAzi = true; }
   try { jur = await api.get("/asistenti/echipa/jurnal" + sfx + "&limit=5"); } catch { _eroareAzi = true; }
   try { rap = await api.get("/raportari/contor"); } catch {}
-  if (_eroareAzi) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca activitatea de azi (eroare de server).</p>`; return; }
+  if (_eroareAzi) { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea de azi (eroare de server).</p>`; return; }
 
   const t = cen.totaluri || {};
   const aziLung = dataRo(new Date(), "lung");
@@ -534,7 +534,7 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
       } catch (e) {
         /* [catch_scriere 27.07.2026] setarea patru-ochi nesalvata parea salvata:
            elementul disparea oricum. Control intern - nu are voie sa taca. */
-        arataMesaj(el, (e && e.mesaj) || "Nu am putut salva setarea. Încearcă din nou.", "eroare");
+        arataMesaj(el, (e && e.mesaj) || "Nu s-a putut salva setarea. Încearcă din nou.", "eroare");
       }
     }, { textOk: efectiv ? "Dezactiveaz\u0103" : "Opre\u0219te de tot" });
   });

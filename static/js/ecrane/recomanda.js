@@ -23,7 +23,7 @@ export function randeazaRecomanda(corp, nav) {
   // Vezi ce trimitem -> modal preview cu HTML-ul exact
   corp.querySelector("#rec-vezi").addEventListener("click", async () => {
     let date;
-    try { date = await api.get("/recomanda/preview"); } catch { const m = corp.querySelector("#rec-msg"); arataMesaj(m, "Nu am putut încărca previzualizarea.", "eroare"); return; }  // portal_ds_audit_a_v1
+    try { date = await api.get("/recomanda/preview"); } catch { const m = corp.querySelector("#rec-msg"); arataMesaj(m, "Nu s-a putut încărca previzualizarea.", "eroare"); return; }  // portal_ds_audit_a_v1
     if (!date || !date.ok) return;
     const ov = document.createElement("div");
     ov.className = "rec-overlay";
@@ -67,7 +67,7 @@ export function randeazaRecomanda(corp, nav) {
           : `Invitație trimisă către ${trimise} ${trimise === 1 ? "adresă" : "adrese"}.`, esuate ? "eroare" : "ok");
         if (!esuate) corp.querySelector("#rec-emails").value = "";
       } else {
-        arataMesaj(msg, "Nu am putut trimite.", "eroare");
+        arataMesaj(msg, "Nu s-a putut trimite.", "eroare");
       }
     } catch (e) {
       // [R158, 05.09.2026] Refuzul serverului numeste ADRESA gresita (R154); mesajul generic

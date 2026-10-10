@@ -129,7 +129,7 @@ def erori_generare(prof, manual):
         er.append("Dacă taraContrib=RO atunci judetContrib obligatoriu (DUK regula R21).")
     iban = str(manual.get("ibanContrib") or "").replace(" ", "").upper()
     if iban and not _IBAN_OK.match(iban):
-        er.append("ibanContrib invalid - aștept RO + 22 caractere majuscule (24 total).")
+        er.append("ibanContrib invalid - se așteaptă RO + 22 caractere majuscule (24 total).")
     try:
         cod = int(manual.get("exceptare"))
     except (TypeError, ValueError):
@@ -144,13 +144,13 @@ def erori_generare(prof, manual):
     di, tdi = _data(manual.get("dataInceput"))
     ds, tds = _data(manual.get("dataSfarsit"))
     if not di:
-        er.append("dataInceput lipsă/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataInceput lipsă/invalidă (se așteaptă YYYY-MM-DD sau dd.MM.yyyy).")
     if not ds:
-        er.append("dataSfarsit lipsă/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataSfarsit lipsă/invalidă (se așteaptă YYYY-MM-DD sau dd.MM.yyyy).")
     if tdi and tds and tdi >= tds:
         er.append("dataInceput trebuie să fie mai mica decât dataSfarsit (DUK regula R36).")
     if not _data(manual.get("dataExceptare"))[0]:
-        er.append("dataExceptare obligatorie/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataExceptare obligatorie/invalidă (se așteaptă YYYY-MM-DD sau dd.MM.yyyy).")
     if not str(manual.get("documente") or "").strip():
         er.append("documente obligatoriu (documentele justificative ale exceptării).")
     if int(manual.get("imputernicit") or 0) == 1:

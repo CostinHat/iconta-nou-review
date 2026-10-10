@@ -20,6 +20,7 @@ from core import common as _common
 from core import cont_valid as _cv
 from core import db, auth_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, observare as _obs, documente_api
 from core import articole_import_api, retete_import_api
+from core import cote_tva
 from core import repo_banca
 from core import repo_casa
 from core import repo_contabilitate
@@ -265,19 +266,19 @@ def tenant_plan_conturi_adauga(tenant_id, date, ctx):
     # seed-uit la crearea firmei are peste 700 de conturi, toate incepand cu o cifra de clasa.
     if not simbol[0].isdigit() or simbol[0] == "0":
         raise _erori.DateInvalide("Simbolul contului începe cu cifra clasei (1-9), ca toate "
-                                     "conturile din planul general — am primit %r. Dacă e un analitic, "
+                                     "conturile din planul general — s-a primit %r. Dacă e un analitic, "
                                      "scrie-l după contul sintetic (de exemplu 4111.01)." % simbol)
     if not all(c.isdigit() or c in "._-/" for c in simbol):
         raise _erori.DateInvalide("Simbolul contului se scrie din cifre, cu separator pentru "
-                                     "analitic (punct, linie jos, cratimă sau bară) — am primit %r." % simbol)
+                                     "analitic (punct, linie jos, cratimă sau bară) — s-a primit %r." % simbol)
     # [Retest 2 pct.13, prins la proba din ecran] „4111.” trecea: un separator fără analitic după el, sau doi separatori la rând,
     # nu numesc niciun cont. Analiticul = sinteticul + separator + cifre (4111.01), oricâte niveluri.
     import re as _re
     if not _re.fullmatch(r"[1-9]\d*(?:[._/-]\d+)*", simbol):
-        raise _erori.DateInvalide("Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — am "
+        raise _erori.DateInvalide("Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — s-a "
                                   "primit %r." % simbol)
     if len(simbol) > 10:
-        raise _erori.DateInvalide("Simbolul contului are cel mult 10 caractere — am primit %r (%d)." % (simbol, len(simbol)))
+        raise _erori.DateInvalide("Simbolul contului are cel mult 10 caractere — s-a primit %r (%d)." % (simbol, len(simbol)))
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             # Regula 4 + 14.4: un simbol care exista deja NU se suprascrie tacut (ar redenumi un cont OMFP
@@ -404,10 +405,14 @@ def produse_lista(tenant_id, ctx):
 def produse_creeaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/produse`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    # [R193] faza de citire (produsul e deja în nomenclator?), apoi modelul cu pool-ul liber, apoi scrierea — care recitește
+    with db.get_conn(schema) as conn:
+        _de_intrebat = produse_api.de_intrebat(conn, date.denumire, date.cota_tva)
+    _ai = cote_tva.intreaba(_de_intrebat)
     with db.get_conn(schema) as conn:
         r = produse_api.creeaza(conn, date.denumire, um=date.um,
                                 pret_unitar=date.pret_unitar, cota_tva=date.cota_tva,
-                                categorie=date.categorie, confirmat=date.confirmat)
+                                categorie=date.categorie, confirmat=date.confirmat, raspunsuri=_ai)
     if not r.get("ok"):
         raise _erori.CerereGresita(r.get("mesaj", "produs invalid"))
     return r
@@ -564,7 +569,7 @@ def firma_profil_model(tenant_id, date, ctx):
     import re as _re
     if date.culoare and not _re.fullmatch(r"#[0-9a-fA-F]{6}", date.culoare.strip()):
         raise _erori.DateInvalide("Culoarea se scrie ca un cod hexazecimal de șase cifre, cu diez "
-                                     "(de exemplu #1d4ed8) — am primit %r. Ea ajunge pe factura "
+                                     "(de exemplu #1d4ed8) — s-a primit %r. Ea ajunge pe factura "
                                      "tipărită." % date.culoare)
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -933,10 +938,14 @@ def produse_potriveste(tenant_id, denumire, ctx):
     se citește din profilul firmei, nu din cerere: cererea fără câmp primea implicit True, deci un neplătitor primea
     propus 21% (CF art.310 alin.(10) lit.b): neplătitorul „nu are voie să menționeze taxa pe factură”)."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    # [R193] citirea (plătitorul, nomenclatorul), apoi modelul cu pool-ul liber, apoi propunerea, care recitește nomenclatorul
     with db.get_conn(schema) as conn:
         platitor = _uc_comun._platitor_tva_firma(conn)
+        _de_intrebat = produse_api.de_intrebat(conn, denumire) if platitor else []
+    _ai = cote_tva.intreaba(_de_intrebat, platitor)
+    with db.get_conn(schema) as conn:
         # [05.10.2026, comanda Costin pct.9] nomenclatorul firmei întâi (cota, UM, preț), potrivirea automată după
-        return produse_api.propunere_pentru_linie(conn, denumire, platitor_tva=platitor)
+        return produse_api.propunere_pentru_linie(conn, denumire, platitor_tva=platitor, raspunsuri=_ai)
 
 
 def cm_lista(tenant_id, salariat_id, an, ctx):
@@ -1613,7 +1622,7 @@ def chitanta_emite(tenant_id, c, ctx):
                 try:
                     _dc = _dt.date.fromisoformat(str(c.data)[:10])
                 except ValueError:
-                    raise _erori.CerereGresita("Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ."
+                    raise _erori.CerereGresita("Data chitanței: %r nu e o dată din calendar. Se așteaptă forma AAAA-LL-ZZ."
                                                % (c.data,))
                 try:
                     if exceptata is None:   # [lotul 07.10 B] neales în Date firmă: se cere acum, o dată
@@ -1892,7 +1901,7 @@ def wc_config(tenant_id, corp, ctx):
         from urllib.parse import urlparse as _urlparse
         _p = _urlparse(_u)
         if _p.scheme not in ("http", "https") or "." not in (_p.netloc or ""):
-            raise _erori.DateInvalide("Adresa magazinului nu e o adresă web: %r. Aștept ceva "
+            raise _erori.DateInvalide("Adresa magazinului nu e o adresă web: %r. Se așteaptă ceva "
                                          "de forma https://magazin.ro." % _u)
     _campuri = [k for k in ("url", "ck", "cs") if k in (corp or {})]
     if not _campuri:
@@ -2079,7 +2088,7 @@ def registratura_creeaza(tenant_id, corp, ctx):
             _zi = _date_reg.fromisoformat(_d)
         except ValueError:
             raise _erori.DateInvalide("Data înregistrării nu e o dată: %r "
-                                         "(aștept AAAA-LL-ZZ)." % _d)
+                                         "(se așteaptă AAAA-LL-ZZ)." % _d)
         _uc_comun._cere_perioada(an=_zi.year)
     from core import registratura_api as _reg
     with db.get_conn() as conn:
@@ -3276,7 +3285,7 @@ def calcul_cm_endpoint(tenant_id, corp, ctx):
                                 "numere întregi: %s" % e)
     _uc_comun._cere_perioada(an, luna)
     if zile_cm < 0:
-        raise _erori.DateInvalide("Zilele de concediu medical nu pot fi negative (am primit %d). "
+        raise _erori.DateInvalide("Zilele de concediu medical nu pot fi negative (s-a primit %d). "
                                      "Se numără zilele lucrătoare acoperite de certificat." % zile_cm)
     # [baza_cm 22.08.2026, DECIS DE COSTIN: EMIS] Baza vine din statele EMISE; lunile neemise se
     # recalculeaza, dar se NUMARA separat si se spun in `temei`.
@@ -3293,7 +3302,7 @@ def calcul_cm_endpoint(tenant_id, corp, ctx):
     _b = _bcm.aduna(_luni, _emise, _recalc, _scad.zile_lucratoare_luna)
     venituri, zile, nr_luni = _b["venituri"], _b["zile"], _b["nr_luni"]
     if nr_luni == 0 or zile == 0:
-        raise _erori.DateInvalide("Nu pot calcula media: salariatul nu are nicio lună lucrată în cele "
+        raise _erori.DateInvalide("Nu se poate calcula media: salariatul nu are nicio lună lucrată în cele "
                                      "6 luni dinaintea certificatului. Verifică data angajării și pontajul.")
     try:
         r = _s.calcul_cm(venituri, zile, zile_cm,
@@ -3486,12 +3495,15 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
             #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
             # `_tert_pl` s-a înghețat înaintea blocului — v. nota de la începutul rutei
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": cota}],
-                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui,
-                                       categorie_331=categorie, taxare_inversa=True, status="importata",
-                                       tert_platitor_tva=_tert_pl)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+                fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                           linii=[{"descriere": descr[:200], "cantitate": 1,
+                                                   "pret_unitar": str(val), "cota_tva": cota}],
+                                           tert_nume=furnizor_nume or None, tert_cui=furnizor_cui,
+                                           categorie_331=categorie, taxare_inversa=True, status="importata",
+                                           tert_platitor_tva=_tert_pl)
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge 4426=4427, NU cea standard
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
@@ -3558,18 +3570,21 @@ def achizitie_ic(tenant_id, corp, ctx):
             tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
             #    (taxare inversa la beneficiar) -> linie cota 0 -> total=val, tva=0 -> baza D390 = val.
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": 0}],
-                                       tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
-                                       tert_tara=tara_furnizor,
-                                       # [R186, 16.09.2026] AXA, INGHETATA pe document. `corp["tip"]`
-                                       # e deja validat contra nomenclatorului mai sus (bunuri|servicii,
-                                       # orice altceva = refuz), deci ce se scrie e ce a declarat omul.
-                                       # Pana azi valoarea intra doar in textul descrierii, iar D300
-                                       # rutata pe implicit: serviciile IC ajungeau la rd.5, nu la rd.7.
-                                       axa_ic=corp.get("tip"),
-                                       data_faptului_generator=data_fg, status="importata")
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+                fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                           linii=[{"descriere": descr[:200], "cantitate": 1,
+                                                   "pret_unitar": str(val), "cota_tva": 0}],
+                                           tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
+                                           tert_tara=tara_furnizor,
+                                           # [R186, 16.09.2026] AXA, INGHETATA pe document. `corp["tip"]`
+                                           # e deja validat contra nomenclatorului mai sus (bunuri|servicii,
+                                           # orice altceva = refuz), deci ce se scrie e ce a declarat omul.
+                                           # Pana azi valoarea intra doar in textul descrierii, iar D300
+                                           # rutata pe implicit: serviciile IC ajungeau la rd.5, nu la rd.7.
+                                           axa_ic=corp.get("tip"),
+                                           data_faptului_generator=data_fg, status="importata")
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
@@ -3619,11 +3634,14 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
             # `tert_pf=True` (23.08.2026): pana azi lipsa codului era declarata DOAR in comentariul de
             # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
             # o persoana neinregistrata E cazul legitim fara cod - acum o spune CODUL, nu proza.
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": 0}],
-                                       tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
-                                       status="importata", tert_platitor_tva=False, tert_pf=True)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+                fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                           linii=[{"descriere": descr[:200], "cantitate": 1,
+                                                   "pret_unitar": str(val), "cota_tva": 0}],
+                                           tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
+                                           status="importata", tert_platitor_tva=False, tert_pf=True)
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             repo_contabilitate.adauga_linie_furnizor(cur, schema, iid, cont, val)
@@ -3649,7 +3667,7 @@ def import_extracomunitar(tenant_id, corp, ctx):
             # vamala de 1.000, baza TVA 6.000. Un procent e o parte dintr-un intreg.
             _ptv = corp.get("procent_taxa_vamala", 0) or 0
             if not (0 <= float(_ptv) <= 100):
-                raise ValueError("Procentul taxei vamale e între 0 și 100 — am primit %s. Taxa "
+                raise ValueError("Procentul taxei vamale e între 0 și 100 — s-a primit %s. Taxa "
                                  "vamală e o parte din valoarea în vamă, nu un multiplu al ei."
                                  % (_ptv,))
             r = _ie.calcul_import(corp["valoare_vamala"],
@@ -4012,11 +4030,14 @@ def achizitie_necorporala(tenant_id, corp, ctx):
             # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
             # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
             # `_tert_pl` s-a înghețat înaintea blocului (TVA deductibilă -> furnizor plătitor)
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": cota}],
-                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata",
-                                       tert_platitor_tva=_tert_pl)
+            try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+                fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                           linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
+                                                   "pret_unitar": str(val), "cota_tva": cota}],
+                                           tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata",
+                                           tert_platitor_tva=_tert_pl)
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
                                        f" (amortizare {dnf} luni, art. 28(9) CF)"[:200])[0]
@@ -4856,7 +4877,7 @@ def parteneri_incarca(tenant_id, continut, nume_fisier, ctx):
     # [lotul 6] Un `.txt` cu o linie de proza intorcea `{"randuri": []}` — „fisierul n-are parteneri"
     # arata identic cu „fisierul n-a fost citit". A treia cale cu aceeasi gaura in lotul asta.
     if not randuri:
-        raise _erori.DateInvalide("Din fișierul %s n-am putut citi niciun partener. Se așteaptă un "
+        raise _erori.DateInvalide("Din fișierul %s nu s-a putut citi niciun partener. Se așteaptă un "
                                  "CSV sau un XLSX cu solduri pe parteneri — un fișier necitit nu e "
                                  "un fișier gol." % (nume_fisier or "trimis",))
     td = round(sum(r["debit"] for r in randuri), 2)
@@ -4961,6 +4982,7 @@ def facturi_emite(tenant_id, date, ctx):
     linii = [l.model_dump() for l in date.linii]
     if not (date.tert_nume or "").strip():
         raise _erori.DateInvalide("Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere.")
+    _ai = _uc_comun._intreaba_modelul(schema, linii)   # [R193] modelul, înaintea tranzacției de emitere
     with db.get_conn(schema) as conn:
         are_stoc = any(l.get("articol_id") for l in linii)
         din_bon = bool((date.bon_fiscal_nr or "").strip())
@@ -4982,6 +5004,7 @@ def facturi_emite(tenant_id, date, ctx):
                 data_curs_manual=date.data_curs_manual,
                 bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
                 tert_platitor_tva=_tert_pl, pleaca_marfa=date.pleaca_marfa,   # [06.10.2026 §6.3]
+                raspunsuri_ai=_ai,
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -5039,6 +5062,16 @@ def proforma_transforma(tenant_id, factura_id, ctx):
     # inaintea tranzactiei de emitere, ca descarcarea BNR sa nu tina o conexiune din pool.
     import datetime as _dtx
     _uc_comun._preincalzeste_cursul(_uc_comun._moneda_facturii(schema, factura_id), _dtx.date.today())
+
+    def _linii_proformei(conn):
+        return [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
+                 "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva")}
+                for l in ((facturi_api.detalii_factura(conn, factura_id) or {}).get("linii") or [])]
+    # [R193] liniile proformei se citesc într-o tranzacție scurtă, modelul se întreabă cu pool-ul liber, iar tranzacția de mai jos
+    # le recitește: o linie schimbată între timp n-are răspuns, deci cota ei iese nedeterminată, nu ghicită
+    with db.get_conn(schema) as conn:
+        _linii0 = _linii_proformei(conn)
+    _ai = _uc_comun._intreaba_modelul(schema, _linii0)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             r = repo_facturi.tip_si_transformare(cur, factura_id)
@@ -5049,14 +5082,12 @@ def proforma_transforma(tenant_id, factura_id, ctx):
         if r[1]:
             raise _erori.Conflict(f"documentul a fost deja transformat în factura nr. {r[1]}")
         f = facturi_api.detalii_factura(conn, factura_id)
-        linii = [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
-                  "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva")}
-                 for l in (f.get("linii") or [])]
+        linii = _linii_proformei(conn)
         platitor = _uc_comun._platitor_tva_firma(conn)
         try:
             rez = facturi_api.emite_factura(conn, linii, client_id=f.get("client_id"),
                 tert_nume=f.get("tert_nume"), tert_cui=f.get("tert_cui"),
-                moneda=f.get("moneda") or "RON", platitor_tva=platitor)
+                moneda=f.get("moneda") or "RON", platitor_tva=platitor, raspunsuri_ai=_ai)
         except ValueError as e:
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
@@ -5147,7 +5178,7 @@ def horeca_import_amef(tenant_id, continut, ctx):
     except (ValueError, Exception) as e:
         raise _erori.DateInvalide(f"fișierul de la casa de marcat nu se poate citi: {e}")
     if not rz["data"]:
-        raise _erori.DateInvalide("nu am putut extrage data din idR")
+        raise _erori.DateInvalide("nu s-a putut extrage data din idR")
     if not rz.get("nr_bonuri") or rz["nr_bonuri"] <= 0:
         # D394 lit.G (OPANAF 2194/2025 pct.14): numărul de bonuri al lunii — un Z fără el n-are ce declara
         raise _erori.DateInvalide(MESAJ_AMEF_FARA_BONURI)
@@ -5433,7 +5464,7 @@ def banca_rec_import(tenant_id, continut, nume_fisier, ctx):
     try:
         tranzactii = banca_parser.parse_extras(continut, nume_fisier or "")
     except Exception as e:
-        raise _erori.CerereGresita(f"nu am putut citi extrasul: {e}")
+        raise _erori.CerereGresita(f"nu s-a putut citi extrasul: {e}")
     for t in tranzactii:
         r = _bk.regula_cont({"sens": "debit" if t["suma"] < 0 else "credit",
                              "suma": abs(t["suma"]), "descriere": t.get("detalii", "")})
@@ -5698,7 +5729,7 @@ def d406_stocuri_xml(tenant_id, data_start, data_end, cui, ctx):
     except ValueError:
         # [lotul 6] „date format YYYY-MM-DD" nu spunea CARE dintre cele doua e gresita.
         raise _erori.DateInvalide("Datele de început și de sfârșit se scriu ca AAAA-LL-ZZ, cu zile "
-                                 "care există în calendar — am primit %r și %r."
+                                 "care există în calendar — s-a primit %r și %r."
                                  % (data_start, data_end))
     # [lotul 6] Un interval INVERSAT producea un XML SAF-T, adica un fisier oficial despre o
     # perioada care nu exista. Raportul se cere pe un interval, iar un interval are o ordine.
@@ -6067,12 +6098,16 @@ def vanzare_ic(tenant_id, corp, ctx):
         from core import facturi_api as _fa_vic
         with conn.cursor() as cur:
             tranzactie.fixeaza_schema(cur, schema)   # emite_factura foloseste INSERT necalificat
-        fres = _fa_vic.emite_factura(
-            conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),
-                          "cota_tva": 0}],
-            tert_nume=(v.get("nume") or "").strip() or None,
-            tert_cui=corp["cod_tva_client"], data_emitere=corp["data"],
-            tert_tara=_tara_client, axa_ic=corp.get("tip"))
+        try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența 224, generalizată)
+            fres = _fa_vic.emite_factura(
+                # [R193] contul de venit al liniei e cel ales mai sus (și pus pe notă), nu unul cerut modelului cu conexiunea ținută
+                conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),
+                              "cota_tva": 0, "cont_venit": cont_venit}],
+                tert_nume=(v.get("nume") or "").strip() or None,
+                tert_cui=corp["cod_tva_client"], data_emitere=corp["data"],
+                tert_tara=_tara_client, axa_ic=corp.get("tip"))
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
         fid = fres["factura_id"]
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_facturi_cu_factura(
@@ -6168,7 +6203,7 @@ def banca_parse_extras(tenant_id, continut, nume_fisier, ctx):
     try:
         tranzactii = banca_parser.parse_extras(continut, nume_fisier or "")
     except Exception as e:
-        raise _erori.CerereGresita(f"nu am putut citi extrasul: {e}")
+        raise _erori.CerereGresita(f"nu s-a putut citi extrasul: {e}")
     _crono.marca("parsare")
     for t in tranzactii:
         linie = {"sens": "debit" if t["suma"] < 0 else "credit",

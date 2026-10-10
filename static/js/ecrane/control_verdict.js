@@ -121,7 +121,7 @@ function randDecl(arr, clasa, marcabil = false) {
       ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}${marcare(x)}
     </div>`).join("");
 }
-// rand de declaratie fara termen (Nu pot verifica / Nu se datoreaza) — doar tip + motiv.
+// rand de declaratie fara termen (Nu se poate verifica / Nu se datoreaza) — doar tip + motiv.
 // [R6 21.08.2026] Un motiv poate primi un SEMNAL: o depunere care îl pune la îndoială. Varianta (b),
 // decisă de Costin: fiecare semnal stă lângă afirmația pe care o contrazice, nu într-un grup propriu —
 // contradicția (defect al NOSTRU) și opinia (informație) cer lucruri diferite de la contabil.
@@ -207,7 +207,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const neclar = d.neclar || [];
   const neaplicabile = d.neaplicabile || [];
   // [R6] depuneri fara obligatie pereche: „contrazice" langa «Nu se datoreaza», „opinie" langa
-  // «Nu pot verifica». NU urca pastila (control_fiscal_api._stare neatins): rosul pastilei inseamna
+  // «Nu se poate verifica». NU urca pastila (control_fiscal_api._stare neatins): rosul pastilei inseamna
   // „ai restante"; o incoerenta de verdict e un defect al nostru, nu o datorie a firmei.
   const semnale = d.depuneri_fara_obligatie || [];
   const contraziceri = semnale.filter((x) => x.fel === "contrazice");
@@ -216,7 +216,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const declaratii = `
     ${lipsa.length ? `<div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div><div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu", true)}</div>` : ""}
     ${urmarit.length ? `<div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div><div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
-    ${neclar.length || opinii.length ? `<div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar, opinii, "cf-semnal-opinie")}</div>` : ""}
+    ${neclar.length || opinii.length ? `<div class="cf-grup-titlu">Nu se poate verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar, opinii, "cf-semnal-opinie")}</div>` : ""}
     ${neaplicabile.length || contraziceri.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>` : ""}
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
@@ -369,7 +369,7 @@ export function legaVerdict(corp, nav, firma) {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern`,
           { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna), data_depunere: data.value, recipisa: rec.value.trim() || null });
         await reincarcaPePozitie(corp, firma, b);
-      } catch (e) { arataMesaj(f, e.mesaj || "Nu am putut marca declarația.", "eroare"); }
+      } catch (e) { arataMesaj(f, e.mesaj || "Nu s-a putut marca declarația.", "eroare"); }
     });
   }));
   corp.querySelectorAll(".cf-extern-anuleaza").forEach((b) => b.addEventListener("click", () => {
@@ -377,7 +377,7 @@ export function legaVerdict(corp, nav, firma) {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern/anuleaza`, { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna) });
         await reincarcaPePozitie(corp, firma, b);
-      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut anula marcarea.", "eroare"); }
+      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu s-a putut anula marcarea.", "eroare"); }
     });
   }));
   corp.querySelectorAll(".cf-anterior-toate").forEach((b) => b.addEventListener("click", () => {
@@ -386,7 +386,7 @@ export function legaVerdict(corp, nav, firma) {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depuse-anterior`, { perioade });
         await reincarcaPePozitie(corp, firma, b);
-      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu am putut marca declarațiile.", "eroare"); }
+      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu s-au putut marca declarațiile.", "eroare"); }
     });
   }));
 
@@ -433,7 +433,7 @@ export function legaVerdict(corp, nav, firma) {
       a = await api.post(`/control-fiscal/${firma.tenant_id}/audit-preluare`, {});
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "Rulează auditul de preluare"; }
-      arataMesaj(zona, `Nu am putut rula auditul: ${e.mesaj || e.message}`, "avert");
+      arataMesaj(zona, `Nu s-a putut rula auditul: ${e.mesaj || e.message}`, "avert");
       return;
     }
     const grup = (titlu, stare, cls) => {

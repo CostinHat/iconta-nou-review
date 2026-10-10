@@ -82,7 +82,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 async function primiteSPV(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let lista = [];
-  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile primite din SPV.</p>`; return; }
+  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
   if (!lista.length) {
     corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV ${semnAjutor("F043")}</h2>
       <div class="stare-goala">Nicio factură primită de validat. Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli.</div>`;
@@ -181,7 +181,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi-primite/${p.id}/xml`);
       xz.innerHTML = `<pre style="max-height:320px;overflow:auto;background:var(--gri-fundal-semafor);padding:8px;white-space:pre-wrap">${esc(r.xml || "")}</pre>`;
-    } catch (e) { arataMesaj(xz, e.mesaj || "nu am putut încărca XML-ul", "eroare"); }
+    } catch (e) { arataMesaj(xz, e.mesaj || "nu s-a putut încărca XML-ul", "eroare"); }
   });
 }
 
@@ -209,7 +209,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
       lista = (r && r.facturi) || [];
-    } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile emise.</p>`; return; }
+    } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile emise.</p>`; return; }
     // [cap.23, 21.08.2026] ACTUL DE ÎNCHIDERE a lunii pe facturi. Cât timp luna nu e închisă, evidența
     // ei e informativă — iar semaforul nu se poate sprijini pe ea când spune că o declarație nu se
     // datorează. Nu se afișează în portalul clientului (închiderea e act de contabil).
@@ -325,7 +325,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă scadențarul…</p>`;
   let d = { linii: [], rezumat: {}, clienti: [] };
   try { d = await api.get(`/tenants/${tenantId}/scadentar`); }
-  catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca scadențarul.</p>`; return; }
+  catch { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca scadențarul.</p>`; return; }
   const rez = d.rezumat || {};
   let vedere = "facturi";
 
@@ -431,14 +431,12 @@ const _bani = (x, mon) => {
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
   let f = null;
   try {
     f = await api.get(`/tenants/${tenantId}/facturi/${facturaId}`);
   } catch {
-    arataMesaj(corp, "Nu am putut încărca factura.", "eroare");
-    corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
+    arataMesaj(corp, "Nu s-a putut încărca factura.", "eroare");
     return;
   }
 
@@ -550,7 +548,6 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     </div>
     ${blocValuta}`;
 
-  corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
   const bSaga = corp.querySelector("#fd-saga");  // [export_saga_v1] F171
   if (bSaga) bSaga.addEventListener("click", async () => {
@@ -739,7 +736,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=8fc3bd020b");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=15b7548994");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -753,7 +750,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       await detaliiFactura(corp, nav, tenantId, f.id, opt);
       arataMesaj(corp, `Factura ${r.numar} a fost emis\u0103.`, "ok");
     } catch (e) {
-      btnTransforma.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + ((e && e.mesaj) || "Nu am putut transforma.") + '</span>');
+      btnTransforma.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + ((e && e.mesaj) || "Nu s-a putut transforma.") + '</span>');
     }
   });
   const zonaStorno = corp.querySelector("#fd-storno-zona");
@@ -809,14 +806,12 @@ const MF_CULORI = ["#5b8dd9", "#4a9d97", "#4a9d6f", "#c15a70", "#8b6fc9", "#c17d
 
 async function modelFactura(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
   let profil = {};
   try {
     profil = await api.get(`/tenants/${tenantId}/firma-profil`);
   } catch {
-    arataMesaj(corp, "Nu am putut încărca profilul firmei.", "eroare");
-    corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
+    arataMesaj(corp, "Nu s-a putut încărca profilul firmei.", "eroare");
     return;
   }
 
@@ -867,7 +862,6 @@ async function modelFactura(corp, nav, tenantId, opt) {
       </div>
     </div>`;
 
-  corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
   const preview = corp.querySelector("#mf-preview");
 
@@ -978,12 +972,11 @@ async function modelFactura(corp, nav, tenantId, opt) {
 async function listaRecurente(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   let sabloane = [];
   try {
     const r = await api.get(`/tenants/${tenantId}/facturi-recurente`);
     sabloane = (r && r.sabloane) || [];
-  } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca șabloanele de facturi recurente.</p>`; return; }
+  } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca șabloanele de facturi recurente.</p>`; return; }
   randareRecurente(corp, nav, tenantId, opt, sabloane);
 }
 
@@ -1014,7 +1007,6 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" data-actiune="POST /tenants/{tenant_id}/facturi-recurente" style="margin-top:12px">+ \u0218ablon nou</button>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelector("#fr-add").addEventListener("click", () => nav.mergi("\u0218ablon nou", (c) => formSablon(c, nav, tenantId, opt)));  // faza_b_traseu_v1
 
   corp.querySelectorAll(".fr-toggle").forEach((b) => b.addEventListener("click", async () => {

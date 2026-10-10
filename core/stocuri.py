@@ -178,7 +178,7 @@ def coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428):
     numitor = (_d(si_371) + _d(rd_371)) - (_d(si_4428) + _d(rc_4428))
     if numitor <= 0:
         raise ValueError(
-            "Nu pot calcula coeficientul de adaos: valoarea mărfurilor la preț de vânzare "
+            "Nu se poate calcula coeficientul de adaos: valoarea mărfurilor la preț de vânzare "
             "(contul 371) minus TVA neexigibilă (contul 4428) dă zero sau negativ. Verifică "
             "soldurile și rulajele conturilor 371 și 4428 pe perioada aleasă — până atunci "
             "descărcarea de gestiune nu se poate face.")

@@ -371,7 +371,7 @@ def cere_denumire_scriibila(nume):
         raise ValueError("denumirea firmei nu poate fi goală")
     if not any(ch.isalpha() for ch in nume):
         raise ValueError(
-            "Denumirea firmei trebuie să conțină cel puțin o literă — am primit %r. Ea pleacă "
+            "Denumirea firmei trebuie să conțină cel puțin o literă — s-a primit %r. Ea pleacă "
             "mai departe pe declarații (de exemplu în D394) și pe antetul facturii, deci nu "
             "poate fi doar semne." % nume)
     return nume

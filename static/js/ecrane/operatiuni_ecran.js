@@ -568,7 +568,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           ? `<p class="pf-intro">${note.length} note generate (ciorne #${note.map((n) => esc(String(n))).join(", #")}). Le validezi din Registru jurnal.</p>`
           : `<p class="pf-intro">Calcul (nu s-a generat nicio notă):</p><ul class="pf-intro">${Object.entries(r || {}).map(([k, v]) => `<li>${esc(k.replace(/_/g, " "))}: <b>${esc(String(v))}</b></li>`).join("")}</ul>`;
       } catch (e) {
-        arataMesaj(zona, e.mesaj || e.message || "Nu am putut genera nota — verifică datele introduse și reîncearcă.", "eroare");
+        arataMesaj(zona, e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă.", "eroare");
       }
     });
   };

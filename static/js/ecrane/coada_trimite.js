@@ -34,7 +34,7 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
       aduInVedere(zona);
       return null;
     }
-    const text = (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj || "Nu am putut trimite în coadă.";
+    const text = (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj || "Nu s-a putut trimite în coadă.";
     arataMesaj(zona, text + (det.erori ? " — " + det.erori : ""), "eroare");
     return null;
   }

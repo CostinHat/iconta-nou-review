@@ -760,7 +760,7 @@ def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_
     text, mesaj = _genereaza_povestea(patron)
     patron.captura("poveste_generata")
     assert text == FAPT_32, text
-    assert "Am scos din textul generat 1 propoziție" in mesaj and "Felicitări pentru rezultat!" in mesaj, mesaj
+    assert "Din textul generat s-a scos o propoziție" in mesaj and "Felicitări pentru rezultat!" in mesaj, mesaj
     pr = ai_prompturi()
     assert len(pr) == 2 and "laudă nesusținută de cifre: excelentă" in pr[1]["prompt"], [x["prompt"][-400:] for x in pr]
     assert "Ton cald" not in pr[0]["prompt"] and "NU lauda" in pr[0]["prompt"], pr[0]["prompt"][:600]

@@ -69,7 +69,7 @@ def ruleaza(acum=None):
                 "serial_certificat": serial,
                 "refresh_token": s.decripteaza(refresh_enc),  # reimprospateaza_token cere clar
             }
-            nou = s.reimprospateaza_token(token_row)
+            nou = s.reimprospateaza_token(token_row, acum=acum)   # aceeași clipă ca selecția de mai sus
             reusite += 1
             print("  OK token %s (%s): access_expira %s -> %s"
                   % (tid, eticheta, access_expira.isoformat(), nou["access_expira"].isoformat()))

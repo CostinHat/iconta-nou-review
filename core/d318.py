@@ -236,13 +236,13 @@ def erori_generare(prof, manual):
             if not str(fz.get("vat_id") or fz.get("vatIdentificationNumber") or "").strip():
                 er.append("Achiziție %d simplificată: furnizorul cere vatIdentificationNumber." % i)
         if not _data_ok(f.get("issuing_date", f.get("issuingDate"))):
-            er.append("Achiziție %d: issuing_date invalid (aștept yyyy-mm-dd sau dd.mm.yyyy)." % i)
+            er.append("Achiziție %d: issuing_date invalid (se așteaptă yyyy-mm-dd sau dd.mm.yyyy)." % i)
     for i, f in enumerate(importuri, 1):
         if not str(f.get("reference_number") or "").strip() and \
                 not str(f.get("reference_information", f.get("referenceInformation")) or "").strip():
             er.append("Import %d: fără reference_number cere reference_information." % i)
         if not _data_ok(f.get("issuing_date", f.get("issuingDate"))):
-            er.append("Import %d: issuing_date invalid (aștept yyyy-mm-dd sau dd.mm.yyyy)." % i)
+            er.append("Import %d: issuing_date invalid (se așteaptă yyyy-mm-dd sau dd.mm.yyyy)." % i)
     return er
 
 

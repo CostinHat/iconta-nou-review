@@ -32,7 +32,8 @@ def pachet_genereaza(tenant_id, an, luna, ctx):
     """[P7 · use-case] Corpul rutei `/pachete/{tenant_id}/genereaza`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._pachet_schema(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
-        return _pachete.genereaza_poveste(cs, cp, tenant_id, an, luna, schema)
+        date = _pachete.date_poveste(cs, cp, tenant_id, an, luna, schema)
+    return _pachete.genereaza_poveste(date, an, luna)   # [R193] modelul, cu conexiunile închise
 
 
 def pachet_poveste_get(tenant_id, an, luna, ctx):

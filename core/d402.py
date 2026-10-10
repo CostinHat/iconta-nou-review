@@ -246,7 +246,7 @@ def erori_generare(prof, manual):
     an = int(prof.get("an") or 0)
     # --- antet platitor de venit (sectiunea A) ---
     if not (_cui_valid(manual.get("cif")) or _cnp_valid(manual.get("cif"))):
-        er.append("CIF plătitor (cif) invalid - aștept CUI (2-10 cifre) sau CNP (13 cifre).")
+        er.append("CIF plătitor (cif) invalid - se așteaptă CUI (2-10 cifre) sau CNP (13 cifre).")
     for camp, et in (("den_p", "Denumire plătitor (Den_P)"),
                      ("adresa_p", "Adresa plătitor (Adresa_P)"),
                      ("nume_declar", "Nume declarant (nume_declar)"),

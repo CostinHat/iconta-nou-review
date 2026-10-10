@@ -237,7 +237,7 @@ def vacue(radacini=None):
 # (prinde si SQL de tipul "NOT NULL fara default"), deci `mesaj_de_rau` e plafon SUPERIOR, iar
 # `apare_oricum` plafon INFERIOR. Directia se scrie, nu se presupune.
 SEMNE_RAU = (
-    "eroare", "erori", "lipse", "lipsa", "lipsă", "nu se poate", "nu poate", "nu am putut",
+    "eroare", "erori", "lipse", "lipsa", "lipsă", "nu se poate", "nu poate",
     "invalid", "gresit", "greșit", "atentie", "atenție", "blocat", "blocaj", "refuz", "esec",
     "eșec", "necunoscut", "nevalid", "obligatoriu", "trebuie", "nu exista", "nu există",
     "imposibil", "conflict", "duplicat", "expirat", "depasit", "depășit", "avertism",

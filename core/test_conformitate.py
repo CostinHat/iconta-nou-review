@@ -539,14 +539,19 @@ def test_fiecare_restanta_e_completa():
     assert not rele, "restanțe incomplete:\n" + "\n".join(rele)
 
 
+#: [CLAUDE.md §2.3 pct.10, decizia Costin 08.10.2026 pct.5: registrele intră în commitul lotului] restanța rezolvată în commitul care
+#: o conține poartă textul ăsta în locul SHA-ului (același marcaj ca `core/test_deficiente.AUTO_COMMIT`); SHA-ul e în raport.
+AUTO_COMMIT = "commitul care conține această intrare"
+
+
 def test_commiturile_restantelor_exista():
     """O restanță ancorată pe un commit inventat n-are contor, deci n-are vechime."""
     rele = []
     for cod, (_titlu, corp) in sorted(_restante().items()):
         for camp in ("deschisă pe commit", "rezolvată pe commit"):
             v = (_camp(corp, camp) or "").strip("`*— ")
-            if not v:
-                continue
+            if not v or v == AUTO_COMMIT:
+                continue   # CLAUDE.md §2.3 pct.10: registrul nu poate purta SHA-ul commitului care îl conține
             if _git("cat-file", "-e", "%s^{commit}" % v).returncode != 0:
                 rele.append("  %s: `%s` = %r nu există în istoric" % (cod, camp, v))
     assert not rele, "commituri inexistente în restanțe:\n" + "\n".join(rele)

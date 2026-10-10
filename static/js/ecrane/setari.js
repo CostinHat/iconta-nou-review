@@ -75,7 +75,7 @@ export async function randeazaSetari(corp, nav) {
           us.nume_firma = r.cabinet.nume;
           sesiune.intra(sesiune.token(), us);
           arataMesaj(msg, "Date cabinet salvate.", "ok");
-        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+        } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
       } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
     });
   }
@@ -111,7 +111,7 @@ export async function randeazaSetari(corp, nav) {
         if (r && r.ok) {
           sesiune.actualizeazaUser({ poate_pregati: r.poate_pregati, poate_valida: r.poate_valida, poate_depune: r.poate_depune });
           arataMesaj(msg, "Competențe salvate.", "ok");
-        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+        } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
       } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
       btnCmp.disabled = false;
     });
@@ -169,7 +169,7 @@ export async function randeazaSetari(corp, nav) {
         if (r && r.url) {
           window.open(r.url, "_blank");
           arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino aici și redeschide ecranul.", "info");
-        } else { arataMesaj(msg, "Nu am putut porni autorizarea.", "eroare"); }
+        } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
       } catch (e) { arataMesaj(msg, "Eroare la pornirea autorizării.", "eroare"); }
       btn.disabled = false; btn.textContent = text;
     });
@@ -236,7 +236,7 @@ export async function randeazaSetari(corp, nav) {
           const r = await api.post("/gdpr/cerere-stergere", { confirmare_nume: inp.value.trim(), motiv: corp.querySelector("#gdpr-motiv").value.trim() || null });
           if (r && r.ok) {
             arataMesaj(msg, "Cerere înregistrată (#" + r.cerere_id + "). Îți răspundem în cel mult 5 zile lucrătoare.", "ok");
-          } else { arataMesaj(msg, "Nu am putut înregistra cererea.", "eroare"); btnCe.disabled = false; }
+          } else { arataMesaj(msg, "Nu s-a putut înregistra cererea.", "eroare"); btnCe.disabled = false; }
         } catch (e) { arataMesaj(msg, e.mesaj || "Eroare la trimiterea cererii.", "eroare"); btnCe.disabled = false; }
       }, { textOk: "Trimite cererea" });
     });
@@ -268,7 +268,7 @@ export async function randeazaSetari(corp, nav) {
         if (r && r.ok && r.user) {
           sesiune.intra(sesiune.token(), r.user);
           arataMesaj(msg, "Profil salvat.", "ok");
-        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+        } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
       } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
     });
   }
@@ -320,7 +320,7 @@ async function _incarcaChei(corp) {
   const zona = corp.querySelector("#set-chei-lista");
   if (!zona) return;
   let chei = [];
-  try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca cheile API.</p>`; return; }
+  try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca cheile API.</p>`; return; }
   if (!chei.length) { zona.innerHTML = `<div class="stare-goala">Nicio cheie generată încă.</div>`; return; }
   zona.innerHTML = chei.map((c) => `
     <div class="pf-frand">
@@ -335,7 +335,7 @@ async function _incarcaChei(corp) {
       try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
       catch (e) {
         b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Nu am putut revoca cheia.") + '</span>');
+        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Nu s-a putut revoca cheia.") + '</span>');
       }
     }, { textOk: "Revoca" });
   }));

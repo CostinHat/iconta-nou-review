@@ -134,7 +134,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă adresa contribuabil (adresa_c).")
     cont = str(manual.get("cont_c") or "").replace(" ", "").upper()
     if cont and not _IBAN_OK.match(cont):
-        er.append("IBAN contribuabil (cont_c) invalid - aștept RO + 22 caractere.")
+        er.append("IBAN contribuabil (cont_c) invalid - se așteaptă RO + 22 caractere.")
     # R42: suma de control trebuie sa fie > 0 (cel putin o componenta CAS/CASS).
     if calcul_d600(manual)["totalPlata_A"] <= 0:
         er.append("Nicio componenta CAS/CASS > 0 (totalPlata_A trebuie să fie > 0) - DUK regula R42.")

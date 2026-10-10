@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**756 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**760 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 719
+### `core/` — 723
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8913,6 +8913,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_chei_unice.py` — GARD — o cheie de registru nu se repetă (comanda Costin 07.10.2026, C7).
+- `core/test_cifre_referinta_poarta.py` — GARD — cifrele de referință ale firmelor F1–F5 opresc publicarea la orice diferență (comanda Costin 10.10.2026 pct.1, verbatim în
 - `core/test_citari_plan.py` — GARDĂ: o trimitere la un număr de linie din `PLAN_HARDENING.md` arată spre ce spune că citează.
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
 - `core/test_cititor_js.py` — GARD [04.09.2026]: cititorul comun de JS nu poate orbi tacut peste cod real.
@@ -9270,6 +9271,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_jurnal_refuz.py` — GARDĂ: calea jurnalului refuză cu TEMEI, și confruntă conturile cu planul firmei.
 - `core/test_jurnal_regim_tva.py` — GARD — jurnalul schimbărilor regimului de TVA (PIVOT DECIZII 04.10.2026, răspunsurile lui Costin la confirmări).
 - `core/test_kpi_client.py` — —
+- `core/test_legari_await.py` — GARD — un clic al contabilului nu se pierde (comanda Costin 10.10.2026 pct.8, verbatim: „Clasa «butoane legate după o cerere
 - `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
 - `core/test_limite_verificarii.py` — GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
 - `core/test_lista3.py` — GARDĂ: titlul listei 3 e GENERAT, nu scris — a doua aplicare a regulii, pe propria listă.
@@ -9338,6 +9340,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_p7_uc.py` — core/test_p7_uc.py — CONTRACTUL HTTP al valului use-case, confruntat cu starea de dinainte.
 - `core/test_p7_v1_citiri.py` — GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 - `core/test_p7_v2_scrieri.py` — GARDA V2 — nicio scriere și niciun control de tranzacție în corpul unei rute.
+- `core/test_parametru_transmis.py` — GARD — o valoare primită de un înveliș ajunge la funcția pe care o învelește (10.10.2026).
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
@@ -9388,6 +9391,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_pull_declaratii.py` — Teste pe pull() — granita COD <-> BAZA DE DATE pentru generatoarele de declaratii.
 - `core/test_q16_cor.py` — GARD Q16 — preview salariati imbogateste COR cu denumirea ocupatiei (nu doar codul).
 - `core/test_r191_amortizare_confruntata.py` — R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA in conturile 28xx.
+- `core/test_r193_model_fara_conexiune.py` — GARD R193 — întrebarea către modelul AI se pune cu pool-ul liber (comanda Costin 10.10.2026 pct.2).
 - `core/test_r36_evidenta.py` — GARDA deciziilor Costin 08.10.2026 §6 pct.6 + pct.7 (verbatim în DECIZII):
 - `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
 - `core/test_ramas.py` — GARDĂ anti-vacuu pe lista derivată a ce a rămas de făcut.
@@ -10735,3 +10739,17 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 |---|---|---|---|---|
 | statica se publică numai odată cu restartul | `scripts/githooks/post-commit` (`publica_statica`, chemată numai sub `core.migrari_registru verifica`, înaintea restartului) + `core/migrari_registru.py` (`_reporneste_daca_e_cazul`: publică statica HEAD-ului înaintea restartului; dacă publicarea eșuează, nu repornește) + `core/test_publicare_restart_neconditionat.py::test_statica_se_publica_numai_odata_cu_restartul` | browserul primește JS-ul commitului nou cât procesul viu rulează commitul vechi (văzut la `445f9932`: statica publicată la 04:56, procesul pe `60c716d1`; la fel în lotul din 09.10, cât a așteptat `repara_tenant049.sh`) | apelul scos din ramura verificată -> ROȘU; publicarea scoasă din rulator -> ROȘU | o publicare manuală (`publica_static.py`, `--din-arbore`) rămâne posibilă — e un act deliberat, cu amprenta în `.publicat.json`, iar `main._alege_static` o arată la pornire |
 | jurnalul și „Închidere lună” își leagă butoanele înaintea cererilor | `static/js/ecrane/firme.js` (`ecranJurnal`: `legaBlocareLuna` neașteptată; `ecranInchidereLuna`: navigarea legată imediat după desenare) + `core/test_retestul_plasei.py::test_jurnalul_si_inchiderea_isi_leaga_butoanele_inaintea_cererilor` | un clic (← luna, luna →, „Validează”) pierdut cât ecranul își citește starea — plasa l-a prins de două ori (58, apoi 96 la poarta commitului de registre din 10.10) | `await` pus la loc -> ROȘU; navigarea după cereri -> ROȘU | gard pe FORMA codului (cursa nu se probează stabil în browser); celelalte ecrane cu butoane legate după `await` nu sunt măsurate |
+
+## 10.10.2026 — „Răspunsul §6”: cifrele de referință în poartă, D406 ca TVA-ul, vocea a treia, clicul care nu se pierde, R193 (comanda Costin)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| cifrele aprobate F1–F5 opresc publicarea la orice diferență | `scripts/cifre_referinta.py --verifica` (referința `scripts/cifre_referinta_aprobate.json`) în `scripts/githooks/poarta-suita`, + `scripts/githooks/verifica-mesaj` (o referință schimbată cere amprenta ei în DECIZII) + `core/test_cifre_referinta_poarta.py` (5) | o publicare cu o cifră diferită de cea aprobată pe F1–F5 (balanță, D112, D300, D390, D394, D406), sau cu producția necitibilă (fail-closed, rc 2); o referință schimbată fără aprobarea scrisă | treapta scoasă din poartă / `exit 1` scos / regula aprobării scoasă / `diferente` care întoarce [] / `AuditFileDateCreated` scos din volatile -> roșu | citește producția: și o schimbare de DATE pe F1–F5 oprește publicarea (cum cere textul); acoperă numai cele cinci firme |
+| D406 blochează la diferența față de balanță, și cu ciorne | `core/uc_coada.py` (`decizie_poarta`) + `core/test_r36_evidenta.py::test_d406_si_tva_blocheaza_…` | trimiterea în coadă a unei declarații (D300/D394/D390/D406) care nu se potrivește cu balanța, pe motiv că luna are ciorne | ciornele trecute înapoi drept „doar avertisment” -> roșu | diferența D406 nu se provoacă din ecran (deficiența 133): proba e pe funcție |
+| aplicația vorbește la persoana a treia | `core/limba_ecran.py` (`VOCE`) + `core/test_text_afisat_limbaj.py` (`test_aplicatia_vorbeste_la_persoana_a_treia`, `test_detectorul_de_voce_are_dinti`; toate literalele Python și JS, șabloane imbricate incluse) | „nu pot …”, „Nu am putut …”, „am primit”, „aștept”, „Ți-am trimis” într-un text al aplicației; o excepție rămasă fără obiect | titlul grupului CF „Nu pot verifica” pus înapoi / un mesaj Python la persoana întâi / „nu am putut” scos din detector / o excepție fără obiect -> roșu | lista formelor e închisă: o formă nouă de persoana întâi („n-o să pot”) trece până intră în `VOCE` |
+| un buton nu se leagă după o cerere așteptată | `scripts/scan_legari_await.js` (acorn, pe toate ecranele) + `core/test_legari_await.py` (3) + plasa `e2e_bloc_e.py::test_def_220_…` | element pus în pagină -> `await`/`.then` -> abia apoi clicul legat (clicul dat între timp se pierde) | legarea după `await legaBlocareLuna` / detector fără `await` / fără `.then` / în browser: legarea după cererea controalelor -> roșu | HTML întors de o funcție ajutătoare nu se vede ca randare; legarea prin delegare pe container nu se judecă |
+| întrebarea către model se pune cu pool-ul liber (R193 — **ACOPERIT**, supersedează rândul PARȚIAL din 09.10) | `core/test_val3_contracte.py` (`CLICHET_C5 = 0`, exact; familiile `ai_client.genereaza_text` / `citeste_imagini`) + `core/test_r193_model_fara_conexiune.py` (7, conexiunile numărate în clipa întrebării) | o cale care întreabă modelul (sau face alt I/O extern) cu o conexiune din pool ținută; emiterea care întreabă modelul din tranzacție; un răspuns lipsă transformat în întrebare | întrebarea pusă înapoi în `_potriveste_linii` / `produse_api.creeaza` / `cote_tva.raspuns`; revalidarea recurentelor scoasă; clichetul 10 -> roșu | scanerul P5 e static: un apel prin `getattr`/dict de funcții nu se vede (aceeași limită ca la P5) |
+| o valoare primită ajunge la funcția învelită | `core/test_parametru_transmis.py` (2) | `F(p)` care cheamă `G(p=implicit)` fără să-i dea `p` (deficiența 221: `tert_pf` pierdut între `emite_factura` și `creeaza_factura`) | `tert_pf=tert_pf` scos / `acum=acum` scos din `spv_refresh` -> roșu | G se rezolvă după nume, numai când e unic; `conn`/`cur`/`schema`/`ctx` nu se judecă |
+| refuzul emiterii ajunge la contabil (422), nu ca 500 | `core/test_refuz_generator_422.py::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500` + `core/woocommerce.py` (comanda refuzată numită, celelalte importate) + plasa `e2e_magazin.py::test_def_224_…` | un apel `emite_factura`/`creeaza_factura` din use-case fără traducerea `ValueError`; o comandă refuzată care oprește sincronizarea | `except ValueError` scos din `_importa` -> roșu (și în browser: „eroare 500”) | numai familia emiterii; alte refuzuri `ValueError` neprinse ies tot prin handlerul global (500) |
+| harta casetelor din Control fiscal declară grupul „Înainte de preluare” | `frontend_test/vizual/harta_casete.py` (intrarea `inainte_de_preluare`) + `frontend_test/vizual/scan_casete.py` (titlul `— perioadă (N, …)`, rândurile din `<details>`) + `core/test_harta_casete.py` | un grup randat pe ecran fără așteptare scrisă (grupul exista din 08.10, artefactul nu se regenerase de la 21.08 — nepotrivirea nu se vedea) | titlul din hartă schimbat -> 2 roșii | artefactul se regenerează numai când un lot atinge ecranul (scanarea vizuală), deci un grup nou e prins la prima scanare, nu la commit |
+| plasa: 220–224 | `frontend_test/e2e/e2e_bloc_e.py::test_def_220_…`, `frontend_test/e2e/e2e_magazin.py::test_def_221…224` (magazinul ținut de un server HTTP local) | revenirea oricăreia dintre cele cinci deficiențe | câte o mutație pe copie, roșie (raportul lotului) | magazinul e simulat local: răspunsul unui WooCommerce real (paginare, alte câmpuri) nu e probat |

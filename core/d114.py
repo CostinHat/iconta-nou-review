@@ -174,7 +174,7 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not (2 <= len(_cif(manual.get("cif_declarant"))) <= 10):
-        er.append("CIF declarant (cif_declarant) invalid — aștept 2..10 cifre.")
+        er.append("CIF declarant (cif_declarant) invalid — se așteaptă 2..10 cifre.")
     if not str(manual.get("den_declarant") or "").strip():
         er.append("Lipsă denumire declarant (den_declarant).")
     if not str(manual.get("adresa_declarant") or "").strip():

@@ -104,7 +104,7 @@ def erori_generare(prof, manual):
         er.append("CIF entitate (cif_entitate) invalid.")
     iban = str(manual.get("cont_entitate") or "").replace(" ", "").upper()
     if not _IBAN_OK.match(iban):
-        er.append("IBAN entitate (cont_entitate) invalid - aștept RO + 22 caractere.")
+        er.append("IBAN entitate (cont_entitate) invalid - se așteaptă RO + 22 caractere.")
     try:
         valab = int(manual.get("valabilitate_distribuire"))
     except (TypeError, ValueError):

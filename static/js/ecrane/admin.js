@@ -4,10 +4,10 @@
 
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt } from "../api.js?v=2561dbfd34";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=f421966906";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=db921cefb0";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=0692c239ea";
-import { randeazaAdminAnalytics } from "./admin_analytics.js?v=eb0ee9388f";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=83cac2dbab";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=75d0c5150d";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
+import { randeazaAdminAnalytics } from "./admin_analytics.js?v=473ece7371";
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {

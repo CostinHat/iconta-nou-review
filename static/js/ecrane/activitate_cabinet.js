@@ -59,7 +59,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
       cen = await api.get("/asistenti/echipa/centralizator" + sfx);
       jur = await api.get("/asistenti/echipa/jurnal" + sfx + (sfx ? "&" : "?") + "limit=200");
     } catch {
-      corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca activitatea.</p>`;
+      corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea.</p>`;
       return;
     }
 

@@ -91,7 +91,7 @@ def test_niciun_motiv_nou_formulat_ca_absenta(motive):
     assert not rele, (
         "motiv «nu se datorează» formulat ca ABSENȚĂ, fără poartă numită:\n" + "\n".join(rele)
         + "\n\nAbsența unei înregistrări nu e absența unui fapt. Ori muți intrarea în `neclar` "
-        "(«nu pot verifica») cu remediul «verifică dacă faptul a existat», ori — dacă absența e "
+        "(«nu se poate verifica») cu remediul «verifică dacă faptul a existat», ori — dacă absența e "
         "măsurată — adaugi poarta în `_ABSENTA_MOTIVATA`, scrisă ca s-o poată contesta cineva.")
 
 
@@ -101,8 +101,8 @@ def test_d205_nu_mai_e_nu_se_datoreaza(motive):
     assert not [s for _, s in motive if "457" in s], \
         "D205 e iar «nu se datorează» pe absența rulajului pe 457"
     src = io.open(_FIS, encoding="utf-8").read()
-    assert "nu pot verifica: am note validate" in src, \
-        "reîncadrarea D205 a dispărut — trebuie să rămână în «nu pot verifica», cu remediul scris"
+    assert "nu se poate verifica: există note validate" in src, \
+        "reîncadrarea D205 a dispărut — trebuie să rămână în «nu se poate verifica», cu remediul scris"
 
 
 def test_d301_pe_fapt_a_ramas_reincadrat():

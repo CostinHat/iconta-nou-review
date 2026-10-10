@@ -42,7 +42,10 @@ RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #: POST /tenants/{id}/produse, POST /tenants/{id}/produse/potriveste, POST /tenants/{id}/facturi/{fid}/transforma, GET /tipare/ai,
 #: POST /tenants/{id}/vanzare-ic, POST /tenants/{id}/woocommerce/sincronizeaza. Durata e mărginită de azi (`ai_client.TERMEN_SECUNDE`,
 #: 60 s; înainte, 10 minute implicit). Mutarea întrebării în afara conexiunii e datorie în GARZI și decizie de scop la Costin.
-CLICHET_C5 = 10
+#: [R193, comanda Costin 10.10.2026 pct.2, verbatim: „R193: da, cele 10 căi care cer un răspuns AI ținând o conexiune la bază se mută
+#: înaintea conexiunii.”] 10 -> 0: întrebarea se pune după o citire scurtă și înaintea tranzacției (`uc_comun._intreaba_modelul`,
+#: `cote_tva.intreaba`; povestea, tiparele și bonul la fel), iar codul care ține conexiunea primește numai răspunsurile.
+CLICHET_C5 = 0
 
 
 # ============================================================
@@ -89,6 +92,8 @@ def test_anti_vacuum_detectorul_chiar_vede_codul():
     "core/anaf_api.py::valideaza_cui",
     "core/observare.py::trimite_email_html",
     "core/curs_bnr.py::_descarca",
+    "core/ai_client.py::genereaza_text",   # [R193, 10.10.2026] cota, contul de venit, povestea, tiparele
+    "core/ai_client.py::citeste_imagini",  # [R193] bonul din portal
 ])
 def test_familia_inchisa_nu_reapare_in_C5(familie):
     """Fiecare familie inchisa isi are propria proba: o regresie se numeste singura, nu se pierde

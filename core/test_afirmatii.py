@@ -40,7 +40,7 @@ def test_absenta_nu_poate_exista_fara_sursele_consultate():
 def test_cheia_prezenta_cu_None_e_un_RASPUNS_nu_o_scapare():
     """Distincția care contează: cheia lipsă = afirmație incompletă; cheia prezentă cu None =
     necunoaștere DECLARATĂ. Intervalul deschis la dreapta e o afirmație validă despre lume."""
-    a = afirmatie("necunoastere", "d300", "nu pot demonstra de când e înregistrată în scopuri de TVA",
+    a = afirmatie("necunoastere", "d300", "nu se poate demonstra de când e înregistrată în scopuri de TVA",
                   domeniu_de="2025-01", domeniu_pana=None)
     assert a["domeniu_pana"] is None
     with pytest.raises(AfirmatieIncompleta):

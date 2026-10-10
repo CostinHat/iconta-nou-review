@@ -589,7 +589,7 @@ def verifica_d112(conn, schema, an, luna):
             actiune = "Completează profilul firmei și salariații, apoi reîncearcă."
         return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
                     "d112", "Salarii", "D112 nu s-a putut genera.",
-                    f"Nu pot verifica salariile: declarația nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
+                    f"Nu se pot verifica salariile: declarația nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
@@ -672,7 +672,7 @@ def verifica_tva(conn, schema, an, luna):
         return {"an": an, "luna": luna, "stare": "gri",
                 "constatari": [_gri_liber(
                     "d300", "TVA", "D300 nu s-a putut genera.",
-                    f"Nu pot verifica TVA-ul: decontul nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
+                    f"Nu se poate verifica TVA-ul: decontul nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "facturi_necontabilizate": [],
                 "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
@@ -936,14 +936,14 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
             ("Declarație față de declarație: baza intracomunitară din D390 față de D300 depus (rândurile salvate la depunere). "
              "Niciun D300 nu e depus prin aplicație în perioada TVA, deci nu e nimic de comparat. E o absență, nu o "
              "diferență — de aceea nu e semnalată cu roșu."),
-            "Nu există D300 depus în fereastră — nu pot compara declarația recapitulativă (D390) cu decontul.",
+            "Nu există D300 depus în fereastră — nu se poate compara declarația recapitulativă (D390) cu decontul.",
             "declarațiile D300 depuse prin aplicație, în fereastra TVA")]
     if randuri is None:
         return [_absenta_libera(
             "d390", "D390 vs D300 depus" + per_sufix,
             ("D300 din perioadă a fost depus fără rândurile salvate (o depunere de dinainte ca aplicația să le "
              "păstreze, sau un import). Lipsa datelor nu e o diferență — de aceea nu e semnalată cu roșu."),
-            "D300 depus fără rândurile salvate — nu pot compara.",
+            "D300 depus fără rândurile salvate — nu se poate compara.",
             "rândurile salvate ale D300 depus în perioadă")]
     R = (randuri or {}).get("R") or {}
     rez = []
@@ -1071,7 +1071,7 @@ def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
             constatari += _stampileaza([_gri_liber(
                 "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
                 "Declarație față de declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
-                "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
+                "NU se poate recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
                 an, luna)], TIP_D390_VS_D300)
     return constatari
 
@@ -1120,7 +1120,7 @@ def verifica_d390(conn, schema, an, luna):
                 # ca supervizorul sa nu citeasca „n-am verificat" drept „n-am ce semnala".
                 "orizontal_rulat": False, "constatari": [_gri_liber(
                     "d390", "Intracomunitar", "D390 nu s-a putut genera.",
-                    f"Nu pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({_fara_eticheta(e)}).",
+                    f"Nu se pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({_fara_eticheta(e)}).",
                     an, luna,
                     {"fel": "investigatie", "cauza": _cauza, "actiune": _actiune, "facturi": []})],
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
@@ -1179,7 +1179,7 @@ def _gri_cota_tva(an, luna, motiv):
     return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
                 "d300", "Cotă TVA facturi emise",
                 "Conformitatea cotei TVA nu s-a putut evalua.",
-                f"Nu pot verifica cota TVA a facturilor emise: {motiv}", an, luna,
+                f"Nu se poate verifica cota TVA a facturilor emise: {motiv}", an, luna,
                 {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
                  "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
                  "facturi": []})],
@@ -1198,7 +1198,7 @@ def verifica_cota_tva(conn, schema, an, luna):
         with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
             linii = [dict(r) for r in _repo.select_facturi_2(cur, schema, inceput, sfarsit)]
     except Exception as e:
-        return _gri_cota_tva(an, luna, f"nu pot citi facturile emise ({e}).")
+        return _gri_cota_tva(an, luna, f"nu se pot citi facturile emise ({e}).")
     return constatare_cota_tva(linii, an, luna)
 
 
@@ -1212,7 +1212,7 @@ def constatare_cota_tva(linii, an, luna):
     try:
         standard_family = {int(round(float(v) * 100)) for _, v, _ in _c.COTE["tva_standard"]}
     except Exception as e:
-        return _gri_cota_tva(an, luna, f"nu pot citi nomenclatorul cotelor ({e}).")
+        return _gri_cota_tva(an, luna, f"nu se poate citi nomenclatorul cotelor ({e}).")
 
     verificate = 0
     nedeterminabile = 0   # linii cu cota neparsabila: SARITE, dar declarate in limita - nu ascunse tacit.
@@ -1492,7 +1492,7 @@ def _c_gri(cheie, eticheta, temei, motiv, an=None, luna=None):
                     remediu={"fel": "investigatie", "cauza": "Date sau profil fiscal incomplet.",
                              "actiune": "Completează datele firmei și reîncearcă.", "facturi": []},
                     a=_af.afirmatie("necunoastere", cheie,
-                                    "NU pot reconcilia %s: %s" % (eticheta, motiv),
+                                    "NU se poate reconcilia %s: %s" % (eticheta, motiv),
                                     domeniu_de=dom, domeniu_pana=dom))
 
 
@@ -1816,7 +1816,7 @@ def _orizontal_d101(conn, schema, _an_curent):
                 ("Confruntare declarație-vs-sursă-independentă, pe an. Niciun D101 depus prin "
                  "aplicație, pe niciun an -> comparația devine posibilă după prima depunere. GRI, "
                  "nu roșu: absența unei depuneri nu e o divergență."),
-                "Niciun D101 depus prin aplicație — nu pot confrunta nimic.",
+                "Niciun D101 depus prin aplicație — nu se poate confrunta nimic.",
                 "declarațiile D101 depuse prin aplicație")], tip)
         return rez
     d101 = _depuneri(conn, schema, "d101", an)
@@ -1830,7 +1830,7 @@ def _orizontal_d101(conn, schema, _an_curent):
                 ("Confruntarea declarației cu o sursă independentă, pe anul %d. Niciun D101 nu e depus prin "
                  "aplicație pe anul ăsta, deci nu am ce confrunta. Lipsa unei depuneri nu e o diferență — de "
                  "aceea nu e semnalată cu roșu." % an),
-                "Niciun D101 depus prin aplicație pe %d — nu pot confrunta nimic." % an,
+                "Niciun D101 depus prin aplicație pe %d — nu se poate confrunta nimic." % an,
                 "declarațiile D101 depuse prin aplicație, pe anul %d" % an)], tip)
         return rez
     if not cu_randuri:
@@ -1840,7 +1840,7 @@ def _orizontal_d101(conn, schema, _an_curent):
                 "d101", "%s — %d" % (et, an),
                 "D101 depus fără rândurile salvate (o depunere de dinainte ca aplicația să le păstreze, sau un "
                 "import). Lipsa datelor nu e o diferență — de aceea nu e semnalată cu roșu.",
-                "D101 depus pe %d, dar fără rândurile salvate — nu pot confrunta." % an,
+                "D101 depus pe %d, dar fără rândurile salvate — nu se poate confrunta." % an,
                 "rândurile salvate ale D101 depus pe %d" % an)], tip)
         return rez
 
@@ -1885,7 +1885,7 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
             "d101", eticheta,
             temei + " Niciun D100 depus prin aplicație pe anul ăsta.",
             "D101 declară %s plăți anticipate, dar niciun D100 nu e depus prin aplicație pe %d — "
-            "nu pot confrunta. Absența depunerii prin aplicație NU dovedește că n-a fost depusă."
+            "nu se poate confrunta. Absența depunerii prin aplicație NU dovedește că n-a fost depusă."
             % (_lei(p50), an), an, 12)]
     suma, cu, fara = _plati_anticipate_din_d100(dep)
     vazute = {l for (_a, l, r) in dep if r}
@@ -1897,15 +1897,15 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
             "d101", eticheta,
             temei + " Trimestre fără depunere D100 văzută de aplicație: %s."
             % ", ".join(_pc(an, l, "trim") for l in lipsa),
-            "Nu pot confrunta: nu văd depunerea D100 pe %s. Un trimestru pe care aplicația "
+            "Nu se poate confrunta: aplicația nu vede depunerea D100 pe %s. Un trimestru pe care aplicația "
             "nu l-a văzut poate să nu fi fost datorat, sau să fi fost depus pe altă cale — iar "
-            "diferența ar fi atunci a măsurătorii mele, nu a declarației."
+            "diferența ar fi atunci a măsurătorii, nu a declarației."
             % ", ".join(_pc(an, l, "trim") for l in lipsa), an, 12)]
     if fara:
         return [_gri_liber(
             "d101", eticheta,
             temei + " %d din %d depuneri D100 n-au rândurile salvate." % (fara, len(dep)),
-            "Nu pot confrunta: %d din %d depuneri D100 pe %d n-au rândurile salvate, deci suma "
+            "Nu se poate confrunta: %d din %d depuneri D100 pe %d n-au rândurile salvate, deci suma "
             "lor nu se poate citi. O depunere fără rânduri nu e o depunere cu zero."
             % (fara, len(dep), an), an, 12)]
     dif = p50 - suma
@@ -2078,7 +2078,7 @@ def _orizontal_d300_vs_d394(conn, schema):
             ("Verificarea dintre două declarații depuse, pe aceeași perioadă. Nu există nicio perioadă în care "
              "D300 și D394 să fie amândouă depuse prin aplicație, cu rândurile salvate, deci comparația devine "
              "posibilă după prima astfel de pereche. E o absență, nu o diferență — de aceea nu e semnalată cu roșu."),
-            "Nu există o perioadă cu ambele declarații depuse prin aplicație — nu pot compara.",
+            "Nu există o perioadă cu ambele declarații depuse prin aplicație — nu se poate compara.",
             "perechile D300 și D394 depuse prin aplicație, cu rândurile salvate")]
 
     an, luna, r300, r394 = per
@@ -2099,8 +2099,8 @@ def _orizontal_d300_vs_d394(conn, schema):
         return [_gri_liber(
             "d394", eticheta,
             temei + " %d operațiuni din D394 depus n-au putut fi citite." % necitibile,
-            "Nu pot compara: %d operațiuni din D394 depus au chei pe care nu le pot citi, deci nu "
-            "văd toată latura. O comparație pe o parte din operațiuni ar numi divergență propria "
+            "Nu se poate compara: %d operațiuni din D394 depus au chei care nu se pot citi, deci nu "
+            "se vede toată latura. O comparație pe o parte din operațiuni ar numi divergență propria "
             "mea vedere incompletă." % necitibile, an, luna)]
 
     baza300 = _d(((r300 or {}).get("R") or {}).get("R12_1") or 0)
@@ -2194,7 +2194,7 @@ def _orizontal_efactura_vs_d394(conn, schema):
              "singura pereche pe surse independente. Niciun D394 nu e depus prin aplicație cu facturile "
              "incluse salvate, deci comparația devine posibilă de la prima astfel de depunere. E o absență, "
              "nu o diferență — de aceea nu e semnalată cu roșu."),
-            "Niciun D394 depus care să-și expună facturile — nu pot confrunta.",
+            "Niciun D394 depus care să-și expună facturile — nu se poate confrunta.",
             "declarațiile D394 depuse prin aplicație, cu facturile incluse expuse")]
 
     an, luna, randuri = rec
@@ -2213,7 +2213,7 @@ def _orizontal_efactura_vs_d394(conn, schema):
         return [_gri_liber(
             "d394", eticheta,
             temei + " Declarația conține %d operațiuni fără factură în spate (manuale)." % manuale,
-            "Nu pot confrunta: D394 depus pe %02d/%d are %d operațiuni manuale, fără factură în "
+            "Nu se poate confrunta: D394 depus pe %02d/%d are %d operațiuni manuale, fără factură în "
             "spate. O factură transmisă ar putea fi acoperită de una dintre ele, iar eu n-aș avea "
             "cum să știu — deci un «transmisă și nedeclarată» ar fi al vederii mele."
             % (luna, an, manuale), an, luna)]
@@ -2226,7 +2226,7 @@ def _orizontal_efactura_vs_d394(conn, schema):
         return [_gri_liber(
             "d394", eticheta,
             temei + " Evidența trimiterilor e-Factura nu există pe schema firmei.",
-            "Nu pot confrunta: firma n-are evidența trimiterilor e-Factura, deci nu pot ști ce a "
+            "Nu se poate confrunta: firma n-are evidența trimiterilor e-Factura, deci nu se poate ști ce a "
             "plecat la ANAF.", an, luna)]
 
     declarate = set()

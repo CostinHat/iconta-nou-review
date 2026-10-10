@@ -47,7 +47,7 @@ ANATOMII = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-# FELURI — nomenclatorul afirmațiilor din „Nu pot verifica" / „Nu se datorează".
+# FELURI — nomenclatorul afirmațiilor din „Nu se poate verifica" / „Nu se datorează".
 # [R2′, 20.08.2026] Payload-ul DECLARĂ felul; garda nu-l deduce din prezența câmpurilor. O deducție
 # din câmpuri e o afirmație implicită — clasa închisă de două ori azi. Un rând pe statut care are din
 # întâmplare și o perioadă ar fi clasificat greșit, în tăcere.
@@ -94,7 +94,7 @@ FELURI = {
                 "absența unui fapt. Se distinge de `necunoastere` prin REMEDIU, nu prin taxonomie — "
                 "necunoașterea trimite la «completează atributul X», asta trimite la «verifică dacă "
                 "faptul a existat». Criteriul de separare (Costin, 20.08): felurile se disting prin "
-                "ce are omul de făcut, nu prin eleganță. APARȚINE lui «Nu pot verifica», NICIODATĂ "
+                "ce are omul de făcut, nu prin eleganță. APARȚINE lui «Nu se poate verifica», NICIODATĂ "
                 "lui «Nu se datorează». PRECEDENT: tenant_006 — «nu se datorează» din vector, în timp "
                 "ce firma avea achiziții IC reale.",
     },
@@ -157,7 +157,7 @@ STRUCTURA = {
              "apare_cand": "len(d.lipsa) > 0", "rand": "decl", "numarata": True},
             {"id": "de_urmarit", "cheie": 'urmarit', "conditie": 'lista_nevida', "titlu": "De urmărit", "sursa": "d.urmarit",
              "apare_cand": "len(d.urmarit) > 0", "rand": "decl", "numarata": True},
-            {"id": "nu_pot_verifica", "cheie": 'neclar', "conditie": 'lista_nevida', "titlu": "Nu pot verifica", "sursa": "d.neclar",
+            {"id": "nu_pot_verifica", "cheie": 'neclar', "conditie": 'lista_nevida', "titlu": "Nu se poate verifica", "sursa": "d.neclar",
              "apare_cand": "len(d.neclar) > 0 sau len(opinii) > 0", "rand": "motiv", "numarata": True,
              "rand_secundar": "semnal",
              "nota": "[R6 21.08.2026] Grupul apare si cand `neclar` e gol dar exista OPINII "
@@ -185,6 +185,12 @@ STRUCTURA = {
                      "un obiect (ramane langa obiect) si nici datoriile de dezvoltare (sunt ale "
                      "noastre, nu ale contabilului).",
              },
+            {"id": "inainte_de_preluare", "cheie": 'inainte_de_preluare', "conditie": 'lista_nevida',
+             "titlu": "Înainte de preluare în iConta.eu", "sursa": "d.inainte_de_preluare",
+             "apare_cand": "len(d.inainte_de_preluare) > 0", "rand": "decl", "numarata": True,
+             "nota": "[Retest 08.10 / Retest 2, declarată 10.10.2026] Grup PLIAT (<details>): titlul poartă luna preluării și "
+                     "precizarea „nu se numără la restanțe” — „Înainte de preluare în iConta.eu — LL/AAAA (N, …)”. Rândurile nu "
+                     "intră în restanțe și nu urcă pastila. Lipsea din hartă: artefactul nu se mai regenerase de la 21.08."},
             {"id": "depuse_cu_intarziere", "cheie": 'cu_intarziere', "conditie": 'lista_nevida', "titlu": "Depuse cu întârziere", "sursa": "d.cu_intarziere",
              "apare_cand": "len(d.cu_intarziere) > 0", "rand": "decl", "numarata": True},
             {"id": "la_zi", "cheie": 'confirmate', "conditie": 'lista_nevida', "titlu": "La zi", "sursa": "d.confirmate",
@@ -326,7 +332,7 @@ CONSTRANGERI = [
                "Constrângerea de unicitate se aplică pe cheia ÎNTREAGĂ, nu pe (tip, perioada)."},
 
     {"id": "motiv_poarta_domeniul", "stare": 'datorie', "marcaj": "[COD]",
-     "regula": "Fiecare rând de anatomie `motiv` (Nu pot verifica / Nu se datorează) poartă perioada "
+     "regula": "Fiecare rând de anatomie `motiv` (Nu se poate verifica / Nu se datorează) poartă perioada "
                "sau intervalul la care se referă. AZI PICĂ: intrările din d.neclar au doar {tip, motiv}, "
                "iar textul lor afirmă 'pentru restanțele trecute' — un domeniu pe care datele nu-l poartă. "
                "Lăsată deliberat neredusă: vreau ca garda s-o prindă, nu eu. "

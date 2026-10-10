@@ -190,7 +190,7 @@ def _erori_persoana(p, idx, sufix, eticheta, cif_ca_pf_pj=False, judet_obligator
             er.append("%s cod de identificare fiscala (cif_%s) invalid - CNP de 13 cifre sau CUI 2-10 cifre." % (pre, sufix))
     else:
         if not (2 <= len(cifv) <= 10):
-            er.append("%s CIF (cif_%s) invalid - aștept 2-10 cifre." % (pre, sufix))
+            er.append("%s CIF (cif_%s) invalid - se așteaptă 2-10 cifre." % (pre, sufix))
     if not str(p.get("localit_" + sufix) or "").strip():
         er.append("%s lipsă localitate (localit_%s)." % (pre, sufix))
     if not str(p.get("adresa_" + sufix) or "").strip():
@@ -214,12 +214,12 @@ def _erori_benefR(b, idx):
     stat_res = str(b.get("stat_resedinta_B") or "").strip().upper()
     if not stat_res:
         if not _cnp_valid(b.get("cif_B")):
-            er.append("%s CNP (cif_B) invalid pentru rezident RO - aștept 13 cifre cu cifra de control." % pre)
+            er.append("%s CNP (cif_B) invalid pentru rezident RO - se așteaptă 13 cifre cu cifra de control." % pre)
     else:
         if not str(b.get("cif_B") or "").strip():
             er.append("%s lipsă cod de identificare (cif_B)." % pre)
     if not _data(b.get("data_nasterii_B")):
-        er.append("%s data nasterii (data_nasterii_B) invalidă - aștept zz.ll.aaaa." % pre)
+        er.append("%s data nasterii (data_nasterii_B) invalidă - se așteaptă zz.ll.aaaa." % pre)
     if not str(b.get("actId_B") or "").strip():
         er.append("%s lipsă serie și număr act de identitate (actId_B)." % pre)
     if not str(b.get("adresa_B") or "").strip():
@@ -253,15 +253,15 @@ def erori_generare(prof, manual):
         er.append("Lipsă funcție semnatar (funcție).")
     cif = _cif(manual.get("cif"))
     if not (2 <= len(cif) <= 10):
-        er.append("CIF fiduciar declarant (cif) invalid - aștept 2-10 cifre.")
+        er.append("CIF fiduciar declarant (cif) invalid - se așteaptă 2-10 cifre.")
     # sectiunea I - inregistrarea contractului
     if not str(manual.get("nr_contract_I") or manual.get("nr_contract") or "").strip():
         er.append("Lipsă numărul contractului de fiducie (nr_contract_I).")
     if not _data(manual.get("data_contract_I") or manual.get("data_contract")):
-        er.append("Data contractului de fiducie (data_contract_I) invalidă - aștept zz.ll.aaaa.")
+        er.append("Data contractului de fiducie (data_contract_I) invalidă - se așteaptă zz.ll.aaaa.")
     d1 = _data(manual.get("data1_I") or manual.get("data_inceput"))
     if not d1:
-        er.append("Data de început a fiduciei (data1_I) invalidă - aștept zz.ll.aaaa.")
+        er.append("Data de început a fiduciei (data1_I) invalidă - se așteaptă zz.ll.aaaa.")
     d2 = _data(manual.get("data2_I") or manual.get("data_sfarsit"))
     if d1 and d2 and _cheie_data(d2) < _cheie_data(d1):
         er.append("data2_I trebuie să fie >= data1_I.")

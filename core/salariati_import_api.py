@@ -134,7 +134,7 @@ def extrage(continut, nume_fisier=""):
     i_fbaza = _gaseste_col(antet, "functie de baza", "funcție de bază", "functia de baza", "funcția de bază")
     i_scut = _gaseste_col(antet, "scutit", "contributie minima", "contribuție minimă")
     if i_nume < 0 and i_cnp < 0:
-        raise ValueError("nu găsesc coloana nume/CNP salariat - fișier nerecunoscut")
+        raise ValueError("nu se găsește coloana nume/CNP salariat - fișier nerecunoscut")
 
     out = []
     for r in randuri[1:]:

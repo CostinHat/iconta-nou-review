@@ -19086,3 +19086,88 @@ iar dacă publicarea eșuează, nu repornește. **Alternativa respinsă:** publi
 „compatibil înapoi” — nimic nu garantează compatibilitatea, iar un ecran nou peste o rută veche e exact divergența pe care o oprim.
 **Limita:** fereastra deschisă la 04:56 nu s-a închis din sesiune (republicarea staticii vechi ar fi o scriere pe producție); se
 închide la rularea `reguli_fond_2_productie.sh`. Norma stă în CLAUDE.md §2.3 pct.10 și în gardul din `core/test_publicare_restart_neconditionat.py`.
+
+## 10.10.2026 — Comanda Costin: răspunsul la §6 din „Retestul plasei” și din completarea lui (dc5e44df) — lotul „Răspunsul §6”
+
+Verbatim:
+
+> Răspuns la §6 din „Retestul plasei” și din completarea lui (dc5e44df).
+>
+> 1. Cifrele de referință din ~/ghid_incoming/cifre_referinta_F1_F5.md (generat 09.10 22:42): aprobate integral, inclusiv F1 10/2026 și rândul D394 cu mai multe cote. Leagă gardul „orice diferență față de referință oprește publicarea”. O schimbare voită se face doar cu aprobarea mea, consemnată în DECIZII.
+> 2. R193: da, cele 10 căi care cer un răspuns AI ținând o conexiune la bază se mută înaintea conexiunii.
+> 3. D406: blocajul la o diferență față de balanță se extinde și la D406, inclusiv când luna are ciorne, ca la D300/D394/D390.
+> 4. Ordinea cardurilor de pe pagina principală: rămâne cum ai pus-o.
+> 5. Vocea „nu pot …” din Control fiscal: se rescrie la persoana a treia („nu se poate verifica …”), pe toată clasa.
+> 6. Nota F2 #5: rămâne neschimbată (notă validată).
+> 7. Notele F5 pe 11/2026: rămân; regula de contare după încheierea lunii oprește altele noi.
+> 8. Clasa „butoane legate după o cerere așteptată”: măsoar-o pe toate ecranele și repar-o unde apare, cu gard. Un clic al contabilului nu se pierde nicăieri.
+> 9. Raportul: tabelul număr → stare → probă → test pentru numerele atinse; operațiile listate fără estimări și durata măsurată a fiecăreia; ZIP cu tot ce s-a schimbat în ~/ghid_incoming/, cu calea exactă.
+>
+> Poți trece la următorul pas din listă.
+
+**Decizii închise:** cifrele F1–F5 aprobate integral (pct.1); R193 se repară (pct.2); D406 blochează ca TVA-ul (pct.3, supersedează limita
+„D406 rămâne sub R36” din PIVOT-ul 09.10); ordinea cardurilor rămâne (pct.4); vocea a treia pe toată clasa (pct.5); nota F2 #5 și
+notele F5 11/2026 rămân (pct.6, 7); clasa „butoane legate după o cerere așteptată” se măsoară și se repară peste tot, cu gard (pct.8).
+
+**Amprenta D406 (pct.1, măsurat înainte de a lega gardul):** regenerate pe 10.10, cifrele F1–F5 sunt identice cu cele aprobate, mai
+puțin amprentele D406 — iar diferența e numai `AuditFileDateCreated` (data generării): cu data pusă la 2026-10-09, toate cele 6 amprente
+D406 de azi ies EXACT cele aprobate. Câmpul se scoate din amprentă (ca `DateCreated`, deja scos), deci referința înghețată poartă
+aceleași cifre, cu amprenta D406 calculată fără data generării. Nu e o schimbare a cifrelor, e a metodei de amprentare; proba e în raport.
+
+**Referința înghețată (pct.1):** `scripts/cifre_referinta_aprobate.json`, amprenta sha256
+`bacab6d3fe481897a73627e7b1b2afebd77445c84d22c57b6e776b410b7b6905` — cifrele aprobate de Costin pe 10.10.2026 (fișierul din 09.10 22:42),
+cu amprenta D406 fără `AuditFileDateCreated`. Gardul: `scripts/githooks/poarta-suita` (treapta „cifrele de referință”, producție
+read-only, fail-closed) + `scripts/githooks/verifica-mesaj` (o schimbare a referinței cere aici amprenta noului fișier).
+**Limita:** gardul citește producția, deci și o schimbare de DATE pe F1–F5 (o notă nouă pusă la retest) oprește publicarea, nu doar una
+de cod — exact cum cere textul („orice diferență”); ieșirea e aprobarea, cu referința regenerată (`--scrie-referinta`).
+
+**D406 (pct.3) — aplicare.** `uc_coada.decizie_poarta(refuz, ciorne)`: refuzul confruntării cu balanța blochează trimiterea la orice
+declarație (D300, D394, D390, D406), cu ciornele numite în mesaj când luna le are; ciornele singure doar avertizează. PIVOT față de
+intrarea 09.10 („D406 rămâne sub R36, avertizează”) — aceea e supersedată de pct.3. Alternativa respinsă: blocajul D406 numai fără
+ciorne (ce era) — Costin: „inclusiv când luna are ciorne”. Limita: diferența D406 față de balanță nu se poate provoca din ecran
+(deficiența 133), deci proba e pe funcție (`core/test_r36_evidenta.py`), nu în browser.
+
+**Vocea (pct.5) — clasa și ce nu e în ea.** Clasa = orice literal al aplicației (Python și JS) în care aplicația vorbește la persoana
+întâi (`limba_ecran.VOCE`: „nu pot”, „nu am putut”, „am primit”, „aștept”, „nu știu”, „am verificat”, „Ți-am trimis” …), nu doar
+Control fiscal. Rescrisă la persoana a treia, cu acordul la plural („Nu s-au putut încărca facturile”). Măsurat cu detectorul final pe
+HEAD `dc5e44df`: 356 de potriviri (188 în Python, 168 în JS); rămân 6, care nu sunt vocea aplicației (`test_text_afisat_limbaj.VOCE_NU_E_APLICATIA`, fiecare cu motivul): textul formularului
+14-4-1 „Chitanță” (vorbește casierul), nota verbatim a lui Costin din `supervizor.motiv_tarie`, bifa „Am citit și accept” (vorbește
+utilizatorul), exemplul din nota de preluare („aștept balanțele”). Alternativa respinsă: rescrierea și a acestora — ar fi falsificat
+vorbitorul. Titlul grupului din Control fiscal e acum „Nu se poate verifica (N)”. Gard: `test_aplicatia_vorbeste_la_persoana_a_treia`
+(toate literalele, inclusiv șabloanele JS imbricate și textul de după `>` în HTML — forma pe care detectorul n-o vedea la început).
+
+**Butoanele legate după o cerere (pct.8) — măsurătoarea.** Detectorul (`scripts/scan_legari_await.js`, pe arborele sintactic al fiecărui
+fișier din `static/js`, cu acorn) caută: element pus în pagină -> `await` / `.then` în aceeași funcție sau în cea care o conține -> abia
+apoi legarea clicului pe el. Pe toate ecranele: 2 legări (deficiența 220, „Închidere lună”), reparate; 0 după. Calibrat pe forma veche a
+jurnalului (8 legări, toate văzute). Ce nu vede, declarat: HTML întors de o funcție ajutătoare — pentru legările de după un `await` fără
+randare vizibilă s-a citit fiecare (16; 14 legate imediat după randare, 2 pe un buton `#fac-back` care nu mai există — cod mort, scos).
+
+**R193 (pct.2) — forma reparației.** Faza de citire scurtă -> întrebarea cu pool-ul liber -> tranzacția care recitește și primește numai
+răspunsurile (tiparul P5 valul 3, ca `_preincalzeste_cursul`). Răspunsurile sunt cheiate pe (denumire, plătitor TVA): o schimbare a
+statutului între faze nu folosește un răspuns dat pe altă premisă; un răspuns lipsă e cota nedeterminată (refuz), nu o întrebare sub
+conexiune. Alternativa respinsă: un context (`contextvar`) cu răspunsurile, citit din adâncul emiterii — forma codului ar fi rămas
+aceeași, iar scanerul P5, static, ar fi văzut tot zece căi (gardul n-ar mai fi putut deosebi reparația de orbire). Efect secundar,
+voit: aceeași denumire se întreabă o dată (înainte, de două ori: cota și contul). Vânzarea IC nu mai întreabă deloc — linia facturii
+poartă contul de venit ales de contabil, același ca pe notă.
+
+**Contul de venit al neplătitorului (deficiența 223) — aplicarea deciziei 64, nu o decizie nouă.** Decizia 64 (22.09): regula pe
+cuvinte-cheie, apoi asistentul, apoi blocarea — fără deosebire de TVA. La neplătitor nivelul 2 nu rula: întrebarea se punea prin
+`potriveste_cota(..., platitor_tva=False)`, care scurtcircuitează la cota 0 fără „tip”, iar refuzul spunea „asistentul nu a putut decide”.
+Acum întrebarea pentru cont e `(denumire, True)` la orice emitent. Temei: OMFP 1802/2014 (701/704/707 după natura venitului) — natura nu
+depinde de TVA.
+
+**Magazinul online: comanda refuzată (deficiența 224).** Un refuz al emiterii (cota sau contul nedeterminat, o linie incompletă) nu mai
+oprește sincronizarea cu 500: comanda rămâne neimportată, cu motivul pe ecran, celelalte merg mai departe, iar data ultimei citiri nu
+trece peste ea (se reîncearcă). Alternativa respinsă: data avansată oricum — o comandă refuzată mai veche de o zi n-ar mai fi fost
+citită niciodată. Generalizat: orice apel al emiterii din stratul use-case traduce refuzul (422) — 5 locuri neprinse (`vanzare_ic` și
+patru achiziții), gard `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`.
+
+**Parametrul pierdut pe drum (deficiența 221) — clasa.** Funcția are parametrul `p`, cheamă o funcție care îl are cu implicit, și nu i-l
+dă. Măsurat pe tot `core/` + `main.py`: 3 — `emite_factura -> creeaza_factura: tert_pf` (221), `spv_refresh.ruleaza ->
+reimprospateaza_token: acum` (selecția după `acum`, expirarea după ceasul real), reparate; `fereastra_uit -> azi_ro: acum` nu pierde
+nimic (`acum if acum is not None else azi_ro()`), forma se recunoaște. Gard: `core/test_parametru_transmis.py`. Limita: funcția chemată
+se rezolvă după nume, numai când numele e unic; `conn`/`cur`/`schema`/`ctx` nu se judecă.
+
+**`rezolvată pe commit` în CONFORMITATE (R193).** Registrele intră în commitul lotului (decizia 08.10 pct.5), deci o restanță rezolvată
+în el nu-și poate purta SHA-ul: `test_conformitate` primește, ca `test_deficiente`, marcajul „commitul care conține această intrare”;
+orice SHA scris trebuie în continuare să existe (mutație: un SHA inventat -> pică).

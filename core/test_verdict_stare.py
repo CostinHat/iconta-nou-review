@@ -28,7 +28,7 @@ def test_pastila_gri_nu_escaladeaza():
 
 
 def test_verificator_esuat_da_gri_cu_temei_nu_absenta():
-    # Un verificator care crapa NU e "nimic de raportat" - e "nu am putut verifica" = GRI cu temei.
+    # Un verificator care crapa NU e "nimic de raportat" - e "nu s-a putut verifica" = GRI cu temei.
     import main
     contabil = []
     main._verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile", ValueError("boom"),
@@ -36,8 +36,8 @@ def test_verificator_esuat_da_gri_cu_temei_nu_absenta():
     assert len(contabil) == 1
     c = contabil[0]
     assert c["stare"] == "gri"                         # gri, nu absenta si nu verde
-    assert "Nu am putut verifica" in c["mesaj"]
-    assert "boom" in c["temei"] and "nu am putut verifica" in c["temei"].lower()
+    assert "Nu s-a putut verifica" in c["mesaj"]
+    assert "boom" in c["temei"] and "nu s-a putut verifica" in c["temei"].lower()
     # gri nu escaladeaza -> nu doboara semaforul (rezistenta pastrata)
     assert pastila_firma("verde", [c]) == "verde"
 
@@ -67,7 +67,7 @@ def test_constatare_esuata_e_gri_cu_temei():
     import main
     c = main._constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate",
                                 ValueError("x"), 2026, 7)
-    assert c["stare"] == "gri" and "Nu am putut verifica" in c["mesaj"] and "x" in c["temei"]
+    assert c["stare"] == "gri" and "Nu s-a putut verifica" in c["mesaj"] and "x" in c["temei"]
 
 
 def test_audit_regim_nedeterminat_e_gri_cu_straturi_sarite():

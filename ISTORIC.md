@@ -2024,3 +2024,34 @@ Comanda Costin (verbatim în DECIZII), 17 operații date înainte de execuție; 
   clicul pe „Validează” din jurnal pierdut (nicio cerere la server). Aceeași clasă ca 58: butoanele jurnalului se legau după
   `await legaBlocareLuna(...)`, care încă aștepta prima cerere. Reparat: jurnalul nu mai așteaptă blocarea, „Închidere lună” își leagă
   navigarea înaintea cererilor; gard structural, două mutații roșii; 96, 58 și testele cu „Închidere lună” trec.
+
+## 10.10.2026 — Lotul „Răspunsul §6” (comanda Costin, verbatim în DECIZII) — commitul care conține această intrare
+
+- **Cifrele de referință în poartă (pct.1).** Referința aprobată înghețată în `scripts/cifre_referinta_aprobate.json` (amprenta în
+  DECIZII); amprenta D406 nu mai depinde de ziua generării (`AuditFileDateCreated`, dovedit: cu data pusă la 09.10, cele 6 amprente
+  ies exact cele aprobate). `poarta-suita` confruntă producția (read-only) cu referința înaintea plasei: orice diferență sau o citire
+  eșuată oprește publicarea; o referință schimbată cere amprenta ei în DECIZII, în același commit.
+- **D406 ca TVA-ul (pct.3).** Diferența față de balanță blochează trimiterea în coadă și când luna are ciorne.
+- **Vocea a treia (pct.5), pe toată clasa.** 356 de potriviri pe HEAD (188 Python, 168 JS) -> 6, care nu sunt vocea aplicației
+  (formularul chitanței, nota verbatim a lui Costin, bifa „Am citit și accept”, exemplul din nota de preluare). Titlul grupului din
+  Control fiscal: „Nu se poate verifica (N)”. Pe drum: detectorul nu vedea textul de după `>` din HTML și nici șabloanele JS imbricate;
+  scanerul literalelor JS e acum pe șabloane cu interpolare imbricată.
+- **Clicul care nu se pierde (pct.8).** Detector pe arborele sintactic al fiecărui fișier JS (acorn): 2 legări după o cerere, ambele în
+  „Închidere lună” (evidența facturilor) — deficiența 220, reparată, probată în browser cu cererea controalelor întârziată 4 s. 8
+  legări pe un buton care nu mai există (`#fac-back`) scoase.
+- **R193 (pct.2).** C5 10 -> 0: modelul se întreabă după o citire scurtă și înaintea tranzacției, pe toate cele zece căi (emitere,
+  API, proformă, vânzare IC, produs, propunere, poveste, tipare, bon, magazin) și pe cronul facturilor recurente. Proba numără
+  conexiunile împrumutate în clipa întrebării: zero peste tot. Ce a scos la iveală: importul magazinului refuza orice comandă (221 —
+  `tert_pf` pierdut între `emite_factura` și `creeaza_factura`), emitea fără statutul de plătitor (222), oprea sincronizarea cu 500 la
+  o comandă refuzată (224); neplătitorul nu primea contul de venit de la asistent (223). Toate reparate, cu clasele lor generalizate și
+  păzite (parametrul netransmis: 3 locuri; refuzul emiterii neprins: 5 use-case-uri).
+- **Harta casetelor** din Control fiscal nu declara grupul „Înainte de preluare” (adăugat pe 08–09.10): artefactul nu se mai
+  regenerase de la 21.08, deci nimic nu vedea nepotrivirea. Regenerat azi, gardul a prins-o; grupul e declarat, iar observatorul citește
+  titlul lui (`— 03/2026 (4, nu se numără la restanțe)`) și rândurile din `<details>`: contor 4 = rânduri 4 = sursă 4.
+- **Unealta de casete** (`frontend_test/vizual/scan_casete.py`) avea adresa fixată pe 8010 (producția) — trecută pe `PROBA_BAZA`
+  (8011, baza de test). Clasa (alte unelte cu 8010 implicit) e la §6 al raportului, ca decizie.
+- **Poarta a respins primul commit al lotului** (pytest 4 roșii / 7931 verzi, 59:58; nimic comis, nimic publicat): refuzul comenzii din
+  magazin era o respingere de rând netipată (acum `migrare_api.respinge`, regula nouă `emitere_refuzata`), care urca și registrul de
+  excepții 14 -> 15; gardul jurnalului TVA vedea în `woocommerce._importa` un `UPDATE firma_profil` lângă argumentul `platitor_tva`
+  (scrierea datei citirii mutată în `_marcheaza_citirea`); antetul predării n-avea un SHA la „pe commit”. Reparate, recomis.
+

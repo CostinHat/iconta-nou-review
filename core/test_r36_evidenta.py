@@ -170,33 +170,20 @@ def test_balanta_arata_numai_validatul_iar_ciornele_separat(lume):
         conn.rollback()
 
 
-def test_portile_cu_ciorne_avertizeaza_fara_ciorne_blocheaza():
-    """„dacă există ciorne în lună, dau doar avertisment, nu blocaj.” MUTAȚIE: `if not ciorne` -> `if True` -> cu ciorne blochează
-    -> pică."""
+def test_d406_si_tva_blocheaza_diferenta_si_cu_ciorne_ciornele_singure_avertizeaza():
+    """[PIVOT 09.10.2026, deficiențele 120 + 210] la TVA; [PIVOT 10.10.2026, comanda Costin pct.3, verbatim în DECIZII: „D406: blocajul
+    la o diferență față de balanță se extinde și la D406, inclusiv când luna are ciorne, ca la D300/D394/D390.”] La toate patru porțile:
+    o diferență blochează — și cu ciorne în perioadă, iar mesajul le numește —; ciornele fără diferență dau numai avertisment.
+    MUTAȚIE: refuzul cu ciorne transformat iar în avertisment (R36 vechi) -> pică, la D406 și la TVA."""
     from core import uc_coada as uq
-    refuz = {"cod": uq.COD_D406_BALANTA, "mesaj": "D406 nu intră în coadă: diferență 7,00 lei."}
-    assert uq.decizie_poarta(refuz, 0) == (refuz, None)
+    for refuz in ({"cod": uq.COD_D406_BALANTA, "mesaj": "D406 nu intră în coadă: diferență 7,00 lei."},
+                  {"cod": uq.COD_TVA_BALANTA, "mesaj": "Declarația nu intră în coadă: contul 4426 are 241.50."}):
+        assert uq.decizie_poarta(refuz, 0) == (refuz, None)
+        blocaj, avert = uq.decizie_poarta(refuz, 2)
+        assert avert is None and (blocaj["cod"], blocaj["ciorne"]) == (refuz["cod"], 2), blocaj
+        assert blocaj["mesaj"] == refuz["mesaj"] + uq.MESAJ_CIORNE_BLOCAJ % 2
     assert uq.decizie_poarta(None, 0) == (None, None)
-    blocaj, avert = uq.decizie_poarta(refuz, 2)
-    # diferența + numărul ciornelor; [deficiența 189] fără „nu intră în coadă” în fața unui avertisment care o lasă să intre
-    assert (blocaj, avert) == (None, "Diferență față de balanță: diferență 7,00 lei. " + uq.MESAJ_CIORNE_POARTA % 2)
-    assert "nu intră în coadă" not in avert
-    assert uq.decizie_poarta(None, 1) == (None, uq.MESAJ_CIORNE_POARTA % 1)
-
-
-def test_poarta_tva_blocheaza_diferenta_si_cu_ciorne_in_perioada():
-    """[PIVOT 09.10.2026, deficiențele 120 + 210, retestul Costin: „D300 F1 10/2026 se poate trimite deși 4426 are 241,50
-    neincluși”] D300 / D394 / D390 se generează din documente: ciornele nu schimbă declarația, deci diferența față de evidența
-    validată blochează și când în perioadă stau ciorne; ciornele fără diferență dau numai avertisment. MUTAȚIE: ramura `tva and refuz`
-    scoasă -> cu ciorne trece -> pică."""
-    from core import uc_coada as uq
-    refuz = {"cod": uq.COD_TVA_BALANTA, "mesaj": "Declarația nu intră în coadă: contul 4426 are 241.50."}
-    blocaj, avert = uq.decizie_poarta(refuz, 2, tva=True)
-    assert avert is None and blocaj["cod"] == uq.COD_TVA_BALANTA and blocaj["ciorne"] == 2, blocaj
-    assert blocaj["mesaj"] == refuz["mesaj"] + uq.MESAJ_CIORNE_BLOCAJ_TVA % 2
-    assert uq.decizie_poarta(None, 2, tva=True) == (None, uq.MESAJ_CIORNE_POARTA % 2)
-    assert uq.decizie_poarta(refuz, 0, tva=True) == (refuz, None)
-
+    assert uq.decizie_poarta(None, 2) == (None, uq.MESAJ_CIORNE_POARTA % 2)
 
 def test_ciornele_perioadei_se_numara_pe_fereastra_declaratiei(lume):
     """Ciornele se numără pe perioada fiscală a declarației (lunar aici). MUTAȚIE: `note_nevalidate_in_interval` pe status

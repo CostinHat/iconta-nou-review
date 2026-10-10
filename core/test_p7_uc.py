@@ -113,10 +113,16 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
-    ("tenant_plan_conturi_adauga", "'Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — am primit %r.' % simbol"): (
+    ("achizitie_ic", "str(e)"): (
+        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+    ("achizitie_necorporala", "str(e)"): (
+        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+    ("achizitie_neinregistrat", "str(e)"): (
+        "Deficiența 224 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
+    ("tenant_plan_conturi_adauga", "'Analiticul se scrie după contul sintetic, cu cifre după separator (de exemplu 4111.01) — s-a primit %r.' % simbol"): (
         "Comanda Costin 09.10.2026, „Retest 2” pct.13 (decizia O12, prinsă la proba din ecran): „4111.” — un separator fără analitic "
         "după el — intra în plan. Refuz numit (422): analiticul = sinteticul + separator + cifre."),
-    ("tenant_plan_conturi_adauga", "'Simbolul contului are cel mult 10 caractere — am primit %r (%d).' % (simbol, len(simbol))"): (
+    ("tenant_plan_conturi_adauga", "'Simbolul contului are cel mult 10 caractere — s-a primit %r (%d).' % (simbol, len(simbol))"): (
         "Comanda Costin 09.10.2026, „Retest 2” pct.13: coloana `plan_conturi.simbol` e varchar(10); un simbol mai lung cădea în driver "
         "(500). Refuz numit (422), cu lungimea."),
     ("coada_adauga", "_blocaj"): (
@@ -201,7 +207,7 @@ PERECHI_ADAUGATE = {
         "D394 Î2, deciziile Costin (03.10.2026): chitanța de VÂNZARE fără factură se emite doar la firma exceptată de la "
         "AMEF (OUG 28/1999 art.1 alin.(1) / art.2), cu cota obligatorie și permisă la data ei — refuz STRUCTURAT (400: "
         "cod + temei). Chitanța de creanță fără factură (firmă neexceptată, fără cotă) rămâne neatinsă."),
-    ("chitanta_emite", "'Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ.' % (c.data,)"): (
+    ("chitanta_emite", "'Data chitanței: %r nu e o dată din calendar. Se așteaptă forma AAAA-LL-ZZ.' % (c.data,)"): (
         "D394 Î2 (03.10.2026): cotele permise depind de data chitanței, deci data se citește înainte — o zi care nu "
         "există în calendar e refuz de contabil (400), cum o refuza deja `casa_api.adauga` mai târziu."),
     ("tenant_creeaza", "{'mesaj': EMAIL_INVALID, 'erori_campuri': [{'camp': 'email_client', 'mesaj': EMAIL_INVALID}]}"): (
@@ -727,6 +733,15 @@ MESAJE_RESCRISE = {
 FRAGMENTE_RESCRISE = {
     "Câmpuri obligatorii lipsă (schema eTransport): ": ("Câmpuri obligatorii lipsă (structura eTransport): ",
         "Deficiența 172: același 422 structurat (CAMPURI_LIPSA), fără „schema”."),
+    # [comanda Costin 10.10.2026 pct.5] vocea aplicației, la persoana a treia (gardul: `test_text_afisat_limbaj::test_aplicatia_vorbeste_la_persoana_a_treia`)
+    "(aștept ": ("(se așteaptă ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "Am primit ": ("S-a primit ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "am primit ": ("s-a primit ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "nu am putut ": ("nu s-a putut ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "Nu am putut ": ("Nu s-a putut ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "Nu pot ": ("Nu se poate ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "n-am putut ": ("nu s-a putut ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    "Aștept ": ("Se așteaptă ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
 }
 
 

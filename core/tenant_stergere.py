@@ -182,7 +182,7 @@ def evidenta(conn, tenant_id, schema=None):
             if n:
                 motive.append("%d %s" % (n, eticheta))
     if nedecis:
-        motive.append("nu pot decide: în evidența firmei (%s) lipsesc tabelele %s"
+        motive.append("nu se poate decide: în evidența firmei (%s) lipsesc tabelele %s"
                       % (schema, ", ".join(nedecis)))
     return {"are": bool(motive), "detalii": detalii, "motive": motive, "nedecis": nedecis}
 

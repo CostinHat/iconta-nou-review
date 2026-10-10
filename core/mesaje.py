@@ -112,7 +112,7 @@ UNDE_PERIOADE = "Perioade blocate"
 # logare" — o afirmație despre o trimitere care poate să fi eșuat, iar eșecul era înghițit.
 # Costin: *„nu e o schimbare de formulare — e diferența dintre a afirma și a presupune."*
 # Ce spune acum: cererea a fost primită, iar linkul vine DACĂ adresa e în sistem.
-MESAJ_LINK_LOGARE_CERUT = ("Am primit cererea. Dacă adresa e în sistem, linkul de logare "
+MESAJ_LINK_LOGARE_CERUT = ("Cererea a fost primită. Dacă adresa e în sistem, linkul de logare "
                            "ajunge în câteva minute — verifică și în Spam.")
 MESAJ_PESTE_PERIOADA_INCHISA = (
     "%(ce)s nu se poate schimba: firma are perioade închise (prima: %(an)s-%(luna)02d). "
@@ -124,7 +124,7 @@ MESAJ_FARA_ADMINISTRATOR = ("%s nu se poate emite: lipsește numele administrato
 MESAJ_DOAR_TITULARUL = ("Doar titularul contului firmei poate face asta — titularul e primul cont de client al firmei. Cere-i lui, sau contabilului tău.")
 MESAJ_EMAIL_ACELASI = "Adresa nouă e aceeași cu cea curentă. Nu e nimic de schimbat."
 MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja folosit. Cere din nou schimbarea adresei din Acces cont.")
-MESAJ_EMAIL_DE_CONFIRMAT = ("Ți-am trimis un link de confirmare pe adresa nouă. Adresa se schimbă abia după ce îl deschizi — până atunci intri tot cu cea veche.")
+MESAJ_EMAIL_DE_CONFIRMAT = ("Un link de confirmare a fost trimis pe adresa nouă. Adresa se schimbă abia după ce îl deschizi — până atunci intri tot cu cea veche.")
 MESAJ_Z_FARA_CHEIE = ("NUI-ul casei de marcat și numărul raportului Z sunt obligatorii — ele fac "
                       "raportul unic. Le găsești pe bonul de raport Z tipărit, în antet.")
 # [D394 op2 Î1, decizia B 02.10.2026] D394 lit.G cere numărul de bonuri fiscale emise în lună (OPANAF 2194/2025 pct.14)

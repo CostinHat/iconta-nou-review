@@ -411,7 +411,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
 
     an = body.get("an")
     if not isinstance(an, int) or an < 2020 or an > 2100:
-        erori.append("an invalid: %r (aștept întreg 2020-2100)" % (an,))
+        erori.append("an invalid: %r (se așteaptă întreg 2020-2100)" % (an,))
 
     # [probare invalid, 03.09.2026] O valoare TRIMISĂ și greșită se spune pe numele ei, chiar
     # dacă periodicitatea firmei n-o cere. Instanța: pe o firmă cu TVA trimestrial, `luna=13`
@@ -420,10 +420,10 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     luna_trimisa, trim_trimis = body.get("luna"), body.get("trim")
     if luna_trimisa is not None and (not isinstance(luna_trimisa, int)
                                      or luna_trimisa < 1 or luna_trimisa > 12):
-        erori.append("luna invalidă: %r (aștept 1-12)" % (luna_trimisa,))
+        erori.append("luna invalidă: %r (se așteaptă 1-12)" % (luna_trimisa,))
     if trim_trimis is not None and (not isinstance(trim_trimis, int)
                                     or trim_trimis < 1 or trim_trimis > 4):
-        erori.append("trimestru invalid: %r (aștept 1-4)" % (trim_trimis,))
+        erori.append("trimestru invalid: %r (se așteaptă 1-4)" % (trim_trimis,))
 
     if per == "lunar":
         luna = body.get("luna")
@@ -432,7 +432,7 @@ def valideaza_cerere(tip, body, per_efectiv=None):
                 erori.append("declarația %s se depune lunar pentru firma asta: trimite luna "
                              "(1-12), nu trimestrul%s" % (tip, _pft.norma(tip, "lunar") or ""))
             elif luna_trimisa is None:
-                erori.append("luna invalidă: %r (aștept 1-12)" % (luna,))
+                erori.append("luna invalidă: %r (se așteaptă 1-12)" % (luna,))
     elif per == "trimestrial":
         trim = body.get("trim")
         if not isinstance(trim, int) or trim < 1 or trim > 4:
@@ -440,13 +440,13 @@ def valideaza_cerere(tip, body, per_efectiv=None):
                 erori.append("firma depune %s trimestrial: trimite trimestrul (1-4), nu luna%s"
                              % (tip, _pft.norma(tip, "trimestrial") or ""))
             elif trim_trimis is None:
-                erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
+                erori.append("trimestru invalid: %r (se așteaptă 1-4)" % (trim,))
     elif per == "semestrial":
         # [Lot 19 defect 8] „semestrial” n-avea ramura: cererea fara luna trecea, iar adaptorul punea 12 in tacere.
         # FORMĂ — DUK regula RLuna (D407): luna de raportare e 6 sau 12.
         if body.get("luna") not in (6, 12):
             erori.append("declarația %s e semestrială: trimite luna 6 (semestrul I) sau 12 (semestrul II); "
-                         "am primit %r" % (tip, body.get("luna")))
+                         "s-a primit %r" % (tip, body.get("luna")))
     # 'anual' nu cere nimic în plus față de an
 
     # d177 (redirectionare impozit profit -> ONG/cult, MANUALA anuala): cere manual.beneficiari. Mesaj de

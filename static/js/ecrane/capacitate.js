@@ -3,7 +3,7 @@
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc } from "../api.js?v=2561dbfd34";
-import { randeazaAsistenti } from "./asistenti.js?v=56949c5709";
+import { randeazaAsistenti } from "./asistenti.js?v=71d1c61bbe";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
@@ -16,14 +16,14 @@ function celulaCifra(valoare, eticheta, accent) {
 
 export async function randeazaCapacitate(corp, nav) {
   // [drepturi_rol 04.10.2026] Panoul e al administratorului (cardul stă doar pe desktopul cabinetului); dacă
-  // s-ar deschide totuși, spune DE CE nu arată nimic, în loc de un „nu am putut încărca” fals.
+  // s-ar deschide totuși, spune DE CE nu arată nimic, în loc de un „nu s-a putut încărca” fals.
   if (!permis("GET /capacitate")) { corp.innerHTML = `<p class="ecran-nota">Capacitatea cabinetului o vede doar administratorul cabinetului.</p>`; return; }
   corp.innerHTML = `<p class="ecran-nota">Se încarcă capacitatea…</p>`;
   let d;
   try {
     d = await api.get("/capacitate");
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca capacitatea.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca capacitatea.</p>`;
     return;
   }
 

@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **10.10.2026: lotul „Retestul plasei” — cele 9 numere găsite stricate reproduse și reparate, 188–219 + parțialele + neverificatele probate în browser (plasa: 210 teste), regulile de fond a–f în bază (restartul așteaptă scriptul lui Costin), R193 deschisă (întrebarea AI ține conexiunea, 10 căi)**
+# PREDARE LANȚ — **10.10.2026: lotul „Răspunsul §6” — cifrele F1–F5 aprobate opresc publicarea la orice diferență, D406 blochează ca TVA-ul, vocea a treia pe toată clasa, clicul legat după o cerere măsurat și reparat (220), R193 închisă (C5 = 0) + 221–224 (magazinul, contul neplătitorului) găsite pe drum**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-10** (noaptea; lotul „Retestul plasei” — comanda Costin 09.10.2026 seara, verbatim în DECIZII), pe
-  secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `6f2a8d26` (lotul `445f9932` + reparația publicării). Producția rulează `6f2a8d26` de la 06:49:28 (restart făcut de
-  rulatorul migrărilor, după scriptul lui Costin); four-way închis. Commitul care conține această predare are SHA-ul în raport.
+- **ultima rescriere**: **2026-10-10** (ziua; lotul „Răspunsul §6” — comanda Costin 10.10.2026, verbatim în DECIZII), pe secțiunile de
+  stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `dc5e44df` (cel de dinaintea lotului, pe care producția rula de la 10:13:13); lotul „Răspunsul §6” e în commitul
+  care conține această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -43,6 +43,7 @@ restul fronturilor sunt [EXTERN] sau restanțe scrise:
 | **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
 | **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
 | **„Deciziile 07.10” + retesturile 07.10** (comenzile Costin 07.10, verbatim în DECIZII): D1 metodele de stoc nesuportate refuzate; D2 NIR legat de factura primită (numai 378/4428); D3 Z la cantitativ-valoric validat numai cu descărcare pe articol / „fără marfă”; D4 salariatul pe API și la import cu cele trei fapte cerute; D5 seria chitanței cerută; R1 respingerea stornează stocul (roșu), NIR-ul se reface; R2 titlul scurt al documentului; S1 prime / sporuri / ore suplimentare (brut, baze, D112 pe DUK, notă, fluturaș; lit.b pe venitul realizat); S2 „de la” = ziua 1 a lunii lucrate; S3 retrimiterea neschimbată cere confirmare, cardul o spune; S4 notificările rezolvate | `876e87a2` (+ registrele zilei, 08.10) | `iconta_decizii_07_10.zip` |
+| **„Răspunsul §6”** (răspunsul Costin la §6 al „Retestul plasei”, verbatim în DECIZII): referința F1–F5 înghețată și confruntată în poartă (producția, fail-closed; amprenta D406 fără data generării); D406 blochează și cu ciorne; vocea a treia pe toată clasa (356 -> 6 declarate); clicul legat după o cerere: 2 -> 0 (220); R193: modelul întrebat cu pool-ul liber pe cele 10 căi + cronul recurentelor; pe drum: 221 (magazinul refuza orice comandă — `tert_pf` pierdut), 222 (plătitorul implicit), 223 (contul de venit al neplătitorului), 224 (comanda refuzată = 500), clasele „parametru netransmis” și „refuzul emiterii neprins” păzite | commitul care conține această predare (SHA în raport) | `iconta_raspunsul_s6.zip` |
 | **„Retestul plasei”** (răspunsul Costin la §6 al „Registrul deficiențelor”, verbatim în DECIZII): 4, 5, 11, 32, 33, 120 (+210, PIVOT R36 la TVA), 156, 173, 181 reproduse și reparate; 12, 159, 162, 172, 188–219 închise; 9, 76, 79, 97, 142, 149, 184, 199 probate în browser; regulile de fond a, c, d, e, f în bază (R6–R10); AI simulat + directorul bonurilor în plasă; cifrele de referință cu excepțiile b, c; pe drum: R6 corectată prin nomenclator, refuzul de stoc al bazei tradus la respingere, R193 (termen AI 60 s, scanerele văd clientul SDK), clicul pierdut la Bilanț, navigarea jurnalului | commitul care conține această predare (SHA în raport) | `iconta_retestul_plasei.zip` |
 | **„Retest 2”** (retestul în aplicație al „Retest 08.10”, comanda Costin 09.10, verbatim în DECIZII): textul judecat pe ECRAN (`core/limba_ecran.py` + `text_ecran_scan.py`, artefact păzit, 0 defecte pe 160+ ecrane; lexicon de diacritice derivat din corpus), rândul D300/D101 = rândul formularului, diferențele de reconciliere în cuvinte; „Înainte de preluare” rămâne deschis și pe rând; contoarele pe o regulă; casa: nota validată se stornează, nu se șterge; amortizarea până la ultima lună încheiată; jurnalul totalizează validatul; rulajul notei; D390 neplătitor pe lunile cu operațiuni; termen și perioadă pe rândurile dinaintea preluării; declarația nedepusă = semnal la închidere; ciornele proprii la vedere; ecranul „Plan de conturi”; confirmările scurte; D394 multi-cotă explicat; „Cod TVA RO…” în antetul PDF; verificarea TVA la trimestrial pe decontul trimestrului | (commitul lotului — raport) | `iconta_retest2.zip` |
 | **„Retest 08.10”** (deciziile Costin la §6 al „Deciziile 08.10 §6” + constatările 4–21, verbatim în DECIZII): TVA-ul din prețul de raft pe 4428.02 (bilanțul o dată, la rd.05); validarea mai multor note; NIR 2/3 F1 refăcute pe 408; D406 liniile + totalurile pe cotă, D394 numărul fără serie; Control fiscal: contoare, „înainte de preluare” pliat + „Marchează toate”, marcarea modificabilă / anulabilă; luna se închide după ce s-a încheiat; 401 debitor semnalat; MF cu meniu de acțiuni; limba ecranelor (gard nou); fereastra largă fără suprapuneri; „Rezumat”; 731–738 scoase; PDF balanță cu CUI + dată; nota de casă descrisă; luna preluării precompletată | commitul lotului (SHA în raport) | `iconta_retest_08_10.zip` |
@@ -65,11 +66,12 @@ aplicației**, nu „în așteptarea unei teme”:
 - **RESTARTUL OPRIT — ÎNCHIS (10.10.2026, 06:49)**: Costin a rulat `~/ghid_incoming/reguli_fond_2_productie.sh` — backup
   `iconta_v2_pre_reguli_fond_2_20261010_0649.dump`, regulile R6–R10 pe 5/5 scheme + triggerul declarațiilor, rulatorul a publicat
   statica lui `6f2a8d26` și a repornit aplicația (06:49:28). Fereastra de nepotrivire JS/backend (04:56–06:49) s-a închis.
-- **DECIZII CERUTE (raportul „Retestul plasei”, §6)** — lista numerotată e acolo; pe scurt: R193 (mutarea întrebării AI înaintea
-  conexiunii, 10 căi — refactor de scop); ordinea cardurilor de pe pagina principală (203); vocea „nu pot”; nota F2 #5 (amortizare,
-  validată pe codul vechi); notele F5 pe 11/2026; aprobarea cifrelor F1 10/2026 și a rândului D394 multi-cotă; D406 sub R36.
+- **Deciziile cerute de „Retestul plasei” (§6) — ÎNCHISE** de comanda „Răspunsul §6” (10.10.2026, verbatim în DECIZII), executate.
+- **DECIZIE CERUTĂ (raportul „Răspunsul §6”, §6):** uneltele de probă și de măsurare cu adresa implicită pe 8010 (producția) — 22 de
+  fișiere în `frontend_test/` + `scripts/` (lista în raport; cele 7 din `core/` sunt legitime: adresa aplicației în linkuri, sonda producției, agenda). `scan_casete.py` trecut pe `PROBA_BAZA` (8011) în lot; restul așteaptă
+  regula: implicitul tuturor = instanța de probă (cu producția numai cerută explicit), sau rămâne cum e.
 - **Deciziile cerute de raportul „Registrul deficiențelor” (09.10, §6) — ÎNCHISE** de comanda „Retestul plasei” (DECIZII 09.10.2026).
-- **Registrul de parametri fiscali**: rămâne la R1 (R0 pe disc, necomis), după deciziile de mai sus.
+- **Registrul de parametri fiscali**: **pasul următor din agendă** (`core.agenda.urmatorul_pas()` -> R1); R0 pe disc, necomis.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
   NIR 1, iar 371 ține 1.150 lei — stornările 8 și 9 din `miscari_stoc`, scrise greșit la respingerea notelor 121/122. Codul e reparat
@@ -172,7 +174,7 @@ aplicației**, nu „în așteptarea unei teme”:
 
 1. **Ritualul de început** (CLAUDE.md §5): `pwd; hostname; git log --oneline -1; git rev-parse --is-inside-work-tree;
    ./venv/bin/python -m core.agenda` — trebuie `/home/costin/iconta_nou`, `iconta-prod`, arbore git valid.
-2. **Comanda deschisă**: registrul unic de parametri fiscali + interdicția 26 (DECIZII 08.10.2026, „Comanda Costin: registrul unic …”).
+2. **Comanda deschisă** (pasul următor din agendă după „Răspunsul §6”): registrul unic de parametri fiscali + interdicția 26 (DECIZII 08.10.2026, „Comanda Costin: registrul unic …”).
    Pașii R0–R16 sunt în TESTE.md („În lucru acum”, al doilea fir); **se reia de la R1**: R0 (`core/scan_registru.py` + testul lui,
    `core/registru_fiscal.py`) e pe disc, necomis — se citește întâi, se comite cu R1.
    **Fără o comandă a lui Costin nu se pornește nimic altceva** (secțiunea de mai sus). Cu o comandă: firul se scrie întâi în TESTE.md
@@ -186,6 +188,18 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
 
+- **(10.10.2026, „Răspunsul §6”) Poarta citește PRODUCȚIA**: treapta „cifrele de referință” confruntă F1–F5 de pe producție (read-only)
+  cu `scripts/cifre_referinta_aprobate.json`. O notă nouă pusă de Costin pe F1–F5 la retest OPREȘTE publicarea — ieșirea e aprobarea
+  lui, cu `scripts/cifre_referinta.py --productie --scrie-referinta` și amprenta noului fișier scrisă în DECIZII în același commit
+  (`verifica-mesaj` o cere). Fără DSN de producție, treapta iese 2 și poarta e roșie (fail-closed).
+- **(10.10.2026) Emiterea nu mai întreabă modelul AI**: `facturi_api.emite_factura` / `produse_api.creeaza` primesc răspunsurile
+  (`raspunsuri_ai=` / `raspunsuri=`), cerute înainte de conexiune (`uc_comun._intreaba_modelul`, `facturi_api.intrebari_model` +
+  `cote_tva.intreaba`). Un apelant nou care nu le dă primește, pe o linie fără cotă (produs nou) sau fără cont de venit decis din
+  denumire, refuzul „nedeterminat” — nu o întrebare. Testele care emit cu AI-ul simulat construiesc răspunsurile cu `cote_tva.intreaba`.
+- **(10.10.2026) Vocea**: orice text nou al aplicației la persoana întâi („nu pot”, „Nu am putut”, „am primit”, „aștept”) pică
+  `test_text_afisat_limbaj::test_aplicatia_vorbeste_la_persoana_a_treia` — și în JS, inclusiv în șabloane imbricate.
+- **(10.10.2026) Un buton se leagă cum apare**: o legare de clic după un `await` / `.then` pe un element deja randat pică
+  `core/test_legari_await.py` (detectorul e Node + acorn din `/usr/share/nodejs`; fără el testul pică, nu sare).
 - **(10.10.2026) Plasa rulează cu AI SIMULAT** (`ICONTA_AI_SIMULAT`, fără cheia reală): o probă care atinge modelul își pregătește
   răspunsul (`conftest.ai_pregateste`); fără el, întrebarea eșuează (de ex. contul de venit al unei linii fără cuvânt-cheie — de-aia
   produsul din bloc_a se numește „Servicii de consultanță contabilă E2E”).
@@ -405,8 +419,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **135** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **935** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1212** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **940** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1215** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

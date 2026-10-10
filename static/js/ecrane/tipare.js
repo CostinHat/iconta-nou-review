@@ -19,7 +19,7 @@ export async function randeazaTipare(corp, nav) {
   try {
     d = await api.get("/tipare");
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca tiparele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca tiparele.</p>`;
     return;
   }
 
@@ -135,7 +135,7 @@ export async function randeazaTipare(corp, nav) {
         rez.innerHTML = `<p class="ecran-nota">${esc((r && r.motiv) || "Analiza nu e disponibilă acum.")}</p>`;
       }
     } catch (e) {
-      rez.innerHTML = `<p class="ecran-nota">Nu am putut genera analiza.</p>`;
+      rez.innerHTML = `<p class="ecran-nota">Nu s-a putut genera analiza.</p>`;
     }
     btn.disabled = false;
   });

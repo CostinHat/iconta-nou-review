@@ -417,23 +417,23 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=f25e1ed56e");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=f25b959e6d");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
-            } catch (e) { console.warn("[clopot] nu am putut deschide De validat:", e); }
+            } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
           }
           else if (typeof n.link === "string" && n.link.startsWith("jurnal:") && window._navGlobal) {
             const [, tid, nid, an, luna] = n.link.split(":").map((x) => parseInt(x, 10));
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=2561dbfd34");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=8fc3bd020b");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=15b7548994");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
               window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t,
                 Object.assign({ evidentiaza: Number.isFinite(nid) ? nid : null }, Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})));
-            } catch (e) { console.warn("[clopot] nu am putut deschide Registrul jurnal:", e); }
+            } catch (e) { console.warn("[clopot] nu s-a putut deschide Registrul jurnal:", e); }
           }
           // [F164_routing] notificare de control fiscal -> deschide ecranul FIRMEI respective (nu portofoliul).
           // Format link: "control-fiscal:{tid}". tid malformat -> log + fallback (ramai pe ecran, nu ecran alb).
@@ -441,9 +441,9 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js?v=ad497d96e3");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
+              const { randeazaControl } = await import("./ecrane/control.js?v=b53f36ab3d");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
-            } catch (e) { console.warn("[clopot] nu am putut deschide control fiscal:", e); }
+            } catch (e) { console.warn("[clopot] nu s-a putut deschide control fiscal:", e); }
           }
         });
         lista.appendChild(it);
@@ -543,7 +543,7 @@ async function _anunturiBanner(ecran) {
         /* [catch_scriere 27.07.2026] confirmarea nesalvata parea salvata - anuntul
            disparea de pe ecran dar reapare la reincarcare, fara explicatie. */
         const t = el.querySelector(".anunt-text") || el;
-        t.textContent = "Nu am putut confirma. Reîncarcă pagina și încearcă din nou.";
+        t.textContent = "Nu s-a putut confirma. Reîncarcă pagina și încearcă din nou.";
       }
     };
     document.body.appendChild(el);

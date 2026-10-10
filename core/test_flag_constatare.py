@@ -41,7 +41,7 @@ def test_perioada_e_obligatorie_in_semnatura():
 
 def test_gri_poarta_perioada_pe_care_nu_o_poate_verifica():
     """O necunoaștere fără capete se citește peste șase luni ca fapt permanent."""
-    c = main._flag_constatare("gri", "Stocuri", "nu pot verifica", "temei", 2026, 7)
+    c = main._flag_constatare("gri", "Stocuri", "nu se poate verifica", "temei", 2026, 7)
     assert c["domeniu_de"] == "2026-07"
 
 

@@ -43,7 +43,7 @@ def extrage_xml(continut: bytes) -> str:
     m = re.search(rb"<\?xml.*?</msj>|<msj.*?</msj>", continut, re.S)
     if m:
         return m.group(0).decode("utf-8", errors="ignore")
-    raise ValueError("Nu am găsit niciun raport Z în fișier — nici într-un p7b semnat, nici "
+    raise ValueError("Nu s-a găsit niciun raport Z în fișier — nici într-un p7b semnat, nici "
                      "ca XML simplu. Încarcă fișierul exportat de casa de marcat.")
 
 

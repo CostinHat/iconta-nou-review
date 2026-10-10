@@ -3,6 +3,8 @@ core/produse_api.py — nomenclatorul de produse per firma (schema tenant).
 Cota TVA se potriveste automat cu AI (cote_tva.potriveste_cota) la prima
 introducere a unei denumiri; apoi produsul e salvat si cota vine din nomenclator
 (nu se mai intreaba AI). Un om poate confirma/corecta cota (control fiscal).
+[R193, 10.10.2026] Modelul NU se intreaba de aici: functiile care primesc o conexiune primesc si
+raspunsurile, cerute inainte de ea (`de_intrebat` -> `cote_tva.intreaba` -> `raspunsuri=`).
 
 Conexiunea vine deja pe schema tenant (search_path setat de apelant).
 """
@@ -53,34 +55,32 @@ def cauta_dupa_denumire(conn, denumire):
     return out
 
 
-def propunere_pentru_linie(conn, denumire, platitor_tva=True):
+def propunere_pentru_linie(conn, denumire, platitor_tva=True, raspunsuri=None):
     """[comanda Costin 05.10.2026 pct.9] Ce se propune pe o linie de factură când se scrie denumirea: produsul din NOMENCLATORUL
     firmei, dacă există (cota, UM, prețul), altfel cota din potrivirea automată. Înainte, linia întreba doar cota (AI), iar
     prețul și UM din nomenclator nu se precompletau. Neplătitorul primește cota 0 (CF art.310 alin.(10) lit.b), iar prețul și
     UM tot din nomenclator."""
     p = cauta_dupa_denumire(conn, denumire)
     if not p:
-        return potriveste(denumire, platitor_tva=platitor_tva)
+        return cote_tva.raspuns(raspunsuri, denumire, platitor_tva)
     cota = p["cota_tva"] if platitor_tva else 0
     return {"ok": True, "cota": int(cota) if float(cota).is_integer() else cota, "categorie": p.get("categorie"),
             "justificare": p.get("justificare"), "sursa": "nomenclator", "produs_id": p["id"],
             "um": p.get("um"), "pret_unitar": p["pret_unitar"]}
 
 
-def potriveste(denumire, platitor_tva=True):
-    """
-    Propune cota pentru o denumire noua, FARA sa salveze (preview pentru UI).
-    Intoarce rezultatul din cote_tva.potriveste_cota (cota, categorie,
-    justificare, incredere, sursa).
-    """
-    return cote_tva.potriveste_cota(denumire, platitor_tva=platitor_tva)
+def de_intrebat(conn, denumire, cota_tva=None):
+    """[R193] Faza de citire: denumirea pentru care `creeaza` / `propunere_pentru_linie` vor avea nevoie de răspunsul modelului —
+    produsul fără cotă dată și absent din nomenclator. Întrebarea se pune apoi cu pool-ul liber (`cote_tva.intreaba`)."""
+    d = (denumire or "").strip()
+    return [d] if d and cota_tva is None and not cauta_dupa_denumire(conn, d) else []
 
 
 def creeaza(conn, denumire, um="buc", pret_unitar=0, cota_tva=None,
             categorie=None, justificare=None, sursa="manual",
-            confirmat=False, platitor_tva=True):
+            confirmat=False, platitor_tva=True, raspunsuri=None):
     """
-    Creeaza un produs in nomenclator. Daca cota_tva nu e data, o potriveste cu AI.
+    Creeaza un produs in nomenclator. Daca cota_tva nu e data, o ia din `raspunsuri` (modelul, intrebat inaintea conexiunii).
     Daca produsul exista deja (aceeasi denumire), intoarce cel existent (nu dubleaza).
     Intoarce {ok, id, denumire, cota_tva, categorie, justificare, sursa, confirmat, existent}.
     """
@@ -94,10 +94,10 @@ def creeaza(conn, denumire, um="buc", pret_unitar=0, cota_tva=None,
         existent["ok"] = True
         return existent
 
-    # daca nu s-a dat cota, o potrivim cu AI
+    # daca nu s-a dat cota, o luam din raspunsul modelului, cerut INAINTEA conexiunii (`de_intrebat` + `cote_tva.intreaba`, R193)
     sursa_finala = sursa
     if cota_tva is None:
-        rez = cote_tva.potriveste_cota(d, platitor_tva=platitor_tva)
+        rez = cote_tva.raspuns(raspunsuri, d, platitor_tva)
         if rez.get("cota") is None:
             # auto-match esuat: NU salvam un produs cu cota ghicita -> NEDETERMINAT (baza nula).
             # (0 = scutit/neplatitor NU e None -> se salveaza normal)

@@ -7,7 +7,7 @@
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=2561dbfd34";
-import { trimiteInCoada } from "./coada_trimite.js?v=4a4f2ddcbd";
+import { trimiteInCoada } from "./coada_trimite.js?v=13f6e15332";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -108,7 +108,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     if (inLucru && S.firme.some((fr) => fr.id === inLucru)) S.tenant_id = inLucru;
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca firmele.</p>`;
     return;
   }
   pas1(corp, nav);
@@ -138,7 +138,7 @@ function pas1(corp, nav) {
   // forma (D101/D406 la un PFA) apar DEZACTIVATE cu temeiul scurt (nu ascunse tacit; temei complet in title).
   function optiuniTip() {
     if (!S.tenant_id) return `<option value="">— alege firma întâi —</option>`;
-    if (S.tipuriEsuat) return `<option value="">— nu am putut încărca tipurile — reîncarcă firma —</option>`;
+    if (S.tipuriEsuat) return `<option value="">— nu s-au putut încărca tipurile — reîncarcă firma —</option>`;
     if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
     return `<option value="">— alege tipul —</option>` + S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
@@ -309,7 +309,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
     ${S.tip === "d398" ? '<div id="dec-d398-form"></div>' : ""}
     ${S.tip === "d318" ? '<div id="dec-d318-form"></div>' : ""}
-      <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
+      <div class="dec-eroare">${esc((e && e.mesaj) || "Nu s-a putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
     if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
@@ -359,7 +359,7 @@ async function pas2(corp, nav) {
                  <pre class="dec-xml-pre">${esc(erANAF)}</pre>
                </div>`)
         : `<div class="dec-avert">
-             <div class="dec-avert-cap">Nu am putut rula validarea cu DUKIntegrator (validatorul ANAF, local)</div>
+             <div class="dec-avert-cap">Nu s-a putut rula validarea cu DUKIntegrator (validatorul ANAF, local)</div>
              <ul><li>${esc(S.rezultat.temei || "Validatorul nu a rulat.")}</li>
                  <li>${esc(S.rezultat.limita || "")}</li></ul>
            </div>`);
@@ -465,7 +465,7 @@ async function randeazaClasificareD390(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const auto = d.auto || [], manual = d.manual || [];
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
@@ -529,7 +529,7 @@ async function randeazaOperatiuniD301(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
   const grila = ops.length
     ? ops.map((o) => {
@@ -3554,7 +3554,7 @@ async function randeazaManualD300(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d300-manual?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca rândurile manuale D300${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca rândurile manuale D300${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const randuri = d.randuri || [], disp = d.randuri_disponibile || [];
   const grila = randuri.length
     ? randuri.map((o) => `<div class="dec-man-rand">
@@ -3652,7 +3652,7 @@ export function _blocComponente(c) {
   if (c.acoperire !== "completa") {
     const spune = c.acoperire === "absenta"
       ? "Declara\u021bia asta nu-\u0219i poate desface \u00eenc\u0103 cifra: motorul care o produce nu \u00eentoarce pozi\u021biile, doar XML-ul. Compozi\u021bia se vede \u00een fi\u0219ierul generat."
-      : "Nu \u0219tiu s\u0103 desfac cifra acestui tip de declara\u021bie \u2014 nu e trecut \u00een harta de componente. Ce vezi mai sus e num\u0103rul de opera\u021biuni, nu compozi\u021bia lor.";
+      : "Cifra acestui tip de declara\u021bie nu se poate desface \u2014 nu e trecut \u00een harta de componente. Ce vezi mai sus e num\u0103rul de opera\u021biuni, nu compozi\u021bia lor.";
     return `<div class="caseta-info"><span class="ci-mesaj">${spune}</span></div>`;
   }
   if (!c.total) return "";

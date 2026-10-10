@@ -163,7 +163,7 @@ def verifica():
         observare.alerteaza(
             "sonda_web_repornire",
             "Procesul iConta a repornit fără să fi fost un deploy"
-            if fel == "cadere" else "Procesul iConta a repornit — nu pot spune dacă a fost deploy",
+            if fel == "cadere" else "Procesul iConta a repornit — nu se poate spune dacă a fost deploy",
             "Ora de pornire a %s s-a schimbat.\n\n  înainte: %s  (commit %s)\n  acum:    %s  (commit %s)\n\n"
             "%s\n\n"
             "Sonda spune CĂ a repornit, nu cât a fost jos: între două rulări la 15 minute, o "
@@ -171,7 +171,7 @@ def verifica():
             % (UNITATE, pornit_inainte, commit_inainte, pornit, commit,
                "Commitul e ACELAȘI, deci n-a fost un deploy — procesul a căzut și s-a ridicat singur."
                if fel == "cadere" else
-               "Nu s-a putut citi unul din commituri, deci nu pot deosebi un deploy de o cădere."))
+               "Nu s-a putut citi unul din commituri, deci nu se poate deosebi un deploy de o cădere."))
     if pornit:
         db.init_pool()
         with db.get_conn() as conn:

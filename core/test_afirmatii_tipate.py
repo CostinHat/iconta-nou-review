@@ -45,7 +45,10 @@ BASELINE = {
     "core/uc_portal.py": 1,
     "core/uc_tenants.py": 1,
     "core/control_fiscal_api.py": 1,
-    "core/cote_tva.py": 1,
+    # [10.10.2026, R193] `core/cote_tva.py` 1 -> 0, SCOS. Nu e o conversie: refuzul „denumire lipsă” (`{ok, cod, mesaj}`) era numărat
+    # la importuri numai fiindcă stătea în `potriveste_cota` (`IMPORT_FN` prinde „potriveste” din nume). Mutat în `_fara_model`, ca
+    # emiterea să-l poată da fără să întrebe modelul, scanerul îl clasează după chei: rezultat de operație (`ok`), în afara scopului —
+    # unde îi era și locul. Verificat cu instrumentul pe HEAD și acum: același dict, aceeași linie de cod, altă funcție-gazdă.
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
     "core/istoric_declaratii_import_api.py": 1,

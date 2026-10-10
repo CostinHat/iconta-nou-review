@@ -41,7 +41,7 @@ def test_marcajele_se_scot_la_generare_si_la_salvare(monkeypatch):
     monkeypatch.setattr(P, "rezumat_luna", lambda *a, **k: dict(RZ))
     import core.control_fiscal_api as cf
     monkeypatch.setattr(cf, "evalueaza_firma", lambda *a, **k: {"lipsa": []})
-    r = P.genereaza_poveste(None, None, 1, 2026, 8, "x")
+    r = P.genereaza_poveste(P.date_poveste(None, None, 1, 2026, 8, "x"), 2026, 8)
     assert "**" not in r["text"] and not r["text"].startswith("#"), r["text"]
     assert ai_client.text_simplu("2 * 3 = 6 și 4*5") == "2 * 3 = 6 și 4*5"     # un asterisc care nu e marcaj rămâne
 
@@ -111,7 +111,7 @@ def test_celelalte_texte_ai_afisate_ies_fara_marcaje(monkeypatch):
     monkeypatch.setattr(tipare_api, "tipare", lambda *a, **k: {"are_date": True, "motive": [{"motiv": "CIF invalid", "n": 3}],
                                                                 "tipuri": [], "firme": []})
     monkeypatch.setattr(ai_client, "genereaza_text", lambda *a, **k: "**Tipar:** D300 respinsă de 3 ori")
-    assert tipare_api.analiza_ai(None, 1) == {"disponibil": True, "analiza": "Tipar: D300 respinsă de 3 ori"}
+    assert tipare_api.analiza_ai(tipare_api.tipare(None, 1)) == {"disponibil": True, "analiza": "Tipar: D300 respinsă de 3 ori"}
     monkeypatch.setattr(ai_client, "genereaza_text",
                         lambda *a, **k: '{"decizie": "raspund", "raspuns": "**Da**, din ecranul Facturi."}')
     assert raportari_ai.triaj("x", "y") == {"decizie": "raspund", "raspuns": "Da, din ecranul Facturi."}

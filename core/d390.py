@@ -754,7 +754,7 @@ def evidenta_incompleta(conn, schema, an, luna):
         return None
     if not n:
         return None
-    return ("%d e-Factur%s primit%s de la ANAF pe %02d.%04d %s încă neînregistrat%s — până atunci nu pot "
+    return ("%d e-Factur%s primit%s de la ANAF pe %02d.%04d %s încă neînregistrat%s — până atunci nu se poate "
             "confirma că luna n-a avut operațiuni intracomunitare." %
             (n, "ă" if n == 1 else "i", "ă" if n == 1 else "e", luna, an,
              "e" if n == 1 else "sunt", "ă" if n == 1 else "e"))

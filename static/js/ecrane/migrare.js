@@ -221,7 +221,7 @@ function pasRezultate(corp, nav, rezultate, ignorate) {
     : "";
   nav.setInapoi(() => pasInput(corp, nav));
   corp.innerHTML = `
-    <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.eu.</p>
+    <p class="mig-intro">S-au verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.eu.</p>
     ${bannerIgnorate}
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
@@ -589,7 +589,7 @@ async function formularVectorFirma(corp, nav, f) {
       const _eris = (e && e.erori_campuri) || [];
       const _MAP = { regim_fiscal: "vf-regim", platitor_tva: "vf-tva", tip_decont: "vf-decont", operatiuni_ic: "vf-ic", tva_data_inceput: "vf-decont" };
       _eris.forEach((x) => { const g = corp.querySelector("#" + (_MAP[x.camp] || "_none")); if (g) { g.classList.add("camp-invalid"); g.setAttribute("aria-invalid", "true"); } });
-      er.textContent = (e && (e.mesaj || e.message)) || "Nu am putut salva. \u00cencearc\u0103 din nou.";
+      er.textContent = (e && (e.mesaj || e.message)) || "Nu s-a putut salva. \u00cencearc\u0103 din nou.";
     }
   });
 }
@@ -1636,7 +1636,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   if (!aplicabile || !aplicabile.length) {
     // straturi_pentru nu a raspuns -> NU ghicim filtrarea in JS (un PFA ar vedea pasii de partida dubla).
     // Stare-goala canonica + reincercare, nu "arata tot".
-    corp.innerHTML = `<div class="stare-goala">Nu am putut încărca pașii de import pentru firmă.
+    corp.innerHTML = `<div class="stare-goala">Nu s-au putut încărca pașii de import pentru firmă.
       <button class="btn-link" id="mig-reincearca">Reîncearcă</button></div>`;
     corp.querySelector("#mig-reincearca").addEventListener("click", () => meniuMigrarePerFirma(corp, nav, firma));
     return;

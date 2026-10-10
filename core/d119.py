@@ -179,7 +179,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă banca (banca) - atribut obligatoriu.")
     iban = str(manual.get("Cont") or "").replace(" ", "").upper()
     if not _IBAN_OK.match(iban):
-        er.append("Cont (IBAN) invalid - aștept RO + 22 caractere.")
+        er.append("Cont (IBAN) invalid - se așteaptă RO + 22 caractere.")
     for k, et in (("nume", "nume reprezentant"), ("prenume", "prenume reprezentant"),
                   ("functie", "funcție reprezentant")):
         if not str(manual.get(k) or "").strip():

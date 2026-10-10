@@ -12,19 +12,19 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=29ab225927";   // [retest 08.10 pct.7] contoarele de sus
+import { itemiContoare } from "./control_verdict.js?v=700c9a6bd0";   // [retest 08.10 pct.7] contoarele de sus
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaControl } from "./control.js?v=ad497d96e3";
-import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=f25e1ed56e";
-import { randeazaListaFirme } from "./firme.js?v=8fc3bd020b";
-import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=593b54babb"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=b535bb1ddc"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=fdcd88308f"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaControl } from "./control.js?v=b53f36ab3d";
+import { randeazaTermene } from "./termene.js?v=d4437aae0c";
+import { randeazaValidat } from "./validat.js?v=f25b959e6d";
+import { randeazaListaFirme } from "./firme.js?v=15b7548994";
+import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
+import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
+import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=43b8abe7c1"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

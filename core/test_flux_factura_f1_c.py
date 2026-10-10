@@ -275,7 +275,8 @@ def test_propunerea_pentru_linie_ia_pretul_si_um_din_nomenclator(conn, monkeypat
         cur.execute("INSERT INTO produse (denumire, um, pret_unitar, cota_tva, sursa, confirmat) VALUES ('Pâine albă', 'kg', 4.5, 11, 'manual', true)")
     r = pa.propunere_pentru_linie(conn, "pâine ALBĂ ", True)
     assert (r["ok"], r["cota"], r["um"], r["pret_unitar"], r["sursa"]) == (True, 11, "kg", 4.5, "nomenclator")
-    r = pa.propunere_pentru_linie(conn, "Consultanță fiscală", True)
+    r = pa.propunere_pentru_linie(conn, "Consultanță fiscală", True,
+                                  raspunsuri=cote_tva.intreaba(["Consultanță fiscală"]))   # [R193] modelul, întrebat înaintea conexiunii
     assert (r["cota"], r.get("um"), r.get("pret_unitar"), r["sursa"]) == (21, None, None, "ai")
     r = pa.propunere_pentru_linie(conn, "Pâine albă", False)            # neplătitor: cota 0 prin lege, prețul tot din nomenclator
     assert (r["cota"], r["pret_unitar"]) == (0, 4.5)
