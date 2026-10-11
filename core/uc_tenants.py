@@ -2666,7 +2666,7 @@ def s1005_xml(tenant_id, an, ctx):
 
 def s1005_valideaza(tenant_id, an, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/s1005-valideaza`; docstringul ei a ramas in stratul HTTP."""
-    import base64, subprocess, tempfile, os
+    import base64
     from core import bilant_api as _ba
     from core import artefacte as _art
     with db.get_conn() as conn:
@@ -2679,16 +2679,12 @@ def s1005_valideaza(tenant_id, an, ctx):
             # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
             # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
             raise _erori.DateInvalide(str(e))
-    with tempfile.TemporaryDirectory() as td:
-        cale = os.path.join(td, f"s1005_{tenant_id}_{an}.xml")
-        open(cale, "w", encoding="utf-8").write(xml)
-        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1005", cale],
-                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
-        erori = ""
-        err_f = cale + ".err.txt"
-        if os.path.exists(err_f):
-            erori = open(err_f, encoding="utf-8").read()
-    ok = "fara erori" in (r.stdout + r.stderr)
+    # [deficiența 222, 11.10.2026] validatorul prin `duk.valideaza` — sursa unică (ca orice declarație): „ok” din fișierul DUK nu mai
+    # ajunge pe ecran ca „erori” (caseta brută „ok” sub „Validare fără erori”), iar o rulare eșuată e gri cu motivul, nu „erori”.
+    from core import duk as _duk_v
+    _v = _duk_v.valideaza(xml, "s1005")
+    ok = _v["stare"] == "valid"
+    erori = _v["erori"] or ("" if ok else _v["temei"])
     # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
     # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
     # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
@@ -2729,7 +2725,7 @@ def s1003_xml(tenant_id, an, ctx):
 
 def s1003_valideaza(tenant_id, an, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/s1003-valideaza`; docstringul ei a ramas in stratul HTTP."""
-    import base64, subprocess, tempfile, os
+    import base64
     from core import bilant_api as _ba
     from core import artefacte as _art
     with db.get_conn() as conn:
@@ -2742,15 +2738,12 @@ def s1003_valideaza(tenant_id, an, ctx):
             # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
             # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
             raise _erori.DateInvalide(str(e))
-    with tempfile.TemporaryDirectory() as td:
-        cale = os.path.join(td, f"s1003_{tenant_id}_{an}.xml")
-        open(cale, "w", encoding="utf-8").write(xml)
-        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1003", cale],
-                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
-        erori = ""
-        if os.path.exists(cale + ".err.txt"):
-            erori = open(cale + ".err.txt", encoding="utf-8").read()
-    ok = "fara erori" in (r.stdout + r.stderr)
+    # [deficiența 222, 11.10.2026] validatorul prin `duk.valideaza` — sursa unică (ca orice declarație): „ok” din fișierul DUK nu mai
+    # ajunge pe ecran ca „erori” (caseta brută „ok” sub „Validare fără erori”), iar o rulare eșuată e gri cu motivul, nu „erori”.
+    from core import duk as _duk_v
+    _v = _duk_v.valideaza(xml, "s1003")
+    ok = _v["stare"] == "valid"
+    erori = _v["erori"] or ("" if ok else _v["temei"])
     # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
     # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
     # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).

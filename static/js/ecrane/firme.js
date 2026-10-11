@@ -1,18 +1,18 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=2561dbfd34";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=2561dbfd34";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=8c49e833bf";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=ca119aa3aa";
 import { ecranRip } from "./rip_ecran.js?v=b0638d5a64";
-import { trimiteInCoada } from "./coada_trimite.js?v=13f6e15332";  /* [C11, 07.10.2026] bilanțul prin coadă */
+import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=49001da67e";
 import { ecranEtransport } from "./etransport_ecran.js?v=d9952813f1";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=00548d5fca";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=43b8abe7c1";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=700c9a6bd0";  // renderer unic verdict control fiscal (DS cap.20)
+import { declaratiiPerFirma } from "./declaratii.js?v=0f3ab68351";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=b591d95307";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=a4cb39990a";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=bbdf562d81";  // [date_firma_v1]
@@ -2901,6 +2901,12 @@ async function ecranBilant(corp, nav, t) {
     cereCategoria();
     const par = () => `an=${corp.querySelector("#bl-an").value}`;
     const tip = () => corp.querySelector("#bl-tip").value;
+    // [deficiența 222, comanda Costin 10.10.2026] fără tip de declarație ales, acțiunile pe declarație sunt inactive — ca „Continuă”
+    // din Declarații (DS cap.1 v2.87, gard ACTIUNE_FARA_TIP). `cereAlegerile` din handlere rămâne refuzul de lângă câmp (FAPT_FISCAL_NECERUT).
+    const actiuniTip = ["#bl-val", "#bl-xml", "#bl-coada"].map((s) => corp.querySelector(s));
+    const legaTip = () => actiuniTip.forEach((b) => { b.disabled = !tip(); });
+    corp.querySelector("#bl-tip").addEventListener("change", legaTip);
+    legaTip();
     corp.querySelector("#bl-val").addEventListener("click", async () => {
       curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       arataMesaj(rez, "Se validează…", "info");
@@ -2926,8 +2932,10 @@ async function ecranBilant(corp, nav, t) {
     corp.querySelector("#bl-coada").addEventListener("click", async () => {
       const zona = corp.querySelector("#bl-coada-mesaj");
       curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+      // [deficiența 222] confirmarea = caseta „Trimisă” a declarațiilor (rescrie zona: caseta atenționărilor, dacă a fost, pleacă)
       await trimiteInCoada(zona, { tenant_id: t.id, tip: tip(), an: parseInt(corp.querySelector("#bl-an").value, 10) },
-        () => arataMesaj(zona, `${tip().toUpperCase()} ${corp.querySelector("#bl-an").value} a intrat în coada de validare — cabinetul o validează și o depune.`, "ok"));
+        () => { zona.innerHTML = casetaTrimisa(tip().toUpperCase(), corp.querySelector("#bl-an").value,
+          "a intrat în coada de validare — cabinetul o validează și o depune."); aduInVedere(zona); });
     });
     corp.querySelector("#bl-xml").addEventListener("click", async () => {
       curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite

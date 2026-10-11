@@ -3,14 +3,13 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=700c9a6bd0";   // [retest 08.10 pct.7] contoarele de sus
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
-import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
+import { semaforCard as _semaforCard, semaforPatruLumini } from "./semafor.js?v=36c253249e";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=15b7548994";
+import { randeazaListaFirme } from "./firme.js?v=918c22ff46";
 import { randeazaMigrare } from "./migrare.js?v=00548d5fca";
-import { randeazaControl } from "./control.js?v=b53f36ab3d";
+import { randeazaControl } from "./control.js?v=0260ebf289";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=74572648b0"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
@@ -65,8 +64,9 @@ const DEF = [  /* cab_ordine_v3 — [deficiența 203, retestul Costin 09.10: „
     sinteza:'<b class="tip-figura">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  { cheie:"raport",    titlu:"Raportează", icon: "suport",    ...CULORI_CARD.verde,
-    sinteza:"Raportează o problemă către iConta.eu", actiune:inLucru("Raportează") },
+  // [deficiența 225, aprobat de Costin 10.10.2026] cardul se numește „Suport” la ambele roluri (supersedă 202/203: „Raportează”)
+  { cheie:"raport",    titlu:"Suport", icon: "suport",    ...CULORI_CARD.verde,
+    sinteza:"Raportează o problemă către iConta.eu", actiune:inLucru("Suport") },
 ];
 
 // [coada_vizibila_mono_v1] titlul ferestrei cozii urmează starea patru-ochi (actualizat de actualizeazaValidat):
@@ -80,7 +80,7 @@ function deschideEcran(cheie, nav, continut) {
   if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
   if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
-  if (cheie === "raport") return nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
+  if (cheie === "raport") return nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
 }
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
@@ -184,7 +184,7 @@ function randeazaPanou(continut, nav) {
   continut.innerHTML = `
     <div class="cab-salut" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
-        <div class="cab-salut-nume">Salut, ${prenume}</div>
+        <h1 class="cab-salut-nume">Salut, ${prenume}</h1>
         <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
       </div>
       <button class="cab-card cab-card-mic accent-recomanda" id="cab-recomanda-mic">
@@ -233,7 +233,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "pachete") {  // [p63_pachete]
       card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "raport") {  // [p34_raporteaza]
-      card.addEventListener("click", () => nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
     } else {
       card.addEventListener("click", () => c.actiune(nav));
     }
@@ -358,7 +358,7 @@ async function actualizeazaControl(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = _semaforCard(itemiContoare((r && r.contoare) || {}), VERDICT_POZITIV.firme_toate, s.verde);   // [retest 08.10 pct.7]
+    zona.innerHTML = semaforPatruLumini(s);   // [deficiența 224] patru lumini, numărul de firme în fiecare stare
   } catch {}
 }
 

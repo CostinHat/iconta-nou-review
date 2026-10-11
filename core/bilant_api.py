@@ -4,10 +4,40 @@ from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import bilant as _b
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
+from core.pdf_util import data_ro
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
-def _solduri_la(cur, schema, an):
-    """Solduri finale la 31.12.an: solduri_initiale + miscari validate pana la 31.12.an."""
+def data_soldurilor(cur, schema):
+    """[deficiența 221, 10.10.2026] Data LA CARE sunt soldurile de preluare (`solduri_initiale`), sau None dacă evidența firmei e
+    întreagă în iConta.eu (nicio preluare). `data_referinta` când e scrisă; altfel ziua dinaintea lunii preluării (`luna_preluare` —
+    decizia Costin 08.10.2026 §6 pct.4: evidența în iConta.eu începe cu luna preluării, deci soldurile sunt „la” ziua de dinainte).
+    Aceeași regulă ca luna preluării din Date firmă și din Control fiscal, nu o a doua."""
+    import datetime
+    from core import luna_preluare as _lp
+    cur.execute(f"""SELECT (SELECT luna_preluare FROM {schema}.firma_profil WHERE id = 1) AS salvata,
+                           (SELECT creat_la FROM public.tenants WHERE schema_name = %s) AS creat_la,
+                           (SELECT max(data_referinta) FROM {schema}.solduri_initiale) AS data_solduri,
+                           (SELECT min(data) FROM {schema}.inregistrari) AS prima_nota,
+                           (SELECT count(*) FROM {schema}.solduri_initiale) AS n_solduri""", (schema,))
+    r = dict(cur.fetchone())
+    if r["data_solduri"]:
+        return r["data_solduri"]
+    c = r["creat_la"]
+    ef = _lp.efectiva(r["salvata"], c.date() if hasattr(c, "date") else c, None, r["prima_nota"])
+    if not ef:
+        return None
+    return datetime.date(ef[0], ef[1], 1) - datetime.timedelta(days=1)
+
+
+def sold_la(cur, schema, zi, ref="calculeaza"):
+    """Soldurile conturilor LA `zi` (inclusiv): soldurile de preluare + mișcările validate de după data lor, până la `zi`.
+    None dacă `zi` e înainte de data soldurilor de preluare: aplicația nu știe ce era atunci (nu se fabrică — OMFP 1802/2014 pct.130 cere
+    valoarea REALĂ a exercițiului precedent, nu o copie). [deficiența 221: coloana „An precedent” era soldul de preluare oricare ar fi
+    anul, deci pe anul preluării ieșea identică cu „An curent”.]"""
+    if ref == "calculeaza":
+        ref = data_soldurilor(cur, schema)
+    if ref is not None and zi < ref:
+        return None
     cur.execute(f"SELECT cont, sold_debitor, sold_creditor FROM {schema}.solduri_initiale")
     net = {}
     for r in cur.fetchall():
@@ -16,17 +46,31 @@ def _solduri_la(cur, schema, an):
         SELECT l.cont_debit, l.cont_credit, l.suma
         FROM {schema}.inregistrari_linii l
         JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-        WHERE i.status = 'validata' AND i.data <= %s""", (f"{an}-12-31",))
+        WHERE i.status = 'validata' AND i.data <= %s AND (%s::date IS NULL OR i.data > %s::date)""", (zi, ref, ref))
     for r in cur.fetchall():
         s = Decimal(str(r["suma"]))
         net[r["cont_debit"]] = net.get(r["cont_debit"], Decimal("0")) + s
         net[r["cont_credit"]] = net.get(r["cont_credit"], Decimal("0")) - s
     return {c: ((v, Decimal("0")) if v >= 0 else (Decimal("0"), -v)) for c, v in net.items()}
 
-def _solduri_initiale(cur, schema):
-    cur.execute(f"SELECT cont, sold_debitor, sold_creditor FROM {schema}.solduri_initiale")
-    return {r["cont"]: (Decimal(str(r["sold_debitor"])), Decimal(str(r["sold_creditor"])))
-            for r in cur.fetchall()}
+
+def coloanele_f10(cur, schema, an, av):
+    """(f10p, f10c) — bilanțul la 31.12 al anului precedent și la 31.12.an. Coloana curentă necunoscută -> refuz (bilanțul nu se poate
+    întocmi pe un an dinaintea preluării); cea precedentă necunoscută -> goală, cu avertismentul care o spune (nu o copie)."""
+    import datetime
+    ref = data_soldurilor(cur, schema)
+    s_c = sold_la(cur, schema, datetime.date(an, 12, 31), ref)
+    if s_c is None:
+        raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
+                         "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
+    s_p = sold_la(cur, schema, datetime.date(an - 1, 12, 31), ref)
+    if s_p is None:
+        av.append("Coloana „An precedent” a bilanțului (soldurile de la %s) e necompletată: evidența firmei în iConta.eu începe "
+                  "după soldurile de preluare de la %s, deci soldurile anului precedent nu sunt în aplicație. Se completează în "
+                  "formularul ANAF — OMFP 1802/2014 pct.130 cere valoarea exercițiului financiar precedent."
+                  % (data_ro(datetime.date(an, 1, 1)), data_ro(ref)))
+    return (_b.f10_din_balanta(s_p) if s_p is not None else {}), _b.f10_din_balanta(s_c)
+
 
 def _rulaje_67(cur, schema, an):
     cur.execute(f"""
@@ -77,8 +121,7 @@ def genereaza(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        s_fin = _solduri_la(cur, schema, an)
-        s_ini = _solduri_initiale(cur, schema)
+        f10p, f10c = coloanele_f10(cur, schema, an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {
@@ -95,8 +138,6 @@ def genereaza(conn, schema, an):
         # [declarant thread 3] Regula 4: fara fabricare tacita a administratorului
         av.append("Bilanț: declarantul (administrator) lipsește din profil — se trece implicit "
                   "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
-    f10c = _b.f10_din_balanta(s_fin)
-    f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_din_rulaje(rl)
     f20p = {}
     av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual dacă e cazul.")
@@ -117,8 +158,7 @@ def genereaza_s1003(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        s_fin = _solduri_la(cur, schema, an)
-        s_ini = _solduri_initiale(cur, schema)
+        f10p, f10c = coloanele_f10(cur, schema, an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {
@@ -129,8 +169,6 @@ def genereaza_s1003(conn, schema, an):
         "declarant_nume": p.get("declarant_nume"),
         "intocmit_nume": p.get("declarant_nume"),
     }
-    f10c = _b.f10_din_balanta(s_fin)
-    f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_complet_din_rulaje(rl)
     av.append("F20 an precedent necompletat - de completat manual dacă e cazul.")
     _er = erori_generare(prof)

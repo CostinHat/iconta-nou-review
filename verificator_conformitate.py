@@ -1733,6 +1733,81 @@ if not re.search(r"\.fd-tabel thead th\.fd-td-num, \.fd-td-num \.tip-desc \{ whi
 #     poveștii (`.pacm`) e un document de scris: înălțimea e a ecranului (`height: calc(100vh - …)`), nu a conținutului — cu povestea
 #     goală se strângea la 600 px. Regula e scrisă O SINGURĂ dată (erau două blocuri `.pacm`, 720 px și 900 px, care se contraziceau).
 #     Mutația: `height:` scos sau al doilea bloc `.pacm {` pus la loc -> TOTAL > 0. LIMITĂ: vede numai `.pacm`.
+# --- ROSU_DOAR_RESTANTA (DS cap.8 v2.87, 10.10.2026, decizia Costin „Roșu înseamnă termen depășit.”, deficiența 220): pe ecranele
+#     Control fiscal (control.js, control_verdict.js) o culoare ROȘIE de semafor (`CULORI.rosu`, `cf-rosu`, `pct-rosu`, `cf-termen-rosu`,
+#     `--rosu-semafor`) stă numai pe un rând care vorbește de restanțe. Mutația: `cf-galben` din titlul „Declarație vs contabilitate”
+#     repus pe `cf-rosu` -> TOTAL > 0. LIMITĂ: culoarea primită prin parametru sau calculată (`CULORI[x]`) nu se vede — acolo
+#     `stareAfisata` e păzită de `core/test_rosu_termen_depasit.py`.
+rap["rosu_doar_restanta"] = []
+_RX_ROSU = re.compile(r"CULORI\.rosu\b|\bcf-rosu\b|\bpct-rosu\b|\bcf-termen-rosu\b|--rosu-semafor")
+for _fis in ("control.js", "control_verdict.js"):
+    for _i, _ln in enumerate(fisiere.get(_fis, "").split("\n"), 1):
+        if _RX_ROSU.search(_ln) and not re.search(r"restan", _ln, re.I) and not _ln.strip().startswith("//"):
+            rap["rosu_doar_restanta"].append((_fis, _i, "ROSU_RESTANTA", _ln.strip()[:70]))
+
+# --- SEMAFOR_PATRU_LUMINI (DS cap.8 v2.87, 10.10.2026, aprobat de Costin, deficiența 224): cardul Control fiscal al contabilului-șef și
+#     al asistentului randează `semaforPatruLumini(sumar)`, iar `LUMINI_CONTROL` are exact patru stări, în ordinea roșu, galben, verde,
+#     gri. Mutația: ordinea `galben` / `rosu` inversată, sau cardul asistentului întors pe `semaforCard` -> TOTAL > 0.
+rap["semafor_patru_lumini"] = []
+_m_lum = re.search(r"export const LUMINI_CONTROL = \[(.*?)\];", fisiere.get("semafor.js", ""), re.S)
+_ord_lum = re.findall(r'\["(\w+)", "pct-', _m_lum.group(1)) if _m_lum else []
+if _ord_lum != ["rosu", "galben", "verde", "gri"]:
+    rap["semafor_patru_lumini"].append(("semafor.js", 0, "SEMAFOR4", "LUMINI_CONTROL: %s" % _ord_lum))
+for _fis in ("cabinet.js", "asistent.js"):
+    _t = fisiere.get(_fis, "")
+    _bloc = re.search(r"querySelector\('\[data-cheie=\"control\"\]'\);(.*?)\n\}", _t, re.S)
+    if not _bloc or "semaforPatruLumini(" not in _bloc.group(1):
+        rap["semafor_patru_lumini"].append((_fis, 0, "SEMAFOR4", "cardul Control fiscal nu randează semaforPatruLumini"))
+
+# --- BUTON_DEZACTIVAT (DS cap.1 v2.87, 10.10.2026, deficiența 222): fiecare clasă de buton din set (cap.1, fără modificatorii
+#     `buton-mic` / `buton-activ`) are o regulă `:disabled` în stil.css, iar hover-ul ei e `:hover:not(:disabled)`. Mutația:
+#     `.buton-secundar:disabled` scos din regula comună -> TOTAL > 0.
+rap["buton_dezactivat"] = []
+_css_b = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+_set_b = ("buton-primar", "buton-secundar", "buton-text", "buton-sters", "buton-verde", "btn-nav", "btn-link")
+for _cl in _set_b:
+    if not re.search(r"\." + _cl + r":disabled\b", _css_b):
+        rap["buton_dezactivat"].append(("stil.css", 0, "BUTON_DEZACTIVAT", ".%s fără regula :disabled" % _cl))
+    for _m in re.finditer(r"\." + _cl + r":hover(?!:not\(:disabled\))", _css_b):
+        rap["buton_dezactivat"].append(("stil.css", _css_b[:_m.start()].count("\n") + 1, "BUTON_DEZACTIVAT",
+                                        ".%s:hover se aplică și dezactivat" % _cl))
+
+# --- ACTIUNE_FARA_TIP (DS cap.1 v2.87, 10.10.2026, deficiența 222): pe un ecran cu select de tip de declarație (`id="<x>-tip"` cu
+#     opțiuni de declarație — `s1005`/`s1003` sau `optiuniTip()`), fiecare buton care trimite în coadă, validează sau descarcă XML-ul
+#     din aceeași funcție e legat la `disabled` după tip (la deschidere și la schimbare). Mutația: apelul `legaTip();` scos din
+#     ecranBilant -> TOTAL > 0. LIMITĂ: recunoaște
+#     selectul de tip după opțiunile lui; un al treilea ecran cu alte coduri de declarație intră în `_TIP_DECL` cu mâna.
+rap["actiune_fara_tip"] = []
+_TIP_DECL = {"firme.js": ("ecranBilant", "bl-tip", ("bl-val", "bl-xml", "bl-coada"),
+                         ('.addEventListener("change", legaTip)', "\n    legaTip();")),          # legat la schimbare ȘI la deschidere
+             "declaratii.js": ("pas1", "dec-tip", ("dec-continua",), ("cont.disabled = !(S.tenant_id && S.tip)",))}
+for _fis, (_fn, _sel, _btn, _leg) in _TIP_DECL.items():
+    _t = fisiere.get(_fis, "")
+    _m = re.search(r"function " + _fn + r"\(.*?\n\}", _t, re.S)
+    _corp = _m.group(0) if _m else ""
+    if 'id="%s"' % _sel not in _corp or any(_l not in _corp for _l in _leg):
+        rap["actiune_fara_tip"].append((_fis, 0, "ACTIUNE_FARA_TIP", "%s: acțiunile nu sunt legate la tipul ales" % _fn))
+    for _b in _btn:
+        if 'id="%s"' % _b not in _corp:
+            rap["actiune_fara_tip"].append((_fis, 0, "ACTIUNE_FARA_TIP", "%s: butonul %s nu mai e în funcție" % (_fn, _b)))
+for _fis, _t in fisiere.items():                       # un select nou de tip de declarație, nelistat
+    for _m in re.finditer(r'<select id="([a-z]+-tip)"[^>]*>\$\{ALEGE\}\s*<option value="(s10|d[0-9])', _t):
+        if (_fis, _m.group(1)) not in {(f, v[1]) for f, v in _TIP_DECL.items()}:
+            rap["actiune_fara_tip"].append((_fis, 0, "ACTIUNE_FARA_TIP", "select de tip de declarație nelistat: %s" % _m.group(1)))
+
+# --- BARA_INALTIME_MINIMA (DS cap.2 v2.87, 11.10.2026, deficiența C8): barele aplicației (`.bara`, `.subbara`, `.bara3`,
+#     `.subbara--admin`) au înălțime MINIMĂ (`min-height`), nu fixă — un conținut rupt pe rânduri (mesajul lung de pe telefon) le
+#     crește, nu iese peste bara vecină și nu-i acoperă butoanele. Mutația: `.subbara { min-height: 40px` înapoi pe `height: 40px` ->
+#     TOTAL > 0. LIMITĂ: vede regulile de bază ale celor patru clase din stil.css; un stil inline nu se vede (plasa: test_def_c8).
+rap["bara_inaltime_minima"] = []
+for _cl in ("bara", "subbara", "bara3", "subbara--admin"):
+    for _m in re.finditer(r"(?m)^\." + re.escape(_cl) + r"\s*\{([^}]*)\}", _css_b):
+        if re.search(r"(?<![-\w])height\s*:", _m.group(1)):
+            rap["bara_inaltime_minima"].append(("stil.css", _css_b[:_m.start()].count("\n") + 1, "BARA_INALTIME_MINIMA",
+                                                ".%s cu înălțime fixă" % _cl))
+    if not re.search(r"(?m)^\." + re.escape(_cl) + r"\s*\{[^}]*min-height\s*:", _css_b):
+        rap["bara_inaltime_minima"].append(("stil.css", 0, "BARA_INALTIME_MINIMA", ".%s fără min-height" % _cl))
+
 rap["fereastra_scris"] = []
 _blocuri_pacm = re.findall(r"(?m)^\.pacm \{([^}]*)\}", _surse_css["stil.css"])
 if len(_blocuri_pacm) != 1 or not re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0] if _blocuri_pacm else ""):

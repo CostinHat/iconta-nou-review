@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.86 · 9 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.87 · 10 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -32,6 +32,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 | `.btn-nav` | Exclusiv navigare. 32×32px, portocaliu #f97316. Duce MEREU un pas înapoi. |
 | `.buton-activ` | STARE (nu buton): marchează butonul cu zona toggle deschisă. Albastru închis #1a5a94. |
 
+- **Butonul dezactivat arată dezactivat (v2.87, 10.10.2026, deficiența 222).** Fiecare clasă de buton din set are regula ei `:disabled`
+  (`.buton-primar`: fundal gri; celelalte: estompat `.55`, cursor obișnuit), iar hover-ul nu se aplică unui buton dezactivat. Gard
+  `BUTON_DEZACTIVAT` (verificator).
+- **Acțiunea pe o declarație e inactivă până se alege tipul declarației (v2.87, 10.10.2026, comanda Costin, deficiența 222: „«Trimite
+  în coadă» e activ fără tip de declarație ales”).** Pe un ecran cu select de tip de declarație, butoanele care lucrează pe ea
+  (Validează, Descarcă XML, Trimite în coadă, Continuă) sunt `disabled` cât timp tipul e „— alege —” — ca „Continuă” din Declarații.
+  Refuzul de lângă câmp (`cereAlegerile`, cap.17) rămâne în handler. Gard `ACTIUNE_FARA_TIP` (verificator).
 - **Butonul declanșator în timpul unei scrieri (v2.81, 08.10.2026).** `api.js` (`blocheazaButon`) dezactivează automat butonul
   apăsat cât durează orice scriere și îi pune `aria-busy`. „Se lucrează...” se scrie NUMAI pe un buton de text simplu, iar la
   final textul lui revine. Un buton care conține ELEMENTE (rândul-buton al unei liste, cardul, iconița) nu se rescrie: textul
@@ -63,6 +70,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.
+
+- **Barele aplicației au înălțime minimă, nu fixă (v2.87, 11.10.2026, deficiența C8).** `.bara`, `.subbara`, `.bara3`, `.subbara--admin`: `min-height`, iar bara de stare se rupe pe rânduri (`flex-wrap`). Pe telefon un mesaj lung din bara de stare ieșea din bara de 40 px și acoperea „?” din bara de sus (atingerea ajungea la mesaj). Gard `BARA_INALTIME_MINIMA` (verificator) + plasa `e2e_comanda_1010.py::test_def_c8_…` (pe 393 px, atingerea din mijlocul fiecărui buton al barelor ajunge la el).
 
 ## 2b. Carduri inactive (feature neconstruit)
 - Un card al carui ecran nu exista inca poarta EXPLICIT `activ: false` in definitie.
@@ -167,6 +176,16 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
 - Se folosesc EXCLUSIV prin tokeni: `var(--verde)` / `var(--galben)` / `var(--rosu-semafor)`. Hex literal interzis în JS/CSS (excepții: definiția tokenului, nuanțele deschise din gradientul `dot:`). Prins de regula HEX_SEMAFOR în verificator (v2.11). Starea gri (necunoscut/necompletat): `var(--gri-semafor)` #9aa3b2 + fundal `var(--gri-fundal-semafor)` #eef0f3 — un singur gri de semafor, nu nuanțe ad-hoc.
 
+- **Roșul semaforului fiscal = termen depășit (v2.87, 10.10.2026, decizia Costin: „Roșu înseamnă termen depășit.”, deficiența 220).**
+  În Control fiscal (listă, detaliu, fișa firmei, cardul de pe pagina principală) roșul e numai al RESTANȚELOR: declarație datorată,
+  nedepusă, cu termenul trecut. O neconcordanță contabilă, o declarație nedepusă înainte de termen, o verificare contabilă care nu
+  trece sau un audit divergent se arată **galben** (de urmărit); ce nu se poate ști, **gri**. Serverul păstrează severitatea
+  verificatorului (porțile cozii, alertele) — regula privește culoarea afișată și starea firmei (`common.pastila_firma`: o constatare
+  urcă firma cel mult la galben). Gard `ROSU_DOAR_RESTANTA` (verificator) + `core/test_rosu_termen_depasit.py`.
+- **Cardul Control fiscal = semafor cu PATRU lumini (v2.87, 10.10.2026, aprobat de Costin, deficiența 224).** Vertical, ROȘU → GALBEN →
+  VERDE → GRI, fiecare lumină cu numărul de firme în starea ei (partiția `sumar` a serverului: fiecare firmă într-o singură stare);
+  toate patru mereu afișate, și cu 0. Bulina e `.cab-pct .pct-<stare>` (STANDARD_SEMAFOR), containerul `.cab-semafor4`. Aceeași
+  componentă la contabilul-șef și la asistent (`semafor.js::semaforPatruLumini`). Gard `SEMAFOR_PATRU_LUMINI` (verificator).
 - Buline de stare pe fire de conversatie (Raporteaza): ROSU = in asteptare de raspuns, VERDE (#1d7a4d) = raspuns primit. Fara concept de citit/necitit; cifra de pe card = firele in asteptare (stare noua) si scade singura la sosirea raspunsurilor.
 
 ## 9. Ferestre de lucru
@@ -815,6 +834,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.87 (10.10.2026)** — comanda Costin de seară: **cap.8** — **roșul semaforului fiscal = termen depășit** (deficiența 220): în Control fiscal o constatare urcă firma cel mult la galben, iar culoarea afișată a constatărilor e galbenă; gard `ROSU_DOAR_RESTANTA` + `core/test_rosu_termen_depasit.py`. **cap.8** — **cardul Control fiscal = semafor cu patru lumini** (deficiența 224, aprobat): vertical, roșu → galben → verde → gri, cu numărul de firme în fiecare stare; gard `SEMAFOR_PATRU_LUMINI`. **cap.1** — **acțiunea pe o declarație e inactivă până se alege tipul** (deficiența 222: Bilanțul avea „Validează”, „Descarcă XML” și „Trimite în coadă” active cu tipul „— alege —”); gard `ACTIUNE_FARA_TIP`. **cap.1** — **butonul dezactivat arată dezactivat**: regula `:disabled` pentru tot setul, hover numai pe butonul activ (un `.buton-secundar` dezactivat arăta activ); gard `BUTON_DEZACTIVAT`. **cap.2** — **barele aplicației au înălțime minimă** (deficiența C8: pe telefon mesajul din bara de stare acoperea „?”); gard `BARA_INALTIME_MINIMA`.
+
 **v2.86 (09.10.2026)** — lotul „Retestul plasei”: **cap.9** — **focusul nu mută ecranul** (deficiența 159): un câmp deschis sub
 un rând primește focusul prin `api.focusFaraSalt` — fără derulare, apoi zona se mișcă doar cât să se vadă câmpul (`nearest`); la
 `<input type="date">` Chromium ignoră `preventScroll`, deci derularea strămoșilor se ține minte și se reface. Gard: `FOCUS_CU_SALT`

@@ -286,6 +286,12 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("s1005_valideaza", "TemporaryDirectory"): (
+        "valideaza",
+        "Deficiența 222 (comanda Costin 10.10.2026, caseta brută «ok»): directorul temporar al validării bilanțului (`TemporaryDirectory`) trăiește acum în `duk.valideaza` (`mkdtemp` + `rmtree` în `finally`), sursa unică a validatorului — un apel `valideaza` îl înlocuiește."),
+    ("s1003_valideaza", "TemporaryDirectory"): (
+        "valideaza",
+        "Deficiența 222 (comanda Costin 10.10.2026, caseta brută «ok»): directorul temporar al validării bilanțului (`TemporaryDirectory`) trăiește acum în `duk.valideaza` (`mkdtemp` + `rmtree` în `finally`), sursa unică a validatorului — un apel `valideaza` îl înlocuiește."),
     ("tenant_mijloace_fixe", "today"): (
         "azi_ro",
         "Comanda Costin 09.10.2026, „Retest 2” pct.5 („calculul merge până la ultima lună încheiată, aceeași regulă ca la închiderea "
@@ -361,6 +367,10 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    "s1005_valideaza": (("core/duk.py", "valideaza"), (
+        "Deficiența 222 (comanda Costin 10.10.2026): „mesajul de confirmare apare ca o casetă brută «ok»” — bilanțul rula DUKIntegrator separat și trimitea conținutul fișierului DUK („ok”) ca „erori”, afișate într-o casetă sub „Validare fără erori”. Validarea trece prin sursa unică `duk.valideaza` (fișierul temporar, rularea, citirea rezultatului și normalizarea „ok” trăiesc acolo).")),
+    "s1003_valideaza": (("core/duk.py", "valideaza"), (
+        "Deficiența 222 (comanda Costin 10.10.2026): „mesajul de confirmare apare ca o casetă brută «ok»” — bilanțul rula DUKIntegrator separat și trimitea conținutul fișierului DUK („ok”) ca „erori”, afișate într-o casetă sub „Validare fără erori”. Validarea trece prin sursa unică `duk.valideaza` (fișierul temporar, rularea, citirea rezultatului și normalizarea „ok” trăiesc acolo).")),
     "perioada_blocheaza": (("core/uc_comun.py", "controale_inchidere"), (
         "Decizia Costin 08.10.2026, W2 + W3: „Închiderea lunii e blocată dacă amortizarea lunii nu e înregistrată” și „controalele de "
         "închidere semnalează soldul 581 nenul”. Controalele (ciorne, facturi neîncheiate, e-Facturi, amortizare, 581) trăiesc într-o "

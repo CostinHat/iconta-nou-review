@@ -74,7 +74,7 @@ async function _corpAnsamblu(corp, primaLogare) {
   corp.innerHTML =
     `<div class="ans-continut">` +
       (primaLogare ? intro : "") +
-      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul „Raportează” de pe pagina principală.</p>` +
+      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul „Suport” de pe pagina principală.</p>` +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
         : _sectiuneFir(asistent, pasi)) +

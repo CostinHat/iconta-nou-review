@@ -416,14 +416,15 @@ def test_def_6_contorul_asistenti_nu_numara_administratorul(browser, request):
 
 def test_def_7_bun_venit_fara_termenul_de_48_de_ore(browser, request):
     """7. Bun venit: textul „se rezolvă în maximum 48 de ore” e un angajament public nedecis.
-    Pașii contabilului: la prima intrare citește „Bun venit”: fraza despre cardul „Raportează” (fost „Suport”, deficiența 202) rămâne,
+    Pașii contabilului: la prima intrare citește „Bun venit”: fraza despre cardul „Suport” (deficiența 225; între 09.10 și 10.10 s-a
+    numit „Raportează”, deficiența 202) rămâne,
     fără niciun termen de rezolvare."""
     with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a, ecran_cont(browser, request, a["email"]) as e:
         e.pg.goto(e_baza(), wait_until="domcontentloaded")
         e.pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
         txt = e.pg.inner_text(".bun-venit-overlay")
         e.captura()
-        fraza = [p for p in txt.split("\n") if "cardul „Raportează”" in p]   # [deficiența 202] cardul se numește „Raportează”
+        fraza = [p for p in txt.split("\n") if "cardul „Suport”" in p]   # [deficiența 225] cardul se numește „Suport”
         assert fraza, txt[:400]
         assert "48 de ore" not in txt and not re.search(r"\b\d+\s+(?:de\s+)?(?:ore|zile)\b", fraza[0]), fraza
 
@@ -929,17 +930,17 @@ def test_def_201_prezentarea_vorbeste_limba_contabilului(patron):
 
 
 def test_def_202_prezentarea_trimite_la_cardul_care_exista(patron, asistent):
-    """202. Prezentarea aplicației trimite la „cardul Suport”; cardul se numește „Raportează”.
-    Pașii: contabilul-șef și asistentul -> „?” -> prezentarea trimite la cardul „Raportează”, iar pe pagina principală a fiecăruia
-    există un card cu exact acest nume."""
+    """202. Prezentarea aplicației trimite la un card care nu există pe pagina principală (atunci: „cardul Suport” / „Raportează”).
+    Pașii: contabilul-șef și asistentul -> „?” -> prezentarea trimite la cardul „Suport” (numele aprobat de Costin pe 10.10.2026,
+    deficiența 225), iar pe pagina principală a fiecăruia există un card cu exact acest nume."""
     for e in (patron, asistent):
         _prezentarea(e)
         text = e.pg.inner_text(".fereastra .ans-continut")
-        assert "cardul „Raportează”" in text and "cardul Suport" not in text, text[:400]
+        assert "cardul „Suport”" in text and "Raportează”" not in text, text[:400]
         e.acasa()
         carduri = e.pg.eval_on_selector_all(".cab-card-titlu, .asi-nod-titlu, .asi-nod", "els => els.map(x => x.innerText.trim())")
         e.captura("desktop")
-        assert any(c.split("\n")[0] == "Raportează" for c in carduri), carduri
+        assert any(c.split("\n")[0] == "Suport" for c in carduri), carduri
 
 
 #: [deficiența 203] ordinea cardurilor cabinetului după lucrul zilnic: întâi ce cere acțiune azi (de validat, restanțe, scadențe), apoi
@@ -952,8 +953,8 @@ def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
     """203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor =
     ecranele din spate.
     Pașii: contabilul-șef -> pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
-    control fiscal, termene, firme …, la urmă Raportează) -> cifra cardului Firme = firmele active din ecranul Firme; contoarele
-    cardului Control fiscal = contoarele ecranului Control fiscal; „N note de validat” = „Note de validat (N)” din fereastra cozii."""
+    control fiscal, termene, firme …, la urmă Suport) -> cifra cardului Firme = firmele active din ecranul Firme; „N note de validat”
+    = „Note de validat (N)” din fereastra cozii (cifrele cardului Control fiscal: `e2e_comanda_1010.py::test_def_224_…`)."""
     import re as _r
     pg = patron.pg
     patron.acasa()
@@ -966,7 +967,7 @@ def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
     chei = [c["cheie"] for c in card]
     assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
     raport = [c for c in card if c["cheie"] == "raport"]
-    assert raport and raport[0]["titlu"].strip() == "Raportează", raport
+    assert raport and raport[0]["titlu"].strip() == "Suport", raport          # [deficiența 225]
     sint = {c["cheie"]: c["sinteza"] for c in card}
     firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
     pg.click("button.cab-card:has([data-cheie='firme'])")
@@ -977,21 +978,7 @@ def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
     pg.wait_for_timeout(800)
     firme_ecran = pg.locator("#firme-lista .firme-rand-linie").count()
     assert firme_card == firme_ecran, (sint["firme"], firme_ecran)
-    patron.acasa()
-    pg.wait_for_function("() => !document.querySelector('[data-cheie=control]').innerText.includes('se încarcă')", timeout=120000)
-    ctrl_card = pg.inner_text("[data-cheie=control]")
-    pg.click("button.cab-card:has([data-cheie='control'])")
-    pg.wait_for_selector(".cf-sumar .cf-pastila", timeout=120000)
-    pastile = pg.eval_on_selector_all(".fereastra:last-of-type .cf-sumar .cf-pastila", "els => els.map(e => e.innerText.trim())")
-    # fiecare contor nenul de pe ecran are pe card aceeași cifră, pe rândul cu aceeași etichetă (ultimele două cuvinte)
-    randuri_card = [x.strip() for x in ctrl_card.split("\n") if x.strip()]
-    for p in pastile:
-        n, et = _r.match(r"(\d+)\s+(.*)", p).groups()
-        if int(n) == 0:
-            continue
-        coada = " ".join(et.split()[-2:])
-        pe_card = [x for x in randuri_card if x.endswith(coada)]
-        assert pe_card and pe_card[0].split()[0] == n, (p, randuri_card)
+    # [deficiența 224] cifrele cardului Control fiscal (patru lumini = firmele în fiecare stare) față de lista din spate: test_def_224
     patron.acasa()
     pg.wait_for_function("() => /\\d/.test(document.querySelector('[data-cheie=validat]').innerText)", timeout=60000)
     val_card = pg.inner_text("[data-cheie=validat]")

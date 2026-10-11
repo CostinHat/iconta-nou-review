@@ -12,18 +12,17 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { itemiContoare } from "./control_verdict.js?v=700c9a6bd0";   // [retest 08.10 pct.7] contoarele de sus
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
-import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
+import { semaforPatruLumini } from "./semafor.js?v=36c253249e";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaControl } from "./control.js?v=b53f36ab3d";
+import { randeazaControl } from "./control.js?v=0260ebf289";
 import { randeazaTermene } from "./termene.js?v=d4437aae0c";
 import { randeazaValidat } from "./validat.js?v=f25b959e6d";
-import { randeazaListaFirme } from "./firme.js?v=15b7548994";
+import { randeazaListaFirme } from "./firme.js?v=918c22ff46";
 import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=43b8abe7c1"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=0f3ab68351"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
@@ -51,9 +50,9 @@ const NODURI = {
   pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
     sinteza: "Trimite pachetul lunar către clienți",
     deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },
-  raport: { titlu: "Raportează", icon: "suport", ...CULORI_CARD.ardezie,   // [05.10.2026] „report” nu mai e în ICOANE (v2.7) — desena gol
+  raport: { titlu: "Suport", icon: "suport", ...CULORI_CARD.ardezie,   // [05.10.2026] „report” nu mai e în ICOANE (v2.7) — desena gol
     sinteza: "Raportează o problemă către iConta.eu",
-    deschide: (nav) => nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav)) },
+    deschide: (nav) => nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav)) },
   recomanda: { titlu: "Recomandă", icon: "gift", ...CULORI_CARD.chihlimbar,
     sinteza: "Invită un cabinet în iConta.eu",
     deschide: (nav) => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)) },
@@ -131,7 +130,7 @@ export async function desktopAsistent(continut, nav) {
 
   continut.innerHTML = `
     <div class="cab-salut">
-      <div class="cab-salut-nume">Salut, ${prenume}</div>
+      <h1 class="cab-salut-nume">Salut, ${prenume}</h1>
     </div>
     <div class="asi-cadru">
       <div class="asi-panou"></div>
@@ -170,7 +169,7 @@ async function actualizeazaControlAsi(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = semaforCard(itemiContoare((r && r.contoare) || {}), VERDICT_POZITIV.firme_toate, s.verde);   // [retest 08.10 pct.7]
+    zona.innerHTML = semaforPatruLumini(s);   // [deficiența 224] patru lumini, numărul de firme în fiecare stare
   } catch {}
 }
 

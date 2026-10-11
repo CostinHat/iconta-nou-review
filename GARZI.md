@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**765 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**768 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 728
+### `core/` — 731
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8886,6 +8886,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_banca_parser_mt940.py` — Test gardian parser MT940 (SWIFT Statement Message).
 - `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
 - `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
+- `core/test_bilant_an_precedent.py` — GARD — deficiența 221 (comanda Costin 10.10.2026, verbatim în DECIZII): „Bilanț: coloana «An precedent» e copiată din anul curent
 - `core/test_bilant_prin_coada.py` — GARD — bilanțul trece prin coadă: pregătit → validat → depus, cu drepturile declarațiilor (decizia Costin 07.10.2026, C11).
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
@@ -9170,6 +9171,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_duk.py` — Teste gardian pentru duk (partea pura, fara java).
 - `core/test_duk_instalat.py` — GARD — validatoarele DUK instalate sunt cele PUBLICATE de ANAF (comanda Costin 07.10.2026, C3).
 - `core/test_duk_severitate.py` — GARD A2: DUK distinge atentionare (A:, NU blocheaza depunerea) de eroare (E:, blocheaza). Fixturi REALE
+- `core/test_duk_sursa_unica.py` — GARD — validatorul DUK se rulează numai prin `core/duk.py` (deficiența 222, comanda Costin 10.10.2026: „mesajul de confirmare apare
 - `core/test_e1_contare_primita_mixt.py` — [E1, 18.09.2026] Contarea unei facturi PRIMITE mixte (21/11) se face PE COTE, nu cu `MAX(cota_tva)`
 - `core/test_e2a_univers.py` — E2a — universul se declară, amestecul se OBSERVĂ.
 - `core/test_e2e_perioada.py` — GARD — perioada declarației în plasa e2e (10.10.2026). `e2e_bloc_d._genereaza` completa numai „Lună”: după C2 (D406 trimestrial la
@@ -9433,6 +9435,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
 - `core/test_ritm_partajat.py` — E1 — ritmul se numără O SINGURĂ DATĂ, pe amândouă procesele, și nu se golește la repornire.
 - `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
+- `core/test_rosu_termen_depasit.py` — GARD — deficiența 220 (comanda Costin 10.10.2026, verbatim în DECIZII): „Control fiscal: declarațiile apar cu roșu încă dinainte de
 - `core/test_rotunjire_explicita.py` — GARDA (lot 06.10, 06.10.2026): niciun `.quantize(...)` fără mod de rotunjire explicit în codul de producție.
 - `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
 - `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).
@@ -10782,3 +10785,20 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | gard | fișier | ce face imposibil | mutația | limita |
 |---|---|---|---|---|
 | amprentele „înainte/după” compară ce trebuie | `scripts/amprente_declaratii.py` + `core/test_amprente_declaratii.py` (4) | o perioadă cerută de două ori sau la altă periodicitate; o amprentă schimbată de data generării; textul refuzului păstrat pe o firmă din afara cabinetului de test; o diferență (lipsă / nouă) nenumită la R8 | trimestrul `m // 3`; amprenta pe XML brut; textul păstrat; perioadele lipsă ignorate -> câte 1 roșu fiecare | pe portofoliu se amprentează numai declarațiile generabile fără formular (R2b acoperă formularele, din suită); baza de test se schimbă între R2 și R8 — de aceea amprenta datelor firmei și „înainte” rulat din worktree-ul commitului R2 |
+
+## 11.10.2026 — Deficiențele 220–225 (comanda Costin 10.10.2026 seara, pct.3)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| roșul Control fiscal = termen depășit (220) | `core/common.py::pastila_firma` (o constatare urcă firma cel mult la galben) + `control_verdict.stareAfisata` + verificator `ROSU_DOAR_RESTANTA` + `core/test_rosu_termen_depasit.py` + plasa `e2e_comanda_1010.py::test_def_220_…` | o firmă roșie fără restanță; o constatare (TVA/salarii nedeclarate, verificare contabilă, audit divergent) afișată roșu | plafonul scos din `pastila_firma` + `stareAfisata` identitate -> unitar și e2e roșu; `cf-rosu` pus pe titlul „Declarație vs contabilitate” -> verificator TOTAL > 0 | culoarea primită prin parametru (`CULORI[x]`) nu se vede în verificator — o păzește testul unitar; alte ecrane (coada, Supervizorul) folosesc roșul pentru „blochează trimiterea” — rămân |
+| „An precedent” = soldul de la 31.12 al anului precedent, din evidență (221) | `core/bilant_api.py::data_soldurilor` / `sold_la` / `coloanele_f10` + `core/test_bilant_an_precedent.py` (3) + plasa `test_def_221_…` | coloana precedentă copiată din soldul de preluare sau din anul curent; un bilanț pe un an dinaintea preluării, fabricat | `coloanele_f10` întoarce coloana curentă de două ori -> unitar și e2e roșu (12.000 / 12.000); verificarea `zi < ref` scoasă -> 2025 se generează -> roșu | când preluarea e în timpul anului, „An precedent” rămâne gol (cu avertisment) — contabilul îl completează în formularul ANAF sau scrie data soldurilor la import |
+| acțiunea pe o declarație e inactivă până se alege tipul (222) | `firme.js::ecranBilant` (`legaTip`) + verificator `ACTIUNE_FARA_TIP` + plasa `test_def_222_…` | „Validează” / „Descarcă XML” / „Trimite în coadă” active cu tipul „— alege —”; un select nou de tip de declarație nelegat | `legaTip()` scos -> e2e roșu; verificator: legarea scoasă -> TOTAL > 0 | un al treilea ecran cu select de tip de declarație intră în `_TIP_DECL` cu mâna (verificatorul îl semnalează) |
+| butonul dezactivat arată dezactivat (222, clasa) | `static/stil.css` (regula `:disabled` a setului, hover `:not(:disabled)`) + verificator `BUTON_DEZACTIVAT` + plasa `test_def_222_…` (aspectul diferă) | un `.buton-secundar` (și restul setului) dezactivat cu aspect activ și hover | `.buton-secundar:disabled` scos -> e2e roșu și TOTAL > 0 | setul de clase e lista din DS cap.1; o clasă nouă de buton (interzisă de cap.1) n-ar fi în listă |
+| confirmarea intrării în coadă e aceeași casetă din orice ecran (222) | `coada_trimite.casetaTrimisa` (Declarații, Bilanț) + plasa `test_def_222_…` | confirmarea ca rând de text („ok”) pe un ecran și casetă pe altul | confirmarea Bilanțului înapoi pe `arataMesaj(…, "ok")` -> e2e roșu | — |
+| validatorul DUK numai prin `core/duk.py` (222: caseta brută „ok”) | `core/test_duk_sursa_unica.py` (AST) + `uc_tenants.s1005_valideaza` / `s1003_valideaza` pe `duk.valideaza` + plasa `test_def_222_…` | o rulare paralelă a `DUKIntegrator.jar` care trimite „ok” ca erori (sau ia o rulare eșuată drept validă) | rularea directă pusă înapoi -> unitar roșu; „ok” trimis ca erori -> e2e roșu | recunoaște jar-ul numit ca șir constant în argumentele procesului |
+| catalogul arată rolului numai ce poate folosi (223) | `core/ansamblu.py` (`RUTA_FUNCTIONALITATE` 4 -> 14, `NUMAI_PAGINA_CABINETULUI`, `FOLOSITE_DE_ASISTENT`) + `core/test_ansamblu.py` (clasificarea completă) + plasa `test_def_223_…` (și: contabilul-șef vede tot) | o funcție de nivel cabinet sau portal neclasificată; o funcție refuzată asistentului arătată în catalogul lui; o funcție ascunsă contabilului-șef | `F014` nelegat / `Sinteza zilnică` arătată asistentului -> e2e roșu; o funcție nouă neclasificată -> unitar roșu | refuzul e măsurat pe un asistent cu numai „Poate pregăti”; cu alte bife, `permis()` din ecran ascunde după gărzile reale |
+| cardul Control fiscal = semafor cu patru lumini (224) | `semafor.js::semaforPatruLumini` (`LUMINI_CONTROL`) + verificator `SEMAFOR_PATRU_LUMINI` + plasa `test_def_224_…` | alte lumini, altă ordine, cardul asistentului pe alt semafor, numere care nu sunt partiția listei | numărul pus pe 0 -> e2e roșu; ordinea inversată / cardul asistentului pe `semaforCard` -> TOTAL > 0 | — |
+| cardul „Suport” la ambele roluri (225) | `cabinet.js`, `asistent.js`, `ansamblu.js` + plasa `test_def_225_…` + `e2e_bloc_a.py` (202, 203, 7) | „Raportează” înapoi pe unul din roluri sau în prezentare | titlul înapoi pe „Raportează” -> e2e roșu | — |
+| barele aplicației cresc cu conținutul (C8) | `static/stil.css` (`.bara`, `.subbara`, `.bara3`, `.subbara--admin`: `min-height`) + verificator `BARA_INALTIME_MINIMA` + plasa `e2e_comanda_1010.py::test_def_c8_…` | pe telefon, un mesaj al barei de stare revărsat peste bara de sus („?” neapăsabil); orice buton al barelor acoperit de un vecin | `.subbara` / `.bara3` înapoi pe `height` -> TOTAL > 0; e2e: bara de stare pe 40 px fix -> roșu | verificatorul vede regulile de bază din stil.css; geometria e probată pe pagina principală a cabinetului, la 393 px |
+| pagina principală are titlul ei (C9) | `cabinet.js` / `asistent.js` (`<h1 class="cab-salut-nume">`) + plasa `test_def_c9_…` + `core/test_acoperire_vizuala.py::test_fara_violari` (axe pe `cabinet_desktop`, acum în `ECRANE`) | o pagină principală fără titlu de nivel 1 | salutul înapoi pe `div` -> e2e roșu | desktopul asistentului nu e în `ECRANE` (alt cont) — îl păzește testul e2e |
+| plasa așteaptă rezumatele la zi | `e2e_comanda_1010.py::_lista_control` | o probă a Control fiscal citită pe rezumatele „în recalculare” (gri) de după pornire — trecea sau pica după noroc | — (prins de mutațiile e2e: 220/224 picau din așteptare, nu din mutație) | așteaptă cel mult 900 s |

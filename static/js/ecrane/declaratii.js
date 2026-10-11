@@ -7,7 +7,7 @@
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=2561dbfd34";
-import { trimiteInCoada } from "./coada_trimite.js?v=13f6e15332";
+import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -3697,11 +3697,7 @@ async function pas3(corp, nav) {
 function pas3Gata(corp, nav, r) {
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
-    <div class="dec-gata">
-      <div class="dec-gata-bif">✓</div>
-      <div class="dec-gata-titlu">Trimisă în coada de validare</div>
-      <div class="dec-gata-sub"><b>${S.tip.toUpperCase()}</b> · ${etPerioada()} a fost trimisă seniorului pentru validare.</div>
-    </div>
+    ${casetaTrimisa(S.tip.toUpperCase(), etPerioada(), "a fost trimisă seniorului pentru validare.")}
     <div id="dec-gata-avert"></div>
     <div class="dec-bara">
       <button class="buton-secundar" id="dec-alta" data-fara-actiune="navigare: alt tip de declarație">+ Altă declarație</button>

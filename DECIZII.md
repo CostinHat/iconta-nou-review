@@ -19279,3 +19279,80 @@ mai jos, iar DEFICIENTE.md o poartă pe fiecare rând C.
 
 Norma (prefixul C pentru deficiențele găsite de Code; numerele simple ale lui Costin) trăiește în CLAUDE.md §2.2.0 și în antetul
 DEFICIENTE.md, păzită de `core/test_deficiente.py`.
+
+## 11.10.2026 — Deficiențele 220–225 (comanda Costin 10.10.2026 seara, pct.3; verbatim în intrarea „Răspunsul lui Costin la §6 al raportului «D406 — perioada tranzacției»”)
+
+**220 — „Roșu înseamnă termen depășit.” PIVOT pe „23.07.2026 Pastila-firma nu poate depasi severitatea maxima a constatarilor”.**
+Măsurat pe producție (10.10.2026, sesiune read-only, `firma_rezumat`): F1 roșu cu 0 restanțe și 5 de urmărit, F5 la fel — roșul venea din
+controlul încrucișat („TVA nedeclarat”, „Salarii nedeclarate”) pe 09/2026, al cărei termen e 26.10. Decizia din 23.07 făcea pastila firmei
+= severitatea MAXIMĂ dintre bază și constatări (un BLOCANT de trezorerie -> roșu). Ce rămâne din ea: pastila e calculată într-un singur loc
+(`common.pastila_firma`), gri nu escaladează, o constatare confirmată bate o necunoaștere, pastila nu depășește constatările. Ce se schimbă:
+**o constatare urcă firma CEL MULT la galben; roșul vine numai din starea de bază — o restanță** (declarație datorată, nedepusă, termen
+trecut). La fel culoarea afișată a constatărilor pe ecranele Control fiscal (`control_verdict.stareAfisata`): galben. Severitatea
+verificatorului rămâne pe server, neatinsă: poarta cozii (TVA/D406 față de balanță) blochează și alertele din clopoțel pleacă exact ca
+până azi — e o regulă de culoare și de stare a firmei, nu de severitate. ALTERNATIVA RESPINSĂ: verificatorii să-și coboare „rosu” la
+„galben” — ar fi slăbit porțile și alertele, care citesc severitatea. LIMITA: alte ecrane (coada de validare, Supervizorul) folosesc roșul
+pentru „blochează trimiterea” — rămân așa (regula lui Costin e despre Control fiscal); spus în DS cap.8. Norma: DS cap.8 v2.87 +
+`ROSU_DOAR_RESTANTA` (verificator) + `core/test_rosu_termen_depasit.py`.
+
+**221 — „An precedent” al bilanțului.** Cauza: coloana 1 era soldul de preluare (`solduri_initiale`) oricare ar fi anul; pe anul preluării,
+coloana 2 ieșea tot din el, deci egale. TEMEI: OMFP 1802/2014, Reglementări, pct.130 (forma consolidată din corpus,
+`anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`): „Pentru fiecare element de bilanţ … trebuie prezentată valoarea aferentă exerciţiului financiar
+la care se referă bilanţul … precum şi valoarea aferentă elementului corespondent pentru exerciţiul financiar precedent.” Decizia: soldul
+la o zi se știe numai de la data soldurilor de preluare încoace — `data_referinta`, altfel ziua dinaintea lunii preluării (aceeași regulă
+ca luna preluării, decizia Costin 08.10.2026 §6 pct.4). Coloana curentă necunoscută (an dinaintea preluării) -> refuz cu motivul; coloana
+precedentă necunoscută -> goală, cu avertismentul care o spune și trimite la formularul ANAF. ALTERNATIVA RESPINSĂ: copia soldului de
+preluare în coloana 1 (cifră falsă în declarație) sau zero fără avertisment (la fel de fals, tăcut). LIMITA: când preluarea e în
+timpul anului, aplicația nu are soldurile de la 01.01; dacă soldurile importate sunt de fapt cele de la începutul anului, contabilul
+scrie data lor la import (`data_referinta`) și ambele coloane ies din evidență.
+
+**222 — „Trimite în coadă” fără tip; confirmarea brută.** Văzut în browser (instanța de test, 11.10.2026): pe Bilanț, cu tipul pe „— alege —”,
+„Validează (ANAF)”, „Descarcă XML” și „Trimite în coadă →” erau active (refuzul venea abia la clic, lângă câmp — tiparul
+FAPT_FISCAL_NECERUT), iar după trimitere confirmarea era un rând de text verde (`arataMesaj(…, "ok")`), nu caseta „Trimisă în coada de
+validare” a Declarațiilor. Clasa, măsurată: selecturile de TIP DE DECLARAȚIE ale aplicației sunt două (`#dec-tip` — „Continuă” deja
+inactiv până la alegere — și `#bl-tip`), iar confirmările intrării în coadă două (Declarații, Bilanț). Decizia: acțiunea pe o
+declarație e inactivă până se alege tipul — ca „Continuă” —, iar confirmarea e ACEEAȘI casetă din orice ecran
+(`coada_trimite.casetaTrimisa`). Refuzul de lângă câmp (`cereAlegerile`) rămâne în handler: cele ~45 de apeluri ale tiparului din
+celelalte formulare NU se schimbă (acolo selectul nu e tipul declarației, iar Costin a numit „tipul de declarație”). Găsit pe drum: un
+`.buton-secundar` dezactivat arăta exact ca unul activ (fără regulă `:disabled`, cu hover) — și la orice buton blocat în timpul unei scrieri
+(`blocheazaButon`, DS cap.1 v2.81); regula globală pentru tot setul de butoane. ALTERNATIVA RESPINSĂ: butoanele ascunse până la alegere
+(ecranul și-ar schimba așezarea — STOP de reorganizare). LIMITA: un al treilea ecran cu select de tip de declarație intră în
+`ACTIUNE_FARA_TIP` cu mâna (verificatorul semnalează un select nou cu opțiuni de declarație și `ALEGE`). Norma: DS cap.1 v2.87 +
+`BUTON_DEZACTIVAT` + `ACTIUNE_FARA_TIP`.
+
+**223 — catalogul lui Ana.** Clasa, măsurată pe gărzile serverului: funcția din catalog a cărei acțiune o refuză serverul unui asistent cu
+numai „Poate pregăti” (`drepturi.interzise`) — 83 de rute; legate de 14 funcții din catalog (`ansamblu.RUTA_FUNCTIONALITATE`, 4 -> 14), plus
+„Sinteza zilnică” (cardul ei e numai pe pagina contabilului-șef). Funcțiile cu și o acțiune permisă (coada, pachetele, magazinul) rămân,
+la fel portalul clientului: rutele `/portal/*` sunt ale clientului, refuzate oricui din cabinet — legate de ele, funcțiile ar fi dispărut
+și din catalogul contabilului-șef (prins de plasă: `test_def_200`, gol de 38 px în prezentare); cabinetul vede portalul prin
+previzualizare (F197, `CITIRE`). Contabilul-șef vede tot catalogul (probat în `test_def_223`).
+Gard: fiecare funcție de nivel cabinet sau portal din catalog e într-una din trei liste (refuzată / numai la cabinet / folosită, cu
+motivul).
+
+**224 — cardul Control fiscal = semafor cu patru lumini (aprobat).** Lumina = numărul de firme în starea ei, din partiția `sumar` a
+serverului (fiecare firmă într-o singură stare); vertical roșu -> galben -> verde -> gri (DS cap.8: „Mereu vertical, ordinea ROȘU →
+GALBEN → VERDE”), toate patru și cu 0. INTERPRETARE: „starea” firmei = cea a pastilei (după 220: roșu = restanțe, galben = de urmărit sau
+neconcordanță, verde = la zi, gri = nu se poate verifica). Contoarele ecranului Control fiscal (fapte, o firmă poate fi în două) rămân pe
+ecran. Norma: DS cap.8 v2.87 + `SEMAFOR_PATRU_LUMINI`.
+
+**225 — cardul „Suport” (aprobat). PIVOT pe deficiențele 202/203 (09.10.2026: cardul cabinetului „Suport” -> „Raportează”).** Numele
+cardului e „Suport” la contabilul-șef și la asistent; prezentarea trimite la „cardul «Suport»”. Ce rămâne din 202: prezentarea numește
+cardul care există.
+
+**C8 — bara de stare pe telefon (găsită de uneltele vizuale ale lotului).** Barele aplicației au înălțime minimă, nu fixă: când conținutul
+încape, aspectul e identic; pe telefon, bara de stare crește cu mesajul în loc să-l lase peste bara de sus. ALTERNATIVA RESPINSĂ: mesajul
+ascuns sau tăiat pe telefon (informația „poți activa validarea în doi” ar dispărea tocmai pe dispozitivul unde nu se vede altundeva) sau
+scurtat (schimbare de text, a lui Costin). LIMITA: înălțimea barelor crește pe telefon când mesajul e lung — conținutul paginii coboară cu
+o linie-două. Norma: DS cap.2 v2.87 + `BARA_INALTIME_MINIMA`.
+
+**125 față de 224 — contradicție ridicată, rezolvată pe intenție; forma rămâne decizia lui Costin (§6 al raportului).** Deficiența 125
+(„cardul ≠ fereastra”) cerea aceleași contoare pe card și în fereastra Control fiscal; 224 (aprobat) face din card un semafor cu
+firmele pe stări — o PARTIȚIE (fiecare firmă într-o singură stare), pe când fereastra numără FAPTE (o firmă poate fi „cu restanțe” și
+„cu neconcordanțe”). Cifrele nu pot fi aceleași decât la restanțe (roșu ⇔ restanță). Ce s-a făcut: testul 125 cere acum ca fiecare
+cifră a cardului să se regăsească în fereastră — restanțele egale, suma luminilor = firmele din listă, fiecare lumină = rândurile listei
+în starea ei (`test_def_224`). ALTERNATIVA RESPINSĂ unilateral: partiția pusă și în antetul ferestrei (ar schimba ecranul Control
+fiscal — STOP de reorganizare). LIMITA: un contabil care compară cardul cu antetul ferestrei vede cifre diferite la „de urmărit” și
+„nu se pot verifica” (fapte vs firme); de aceea întrebarea e la §6.
+
+**C9 — titlul paginii principale.** Salutul „Salut, …” devine titlul de nivel 1 al paginii (`h1`, aceeași clasă, `margin: 0`) — nu un
+titlu nou ascuns doar pentru cititorul de ecran (ar fi două texte pentru același lucru). Același aspect pe ecran.

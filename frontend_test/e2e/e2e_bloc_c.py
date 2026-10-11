@@ -814,16 +814,25 @@ def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
     Pașii: firma -> Bilanț anual -> an 2025, S1005 -> „Trimite în coadă →”. Bilanțul intră în coada de validare (mesaj „a intrat
     în coada de validare”), iar în coada cabinetului apare S1005 al firmei."""
     pg = patron.pg
-    _deschide(patron, firma_gv["nume"], "bilant", "#bl-coada")
-    pg.fill("#bl-an", "2025")
-    pg.select_option("#bl-tip", "s1005")
-    pg.click("#bl-coada")
-    pg.wait_for_function("() => (document.querySelector('#bl-coada-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=60000)
-    patron.captura("trimis")
-    msg = pg.inner_text("#bl-coada-mesaj")
-    assert "a intrat în coada de validare" in msg, msg
-    r = sql("SELECT tip, stare FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (firma_gv["tenant_id"],))
-    assert len(r) == 1 and r[0][1] in ("la_senior", "aprobata"), r
+    # [deficiența 221] bilanțul 2025 se întocmește numai dacă evidența firmei din iConta.eu cuprinde 31.12.2025: firma, creată azi fără
+    # preluare, primește luna preluării 01/2025 (cum ar scrie-o contabilul în Date firmă), readusă la final
+    s = firma_gv["schema"]
+    vechi = sql('SELECT luna_preluare FROM "%s".firma_profil WHERE id = 1' % s)[0][0]
+    sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (_dt.date(2025, 1, 1),))
+    try:
+        _deschide(patron, firma_gv["nume"], "bilant", "#bl-coada")
+        pg.fill("#bl-an", "2025")
+        pg.dispatch_event("#bl-an", "change")
+        pg.select_option("#bl-tip", "s1005")
+        pg.click("#bl-coada")
+        pg.wait_for_function("() => (document.querySelector('#bl-coada-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=60000)
+        patron.captura("trimis")
+        msg = pg.inner_text("#bl-coada-mesaj")
+        assert "a intrat în coada de validare" in msg, msg
+        r = sql("SELECT tip, stare FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (firma_gv["tenant_id"],))
+        assert len(r) == 1 and r[0][1] in ("la_senior", "aprobata"), r
+    finally:
+        sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (vechi,))
 
 
 # ================================================================ 79 — Da/Nu din schemă, cerute la prima folosire

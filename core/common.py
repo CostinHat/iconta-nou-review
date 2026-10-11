@@ -313,7 +313,10 @@ def pastila_firma(base, constatari):
     se pastreaza daca nimic confirmat nu escaladeaza. EXPLICIT, fiindca aici a fost indus in eroare
     cititorul (si codul, pana la 20.08): o constatare VERDE nu poate scoate firma din gri - doar una
     CONFIRMATA (galben/rosu) o poate. Verdele e o afirmatie; griul spune ca afirmatia nu se poate face. constatari = [{'stare': ...}, ...]. Vezi DECIZII 23.07."""
-    rang = max([_RANG_STARE.get(base, 0)] + [_RANG_STARE.get((c or {}).get("stare"), 0) for c in constatari])
+    # [deficiența 220, decizia Costin 10.10.2026: „Roșu înseamnă termen depășit.”] O constatare (neconcordanță, declarație nedepusă
+    # înainte de termen, regim TVA divergent) urcă firma CEL MULT la galben; roșul vine numai din starea de bază — o restanță
+    # (`control_fiscal_api._stare`: termen trecut, nedepusă). Gardat: `core/test_rosu_termen_depasit.py`.
+    rang = max([_RANG_STARE.get(base, 0)] + [min(_RANG_STARE.get((c or {}).get("stare"), 0), _RANG_STARE["galben"]) for c in constatari])
     # [gri_nu_devine_verde 20.08.2026] VERDELE E O AFIRMATIE — „am verificat si e in regula". GRIUL spune
     # ca afirmatia NU SE POATE FACE. O afirmatie partial imposibila nu devine adevarata prin partea care
     # s-a putut face. Aceeasi propozitie ca la indicatorul de patru ochi: verdele e afirmatia ca lucrurile

@@ -26,16 +26,6 @@ export function etichetaRand(f) {
   return etichetaStare(f.stare, f.neclar);
 }
 
-// Contoarele de sus, din faptele numărate de server (`contoare`), aceleași pe lista Control fiscal și pe cardurile de pe ecranul principal.
-export function itemiContoare(c) {
-  return [
-    { n: c.restante, cls: "pct-rosu", txt: c.restante === 1 ? "cu restanță" : "cu restanțe" },
-    { n: c.neconcordante, cls: "pct-rosu", txt: c.neconcordante === 1 ? "cu neconcordanță contabilă" : "cu neconcordanțe contabile" },
-    { n: c.de_urmarit, cls: "pct-galben", txt: "cu declarații de urmărit" },
-    { n: c.nu_se_pot_verifica, cls: "pct-gri", txt: c.nu_se_pot_verifica === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
-  ];
-}
-
 // INVENTAR DECLARAT — paritatea 1 (RANDARE). Fiecare cheie din payload-ul `verificari_contabile` (vc)
 // trebuie sa aiba aici o destinatie: o sectiune randata, sau "via d.contabil", sau marcata contor. O cheie
 // noua produsa de backend fara intrare aici = EROARE in verificator (VERDICT_PARITATE, sub-regula randare),
@@ -71,6 +61,12 @@ export function etichetaStare(stare, n_neverificabile) {
 // anatomie constatare (dot + mesaj + temei + remediu) — renderer unic pt «Verificari contabile» si audit.
 // [01.09.2026] EXPORTAT: ecranul supervizorului randeaza aceeasi anatomie. A doua randare a ei ar
 // diverge, iar TEMEIUL — partea ceruta explicit de Costin — e prima care s-ar pierde.
+// [deficiența 220, decizia Costin 10.10.2026: „Roșu înseamnă termen depășit.”] În Control fiscal roșul e al RESTANȚELOR (termen trecut,
+// nedepusă). O constatare — neconcordanță, declarație nedepusă înainte de termen, verificare contabilă eșuată, audit divergent — se
+// arată cel mult galben. Serverul păstrează severitatea verificatorului (porțile cozii și alertele o folosesc); aici e numai culoarea.
+// Gard: regula ROSU_DOAR_RESTANTA din verificator + `core/test_rosu_termen_depasit.py`.
+export function stareAfisata(s) { return s === "rosu" ? "galben" : s; }
+
 export function randA(c) {
   const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
   const r = c.remediu;
@@ -84,7 +80,7 @@ export function randA(c) {
 
 // anatomie constatare cu remediu EXECUTABIL (buton «Contabilizeaza facturile») — pt cross-check-uri.
 function randConst(c) {
-  const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
+  const dot = CULORI[stareAfisata(c.stare)] ? CULORI[stareAfisata(c.stare)].dot : CULORI.gri.dot;
   let extra = "";
   if (c.remediu) {
     const r = c.remediu;
@@ -176,7 +172,7 @@ function randMotiv(arr, semnale = [], felCls = "") {
 // verificare booleana (echilibru/tva/documente) — dot verde/rosu dupa .ok.
 function randVerif(eticheta, ok, detaliu) {
   return `<div class="cf-verif">
-    <span class="cf-verif-dot" style="background:${ok ? "var(--verde)" : "var(--rosu-semafor)"}"></span>
+    <span class="cf-verif-dot" style="background:${ok ? "var(--verde)" : "var(--galben)"}"></span>
     <span class="cf-verif-txt">${eticheta}${detaliu ? ` <span class="tip-micut">${detaliu}</span>` : ""}</span>
   </div>`;
 }
@@ -235,7 +231,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const neaplic = verificatori.flatMap((v) => v.nu_se_aplica || []);
     if (!cuFinding.length && !neaplic.length) return "";
     const worst = cuFinding.reduce((m, v) => ((RANG[v.stare] || 0) > (RANG[m] || 0) ? v.stare : m), "verde");
-    const cls = worst === "rosu" ? "cf-rosu" : (worst === "galben" ? "cf-galben" : "");
+    const cls = (worst === "rosu" || worst === "galben") ? "cf-galben" : "";
     const blocuri = cuFinding.map((v) => (v.constatari || []).map(randConst).join("")
       + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")).join("")
       + neaplic.map((t) => `<div class="cf-incr-temei">${esc(t)}</div>`).join("");
@@ -246,7 +242,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const sectCota = (() => {
     const cf = vc.cota_tva_conformitate;
     if (!cf || !(cf.constatari || []).length) return "";
-    const cls = cf.stare === "rosu" ? "cf-rosu" : "";
+    const cls = cf.stare === "rosu" ? "cf-galben" : "";
     const randuri = (cf.constatari || []).map(randConst).join("");
     const limita = cf.limita ? `<div class="cf-incr-temei">${esc(cf.limita)}</div>` : "";
     return `<div class="cf-grup-titlu ${cls}">Conformitate facturi emise</div><div class="cf-decl">${randuri}${limita}</div>`;
@@ -276,8 +272,8 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const items = (d.contabil || []).filter((c) => c && typeof c === "object" && !DEJA_IN_INCRUCISAT.includes(c.eticheta));
     if (!items.length) return "";
     const worst = items.reduce((m, c) => ((RANG[c.stare] || 0) > (RANG[m] || 0) ? c.stare : m), "verde");
-    const cls = worst === "rosu" ? "cf-rosu" : (worst === "galben" ? "cf-galben" : "");
-    return `<div class="cf-grup-titlu ${cls}">Verificări contabile (${items.length})</div><div class="cf-decl">${items.map(randA).join("")}</div>`;
+    const cls = (worst === "rosu" || worst === "galben") ? "cf-galben" : "";
+    return `<div class="cf-grup-titlu ${cls}">Verificări contabile (${items.length})</div><div class="cf-decl">${items.map((c) => randA(Object.assign({}, c, { stare: stareAfisata(c.stare) }))).join("")}</div>`;
   })();
 
   const gata = d.stare === "verde" ? `
@@ -439,13 +435,15 @@ export function legaVerdict(corp, nav, firma) {
     const grup = (titlu, stare, cls) => {
       const arr = (a.constatari || []).filter((c) => c.stare === stare);
       if (!arr.length) return "";
-      return `<div class="cf-grup-titlu ${cls}">${titlu} (${arr.length})</div>${arr.map(randA).join("")}`;
+      return `<div class="cf-grup-titlu ${cls}">${titlu} (${arr.length})</div>${arr.map((c) => randA(Object.assign({}, c, { stare: stareAfisata(c.stare) }))).join("")}`;
     };
-    const col = CULORI[a.stare] || CULORI.gri;
+    // [deficiența 220] auditul nu e o restanță: „divergent” e galben și se spune pe nume (eticheta paletei ar fi zis „restanță”)
+    const col = CULORI[stareAfisata(a.stare)] || CULORI.gri;
+    const txtAudit = a.stare === "rosu" ? "divergent" : col.txt;
     zona.innerHTML = `
-      <div class="cf-incr-temei">${a.in_iconta_din ? `Firmă în iConta.eu din ${dataRo(a.in_iconta_din)} · ` : ""}Audit rulat ${dataRo(a.data, "cu_ora")} · <span style="color:${col.dot}">${col.txt}</span> · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
+      <div class="cf-incr-temei">${a.in_iconta_din ? `Firmă în iConta.eu din ${dataRo(a.in_iconta_din)} · ` : ""}Audit rulat ${dataRo(a.data, "cu_ora")} · <span class="cf-dot" style="background:${col.dot}"></span> ${txtAudit} · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
       ${grup("Coerent", "verde", "cf-verde")}
-      ${grup("Divergent", "rosu", "cf-rosu")}
+      ${grup("Divergent", "rosu", "cf-galben")}
       ${grup("Neverificat", "gri", "")}
       ${a.limita ? `<div class="cf-incr-temei">${esc(a.limita)}</div>` : ""}
       <button class="buton-secundar" id="cf-audit-run" data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare" style="margin-top:12px">Rerulează auditul</button>`;

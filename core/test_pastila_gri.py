@@ -37,17 +37,17 @@ def test_gri_ramane_gri_fara_constatari():
 def test_confirmatul_escaladeaza_griul():
     """O problemă CUNOSCUTĂ bate o necunoaștere — altfel griul ar ascunde restanțe."""
     assert pastila_firma("gri", [{"stare": "galben"}]) == "galben"
-    assert pastila_firma("gri", [{"stare": "rosu"}]) == "rosu"
-    assert pastila_firma("gri", [{"stare": "verde"}, {"stare": "rosu"}]) == "rosu"
+    assert pastila_firma("gri", [{"stare": "rosu"}]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
+    assert pastila_firma("gri", [{"stare": "verde"}, {"stare": "rosu"}]) == "galben"
 
 
 def test_bazele_necolorate_gri_neatinse():
-    """Fixul nu schimbă nimic pe celelalte baze - escaladarea rămâne max(base, constatări)."""
+    """Fixul nu schimbă nimic pe celelalte baze - escaladarea rămâne max(bază, constatări plafonate la galben — deficiența 220)."""
     assert pastila_firma("verde", [{"stare": "verde"}]) == "verde"
-    assert pastila_firma("verde", [{"stare": "rosu"}]) == "rosu"
+    assert pastila_firma("verde", [{"stare": "rosu"}]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
     assert pastila_firma("rosu", [{"stare": "verde"}]) == "rosu"
     assert pastila_firma("galben", [{"stare": "verde"}]) == "galben"
-    assert pastila_firma("galben", [{"stare": "rosu"}]) == "rosu"
+    assert pastila_firma("galben", [{"stare": "rosu"}]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
 
 
 def test_supra_escaladarea_ramane_interzisa():

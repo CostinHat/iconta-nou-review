@@ -213,7 +213,10 @@ def indicatori(conn, schema, an):
         rl = _ba._rulaje_67(cur, schema, an)
         if not rl:
             return None
-        s_fin = _ba._solduri_la(cur, schema, an)
+        import datetime
+        s_fin = _ba.sold_la(cur, schema, datetime.date(an, 12, 31))   # [deficiența 221] None = an dinaintea preluării: necunoscut
+        if s_fin is None:
+            return None
         f10 = _b.f10_din_balanta(s_fin)
         f20 = _b.f20_din_rulaje(rl)
         nms = nr_mediu_salariati(cur, schema, an)

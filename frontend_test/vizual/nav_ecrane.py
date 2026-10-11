@@ -219,6 +219,32 @@ def ecran_mijloace(pg): _ecran_shell(pg, "fa-mijloace")
 def ecran_pachete(pg): _card(pg, "pachete")
 
 
+def ecran_control_verdict(pg):
+    """Control fiscal -> PRIMA firma din lista -> corpul verdictului (`control_verdict.js`).
+
+    Lista e sortata rosu-galben-verde-gri de `control.js`, deci „prima" e cea mai incarcata —
+    ceea ce e exact ce vrem: un verdict gol n-ar avea ce randa."""
+    _card(pg, "control")
+    pg.wait_for_selector(".mig-frand", timeout=20000)
+    pg.locator(".mig-frand").first.click(timeout=8000)
+    pg.wait_for_timeout(1600)
+
+
+def ecran_control_portofoliu(pg):
+    """Cardul «Control fiscal» al cabinetului -> lista portofoliului (`control.js`). [11.10.2026] a trecut din `ECRANE_CABINET`."""
+    _card(pg, "control")
+
+
+def ecran_raporteaza(pg):
+    """Cardul «Suport» al cabinetului (`raporteaza.js`). [11.10.2026] a trecut din `ECRANE_CABINET`."""
+    _card(pg, "raport")
+
+
+def ecran_bilant(pg):
+    """Firma -> «Bilanț anual» (`firme.js::ecranBilant`). [11.10.2026, deficiențele 221/222] a trecut din `ECRANE_CAMPANIE`."""
+    _ecran_shell(pg, "fa-bilant")
+
+
 ECRANE = [
     ("supervizor", ecran_supervizor),
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
@@ -255,6 +281,15 @@ ECRANE = [
     ("raportz", ecran_raportz),
     # [LOT 19 d11, 03.10.2026] «Mijloace fixe»: butonul „C&D: da/nu” la capătul rândului i-a ATINS JS-ul
     ("mijloace", ecran_mijloace),
+    # [11.10.2026, deficiențele 220–225] ecranele atinse de lot au trecut aici din `ECRANE_CABINET` / `ECRANE_CAMPANIE` (pe contul
+    # implicit = CONT_CABINET): pagina principală (cardurile Control fiscal cu patru lumini și „Suport”), lista și detaliul Control
+    # fiscal (roșul = restanța), „Suport”, prezentarea (catalogul pe rol), Bilanțul (butoanele legate de tip, confirmarea)
+    ("cabinet_desktop", ecran_cab_desktop),
+    ("control_portofoliu", ecran_control_portofoliu),
+    ("control_verdict", ecran_control_verdict),
+    ("raporteaza", ecran_raporteaza),
+    ("ansamblu", ecran_ansamblu),
+    ("bilant", ecran_bilant),
 ]
 
 
@@ -274,7 +309,8 @@ ECRANE = [
 # Navigarea lor e aceeasi — deschide firma, apasa cardul —, deci se genereaza, nu se scrie de 21
 # de ori. Un ecran care cere mai mult de o apasare primeste functie proprie, ca `_import_strat`.
 _FA_CAMPANIE = [
-    "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
+    "fa-acces", "fa-balanta", "fa-bonuri",   # [11.10.2026] `fa-bilant` a trecut în `ECRANE` (deficiențele 221/222)
+    "fa-contracte", "fa-control",
     # [LOTUL 15] `fa-magazin` a trecut in `ECRANE`: lotul i-a atins JS-ul (R152).
     "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-marja",
     # [D394 op2 Î1, 02.10.2026] `fa-raportz` a trecut in `ECRANE`: decizia B i-a atins JS-ul.
@@ -370,17 +406,6 @@ def ecran_rip_pfa(pg):
     pg.wait_for_timeout(1800)
 
 
-def ecran_control_verdict(pg):
-    """Control fiscal -> PRIMA firma din lista -> corpul verdictului (`control_verdict.js`).
-
-    Lista e sortata rosu-galben-verde-gri de `control.js`, deci „prima" e cea mai incarcata —
-    ceea ce e exact ce vrem: un verdict gol n-ar avea ce randa."""
-    _card(pg, "control")
-    pg.wait_for_selector(".mig-frand", timeout=20000)
-    pg.locator(".mig-frand").first.click(timeout=8000)
-    pg.wait_for_timeout(1600)
-
-
 def ecran_flux_concediu(pg):
     """Firma -> «Salariați» -> fluxul de concediu (`flux_concediu.js`)."""
     deschide_firma(pg)
@@ -394,7 +419,7 @@ def ecran_flux_concediu(pg):
 # (nume, cont, functie) — numele e cel al FISIERULUI din lista campaniei, ca sa se poata lega
 # verdictul de randul `#nr` fara traducere.
 ECRANE_CABINET = [
-    ("cabinet_desktop", CONT_CABINET, ecran_cab_desktop),          # 472
+    # [11.10.2026] `cabinet_desktop` a trecut în `ECRANE` (JS atins de lotul 220–225)
     ("activitate_cabinet", CONT_CABINET, ecran_activitate_cabinet),  # 463
     ("tipare", CONT_CABINET, ecran_tipare),                        # 497
     ("asistenti", CONT_CABINET, _card_fn("asistenti")),            # 471
@@ -402,14 +427,14 @@ ECRANE_CABINET = [
     # numele e «_portofoliu», nu «control»: `fa-control` din ECRANE_CAMPANIE e ecranul UNEI
     # firme (#436), asta e semaforul intregului portofoliu (#474). Coliziunea a fost prinsa de
     # aserțiunea de mai jos la prima rulare — doua ecrane diferite cu acelasi nume scurt.
-    ("control_portofoliu", CONT_CABINET, _card_fn("control")),     # 474
-    ("control_verdict", CONT_CABINET, ecran_control_verdict),      # 475
+    # [11.10.2026] `control_portofoliu` a trecut în `ECRANE` (JS atins de lotul 220–225)
+    # [11.10.2026] `control_verdict` a trecut în `ECRANE` (JS atins de lotul 220–225)
     # [LOTUL 15] `pachete` a trecut in `ECRANE` (JS atins: R156, R159)
-    ("raporteaza", CONT_CABINET, _card_fn("raport")),              # 490
+    # [11.10.2026] `raporteaza` a trecut în `ECRANE` (JS atins de lotul 220–225)
     # [LOTUL 15] `recomanda` a trecut in `ECRANE` (JS atins: R158)
     ("termene", CONT_CABINET, _card_fn("termene")),                # 496
     ("validat", CONT_CABINET, _card_fn("validat")),                # 498
-    ("ansamblu", CONT_CABINET, ecran_ansamblu),                    # 469
+    # [11.10.2026] `ansamblu` a trecut în `ECRANE` (JS atins de lotul 220–225)
     ("navigator_clopot", CONT_CABINET, ecran_clopot),              # 500
     ("flux_concediu", CONT_CABINET, ecran_flux_concediu),          # 481
     ("admin_desktop", CONT_ADMIN, ecran_admin_desktop),            # 464

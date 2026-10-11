@@ -161,7 +161,7 @@ def test_c_reconciliator_rupt_nu_devine_gri_tacut(monkeypatch):
 def test_d_vizibil_in_control_fiscal_si_escaladeaza_pastila(monkeypatch):
     """(d) VIZIBILITATE: reconcilierea curge prin evalueaza_firma (reconciliere_surse) si o divergenta
     ROSIE escaladeaza pastila firmei. Escaladarea prin common.pastila_firma: rosu urca o baza verde la
-    rosu; gri NU escaladeaza."""
+    GALBEN (deficiența 220, 10.10.2026: roșul firmei = restanță; DS cap.8 v2.87); gri NU escaladeaza."""
     import core.d300 as d300mod
     from core import control_fiscal_api as cf
     orig = d300mod.calcul_d300
@@ -186,10 +186,10 @@ def test_d_vizibil_in_control_fiscal_si_escaladeaza_pastila(monkeypatch):
         assert recon["stare"] == "rosu", "reconcilierea vizibila trebuie rosie: %r" % recon["stare"]
         d300 = _constatare(recon, "d300")
         assert d300 and d300["stare"] == "rosu" and "310" in d300["mesaj"] and "210" in d300["mesaj"]
-        assert rez["stare"] == "rosu", "pastila firmei trebuie sa fie rosie (escaladata din reconciliere)"
+        assert rez["stare"] == "galben", "pastila firmei trebuie sa fie galbena (escaladata din reconciliere)"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
 
-        # Contractul de escaladare (pur): o constatare ROSIE urca o baza VERDE la rosu; gri NU urca.
-        assert pastila_firma("verde", recon["constatari"]) == "rosu"
+        # Contractul de escaladare (pur): o constatare ROSIE urca o baza VERDE la galben; gri NU urca.
+        assert pastila_firma("verde", recon["constatari"]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
         gri_only = [{"stare": "gri", "eticheta": "x", "mesaj": "y", "temei": "z"}]
         assert pastila_firma("verde", gri_only) == "verde", "gri nu trebuie sa escaladeze pastila"
     finally:

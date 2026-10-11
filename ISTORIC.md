@@ -2095,3 +2095,35 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
 - A doua poartă a respins (4 failed / 7989 passed): gardul nou asertase pe text (`"alege_perioada(" in fișier`) — `test_garzi_pe_text`
   (un fișier nou pornește de la zero) și clichetul din PREDARE. Rescris pe AST (apelurile și argumentele lor constante); înainte de
   a treia poartă, subsetul gărzilor-meta (agenda, clichete, conformitate, deficiențe, inventar, text, predare, temeiuri) rulat separat.
+
+## 11.10.2026 (noaptea) — Deficiențele 220–225: roșul = termen depășit, „An precedent” din evidență, Bilanțul fără tip, catalogul lui Ana, semaforul cu patru lumini, „Suport”
+
+Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2026 seara, pct.3 (verbatim în DECIZII); E2 din firul ei.
+- 220 — măsurat pe producție (read-only): roșul firmelor fără restanțe venea din constatările încrucișate. PIVOT pe decizia 23.07:
+  o constatare urcă firma cel mult la galben (`common.pastila_firma`), iar Control fiscal afișează constatările galben
+  (`control_verdict.stareAfisata`). DS cap.8 v2.87 + `ROSU_DOAR_RESTANTA` + `core/test_rosu_termen_depasit.py`.
+- 221 — „An precedent” era soldul de preluare oricare ar fi anul. Acum soldul la 31.12 al anului precedent, din evidență, de la data
+  soldurilor de preluare încoace (`bilant_api.data_soldurilor` / `sold_la` / `coloanele_f10`; OMFP 1802/2014 pct.130); necunoscut ->
+  gol cu avertisment (coloana precedentă) sau refuz cu motivul (coloana curentă). Testul 72 (bilanțul prin coadă) cere acum luna
+  preluării 01/2025 pe firma lui, creată azi.
+- 222 — reprodus în browser: pe Bilanț, „Validează”, „Descarcă XML” și „Trimite în coadă” active fără tip; după „Validează”, o casetă
+  `<pre>` cu „ok” sub „Validare fără erori” (fișierul DUK trimis ca „erori” de o rulare paralelă a validatorului); confirmarea cozii un
+  rând de text. Reparat: butoanele legate de tip, validarea prin `duk.valideaza` (sursa unică; gard `core/test_duk_sursa_unica.py`),
+  confirmarea = caseta „Trimisă” a Declarațiilor (`coada_trimite.casetaTrimisa`). Clasa găsită pe drum: butonul dezactivat arăta activ
+  (fără regula `:disabled`, cu hover) — regula pentru tot setul. DS cap.1 v2.87 + `ACTIUNE_FARA_TIP` + `BUTON_DEZACTIVAT`.
+- 223 — 14 funcții legate de ruta refuzată asistentului (erau 4) + „Sinteza zilnică” numai la cabinet; clasificarea completă păzită.
+  Portalul clientului NU se leagă de rutele `/portal/*` (ar fi dispărut și din catalogul contabilului-șef — prins de plasă la
+  `test_def_200`). Deficiența 5 primește retestul.
+- 224 — `semafor.semaforPatruLumini` la contabilul-șef și la asistent; DS cap.8 v2.87 + `SEMAFOR_PATRU_LUMINI`.
+- 225 — „Suport” la ambele roluri și în prezentare (PIVOT pe 202/203); testele 7, 202, 203 actualizate.
+- Plasa: lista Control fiscal se citește după tura lucrătorului de rezumate (pe producție cronul de la 5 minute, pe instanța de test
+  nu rulează) — mutațiile e2e arătau 220/224 roșii din așteptare, nu din mutație. Teste vechi actualizate la PIVOT (pastila:
+  `test_pastila_gri`, `test_verdict_stare`, `test_control_reconciliere_vizibila`; `test_onboarding_ux`), TRASEE regenerat (+1 refuz).
+- Uneltele vizuale (pe o instanță proaspătă, pe baza de test): ecranele atinse — pagina principală, lista și detaliul Control fiscal,
+  „Suport”, prezentarea, Bilanțul — au trecut în `nav_ecrane.ECRANE` (regula lotului 15: ecranul cu JS atins primește cele trei unelte);
+  desktopul asistentului prin `proba_r175_arbore_asistent.py`. Artefactele `acoperire_vizuala.json` și `proba_r175_arbore_asistent.json`
+  regenerate pe noul `ui_hash`.
+- C8 (găsită de uneltele vizuale, pe ciclu): pe telefon mesajul despre validarea în doi ieșea din bara de stare (înălțime fixă) și
+  acoperea „?”; barele aplicației au acum înălțime minimă (DS cap.2 v2.87 + `BARA_INALTIME_MINIMA` + `test_def_c8_…`).
+- C9 (găsită de uneltele vizuale, când pagina principală a intrat în `ECRANE`): pagina principală n-avea titlu de nivel 1 — salutul
+  e acum `h1`, cu același aspect, la contabilul-șef și la asistent (`test_def_c9_…`).

@@ -162,7 +162,7 @@ html, body {
   margin-top: 4px;
 }
 
-.buton-primar:hover { background: var(--albastru-inchis); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
+.buton-primar:hover:not(:disabled) { background: var(--albastru-inchis); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
 .buton-primar:disabled { background: var(--gri-clar); cursor: default; }
 
 .buton-text {
@@ -175,7 +175,7 @@ html, body {
   padding: 6px 10px;
   border-radius: var(--raza);
 }
-.buton-text:hover { background: var(--albastru-clar); color: var(--albastru); }
+.buton-text:hover:not(:disabled) { background: var(--albastru-clar); color: var(--albastru); }
 
 .login-eroare {
   background: var(--rosu-fundal);
@@ -192,8 +192,10 @@ html, body {
 .bara-antet { display: flex; flex-direction: column; }  /* [a11y_landmark] banner: bara+subbara+bara3 stivuite */
 
 /* bara albastră (sus) */
+/* [deficiența C8, 11.10.2026] barele aplicației (.bara, .subbara, .bara3) au înălțime MINIMĂ, nu fixă: pe telefon un mesaj lung din
+   bara de stare se rupea pe rânduri, ieșea din bară și acoperea „?” din bara de sus. DS cap.2 v2.87, gard BARA_INALTIME_MINIMA. */
 .bara {
-  height: 54px;
+  min-height: 54px;
   background: var(--albastru);
   display: flex;
   align-items: center;
@@ -221,9 +223,9 @@ html, body {
 
 /* bara albastru-gri (firma în lucru) */
 .subbara {
-  height: 40px;
+  min-height: 40px;
   background: var(--albastru-gri);
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   padding: 0 16px;
 }
 .subbara-icon { width: 17px; height: 17px; color: #2b3a4f; flex-shrink: 0; }
@@ -344,7 +346,7 @@ html, body {
   }
 
   /* bara gri */
-  .subbara { padding: 0 12px; }
+  .subbara { padding: 4px 12px; }   /* [C8] pe telefon mesajul se rupe pe rânduri: aer sus și jos */
 
   /* conținut: margini mai mici */
   .desktop-continut { padding: 20px 14px; }
@@ -364,7 +366,7 @@ html, body {
    DESKTOP CABINET — salut + grilă 9 carduri pastel
    ============================================================ */
 .cab-salut { margin-bottom: 12px; }
-.cab-salut-nume { font-size: var(--text-titlu); font-weight: 600; color: #163a5a; }
+.cab-salut-nume { font-size: var(--text-titlu); font-weight: 600; color: #163a5a; margin: 0; }   /* [11.10.2026] h1 al paginii principale (axe page-has-heading-one), același aspect */
 .cab-salut-data { font-size: var(--text-mic); color: var(--gri); }
 
 .cab-grila {
@@ -1077,7 +1079,7 @@ html, body {
 
 
 /* [p25_bara3] bara 3 — fasie mai deschisa decat subbara */
-.bara3 { height: 36px; background: #cdd8e6; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+.bara3 { min-height: 36px; background: #cdd8e6; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
 .bara3-item { font-size: var(--text-mic); color: #2b3a4f; }
 .bara3-item b { font-weight: 700; color: #1a2535; }
 .bara3-sep { color: #7f93ad; }
@@ -1419,7 +1421,10 @@ html, body {
   font-size: var(--text-mic);
   cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.18); transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
 }
-.buton-secundar:hover { background: var(--fundal); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.25); }
+.buton-secundar:hover:not(:disabled) { background: var(--fundal); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.25); }
+/* [deficiența 222, DS cap.1 v2.87] butonul dezactivat (fără tip ales, în timpul unei scrieri — `blocheazaButon`) arată dezactivat,
+   oricare ar fi clasa; `.buton-primar` își are griul lui (mai sus). Gard verificator BUTON_DEZACTIVAT. */
+.buton-secundar:disabled, .buton-text:disabled, .buton-sters:disabled, .buton-verde:disabled, .btn-nav:disabled, .btn-link:disabled { opacity: .55; cursor: default; }
 
 /* ---- ecran Declaratii ---- */
 .dec-form { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
@@ -1770,6 +1775,8 @@ html, body {
 
 /* [p75_carduri_mari] stari orizontale pe carduri (semafor doar cand e ceva) */
 .cab-stari { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
+/* [deficiența 224, DS cap.8] semaforul cu patru lumini al cardului Control fiscal: vertical, roșu -> galben -> verde -> gri */
+.cab-semafor4 { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
 .cab-stare { display: inline-flex; align-items: center; font-size: var(--text); }  /* [p76_comasare_font] */
 
 /* [p84_vector_css] formular vector fiscal */
@@ -2048,7 +2055,7 @@ html, body {
 #ac-lista.pf-lista { max-width: none; }
 #an-sel-lista.pf-lista { max-width: none; max-height: 60vh; overflow: auto; }  /* [anunturi_meniu_v1] selector destinatari: full-width + scroll propriu */
 
-.subbara--admin { height: 56px; padding: 0 24px; }
+.subbara--admin { min-height: 56px; padding: 0 24px; }
 .subbara-admin-sumar { font-size: var(--text); font-weight: 600; color: #1a2535; }
 .fereastra.fer-larg-simplu { max-width: 1000px; }
 
@@ -2170,7 +2177,7 @@ html.pagina-publica, body.pagina-publica { overflow-y: auto; }
 .buton-sters { border: none; border-radius: var(--raza); background: var(--rosu); color: #fff;  /* a11y contrast 19.08: era --rosu-semafor #ff3b30=3.4:1; --rosu #b3261e=6.5:1 */
   padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: background 0.15s, transform 0.1s, box-shadow 0.1s; }
-.buton-sters:hover { background: #d92d23; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
+.buton-sters:hover:not(:disabled) { background: #d92d23; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
 .btn-nav { width: 32px; height: 32px; padding: 0; border-radius: 8px; border: none;
   background: #f97316; color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.25); }
 .subbara-edu { min-height: 24px; display: inline-flex; align-items: center; padding: 2px 4px; }  /* a11y: tinta atingere >=24px (AA 2.5.8; era 18px) */
@@ -2191,7 +2198,7 @@ input[type=file] { min-height: 24px; }  /* a11y tinta atingere >=24px (AA 2.5.8)
 .buton-verde { border: none; border-radius: var(--raza); background: #1d7a4d; color: #fff;
   padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: background 0.15s, transform 0.1s, box-shadow 0.1s; }
-.buton-verde:hover { background: #16613d; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
+.buton-verde:hover:not(:disabled) { background: #16613d; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
 /* [STANDARD_ATENTIONARE] caseta de atentionare/confirmare - unica in toata aplicatia */
 .caseta-atentie {
   background: #fdf3f3; border: 2px solid #d98c8c; border-radius: var(--raza);

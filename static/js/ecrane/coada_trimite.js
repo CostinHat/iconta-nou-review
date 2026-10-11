@@ -8,6 +8,16 @@
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
 import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=2561dbfd34";
 
+// [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
+// nu un rând de text: bifa, „Trimisă în coada de validare”, declarația și perioada. `cine` = ce urmează („a fost trimisă seniorului …”).
+export function casetaTrimisa(tip, perioada, cine) {
+  return `<div class="dec-gata">
+      <div class="dec-gata-bif">✓</div>
+      <div class="dec-gata-titlu">Trimisă în coada de validare</div>
+      <div class="dec-gata-sub"><b>${esc(tip)}</b> · ${esc(perioada)} ${esc(cine)}</div>
+    </div>`;
+}
+
 export async function trimiteInCoada(zona, body, laSucces, confirmare) {
   const corp = Object.assign({}, body);
   if (confirmare) corp.motiv_trecere = confirmare;

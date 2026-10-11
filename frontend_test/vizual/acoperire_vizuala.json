@@ -1,5 +1,5 @@
 {
- "ui_hash": "c8a47ee5183a012c",
+ "ui_hash": "d7935690f7ed5c31",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -481,6 +481,120 @@
    "apasare": {
     "vazute": 5,
     "apasate": 3,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "cabinet_desktop": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 0,
+    "apasate": 0,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "control_portofoliu": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 16,
+    "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "control_verdict": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 15,
+    "apasate": 2,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "raporteaza": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 4,
+    "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "ansamblu": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 169,
+    "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "bilant": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 6,
+    "apasate": 4,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },

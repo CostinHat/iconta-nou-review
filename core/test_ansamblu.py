@@ -6,6 +6,7 @@ administratorului de cabinet își poartă ruta, pe care drepturile o ascund asi
   · fiecare rută din `RUTA_FUNCTIONALITATE` există între gărzile rutelor și e REFUZATĂ asistentului (altfel marcajul n-ar ascunde nimic).
 """
 import csv
+import io
 import os
 import re
 
@@ -26,10 +27,12 @@ def test_drum_nou_functia_de_administrator_de_cabinet_are_ruta():
 
 
 def test_rutele_exista_si_sunt_refuzate_asistentului():
+    """[deficiența 223] Profilul lui Ana: asistent cu numai „Poate pregăti”. MUTAȚIE: o rută permisă pusă în `RUTA_FUNCTIONALITATE`
+    (`POST /tenants/{tenant_id}/woocommerce/sincronizeaza`) -> pică."""
     import main
     from core import drepturi as d
     g = d.garzi_rute(main.app)
-    refuzate = set(d.interzise("angajat", {"poate_pregati": True, "poate_valida": True, "poate_depune": True}, g))
+    refuzate = set(d.interzise("angajat", {"poate_pregati": True}, g))
     rele = [(fid, r) for fid, r in sorted(an.RUTA_FUNCTIONALITATE.items()) if r not in refuzate]
     assert rele == [], "rute din RUTA_FUNCTIONALITATE pe care serverul NU le refuză asistentului (marcajul n-ar ascunde nimic): %s" % rele
 
@@ -57,3 +60,31 @@ def test_catalogul_vorbeste_limba_contabilului():
     assert not rele, rele
     assert an.limbaj_tehnic("Dispatch declarații") and an.limbaj_tehnic("Calcul (brut->net)"), "anti-vacuu"
 
+
+
+def test_fiecare_functie_de_cabinet_sau_portal_din_catalog_e_clasificata():
+    """[deficiența 223, comanda Costin 10.10.2026: „Catalogul trebuie să arate doar ce poate folosi rolul lui”] Drum nou: o funcție de
+    nivel cabinet sau portal intrată în catalog trebuie să fie refuzată asistentului (ruta ei), numai pe pagina cabinetului, sau
+    declarată folosită de el, cu motivul. MUTAȚIE: „F014” scos din `RUTA_FUNCTIONALITATE` -> pică."""
+    from genereaza_grupe_functii import repartizeaza
+    reg = {r[0].strip(): (r[2].strip(), r[3].strip()) for r in _registru() if len(r) > 3}
+    in_catalog = {reg[n][0] for g in repartizeaza() for n in g["functii"] if n in reg and reg[n][1] in ("cabinet", "portal")}
+    clasificate = set(an.RUTA_FUNCTIONALITATE) | set(an.NUMAI_PAGINA_CABINETULUI) | set(an.FOLOSITE_DE_ASISTENT)
+    assert len(in_catalog) >= 15, in_catalog                     # anti-vacuu: măsurat 10.10.2026, 20
+    assert sorted(in_catalog - clasificate) == [], sorted(in_catalog - clasificate)
+    assert not set(an.RUTA_FUNCTIONALITATE) & set(an.FOLOSITE_DE_ASISTENT), "o funcție nu poate fi și refuzată, și folosită"
+
+
+def test_numai_pe_pagina_cabinetului_e_adevarat():
+    """Cardul fiecărei funcții din `NUMAI_PAGINA_CABINETULUI` e pe pagina contabilului-șef și lipsește de pe a asistentului; iar
+    catalogul asistentului n-o arată. MUTAȚIE: filtrul pe `NUMAI_PAGINA_CABINETULUI` scos din `functii` -> pică."""
+    cab = io.open(os.path.join(_RAD, "static/js/ecrane/cabinet.js"), encoding="utf-8").read()
+    asi = io.open(os.path.join(_RAD, "static/js/ecrane/asistent.js"), encoding="utf-8").read()
+    for fid, cheie in an.NUMAI_PAGINA_CABINETULUI.items():
+        assert re.search(r'cheie:\s*"%s"' % cheie, cab), (fid, cheie)
+        assert not re.search(r"\b%s\s*:\s*\{\s*titlu" % cheie, asi), (fid, cheie)
+    grupe = [{"titlu": "G", "icon": "i", "functii": ["Sinteza zilnică pe email", "Generare contracte"]}]
+    randuri = {"Sinteza zilnică pe email": ("F083", "cabinet"), "Generare contracte": ("F147", "firma")}
+    asist = [f["nume"] for g in an.functii(grupe, randuri, "angajat", set()) for f in g["functii"]]
+    admin = [f["nume"] for g in an.functii(grupe, randuri, "admin_firma", set()) for f in g["functii"]]
+    assert asist == ["Generare contracte"] and admin == ["Sinteza zilnică pe email", "Generare contracte"], (asist, admin)

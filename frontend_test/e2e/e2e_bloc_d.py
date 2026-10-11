@@ -711,20 +711,24 @@ def test_def_124_de_urmarit_are_scadentele_din_30_de_zile(patron, firma_sal):
 
 def test_def_125_cardul_arata_aceleasi_cifre_ca_fereastra(patron, firma_sal):
     """125. Control fiscal: cardul ≠ fereastra.
-    Pașii contabilului: după o scriere (firma tocmai preluată) -> birou: cardul „Control fiscal” -> fereastra Control fiscal: aceleași
-    contoare pe card și în fereastră, iar firma are deja faptele ei (de urmărit), nu „în recalculare”/gri."""
+    Pașii contabilului: după o scriere (firma tocmai preluată) -> birou: cardul „Control fiscal” -> fereastra Control fiscal: fiecare
+    cifră a cardului se regăsește în fereastră, iar firma are deja faptele ei (de urmărit), nu „în recalculare”/gri.
+    [deficiența 224, aprobată 10.10.2026] Cardul arată de atunci firmele pe stări (patru lumini, fiecare firmă într-o singură stare), iar
+    fereastra păstrează contoarele de fapte (o firmă poate fi în două): restanțele sunt aceeași cifră, iar suma luminilor = firmele din
+    listă; fiecare lumină = rândurile listei în starea ei e probată de `e2e_comanda_1010.py::test_def_224_…`."""
     pg = patron.pg
     patron.acasa()
-    pg.wait_for_function("() => { const z = document.querySelector(\"[data-cheie='control']\"); return z && /\\d/.test(z.innerText); }",
-                         timeout=30000)
-    card = pg.inner_text("[data-cheie='control']")
+    pg.wait_for_function("() => document.querySelector(\"[data-cheie='control'] .cab-semafor4\")", timeout=30000)
+    card = {e["stare"]: e["n"] for e in pg.eval_on_selector_all(
+        "[data-cheie='control'] .cab-stare", "es => es.map(e => ({stare: e.dataset.stare, n: parseInt(e.querySelector('.tip-figura').innerText, 10)}))")}
     _control(patron)
     fereastra = pg.inner_text(".fereastra:last-of-type .cf-sumar")
-    nr = lambda t, eticheta: (re.search(r"(\d+) cu " + eticheta, t) or [None, None])[1]  # noqa: E731
+    randuri = pg.locator(".fereastra:last-of-type #cf-lista .mig-frand").count()
     rand = pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=firma_sal["nume"]).first.inner_text()
     patron.captura()
-    for et in ("restanțe", "neconcordanțe", "declarații de urm"):
-        assert nr(card, et) == nr(fereastra, et), (et, card, fereastra)
+    restante = re.search(r"(\d+) cu restanțe", fereastra)
+    assert restante and card.get("rosu") == int(restante.group(1)), (card, fereastra)
+    assert sum(card.values()) == randuri, (card, randuri)
     assert "de urmărit" in rand, rand
 
 

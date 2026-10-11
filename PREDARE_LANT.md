@@ -1,24 +1,25 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **10.10.2026, seara: lotul D406 (C1, C2) comis cu referința aprobată; numerotarea C; urmează deficiențele 220–225 ale lui Costin (comanda din seara asta), apoi R2a**
+# PREDARE LANȚ — **11.10.2026, noaptea: deficiențele 220–225 ale lui Costin rezolvate (lotul B); urmează raportul punctual + ZIP (E4), apoi R2a**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-10** (seara; comanda Costin de seară, pct.1–2 executate), pe secțiunile de stare (lecțiile și CIFRE
-  INVALIDATE se poartă).
-- **pe commit**: `8de0b0a5` (R0+R1, four-way închis); lotul D406 e în commitul care conține această predare — SHA-ul și four-way-ul în
-  raport. Ramura `wip/2026-10-10-1935` (copia de siguranță de la oprire) e depășită de commit.
+- **ultima rescriere**: **2026-10-11** (noaptea; comanda Costin din 10.10 seara, pct.3 executat), pe secțiunile de stare (lecțiile și
+  CIFRE INVALIDATE se poartă).
+- **pe commit**: `5dd1add9` (lotul D406 + numerotarea C, four-way închis); lotul 220–225 e în commitul care conține această predare —
+  SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
 **O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII), în
-execuție: R0 și R1 comise (`8de0b0a5`); **la R2 (amprentele „înainte”) a ieșit neconformitatea D406** — firul de sus din TESTE.md
-(D1–D5), închis: aprobat de Costin („Aprob — Costin, 10.10.2026”), comis. **În lucru: comanda Costin de seară** (TESTE.md, firul de
-sus, E1–E4): E1 comis cu lotul D406; urmează E2 — deficiențele 220–225 (Control fiscal roșu înainte de termen; „An precedent” al
-bilanțului; „Trimite în coadă” fără tip + „ok” brut; catalogul lui Ana; cardul Control fiscal semafor cu 4 lumini; cardul „Suport”), apoi
-E3 (curățenia /tmp/claude-1000), E4 (raportul punctual + ZIP), apoi R2a. Tot restul e livrat, cu poartă completă, four-way și ZIP în
+execuție: R0 și R1 comise (`8de0b0a5`); la R2 a ieșit neconformitatea D406 (C1, C2), închisă și comisă (`5dd1add9`). **În lucru: comanda
+Costin din 10.10 seara** (TESTE.md, firul de sus, E1–E4): E1 comis (`5dd1add9`), E3 făcut (/tmp/claude-1000: 2991 -> 2185 MB), E2 —
+deficiențele 220–225 — în commitul care conține această predare, toate „rezolvată” cu test în browser (`e2e_comanda_1010.py`) și
+mutație roșie; **urmează E4** (raportul punctual pentru 220–225, C1–C7, cifrele de referință, R193, vocea din Control fiscal, clicurile
+pierdute + ZIP-ul în `~/ghid_incoming/`), **apoi R2a** — amprentele „înainte” pe codul comis (`scripts/amprente_declaratii.py`, pe
+producție read-only și pe baza de test), R2b, R3–R16, ZIP la R16. Tot restul e livrat, cu poartă completă, four-way și ZIP în
 `/home/costin/ghid_incoming/`. **O decizie așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 08.10 §6”, §6 — și FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
 
@@ -427,8 +428,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **940** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1215** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **941** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

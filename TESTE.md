@@ -47,8 +47,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 ## În lucru acum
 - fir: **Comanda Costin 10.10.2026 seara (răspunsul la §6 „D406 — perioada tranzacției”, verbatim în DECIZII)** — aprobarea amprentei F5
   D406 T4/2026, numerotarea C, deficiențele 220–225, curățenia /tmp, raportul punctual, ZIP; apoi „următorul pas din listă” (R2a).
-  - ultim: E1 în commitul care conține această intrare (referința aprobată, numerotarea C, lotul D406).
-  - urmator: E2. STARE = IN LUCRU
+  - ultim: E1 (`5dd1add9`); E3 (curățenia /tmp, fără commit); E2 în commitul care conține această intrare (220–225, rezolvate, plasa
+    `e2e_comanda_1010.py`, 10 mutații e2e roșii) + C8 (bara de stare pe telefon) și C9 (pagina principală fără h1), găsite de uneltele vizuale.
+  - urmator: E4 (raportul punctual + ZIP), apoi „următorul pas din listă”: R2a — amprentele „înainte” pe codul comis. STARE = IN LUCRU
   - pasi:
     E1. pct.1+2 — DECIZII: comanda verbatim + „Aprob — Costin, 10.10.2026” + amprenta noii referințe (`cifre_referinta.py --productie
         --scrie-referinta`); numerotarea: deficiențele găsite de Code primesc prefixul C (225->C1, 226->C2; 220–224, tot ale lui Code,

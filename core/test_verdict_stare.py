@@ -14,10 +14,10 @@ def _c(stare):
 def test_pastila_nu_depaseste_max_constatari():
     # Intrastat AVERTISMENT (galben) singur -> pastila galben, NU rosu (supra-escaladare = minciuna).
     assert pastila_firma("verde", [_c("galben")]) == "galben"
-    # trezorerie BLOCANT (rosu) -> pastila rosu (nu se sub-escaladeaza la galben).
-    assert pastila_firma("verde", [_c("rosu")]) == "rosu"
-    # max intre mai multe: galben + rosu -> rosu.
-    assert pastila_firma("verde", [_c("galben"), _c("rosu")]) == "rosu"
+    # trezorerie BLOCANT (rosu) -> pastila galben: roșul firmei e numai al restanțelor (deficiența 220, PIVOT 10.10.2026).
+    assert pastila_firma("verde", [_c("rosu")]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
+    # max intre mai multe: galben + rosu -> galben (plafonat).
+    assert pastila_firma("verde", [_c("galben"), _c("rosu")]) == "galben"
 
 
 def test_pastila_gri_nu_escaladeaza():
@@ -82,10 +82,10 @@ def test_audit_regim_nedeterminat_e_gri_cu_straturi_sarite():
 def test_header_nu_poate_fi_verde_cu_blocant_dedesubt():
     # Motivul incarnat: header "la zi" + banner verde peste un BLOCANT e cea mai grava minciuna. Un
     # sold creditor 5121 (BLOCANT) devine constatare rosie (stare_din_nivel(BLOCANT)); pastila_firma peste
-    # o baza verde NU poate ramane verde - severitatea de sus nu poate fi mai buna decat ce e sub ea.
+    # o baza verde NU poate ramane verde - severitatea de sus nu poate fi mai buna decat ce e sub ea; roșu rămâne al restanțelor.
     blocant = {"stare": stare_din_nivel(BLOCANT)}   # trezorerie -> rosu
     assert pastila_firma("verde", [blocant]) != "verde"
-    assert pastila_firma("verde", [blocant]) == "rosu"
+    assert pastila_firma("verde", [blocant]) == "galben"  # [deficiența 220, PIVOT 10.10.2026: „Roșu înseamnă termen depășit.”] constatarea urcă cel mult la galben
 
 
 def test_pastila_pastreaza_baza_daca_nimic_confirmat():
