@@ -49,7 +49,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   D406 T4/2026, numerotarea C, deficiențele 220–225, curățenia /tmp, raportul punctual, ZIP; apoi „următorul pas din listă” (R2a).
   - ultim: E1 (`5dd1add9`); E3 (curățenia /tmp, fără commit); E2 în commitul care conține această intrare (220–225, rezolvate, plasa
     `e2e_comanda_1010.py`, 10 mutații e2e roșii) + C8 (bara de stare pe telefon) și C9 (pagina principală fără h1), găsite de uneltele vizuale.
-  - urmator: E4 (raportul punctual + ZIP), apoi „următorul pas din listă”: R2a — amprentele „înainte” pe codul comis. STARE = IN LUCRU
+  - ultim (11.10.2026): E2 publicat în `72e8b5eb` (prima poartă respinsă: proba celor 50 pe vechiul `ui_hash`, refăcută); E4 — raportul
+    punctual + ZIP `/home/costin/ghid_incoming/iconta_comanda_10_10_seara.zip`.
+  - urmator: — (închis; „următorul pas din listă” = R2a, firul registrului de mai jos). STARE = ÎNCHIS
   - pasi:
     E1. pct.1+2 — DECIZII: comanda verbatim + „Aprob — Costin, 10.10.2026” + amprenta noii referințe (`cifre_referinta.py --productie
         --scrie-referinta`); numerotarea: deficiențele găsite de Code primesc prefixul C (225->C1, 226->C2; 220–224, tot ale lui Code,
@@ -229,8 +231,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim (10.10.2026): R0 + R1a–R1d în commitul care conține această intrare (SHA în raport) — `ancoreaza` scrie în `COTE`
     (55 de chei, din care 32 ancorate / 71 de intrări), `registru_complet`, `core/registru_fiscal.py` (stare / verdicte / export),
     `core/test_registru_fiscal.py` (11) + recalibrările gărzilor registrului întreg (DECIZII 10.10.2026, „R1”); 8 mutații roșii.
-  - urmator: R2a (amprentele „înainte” ale declarațiilor pe portofoliu, `scripts/amprente_declaratii.py`). STARE = BLOCAT: după firul
-    comenzii din 10.10.2026 seara (E1–E4), care e întâi în listă
+  - ultim (11.10.2026): R2a în commitul care conține această intrare — amprentele „înainte” pe `72e8b5eb`, în
+    `/home/costin/iconta_amprente/R2a/inainte_{productie,test}_72e8b5eb.json` (producția 5 firme / 259 cereri / 35 XML, 1 s; testul 20 /
+    1321 / 198, 3 s); `--cod-din` reparat (opțiunea din docstring nu exista; importul uneltei ar fi luat tacit `core` curent) și păzit
+    (`test_cod_din_…`, 5 mutații roșii); probat: `--cod-din` pe arborele `72e8b5eb` -> „identice” pe ambele baze.
+  - urmator: R2b (amprenta fiecărui apel de generator din suită). STARE = IN LUCRU
   - R1 SPART ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1 — lista crește întâi): măsurat pe 11a03cb8, `ancoreaza` ține 32 de constante în
     `CONSTANTE_ANCORATE` (al doilea dicționar), umplut la IMPORT — iar 30 de locuri citesc registrul întreg (`COTE.items()` & co.).
     R1a. `common.ancoreaza` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)`; refuz fără `data_in`, refuz la a doua

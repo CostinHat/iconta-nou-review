@@ -18,6 +18,8 @@ sunt aceleași.
 
 Uz: python scripts/amprente_declaratii.py --test <iesire.json>        baza de test (~/.iconta/test.env)
     python scripts/amprente_declaratii.py --productie <iesire.json>   producția, read-only
+    … --cod-din=<arbore>   generatoarele (`core`) din alt arbore (worktree al commitului R2, la R8); normalizarea și alegerea perioadelor
+                           rămân ale uneltei, deci „înainte” și „după” se măsoară la fel
     python scripts/amprente_declaratii.py --compara <a.json> <b.json> -> 0 identice / 1 diferă (lista tipărită)
 """
 import datetime as _dt
@@ -142,6 +144,29 @@ def culege(baza):
     return rez
 
 
+def cod_din(cale):
+    """`core` (generatoarele) din arborele `cale`, nu din cel curent; întoarce commitul arborelui. Unealta și `cifre_referinta` își pun
+    arborele lor primul în `sys.path`, deci o rulare „din alt arbore” care doar adaugă calea folosește TACIT codul curent — prins pe
+    11.10.2026, la R2a: comparația vechi/nou a bilanțului ieșea identică fiindcă ambele rulau pe codul nou. Refuz dacă `core` e deja
+    importat, dacă, după import, nu vine din `cale`, sau dacă arborele n-are API-ul pe care îl cheamă unealta (`periodicitate_firma(tip,
+    prof)`): pe 8de0b0a5, al doilea parametru era șirul `tip_decont`, iar neplătitorii ieșeau cu perioadele implicite."""
+    cale = os.path.realpath(cale)
+    deja = sorted(m for m in sys.modules if m == "core" or m.startswith("core."))
+    if deja:
+        raise SystemExit("--cod-din: `core` e deja importat (%s) — refuz" % deja[0])
+    sys.path.insert(0, cale)
+    from core import declaratii_api
+    sursa = os.path.realpath(declaratii_api.__file__)
+    if not sursa.startswith(cale + os.sep):
+        raise SystemExit("--cod-din: `core` vine din %s, nu din %s — refuz" % (sursa, cale))
+    import inspect
+    param = list(inspect.signature(declaratii_api.periodicitate_firma).parameters)[1:2]
+    if param != ["prof"]:                                   # unealta cheamă `periodicitate_firma(tip, prof)` (de la 5dd1add9)
+        raise SystemExit("--cod-din: arborele are `periodicitate_firma(tip, %s)`, unealta cere `(tip, prof)` — refuz (o rulare ar "
+                         "alege alte perioade decât cea curentă și ar da diferențe care nu vin din cod)" % (param[0] if param else ""))
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=cale, capture_output=True, text=True).stdout.strip() or cale
+
+
 def compara(a, b):
     """[(schema, tip, perioadă, înainte, după)] — fiecare amprentă care diferă, lipsește sau e nouă; plus datele firmei, dacă diferă."""
     out = []
@@ -178,6 +203,15 @@ def _mediu(baza):
     os.environ["PGOPTIONS"] = READ_ONLY
 
 
+def pregateste(argv):
+    """(baza, ieșirea, commitul codului care generează) — cu `--cod-din=<arbore>`, `core` se ia de acolo ÎNAINTEA oricărui import."""
+    baza = "productie" if "--productie" in argv else "test"
+    iesire = [x for x in argv if not x.startswith("--")][0]
+    alt = [x.split("=", 1)[1] for x in argv if x.startswith("--cod-din=")]
+    commit = cod_din(alt[0]) if alt else subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+    return baza, iesire, commit
+
+
 def main(argv):
     if argv[:1] == ["--compara"]:
         dif = compara(json.load(open(argv[1], encoding="utf-8"))["firme"], json.load(open(argv[2], encoding="utf-8"))["firme"])
@@ -185,15 +219,13 @@ def main(argv):
             print("  %s %s %s: %s -> %s" % d)
         print("[amprente] %s" % ("identice" if not dif else "%d diferențe" % len(dif)))
         return 1 if dif else 0
-    baza = "productie" if "--productie" in argv else "test" if "--test" in argv else None
-    if baza is None:
+    if "--productie" not in argv and "--test" not in argv:
         print(__doc__)
         return 2
-    iesire = [x for x in argv if not x.startswith("--")][0]
+    baza, iesire, commit = pregateste(argv)
     _mediu(baza)
     t0 = time.time()
     firme = culege(baza)
-    commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
     json.dump({"baza": baza, "commit": commit, "generat": _dt.datetime.now().isoformat(timespec="seconds"),
                "secunde": round(time.time() - t0, 1), "firme": firme},
               open(iesire, "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)

@@ -1,26 +1,25 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **11.10.2026, noaptea: deficiențele 220–225 ale lui Costin rezolvate (lotul B); urmează raportul punctual + ZIP (E4), apoi R2a**
+# PREDARE LANȚ — **11.10.2026, dimineața: comanda din 10.10 seara închisă (E1–E4, raport + ZIP); R2a (amprentele „înainte”) făcut; urmează R2b**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-11** (noaptea; comanda Costin din 10.10 seara, pct.3 executat), pe secțiunile de stare (lecțiile și
-  CIFRE INVALIDATE se poartă).
-- **pe commit**: `5dd1add9` (lotul D406 + numerotarea C, four-way închis); lotul 220–225 e în commitul care conține această predare —
-  SHA-ul și four-way-ul în raport.
+- **ultima rescriere**: **2026-10-11** (dimineața; R2a), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `72e8b5eb` (lotul 220–225, four-way închis 07:13); R2a e în commitul care conține această predare — SHA-ul și four-way-ul
+  în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
 **O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII), în
-execuție: R0 și R1 comise (`8de0b0a5`); la R2 a ieșit neconformitatea D406 (C1, C2), închisă și comisă (`5dd1add9`). **În lucru: comanda
-Costin din 10.10 seara** (TESTE.md, firul de sus, E1–E4): E1 comis (`5dd1add9`), E3 făcut (/tmp/claude-1000: 2991 -> 2185 MB), E2 —
-deficiențele 220–225 — în commitul care conține această predare, toate „rezolvată” cu test în browser (`e2e_comanda_1010.py`) și
-mutație roșie; **urmează E4** (raportul punctual pentru 220–225, C1–C7, cifrele de referință, R193, vocea din Control fiscal, clicurile
-pierdute + ZIP-ul în `~/ghid_incoming/`), **apoi R2a** — amprentele „înainte” pe codul comis (`scripts/amprente_declaratii.py`, pe
-producție read-only și pe baza de test), R2b, R3–R16, ZIP la R16. Tot restul e livrat, cu poartă completă, four-way și ZIP în
-`/home/costin/ghid_incoming/`. **O decizie așteaptă răspunsul lui Costin** (raportul lotului „Deciziile 08.10 §6”, §6 — și FRONTURI);
+execuție: R0 și R1 comise (`8de0b0a5`); la R2 a ieșit neconformitatea D406 (C1, C2), închisă și comisă (`5dd1add9`). **Comanda Costin
+din 10.10 seara — ÎNCHISĂ**: E1 `5dd1add9`, E2 `72e8b5eb` (220–225 + C8, C9), E3 (/tmp), E4 (raportul punctual + ZIP
+`~/ghid_incoming/iconta_comanda_10_10_seara.zip`). **R2a făcut** (în commitul care conține această predare): amprentele „înainte” pe
+`72e8b5eb` în **`/home/costin/iconta_amprente/R2a/`** (în afara depozitului și a /tmp — DECIZII 11.10.2026 „R2a”): producția 5 firme /
+259 cereri / 35 XML, testul 20 / 1321 / 198; `--cod-din` reparat și probat (le reproduce identic). **Urmează R2b** (amprenta fiecărui
+apel de generator din suită), R3–R16, ZIP la R16. Tot restul e livrat, cu poartă completă, four-way și ZIP în
+`/home/costin/ghid_incoming/`. **Decizii așteaptă răspunsul lui Costin** (FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
 
 | ce | commit | ZIP |
@@ -75,7 +74,12 @@ aplicației**, nu „în așteptarea unei teme”:
   fișiere în `frontend_test/` + `scripts/` (lista în raport; cele 7 din `core/` sunt legitime: adresa aplicației în linkuri, sonda producției, agenda). `scan_casete.py` trecut pe `PROBA_BAZA` (8011) în lot; restul așteaptă
   regula: implicitul tuturor = instanța de probă (cu producția numai cerută explicit), sau rămâne cum e.
 - **Deciziile cerute de raportul „Registrul deficiențelor” (09.10, §6) — ÎNCHISE** de comanda „Retestul plasei” (DECIZII 09.10.2026).
-- **Registrul de parametri fiscali**: R0 + R1 comise; unealta R2a comisă cu lotul D406; artefactul „înainte” după lotul 220–225.
+- **Registrul de parametri fiscali**: R0 + R1 comise; R2a făcut (artefactele „înainte” pe `72e8b5eb`, în `~/iconta_amprente/R2a/`); urmează
+  R2b. La R8, „înainte” rulează cu `--cod-din=<arbore al commitului R2a>` (unealta refuză un arbore din care nu vine `core` sau cu alt API).
+- **DECIZII CERUTE (raportul comenzii 10.10 seara, §6):** (1) fereastra Control fiscal arată și ea cele 4 stări (125 față de 224) — reorganizare,
+  cere acord; (2) 221: „An precedent” gol cu avertisment la preluarea din timpul anului — **pe producție, F1/F2/F3, S1005/S1003 2026 au acum
+  coloana goală** (13/11/9 celule; înainte purtau soldurile de preluare, care nu sunt de la 31.12.2025 — `luna_preluare` necompletată, deci
+  data e ziua dinaintea primei note); confirmare sau câmp manual; (3) cele 26 de fișiere răzlețe din /tmp/claude-1000 (~0,5 MB).
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -180,7 +184,7 @@ aplicației**, nu „în așteptarea unei teme”:
 1. **Ritualul de început** (CLAUDE.md §5): `pwd; hostname; git log --oneline -1; git rev-parse --is-inside-work-tree;
    ./venv/bin/python -m core.agenda` — trebuie `/home/costin/iconta_nou`, `iconta-prod`, arbore git valid.
 2. **Comanda deschisă**: registrul unic de parametri fiscali + interdicția 26 (DECIZII 08.10.2026, „Comanda Costin: registrul unic …”).
-   Pașii R0–R16 sunt în TESTE.md („În lucru acum”, al doilea fir); R0 + R1 comise (DECIZII 10.10.2026, „R1”), **se reia de la R2**.
+   Pașii R0–R16 sunt în TESTE.md („În lucru acum”, al doilea fir); R0, R1, R2a comise, **se reia de la R2b**.
    **Fără o comandă a lui Costin nu se pornește nimic altceva** (secțiunea de mai sus). Cu o comandă: firul se scrie întâi în TESTE.md
    („În lucru acum”, cu pașii), decizia în DECIZII.md (verbatim), apoi codul.
 3. **Fiecare temă se încheie la fel**: gard + mutație (backup cu `cp`, niciodată `git checkout`; `__pycache__` curățat) + probă pe
@@ -394,6 +398,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
+**Ultima poartă completă: `72e8b5eb` (11.10.2026)** — `8005 passed, 9 skipped, 15 xfailed in 4115.53s (1:08:35)`, COLLECTED 8029
+(confirmat cu `--collect-only`), verificator TOTAL 0, cifrele identice cu referința (5 firme), e2e 225 passed (15:24); poarta întreagă
+85 de minute.
+
 **Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima poartă completă ÎNAINTEA acestei rescrieri, pe
 `876e87a2` (08.10.2026):
 
@@ -429,7 +437,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **941** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

@@ -51,3 +51,37 @@ def test_compararea_numeste_fiecare_diferenta_si_datele_schimbate():
     assert ad.compara(a, b) == [("t1", "(datele firmei)", "", "x", "y"),
                                 ("t1", "d300", "02/2025", {"amprenta": "2"}, None),
                                 ("t1", "d300", "03/2025", None, {"amprenta": "3"})]
+
+
+def _ruleaza(cod):
+    import subprocess
+    return subprocess.run([sys.executable, "-c", "import sys; sys.path.insert(0, %r)\n" % os.path.join(RAD, "scripts") + cod],
+                          capture_output=True, text=True, cwd=RAD, timeout=120)
+
+
+def test_cod_din_ia_generatoarele_din_arborele_cerut_sau_refuza(tmp_path):
+    """R8 rulează codul „înainte” dintr-un worktree (`--cod-din`). Unealta își pune arborele primul în `sys.path`, deci fără verificare
+    o rulare „din alt arbore” folosea tacit codul curent (prins 11.10.2026, la R2a). Aici: un arbore fals cu `core` propriu -> `core`
+    vine de acolo; un arbore fără `core` -> refuz, nu codul curent; `core` deja importat -> refuz.
+    MUTAȚII: `sys.path.append(cale)` în loc de `insert(0, …)` -> pică primul caz; verificarea sursei scoasă -> pică al doilea; `--cod-din` ignorat în `pregateste` -> pică ultimul; verificarea API-ului scoasă -> pică arborele „vechi”."""
+    fals = tmp_path / "arbore"
+    (fals / "core").mkdir(parents=True)
+    (fals / "core" / "__init__.py").write_text("")
+    (fals / "core" / "declaratii_api.py").write_text("MARCA = 'arborele-fals'\ndef periodicitate_firma(tip, prof=None):\n    pass\n")
+    vechi = tmp_path / "vechi"
+    (vechi / "core").mkdir(parents=True)
+    (vechi / "core" / "__init__.py").write_text("")
+    (vechi / "core" / "declaratii_api.py").write_text("def periodicitate_firma(tip, tip_decont=None):\n    pass\n")
+    r = _ruleaza("import amprente_declaratii as ad\nad.cod_din(%r)" % str(vechi))
+    assert r.returncode != 0 and "(tip, prof)" in r.stderr + r.stdout, r.stdout + r.stderr
+    r = _ruleaza("import amprente_declaratii as ad\nad.cod_din(%r)\nfrom core import declaratii_api as d\nprint(d.MARCA)" % str(fals))
+    assert r.returncode == 0 and r.stdout.strip().endswith("arborele-fals"), r.stdout + r.stderr
+    gol = tmp_path / "fara_core"
+    gol.mkdir()
+    r = _ruleaza("import amprente_declaratii as ad\nad.cod_din(%r)" % str(gol))
+    assert r.returncode != 0 and "refuz" in r.stderr + r.stdout, r.stdout + r.stderr
+    r = _ruleaza("import amprente_declaratii as ad\nimport core.common\nad.cod_din(%r)" % str(fals))
+    assert r.returncode != 0 and "deja importat" in r.stderr + r.stdout, r.stdout + r.stderr
+    r = _ruleaza("import amprente_declaratii as ad\nprint(ad.pregateste(['--test', 'x.json', '--cod-din=%s']))\n"
+                 "from core import declaratii_api as d\nprint(d.MARCA)" % str(fals))
+    assert r.returncode == 0 and r.stdout.split()[-1] == "arborele-fals" and "'test', 'x.json'" in r.stdout, r.stdout + r.stderr

@@ -2127,3 +2127,26 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
   acoperea „?”; barele aplicației au acum înălțime minimă (DS cap.2 v2.87 + `BARA_INALTIME_MINIMA` + `test_def_c8_…`).
 - C9 (găsită de uneltele vizuale, când pagina principală a intrat în `ECRANE`): pagina principală n-avea titlu de nivel 1 — salutul
   e acum `h1`, cu același aspect, la contabilul-șef și la asistent (`test_def_c9_…`).
+
+## 11.10.2026, dimineața — lotul 220–225 publicat (`72e8b5eb`), raportul comenzii din 10.10 seara + ZIP; R2a (commitul care conține această intrare)
+
+- **Poarta a respins prima rulare a lotului 220–225** (pytest 1 roșu / 8004 verzi, 68:43; nimic comis, nimic publicat):
+  `test_declaratii_50::test_proba_e_proaspata` — proba celor 50 de declarații de pe ecranul de logare e legată de același `ui_hash` ca
+  artefactele vizuale, iar `stil.css` se schimbase. Refăcută pe instanța de test (singura schimbare a artefactului: `ui_hash`), a doua
+  rulare verde (85 de minute), four-way 07:13 pe `72e8b5eb`. Subsetul pe care îl rulez înaintea unui commit ia acum testele legate de
+  `ui_hash` din `grep`, nu dintr-o listă scrisă de mână (lipsea cel al celor 50).
+- **Raportul comenzii din 10.10 seara** (220–225, C1–C9, cifrele de referință, R193, vocea, clicurile pierdute — fiecare cu proba) și
+  ZIP-ul `/home/costin/ghid_incoming/iconta_comanda_10_10_seara.zip` (232 de fișiere).
+- **R2a — amprentele „înainte” pe codul comis** (`72e8b5eb`): producția (read-only) 5 firme, 259 cereri, 35 XML, 1 s; baza de test 20
+  firme, 1321 cereri, 198 XML, 3 s. Păstrate în `/home/costin/iconta_amprente/R2a/` (DECIZII 11.10.2026, „R2a”).
+  Față de proba din 10.10 (pe `8de0b0a5`), 13 diferențe pe producție și 21 pe test, toate numite: D406 de pe lună pe trimestru cu
+  aceeași amprentă (C2); D406 T3/2026 la tenant_003 (C1); S1005/S1003 — numai coloana 1 („An precedent”, 221). Pe producție, F1/F2/F3:
+  coloana golită în 2026 (13/11/9 celule) — `luna_preluare` necompletată, deci soldurile sunt „la” ziua dinaintea primei note, nu la
+  31.12.2025; pe test: golită unde preluarea e după 31.12 a anului precedent, recalculată din evidență în rest (tenant_016 2026: 6.050 ->
+  6.150, soldul real de la 31.12.2025).
+- **Neconformitate în unealtă, pe ciclu:** docstring-ul promitea `--cod-din` (codul „înainte” rulat din alt arbore, la R8), opțiunea nu
+  exista, iar importul uneltei pune arborele curent primul în `sys.path` — o rulare „din alt arbore” ar fi folosit tacit codul curent
+  (mi s-a întâmplat la comparația vechi/nou a bilanțului: ieșea identică, pe codul nou). Acum `--cod-din=<arbore>` ia `core` de acolo
+  sau refuză (`core` deja importat, `core` venit din altă parte, API-ul `periodicitate_firma(tip, prof)` absent — pe `8de0b0a5`, al doilea
+  parametru era `tip_decont` și neplătitorii ieșeau pe perioadele implicite). Probat: pe arborele `8de0b0a5`, producția iese identică cu
+  amprentele din 10.10 (iar arborele e acum refuzat pentru API); pe arborele `72e8b5eb`, ambele baze identice cu R2a.

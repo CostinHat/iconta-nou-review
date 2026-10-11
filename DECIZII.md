@@ -19356,3 +19356,20 @@ fiscal — STOP de reorganizare). LIMITA: un contabil care compară cardul cu an
 
 **C9 — titlul paginii principale.** Salutul „Salut, …” devine titlul de nivel 1 al paginii (`h1`, aceeași clasă, `margin: 0`) — nu un
 titlu nou ascuns doar pentru cititorul de ecran (ar fi două texte pentru același lucru). Același aspect pe ecran.
+
+## 11.10.2026 — R2a: unde stau amprentele „înainte” și ce poate compara `--cod-din`
+
+- **Decizia:** artefactele amprentelor (R2a „înainte”, R8 „după”) stau în `/home/costin/iconta_amprente/<pas>/`, nu în depozit și nu în
+  /tmp. **Temei:** depozitul se publică automat pe mai multe remote-uri (post-commit: origin, `public`, backup), iar amprentele producției
+  sunt derivate din date reale (SHA-uri + numele schemelor); /tmp se curăță (comanda din 10.10, pct.4). R8 are nevoie de ele peste zile.
+  **Alternativa respinsă:** artefactul comis în `scripts/` — publică derivate ale datelor reale. **Limita:** există într-un singur loc pe
+  server; intră în ZIP-ul de la R16.
+- **Decizia:** `--cod-din` compară numai arbori care au API-ul pe care îl cheamă unealta (`periodicitate_firma(tip, prof)`, de la
+  `5dd1add9`); un arbore mai vechi e refuzat. **Temei:** pe `8de0b0a5` (al doilea parametru `tip_decont`), două firme neplătitoare au ieșit
+  pe perioadele implicite — 18 „diferențe” care nu veneau din cod. **Alternativa respinsă:** un adaptor pentru semnătura veche — R8
+  compară cu commitul R2a, care are deja API-ul nou; adaptorul ar fi cod pentru un caz care nu apare. **Limita:** verifică semnătura unei
+  funcții, nu tot API-ul folosit de unealtă (`genereaza`, `DECLARATII`, `SITUATII_FINANCIARE` sunt aceleași de la R0).
+- **Efect pe produs, măsurat la R2a (pentru decizia cerută la §6 pct.2 al raportului comenzii din 10.10 seara):** pe producție, F1, F2,
+  F3 — S1005 și S1003 2026 au acum coloana „An precedent” goală, cu avertisment (13/11/9 celule), fiindcă `luna_preluare` e
+  necompletată și soldurile de preluare sunt „la” ziua dinaintea primei note (2026), nu la 31.12.2025. Înainte, coloana purta soldurile de
+  preluare prezentate drept solduri de la 31.12.2025.
