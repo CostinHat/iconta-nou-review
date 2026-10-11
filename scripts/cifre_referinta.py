@@ -29,8 +29,13 @@ _ATRIB = re.compile(r'([A-Za-z_][A-Za-z0-9_]*)="([^"]*)"')
 #: părți care se schimbă la fiecare generare și nu sunt cifre (data generării); se scot înaintea amprentei
 # [10.10.2026] și `AuditFileDateCreated` din antetul SAF-T (D406): pe 10.10, cifrele aprobate pe 09.10 ieșeau identice, iar amprenta
 # D406 diferea NUMAI prin data generării (dovedit: cu data pusă la 09.10, toate cele 6 amprente = cele aprobate — DECIZII 10.10.2026)
+# [11.10.2026, R2b] și mesajul REGES: în antet `MessageId` și `SessionId` sunt `uuid4`, `Timestamp` ora trimiterii (`reges_client._header`),
+# iar `DataConsemnare` din contract e tot ora generării (`_acum()`) — singurele citiri de ceas/uuid din `reges_client`. Dovedit la R2b: două
+# rulări ale aceleiași suite dau 455 de amprente identice și numai cele 3 mesaje REGES diferite (DECIZII 11.10.2026)
 _VOLATIL = [re.compile(p) for p in (r'<DateCreated>[^<]*</DateCreated>', r'data_generare="[^"]*"',
-                                     r'<AuditFileDateCreated>[^<]*</AuditFileDateCreated>')]
+                                     r'<AuditFileDateCreated>[^<]*</AuditFileDateCreated>', r'<MessageId>[^<]*</MessageId>',
+                                     r'<SessionId>[^<]*</SessionId>', r'<Timestamp>[^<]*</Timestamp>',
+                                     r'<DataConsemnare>[^<]*</DataConsemnare>')]
 #: referința APROBATĂ de Costin (comanda 10.10.2026 pct.1: „orice diferență față de referință oprește publicarea”), înghețată în depozit;
 #: o schimbare voită cere aprobarea lui, consemnată în DECIZII cu amprenta noului fișier (`scripts/githooks/verifica-mesaj`)
 REFERINTA = os.path.join(RAD, "scripts", "cifre_referinta_aprobate.json")

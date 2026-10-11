@@ -2150,3 +2150,18 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
   sau refuză (`core` deja importat, `core` venit din altă parte, API-ul `periodicitate_firma(tip, prof)` absent — pe `8de0b0a5`, al doilea
   parametru era `tip_decont` și neplătitorii ieșeau pe perioadele implicite). Probat: pe arborele `8de0b0a5`, producția iese identică cu
   amprentele din 10.10 (iar arborele e acum refuzat pentru API); pe arborele `72e8b5eb`, ambele baze identice cu R2a.
+
+## 11.10.2026, după-amiaza — R2b: amprenta fiecărui apel de generator din suită (commitul care conține această intrare)
+
+- **R2a publicat** (`e798335b`, poarta 8006/9/15, cifrele identice, e2e 225, four-way 08:59).
+- **Pluginul** `scripts/amprente_suita.py` (încărcat numai cu `-p amprente_suita` și `ICONTA_AMPRENTE_SUITA`; poarta nu-l vede): învelește
+  cele **56 de emițătoare** derivate din sursă (50 de `build_xml` ale dispecerului + S1005, D406 anual active, e-Factura, e-Transport,
+  SAGA, REGES) și consemnează amprenta normalizată a fiecărei ieșiri pe testul care a chemat-o.
+- **Măsurat:** suita cu plugin 8014 passed / 9 skipped / 15 xfailed, rc 0 (fără plugin: poarta commitului care conține această intrare, în raport); **516 teste cheamă generatoare,
+  760 de apeluri, toate cele 56 chemate, 460 de amprente distincte**. Artefactul: `/home/costin/iconta_amprente/R2b/inainte_suita_R2b.json`.
+- **Stabilitatea, pe două rulări:** prima comparație (rularea întreagă față de re-rularea celor 516 teste) a dat 3 amprente REGES instabile
+  și 3 teste cu apelurile mutate. REGES: antetul are `uuid4` și ora (normalizate în `_VOLATIL`, cu `DataConsemnare`), iar
+  `test_reges_client.py` dădea intrări `uuid4()` la fiecare rulare (AuthorId, referința contractului — conținut real, deci fixate în test,
+  nu normalizate). Celelalte 3: fixture-ul de modul din `test_paritate_p2` consemnat pe primul test rulat, iar `recalculeaza_lot` din
+  `test_firma_rezumat` cheamă generatorul numai pentru firmele învechite. De aici verdictul pe amprentele distincte (DECIZII 11.10.2026,
+  „R2b”). După: **460 / 460 aceleași**, pe test 3 diferențe informative. Amprentele R2a ale declarațiilor rămân identice (test și producție).

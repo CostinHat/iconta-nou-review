@@ -231,11 +231,16 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim (10.10.2026): R0 + R1a–R1d în commitul care conține această intrare (SHA în raport) — `ancoreaza` scrie în `COTE`
     (55 de chei, din care 32 ancorate / 71 de intrări), `registru_complet`, `core/registru_fiscal.py` (stare / verdicte / export),
     `core/test_registru_fiscal.py` (11) + recalibrările gărzilor registrului întreg (DECIZII 10.10.2026, „R1”); 8 mutații roșii.
-  - ultim (11.10.2026): R2a în commitul care conține această intrare — amprentele „înainte” pe `72e8b5eb`, în
+  - ultim (11.10.2026): R2a (`e798335b`) — amprentele „înainte” pe `72e8b5eb`, în
     `/home/costin/iconta_amprente/R2a/inainte_{productie,test}_72e8b5eb.json` (producția 5 firme / 259 cereri / 35 XML, 1 s; testul 20 /
     1321 / 198, 3 s); `--cod-din` reparat (opțiunea din docstring nu exista; importul uneltei ar fi luat tacit `core` curent) și păzit
     (`test_cod_din_…`, 5 mutații roșii); probat: `--cod-din` pe arborele `72e8b5eb` -> „identice” pe ambele baze.
-  - urmator: R2b (amprenta fiecărui apel de generator din suită). STARE = IN LUCRU
+  - ultim (11.10.2026): R2b în commitul care conține această intrare — `scripts/amprente_suita.py` (plugin pytest la cerere, 56 de
+    emițătoare derivate din sursă) + `core/test_amprente_suita.py` (6 gărzi, 16 mutații roșii); suita cu plugin 8014/9/15, 516 teste /
+    760 de apeluri / 460 de amprente distincte, în `/home/costin/iconta_amprente/R2b/inainte_suita_R2b.json`; a doua rulare: 460/460
+    aceleași. Normalizarea REGES (`_VOLATIL`) + intrările fixe din testul REGES de la rădăcina depozitului; verdictul pe amprentele distincte (DECIZII
+    11.10.2026, „R2b”).
+  - urmator: R3 (dublurile: `COTA_STANDARD` din d101/d101g și cote_tva -> registru, citite după dată). STARE = NEINCEPUT
   - R1 SPART ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1 — lista crește întâi): măsurat pe 11a03cb8, `ancoreaza` ține 32 de constante în
     `CONSTANTE_ANCORATE` (al doilea dicționar), umplut la IMPORT — iar 30 de locuri citesc registrul întreg (`COTE.items()` & co.).
     R1a. `common.ancoreaza` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)`; refuz fără `data_in`, refuz la a doua
@@ -271,7 +276,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     R6. Clasa E (temei în proză): temeiul citit în corpus, devenit `Temei`, valoarea mutată în registru.
     R7. Clasa C — numai valorile FISCALE (cele operaționale rămân, numărate, cu motivul): temeiul căutat în corpus; unde nu se
         găsește, intrarea „fără temei” (fără valoare / citat presupus — valoarea veche rămâne citită, marcată).
-    R8. Amprentele „după” = „înainte” (aceleași declarații, aceleași SHA).
+    R8. Amprentele „după” = „înainte” (aceleași declarații, aceleași SHA). Suita (R2b): commitul R2b dintr-un `git worktree` și HEAD,
+        fiecare cu `-p amprente_suita`, în aceeași zi; verdictul = `amprente_suita.py --compara` pe amprentele distincte (DECIZII
+        11.10.2026, „R2b”).
     R9. Gardul interdicției 1: o valoare fiscală nouă în afara registrului înroșește poarta (mutație); CONFORMITATE §1.
     R10. Proba pe perioade: D300 07/2025 cu 19%, 08/2025 cu 21% (schemă efemeră, DUK).
     R11. Registrul integral exportat (formatul `verif_temeiuri.json`), calea raportată; stările „propus” până la verdict.

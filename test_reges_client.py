@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-import uuid
 import xml.etree.ElementTree as ET
 import pytest
 from core import reges_client as m
 
-AID = str(uuid.uuid4())
+# Intrările sunt FIXE (11.10.2026, R2b): amprenta mesajului se compară între rulări (`scripts/amprente_suita.py`), iar un AuthorId sau o
+# referință de contract generată la fiecare rulare dădea alt document. Formatul UUID e tot ce cere mesajul.
+AID = "6f1c2b7e-3d4a-4e5f-8a9b-0c1d2e3f4a5b"
+REF_CONTRACT = "0b7d9c4e-1f2a-4b3c-9d8e-7f6a5b4c3d2e"
 
 def _valid_xml(x):
     root = ET.fromstring(x)
@@ -25,7 +27,7 @@ def test_salariat_fara_cnp():
         m.mesaj_inregistrare_salariat({"nume": "X"}, AID, "c")
 
 def test_adaugare_contract():
-    ref = str(uuid.uuid4())
+    ref = REF_CONTRACT
     x = m.mesaj_adaugare_contract(
         {"numar": "12", "data_contract": "2026-07-01", "data_inceput": "2026-07-06",
          "salariu": 4500, "cor": "251204"}, ref, AID, "costin")
@@ -37,10 +39,10 @@ def test_contract_camp_lipsa():
     with pytest.raises(ValueError, match="salariu"):
         m.mesaj_adaugare_contract({"numar": "1", "data_contract": "2026-01-01",
                                    "data_inceput": "2026-01-01", "cor": "1"},
-                                  str(uuid.uuid4()), AID, "c")
+                                  REF_CONTRACT, AID, "c")
 
 def test_incetare():
-    x = m.mesaj_incetare_contract(str(uuid.uuid4()), "2026-08-01", "Art55LitB",
+    x = m.mesaj_incetare_contract(REF_CONTRACT, "2026-08-01", "Art55LitB",
                                   "Acord parti", AID, "c")
     _valid_xml(x)
     assert 'xsi:type="ActiuneIncetare"' in x

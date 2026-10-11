@@ -19373,3 +19373,23 @@ titlu nou ascuns doar pentru cititorul de ecran (ar fi două texte pentru acela�
   F3 — S1005 și S1003 2026 au acum coloana „An precedent” goală, cu avertisment (13/11/9 celule), fiindcă `luna_preluare` e
   necompletată și soldurile de preluare sunt „la” ziua dinaintea primei note (2026), nu la 31.12.2025. Înainte, coloana purta soldurile de
   preluare prezentate drept solduri de la 31.12.2025.
+
+## 11.10.2026 — R2b: ce compară R8 pe suită și ce înseamnă „aceeași ieșire”
+
+- **Decizia:** verdictul „înainte = după” pe suită e pe **mulțimea amprentelor distincte (emițător, SHA)**; lista pe test se tipărește,
+  dar e informativă. **Temei (măsurat):** pe același cod, două rulări mută apeluri între teste — fixture-ul de modul `teren` din
+  `test_paritate_p2` se consemnează pe primul test rulat (7 apeluri pe `migrare_solduri` sau 14 pe `control_fiscal`, după ordine), iar
+  `firma_rezumat.recalculeaza_lot` cheamă D112 numai dacă firma e învechită (depinde de testele dinainte). Conținutul e identic.
+  **Alternativa respinsă:** verdict pe test — roșu fără schimbare de cod. **Limita:** o ieșire care dispare dintr-un test, dar e produsă
+  identic de altul, nu schimbă verdictul; apare în lista pe test.
+- **Decizia:** antetul REGES (`MessageId`, `SessionId` = `uuid4`; `Timestamp`) și `DataConsemnare` (ora generării) intră în
+  `cifre_referinta._VOLATIL` — o singură normalizare pentru R2a, R2b și cifrele de referință. **Temei:** sunt citiri de ceas/uuid la
+  generare, ca `data_generare`; nu apar în nicio declarație (`grep` pe `core/` și `scripts/`: numai `reges_client.py`), iar amprentele
+  R2a și cifrele rămân identice (reverificat pe test și producție). **Alternativa respinsă:** o normalizare proprie a pluginului — două
+  liste de „volatil” care diverg.
+- **Decizia:** intrările aleatoare din `test_reges_client.py` (AuthorId, referința contractului) devin constante. Sunt conținut real
+  al mesajului (nu se normalizează); testele cer numai formatul UUID.
+- **Decizia (pentru R8):** ambele părți rulează **în aceeași zi** — suita commitului R2b dintr-un arbore separat (`git worktree`) și suita
+  HEAD, fiecare cu pluginul. Artefactul `inainte_suita_R2b.json` (câmpul `commit` = `e798335b`, fiindcă s-a luat înaintea commitului R2b,
+  pe conținutul lui) e referința de control. **Temei:** ce depinde de ziua curentă (testele care construiesc perioade din `azi`) nu poate
+  fi deosebit de o regresie peste zile; nu există unealtă de falsificat data pe server. **Limita:** R8 costă două suite (~2 × 70 min).

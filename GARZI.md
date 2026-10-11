@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**768 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**769 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 731
+### `core/` — 732
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8864,6 +8864,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_amortizare_ecran_metoda.py` — GARD amortizare pe METODA (Q6+Q15, tura import 16.08.2026).
 - `core/test_amprenta_declaratie.py` — core/test_amprenta_declaratie.py — GARD C3 (snapshot+hash): regenerare-diff prinde editarea retroactiva.
 - `core/test_amprente_declaratii.py` — GĂRZI R2 — amprentele declarațiilor pe portofoliu (`scripts/amprente_declaratii.py`, comanda Costin 08.10.2026, verbatim în DECIZII;
+- `core/test_amprente_suita.py` — GĂRZI R2b — amprenta fiecărui apel de generator din suită (`scripts/amprente_suita.py`, comanda Costin 08.10.2026, verbatim în DECIZII;
 - `core/test_an_hardcodat.py` — Un AN scris literal intr-o cerere catre server ingheata ecranul in trecut.
 - `core/test_anaf_api.py` — Teste core/anaf_api.py — freeze best-effort al statutului ANAF pe factura.
 - `core/test_ancore_in_cod.py` — GARD PESTE GĂRZI (21.08.2026): ancora unui gard trăiește în COD, nu în PROZĂ.
@@ -10808,3 +10809,12 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | gard | fișier | ce face imposibil | mutația | limita |
 |---|---|---|---|---|
 | `--cod-din` ia generatoarele din arborele cerut sau refuză | `scripts/amprente_declaratii.py::cod_din` / `pregateste` + `core/test_amprente_declaratii.py::test_cod_din_ia_generatoarele_din_arborele_cerut_sau_refuza` | o comparație „înainte/după” care rulează tacit codul curent de ambele părți (`core` venit din arborele curent, `core` importat dinainte, opțiunea ignorată) sau pe un arbore cu altă semnătură a `periodicitate_firma` | `append` în loc de `insert(0)`; verificarea sursei scoasă; „deja importat” ignorat; `--cod-din` ignorat în `pregateste`; verificarea API-ului scoasă -> câte un roșu | verifică semnătura unei singure funcții chemate de unealtă |
+
+## 11.10.2026 — R2b: amprenta fiecărui apel de generator din suită (pentru R8)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| lista emițătoarelor se derivă din sursă și le cuprinde pe toate | `scripts/amprente_suita.py::emitatoare` + `core/test_amprente_suita.py::test_emitatoarele_sunt_toate_generatoarele_de_declaratii` | un generator de declarație (din dispecerul `declaratii_api`) neînvelit, deci neamprentat la R8 | d300 pus în `NU_EMIT` -> roșu; scanarea restrânsă la `build_xml` -> roșu (2 teste) | emițător = funcție de nivel modul din `core/` cu `<?xml` în corp; o metodă de clasă sau un XML construit cu ElementTree n-ar fi văzut (azi: 0 — dispecerul are 50 de module, toate în listă) |
+| învelișul întoarce același rezultat și consemnează amprenta normalizată pe testul curent | `inveleste` / `pytest_runtest_setup` + `test_invelisul_…`, `test_pluginul_consemneaza_pe_test_numai_cand_e_cerut` (pytest separat, emițător real) | un plugin care schimbă rezultatul, amprentează XML-ul brut, nu pune învelișul pe modul, nu știe testul sau rulează fără să fie cerut | rezultat neîntors, SHA brut, `activeaza` fără `setattr`, testul nesetat la setup, activ fără variabilă -> roșu (câte 1 test) | suita cu plugin: 8014 / 9 / 15; fără plugin = poarta commitului care conține această intrare (cifrele în raport) — numai pe acest commit |
+| verdictul e pe amprentele distincte, nu pe testul care le consemnează | `compara_distincte` + `test_verdictul_e_pe_amprentele_distincte_…` | un verdict „diferă” din ordinea fixture-urilor de modul sau din recalculările condiționate de bază; o ieșire nouă/dispărută nevăzută | numai-după ignorate, o singură parte, distincte legate de test -> roșu | o ieșire dispărută dintr-un test, dar produsă identic de altul, nu dă verdict — se vede în lista pe test (informativă) |
+| mesajul REGES are aceeași amprentă la fiecare trimitere | `scripts/cifre_referinta.py::_VOLATIL` (+ `MessageId`, `SessionId`, `Timestamp`, `DataConsemnare`) + `test_mesajul_reges_are_aceeasi_amprenta_la_fiecare_trimitere` | amprenta REGES diferită la fiecare rulare (uuid4 / ora), deci R8 roșu fără nicio schimbare de cod | fiecare din cele 4 scoasă din `_VOLATIL` -> roșu | o citire NOUĂ de ceas/uuid într-un emițător se vede ca instabilitate la R8 (ambele părți rulează în aceeași zi), nu e prinsă de gardă înainte |
