@@ -246,16 +246,8 @@ def test_pct6_numarul_in_serie_nu_ia_cifrele_seriei():
 
 
 # ── pct.7–10 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_pct7_contoarele_numara_fapte_nu_culoarea():
-    """„F1 și F5 arată «restanță» cu «0 restanțe», iar contorul de sus «0 de urmărit», deși detaliul F1 are 5 de urmărit.” MUTAȚIE:
-    „de urmărit” numărat pe culoarea galbenă -> F1 (roșie din contabilitate) iese din contor -> pică."""
-    from core import uc_control_fiscal as u
-    firme = [{"stare": "rosu", "lipsa": 0, "urmarit": 5, "contabil": [{"stare": "rosu"}]},     # F1
-             {"stare": "rosu", "lipsa": 0, "urmarit": 3, "contabil": [{"stare": "galben"}]},   # F5
-             {"stare": "rosu", "lipsa": 2, "urmarit": 0, "contabil": []},
-             {"stare": "verde", "lipsa": 0, "urmarit": 0, "contabil": []}]
-    assert u.contoare_portofoliu(firme) == {"restante": 1, "de_urmarit": 2, "neconcordante": 2, "nu_se_pot_verifica": 0, "la_zi": 1}
-
+# [125 + 224, decizia Costin 11.10.2026] `test_pct7_contoarele_numara_fapte_nu_culoarea` testa `contoare_portofoliu` (contoarele de fapte ale ferestrei Control fiscal),
+# scoasă: fereastra arată acum aceleași patru stări ca ale cardului, din `sumar` — `core/test_control_fiscal_o_sursa.py`.
 
 def test_pct8_necunoasterile_dinaintea_preluarii_trec_la_grupul_lor():
     """„D100 și D205 pe 2025 apar la «Nu pot verifica»; sunt dinaintea preluării și intră în grupul acela.” MUTAȚIE: comparația pe

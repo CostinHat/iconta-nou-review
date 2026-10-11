@@ -167,12 +167,13 @@ def test_def_223_catalogul_lui_ana_arata_doar_ce_poate_folosi(browser, request, 
 # ── 222 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 @pytest.fixture(scope="module")
 def firma_bilant():
-    """Firmă nouă cu datele cerute de ANAF completate în Date firmă și luna preluării 01/2025 (evidența în iConta.eu de la 01.01.2025):
-    bilanțul 2025 se poate întocmi (deficiența 221)."""
+    """Firmă nouă cu datele cerute de ANAF completate în Date firmă și luna preluării 01/2024 (evidența în iConta.eu de la 01.01.2024):
+    bilanțul 2025 se poate întocmi, iar „An precedent” vine din evidența întregului 2024 (deficiența 221, decizia Costin 11.10.2026 —
+    fără anul precedent în aplicație coloana s-ar cere manual, iar 222 nu e despre ea)."""
     gen = firma_noua()
     f = next(gen)
     _date_firma(f)
-    st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"luna_preluare": "2025-01"})
+    st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"luna_preluare": "2024-01"})
     assert st == 200 and r.get("ok") is not False, (st, r)
     yield f
     try:
@@ -240,13 +241,22 @@ def _solduri(f, data_referinta):
     assert st == 200 and r.get("ok") is not False, (st, r)
 
 
-def _valideaza_bilant(ecran, an):
+def _alege_bilant(ecran, an):
     pg = ecran.pg
     pg.fill(".fereastra:last-of-type #bl-an", str(an))
     pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
     pg.wait_for_function("() => { const z = document.querySelector('.fereastra:last-of-type #bl-categorie'); return z && "
                          "!z.hasAttribute('aria-busy') && !z.innerText.includes('Se calculează'); }", timeout=90000)
     pg.select_option(".fereastra:last-of-type #bl-tip", "s1005")
+    pg.wait_for_function("(an) => { const z = document.querySelector('.fereastra:last-of-type #bl-precedent'); "
+                         "return z && z.dataset.pentru === an + '|s1005' && z.innerText.trim(); }", arg=str(an), timeout=60000)
+    return pg.inner_text(".fereastra:last-of-type #bl-precedent")
+
+
+def _valideaza_bilant(ecran, an, alege=True):
+    pg = ecran.pg
+    if alege:
+        _alege_bilant(ecran, an)
     pg.click(".fereastra:last-of-type #bl-val")
     pg.wait_for_function("() => { const r = document.querySelector('.fereastra:last-of-type #bl-rez'); return r && r.innerText.trim() "
                          "&& !r.innerText.includes('Se validează'); }", timeout=120000)
@@ -257,30 +267,53 @@ def _valideaza_bilant(ecran, an):
 
 def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     """221. Bilanț: coloana „An precedent” e copiată din anul curent (grav, cifre greșite în declarație).
+    [Decizia Costin 11.10.2026] „coloana «An precedent» din bilanț se completează din bilanțul anului anterior, dacă firma îl are în
+    aplicație. Dacă nu îl are, se completează manual, cu avertisment vizibil. Bilanțul nu poate fi generat cu coloana goală.”
     Pașii contabilului: firma cu soldurile de preluare la 31.12.2024 (bancă 10.000) și un aport validat în 03/2025 (+2.000) -> Bilanț
-    anual 2025, S1005, „Validează”: rândul băncilor are „An precedent” 10.000 și „An curent” 12.000 — nu două coloane egale ->
-    soldurile de preluare mutate la 30.06.2025 (evidența începe în iulie; nota din martie e deja în ele): 2025 se validează cu „An
-    curent” 10.000, „An precedent” gol și avertismentul
-    care spune de ce (OMFP 1802/2014 pct.130), iar 2024 se refuză cu motivul (soldurile de la 31.12.2024 nu sunt în aplicație)."""
+    anual 2025, S1005: ecranul spune că F10 vine din evidența pe 2024 și cere, cu avertisment, F20 (anul 2024 nu e în aplicație) ->
+    „Validează” fără F20: refuzul „coloana «An precedent» goală (F20)” -> completează F20 (zero pe toate rândurile) și salvează: avertismentul
+    rămâne, „completată manual” -> „Validează”: rândul băncilor „An precedent” 10.000, „An curent” 12.000, validare fără erori, cu
+    avertismentul în rezultat -> Bilanț 2026: „An precedent” vine din bilanțul pe 2025 validat în aplicație (12.000 pe rândul băncilor), fără
+    formular manual -> 2024 se refuză cu coloana „An precedent” goală (2023 nu e în aplicație) -> 2023 se refuză (soldurile de la
+    31.12.2023 sunt dinaintea preluării).
+    MUTAȚIILE din plasă: refuzul coloanei goale scos; bilanțul anului precedent ignorat."""
     f = firma_e2e
+    pg = patron.pg
     _date_firma(f)
     _solduri(f, "2024-12-31")
     _nota_validata(f, "2025-03-10", "5121", "1012", 2000, "Aport capital D221")
     patron.firma(f["nume"])
     _deschide(patron, "#fa-bilant", "Bilanț anual")
-    text, rand = _valideaza_bilant(patron, 2025)
+    zona = _alege_bilant(patron, 2025)
+    patron.captura("an_precedent_de_completat")
+    assert "F10: evidența pe 2024 din aplicație" in zona, zona
+    assert pg.locator(".fereastra:last-of-type #bl-precedent .caseta-atentie").is_visible(), zona
+    assert "goală (F20)" in zona and pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 1, zona
+    text, _r = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura("refuz_coloana_goala")
+    assert "nu se poate genera cu coloana „An precedent” goală (F20)" in text, text[:800]
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")                  # câmpurile goale = 0 lei, pe toate rândurile F20
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-prec-mesaj') || {}).innerText === "
+                         "'Coloana „An precedent” a fost salvată.'", timeout=60000)
+    zona = pg.inner_text(".fereastra:last-of-type #bl-precedent")
+    patron.captura("completata_manual")
+    assert "completată manual de" in zona and pg.locator(".fereastra:last-of-type #bl-precedent .caseta-atentie").is_visible(), zona
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
     patron.captura("an_precedent_din_evidenta")
+    assert "Validare fără erori" in text, text[:800]
+    assert "completată manual" in text, text[:800]                          # avertismentul ajunge și în rezultatul validării
     assert rand.get(("F10", 8)) == ("10.000,00", "12.000,00"), (rand, text[:600])   # rd.08 „Casa și conturi la bănci”
     assert any(p != c for p, c in rand.values()), rand          # anti-copie: nu toate rândurile au coloanele egale
-    _solduri(f, "2025-06-30")
-    patron.firma(f["nume"])
-    _deschide(patron, "#fa-bilant", "Bilanț anual")
-    text, rand = _valideaza_bilant(patron, 2025)
-    patron.captura("an_precedent_necunoscut")
-    assert "„An precedent”" in text and "30.06.2025" in text and "pct.130" in text, text[:800]
-    assert rand.get(("F10", 8), ("?", "?"))[1] == "10.000,00", rand                     # an curent: soldul de la 30.06 (cuprinde nota din martie)
-    assert all(p in ("", "0,00", "—") for (fo, _n), (p, _c) in rand.items() if fo == "F10"), rand   # an precedent al bilanțului: gol
+    zona = _alege_bilant(patron, 2026)
+    patron.captura("an_precedent_din_bilantul_2025")
+    assert "F10: bilanțul pe 2025 validat în aplicație; F20: bilanțul pe 2025 validat în aplicație" in zona, zona
+    assert pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 0, zona
+    text, rand = _valideaza_bilant(patron, 2026, alege=False)
+    assert rand.get(("F10", 8), ("?", "?"))[0] == "12.000,00", (rand, text[:600])
     text, _rand = _valideaza_bilant(patron, 2024)
+    patron.captura("an_preluarii_fara_precedent")
+    assert "nu se poate genera cu coloana „An precedent” goală (F10, F20)" in text, text[:800]   # 2023 nu e deloc în aplicație
+    text, _rand = _valideaza_bilant(patron, 2023)
     patron.captura("an_dinaintea_preluarii")
     assert "nu se poate întocmi" in text and "31.12.2024" in text, text[:800]
 

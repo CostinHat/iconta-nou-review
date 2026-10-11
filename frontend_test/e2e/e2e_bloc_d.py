@@ -709,26 +709,54 @@ def test_def_124_de_urmarit_are_scadentele_din_30_de_zile(patron, firma_sal):
     assert sorted(in_30) == sorted(urmarit), g
 
 
+#: culoarea punctului de pe rândul listei (CULORI din control_verdict.js) -> starea pe care o vede contabilul
+_STARE_DIN_PUNCT = (("#ff8a80", "rosu"), ("#f0cd7a", "galben"), ("#6fc494", "verde"))
+
+
+def _lumini_din(pg, radacina):
+    return {e["stare"]: e["n"] for e in pg.eval_on_selector_all(
+        radacina + " .cab-semafor4 .cab-stare",
+        "es => es.map(e => ({stare: e.dataset.stare, n: parseInt(e.querySelector('.tip-figura').innerText, 10)}))")}
+
+
 def test_def_125_cardul_arata_aceleasi_cifre_ca_fereastra(patron, firma_sal):
-    """125. Control fiscal: cardul ≠ fereastra.
-    Pașii contabilului: după o scriere (firma tocmai preluată) -> birou: cardul „Control fiscal” -> fereastra Control fiscal: fiecare
-    cifră a cardului se regăsește în fereastră, iar firma are deja faptele ei (de urmărit), nu „în recalculare”/gri.
-    [deficiența 224, aprobată 10.10.2026] Cardul arată de atunci firmele pe stări (patru lumini, fiecare firmă într-o singură stare), iar
-    fereastra păstrează contoarele de fapte (o firmă poate fi în două): restanțele sunt aceeași cifră, iar suma luminilor = firmele din
-    listă; fiecare lumină = rândurile listei în starea ei e probată de `e2e_comanda_1010.py::test_def_224_…`."""
+    """125. Control fiscal: cardul ≠ fereastra. [decizia Costin 11.10.2026, cu 224] „cardul Control fiscal și fereastra care se deschide
+    din el arată aceleași 4 stări, cu aceleași numere, calculate dintr-o singură sursă.”
+    Pașii contabilului: după o scriere (firma tocmai preluată) -> birou: cardul „Control fiscal”, patru lumini cu numărul de firme ->
+    clic pe card -> fereastra: aceleași patru lumini, în aceeași ordine, cu aceleași numere; fiecare număr = rândurile listei de
+    dedesubt cu punctul de culoarea aceea; cardul arată citirea ferestrei, chiar dacă la încărcarea paginii citise altceva; firma are
+    deja faptele ei (de urmărit), nu „în recalculare”.
+    MUTAȚIILE din plasă: fereastra pe alte cifre decât `sumar` -> ROȘU; publicarea către card scoasă -> ROȘU."""
     pg = patron.pg
+    import time as _t
+    for _ in range(60):                     # recalcularea pornită de scriere: rândul firmei ajunge la faptele ei, nu „în recalculare”
+        st, r = _api(PATRON, "GET", "/control-fiscal")
+        f = next((x for x in (r.get("firme") or []) if x["tenant_id"] == firma_sal["tenant_id"]), None)
+        if f and (f.get("prospetime") or {}).get("stare") == "curent":
+            break
+        _t.sleep(2)
     patron.acasa()
     pg.wait_for_function("() => document.querySelector(\"[data-cheie='control'] .cab-semafor4\")", timeout=30000)
-    card = {e["stare"]: e["n"] for e in pg.eval_on_selector_all(
-        "[data-cheie='control'] .cab-stare", "es => es.map(e => ({stare: e.dataset.stare, n: parseInt(e.querySelector('.tip-figura').innerText, 10)}))")}
-    _control(patron)
-    fereastra = pg.inner_text(".fereastra:last-of-type .cf-sumar")
-    randuri = pg.locator(".fereastra:last-of-type #cf-lista .mig-frand").count()
+    assert sorted(_lumini_din(pg, "[data-cheie='control']")) == ["galben", "gri", "rosu", "verde"]
+    # cardul citise /control-fiscal la încărcarea paginii; între timp o firmă poate trece din „în recalculare” într-o stare (prins de
+    # plasă 11.10: card 7 / 2, fereastra 8 / 1). Cardul cu o citire veche — simulată aici — trebuie să ajungă la citirea ferestrei.
+    pg.evaluate("() => document.querySelectorAll(\"[data-cheie='control'] .tip-figura\").forEach((e) => { e.innerText = '99'; })")
+    pg.click("button.cab-card:has([data-cheie='control'])")             # direct pe card, fără a reîncărca pagina principală
+    pg.wait_for_selector(".fereastra:last-of-type #cf-lista .mig-frand", timeout=60000)
+    pg.wait_for_selector(".fereastra:last-of-type .cf-sumar .cab-semafor4", timeout=30000)
+    fereastra = _lumini_din(pg, ".fereastra:last-of-type .cf-sumar")
+    card = _lumini_din(pg, "[data-cheie='control']")
+    ordine = pg.eval_on_selector_all(".fereastra:last-of-type .cf-sumar .cab-stare", "es => es.map(e => e.dataset.stare)")
+    puncte = pg.eval_on_selector_all(".fereastra:last-of-type #cf-lista .mig-frand .cf-stare .cf-dot", "es => es.map(e => e.getAttribute('style'))")
     rand = pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=firma_sal["nume"]).first.inner_text()
     patron.captura()
-    restante = re.search(r"(\d+) cu restanțe", fereastra)
-    assert restante and card.get("rosu") == int(restante.group(1)), (card, fereastra)
-    assert sum(card.values()) == randuri, (card, randuri)
+    pe_randuri = {s: 0 for s in ("rosu", "galben", "verde", "gri")}
+    for st in puncte:
+        pe_randuri[next((s for c, s in _STARE_DIN_PUNCT if c in st), "gri")] += 1
+    assert ordine == ["rosu", "galben", "verde", "gri"], ordine
+    assert fereastra == card, "cardul %s, fereastra %s" % (card, fereastra)
+    assert fereastra == pe_randuri, "luminile ferestrei %s, rândurile de dedesubt %s" % (fereastra, pe_randuri)
+    assert sum(card.values()) == len(puncte) > 0, (card, len(puncte))
     assert "de urmărit" in rand, rand
 
 

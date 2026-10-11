@@ -741,6 +741,20 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    ("Infrastructura de testare vizuala"). Gardata structural de core/test_infra_vizuala.py
    (cele trei unelte + axe.min.js + baseline-urile nu pot disparea tacut — Regula 6).
 
+12. **REGULI DE LUCRU (11.10.2026, comanda Costin pct.4, verbatim in DECIZII 11.10.2026).** Se aplica de acum inainte,
+   peste ordinea agendei si peste continuarea automata a lantului:
+   a) **Prioritate:** deficientele vizibile contabilului (numerele din `DEFICIENTE.md`) trec inaintea oricarui fir intern (seria R,
+      amprente, unelte). `core.agenda` / „urmatorul pas din lista” nu porneste un fir intern cat timp o deficienta numerotata
+      din comanda curenta e deschisa.
+   b) **Decizie in asteptare:** cand o decizie a lui Costin e ceruta (§2.2 sect.6), NU se trece pe alt fir; se lucreaza la
+      celelalte deficiente din aceeasi comanda, apoi se raporteaza si se asteapta.
+   c) **Un singur commit si o singura trecere prin poarta pe LOT** (comanda), nu pe fiecare deficienta. (Intareste §2.3 pct.10:
+      registrele intra in acelasi commit.)
+   d) **Inainte de poarta:** verificatorul (`verificator_conformitate.py`, TOTAL 0) si testele fisierelor atinse (testele care
+      le importa sau le citesc, plus testele scrise/modificate in lot) — verzi. Poarta porneste DOAR pe verde: o respingere pentru
+      o greseala marunta prinsa de un gard existent (rotunjirea fara mod, data formatata local) costa o ora de poarta.
+   e) **Durata portii:** tinta sub 30 de minute, fara niciun test scos (COLLECTED neschimbat). Durata se masoara si se raporteaza.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.

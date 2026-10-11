@@ -1758,6 +1758,21 @@ for _fis in ("cabinet.js", "asistent.js"):
     _bloc = re.search(r"querySelector\('\[data-cheie=\"control\"\]'\);(.*?)\n\}", _t, re.S)
     if not _bloc or "semaforPatruLumini(" not in _bloc.group(1):
         rap["semafor_patru_lumini"].append((_fis, 0, "SEMAFOR4", "cardul Control fiscal nu randează semaforPatruLumini"))
+# [125 + 224, decizia Costin 11.10.2026] fereastra deschisă din card arată ACELEAȘI patru stări, din ACEEAȘI sursă: `control.js` randează
+#     `semaforPatruLumini(date.sumar)` și nu mai citește alte cifre de sumar (`contoare`). Mutația: fereastra întoarsă pe contoarele de
+#     fapte (`date.contoare`) sau pe alt câmp decât `sumar` -> TOTAL > 0.
+_t_cf = fisiere.get("control.js", "")
+if "semaforPatruLumini(date.sumar)" not in _t_cf:
+    rap["semafor_patru_lumini"].append(("control.js", 0, "SEMAFOR4", "fereastra Control fiscal nu randează semaforPatruLumini(date.sumar)"))
+# ... și o PUBLICĂ: cardul se redesenează din citirea ferestrei (`publicaSumarControl` -> ascultătorul din semafor.js), altfel două citiri
+#     la momente diferite dau cifre diferite (prins de plasă 11.10). Mutația: apelul scos din control.js sau ascultătorul scos -> TOTAL > 0.
+if "publicaSumarControl(date.sumar)" not in _t_cf:
+    rap["semafor_patru_lumini"].append(("control.js", 0, "SEMAFOR4", "fereastra nu publică sumarul către card (publicaSumarControl)"))
+if not re.search(r'addEventListener\("control-fiscal:sumar"[^;]*semaforPatruLumini\(e\.detail\)', fisiere.get("semafor.js", ""), re.S):
+    rap["semafor_patru_lumini"].append(("semafor.js", 0, "SEMAFOR4", "cardul nu se redesenează din sumarul publicat de fereastră"))
+for _m in re.finditer(r"\.contoare\b", _t_cf):
+    rap["semafor_patru_lumini"].append(("control.js", _t_cf[:_m.start()].count("\n") + 1, "SEMAFOR4",
+                                        "fereastra citește alte cifre decât sumar (contoare)"))
 
 # --- BUTON_DEZACTIVAT (DS cap.1 v2.87, 10.10.2026, deficiența 222): fiecare clasă de buton din set (cap.1, fără modificatorii
 #     `buton-mic` / `buton-activ`) are o regulă `:disabled` în stil.css, iar hover-ul ei e `:hover:not(:disabled)`. Mutația:

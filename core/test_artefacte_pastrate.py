@@ -39,6 +39,7 @@ _ACTE = {
     "/tenants/{tenant_id}/facturi/export-saga": "post",
     "/tenants/{tenant_id}/facturi/export-winmentor": "post",
     "/control-fiscal/{tenant_id}/audit-preluare": "post",
+    "/tenants/{tenant_id}/bilant-an-precedent-manual": "post",   # [221] coloana completată manual
 }
 
 

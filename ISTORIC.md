@@ -2184,3 +2184,24 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
   unealta R2b: proba pe suită a dat 7 amprente D112/D300 în plus, venite numai din lucrătorul `firma_rezumat.recalculeaza_lot` (alege
   firmele după starea bazei, schimbată de poarta e2e dintre rulări); apelurile lui se marchează și nu mai intră în verdict. Fără ele,
   suita pe codul R3 = R2b: 460/460 aceleași.
+
+## 11.10.2026, noaptea — Comanda Costin „Oprește R4”: 125 + 224, 221, poarta în paralel (commitul care conține această intrare)
+
+- **R4 oprit** înainte de orice scriere; firul registrului e BLOCAT până la aprobare (TESTE.md). Regulile de lucru 4a–e intră în
+  CLAUDE.md §2.3 pct.12.
+- **125 + 224:** fereastra Control fiscal arată acum aceleași patru lumini ca și cardul, din același `sumar`; contoarele de fapte
+  (`contoare_portofoliu`) s-au scos, faptele rămân pe rândul firmei. Plasa a prins o a doua cale a divergenței — cardul citea la
+  încărcarea paginii, fereastra la deschidere (card 7/2, fereastră 8/1) —, închisă: fereastra publică citirea ei, cardul se redesenează.
+- **221:** „An precedent” (F10 și F20) vine din bilanțul anului precedent validat în aplicație, altfel din evidența acelui an, altfel
+  se completează manual pe ecranul Bilanț, cu avertisment vizibil; fără sursă, generarea, validarea, XML-ul și coada refuză. Pe drum:
+  autorul artefactelor se scria ca id („completată manual de 1968”) — `artefacte.pastreaza` scrie acum numele, pentru toți cei 7
+  apelanți; un clic pe „Validează” se putea pierde când zona nouă golea fereastra — zona veche rămâne până sosește cea nouă.
+- **Neconformitate moștenită din R3:** după commitul R3, 11 bife (D100/D101/D710) stăteau pe `impozit_profit` schimbat (extins la 2016,
+  aceeași valoare) — garda o vedea abia după commit. Reverificate la sursă (CF art.17, 16%, verbatim în corpus) și reînnoite √ 11.10; garda
+  citește de acum indexul, deci o asemenea schimbare înroșește poarta înainte de commit.
+- **Poarta:** pytest pe 3 procese (pytest-xdist, `--dist loadfile`), iar verificatorul și cifrele rulează în același timp cu el; plasa
+  e2e pornește după verdictul pytest (suprapuse pe aceeași bază de test au intrat în deadlock — proba din 11.10, 22:16, plasa agățată
+  două ore; DECIZII 4e); niciun test scos (gard). Durata înainte: ~82 de minute (e69198fb: 19:12 -> 20:34). Durata după: în raportul lotului și în
+  `.poarta_jurnal.log` (linia `DURATE`).
+- **/tmp/claude-1000:** 25 de fișiere rătăcite (numărate acum, nu 26) și directorul vechi al sesiunii fiscalos (584 MB) șterse; sesiunea
+  curentă păstrată.

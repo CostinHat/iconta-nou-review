@@ -78,18 +78,21 @@ def test_def_173_randul_spune_ce_numara_contorul(patron, firma_e2e):
     """173. Control fiscal: contoarele cu două reguli; cifrele raportului nu sunt pe ecran.
     [retestul Costin 09.10, cuvânt cu cuvânt] „«3 nu se pot verifica», lista arată 2.” Calea: o firmă cu restanțe ȘI o verificare
     contabilă care nu se poate face (gri) e numărată la „nu se pot verifica”, dar rândul ei spunea doar „2 restanțe · TVA vs sold
-    balanță”. Pașii: rezumatul curent al firmei are 2 restanțe și verificarea „TVA vs sold balanță” gri -> contorul de sus „nu se pot
-    verifica” = rândurile care o spun, iar rândul acestei firme o spune."""
+    balanță”. Pașii: rezumatul curent al firmei are 2 restanțe și verificarea „TVA vs sold balanță” gri -> rândul acestei firme o spune,
+    iar lumina gri de sus = rândurile cu punctul gri (125 + 224, 11.10.2026: contorul de fapte s-a scos)."""
     from core import firma_rezumat as fr
     import datetime as _d
     _rezumat_cf(firma_e2e, {"stare": "rosu", "lipsa": 2, "urmarit": 0, "neclar": 0,
                             "contabil": [{"eticheta": "TVA vs sold balanță", "stare": "gri"}]},
                 fr.epoca_pentru("control_fiscal", _d.date.today()))
     r = _rand_cf(patron, firma_e2e["nume"])
+    # [125 + 224, decizia Costin 11.10.2026] contorul de fapte „nu se pot verifica” s-a scos; sus sunt cele patru stări ale cardului, iar
+    # lumina gri = rândurile cu punctul gri. Ce se păstrează din 173: rândul firmei SPUNE ce nu se poate verifica, la orice stare.
     d = patron.pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop();
-      const p = [...f.querySelectorAll('.cf-sumar .cf-pastila')].map(e => e.innerText.trim()).find(t => t.endsWith('nu se pot verifica'));
-      const rr = [...f.querySelectorAll('#cf-lista .mig-frand')].map(x => x.innerText);
-      return {contor: parseInt(p, 10), randuri: rr.filter(t => /nu se (poate|pot) verifica|în recalculare/.test(t)).length}; }""")
+      const l = f.querySelector('.cf-sumar .cab-stare[data-stare=gri] .tip-figura');
+      const gri = [...f.querySelectorAll('#cf-lista .mig-frand .cf-stare .cf-dot')].filter(
+        (e) => !/#ff8a80|#f0cd7a|#6fc494/.test(e.getAttribute('style') || '')).length;
+      return {lumina: l ? parseInt(l.innerText, 10) : null, randuri: gri}; }""")
     patron.captura("lista")
     assert r and "nu se poate verifica" in r["sub"], r
-    assert d["contor"] == d["randuri"], d
+    assert d["lumina"] == d["randuri"], d

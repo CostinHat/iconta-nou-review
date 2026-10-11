@@ -19431,3 +19431,66 @@ titlu nou ascuns doar pentru cititorul de ecran (ar fi două texte pentru acela�
   verdict. **Alternativa respinsă:** golirea `firma_rezumat` înaintea fiecărei rulări — face ca ambele să recalculeze, dar conținutul
   generat ar depinde tot de datele bazei de test din ziua aceea, nu de cod; și e o scriere în plus în pregătirea măsurătorii.
   **Limita:** `LUCRATORI` e măsurat (o singură sursă variabilă în cinci rulări), nu derivat.
+
+## 11.10.2026 — Răspunsul lui Costin la §6 al raportului R3: R4 oprit, 125 + 224 împreună, 221 pe regula nouă, curățenia /tmp
+
+**Comanda, verbatim** (a doua formă, trimisă în timpul lucrului; o înlocuiește pe prima, care avea în loc de pct.4–5 „bilanțul de la
+comanda din 10.10, ora 19:41” — scos din cerere):
+
+> Oprește R4. Nu e aprobat.
+>
+> 1. 125 + 224: cardul Control fiscal și fereastra care se deschide din el arată aceleași 4 stări, cu aceleași numere, calculate dintr-o singură sursă. Închide-le pe amândouă.
+>
+> 2. 221: coloana „An precedent” din bilanț se completează din bilanțul anului anterior, dacă firma îl are în aplicație. Dacă nu îl are, se completează manual, cu avertisment vizibil. Bilanțul nu poate fi generat cu coloana goală.
+>
+> 3. Șterge cele 26 de fișiere rătăcite din /tmp și directoarele vechi din /tmp/claude-1000. Păstrează sesiunea curentă.
+>
+> 4. Reguli de lucru, de acum înainte:
+>    a) Prioritate: deficiențele vizibile contabilului (numerele din DEFICIENTE.md) trec înaintea oricărui fir intern (seria R, amprente, unelte).
+>    b) Când o decizie mă așteaptă, nu treci pe alt fir. Lucrezi la celelalte deficiențe din aceeași comandă.
+>    c) Un singur commit și o singură trecere prin poartă pe lot, nu pe fiecare deficiență.
+>    d) Înainte de poartă, rulezi verificatorul și testele fișierelor atinse. Poarta pornește doar pe verde, ca să nu mai fie respinsă pentru greșeli mărunte.
+>    e) Fă poarta mai rapidă fără să scoți niciun test (de exemplu, rulare în paralel). Ținta: sub 30 de minute. Raportează durata înainte și după.
+>
+> 5. Rezolvă 220, 221, 222, 223, 224, 225 și 125 într-un singur lot.
+>
+> 6. În raport, răspunde punctual, cu proba, pentru fiecare: 220, 221, 222, 223, 224, 225, 125, C1, C2 — rezolvată sau nu. Spune dacă ai redenumit C1/C2.
+>
+> 7. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. Nu porni R4 sau alt pas fără aprobare.
+
+- **Regulile pct.4 a–e** sunt reguli de PROCES: textul lor canonic intră în `CLAUDE.md` (§2.3, „Reguli de lucru 11.10.2026”); aici
+  rămâne comanda. 4a schimbă ordinea dată de agendă: o deficiență numerotată în DEFICIENTE.md trece înaintea oricărui fir intern.
+- **R4 oprit** înainte de orice scriere (trei agenți de citire opriți). Firul registrului: R4 BLOCAT până la aprobare (TESTE.md).
+- **PIVOT — fereastra Control fiscal pe stări, nu pe fapte.** Supersedează explicit „08.10.2026, retest pct.7” (contoarele de sus =
+  fapte numărate pe firme) și „Retest 2, 09.10.2026, pct.3” (o singură regulă, a faptelor), precum și intrarea 11.10.2026 „Deficiențele
+  220–225” la 224 (cardul pe stări, fereastra păstra contoarele de fapte, cu întrebarea formei la §6). Acum cardul și fereastra
+  randează ACEEAȘI funcție (`semafor.js::semaforPatruLumini`) peste ACELAȘI câmp al aceluiași răspuns (`/control-fiscal` -> `sumar`,
+  partiția: fiecare firmă într-o singură stare). Contoarele de fapte (`uc_control_fiscal.contoare_portofoliu`) se scot — a treia sursă
+  de cifre ar fi exact divergența din 125. Faptele (N restanțe, N de urmărit, ce nu se poate verifica) rămân pe rândul fiecărei firme.
+- **PIVOT — 221, „An precedent” niciodată gol.** Supersedează „gol, cu avertisment” din intrarea 11.10.2026 „Deficiențele 220–225”
+  (221). Ordinea surselor: (a) bilanțul anului precedent validat în aplicație (artefactul S1005/S1003 al anului precedent, același tip,
+  ultimul exemplar cu verdict „valid”) — coloana lui „An curent”; (b) altfel, evidența anului precedent din aplicație: F10 = soldurile
+  la 31.12 (cunoscute de la soldurile de preluare încoace), F20 = rulajele anului numai dacă evidența îl acoperă întreg; (c) altfel,
+  completată manual de contabil, păstrată ca artefact `bilant_an_precedent` (cu autor, moment, exemplar), cu avertisment vizibil pe
+  ecran și în răspuns. Nicio sursă pentru F10 sau F20 -> generarea, validarea, XML-ul și coada refuză cu motivul.
+  **INTERPRETARE (de reconfirmat de Costin):** (b) — evidența completă a anului precedent e bilanțul acelui an pe care aplicația îl are
+  (l-ar genera identic); fără (b), o firmă cu tot anul precedent în aplicație, dar fără bilanțul lui validat aici, ar fi pusă să
+  copieze manual cifre pe care aplicația le știe. **Alternativa respinsă:** numai (a) + (c).
+  **TEMEI:** OMFP 1802/2014, Reglementări, pct.130 (citat în `core/test_bilant_an_precedent.py`): valoarea elementului corespondent
+  pentru exercițiul financiar precedent. **Limita:** valorile manuale sunt ale contabilului (CLAUDE.md §8); aplicația nu le verifică
+  față de bilanțul depus, pe care nu-l are.
+- **221, regula (a) strânsă după proba pe producție (read-only):** F1 avea S1005 2025 „valid” (10.10.2026 10:57) generat de defectul 221 —
+  ambele coloane = soldurile de preluare de la 31.08.2026. Un bilanț al anului precedent pe care aplicația NU l-ar putea întocmi azi
+  (31.12 a lui e înaintea soldurilor de preluare) nu e „bilanțul anului anterior”: nu se folosește, iar mesajul spune de ce. Pe
+  producție, F1–F5 cer acum completarea manuală a coloanei pentru bilanțul 2026 (2025 nu e în aplicație la niciuna). **Alternativa
+  respinsă:** artefactul luat oricum — ar fi dus cifrele defectului în declarația 2026.
+- **4e — forma porții în paralel.** pytest pe `POARTA_PROCESE` procese (pytest-xdist, implicit 3, `--dist loadfile`: testele unui fișier
+  rămân împreună, în ordinea lor), toată suita, fără selecție; verificatorul și cifrele de referință (producție, read-only) rulează în
+  același timp cu el; plasa e2e pornește DUPĂ verdictul pytest. **De ce plasa nu se suprapune cu pytest (măsurat, 11.10 22:16):**
+  amândouă folosesc baza de test, iar pornirea aplicației (lifespan) reface triggerele fiecărei firme (`DROP TRIGGER` + `CREATE
+  TRIGGER`); suprapuse, o pornire din pytest și aplicația plasei au intrat în deadlock, pool-ul aplicației s-a epuizat și plasa a stat
+  agățată două ore. **Alternativa respinsă:** o bază separată pentru plasă — rolul de test n-are `CREATEDB` (verificat:
+  `rolcreatedb=f`), iar o bază nouă pe serverul de producție e infrastructură, nu tooling. **Limita:** mașina are 2 procesoare; durata
+  e cât dă hardware-ul, raportată, nu promisă.

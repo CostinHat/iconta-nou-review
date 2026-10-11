@@ -144,18 +144,8 @@ def test_pct2_notele_de_refacere_nir_se_rescriu_si_se_retrimit(lume):
 
 
 # ── pct.3 (A3) ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_pct3_contoarele_pe_o_singura_regula():
-    """„Contoarele de sus folosesc două reguli […] Una dintre reguli, aplicată peste tot.” Fiecare contor = firmele care AU faptul;
-    o firmă cu restanță și un necunoscut intră în amândouă; „la zi” = fără niciun fapt. MUTAȚIE: „nu se pot verifica” înapoi pe
-    starea principală gri -> F1 (roșie, cu 2 necunoscute) iese din contor -> pică."""
-    from core.uc_control_fiscal import contoare_portofoliu
-    firme = [{"stare": "rosu", "lipsa": 1, "urmarit": 0, "neclar": 2, "contabil": []},                 # F1: restanță + necunoscut
-             {"stare": "galben", "lipsa": 0, "urmarit": 3, "neclar": 0, "contabil": [{"stare": "rosu"}]},
-             {"stare": "verde", "lipsa": 0, "urmarit": 0, "neclar": 0, "contabil": [{"stare": "gri"}]},
-             {"stare": "verde", "lipsa": 0, "urmarit": 0, "neclar": 0, "contabil": [], "prospetime": {"stare": "veche"}},
-             {"stare": "verde", "lipsa": 0, "urmarit": 0, "neclar": 0, "contabil": [{"stare": "verde"}]}]
-    assert contoare_portofoliu(firme) == {"restante": 1, "de_urmarit": 1, "neconcordante": 1, "nu_se_pot_verifica": 3, "la_zi": 1}
-
+# [125 + 224, decizia Costin 11.10.2026] `test_pct3_contoarele_pe_o_singura_regula` testa `contoare_portofoliu` (contoarele de fapte ale ferestrei Control fiscal),
+# scoasă: fereastra arată acum aceleași patru stări ca ale cardului, din `sumar` — `core/test_control_fiscal_o_sursa.py`.
 
 # ── pct.4 (B4) ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_pct4_operatiunea_cu_nota_validata_nu_se_sterge_se_storneaza(lume):

@@ -39,6 +39,13 @@ def _ast_functie(src, nume):
     return "<ABSENT>"
 
 
+# [lotul 11.10.2026, neconformitate găsită la poarta lotului] Starea „de acum” a gărzilor anti-stale e INDEXUL (`git show :<fișier>`),
+# nu HEAD: la poartă indexul = ce se comite, după commit indexul = HEAD. Cu HEAD, R3 (`e69198fb`) a trecut poarta cu o schimbare în COTE
+# pe care garda o vedea abia DUPĂ commit — HEAD a rămas cu suita roșie (11 bife pe `impozit_profit`), iar lotul următor a moștenit-o.
+# Capcana era scrisă în CLAUDE.md („Garda anti-stale citeste data ultimului COMMIT”) ca disciplină; acum e mecanism.
+INDEX = ""
+
+
 def _ast_functie_multi(relpaths, commit, func):
     """AST-ul functiei `func` cautat in TOATE fisierele clusterului la `commit`. Intoarce AST-ul din primul
     fisier care o contine; '<ABSENT>' daca nu-i in niciunul (toate parsate); None daca vreun fisier nu se
@@ -72,7 +79,7 @@ def _functie_schimbata(relpaths, func, data_verif):
     if not oc:
         return True, None
     ao = _ast_functie_multi(relpaths, oc, func)
-    an = _ast_functie_multi(relpaths, "HEAD", func)
+    an = _ast_functie_multi(relpaths, INDEX, func)
     if ao is None or an is None:
         return True, "versiunea nu se parseaza; fallback pe fisier pentru %s" % func
     if ao == "<ABSENT>" and an == "<ABSENT>":
@@ -85,7 +92,7 @@ def _fisier_functie(relpaths, func):
     testele clusterului, indiferent de fisier (02.08.2026: testele D2/D3 stau in fisiere separate de cel
     primar - bifa nu cadea daca erau modificate). None daca in niciunul (-> fisierul primar, absenta semnalata)."""
     for rp in relpaths:
-        new = subprocess.run(["git", "-C", str(_RAD), "show", "HEAD:%s" % rp],
+        new = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (INDEX, rp)],
                              capture_output=True, text=True).stdout
         if _ast_functie(new, func) not in (None, "<ABSENT>"):
             return rp
@@ -339,7 +346,7 @@ def _cota_schimbata(nume, data_verif):
     if not oc:
         return False
     old = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (oc, relpath)], capture_output=True, text=True).stdout
-    new = subprocess.run(["git", "-C", str(_RAD), "show", "HEAD:%s" % relpath], capture_output=True, text=True).stdout
+    new = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (INDEX, relpath)], capture_output=True, text=True).stdout
     vo, vn = agenda.cota_valori(old, nume), agenda.cota_valori(new, nume)
     if vo is None or vn is None:
         return True
@@ -600,3 +607,28 @@ def test_registrul_nu_citeaza_teste_moarte_prinde_citare_moarta():
     assert _citari_teste_moarte("vezi test_mort_definitiv_zzz", CUN)                # necolectat -> semnalat
     assert _citari_teste_moarte("test_mort_definitiv_zzz scos [citare-istorica: scos in abc123]", CUN) == []  # marcat cu motiv
     assert _citari_teste_moarte("test_mort_definitiv_zzz [citare-istorica]", CUN)   # marcaj GOL -> NU exempteaza (abuz)
+
+
+def test_garda_anti_stale_vede_ce_se_comite_nu_numai_HEAD(tmp_path, monkeypatch):
+    """[lotul 11.10.2026] La poartă, o valoare schimbată în COTE e încă numai în INDEX. Garda o vede de atunci, nu abia după commit
+    (R3 a trecut poarta și a lăsat HEAD roșu). Proba, fără să atingă indexul sau obiectele depozitului: un index temporar
+    (`GIT_INDEX_FILE`) cu `core/common.py` în care `salariu_minim` are altă valoare, obiectul scris într-un director temporar
+    (`GIT_OBJECT_DIRECTORY`, depozitul rămâne alternativ). MUTAȚIE: `INDEX = "HEAD"` -> garda nu vede schimbarea -> pică."""
+    import shutil
+    git_dir = subprocess.run(["git", "-C", str(_RAD), "rev-parse", "--absolute-git-dir"], capture_output=True, text=True).stdout.strip()
+    idx, obj = tmp_path / "index", tmp_path / "objects"
+    obj.mkdir()
+    shutil.copy(os.path.join(git_dir, "index"), idx)
+    src = subprocess.run(["git", "-C", str(_RAD), "show", ":core/common.py"], capture_output=True, text=True).stdout
+    vechi = agenda.cota_valori(src, "salariu_minim")
+    assert vechi not in (None, "<ABSENT>"), vechi
+    import re as _re
+    mutat = _re.sub(r'("salariu_minim"\s*:\s*\[\s*\(\s*date\([^)]*\)\s*,\s*)(Decimal\("?)(\d+)', lambda m: m.group(1) + m.group(2) + str(int(m.group(3)) + 1), src, count=1)
+    assert agenda.cota_valori(mutat, "salariu_minim") != vechi, "proba n-a schimbat valoarea"
+    monkeypatch.setenv("GIT_OBJECT_DIRECTORY", str(obj))
+    monkeypatch.setenv("GIT_ALTERNATE_OBJECT_DIRECTORIES", os.path.join(git_dir, "objects"))
+    monkeypatch.setenv("GIT_INDEX_FILE", str(idx))
+    blob = subprocess.run(["git", "-C", str(_RAD), "hash-object", "-w", "--stdin"], input=mutat, capture_output=True,
+                          text=True).stdout.strip()
+    subprocess.run(["git", "-C", str(_RAD), "update-index", "--cacheinfo", "100644,%s,core/common.py" % blob], check=True)
+    assert _cota_schimbata("salariu_minim", datetime.date.today()), "schimbarea din index nu e văzută de gardă"

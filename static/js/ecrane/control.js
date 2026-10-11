@@ -4,6 +4,7 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
+import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=e92b4d8ea1";  // [125 + 224] aceleași patru lumini ca ale cardului
 import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=b591d95307";  // renderer unic al verdictului (DS cap.20)
 
 
@@ -17,19 +18,16 @@ export async function randeazaControl(corp, nav, tidAuto) {
     return;
   }
   const firme = date.firme || [];
-  const k = date.contoare || {};
+  publicaSumarControl(date.sumar);   // [125 + 224] cardul care a deschis fereastra arată aceeași citire
 
   corp.innerHTML = `
     <p class="mig-intro">Starea fiscală a fiecărei firme: declarațiile datorate vs depuse (cu termenele ANAF) și coerența lor cu contabilitatea — TVA, salarii, operațiuni intracomunitare, cota facturilor emise, echilibru și trezorerie.</p>
     <div class="cf-sumar">
-      <!-- [08.10.2026, retest pct.7] fapte numărate pe firme (o firmă poate intra în două), nu partiția pe culori -->
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${k.la_zi || 0} la zi</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${k.de_urmarit || 0} cu declarații de urmărit</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${k.restante || 0} cu restanțe</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${k.neconcordante || 0} cu neconcordanțe contabile</span>
-      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.gri.dot}"></span>${k.nu_se_pot_verifica || 0} nu se pot verifica</span>
+      <!-- [125 + 224, decizia Costin 11.10.2026] aceleași patru stări, cu aceleași numere, ca pe cardul care deschide fereastra:
+           aceeași funcție (semaforPatruLumini) peste același câmp (sumar din /control-fiscal) — fiecare firmă într-o singură stare -->
+      ${semaforPatruLumini(date.sumar)}
     </div>
-    <p class="ecran-nota">Din ${firme.length} ${firme.length === 1 ? "firmă" : "firme"}. Fiecare contor numără firmele care au faptul acela; o firmă cu mai multe apare în fiecare.</p>
+    <p class="ecran-nota">Din ${firme.length} ${firme.length === 1 ? "firmă" : "firme"}; fiecare firmă e numărată o singură dată, în starea de pe rândul ei.</p>
     <div class="mig-lista" id="cf-lista"></div>
   `;
 

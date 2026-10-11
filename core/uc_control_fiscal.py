@@ -49,13 +49,16 @@ def control_fiscal_portofoliu(ctx):
                                    "calculat_la": st.get("calculat_la")}})
     for f in out:   # [deficiența 173] rândul spune exact ce numără contorul „nu se pot verifica” (același predicat)
         f["neverificabil"] = motiv_neverificabil(f)
-    return {"firme": out, "sumar": sumar, "contoare": contoare_portofoliu(out)}
+    # [125 + 224, decizia Costin 11.10.2026] `sumar` = singura sursă a cifrelor: cardul ȘI fereastra randează aceleași patru stări
+    # din el (fiecare firmă într-o singură stare). Contoarele de fapte (`contoare_portofoliu`, 08.10 pct.7) s-au scos: o a doua
+    # numărătoare pe același ecran era exact divergența din 125. Faptele rămân pe rândul firmei (`lipsa`, `urmarit`, `neverificabil`).
+    return {"firme": out, "sumar": sumar}
 
 
 def motiv_neverificabil(f):
-    """[retestul Costin 09.10, deficiența 173: „«3 nu se pot verifica», lista arată 2”] De ce firma intră în contorul „nu se pot
-    verifica” — textul de pe rândul ei — sau None. ACELAȘI predicat ca `contoare_portofoliu`: un rând nu poate fi numărat fără să
-    spună de ce, iar unul care o spune e numărat."""
+    """[retestul Costin 09.10, deficiența 173] Ce nu se poate verifica la firmă — textul de pe rândul ei — sau None.
+    [125 + 224, 11.10.2026] Contorul de fapte care îl folosea s-a scos; lumina gri numără firmele în starea gri (`sumar`), iar
+    rândul spune, la orice stare, ce nu s-a putut verifica."""
     pr = (f.get("prospetime") or {}).get("stare", "curent")
     if pr != "curent":
         return "în recalculare — rezumatul nu e încă la zi (date schimbate sau o versiune nouă a aplicației)"
@@ -66,23 +69,6 @@ def motiv_neverificabil(f):
     if gri:
         parti.append("nu se poate verifica: " + ", ".join(str(x) for x in gri if x))
     return " · ".join(parti) or None
-
-
-def contoare_portofoliu(firme):
-    """[08.10.2026, retest pct.7] Contoarele de sus = FAPTE numărate pe firme, nu culoarea combinată: „F1 și F5 arată «restanță» cu
-    «0 restanțe», iar contorul de sus «0 de urmărit», deși detaliul F1 are 5 de urmărit. Nedeclaratul înainte de termen e «de urmărit»,
-    nu restanță.” O firmă poate intra în două (restanțe ȘI neconcordanțe); `sumar` (partiția pe culori) rămâne neschimbat.
-    [Retest 2, 09.10.2026, pct.3] „contoarele de sus folosesc două reguli … Una dintre reguli, aplicată peste tot.” Regula unică e cea
-    a faptelor (de la pct.7): fiecare contor = firmele care AU faptul; „nu se pot verifica” = firma cu cel puțin un necunoscut
-    (declarație sau verificare contabilă gri) sau fără date la zi — nu starea principală gri (F5 avea 2 necunoscute și pică din
-    numărătoare); „la zi” = firma fără niciun fapt din celelalte patru."""
-    neconc = lambda f: any((c or {}).get("stare") in ("rosu", "galben") for c in (f.get("contabil") or []))   # noqa: E731
-    gri = lambda f: motiv_neverificabil(f) is not None   # noqa: E731 — același predicat ca textul rândului (deficiența 173)
-    fapte = {"restante": lambda f: (f.get("lipsa") or 0) > 0, "de_urmarit": lambda f: (f.get("urmarit") or 0) > 0,
-             "neconcordante": neconc, "nu_se_pot_verifica": gri}
-    out = {k: sum(1 for f in firme if p(f)) for k, p in fapte.items()}
-    out["la_zi"] = sum(1 for f in firme if not any(p(f) for p in fapte.values()))
-    return out
 
 
 def control_fiscal_audit_preluare(tenant_id, ctx):

@@ -4,12 +4,12 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
-import { semaforCard as _semaforCard, semaforPatruLumini } from "./semafor.js?v=36c253249e";  // [p87_asistent] [224]
+import { semaforCard as _semaforCard, semaforPatruLumini } from "./semafor.js?v=e92b4d8ea1";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=918c22ff46";
+import { randeazaListaFirme } from "./firme.js?v=f79bbba87b";
 import { randeazaMigrare } from "./migrare.js?v=00548d5fca";
-import { randeazaControl } from "./control.js?v=0260ebf289";
+import { randeazaControl } from "./control.js?v=27e3238637";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=74572648b0"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]

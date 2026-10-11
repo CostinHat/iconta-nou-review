@@ -2874,6 +2874,7 @@ async function ecranBilant(corp, nav, t) {
         <button class="buton-primar" id="bl-coada" data-actiune="POST /coada">Trimite \u00een coad\u0103 \u2192</button>
       </div>
       <div id="bl-categorie"></div>
+      <div id="bl-precedent"></div>
       <div id="bl-rez" style="margin-top:10px"></div>
       <div id="bl-coada-mesaj"></div>`;
     const rez = corp.querySelector("#bl-rez");
@@ -2907,6 +2908,53 @@ async function ecranBilant(corp, nav, t) {
     const legaTip = () => actiuniTip.forEach((b) => { b.disabled = !tip(); });
     corp.querySelector("#bl-tip").addEventListener("change", legaTip);
     legaTip();
+    // [deficiența 221, decizia Costin 11.10.2026] coloana „An precedent”: din bilanțul anului precedent din aplicație, altfel completată
+    // manual cu avertisment vizibil; fără ea serverul refuză generarea. Zona spune sursa și, unde lipsește, cere completarea.
+    const zonaPrec = corp.querySelector("#bl-precedent");
+    const SURSA = { bilant: "bilanțul pe %AN validat în aplicație", evidenta: "evidența pe %AN din aplicație", manual: "completată manual" };
+    // ca la categoria de mărime (151/188): zona veche rămâne până sosește cea nouă — golirea ei mișca fereastra (centrată) sub cursor
+    let cerereaPrec = "";
+    const incarcaPrecedent = async () => {
+      if (!tip()) { zonaPrec.innerHTML = ""; zonaPrec.removeAttribute("data-pentru"); return; }
+      const an = parseInt(corp.querySelector("#bl-an").value, 10);
+      const cheie = `${an}|${tip()}`;
+      cerereaPrec = cheie;
+      let p;
+      try { p = await api.get(`/tenants/${t.id}/bilant-an-precedent?an=${an}&tip=${tip()}`); } catch (e) {
+        if (cheie === cerereaPrec) arataMesaj(zonaPrec, (e && e.mesaj) || "Nu s-a putut citi coloana „An precedent”.", "eroare");
+        return;
+      }
+      if (cheie !== cerereaPrec) return;          // un an / tip schimbat între timp își aduce propria zonă
+      zonaPrec.dataset.pentru = cheie;
+      const surse = ["F10", "F20"].filter((s) => p.sursa[s] && p.sursa[s] !== "manual")
+        .map((s) => `${s}: ${SURSA[p.sursa[s]].replace("%AN", an - 1)}`);
+      const info = surse.length ? `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">Coloana „An precedent” vine din ${esc(surse.join("; "))}.</span></div>` : "";
+      if (!p.de_completat.length) { zonaPrec.innerHTML = info; return; }
+      const sectiune = (s) => `<h3 class="pf-subtitlu">An precedent — ${s}</h3>
+        <table class="fd-tabel bl-prec-tabel" data-sectiune="${s}"><thead><tr><th>Rândul</th><th class="fd-td-num">An precedent (lei)</th></tr></thead><tbody>
+        ${p.randuri[s].map((r) => `<tr><td>rândul ${r}</td><td class="fd-td-num"><input type="number" step="1" class="camp-input bl-prec-val" data-rand="${r}"
+          value="${p.valori[s] && p.valori[s][r] != null ? p.valori[s][r] : ""}" aria-label="${s} rândul ${r}, an precedent"></td></tr>`).join("")}</tbody></table>`;
+      zonaPrec.innerHTML = info + `<div class="caseta-atentie bl-prec-atentie" style="margin-top:10px"><div class="ca-mesaj"><b>${esc((p.afirmatie && p.afirmatie.motiv) || "")}</b></div></div>
+        ${p.de_completat.map(sectiune).join("")}
+        <button class="buton-secundar" id="bl-prec-salveaza" data-actiune="POST /tenants/{tenant_id}/bilant-an-precedent-manual">Salvează coloana „An precedent”</button>
+        <div id="bl-prec-mesaj"></div>`;
+      zonaPrec.querySelector("#bl-prec-salveaza").addEventListener("click", async () => {
+        const corpCerere = {};
+        zonaPrec.querySelectorAll(".bl-prec-tabel").forEach((tb) => {
+          const v = {};
+          tb.querySelectorAll(".bl-prec-val").forEach((i) => { v[i.dataset.rand] = i.value.trim() === "" ? 0 : parseInt(i.value, 10); });
+          corpCerere[tb.dataset.sectiune] = v;
+        });
+        const msg = zonaPrec.querySelector("#bl-prec-mesaj");
+        try {
+          await api.post(`/tenants/${t.id}/bilant-an-precedent-manual?an=${an}&tip=${tip()}`, corpCerere);
+          await incarcaPrecedent();
+          arataMesaj(zonaPrec.querySelector("#bl-prec-mesaj") || zonaPrec, "Coloana „An precedent” a fost salvată.", "ok");
+        } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Nu s-a putut salva coloana.", "eroare"); }
+      });
+    };
+    corp.querySelector("#bl-tip").addEventListener("change", incarcaPrecedent);
+    corp.querySelector("#bl-an").addEventListener("change", incarcaPrecedent);
     corp.querySelector("#bl-val").addEventListener("click", async () => {
       curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       arataMesaj(rez, "Se validează…", "info");

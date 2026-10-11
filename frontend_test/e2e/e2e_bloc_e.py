@@ -1116,8 +1116,8 @@ def test_def_148_recipisa_doar_numar(patron, preluata_07):
 def test_def_156_contoarele_si_eticheta_pe_fapte(patron):
     """156. Control fiscal: „restanță” la „0 restanțe”; „0 de urmărit” vs 5 în detaliu.
     Pașii contabilului: Control fiscal pe portofoliul cabinetului de test -> orice rând etichetat „restanță” are restanțe numărate
-    („N restanțe”); contorul de sus „cu declarații de urmărit” = numărul firmelor cu „N de urmărit” pe rând -> deschide o firmă cu
-    declarații de urmărit: grupul „De urmărit (N)” din detaliu are același N ca rândul."""
+    („N restanțe”) -> deschide o firmă cu declarații de urmărit: grupul „De urmărit (N)” din detaliu are același N ca rândul.
+    [125 + 224, 11.10.2026] Contorul de sus „cu declarații de urmărit” nu mai există: sus sunt cele patru stări ale cardului."""
     pg = patron.pg
     patron.acasa()
     pg.click("button.cab-card:has([data-cheie='control'])")
@@ -1127,10 +1127,9 @@ def test_def_156_contoarele_si_eticheta_pe_fapte(patron):
     for r in randuri:
         if r["et"] == "restanță":
             assert _re.search(r"\b[1-9]\d* restanț", r["sub"]), r
-    pastile = pg.inner_text(".cf-sumar")
-    m = _re.search(r"(\d+) cu declarații de urmărit", pastile)
+    # [125 + 224, decizia Costin 11.10.2026] contorul de sus „cu declarații de urmărit” s-a scos: fereastra arată aceleași patru stări
+    # ca ale cardului (`e2e_bloc_d.py::test_def_125_…`); faptele rămân pe rând, iar „N de urmărit” de pe rând = grupul din detaliu.
     cu_urmarit = [r for r in randuri if _re.search(r"\b[1-9]\d* de urmărit", r["sub"])]
-    assert m and int(m.group(1)) == len(cu_urmarit), (pastile, [r["nume"] for r in cu_urmarit])
     patron.captura("lista_contoare")
     assert cu_urmarit, "nicio firmă cu declarații de urmărit în portofoliul de test"
     r0 = cu_urmarit[0]
@@ -1404,6 +1403,12 @@ def _bilant(ecran, f, an, tip):
     Primul clic pe un buton după asta nu are voie să se piardă: părăsirea câmpului „An” reîncărca o categorie deja încărcată, iar
     fereastra (centrată) se micșora sub cursor — „Descarcă XML” / „Validează” fără nicio cerere (prins de plasă, 151/188)."""
     pg = ecran.pg
+    # [deficiența 221, decizia Costin 11.10.2026] „An precedent” se ia din anul precedent din aplicație, altfel se completează manual;
+    # 151/188 sunt despre rândurile anului curent: evidența firmei începe cu anul precedent întreg (luna preluării = ianuarie a lui).
+    from core import db
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % f["schema"], (_dt.date(an - 1, 1, 1),))
+        c.commit()
     _card(ecran, f, "bilant", "#bl-an")
     pg.fill("#bl-an", str(an))
     pg.dispatch_event("#bl-an", "change")

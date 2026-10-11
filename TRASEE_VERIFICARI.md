@@ -1026,11 +1026,23 @@ faptica, pe baza listelor de inventariere.
 
 ## T12 — Închiderea anului și situațiile financiare
 
-*clasa MECANIC · 5 rute · 2 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 7 rute · 3 schimba date · ? firme il pot exercita azi*
 
 *clasa PARTIAL · 4 rute · 2 schimba date · nu se poate sti din date*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/s1003-xml`, `/tenants/{tenant_id}/s1005-xml`*
+
+### `POST /tenants/{tenant_id}/bilant-an-precedent-manual`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [deficiența 221] Coloana „An precedent” completată manual, numai unde aplicația n-are bilanțul anului precedent. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
+
+- [x] coloana „An precedent” completată manual se păstrează cu autorul (numele lui, din `public.users`), momentul și exemplarul — exemplarul vechi rămâne
+- [x] se scrie numai pe secțiunile (F10 / F20) pe care aplicația nu le are nici din bilanțul anului precedent validat aici, nici din evidența lui — altfel refuz cu sursa
+- [x] o secțiune trimisă are toate rândurile formularului, în lei întregi — altfel refuz
+- [x] fără nicio sursă, generarea / validarea / XML-ul / coada refuză: bilanțul nu se generează cu coloana goală
+- **verificare de fond:** cifrele sunt ale contabilului (CLAUDE.md §8); aplicația nu le poate compara cu bilanțul depus, pe care nu-l are — avertismentul de pe ecran și din validare o spune
 
 ### `POST /tenants/{tenant_id}/s1003-valideaza`
 

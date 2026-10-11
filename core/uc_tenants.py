@@ -2647,6 +2647,87 @@ def cabinet_categorie_marime(tenant_id, an, ctx):
         return _cm.categorie(conn, schema, an)
 
 
+def _tip_bilant(tip):
+    if tip not in ("s1005", "s1003"):
+        raise _erori.DateInvalide("Tipul bilanțului e S1005 sau S1003.")
+    return tip
+
+
+def bilant_an_precedent(tenant_id, an, tip, ctx):
+    """[deficiența 221, decizia Costin 11.10.2026] De unde vine coloana „An precedent” a bilanțului `tip` pe `an` (bilanțul anului precedent
+    din aplicație / evidența / completată manual / nicio sursă) și rândurile ei — ecranul Bilanț o spune și, unde lipsește, cere
+    completarea manuală."""
+    from psycopg2.extras import RealDictCursor
+    from core import bilant_api as _ba
+    _uc_comun._cere_perioada(an=an)
+    _tip_bilant(tip)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cp = _ba.coloana_precedenta(cur, schema, tip, an)
+    lipsa = [s for s in _ba.SECTIUNI if cp[s] is None]
+    manual = [s for s in _ba.SECTIUNI if cp["sursa"][s] == "manual"]
+    # afirmația despre coloană e TIPATĂ (DS cap.25): lipsa = absența observației, cu sursele în care s-a căutat; manualul = fapt, cu
+    # temeiul completitudinii (cine a scris cifrele)
+    if lipsa:
+        afm = _af.afirmatie("absenta_observatie", "bilant_an_precedent", _ba.mesaj_coloana_goala(an, lipsa, cp.get("bilant_respins")), an=an - 1,
+                            surse_consultate=["bilanțul %s pe %d validat în aplicație" % (tip.upper(), an - 1),
+                                              "evidența pe %d din aplicație" % (an - 1)])
+    elif manual:
+        afm = _af.afirmatie("fapt", "bilant_an_precedent", _ba.avertisment_manual(an, manual, cp.get("manual"), cp.get("bilant_respins")), an=an - 1,
+                            temei_completitudine="completată manual de contabil (exemplarul %d al coloanei)" % cp["manual"]["exemplar"])
+    else:
+        afm = None
+    return {"tip": tip, "an": an, "sursa": cp["sursa"], "lipsa": lipsa,
+            "bilant": cp.get("bilant"), "manual": cp.get("manual"),
+            "randuri": _ba.randuri_formular(tip),
+            "valori": {s: cp[s] for s in _ba.SECTIUNI},
+            "de_completat": [s for s in _ba.SECTIUNI if cp["sursa"][s] in (None, "manual")],
+            "afirmatie": afm}
+
+
+def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
+    """[deficiența 221] Contabilul completează coloana „An precedent” pe secțiunile pe care aplicația nu le are (nici bilanțul anului
+    precedent, nici evidența lui). Fiecare secțiune trimisă are TOATE rândurile formularului, în lei întregi; o secțiune pe care aplicația o
+    are din bilanț sau din evidență nu se suprascrie manual. Se păstrează ca artefact (autor, moment, exemplar — cel vechi rămâne)."""
+    import json
+    from psycopg2.extras import RealDictCursor
+    from core import artefacte as _art
+    from core import bilant_api as _ba
+    _uc_comun._cere_perioada(an=an)
+    _tip_bilant(tip)
+    corp = corp or {}
+    rand = _ba.randuri_formular(tip)
+    trimise = [s for s in _ba.SECTIUNI if s in corp]
+    if not trimise or set(corp) - set(_ba.SECTIUNI):
+        raise _erori.DateInvalide("Trimite coloana „An precedent” pe secțiunile F10 și/sau F20.")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cp = _ba.coloana_precedenta(cur, schema, tip, an)
+            m = _ba._ultimul(cur, schema, _ba.FEL_MANUAL, "%s:%d" % (tip, an))
+        valori = json.loads(m["continut"]) if m else {}
+        for s in trimise:
+            if cp["sursa"][s] not in (None, "manual"):
+                raise _erori.DateInvalide("Coloana „An precedent” %s vine din %s — nu se completează manual."
+                                          % (s, "bilanțul pe %d din aplicație" % (an - 1) if cp["sursa"][s] == "bilant"
+                                             else "evidența pe %d din aplicație" % (an - 1)))
+            v = corp[s] if isinstance(corp[s], dict) else {}
+            if sorted(int(k) for k in v) != rand[s]:
+                raise _erori.DateInvalide("Coloana „An precedent” %s se completează pe toate rândurile formularului (%d)." % (s, len(rand[s])))
+            try:
+                valori[s] = {str(int(k)): int(str(x).strip() or 0) for k, x in v.items()}
+            except (TypeError, ValueError):
+                raise _erori.DateInvalide("Coloana „An precedent” %s: fiecare rând e o sumă în lei întregi." % s)
+        r = _art.pastreaza(conn, schema, _ba.FEL_MANUAL, "%s:%d" % (tip, an), json.dumps(valori, sort_keys=True),
+                           produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
+    return {"ok": True, "exemplar": r.get("exemplar"), "sectiuni": trimise}
+
+
 def s1005_xml(tenant_id, an, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/s1005-xml`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an=an)

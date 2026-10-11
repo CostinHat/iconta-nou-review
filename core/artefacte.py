@@ -36,6 +36,9 @@ FELURI = {
     "export_saga": "export contabil SAGA",
     "export_winmentor": "export contabil WinMentor",
     "audit_preluare": "verdictul auditului de preluare",
+    # [deficiența 221, decizia Costin 11.10.2026] coloana „An precedent” completată de contabil când firma nu are în aplicație
+    # bilanțul anului precedent: cine, când, ce cifre (JSON pe secțiuni) — exemplarele vechi rămân (P4)
+    "bilant_an_precedent": "coloana „An precedent” a bilantului, completata manual",
 }
 # Felurile care poarta si verdict de validare (declaratii). Restul il lasa NULL.
 CU_VERDICT = ("s1003", "s1005")
@@ -75,6 +78,16 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
         cur.execute('SELECT COALESCE(max(exemplar), 0) + 1 FROM "%s".artefacte_produse '
                     "WHERE fel = %%s AND cheie = %%s" % schema, (fel, str(cheie)))
         exemplar = cur.fetchone()[0]
+        # [lotul 11.10.2026, găsit la 221: „completată manual de 1968”] Autorul se scrie cu NUMELE lui: apelanții treceau
+        # `ctx.get("nume") or str(uid)`, iar contextul cererii n-are „nume” — deci în `produs_de` ajungea id-ul. Numele se ia aici, o dată
+        # pentru toți apelanții, din `public.users` (prenume + nume, altfel e-mailul); textul apelantului rămâne numai dacă utilizatorul
+        # nu se găsește.
+        if produs_de_id is not None:
+            cur.execute("SELECT COALESCE(NULLIF(trim(concat_ws(' ', prenume, nume)), ''), email) FROM public.users WHERE id = %s",
+                        (produs_de_id,))
+            r = cur.fetchone()
+            if r and r[0]:
+                produs_de = r[0]
         # `verdict_la` = now() DOAR daca exista verdict; altfel NULL. Un moment de validare
         # pe un artefact nevalidat ar fi o afirmatie despre ceva ce nu s-a intamplat.
         cur.execute(

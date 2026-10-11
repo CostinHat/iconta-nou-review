@@ -35,13 +35,73 @@ if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
 fi
 # [16.09.2026] CIFRA, CORECTATA: scria „~32s" — statut de mult si fals cu trei ordine de
 # marime. Masurat pe sase rulari consecutive: 2156-2216 s, adica ~36 de minute pentru ~6.190
-# de teste. [08.10.2026] Remasurat: 3286,55 s (54:46) pe 7.637 de teste colectate (poarta lui 876e87a2). Nu e o estimare: se RECALCULEAZA din `.poarta_jurnal.log`, care poarta durata
-# fiecarei rulari respinse. Conteaza fiindca de ea atarna cat costa o RESPINGERE — iar cine
-# citeste hook-ul intai afla de aici cat de scump e sa intri in poarta nepregatit.
-echo "[poarta] pytest (suita intreaga, ~55 min pe ~7.600 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)..."
-"$PY" -m pytest -q > /tmp/precommit_pytest.log 2>&1
+# de teste. [08.10.2026] Remasurat: 3286,55 s (54:46) pe 7.637 de teste colectate (poarta lui 876e87a2). [11.10.2026] 3953 s (65:53) pe
+# 8.021, iar poarta intreaga (pytest + verificator + cifre + plasa e2e de ~15 min, una dupa alta) ~82 de minute (e69198fb).
+# ── IN PARALEL (11.10.2026, comanda Costin pct.4e, verbatim in DECIZII: „Fă poarta mai rapidă fără să scoți niciun test (de exemplu,
+# rulare în paralel). Ținta: sub 30 de minute.”). Doua lucruri, fara niciun test scos (COLLECTED neschimbat):
+#  1. pytest pe POARTA_PROCESE procese (pytest-xdist, implicit 3), `--dist loadfile`: testele unui fisier raman in acelasi proces, in
+#     ordinea lor (fixture-urile de modul si starea dintre testele unui fisier nu se impart intre procese);
+#  2. pytest porneste INTAI, in fundal; verificatorul si cifrele de referinta (productie, read-only) ruleaza IN ACELASI TIMP cu el, apoi
+#     poarta asteapta pytest, si abia dupa verdictul lui porneste plasa e2e (aceeasi baza de test — v. mai jos de ce nu se suprapun).
+#     O treapta rosie respinge commitul, ca inainte; numai asteptarea se suprapune.
+#     Pe o treapta rosie poarta ASTEAPTA pytest inainte de a iesi (nu-l omoara): un test oprit la jumatate isi lasa datele.
+# Fiecare durata se scrie in .poarta_jurnal.log (`DURATE`), si la verde, ca masuratoarea sa nu depinda de memoria cuiva.
+NW=${POARTA_PROCESE:-3}
+T0=$(date +%s)
+echo "[poarta] pytest (suita intreaga, $NW procese in paralel; verificatorul si cifrele ruleaza in acelasi timp, plasa dupa)..."
+"$PY" -m pytest -q -n "$NW" --dist loadfile > /tmp/precommit_pytest.log 2>&1 &
+PID_PYTEST=$!
+RC_PYTEST=""
+asteapta_pytest() {
+    if [ -z "$RC_PYTEST" ]; then
+        wait "$PID_PYTEST"
+        RC_PYTEST=$?
+        T_PYTEST=$(( $(date +%s) - T0 ))
+    fi
+}
+inainte_de_respingere() {   # $1 = treapta; pytest se asteapta inainte de iesire (nu ramane orfan, nu-si lasa datele la jumatate)
+    asteapta_pytest
+    echo "    DURATE: pytest ${T_PYTEST}s (rc $RC_PYTEST) · poarta $(( $(date +%s) - T0 ))s · respinsa la: $1" >> "$ROOT/.poarta_jurnal.log"
+}
+
+TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
+echo "[poarta] verificator: $TOT"
+case "$TOT" in
+    *"TOTAL: 0"*) : ;;
+    *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
+       { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
+         echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
+       } >> "$ROOT/.poarta_jurnal.log" ;
+       inainte_de_respingere "verificator" ;
+       exit 1 ;;
+esac
+
+# ── CIFRELE DE REFERINTA ALE FIRMELOR F1–F5 (10.10.2026, comanda Costin pct.1) ────────────────────────────────────────
+# „Cifrele de referință [...] aprobate integral [...] Leagă gardul «orice diferență față de referință oprește publicarea». O schimbare
+# voită se face doar cu aprobarea mea, consemnată în DECIZII.” Codul care se comite calculează balanța, D300, D394, D406 și D112 ale
+# firmelor de test din producție (sesiune READ-ONLY, pe drumul aplicației) și le confruntă cu `scripts/cifre_referinta_aprobate.json`.
+# Orice diferență -> RESPINS; orice eșec al măsurătorii -> RESPINS (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
+echo "[poarta] cifrele de referinta F1–F5 (productie, read-only) fata de referinta aprobata..."
+"$PY" scripts/cifre_referinta.py --productie --verifica > /tmp/precommit_cifre.log 2>&1
 RC=$?
+tail -1 /tmp/precommit_cifre.log
+if [ "$RC" -ne 0 ]; then
+    { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
+      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      head -20 /tmp/precommit_cifre.log | sed "s/^/    /"
+    } >> "$ROOT/.poarta_jurnal.log"
+    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: /tmp/precommit_cifre.log"
+    inainte_de_respingere "cifre"
+    exit 1
+fi
+
+# ── pytest se ASTEAPTA AICI, INAINTEA plasei (11.10.2026, masurat): plasa porneste aplicatia pe ACEEASI baza de test pe care o folosesc
+# testele, iar pornirea aplicatiei (lifespan) reface triggerele fiecarei firme (`DROP TRIGGER` + `CREATE TRIGGER`). Rulate simultan
+# (proba din 11.10, 22:16): deadlock intre o pornire din pytest si aplicatia plasei care servea, pool-ul aplicatiei epuizat, plasa
+# agatata doua ore. Pe baza de test, pytest si plasa NU se suprapun; se suprapun numai verificatorul si cifrele (productie read-only).
+asteapta_pytest
 tail -1 /tmp/precommit_pytest.log
+RC=$RC_PYTEST
 if [ "$RC" -ne 0 ]; then
     # JURNALUL PORTII (23.08.2026). Un test rosu OPRESTE commitul, omul repara, si ce ajunge in
     # istorie e deja verde - deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio
@@ -62,8 +122,29 @@ if [ "$RC" -ne 0 ]; then
     } >> "$JURNAL"
     echo "[poarta] RESPINS: pytest exit $RC (suita rosie). Log complet: /tmp/precommit_pytest.log"
     echo "[poarta] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
+    inainte_de_respingere "pytest"
     exit 1
 fi
+# ── PLASA: testele de capat la capat ale deficientelor rezolvate (09.10.2026, comanda Costin pct.8) ──────────────
+# „Proba unei deficiente «rezolvate» e un test de capat la capat in browser [...] Testul ramane permanent in poarta.” si regula
+# de directie: „orice publicare la care pica o verificare a plasei nu se face”. Aplicatia porneste din INDEX (exact ce se
+# comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = commit respins, ca pytest-ul.
+echo "[poarta] plasa: testele de capat la capat ale deficientelor (browser, aplicatia din index)..."
+T_E2E0=$(date +%s)
+"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > /tmp/precommit_e2e.log 2>&1
+RC=$?
+tail -1 /tmp/precommit_e2e.log
+if [ "$RC" -ne 0 ]; then
+    { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
+      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      grep -E "^(FAILED|ERROR) " /tmp/precommit_e2e.log | sed "s/^/    /" | head -40
+    } >> "$ROOT/.poarta_jurnal.log"
+    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: /tmp/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
+    inainte_de_respingere "plasa e2e"
+    exit 1
+fi
+T_E2E=$(( $(date +%s) - T_E2E0 ))
+
 # ── vechimea PREDARII (24.08.2026, cerut de Costin) ──────────────────────────
 # Un /clear nu se poate garda din hook. Ce SE poate garda e commitul: daca HEAD a
 # plecat cu mai mult de PRAG_PREDARE commituri de la ultima rescriere a predarii,
@@ -84,50 +165,7 @@ else
     fi
 fi
 
-TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
-echo "[poarta] verificator: $TOT"
-case "$TOT" in
-    *"TOTAL: 0"*) : ;;
-    *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
-       { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
-         echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
-       } >> "$ROOT/.poarta_jurnal.log" ;
-       exit 1 ;;
-esac
-
-# ── CIFRELE DE REFERINTA ALE FIRMELOR F1–F5 (10.10.2026, comanda Costin pct.1) ────────────────────────────────────────
-# „Cifrele de referință [...] aprobate integral [...] Leagă gardul «orice diferență față de referință oprește publicarea». O schimbare
-# voită se face doar cu aprobarea mea, consemnată în DECIZII.” Codul care se comite calculează balanța, D300, D394, D406 și D112 ale
-# firmelor de test din producție (sesiune READ-ONLY, pe drumul aplicației) și le confruntă cu `scripts/cifre_referinta_aprobate.json`.
-# Orice diferență -> RESPINS; orice eșec al măsurătorii -> RESPINS (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
-echo "[poarta] cifrele de referinta F1–F5 (productie, read-only) fata de referinta aprobata..."
-"$PY" scripts/cifre_referinta.py --productie --verifica > /tmp/precommit_cifre.log 2>&1
-RC=$?
-tail -1 /tmp/precommit_cifre.log
-if [ "$RC" -ne 0 ]; then
-    { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
-      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
-      head -20 /tmp/precommit_cifre.log | sed "s/^/    /"
-    } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: /tmp/precommit_cifre.log"
-    exit 1
-fi
-
-# ── PLASA: testele de capat la capat ale deficientelor rezolvate (09.10.2026, comanda Costin pct.8) ──────────────
-# „Proba unei deficiente «rezolvate» e un test de capat la capat in browser [...] Testul ramane permanent in poarta.” si regula
-# de directie: „orice publicare la care pica o verificare a plasei nu se face”. Aplicatia porneste din INDEX (exact ce se
-# comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = commit respins, ca pytest-ul.
-echo "[poarta] plasa: testele de capat la capat ale deficientelor (browser, aplicatia din index)..."
-"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > /tmp/precommit_e2e.log 2>&1
-RC=$?
-tail -1 /tmp/precommit_e2e.log
-if [ "$RC" -ne 0 ]; then
-    { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
-      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
-      grep -E "^(FAILED|ERROR) " /tmp/precommit_e2e.log | sed "s/^/    /" | head -40
-    } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: /tmp/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
-    exit 1
-fi
+echo "    DURATE: $(date -Is) VERDE · pytest ${T_PYTEST}s (verificator+cifre simultan) · plasa ${T_E2E}s (dupa pytest) · poarta $(( $(date +%s) - T0 ))s" >> "$ROOT/.poarta_jurnal.log"
+echo "[poarta] durata: pytest ${T_PYTEST}s · plasa ${T_E2E}s · poarta $(( $(date +%s) - T0 ))s"
 echo "[poarta] OK - poarta verde, commit permis."
 exit 0

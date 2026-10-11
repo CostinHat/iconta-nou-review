@@ -5557,6 +5557,25 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_drept(_drepturi.PR
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/bilant-an-precedent")
+def bilant_an_precedent(tenant_id: int, an: int, tip: str, ctx=Depends(cere_cabinet)):
+    """[deficiența 221, decizia Costin 11.10.2026] De unde vine coloana „An precedent” a bilanțului și ce rânduri are."""
+    try:
+        return _uc_tenants.bilant_an_precedent(tenant_id, an, tip, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/bilant-an-precedent-manual")
+def bilant_an_precedent_scrie(tenant_id: int, an: int, tip: str, corp: dict = Body(default={}),
+                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[deficiența 221] Coloana „An precedent” completată manual, numai unde aplicația n-are bilanțul anului precedent."""
+    try:
+        return _uc_tenants.bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 # --- S1003 (bilant mici) ---
 @app.get("/tenants/{tenant_id}/s1003-xml")
 def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):

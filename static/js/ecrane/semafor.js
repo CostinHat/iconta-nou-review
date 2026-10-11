@@ -21,6 +21,17 @@ export function semaforPatruLumini(sumar) {
   }).join("")}</div>`;
 }
 
+// [125 + 224, decizia Costin 11.10.2026: „aceleași 4 stări, cu aceleași numere, calculate dintr-o singură sursă”] Cardul și fereastra
+// citeau /control-fiscal în momente diferite: o firmă care trecea din „în recalculare” în „de urmărit” între cele două citiri dădea pe card
+// 7 / 2 și în fereastră 8 / 1 (prins de plasă, 11.10). Fereastra PUBLICĂ partiția pe care o arată, iar orice card Control fiscal din
+// pagină se redesenează din ea — ultima citire e singura pe ecran. Un singur ascultător, al modulului.
+export function publicaSumarControl(sumar) {
+  document.dispatchEvent(new CustomEvent("control-fiscal:sumar", { detail: sumar || {} }));
+}
+document.addEventListener("control-fiscal:sumar", (e) => {
+  document.querySelectorAll('[data-cheie="control"]').forEach((z) => { z.innerHTML = semaforPatruLumini(e.detail); });
+});
+
 export function semaforCard(perechi, mesajOk, verde) {
   // perechi: starile NEGATIVE/nedecise de aratat cand n>0 (rosu, galben, gri...), in ordine.
   // [P13b, interdictia 27+31] Verdictul POZITIV (mesajOk) apare DOAR dintr-o stare VERDE explicita

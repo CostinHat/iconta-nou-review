@@ -89,3 +89,35 @@ def test_mesajul_bun_ajunge_la_suita():
     cod, iesire, _dur = _ruleaza("Reparație mică, cu diacritice: șțăîâ\n".encode("utf-8"))
     assert iesire.count("[poarta] pytest") == 1, iesire
     assert cod == 1, "pe un depozit fără teste poarta trebuia să respingă:\n%s" % iesire
+
+
+def test_poarta_ruleaza_toata_suita_in_paralel_fara_selectie():
+    """[11.10.2026, comanda Costin pct.4e: „Fă poarta mai rapidă fără să scoți niciun test”] Poarta rulează pytest în paralel
+    (pytest-xdist, `--dist loadfile`) pe TOATĂ suita: linia lui pytest n-are cale, `-k`, `-m`, `--deselect`, `--ignore` sau `-x` —
+    nimic care să lase un test pe dinafară. MUTAȚIE: `--ignore=frontend_test` (sau `-k "not lent"`) pe linia pytest -> pică;
+    `-n` scos (rulare serială, poarta înapoi la ~82 de minute) -> pică."""
+    import io
+    import re as _re
+    t = io.open(os.path.join(_RAD, "scripts", "githooks", "poarta-suita"), encoding="utf-8").read()
+    linii = [x for x in t.splitlines() if _re.match(r'^"\$PY" -m pytest\b', x)]
+    assert len(linii) == 1, linii
+    arg = linii[0].split(">")[0].split()[3:]
+    assert arg[:1] == ["-q"] and arg.count("-n") == 1 and arg.count("--dist") == 1 and arg[arg.index("--dist") + 1] == "loadfile", arg
+    straine = [a for a in arg if a not in ("-q", "-n", '"$NW"', "--dist", "loadfile")]
+    assert straine == [], "pytest-ul porții alege teste: %s" % straine
+
+
+def test_plasa_porneste_numai_dupa_verdictul_pytest():
+    """[11.10.2026, măsurat] Plasa e2e pornește aplicația pe ACEEAȘI bază de test pe care rulează pytest, iar pornirea aplicației
+    reface triggerele fiecărei firme. Suprapuse (proba din 11.10, 22:16): deadlock, pool-ul aplicației epuizat, plasa agățată două ore.
+    Deci în poartă rularea plasei vine DUPĂ `asteapta_pytest` și după verdictul lui (`RC=$RC_PYTEST`), nu în timpul lui. MUTAȚIE: blocul
+    plasei mutat înaintea așteptării lui pytest -> pică."""
+    import io
+    t = io.open(os.path.join(_RAD, "scripts", "githooks", "poarta-suita"), encoding="utf-8").read()
+    linii = t.splitlines()
+    porneste = next(i for i, x in enumerate(linii) if x.startswith('"$PY" -m pytest '))
+    plasa = next(i for i, x in enumerate(linii) if x.startswith('"$PY" scripts/e2e_poarta.py'))
+    asteapta = [i for i, x in enumerate(linii) if x.strip() == "asteapta_pytest"]
+    verdict = [i for i, x in enumerate(linii) if x.strip() == "RC=$RC_PYTEST"]
+    assert asteapta and verdict, (asteapta, verdict)
+    assert porneste < min(asteapta) < min(verdict) < plasa, (porneste, asteapta, verdict, plasa)

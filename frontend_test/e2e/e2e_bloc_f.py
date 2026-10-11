@@ -108,31 +108,26 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
 
 def test_def_173_contoarele_de_sus_numara_dupa_aceeasi_regula_ca_randurile(patron):
     """173. Control fiscal: contoarele cu două reguli; cifrele raportului nu sunt pe ecran.
-    Pașii contabilului: Control fiscal -> citește contoarele de sus și numără, pe rândurile firmelor de dedesubt, câte au restanțe,
-    câte au declarații de urmărit și câte nu se pot verifica -> fiecare contor e egal cu numărătoarea lui de pe rânduri (o regulă:
-    firma care ARE faptul)."""
+    [125 + 224, decizia Costin 11.10.2026] Sus sunt cele patru stări ale cardului; regula unică: fiecare lumină = rândurile de dedesubt cu
+    punctul de culoarea ei (o firmă într-o singură stare). Pașii contabilului: Control fiscal -> citește luminile de sus și numără
+    rândurile pe culori -> fiecare lumină e egală cu numărătoarea ei; o firmă cu ceva ce nu se poate verifica, dar cu altă stare, o spune
+    pe rând și e numărată o singură dată, în starea ei."""
     pg = patron.pg
     _control_fiscal(patron)
     d = pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop();
-      return {pastile: [...f.querySelectorAll('.cf-sumar .cf-pastila')].map(e => e.innerText.trim()),
+      return {lumini: Object.fromEntries([...f.querySelectorAll('.cf-sumar .cab-stare')].map(e => [e.dataset.stare,
+                parseInt(e.querySelector('.tip-figura').innerText, 10)])),
               nota: (f.querySelector('.cf-sumar + .ecran-nota') || {}).innerText || '',
               randuri: [...f.querySelectorAll('#cf-lista .mig-frand')].map(r => ({
-                sub: r.querySelector('.mig-frand-sub').innerText, stare: r.querySelector('.cf-stare').innerText}))}; }""")
+                sub: r.querySelector('.mig-frand-sub').innerText, punct: r.querySelector('.cf-stare .cf-dot').getAttribute('style')}))}; }""")
     patron.captura()
-    cont = {}
-    for p in d["pastile"]:
-        m = re.match(r"(\d+)\s+(.*)", p)
-        cont[m.group(2)] = int(m.group(1))
     rr = d["randuri"]
-    nsv = lambda r: any(x in r["sub"] + " " + r["stare"] for x in ("nu se pot verifica", "nu se poate verifica"))  # noqa: E731
-    pe_randuri = {"cu restanțe": sum(1 for r in rr if re.search(r"\d+ restanț", r["sub"])),
-                  "cu declarații de urmărit": sum(1 for r in rr if re.search(r"\d+ de urmărit", r["sub"])),
-                  "nu se pot verifica": sum(1 for r in rr if nsv(r))}
+    culoare = lambda r: next((s for c, s in (("#ff8a80", "rosu"), ("#f0cd7a", "galben"), ("#6fc494", "verde")) if c in r["punct"]), "gri")  # noqa: E731
+    pe_randuri = {s: sum(1 for r in rr if culoare(r) == s) for s in ("rosu", "galben", "verde", "gri")}
     assert "Din %d firme" % len(rr) in d["nota"], d["nota"]
-    for eticheta, n in pe_randuri.items():
-        assert cont.get(eticheta) == n, "contorul „%s” arată %s, rândurile de dedesubt au %d" % (eticheta, cont.get(eticheta), n)
-    assert pe_randuri["nu se pot verifica"] > sum(1 for r in rr if r["stare"].strip().endswith(("nu se poate verifica",
-                                                                                                 "nu se pot verifica"))), \
+    assert d["lumini"] == pe_randuri, "luminile %s, rândurile de dedesubt %s" % (d["lumini"], pe_randuri)
+    nsv = lambda r: any(x in r["sub"] for x in ("nu se pot verifica", "nu se poate verifica"))  # noqa: E731
+    assert any(nsv(r) and culoare(r) != "gri" for r in rr), \
         "proba n-are o firmă cu necunoscute și altă stare principală — nu deosebește cele două reguli"
 
 

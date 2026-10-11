@@ -54,22 +54,122 @@ def sold_la(cur, schema, zi, ref="calculeaza"):
     return {c: ((v, Decimal("0")) if v >= 0 else (Decimal("0"), -v)) for c, v in net.items()}
 
 
-def coloanele_f10(cur, schema, an, av):
-    """(f10p, f10c) — bilanțul la 31.12 al anului precedent și la 31.12.an. Coloana curentă necunoscută -> refuz (bilanțul nu se poate
-    întocmi pe un an dinaintea preluării); cea precedentă necunoscută -> goală, cu avertismentul care o spune (nu o copie)."""
+def coloana_curenta_f10(cur, schema, an):
+    """F10 „An curent” = bilanțul la 31.12.an. Necunoscut (an dinaintea soldurilor de preluare) -> refuz: bilanțul nu se poate întocmi."""
     import datetime
     ref = data_soldurilor(cur, schema)
     s_c = sold_la(cur, schema, datetime.date(an, 12, 31), ref)
     if s_c is None:
         raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
                          "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
+    return _b.f10_din_balanta(s_c)
+
+
+# [deficiența 221, decizia Costin 11.10.2026, verbatim în DECIZII] „coloana «An precedent» din bilanț se completează din bilanțul anului
+# anterior, dacă firma îl are în aplicație. Dacă nu îl are, se completează manual, cu avertisment vizibil. Bilanțul nu poate fi generat
+# cu coloana goală.” Coloana = F10 și F20, coloana 1 (`xml_s1005`). TEMEI: OMFP 1802/2014, Reglementări, pct.130 — valoarea elementului
+# corespondent pentru exercițiul financiar precedent.
+FEL_MANUAL = "bilant_an_precedent"      # artefactul coloanei completate manual (core/artefacte.FELURI), cheia "<tip>:<an>"
+SECTIUNI = ("F10", "F20")
+
+
+def randuri_formular(tip):
+    """Rândurile fiecărei secțiuni a formularului `tip` (s1005 / s1003) — cele pe care le scrie generatorul, deci și cele de completat."""
+    f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
+    return {"F10": sorted(_b.f10_din_balanta({})), "F20": sorted(f20({}))}
+
+
+def _ultimul(cur, schema, fel, cheie, numai_valid=False):
+    cur.execute(f"""SELECT continut, exemplar, produs_la, produs_de FROM {schema}.artefacte_produse
+                    WHERE fel = %s AND cheie = %s {"AND verdict = 'valid'" if numai_valid else ""}
+                    ORDER BY exemplar DESC LIMIT 1""", (fel, str(cheie)))
+    r = cur.fetchone()
+    return dict(r) if r else None
+
+
+def coloana_precedenta(cur, schema, tip, an):
+    """„An precedent” al bilanțului `tip` pe `an`, pe secțiuni: {"F10": {rând: lei} | None, "F20": … | None, "sursa": {secțiune: fel},
+    "bilant"/"manual": cine și când}. Ordinea surselor (DECIZII 11.10.2026):
+      (a) „bilant”   — bilanțul anului precedent validat în aplicație (artefactul `tip` pe an-1, ultimul exemplar „valid”): coloana lui
+                       „An curent”, ambele secțiuni;
+      (b) „evidenta” — evidența anului precedent din aplicație: F10 = soldurile la 31.12 (cunoscute de la soldurile de preluare încoace),
+                       F20 = rulajele anului numai dacă evidența îl acoperă întreg (INTERPRETARE: e bilanțul pe care aplicația l-ar
+                       genera pentru acel an);
+      (c) „manual”   — completată de contabil (artefactul `FEL_MANUAL`), numai pentru secțiunile fără (a)/(b).
+    O secțiune fără sursă rămâne None: `coloanele` refuză generarea."""
+    import datetime
+    import json
+    out = {"F10": None, "F20": None, "sursa": {"F10": None, "F20": None}}
+    ref = data_soldurilor(cur, schema)
     s_p = sold_la(cur, schema, datetime.date(an - 1, 12, 31), ref)
-    if s_p is None:
-        av.append("Coloana „An precedent” a bilanțului (soldurile de la %s) e necompletată: evidența firmei în iConta.eu începe "
-                  "după soldurile de preluare de la %s, deci soldurile anului precedent nu sunt în aplicație. Se completează în "
-                  "formularul ANAF — OMFP 1802/2014 pct.130 cere valoarea exercițiului financiar precedent."
-                  % (data_ro(datetime.date(an, 1, 1)), data_ro(ref)))
-    return (_b.f10_din_balanta(s_p) if s_p is not None else {}), _b.f10_din_balanta(s_c)
+    b = _ultimul(cur, schema, tip, an - 1, numai_valid=True)
+    if b and s_p is None:
+        # [prins la proba pe producție, 11.10.2026] Un bilanț al anului precedent pe care aplicația NU l-ar putea întocmi azi (31.12 a
+        # lui e înaintea soldurilor de preluare) a fost generat de defectul 221 — F1 avea S1005 2025 „valid” din 10.10, cu ambele
+        # coloane = soldurile de preluare de la 31.08.2026. Cifrele lui nu sunt ale exercițiului precedent: nu se folosesc.
+        out["bilant_respins"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"], "solduri_la": ref}
+        b = None
+    if b:
+        col = {s: {} for s in SECTIUNI}
+        for x in _b.randuri_din_xml(b["continut"]):
+            if x["formular"] in col:
+                col[x["formular"]][x["rand"]] = x["an_curent"]
+        out.update(col)
+        out["sursa"] = {s: "bilant" for s in SECTIUNI}
+        out["bilant"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"]}
+        return out
+    if s_p is not None:
+        out["F10"], out["sursa"]["F10"] = _b.f10_din_balanta(s_p), "evidenta"
+    if ref is None or ref < datetime.date(an - 1, 1, 1):
+        f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
+        out["F20"], out["sursa"]["F20"] = f20(_rulaje_67(cur, schema, an - 1)), "evidenta"
+    lipsa = [s for s in SECTIUNI if out[s] is None]
+    if lipsa:
+        m = _ultimul(cur, schema, FEL_MANUAL, "%s:%d" % (tip, an))
+        valori = json.loads(m["continut"]) if m else {}
+        for s in lipsa:
+            if s in valori:
+                out[s], out["sursa"][s] = {int(k): int(v) for k, v in valori[s].items()}, "manual"
+        if any(out["sursa"][s] == "manual" for s in SECTIUNI):
+            out["manual"] = {"exemplar": m["exemplar"], "la": m["produs_la"], "de": m["produs_de"]}
+    return out
+
+
+def coloanele(cur, schema, tip, an, av):
+    """(f10p, f10c, f20p) pentru generare. „An curent” F10 necunoscut -> refuz (`coloana_curenta_f10`). „An precedent” fără sursă pe o
+    secțiune -> refuz: bilanțul nu se generează cu coloana goală (decizia Costin 11.10.2026). Completat manual -> avertismentul vizibil."""
+    f10c = coloana_curenta_f10(cur, schema, an)
+    cp = coloana_precedenta(cur, schema, tip, an)
+    lipsa = [s for s in SECTIUNI if cp[s] is None]
+    if lipsa:
+        raise ValueError(mesaj_coloana_goala(an, lipsa, cp.get("bilant_respins")))
+    manual = [s for s in SECTIUNI if cp["sursa"][s] == "manual"]
+    if manual:
+        av.append(avertisment_manual(an, manual, cp["manual"], cp.get("bilant_respins")))
+    return cp["F10"], f10c, cp["F20"]
+
+
+def mesaj_coloana_goala(an, lipsa, respins=None):
+    return ("Bilanțul pe %d nu se poate genera cu coloana „An precedent” goală (%s): firma nu are în aplicație bilanțul pe %d validat, "
+            "iar evidența din aplicație nu acoperă %s.%s Completeaz-o manual pe ecranul Bilanț, din bilanțul depus pe %d."
+            % (an, ", ".join(lipsa), an - 1,
+               " și ".join({"F10": "soldurile de la %s" % data_ro("%d-12-31" % (an - 1)), "F20": "tot anul %d" % (an - 1)}[s] for s in lipsa),
+               nota_bilant_respins(an, respins), an - 1))
+
+
+def nota_bilant_respins(an, respins):
+    """Bilanțul anului precedent din aplicație care NU se folosește (generat cu soldurile de preluare de după 31.12 a lui — defectul 221)."""
+    if not respins:
+        return ""
+    return (" Bilanțul pe %d păstrat în aplicație (%s) nu se folosește: soldurile de preluare sunt de la %s, deci cifrele lui nu sunt ale "
+            "exercițiului %d." % (an - 1, data_ro(respins.get("la"), "cu_ora"), data_ro(respins.get("solduri_la")), an - 1))
+
+
+def avertisment_manual(an, sectiuni, meta, respins=None):
+    return ("Coloana „An precedent” (%s) e completată manual%s, nu din bilanțul pe %d: firma nu îl are în aplicație.%s Verific-o față de "
+            "bilanțul depus pe %d — cifrele ei intră în declarație așa cum au fost scrise."
+            % (", ".join(sectiuni), (" de %s, la %s" % (meta.get("de") or "—", data_ro(meta.get("la"), "cu_ora"))) if meta else "",
+               an - 1, nota_bilant_respins(an, respins), an - 1))
 
 
 def _rulaje_67(cur, schema, an):
@@ -121,7 +221,7 @@ def genereaza(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        f10p, f10c = coloanele_f10(cur, schema, an, av)
+        f10p, f10c, f20p = coloanele(cur, schema, "s1005", an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {
@@ -139,8 +239,6 @@ def genereaza(conn, schema, an):
         av.append("Bilanț: declarantul (administrator) lipsește din profil — se trece implicit "
                   "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     f20c = _b.f20_din_rulaje(rl)
-    f20p = {}
-    av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual dacă e cazul.")
     if f10c.get(15) != f10c.get(49):
         av.append(f"Verificare: rândul 15 (F) = {f10c.get(15)} diferă de rândul 49 (J) = {f10c.get(49)} — datoriile peste un an, "
                   "provizioanele sau veniturile în avans pot explica diferența.")
@@ -158,7 +256,7 @@ def genereaza_s1003(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        f10p, f10c = coloanele_f10(cur, schema, an, av)
+        f10p, f10c, f20p = coloanele(cur, schema, "s1003", an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {
@@ -170,8 +268,7 @@ def genereaza_s1003(conn, schema, an):
         "intocmit_nume": p.get("declarant_nume"),
     }
     f20c = _b.f20_complet_din_rulaje(rl)
-    av.append("F20 an precedent necompletat - de completat manual dacă e cazul.")
     _er = erori_generare(prof)
     if _er:
         raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
-    return _b.xml_s1003(prof, an, f10p, f10c, {}, f20c), av
+    return _b.xml_s1003(prof, an, f10p, f10c, f20p, f20c), av

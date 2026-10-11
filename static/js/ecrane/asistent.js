@@ -13,12 +13,12 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
-import { semaforPatruLumini } from "./semafor.js?v=36c253249e";  // [p87_asistent] [224]
+import { semaforPatruLumini } from "./semafor.js?v=e92b4d8ea1";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaControl } from "./control.js?v=0260ebf289";
+import { randeazaControl } from "./control.js?v=27e3238637";
 import { randeazaTermene } from "./termene.js?v=d4437aae0c";
 import { randeazaValidat } from "./validat.js?v=f25b959e6d";
-import { randeazaListaFirme } from "./firme.js?v=918c22ff46";
+import { randeazaListaFirme } from "./firme.js?v=f79bbba87b";
 import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]

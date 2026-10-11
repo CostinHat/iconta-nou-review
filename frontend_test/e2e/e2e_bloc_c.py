@@ -814,11 +814,12 @@ def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
     Pașii: firma -> Bilanț anual -> an 2025, S1005 -> „Trimite în coadă →”. Bilanțul intră în coada de validare (mesaj „a intrat
     în coada de validare”), iar în coada cabinetului apare S1005 al firmei."""
     pg = patron.pg
-    # [deficiența 221] bilanțul 2025 se întocmește numai dacă evidența firmei din iConta.eu cuprinde 31.12.2025: firma, creată azi fără
-    # preluare, primește luna preluării 01/2025 (cum ar scrie-o contabilul în Date firmă), readusă la final
+    # [deficiența 221] bilanțul 2025 se întocmește numai dacă evidența firmei din iConta.eu cuprinde 31.12.2025, iar „An precedent” are
+    # nevoie de anul 2024 întreg (decizia Costin 11.10.2026: altfel se completează manual): firma, creată azi fără preluare, primește
+    # luna preluării 01/2024 (cum ar scrie-o contabilul în Date firmă), readusă la final
     s = firma_gv["schema"]
     vechi = sql('SELECT luna_preluare FROM "%s".firma_profil WHERE id = 1' % s)[0][0]
-    sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (_dt.date(2025, 1, 1),))
+    sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (_dt.date(2024, 1, 1),))
     try:
         _deschide(patron, firma_gv["nume"], "bilant", "#bl-coada")
         pg.fill("#bl-an", "2025")
