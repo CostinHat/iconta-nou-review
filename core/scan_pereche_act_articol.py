@@ -54,7 +54,10 @@ NECONFIRMATE = ("NEGASIT", "CIOT", "FISIER_LIPSA", "FARA_ART")
 #: în două locuri se desparte în tăcere.
 #: 322 adaugat 06.09.2026 (R167): perioada fiscala a TVA. Citit la sursa in
 #: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, „Articolul 322 / Perioada fiscală".
-ART_DE_COD_FISCAL = {"97", "28", "282", "291", "322"}
+#: 64 adaugat 11.10.2026 (R3c): cota impozitului pe venit pe categorii, citata si pe forma initiala a Codului (Legea 227/2015 art.64,
+#: 16% in 2016-2017 — `COTE["impozit_venit_categorii"]`). Citit la sursa in `anaf_surse/cf_2015_forma_initiala.html` si in forma
+#: consolidata, „Articolul 64 / Cotele de impozitare”.
+ART_DE_COD_FISCAL = {"97", "28", "64", "282", "291", "322"}
 
 #: Forma consolidată a Codului fiscal din corpus — documentul în care se caută articolele de mai sus.
 CF_CORPUS = "anaf_surse/cod_fiscal_227_2015_consolidat.html"

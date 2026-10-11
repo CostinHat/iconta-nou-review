@@ -160,10 +160,11 @@ def test_orice_fisier_legat_de_o_cota_are_tip_forma():
 
 def test_fisierele_de_evidenta_ale_corpusului_n_au_sursa():
     """10.10.2026: `gen_index` dădea „sursa: static.anaf.ro, forma: initiala” oricărui fișier atins azi — și lui `PORTAL_IDS.json`, pe
-    care îl scriem noi. Un fișier de evidență (`.json`) nu e adus de nicăieri. MUTAȚIE: excluderea `.json` scoasă din `_sursa_forma`
-    și INDEX regenerat în ziua în care un `.json` se atinge -> pică."""
+    care îl scriem noi. Un fișier de evidență (`.json`) nu e adus de nicăieri. 11.10.2026 (R3): la fel generatorul (`gen_index.py`
+    purta eticheta), notele `.md` și amprentele `.sha256` — clasa „scris de noi”, `gen_index.FISIERE_PROPRII`. MUTAȚIE: `.py` scos
+    din `FISIERE_PROPRII` și INDEX regenerat în ziua în care generatorul se atinge -> pică."""
     m = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "anaf_surse", "INDEX.json"),
                        encoding="utf-8"))
     rele = {k: (v.get("sursa"), v.get("forma")) for k, v in m["fisiere"].items()
-            if k.lower().endswith(".json") and (v.get("sursa") or v.get("forma"))}
+            if k.lower().endswith((".json", ".py", ".md", ".sha256")) and (v.get("sursa") or v.get("forma"))}
     assert not rele, "fișiere de evidență cu sursă/formă atribuite: %s" % rele

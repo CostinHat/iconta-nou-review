@@ -20,8 +20,7 @@ from decimal import Decimal
 
 import pytest
 
-from core import (bacsis, casa, common, cote_tva, d100_pozitia_116, d101, d101g, d394, expirare_cote,
-                  salarizare, scan_citate, taxare_inversa)
+from core import (casa, common, d100_pozitia_116, d101, d394, expirare_cote, salarizare, scan_citate, taxare_inversa)
 
 # Constantele ancorate intră în registru (`common.COTE`, cheia „<modul>.<NUME>”; până la R1, 10.10.2026, `CONSTANTE_ANCORATE`) la IMPORT. Parametrizarea generică de mai jos îl citește la colectare, deci
 # un modul neimportat aici își scotea constantele din verificare când testul rula singur (d212 — Etapa 2 și 3 — lipsea din
@@ -31,8 +30,9 @@ common.registru_complet()
 
 # nume -> (modul, valoare, (tip, nr, an, art, alin, lit)) - temeiul APROBAT in verif_temeiuri.json, re-verificat.
 APROBATE = {
-    # CF art.64 alin.(1) lit.h) + OUG 28/1999 art.2^3 alin.(10) (al doilea, ca TEMEI_BACSIS_ALTE_SURSE)
-    "bacsis.COTA_IMPOZIT": (bacsis, Decimal("10"), ("CF", None, None, "64", "1", "h")),
+    # [R3, 11.10.2026] bacsis.COTA_IMPOZIT, cote_tva.COTA_STANDARD/REDUSA, d101/d101g.COTA_STANDARD au ieșit: dublau o prevedere din
+    # registru și se citesc acum din `COTE` (impozit_venit_categorii, tva_standard/tva_redusa, impozit_profit) — garda clasei e
+    # `core/test_registru_fiscal.py::test_nicio_constanta_ancorata_nu_dubleaza_registrul`.
     # Legea 70/2015 art.3 alin.(1) lit.a) / b) / c) / c) / d), art.4 alin.(1), art.4^2 alin.(1)
     "casa.PLAFON_INCASARE_PJ": (casa, Decimal("5000"), ("Legea", 70, 2015, "3", "1", "a")),
     "casa.PLAFON_INCASARE_PJ_CC": (casa, Decimal("10000"), ("Legea", 70, 2015, "3", "1", "b")),
@@ -41,13 +41,8 @@ APROBATE = {
     "casa.PLAFON_PLATA_CC_TOTAL": (casa, Decimal("10000"), ("Legea", 70, 2015, "3", "1", "d")),
     "casa.PLAFON_PF": (casa, Decimal("10000"), ("Legea", 70, 2015, "4", "1", None)),
     "casa.PLAFON_SOLD_ZI_CC": (casa, Decimal("500000"), ("Legea", 70, 2015, "4^2", "1", None)),
-    # CF art.291 alin.(1)/(2) (forma Legea 141/2025 art.II pct.42)
-    "cote_tva.COTA_STANDARD": (cote_tva, 21, ("CF", None, None, "291", "1", None)),
-    "cote_tva.COTA_REDUSA": (cote_tva, 11, ("CF", None, None, "291", "2", None)),
-    # CF art.17 ; CF art.18^1 alin.(1)
-    "d101.COTA_STANDARD": (d101, Decimal("16"), ("CF", None, None, "17", None, None)),
+    # CF art.18^1 alin.(1)
     "d101.PRAG_IMCA_EUR": (d101, Decimal("50000000"), ("CF", None, None, "18^1", "1", None)),
-    "d101g.COTA_STANDARD": (d101g, Decimal("16"), ("CF", None, None, "17", None, None)),
     # OPANAF 2194/2025 anexa 2 cartusul I pct.4.1 (lista cotelor acceptate in D394)
     "d394.COTE": (d394, (0, 5, 9, 11, 19, 20, 21, 24), ("OPANAF", 2194, 2025, None, None, None)),
     # CF art.77 alin.(3) ; CF art.331 alin.(7)
@@ -186,23 +181,6 @@ def test_s2_ancoreaza_refuza_doua_surse_si_temei_neobiect():
     finally:
         for k in (nume, nume + "2", nume + "3"):
             common.COTE.pop(k, None)
-
-
-@pytest.mark.parametrize("nume,cheie", [
-    ("d101.COTA_STANDARD", "impozit_profit"),
-    ("d101g.COTA_STANDARD", "impozit_profit"),
-    ("cote_tva.COTA_STANDARD", "tva_standard"),
-    ("cote_tva.COTA_REDUSA", "tva_redusa"),
-])
-def test_s2_geamana_din_registru_nu_diverge(nume, cheie):
-    # LIMITA ancorarii (CONFORMITATE interdictia 1): aceste patru constante DUBLEAZA o cheie din COTE - temeiul le-a
-    # venit, scrierea in doua locuri a ramas (mutarea in registru = campania interdictiei 1 / R26). Pana atunci,
-    # divergenta e imposibila: procentul de modul == valoarea CURENTA a cheii, si ambele pe acelasi articol.
-    # MUTATIE: cote_tva.COTA_REDUSA 11 -> 9 -> 9/100 != 0.11 -> pica (citatul ar pica si el: „11%").
-    v, t = common.ancorata(nume)
-    vc, tc = common.cota(cheie, date(2026, 10, 1))
-    assert Decimal(str(v)) / 100 == vc, "%s=%s, dar COTE[%s]=%s" % (nume, v, cheie, vc)
-    assert (t.art, t.alin) == (tc.art, tc.alin), "%s pe %s, COTE[%s] pe %s" % (nume, t, cheie, tc)
 
 
 def test_s2_fiecare_modul_care_ancoreaza_e_in_registru():

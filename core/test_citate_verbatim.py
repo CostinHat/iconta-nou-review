@@ -48,7 +48,12 @@ from core import scan_citate
 #: alin.(3)), `PLAFON_JOCURI_NEIMPOZABIL` (art.110 alin.(4) lit.b) — căutate verbatim în forma consolidată înainte de scriere.
 #: 69 → **70** la 03.10.2026 (D212 Etapa 5c-2b): +1 = `d212.PENSIE_NEIMPOZABIL_LUNAR` (CF art.100 alin.(1), 3.000 lei), căutat
 #: verbatim în forma consolidată; perioada octombrie 2024 – iulie 2025 dovedită de Legea 244/2024 (adusă în corpus).
-VERBATIM_BASELINE = 70
+#: 70 → **69** la 11.10.2026 (R3, dublurile mutate în registru): −6 = citatele de pe `bacsis.COTA_IMPOZIT`, `cote_tva.COTA_STANDARD`
+#: / `COTA_REDUSA`, `d101.COTA_STANDARD`, `d212.COTA_IMPOZIT_VENIT` (constantele scoase) și vechea `tva_redusa` (recitată); +4 =
+#: `impozit_venit_categorii` (CF art.64 alin.(1), ambele intrări), `tva_standard` și `tva_redusa` pe textul verbatim al art.291
+#: alin.(1)/(2). Nicio prevedere n-a pierdut citatul verificabil: art.17, art.64 alin.(1) și art.291 alin.(1)/(2) au câte unul, în
+#: registru — scăderea e numărul dublurilor, nu o citare devenită parafrază.
+VERBATIM_BASELINE = 69
 
 
 @pytest.fixture(scope="module")

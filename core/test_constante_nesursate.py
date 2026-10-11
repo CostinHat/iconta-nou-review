@@ -210,7 +210,9 @@ def test_calibrare_vede_temeiul_din_proza(inv):
     assert _clasa(inv, "d108.py", "18000") == "E"
     assert _clasa(inv, "beneficii_api.py", "300") == "E"
     # si direcția noua: ancorarea prin `common.ancoreaza(..., Temei(...))` e vazuta ca SURSAT (A), nu ca proza
-    assert _clasa(inv, "cote_tva.py", "21") == "A"
+    # 11.10.2026 (R3): `cote_tva` nu mai scrie cotele (le citeste din registru); exemplul de A trece pe o constanta ancorata ramasa
+    assert _clasa(inv, "cote_tva.py", "21") is None
+    assert _clasa(inv, "d101.py", "50000000") == "A"
     assert _clasa(inv, "casa.py", "500000") == "A"
 
 
@@ -226,7 +228,9 @@ def test_proza_nu_inghite_nesursatul(inv):
     assert _clasa(inv, "d216.py", "0.3") is None, "cota impozitului special a reapărut ca literal în d216"
     # 01.10.2026: cota de profit d101.py `16` e acum A (ancorata pe CF art.17) - nu mai poate fi exemplul.
     # Exemplul de C intr-un modul cu antet plin de citari: plafonul de sponsorizare 0,75% din d101.
-    assert _clasa(inv, "d101.py", "16") == "A", "cota de impozit pe profit a pierdut ancorarea"
+    # 11.10.2026 (R3): `16` nu mai e in d101 deloc — cota se citeste din registru (`impozit_profit`); ca la d216, exemplul devine o
+    # interdictie: literalul nu are voie sa reapara in modul (nici ancorat, ar fi o dublura, nici C).
+    assert _clasa(inv, "d101.py", "16") is None, "cota de impozit pe profit a reaparut ca literal in d101"
     assert _clasa(inv, "d101.py", "0.0075") == "C", "plafonul 0,75% din d101 a fugit în E"
     assert sum(1 for h in inv if h["cls"] == "C" and h["f"] == "d212_engine.py") >= 11, \
         "aserțiunile cu valori din modulul de PRODUCȚIE d212_engine au fugit în E"

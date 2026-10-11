@@ -19393,3 +19393,41 @@ titlu nou ascuns doar pentru cititorul de ecran (ar fi două texte pentru acela�
   HEAD, fiecare cu pluginul. Artefactul `inainte_suita_R2b.json` (câmpul `commit` = `e798335b`, fiindcă s-a luat înaintea commitului R2b,
   pe conținutul lui) e referința de control. **Temei:** ce depinde de ziua curentă (testele care construiesc perioade din `azi`) nu poate
   fi deosebit de o regresie peste zile; nu există unealtă de falsificat data pe server. **Limita:** R8 costă două suite (~2 × 70 min).
+
+## 11.10.2026 — R3: dublurile registrului mutate; data la care citește fiecare consumator
+
+- **Ce e o dublură (măsurat, nu enumerat):** o constantă ancorată care repetă PREVEDEREA (articol, alineat; litera egală sau una lipsă)
+  și VALOAREA (procent sau fracție) altei intrări din `COTE`. Actul nu intră în comparație (registrul citează articolul CF și prin legea
+  modificatoare). Pe `5c4a3161`: cele trei din plan + `bacsis.COTA_IMPOZIT` = `d212.COTA_IMPOZIT_VENIT` (CF art.64 alin.(1)) — lista
+  R3 a crescut înainte de execuție (TESTE, §2.1). Cheile istorice între ele nu se compară (`tva_redusa_9/_5` = decizia din 03.08).
+- **`impozit_profit` de la 2016-01-01** (era 2018): CF art.17 are același text în forma inițială și în cea consolidată, iar Codul e în
+  vigoare de la 01.01.2016 (Legea 227/2015 art.501, citat verbatim). Era data constantei `d101.COTA_STANDARD`; altfel D101 ar fi
+  pierdut 2016–2017. **Limita:** D101 nu se generează oricum pentru 2016–2018 (dispecerul scadenței refuză — măsurat pe acești trei ani, identic cu HEAD).
+- **D101 / D101G citesc cota la `(an, 1, 1)`:** convenția modulului (`_scadenta` alege regula anului la aceeași dată) și a lui D100.
+  **Alternativa respinsă:** 31.12 a anului — fără temei care s-o prefere; o schimbare de cotă la mijloc de an ar cere oricum o regulă
+  tranzitorie scrisă, nu o dată aleasă.
+- **`impozit_venit_categorii` (cheie nouă):** CF art.64 alin.(1) — 16% de la 01.01.2016 (forma inițială), 10% de la 01.01.2018 (OUG
+  79/2017 art.I pct.15, MO 885/10.11.2017; nota formei consolidate), ambele citate verbatim. D212 citește la `(an, 1, 1)` (ca
+  `impozit_dividend`/`impozit_venit` din același modul), bacșișul la data notei (parametru OBLIGATORIU — o funcție fiscală nu cade pe
+  data curentă). Art.64 intră în `scan_pereche_act_articol.ART_DE_COD_FISCAL` (convenția: articolele Codului, oricare ar fi actul).
+  **Limita:** D212 pe categorii refuză orice an în afară de 2025 — istoricul de 16% nu ajunge azi în nicio declarație.
+- **Filtrul AI al TVA citește cotele la data regimului (01.08.2025), nu la data operațiunii:** catalogul n-are dată; modulul reproduce
+  lista cotei reduse a Legii 141/2025, deci cotele lui sunt ale acelui regim; cota facturii o verifică emiterea, la data facturii
+  (`cote_tva_in_vigoare`). Promptul trimis modelului e identic octet cu octet cu cel de pe HEAD (probat). **Alternativa respinsă:**
+  data curentă — interzisă de `test_data_curenta`; o dată pasată de apelanți — catalogul n-are una.
+- **La contopire rămâne citarea care se verifică mecanic:** `tva_standard` (2025) primește textul verbatim al noului art.291 alin.(1)
+  din Legea 141/2025 art.II pct.42 (era parafrază; textul verificabil stătea pe `cote_tva.COTA_STANDARD`); actul rămâne Legea 141/2025,
+  fiindcă pe el își iau consecința `tva_redusa_9/_5` (o primă variantă pe „CF art.291” le lăsa fără prag de reverificare — măsurat cu
+  `reverificare.inventar`, retrasă). **Recalibrări, cu motiv scris în teste:** `VERBATIM_BASELINE` 70 -> 69, distribuția reverificării
+  (STABIL/CALCULAT 14 -> 13, VOLATIL/CALCULAT 16 -> 14), `PRIMESC_PRAG_PESTE_PODEA` 14 -> 13, podeaua ancorărilor 30 -> 26.
+- **Neconformitate pe drum, pe ciclu:** `anaf_surse/gen_index.py` se eticheta pe sine „static.anaf.ro, initiala” (atins în ziua unei
+  generări) — clasa „fișier scris de noi tratat ca act adus”, închisă la 10.10 numai pentru `.json`. Acum `FISIERE_PROPRII` = `.json`,
+  `.py`, `.md`, `.sha256`, păzit de test (mutație roșie).
+- **Neconformitate în unealta R2b, pe ciclu (pivot față de „R2b”, 11.10.2026, pct.1 — verdictul pe amprentele distincte rămâne, dar
+  fără apelurile lucrătorului):** proba R3 pe suită a dat 7 amprente D112/D300 în plus, toate în
+  `test_doua_ture_nu_recalculeaza_aceeasi_firma` — `firma_rezumat.recalculeaza_lot` recalculează ce găsește învechit în baza de test, iar
+  între rulări trecuse o poartă e2e. Fără apelurile acelui test: 460/460 aceleași. La R8 (două rulări una după alta) prima ar recalcula
+  și a doua nu — un „DIFERĂ” fals. Acum apelurile venite din `LUCRATORI` poartă marcajul „lucrator”, se tipăresc și nu intră în
+  verdict. **Alternativa respinsă:** golirea `firma_rezumat` înaintea fiecărei rulări — face ca ambele să recalculeze, dar conținutul
+  generat ar depinde tot de datele bazei de test din ziua aceea, nu de cod; și e o scriere în plus în pregătirea măsurătorii.
+  **Limita:** `LUCRATORI` e măsurat (o singură sursă variabilă în cinci rulări), nu derivat.

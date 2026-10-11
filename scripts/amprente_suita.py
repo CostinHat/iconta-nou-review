@@ -13,6 +13,10 @@ Ce se compară (măsurat la R2b, două rulări pe același cod): VERDICTUL e pe 
 schimbată dă un SHA care n-a existat înainte, una dispărută lasă un SHA fără pereche. Lista PE TEST e informativă, nu verdict: apelurile
 unui fixture de modul se consemnează pe primul test care îl cere (ordinea de rulare decide care), iar recalculările condiționate de
 starea bazei (`firma_rezumat.recalculeaza_lot` sare firmele proaspete) cheamă sau nu generatorul după ce au lăsat testele dinainte.
+Apelurile făcute de LUCRĂTORUL care își alege singur firmele după starea bazei (`firma_rezumat.recalculeaza_lot`: recalculează ce e
+învechit) se consemnează cu marcajul „lucrator” și NU intră în verdict: ce generează depinde de ce au lăsat în bază rulările dinainte,
+nu de cod (măsurat 11.10.2026: aceeași rulare pe același cod, după o poartă e2e, a dat 7 amprente D112/D300 în plus numai în
+`test_doua_ture_nu_recalculeaza_aceeasi_firma`; fără ele, 460/460 aceleași). Se tipăresc, ca să se vadă.
 R8 rulează ambele părți în aceeași zi (suita commitului R2b dintr-un arbore separat și suita HEAD): ce depinde de ziua curentă și n-a
 fost normalizat se vede ca diferență, nu ca regresie ascunsă.
 
@@ -38,6 +42,10 @@ VAR = "ICONTA_AMPRENTE_SUITA"
 #: citesc XML (cititorul bonurilor AMEF), nu emit un document — nu sunt generatoare
 NU_EMIT = {("core.amef_import", "extrage_xml"), ("core.amef_import", "_test")}
 FARA_TEST = "(în afara unui test)"
+#: (modul, funcție) ale lucrătorilor care aleg singuri firmele după starea bazei — apelurile lor nu intră în verdict (v. antetul).
+#: Măsurat, nu dedus: singura sursă de amprente variabile pe același cod în cinci rulări ale suitei.
+LUCRATORI = {("core.firma_rezumat", "recalculeaza_lot")}
+LUCRATOR = "lucrator"
 STARE = {"test": FARA_TEST, "apeluri": {}, "invelite": []}
 
 
@@ -66,12 +74,23 @@ def amprenta(rez):
     return "tip:" + type(rez).__name__
 
 
+def din_lucrator():
+    """True dacă apelul curent vine (oricât de adânc) dintr-un lucrător din `LUCRATORI`."""
+    f = sys._getframe(1)
+    while f is not None:
+        if (f.f_globals.get("__name__"), f.f_code.co_name) in LUCRATORI:
+            return True
+        f = f.f_back
+    return False
+
+
 def inveleste(fn, nume):
-    """Același rezultat, plus consemnarea amprentei pe testul curent. MUTAȚIE: amprenta consemnată fără normalizare -> pică garda."""
+    """Același rezultat, plus consemnarea amprentei pe testul curent (cu marcajul „lucrator” când vine dintr-un lucrător). MUTAȚIE:
+    amprenta consemnată fără normalizare -> pică garda."""
     @functools.wraps(fn)
     def w(*a, **k):
         rez = fn(*a, **k)
-        STARE["apeluri"].setdefault(STARE["test"], []).append([nume, amprenta(rez)])
+        STARE["apeluri"].setdefault(STARE["test"], []).append([nume, amprenta(rez)] + ([LUCRATOR] if din_lucrator() else []))
         return rez
     w.__amprente_suita__ = True
     return w
@@ -95,8 +114,14 @@ def compara(a, b):
 
 
 def distincte(d):
-    """Mulțimea amprentelor (emițător, SHA) produse în rulare, oricare ar fi testul pe care s-au consemnat."""
-    return {(x[0], x[1]) for v in (d.get("teste") or {}).values() for x in v}
+    """Mulțimea amprentelor (emițător, SHA) produse în rulare, oricare ar fi testul pe care s-au consemnat — fără apelurile
+    lucrătorilor (v. antetul). MUTAȚIE: marcajul ignorat -> pică garda."""
+    return {(x[0], x[1]) for v in (d.get("teste") or {}).values() for x in v if LUCRATOR not in x[2:]}
+
+
+def din_lucratori(d):
+    """Câte apeluri au venit din lucrători (informativ)."""
+    return sum(1 for v in (d.get("teste") or {}).values() for x in v if LUCRATOR in x[2:])
 
 
 def compara_distincte(a, b):
@@ -144,8 +169,9 @@ def main(argv):
             print("  NUMAI ÎNAINTE %s %s" % (e, s))
         for e, s in doar_b:
             print("  NUMAI DUPĂ    %s %s" % (e, s))
-        print("[amprente_suita] pe test: %d diferă; distincte: %d / %d -> %s" % (
-            len(dif), len(distincte(a)), len(distincte(b)), "aceleași" if not (doar_a or doar_b) else "DIFERĂ"))
+        print("[amprente_suita] pe test: %d diferă; apeluri din lucrători (în afara verdictului): %d / %d; distincte: %d / %d -> %s" % (
+            len(dif), din_lucratori(a), din_lucratori(b), len(distincte(a)), len(distincte(b)),
+            "aceleași" if not (doar_a or doar_b) else "DIFERĂ"))
         return 1 if (doar_a or doar_b) else 0
     print(__doc__)
     return 2

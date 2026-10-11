@@ -44,9 +44,14 @@ from core import repo_d101 as _repo
 
 NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
-COTA_STANDARD = _anc("d101.COTA_STANDARD", Decimal("16"), _Tm(
-    "CF", art="17", data_in="2016-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
-    text_citat="Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."))
+
+
+def _cota_profit(an):
+    """Cota impozitului pe profit (procent întreg) pentru anul declarației: registrul unic (`common.COTE["impozit_profit"]`, CF art.17),
+    la 1 ianuarie a anului — data după care `_scadenta` alege și ea regula anului. [R3a, 11.10.2026] Până atunci, `COTA_STANDARD = 16`
+    ancorat aici dubla intrarea din registru (și `d101g` o mai scria o dată)."""
+    from core import common as _c
+    return _c.cota("impozit_profit", _date_v(an, 1, 1))[0] * 100
 
 # ============================================================
 #  IMCA - impozit minim pe cifra de afaceri (CF art.18^1). Verificat VERBATIM la sursa:
@@ -269,7 +274,7 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     if cod_obligatie not in _COD_OBLIGATIE_D101:
         raise ValueError("D101: tipul de impozit pe profit (%s) nu e acceptat de validatorul ANAF; tipurile acceptate: %s. "
                          "Corectează tipul de impozit pe profit." % (cod_obligatie, sorted(_COD_OBLIGATIE_D101)))
-    cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
+    cota = Decimal(str(cota if cota is not None else _cota_profit(an)))
     g = lambda k: _i(I.get(k, 0))
 
     P = {}

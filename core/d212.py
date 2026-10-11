@@ -235,13 +235,16 @@ COTA_FORFETARA_CEDARE = _anc("d212.COTA_FORFETARA_CEDARE", Decimal("20"), _Tm(
     text_citat="se stabilește prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra venitului brut",
     lant_acte="cota de 20% din OUG 115/2023 art.LIII (veniturile 2024+); alin.(3) reformulat de Legea 239/2025 art.XII pct.8 "
               "(veniturile 2026), cota neschimbată; aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.5.6.6 rd.2"))
-#: Cota de impozit pe venitul fiecărei surse din fiecare categorie (procent întreg).
-COTA_IMPOZIT_VENIT = _anc("d212.COTA_IMPOZIT_VENIT", Decimal("10"), _Tm(
-    "CF", art="64", alin="1", data_in="2018-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E5",
-    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
-    text_citat="Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie",
-    lant_acte="lit.a^1) DPI, c) cedarea folosinței, d) investiții, f) agricole, h) alte surse; la alte surse și art.116 alin.(2) "
-              "(„prin aplicarea cotei de 10%”); aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.4-9, rd.9"))
+
+
+def _cota_venit(an):
+    """Cota de impozit pe venitul fiecărei surse din fiecare categorie (procent întreg), pentru anul venitului: registrul unic
+    (`common.COTE["impozit_venit_categorii"]`, CF art.64 alin.(1)), la 1 ianuarie — ca `impozit_dividend` / `impozit_venit` mai jos.
+    Se aplică la lit.a^1) DPI, c) cedarea folosinței, d) investiții, f) agricole, h) alte surse (la alte surse și art.116 alin.(2)); aplicat
+    de instrucțiunile D212 (OPANAF 2736/2025) pct.4-9, rd.9. [R3c, 11.10.2026] Până atunci, `COTA_IMPOZIT_VENIT = 10` ancorat aici dubla
+    aceeași prevedere cu `bacsis.COTA_IMPOZIT`."""
+    from core import common as _c
+    return _c.cota("impozit_venit_categorii", _dt.date(an, 1, 1))[0] * 100
 #: Pierderea netă din investiții se recuperează din câștigul net, în limita a 70% (procent întreg) — normă proprie, alta
 #: decât art.118 alin.(4) (activitățile), aceeași cifră.
 PROCENT_COMPENSARE_INVESTITII = _anc("d212.PROCENT_COMPENSARE_INVESTITII", Decimal("70"), _Tm(
@@ -370,7 +373,7 @@ def cap11_categorie(a, an):
         baza = net
         if scut:
             c["venit_redus"] = baza = redus_handicap(net, scut, an)
-        c["impozit11"] = _procent(baza, COTA_IMPOZIT_VENIT)
+        c["impozit11"] = _procent(baza, _cota_venit(an))
     elif det == DET_VEN_NET_SISTEM_REAL:
         if cat == CATEG_TURISTIC and pp:
             raise ValueError("D212 %s: pierderea din închirierea în scop turistic „reprezintă pierdere definitivă” (OPANAF "
@@ -391,7 +394,7 @@ def cap11_categorie(a, an):
                 baza = net - comp
                 if scut:
                     c["venit_redus"] = baza = redus_handicap(baza, scut, an)
-                c["impozit11"] = _procent(baza, COTA_IMPOZIT_VENIT)
+                c["impozit11"] = _procent(baza, _cota_venit(an))
         else:
             if cd > vb:
                 c["pierdere"] = cd - vb
@@ -409,7 +412,7 @@ def cap11_categorie(a, an):
             if pp:
                 c["pierdere_compensata"] = comp
             c["venit_recalculat"] = cn - comp
-            c["impozit11"] = _procent(cn - comp, COTA_IMPOZIT_VENIT)
+            c["impozit11"] = _procent(cn - comp, _cota_venit(an))
         else:
             if cn < 0:
                 c["pierdere"] = -cn
@@ -420,7 +423,7 @@ def cap11_categorie(a, an):
         vi = _lei(a.get("venit_impozabil"))
         if vi <= 0:   # refuz de FORMĂ: secțiune fără venit
             raise ValueError("D212 %s: venitul impozabil lipsește." % eticheta)
-        c.update(venit_recalculat=vi, impozit11=_procent(vi, COTA_IMPOZIT_VENIT))
+        c.update(venit_recalculat=vi, impozit11=_procent(vi, _cota_venit(an)))
     return c
 
 
@@ -556,7 +559,7 @@ def _cota_strainatate(cat, an):
         return COTA_TRANSFER_PANA_3_ANI if cat == 2029 else COTA_TRANSFER_PESTE_3_ANI   # CF art.111 alin.(1)
     if cat == 2024:
         return COTA_MOSTENIRE                                                    # CF art.111 alin.(3)
-    return COTA_IMPOZIT_VENIT                                                    # CF art.64 alin.(1)
+    return _cota_venit(an)                                                       # CF art.64 alin.(1)
 
 
 def cap14_sectiune(a, an):
@@ -861,7 +864,7 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
         scut = _scutite((CATEG_DPI,))
         if scut:
             o["real_venit_net_impozabil_redus_dpi"] = impozabil_dpi = redus_handicap(impozabil_dpi, scut, an)
-        imp_dpi = _procent(impozabil_dpi, COTA_IMPOZIT_VENIT)
+        imp_dpi = _procent(impozabil_dpi, _cota_venit(an))
         o["real_impozit_datorat_dpi"] = imp_dpi
         bife["bifa15"] = "1"
         impozit += imp_dpi

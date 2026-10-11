@@ -4480,9 +4480,9 @@ def nota_bacsis(tenant_id, corp, ctx):
                 r = _bc.nota_incasare(corp["suma"], corp.get("sursa", "card"))
                 d0 = "Bacsis incasat pe bon fiscal (461=462, fara TVA)"
             elif fel == "distribuire":
-                r = _bc.nota_distribuire(corp["suma"], corp.get("sursa", "banca"))
+                r = _bc.nota_distribuire(corp["suma"], corp["data"], corp.get("sursa", "banca"))
                 info = {"impozit": str(r["impozit"]), "net": str(r["net"])}
-                d0 = "Distribuire bacsis salariati (impozit 10% retinut, 462=446)"
+                d0 = "Distribuire bacsis salariati (impozit %s%% retinut, 462=446)" % r["cota"]
             else:
                 raise ValueError(nomenclator_cerut("fel", "incasare|distribuire"))
         except (ValueError, KeyError) as e:

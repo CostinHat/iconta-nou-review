@@ -235,12 +235,16 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     `/home/costin/iconta_amprente/R2a/inainte_{productie,test}_72e8b5eb.json` (producția 5 firme / 259 cereri / 35 XML, 1 s; testul 20 /
     1321 / 198, 3 s); `--cod-din` reparat (opțiunea din docstring nu exista; importul uneltei ar fi luat tacit `core` curent) și păzit
     (`test_cod_din_…`, 5 mutații roșii); probat: `--cod-din` pe arborele `72e8b5eb` -> „identice” pe ambele baze.
-  - ultim (11.10.2026): R2b în commitul care conține această intrare — `scripts/amprente_suita.py` (plugin pytest la cerere, 56 de
+  - ultim (11.10.2026): R2b (`5c4a3161`) — `scripts/amprente_suita.py` (plugin pytest la cerere, 56 de
     emițătoare derivate din sursă) + `core/test_amprente_suita.py` (6 gărzi, 16 mutații roșii); suita cu plugin 8014/9/15, 516 teste /
     760 de apeluri / 460 de amprente distincte, în `/home/costin/iconta_amprente/R2b/inainte_suita_R2b.json`; a doua rulare: 460/460
     aceleași. Normalizarea REGES (`_VOLATIL`) + intrările fixe din testul REGES de la rădăcina depozitului; verdictul pe amprentele distincte (DECIZII
     11.10.2026, „R2b”).
-  - urmator: R3 (dublurile: `COTA_STANDARD` din d101/d101g și cote_tva -> registru, citite după dată). STARE = NEINCEPUT
+  - ultim (11.10.2026): R3 în commitul care conține această intrare — 4 dubluri / 6 constante mutate în registru (R3a–R3d):
+    `impozit_profit` din 2016, `impozit_venit_categorii` nouă, `cote_tva` la data regimului; garda `scan_registru.dubluri()` (dubluri 0,
+    calibrare, 9 mutații roșii); amprentele portofoliului identice cu R2a (test + producție); registrul 50 chei / 26 ancorate / 67
+    intrări. Pe drum: `gen_index` — fișierele noastre din corpus fără sursă (`FISIERE_PROPRII`, mutație roșie).
+  - urmator: R4 (constantele ancorate rămase — 26, în 8 fișiere — intrări în registru cu istoricul lor). STARE = NEINCEPUT
   - R1 SPART ÎNAINTE DE EXECUȚIE (10.10.2026, §2.1 — lista crește întâi): măsurat pe 11a03cb8, `ancoreaza` ține 32 de constante în
     `CONSTANTE_ANCORATE` (al doilea dicționar), umplut la IMPORT — iar 30 de locuri citesc registrul întreg (`COTE.items()` & co.).
     R1a. `common.ancoreaza` scrie în `COTE[nume]` o intrare `(temei.data_in, valoare, temei)`; refuz fără `data_in`, refuz la a doua
@@ -270,6 +274,20 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
         R2b. Suita: amprenta fiecărui apel de generator din `pytest` (formularele completate de teste), pe test, artefact.
     R3. Dublurile: `d101/d101g.COTA_STANDARD` -> `impozit_profit`; `cote_tva.COTA_STANDARD/REDUSA` -> `tva_standard`/`tva_redusa`;
         consumatorii citesc `cota(nume, data_operatiunii)`.
+        R3 CRESCUT ÎNAINTE DE EXECUȚIE (11.10.2026, §2.1): măsurat pe 5c4a3161 — o dublură = aceeași prevedere (articol, alineat; litera
+        egală sau una lipsă) și aceeași valoare (procent sau fracție), pentru o constantă ancorată față de orice altă intrare din `COTE`.
+        Găsite: cele trei de mai sus ȘI `bacsis.COTA_IMPOZIT` = `d212.COTA_IMPOZIT_VENIT` (CF art.64 alin.(1), 10%); nicio altă potrivire.
+        R3a. `COTE["impozit_profit"]` de la 2016-01-01 (CF art.17, citat verbatim; Legea 227/2015 art.501 — în vigoare 01.01.2016;
+             textul identic în forma inițială), ca D101 să nu piardă 2016–2017; `d101`/`d101g`: ancorarea scoasă, cota implicită =
+             `cota("impozit_profit", date(an, 1, 1))` (convenția modulului: `_scadenta` alege după `(an, 1, 1)`).
+        R3b. `cote_tva`: ancorările scoase; filtrul răspunsului AI și textul promptului citesc `tva_standard`/`tva_redusa` la data
+             regimului pe care îl descrie modulul (01.08.2025, Legea 141/2025) — catalogul n-are dată a operațiunii; data facturii o
+             verifică emiterea (`cote_tva_in_vigoare`).
+        R3c. `COTE["impozit_venit_categorii"]` (CF art.64 alin.(1): 16% de la 01.01.2016, forma inițială; 10% de la 01.01.2018, OUG
+             79/2017 art.I pct.15 — ambele verbatim în corpus); `d212` citește la `date(an, 1, 1)`, `bacsis.nota_distribuire` la data notei
+             (parametru obligatoriu, din ruta din `uc_tenants`); ancorările scoase.
+        R3d. Gardul clasei: `scan_registru.dubluri()` + test — nicio constantă ancorată nu repetă prevederea și valoarea altei intrări
+             (calibrare + mutație); înlocuiește `test_s2_geamana_din_registru_nu_diverge` (paritatea celor patru dubluri, care dispar) [citare-istorica: testul vechi, scos la R3].
     R4. Constantele ancorate (32), grupate pe modul (casa, d212, salarizare, bacsis, d100, d394, taxare_inversa, creșa): intrări
         în registru cu istoricul lor unde există; consumatorii citesc după dată.
     R5. Clasa A din module (temei-obiect lângă literal, în afara registrului): mutată în registru.

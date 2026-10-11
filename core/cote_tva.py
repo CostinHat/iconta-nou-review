@@ -16,19 +16,22 @@ referinta, iar EXCEPTII_21 marcheaza produsele care par sa fie in lista redusa
 dar raman la 21% (alcool, bauturi NC 2202, alimente cu zahar >10g, suplimente).
 """
 
-from core.common import Temei, ancoreaza
+from datetime import date
 
-# [FiscalOS §2] CF art.291, forma Legii 141/2025 art.II pct.42 (in vigoare 01.08.2025). Procente intregi.
-COTA_STANDARD = ancoreaza("cote_tva.COTA_STANDARD", 21, Temei(
-    "CF", art="291", alin="1", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
-    text_citat=("Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt "
-                "scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%."),
-    lant_acte="Legea 141/2025 art.II pct.42"))
-COTA_REDUSA = ancoreaza("cote_tva.COTA_REDUSA", 11, Temei(
-    "CF", art="291", alin="2", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
-    text_citat=("Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii "
-                "și/sau livrări de bunuri"),
-    lant_acte="Legea 141/2025 art.II pct.42 (comaseaza 9% si 5% in 11%; alin.(3) abrogat de pct.43)"))
+from core import common as _c
+from core.pdf_util import data_ro
+
+#: Data regimului pe care îl reproduce modulul: lista cotei reduse (`CATEGORII_11`) și excepțiile ei sunt cele din CF art.291, forma
+#: Legii 141/2025 art.II pct.42, în vigoare la 01.08.2025. [R3b, 11.10.2026] Cotele nu se mai scriu aici (erau `COTA_STANDARD = 21`,
+#: `COTA_REDUSA = 11`, ancorate — dublura cheilor `tva_standard`/`tva_redusa` din registru): se citesc din registru LA DATA REGIMULUI.
+#: Nu la data operațiunii: întrebarea despre un produs din catalog n-are una, iar cota unei facturi o verifică emiterea, la data
+#: facturii (`common.cote_tva_in_vigoare`). Un regim nou (alte categorii) înseamnă alt modul, nu doar altă cifră.
+REGIM_LEGEA_141 = date(2025, 8, 1)
+
+
+def cote_regim():
+    """(standard, redusă) în procente întregi, din registru, la data regimului (CF art.291 alin.(1) și (2))."""
+    return (int(_c.cota("tva_standard", REGIM_LEGEA_141)[0] * 100), int(_c.cota("tva_redusa", REGIM_LEGEA_141)[0] * 100))
 
 # Categoriile la care se aplica cota redusa de 11% (art. 291 alin. 2, lit. a-n)
 # Fiecare intrare: cheie interna + descriere (asa cum apare in lege) + exemple.
@@ -151,11 +154,12 @@ def rezumat_pentru_ai():
     Intoarce un text compact cu regula (categorii 11% + exceptii 21%),
     de injectat in promptul AI ca referinta. Fara diacritice, concis.
     """
+    std, red = cote_regim()
     linii = [
-        "REGULA COTE TVA (art. 291 Cod fiscal, Legea 141/2025, de la 01.08.2025):",
-        "Doua cote: 21% standard (implicit) si 11% redusa (doar lista de mai jos).",
+        "REGULA COTE TVA (art. 291 Cod fiscal, Legea 141/2025, de la %s):" % data_ro(REGIM_LEGEA_141),
+        "Doua cote: %d%% standard (implicit) si %d%% redusa (doar lista de mai jos)." % (std, red),
         "",
-        "COTA 11% se aplica DOAR la:",
+        "COTA %d%% se aplica DOAR la:" % red,
     ]
     for c in CATEGORII_11:
         linie = f"- {c['descriere']} ({c['lege']})"
@@ -163,13 +167,13 @@ def rezumat_pentru_ai():
             linie += f" [ATENTIE: {c['exceptii']}]"
         linii.append(linie)
     linii.append("")
-    linii.append("RAMAN LA 21% chiar daca par reduse:")
+    linii.append("RAMAN LA %d%% chiar daca par reduse:" % std)
     for e in EXCEPTII_21:
         linii.append(f"- {e['descriere']}")
     linii.append("")
-    linii.append("Tot ce NU se incadreaza explicit la 11% -> 21%.")
+    linii.append("Tot ce NU se incadreaza explicit la %d%% -> %d%%." % (red, std))
     linii.append("Serviciile obisnuite (consultanta, IT, transport, chirii comerciale, "
-                 "constructii etc.) -> 21%.")
+                 "constructii etc.) -> %d%%." % std)
     return "\n".join(linii)
 
 
@@ -251,16 +255,18 @@ def potriveste_cota(denumire, platitor_tva=True):
         return _nedeterminat("AI indisponibil; cota TVA nu s-a putut determina. "
                              "Declara cota explicit pe linie.")
 
+    std, red = cote_regim()
     sistem = (
         "Esti un expert fiscal roman. Stabilesti cota de TVA corecta pentru un "
         "produs sau serviciu, STRICT dupa regula oficiala de mai jos. "
-        "Nu inventezi. Daca nu se incadreaza clar la 11%, cota este 21%.\n\n"
+        + ("Nu inventezi. Daca nu se incadreaza clar la %d%%, cota este %d%%.\n\n" % (red, std))
         + rezumat_pentru_ai()
     )
     prompt = (
         f'Produs/serviciu: "{denum}"\n\n'
         "Raspunde DOAR cu un obiect JSON, fara alt text, in formatul:\n"
-        '{"cota": 11 sau 21, "categorie": "cheia categoriei sau standard", '
+        # `%` numai pe bucata lui: lipit implicit de f-string-ul de sus, ar formata și denumirea produsului (un „%” în ea ar strica promptul)
+        + ('{"cota": %d sau %d, "categorie": "cheia categoriei sau standard", ' % (red, std)) +
         '"tip": "marfa sau produse sau servicii", '
         '"justificare": "o fraza scurta cu temeiul legal", '
         '"incredere": "mare/medie/mica"}\n'
@@ -290,7 +296,7 @@ def potriveste_cota(denumire, platitor_tva=True):
                              "Declara cota explicit pe linie.")
 
     cota = obj.get("cota")
-    if cota not in (COTA_STANDARD, COTA_REDUSA):
+    if cota not in cote_regim():
         return _nedeterminat("AI a intors o cota neacceptata (%r); cota TVA nu s-a putut "
                              "determina. Declara cota explicit." % cota)
     return {"ok": True, "cota": int(cota),

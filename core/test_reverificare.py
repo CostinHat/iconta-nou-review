@@ -88,7 +88,9 @@ DISTRIBUTIE = {
     # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
     # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
-    ("VOLATIL", "CALCULAT"): 16,
+    # 16 -> 14 la 11.10.2026 (R3, dublurile mutate in registru): ies `cote_tva.COTA_STANDARD` / `COTA_REDUSA` (CF art.291 alin.(1)/(2)),
+    # constantele care dublau `tva_standard` / `tva_redusa` — cele doua chei raman, cu clasa lor (VOLATIL/DEPUS). Masurat cu R.inventar.
+    ("VOLATIL", "CALCULAT"): 14,
     # 9 -> 10 la 02.10.2026 (lot 19 pct.4a, D216): Legea 296/2023 art.III - cota 0,3% a impozitului special (2024-2025).
     # 10 -> 11 la 02.10.2026 (D212 Etapa 3): CF art.69^2 alin.(1) - cota 10% a impozitului pe norma de venit.
     # 11 -> 13 la 02.10.2026 (D212 Etapa 5): CF art.72^1 alin.(1) - cota forfetara 40% la drepturile de proprietate
@@ -97,7 +99,10 @@ DISTRIBUTIE = {
     # Masurat cu R.inventar: STABIL, prag 6 luni.
     ("STABIL", "DEPUS"): 14,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
-    ("STABIL", "CALCULAT"): 14,
+    # 14 -> 13 la 11.10.2026 (R3): iese `bacsis.COTA_IMPOZIT` (CF art.64 alin.(1) lit.h); cota se citeste din
+    # `COTE["impozit_venit_categorii"]`, ale carei doua intrari (CF art.64 / Legea 227/2015 art.64) sunt STABIL/DEPUS — locul lasat de
+    # `d101.COTA_STANDARD` si `d212.COTA_IMPOZIT_VENIT`, iesite si ele (STABIL/DEPUS ramane 14). Masurat cu R.inventar.
+    ("STABIL", "CALCULAT"): 13,
     ("MISCATOR", "CALCULAT"): 7,
     # 0 -> 6 la 03.10.2026 (D212 Etapa 5c-2a), clasa noua: CF art.110 alin.(1) (premii 10%), alin.(4) lit.a (600 lei pe
     # premiu), alin.(4) lit.b (66.750 lei la jocuri), art.111 alin.(1) lit.a/b (3% / 1% la transfer), alin.(3) (1% la
@@ -253,7 +258,9 @@ def test_ANTI_VACUU_si_distributia_pinata():
 #: ALTE_SURSE (OUG 28/1999 art.2^3) si taxare_inversa.PRAG_ELECTRONICE (CF art.331 alin.7) — STABIL/CALCULAT, 12 luni.
 #: Nu verificate mai rar: pana azi n-aveau niciun Temei, deci nicio cadenta.
 #: 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA (Legea 165/2018 art.19 alin.(1)), STABIL/CALCULAT.
-PRIMESC_PRAG_PESTE_PODEA = 14
+#: 14 -> 13 la 11.10.2026 (R3): `bacsis.COTA_IMPOZIT` a iesit — cota e acum in registru (`impozit_venit_categorii`), sub podeaua
+#: globala ca orice cheie din `COTE`: verificata MAI DES, nu mai rar.
+PRIMESC_PRAG_PESTE_PODEA = 13
 
 
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():

@@ -100,3 +100,26 @@ def test_verdictul_e_pe_amprentele_distincte_nu_pe_testul_care_le_consemneaza():
     assert A.compara(a, mutat) != []                                  # pe test se vede, dar nu e verdict
     nou = {"teste": {"t1": [["f", "x"], ["g", "z"]]}}
     assert A.compara_distincte(a, nou) == ([("g", "y")], [("g", "z")])
+
+
+def test_apelurile_lucratorului_se_marcheaza_si_nu_intra_in_verdict():
+    """`firma_rezumat.recalculeaza_lot` alege singur firmele după starea bazei: aceeași suită, pe același cod, a dat după o poartă e2e
+    7 amprente D112/D300 în plus (11.10.2026, R3). Un apel venit din el poartă marcajul „lucrator” și nu intră în amprentele distincte;
+    același apel din afara lui intră. MUTAȚII: marcajul nepus -> pică; `distincte` care ignoră marcajul -> pică."""
+    import types
+    f = A.inveleste(lambda x: x, "core.d112.build_xml")
+    lucrator = types.FunctionType(
+        compile("def recalculeaza_lot(f):\n    return f('<?xml version=\"1.0\"?><D112 x=\"1\"/>')", "<lucrator>", "exec")
+        .co_consts[0], {"__name__": "core.firma_rezumat"})
+    vechi = dict(A.STARE)
+    A.STARE.update(test="t::unu", apeluri={})
+    try:
+        lucrator(f)
+        f('<?xml version="1.0"?><D112 x="2"/>')
+        (a, b) = A.STARE["apeluri"]["t::unu"]
+        assert a[2:] == [A.LUCRATOR] and b[2:] == []
+        d = {"teste": {"t::unu": [a, b]}}
+        assert A.distincte(d) == {(b[0], b[1])} and A.din_lucratori(d) == 1
+    finally:
+        A.STARE.clear()
+        A.STARE.update(vechi)

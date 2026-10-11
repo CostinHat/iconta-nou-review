@@ -79,6 +79,39 @@ def inventar():
             "total": {f: sum(len(v) for v in out[f].values()) for f in FELURI}}
 
 
+def _fractie(v):
+    """Valoarea ca fracție, ca un procent întreg al unei constante ancorate (16) să se întâlnească cu fracția registrului (0.16); `None`
+    pentru ce nu e un număr (o mulțime de cote, un text)."""
+    from decimal import Decimal, InvalidOperation
+    try:
+        d = Decimal(str(v))
+    except (InvalidOperation, ValueError):
+        return None
+    return d / 100 if 1 < d <= 100 else d
+
+
+def dubluri(cote=None):
+    """[(constanta ancorată, cealaltă intrare)] — o constantă ancorată care repetă PREVEDEREA (articol, alineat; litera egală sau una
+    dintre ele lipsă — o citare fără literă acoperă tot alineatul) ȘI VALOAREA altei intrări din registru: aceeași regulă scrisă de două
+    ori, care poate diverge (R3, 11.10.2026: d101/d101g/cote_tva/bacsis/d212). Actul NU intră în comparație: registrul citează uneori
+    articolul din Codul fiscal prin legea care l-a modificat („Legea 141/2025 art.291”), iar constanta „CF art.291” — aceeași prevedere.
+    Cheile istorice între ele nu se compară: `tva_redusa_9`/`tva_redusa_5` = `tva_redusa` de la 01.08.2025 e decizia lui Costin
+    (03.08.2026, DECIZII), nu o dublură uitată."""
+    from core import common as c
+    cote = c.registru_complet() if cote is None else cote
+    intrari = [(k, v, t) for k, lst in cote.items() for _d, v, t in lst]
+    out = set()
+    for k, v, t in intrari:
+        if "." not in k or getattr(t, "art", None) is None or _fractie(v) is None:
+            continue
+        for k2, v2, t2 in intrari:
+            if k2 == k or (str(t.art), str(t.alin)) != (str(t2.art), str(t2.alin)):
+                continue
+            if (t.lit is None or t2.lit is None or t.lit == t2.lit) and _fractie(v) == _fractie(v2):
+                out.add(tuple(sorted((k, k2))) if "." in k2 else (k, k2))
+    return sorted(out)
+
+
 def _main():
     import json
     import sys
@@ -89,6 +122,8 @@ def _main():
     print("registru: %(chei)d chei (din care %(ancorate)d ancorate), %(intrari)d intrări" % r["registru"])
     for f in FELURI:
         print("%-16s %4d în %d fișiere" % (f, r["total"][f], len(r["in_afara"][f])))
+    d = dubluri()
+    print("dubluri          %4d%s" % (len(d), "".join("\n  %s = %s" % p for p in d)))
 
 
 if __name__ == "__main__":

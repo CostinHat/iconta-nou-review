@@ -120,6 +120,10 @@ def _forma_html(cale):
     return "necunoscuta", e_justro
 
 
+#: extensiile fisierelor pe care le scriem NOI in corpus (evidenta, generator, note, amprente) — n-au sursa si nici forma
+FISIERE_PROPRII = (".json", ".py", ".md", ".sha256")
+
+
 def _sursa_forma(fname):
     """(sursa, forma, nota) pentru intrarile NOI de azi; (None, None, None) altfel. Override > detectie."""
     if fname in _FORMA_OVR:
@@ -127,7 +131,9 @@ def _sursa_forma(fname):
     # Fisierele de EVIDENTA ale corpusului (INDEX.json, PORTAL_IDS.json, PROVENIENTA.json, duk_instalat.json) sunt scrise de noi, nu
     # aduse de undeva: n-au sursa si nici forma. Regula „nou azi -> static.anaf.ro / initiala” le eticheta fals cand erau atinse azi
     # (vazut 10.10.2026: PORTAL_IDS.json -> „static.anaf.ro, initiala”). Corpusul nu are surse .json — un act vine ca html/pdf/txt.
-    if fname.lower().endswith(".json"):
+    # [11.10.2026, R3] aceeasi clasa pentru tot ce scriem noi in corpus: generatorul insusi (`gen_index.py` purta „static.anaf.ro,
+    # initiala”, fiindca fusese atins in ziua unei generari), notele `.md` si amprentele `.sha256`.
+    if fname.lower().endswith(FISIERE_PROPRII):
         return None, None, None
     cale = os.path.join(SURSE, fname)
     try:

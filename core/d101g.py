@@ -62,14 +62,11 @@ from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
 from core import repo_d101g as _repo
-from core.common import Temei as _Tm, ancoreaza as _anc
+from datetime import date as _date
+from core import common as _c
 
 NS = "mfp:anaf:dgti:d101g:declaratie:v2"
 
-# cota standard impozit pe profit (override prin manual["cota"])
-COTA_STANDARD = _anc("d101g.COTA_STANDARD", Decimal("16"), _Tm(
-    "CF", art="17", data_in="2016-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
-    text_citat="Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."))
 _COD_OBLIGATIE_DEFAULT = "103"           # cod obligatie bugetara impozit pe profit (poz.3-5 din nr_evid)
 _COD_BUG_DEFAULT = "5503XXXXXX"          # cod bugetar impozit pe profit (X-uri literale, ca la D101)
 _NEDIGIT = re.compile(r"\D")
@@ -129,7 +126,9 @@ def calcul_d101g(prof, an, intrari=None, cota=None, cod_obligatie=_COD_OBLIGATIE
         if _i(I.get(k, 0)) < 0:
             raise ValueError("D101G: %s = %d < 0 (DUK regula %s>=0). Corectează valoarea consolidată." % (
                 k, _i(I.get(k, 0)), k))
-    cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
+    # cota impozitului pe profit (override prin manual["cota"]) din registru, ca la D101 (`d101._cota_profit`): CF art.17 la 1 ianuarie
+    # a anului declarației. [R3a, 11.10.2026] Până atunci, `COTA_STANDARD = 16` ancorat aici dubla `COTE["impozit_profit"]`.
+    cota = Decimal(str(cota if cota is not None else _c.cota("impozit_profit", _date(an, 1, 1))[0] * 100))
     g = lambda k: _i(I.get(k, 0))
 
     P = {}

@@ -48,7 +48,7 @@ def test_un_singur_registru_fiecare_constanta_ancorata_e_intrare_in_COTE():
     assert not hasattr(common, "CONSTANTE_ANCORATE"), "al doilea dicționar a revenit"
     din_sursa = _nume_ancorate_in_sursa()
     cote = common.registru_complet()
-    assert len(din_sursa) >= 30, din_sursa                         # măsurat 10.10.2026: 32
+    assert len(din_sursa) >= 26, din_sursa                         # măsurat 10.10.2026: 32; 11.10.2026: 26 (R3 a mutat 6 dubluri în registru)
     lipsa = sorted(din_sursa - set(cote))
     assert not lipsa, "ancorate în cod, absente din registru: %s" % lipsa
     for k in din_sursa:
@@ -120,3 +120,50 @@ def test_constanta_ancorata_se_citeste_prin_cota_dupa_data(nume):
     assert common.cota(nume, din)[0] == valoare
     with pytest.raises(common.PerioadaIndisponibila):
         common.cota(nume, date.fromordinal(din.toordinal() - 1))
+
+
+def test_nicio_constanta_ancorata_nu_dubleaza_registrul():
+    """R3 (11.10.2026): aceeași regulă nu se scrie de două ori — o constantă ancorată nu repetă prevederea și valoarea altei intrări
+    (măsurat pe 5c4a3161: d101/d101g.COTA_STANDARD = `impozit_profit`, cote_tva.COTA_STANDARD/REDUSA = `tva_standard`/`tva_redusa`,
+    bacsis.COTA_IMPOZIT = d212.COTA_IMPOZIT_VENIT; mutate în registru). Înlocuiește paritatea celor patru gemene
+    (`test_s2_geamana_din_registru_nu_diverge`), care ținea dublura în viață. MUTAȚIE: o ancorare readusă (d101.COTA_STANDARD) -> pică."""
+    from core import scan_registru as sr
+    assert sr.dubluri() == [], "aceeași regulă scrisă de două ori: %s" % sr.dubluri()
+
+
+def test_CALIBRARE_dublura_se_recunoaste_pe_prevedere_si_valoare():
+    """Procentul întreg al constantei se întâlnește cu fracția registrului; actul diferit (legea modificatoare) nu ascunde dublura; o
+    literă diferită, o valoare diferită sau o mulțime de cote nu sunt dubluri. MUTAȚII: normalizarea procentului scoasă -> pică;
+    litera ignorată -> pică; actul comparat -> pică; cheile istorice comparate între ele -> pică."""
+    from core import scan_registru as sr
+    T = common.Temei
+    d = date(2025, 8, 1)
+    cote = {
+        "tva_standard": [(d, Decimal("0.21"), T("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01"))],
+        "tva_redusa": [(d, Decimal("0.11"), T("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01"))],
+        "tva_redusa_9": [(d, Decimal("0.11"), T("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01"))],
+        "m.STD": [(d, 21, T("CF", art="291", alin="1", data_in="2025-08-01"))],
+        "m.LIT_A": [(d, Decimal("10"), T("CF", art="64", alin="1", lit="a", data_in="2018-01-01"))],
+        "m.LIT_H": [(d, Decimal("10"), T("CF", art="64", alin="1", lit="h", data_in="2018-01-01"))],
+        "m.ALT_PRAG": [(d, Decimal("22"), T("CF", art="291", alin="1", data_in="2025-08-01"))],
+        "m.COTE": [(d, (0, 11, 21), T("CF", art="291", alin="1", data_in="2025-08-01"))],
+    }
+    assert sr.dubluri(cote) == [("m.STD", "tva_standard")]
+    cote["m.TOT_ALIN"] = [(d, Decimal("10"), T("CF", art="64", alin="1", data_in="2018-01-01"))]
+    assert sr.dubluri(cote) == [("m.LIT_A", "m.TOT_ALIN"), ("m.LIT_H", "m.TOT_ALIN"), ("m.STD", "tva_standard")]
+
+
+def test_cota_din_registru_la_D101_D212_bacsis_si_promptul_TVA():
+    """Consumatorii dublurilor citesc registrul la data lor (R3): D101/D101G la 1 ianuarie a anului (CF art.17 — 16% din 2016, Legea
+    227/2015 art.501), D212 și bacșișul pe CF art.64 alin.(1) (16% în 2016–2017, 10% din 2018 — OUG 79/2017 art.I pct.15), filtrul AI al
+    TVA pe cotele regimului din 01.08.2025 (21/11). MUTAȚII: `impozit_profit` de la 2018 (cum era) -> pică pe 2016; D212 cu 10 fix
+    -> pică pe 2017; bacșișul fără dată -> TypeError; filtrul TVA cu cheia greșită -> pică."""
+    from core import bacsis, cote_tva, d101, d212
+    assert d101._cota_profit(2016) == d101._cota_profit(2026) == Decimal("16")
+    assert d212._cota_venit(2017) == Decimal("16") and d212._cota_venit(2018) == Decimal("10")
+    r = bacsis.nota_distribuire("1000.00", "2026-10-11")
+    assert (r["impozit"], r["net"], r["cota"]) == (Decimal("100.00"), Decimal("900.00"), Decimal("10"))
+    assert r["temei"][0] == "CF art.64 alin.(1) lit.h"
+    with pytest.raises(TypeError):
+        bacsis.nota_distribuire("1000.00")
+    assert cote_tva.cote_regim() == (21, 11)

@@ -2165,3 +2165,22 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
   nu normalizate). Celelalte 3: fixture-ul de modul din `test_paritate_p2` consemnat pe primul test rulat, iar `recalculeaza_lot` din
   `test_firma_rezumat` cheamă generatorul numai pentru firmele învechite. De aici verdictul pe amprentele distincte (DECIZII 11.10.2026,
   „R2b”). După: **460 / 460 aceleași**, pe test 3 diferențe informative. Amprentele R2a ale declarațiilor rămân identice (test și producție).
+
+## 11.10.2026, seara — R2b publicat (`5c4a3161`); R3: dublurile registrului (commitul care conține această intrare)
+
+- **R2b publicat** (`5c4a3161`, poarta 8014/9/15 — aceleași cifre ca suita cu plugin —, cifrele identice, e2e 225, four-way 14:29).
+- **R3 măsurat înainte de cod:** regula „aceeași prevedere + aceeași valoare” găsește 4 dubluri / 6 constante — cele 3 din plan și
+  perechea `bacsis.COTA_IMPOZIT` = `d212.COTA_IMPOZIT_VENIT` (CF art.64 alin.(1)); lista R3 a crescut în TESTE înainte de execuție.
+- **Mutate în registru:** `d101`/`d101g` citesc `impozit_profit` la `(an, 1, 1)` (intrarea pornește acum din 2016, verbatim + Legea
+  227/2015 art.501); `cote_tva` citește `tva_standard`/`tva_redusa` la data regimului Legii 141/2025 (filtrul AI și promptul — identice
+  cu HEAD); `d212` și bacșișul citesc cheia nouă `impozit_venit_categorii` (16% 2016–2017, 10% din 2018, ambele verbatim).
+- **Probe:** amprentele portofoliului (R2a) identice pe test și producție; D101/D101G/D212/bacșiș identice cu HEAD pe aceleași intrări;
+  suita cu plugin pe testele care cheamă generatoare — în raport. Registrul: 50 de chei / 26 ancorate / 67 de intrări, dubluri 0.
+- **Poarta, prima rulare:** respinsă de `test_rotunjire_explicita` — procentul nou din nota de bacșiș (`bacsis.py`) folosea `quantize`
+  fără mod de rotunjire; corectat cu `ROUND_HALF_UP`, gardul existent acoperă clasa în tot `core/`.
+- **Poarta, a doua rulare:** suita verde, respinsă de verificator (`BACKEND_UI_BRUT`) — data regimului din `rezumat_pentru_ai`
+  era formatată local cu `strftime("%d.%m.%Y")`; acum trece prin `pdf_util.data_ro` (textul promptului rămâne identic cu HEAD).
+- **Pe drum:** `gen_index.py` se eticheta drept act adus — clasa extinsă de la `.json` la toate fișierele noastre din corpus. Și în
+  unealta R2b: proba pe suită a dat 7 amprente D112/D300 în plus, venite numai din lucrătorul `firma_rezumat.recalculeaza_lot` (alege
+  firmele după starea bazei, schimbată de poarta e2e dintre rulări); apelurile lui se marchează și nu mai intră în verdict. Fără ele,
+  suita pe codul R3 = R2b: 460/460 aceleași.

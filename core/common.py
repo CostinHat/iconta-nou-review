@@ -682,7 +682,11 @@ COTE = {
     # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
     # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (modifica art.291 alin.1 CF): cota standard TVA 21%", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="MO")),
+        # [R3b, 11.10.2026] citatul verbatim al noului art.291 alin.(1), din textul Legii 141/2025 (art.II pct.42), în locul parafrazei
+        # „Art.II pct.42 (modifica art.291 alin.1 CF): cota standard TVA 21%” — la contopirea cu `cote_tva.COTA_STANDARD` (dublura scoasă,
+        # care purta citatul verificabil) rămâne citarea care se verifică mecanic. Actul rămâne Legea 141/2025: pe el își iau consecința
+        # (reverificarea) și `tva_redusa_9` / `tva_redusa_5`, care citează același articol.
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-10-11", de_cine="Code", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%.", lant_acte="Legea 141/2025 art.II pct.42 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="MO")),
         (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, art="291", alin="1", data_in="2017-01-01", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cf_2015_forma_initiala.html", text_citat="art.291 alin.(1) lit.b): 19% incepand cu data de 1 ianuarie 2017 (forma initiala Legea 227/2015, MO 688/2015)")),
     ],
     "tva_redusa": [
@@ -762,8 +766,11 @@ COTE = {
         (date(2026, 1, 1), Decimal("0.009"), Temei("CF", art="500^2", lit="a", data_in="2026-01-01", verificat_la="2026-10-02", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="prin aplicarea unei cote de 0,9% asupra diferenței dintre valoarea impozabilă a clădirii comunicată de către organul fiscal local și plafonul de 2.500.000 lei", lant_acte="lit.a) (clădiri) și lit.b) (autoturisme: „prin aplicarea unei cote de 0,9% asupra diferenței dintre valoarea de achiziție și plafonul de 375.000 lei”) modificate de Legea 239/2025 art.XII pct.51; în vigoare la 01.01.2026 conform Legea 239/2025 art.XIII alin.(1) lit.a) („prevederile pct. … 51 și 52 intră în vigoare la data de 1 ianuarie 2026”)")),
         (date(2024, 1, 1), Decimal("0.003"), Temei("Legea", 296, 2023, art="III", data_in="2024-01-01", verificat_la="2026-10-02", de_cine="Code", nivel_sursa="MO", url="anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html", text_citat="prin aplicarea unei cote de 0,3% asupra diferenței dintre valoarea impozabilă a clădirii comunicată de către organul fiscal local prin decizia de impunere și plafonul de 2.500.000 lei", lant_acte="Legea 296/2023 art.III pct.65 introduce Titlul X^1 (art.500^1-500^3) în Codul fiscal, de la 01.01.2024 (nota portalului din forma consolidată a CF); lit.b) autoturisme tot 0,3%")),
     ],
+    # [R3a, 11.10.2026] De la 2016-01-01, nu 2018: Codul fiscal (Legea 227/2015) e în vigoare de la 01.01.2016 (art.501), iar art.17 are
+    # același text în forma inițială (anaf_surse/cf_2015_forma_initiala.html) și în cea consolidată. Era și data constantei
+    # `d101.COTA_STANDARD`, dublura scoasă la R3 — D101 nu pierde 2016–2017.
     "impozit_profit": [
-        (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.17: Cota de impozit pe profit care se aplica asupra profitului impozabil este de 16%")),
+        (date(2016, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2016-01-01", verificat_la="2026-10-11", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%.", lant_acte="Legea 227/2015 art.501: „Prezentul cod intră în vigoare la data de 1 ianuarie 2016”; art.17 nemodificat de atunci (același text în forma inițială)")),
     ],
     "cas": [
         (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.138 lit.a): 25% datorata de persoanele fizice care au calitatea de angajati")),
@@ -773,6 +780,13 @@ COTE = {
     ],
     "impozit_venit": [
         (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", alin="2", lit="a", data_in="2018-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.78 alin.(2) lit.a): la locul unde se află funcția de bază, prin aplicarea cotei de 10% asupra bazei de calcul determinată ca diferență între venitul net din salarii calculat prin deducerea din venitul brut", lant_acte="consumatorii cotei sunt salariile (salarizare, D112) -> temeiul SPECIFIC e art.78 alin.(2) lit.a); cota GENERALA de 10% e art.64 alin.(1) (forma OUG 79/2017, de la 01.01.2018). Citatul vechi era din art.64 pe un Temei art.78 fara alineat - aliniat 01.10.2026")),
+    ],
+    # [R3c, 11.10.2026] CF art.64 alin.(1): cota pe venitul fiecărei surse din fiecare categorie (activități independente, DPI, cedarea
+    # folosinței, investiții, agricole, alte surse — și bacșișul, venit din alte surse). Era scrisă de două ori (`d212.COTA_IMPOZIT_VENIT`,
+    # `bacsis.COTA_IMPOZIT`). Istoricul, verbatim în corpus: 16% în forma inițială, 10% de la 01.01.2018 (OUG 79/2017 art.I pct.15).
+    "impozit_venit_categorii": [
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="64", alin="1", data_in="2018-01-01", verificat_la="2026-10-11", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din", lant_acte="partea introductivă a alin.(1) modificată de OUG 79/2017 art.I pct.15 (MO 885/10.11.2017), în vigoare la 01.01.2018 (nota formei consolidate)")),
+        (date(2016, 1, 1), Decimal("0.16"), Temei("Legea", 227, 2015, art="64", alin="1", data_in="2016-01-01", verificat_la="2026-10-11", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cf_2015_forma_initiala.html", text_citat="Cota de impozit este de 16% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din", lant_acte="forma inițială a Codului fiscal, în vigoare la 01.01.2016 (art.501)")),
     ],
     "cam": [
         (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^3", alin="1", data_in="2018-01-01", verificat_la="2026-08-16", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.220^3 alin.(1): Cota contributiei asiguratorii pentru munca este de 2,25%")),
@@ -856,6 +870,7 @@ ETICHETE_COTE = {
     "cas": "Cota CAS (pensie)",
     "cass": "Cota CASS (sănătate)",
     "impozit_venit": "Cota impozit pe venit",
+    "impozit_venit_categorii": "Cota impozitului pe venitul fiecărei surse din fiecare categorie (CF art.64 alin.1: independente, DPI, cedarea folosinței, investiții, agricole, alte surse — inclusiv bacșișul)",
     "cam": "Cota CAM (asiguratorie pentru muncă)",
     "salariu_minim": "Salariul minim brut",
     "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabilă)",
@@ -863,7 +878,6 @@ ETICHETE_COTE = {
     "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
     "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
     # constantele ancorate (`ancoreaza`, cheia „<modul>.<NUME>”), în registru din R1 (10.10.2026); eticheta spune ce e, din citatul ei
-    "bacsis.COTA_IMPOZIT": "Cota impozitului pe bacșișul distribuit salariaților (10%, venit din alte surse)",
     "casa.PLAFON_INCASARE_PJ": "Plafonul zilnic de încasare în numerar de la o persoană juridică (5.000 lei)",
     "casa.PLAFON_INCASARE_PJ_CC": "Plafonul zilnic de încasare în numerar al magazinelor cash and carry (10.000 lei)",
     "casa.PLAFON_PF": "Plafonul zilnic de încasare / plată în numerar către / de la o persoană fizică (10.000 lei)",
@@ -872,16 +886,11 @@ ETICHETE_COTE = {
     "casa.PLAFON_PLATA_PJ_TOTAL": "Plafonul zilnic total de plăți în numerar către persoane juridice (10.000 lei)",
     "casa.PLAFON_SOLD_ZI_CC": "Plafonul soldului de casă la sfârșitul zilei, cash and carry (500.000 lei)",
     "common.PLAFON_CRESA_BAZA": "Nivelul maxim lunar al tichetelor de creșă, fără indexare (450 lei/copil)",
-    "cote_tva.COTA_REDUSA": "Cota redusă de TVA, ca procent întreg (11%)",
-    "cote_tva.COTA_STANDARD": "Cota standard de TVA, ca procent întreg (21%)",
     "d100_pozitia_116.PRAG_BRENT_USD": "Pragul prețului Brent peste care se datorează contribuția de solidaritate (70 USD/baril)",
-    "d101.COTA_STANDARD": "Cota impozitului pe profit în D101, ca procent întreg (16%)",
     "d101.PRAG_IMCA_EUR": "Pragul cifrei de afaceri pentru impozitul minim pe cifra de afaceri (50.000.000 euro)",
-    "d101g.COTA_STANDARD": "Cota impozitului pe profit în D101 la grup fiscal, ca procent întreg (16%)",
     "d212.COTA_FORFETARA_CEDARE": "Cota cheltuielilor forfetare la cedarea folosinței bunurilor, D212 (20%)",
     "d212.COTA_FORFETARA_DPI": "Cota cheltuielilor forfetare la drepturile de proprietate intelectuală, D212 (40%)",
     "d212.COTA_IMPOZIT_NORMA": "Cota impozitului pe norma de venit, D212 (10%)",
-    "d212.COTA_IMPOZIT_VENIT": "Cota impozitului pe venit, D212 (10%)",
     "d212.COTA_MOSTENIRE": "Cota impozitului la dezbaterea succesiunii după termen (1%)",
     "d212.COTA_PREMII": "Cota impozitului pe premii (10%)",
     "d212.COTA_TRANSFER_PANA_3_ANI": "Cota impozitului la transferul imobilelor deținute până la 3 ani (3%)",
