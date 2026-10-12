@@ -4,7 +4,7 @@
 
 Ce parcurge:
   · pe fiecare firmă din FIRME: TOATE cardurile firmei (`#fa-*`, citite din pagină la rulare, nu dintr-o listă scrisă aici);
-  · desktopul cabinetului: toate cardurile lui (`button.cab-card`);
+  · desktopul cabinetului: toate cardurile lui (`button.cab-card`) și benzile de sus (`[data-banda]`: Recomandă, Suport);
   · drumurile adânci: Control fiscal pe firmă, declarațiile generate (D300, D390, D394, D406) pe o perioadă cu date.
 Pe fiecare ecran: deschide toate `<details>`, citește nodurile de TEXT vizibile (textul scris, nu cel transformat de CSS — un antet
 cu `text-transform: uppercase` nu e o „majusculă de accent”) și opțiunile selecturilor; scrie captura ecranului.
@@ -112,6 +112,14 @@ def main():
             try:
                 pg.goto(BAZA + "/", wait_until="domcontentloaded"); pg.wait_for_selector(".cab-card", timeout=20000)
                 pg.click("button.cab-card:has([data-cheie='%s'])" % k, timeout=8000); pg.wait_for_timeout(2500)
+                _citeste(pg, "cabinet/" + k, out_dir, excl, rez)
+            except Exception as e:  # noqa: BLE001
+                rez["cabinet/" + k] = {"eroare": str(e)[:200]}
+        # [deficiența 225, 12.10.2026] „Recomandă” și „Suport” sunt benzile de sus (`[data-banda]`), nu carduri — tot ecrane ale cabinetului
+        for k in pg.eval_on_selector_all("[data-banda]", "els => els.map(e => e.dataset.banda)"):
+            try:
+                pg.goto(BAZA + "/", wait_until="domcontentloaded"); pg.wait_for_selector(".cab-card", timeout=20000)
+                pg.click("[data-banda='%s']" % k, timeout=8000); pg.wait_for_timeout(2500)
                 _citeste(pg, "cabinet/" + k, out_dir, excl, rez)
             except Exception as e:  # noqa: BLE001
                 rez["cabinet/" + k] = {"eroare": str(e)[:200]}

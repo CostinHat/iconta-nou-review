@@ -24,6 +24,9 @@ import sys
 import time
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import argumente_script  # noqa: E402
+
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PORT = int(os.environ.get("E2E_PORT", "8019"))
 #: [09.10.2026, prins la prima rulare în paralel] Pornirea aplicației face DDL pe toate firmele (`migreaza_triggerele`, sub un lacăt
@@ -132,6 +135,9 @@ def _opreste(app):
 
 
 def main(argv):
+    # [12.10.2026, decizia Costin: „--help la e2e_poarta.py: repară-l în acest lot.”] argumentele se citesc ÎNAINTE de lacăt și de export:
+    # `--help` pornea plasa întreagă, iar o plasă oprită la jumătate a lăsat firma sintetică în baza de test (scripts/argumente_script.py)
+    argv = argumente_script.citeste(argv, __doc__, flaguri=("--arbore",), cu_valoare=("--doar=", "--mutatie="), pozitionale=1, prefix="[e2e]")
     with open(LACAT, "w") as lac:
         fcntl.flock(lac, fcntl.LOCK_EX)          # așteaptă rândul: rulările se serializează, nu se calcă
         return _main(argv)

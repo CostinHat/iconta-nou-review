@@ -2220,3 +2220,27 @@ manual „An precedent” pe 2026; mutația scăpată din lotul 11.10 închisă.
   / `_scrie`): 6 mutații ROȘII; `firme.js:2930` acoperit de e2e 221 — mutația pe copie: ROȘU la `e2e_comanda_1010.py:289`.
 - Registre: DECIZII, CLAUDE.md §2.3 pct.12 e), GARZI, TESTE (firul 12.10 închis; firul 11.10 închis), PREDARE. Un singur commit prin
   poarta completă (commitul care conține această intrare).
+
+## 12.10.2026 — Retestul Costin: 224 și 225 redeschise, 226–232, `--help` la plasă (un lot, o poartă)
+
+Comanda verbatim în DECIZII 12.10.2026 („Retestul în aplicație”). Confirmate de Costin: 125, 220, 221, 222, 223. R4 rămâne BLOCAT.
+
+- **224:** cardul Control fiscal = un rând de patru buline cu numerele lor, fără text, la înălțimea celorlalte carduri
+  (`semafor.semaforCardControl`); fereastra păstrează luminile cu text. **225 + 231:** pagina principală, aceeași la ambele roluri, scrisă
+  din `salut.js`: banda de salut cu benzile „Recomandă” și „Suport” una lângă alta, apoi grila; meniul din stânga al asistentului scos
+  (proba R175 înlocuită de `proba_pagina_principala.py`). **226:** eticheta stării firmei = una din patru (`etichetaStare(stare)`).
+- **227:** denumirile rândurilor din structura ANAF 2025 (`anaf_surse/structura_SC_1225_270126.pdf`), extrase de
+  `scripts/extrage_denumiri_bilant.py` în `core/bilant_denumiri.py`; formularul manual și „Ce se depune” le arată. **228:** acțiunile
+  bilanțului inactive până se completează coloana, cu motivul lângă ele. **229:** `firma_profil.data_infiintare` (ANAF
+  `data_inregistrare` la adăugare, Date firmă, jurnal) și primul exercițiu fără „An precedent” (Legea 82/1991 art.27 alin.(8)), valid pe
+  DUK; migrarea `core/migrare_data_infiintare.py` — rulată pe baza de test, pe producție o rulează Costin. **230:** firul de intrare
+  numerotat după poziție. **232:** datele lui F3 (prima notă 15.06.2026) -> luna preluării 06/2026; antetul „Înainte de preluare” spune
+  acum „până la 05/2026” și de unde vine luna.
+- **`--help`:** `scripts/argumente_script.py` (uzul / refuzul înainte de orice efect) în `e2e_poarta.py`, `publica_static.py`,
+  `cifre_referinta.py`. Prilejul: o plasă pornită din greșeală de `--help` și oprită a lăsat firma sintetică în baza de test.
+- **Găsite de Code:** C10 (F20 S1003 pe o numerotare proprie, nu pe a formularului; DUK „valid”) — nerezolvată, la decizia lui Costin;
+  C11 (F30 sub „An precedent / An curent” în „Ce se depune”) — reparată.
+- **O mutație a verificatorului a scăpat** (228, butoanele nelegate de coloană: regula cerea numai motivul) — regula întărită, refăcută roșie.
+- Uneltele vizuale pe instanța de probă IZOLATĂ (export al arborelui, statica publicată lângă el, 8011 pe baza de test) — nu prin
+  publicarea staticii din arbore în directorul servit de producție (rețeta din PREDARE ar fi pus JS-ul nou peste backendul vechi).
+- Un singur commit prin poarta completă (commitul care conține această intrare).

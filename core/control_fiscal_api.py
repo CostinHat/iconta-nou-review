@@ -1133,6 +1133,11 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             "cu_intarziere": cu_intarziere,
             "inainte_de_preluare": inainte_de_preluare,
             "luna_preluare": ("%02d/%d" % (preluare[1], preluare[0])) if preluare else None,
+            # [deficiența 232] grupul „Înainte de preluare” = perioadele PÂNĂ LA luna dinaintea preluării; luna preluării se numără.
+            # Antetul spune ultima lună dinainte și de unde vine luna preluării (datele firmei), ca să nu se citească invers.
+            "luna_inainte_de_preluare": ("%02d/%d" % tuple(reversed(_lp.luna_dinainte(preluare)))) if preluare else None,
+            "luna_preluare_din": _lp.de_unde(_fp["salvata"], _fp["creat_la"] or _creat_la, _fp["data_solduri"], _fp["prima_nota"])
+                                 if preluare else None,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
             "regim_tva_anaf": regim_tva_anaf,
             "reconciliere_surse": reconciliere}

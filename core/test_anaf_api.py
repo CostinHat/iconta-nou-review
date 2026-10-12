@@ -47,3 +47,18 @@ def test_3j_uc_tenants_paseaza_data_emitere():
     s = _io.open(_os.path.join(_r, "core", "uc_tenants.py"), encoding="utf-8").read()
     assert _re.search(r"furnizor_incasare_freeze\(.*data=date\.data_emitere", s), \
         "uc_tenants nu mai paseaza data emiterii la furnizor_incasare_freeze (3j necablat)"
+
+
+def test_data_inregistrarii_din_anaf_ajunge_ca_data_infiintarii(monkeypatch):
+    """[deficiența 229] `date_generale.data_inregistrare` (ANAF WS v9, `anaf_surse/doc_WS_V9.txt`: „Data inregistrare”; răspuns real
+    12.10.2026 pentru 14399840: '2002-01-23', J2002000372404) se citește și trece la adăugarea firmei în `firma_profil.data_infiintare`.
+    MUTAȚIE: câmpul scos din `valideaza_cui` -> pică."""
+    class _R:
+        status_code = 200
+
+        def json(self):
+            return {"found": [{"date_generale": {"cui": 14399840, "denumire": "DANTE INTERNATIONAL SA", "data_inregistrare": "2002-01-23",
+                                                 "nrRegCom": "J2002000372404"}, "inregistrare_scop_Tva": {}}], "notFound": []}
+    monkeypatch.setattr(anaf_api.requests, "post", lambda *a, **k: _R())
+    r = anaf_api.valideaza_cui([14399840], data_interogare="2026-10-12")
+    assert r[0]["data_inregistrare"] == "2002-01-23", r

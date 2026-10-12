@@ -1458,7 +1458,10 @@ def test_def_188_randurile_bilantului_pe_ecran_cu_cifrele_care_se_depun(patron, 
     for f, r, col, v in _re.findall(r'\b(F\d\d)_(\d{3})([12])="(-?\d+)"', xml):
         din_xml.setdefault((f, int(r)), ["0", "0"])[int(col) - 1] = v
     bani = lambda t: str(int(round(float(t.replace(".", "").replace(",", ".").replace("\u2212", "-") or 0))))
-    pe_ecran = {(f, int(r.split()[-1])): (bani(p), bani(c)) for f, r, p, c in ecran}
+    pe_ecran = {(f, int(r.split()[-1])): (bani(p), bani(c)) for f, r, _den, p, c in ecran}
+    # [C11] datele informative (F30) în tabelul lor, cu valorile așa cum se depun (fără „An precedent” / „An curent”)
+    pe_ecran.update({("F30", int(r.split()[-1])): (a, b) for r, _den, a, b in pg.evaluate("""() => [...document.querySelectorAll(
+      '#bl-randuri-f30 tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))""")})
     din_xml = {k: tuple(v) for k, v in din_xml.items()}
     assert ("F10", 5) in pe_ecran and ("F10", 13) in pe_ecran, ecran
     assert pe_ecran == din_xml, sorted(set(pe_ecran.items()) ^ set(din_xml.items()))

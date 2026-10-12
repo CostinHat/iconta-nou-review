@@ -45,6 +45,29 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Retestul Costin 12.10.2026 (verbatim în DECIZII): 224 și 225 redeschise, 226–232, `--help` la plasă** — un singur lot, o
+  singură trecere prin poartă; raport punctual cu probă și captură; ZIP. R4 rămâne BLOCAT.
+  - ultim: H0–H10 în commitul care conține această intrare (+ C11, găsită de plasa lui 229; C10 înregistrată, la decizie)
+  - urmator: — (raportul + ZIP; R4 BLOCAT). STARE = ÎNCHIS
+  - pasi:
+    H0. DECIZII (comanda verbatim, PIVOT 224 și 225), DEFICIENTE (224, 225 redeschise; 226–232 noi), TESTE (acest fir).
+    H1. `--help`: `scripts/e2e_poarta.py` tipărește uzul și iese fără să pornească plasa; un flag necunoscut e refuzat (o rulare pornită
+        din greșeală lasă firma sintetică în baza de test). Test + mutație. Clasa: celelalte scripturi cu argv manual.
+    H2. 224: cardul Control fiscal = un rând cu 4 buline colorate și numărul fiecăreia, fără text, înălțimea celorlalte carduri (Cabinet
+        și asistent); textul stărilor numai în fereastră. Regula în DESIGN_SYSTEM.md + verificator (SEMAFOR_PATRU_LUMINI). e2e 224 rescris.
+    H3. 225: „Recomandă” și „Suport” = două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri (și la rolul la care
+        „Suport” lipsește). e2e 225 rescris.
+    H4. 231: pagina principală a asistentului fără meniul din stânga care repetă cardurile; aceeași structură la ambele roluri. e2e 231.
+    H5. 226: eticheta din dreapta fiecărei firme în fereastra Control fiscal = una din cele 4 stări; detaliul pe rândul de dedesubt. e2e.
+    H6. 232: luna preluării dintr-o singură funcție, din datele firmei; „Înainte de preluare” și restanțele consecvente. Proba pe F3
+        (producție, read-only). e2e.
+    H7. 227: formularul manual „An precedent” cu denumirea rândului de pe formular (S1005, S1003; F10, F20), din sursa oficială. e2e.
+    H8. 228: „Validează” și „Trimite în coadă” inactive până se completează coloana, cu motivul lângă ele. e2e.
+    H9. 229: firma înființată în anul bilanțului -> primul exercițiu: coloana „An precedent” legal goală, fără completare manuală; data
+        înființării din datele firmei; temeiul citat. Teste core + e2e.
+    H10. 230: catalogul lui Ana — „Firul de intrare” numerotat de la 1. e2e.
+    H11. Verificatorul + testele fișierelor atinse verzi; uneltele vizuale pe ecranele atinse; registrele; un singur commit prin poarta
+         completă; four-way; raportul punctual cu capturi; ZIP.
 - fir: **Comanda Costin 12.10.2026 (răspunsul la §6 al raportului „Oprește R4”, verbatim în DECIZII)** — deciziile 1–4 consemnate;
   mutația scăpată din lotul 11.10 (anul din refuzul coloanei goale, `bilant_api.py:157`) închisă cu un test care o prinde; raportul
   punctual pe pct.5; ZIP. R4 rămâne BLOCAT.

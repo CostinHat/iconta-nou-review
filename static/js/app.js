@@ -45,11 +45,11 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 
 import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
 import { api, arataMesaj } from "./api.js?v=2561dbfd34";
-import { ecranBunVenit } from "./ecrane/ansamblu.js?v=40d4d489bc";  // [bun_venit_v1]
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=96c0d1308c";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=f09f7a3d4e";
 import { creeazaNavigator } from "./navigator.js?v=cf99012ad3";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=a95d3d4fc8";
-import { desktopAsistent } from "./ecrane/asistent.js?v=db8a1900e0";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=36c9a0df4c";
+import { desktopAsistent } from "./ecrane/asistent.js?v=eac5e4cefd";
 import { desktopPortal } from "./ecrane/portal.js?v=385b370f93";
 import { desktopAdmin } from "./ecrane/admin.js?v=8d78001a23"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul

@@ -172,7 +172,8 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
 CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
-                                                                    "luna_preluare")   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
+                                                                    "luna_preluare",   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
+                                                                    "data_infiintare")   # [deficiența 229, 12.10.2026]
 
 
 def _instantaneu(conn):
@@ -359,7 +360,7 @@ def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
-               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
+               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -369,6 +370,8 @@ def citeste_date(conn):
     for k in ("capital_subscris", "capital_varsat"):
         if prof.get(k) is not None:
             prof[k] = str(prof[k])
+    if prof.get("data_infiintare") is not None:
+        prof["data_infiintare"] = prof["data_infiintare"].isoformat()
     from core import capital_social as _cs
     from core import luna_preluare as _lp, repo_firma_profil as _rfp
     with conn.cursor() as cur:   # [08.10 §6 pct.4] luna preluării: salvată / propusă (dedusă, plafonată la prima notă) / efectivă
@@ -444,6 +447,19 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
         if _er:
             return {"ok": False, "camp": "luna_preluare", "mesaj": _er}
         _val["luna_preluare"] = _l
+    # [deficiența 229, comanda Costin 12.10.2026] data înființării: de la ea curge primul exercițiu financiar (Legea 82/1991 art.27
+    # alin.(8)), în care coloana „An precedent” a bilanțului rămâne goală. Gol = necunoscută; o dată din viitor nu e o înființare.
+    if "data_infiintare" in (date or {}):
+        import datetime as _dt
+        _di = str(date.get("data_infiintare") or "").strip() or None
+        if _di is not None:
+            try:
+                _di = _dt.date.fromisoformat(_di)
+            except ValueError:
+                return {"ok": False, "camp": "data_infiintare", "mesaj": "Data înființării: o dată (zi, lună, an)."}
+            if _di > _dt.date.today():
+                return {"ok": False, "camp": "data_infiintare", "mesaj": "Data înființării nu poate fi în viitor."}
+        _val["data_infiintare"] = _di
     # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
     if any(k in (date or {}) for k in CAMPURI_AMEF):
         from core.uc_comun import bifa as _bifa

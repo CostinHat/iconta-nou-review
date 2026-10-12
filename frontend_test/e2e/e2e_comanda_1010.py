@@ -77,59 +77,6 @@ def test_def_220_rosu_numai_cu_termen_depasit(patron):
     assert rosii == [], rosii
 
 
-# ── 224 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def _lumini(ecran, selector_card="button.cab-card:has([data-cheie='control'])"):
-    pg = ecran.pg
-    pg.wait_for_function("() => document.querySelector('[data-cheie=control] .cab-semafor4')", timeout=120000)
-    return pg.eval_on_selector_all("[data-cheie=control] .cab-semafor4 .cab-stare", """es => es.map(e => ({stare: e.dataset.stare,
-        n: parseInt(e.querySelector('.tip-figura').innerText, 10), text: e.innerText.trim(),
-        cls: e.querySelector('.cab-pct').className}))""")
-
-
-def test_def_224_cardul_control_fiscal_semafor_cu_patru_lumini(browser, request, patron):
-    """224. Cardul Control fiscal devine semafor cu 4 lumini, cu numărul de firme în fiecare stare.
-    Pașii contabilului: contabilul-șef -> pagina principală: cardul Control fiscal are patru lumini, de sus în jos roșu, galben, verde,
-    gri, fiecare cu un număr (și 0); suma lor = firmele din lista Control fiscal, iar fiecare număr = rândurile listei în starea aceea
-    -> asistentul, pe pagina lui: același semafor, cu firmele lui."""
-    _rezumate_la_zi()                                       # cardul citește rezumatele: la zi, ca pe producție după tura cronului
-    patron.acasa()
-    lum = _lumini(patron)
-    patron.pg.locator("button.cab-card:has([data-cheie='control'])").scroll_into_view_if_needed()
-    patron.captura("card_cabinet")
-    assert [x["stare"] for x in lum] == ["rosu", "galben", "verde", "gri"], lum
-    assert all("pct-" + x["stare"] in x["cls"] for x in lum), lum
-    tops = patron.pg.eval_on_selector_all("[data-cheie=control] .cab-semafor4 .cab-stare", "es => es.map(e => e.getBoundingClientRect().top)")
-    assert tops == sorted(tops) and len(set(round(t) for t in tops)) == 4, tops      # vertical
-    randuri = _lista_control(patron)
-    culoare = lambda r: ("rosu" if "#ff8a80" in r["dot"] else "galben" if "#f0cd7a" in r["dot"] else "verde" if "#6fc494" in r["dot"]   # noqa: E731
-                         else "gri")
-    pe_lista = {s: sum(1 for r in randuri if culoare(r) == s) for s in ("rosu", "galben", "verde", "gri")}
-    assert {x["stare"]: x["n"] for x in lum} == pe_lista, (lum, pe_lista)
-    with cont_asistent(firme=(4838,)) as a, ecran_cont(browser, request, a["email"]) as e:
-        e.acasa()
-        la = _lumini(e)
-        e.captura("card_asistent")
-        assert [x["stare"] for x in la] == ["rosu", "galben", "verde", "gri"] and sum(x["n"] for x in la) == 1, la
-
-
-# ── 225 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_225_cardul_suport_la_ambele_roluri(browser, request, patron):
-    """225. Cardul „Suport” înlocuiește „Raportează”, la ambele roluri.
-    Pașii: contabilul-șef -> pagina principală: cardul „Suport” (niciun card „Raportează”) -> îl deschide: fereastra „Suport” cu
-    sesizările -> asistentul: la fel, în pagina lui."""
-    patron.acasa()
-    titluri = patron.pg.eval_on_selector_all(".cab-grila .cab-card-titlu", "els => els.map(x => x.innerText.trim())")
-    assert "Suport" in titluri and "Raportează" not in titluri, titluri
-    patron.pg.click("button.cab-card:has([data-cheie='raport'])")
-    patron.pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Suport')", timeout=30000)
-    patron.captura("cabinet")
-    with cont_asistent(firme=(4838,)) as a, ecran_cont(browser, request, a["email"]) as e:
-        e.acasa()
-        carduri = e.pg.eval_on_selector_all(".cab-card-titlu, .asi-nod-titlu", "els => els.map(x => x.innerText.trim())")
-        e.captura("asistent")
-        assert "Suport" in carduri and "Raportează" not in carduri, carduri
-
-
 # ── 223 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #: funcțiile pe care serverul le refuză unui asistent cu numai „Poate pregăti” (core/ansamblu.RUTA_FUNCTIONALITATE) + cea cu ecran numai
 #: la cabinet; câteva, numite, ca probă pe ecran
@@ -262,7 +209,7 @@ def _valideaza_bilant(ecran, an, alege=True):
                          "&& !r.innerText.includes('Se validează'); }", timeout=120000)
     randuri = pg.evaluate("""() => [...document.querySelectorAll('.fereastra:last-of-type #bl-randuri tbody tr')].map(tr =>
       [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))""")
-    return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, int(r.split()[-1])): (p, c) for f, r, p, c in randuri}
+    return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, int(r.split()[-1])): (p, c) for f, r, _den, p, c in randuri}
 
 
 def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
@@ -271,11 +218,11 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     aplicație. Dacă nu îl are, se completează manual, cu avertisment vizibil. Bilanțul nu poate fi generat cu coloana goală.”
     Pașii contabilului: firma cu soldurile de preluare la 31.12.2024 (bancă 10.000) și un aport validat în 03/2025 (+2.000) -> Bilanț
     anual 2025, S1005: ecranul spune că F10 vine din evidența pe 2024 și cere, cu avertisment, F20 (anul 2024 nu e în aplicație) ->
-    „Validează” fără F20: refuzul „coloana «An precedent» goală (F20)” -> completează F20 (zero pe toate rândurile) și salvează: avertismentul
+    „Validează” e inactiv fără F20 (228: motivul lângă el) -> completează F20 (zero pe toate rândurile) și salvează: avertismentul
     rămâne, „completată manual” -> „Validează”: rândul băncilor „An precedent” 10.000, „An curent” 12.000, validare fără erori, cu
     avertismentul în rezultat -> Bilanț 2026: „An precedent” vine din bilanțul pe 2025 validat în aplicație (12.000 pe rândul băncilor), fără
-    formular manual -> 2024 se refuză cu coloana „An precedent” goală (2023 nu e în aplicație) -> 2023 se refuză (soldurile de la
-    31.12.2023 sunt dinaintea preluării).
+    formular manual -> 2024: acțiunile inactive, coloana „An precedent” goală (2023 nu e în aplicație) -> 2023: acțiunile inactive, cu
+    motivul „nu se poate întocmi” (soldurile de la 31.12.2023 sunt dinaintea preluării).
     MUTAȚIILE din plasă: refuzul coloanei goale scos; bilanțul anului precedent ignorat."""
     f = firma_e2e
     pg = patron.pg
@@ -289,9 +236,8 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     assert "F10: evidența pe 2024 din aplicație" in zona, zona
     assert pg.locator(".fereastra:last-of-type #bl-precedent .caseta-atentie").is_visible(), zona
     assert "goală (F20)" in zona and pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 1, zona
-    text, _r = _valideaza_bilant(patron, 2025, alege=False)
-    patron.captura("refuz_coloana_goala")
-    assert "nu se poate genera cu coloana „An precedent” goală (F20)" in text, text[:800]
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), "„Validează” activ cu coloana „An precedent” goală"   # 228
+    assert "(F20)" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv"), pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
     pg.click(".fereastra:last-of-type #bl-prec-salveaza")                  # câmpurile goale = 0 lei, pe toate rândurile F20
     pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-prec-mesaj') || {}).innerText === "
                          "'Coloana „An precedent” a fost salvată.'", timeout=60000)
@@ -310,12 +256,17 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     assert pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 0, zona
     text, rand = _valideaza_bilant(patron, 2026, alege=False)
     assert rand.get(("F10", 8), ("?", "?"))[0] == "12.000,00", (rand, text[:600])
-    text, _rand = _valideaza_bilant(patron, 2024)
+    zona = _alege_bilant(patron, 2024)
     patron.captura("an_preluarii_fara_precedent")
-    assert "nu se poate genera cu coloana „An precedent” goală (F10, F20)" in text, text[:800]   # 2023 nu e deloc în aplicație
-    text, _rand = _valideaza_bilant(patron, 2023)
+    motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "(F10, F20)" in motiv, (motiv, zona[:300])   # 2023 nu e în aplicație
+    pg.fill(".fereastra:last-of-type #bl-an", "2023")
+    pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-actiuni-motiv') || {}).innerText.includes('nu se poate întocmi')",
+                         timeout=60000)
     patron.captura("an_dinaintea_preluarii")
-    assert "nu se poate întocmi" in text and "31.12.2024" in text, text[:800]
+    motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "31.12.2024" in motiv, motiv
 
 
 # ── C8 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

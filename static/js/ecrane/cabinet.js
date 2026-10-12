@@ -1,19 +1,19 @@
 // cabinet.js — desktopul cabinetului (admin_firma / superadmin).
-// Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
+// Banda de salut cu „Recomandă” și „Suport” (salut.js, aceeași la asistent) + cardurile pastel, fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
-import { semaforCard as _semaforCard, semaforPatruLumini } from "./semafor.js?v=e92b4d8ea1";  // [p87_asistent] [224]
+import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=f79bbba87b";
+import { randeazaListaFirme } from "./firme.js?v=14a1c5308f";
 import { randeazaMigrare } from "./migrare.js?v=00548d5fca";
-import { randeazaControl } from "./control.js?v=27e3238637";
+import { randeazaControl } from "./control.js?v=d5c4e1f86d";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=74572648b0"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari]
-import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
+import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=742787f71b"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=d4437aae0c";
 import { randeazaValidat } from "./validat.js?v=f25b959e6d";
@@ -64,9 +64,8 @@ const DEF = [  /* cab_ordine_v3 — [deficiența 203, retestul Costin 09.10: „
     sinteza:'<b class="tip-figura">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  // [deficiența 225, aprobat de Costin 10.10.2026] cardul se numește „Suport” la ambele roluri (supersedă 202/203: „Raportează”)
-  { cheie:"raport",    titlu:"Suport", icon: "suport",    ...CULORI_CARD.verde,
-    sinteza:"Raportează o problemă către iConta.eu", actiune:inLucru("Suport") },
+  // [deficiența 225 redeschisă, comanda Costin 12.10.2026] „Suport” și „Recomandă” nu mai sunt carduri: sunt benzile de deasupra
+  // cardurilor (salut.js), la ambele roluri
 ];
 
 // [coada_vizibila_mono_v1] titlul ferestrei cozii urmează starea patru-ochi (actualizat de actualizeazaValidat):
@@ -178,24 +177,11 @@ export function desktopCabinet(continut, nav) {
 // VEDEREA 1: panoul cu cele 9 carduri
 function randeazaPanou(continut, nav) {
   const u = sesiune.user() || {};
-  const azi = dataRo(new Date(), "lung");
   const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
 
-  continut.innerHTML = `
-    <div class="cab-salut" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
-      <div>
-        <h1 class="cab-salut-nume">Salut, ${prenume}</h1>
-        <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
-      </div>
-      <button class="cab-card cab-card-mic accent-recomanda" id="cab-recomanda-mic">
-        <div class="cab-card-cap">${svg("gift", "#92500a")}<span class="cab-card-titlu">Recomandă</span></div>
-      </button>
-    </div>
-    <div class="cab-grila"></div>
-  `;
-
+  continut.innerHTML = paginaPrincipala(prenume);
+  legaBenzile(continut, nav, "cabinet");
   const grila = continut.querySelector(".cab-grila");
-  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomandă", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));  /* recomanda_mic_v1 */
   DEF.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -228,12 +214,8 @@ function randeazaPanou(continut, nav) {
       card.addEventListener("click", () => nav.deschide("Sinteza zilei", (c) => randeazaSintezaAzi(c, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "setari") {  // [p28_setari]
       card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
-    } else if (c.cheie === "recomanda") {  // [p31_recomanda]
-      card.addEventListener("click", () => nav.deschide("Recomandă", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "pachete") {  // [p63_pachete]
       card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav), { nivel: "cabinet" }));
-    } else if (c.cheie === "raport") {  // [p34_raporteaza]
-      card.addEventListener("click", () => nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
     } else {
       card.addEventListener("click", () => c.actiune(nav));
     }
@@ -246,10 +228,8 @@ function randeazaPanou(continut, nav) {
   actualizeazaActivitate(grila);
   actualizeazaValidat(grila);
   actualizeazaAsistenti(grila);
-  actualizeazaRaportari(grila);  // [p34_raporteaza]
   _educatiePatruOchi(continut);
   _indicatorPatruOchi();  // [p51_edu]
-  document.addEventListener("raportari:schimbat", () => actualizeazaRaportari(grila));
 }
 
 // VEDEREA 2: meniul Firme — două opțiuni (existente / migrare cabinet)
@@ -358,7 +338,7 @@ async function actualizeazaControl(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = semaforPatruLumini(s);   // [deficiența 224] patru lumini, numărul de firme în fiecare stare
+    zona.innerHTML = semaforCardControl(s);   // [deficiența 224] un rând: patru buline, numărul de firme în fiecare stare, fără text
   } catch {}
 }
 
@@ -467,28 +447,6 @@ async function actualizeazaAsistenti(grila) {
       }
     } catch {}
     zona.innerHTML = randuri || (derivat ? `<span class="cab-stare"><span class="cab-pct pct-verde"></span>Echipă activă</span>` : "");  // [p76_comasare_font] [verde_derivat]
-  } catch {}
-}
-
-
-// [p34_raporteaza] badge rosu pe cardul Raporteaza
-async function actualizeazaRaportari(grila) {
-  const card = grila.querySelector('[data-cheie="raport"]');
-  const host = card ? card.closest(".cab-card") : null;
-  if (!host) return;
-  try {
-    const r = await api.get("/raportari/contor");
-    const n = (r && r.necitite) || 0;
-    let b = host.querySelector(".cab-card-badge");
-    if (n > 0) {
-      if (!b) {
-        b = document.createElement("span");
-        b.className = "cab-card-badge";
-        host.style.position = "relative";
-        host.appendChild(b);
-      }
-      b.textContent = n;
-    } else if (b) { b.remove(); }
   } catch {}
 }
 

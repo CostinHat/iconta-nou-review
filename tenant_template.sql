@@ -2832,6 +2832,9 @@ CREATE INDEX IF NOT EXISTS elemente_salariale_luna_ix ON TENANT_PLACEHOLDER.elem
 -- [08.10.2026, decizia Costin §6 pct.4] luna preluării, editabilă în Date firmă (mirror core/migrare_decizii_0810_s6.py)
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_preluare date;
 
+-- [12.10.2026, deficiența 229] data înființării (ANAF data_inregistrare / Date firmă): primul exercițiu (mirror core/migrare_data_infiintare.py)
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS data_infiintare date;
+
 -- [Retest 2 pct.4] stornarea operațiunii de casă: legătura spre operațiunea stornată (mirror: core/migrare_retest2.py)
 ALTER TABLE ONLY TENANT_PLACEHOLDER.casa_operatiuni
     ADD CONSTRAINT casa_operatiuni_storno_de_fkey FOREIGN KEY (storno_de) REFERENCES TENANT_PLACEHOLDER.casa_operatiuni(id);

@@ -2,25 +2,19 @@
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
 //
-// [p90_arbore 06.09.2026] PANOU DE NAVIGARE TIP ARBORE, in stanga, langa carduri.
-//
-// O SINGURA SURSA pentru amandoua. Arborele si cardurile se randeaza din `SECTIUNI` +
-// `NODURI`, iar destinatia fiecarui nod e ACEEASI functie pe care o cheama cardul - nu o
-// copie a ei. Motivul e masurat, nu estetic: chiar azi (R94) s-a reparat clasa „doua
-// mecanisme raspund diferit la aceeasi intrebare", care traise noua zile fiindca ecranul
-// si poarta citeau doua liste. Un arbore scris separat de carduri ar fi fost a treia.
-// `core/test_asistent_arbore.py` cere egalitatea, pe structura.
+// [deficiența 231, comanda Costin 12.10.2026, verbatim în DECIZII] „la Ana, scoate meniul din stânga care repetă cardurile. Pagina
+// principală are aceeași structură la ambele roluri.” PIVOT pe [p90_arbore 06.09.2026] (arborele de navigare din stânga): banda de
+// sus și benzile „Recomandă” / „Suport” vin din salut.js, ca la cabinet; dedesubt, numai grila de carduri.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
-import { semaforPatruLumini } from "./semafor.js?v=e92b4d8ea1";  // [p87_asistent] [224]
+import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaControl } from "./control.js?v=27e3238637";
+import { randeazaControl } from "./control.js?v=d5c4e1f86d";
 import { randeazaTermene } from "./termene.js?v=d4437aae0c";
 import { randeazaValidat } from "./validat.js?v=f25b959e6d";
-import { randeazaListaFirme } from "./firme.js?v=f79bbba87b";
-import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
+import { randeazaListaFirme } from "./firme.js?v=14a1c5308f";
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=742787f71b"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=0f3ab68351"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
@@ -29,8 +23,7 @@ function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
 }
 
-// ── NODURILE, una per functionalitate. `deschide` e destinatia UNICA: o cheama si cardul,
-// si nodul din arbore. Nimic din ce urmeaza nu duplica o navigare.
+// ── CARDURILE, unul per functionalitate; `deschide` e destinatia lui.
 const NODURI = {
   firme: { titlu: "Firme", icon: "building", ...CULORI_CARD.albastru,
     sinteza: "Firmele tale alocate",
@@ -50,12 +43,6 @@ const NODURI = {
   pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
     sinteza: "Trimite pachetul lunar către clienți",
     deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },
-  raport: { titlu: "Suport", icon: "suport", ...CULORI_CARD.ardezie,   // [05.10.2026] „report” nu mai e în ICOANE (v2.7) — desena gol
-    sinteza: "Raportează o problemă către iConta.eu",
-    deschide: (nav) => nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav)) },
-  recomanda: { titlu: "Recomandă", icon: "gift", ...CULORI_CARD.chihlimbar,
-    sinteza: "Invită un cabinet în iConta.eu",
-    deschide: (nav) => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)) },
   setari: { titlu: "Setări cont", icon: "settings", ...CULORI_CARD.ardezie,
     sinteza: "Parolă și date de profil",
     deschide: (nav) => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav)) },
@@ -74,8 +61,8 @@ const SECTIUNI = [
   { titlu: "Firmele mele", noduri: ["firme", "control", "termene"] },
   // lunar/trimestrial, in ordinea actului: pregatesc -> verific -> livrez
   { titlu: "Lucrarea lunii", noduri: ["declaratii", "validat", "pachete"] },
-  // ocazional si administrativ, la urma
-  { titlu: "Contul meu", noduri: ["raport", "recomanda", "setari"] },
+  // ocazional si administrativ, la urma („Suport” și „Recomandă” sunt benzile de sus — deficiența 225)
+  { titlu: "Contul meu", noduri: ["setari"] },
 ];
 
 // Cheile pe care le are DREPTUL sa vada utilizatorul, in ordinea sectiunilor.
@@ -87,39 +74,6 @@ export function cheiPermise(u) {
   })).filter((s) => s.noduri.length);
 }
 
-function arbore(sectiuni, nav) {
-  const el = document.createElement("nav");
-  el.className = "asi-arbore";
-  el.setAttribute("aria-label", "Navigare între funcționalități");
-  sectiuni.forEach((s, i) => {
-    const grup = document.createElement("div");
-    grup.className = "asi-grup";
-    const cap = document.createElement("h2");
-    cap.className = "asi-grup-titlu";
-    cap.id = `asi-grup-${i}`;
-    cap.textContent = s.titlu;
-    grup.appendChild(cap);
-    const lista = document.createElement("ul");
-    lista.className = "asi-lista";
-    lista.setAttribute("aria-labelledby", cap.id);
-    s.noduri.forEach((k) => {
-      const n = NODURI[k];
-      const li = document.createElement("li");
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "asi-nod";
-      b.dataset.nod = k;
-      b.innerHTML = `${svg(n.icon, "#2f6fa6")}<span>${n.titlu}</span>`;
-      b.addEventListener("click", () => n.deschide(nav));
-      li.appendChild(b);
-      lista.appendChild(li);
-    });
-    grup.appendChild(lista);
-    el.appendChild(grup);
-  });
-  return el;
-}
-
 export async function desktopAsistent(continut, nav) {
   const u = sesiune.user() || {};
   const prenume = u.prenume || u.nume || u.email || "";  /* [salut_prenume 27.07.2026] afisa numele de familie */
@@ -128,20 +82,10 @@ export async function desktopAsistent(continut, nav) {
 
   const sectiuni = cheiPermise(u);
 
-  continut.innerHTML = `
-    <div class="cab-salut">
-      <h1 class="cab-salut-nume">Salut, ${prenume}</h1>
-    </div>
-    <div class="asi-cadru">
-      <div class="asi-panou"></div>
-      <div class="cab-grila"></div>
-    </div>
-  `;
-
-  continut.querySelector(".asi-panou").appendChild(arbore(sectiuni, nav));
-
+  continut.innerHTML = paginaPrincipala(prenume);
+  legaBenzile(continut, nav);
   const grila = continut.querySelector(".cab-grila");
-  // Cardurile, in EXACT ordinea arborelui - aceeasi lista, plimbata o data.
+  // Cardurile, in ordinea sectiunilor (fluxul de lucru al asistentului)
   sectiuni.forEach((s) => s.noduri.forEach((k) => {
     const c = NODURI[k];
     const card = document.createElement("button");
@@ -156,9 +100,7 @@ export async function desktopAsistent(continut, nav) {
     grila.appendChild(card);
   }));
 
-  actualizeazaRaportariAsi(grila);  // [p34_raporteaza]
   actualizeazaControlAsi(grila);  // [p87_asistent]
-  document.addEventListener("raportari:schimbat", () => actualizeazaRaportariAsi(grila));
 }
 
 
@@ -169,27 +111,6 @@ async function actualizeazaControlAsi(grila) {
   try {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
-    zona.innerHTML = semaforPatruLumini(s);   // [deficiența 224] patru lumini, numărul de firme în fiecare stare
-  } catch {}
-}
-
-// [p34_raporteaza] badge rosu pe cardul Raporteaza (asistent)
-async function actualizeazaRaportariAsi(grila) {
-  const card = grila.querySelector('[data-cheie="raport"]');
-  const host = card ? card.closest(".cab-card") : null;
-  if (!host) return;
-  try {
-    const r = await api.get("/raportari/contor");
-    const n = (r && r.necitite) || 0;
-    let b = host.querySelector(".cab-card-badge");
-    if (n > 0) {
-      if (!b) {
-        b = document.createElement("span");
-        b.className = "cab-card-badge";
-        host.style.position = "relative";
-        host.appendChild(b);
-      }
-      b.textContent = n;
-    } else if (b) { b.remove(); }
+    zona.innerHTML = semaforCardControl(s);   // [deficiența 224] un rând: patru buline, numărul de firme în fiecare stare, fără text
   } catch {}
 }

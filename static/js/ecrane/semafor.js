@@ -3,22 +3,34 @@
 // Daca tot e zero -> rand verde pozitiv cu mesajOk.
 // Refolosit de cabinet.js si asistent.js (principiul: construit o data).
 
-// [deficiența 224, aprobat de Costin 10.10.2026] Cardul Control fiscal = semafor cu PATRU lumini, fiecare cu numărul de firme în starea
-// ei — partiția `sumar` a serverului (fiecare firmă într-o singură stare: `uc_control_fiscal.control_fiscal_portofoliu`). DS cap.8:
-// vertical, ROȘU -> GALBEN -> VERDE (urgența întâi), apoi GRI; toate patru mereu, și cu 0. Roșu = termen depășit (deficiența 220).
-// Gard: regula SEMAFOR_PATRU_LUMINI din verificator.
+// [deficiența 224, aprobat de Costin 10.10.2026; forma cardului: PIVOT 12.10.2026] Semaforul Control fiscal = PATRU lumini, fiecare cu
+// numărul de firme în starea ei — partiția `sumar` a serverului (fiecare firmă într-o singură stare:
+// `uc_control_fiscal.control_fiscal_portofoliu`). DS cap.8: ordinea ROȘU -> GALBEN -> VERDE (urgența întâi), apoi GRI; toate patru mereu,
+// și cu 0. Roșu = termen depășit (deficiența 220). Fereastra: vertical, cu numele stării (`semaforPatruLumini`); cardul: un rând, numai
+// bulina și numărul (`semaforCardControl`). Gard: regula SEMAFOR_PATRU_LUMINI din verificator.
 export const LUMINI_CONTROL = [
   ["rosu", "pct-rosu", "cu restanță", "cu restanțe"],
   ["galben", "pct-galben", "de urmărit", "de urmărit"],
   ["verde", "pct-verde", "la zi", "la zi"],
   ["gri", "pct-gri", "nu se poate verifica", "nu se pot verifica"],
 ];
+// Fereastra Control fiscal: luminile cu numărul ȘI numele stării (textul stă numai aici — deficiența 224, 12.10.2026).
 export function semaforPatruLumini(sumar) {
   const s = sumar || {};
   return `<div class="cab-semafor4">${LUMINI_CONTROL.map(([k, cls, unu, multe]) => {
     const n = s[k] || 0;
     return `<span class="cab-stare" data-stare="${k}"><span class="cab-pct ${cls}"></span><b class="tip-figura">${n}</b>&nbsp;${n === 1 ? unu : multe}</span>`;
   }).join("")}</div>`;
+}
+
+// [deficiența 224 REDESCHISĂ, comanda Costin 12.10.2026, verbatim în DECIZII] „Cardul arată doar un rând cu 4 buline colorate și
+// numărul fiecăreia, fără text, iar înălțimea lui e la fel cu a celorlalte carduri. Textul rămâne numai în fereastră.” Aceleași patru
+// stări, în aceeași ordine, din același `sumar` ca fereastra; numele stărilor ajung la cititorul de ecran prin `aria-label`, nu pe card.
+export function semaforCardControl(sumar) {
+  const s = sumar || {};
+  const eticheta = LUMINI_CONTROL.map(([k, , unu, multe]) => `${s[k] || 0} ${(s[k] || 0) === 1 ? unu : multe}`).join(", ");
+  return `<div class="cab-semafor4 cab-semafor4--card" role="img" aria-label="${eticheta}">${LUMINI_CONTROL.map(([k, cls]) =>
+    `<span class="cab-stare" data-stare="${k}"><span class="cab-pct ${cls}"></span><b class="tip-figura">${s[k] || 0}</b></span>`).join("")}</div>`;
 }
 
 // [125 + 224, decizia Costin 11.10.2026: „aceleași 4 stări, cu aceleași numere, calculate dintr-o singură sursă”] Cardul și fereastra
@@ -29,7 +41,7 @@ export function publicaSumarControl(sumar) {
   document.dispatchEvent(new CustomEvent("control-fiscal:sumar", { detail: sumar || {} }));
 }
 document.addEventListener("control-fiscal:sumar", (e) => {
-  document.querySelectorAll('[data-cheie="control"]').forEach((z) => { z.innerHTML = semaforPatruLumini(e.detail); });
+  document.querySelectorAll('[data-cheie="control"]').forEach((z) => { z.innerHTML = semaforCardControl(e.detail); });
 });
 
 export function semaforCard(perechi, mesajOk, verde) {

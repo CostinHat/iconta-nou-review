@@ -365,7 +365,12 @@ html, body {
 /* ============================================================
    DESKTOP CABINET — salut + grilă 9 carduri pastel
    ============================================================ */
-.cab-salut { margin-bottom: 12px; }
+.cab-salut { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+/* [deficiențele 225 + 231, comanda Costin 12.10.2026] „Recomandă” și „Suport”: două benzi înguste, una lângă alta, deasupra cardurilor,
+   la ambele roluri (salut.js). Banda = un card scund, cât titlul lui. */
+.cab-benzi { display: flex; gap: 12px; flex-wrap: wrap; }
+.cab-banda { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; min-height: 44px; }
+.cab-banda .cab-card-titlu { font-size: var(--text); }
 .cab-salut-nume { font-size: var(--text-titlu); font-weight: 600; color: #163a5a; margin: 0; }   /* [11.10.2026] h1 al paginii principale (axe page-has-heading-one), același aspect */
 .cab-salut-data { font-size: var(--text-mic); color: var(--gri); }
 
@@ -399,25 +404,6 @@ html, body {
 @media (max-width: 760px) { .cab-grila { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { .cab-grila { grid-template-columns: 1fr; } }
 
-/* [p90_arbore 06.09.2026] desktopul asistentului: arbore de navigare in stanga, carduri in dreapta.
-   Pe telefon arborele TRECE DEASUPRA cardurilor, nu dispare: e navigare, iar o navigare ascunsa pe
-   ecranul mic ar muta functionalitati in nicaieri. */
-.asi-cadru { display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
-.asi-panou { position: sticky; top: 12px; }
-.asi-arbore { background: #e9edf3; border: 2px solid rgba(0,0,0,0.10); border-radius: 12px; padding: 12px 10px; }
-.asi-grup + .asi-grup { margin-top: 14px; }
-.asi-grup-titlu { font-size: var(--text-mic); font-weight: 700; color: #5c6675; letter-spacing: 0.04em;
-  text-transform: uppercase; margin: 0 0 6px 8px; }
-.asi-lista { list-style: none; margin: 0; padding: 0; }
-.asi-nod { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px;
-  padding: 8px 10px; border: 0; border-radius: 8px; background: transparent; color: #2f6fa6;
-  font-family: inherit; font-size: var(--text); text-align: left; cursor: pointer; }
-.asi-nod:hover { background: rgba(47,111,166,0.10); }
-.asi-nod:focus-visible { outline: 2px solid #2f6fa6; outline-offset: 1px; }
-@media (max-width: 760px) {
-  .asi-cadru { grid-template-columns: 1fr; }
-  .asi-panou { position: static; }
-}
 
 /* ============================================================
    VEDERI SECUNDARE în desktop (meniu Firme, listă) — antet comun
@@ -1777,6 +1763,8 @@ html, body {
 .cab-stari { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
 /* [deficiența 224, DS cap.8] semaforul cu patru lumini al cardului Control fiscal: vertical, roșu -> galben -> verde -> gri */
 .cab-semafor4 { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+/* [deficiența 224 redeschisă, 12.10.2026] pe card: un rând cu patru buline și numărul fiecăreia, fără text — înălțimea celorlalte carduri */
+.cab-semafor4--card { flex-direction: row; flex-wrap: nowrap; gap: 18px; margin-top: 10px; line-height: 1.5; }
 .cab-stare { display: inline-flex; align-items: center; font-size: var(--text); }  /* [p76_comasare_font] */
 
 /* [p84_vector_css] formular vector fiscal */

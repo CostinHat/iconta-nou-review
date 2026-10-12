@@ -256,11 +256,15 @@ def randuri_din_xml(xml):
     """[deficiența 188, retestul Costin 09.10.2026: „rândurile bilanțului (F10_0052, F10_0132 și restul) apar pe ecranul Bilanț, cu cifrele
     care se depun, nu doar verdictul”] Rândurile CITITE din XML-ul care se depune (nu recalculate): [{formular, rand, cod_precedent,
     an_precedent, cod_curent, an_curent}], în ordinea formularului. Codul atributului e `F<formular>_<rând pe 3 cifre><coloana>`
-    (1 = an precedent, 2 = an curent — `xml_s1005`)."""
+    (1 = an precedent, 2 = an curent — `xml_s1005`). [deficiența 227, comanda Costin 12.10.2026] fiecare rând poartă și denumirea de pe
+    formular (`core/bilant_denumiri.py`, extrasă din structura ANAF), după formularul din rădăcina XML-ului (Bilant1003 / Bilant1005)."""
     import re as _re
+    from core.bilant_denumiri import NOMENCLATOR_DENUMIRI
+    den = NOMENCLATOR_DENUMIRI["s1003" if "<Bilant1003" in (xml or "") else "s1005"]
     out = {}
     for f, r, col, v in _re.findall(r'\b(F\d\d)_(\d{3})([12])="(-?\d+)"', xml or ""):
-        d = out.setdefault((f, int(r)), {"formular": f, "rand": int(r), "cod_precedent": "%s_%s1" % (f, r), "an_precedent": 0,
+        d = out.setdefault((f, int(r)), {"formular": f, "rand": int(r), "denumire": den.get(f, {}).get(int(r), ""),
+                                          "cod_precedent": "%s_%s1" % (f, r), "an_precedent": 0,
                                           "cod_curent": "%s_%s2" % (f, r), "an_curent": 0})
         d["an_precedent" if col == "1" else "an_curent"] = int(v)
     return [out[k] for k in sorted(out)]

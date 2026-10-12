@@ -94,3 +94,19 @@ def test_control_fiscal_citeste_luna_efectiva():
                 n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", None))
                for n in ast.walk(ast.parse(inspect.getsource(cf))) if isinstance(n, ast.Call)}
     assert ("_lp", "efectiva") in apeluri and ("_lp", "deduse") not in apeluri
+
+
+def test_data_infiintarii_se_salveaza_se_refuza_in_viitor_si_se_jurnalizeaza(conn):
+    """[deficiența 229, comanda Costin 12.10.2026: „Ține cont de data înființării.”] Data înființării e un câmp al Date firmă: din ANAF
+    la adăugare, editabil, jurnalizat; o dată din viitor sau un text care nu e dată se refuză lângă câmp. MUTAȚIE: "data_infiintare"
+    scos din CAMPURI_JURNAL -> niciun rând în jurnal -> pică; refuzul datei din viitor scos -> pică."""
+    from core import firma_profil_api as fp
+    assert fp.citeste_date(conn)["profil"]["data_infiintare"] is None
+    r = fp.salveaza_date(conn, {"data_infiintare": "2999-01-01"}, user_id=7)
+    assert (r["ok"], r["camp"]) == (False, "data_infiintare"), r
+    assert fp.salveaza_date(conn, {"data_infiintare": "nu"}, user_id=7)["camp"] == "data_infiintare"
+    assert fp.salveaza_date(conn, {"data_infiintare": "2025-03-15"}, user_id=7)["ok"]
+    assert fp.citeste_date(conn)["profil"]["data_infiintare"] == "2025-03-15"
+    with conn.cursor() as cur:
+        cur.execute("SELECT camp, valoare_veche, valoare_noua, user_id FROM firma_profil_jurnal WHERE camp = 'data_infiintare'")
+        assert cur.fetchall() == [("data_infiintare", None, "2025-03-15", 7)]

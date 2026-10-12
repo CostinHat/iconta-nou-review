@@ -79,6 +79,14 @@ def randuri_formular(tip):
     return {"F10": sorted(_b.f10_din_balanta({})), "F20": sorted(f20({}))}
 
 
+def denumiri_formular(tip):
+    """[deficiența 227, comanda Costin 12.10.2026] {secțiune: {rând: denumirea de pe formular}} pentru rândurile din `randuri_formular`
+    — din `core/bilant_denumiri.py` (structura ANAF a formularelor de bilanț 2025, generat). Un rând fără denumire e o eroare de date:
+    `core/test_bilant_denumiri.py` cere ca fiecare rând de completat să aibă una."""
+    from core.bilant_denumiri import NOMENCLATOR_DENUMIRI
+    return {s: {r: NOMENCLATOR_DENUMIRI[tip][s][r] for r in rr} for s, rr in randuri_formular(tip).items()}
+
+
 def _ultimul(cur, schema, fel, cheie, numai_valid=False):
     cur.execute(f"""SELECT continut, exemplar, produs_la, produs_de FROM {schema}.artefacte_produse
                     WHERE fel = %s AND cheie = %s {"AND verdict = 'valid'" if numai_valid else ""}
@@ -96,10 +104,25 @@ def coloana_precedenta(cur, schema, tip, an):
                        F20 = rulajele anului numai dacă evidența îl acoperă întreg (INTERPRETARE: e bilanțul pe care aplicația l-ar
                        genera pentru acel an);
       (c) „manual”   — completată de contabil (artefactul `FEL_MANUAL`), numai pentru secțiunile fără (a)/(b).
-    O secțiune fără sursă rămâne None: `coloanele` refuză generarea."""
+    O secțiune fără sursă rămâne None: `coloanele` refuză generarea.
+    [deficiența 229, comanda Costin 12.10.2026] înaintea lor, PRIMUL EXERCIȚIU: firma înființată în anul bilanțului (`data_infiintare`)
+    nu are exercițiu precedent — coloana „An precedent” rămâne legal goală, sursa „primul_exercitiu”, fără completare manuală. TEMEI:
+    Legea 82/1991 art.27 alin.(8): „Exercițiul financiar al unităților nou-înființate începe la data înființării, potrivit legii.”;
+    OMFP 1802/2014 pct.130 cere valoarea „pentru exercițiul financiar precedent” — în primul exercițiu nu există. Un bilanț pe un an
+    dinaintea înființării nu există: refuz."""
     import datetime
     import json
     out = {"F10": None, "F20": None, "sursa": {"F10": None, "F20": None}}
+    cur.execute(f"SELECT data_infiintare FROM {schema}.firma_profil WHERE id = 1")
+    _r = cur.fetchone()
+    infiintare = (_r["data_infiintare"] if isinstance(_r, dict) else _r[0]) if _r else None
+    if infiintare and infiintare.year > an:
+        raise ValueError(mesaj_inainte_de_infiintare(an, infiintare))
+    if infiintare and infiintare.year == an:
+        out.update({s: {} for s in SECTIUNI})
+        out["sursa"] = {s: PRIMUL_EXERCITIU for s in SECTIUNI}
+        out["infiintare"] = infiintare
+        return out
     ref = data_soldurilor(cur, schema)
     s_p = sold_la(cur, schema, datetime.date(an - 1, 12, 31), ref)
     b = _ultimul(cur, schema, tip, an - 1, numai_valid=True)
@@ -138,8 +161,8 @@ def coloana_precedenta(cur, schema, tip, an):
 def coloanele(cur, schema, tip, an, av):
     """(f10p, f10c, f20p) pentru generare. „An curent” F10 necunoscut -> refuz (`coloana_curenta_f10`). „An precedent” fără sursă pe o
     secțiune -> refuz: bilanțul nu se generează cu coloana goală (decizia Costin 11.10.2026). Completat manual -> avertismentul vizibil."""
+    cp = coloana_precedenta(cur, schema, tip, an)     # întâi: un an dinaintea înființării se refuză cu motivul lui (229)
     f10c = coloana_curenta_f10(cur, schema, an)
-    cp = coloana_precedenta(cur, schema, tip, an)
     lipsa = [s for s in SECTIUNI if cp[s] is None]
     if lipsa:
         raise ValueError(mesaj_coloana_goala(an, lipsa, cp.get("bilant_respins")))
@@ -147,6 +170,20 @@ def coloanele(cur, schema, tip, an, av):
     if manual:
         av.append(avertisment_manual(an, manual, cp["manual"], cp.get("bilant_respins")))
     return cp["F10"], f10c, cp["F20"]
+
+
+PRIMUL_EXERCITIU = "primul_exercitiu"
+
+
+def mesaj_inainte_de_infiintare(an, infiintare):
+    return ("Bilanțul pe %d nu există: firma s-a înființat pe %s, iar primul ei exercițiu financiar e %d (Legea 82/1991 art.27 alin.(8))."
+            % (an, data_ro(infiintare), infiintare.year))
+
+
+def nota_primul_exercitiu(an, infiintare):
+    """Textul ecranului: de ce coloana „An precedent” e goală și nu se cere."""
+    return ("Primul exercițiu financiar: firma s-a înființat pe %s, deci bilanțul pe %d nu are exercițiu precedent — coloana „An "
+            "precedent” rămâne goală și nu se completează (Legea 82/1991 art.27 alin.(8))." % (data_ro(infiintare), an))
 
 
 def mesaj_coloana_goala(an, lipsa, respins=None):

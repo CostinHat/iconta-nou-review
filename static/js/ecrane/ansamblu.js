@@ -17,9 +17,11 @@ import { STRATURI } from "./migrare.js?v=00548d5fca";
 import { permis } from "../drepturi.js?v=df020d220f";
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 
+// [deficiența 230, comanda Costin 12.10.2026] numărul pasului e poziția lui în firul AFIȘAT, nu `nr` din STRATURI: pentru asistent
+// pasul „Firme” e al administratorului și lipsește, iar firul începea de la „2”.
 function _firHTML(pasi) {
-  return pasi.map((st) =>
-    `<li class="ans-pas"><span class="ans-pas-nr">${st.nr}</span>` +
+  return pasi.map((st, i) =>
+    `<li class="ans-pas"><span class="ans-pas-nr">${i + 1}</span>` +
     `<span class="ans-pas-txt"><b class="ans-pas-titlu">${esc(st.titlu)}</b>` +
     `<span class="ans-pas-desc">${esc(st.desc)}</span></span></li>`
   ).join("");
@@ -74,7 +76,7 @@ async function _corpAnsamblu(corp, primaLogare) {
   corp.innerHTML =
     `<div class="ans-continut">` +
       (primaLogare ? intro : "") +
-      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul „Suport” de pe pagina principală.</p>` +
+      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează din „Suport”, sus pe pagina principală, lângă „Recomandă”.</p>`   /* [deficiența 225, 12.10.2026] bandă, nu card */ +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
         : _sectiuneFir(asistent, pasi)) +

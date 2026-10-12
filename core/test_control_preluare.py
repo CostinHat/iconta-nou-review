@@ -71,6 +71,22 @@ def test_propunerea_nu_trece_de_prima_nota_si_luna_salvata_castiga():
     assert lp.din_text("2026-06") == datetime.date(2026, 6, 1) and lp.din_text("") is None
 
 
+def test_luna_preluarii_spune_de_unde_vine_si_ultima_luna_dinainte():
+    """[deficiența 232, comanda Costin 12.10.2026] „F3, Control fiscal: «Înainte de preluare — 06/2026 (nu se numără la restanțe)», dar D390
+    și D301 pe 06/2026 apar ca restanțe. Stabilește din datele firmei care e luna preluării și fă cele două locuri consecvente.” Datele
+    lui F3 pe producție (citite read-only, 12.10.2026): luna nesalvată, soldurile de preluare fără dată, prima notă 15.06.2026, adăugată
+    21.09.2026 -> luna preluării 06/2026, deci iunie SE numără; grupul „Înainte de preluare” e până la 05/2026. MUTAȚIE: `de_unde`
+    care spune soldurile când prima notă e mai veche -> pică; `luna_dinainte` = luna însăși -> pică."""
+    from core import luna_preluare as lp
+    f3 = dict(creat_la=datetime.date(2026, 9, 21), data_solduri=None, prima_nota=datetime.date(2026, 6, 15))
+    assert lp.efectiva(None, **f3) == (2026, 6)
+    assert lp.de_unde(None, **f3) == "luna primei note din jurnal, 15.06.2026"
+    assert lp.luna_dinainte((2026, 6)) == (2026, 5) and lp.luna_dinainte((2026, 1)) == (2025, 12)
+    assert lp.de_unde(datetime.date(2026, 4, 1), **f3) == "aleasă în Date firmă"
+    assert lp.de_unde(None, datetime.date(2026, 9, 21), datetime.date(2026, 6, 30), None) == "ziua de după soldurile de preluare, 30.06.2026"
+    assert lp.de_unde(None, datetime.date(2026, 9, 21)) == "luna adăugării firmei în iConta.eu, 21.09.2026"
+
+
 def test_perioadele_dinaintea_preluarii_nu_sunt_restante():
     d = lambda tip, an, luna, term: {"tip": tip, "an": an, "luna": luna, "termen": term, "perioada": "", "motiv": ""}
     lipsa = [d("d300", 2026, 8, "2026-09-25"), d("d101", 2025, 12, "2026-06-25"), d("d300", 2026, 9, "2026-10-26")]
@@ -154,6 +170,8 @@ def _evalueaza():
 def test_fereastra_firmei_numara_de_la_preluare_si_vede_30_de_zile(firma):
     r = _evalueaza()
     assert r["luna_preluare"] == "09/2026"
+    # [232] antetul grupului „Înainte de preluare”: ultima lună dinainte și de unde vine luna preluării (datele firmei)
+    assert r["luna_inainte_de_preluare"] == "08/2026" and r["luna_preluare_din"], r["luna_preluare_din"]
     cheie = lambda lst: {(x["tip"], x["luna"]) for x in lst}
     assert ("d300", 8) in cheie(r["inainte_de_preluare"]) and ("d300", 8) not in cheie(r["lipsa"])
     assert not [x for x in r["lipsa"] if (x["an"], x["luna"]) < (2026, 9)]

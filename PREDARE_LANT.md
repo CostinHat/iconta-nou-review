@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026: răspunsul la §6 al raportului „Oprește R4” — deciziile consemnate, mutația scăpată din 221 închisă; R4 BLOCAT**
+# PREDARE LANȚ — **12.10.2026: retestul Costin — 224, 225 redeschise, 226–232, `--help`; migrarea `data_infiintare` de rulat pe producție; R4 BLOCAT**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-12** (răspunsul lui Costin la §6 al raportului „Oprește R4”), pe secțiunile de stare (lecțiile și CIFRE
+- **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `41aaf93d` (lotul „Oprește R4”, four-way închis 02:43, poarta 63 de minute); lotul 12.10 e în commitul care conține
-  această predare — SHA-ul și four-way-ul în raport.
+- **pe commit**: `f90a23f6` (mutația scăpată din 221, four-way închis 05:09); lotul retestului e în commitul care conține această
+  predare — SHA-ul, starea restartului (oprit până la migrare) și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -27,7 +27,8 @@ portofoliului identice cu R2a (`e69198fb`). **Comanda Costin 11.10 noaptea („O
 (fereastra = semaforul cardului, o singură sursă), 221 („An precedent” din bilanțul anului precedent din aplicație / evidență / manual,
 niciodată gol), regulile de lucru 4a–e (CLAUDE.md §2.3 pct.12), poarta în paralel — `41aaf93d`. **Răspunsul lui Costin la §6 (12.10.2026,
 verbatim în DECIZII)**: poarta rămâne la 63 de minute pe serverul actual; 221 (b) aprobată; cele 11 bife CF art.17 confirmate; mutația
-scăpată din 221 închisă (anii din mesajele coloanei, pe ecran și în server) — în commitul care conține această predare. **R4 e
+scăpată din 221 închisă (`f90a23f6`). **Retestul Costin 12.10.2026 (verbatim în DECIZII)**: 224 și 225 redeschise, 226–232 și `--help`
+la plasă, un singur lot — în commitul care conține această predare; C10 (F20 S1003) găsită și lăsată la decizie, C11 reparată. **R4 e
 BLOCAT până la aprobarea lui Costin**; nu se pornește alt pas fără aprobare. Tot restul e livrat, cu poartă completă, four-way și ZIP în
 `/home/costin/ghid_incoming/`. **Decizii așteaptă răspunsul lui Costin** (FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
@@ -97,6 +98,12 @@ aplicației**, nu „în așteptarea unei teme”:
   `test_reverificare`, `test_trasee`) numai când nicio deficiență nu e deschisă (CLAUDE.md §2.3 pct.12 e); (2) 221 interpretarea (b)
   aprobată; (3) cele 11 bife CF art.17 confirmate; (4) F1–F5 completează manual „An precedent” pe 2026, S1005 2025 al lui F1 nefolosit;
   (5) mutația scăpată închisă, executat.
+- **MIGRARE DE RULAT PE PRODUCȚIE (Costin): `core/migrare_data_infiintare.py`** (coloana `firma_profil.data_infiintare`, deficiența 229).
+  Până la rulare, post-commit a oprit restartul (`.git/RESTART_OPRIT_MIGRARE`) și statica nu s-a publicat — producția rulează commitul
+  de dinainte. Comanda: `./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_data_infiintare.py` (după ea,
+  rulatorul publică statica și repornește). Pe baza de test e rulată.
+- **DECIZIE CERUTĂ: C10** — F20 al bilanțului S1003 e scris pe o numerotare proprie (38 de rânduri), nu pe a formularului ANAF 2025
+  (rd.1–70); DUK îl declară totuși „valid”. Rescrierea e un lot separat (declarație către ANAF) — aștept decizia (raportul 12.10 §6).
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -318,8 +325,8 @@ aplicației**, nu „în așteptarea unei teme”:
   apasă „+ ingredient” și salvează fără să aleagă articolul primește refuzul `rt-l{i}-articol`.
 - **(06.10 seara, plătit de DOUĂ ori în poartă) După `versioneaza_assets.py --scrie`, TOATE cele trei artefacte cu `ui_hash` se
   regenerează pe codul final**: `frontend_test/vizual/interactiune_scan.py` (`acoperire_vizuala.json`),
-  `frontend_test/proba_r175_arbore_asistent.py`, `frontend_test/proba_decl50.py` — gărzile `test_acoperire_vizuala`,
-  `test_asistent_arbore`, `test_declaratii_50`. Scanarea rulată ÎNAINTEA versionării lasă amprenta veche și poarta respinge.
+  `frontend_test/proba_pagina_principala.py`, `frontend_test/proba_decl50.py` — gărzile `test_acoperire_vizuala`,
+  `test_pagina_principala`, `test_declaratii_50`. Scanarea rulată ÎNAINTEA versionării lasă amprenta veche și poarta respinge.
 - **(06.10 seara) „Versiune nouă” compară cu amprenta de la ÎNCĂRCAREA paginii** (`versiune.js`, `laIncarcare`): o probă care
   schimbă `.publicat.json` după încărcare vede anunțul și înainte de autentificare.
 
@@ -456,8 +463,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **947** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **952** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -534,9 +541,9 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 - **R118 — ce se servește NU e ce e în lucru.** `/static` vine din `../iconta_publicat/static`, scris din HEAD la `post-commit`. O
   editare de JS nu e live: înainte de orice probă pe ecran, `scripts/publica_static.py --din-arbore`, iar la final republicarea HEAD.
 - **O schimbare de JS cere, în ordine**: `versioneaza_assets.py --scrie` (în rădăcina repo-ului) după ULTIMA editare · rescanarea vizuală
-  (artefactele `proba_r175_arbore_asistent.json`, `proba_decl50.json`, `acoperire_vizuala.json` se comit cu lucrul).
+  (artefactele `proba_pagina_principala.json`, `proba_decl50.json`, `acoperire_vizuala.json` se comit cu lucrul).
 - **Scanul vizual — rețeta, ca script cu `trap`** (exemplu: `scan_sal.sh` din scratchpad-ul turei, în ZIP-ul `iconta_salariu_in_timp.zip`):
-  `publica_static.py --din-arbore` → `uvicorn main:app --port 8011` pe `iconta_test` (așteaptă 200) → `proba_r175_arbore_asistent.py`,
+  `publica_static.py --din-arbore` → `uvicorn main:app --port 8011` pe `iconta_test` (așteaptă 200) → `proba_pagina_principala.py`,
   proba UI a temei, `vizual/interactiune_scan.py`, `proba_decl50.py`, `vizual/axe_scan.py`, `vizual/mobil_scan.py` →
   `vizual/curata_proba_ecrane.py` → oprește 8011 **pe PID** → `publica_static.py` (republică HEAD). Durată ~9 minute. **Nu se editează
   arborele cât rulează** poarta sau scanarea.

@@ -61,6 +61,27 @@ def din_text(v):
         raise ValueError("Luna preluării se scrie ca lună și an (ex. 06/2026).")
 
 
+def de_unde(salvata, creat_la, data_solduri=None, prima_nota=None):
+    """[deficiența 232, comanda Costin 12.10.2026: „Stabilește din datele firmei care e luna preluării și fă cele două locuri
+    consecvente.”] Faptul din care vine luna EFECTIVĂ, ca text pentru ecran — aceeași ordine ca `efectiva` / `propunere`."""
+    zi = (lambda d: "%02d.%02d.%d" % (d.day, d.month, d.year))
+    if _luna(salvata):
+        return "aleasă în Date firmă"
+    d, p = deduse(creat_la, data_solduri), _luna(prima_nota)
+    if p and (not d or p < d):
+        return "luna primei note din jurnal, %s" % zi(prima_nota)
+    if data_solduri:
+        return "ziua de după soldurile de preluare, %s" % zi(data_solduri)
+    if creat_la:
+        return "luna adăugării firmei în iConta.eu, %s" % zi(creat_la)
+    return None
+
+
+def luna_dinainte(luna):
+    """(an, lună) -> luna precedentă: ultima perioadă „înainte de preluare”."""
+    return (luna[0] - 1, 12) if luna[1] == 1 else (luna[0], luna[1] - 1)
+
+
 def stare(fapte):
     """`fapte` = `repo_firma_profil.fapte_preluare` -> {salvata, propunere, efectiva, prima_nota} ca „AAAA-LL” (pentru ecran)."""
     s, c, d, p = fapte.get("salvata"), fapte.get("creat_la"), fapte.get("data_solduri"), fapte.get("prima_nota")

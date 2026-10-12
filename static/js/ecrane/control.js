@@ -4,8 +4,8 @@
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
-import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=e92b4d8ea1";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, etichetaRand, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=b591d95307";  // renderer unic al verdictului (DS cap.20)
+import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2fc749a2a2";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -59,7 +59,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
         <div class="mig-frand-sub">${detaliu}</div>
       </div>
       <span class="cf-stare" style="background:${col.bg}">
-        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaRand(f)}
+        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaStare(f.stare)}
       </span>
     `;
     rand.addEventListener("click", () => nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f)));  // [p122_nav_stiva]
@@ -90,7 +90,7 @@ async function detaliuFirma(corp, nav, firma) {
   }
   const col = CULORI[d.stare] || CULORI.gri;
   corp.innerHTML =
-    `<p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${etichetaStare(d.stare, (d.neclar || []).length)}</span></p>`
+    `<p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${etichetaStare(d.stare)}</span></p>`
     + randeazaCorpVerdict(d, { mod: "detaliu" });
   legaVerdict(corp, nav, { tenant_id: firma.tenant_id, nume: firma.nume, reincarca: () => detaliuFirma(corp, nav, firma) });
 }

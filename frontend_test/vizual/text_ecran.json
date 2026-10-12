@@ -1,6 +1,6 @@
 {
- "ui_hash": "83dadfa35176ca96",
- "instrument_hash": "9ed8ba9201597b61",
+ "ui_hash": "447c6527271de2c8",
+ "instrument_hash": "6df46f1591b5e702",
  "ecrane": [
   "Achizitii IC Neplatitor/declaratie_d300",
   "Achizitii IC Neplatitor/declaratie_d390",
@@ -159,6 +159,7 @@
   "cabinet/firme",
   "cabinet/pachete",
   "cabinet/raport",
+  "cabinet/recomanda",
   "cabinet/setari",
   "cabinet/supervizor",
   "cabinet/termene",

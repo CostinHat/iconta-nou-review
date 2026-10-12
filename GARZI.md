@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**770 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**772 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 733
+### `core/` — 735
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8872,9 +8872,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_ansamblu.py` — GARD — catalogul „Ce cuprinde aplicația” după rol (deficiența 5, retestul Costin 09.10.2026: „Ana vede în catalog funcții de
 - `core/test_api_public.py` — —
 - `core/test_aplicabilitate_o_singura_sursa.py` — GARD R94 (06.09.2026) — aplicabilitatea se decide INTR-UN SINGUR LOC, iar poarta o consulta.
+- `core/test_argumente_script.py` — GARD — scripturile de lucru citesc argumentele ÎNAINTE de orice efect (decizia Costin 12.10.2026, verbatim în DECIZII: „--help la
 - `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
 - `core/test_artefacte_pastrate.py` — GARD [R45]: un artefact produs se păstrează, cu cele cinci câmpuri — și producerea lui e
-- `core/test_asistent_arbore.py` — GARD (06.09.2026) — arborele de navigare al asistentului si cardurile lui nu pot diverge.
 - `core/test_atribuire_scrieri.py` — GARDA (15.09.2026): atribuirea scrierilor la o ruta nu poate nici degenera, nici tacea.
 - `core/test_audit_campuri_oficiale.py` — GARD AUDIT SEMANTIC — numele campurilor emise = campuri OFICIALE (01.08.2026, Conditia 2 Costin).
 - `core/test_audit_preluare.py` — Teste gardian F183 — audit_preluare (nucleele PURE, date minime construite manual).
@@ -8888,6 +8888,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
 - `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
 - `core/test_bilant_an_precedent.py` — GARD — deficiența 221 (comanda Costin 10.10.2026, verbatim în DECIZII): „Bilanț: coloana «An precedent» e copiată din anul curent
+- `core/test_bilant_denumiri.py` — GARD — deficiența 227 (comanda Costin 12.10.2026, verbatim în DECIZII): „la completarea manuală a coloanei «An precedent» din bilanț,
 - `core/test_bilant_prin_coada.py` — GARD — bilanțul trece prin coadă: pregătit → validat → depus, cu drepturile declarațiilor (decizia Costin 07.10.2026, C11).
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
@@ -9347,6 +9348,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_p7_uc.py` — core/test_p7_uc.py — CONTRACTUL HTTP al valului use-case, confruntat cu starea de dinainte.
 - `core/test_p7_v1_citiri.py` — GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 - `core/test_p7_v2_scrieri.py` — GARDA V2 — nicio scriere și niciun control de tranzacție în corpul unei rute.
+- `core/test_pagina_principala.py` — GARD (12.10.2026) — pagina principală are aceeași structură la ambele roluri; „Recomandă” și „Suport” sunt benzile de deasupra
 - `core/test_parametru_transmis.py` — GARD — o valoare primită de un înveliș ajunge la funcția pe care o învelește (10.10.2026).
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
@@ -10849,3 +10851,17 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 |---|---|---|---|---|
 | fiecare an din mesajele coloanei „An precedent” e anul lui | `core/test_bilant_an_precedent.py::test_fiecare_an_din_mesaje_e_anul_lui` | refuzul coloanei goale, nota bilanțului respins, avertismentul manual sau refuzul „nu se poate întocmi” care trimit contabilul la alt an (ex. „completeaz-o din bilanțul depus pe 2026” la bilanțul 2026) | 10 mutații (`an - 1` -> `an` pe fiecare poziție din `bilant_api.py:155–157, 165, 172`; anul și data din refuzul `:64`) -> toate ROȘII; înainte: `:157` trecea verde | anii fixați pe un singur caz (bilanțul 2026); un mesaj nou cu an trebuie adăugat aici |
 | anii de pe ecranul Bilanț sunt ai anului precedent | `core/test_bilant_an_precedent.py::test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent` + e2e `test_def_221` (`e2e_comanda_1010.py:289, 309`) | afirmația coloanei datată pe anul curent; sursele consultate sau refuzul completării manuale pe anul curent; sursa coloanei afișată cu anul curent | 6 mutații în `uc_tenants.py:2675–2718` -> ROȘII; `firme.js:2930` `%AN` = `an` -> e2e ROȘU | rutele chemate direct (autentificarea simulată); ecranul probat numai pe plasă |
+
+## 12.10.2026 — Retestul Costin: 224 și 225 redeschise, 226–232, `--help`, C11
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| cardul Control fiscal = un rând de buline cu numere, fără text | `verificator_conformitate.py` SEMAFOR_PATRU_LUMINI (extins: `semaforCardControl` pe ambele pagini, fără text după număr, `.cab-semafor4--card` rând) + `core/test_pagina_principala.py` (proba în browser: un rând, numai numere, înălțimea celorlalte) + e2e 224 | lista cu text pe card; cardul mai înalt decât celelalte | cardul pe semaforul ferestrei / text după număr / coloană -> ROȘU (3) | înălțimea o măsoară proba, nu verificatorul |
+| pagina principală, aceeași la ambele roluri | `verificator_conformitate.py` PAGINA_PRINCIPALA_UNA + `static/js/ecrane/salut.js` + `core/test_pagina_principala.py` + e2e 225, 231 | meniul lateral readus; „Suport” / „Recomandă” înapoi carduri; o pagină cu banda ei proprie | arborele readus / „Suport” card / banda scoasă -> ROȘU (3) | așezarea (benzile deasupra, scunde) — numai în probă |
+| eticheta stării firmei = una din patru | `verificator_conformitate.py` ETICHETA_PATRU_STARI + e2e 226 | „neconcordanță”, „2 nu se pot verifica” pe rândul listei sau în antetul detaliului | eticheta gri cu numărul / eticheta din fapte -> ROȘU (2) | privește `control.js` și `firme.js` |
+| denumirile rândurilor de bilanț = cele din structura ANAF | `core/test_bilant_denumiri.py` (modulul generat = extragerea; fiecare rând de completat are denumire; F30 scrise au denumire) + e2e 227, C11 | denumiri scrise de mână; un rând fără denumire; resturi de formulă în denumire | denumire schimbată / continuarea din coloana formulei / denumirea scoasă din `randuri_din_xml` -> ROȘU (3) | structura 2025; la o structură nouă ANAF se descarcă și se regenerează |
+| acțiunile bilanțului inactive până se completează coloana, cu motivul | `verificator_conformitate.py` ACTIUNE_FARA_TIP (extins) + `core/test_bilant_an_precedent.py::test_anul_care_nu_se_poate_intocmi_se_spune_pe_ecran` + e2e 228 | „Validează” / „Trimite în coadă” / XML active cu coloana goală; motivul lipsă; „completează coloana” pentru un an imposibil | motivul scos / butoanele nelegate (a doua formă a regulii) / verificarea anului scoasă -> ROȘU | — |
+| primul exercițiu: coloana „An precedent” goală prin lege | `core/test_bilant_an_precedent.py::test_primul_exercitiu_…` (+ DUK), `test_firma_infiintata_inainte_…`, `test_firma_adaugata_ia_data_infiintarii_din_anaf`; `core/test_luna_preluare.py::test_data_infiintarii_…`; `core/test_anaf_api.py::test_data_inregistrarii_…` + e2e 229 | completarea cerută în anul înființării; un bilanț pe un an dinaintea înființării; data din ANAF pierdută; o dată din viitor | 9 mutații -> ROȘII | firmele existente: câmpul gol până îl completează contabilul |
+| „Înainte de preluare” și restanțele spun aceeași lună | `core/test_control_preluare.py::test_luna_preluarii_spune_de_unde_vine_…` + câmpurile răspunsului + e2e 232 (și 121) | antetul pe luna preluării, cu perioadele dinaintea ei dedesubt | `de_unde` / `luna_dinainte` stricate -> ROȘU (2) | — |
+| catalogul numerotat de la 1 | e2e 230 | firul lui Ana de la „2” | numărul înapoi din STRATURI -> ROȘU (plasă) | — |
+| scripturile de lucru citesc argumentele înainte de efecte | `scripts/argumente_script.py` + `core/test_argumente_script.py` | `--help` care pornește plasa / publică statica / scrie fișiere; un flag necunoscut ignorat | ramura uzului / refuzul / citirea scoasă din `cifre_referinta` / din `e2e_poarta` -> ROȘII (4) | trei scripturi; un script nou cu argumente de mână intră în listă |

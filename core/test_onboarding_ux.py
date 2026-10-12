@@ -12,7 +12,7 @@ def _read(p):
 def test_bun_venit_salut_inaintea_suportului():
     js = _read("static/js/ecrane/ansamblu.js")
     poz_salut = js.find("Bun venit")
-    poz_suport = js.find("cardul „Suport”")   # [deficiența 225, 10.10.2026] cardul se numește „Suport” (între 09.10 și 10.10: „Raportează”)
+    poz_suport = js.find("din „Suport”, sus pe pagina principală")   # [deficiența 225] „Suport” (09.10–10.10: „Raportează”; din 12.10.2026 banda de sus)
     assert poz_salut > 0 and poz_suport > 0, "lipsesc blocurile salut/Suport"
     assert poz_salut < poz_suport, "salutul nu mai vine inaintea Suportului (Q6)"
 

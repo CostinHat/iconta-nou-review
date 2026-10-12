@@ -1753,11 +1753,22 @@ _m_lum = re.search(r"export const LUMINI_CONTROL = \[(.*?)\];", fisiere.get("sem
 _ord_lum = re.findall(r'\["(\w+)", "pct-', _m_lum.group(1)) if _m_lum else []
 if _ord_lum != ["rosu", "galben", "verde", "gri"]:
     rap["semafor_patru_lumini"].append(("semafor.js", 0, "SEMAFOR4", "LUMINI_CONTROL: %s" % _ord_lum))
+# [deficiența 224 redeschisă, comanda Costin 12.10.2026] cardul = UN RÂND cu patru buline și numărul fiecăreia, FĂRĂ TEXT
+#     (`semaforCardControl`), aceeași înălțime cu celelalte carduri; textul stărilor numai în fereastră (`semaforPatruLumini`). Mutația:
+#     cardul întors pe `semaforPatruLumini` (listă cu text), sau un text după număr în `semaforCardControl`, sau `.cab-semafor4--card`
+#     înapoi pe coloană -> TOTAL > 0.
 for _fis in ("cabinet.js", "asistent.js"):
     _t = fisiere.get(_fis, "")
     _bloc = re.search(r"querySelector\('\[data-cheie=\"control\"\]'\);(.*?)\n\}", _t, re.S)
-    if not _bloc or "semaforPatruLumini(" not in _bloc.group(1):
-        rap["semafor_patru_lumini"].append((_fis, 0, "SEMAFOR4", "cardul Control fiscal nu randează semaforPatruLumini"))
+    if not _bloc or "semaforCardControl(" not in _bloc.group(1) or "semaforPatruLumini(" in _bloc.group(1):
+        rap["semafor_patru_lumini"].append((_fis, 0, "SEMAFOR4", "cardul Control fiscal nu randează semaforCardControl (rând fără text)"))
+_m_card = re.search(r"export function semaforCardControl\(.*?\n\}", fisiere.get("semafor.js", ""), re.S)
+_m_stare = re.search(r'<span class="cab-stare"[^`]*?</span>`', _m_card.group(0), re.S) if _m_card else None
+if not _m_stare or not _m_stare.group(0).endswith('<b class="tip-figura">${s[k] || 0}</b></span>`'):
+    rap["semafor_patru_lumini"].append(("semafor.js", 0, "SEMAFOR4", "lumina cardului are altceva decât bulina și numărul (text pe card)"))
+_m_css4 = re.search(r"(?m)^\.cab-semafor4--card\s*\{([^}]*)\}", open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
+if not _m_css4 or not re.search(r"flex-direction:\s*row", _m_css4.group(1)):
+    rap["semafor_patru_lumini"].append(("stil.css", 0, "SEMAFOR4", ".cab-semafor4--card nu e un rând"))
 # [125 + 224, decizia Costin 11.10.2026] fereastra deschisă din card arată ACELEAȘI patru stări, din ACEEAȘI sursă: `control.js` randează
 #     `semaforPatruLumini(date.sumar)` și nu mai citește alte cifre de sumar (`contoare`). Mutația: fereastra întoarsă pe contoarele de
 #     fapte (`date.contoare`) sau pe alt câmp decât `sumar` -> TOTAL > 0.
@@ -1768,11 +1779,52 @@ if "semaforPatruLumini(date.sumar)" not in _t_cf:
 #     la momente diferite dau cifre diferite (prins de plasă 11.10). Mutația: apelul scos din control.js sau ascultătorul scos -> TOTAL > 0.
 if "publicaSumarControl(date.sumar)" not in _t_cf:
     rap["semafor_patru_lumini"].append(("control.js", 0, "SEMAFOR4", "fereastra nu publică sumarul către card (publicaSumarControl)"))
-if not re.search(r'addEventListener\("control-fiscal:sumar"[^;]*semaforPatruLumini\(e\.detail\)', fisiere.get("semafor.js", ""), re.S):
+if not re.search(r'addEventListener\("control-fiscal:sumar"[^;]*semaforCardControl\(e\.detail\)', fisiere.get("semafor.js", ""), re.S):
     rap["semafor_patru_lumini"].append(("semafor.js", 0, "SEMAFOR4", "cardul nu se redesenează din sumarul publicat de fereastră"))
 for _m in re.finditer(r"\.contoare\b", _t_cf):
     rap["semafor_patru_lumini"].append(("control.js", _t_cf[:_m.start()].count("\n") + 1, "SEMAFOR4",
                                         "fereastra citește alte cifre decât sumar (contoare)"))
+
+# --- PAGINA_PRINCIPALA_UNA (DS cap.2a v2.88, 12.10.2026, deficiențele 225 + 231, comanda Costin): pagina principală are ACEEAȘI
+#     structură la ambele roluri — banda de sus din `salut.js` (`paginaPrincipala` + `legaBenzile`: titlul, data, benzile „Recomandă” și
+#     „Suport” una lângă alta), apoi grila de carduri; fără meniu lateral, iar „Suport” / „Recomandă” nu mai sunt carduri în grilă.
+#     Mutația: arborele asistentului readus (`asi-arbore`), sau „Suport” înapoi card în DEF (`cheie:"raport"`), sau o pagină cu banda
+#     ei proprie (fără `paginaPrincipala(`) -> TOTAL > 0. LIMITĂ: așezarea (benzile deasupra, înălțimile) o măsoară proba în browser
+#     (`frontend_test/proba_pagina_principala.py` + `core/test_pagina_principala.py`).
+rap["pagina_principala_una"] = []
+for _fis, _fn in (("cabinet.js", "randeazaPanou"), ("asistent.js", "desktopAsistent")):
+    _t = fisiere.get(_fis, "")
+    _m = re.search(r"function " + _fn + r"\(.*?\n\}", _t, re.S)
+    _corp = _m.group(0) if _m else ""
+    if "paginaPrincipala(" not in _corp or "legaBenzile(" not in _corp:
+        rap["pagina_principala_una"].append((_fis, 0, "PAGINA_UNA", "%s nu folosește banda comună (salut.js)" % _fn))
+    for _rx, _ce in ((r"asi-arbore|asi-nod|<nav\b", "meniu lateral"), (r"""cheie:\s*["']raport["']|\braport:\s*\{""", "„Suport” card în grilă"),
+                     (r"""cheie:\s*["']recomanda["']|\brecomanda:\s*\{""", "„Recomandă” card în grilă")):
+        for _mm in re.finditer(_rx, _t):
+            rap["pagina_principala_una"].append((_fis, _t[:_mm.start()].count("\n") + 1, "PAGINA_UNA", _ce))
+_t_sal = fisiere.get("salut.js", "")
+if [x for x in re.findall(r'\{ cheie: "(\w+)", titlu:', _t_sal)] != ["recomanda", "raport"]:
+    rap["pagina_principala_una"].append(("salut.js", 0, "PAGINA_UNA", "benzile nu sunt „Recomandă”, „Suport”"))
+
+# --- ETICHETA_PATRU_STARI (DS cap.8 v2.88, 12.10.2026, deficiența 226, comanda Costin): în Control fiscal eticheta stării unei firme
+#     (rândul listei, antetul detaliului) e UNA din cele patru stări — `etichetaStare(stare)` = `CULORI[stare].txt`, fără cauză
+#     („neconcordanță”) și fără număr („2 nu se pot verifica”); detaliul stă pe rândul de dedesubt. Mutația: `etichetaStare` cu al doilea
+#     argument (numărul) sau o etichetă calculată din fapte pe rând -> TOTAL > 0.
+rap["eticheta_patru_stari"] = []
+_t_cv = fisiere.get("control_verdict.js", "")
+_m_es = re.search(r"export function etichetaStare\(([^)]*)\)\s*\{(.*?)\n\}", _t_cv, re.S)
+if not _m_es or _m_es.group(1).strip() != "stare" or "CULORI[stare]" not in _m_es.group(2) or "${" in _m_es.group(2):
+    rap["eticheta_patru_stari"].append(("control_verdict.js", 0, "ETICHETA4", "etichetaStare nu e numele uneia din cele patru stări"))
+_txt4 = re.findall(r'txt:"([^"]+)"', _t_cv)
+if _txt4 != ["la zi", "de urmărit", "restanță", "nu se poate verifica"]:
+    rap["eticheta_patru_stari"].append(("control_verdict.js", 0, "ETICHETA4", "CULORI.txt: %s" % _txt4))
+for _fis in ("control.js", "firme.js"):
+    _t = fisiere.get(_fis, "")
+    for _mm in re.finditer(r"etichetaStare\(([^)]*)\)", _t):
+        if "," in _mm.group(1) or not _mm.group(1).strip().endswith("stare"):
+            rap["eticheta_patru_stari"].append((_fis, _t[:_mm.start()].count("\n") + 1, "ETICHETA4", _mm.group(0)[:60]))
+    if re.search(r"etichetaRand|neconcordanță[\"`]", _t):
+        rap["eticheta_patru_stari"].append((_fis, 0, "ETICHETA4", "etichetă din fapte pe rândul firmei"))
 
 # --- BUTON_DEZACTIVAT (DS cap.1 v2.87, 10.10.2026, deficiența 222): fiecare clasă de buton din set (cap.1, fără modificatorii
 #     `buton-mic` / `buton-activ`) are o regulă `:disabled` în stil.css, iar hover-ul ei e `:hover:not(:disabled)`. Mutația:
@@ -1794,7 +1846,10 @@ for _cl in _set_b:
 #     selectul de tip după opțiunile lui; un al treilea ecran cu alte coduri de declarație intră în `_TIP_DECL` cu mâna.
 rap["actiune_fara_tip"] = []
 _TIP_DECL = {"firme.js": ("ecranBilant", "bl-tip", ("bl-val", "bl-xml", "bl-coada"),
-                         ('.addEventListener("change", legaTip)', "\n    legaTip();")),          # legat la schimbare ȘI la deschidere
+                         ('.addEventListener("change", legaTip)', "\n    legaTip();",          # legat la schimbare ȘI la deschidere
+                          # [deficiența 228, 12.10.2026] și la coloana „An precedent”: inactive cu motivul lângă ele până e completă
+                          'id="bl-actiuni-motiv"', "stareaPrec.motiv", "p.lipsa.length", "motivActiuni.textContent = motiv",
+                          "b.disabled = !tip() || !!motiv")),
              "declaratii.js": ("pas1", "dec-tip", ("dec-continua",), ("cont.disabled = !(S.tenant_id && S.tip)",))}
 for _fis, (_fn, _sel, _btn, _leg) in _TIP_DECL.items():
     _t = fisiere.get(_fis, "")

@@ -659,12 +659,14 @@ def _grupuri_control(ecran):
 def test_def_121_restantele_se_numara_de_la_luna_preluarii(patron, firma_sal):
     """121. Control fiscal: restanțe numărate din ianuarie.
     Pașii contabilului: firma cu salariat din 01/2026, preluată în iConta în luna trecută (Date firmă) -> Control fiscal -> firma:
-    D112 pe lunile dinaintea preluării NU sunt „Restanțe”; stau în grupul „Înainte de preluare în iConta.eu — LL/AAAA”."""
+    D112 pe lunile dinaintea preluării NU sunt „Restanțe”; stau în grupul „Înainte de preluare în iConta.eu — până la LL/AAAA” (luna
+    dinaintea preluării — deficiența 232)."""
     _control_firma(patron, firma_sal)
     g = _grupuri_control(patron)
     patron.captura()
     restante = [r for k, v in g.items() if k.startswith("Restanțe") for r in v]
-    inainte = next((v for k, v in g.items() if k.startswith("Înainte de preluare în iConta.eu — %s" % LUNA_TRECUTA.strftime("%m/%Y"))),
+    inainte = next((v for k, v in g.items() if k.startswith("Înainte de preluare în iConta.eu — până la %s"
+                    % (LUNA_TRECUTA - _dt.timedelta(days=1)).strftime("%m/%Y"))),
                    None)
     assert inainte and any(r.startswith("D112 01/2026") for r in inainte), g
     assert not [r for r in restante if r.startswith("D112")], g

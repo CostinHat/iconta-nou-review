@@ -2666,7 +2666,13 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cp = _ba.coloana_precedenta(cur, schema, tip, an)
+            try:
+                cp = _ba.coloana_precedenta(cur, schema, tip, an)
+                # [deficiența 228] un an al cărui bilanț nu se poate întocmi deloc (31.12 dinaintea soldurilor de preluare) se spune ca
+                # atare — ecranul îl pune lângă acțiunile inactive, nu „completează coloana”, care n-ar ajuta
+                _ba.coloana_curenta_f10(cur, schema, an)
+            except ValueError as e:      # [deficiența 229] un an dinaintea înființării: bilanțul nu există
+                raise _erori.DateInvalide(str(e))
     lipsa = [s for s in _ba.SECTIUNI if cp[s] is None]
     manual = [s for s in _ba.SECTIUNI if cp["sursa"][s] == "manual"]
     # afirmația despre coloană e TIPATĂ (DS cap.25): lipsa = absența observației, cu sursele în care s-a căutat; manualul = fapt, cu
@@ -2678,11 +2684,18 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
     elif manual:
         afm = _af.afirmatie("fapt", "bilant_an_precedent", _ba.avertisment_manual(an, manual, cp.get("manual"), cp.get("bilant_respins")), an=an - 1,
                             temei_completitudine="completată manual de contabil (exemplarul %d al coloanei)" % cp["manual"]["exemplar"])
+    elif cp.get("infiintare"):
+        # [deficiența 229] primul exercițiu: coloana e goală prin lege, nu prin lipsă — fapt, cu temeiul și data din Date firmă
+        afm = _af.afirmatie("fapt", "bilant_an_precedent", _ba.nota_primul_exercitiu(an, cp["infiintare"]), an=an,
+                            temei_completitudine="data înființării din Date firmă (%s); Legea 82/1991 art.27 alin.(8)"
+                            % cp["infiintare"].isoformat())
     else:
         afm = None
     return {"tip": tip, "an": an, "sursa": cp["sursa"], "lipsa": lipsa,
             "bilant": cp.get("bilant"), "manual": cp.get("manual"),
             "randuri": _ba.randuri_formular(tip),
+            # [deficiența 227] denumirea fiecărui rând, de pe formular (structura ANAF), lângă numărul lui
+            "denumiri": _ba.denumiri_formular(tip),
             "valori": {s: cp[s] for s in _ba.SECTIUNI},
             "de_completat": [s for s in _ba.SECTIUNI if cp["sursa"][s] in (None, "manual")],
             "afirmatie": afm}
@@ -2708,10 +2721,15 @@ def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cp = _ba.coloana_precedenta(cur, schema, tip, an)
+            try:
+                cp = _ba.coloana_precedenta(cur, schema, tip, an)
+            except ValueError as e:      # [deficiența 229] un an dinaintea înființării
+                raise _erori.DateInvalide(str(e))
             m = _ba._ultimul(cur, schema, _ba.FEL_MANUAL, "%s:%d" % (tip, an))
         valori = json.loads(m["continut"]) if m else {}
         for s in trimise:
+            if cp["sursa"][s] == _ba.PRIMUL_EXERCITIU:     # [deficiența 229] goală prin lege, nu se completează
+                raise _erori.DateInvalide(_ba.nota_primul_exercitiu(an, cp["infiintare"]))
             if cp["sursa"][s] not in (None, "manual"):
                 raise _erori.DateInvalide("Coloana „An precedent” %s vine din %s — nu se completează manual."
                                           % (s, "bilanțul pe %d din aplicație" % (an - 1) if cp["sursa"][s] == "bilant"

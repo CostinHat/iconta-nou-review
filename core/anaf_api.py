@@ -186,11 +186,14 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "nr_reg_com": (dg.get("nrRegCom") or "").strip(),          # F188
                 # [comanda Costin 05.10.2026 pct.2] documentat în doc_WS_V9.txt (date_generale.forma_juridica), văzut pe răspuns real
                 "forma_juridica": (dg.get("forma_juridica") or "").strip(),
+                # [deficiența 229, 12.10.2026] documentat în doc_WS_V9.txt (date_generale.data_inregistrare, „Data inregistrare”),
+                # văzut pe răspuns real: '2002-01-23' pentru J2002000372404 — data înființării, de la care curge primul exercițiu
+                "data_inregistrare": (dg.get("data_inregistrare") or "").strip() or None,
                 "gasit": True,
             })
         for c in dj.get("notFound", []):
             rezultate.append({
                 "cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_la_incasare": False,
-                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "gasit": False,
+                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "data_inregistrare": None, "gasit": False,
             })
     return rezultate

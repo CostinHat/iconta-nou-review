@@ -424,7 +424,7 @@ def test_def_7_bun_venit_fara_termenul_de_48_de_ore(browser, request):
         e.pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
         txt = e.pg.inner_text(".bun-venit-overlay")
         e.captura()
-        fraza = [p for p in txt.split("\n") if "cardul „Suport”" in p]   # [deficiența 225] cardul se numește „Suport”
+        fraza = [p for p in txt.split("\n") if "din „Suport”, sus pe pagina principală" in p]   # [225] „Suport” — banda de sus din 12.10.2026
         assert fraza, txt[:400]
         assert "48 de ore" not in txt and not re.search(r"\b\d+\s+(?:de\s+)?(?:ore|zile)\b", fraza[0]), fraza
 
@@ -650,14 +650,14 @@ def test_def_15_administratorul_apare_cu_toate_drepturile(browser, request):
 
 def test_def_16_raporteaza_are_iconita(browser, request):
     """16. Meniu: „Raportează” nu avea iconiță.
-    Pașii contabilului: asistentul își vede meniul: „Raportează” are o iconiță desenată (în arbore și pe card), ca restul."""
+    Pașii contabilului: asistentul își vede pagina principală: „Suport” (fostul „Raportează”; din 12.10.2026 banda de sus — deficiența
+    225) are o iconiță desenată, ca restul."""
     with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
         e.acasa()
-        forme = e.pg.eval_on_selector_all(".asi-nod[data-nod='raport'] svg, button.cab-card:has([data-cheie='raport']) svg",
+        forme = e.pg.eval_on_selector_all("[data-banda='raport'] svg",
                                           "els => els.map(s => s.querySelectorAll('path,circle,rect,line,polyline,polygon').length)")
-        e.pg.locator(".asi-nod[data-nod='raport']").scroll_into_view_if_needed()
         e.captura()
-        assert len(forme) == 2 and all(n > 0 for n in forme), forme
+        assert len(forme) == 1 and all(n > 0 for n in forme), forme
 
 
 def test_def_17_pachete_alegerea_firmei_o_singura_data(patron):
@@ -931,22 +931,22 @@ def test_def_201_prezentarea_vorbeste_limba_contabilului(patron):
 
 def test_def_202_prezentarea_trimite_la_cardul_care_exista(patron, asistent):
     """202. Prezentarea aplicației trimite la un card care nu există pe pagina principală (atunci: „cardul Suport” / „Raportează”).
-    Pașii: contabilul-șef și asistentul -> „?” -> prezentarea trimite la cardul „Suport” (numele aprobat de Costin pe 10.10.2026,
-    deficiența 225), iar pe pagina principală a fiecăruia există un card cu exact acest nume."""
+    Pașii: contabilul-șef și asistentul -> „?” -> prezentarea trimite la banda „Suport” (numele aprobat de Costin pe 10.10.2026,
+    deficiența 225; banda de sus din 12.10.2026), iar pe pagina principală a fiecăruia există banda cu exact acest nume."""
     for e in (patron, asistent):
         _prezentarea(e)
         text = e.pg.inner_text(".fereastra .ans-continut")
-        assert "cardul „Suport”" in text and "Raportează”" not in text, text[:400]
+        assert "din „Suport”, sus pe pagina principală" in text and "Raportează”" not in text, text[:400]
         e.acasa()
-        carduri = e.pg.eval_on_selector_all(".cab-card-titlu, .asi-nod-titlu, .asi-nod", "els => els.map(x => x.innerText.trim())")
+        benzi = e.pg.eval_on_selector_all(".cab-salut .cab-banda .cab-card-titlu", "els => els.map(x => x.innerText.trim())")
         e.captura("desktop")
-        assert any(c.split("\n")[0] == "Suport" for c in carduri), carduri
+        assert "Suport" in benzi, benzi
 
 
 #: [deficiența 203] ordinea cardurilor cabinetului după lucrul zilnic: întâi ce cere acțiune azi (de validat, restanțe, scadențe), apoi
 #: lucrul pe firme și ziua, apoi lunarul, apoi echipa și contul, la urmă sesizările
 ORDINE_CABINET = ["validat", "control", "termene", "firme", "brief", "activitate", "pachete", "supervizor", "capacitate",
-                  "consolidare", "asistenti", "setari", "raport"]
+                  "consolidare", "asistenti", "setari"]   # „Suport” (raport) e banda de sus din 12.10.2026 (deficiența 225)
 
 
 def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
@@ -966,8 +966,7 @@ def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
     patron.captura("desktop")
     chei = [c["cheie"] for c in card]
     assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
-    raport = [c for c in card if c["cheie"] == "raport"]
-    assert raport and raport[0]["titlu"].strip() == "Suport", raport          # [deficiența 225]
+    assert "raport" not in chei and pg.inner_text("[data-banda='raport']").strip().startswith("Suport"), chei   # [225, 12.10.2026] banda
     sint = {c["cheie"]: c["sinteza"] for c in card}
     firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
     pg.click("button.cab-card:has([data-cheie='firme'])")
@@ -1017,7 +1016,7 @@ def test_def_207_ecranele_generale_pornesc_pe_firma_in_lucru(patron, asistent, f
     assert alese == [str(firma_e2e["tenant_id"]), False], alese
     asistent.firma(firma_e2e["nume"])
     asistent.acasa()
-    asistent.pg.click(".asi-nod[data-nod='declaratii']")
+    asistent.pg.click("button.cab-card:has([data-cheie='declaratii'])")
     asistent.pg.wait_for_selector("#dec-firma", timeout=20000)
     dec = asistent.pg.input_value("#dec-firma")
     asistent.captura("declaratii")

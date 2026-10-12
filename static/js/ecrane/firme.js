@@ -12,10 +12,10 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=49001da67e";
 import { ecranEtransport } from "./etransport_ecran.js?v=d9952813f1";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=00548d5fca";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=0f3ab68351";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=b591d95307";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2fc749a2a2";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=a4cb39990a";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=bbdf562d81";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=931fc357d5";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=34c025f64a";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -1045,7 +1045,7 @@ async function ecranControlFirma(corp, nav, t) {
     <p class="pf-intro">Situația fiscală a firmei: ce s-a depus vs ce e datorat, cu verificări de coerență.</p>
     <div class="cf-stare-mare" style="background:${cul.bg}">
       <span class="cf-dot" style="background:${cul.dot}"></span>
-      <span class="cf-stare-txt">${etichetaStare(d.stare, (d.neclar || []).length)}</span>
+      <span class="cf-stare-txt">${etichetaStare(d.stare)}</span>
       <span class="cf-stare-cifre tip-micut">${d.datorate || 0} datorate · ${d.depuse || 0} depuse</span>
     </div>
     ${randeazaCorpVerdict(d, { mod: "fisa" })}`;
@@ -2872,6 +2872,7 @@ async function ecranBilant(corp, nav, t) {
         <button class="buton-primar" id="bl-val" data-actiune="POST /tenants/{tenant_id}/s1003-valideaza|POST /tenants/{tenant_id}/s1005-valideaza">Valideaz\u0103 (ANAF)</button>
         <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
         <button class="buton-primar" id="bl-coada" data-actiune="POST /coada">Trimite \u00een coad\u0103 \u2192</button>
+        <span class="ecran-nota" id="bl-actiuni-motiv" role="status" style="align-self:center"></span>
       </div>
       <div id="bl-categorie"></div>
       <div id="bl-precedent"></div>
@@ -2904,9 +2905,20 @@ async function ecranBilant(corp, nav, t) {
     const tip = () => corp.querySelector("#bl-tip").value;
     // [deficiența 222, comanda Costin 10.10.2026] fără tip de declarație ales, acțiunile pe declarație sunt inactive — ca „Continuă”
     // din Declarații (DS cap.1 v2.87, gard ACTIUNE_FARA_TIP). `cereAlegerile` din handlere rămâne refuzul de lângă câmp (FAPT_FISCAL_NECERUT).
+    // [deficiența 228, comanda Costin 12.10.2026] „«Validează» și «Trimite în coadă» sunt inactive până se completează coloana «An
+    // precedent», cu motivul afișat lângă ele.” Serverul refuză generarea cu coloana goală (221) — și XML-ul, deci și „Descarcă XML”.
+    // Starea coloanei e a anului și tipului ALESE: cât nu e citită (sau citirea a eșuat), acțiunile rămân inactive (fail-closed).
     const actiuniTip = ["#bl-val", "#bl-xml", "#bl-coada"].map((s) => corp.querySelector(s));
-    const legaTip = () => actiuniTip.forEach((b) => { b.disabled = !tip(); });
+    const motivActiuni = corp.querySelector("#bl-actiuni-motiv");
+    let stareaPrec = { cheie: "", motiv: "" };          // motiv gol = coloana „An precedent” e completă pentru `cheie`
+    const cheiaAleasa = () => `${parseInt(corp.querySelector("#bl-an").value, 10)}|${tip()}`;
+    const legaTip = () => {
+      const motiv = !tip() ? "" : (stareaPrec.cheie !== cheiaAleasa() ? "Se citește coloana „An precedent”…" : stareaPrec.motiv);
+      actiuniTip.forEach((b) => { b.disabled = !tip() || !!motiv; });
+      motivActiuni.textContent = motiv;
+    };
     corp.querySelector("#bl-tip").addEventListener("change", legaTip);
+    corp.querySelector("#bl-an").addEventListener("change", legaTip);
     legaTip();
     // [deficiența 221, decizia Costin 11.10.2026] coloana „An precedent”: din bilanțul anului precedent din aplicație, altfel completată
     // manual cu avertisment vizibil; fără ea serverul refuză generarea. Zona spune sursa și, unde lipsește, cere completarea.
@@ -2915,25 +2927,39 @@ async function ecranBilant(corp, nav, t) {
     // ca la categoria de mărime (151/188): zona veche rămâne până sosește cea nouă — golirea ei mișca fereastra (centrată) sub cursor
     let cerereaPrec = "";
     const incarcaPrecedent = async () => {
-      if (!tip()) { zonaPrec.innerHTML = ""; zonaPrec.removeAttribute("data-pentru"); return; }
+      if (!tip()) { zonaPrec.innerHTML = ""; zonaPrec.removeAttribute("data-pentru"); legaTip(); return; }
       const an = parseInt(corp.querySelector("#bl-an").value, 10);
       const cheie = `${an}|${tip()}`;
       cerereaPrec = cheie;
       let p;
+      legaTip();
       try { p = await api.get(`/tenants/${t.id}/bilant-an-precedent?an=${an}&tip=${tip()}`); } catch (e) {
-        if (cheie === cerereaPrec) arataMesaj(zonaPrec, (e && e.mesaj) || "Nu s-a putut citi coloana „An precedent”.", "eroare");
+        if (cheie === cerereaPrec) {
+          const m = (e && e.mesaj) || "Nu s-a putut citi coloana „An precedent”.";
+          arataMesaj(zonaPrec, m, "eroare");
+          stareaPrec = { cheie, motiv: m };
+          legaTip();
+        }
         return;
       }
       if (cheie !== cerereaPrec) return;          // un an / tip schimbat între timp își aduce propria zonă
       zonaPrec.dataset.pentru = cheie;
-      const surse = ["F10", "F20"].filter((s) => p.sursa[s] && p.sursa[s] !== "manual")
+      stareaPrec = { cheie, motiv: p.lipsa.length
+        ? `Inactive până completezi coloana „An precedent” (${p.lipsa.join(", ")}) mai jos și o salvezi.` : "" };
+      legaTip();
+      // [deficiența 229] primul exercițiu: coloana e goală prin lege — se spune de ce, fără formular de completat
+      const primul = ["F10", "F20"].every((s) => p.sursa[s] === "primul_exercitiu");
+      const surse = ["F10", "F20"].filter((s) => p.sursa[s] && p.sursa[s] !== "manual" && p.sursa[s] !== "primul_exercitiu")
         .map((s) => `${s}: ${SURSA[p.sursa[s]].replace("%AN", an - 1)}`);
-      const info = surse.length ? `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">Coloana „An precedent” vine din ${esc(surse.join("; "))}.</span></div>` : "";
+      const info = primul
+        ? `<div class="caseta-info bl-prec-primul" style="margin-top:10px"><span class="ci-mesaj">${esc((p.afirmatie && p.afirmatie.motiv) || "")}</span></div>`
+        : (surse.length ? `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">Coloana „An precedent” vine din ${esc(surse.join("; "))}.</span></div>` : "");
       if (!p.de_completat.length) { zonaPrec.innerHTML = info; return; }
       const sectiune = (s) => `<h3 class="pf-subtitlu">An precedent — ${s}</h3>
-        <table class="fd-tabel bl-prec-tabel" data-sectiune="${s}"><thead><tr><th>Rândul</th><th class="fd-td-num">An precedent (lei)</th></tr></thead><tbody>
-        ${p.randuri[s].map((r) => `<tr><td>rândul ${r}</td><td class="fd-td-num"><input type="number" step="1" class="camp-input bl-prec-val" data-rand="${r}"
-          value="${p.valori[s] && p.valori[s][r] != null ? p.valori[s][r] : ""}" aria-label="${s} rândul ${r}, an precedent"></td></tr>`).join("")}</tbody></table>`;
+        <table class="fd-tabel bl-prec-tabel" data-sectiune="${s}"><thead><tr><th>Rândul</th><th>Denumirea de pe formular</th><th class="fd-td-num">An precedent (lei)</th></tr></thead><tbody>
+        ${p.randuri[s].map((r) => { const den = (p.denumiri && p.denumiri[s] && p.denumiri[s][r]) || "";   // [deficiența 227] numele de pe formular
+          return `<tr><td>rândul ${r}</td><td class="bl-prec-den">${esc(den)}</td><td class="fd-td-num"><input type="number" step="1" class="camp-input bl-prec-val" data-rand="${r}"
+          value="${p.valori[s] && p.valori[s][r] != null ? p.valori[s][r] : ""}" aria-label="${s} rândul ${r}${den ? " — " + esc(den) : ""}, an precedent"></td></tr>`; }).join("")}</tbody></table>`;
       zonaPrec.innerHTML = info + `<div class="caseta-atentie bl-prec-atentie" style="margin-top:10px"><div class="ca-mesaj"><b>${esc((p.afirmatie && p.afirmatie.motiv) || "")}</b></div></div>
         ${p.de_completat.map(sectiune).join("")}
         <button class="buton-secundar" id="bl-prec-salveaza" data-actiune="POST /tenants/{tenant_id}/bilant-an-precedent-manual">Salvează coloana „An precedent”</button>
@@ -2964,15 +2990,24 @@ async function ecranBilant(corp, nav, t) {
           ? `<span style="color:var(--verde);font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:var(--rosu);font-weight:600">\u25cf Erori la validare</span>`;
         // [deficiența 188] rândurile care se depun, cu cifrele lor, citite din XML-ul validat (nu doar verdictul)
-        const randuri = (r.randuri || []).map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${x.rand}</td>`
+        // [227 + C11, 12.10.2026] fiecare rând cu denumirea de pe formular; datele informative (F30) au alte coloane decât „An precedent” /
+        // „An curent” (numerele lor nu sunt sume pe doi ani), deci stau în tabelul lor, cu valorile așa cum se depun
+        const doiAni = (r.randuri || []).filter((x) => x.formular !== "F30");
+        const f30 = (r.randuri || []).filter((x) => x.formular === "F30");
+        const randuri = doiAni.map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${x.rand}</td><td>${esc(x.denumire || "")}</td>`
           + `<td class="fd-td-num">${bani(x.an_precedent)}</td><td class="fd-td-num">${bani(x.an_curent)}</td></tr>`).join("");
+        const randuriF30 = f30.map((x) => `<tr><td>rândul ${x.rand}</td><td>${esc(x.denumire || "")}</td>`
+          + `<td class="fd-td-num">${esc(String(x.an_precedent))}</td><td class="fd-td-num">${esc(String(x.an_curent))}</td></tr>`).join("");
         rez.innerHTML = `<p>${sem}</p>` +
           (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "") +
-          (randuri ? `<h3 class="pf-subtitlu">Ce se depune — ${(r.randuri || []).length} rânduri cu valoare</h3>
-            <table class="fd-tabel" id="bl-randuri"><thead><tr><th>Formular</th><th>Rândul</th><th class="fd-td-num">An precedent</th>`
-            + `<th class="fd-td-num">An curent</th></tr></thead><tbody>${randuri}</tbody></table>` : "");
+          (randuri ? `<h3 class="pf-subtitlu">Ce se depune — ${doiAni.length} rânduri cu valoare</h3>
+            <table class="fd-tabel" id="bl-randuri"><thead><tr><th>Formular</th><th>Rândul</th><th>Denumirea de pe formular</th><th class="fd-td-num">An precedent</th>`
+            + `<th class="fd-td-num">An curent</th></tr></thead><tbody>${randuri}</tbody></table>` : "")
+          + (randuriF30 ? `<h3 class="pf-subtitlu">Date informative (F30)</h3>
+            <table class="fd-tabel" id="bl-randuri-f30"><thead><tr><th>Rândul</th><th>Denumirea de pe formular</th><th class="fd-td-num">Coloana 1</th>`
+            + `<th class="fd-td-num">Coloana 2</th></tr></thead><tbody>${randuriF30}</tbody></table>` : "");
       } catch (e) { arataMesaj(rez, e.mesaj || "eroare", "eroare"); }
     });
     // [decizia Costin 07.10.2026, C11] bilanțul trece prin coadă (pregătit → validat → depus), cu drepturile declarațiilor:

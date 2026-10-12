@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.87 · 10 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.88 · 12 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -39,6 +39,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   în coadă» e activ fără tip de declarație ales”).** Pe un ecran cu select de tip de declarație, butoanele care lucrează pe ea
   (Validează, Descarcă XML, Trimite în coadă, Continuă) sunt `disabled` cât timp tipul e „— alege —” — ca „Continuă” din Declarații.
   Refuzul de lângă câmp (`cereAlegerile`, cap.17) rămâne în handler. Gard `ACTIUNE_FARA_TIP` (verificator).
+  **Și până se completează datele fără de care serverul refuză (v2.88, 12.10.2026, comanda Costin, deficiența 228: „în bilanț,
+  «Validează» și «Trimite în coadă» sunt inactive până se completează coloana «An precedent», cu motivul afișat lângă ele.”).** Bilanțul:
+  „Validează”, „Descarcă XML” și „Trimite în coadă” sunt `disabled` cât timp coloana „An precedent” a anului și tipului alese lipsește
+  sau nu e încă citită; motivul stă lângă ele (`#bl-actiuni-motiv`). Gard `ACTIUNE_FARA_TIP` (extins).
 - **Butonul declanșator în timpul unei scrieri (v2.81, 08.10.2026).** `api.js` (`blocheazaButon`) dezactivează automat butonul
   apăsat cât durează orice scriere și îi pune `aria-busy`. „Se lucrează...” se scrie NUMAI pe un buton de text simplu, iar la
   final textul lui revine. Un buton care conține ELEMENTE (rândul-buton al unei liste, cardul, iconița) nu se rescrie: textul
@@ -70,6 +74,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.
+- **Pagina principală are aceeași structură la ambele roluri (v2.88, 12.10.2026, comanda Costin, deficiențele 225 + 231: „«Recomandă» și
+  «Suport» sunt două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.” · „la Ana, scoate meniul din
+  stânga care repetă cardurile. Pagina principală are aceeași structură la ambele roluri.”).** La contabilul-șef și la asistent: banda de
+  salut (`.cab-salut`: titlul paginii și data în stânga; în dreapta benzile `.cab-banda` „Recomandă” — chihlimbar — și „Suport” — ardezie
+  —, una lângă alta, scunde), apoi grila de carduri `.cab-grila`. FĂRĂ meniu lateral; „Recomandă” și „Suport” nu sunt carduri în grilă.
+  Un singur loc o scrie: `salut.js` (`paginaPrincipala`, `legaBenzile`). Gard `PAGINA_PRINCIPALA_UNA` (verificator) + proba în browser
+  `frontend_test/proba_pagina_principala.py` / `core/test_pagina_principala.py` (structura, benzile deasupra cardurilor, înălțimile).
 
 - **Barele aplicației au înălțime minimă, nu fixă (v2.87, 11.10.2026, deficiența C8).** `.bara`, `.subbara`, `.bara3`, `.subbara--admin`: `min-height`, iar bara de stare se rupe pe rânduri (`flex-wrap`). Pe telefon un mesaj lung din bara de stare ieșea din bara de 40 px și acoperea „?” din bara de sus (atingerea ajungea la mesaj). Gard `BARA_INALTIME_MINIMA` (verificator) + plasa `e2e_comanda_1010.py::test_def_c8_…` (pe 393 px, atingerea din mijlocul fiecărui buton al barelor ajunge la el).
 
@@ -170,7 +181,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 8. Semafoare
 
-- Mereu vertical, ordinea ROȘU → GALBEN → VERDE (urgența întâi).
+- Mereu vertical, ordinea ROȘU → GALBEN → VERDE (urgența întâi). Excepție: cardul Control fiscal de pe pagina principală — un rând (mai jos, v2.88).
 - **Culorile de semafor nu colorează text (v2.70, 05.10.2026).** Gard `CULOARE_SEMAFOR_TEXT`. `--galben` (#c9961f), `--gri-semafor` (#9aa3b2) și `--rosu-semafor` sunt pentru buline, borduri, bare și fundaluri: pe alb, ca text, dau ~2,6:1 / ~2,5:1 / ~3,6:1, sub pragul WCAG 1.4.3 (4,5:1). Un text (insignă, stare, cifră, mesaj) folosește tokenii de text: `--galben-text`, `--gri`, `--rosu`, `--verde`. Regula prinde forma directă (`color:var(--galben)`, `color:${CUL.galben}`) și două forme indirecte (dicționar/variabilă și funcție care întorc o culoare de semafor, folosite în `color:${…}`); culoarea transmisă prin parametru nu se vede.
 - Bulină LED 16px cu gradient + etichetă text 10px.
 - Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
@@ -182,10 +193,17 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   trece sau un audit divergent se arată **galben** (de urmărit); ce nu se poate ști, **gri**. Serverul păstrează severitatea
   verificatorului (porțile cozii, alertele) — regula privește culoarea afișată și starea firmei (`common.pastila_firma`: o constatare
   urcă firma cel mult la galben). Gard `ROSU_DOAR_RESTANTA` (verificator) + `core/test_rosu_termen_depasit.py`.
-- **Cardul Control fiscal = semafor cu PATRU lumini (v2.87, 10.10.2026, aprobat de Costin, deficiența 224).** Vertical, ROȘU → GALBEN →
-  VERDE → GRI, fiecare lumină cu numărul de firme în starea ei (partiția `sumar` a serverului: fiecare firmă într-o singură stare);
-  toate patru mereu afișate, și cu 0. Bulina e `.cab-pct .pct-<stare>` (STANDARD_SEMAFOR), containerul `.cab-semafor4`. Aceeași
-  componentă la contabilul-șef și la asistent (`semafor.js::semaforPatruLumini`). Gard `SEMAFOR_PATRU_LUMINI` (verificator).
+- **Semaforul Control fiscal = PATRU lumini (v2.87, 10.10.2026, aprobat de Costin, deficiența 224).** ROȘU → GALBEN → VERDE → GRI,
+  fiecare lumină cu numărul de firme în starea ei (partiția `sumar` a serverului: fiecare firmă într-o singură stare); toate patru mereu
+  afișate, și cu 0. Bulina e `.cab-pct .pct-<stare>` (STANDARD_SEMAFOR), containerul `.cab-semafor4`. Gard `SEMAFOR_PATRU_LUMINI`.
+  **Forma, v2.88 (12.10.2026, comanda Costin, 224 redeschisă: „Cardul arată doar un rând cu 4 buline colorate și numărul fiecăreia, fără
+  text, iar înălțimea lui e la fel cu a celorlalte carduri. Textul rămâne numai în fereastră.”):** CARDUL (contabil-șef și asistent) =
+  un rând, bulina și numărul, fără numele stării (`semafor.js::semaforCardControl`, `.cab-semafor4--card`; numele ajung la cititorul de
+  ecran prin `aria-label`); FEREASTRA = vertical, cu numele stării (`semaforPatruLumini`). Aceeași sursă (`sumar`), aceeași ordine.
+- **Eticheta stării unei firme în Control fiscal = una din cele patru stări (v2.88, 12.10.2026, comanda Costin, deficiența 226: „eticheta
+  din dreapta fiecărei firme e una din cele 4 stări (restanță, de urmărit, la zi, nu se poate verifica) … Detaliul rămâne pe rândul de
+  dedesubt.”).** Rândul listei și antetul detaliului folosesc `control_verdict.js::etichetaStare(stare)` = `CULORI[stare].txt`; cauza
+  („neconcordanță”) și numărul („2 nu se pot verifica”) stau în detaliu. Gard `ETICHETA_PATRU_STARI` (verificator).
 - Buline de stare pe fire de conversatie (Raporteaza): ROSU = in asteptare de raspuns, VERDE (#1d7a4d) = raspuns primit. Fara concept de citit/necitit; cifra de pe card = firele in asteptare (stare noua) si scade singura la sosirea raspunsurilor.
 
 ## 9. Ferestre de lucru
@@ -834,6 +852,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.88 (12.10.2026)** — retestul Costin: **cap.8** — **cardul Control fiscal = un rând de patru buline cu numerele lor, fără text**, la înălțimea celorlalte carduri; textul numai în fereastră (224 redeschisă). **cap.8** — **eticheta stării firmei = una din cele patru stări** (226); gard `ETICHETA_PATRU_STARI`. **cap.2a** — **pagina principală are aceeași structură la ambele roluri**: banda de salut cu benzile „Recomandă” și „Suport”, apoi grila, fără meniu lateral (225, 231); gard `PAGINA_PRINCIPALA_UNA`. **cap.1** — **acțiunile bilanțului inactive până se completează coloana „An precedent”, cu motivul lângă ele** (228); gard `ACTIUNE_FARA_TIP` extins.
+
 **v2.87 (10.10.2026)** — comanda Costin de seară: **cap.8** — **roșul semaforului fiscal = termen depășit** (deficiența 220): în Control fiscal o constatare urcă firma cel mult la galben, iar culoarea afișată a constatărilor e galbenă; gard `ROSU_DOAR_RESTANTA` + `core/test_rosu_termen_depasit.py`. **cap.8** — **cardul Control fiscal = semafor cu patru lumini** (deficiența 224, aprobat): vertical, roșu → galben → verde → gri, cu numărul de firme în fiecare stare; gard `SEMAFOR_PATRU_LUMINI`. **cap.1** — **acțiunea pe o declarație e inactivă până se alege tipul** (deficiența 222: Bilanțul avea „Validează”, „Descarcă XML” și „Trimite în coadă” active cu tipul „— alege —”); gard `ACTIUNE_FARA_TIP`. **cap.1** — **butonul dezactivat arată dezactivat**: regula `:disabled` pentru tot setul, hover numai pe butonul activ (un `.buton-secundar` dezactivat arăta activ); gard `BUTON_DEZACTIVAT`. **cap.2** — **barele aplicației au înălțime minimă** (deficiența C8: pe telefon mesajul din bara de stare acoperea „?”); gard `BARA_INALTIME_MINIMA`.
 
 **v2.86 (09.10.2026)** — lotul „Retestul plasei”: **cap.9** — **focusul nu mută ecranul** (deficiența 159): un câmp deschis sub

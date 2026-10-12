@@ -205,12 +205,17 @@ def ecran_tipare(pg):
     pg.wait_for_timeout(1400)
 
 
-def ecran_recomanda(pg):
-    """Cardul mic «Recomanda», singurul care nu e in grila (`#cab-recomanda-mic`)."""
+def _banda(pg, cheie):
+    """[225, 12.10.2026] „Recomandă” și „Suport” sunt benzile de sus ale paginii principale (`salut.js`, `[data-banda]`), nu carduri."""
     _desktop(pg)
-    pg.click("#cab-recomanda-mic", timeout=8000)
+    pg.click("[data-banda='%s']" % cheie, timeout=8000)
     pg.wait_for_selector(".fereastra-corp", timeout=15000)
     pg.wait_for_timeout(900)
+
+
+def ecran_recomanda(pg):
+    """Banda «Recomandă» (`recomanda.js`)."""
+    _banda(pg, "recomanda")
 
 
 def ecran_magazin(pg): _ecran_shell(pg, "fa-magazin")
@@ -236,8 +241,8 @@ def ecran_control_portofoliu(pg):
 
 
 def ecran_raporteaza(pg):
-    """Cardul «Suport» al cabinetului (`raporteaza.js`). [11.10.2026] a trecut din `ECRANE_CABINET`."""
-    _card(pg, "raport")
+    """Banda «Suport» (`raporteaza.js`). [11.10.2026] a trecut din `ECRANE_CABINET`; [12.10.2026] din card, bandă (225)."""
+    _banda(pg, "raport")
 
 
 def ecran_bilant(pg):
@@ -361,8 +366,9 @@ ECRANE_CAMPANIE = [(fid[3:].replace("-", "_"), _fa_card(fid)) for fid in _FA_CAM
 # peste lista, iar `app.js` alege desktopul din `sesiune.rol()` la pornirea filei — deci un al
 # doilea ROL cere un al doilea CONTEXT de browser, nu un ecran in plus. Hamul stie s-o faca
 # (`w_auth.new_page(pw, email)`); uneltele de lista, nu. Pana cand vor sti, ecranul e acoperit de
-# `frontend_test/proba_r175_arbore_asistent.py` (axe + mobil + perechile nod/card), cuplata la
-# `ui_hash` prin `core/test_asistent_arbore.py` ca sa nu imbatraneasca tacut.
+# `frontend_test/proba_pagina_principala.py` (12.10.2026, inlocuieste proba arborelui R175: meniul din
+# stanga s-a scos — deficienta 231): structura, benzile, cardul Control fiscal, axe + mobil, la AMBELE
+# roluri, cuplata la `ui_hash` prin `core/test_pagina_principala.py` ca sa nu imbatraneasca tacut.
 CONT_CABINET = EMAIL_IMPLICIT              # admin_firma, cabinetul 1968
 CONT_ADMIN = "admin@prisma-cont.test"      # superadmin
 CONT_TEST = "fir-intrare@prisma-cont.test"  # admin_firma al cabinetului de test 4163

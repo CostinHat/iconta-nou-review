@@ -19531,3 +19531,89 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   patru mesaje ale coloanei (refuzul coloanei goale, nota bilanțului respins, avertismentul manual, refuzul „nu se poate întocmi”);
   generalizat pe drumul ecranului (`test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent`: anul afirmației, sursele consultate,
   refuzul completării manuale). Mutațiile și rezultatele: raportul 12.10.2026 §3/§9 și `ISTORIC.md`.
+
+## 12.10.2026 — Retestul în aplicație: 224 și 225 redeschise, 226–232 noi, `--help` la plasă (comanda Costin, un singur lot)
+
+**Comanda, verbatim:**
+
+> Retestul în aplicație, 12.10:
+> Confirmate: 125, 220, 221, 222, 223.
+>
+> 1. Răspuns la raportul tău, §6: R4 rămâne blocat. --help la e2e_poarta.py: repară-l în acest lot.
+>
+> 2. 224 REDESCHISĂ: cardul Control fiscal are încă listă cu text. Cardul arată doar un rând cu 4 buline colorate și numărul fiecăreia, fără text, iar înălțimea lui e la fel cu a celorlalte carduri. Textul rămâne numai în fereastră.
+>
+> 3. 225 REDESCHISĂ: la B, cardul „Suport” lipsește. La Ana stă jos. „Recomandă” și „Suport” sunt două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.
+>
+> 4. 226: în fereastra Control fiscal, eticheta din dreapta fiecărei firme e una din cele 4 stări (restanță, de urmărit, la zi, nu se poate verifica). Acum apar „neconcordanță” și „2 nu se pot verifica”. Detaliul rămâne pe rândul de dedesubt.
+>
+> 5. 227: la completarea manuală a coloanei „An precedent” din bilanț, fiecare rând arată denumirea de pe formular, nu doar „rândul 41”.
+>
+> 6. 228: în bilanț, „Validează” și „Trimite în coadă” sunt inactive până se completează coloana „An precedent”, cu motivul afișat lângă ele.
+>
+> 7. 229: dacă firma s-a înființat în anul bilanțului, coloana „An precedent” rămâne legal goală (primul exercițiu) și nu se cere completarea manuală. Ține cont de data înființării.
+>
+> 8. 230: la Ana, în catalog, „Firul de intrare” începe de la pasul 2. Numerotează de la 1.
+>
+> 9. 231: la Ana, scoate meniul din stânga care repetă cardurile. Pagina principală are aceeași structură la ambele roluri.
+>
+> 10. 232: F3, Control fiscal: „Înainte de preluare — 06/2026 (nu se numără la restanțe)”, dar D390 și D301 pe 06/2026 apar ca restanțe. Stabilește din datele firmei care e luna preluării și fă cele două locuri consecvente.
+>
+> 11. Un singur lot, o singură trecere prin poartă. În raport, răspunde punctual, cu proba, pentru fiecare: 224, 225, 226, 227, 228, 229, 230, 231, 232 și --help — rezolvată sau nu. Pentru cele vizibile pe ecran, atașează o captură.
+>
+> 12. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. Nu porni R4 sau alt pas fără aprobare.
+
+- **Confirmate de Costin în aplicație:** 125, 220, 221, 222, 223 (DEFICIENTE.md: rămân „rezolvată”).
+- **R4 rămâne BLOCAT.** Decizia cerută la §6 pct.2 (raportul 12.10 „mutația scăpată”) — `--help` la `scripts/e2e_poarta.py` se repară
+  în acest lot.
+- **PIVOT 224** — supersedează forma din 10.10/11.10 (cardul cu patru lumini „de sus în jos”, fiecare cu numărul ei și eticheta):
+  cardul are UN rând cu 4 buline colorate și numărul fiecăreia, fără text, și aceeași înălțime cu celelalte carduri; textul stărilor
+  numai în fereastră. Sursa rămâne una (`sumar`, PIVOT 125+224 din 11.10).
+- **PIVOT 225** — supersedează „cardul «Suport» înlocuiește «Raportează»” (10.10): „Recomandă” și „Suport” sunt două benzi înguste,
+  una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.
+- 226–232: numerele lui Costin, în DEFICIENTE.md. Deciziile de formă din ele (eticheta = una din cele 4 stări; butoanele inactive cu
+  motivul lângă ele; primul exercițiu fără coloană precedentă; aceeași structură a paginii principale la ambele roluri) sunt ale lui
+  Costin, verbatim mai sus; temeiurile și alegerile mele de implementare — în intrările de mai jos, pe măsură ce se fac.
+- **PIVOT 226** — supersedează explicit „[08.10.2026, retest pct.7] eticheta rândului spune CAUZA (neconcordanță)” și „[eticheta_din_fapt
+  20.08.2026] griul cu numărul (N nu se pot verifica)”: eticheta stării unei firme (rândul listei ȘI antetul detaliului — aceeași funcție,
+  `control_verdict.etichetaStare(stare)`) = numele culorii, una din patru; cauza și numărul stau în detaliu. Norma: DS cap.8 v2.88, gard
+  `ETICHETA_PATRU_STARI`.
+- **PIVOT 231** — supersedează „[p90_arbore 06.09.2026] panoul de navigare tip arbore, în stânga” (și garda lui R175,
+  `core/test_asistent_arbore.py` + `frontend_test/proba_r175_arbore_asistent.py`): pagina principală are aceeași structură la ambele
+  roluri, scrisă dintr-un singur loc (`static/js/ecrane/salut.js`); proba în browser a trecut pe ambele roluri
+  (`frontend_test/proba_pagina_principala.py` + `core/test_pagina_principala.py`). Norma: DS cap.2a v2.88, gard `PAGINA_PRINCIPALA_UNA`.
+  **Alegere de implementare (225):** benzile stau în banda de salut, în dreapta, ca „Recomandă” la cabinet până azi („ca la Cabinet”);
+  culorile din DS cap.12 (Recomandă chihlimbar, Suport ardezie — la cabinet „Suport” era verde, abatere de la DS).
+- **227 — sursa denumirilor:** documentul de STRUCTURĂ ANAF al formularelor de bilanț 2025 (`anaf_surse/structura_SC_1225_270126.pdf`,
+  descărcat 12.10.2026 de pe pagina S1002-S1003-S1004-S1005 / 2025, cu sha256), extras de `scripts/extrage_denumiri_bilant.py` în
+  `core/bilant_denumiri.py` (generat, păzit de `core/test_bilant_denumiri.py`). **Alternativă respinsă:** denumiri scrise de mână (din
+  memorie) — interzis (CLAUDE.md, regula de aur). **Limita:** denumirile sunt cele ale structurii, cu formula de conturi scoasă; rândurile
+  „SOLD C / SOLD D”, „Cheltuieli / Venituri” poartă grupa lor în față; F30 numai rândurile 1–3 (cele pe care le scrie generatorul).
+- **228 — și „Descarcă XML”:** comanda numește „Validează” și „Trimite în coadă”; serverul refuză și XML-ul cu coloana goală (221), deci și
+  al treilea buton al aceleiași funcții e inactiv (aceeași clasă ca 222). Un an al cărui bilanț nu se poate întocmi deloc (31.12 dinaintea
+  soldurilor de preluare) primește motivul acela, nu „completează coloana”.
+- **229 — data înființării:** câmp nou `firma_profil.data_infiintare` (migrarea `core/migrare_data_infiintare.py`, oglindă în
+  `tenant_template.sql`), completat la adăugarea firmei din ANAF (`date_generale.data_inregistrare`, documentat în
+  `anaf_surse/doc_WS_V9.txt`, văzut pe răspuns real: '2002-01-23' pentru J2002000372404), editabil în Date firmă, jurnalizat. **TEMEI:**
+  Legea 82/1991 art.27 alin.(8): „Exercițiul financiar al unităților nou-înființate începe la data înființării, potrivit legii.”; OMFP
+  1802/2014 pct.130 cere „valoarea aferentă elementului corespondent pentru exercițiul financiar precedent” — în primul exercițiu nu există.
+  **INTERPRETARE CU TEMEI:** data înregistrării la ANAF = data înființării (persoana juridică se înființează prin înmatriculare; CUI-ul se
+  atribuie la înmatriculare) — de reconfirmat dacă apare o normă care le desparte. **Alternativă respinsă:** anul din numărul de
+  registrul comerțului — un transfer de sediu în alt județ dă număr nou cu anul transferului (ar declara „primul exercițiu” fals).
+  **Limita:** firmele existente au câmpul gol (necunoscut = coloana se cere ca până acum) până îl completează contabilul sau o readăugare
+  din ANAF; XML-ul primului exercițiu nu poartă coloana 1 (valorile zero nu se scriu, ca la toate rândurile), valid pe DUK (S1005 2025).
+  **Pe producție:** migrarea o rulează Costin (`./venv/bin/python -m core.migrari_registru ruleaza --productie
+  core/migrare_data_infiintare.py`); până atunci post-commit oprește restartul (gardul „cod publicat înaintea migrării”).
+- **232 — luna preluării, din datele lui F3** (producție, read-only, 12.10.2026): luna nesalvată, soldurile de preluare fără dată, prima
+  notă 15.06.2026, adăugată 21.09.2026 -> luna preluării 06/2026 (`luna_preluare.efectiva`, regula din 08.10 §6 pct.4); iunie SE numără,
+  deci D390 și D301 06/2026 sunt în perioada iConta.eu. Neconsecvența era antetul: arăta luna preluării ca și cum ar fi dinaintea ei. Acum
+  antetul spune ultima lună dinainte („până la 05/2026”), iar explicația — luna preluării, de unde vine și că ea se numără. O singură
+  funcție calculează luna (`luna_preluare.efectiva`) la Control fiscal, Date firmă și bilanț; nimic nu s-a schimbat în ce se numără.
+- **`--help` — clasa:** scripturile de lucru cu argumente citite de mână porneau lucrul la un flag necunoscut; mecanismul unic
+  `scripts/argumente_script.py`, folosit de `e2e_poarta.py`, `publica_static.py`, `cifre_referinta.py` (cele trei cu efect la un
+  `--help`); garda `core/test_argumente_script.py`. **Limita:** celelalte scripturi `scan_*` / `proba_*` cu argumente citite de mână nu
+  scriu nimic la un `--help` greșit (scanări read-only sau o cale greșită care cade) — rămân cum sunt.
+- **C10, C11** — găsite de mine în lot (DEFICIENTE.md). C11 reparată (aceeași clasă cu 227). C10 (F20 S1003 pe o numerotare proprie, nu pe
+  a formularului) e o rescriere a unei declarații către ANAF — cere lot separat, la decizia lui Costin (raportul 12.10.2026 §6).

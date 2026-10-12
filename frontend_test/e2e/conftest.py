@@ -68,7 +68,7 @@ class Ecran:
 
     def acasa(self):
         self.pg.goto(BAZA + "/", wait_until="domcontentloaded")
-        self.pg.wait_for_selector(".asi-arbore, .cab-grila, .cab-card", timeout=30000)
+        self.pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
         self.pg.wait_for_timeout(500)
 
     def firma(self, nume="Comert Micro TVA"):

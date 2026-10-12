@@ -309,6 +309,7 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
         "caen = COALESCE(NULLIF(%s, ''), caen)",
         "adresa = COALESCE(NULLIF(%s, ''), adresa)",
         "reg_com = COALESCE(NULLIF(%s, ''), reg_com)",
+        "data_infiintare = COALESCE(data_infiintare, %s::date)",   # [deficiența 229] ANAF date_generale.data_inregistrare
         "platitor_tva = %s",
         "tva_la_incasare = %s",
         "platitor_tva_anaf = %s",           # snapshot ANAF (verde) = aceeasi valoare la onboarding
@@ -319,6 +320,7 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
         (d.get("cod_caen") or "").strip(),
         (d.get("adresa") or "").strip(),
         (d.get("nr_reg_com") or "").strip(),
+        d.get("data_inregistrare") or None,
         bool(d.get("platitor_tva")),
         bool(d.get("tva_la_incasare")),
         bool(d.get("platitor_tva")),

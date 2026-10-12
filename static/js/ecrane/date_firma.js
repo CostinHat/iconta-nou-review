@@ -154,6 +154,11 @@ function _blocPreluare(d) {
         <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` ${lp.salvata ? "Propunerea iConta.eu" : "Completată cu propunerea"}: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""}${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}</span>
         <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.salvata || lp.propunere || "")}" data-propunere="${esc(lp.salvata ? "" : (lp.propunere || ""))}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
       </label>
+      <label class="camp">
+        <span class="camp-eticheta">Data înființării</span>
+        <span class="camp-ajutor">Din ANAF la adăugarea firmei. În anul înființării (primul exercițiu financiar) coloana „An precedent” a bilanțului rămâne goală.</span>
+        <input type="date" class="camp-input" id="df-data_infiintare" value="${esc((d.profil || {}).data_infiintare || "")}">
+      </label>
     </div>`;
 }
 
@@ -162,7 +167,7 @@ function _blocPreluare(d) {
 const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
   metoda_stoc: "Metoda de stoc", serie_chitanta: "Seria chitanțelor", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
-  cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării" };
+  cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării", data_infiintare: "Data înființării" };
 // [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
 // aceleași liste pe care le randează formularul (`metode_stoc`, `forme_juridice`, `activitati_amef`, opțiunile periodicității),
 // iar „true” / „false” devin „da” / „nu”. O valoare fără etichetă cunoscută se arată așa cum e — nu se ghicește.
@@ -513,6 +518,7 @@ function _dateDinFormular(corp) {
   // [08.10 §6 pct.4 + retest 08.10 pct.20] propunerea neschimbată (sau câmpul golit) rămâne propunere: null, nu o valoare fixată
   const _lp = corp.querySelector("#df-luna_preluare");
   date.luna_preluare = (_lp.value && _lp.value !== _lp.dataset.propunere) ? _lp.value : null;
+  date.data_infiintare = corp.querySelector("#df-data_infiintare").value || null;   // [deficiența 229]
   if (corp.querySelector("#df-forma_juridica")) {
     date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
     date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;

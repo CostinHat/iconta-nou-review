@@ -1,0 +1,118 @@
+{
+ "ui_hash": "447c6527271de2c8",
+ "roluri": {
+  "cabinet": {
+   "structura": [
+    "cab-salut",
+    "cab-grila"
+   ],
+   "meniu_lateral": 0,
+   "benzi": [
+    {
+     "titlu": "Recomandă",
+     "top": 126,
+     "bottom": 184,
+     "h": 58
+    },
+    {
+     "titlu": "Suport",
+     "top": 126,
+     "bottom": 184,
+     "h": 58
+    }
+   ],
+   "grila_top": 196,
+   "inaltimi_carduri": [
+    100,
+    100,
+    100,
+    98,
+    98,
+    98,
+    122,
+    122,
+    122,
+    99,
+    99,
+    99
+   ],
+   "control": {
+    "h": 100,
+    "text": "0 0 0 14",
+    "lumini": [
+     "rosu",
+     "galben",
+     "verde",
+     "gri"
+    ],
+    "randuri": 1
+   },
+   "axe": {
+    "violari": [],
+    "title_only": {
+     "strict": [],
+     "glif": [],
+     "extra": []
+    }
+   },
+   "mobil": {
+    "revarsare_x": false,
+    "benzi_sub_24": 0
+   }
+  },
+  "asistent": {
+   "structura": [
+    "cab-salut",
+    "cab-grila"
+   ],
+   "meniu_lateral": 0,
+   "benzi": [
+    {
+     "titlu": "Recomandă",
+     "top": 162,
+     "bottom": 220,
+     "h": 58
+    },
+    {
+     "titlu": "Suport",
+     "top": 162,
+     "bottom": 220,
+     "h": 58
+    }
+   ],
+   "grila_top": 232,
+   "inaltimi_carduri": [
+    100,
+    100,
+    100,
+    122,
+    122,
+    122,
+    98
+   ],
+   "control": {
+    "h": 100,
+    "text": "0 0 0 2",
+    "lumini": [
+     "rosu",
+     "galben",
+     "verde",
+     "gri"
+    ],
+    "randuri": 1
+   },
+   "axe": {
+    "violari": [],
+    "title_only": {
+     "strict": [],
+     "glif": [],
+     "extra": []
+    }
+   },
+   "mobil": {
+    "revarsare_x": false,
+    "benzi_sub_24": 0
+   }
+  }
+ }
+}

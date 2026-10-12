@@ -293,6 +293,10 @@ def amprenta_fisier(cale=REFERINTA):
 
 
 def main(argv):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import argumente_script                      # [12.10.2026, clasa `--help`] `-h` scria `-h.json` / `-h.md`: uzul, nimic scris
+    argv = argumente_script.citeste(argv, __doc__, flaguri=("--productie", "--verifica", "--scrie-referinta"), pozitionale=1,
+                                    prefix="[cifre]")
     if "--productie" in argv:
         from core import mediu_test
         dsn = mediu_test.dsn_productie()

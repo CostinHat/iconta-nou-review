@@ -27,7 +27,7 @@ era o intrebare care sa aiba raspuns.*
 de stergere (`rsync --filter='P raportari/***'`), altfel fiecare publicare ar sterge rapoartele
 generate intre timp.
 
-Folosire:
+Uz:
     ./venv/bin/python scripts/publica_static.py              # din HEAD (calea din post-commit)
     ./venv/bin/python scripts/publica_static.py --din-arbore # din arborele de lucru, DELIBERAT
     ./venv/bin/python scripts/publica_static.py --stare      # ce se serveste acum
@@ -156,6 +156,9 @@ def publica(din_arbore=False, acum=None):
 
 
 def main(argv):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import argumente_script                      # [12.10.2026, clasa `--help`] `--help` publica staticul: uzul, nimic publicat
+    argv = argumente_script.citeste(argv, __doc__, flaguri=("--stare", "--din-arbore"), prefix="[publica_static]")
     if "--stare" in argv:
         s = stare()
         print("SERVIT DIN:", PUBLICAT)

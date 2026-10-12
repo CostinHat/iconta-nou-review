@@ -212,7 +212,7 @@ def test_def_64_fila_pe_cod_vechi_nu_ramane_tacuta(browser):
     pg = f.ecran.pg
     try:
         _intra_in_fila(pg, "patron@prisma-cont.test")
-        pg.wait_for_selector(".asi-arbore, .cab-grila, .cab-card", timeout=30000)
+        pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
         pg.wait_for_function("() => window.__marcaj_fila === undefined || "
                              "[...document.querySelectorAll('.versiune-noua')].some(e => e.offsetParent !== null)", timeout=15000)
         reincarcata = pg.evaluate("() => window.__marcaj_fila === undefined")

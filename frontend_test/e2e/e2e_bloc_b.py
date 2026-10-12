@@ -141,16 +141,13 @@ def ana2(browser, request, ana2_cont):
 
 # ── navigare ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def _deschide_firma(e, nume):
-    """Firma din lista „Firme” — și pentru patron (grila cabinetului), și pentru asistent (arborele)."""
+    """Firma din lista „Firme”, din cardul „Firme” al grilei — la ambele roluri (231, 12.10.2026: meniul din stânga s-a scos)."""
     pg = e.pg
     e.acasa()
-    if pg.query_selector(".asi-nod[data-nod='firme']"):
-        pg.click(".asi-nod[data-nod='firme']")
-    else:
-        pg.click("button.cab-card:has([data-cheie='firme'])")
-        pg.wait_for_timeout(400)
-        if pg.query_selector("#opt-existente"):
-            pg.click("#opt-existente")
+    pg.click("button.cab-card:has([data-cheie='firme'])")
+    pg.wait_for_timeout(400)
+    if pg.query_selector("#opt-existente"):
+        pg.click("#opt-existente")
     pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)
     pg.locator("#firme-lista button.firme-rand", has_text=nume).first.click()
     pg.wait_for_selector("#fa-facturi", timeout=20000)

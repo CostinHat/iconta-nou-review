@@ -235,3 +235,73 @@ def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
     with pytest.raises(erori.DateInvalide) as e:
         uc.bilant_an_precedent_scrie(1, 2026, "s1003", {"F20": {}}, {"uid": 1})
     assert re.findall(r"vine din evidența pe (\d{4}) din aplicație", str(e.value)) == ["2025"], str(e.value)
+
+
+def test_primul_exercitiu_coloana_an_precedent_ramane_goala(cur, monkeypatch):
+    """[deficiența 229, comanda Costin 12.10.2026] „dacă firma s-a înființat în anul bilanțului, coloana «An precedent» rămâne legal goală
+    (primul exercițiu) și nu se cere completarea manuală. Ține cont de data înființării.” TEMEI: Legea 82/1991 art.27 alin.(8) „Exercițiul
+    financiar al unităților nou-înființate începe la data înființării, potrivit legii.”; OMFP 1802/2014 pct.130 cere valoarea „pentru
+    exercițiul financiar precedent”, pe care primul exercițiu nu-l are.
+    Firma înființată pe 15.03.2025, o notă în 03/2025: bilanțul 2025 se generează fără coloana 1 (nicio valoare „An precedent” în XML),
+    fără avertisment și fără formular de completat; XML-ul e valid pe DUK; ecranul spune de ce, iar completarea manuală se refuză; bilanțul
+    2024 (înaintea înființării) se refuză. MUTAȚIE: regula primului exercițiu scoasă din `coloana_precedenta` -> coloana „goală (F10, F20)”,
+    refuz -> pică; anul înființării comparat cu `an - 1` -> pică."""
+    from core import duk, erori
+    cur.execute("UPDATE firma_profil SET data_infiintare = '2025-03-15', reg_com = 'J40/1/2025', caen = '6202', adresa = 'Str 1', "
+                "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', declarant_functie = 'ADMINISTRATOR' WHERE id = 1")
+    _nota(cur, datetime.date(2025, 3, 20), "5121", "1012", Decimal("1000"))
+    cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
+    assert cp["sursa"] == {"F10": "primul_exercitiu", "F20": "primul_exercitiu"} and cp["F10"] == {} and cp["F20"] == {}, cp
+    av = []
+    f10p, f10c, f20p = ba.coloanele(cur, _SCHEMA, "s1005", 2025, av)
+    assert (f10p, f20p, av) == ({}, {}, []) and f10c.get(8) == 1000, (f10p, f20p, av, f10c)
+    xml, _ = ba.genereaza(cur.connection, _SCHEMA, 2025)
+    assert re.findall(r'\bF[12]0_\d{3}1="', xml) == [] and re.findall(r'\bF10_0082="(\d+)"', xml) == ["1000"], xml[:600]
+    v = duk.valideaza(xml, "s1005", an=2025, luna=12)
+    assert v["stare"] == "valid", v
+    with pytest.raises(ValueError, match=r"Bilanțul pe 2024 nu există: firma s-a înființat pe 15\.03\.2025"):
+        ba.coloanele(cur, _SCHEMA, "s1005", 2024, [])
+    uc = _ecranul(cur, monkeypatch)
+    e = uc.bilant_an_precedent(1, 2025, "s1005", {"uid": 1})
+    assert (e["lipsa"], e["de_completat"], e["afirmatie"]["fel"], e["afirmatie"]["an"]) == ([], [], "fapt", 2025), e
+    assert re.search(r"Primul exercițiu financiar: firma s-a înființat pe 15\.03\.2025", e["afirmatie"]["motiv"]), e["afirmatie"]
+    with pytest.raises(erori.DateInvalide, match="Primul exercițiu financiar"):
+        uc.bilant_an_precedent_scrie(1, 2025, "s1005", {"F10": {}}, {"uid": 1})
+    with pytest.raises(erori.DateInvalide, match="nu există"):
+        uc.bilant_an_precedent(1, 2024, "s1005", {"uid": 1})
+
+
+def test_firma_infiintata_inainte_cere_coloana_ca_pana_acum(cur):
+    """Data înființării într-un an anterior nu schimbă nimic: bilanțul 2026 al unei firme din 2020, cu soldurile de preluare la
+    31.08.2026, cere coloana „An precedent” (refuz până la completare) — primul exercițiu e numai anul înființării."""
+    cur.execute("UPDATE firma_profil SET data_infiintare = '2020-05-04' WHERE id = 1")
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20\)"):
+        ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
+
+
+def test_firma_adaugata_ia_data_infiintarii_din_anaf(cur):
+    """[deficiența 229] La adăugarea firmei, `precompleteaza_din_anaf` scrie data înregistrării ANAF ca dată a înființării — fără să
+    suprascrie una deja aleasă de contabil. MUTAȚIE: coloana scoasă din precompletare -> pică."""
+    d = {"denumire": "PROBA SRL", "cod_caen": "6202", "adresa": "Str 1", "nr_reg_com": "J40/1/2025", "platitor_tva": False,
+         "tva_la_incasare": False, "tva_data_inceput": None, "data_inregistrare": "2025-03-15"}
+    _tp.precompleteaza_din_anaf(cur.connection, _SCHEMA, d)
+    cur.execute("SELECT data_infiintare FROM firma_profil WHERE id = 1")
+    assert cur.fetchone()["data_infiintare"] == datetime.date(2025, 3, 15)
+    _tp.precompleteaza_din_anaf(cur.connection, _SCHEMA, dict(d, data_inregistrare="2001-01-01"))
+    cur.execute("SELECT data_infiintare FROM firma_profil WHERE id = 1")
+    assert cur.fetchone()["data_infiintare"] == datetime.date(2025, 3, 15)
+
+
+def test_anul_care_nu_se_poate_intocmi_se_spune_pe_ecran(cur, monkeypatch):
+    """[deficiența 228] Lângă acțiunile inactive stă motivul: pentru un an al cărui bilanț nu se poate întocmi deloc (31.12 dinaintea
+    soldurilor de preluare) motivul e acesta, nu „completează coloana”, care n-ar ajuta. MUTAȚIE: verificarea `coloana_curenta_f10` scoasă
+    din `bilant_an_precedent` -> ecranul ar cere completarea coloanei -> pică."""
+    from core import erori
+    uc = _ecranul(cur, monkeypatch)
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2024-12-31'), ('1012', 'Capital', 0, 10000, '2024-12-31')")
+    with pytest.raises(erori.DateInvalide, match=r"Bilanțul pe 2023 nu se poate întocmi .* 31\.12\.2024"):
+        uc.bilant_an_precedent(1, 2023, "s1005", {"uid": 1})
+    assert uc.bilant_an_precedent(1, 2025, "s1005", {"uid": 1})["lipsa"] == ["F20"]

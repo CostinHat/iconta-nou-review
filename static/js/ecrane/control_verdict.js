@@ -17,15 +17,6 @@ export const CULORI = {
   gri:    { dot:"var(--gri-semafor)", txt:"nu se poate verifica", bg:"var(--gri-fundal-semafor)" },
 };
 
-// [08.10.2026, retest pct.7] Eticheta rândului spune CAUZA, nu doar culoarea combinată: „restanță” numai cu restanțe; roșul venit din
-// verificarea contabilă e „neconcordanță”; nedeclaratul înainte de termen e „de urmărit”.
-export function etichetaRand(f) {
-  if ((f.lipsa || 0) > 0) return "restanță";
-  if ((f.contabil || []).some((c) => c && (c.stare === "rosu" || c.stare === "galben")) && f.stare !== "verde") return "neconcordanță";
-  if ((f.urmarit || 0) > 0) return "de urmărit";
-  return etichetaStare(f.stare, f.neclar);
-}
-
 // INVENTAR DECLARAT — paritatea 1 (RANDARE). Fiecare cheie din payload-ul `verificari_contabile` (vc)
 // trebuie sa aiba aici o destinatie: o sectiune randata, sau "via d.contabil", sau marcata contor. O cheie
 // noua produsa de backend fara intrare aici = EROARE in verificator (VERDICT_PARITATE, sub-regula randare),
@@ -42,20 +33,13 @@ export const VC_RANDATE = {
   note:                  "__contor__ (numar de note, nu constatare)",
 };
 
-// [eticheta_din_fapt 20.08.2026] Textul pastilei se leaga de FAPT, nu de culoare. `CULORI[x].txt` era
-// un dictionar indexat pe culoare: griul afisa mereu "vector necompletat", inclusiv pe firme al caror
-// vector e COMPLET (masurat pe Startup Partial 2026 si Trecere Micro Profit - niciun camp NULL).
-// Griul are patru cauze acum (necunoastere, absenta de observatie, vector incomplet, existenta firmei),
-// deci o eticheta fixa e falsa in trei cazuri din patru.
-// NU alegem o "cauza dominanta": ordinea ar fi arbitrara, iar contabilul ar vedea o cauza si ar crede
-// ca e singura. Afisam NUMARUL, exact ca la rosu ("3 restante") si galben ("2 de urmarit"); cauzele,
-// toate, sunt in ecranul de detaliu. Un numar nu minte si nu alege.
-export function etichetaStare(stare, n_neverificabile) {
-  const col = CULORI[stare] || CULORI.gri;
-  if (stare !== "gri") return col.txt;
-  const n = Number(n_neverificabile || 0);
-  if (!n) return col.txt;                       // gri fara numar (ex. eroare de evaluare) -> generic
-  return `${n} ${n === 1 ? "nu se poate verifica" : "nu se pot verifica"}`;
+// [deficiența 226, comanda Costin 12.10.2026, verbatim în DECIZII] „în fereastra Control fiscal, eticheta din dreapta fiecărei firme e una
+// din cele 4 stări (restanță, de urmărit, la zi, nu se poate verifica). Acum apar «neconcordanță» și «2 nu se pot verifica». Detaliul
+// rămâne pe rândul de dedesubt.” PIVOT pe [08.10 retest pct.7] (eticheta = cauza: „neconcordanță”) și [eticheta_din_fapt 20.08]
+// (griul cu numărul): eticheta stării = numele culorii, una din patru; numărul și cauza stau în detaliu (rândul de dedesubt, grupele
+// ferestrei firmei). Aceeași funcție pentru rândul listei și pentru antetul detaliului — o singură listă de nume (CULORI.txt).
+export function etichetaStare(stare) {
+  return (CULORI[stare] || CULORI.gri).txt;
 }
 
 // anatomie constatare (dot + mesaj + temei + remediu) — renderer unic pt «Verificari contabile» si audit.
@@ -217,8 +201,8 @@ export function randeazaCorpVerdict(d, opt = {}) {
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
     ${inainte.length ? `<details class="dec-xml cf-inainte">
-        <summary class="cf-grup-titlu">Înainte de preluare în iConta.eu — ${esc(d.luna_preluare || "")} (${inainte.length}, nu se numără la restanțe)</summary>
-        <p class="cf-incr-temei">Perioade dinaintea preluării firmei în iConta.eu (${esc(d.luna_preluare || "")}): declarațiile lor nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
+        <summary class="cf-grup-titlu">Înainte de preluare în iConta.eu — până la ${esc(d.luna_inainte_de_preluare || "")} (${inainte.length}, nu se numără la restanțe)</summary>
+        <p class="cf-incr-temei">Luna preluării în iConta.eu e ${esc(d.luna_preluare || "")}${d.luna_preluare_din ? ` (${esc(d.luna_preluare_din)})` : ""}: declarațiile pe ${esc(d.luna_preluare || "")} și după se numără la restanțe, cele până la ${esc(d.luna_inainte_de_preluare || "")} nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
         ${inainte.some((x) => x.luna && !x.extern) ? `<div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
           data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
         <div class="cf-decl">${randDecl(inainte, "", true)}</div></details>` : ""}`;
