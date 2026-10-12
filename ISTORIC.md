@@ -2254,3 +2254,10 @@ FOUR-WAY ÎNCHIS pe 0a64ac94. **pct.2 (C10):** F20 S1003 pe rândurile formularu
 calculele fiecărui rând; textul structurii avea rd.33 greșit), denumirile oficiale, garda pe tot planul OMFP, S1003-urile vechi respinse ca
 „An precedent”; e2e C10. **pct.3:** interpretarea 229 confirmată. R4 BLOCAT. Un commit prin poarta completă (commitul care conține
 această intrare).
+
+## 12.10.2026 — C10, interpretările: 6811 / 6818-7818 confirmate; sinteticele opresc generarea
+
+Comanda verbatim în DECIZII. 741 și 658 (și, pe clasă, 681, 761, 781 — sinteticele planului OMFP cu analitice pe rânduri diferite ale
+formularului) nu mai primesc un rând: rulajul pe ele oprește generarea S1003 cu motivul și analiticele cerute, fiecare cu rândul lui
+(`core/bilant.py`, tabel păzit pe planul OMFP). Consecință ridicată la Costin: aplicația propune 741 sintetic la subvenții. R4 BLOCAT.
+Un commit prin poarta completă (commitul care conține această intrare).

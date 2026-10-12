@@ -19669,3 +19669,27 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   «publicat pe <commit>». Abia apoi treci la punctul 2.” Ordinea efectivă: migrarea și închiderea publicării (11:28) au fost înaintea
   oricărui pas din pct.2; rândul „publicat pe 0a64ac94” l-am scris la primirea formei a doua, când lucrul la pct.2 începuse deja (după
   prima formă) — publicarea pe 0a64ac94 reverificată atunci (2/2 procese, fără sentinele).
+
+## 12.10.2026 — C10, interpretările: 6811 și 6818/7818 confirmate; sinteticele cu analitice pe rânduri diferite opresc generarea
+
+**Comanda, verbatim:**
+
+> 1. C10, interpretările: confirm 6811 numai la a.1 și „din ct.6818/7818” la b). Pentru 741 și 658 folosite sintetic, fără analitic: nu ghicim rândul. Generarea S1003 se oprește, cu motivul și contul analitic cerut, la fel ca la contul fără rând.
+>
+> 2. R4 rămâne blocat.
+>
+> 3. În raport, răspunde punctual, cu proba, pentru 1.
+>
+> 4. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. Nu porni R4 sau alt pas fără aprobare.
+
+- **PIVOT** pe interpretările (3) din intrarea C10 de mai sus (741 -> rd.12, 658 -> rd.37): retrase. **Clasa, nu instanța:** un
+  SINTETIC al cărui analitice stau, pe formular, pe rânduri diferite — căutat pe tot planul OMFP 1802/2014 din corpus: 658, 681, 741,
+  761, 781 (761 primea și el un rând ghicit, rd.45; 681 și 781 se opreau deja, dar fără analiticul cerut). Rulajul pe oricare din ele,
+  sintetic (sau cu un analitic propriu al aplicației, „741.01”), oprește generarea S1003 cu motivul și analiticele cerute, fiecare cu
+  rândul lui. Lista e derivată din plan și păzită (`core/test_bilant_s1003_f20.py`). Confirmate: 6811 numai la a.1 (rândul 306);
+  „din ct.6818 / 7818” la b).
+- **Consecință de produs, ridicată la §6:** aplicația însăși propune 741 sintetic la subvenții (`core/subventii.py`, ruta subvențiilor
+  din `core/uc_tenants.py`, sugestia din ecranul Operațiuni) — o firmă cu subvenții înregistrate așa nu-și mai poate genera S1003 până
+  le reclasează pe analitic.

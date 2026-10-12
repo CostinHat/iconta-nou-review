@@ -1474,7 +1474,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T12 — Închiderea anului și situațiile financiare
 
-**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 3) · **refuzuri explicite:** 28
+**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 3) · **refuzuri explicite:** 29
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
 

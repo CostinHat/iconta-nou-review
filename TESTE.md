@@ -45,6 +45,16 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **C10, interpretările (comanda Costin 12.10.2026, verbatim în DECIZII)** — 6811 / 6818-7818 confirmate; sinteticele cu analitice
+  pe rânduri diferite (658, 681, 741, 761, 781) opresc generarea S1003 cu analiticul cerut. Un lot, o poartă. R4 BLOCAT.
+  - ultim: — (pornit după `6dea8a28`)
+  - urmator: — (raportul + ZIP). STARE = ÎNCHIS
+  - pasi:
+    L0. DECIZII (comanda verbatim, PIVOT pe 741/658), TESTE (acest fir).
+    L1. `core/bilant.py`: 741, 658, 761 scoase din rânduri; `F20_S1003_NOMENCLATOR_SINTETICE` (sintetic -> analiticele lui cu rândul)
+        derivat din planul OMFP; refuzul cu motivul și analiticele; test (lista = cea calculată din plan, mesajul) + mutații.
+    L2. e2e C10: un rulaj pe 741 sintetic -> „Validează” refuză cu analiticele cerute; mutația.
+    L3. Registre, un commit prin poartă, ZIP.
 - fir: **C10 — F20 al bilanțului S1003 pe numerotarea formularului ANAF 2025 (comanda Costin 12.10.2026, răspunsul la §6, verbatim în
   DECIZII)** — + pct.1 (migrarea `data_infiintare` rulată de Code, publicarea închisă) și golul găsit acolo (four-way nereevaluat de
   rulator). Un lot, o poartă. R4 BLOCAT.

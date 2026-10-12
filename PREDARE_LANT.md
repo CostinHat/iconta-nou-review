@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026: migrarea `data_infiintare` rulată, publicarea închisă; C10 — F20 S1003 pe rândurile formularului; R4 BLOCAT**
+# PREDARE LANȚ — **12.10.2026: C10 — sinteticele cu analitice despărțite opresc S1003 (decizia Costin); R4 BLOCAT**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `0a64ac94` (retestul 12.10; restartul oprit până la migrare, migrarea rulată 11:28, four-way închis prin
-  `scripts/githooks/four-way`); lotul C10 e în commitul care conține această predare — SHA-ul și four-way-ul în raport.
+- **pe commit**: `6dea8a28` (C10, four-way închis 13:33 prin `scripts/githooks/four-way`); lotul „interpretările C10” e în commitul care
+  conține această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -101,7 +101,10 @@ aplicației**, nu „în așteptarea unei teme”:
 - **MIGRAREA `data_infiintare` — RULATĂ** (12.10.2026 11:28, de Code, cu autorizarea explicită a lui Costin pentru ea; copie a tabelelor
   în `~/iconta_backups/firma_profil_pre_data_infiintare_20261012_1128.sql`). Regula generală rămâne: migrările pe producție le rulează
   Costin. Rulatorul cheamă acum și four-way-ul după restart.
-- **C10 — ÎNCHISĂ** (lotul care conține această predare): F20 S1003 pe rândurile formularului oficial 2025, cu denumirile lui.
+- **C10 — ÎNCHISĂ** (`6dea8a28`): F20 S1003 pe rândurile formularului oficial 2025, cu denumirile lui; interpretările 6811 / 6818-7818
+  confirmate; sinteticele 658, 681, 741, 761, 781 opresc generarea cu analiticul cerut (lotul care conține această predare).
+- **DECIZIE CERUTĂ:** aplicația propune 741 SINTETIC la subvenții (`core/subventii.py`, ruta subvențiilor, ecranul Operațiuni) — o firmă
+  cu subvenții înregistrate așa nu-și mai poate genera S1003 până le reclasează; analiticul cerut la înregistrare, sau rămâne așa?
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -461,7 +464,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **953** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **954** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

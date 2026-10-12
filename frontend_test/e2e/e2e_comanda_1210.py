@@ -343,7 +343,8 @@ def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(pa
     Pașii: firma cu vânzări 5.000, subvenție aferentă cifrei de afaceri 800 și reduceri acordate 300 în 2025 -> Bilanț 2025, S1003 ->
     completează F20 „An precedent” (2024 nu e în aplicație) -> „Validează”: fără erori; „Ce se depune” — rd.04 „Reduceri comerciale
     acordate” 300, rd.06 subvenția 800, rd.01 cifra de afaceri 5.500 (rd.02 + 03 − 04 + 06), fiecare cu denumirea de pe formular.
-    MUTAȚIA din plasă: 7411 înapoi pe rd.04 -> ROȘU."""
+    Apoi un rulaj pe 741 sintetic -> „Validează” refuză cu analiticele cerute (decizia Costin 12.10.2026: „nu ghicim rândul”).
+    MUTAȚIILE din plasă: 7411 înapoi pe rd.04 -> ROȘU; refuzul sinteticului scos -> ROȘU."""
     f = firma_s1003
     pg = patron.pg
     patron.firma(f["nume"])
@@ -365,3 +366,10 @@ def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(pa
     assert (rand[("F20", 4)][1], rand[("F20", 6)][1], rand[("F20", 1)][1], rand[("F20", 2)][1]) == \
         ("300,00", "800,00", "5.500,00", "5.000,00"), sorted((k, v) for k, v in rand.items() if k[0] == "F20")
     assert den[("F20", 4)] == "Reduceri comerciale acordate" and den[("F20", 1)].startswith("1. Cifra de afaceri netă"), den
+    # [decizia Costin 12.10.2026] „Pentru 741 și 658 folosite sintetic, fără analitic: nu ghicim rândul. Generarea S1003 se oprește, cu
+    # motivul și contul analitic cerut.” Un rulaj pe 741 sintetic -> „Validează” refuză și numește analiticele cu rândul lor
+    _nota_validata(f, "2025-06-10", "5121", "741", 100, "Subventie pe sintetic C10")
+    text, _rand = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura("sintetic_741_refuzat")
+    assert "contul 741 e folosit sintetic" in text and "7411 (rd.06); 7412, 7413, 7414, 7415, 7416, 7417, 7419 (rd.12); 7418 (rd.49)" in text, \
+        text[:600]

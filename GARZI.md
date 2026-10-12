@@ -10875,3 +10875,9 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | denumirile S1003 F20 din formular | `scripts/extrage_denumiri_bilant.py` (`denumiri_f20_formular`) + `core/test_bilant_denumiri.py` | denumirea rd.33 luată din textul greșit al structurii | „11.2” din structură -> ROȘU | — |
 | S1003 vechi nu e „An precedent” | `core/bilant_api.py` (`S1003_F20_SCHEMA_NOUA_DIN`) + `core/test_bilant_an_precedent.py::test_s1003_pe_numerotarea_veche_…` | cifre pe numerotarea veche duse în coloana anului următor | verificarea scoasă -> ROȘU | pragul e momentul rescrierii |
 | four-way-ul după restartul amânat | `scripts/githooks/four-way` (chemat de post-commit și de `core/migrari_registru.py`) + `core/test_publicare_restart_neconditionat.py` (2 teste) + `core/test_wave3_instante.py::test_bratul_e_chemat_de_hook` | sentinela FOUR_WAY_NEINCHIS rămasă după ce toate brațele s-au închis | apelul scos din rulator / din post-commit / ștergerea scoasă -> ROȘII (3) | — |
+
+## 12.10.2026 — C10: sinteticele cu analitice pe rânduri diferite opresc generarea (decizia Costin: „nu ghicim rândul”)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| sintetic fără analitic = refuz cu analiticele cerute | `core/bilant.py` (`F20_S1003_NOMENCLATOR_SINTETICE`, `motiv_sintetic`) + `core/test_bilant_s1003_f20.py::test_sinteticele_cu_analitice_pe_randuri_diferite_opresc_generarea` (tabelul = lista calculată din planul OMFP) + e2e C10 | un rând ghicit pentru 658 / 681 / 741 / 761 / 781; un sintetic nou cu analitice despărțite scăpat din tabel | 741 sau 761 readus pe un rând / un sintetic scos din tabel / refuzul scos -> ROȘII (4 core + 1 e2e); mutația e2e „741 pe rd.12” a trecut verde (refuzul vine înaintea repartizării) — o prinde testul core | universul = planul OMFP din corpus |

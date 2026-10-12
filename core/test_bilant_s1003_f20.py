@@ -29,11 +29,11 @@ def _frunze(conturi):
 
 def test_fiecare_cont_al_planului_oficial_are_un_singur_rand():
     """Fiecare cont analitic (frunză) de clasa 6/7 al planului OMFP 1802/2014 intră pe exact un rând al F20 S1003 (prefixul cel mai lung);
-    sinteticele pe care aplicația le scrie direct (741 — `core/subventii.py`; 658) au și ele rând. Singura excepție declarată: 695
-    (impozitul specific, rd.67 „=null” în formular). MUTAȚIE: un cont scos din tabel (ex. 646 din rd.24) -> pică."""
+    sinteticele cu analitice pe rânduri diferite nu au rând (vezi testul de mai jos). Singura frunză fără rând: 695 (impozitul specific,
+    rd.67 „=null” în formular). MUTAȚIE: un cont scos din tabel (ex. 646 din rd.24) -> pică."""
     plan = _plan_oficial_67()
     assert len(plan) > 150, len(plan)                                    # anti-vacuu: planul întreg, nu un fragment
-    fara = [c for c in _frunze(plan) + ["741", "658"] if b.rand_f20_s1003(c) is None and c != "695"]
+    fara = [c for c in _frunze(plan) if b.rand_f20_s1003(c) is None and c != "695"]
     assert not fara, "conturi fără rând în F20 S1003: %s" % fara
     assert b.rand_f20_s1003("695") is None
 
@@ -49,14 +49,14 @@ def test_randurile_cazului_c10_sunt_ale_formularului():
 def test_cheltuielile_pe_randurile_formularului():
     """Formularul (șablonul XFA): rd.24 „b) Cheltuieli cu asigurările și protecția socială (ct.645+646)”; rd.32 „11.1. … prestațiile
     externe (ct.611+613+…+628)” FĂRĂ 612; rd.33 „11.2. … redevențele, locațiile de gestiune și chiriile (ct. 612)” cu „din care” 6121 /
-    6122 / 6123 (rd.307–309); 11.6 (rd.316) = 635 + 6586; 11.9 (rd.36) = 6587; restul lui 658 -> 11.10 (rd.37); 25a (rd.306) = 6811.
+    6122 / 6123 (rd.307–309); 11.6 (rd.316) = 635 + 6586; 11.9 (rd.36) = 6587; 6588 -> 11.10 (rd.37); 25a (rd.306) = 6811.
     MUTAȚIE: 612 înapoi în 11.1 -> pică; 646 scos din 9.b -> pică."""
     r = b.f20_complet_din_rulaje({"646": (40, 0), "645": (60, 0), "641": (1000, 0), "6123": (200, 0), "611": (50, 0),
-                                  "6586": (7, 0), "6587": (3, 0), "6588": (11, 0), "658": (2, 0), "6811": (90, 0), "6813": (10, 0)})
+                                  "6586": (7, 0), "6587": (3, 0), "6588": (11, 0), "6811": (90, 0), "6813": (10, 0)})
     assert (r[23], r[24], r[22]) == (1000, 100, 1100), r                                     # R22 = R23 + R24
-    assert (r[32], r[33], r[309], r[316], r[36], r[37]) == (50, 200, 200, 7, 3, 13), r
+    assert (r[32], r[33], r[309], r[316], r[36], r[37]) == (50, 200, 200, 7, 3, 11), r
     assert (r[306], r[26], r[25]) == (90, 10, 100), r                                         # R25 = R306 + R26 − R27
-    assert r[31] == 50 + 200 + 7 + 3 + 13, r                                                  # R31 = R32+…+R37+R310+R312+R314+R316
+    assert r[31] == 50 + 200 + 7 + 3 + 11, r                                                  # R31 = R32+…+R37+R310+R312+R314+R316
 
 
 def _rulaje_tot_planul():
@@ -117,3 +117,28 @@ def test_xml_s1003_valid_pe_duk():
     assert not re.search(r'\bF20_0(05|38|67)\d="', x) and not re.search(r'\bF20_318\d="', x)
     v = duk.valideaza(x, "s1003", an=2025, luna=12)
     assert v["stare"] == "valid", v
+
+
+def test_sinteticele_cu_analitice_pe_randuri_diferite_opresc_generarea():
+    """[decizia Costin 12.10.2026] „Pentru 741 și 658 folosite sintetic, fără analitic: nu ghicim rândul. Generarea S1003 se oprește, cu
+    motivul și contul analitic cerut.” Clasa, calculată din planul OMFP: orice sintetic ale cărui analitice cad pe rânduri DIFERITE
+    (658, 681, 741, 761, 781) — tabelul `F20_S1003_NOMENCLATOR_SINTETICE` e exact lista calculată, iar un rulaj pe sintetic (și pe un
+    analitic al aplicației, „741.01”) oprește generarea cu analiticele cerute pe rândurile lor. MUTAȚIE: 741 readus pe rd.12 (rândul
+    ghicit) -> pică; un sintetic scos din tabel -> pică; refuzul scos -> pică."""
+    plan = _plan_oficial_67()
+    calculat = {}
+    for p in plan:
+        frunze = [c for c in _frunze(plan) if c != p and c.startswith(p)]
+        randuri = {c: (b.rand_f20_s1003(c) or (None,))[0] for c in frunze}
+        if len(set(randuri.values())) > 1:
+            calculat[p] = tuple(sorted(randuri.items()))
+    assert {k: tuple(sorted(v)) for k, v in b.F20_S1003_NOMENCLATOR_SINTETICE.items()} == calculat, calculat
+    assert sorted(calculat) == ["658", "681", "741", "761", "781"]
+    for s in calculat:
+        assert b.rand_f20_s1003(s) is None, s                                   # niciun rând ghicit pentru sintetic
+    with pytest.raises(ValueError) as e:
+        b.f20_complet_din_rulaje({"704": (0, 10), "741": (0, 800), "658.01": (5, 0)})
+    m = str(e.value)
+    assert re.findall(r"contul (\d+) e folosit sintetic", m) == ["658", "741"], m
+    assert re.findall(r"contul 741 e folosit sintetic, fără analitic, iar formularul ANAF îi pune analiticele pe rânduri diferite: (.*?)\. Trece", m) \
+        == ["7411 (rd.06); 7412, 7413, 7414, 7415, 7416, 7417, 7419 (rd.12); 7418 (rd.49)"], m

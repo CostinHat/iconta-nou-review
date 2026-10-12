@@ -189,15 +189,17 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
 # conturile tipărite pe fiecare rând și calculele lui (`<calculate>`), citite în șablonul XFA. Unde textul structurii
 # (`structura_SC_1225_270126.pdf`) diferă, formularul câștigă: rd.32 (11.1) fără 612; rd.33 (11.2) = 612 — în structură o copie a lui
 # 11.6; rd.24 (9.b) = 645 + 646; rd.01 = rd.02 + 03 − 04 + 06 (fără rd.05).
-# Fiecare cont din rulaje merge pe UN rând: cel al prefixului listat CEL MAI LUNG care îl cuprinde (6586 -> 11.6, 6587 -> 11.9, restul lui
-# 658 -> 11.10; 7411 -> rd.06, restul lui 741 -> rd.12). Un cont fără rând oprește generarea (`ValueError`), nu dispare din cont.
-# INTERPRETĂRI CU TEMEI (formularul s-ar contrazice altfel; de reconfirmat dacă ANAF tranșează):
+# Fiecare cont din rulaje merge pe UN rând: cel al prefixului listat CEL MAI LUNG care îl cuprinde (6586 -> 11.6, 6587 -> 11.9, 7411 ->
+# rd.06, 7418 -> rd.49). Un cont fără rând, sau un sintetic cu analitice pe rânduri diferite, oprește generarea (`ValueError`, cu motivul).
+# INTERPRETĂRI CU TEMEI (formularul s-ar contrazice altfel):
 #   · rd.26 (a.2) tipărește „6811 + 6813 + 6817 + din ct.6818”, iar rd.25 = 25a + 26 − 27 cu 25a = 6811: 6811 ar intra de două ori, deci
 #     6811 numai la 25a (rândul 306);
 #   · „din ct.6818” / „din ct.7818” se repartizează „după natura elementelor” (nota formularului): la noi, la b) — activele circulante
 #     (rd.29 / rd.30); rd.26 / rd.27 primesc numai 6813 + 6817 / 7813;
-#   · sinteticul 741 fără analitic (îl scrie `core/subventii.py`) — subvenție de exploatare, rd.12, nu „aferentă cifrei de afaceri” (rd.06,
-#     numai 7411); sinteticul 658 fără analitic — „alte cheltuieli”, rd.37.
+#   (ambele confirmate de Costin, 12.10.2026)
+# [decizia Costin 12.10.2026, verbatim în DECIZII] „Pentru 741 și 658 folosite sintetic, fără analitic: nu ghicim rândul. Generarea S1003
+# se oprește, cu motivul și contul analitic cerut, la fel ca la contul fără rând.” Clasa: orice SINTETIC al cărui analitice stau pe rânduri
+# diferite (F20_S1003_NOMENCLATOR_SINTETICE, derivat din planul OMFP 1802/2014) — 658, 681, 741, 761, 781.
 # Rândurile „=null” ale formularului (rd.05, rd.38, rd.67, rd.318) nu se scriu; „din care … afiliate” și rd.301 (activitatea
 # preponderentă) nu se pot ști din rulaje — nu se scriu (ANAF le acceptă absente).
 #: (rând, latura, prefixe) — latura: "c" rulajul creditor, "d" rulajul debitor, "n" soldul net creditor (711, 712 -> rd.07 / rd.08)
@@ -210,7 +212,7 @@ F20_S1003_NOMENCLATOR = (
     (9, "c", ("721", "722")),
     (10, "c", ("755",)),
     (11, "c", ("725",)),
-    (12, "c", ("741", "7412", "7413", "7414", "7415", "7416", "7417", "7419")),
+    (12, "c", ("7412", "7413", "7414", "7415", "7416", "7417", "7419")),
     (13, "c", ("751", "758", "7815")),
     (17, "d", ("601", "602")),
     (18, "d", ("603", "604", "606", "608")),
@@ -233,10 +235,10 @@ F20_S1003_NOMENCLATOR = (
     (34, "d", ("652",)),
     (35, "d", ("655",)),
     (36, "d", ("6587",)),
-    (37, "d", ("651", "658", "6581", "6582", "6583", "6584", "6588")),
+    (37, "d", ("651", "6581", "6582", "6583", "6584", "6588")),
     (40, "d", ("6812",)),
     (41, "c", ("7812",)),
-    (45, "c", ("761", "7611", "7612", "7613")),
+    (45, "c", ("7611", "7612", "7613")),
     (47, "c", ("766",)),
     (49, "c", ("7418",)),
     (50, "c", ("762", "764", "765", "767", "768", "7615")),
@@ -256,6 +258,29 @@ F20_S1003_NOMENCLATOR_DIN_CARE = (
     (302, "d", ("6051",)), (303, "d", ("6053",)),
     (307, "d", ("6121",)), (308, "d", ("6122",)), (309, "d", ("6123",)),
 )
+#: sinteticele planului OMFP 1802/2014 ale căror analitice stau pe rânduri DIFERITE: un rulaj pe sintetic (sau pe un analitic al aplicației,
+#: „741.01”) nu spune rândul — generarea se oprește și cere analiticul. {sintetic: ((analitic, rând), …)}; păzit de
+#: `core/test_bilant_s1003_f20.py` (= lista calculată din plan cu `rand_f20_s1003`).
+F20_S1003_NOMENCLATOR_SINTETICE = {
+    "658": (("6581", 37), ("6582", 37), ("6583", 37), ("6584", 37), ("6586", 316), ("6587", 36), ("6588", 37)),
+    "681": (("6811", 306), ("6812", 40), ("6813", 26), ("6814", 29), ("6817", 26), ("6818", 29)),
+    "741": (("7411", 6), ("7412", 12), ("7413", 12), ("7414", 12), ("7415", 12), ("7416", 12), ("7417", 12), ("7418", 49), ("7419", 12)),
+    "761": (("7611", 45), ("7612", 45), ("7613", 45), ("7615", 50)),
+    "781": (("7812", 41), ("7813", 27), ("7814", 30), ("7815", 13), ("7818", 30)),
+}
+
+
+def motiv_sintetic(sintetic):
+    """Motivul refuzului pentru un rulaj pe `sintetic`, cu analiticele cerute grupate pe rândul formularului."""
+    pe_rand = {}
+    for analitic, rand in F20_S1003_NOMENCLATOR_SINTETICE[sintetic]:
+        pe_rand.setdefault(rand, []).append(analitic)
+    rd = lambda r: "rd.%s" % (("%02d" % r) if r < 100 else r)   # noqa: E731
+    return ("contul %s e folosit sintetic, fără analitic, iar formularul ANAF îi pune analiticele pe rânduri diferite: %s. Trece rulajul "
+            "pe analiticul potrivit — iConta.eu nu alege rândul în locul tău."
+            % (sintetic, "; ".join("%s (%s)" % (", ".join(a), rd(r)) for r, a in pe_rand.items())))
+
+
 #: rânduri „=null” în formular (nu se scriu); 695 (impozitul specific, rd.67 „=null”) nu are rând — un rulaj pe el oprește generarea
 F20_S1003_NOMENCLATOR_NULL = (5, 38, 67, 318)
 
@@ -277,6 +302,9 @@ def f20_complet_din_rulaje(rl):
     D = Decimal
     v = {r: D("0") for r, _l, _p in F20_S1003_NOMENCLATOR}
     v[8] = D("0")
+    sintetice = sorted({str(c).split(".")[0] for c in (rl or {}) if str(c).split(".")[0] in F20_S1003_NOMENCLATOR_SINTETICE})
+    if sintetice:
+        raise ValueError("Bilanțul S1003: " + " ".join(motiv_sintetic(c) for c in sintetice))
     fara_rand = []
     for cont, (deb, cred) in (rl or {}).items():
         rr = rand_f20_s1003(cont)
