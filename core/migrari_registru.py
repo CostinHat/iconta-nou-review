@@ -177,6 +177,10 @@ def _reporneste_daca_e_cazul(productie):
     if r.returncode == 0:
         os.remove(SENTINELA)
         print("toate migrările lui %s sunt rulate pe producție: iconta-nou repornit, preia HEAD" % head[:8])
+        # [12.10.2026] publicarea se închide abia cu four-way-ul: același script ca post-commit (scrie sau șterge .git/FOUR_WAY_NEINCHIS);
+        # fără el sentinela scrisă de post-commit la restartul oprit rămânea după ce toate brațele se închiseseră
+        fw = subprocess.run(["sh", os.path.join(RAD, "scripts", "githooks", "four-way")], capture_output=True, text=True, cwd=RAD)
+        print((fw.stdout + fw.stderr).strip())
     else:
         print("restartul a eșuat (%s) — rulează: sudo systemctl restart iconta-nou" % (r.stderr.strip() or r.stdout.strip()))
 

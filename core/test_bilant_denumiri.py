@@ -40,6 +40,9 @@ def test_denumirile_sunt_cele_de_pe_formular():
     assert NOMENCLATOR_DENUMIRI["s1005"]["F10"][41] == "V. PROFITUL SAU PIERDEREA EXERCITIULUI REPORTAT(A) — SOLD C"   # F10_0411, sub grupa ei
     assert NOMENCLATOR_DENUMIRI["s1005"]["F20"][1] == "1.Cifra de afaceri netă"                             # F20_micro, F20_0011
     assert NOMENCLATOR_DENUMIRI["s1003"]["F20"][4] == "Reduceri comerciale acordate"                        # F20 (rd.1-70), F20_0041
+    # [C10] S1003 F20 = denumirile FORMULARULUI (soft A 2025); rd.33 în structură era o copie a lui 11.6
+    assert NOMENCLATOR_DENUMIRI["s1003"]["F20"][33] == "11.2. Cheltuieli cu redevențele, locațiile de gestiune și chiriile"
+    assert NOMENCLATOR_DENUMIRI["s1003"]["F20"][8] == "2. Venituri aferente costului producției în curs de execuție — Sold D"
     assert NOMENCLATOR_DENUMIRI["s1003"]["F10"] == NOMENCLATOR_DENUMIRI["s1005"]["F10"]                                 # F10_BS e comun S1003 / S1005
 
 

@@ -392,14 +392,16 @@ def test_bratul_e_chemat_de_hook():
     import shlex
     _m, cale_brat = _modul_brat()
     asteptat = os.path.relpath(cale_brat, RADACINA).replace(os.sep, "/")
-    hook = io.open(os.path.join(RADACINA, "scripts", "githooks", "post-commit"),
-                   encoding="utf-8").read()
-    lexer = shlex.shlex(hook, posix=True)
-    lexer.whitespace_split = True
-    jetoane = set(lexer)
-    assert asteptat in jetoane, (
-        "bratul redefinit nu e chemat din post-commit (%s lipseste dintre jetoane) — ar fi cod "
+    # [12.10.2026] four-way-ul s-a mutat în scripts/githooks/four-way (chemat de post-commit și de rulatorul migrărilor): brațul se
+    # cere acolo, iar post-commit trebuie să cheme scriptul — tot ca JETON, nu ca subșir
+    def _jetoane(cale):
+        lexer = shlex.shlex(io.open(os.path.join(RADACINA, "scripts", "githooks", cale), encoding="utf-8").read(), posix=True)
+        lexer.whitespace_split = True
+        return set(lexer)
+    assert asteptat in _jetoane("four-way"), (
+        "bratul redefinit nu e chemat din four-way (%s lipseste dintre jetoane) — ar fi cod "
         "care nu masoara nimic" % asteptat)
+    assert '$(dirname $0)/four-way' in _jetoane("post-commit"), "post-commit nu mai cheamă four-way-ul"   # shlex posix scoate ghilimelele
 
 
 def test_pragul_de_conexiuni_e_PESTE_ce_tine_aplicatia_singura():

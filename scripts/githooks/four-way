@@ -1,0 +1,75 @@
+#!/bin/sh
+# four-way — confirmarea publicarii: HEAD = origin/main = backup/lant-<zi> = procesul viu (pornire > commit, toate procesele poarta
+# HEAD). Extras din post-commit pe 12.10.2026: e chemat de post-commit dupa fiecare commit SI de rulatorul migrarilor
+# (`core/migrari_registru.py`) dupa restartul pe care l-a amanat o migrare — pana atunci sentinela .git/FOUR_WAY_NEINCHIS scrisa de
+# post-commit ramanea dupa ce toate bratele se inchisesera (vazut la migrarea data_infiintare, 12.10.2026). Un singur loc o
+# scrie si o sterge: aici.
+set -u
+HEAD_SHA=$(git rev-parse HEAD)
+
+banner() {   # $1=tinta  $2=sentinela  $3=motiv  $4=remediu
+    echo ""
+    echo "############################################################"
+    echo "## [four-way] PUBLICARE pe $1 NEFACUTA: $3"
+    echo "## Commit-ul e local, dar NU pe $1."
+    echo "## Rezolva ACUM: $4"
+    echo "## Sentinela $2 scrisa - raportul NU e 'incheiat' cat timp exista."
+    echo "############################################################"
+    echo ""
+    printf '%s\n' "$3" > "$2"
+}
+
+# [P0, 07.09.2026] Cerut: „push automat imediat dupa fiecare publicare confirmata prin four-way;
+# daca push-ul esueaza, nu bloca publicarea locala".
+#
+# Push-ul propriu-zis ramane la pasul 1 — „doar dupa four-way confirmat" ar fi circular, fiindca
+# `origin/main == HEAD` E unul dintre cele patru brate. Ce se adauga aici e CONFIRMAREA lui, la
+# capat, dupa ce statica s-a publicat si procesul s-a restartat, plus o REINCERCARE a bratului care
+# lipseste. Fara ea, un push cazut la inceput (retea) ramanea cazut pana la commitul urmator.
+#
+# NU BLOCHEAZA: hook-ul iese 0 orice ar fi. Un post-commit care esueaza nu poate desface commitul,
+# deci singurul lucru pe care l-ar obtine oprindu-se e sa ascunda restul pasilor.
+S_4W=".git/FOUR_WAY_NEINCHIS"; rm -f "$S_4W"
+REMOTE_MAIN=$(git rev-parse origin/main 2>/dev/null || echo "")
+if [ "$REMOTE_MAIN" != "$HEAD_SHA" ]; then
+    echo "[four-way] origin/main NU e la HEAD — reincerc push-ul"
+    if git push origin main > /tmp/push_main_retry.log 2>&1; then
+        echo "[four-way] push de recuperare REUSIT -> $(git rev-parse --short HEAD)"
+        REMOTE_MAIN=$(git rev-parse origin/main 2>/dev/null || echo "")
+    else
+        echo "[four-way] push de recuperare a ESUAT: $(tail -1 /tmp/push_main_retry.log)"
+    fi
+fi
+
+# cele patru brate, citite acum: HEAD · origin/main · backup/<zi> · procesul viu (pornire > commit)
+BK4="backup/lant-$(date +%Y-%m-%d)"
+REMOTE_BK4=$(git ls-remote origin "$BK4" 2>/dev/null | cut -f1)
+COMMIT_TS=$(git log -1 --format=%ct)
+START_TS=$(date -d "$(systemctl show iconta-nou -p ActiveEnterTimestamp --value 2>/dev/null)" +%s 2>/dev/null || echo 0)
+
+LIPSA=""
+[ "$REMOTE_MAIN" = "$HEAD_SHA" ] || LIPSA="$LIPSA origin/main"
+[ "$REMOTE_BK4" = "$HEAD_SHA" ] || LIPSA="$LIPSA $BK4"
+[ "$START_TS" -gt "$COMMIT_TS" ] 2>/dev/null || LIPSA="$LIPSA proces-viu(pornire<=commit)"
+
+# [P6 val 3, 12.09.2026] Bratul REDEFINIT. Ora de pornire a unitatii spune ca restartul a avut loc;
+# nu spune ca FIECARE worker poarta HEAD. Cu `--workers N` diferenta devine reala, iar textul
+# canonic (PLAN_HARDENING.md:718-720) cere tocmai a doua afirmatie. Fiecare proces se inregistreaza
+# la capatul verificarii lui de pornire, deci intrebarea se poate pune pe date.
+if [ -x ./venv/bin/python ] && [ -f scripts/toate_poarta_head.py ]; then
+    if ./venv/bin/python scripts/toate_poarta_head.py "$HEAD_SHA"; then
+        :
+    else
+        LIPSA="$LIPSA toate-procesele-poarta-HEAD"
+    fi
+fi
+
+if [ -z "$LIPSA" ]; then
+    echo "[four-way] FOUR-WAY INCHIS: HEAD = origin/main = $BK4 = procesul viu"
+else
+    banner "four-way" "$S_4W" "brate care NU se inchid:$LIPSA" \
+           "publicarea LOCALA e intacta si commitul exista; rezolva bratul lipsa (de obicei: git push origin main)"
+fi
+
+
+exit 0

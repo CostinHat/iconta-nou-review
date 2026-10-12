@@ -2244,3 +2244,13 @@ Comanda verbatim în DECIZII 12.10.2026 („Retestul în aplicație”). Confirm
 - Uneltele vizuale pe instanța de probă IZOLATĂ (export al arborelui, statica publicată lângă el, 8011 pe baza de test) — nu prin
   publicarea staticii din arbore în directorul servit de producție (rețeta din PREDARE ar fi pus JS-ul nou peste backendul vechi).
 - Un singur commit prin poarta completă (commitul care conține această intrare).
+
+## 12.10.2026 — Răspunsul la §6 al „Retestului”: migrarea data_infiintare rulată; C10 — F20 S1003 rescris
+
+Comanda verbatim în DECIZII. **pct.1:** copie a celor 5 tabele `firma_profil`, apoi `core.migrari_registru ruleaza --productie
+core/migrare_data_infiintare.py` (11:28): 5/5 scheme, statica 0a64ac94 publicată, iconta-nou repornit; four-way-ul rămăsese neînchis
+(sentinela scrisă de post-commit, nereevaluată de rulator) — four-way-ul mutat în `scripts/githooks/four-way`, chemat și de rulator;
+FOUR-WAY ÎNCHIS pe 0a64ac94. **pct.2 (C10):** F20 S1003 pe rândurile formularului oficial 2025 (șablonul XFA al „soft A”: conturile și
+calculele fiecărui rând; textul structurii avea rd.33 greșit), denumirile oficiale, garda pe tot planul OMFP, S1003-urile vechi respinse ca
+„An precedent”; e2e C10. **pct.3:** interpretarea 229 confirmată. R4 BLOCAT. Un commit prin poarta completă (commitul care conține
+această intrare).

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**772 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**773 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 735
+### `core/` — 736
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8891,6 +8891,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_bilant_denumiri.py` — GARD — deficiența 227 (comanda Costin 12.10.2026, verbatim în DECIZII): „la completarea manuală a coloanei «An precedent» din bilanț,
 - `core/test_bilant_prin_coada.py` — GARD — bilanțul trece prin coadă: pregătit → validat → depus, cu drepturile declarațiilor (decizia Costin 07.10.2026, C11).
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
+- `core/test_bilant_s1003_f20.py` — GARD — C10 (comanda Costin 12.10.2026, verbatim în DECIZII): „rescrie F20 din S1003 pe numerotarea formularului ANAF (70 de rânduri),
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
 - `core/test_brevo_pe_fir_propriu.py` — core/test_brevo_pe_fir_propriu.py — familia `_trimite_brevo` nu mai tine o conexiune din pool.
 - `core/test_buton_blocat_structura.py` — GARD ÎN BROWSER — blocarea butonului în timpul unei scrieri nu-i distruge conținutul (găsit 08.10.2026, la proba lotului
@@ -10865,3 +10866,12 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | „Înainte de preluare” și restanțele spun aceeași lună | `core/test_control_preluare.py::test_luna_preluarii_spune_de_unde_vine_…` + câmpurile răspunsului + e2e 232 (și 121) | antetul pe luna preluării, cu perioadele dinaintea ei dedesubt | `de_unde` / `luna_dinainte` stricate -> ROȘU (2) | — |
 | catalogul numerotat de la 1 | e2e 230 | firul lui Ana de la „2” | numărul înapoi din STRATURI -> ROȘU (plasă) | — |
 | scripturile de lucru citesc argumentele înainte de efecte | `scripts/argumente_script.py` + `core/test_argumente_script.py` | `--help` care pornește plasa / publică statica / scrie fișiere; un flag necunoscut ignorat | ramura uzului / refuzul / citirea scoasă din `cifre_referinta` / din `e2e_poarta` -> ROȘII (4) | trei scripturi; un script nou cu argumente de mână intră în listă |
+
+## 12.10.2026 — C10 (F20 S1003 pe rândurile formularului) și four-way-ul după migrare
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| F20 S1003 = formularul oficial | `core/test_bilant_s1003_f20.py` (7 teste: planul oficial pe exact un rând, cazul C10, cheltuielile pe rânduri, totalurile = calculele formularului, rezultatul net = rulajele, rândurile null, DUK) + e2e `test_def_c10_…` | subvenții pe rândul reducerilor; 612 în 11.1 și 11.2; 646 fără rând; 6811 de două ori; un cont care dispare din P&L; rânduri „=null” scrise | 7 mutații core + 1 e2e -> ROȘII | universul = planul OMFP din corpus; un cont nou din plan intră în tabel |
+| denumirile S1003 F20 din formular | `scripts/extrage_denumiri_bilant.py` (`denumiri_f20_formular`) + `core/test_bilant_denumiri.py` | denumirea rd.33 luată din textul greșit al structurii | „11.2” din structură -> ROȘU | — |
+| S1003 vechi nu e „An precedent” | `core/bilant_api.py` (`S1003_F20_SCHEMA_NOUA_DIN`) + `core/test_bilant_an_precedent.py::test_s1003_pe_numerotarea_veche_…` | cifre pe numerotarea veche duse în coloana anului următor | verificarea scoasă -> ROȘU | pragul e momentul rescrierii |
+| four-way-ul după restartul amânat | `scripts/githooks/four-way` (chemat de post-commit și de `core/migrari_registru.py`) + `core/test_publicare_restart_neconditionat.py` (2 teste) + `core/test_wave3_instante.py::test_bratul_e_chemat_de_hook` | sentinela FOUR_WAY_NEINCHIS rămasă după ce toate brațele s-au închis | apelul scos din rulator / din post-commit / ștergerea scoasă -> ROȘII (3) | — |

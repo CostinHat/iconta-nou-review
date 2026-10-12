@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026: retestul Costin — 224, 225 redeschise, 226–232, `--help`; migrarea `data_infiintare` de rulat pe producție; R4 BLOCAT**
+# PREDARE LANȚ — **12.10.2026: migrarea `data_infiintare` rulată, publicarea închisă; C10 — F20 S1003 pe rândurile formularului; R4 BLOCAT**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `f90a23f6` (mutația scăpată din 221, four-way închis 05:09); lotul retestului e în commitul care conține această
-  predare — SHA-ul, starea restartului (oprit până la migrare) și four-way-ul în raport.
+- **pe commit**: `0a64ac94` (retestul 12.10; restartul oprit până la migrare, migrarea rulată 11:28, four-way închis prin
+  `scripts/githooks/four-way`); lotul C10 e în commitul care conține această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -98,12 +98,10 @@ aplicației**, nu „în așteptarea unei teme”:
   `test_reverificare`, `test_trasee`) numai când nicio deficiență nu e deschisă (CLAUDE.md §2.3 pct.12 e); (2) 221 interpretarea (b)
   aprobată; (3) cele 11 bife CF art.17 confirmate; (4) F1–F5 completează manual „An precedent” pe 2026, S1005 2025 al lui F1 nefolosit;
   (5) mutația scăpată închisă, executat.
-- **MIGRARE DE RULAT PE PRODUCȚIE (Costin): `core/migrare_data_infiintare.py`** (coloana `firma_profil.data_infiintare`, deficiența 229).
-  Până la rulare, post-commit a oprit restartul (`.git/RESTART_OPRIT_MIGRARE`) și statica nu s-a publicat — producția rulează commitul
-  de dinainte. Comanda: `./venv/bin/python -m core.migrari_registru ruleaza --productie core/migrare_data_infiintare.py` (după ea,
-  rulatorul publică statica și repornește). Pe baza de test e rulată.
-- **DECIZIE CERUTĂ: C10** — F20 al bilanțului S1003 e scris pe o numerotare proprie (38 de rânduri), nu pe a formularului ANAF 2025
-  (rd.1–70); DUK îl declară totuși „valid”. Rescrierea e un lot separat (declarație către ANAF) — aștept decizia (raportul 12.10 §6).
+- **MIGRAREA `data_infiintare` — RULATĂ** (12.10.2026 11:28, de Code, cu autorizarea explicită a lui Costin pentru ea; copie a tabelelor
+  în `~/iconta_backups/firma_profil_pre_data_infiintare_20261012_1128.sql`). Regula generală rămâne: migrările pe producție le rulează
+  Costin. Rulatorul cheamă acum și four-way-ul după restart.
+- **C10 — ÎNCHISĂ** (lotul care conține această predare): F20 S1003 pe rândurile formularului oficial 2025, cu denumirile lui.
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -463,8 +461,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **952** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **953** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

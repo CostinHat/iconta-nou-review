@@ -19,6 +19,11 @@ import sys
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SURSA = os.path.join(RAD, "anaf_surse", "structura_SC_1225_270126.txt")
+#: [C10, comanda Costin 12.10.2026] FORMULARUL oficial 2025 („soft A”, PDF XFA, static.anaf.ro — pagina S1002-S1003-S1004-S1005 / 2025):
+#: șablonul lui are, pe fiecare rând al tabelului `form1.F20` (cel pe care scriptul formularului îl folosește pentru S1002 și S1003,
+#: `rbl == 1 || rbl == 2`), denumirea și formula de conturi tipărite. Unde textul structurii diferă de formular (rd.33 „11.2”: în structură
+#: e o copie a lui 11.6), FORMULARUL câștigă — e ce completează și depune contabilul.
+FORMULAR = os.path.join(RAD, "anaf_surse", "bilant_SC_1225_XML_270326.pdf")
 TINTA = os.path.join(RAD, "core", "bilant_denumiri.py")
 #: (formular, secțiune) -> antetul secțiunii din structură; secțiunea se încheie la primul antet de secțiune următor
 SECTIUNI = {("s1005", "F10"): "F10_BS (rd.1-49,301,302) S1003, S1005", ("s1003", "F10"): "F10_BS (rd.1-49,301,302) S1003, S1005",
@@ -58,6 +63,42 @@ def _curata(s):
     s = re.sub(r"\*+$", "", s)                                          # trimiterea la nota de subsol a formularului
     s = re.sub(r"\s+", " ", s).strip(" -–")
     return s
+
+
+def sablon_formular(cale=FORMULAR):
+    """Șablonul XFA (XML) al formularului: fluxul comprimat din PDF care conține tabelul F20."""
+    import zlib
+    d = io.open(cale, "rb").read()
+    for m in re.finditer(rb"stream\r?\n", d):
+        e = d.find(b"endstream", m.end())
+        try:
+            t = zlib.decompress(d[m.end():e])
+        except zlib.error:
+            continue
+        if b'name="F20"' in t:
+            return t.decode("utf-8", "replace")
+    raise ValueError("șablonul formularului nu are tabelul F20")
+
+
+def denumiri_f20_formular(sablon=None):
+    """{rând: denumirea tipărită} pentru tabelul `form1.F20` (rândurile R01–R70 și „din care” R301–R318)."""
+    t = sablon if sablon is not None else sablon_formular()
+    i0 = t.index('<subform id="F20_ID" layout="tb" name="F20"')
+    i1 = min(x for x in (t.find('name="F20S"', i0), t.find('name="F30"', i0)) if x > 0)
+    bloc = t[i0:i1]
+    randuri = [(m.start(), int(m.group(1))) for m in re.finditer(r'<subform\b[^>]*\bname="R(\d+)"', bloc)]
+    out = {}
+    for k, (p, rand) in enumerate(randuri):
+        seg = bloc[p:randuri[k + 1][0] if k + 1 < len(randuri) else len(bloc)]
+        m = re.search(r"<draw\b.*?<value\s*>(.*?)</value\s*>", seg, re.S)
+        if not m:
+            continue
+        txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        txt = re.sub(r"\s*din care:?\s*$", "", txt).strip(" ,")
+        den = _curata(txt)
+        if den:
+            out[rand] = den
+    return out
 
 
 def extrage(text=None):
@@ -102,6 +143,10 @@ def extrage(text=None):
                 i = j
                 continue
             i += 1
+        if (form, sec) == ("s1003", "F20"):   # [C10] denumirile FORMULARULUI (vezi FORMULAR); structura rămâne numai pentru grupe
+            din_structura = {k: re.sub(r"(?<!—)\s+(Sold [CD])$", r" — \1", v) for k, v in rez.items()}
+            rez = {k: (din_structura[k] if v.upper() in _GENERICE and k in din_structura else v)
+                   for k, v in denumiri_f20_formular().items()}
         if sec == "F30":                 # numai rândurile pe care le scrie generatorul (`bilant.xml_s1005`: F30 rd.1-3, cap.I)
             rez = {k: v for k, v in rez.items() if k in RANDURI_F30}
         out.setdefault(form, {})[sec] = dict(sorted(rez.items()))

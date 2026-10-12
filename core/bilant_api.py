@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """S1005 - strat DB: solduri finale + rulaje din note VALIDATE, apoi core.bilant."""
+import datetime as _dt
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import bilant as _b
@@ -126,6 +127,11 @@ def coloana_precedenta(cur, schema, tip, an):
     ref = data_soldurilor(cur, schema)
     s_p = sold_la(cur, schema, datetime.date(an - 1, 12, 31), ref)
     b = _ultimul(cur, schema, tip, an - 1, numai_valid=True)
+    if b and tip == "s1003" and b["produs_la"] < S1003_F20_SCHEMA_NOUA_DIN:
+        # [C10, 12.10.2026] un S1003 produs înainte de rescrierea F20 pe rândurile formularului are F20 pe numerotarea veche (38 de rânduri
+        # proprii): coloana lui „An curent” ar ajunge pe rânduri greșite. Nu se folosește; coloana se cere ca la bilanțul respins de 221.
+        out["bilant_respins"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"], "numerotare_veche": True}
+        b = None
     if b and s_p is None:
         # [prins la proba pe producție, 11.10.2026] Un bilanț al anului precedent pe care aplicația NU l-ar putea întocmi azi (31.12 a
         # lui e înaintea soldurilor de preluare) a fost generat de defectul 221 — F1 avea S1005 2025 „valid” din 10.10, cu ambele
@@ -173,6 +179,8 @@ def coloanele(cur, schema, tip, an, av):
 
 
 PRIMUL_EXERCITIU = "primul_exercitiu"
+#: [C10] momentul schimbării SCHEMEI F20 a S1003 (de la el, rândurile formularului ANAF 2025); un S1003 păstrat de dinainte nu e „An precedent”
+S1003_F20_SCHEMA_NOUA_DIN = _dt.datetime(2026, 10, 13, tzinfo=_dt.timezone.utc)
 
 
 def mesaj_inainte_de_infiintare(an, infiintare):
@@ -195,9 +203,13 @@ def mesaj_coloana_goala(an, lipsa, respins=None):
 
 
 def nota_bilant_respins(an, respins):
-    """Bilanțul anului precedent din aplicație care NU se folosește (generat cu soldurile de preluare de după 31.12 a lui — defectul 221)."""
+    """Bilanțul anului precedent din aplicație care NU se folosește (generat cu soldurile de preluare de după 31.12 a lui — defectul 221;
+    sau un S1003 pe numerotarea veche a F20 — C10)."""
     if not respins:
         return ""
+    if respins.get("numerotare_veche"):
+        return (" Bilanțul S1003 pe %d păstrat în aplicație (%s) nu se folosește: contul lui de profit și pierdere e pe numerotarea veche, "
+                "dinaintea rescrierii pe rândurile formularului ANAF." % (an - 1, data_ro(respins.get("la"), "cu_ora")))
     return (" Bilanțul pe %d păstrat în aplicație (%s) nu se folosește: soldurile de preluare sunt de la %s, deci cifrele lui nu sunt ale "
             "exercițiului %d." % (an - 1, data_ro(respins.get("la"), "cu_ora"), data_ro(respins.get("solduri_la")), an - 1))
 

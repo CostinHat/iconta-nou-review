@@ -183,64 +183,144 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
     return "\n".join(H)
 
 
+# ── F20 S1003 (contul de profit și pierdere al entităților mici) — [C10, comanda Costin 12.10.2026, verbatim în DECIZII] „rescrie F20
+# din S1003 pe numerotarea formularului ANAF (70 de rânduri), cu denumirile oficiale.” SURSA: FORMULARUL oficial 2025 („soft A”,
+# `anaf_surse/bilant_SC_1225_XML_270326.pdf`, tabelul `form1.F20` pe care scriptul formularului îl folosește la S1002 și S1003):
+# conturile tipărite pe fiecare rând și calculele lui (`<calculate>`), citite în șablonul XFA. Unde textul structurii
+# (`structura_SC_1225_270126.pdf`) diferă, formularul câștigă: rd.32 (11.1) fără 612; rd.33 (11.2) = 612 — în structură o copie a lui
+# 11.6; rd.24 (9.b) = 645 + 646; rd.01 = rd.02 + 03 − 04 + 06 (fără rd.05).
+# Fiecare cont din rulaje merge pe UN rând: cel al prefixului listat CEL MAI LUNG care îl cuprinde (6586 -> 11.6, 6587 -> 11.9, restul lui
+# 658 -> 11.10; 7411 -> rd.06, restul lui 741 -> rd.12). Un cont fără rând oprește generarea (`ValueError`), nu dispare din cont.
+# INTERPRETĂRI CU TEMEI (formularul s-ar contrazice altfel; de reconfirmat dacă ANAF tranșează):
+#   · rd.26 (a.2) tipărește „6811 + 6813 + 6817 + din ct.6818”, iar rd.25 = 25a + 26 − 27 cu 25a = 6811: 6811 ar intra de două ori, deci
+#     6811 numai la 25a (rândul 306);
+#   · „din ct.6818” / „din ct.7818” se repartizează „după natura elementelor” (nota formularului): la noi, la b) — activele circulante
+#     (rd.29 / rd.30); rd.26 / rd.27 primesc numai 6813 + 6817 / 7813;
+#   · sinteticul 741 fără analitic (îl scrie `core/subventii.py`) — subvenție de exploatare, rd.12, nu „aferentă cifrei de afaceri” (rd.06,
+#     numai 7411); sinteticul 658 fără analitic — „alte cheltuieli”, rd.37.
+# Rândurile „=null” ale formularului (rd.05, rd.38, rd.67, rd.318) nu se scriu; „din care … afiliate” și rd.301 (activitatea
+# preponderentă) nu se pot ști din rulaje — nu se scriu (ANAF le acceptă absente).
+#: (rând, latura, prefixe) — latura: "c" rulajul creditor, "d" rulajul debitor, "n" soldul net creditor (711, 712 -> rd.07 / rd.08)
+F20_S1003_NOMENCLATOR = (
+    (2, "c", ("701", "702", "703", "704", "705", "706", "708")),
+    (3, "c", ("707",)),
+    (4, "d", ("709",)),
+    (6, "c", ("7411",)),
+    (7, "n", ("711", "712")),
+    (9, "c", ("721", "722")),
+    (10, "c", ("755",)),
+    (11, "c", ("725",)),
+    (12, "c", ("741", "7412", "7413", "7414", "7415", "7416", "7417", "7419")),
+    (13, "c", ("751", "758", "7815")),
+    (17, "d", ("601", "602")),
+    (18, "d", ("603", "604", "606", "608")),
+    (19, "d", ("605",)),
+    (20, "d", ("607",)),
+    (21, "c", ("609",)),
+    (23, "d", ("641", "642", "643", "644")),
+    (24, "d", ("645", "646")),
+    (306, "d", ("6811",)),
+    (26, "d", ("6813", "6817")),
+    (27, "c", ("7813",)),
+    (29, "d", ("654", "6814", "6818")),
+    (30, "c", ("754", "7814", "7818")),
+    (32, "d", ("611", "613", "614", "615", "621", "622", "623", "624", "625", "626", "627", "628")),
+    (33, "d", ("612",)),
+    (310, "d", ("616",)),
+    (312, "d", ("617",)),
+    (314, "d", ("618",)),
+    (316, "d", ("635", "6586")),
+    (34, "d", ("652",)),
+    (35, "d", ("655",)),
+    (36, "d", ("6587",)),
+    (37, "d", ("651", "658", "6581", "6582", "6583", "6584", "6588")),
+    (40, "d", ("6812",)),
+    (41, "c", ("7812",)),
+    (45, "c", ("761", "7611", "7612", "7613")),
+    (47, "c", ("766",)),
+    (49, "c", ("7418",)),
+    (50, "c", ("762", "764", "765", "767", "768", "7615")),
+    (54, "d", ("686",)),
+    (55, "c", ("786",)),
+    (56, "d", ("666",)),
+    (58, "d", ("663", "664", "665", "667", "668")),
+    (66, "d", ("691",)),
+    (304, "d", ("694",)),
+    (305, "c", ("794",)),
+    (317, "d", ("697",)),
+    (68, "d", ("698",)),
+)
+#: „din care” — părți ale unui rând de mai sus, nu componente ale totalurilor
+F20_S1003_NOMENCLATOR_DIN_CARE = (
+    (14, "c", ("7584",)), (15, "c", ("7815",)), (51, "c", ("7615",)),
+    (302, "d", ("6051",)), (303, "d", ("6053",)),
+    (307, "d", ("6121",)), (308, "d", ("6122",)), (309, "d", ("6123",)),
+)
+#: rânduri „=null” în formular (nu se scriu); 695 (impozitul specific, rd.67 „=null”) nu are rând — un rulaj pe el oprește generarea
+F20_S1003_NOMENCLATOR_NULL = (5, 38, 67, 318)
+
+
+def rand_f20_s1003(cont):
+    """(rând, latura) pe care intră `cont` — prefixul listat cel mai lung care îl cuprinde — sau None."""
+    c = str(cont).split(".")[0]
+    best = None
+    for rand, lat, prefixe in F20_S1003_NOMENCLATOR:
+        for p in prefixe:
+            if c.startswith(p) and (best is None or len(p) > best[0]):
+                best = (len(p), rand, lat)
+    return (best[1], best[2]) if best else None
+
+
 def f20_complet_din_rulaje(rl):
-    """F20 cont de profit si pierdere COMPLET (S1003, OMFP 1802 formular standard).
-    Intoarce dict rd->valoare. Randuri agregate calculate; iterat cu validatorul DUK."""
-    r = {}
-    # venituri exploatare
-    prod_vanduta = rc(rl, "701","702","703","704","705","706","708") - rd(rl, "709")
-    venit_marfa = rc(rl, "707")
-    r[2] = _i(prod_vanduta); r[3] = _i(venit_marfa)
-    r[4] = _i(rc(rl, "7411"))
-    r[5] = Decimal("0")  # reduceri comerciale acordate (709 deja scazut) - pe formular rd separat
-    r[1] = _i(prod_vanduta + venit_marfa + rc(rl, "7411"))
-    sold_711 = rc(rl, "711","712") - rd(rl, "711","712")
-    r[6] = _i(sold_711 if sold_711 > 0 else 0)   # sold C variatia stocurilor
-    r[7] = _i(-sold_711 if sold_711 < 0 else 0)  # sold D
-    r[8] = _i(rc(rl, "721","722","725"))
-    r[9] = _i(rc(rl, "741") - rc(rl, "7411") + rc(rl, "751","755","758") + rc(rl, "7815"))
-    r[10] = _i(Decimal(str(r[1])) + Decimal(str(r[6])) - Decimal(str(r[7])) + Decimal(str(r[8])) + Decimal(str(r[9])))
-    # cheltuieli exploatare
-    r[11] = _i(rd(rl, "601","602") - rc(rl, "609"))
-    r[12] = _i(rd(rl, "603","604","606","608"))
-    r[13] = _i(rd(rl, "605"))
-    r[14] = _i(rd(rl, "607"))
-    r[15] = Decimal("0")  # reduceri comerciale primite (609) - net in rd11 v1
-    r[16] = _i(rd(rl, "641","642","643","644","645","646"))
-    r[17] = _i(rd(rl, "6811","6813","6817") + rd(rl, "654") - rc(rl, "754","7813","7814"))
-    r[18] = _i(rd(rl, "611","612","613","614","615","621","622","623","624","625","626","627","628"))
-    r[19] = _i(rd(rl, "635"))
-    r[20] = _i(rd(rl, "651","652","655","658"))
-    r[21] = _i(rd(rl, "6812") - rc(rl, "7812"))
-    che_expl = (Decimal(str(r[11])) + Decimal(str(r[12])) + Decimal(str(r[13])) + Decimal(str(r[14]))
-                + Decimal(str(r[16])) + Decimal(str(r[17])) + Decimal(str(r[18])) + Decimal(str(r[19]))
-                + Decimal(str(r[20])) + Decimal(str(r[21])))
-    r[22] = _i(che_expl)
-    rez_expl = Decimal(str(r[10])) - che_expl
-    r[23] = _i(rez_expl if rez_expl > 0 else 0)
-    r[24] = _i(-rez_expl if rez_expl < 0 else 0)
-    # financiar
-    r[25] = _i(rc(rl, "761","762"))
-    r[26] = _i(rc(rl, "764","765","766","767","768","786"))
-    r[27] = _i(rd(rl, "663","664","665","666","667","668","686"))
-    ven_fin = Decimal(str(r[25])) + Decimal(str(r[26]))
-    r[28] = _i(ven_fin)
-    rez_fin = ven_fin - Decimal(str(r[27]))
-    r[29] = _i(rez_fin if rez_fin > 0 else 0)
-    r[30] = _i(-rez_fin if rez_fin < 0 else 0)
-    # totaluri
-    ven_tot = Decimal(str(r[10])) + ven_fin
-    che_tot = che_expl + Decimal(str(r[27]))
-    r[31] = _i(ven_tot); r[32] = _i(che_tot)
-    rez_brut = ven_tot - che_tot
-    r[33] = _i(rez_brut if rez_brut > 0 else 0)
-    r[34] = _i(-rez_brut if rez_brut < 0 else 0)
-    r[35] = _i(rd(rl, "691","698"))
-    r[36] = _i(rd(rl, "694","695","696","697"))
-    rez_net = rez_brut - Decimal(str(r[35])) - Decimal(str(r[36]))
-    r[37] = _i(rez_net if rez_net > 0 else 0)
-    r[38] = _i(-rez_net if rez_net < 0 else 0)
-    return {k: (v if isinstance(v, int) else _i(v)) for k, v in r.items()}
+    """F20 S1003 pe rândurile formularului ANAF 2025: {rând: lei întregi}. `rl` = {cont: (rulaj debitor, rulaj creditor)} pe anul
+    bilanțului (`bilant_api._rulaje_67`). Totalurile urmează calculele formularului (`<calculate>` din șablonul XFA, citate pe fiecare)."""
+    D = Decimal
+    v = {r: D("0") for r, _l, _p in F20_S1003_NOMENCLATOR}
+    v[8] = D("0")
+    fara_rand = []
+    for cont, (deb, cred) in (rl or {}).items():
+        rr = rand_f20_s1003(cont)
+        if rr is None:
+            fara_rand.append(str(cont))
+            continue
+        rand, lat = rr
+        if lat == "c":
+            v[rand] += D(str(cred))
+        elif lat == "d":
+            v[rand] += D(str(deb))
+        else:
+            v[rand] += D(str(cred)) - D(str(deb))
+    if fara_rand:
+        raise ValueError("Bilanțul S1003: contul %s nu are rând în contul de profit și pierdere al formularului ANAF 2025 — rulajul lui "
+                         "nu se poate depune; reclasează-l pe un cont al planului OMFP 1802/2014." % ", ".join(sorted(fara_rand)))
+    sold = v.pop(7)
+    v[7], v[8] = (sold, D("0")) if sold > 0 else (D("0"), -sold)
+    for rand, lat, prefixe in F20_S1003_NOMENCLATOR_DIN_CARE:
+        v[rand] = sum((D(str(cred if lat == "c" else deb)) for cont, (deb, cred) in (rl or {}).items()
+                       if str(cont).split(".")[0].startswith(prefixe)), D("0"))
+    r = v
+    r[1] = r[2] + r[3] - r[4] + r[6]                                                    # R01: R02+R03-R04+R06
+    r[16] = r[1] + r[7] - r[8] + r[9] + r[10] + r[11] + r[12] + r[13]                   # R16
+    r[22] = r[23] + r[24]                                                               # R22
+    r[25] = r[306] + r[26] - r[27]                                                      # R25: R306+R26-R27
+    r[28] = r[29] - r[30]                                                               # R28
+    r[31] = r[32] + r[33] + r[34] + r[35] + r[36] + r[37] + r[310] + r[312] + r[314] + r[316]   # R31
+    r[39] = r[40] - r[41]                                                               # R39
+    r[42] = r[17] + r[18] + r[19] + r[20] - r[21] + r[22] + r[25] + r[28] + r[31] + r[39]      # R42
+    r[43], r[44] = max(r[16] - r[42], D("0")), max(r[42] - r[16], D("0"))              # R43 / R44
+    r[46] = r[48] = r[57] = D("0")                                                      # „din care … afiliate”: nu se știu
+    r[52] = r[45] + r[47] + r[49] + r[50]                                               # R52
+    r[53] = r[54] - r[55]                                                               # R53
+    r[59] = r[53] + r[56] + r[58]                                                       # R59
+    r[60], r[61] = max(r[52] - r[59], D("0")), max(r[59] - r[52], D("0"))              # R60 / R61
+    r[62] = r[16] + r[52]                                                               # R62
+    r[63] = r[42] + r[59]                                                               # R63
+    r[64], r[65] = max(r[62] - r[63], D("0")), max(r[63] - r[62], D("0"))              # R64 / R65
+    net = (r[64] + r[305]) - (r[65] + r[66] + r[68] + r[304] + r[317])                 # R69 / R70 (R67 = null, scos din calcul)
+    r[69], r[70] = max(net, D("0")), max(-net, D("0"))
+    for k in (46, 48, 57):
+        r.pop(k)
+    return {k: _i(x) for k, x in r.items()}
 
 
 def xml_s1003(prof, an, f10p, f10c, f20p, f20c):

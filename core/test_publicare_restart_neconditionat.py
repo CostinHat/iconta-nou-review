@@ -16,6 +16,7 @@ firmelor fata de sablon), nu pe tipul commitului. Gardul cere acum si ca ea sa e
 """
 import os
 import re
+import io
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOOK = os.path.join(_RAD, "scripts", "githooks", "post-commit")
@@ -95,3 +96,28 @@ def test_statica_se_publica_numai_odata_cu_restartul():
     apel = re.search(r'subprocess\.run\(\[sys\.executable, os\.path\.join\(RAD, "scripts", "publica_static\.py"\)\]', src)
     assert apel and apel.start() < src.find('"systemctl", "restart"'), (
         "rulatorul migrărilor trebuie să publice statica ÎNAINTEA restartului")
+
+
+def test_rulatorul_migrarilor_inchide_four_way_dupa_restartul_amanat():
+    """[12.10.2026, prins la migrarea data_infiintare] Cu restartul oprit de o migrare, post-commit scrie .git/FOUR_WAY_NEINCHIS; după
+    rularea migrării, rulatorul publică statica și repornește — dar four-way-ul nu se reevalua, deci sentinela rămânea deși toate brațele
+    se închiseseră. Acum rulatorul cheamă același script ca post-commit (`scripts/githooks/four-way`), DUPĂ restart. MUTAȚIE: apelul
+    scos din `_reporneste_daca_e_cazul` (sau pus înaintea restartului) -> pică."""
+    import ast
+    src = io.open(os.path.join(_RAD, "core", "migrari_registru.py"), encoding="utf-8").read()
+    fn = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == "_reporneste_daca_e_cazul")
+    corp = ast.get_source_segment(src, fn)
+    i_restart, i_4w = corp.find('"systemctl", "restart", "iconta-nou"'), corp.find('"githooks", "four-way"')
+    assert i_restart != -1 and i_4w > i_restart, "rulatorul nu cheamă four-way după restart"
+    assert os.access(os.path.join(_RAD, "scripts", "githooks", "four-way"), os.X_OK), "scripts/githooks/four-way lipsește sau nu e executabil"
+
+
+def test_four_way_sterge_sentinela_inainte_si_o_scrie_numai_pe_brat_lipsa():
+    """[12.10.2026] Sentinela .git/FOUR_WAY_NEINCHIS reflectă ULTIMA evaluare: scriptul o șterge înainte să citească brațele și o scrie
+    numai în ramura „brațe care NU se închid”. MUTAȚIE: ștergerea scoasă -> o sentinelă veche rămâne după ce four-way-ul s-a închis
+    (exact ce s-a văzut după migrarea data_infiintare) -> pică."""
+    t = io.open(os.path.join(_RAD, "scripts", "githooks", "four-way"), encoding="utf-8").read()
+    cod = "\n".join(ln for ln in t.splitlines() if not ln.lstrip().startswith("#"))
+    i_rm, i_ban = cod.find('rm -f "$S_4W"'), cod.find('banner "four-way" "$S_4W"')
+    assert i_rm != -1 and i_ban > i_rm, "four-way nu mai șterge sentinela înainte de evaluare"
+    assert re.search(r'if \[ -z "\$LIPSA" \]; then\s*\n\s*echo "\[four-way\] FOUR-WAY INCHIS', cod), "închiderea nu mai e ramura fără brațe lipsă"

@@ -305,3 +305,18 @@ def test_anul_care_nu_se_poate_intocmi_se_spune_pe_ecran(cur, monkeypatch):
     with pytest.raises(erori.DateInvalide, match=r"Bilanțul pe 2023 nu se poate întocmi .* 31\.12\.2024"):
         uc.bilant_an_precedent(1, 2023, "s1005", {"uid": 1})
     assert uc.bilant_an_precedent(1, 2025, "s1005", {"uid": 1})["lipsa"] == ["F20"]
+
+
+def test_s1003_pe_numerotarea_veche_nu_e_an_precedent(cur):
+    """[C10, 12.10.2026] Un S1003 păstrat înainte de rescrierea F20 pe rândurile formularului are contul de profit și pierdere pe
+    numerotarea veche: coloana lui „An curent” ar ajunge pe rânduri greșite. Nu se folosește ca „An precedent” (ca bilanțul respins de
+    221), iar mesajul spune de ce. MUTAȚIE: verificarea `S1003_F20_SCHEMA_NOUA_DIN` scoasă -> sursa „bilant” -> pică."""
+    from core import artefacte
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2023-12-31'), ('1012', 'Capital', 0, 10000, '2023-12-31')")
+    artefacte.pastreaza(cur.connection, _SCHEMA, "s1003", "2025", '<Bilant1003><F10 F10_0082="7"/><F20 F20_0042="800"/></Bilant1003>',
+                        produs_de="Contabil", verdict="valid")
+    cur.execute("UPDATE artefacte_produse SET produs_la = '2026-10-01' WHERE fel = 's1003'")
+    cp = ba.coloana_precedenta(cur, _SCHEMA, "s1003", 2026)
+    assert cp["sursa"]["F20"] != "bilant" and cp["bilant_respins"]["numerotare_veche"], cp
+    assert re.findall(r"profit și pierdere e pe (numerotarea veche)", ba.nota_bilant_respins(2026, cp["bilant_respins"])) == ["numerotarea veche"]

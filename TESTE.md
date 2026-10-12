@@ -45,6 +45,22 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **C10 — F20 al bilanțului S1003 pe numerotarea formularului ANAF 2025 (comanda Costin 12.10.2026, răspunsul la §6, verbatim în
+  DECIZII)** — + pct.1 (migrarea `data_infiintare` rulată de Code, publicarea închisă) și golul găsit acolo (four-way nereevaluat de
+  rulator). Un lot, o poartă. R4 BLOCAT.
+  - ultim: pct.1 — migrarea rulată pe producție (5/5), statica 0a64ac94 publicată, repornit; FOUR-WAY ÎNCHIS prin `scripts/githooks/four-way`
+  - urmator: — (raportul + ZIP). STARE = ÎNCHIS
+  - pasi:
+    K0. DECIZII (comanda verbatim), TESTE (acest fir).
+    K1. `scripts/githooks/four-way` (extras din post-commit) chemat și de `core/migrari_registru.py` după restart; gărzi + mutații.
+    K2. Sursa: PDF-ul formularului ANAF 2025 („soft A”, `anaf_surse/bilant_SC_1225_XML_270326.pdf`, XFA) — denumirile și formulele
+        tabelului `form1.F20` (S1002/S1003) extrase din șablon; unde textul structurii diferă (rd.32/33, 24, 26, 29, 37, 47), formularul
+        câștigă, iar diferențele se consemnează. `core/bilant_denumiri.py` S1003 F20 = denumirile formularului.
+    K3. `core/bilant.f20_complet_din_rulaje` pe rândurile formularului (1–70 + „din care” 3xx), rândurile „=null” nescrise; regulile de
+        calcul ale formularului ca test (fiecare total, profit/pierdere), reconcilierea cu rezultatul din rulaje (niciun cont 6/7 pierdut),
+        DUK; mutații.
+    K4. e2e `test_def_c10_…` (S1003 pe ecran, rândurile pe locul lor, cu denumirea oficială); cifrele de referință F1–F5 confruntate
+        (cele care se schimbă, raportate pentru aprobare); registre; un commit prin poartă; ZIP.
 - fir: **Retestul Costin 12.10.2026 (verbatim în DECIZII): 224 și 225 redeschise, 226–232, `--help` la plasă** — un singur lot, o
   singură trecere prin poartă; raport punctual cu probă și captură; ZIP. R4 rămâne BLOCAT.
   - ultim: H0–H10 în commitul care conține această intrare (+ C11, găsită de plasa lui 229; C10 înregistrată, la decizie)

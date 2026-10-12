@@ -315,3 +315,53 @@ def test_def_c11_datele_informative_f30_in_tabelul_lor(patron, firma_infiintata_
     assert [x[:2] for x in f30] == [["rândul 1", "Unităti care au inregistrat profit"], ["rândul 2", "Unităti care au inregistrat pierdere"],
                                     ["rândul 3", "Unități care nu au înregistrat nici profit nici pierdere"]], f30
     assert f30[2][2:] == ["1", "0"], f30                                       # o unitate fără profit și fără pierdere: „1”, nu „1,00”
+
+
+# ── C10 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_s1003():
+    """Firmă nouă: soldurile de preluare la 31.12.2024, iar în 2025 vânzări 5.000 (704), o subvenție aferentă cifrei de afaceri 800 (7411)
+    și reduceri comerciale acordate 300 (709)."""
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2024-12-31")
+        # 7411 (analiticul OMFP 1802 al lui 741, „aferente cifrei de afaceri”) și 709 nu sunt în șablonul planului firmei — contabilul le adaugă
+        for simbol, den in (("7411", "Venituri din subvenții de exploatare aferente cifrei de afaceri"),
+                            ("709", "Reduceri comerciale acordate")):
+            st, r = _api(PATRON, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": simbol, "denumire": den})
+            assert st == 200, (st, r)
+        _nota_validata(f, "2025-03-10", "5121", "704", 5000, "Vanzare C10")
+        _nota_validata(f, "2025-04-10", "5121", "7411", 800, "Subventie C10")
+        _nota_validata(f, "2025-05-10", "709", "5121", 300, "Reducere C10")
+        yield f
+
+
+def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(patron, firma_s1003):
+    """C10. Bilanțul S1003: F20 era scris pe o numerotare proprie de 38 de rânduri (subvențiile pe rd.04, unde formularul ANAF are
+    „Reduceri comerciale acordate”), iar rândurile 39–70 lipseau; DUK îl declara totuși „valid”. Găsită la extragerea denumirilor
+    pentru 227 (12.10.2026); rescriere comandată de Costin (12.10.2026).
+    Pașii: firma cu vânzări 5.000, subvenție aferentă cifrei de afaceri 800 și reduceri acordate 300 în 2025 -> Bilanț 2025, S1003 ->
+    completează F20 „An precedent” (2024 nu e în aplicație) -> „Validează”: fără erori; „Ce se depune” — rd.04 „Reduceri comerciale
+    acordate” 300, rd.06 subvenția 800, rd.01 cifra de afaceri 5.500 (rd.02 + 03 − 04 + 06), fiecare cu denumirea de pe formular.
+    MUTAȚIA din plasă: 7411 înapoi pe rd.04 -> ROȘU."""
+    f = firma_s1003
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    pg.fill(".fereastra:last-of-type #bl-an", "2025")
+    pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
+    pg.wait_for_function("() => { const z = document.querySelector('.fereastra:last-of-type #bl-categorie'); return z && "
+                         "!z.hasAttribute('aria-busy') && !z.innerText.includes('Se calculează'); }", timeout=90000)
+    pg.select_option(".fereastra:last-of-type #bl-tip", "s1003")
+    pg.wait_for_function("() => { const z = document.querySelector('.fereastra:last-of-type #bl-precedent'); "
+                         "return z && z.dataset.pentru === '2025|s1003' && z.innerText.trim(); }", timeout=60000)
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    den = {(x[0], int(x[1].split()[-1])): x[2] for x in pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri tbody tr",
+           "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim()))")}
+    patron.captura()
+    assert "Validare fără erori" in text, text[:400]
+    assert (rand[("F20", 4)][1], rand[("F20", 6)][1], rand[("F20", 1)][1], rand[("F20", 2)][1]) == \
+        ("300,00", "800,00", "5.500,00", "5.000,00"), sorted((k, v) for k, v in rand.items() if k[0] == "F20")
+    assert den[("F20", 4)] == "Reduceri comerciale acordate" and den[("F20", 1)].startswith("1. Cifra de afaceri netă"), den

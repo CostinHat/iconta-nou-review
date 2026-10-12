@@ -19617,3 +19617,55 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   scriu nimic la un `--help` greșit (scanări read-only sau o cale greșită care cade) — rămân cum sunt.
 - **C10, C11** — găsite de mine în lot (DEFICIENTE.md). C11 reparată (aceeași clasă cu 227). C10 (F20 S1003 pe o numerotare proprie, nu pe
   a formularului) e o rescriere a unei declarații către ANAF — cere lot separat, la decizia lui Costin (raportul 12.10.2026 §6).
+
+## 12.10.2026 — Răspunsul la §6 al raportului „Retestul 12.10”: migrarea `data_infiintare` rulată de Code; C10 — F20 S1003 rescris
+
+**Comanda, verbatim:**
+
+> 1. Migrarea data_infiintare: rulează-o tu pe producție, apoi închide publicarea (restart, statica, four-way).
+>
+> 2. C10: rescrie F20 din S1003 pe numerotarea formularului ANAF (70 de rânduri), cu denumirile oficiale. Cifrele de referință care se schimbă le raportezi pentru aprobare. Un lot separat, cu o singură trecere prin poartă.
+>
+> 3. 229: confirm „data înregistrării la ANAF = data înființării”, editabilă în Date firmă.
+>
+> 4. R4 rămâne blocat.
+>
+> 5. În raport, răspunde punctual, cu proba, pentru 1 și 2.
+>
+> 6. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. Nu porni R4 sau alt pas fără aprobare.
+
+- **pct.1 — autorizare explicită pentru O migrare:** regula „scrierile și migrările pe producție le rulează Costin” rămâne; comanda o
+  ridică pentru `core/migrare_data_infiintare.py`, atât. Rulată 12.10.2026 11:28 (`core.migrari_registru ruleaza --productie`), după o
+  copie a celor 5 tabele `firma_profil` (`~/iconta_backups/firma_profil_pre_data_infiintare_20261012_1128.sql`): 5/5 scheme, statica
+  0a64ac94 publicată, iconta-nou repornit. **Prins la închidere:** rulatorul nu reevalua four-way-ul, deci `.git/FOUR_WAY_NEINCHIS`
+  (scris de post-commit la restartul oprit) rămânea după ce toate brațele se închiseseră. Reparat: four-way-ul trăiește în
+  `scripts/githooks/four-way`, chemat de post-commit ȘI de rulator după restart (gărzi: `test_rulatorul_migrarilor_inchide_four_way_…`,
+  `test_wave3_instante::test_bratul_e_chemat_de_hook`). FOUR-WAY ÎNCHIS pe 0a64ac94 prin script, nu prin ștergerea de mână a sentinelei.
+- **pct.3 — INTERPRETAREA 229 CONFIRMATĂ** (intrarea 12.10.2026 „Retestul”): data înregistrării la ANAF = data înființării, editabilă în
+  Date firmă.
+- **pct.2 — C10:** lot separat (firul C10 în TESTE.md), o singură poartă; cifrele de referință F1–F5 care se schimbă se raportează pentru
+  aprobare, nu se rescriu (`cifre_referinta.py --scrie-referinta` numai cu aprobarea lui Costin).
+- **C10 — sursa: FORMULARUL, nu textul structurii.** DUK S1003 nu verifică formulele F20 (probat: rd.01 = 999 fără nicio componentă trece
+  „valid”), deci judecătorul e formularul oficial 2025 („soft A”, `anaf_surse/bilant_SC_1225_XML_270326.pdf`, PDF XFA): șablonul are,
+  pe fiecare rând al tabelului `form1.F20` (cel folosit de scriptul formularului pentru S1002 și S1003), denumirea, conturile tipărite și
+  calculul rândului. Unde textul structurii (`structura_SC_1225_270126.pdf`; la fel în cea din 2024, `structura_SC_1224_190525.pdf`)
+  diferă, formularul câștigă: **rd.33 (11.2)** = 612 (redevențe, locații de gestiune, chirii; „din care” 6121/6122/6123) — în structură o
+  copie a lui 11.6 (635 + 6586*), care ar fi numărat 635 de două ori în rd.31; **rd.32 (11.1)** fără 612; **rd.24 (9.b)** = 645 + 646
+  (CAM-ul, pe formular); **rd.01** = rd.02 + 03 − 04 + 06; **rd.26 / rd.29** cu „din ct.6818”, **rd.37** cu 6584, **rd.47** = 766.
+  **Alternativă respinsă:** textul structurii (rd.33 dublat, 646 fără rând).
+- **C10 — INTERPRETĂRI CU TEMEI** (de reconfirmat dacă ANAF tranșează), scrise și în `core/bilant.py`: (1) rd.26 tipărește „6811 + 6813 +
+  6817 + din ct.6818”, dar rd.25 = 25a + 26 − 27 cu 25a = 6811 — 6811 ar intra de două ori; 6811 numai la 25a. (2) „din ct.6818” / „din
+  ct.7818” se repartizează „după natura elementelor” (nota formularului): la b), activele circulante. (3) sinteticul 741 fără analitic
+  (`core/subventii.py`) -> rd.12 (subvenții de exploatare), numai 7411 -> rd.06; sinteticul 658 -> rd.37 (11.10). (4) rândurile „din care …
+  afiliate” și rd.301 (activitatea preponderentă) nu se pot ști din rulaje — nu se scriu. **Limita:** rulajele includ toate notele validate
+  ale anului (ca la S1005): o închidere pe 121 înregistrată ca notă ar anula soldul 711/712.
+- **C10 — clasa:** un S1003 păstrat înainte de rescriere (`S1003_F20_FORMULAR_DIN` = 13.10.2026 00:00 UTC) are F20 pe numerotarea veche;
+  nu mai e sursă pentru „An precedent” (mesajul o spune). Pe producție nu există niciun S1003 păstrat (citit read-only, 12.10.2026).
+- **C10 — cifrele de referință F1–F5 nu se schimbă:** `scripts/cifre_referinta.py` acoperă balanța, D300, D394, D406, D112 — nu bilanțul;
+  amprentele declarațiilor (R2) nici ele. Confruntarea porții o confirmă. Nimic de aprobat.
+- **Comanda, a doua formă** (retrimisă în timpul lucrului; identică, plus la pct.1): „Imediat după aceea scrie-mi un singur rând:
+  «publicat pe <commit>». Abia apoi treci la punctul 2.” Ordinea efectivă: migrarea și închiderea publicării (11:28) au fost înaintea
+  oricărui pas din pct.2; rândul „publicat pe 0a64ac94” l-am scris la primirea formei a doua, când lucrul la pct.2 începuse deja (după
+  prima formă) — publicarea pe 0a64ac94 reverificată atunci (2/2 procese, fără sentinele).
