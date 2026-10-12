@@ -324,7 +324,7 @@ def test_def_101_titlul_documentului_in_coada_e_scurt(patron, firma_gv):
     card = _card_coada(patron, firma_gv, "NIR nr D101 ")
     titlu = card.locator(".val-titlu").inner_text().strip()
     patron.captura()
-    assert titlu == "NIR nr D101 din %s · Furnizor Proba E2E SRL · 4 note" % AZI.strftime("%d.%m.%Y"), titlu
+    assert titlu == "NIR nr D101 din %s · Furnizor Proba E2E SRL · 4 note" % AZI.strftime("%d.%m.%Y"), titlu   # AZI-dat-de-test
 
 
 def test_def_127_fereastra_cozii_spune_ce_contine(patron, firma_gv):

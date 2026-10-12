@@ -2673,8 +2673,8 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
                 _ba.coloana_curenta_f10(cur, schema, an)
             except ValueError as e:      # [deficiența 229] un an dinaintea înființării: bilanțul nu există
                 raise _erori.DateInvalide(str(e))
-    lipsa = [s for s in _ba.SECTIUNI if cp[s] is None]
-    manual = [s for s in _ba.SECTIUNI if cp["sursa"][s] == "manual"]
+    lipsa = [s for s in _ba.sectiuni(tip) if cp[s] is None]
+    manual = [s for s in _ba.sectiuni(tip) if cp["sursa"][s] == "manual"]
     # afirmația despre coloană e TIPATĂ (DS cap.25): lipsa = absența observației, cu sursele în care s-a căutat; manualul = fapt, cu
     # temeiul completitudinii (cine a scris cifrele)
     if lipsa:
@@ -2699,8 +2699,8 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
             # [deficiențele 233, 234] totalurile (fără câmp, calculate) și ordinea + codul rândurilor de pe formular
             "totaluri": _ba.totaluri_formular(tip),
             "ordine": _ba.ordine_formular(tip)[0], "coduri": _ba.ordine_formular(tip)[1],
-            "valori": {s: cp[s] for s in _ba.SECTIUNI},
-            "de_completat": [s for s in _ba.SECTIUNI if cp["sursa"][s] in (None, "manual")],
+            "valori": {s: cp[s] for s in _ba.sectiuni(tip)},
+            "de_completat": [s for s in _ba.sectiuni(tip) if cp["sursa"][s] in (None, "manual")],
             "afirmatie": afm}
 
 
@@ -2719,9 +2719,9 @@ def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
     corp = corp or {}
     rand = _ba.componente_formular(tip)
     tot = _ba.totaluri_formular(tip)
-    trimise = [s for s in _ba.SECTIUNI if s in corp]
-    if not trimise or set(corp) - set(_ba.SECTIUNI):
-        raise _erori.DateInvalide("Trimite coloana „An precedent” pe secțiunile F10 și/sau F20.")
+    trimise = [s for s in _ba.sectiuni(tip) if s in corp]
+    if not trimise or set(corp) - set(_ba.sectiuni(tip)):
+        raise _erori.DateInvalide("Trimite coloana „An precedent” pe secțiunile %s." % " și / sau ".join(_ba.sectiuni(tip)))
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -2747,6 +2747,12 @@ def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
                 valori[s] = {str(k): int(x) for k, x in _b.cu_totaluri(tip, s, {int(k): int(str(x).strip() or 0) for k, x in v.items()}).items()}
             except (TypeError, ValueError):
                 raise _erori.DateInvalide("Coloana „An precedent” %s: fiecare rând e o sumă în lei întregi." % s)
+        if "F20" in valori and "F30" in valori:
+            # [C14] F20 și F30 cap.XIX se copiază amândouă din bilanțul depus; validatorul ANAF le compară — o neconcordanță se spune acum,
+            # pe rânduri, nu la validare
+            nec = _b.neconcordante_f20_f30({int(k): v for k, v in valori["F20"].items()}, {int(k): v for k, v in valori["F30"].items()})
+            if nec:
+                raise _erori.DateInvalide(_ba.mesaj_neconcordanta(an, nec))
         r = _art.pastreaza(conn, schema, _ba.FEL_MANUAL, "%s:%d" % (tip, an), json.dumps(valori, sort_keys=True),
                            produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
     return {"ok": True, "exemplar": r.get("exemplar"), "sectiuni": trimise}

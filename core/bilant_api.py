@@ -63,6 +63,7 @@ def coloana_curenta_f10(cur, schema, an):
     if s_c is None:
         raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
                          "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
+    _b.inchiderea_6_7(s_c, an)          # [C15] rezultatul exercițiului e în 121 numai după închiderea claselor 6 / 7
     return _b.f10_din_balanta(s_c)
 
 
@@ -71,7 +72,12 @@ def coloana_curenta_f10(cur, schema, an):
 # cu coloana goală.” Coloana = F10 și F20, coloana 1 (`xml_s1005`). TEMEI: OMFP 1802/2014, Reglementări, pct.130 — valoarea elementului
 # corespondent pentru exercițiul financiar precedent.
 FEL_MANUAL = "bilant_an_precedent"      # artefactul coloanei completate manual (core/artefacte.FELURI), cheia "<tip>:<an>"
-SECTIUNI = ("F10", "F20")
+#: secțiunile cu două coloane (an precedent / an curent) ale fiecărui formular; [C14] S1005 are și F30 cap.XIX
+NOMENCLATOR_SECTIUNI = {"s1005": ("F10", "F20", "F30"), "s1003": ("F10", "F20")}
+
+
+def sectiuni(tip):
+    return NOMENCLATOR_SECTIUNI[tip]
 
 
 def data_infiintare(cur, schema):
@@ -85,7 +91,10 @@ def data_infiintare(cur, schema):
 def randuri_formular(tip):
     """Rândurile fiecărei secțiuni a formularului `tip` (s1005 / s1003) — cele pe care le scrie generatorul, deci și cele de completat."""
     f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
-    return {"F10": sorted(_b.f10_din_balanta({})), "F20": sorted(f20({}))}
+    out = {"F10": sorted(_b.f10_din_balanta({})), "F20": sorted(f20({}))}
+    if "F30" in sectiuni(tip):                       # [C14] cap.XIX, rândurile scrise de generator
+        out["F30"] = sorted(_b.f30_din_rulaje({}))
+    return out
 
 
 def denumiri_formular(tip):
@@ -101,7 +110,7 @@ def totaluri_formular(tip):
     NOMENCLATOR_TOTALURI`, = calculele formularului) pe rândurile scrise de generator; ecranul le calculează pe loc, serverul la fel."""
     rr = randuri_formular(tip)
     return {s: {r: {"termeni": [list(t) for t in _b.termeni_total(e)], "pozitiv": p}
-                for r, (e, p) in _b.NOMENCLATOR_TOTALURI[tip].get(s, {}).items() if r in rr[s]} for s in SECTIUNI}
+                for r, (e, p) in _b.NOMENCLATOR_TOTALURI[tip].get(s, {}).items() if r in rr[s]} for s in sectiuni(tip)}
 
 
 def componente_formular(tip):
@@ -115,8 +124,8 @@ def ordine_formular(tip):
     from core.bilant_denumiri import NOMENCLATOR_COD, NOMENCLATOR_ORDINE
     rr = randuri_formular(tip)
     ordine = {s: [r for r in NOMENCLATOR_ORDINE[tip][s] if r in rr[s]] + [r for r in rr[s] if r not in NOMENCLATOR_ORDINE[tip][s]]
-              for s in SECTIUNI}
-    return ordine, {s: {r: NOMENCLATOR_COD[tip][s].get(r, "%02d" % r) for r in rr[s]} for s in SECTIUNI}
+              for s in sectiuni(tip)}
+    return ordine, {s: {r: NOMENCLATOR_COD[tip][s].get(r, "%02d" % r) for r in rr[s]} for s in sectiuni(tip)}
 
 
 def _ultimul(cur, schema, fel, cheie, numai_valid=False):
@@ -144,22 +153,24 @@ def coloana_precedenta(cur, schema, tip, an):
     dinaintea înființării nu există: refuz."""
     import datetime
     import json
-    out = {"F10": None, "F20": None, "sursa": {"F10": None, "F20": None}}
+    out = {s: None for s in sectiuni(tip)}
+    out["sursa"] = {s: None for s in sectiuni(tip)}
     infiintare = data_infiintare(cur, schema)
     if infiintare and infiintare.year > an:
         raise ValueError(mesaj_inainte_de_infiintare(an, infiintare))
     if infiintare and infiintare.year == an:
-        out.update({s: {} for s in SECTIUNI})
-        out["sursa"] = {s: PRIMUL_EXERCITIU for s in SECTIUNI}
+        out.update({s: {} for s in sectiuni(tip)})
+        out["sursa"] = {s: PRIMUL_EXERCITIU for s in sectiuni(tip)}
         out["infiintare"] = infiintare
         return out
     ref = data_soldurilor(cur, schema)
     s_p = sold_la(cur, schema, datetime.date(an - 1, 12, 31), ref)
     b = _ultimul(cur, schema, tip, an - 1, numai_valid=True)
-    if b and b["produs_la"] < S1003_F20_SCHEMA_NOUA_DIN:
+    if b and (b["produs_la"] < S1003_F20_SCHEMA_NOUA_DIN or (tip == "s1005" and fara_cap_xix(b["continut"]))):
         # [C10, 12.10.2026] un S1003 produs înainte de rescrierea F20 pe rândurile formularului are F20 pe numerotarea veche (38 de rânduri
         # proprii): coloana lui „An curent” ar ajunge pe rânduri greșite. Nu se folosește; coloana se cere ca la bilanțul respins de 221.
         # [C12, C13 — clasa] la fel orice bilanț (S1005 / S1003) produs înainte ca F10 și F20 S1005 să urmeze listele formularului 2025.
+        # [C14] și un S1005 fără F30 cap.XIX (produs înainte de C14): coloana lui F30 n-ar exista — se cere ca mai sus.
         out["bilant_respins"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"], "numerotare_veche": True,
                                  "tip": tip}
         b = None
@@ -170,20 +181,25 @@ def coloana_precedenta(cur, schema, tip, an):
         out["bilant_respins"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"], "solduri_la": ref}
         b = None
     if b:
-        col = {s: {} for s in SECTIUNI}
+        col = {s: {} for s in sectiuni(tip)}
+        rr = randuri_formular(tip)
         for x in _b.randuri_din_xml(b["continut"]):
-            if x["formular"] in col:
+            if x["formular"] in col and x["rand"] in rr[x["formular"]]:     # F30: numai cap.XIX (rd.01–03 nu sunt pe doi ani)
                 col[x["formular"]][x["rand"]] = x["an_curent"]
         out.update(col)
-        out["sursa"] = {s: "bilant" for s in SECTIUNI}
+        out["sursa"] = {s: "bilant" for s in sectiuni(tip)}
         out["bilant"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"]}
         return out
     if s_p is not None:
+        _b.inchiderea_6_7(s_p, an - 1, bilant_pe=an)   # [C15] și coloana „An precedent” din evidență cere 6 / 7 închise la 31.12.an-1
         out["F10"], out["sursa"]["F10"] = _b.f10_din_balanta(s_p), "evidenta"
     if ref is None or ref < datetime.date(an - 1, 1, 1):
         f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
-        out["F20"], out["sursa"]["F20"] = f20(_rulaje_67(cur, schema, an - 1)), "evidenta"
-    lipsa = [s for s in SECTIUNI if out[s] is None]
+        rl_p = _rulaje_67(cur, schema, an - 1)
+        out["F20"], out["sursa"]["F20"] = f20(rl_p), "evidenta"
+        if "F30" in out:                               # [C14] cap.XIX din aceleași rulaje
+            out["F30"], out["sursa"]["F30"] = _b.f30_din_rulaje(rl_p), "evidenta"
+    lipsa = [s for s in sectiuni(tip) if out[s] is None]
     if lipsa:
         m = _ultimul(cur, schema, FEL_MANUAL, "%s:%d" % (tip, an))
         valori = json.loads(m["continut"]) if m else {}
@@ -191,23 +207,27 @@ def coloana_precedenta(cur, schema, tip, an):
         for s in lipsa:
             if s in valori:          # [deficiența 233] totalurile se calculează din componente (și la o coloană salvată înainte)
                 out[s], out["sursa"][s] = _b.cu_totaluri(tip, s, {int(k): int(v) for k, v in valori[s].items() if int(k) not in tot[s]}), "manual"
-        if any(out["sursa"][s] == "manual" for s in SECTIUNI):
+        if any(out["sursa"][s] == "manual" for s in sectiuni(tip)):
             out["manual"] = {"exemplar": m["exemplar"], "la": m["produs_la"], "de": m["produs_de"]}
     return out
 
 
 def coloanele(cur, schema, tip, an, av):
-    """(f10p, f10c, f20p) pentru generare. „An curent” F10 necunoscut -> refuz (`coloana_curenta_f10`). „An precedent” fără sursă pe o
+    """(f10p, f10c, f20p, f30p) pentru generare (f30p = F30 cap.XIX „An precedent”, numai S1005; None la S1003). „An curent” F10 necunoscut -> refuz (`coloana_curenta_f10`). „An precedent” fără sursă pe o
     secțiune -> refuz: bilanțul nu se generează cu coloana goală (decizia Costin 11.10.2026). Completat manual -> avertismentul vizibil."""
     cp = coloana_precedenta(cur, schema, tip, an)     # întâi: un an dinaintea înființării se refuză cu motivul lui (229)
     f10c = coloana_curenta_f10(cur, schema, an)
-    lipsa = [s for s in SECTIUNI if cp[s] is None]
+    lipsa = [s for s in sectiuni(tip) if cp[s] is None]
     if lipsa:
         raise ValueError(mesaj_coloana_goala(an, lipsa, cp.get("bilant_respins")))
-    manual = [s for s in SECTIUNI if cp["sursa"][s] == "manual"]
+    manual = [s for s in sectiuni(tip) if cp["sursa"][s] == "manual"]
     if manual:
         av.append(avertisment_manual(an, manual, cp["manual"], cp.get("bilant_respins")))
-    return cp["F10"], f10c, cp["F20"]
+    if "F30" in cp:
+        nec = _b.neconcordante_f20_f30(cp["F20"], cp["F30"])
+        if nec:
+            raise ValueError(mesaj_neconcordanta(an, nec))
+    return cp["F10"], f10c, cp["F20"], cp.get("F30")
 
 
 PRIMUL_EXERCITIU = "primul_exercitiu"
@@ -216,6 +236,23 @@ PRIMUL_EXERCITIU = "primul_exercitiu"
 #: lotului C12 / C13 — un prag în viitor (13.10, cum era) respingea și bilanțurile generate de codul nou până atunci (prins de plasa 221).
 #: Fereastra 13:00 UTC → publicarea lotului se verifică pe producție (read-only) la publicare.
 S1003_F20_SCHEMA_NOUA_DIN = _dt.datetime(2026, 10, 12, 13, 0, tzinfo=_dt.timezone.utc)
+
+
+def fara_cap_xix(xml):
+    """[C14] Un S1005 cu activitate (vreun rând F20 nenul) fără niciun rând F30 cap.XIX a fost produs înainte de C14: cap.XIX lipsește
+    din el. (Fără activitate, cap.XIX e tot zero — nu lipsește nimic.)"""
+    rr = _b.randuri_din_xml(xml)
+    return any(x["formular"] == "F20" and x["an_curent"] for x in rr) and not any(x["formular"] == "F30" and x["rand"] >= 167 for x in rr)
+
+
+def mesaj_neconcordanta(an, nec):
+    """[C14] Coloana „An precedent” completată manual: F20 și F30 cap.XIX trebuie să dea aceleași cifre pe rândurile pe care validatorul
+    ANAF le compară (`bilant.NOMENCLATOR_CONCORDANTA_F20_F30`)."""
+    from core.pdf_util import bani
+    det = "; ".join("F20 rândul %02d = %s lei, F30 %s = %s lei" % (r, bani(v20), " + ".join("rândul %d" % k for _s, k in _b.termeni_total(e)),
+                                                                     bani(v30)) for r, v20, e, v30 in nec)
+    return ("Coloana „An precedent” (%d) nu se potrivește între F20 și F30 cap.XIX, pe rândurile pe care validatorul ANAF le compară: %s. "
+            "Corectează cifrele după bilanțul depus pe %d." % (an - 1, det, an - 1))
 
 
 def mesaj_inainte_de_infiintare(an, infiintare):
@@ -233,7 +270,8 @@ def mesaj_coloana_goala(an, lipsa, respins=None):
     return ("Bilanțul pe %d nu se poate genera cu coloana „An precedent” goală (%s): firma nu are în aplicație bilanțul pe %d validat, "
             "iar evidența din aplicație nu acoperă %s.%s Completeaz-o manual pe ecranul Bilanț, din bilanțul depus pe %d."
             % (an, ", ".join(lipsa), an - 1,
-               " și ".join({"F10": "soldurile de la %s" % data_ro("%d-12-31" % (an - 1)), "F20": "tot anul %d" % (an - 1)}[s] for s in lipsa),
+               " și ".join(dict.fromkeys({"F10": "soldurile de la %s" % data_ro("%d-12-31" % (an - 1)), "F20": "tot anul %d" % (an - 1),
+                                          "F30": "tot anul %d" % (an - 1)}[s] for s in lipsa)),
                nota_bilant_respins(an, respins), an - 1))
 
 
@@ -244,7 +282,8 @@ def nota_bilant_respins(an, respins):
         return ""
     if respins.get("numerotare_veche") and respins.get("tip") == "s1005":
         return (" Bilanțul S1005 pe %d păstrat în aplicație (%s) nu se folosește: rândurile lui sunt dinaintea rescrierii pe listele de "
-                "conturi ale formularului ANAF 2025." % (an - 1, data_ro(respins.get("la"), "cu_ora")))
+                "conturi ale formularului ANAF 2025 și a situației veniturilor și cheltuielilor (F30 cap.XIX)."
+                % (an - 1, data_ro(respins.get("la"), "cu_ora")))
     if respins.get("numerotare_veche"):
         return (" Bilanțul S1003 pe %d păstrat în aplicație (%s) nu se folosește: contul lui de profit și pierdere e pe numerotarea veche, "
                 "dinaintea rescrierii pe rândurile formularului ANAF." % (an - 1, data_ro(respins.get("la"), "cu_ora")))
@@ -260,6 +299,9 @@ def avertisment_manual(an, sectiuni, meta, respins=None):
 
 
 def _rulaje_67(cur, schema, an):
+    """Rulajele conturilor din clasele 6 / 7 pe `an`, din notele validate: {cont: (rulaj debitor, rulaj creditor)}. [C15] FĂRĂ închiderea
+    în 121 (o linie cu 121 de partea cealaltă): închiderea mută soldul, nu e venit sau cheltuială — numărată, ar face 0 rulajul net al
+    lui 711 / 712 (variația stocurilor) după ce contabilul închide anul, cum îi cere bilanțul (`bilant.inchiderea_6_7`)."""
     cur.execute(f"""
         SELECT l.cont_debit, l.cont_credit, l.suma
         FROM {schema}.inregistrari_linii l
@@ -268,6 +310,8 @@ def _rulaje_67(cur, schema, an):
         (f"{an}-01-01", f"{an}-12-31"))
     rl = {}
     for r in cur.fetchall():
+        if str(r["cont_debit"]).startswith("121") or str(r["cont_credit"]).startswith("121"):
+            continue
         s = Decimal(str(r["suma"]))
         for cont, idx in ((r["cont_debit"], 0), (r["cont_credit"], 1)):
             if str(cont)[:1] in ("6", "7"):
@@ -308,7 +352,7 @@ def genereaza(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        f10p, f10c, f20p = coloanele(cur, schema, "s1005", an, av)
+        f10p, f10c, f20p, f30p = coloanele(cur, schema, "s1005", an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {
@@ -332,7 +376,7 @@ def genereaza(conn, schema, an):
     _er = erori_generare(prof)
     if _er:
         raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
-    return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c), av
+    return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p, _b.f30_din_rulaje(rl)), av
 
 
 def genereaza_s1003(conn, schema, an):
@@ -343,7 +387,7 @@ def genereaza_s1003(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
-        f10p, f10c, f20p = coloanele(cur, schema, "s1003", an, av)
+        f10p, f10c, f20p, _f30p = coloanele(cur, schema, "s1003", an, av)
         rl = _rulaje_67(cur, schema, an)
     j = (p.get("judet") or "bucuresti").strip().lower()
     prof = {

@@ -31,7 +31,8 @@ def select_inregistrari_linii(cur, _inc, _sf):
                 "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) AS venituri, "
                 "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'", (_inc.isoformat(), _sf.isoformat()))   # [C15] fără închiderea în 121
     return cur.fetchone()
 
 

@@ -15,7 +15,7 @@ import time as _t
 
 import pytest
 
-from conftest import _ecran, cui_cu_control, sql
+from conftest import _ecran, cui_cu_control, sql, zile_de_acum
 
 AZI = _dt.date.today()
 # [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat: probele de salarii lucrează pe ultima lună încheiată
@@ -439,8 +439,8 @@ def test_def_60_scadenta_propusa_editabila(patron, firma_e2e):
     _asigura_serie(firma_e2e)
     pg = patron.pg
     _emitere(patron, firma_e2e)
-    assert pg.input_value("#em-data") == AZI.isoformat()
-    assert pg.input_value("#em-scadenta") == (AZI + _dt.timedelta(days=30)).isoformat(), pg.input_value("#em-scadenta")
+    assert any(pg.input_value("#em-data") == d.isoformat() and pg.input_value("#em-scadenta") == (d + _dt.timedelta(days=30)).isoformat()
+               for d in zile_de_acum(AZI)), (pg.input_value("#em-data"), pg.input_value("#em-scadenta"))
     assert "30 de zile" in pg.inner_text("#em-scadenta-ajutor")
     patron.captura("propusa")
     pg.fill("#em-data", "2026-10-01")
@@ -484,7 +484,7 @@ def test_def_37_modificarea_din_date_firma_se_jurnalizeaza(patron, firma_e2e):
     tel = [r for r in randuri if r[2] == "Telefon" and r[4] == nou]
     assert tel, "schimbarea telefonului nu e în istoric: %s" % randuri[:5]
     assert tel[0][3] == (vechi or "—"), tel[0]
-    assert tel[0][0][:10] == AZI.strftime("%d.%m.%Y"), tel[0]
+    assert tel[0][0][:10] in [d.strftime("%d.%m.%Y") for d in zile_de_acum(AZI)], tel[0]
     assert _patron()[1] in tel[0][1], tel[0]
 
 
@@ -565,7 +565,7 @@ def test_def_35_iesirea_fara_document_primeste_bon_de_consum(patron, firma_e2e):
     txt = rand.inner_text()
     patron.captura("jurnal")
     assert "607 = 371" in txt and "8,00" in txt, txt                     # 2 kg × CMP 4,00 = 8,00 lei
-    assert re.search(r"Document justificativ: Bon de consum nr \d+ din %s" % re.escape(AZI.strftime("%d.%m.%Y")), txt), txt
+    assert re.search(r"Document justificativ: Bon de consum nr \d+ din %s" % re.escape(AZI.strftime("%d.%m.%Y")), txt), txt   # AZI-dat-de-test
     assert "nederivat" not in txt
 
 

@@ -36,6 +36,8 @@ TINTA = os.path.join(RAD, "core", "bilant_denumiri.py")
 LEXICON = os.path.join(RAD, "core", "lexicon_diacritice.json")
 #: (formular, secțiune) -> tabelul formularului
 TABELE = {("s1005", "F10"): "F10S", ("s1003", "F10"): "F10S", ("s1005", "F20"): "F20S", ("s1003", "F20"): "F20"}
+#: [C14] F30 cap.XIX „Situația veniturilor și cheltuielilor” (S1005, anual) — subtabelul formularului
+TABEL_F30_CAP_XIX = "F30/Table8_an_micro"
 #: F30 (datele informative, cap.I) — din structură; numai rândurile scrise de generator (`bilant.xml_s1005`: F30 rd.1-3)
 SECTIUNI_F30 = {"s1005": "F30_capital (rd.1-148, 301-303, 305, 306,316-321) cap.I-XII S1005",
                 "s1003": "F30_capital_MM (rd.1- 152,301-311,313,314,316-321) cap.I-XII S1002-S1003-S1004"}
@@ -65,9 +67,16 @@ def sablon_formular(cale=FORMULAR):
 
 
 def bloc_tabel(sablon, tabel):
+    if "/" in tabel:                                                  # subtabel: „F30/Table8_an_micro”, până la subtabelul următor
+        mare, sub = tabel.split("/")
+        b = bloc_tabel(sablon, mare)
+        p = b.index('name="%s"' % sub)
+        i0 = b.rfind("<subform", 0, p)
+        m = re.search(r'<subform\b[^>]*\bname="Table', b[p:])
+        return b[i0:p + m.start()] if m else b[i0:]
     p = sablon.index('name="%s"' % tabel)
     i0 = sablon.rfind("<subform", 0, p)
-    i1 = min(x for x in (sablon.find('name="%s"' % n, p + 10) for n in _TABELE_TOATE) if x > 0)
+    i1 = min((x for x in (sablon.find('name="%s"' % n, p + 10) for n in _TABELE_TOATE + ("F40",)) if x > 0), default=len(sablon))
     return sablon[i0:i1]
 
 
@@ -84,7 +93,7 @@ def _antet_anual(sablon, tabel):
 def randuri_tabel(sablon, tabel):
     """[(rând, cod, text, antet)] în ordinea formularului; `antet` = antetul de grupă (RGOL / R_PP) de deasupra, dacă vine imediat."""
     b = bloc_tabel(sablon, tabel)
-    subf = [(m.start(), m.group(1)) for m in re.finditer(r'<subform\b[^>]*\bname="(R\d+|RGOL\d+|R_PP)"', b)]
+    subf = [(m.start(), m.group(1)) for m in re.finditer(r'<subform\b[^>]*\bname="(R\d+|RGOL\d*|R_PP)"', b)]
     out, antet = [], ""
     for k, (p, nume) in enumerate(subf):
         seg = b[p:subf[k + 1][0] if k + 1 < len(subf) else len(b)]
@@ -137,6 +146,7 @@ def curata(s):
         if n == s:
             break
         s = n
+    s = re.sub(r"\(\s*(?:din\s*)?ct\.[^()]*$", "", s)                    # paranteza de conturi neînchisă pe formular („(ct. 6053”)
     s = re.sub(r"\(\s*r\s*d\s*\.\s*", "(rd. ", s)
     s = re.sub(r"\s*\*+\s*\)", ")", s)
     s = re.sub(r"\s*\*+", "", s)
@@ -182,7 +192,7 @@ def denumiri_tabel(sablon, tabel, lex=None):
     lex = _lexicon() if lex is None else lex
     rr = randuri_tabel(sablon, tabel)
     brut = [(r, cod, diacritice(propozitie(curata(t)), lex), diacritice(propozitie(curata(a)), lex) if a else "") for r, cod, t, a in rr]
-    cheie = lambda d: re.sub(r"\s*\(rd\..*$", "", d).strip().lower()   # noqa: E731
+    cheie = lambda d: re.sub(r"[\s-]*\(rd\..*$", "", d).strip().lower()   # noqa: E731  („Pierdere - (rd. …)” e tot „pierdere”)
     numar = {}
     for _r, _c, d, _a in brut:
         numar[cheie(d)] = numar.get(cheie(d), 0) + 1
@@ -249,6 +259,10 @@ def extrage(sablon=None):
     for form in SECTIUNI_F30:
         f30 = denumiri_f30(form, lex=lex)
         den[form]["F30"], ordine[form]["F30"], coduri[form]["F30"] = f30, sorted(f30), {r: "%02d" % r for r in f30}
+    d, o, c = denumiri_tabel(t, TABEL_F30_CAP_XIX, lex)               # [C14] cap.XIX al S1005, după rândurile 1–3
+    den["s1005"]["F30"].update(d)
+    ordine["s1005"]["F30"] += o
+    coduri["s1005"]["F30"].update(c)
     return den, ordine, coduri
 
 

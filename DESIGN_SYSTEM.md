@@ -151,6 +151,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
+- **Un mesaj, o singură dată; o listă, rând cu rând (v2.89, retestul Costin 12.10.2026, deficiențele 237, 238):** același mesaj nu apare
+  de două ori pe ecran — o notă de lângă butoane care ar repeta refuzul de dedesubt trimite la el („motivul e mai jos”). Un mesaj cu mai
+  multe elemente (un rând pe cont, cu suma și acțiunea) vine cu rândurile despărțite (`\n`), iar zonele de mesaj (`.msg-eroare`,
+  `.msg-avert`, `.msg-info`, `.msg-ok`) le păstrează (`white-space: pre-line`). Gard: verificator MESAJ_PE_RANDURI + e2e 237 / 238.
 - **Mesajul nu șterge formularul în care e pus (v2.82, 08.10.2026):** `arataMesaj` pe un container care ține câmpuri (`input`,
   `select`, `textarea`) scrie mesajul într-un copil propriu (`.msg-in-formular`, la capătul containerului), nu peste conținut — omul nu
   pierde ce a tastat. O zonă de mesaj fără câmpuri se rescrie ca înainte. Regula stă în mecanismul unic (`api.js`), nu în fiecare ecran;
@@ -852,7 +856,14 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
-**v2.88 (12.10.2026)** — retestul Costin: **cap.8** — **cardul Control fiscal = un rând de patru buline cu numerele lor, fără text**, la înălțimea celorlalte carduri; textul numai în fereastră (224 redeschisă). **cap.8** — **eticheta stării firmei = una din cele patru stări** (226); gard `ETICHETA_PATRU_STARI`. **cap.2a** — **pagina principală are aceeași structură la ambele roluri**: banda de salut cu benzile „Recomandă” și „Suport”, apoi grila, fără meniu lateral (225, 231); gard `PAGINA_PRINCIPALA_UNA`. **cap.1** — **acțiunile bilanțului inactive până se completează coloana „An precedent”, cu motivul lângă ele** (228); gard `ACTIUNE_FARA_TIP` extins.
+**v2.89 (12.10.2026)** — retestul Costin de seară: **cap.6** — **un mesaj, o singură dată; o listă, rând cu rând** (deficiențele 237, 238): nota de lângă butoanele Bilanțului trimite la refuzul de dedesubt în loc să-l repete; zonele de mesaj păstrează rândurile (`white-space: pre-line`), iar refuzul soldurilor fără loc în bilanț are un rând pe cont. Gard: verificator MESAJ_PE_RANDURI, e2e 237 / 238.
+
+- Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
+- **Un mesaj, o singură dată; o listă, rând cu rând (v2.89, retestul Costin 12.10.2026, deficiențele 237, 238):** același mesaj nu apare
+  de două ori pe ecran — o notă de lângă butoane care ar repeta refuzul de dedesubt trimite la el („motivul e mai jos”). Un mesaj cu mai
+  multe elemente (un rând pe cont, cu suma și acțiunea) vine cu rândurile despărțite (`\n`), iar zonele de mesaj (`.msg-eroare`,
+  `.msg-avert`, `.msg-info`, `.msg-ok`) le păstrează (`white-space: pre-line`). Gard: verificator MESAJ_PE_RANDURI + e2e 237 / 238.
+ — retestul Costin: **cap.8** — **cardul Control fiscal = un rând de patru buline cu numerele lor, fără text**, la înălțimea celorlalte carduri; textul numai în fereastră (224 redeschisă). **cap.8** — **eticheta stării firmei = una din cele patru stări** (226); gard `ETICHETA_PATRU_STARI`. **cap.2a** — **pagina principală are aceeași structură la ambele roluri**: banda de salut cu benzile „Recomandă” și „Suport”, apoi grila, fără meniu lateral (225, 231); gard `PAGINA_PRINCIPALA_UNA`. **cap.1** — **acțiunile bilanțului inactive până se completează coloana „An precedent”, cu motivul lângă ele** (228); gard `ACTIUNE_FARA_TIP` extins.
 
 **v2.87 (10.10.2026)** — comanda Costin de seară: **cap.8** — **roșul semaforului fiscal = termen depășit** (deficiența 220): în Control fiscal o constatare urcă firma cel mult la galben, iar culoarea afișată a constatărilor e galbenă; gard `ROSU_DOAR_RESTANTA` + `core/test_rosu_termen_depasit.py`. **cap.8** — **cardul Control fiscal = semafor cu patru lumini** (deficiența 224, aprobat): vertical, roșu → galben → verde → gri, cu numărul de firme în fiecare stare; gard `SEMAFOR_PATRU_LUMINI`. **cap.1** — **acțiunea pe o declarație e inactivă până se alege tipul** (deficiența 222: Bilanțul avea „Validează”, „Descarcă XML” și „Trimite în coadă” active cu tipul „— alege —”); gard `ACTIUNE_FARA_TIP`. **cap.1** — **butonul dezactivat arată dezactivat**: regula `:disabled` pentru tot setul, hover numai pe butonul activ (un `.buton-secundar` dezactivat arăta activ); gard `BUTON_DEZACTIVAT`. **cap.2** — **barele aplicației au înălțime minimă** (deficiența C8: pe telefon mesajul din bara de stare acoperea „?”); gard `BARA_INALTIME_MINIMA`.
 

@@ -14,7 +14,7 @@ import io
 import re
 import time
 
-from conftest import ai_pregateste, ai_prompturi, _db, _ecran, sql, cui_cu_control, PREFIX_FIRMA
+from conftest import ai_pregateste, ai_prompturi, _db, _ecran, sql, cui_cu_control, PREFIX_FIRMA, zile_de_acum
 
 ecran_cont = contextlib.contextmanager(_ecran)
 AZI = _dt.date.today()
@@ -538,7 +538,7 @@ def test_def_10_schimbarea_regimului_de_tva_e_jurnalizata(browser, request, patr
         tva = [r for r in randuri if r[2] == "Plătitor de TVA"]
         assert tva, randuri
         assert tva[0][1] == "Ana Asistent E2E" and tva[0][3:] == ["nu", "da"], tva[0]
-        assert tva[0][0].startswith(AZI.strftime("%d.%m.%Y")), tva[0]
+        assert tva[0][0][:10] in [d.strftime("%d.%m.%Y") for d in zile_de_acum(AZI)], tva[0]
 
 
 def test_def_11_reges_trimiterea_la_poate_depune_credentialele_la_administrator(browser, request):
@@ -1202,11 +1202,11 @@ def test_def_22_formularul_arata_data_scadenta_si_seria(patron, firma_e2e):
     pregateste_firma(patron, firma_e2e)
     _deschide_emiterea(patron, firma_e2e["nume"])
     pg = patron.pg
-    assert pg.input_value("#em-data") == AZI.isoformat()
+    assert pg.input_value("#em-data") in [d.isoformat() for d in zile_de_acum(AZI)], pg.input_value("#em-data")
     scad = pg.input_value("#em-scadenta")
     serie = pg.inner_text("#em-serie-nr")
     patron.captura()
-    assert scad and _dt.date.fromisoformat(scad) > AZI, scad
+    assert scad and _dt.date.fromisoformat(scad) > max(zile_de_acum(AZI)), scad
     assert serie.startswith(SERIE + " · următorul număr:"), serie
     pg.fill("#em-data", "2026-10-01")
     pg.dispatch_event("#em-data", "change")
@@ -1229,8 +1229,8 @@ def test_def_23_pdf_factura_cod_tva_serie_data_scadenta_titlu(browser, request, 
     nr = str(f["numar"])[len(SERIE):]
     assert "Cod TVA: RO%s" % re.sub(r"\D", "", cui) in text, text[:600]
     assert "Seria %s nr. %s" % (SERIE, nr) in text, text[:600]
-    assert "Data emiterii: %s" % AZI.strftime("%d.%m.%Y") in text and "Emisă -" not in text, text[:600]
-    assert "Data scadenței: %s" % (AZI + _dt.timedelta(days=30)).strftime("%d.%m.%Y") in text, text[:600]
+    assert any("Data emiterii: %s" % d.strftime("%d.%m.%Y") in text and "Data scadenței: %s" % (d + _dt.timedelta(days=30)).strftime(
+        "%d.%m.%Y") in text for d in zile_de_acum(AZI)) and "Emisă -" not in text, text[:600]
     assert titlu == "Factura %s nr. %s" % (SERIE, nr), titlu
 
 
@@ -1269,7 +1269,7 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
         return pg.inner_text("[data-nota-id='%s']" % nid)
     r_stoc, r_com, r_man = rand(stoc[0][0]), rand(comision[0][0]), rand(nota_manuala)
     patron.captura("jurnal", intreaga=True)
-    assert "Document justificativ: Factură %s din %s" % (f["numar"], AZI.strftime("%d.%m.%Y")) in r_stoc, r_stoc
+    assert "Document justificativ: Factură %s din %s" % (f["numar"], AZI.strftime("%d.%m.%Y")) in r_stoc, r_stoc   # AZI-dat-de-test
     assert "Notă fără document justificativ" not in r_stoc and "Notă fără document justificativ" not in r_com, (r_stoc, r_com)
     assert "Document justificativ: Extras bancar" in r_com, r_com
     assert "Notă fără document justificativ" in r_man, r_man

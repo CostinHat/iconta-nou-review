@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
+from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql, zile_de_acum
 
 AZI = _dt.date.today()
 
@@ -260,9 +260,9 @@ def test_def_68_scadenta_propusa_la_formularul_nou(patron):
     Legea 72/2013 art.3 alin.(3) lit.a — 30 de zile), editabilă, nu goală „zz.ll.aaaa”; o dată a emiterii schimbată o mută."""
     pg = patron.pg
     _emite_factura(patron)
-    assert pg.input_value("#em-data") == AZI.isoformat()
     pg.wait_for_function("() => document.querySelector('#em-scadenta').value !== ''", timeout=10000)
-    assert pg.input_value("#em-scadenta") == (AZI + _dt.timedelta(days=30)).isoformat(), pg.input_value("#em-scadenta")
+    assert any(pg.input_value("#em-data") == d.isoformat() and pg.input_value("#em-scadenta") == (d + _dt.timedelta(days=30)).isoformat()
+               for d in zile_de_acum(AZI)), (pg.input_value("#em-data"), pg.input_value("#em-scadenta"))
     assert "Propusă la 30 de zile" in pg.inner_text("#em-scadenta-ajutor")
     patron.captura("propusa")
     pg.fill("#em-data", "2026-09-01")

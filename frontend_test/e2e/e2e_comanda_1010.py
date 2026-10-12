@@ -237,10 +237,11 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     patron.captura("an_precedent_de_completat")
     assert "F10: evidența pe 2024 din aplicație" in zona, zona
     assert pg.locator(".fereastra:last-of-type #bl-precedent .caseta-atentie").is_visible(), zona
-    assert "goală (F20)" in zona and pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 1, zona
+    # [C14] S1005 are și F30 cap.XIX pe doi ani: se cere împreună cu F20 (aceeași sursă — anul 2024 întreg)
+    assert "goală (F20, F30)" in zona and pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 2, zona
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), "„Validează” activ cu coloana „An precedent” goală"   # 228
-    assert "(F20)" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv"), pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
-    pg.click(".fereastra:last-of-type #bl-prec-salveaza")                  # câmpurile goale = 0 lei, pe toate rândurile F20
+    assert "(F20, F30)" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv"), pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")                  # câmpurile goale = 0 lei, pe toate rândurile F20 și F30
     pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-prec-mesaj') || {}).innerText === "
                          "'Coloana „An precedent” a fost salvată.'", timeout=60000)
     zona = pg.inner_text(".fereastra:last-of-type #bl-precedent")
@@ -261,14 +262,16 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     zona = _alege_bilant(patron, 2024)
     patron.captura("an_preluarii_fara_precedent")
     motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
-    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "(F10, F20)" in motiv, (motiv, zona[:300])   # 2023 nu e în aplicație
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "(F10, F20, F30)" in motiv, (motiv, zona[:300])   # 2023 nu e în aplicație
     pg.fill(".fereastra:last-of-type #bl-an", "2023")
     pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
-    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-actiuni-motiv') || {}).innerText.includes('nu se poate întocmi')",
+    # [237] refuzul stă o dată, dedesubt; lângă butoane — de ce sunt inactive și unde e motivul
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-precedent') || {}).innerText.includes('nu se poate întocmi')",
                          timeout=60000)
     patron.captura("an_dinaintea_preluarii")
-    motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    motiv = pg.inner_text(".fereastra:last-of-type #bl-precedent")
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "31.12.2024" in motiv, motiv
+    assert "motivul e mai jos" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
 
 
 # ── C8 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

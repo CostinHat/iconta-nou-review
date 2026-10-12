@@ -1,12 +1,12 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026: retestul 233–236 + C12, C13 (bilanțul pe listele formularului 2025); 3 decizii cerute; R4 BLOCAT**
+# PREDARE LANȚ — **12.10.2026 seara: C15 (6/7 închise, varianta c), C14 (F30 cap.XIX), 237, 238, C16; R4 și varianta (a) BLOCATE**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `4fbb09ed` (C10, interpretările — four-way închis 16:05); lotul „retestul 233–236 + C12, C13” e în commitul care conține
+- **pe commit**: `1b7b9b4c` (233–236 + C12, C13 — four-way închis 19:32); lotul „C15, C14, 237, 238, C16” e în commitul care conține
   această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
@@ -103,18 +103,22 @@ aplicației**, nu „în așteptarea unei teme”:
   Costin. Rulatorul cheamă acum și four-way-ul după restart.
 - **C10 — ÎNCHISĂ** (`6dea8a28`): F20 S1003 pe rândurile formularului oficial 2025, cu denumirile lui; interpretările 6811 / 6818-7818
   confirmate; sinteticele 658, 681, 741, 761, 781 opresc generarea cu analiticul cerut (lotul care conține această predare).
-- **DECIZIE CERUTĂ:** aplicația propune 741 SINTETIC la subvenții (`core/subventii.py`, ruta subvențiilor, ecranul Operațiuni) — o firmă
-  cu subvenții înregistrate așa nu-și mai poate genera S1003 (și, de la C13, nici S1005) până le reclasează; analiticul cerut la
-  înregistrare, sau rămâne așa?
+- **741 fără analitic — DECIS** (Costin 12.10.2026 seara, pct.3): „rămâne decizia din 12.10. Generarea se oprește și cere contul
+  analitic.” Extinsă la clasa calculată pe F30 cap.XIX pentru S1005 (658, 681, 761).
 - **233–236, C12, C13 — ÎNCHISE** (lotul care conține această predare): totalurile fără câmp, calculate ca în formular; denumirile din
   formular, curate, în ordinea lui; primul exercițiu după OMFP 1802/2014 pct.22 alin.(1); tipul bilanțului reținut pe firmă; F10 și F20
   S1005 pe listele formularului 2025 (436 — CAM-ul de plată — intră la rd.13).
-- **DECIZIE CERUTĂ — închiderea claselor 6 / 7 în 121 la bilanț:** pe toate cele 5 firme de test (producție, read-only, 31.12.2026)
-  veniturile și cheltuielile au sold, iar 121 nu are: F10 rd.43 / 44 nu poartă rezultatul exercițiului, DUK S1005 respinge (F10_64).
-  Variante: (a) închiderea virtuală în generator (anul -> 121, anii anteriori neînchiși -> 117); (b) acțiune de închidere a anului cu note
-  pe 121, bilanțul refuzat până e făcută; (c) refuz cu motiv. Blochează: orice bilanț S1005 cu activitate.
-- **DECIZIE CERUTĂ — C14 (nerezolvată):** S1005 nu scrie F30 cap.XIX (situația veniturilor și cheltuielilor, rd.167–236); DUK o confruntă
-  cu F20 (F20_F30_2, F20_F30_8) — orice S1005 cu activitate e respins. Lot separat? Blochează: S1005 cu activitate.
+- **C15 — ÎNCHISĂ, varianta (c)** (decizia Costin 12.10.2026 seara; lotul care conține această predare): bilanțul se oprește cu „închide
+  clasele 6/7 în 121 la 31.12”, cu rezultatul și conturile; închiderea în 121 nu mai e numărată ca rulaj nicăieri (bilanț, D100, D101,
+  centre de cost). **Pe producție: toate cele 5 firme de test au 6 / 7 neînchise la 31.12.2026 — bilanțul lor se oprește până la nota de
+  închidere.**
+- **VARIANTA (a) — BLOCATĂ până la aprobare** (comanda: „Varianta (a) intră în lotul următor, nu acum … Nu porni R4, varianta (a) sau alt
+  pas fără aprobare.”): aplicația propune nota de închidere 6/7 → 121 și regularizarea TVA 4426 / 4427 → 4423 / 4424, contabilul o
+  validează (R36).
+- **C14 — ÎNCHISĂ** (lotul care conține această predare): F30 cap.XIX scris pe listele și calculele formularului (`Table8_an_micro`), pe
+  ambele coloane; S1005 cu activitate valid pe DUK; „An precedent” manual cere și cap.XIX, verificat cu F20 la salvare.
+- **237, 238, C16 — ÎNCHISE** (lotul care conține această predare): refuzul o singură dată pe ecran; refuzul soldurilor fără loc rescris
+  pentru contabil (un rând pe cont, acțiunea, temeiul OMFP 1802/2014); S1003 F30 rd.01 / 02 din profitul net.
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -474,7 +478,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **957** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **960** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

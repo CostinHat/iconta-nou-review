@@ -27,7 +27,8 @@ def select_inregistrari_linii(cur, _inc, _sf):
                 "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
                 "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+                "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'", (_inc.isoformat(), _sf.isoformat()))   # [C15] fără închiderea în 121
     return cur.fetchone()
 
 
@@ -50,5 +51,6 @@ def select_inregistrari_linii_3(cur, _inc):
 def select_inregistrari_linii_4(cur, _inc, _sf):
     cur.execute("SELECT COALESCE(SUM(CASE WHEN l.cont_debit LIKE '691%%' THEN l.suma ELSE 0 END),0) AS imp "
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+                "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'", (_inc.isoformat(), _sf.isoformat()))
     return cur.fetchone()

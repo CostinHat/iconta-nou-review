@@ -89,7 +89,8 @@ def _venituri_independent(conn, perioada, fereastra=None):
          "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) "
          "FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
-         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s")
+         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+         "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
     with conn.cursor() as cur:
         return Decimal(str(_repo.sql(cur, q, inc, sf)[0] or 0))
 
@@ -102,7 +103,7 @@ def _cheltuieli_independent(conn, perioada, fereastra=None):
     q = ("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND l.cont_debit LIKE '6%%' "
-         "AND i.data >= %s AND i.data < %s")
+         "AND i.data >= %s AND i.data < %s AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
     with conn.cursor() as cur:
         return Decimal(str(_repo.sql_2(cur, q, inc, sf)[0] or 0))
 

@@ -45,6 +45,26 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+
+- fir: **Comanda Costin 12.10.2026 seara (răspunsul la §6 al lotului 233–236) + retestul 237 / 238 (verbatim în DECIZII): C15 (clasele 6/7
+  neînchise, varianta (c)), C14 (F30 cap.XIX pentru S1005), 237, 238; C16 (Code)** — un lot, o poartă; raport punctual cu probă și
+  captură; ZIP. R4, varianta (a) BLOCATE fără aprobare.
+  - ultim: P0–P6 în commitul care conține această intrare (poarta completă; SHA-ul în raport)
+  - urmator: — (raportul + ZIP; R4 și varianta (a) așteaptă aprobarea). STARE = ÎNCHIS
+  - pasi:
+    P0. DECIZII (ambele comenzi verbatim + interpretările), TESTE (acest fir), DEFICIENTE (C14 în lucru; C15, C16, 237, 238).
+    P1. C15: `core/bilant.py` — refuzul „închide clasele 6/7 în 121 la 31.12”, cu suma rezultatului, la „An curent” (`bilant_api.
+        coloana_curenta_f10`) și la „An precedent” din evidență; `_rulaje_67` fără închiderea în 121 (altfel 711 / 712 pe sold ies 0 după
+        închidere); teste + e2e + mutații.
+    P2. C14: `core/bilant.py` — `F30_S1005_NOMENCLATOR` (listele tipărite pe rândurile cap.XIX, `Table8_an_micro`), „din care”, abaterile
+        numite, totalurile = calculele formularului (`<calculate>`) și regulile DUK; `f30_din_rulaje`; sinteticele S1005 pe cap.XIX;
+        `xml_s1005` scrie cap.XIX pe ambele coloane; „An precedent” F30: bilanț (după pragul nou) / evidență / manual (secțiunea F30, cu
+        concordanța F20 = F30 la salvare); denumirile cap.XIX din formular; ecranul (tabelul manual F30); DUK valid; e2e + mutații.
+    P3. C16: `xml_s1003` — F30 rd.01–03 (unități cu profit / pierdere) din profitul / pierderea netă S1003 (rd.69 / 70), nu din rd.08 / 09.
+    P4. 237: mesajul de oprire o singură dată pe ecranul Bilanț (nota de lângă butoane trimite la el, nu-l repetă); clasa pe ecrane; e2e.
+    P5. 238: mesajul soldurilor fără rând rescris pentru contabil — un rând pe cont, suma, acțiunea, temeiul OMFP 1802/2014 unde există,
+        fără coduri DUK; toate conturile listei (1033 … 581) + soldurile pe latura nefirească; e2e.
+    P6. Registre, uneltele vizuale pe Bilanț, testele atinse + scanerele globale, un commit prin poartă, ZIP.
 - fir: **Retestul Costin 12.10.2026 după 0a64ac94 + 6dea8a28 (verbatim în DECIZII): 233–236; C12, C13 (Code, CICLUL); C14 consemnată** —
   un lot, o poartă; raport punctual cu probă și captură; ZIP. R4 BLOCAT.
   - ultim: M0–M6 (commitul care conține această intrare)

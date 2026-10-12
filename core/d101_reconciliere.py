@@ -47,7 +47,8 @@ def _baza_contabila_independenta(conn, an):
          "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
          "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
          "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s")
+         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+         "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
     with conn.cursor() as cur:
         ven_fin, ven_expl, chelt_fin, chelt_expl = _repo.sql(cur, q, inc, sf)
     return {"P1": _q(ven_expl or 0), "P2": _q(chelt_expl or 0),

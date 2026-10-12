@@ -69,11 +69,12 @@ def _nomenclator(nomenclator):
 @pytest.mark.parametrize("sectiune,tip,tabel,nomenclator", [
     ("F10", "*", "F10S", lambda: b.F10_NOMENCLATOR),
     ("F20", "s1005", "F20S", lambda: b.F20_S1005_NOMENCLATOR + b.F20_S1005_NOMENCLATOR_DIN_CARE),
+    ("F30", "s1005", ex.TABEL_F30_CAP_XIX, lambda: b.F30_S1005_NOMENCLATOR + b.F30_S1005_NOMENCLATOR_DIN_CARE),   # C14
 ])
 def test_listele_de_conturi_sunt_ale_formularului(sablon, sectiune, tip, tabel, nomenclator):
     """Fiecare rând al generatorului = conturile tipărite pe rândul formularului, cu abaterile numite. Totalurile își tipăresc și ele
     conturile (rd.10 „(ct. 471)”), dar se calculează din rânduri. MUTAȚII: 436 scos din rd.13 -> pică; 266 adăugat la rd.03 -> pică;
-    603 mutat înapoi la rd.03 (S1005) -> pică."""
+    603 mutat înapoi la rd.03 (S1005) -> pică; F30 cap.XIX: 612 readus la rd.198 -> pică (C14)."""
     form = _din_formular(sablon, tabel)
     gen = _nomenclator(nomenclator())
     totaluri = b.NOMENCLATOR_TOTALURI["s1005"][sectiune]
@@ -143,12 +144,15 @@ def _calcule(sablon, tabel):
 
 
 @pytest.mark.parametrize("tip,sectiune,tabel", [("s1005", "F10", "F10S"), ("s1005", "F20", "F20S"), ("s1003", "F20", "F20"),
-                                                 ("s1003", "F10", "F10S")])
+                                                 ("s1003", "F10", "F10S"), ("s1005", "F30", ex.TABEL_F30_CAP_XIX)])
 def test_totalurile_sunt_calculele_formularului(sablon, tip, sectiune, tabel):
     """`NOMENCLATOR_TOTALURI` = calculele formularului, rând cu rând (termeni și „numai dacă e pozitiv”). Singura excepție: S1003 rd.01
     — formularul calculează „v1 = R02 + R03 − R04 + R06” dar nu-l atribuie (linie comentată); formula e cea din denumire, „(rd. 02 + 03 −
     04 + 06)”. MUTAȚII: rd.14 fără „− 26” -> pică; rd.44 fără „pozitiv” -> pică."""
     calc = _calcule(sablon, tabel)
+    nule = {r for (s, ti, r), v in b.NOMENCLATOR_ABATERI_FORMULAR.items() if (s, ti) == (sectiune, tip) and v == "=null"}
+    # [C14] un rând „=null” (nescris) nu intră în totaluri: F30 rd.167 = 168 + 169 − 170 (+ 171 =null) + 172; rd.197 (+ 204 =null)
+    calc = {r: ("".join(x for x in re.findall(r"[+-]\d+", e) if int(x[1:]) not in nule), p) for r, (e, p) in calc.items()}
     canon = lambda e: "".join(sorted(re.findall(r"[+-]\d+", e)))   # noqa: E731  (ordinea termenilor nu contează)
     calc = {r: (canon(e), p) for r, (e, p) in calc.items()}
     tot = {r: (canon(e), p) for r, (e, p) in b.NOMENCLATOR_TOTALURI[tip][sectiune].items()}
@@ -200,20 +204,26 @@ def test_f20_s1005_fiecare_cont_are_un_rand_si_rezultatul_e_cel_din_rulaje():
     r = b.f20_din_rulaje(rl)
     assert r[8] - r[9] == int(ven - che), (r[8], r[9], ven, che)
     assert r[8] - r[9] == r[1] + r[2] - r[3] - r[4] - r[5] - r[6] - r[7] + r[304] and min(r[8], r[9]) == 0   # din rândurile depuse
+    # [C14] F30 cap.XIX: fiecare frunză are un rând, iar rândurile pe care DUK le compară cu F20 dau aceleași cifre (regulile F20_F30_1–10)
+    assert [c for c in frunze if b.rand_f30_s1005(c) is None] == ["695"]
+    f30 = b.f30_din_rulaje(rl)
+    assert b.neconcordante_f20_f30(r, f30) == [], b.neconcordante_f20_f30(r, f30)
+    assert min(f30[235], f30[236]) == 0 and f30[235] - f30[236] == r[8] - r[9]
 
 
 def test_f20_s1005_sinteticele_cu_analitice_pe_randuri_diferite_opresc_generarea():
-    """Ca la S1003 (decizia Costin 12.10.2026, „nu ghicim rândul”): tabelul = sinteticele planului ale căror analitice cad pe rânduri
-    diferite ale F20 S1005; un rulaj pe ele oprește generarea cu analiticele cerute. MUTAȚIE: 781 scos din tabel -> pică."""
+    """Ca la S1003 (decizia Costin 12.10.2026, „nu ghicim rândul”, reconfirmată seara pentru 741): tabelul = sinteticele planului ale căror
+    analitice cad pe rânduri diferite ale S1005 — F20 sau F30 cap.XIX (C14: cap.XIX desparte și 658, 681, 761); un rulaj pe ele oprește
+    generarea cu analiticele cerute, pe rândurile cap.XIX. MUTAȚIE: 781 scos din tabel -> pică; 658 scos -> pică."""
     plan, frunze = _plan("67")
     calc = {}
     for s in plan:
         an = [c for c in frunze if c != s and c.startswith(s)]
-        rand = {b.rand_f20_s1005(c) for c in an}
+        rand = {(b.rand_f20_s1005(c), b.rand_f30_s1005(c)) for c in an}
         if len(rand) > 1:
-            calc[s] = tuple((c, b.rand_f20_s1005(c)) for c in an)
-    assert b.F20_S1005_NOMENCLATOR_SINTETICE == calc, calc
-    with pytest.raises(ValueError, match=r"contul 741 e folosit sintetic.*7411 \(rd\.01\)"):
+            calc[s] = tuple((c, b.rand_f30_s1005(c)) for c in an)
+    assert b.S1005_NOMENCLATOR_SINTETICE == calc, calc
+    with pytest.raises(ValueError, match=r"contul 741 e folosit sintetic.*7411 \(F30 rd\.172\)"):
         b.f20_din_rulaje({"704": (0, 10), "741": (0, 800)})
     with pytest.raises(ValueError, match=r"contul 695 nu are rând"):
         b.f20_din_rulaje({"695": (5, 0)})
@@ -229,12 +239,40 @@ def test_f10_cam_de_plata_436_e_datorie_si_bilantul_e_egal():
     assert r[49] == r[4] + r[9] + r[10] - r[13] - r[16] - r[17] - r[18]
 
 
-def test_f10_soldul_fara_rand_opreste_generarea():
-    """Un sold pe care formularul nu-l preia (pe latura lui) oprește generarea, cu contul, latura și suma — bilanțul n-ar fi egal. Văzut pe
-    firmele de test din producție (read-only, 12.10.2026): F1 4426 / 4427 neregularizate, F2 401 debitor, 4427, 581. MUTAȚIE: verificarea
-    scoasă -> XML-ul ar ieși și DUK l-ar respinge -> pică."""
-    with pytest.raises(ValueError, match=r"4427 sold creditor 1390\.00.*401 sold debitor 500\.00|401 sold debitor 500\.00.*4427 sold creditor"):
-        b.f10_din_balanta({"5121": (Decimal(890), 0), "401": (Decimal(500), 0), "4427": (0, Decimal(1390))})
+def test_def_238_soldul_fara_rand_opreste_generarea_cu_un_rand_pe_cont_pentru_contabil():
+    """238 (retestul Costin 12.10.2026): „Rescrie-l pentru contabil, câte un rând pe cont, cu suma și acțiunea concretă, fără coduri DUK.
+    Exemple: «401 sold debitor 500,00 — reclasifică în 409 (furnizori-debitori)»; «4427 sold creditor 1.050,00 — închide TVA-ul lunii în
+    4423»; «581 sold creditor 1.000,00 — viramentele interne trebuie să aibă sold zero».” Cazul firmei F2 din producție (read-only,
+    12.10.2026). Un sold pe care bilanțul nu-l preia oprește generarea (bilanțul n-ar fi egal); mesajul are un rând pe cont, cu suma în
+    formatul românesc, acțiunea și temeiul OMFP 1802/2014. MUTAȚII: acțiunea lui 401 scoasă (cade pe natura contului) -> pică; mesajul
+    vechi (DUK regula F10_64, sume „500.00”) -> pică."""
+    with pytest.raises(ValueError) as e:
+        b.f10_din_balanta({"5121": (Decimal(1550), 0), "401": (Decimal(500), 0), "4427": (0, Decimal(1050)), "581": (0, Decimal(1000))})
+    linii = str(e.value).split("\n")
+    assert linii[0] == "Bilanțul nu se poate genera: soldurile de la 31.12 de mai jos nu au loc în bilanț. Corectează-le, apoi generează din nou."
+    assert linii[1].startswith("• 401 sold debitor 500,00 — reclasifică în 409 (furnizori-debitori). OMFP 1802/2014, contul 409:"), linii
+    assert linii[2].startswith("• 4427 sold creditor 1.050,00 — închide TVA-ul lunii: compensează-l cu 4426, iar diferența trece în 4423"), linii
+    assert linii[3].startswith("• 581 sold creditor 1.000,00 — viramentele interne trebuie să aibă sold zero"), linii
+    assert len(linii) == 4 and "DUK" not in str(e.value) and "F10" not in str(e.value), linii
+
+
+def test_def_238_fiecare_sold_fara_loc_din_plan_are_o_actiune_concreta():
+    """Pe TOT planul OMFP (clasele 1–5, fiecare frunză pe fiecare latură): orice sold pe care bilanțul nu-l preia primește o acțiune, fără
+    coduri DUK, în română corectă (verificatorul de limbă al aplicației); cele 12 conturi fără niciun rând (1033, 1038, 107, 1081, 1082,
+    264, 266, 4426, 4427, 481, 482, 581) au acțiunea lor anume, cu temeiul OMFP 1802/2014 — nu una după natura contului. MUTAȚIE: 266
+    scos din `NOMENCLATOR_ACTIUNI_SOLD` -> pică."""
+    from core import limba_ecran
+    _p, frunze = _plan("12345")
+    fara = []
+    for lat in ("d", "c"):
+        s = {c: ((Decimal(1), Decimal(0)) if lat == "d" else (Decimal(0), Decimal(1))) for c in frunze}
+        fara += b.conturi_fara_rand(b.F10_NOMENCLATOR, s, "12345")
+    rele = [ln for ln in b.motiv_f10(fara).split("\n") if limba_ecran.defecte(ln) or re.search(r"DUK| — \.", ln)]
+    assert len(fara) > 250 and not rele, rele[:5]
+    fara_rand = ["1033", "1038", "107", "1081", "1082", "264", "266", "4426", "4427", "481", "482", "581"]
+    for c in fara_rand:
+        act, temei = b.actiune_sold(c, "d")
+        assert act not in b.NOMENCLATOR_ACTIUNI_SOLD_GRUPE.values() and temei.startswith("OMFP 1802/2014"), (c, act, temei)
 
 
 def test_f10_pe_tot_planul_fiecare_sold_pe_latura_lui_are_rand():

@@ -19755,3 +19755,71 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   o confruntă cu F20: „F20_F30_2: F20_0012 (1000) = F30_1672 (0)”, „F20_F30_8: F20_0082 (500) = F30_2352 (0)” — orice S1005 cu
   activitate e respins (probat și pe codul de dinainte de lot, 4fbb09ed). E o construcție nouă (~70 de rânduri, cu listele lor de
   conturi), cerută la §6 ca lot separat, nu o reparație în acest lot.
+
+## 12.10.2026 seara — Răspunsul la §6 al lotului 233–236 (C15, C14, 741) și retestul 237 / 238; C16 (Code)
+
+**Comanda, verbatim:**
+
+> 1. Clasele 6/7 neînchise în 121: varianta (c) acum. Generarea bilanțului se oprește cu motivul „închide clasele 6/7 în 121 la 31.12”, cu suma rezultatului.
+> Varianta (a) intră în lotul următor, nu acum: aplicația propune nota de închidere 6/7 → 121 (și regularizarea TVA 4426/4427 → 4423/4424), iar contabilul o validează (R36).
+>
+> 2. C14: construiește F30 cap.XIX pentru S1005, după formularul ANAF 2025, cu listele de conturi tipărite pe fiecare rând. Lot separat, în aceeași comandă.
+>
+> 3. 741 fără analitic: rămâne decizia din 12.10. Generarea se oprește și cere contul analitic.
+>
+> 4. Un singur lot (1 + 2), o singură trecere prin poartă. În raport, răspunde punctual, cu proba și capturi, pentru 1 și 2.
+>
+> 5. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. Nu porni R4, varianta (a) sau alt pas fără aprobare.
+
+**Retestul, verbatim (primit în timpul lotului, înainte de poartă — deci în același lot, cum cere pct.3):**
+
+> Retestul 12.10 seara, pe 1b7b9b4c: confirmate 233, 234, 235, 236.
+>
+> 1. 237: în Bilanț, mesajul de oprire (solduri fără rând) apare de două ori: o dată gri, sub butoane, și o dată roșu, jos. Trebuie să apară o singură dată.
+>
+> 2. 238: mesajul de oprire e scris tehnic („nu au rând în bilanțul formularului… pe latura lor… DUK regula F10_64”). Rescrie-l pentru contabil, câte un rând pe cont, cu suma și acțiunea concretă, fără coduri DUK. Exemple: „401 sold debitor 500,00 — reclasifică în 409 (furnizori-debitori)”; „4427 sold creditor 1.050,00 — închide TVA-ul lunii în 4423”; „581 sold creditor 1.000,00 — viramentele interne trebuie să aibă sold zero”. Aplică la fel pentru toate conturile din lista ta (1033, 1038, 107, 1081, 1082, 264, 266, 4426, 4427, 481, 482, 581), cu temeiul din OMFP 1802/2014 unde există.
+>
+> 3. Le pui în același lot cu 6/7 și C14 dacă încă nu ai pornit poarta. Altfel, în lotul următor. În raport, răspunde punctual, cu proba și o captură pentru fiecare.
+>
+> Oprește-te și raportează. Nu porni R4, varianta (a) sau alt pas fără aprobare.
+
+- **C15 — varianta (c).** TEMEI: OMFP 1802/2014, funcțiunea contului 121 — „În creditul contului 121 «Profit sau pierdere» se înregistrează:
+  la sfârșitul perioadei, soldul creditor al conturilor din clasa 7 (701 la 786)”; „În debitul contului 121 … soldul debitor al conturilor
+  de cheltuieli (601 la 698)”. Refuzul (`bilant.inchiderea_6_7`) stă unde se citesc soldurile la 31.12: „An curent” (`bilant_api.
+  coloana_curenta_f10`) și „An precedent” din evidență (31.12 a anului precedent). Spune rezultatul de închis (profit / pierdere, în lei)
+  și conturile cu sold. **Clasa:** după închiderea cerută, o linie cu 121 de partea cealaltă a unui cont 6 / 7 NU e venit sau cheltuială —
+  numărată, ar face 0 rulajul net al lui 711 / 712 în bilanț, iar 709 / 609 închise ar umfla veniturile / cheltuielile din D100, D101 și
+  centrele de cost. Exclusă peste tot unde se citesc rulaje 6 / 7: `bilant_api._rulaje_67` (Python) și cele 7 interogări SQL (D100 repo +
+  reconciliere, D101 repo + reconciliere, centrele de cost); gard `core/test_bilant_f30.py`. **Alternativă respinsă:** recunoașterea
+  închiderii după descriere / sursa notei — contabilul o face de mână, cu orice text; 121 de partea cealaltă e definiția închiderii.
+  **Limita:** varianta (a) — nota propusă de aplicație — NU e în lot (comanda o amână, R36).
+- **C14 — F30 cap.XIX.** SURSA: subtabelul formularului `form1.F30.Table8_an_micro` („XIX. Situația veniturilor și cheltuielilor”, numai
+  la microentități, anual); listele de conturi = cele tipărite pe fiecare rând, totalurile = `<calculate>` al fiecăruia (comparate în
+  `core/test_bilant_formular.py`). **INTERPRETĂRI CU TEMEI** (aceleași ca la S1003, deciziile 12.10): 6811 numai la 191a (rd.330) — formularul
+  îl tipărește și la a.2) (rd.192), iar rd.191 = 191a + 192 − 193; „din ct.6818 / 7818” la b) (rd.195 / 196). **NOU:** 612 numai la 198a
+  (rd.331) — formularul tipărește 612 și la 11.1 (rd.198), iar rd.197 = 198 + … + 198a: numărat de două ori, profitul cap.XIX n-ar mai fi
+  cel din F20, iar DUK le compară (regula F20_F30_8). Rândurile pe care rulajele nu le pot ști nu se scriu: „=null” pe formular (171,
+  204, 233), activitatea preponderentă (325), entitățile afiliate (212, 214, 223, 336, 338, 340), felul calamității (322–324).
+  **Sinteticele S1005** se calculează acum pe cap.XIX (mai detaliat decât F20): pe lângă 741 și 781, și 658, 681, 761 opresc generarea și
+  cer analiticul — aceeași regulă ca decizia de la pct.3. **„An precedent”:** cap.XIX vine din aceeași sursă ca F20 — bilanțul validat în
+  aplicație (un S1005 cu activitate și fără cap.XIX e de dinainte de C14 și nu se folosește: verificat pe CONȚINUT, nu pe un prag de timp —
+  lecția pragului din viitor de la 233), evidența anului întreg, sau completarea manuală (secțiunea F30 pe ecran). La salvarea manuală,
+  F20 și cap.XIX se verifică pe rândurile pe care le compară validatorul (cifra de afaceri, personalul, impozitele, profitul / pierderea);
+  o neconcordanță se spune pe rânduri. **Alternativă respinsă:** F20 calculat din cap.XIX — ar transforma câmpurile F20 existente în
+  totaluri (reorganizarea unui ecran, STOP), iar contabilul copiază oricum ambele din bilanțul depus.
+- **237.** Refuzul stă o dată, dedesubt (roșu, complet, pe rânduri); nota de lângă butoane spune de ce sunt inactive și unde e motivul
+  („Inactive: bilanțul nu se poate genera — motivul e mai jos.”). Rămâne „motivul afișat lângă ele” de la 228. **Alternativă respinsă:**
+  numai nota gri — o listă cu un rând pe cont nu se citește într-o notă de o linie. Regula intră în DS cap.6 v2.89.
+- **238.** `bilant.NOMENCLATOR_ACTIUNI_SOLD`: acțiunea și temeiul (funcțiunea contului din OMFP 1802/2014, citată) pentru cele 12 conturi
+  fără rând și pentru perechile din plan (401 / 403 / 404 / 405 / 408 debitor -> 409; 411 / 413 / 418 creditor -> 419; 421–427 debitor ->
+  4282; 4423 <-> 4424; 4281 <-> 4282; 4381 <-> 4382; 4481 <-> 4482; 4581 <-> 4582; 461 <-> 462; 512 creditor -> 519 …); restul, după natura
+  contului (`NOMENCLATOR_ACTIUNI_SOLD_GRUPE`). Temeiurile citate: 1033 / 1038 / 107 / 108 — „Acest cont apare numai în situațiile financiare
+  anuale consolidate”; 264 — participațiile „prezentate în situațiile financiare anuale consolidate”; 266 — „funcțiune eliminată”; 581 —
+  „De regulă, contul nu prezintă sold.”; 4426 / 4427 — compensarea la sfârșitul perioadei. **INTERPRETARE:** 481 / 482 — textul OMFP nu
+  spune „sold zero”; spune că sunt decontări „din cadrul unei entități cu subunități fără personalitate juridică”, deci în bilanțul
+  întregii entități se compensează. Zonele de mesaj păstrează rândurile (`white-space: pre-line`, DS cap.6 v2.89, verificator
+  MESAJ_PE_RANDURI).
+- **C16 (Code).** S1003 scria F30 rd.01 / 02 din F20 rd.08 / 09 — rândurile S1005; la S1003 profitul / pierderea netă sunt rd.69 / 70.
+- **741 (pct.3):** neschimbat; extins la clasa calculată pe cap.XIX (658, 681, 761) — vezi C14.

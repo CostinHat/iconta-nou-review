@@ -44,7 +44,7 @@ def test_f20_micro():
     („6. Alte cheltuieli (ct. 603 + 604 + 605 + 606 + 607 + …)”), nu la rd.03 („3. Costul materiilor prime și al consumabilelor (ct. 601 +
     602 - 609*)”) — testul vechi cerea rd.03 = 30.000; 646 la rd.04 („ct. 641 + … + 645 + 646”)."""
     rl = {"707": (0, 50000), "709": (500, 0), "607": (30000, 0), "641": (8000, 0),
-          "646": (180, 0), "681": (1200, 0), "691": (1600, 0), "765": (0, 300)}
+          "646": (180, 0), "6811": (1200, 0), "691": (1600, 0), "765": (0, 300)}   # [C14] 681 sintetic oprește generarea: 6811
     r = bilant.f20_din_rulaje(rl)
     assert r[1] == 49500                                 # 707 - 709
     assert r[2] == 300                                   # 765

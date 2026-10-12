@@ -20,7 +20,7 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
+from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql, zile_de_acum
 
 IBAN_PROBA = "RO49AAAA1B31007593840000"   # IBAN-ul exemplu ECBS pentru România (cifrele de control valide)
 AZI = _dt.date.today()
@@ -432,7 +432,7 @@ def test_def_167_pdf_balanta_cu_cui_si_data_in_antet(patron, firma):
         cui = sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % firma["schema"])[0][0]
         cifre = "".join(ch for ch in str(cui) if ch.isdigit())
         assert "Cod TVA RO%s" % cifre in text, text[:600]
-        assert _re.search(r"Generată la %s \d{2}:\d{2}" % _re.escape(AZI.strftime("%d.%m.%Y")), text), text[:600]
+        assert any(_re.search(r"Generată la %s \d{2}:\d{2}" % _re.escape(d.strftime("%d.%m.%Y")), text) for d in zile_de_acum(AZI)), text[:600]
         patron.captura("balanta_pdf_descarcat")
     finally:
         _sterge_note(firma, [v])
@@ -493,7 +493,7 @@ def test_def_168_nota_chitantei_numeste_chitanta_si_factura(patron, firma, factu
     nota = [n for n in _randuri_jurnal(patron) if ("chitanța " + eticheta_ch) in n[0]]
     assert len(nota) == 1, _randuri_jurnal(patron)
     antet = nota[0][0]
-    assert "contravaloare factura %s din %s" % (nr, AZI.strftime("%d.%m.%Y")) in antet, antet
+    assert "contravaloare factura %s din %s" % (nr, AZI.strftime("%d.%m.%Y")) in antet, antet   # AZI-dat-de-test
     assert "Client Chitanta SRL" in antet, antet
     assert any(x.startswith("5311 = 4111") and "121,00" in x for x in nota[0][1]), nota
     pg.locator(".fereastra:last-of-type [data-nota-id]", has_text=eticheta_ch).first.scroll_into_view_if_needed()

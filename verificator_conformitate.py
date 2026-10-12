@@ -1353,6 +1353,20 @@ try:
 except Exception as _e_tb:
     rap["tinta_bifa"].append(("verificator", 0, "EROARE", "gard tinta_bifa: " + str(_e_tb)))
 
+# --- MESAJ_PE_RANDURI (DS cap.6 v2.89, retestul Costin 12.10.2026, deficiența 238): un refuz cu un rând pe cont (`\n`) se citește rând
+#     cu rând numai dacă zonele de mesaj păstrează rândurile. Mutația care o probează: `white-space: normal` pe `.msg-eroare` -> lista
+#     nevidă -> TOTAL > 0 -> poarta roșie.
+rap["mesaj_pe_randuri"] = []
+try:
+    _css_mr = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    for _cls in ("msg-eroare", "msg-avert", "msg-info", "msg-ok"):
+        _mm = re.search(r"(?m)^\.%s\s*\{([^}]*)\}" % _cls, _css_mr)
+        if not _mm or not re.search(r"white-space\s*:\s*pre-line", _mm.group(1)):
+            rap["mesaj_pe_randuri"].append(("static/stil.css", 0, _cls,
+                ".%s fara white-space: pre-line — un mesaj cu un rand pe element s-ar citi pe un singur rand (DS cap.6 v2.89)" % _cls))
+except Exception as _e_mr:
+    rap["mesaj_pe_randuri"].append(("verificator", 0, "EROARE", "gard mesaj_pe_randuri: " + str(_e_mr)))
+
 # --- DIALOG_FARA_INCHIDERE (DS cap.9 v2.64, comanda Costin 04.10.2026): orice fereastră suprapusă creată în JS se
 #     închide prin mecanismul unic `inchidereDialog` (X în antet + Esc), SAU poartă pe linia creării marcajul
 #     `fereastra-de-lucru: doar X` (fereastra cu câmpuri — Esc nu aruncă un formular). Instanța: bun-venitul se

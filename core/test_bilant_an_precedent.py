@@ -73,15 +73,17 @@ def test_coloana_precedenta_e_soldul_de_la_31_12_al_anului_precedent(cur):
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2024-12-31'), ('1012', 'Capital', 0, 10000, '2024-12-31')")
     _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
-    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F20\).*tot anul 2024"):
+    _nota(cur, datetime.date(2025, 12, 31), "704", "121", Decimal("2000"))    # [C15] închiderea veniturilor în 121
+    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F20, F30\).*tot anul 2024"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
-    assert cp["sursa"] == {"F10": "evidenta", "F20": None}, cp["sursa"]
+    assert cp["sursa"] == {"F10": "evidenta", "F20": None, "F30": None}, cp["sursa"]
     f10c = ba.coloana_curenta_f10(cur, _SCHEMA, 2025)
     assert (cp["F10"].get(8), f10c.get(8)) == (10000, 12000), (cp["F10"].get(8), f10c.get(8))   # rd.08 „Casa și conturi la bănci”
     cp26 = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
-    assert cp26["sursa"] == {"F10": "evidenta", "F20": "evidenta"}, cp26["sursa"]
-    assert cp26["F10"].get(8) == 12000 and cp26["F20"].get(1) == 2000, (cp26["F10"].get(8), cp26["F20"])
+    assert cp26["sursa"] == {"F10": "evidenta", "F20": "evidenta", "F30": "evidenta"}, cp26["sursa"]
+    assert cp26["F10"].get(8) == 12000 and cp26["F20"].get(1) == 2000 and cp26["F30"].get(167) == 2000, (cp26["F10"].get(8), cp26["F20"])
+    assert cp26["F10"].get(43) == 2000, cp26["F10"]                    # [C15] profitul închis e în 121 -> rd.43
 
 
 def test_bilantul_anului_precedent_din_aplicatie_are_intaietate(cur):
@@ -92,12 +94,13 @@ def test_bilantul_anului_precedent_din_aplicatie_are_intaietate(cur):
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2024-12-31'), ('1012', 'Capital', 0, 10000, '2024-12-31')")
     _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
-    xml_2025 = '<Bilant1005><F10 F10_0081="7000" F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>'
+    _nota(cur, datetime.date(2025, 12, 31), "704", "121", Decimal("2000"))
+    xml_2025 = '<Bilant1005><F10 F10_0081="7000" F10_0082="7777"/><F20 F20_0012="555"/><F30 F30_1672="555" F30_1682="555"/></Bilant1005>'
     _bilant_pastrat(cur, "s1005", "2025", xml_2025, produs_de="Contabil", verdict="valid")
     _bilant_pastrat(cur, "s1005", "2025", xml_2025.replace("7777", "1"), produs_de="Contabil", verdict="erori")
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
-    assert cp["sursa"] == {"F10": "bilant", "F20": "bilant"}, cp["sursa"]
-    assert cp["F10"] == {8: 7777} and cp["F20"] == {1: 555}, (cp["F10"], cp["F20"])
+    assert cp["sursa"] == {"F10": "bilant", "F20": "bilant", "F30": "bilant"}, cp["sursa"]
+    assert cp["F10"] == {8: 7777} and cp["F20"] == {1: 555} and cp["F30"] == {167: 555, 168: 555}, (cp["F10"], cp["F20"], cp["F30"])
     assert cp["bilant"]["exemplar"] == 1, cp["bilant"]
     assert ba.coloana_precedenta(cur, _SCHEMA, "s1003", 2026)["sursa"]["F20"] != "bilant"   # alt formular: rândurile F20 diferă
 
@@ -110,11 +113,11 @@ def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur):
     generează cu soldul de preluare -> pică."""
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
-    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20\)"):
+    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20, F30\)"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
-    _manual(cur, "s1005", 2026, {"F10": _toate("F10", r8=4321), "F20": _toate("F20")})
+    _manual(cur, "s1005", 2026, {"F10": _toate("F10", r8=4321), "F20": _toate("F20"), "F30": _toate("F30")})
     av = []
-    f10p, f10c, f20p = ba.coloanele(cur, _SCHEMA, "s1005", 2026, av)
+    f10p, f10c, f20p, _f30p = ba.coloanele(cur, _SCHEMA, "s1005", 2026, av)
     assert f10p.get(8) == 4321 and f10c.get(8) == 10000 and f20p == {r: 0 for r in ba.randuri_formular("s1005")["F20"]}, (f10p, f20p)
     assert len(av) == 1, av
     assert re.search(r"completată manual de (.+?), la ", av[0]).group(1) == "Contabil Probă", av          # cine
@@ -148,7 +151,7 @@ def test_autorul_completarii_manuale_e_numit_nu_numerotat(cur):
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
     artefacte.pastreaza(cur.connection, _SCHEMA, ba.FEL_MANUAL, "s1005:2026",
-                        json.dumps({"F10": _toate("F10"), "F20": _toate("F20")}), produs_de_id=uid, produs_de=str(uid))
+                        json.dumps({"F10": _toate("F10"), "F20": _toate("F20"), "F30": _toate("F30")}), produs_de_id=uid, produs_de=str(uid))
     av = []
     ba.coloanele(cur, _SCHEMA, "s1005", 2026, av)
     assert re.search(r"completată manual de (.+?), la ", av[0]).group(1) == "Elena Popescu", av
@@ -164,7 +167,7 @@ def test_bilantul_generat_de_defect_nu_e_bilantul_anului_precedent(cur):
     _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
-    assert cp["sursa"] == {"F10": None, "F20": None} and cp["bilant_respins"]["exemplar"] == 1, cp
+    assert cp["sursa"] == {"F10": None, "F20": None, "F30": None} and cp["bilant_respins"]["exemplar"] == 1, cp
     with pytest.raises(ValueError, match=r"Bilanțul pe 2025 păstrat în aplicație .* nu se folosește: soldurile de preluare sunt de la 31\.08\.2026"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
 
@@ -189,7 +192,7 @@ def test_fiecare_an_din_mesaje_e_anul_lui(cur):
     assert re.findall(r"Bilanțul pe (\d{4}) păstrat în aplicație", m) == ["2025"], m
     assert re.findall(r"nu sunt ale exercițiului (\d{4})", m) == ["2025"], m
     assert re.findall(r"bilanțul depus pe (\d{4})", m) == ["2025"], m
-    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20")})
+    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20"), "F30": _toate("F30")})
     av = []
     ba.coloanele(cur, _SCHEMA, "s1005", 2026, av)
     assert re.findall(r"nu din bilanțul pe (\d{4})", av[0]) == ["2025"], av
@@ -228,12 +231,13 @@ def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
     a = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})["afirmatie"]
     assert (a["fel"], a["an"]) == ("absenta_observatie", 2025), a
     assert [re.findall(r"pe (\d{4})", s) for s in a["surse_consultate"]] == [["2025"], ["2025"]], a["surse_consultate"]
-    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20")})
+    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20"), "F30": _toate("F30")})
     a = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})["afirmatie"]
     assert (a["fel"], a["an"]) == ("fapt", 2025), a
     cur.execute("UPDATE solduri_initiale SET data_referinta = '2024-12-31'")
     _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
-    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>',
+    _nota(cur, datetime.date(2025, 12, 31), "704", "121", Decimal("2000"))
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7777"/><F20 F20_0012="555"/><F30 F30_1682="555"/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     with pytest.raises(erori.DateInvalide) as e:
         uc.bilant_an_precedent_scrie(1, 2026, "s1005", {"F10": {}}, {"uid": 1})
@@ -257,9 +261,10 @@ def test_primul_exercitiu_coloana_an_precedent_ramane_goala(cur, monkeypatch):
                 "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', declarant_functie = 'ADMINISTRATOR' WHERE id = 1")
     _nota(cur, datetime.date(2025, 3, 20), "5121", "1012", Decimal("1000"))
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
-    assert cp["sursa"] == {"F10": "primul_exercitiu", "F20": "primul_exercitiu"} and cp["F10"] == {} and cp["F20"] == {}, cp
+    assert cp["sursa"] == {"F10": "primul_exercitiu", "F20": "primul_exercitiu", "F30": "primul_exercitiu"} and cp["F10"] == {} \
+        and cp["F20"] == {} and cp["F30"] == {}, cp
     av = []
-    f10p, f10c, f20p = ba.coloanele(cur, _SCHEMA, "s1005", 2025, av)
+    f10p, f10c, f20p, _f30p = ba.coloanele(cur, _SCHEMA, "s1005", 2025, av)
     assert (f10p, f20p, av) == ({}, {}, []) and f10c.get(8) == 1000, (f10p, f20p, av, f10c)
     xml, _ = ba.genereaza(cur.connection, _SCHEMA, 2025)
     assert re.findall(r'\bF[12]0_\d{3}1="', xml) == [] and re.findall(r'\bF10_0082="(\d+)"', xml) == ["1000"], xml[:600]
@@ -283,7 +288,7 @@ def test_firma_infiintata_inainte_cere_coloana_ca_pana_acum(cur):
     cur.execute("UPDATE firma_profil SET data_infiintare = '2020-05-04' WHERE id = 1")
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
-    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20\)"):
+    with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20, F30\)"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
 
 
@@ -310,7 +315,7 @@ def test_anul_care_nu_se_poate_intocmi_se_spune_pe_ecran(cur, monkeypatch):
                 "('5121', 'Banca', 10000, 0, '2024-12-31'), ('1012', 'Capital', 0, 10000, '2024-12-31')")
     with pytest.raises(erori.DateInvalide, match=r"Bilanțul pe 2023 nu se poate întocmi .* 31\.12\.2024"):
         uc.bilant_an_precedent(1, 2023, "s1005", {"uid": 1})
-    assert uc.bilant_an_precedent(1, 2025, "s1005", {"uid": 1})["lipsa"] == ["F20"]
+    assert uc.bilant_an_precedent(1, 2025, "s1005", {"uid": 1})["lipsa"] == ["F20", "F30"]
 
 
 def test_s1003_pe_numerotarea_veche_nu_e_an_precedent(cur):
@@ -373,3 +378,41 @@ def test_s1005_dinaintea_listelor_formularului_nu_e_an_precedent(cur):
     assert cp["sursa"]["F20"] != "bilant" and cp["bilant_respins"]["numerotare_veche"], cp
     assert re.findall(r"Bilanțul (S100\d) pe (\d{4}) .* rândurile lui sunt (dinaintea rescrierii)", ba.nota_bilant_respins(2026, cp["bilant_respins"])) \
         == [("S1005", "2025", "dinaintea rescrierii")]
+
+
+def test_def_c14_coloana_manuala_f30_se_potriveste_cu_f20(cur, monkeypatch):
+    """[C14] S1005 are și F30 cap.XIX pe doi ani: coloana „An precedent” completată manual cere și cap.XIX, iar F20 și cap.XIX se copiază
+    amândouă din bilanțul depus — validatorul ANAF le compară (cifra de afaceri, personalul, impozitele, profitul / pierderea). O
+    neconcordanță se spune la salvare, pe rânduri, nu la validare; concordante -> se salvează și ajung în generare (`coloanele`). MUTAȚIE:
+    verificarea scoasă din `bilant_an_precedent_scrie` -> se salvează -> pică."""
+    from core import erori
+    uc = _ecranul(cur, monkeypatch)
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    e = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})
+    assert e["de_completat"] == ["F10", "F20", "F30"] and 167 in e["totaluri"]["F30"] and 168 in e["randuri"]["F30"], e["de_completat"]
+    corp = {"F10": _toate("F10"), "F20": _toate("F20", r1=1000), "F30": _toate("F30", r168=900)}
+    with pytest.raises(erori.DateInvalide) as ex:
+        uc.bilant_an_precedent_scrie(1, 2026, "s1005", corp, {"uid": 1})
+    assert re.findall(r"F20 rândul (\d\d) = ([\d.,]+) lei, F30 rândul (\d+) = ([\d.,]+) lei", str(ex.value)) == [
+        ("01", "1.000,00", "167", "900,00"), ("08", "1.000,00", "235", "900,00")], str(ex.value)
+    uc.bilant_an_precedent_scrie(1, 2026, "s1005", dict(corp, F30=_toate("F30", r168=1000)), {"uid": 1})
+    f10p, _f10c, f20p, f30p = ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
+    assert (f20p[1], f20p[8], f30p[167], f30p[235]) == (1000, 1000, 1000, 1000), (f20p, f30p)
+
+
+def test_c14_s1005_fara_cap_xix_nu_e_an_precedent(cur):
+    """[C14 — clasa C10] Un S1005 cu activitate (F20 nenul) fără niciun rând F30 cap.XIX a fost produs înainte de C14: coloana lui F30
+    n-ar exista. Nu se folosește ca „An precedent” — verificat pe conținut, nu pe un prag de timp (un prag în viitor respingea bilanțurile
+    generate între timp: lecția de la 233). Un S1005 fără activitate (F20 zero) nu are ce pierde: se folosește. MUTAȚIE: `fara_cap_xix`
+    scoasă din `coloana_precedenta` -> sursa „bilant”, cu F30 gol -> pică."""
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2023-12-31'), ('1012', 'Capital', 0, 10000, '2023-12-31')")
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7"/><F20 F20_0012="800"/></Bilant1005>', produs_de="C",
+                    verdict="valid")
+    cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
+    assert cp["sursa"]["F30"] != "bilant" and cp["bilant_respins"]["numerotare_veche"], cp
+    assert re.findall(r"rândurile lui sunt dinaintea rescrierii .* și a (situației veniturilor și cheltuielilor) \(F30 cap\.XIX\)",
+                      ba.nota_bilant_respins(2026, cp["bilant_respins"])) == ["situației veniturilor și cheltuielilor"]
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7"/><F20/></Bilant1005>', produs_de="C", verdict="valid")
+    assert ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)["sursa"] == {"F10": "bilant", "F20": "bilant", "F30": "bilant"}

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**774 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**776 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 737
+### `core/` — 739
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8889,6 +8889,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
 - `core/test_bilant_an_precedent.py` — GARD — deficiența 221 (comanda Costin 10.10.2026, verbatim în DECIZII): „Bilanț: coloana «An precedent» e copiată din anul curent
 - `core/test_bilant_denumiri.py` — GARD — deficiențele 227 și 234 (comenzile Costin 12.10.2026, verbatim în DECIZII). 227: „la completarea manuală a coloanei «An
+- `core/test_bilant_f30.py` — GARD — comanda Costin 12.10.2026 seara (răspunsul la §6 al lotului 233–236, verbatim în DECIZII): C14, C15; C16 (găsită de Code).
 - `core/test_bilant_formular.py` — GARD — generatoarele bilanțului urmează FORMULARUL ANAF 2025 rând cu rând (C12, C13, deficiența 233; 12.10.2026).
 - `core/test_bilant_prin_coada.py` — GARD — bilanțul trece prin coadă: pregătit → validat → depus, cu drepturile declarațiilor (decizia Costin 07.10.2026, C11).
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
@@ -9179,6 +9180,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_duk_sursa_unica.py` — GARD — validatorul DUK se rulează numai prin `core/duk.py` (deficiența 222, comanda Costin 10.10.2026: „mesajul de confirmare apare
 - `core/test_e1_contare_primita_mixt.py` — [E1, 18.09.2026] Contarea unei facturi PRIMITE mixte (21/11) se face PE COTE, nu cu `MAX(cota_tva)`
 - `core/test_e2a_univers.py` — E2a — universul se declară, amestecul se OBSERVĂ.
+- `core/test_e2e_azi_acum.py` — GARD — „azi” fixat la importul unui test e2e, comparat cu ce datează aplicația ACUM (13.10.2026, prins de poarta lotului C14 / C15).
 - `core/test_e2e_perioada.py` — GARD — perioada declarației în plasa e2e (10.10.2026). `e2e_bloc_d._genereaza` completa numai „Lună”: după C2 (D406 trimestrial la
 - `core/test_echilibru_legat.py` — core/test_echilibru_legat.py — GARDA R33 varianta b'' (26.08.2026).
 - `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
@@ -10889,7 +10891,7 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 |---|---|---|---|---|
 | listele de conturi = formularul | `core/test_bilant_formular.py::test_listele_de_conturi_sunt_ale_formularului` (F10, F20 S1005) + `::test_listele_f20_s1003_sunt_ale_formularului` — nomenclatoarele din `core/bilant.py` comparate, rând cu rând, cu „(ct. …)” tipărit pe formular; abaterile numite în `NOMENCLATOR_ABATERI_FORMULAR` | un cont al formularului lipsă din generator (436), unul în plus (266), un cont pe alt rând (603 la rd.03) fără abatere numită | 436 scos / 266 adăugat / 603 la rd.03 -> ROȘU | „*) de repartizat după natură” stă pe un singur rând (interpretare numită); listele 6/7 neîncheiate în 121 nu sunt aici (decizia cerută) |
 | totalurile = calculele formularului | `core/test_bilant_formular.py::test_totalurile_sunt_calculele_formularului` (`<calculate>` al fiecărui rând, parsat) + `::test_cu_totaluri_…` | un total calculat altfel (rd.14 fără −26), profitul / pierderea fără „numai dacă e pozitiv” | rd.14 fără −26 / rd.44 fără „pozitiv” / „pozitiv” ignorat -> ROȘU | S1003 rd.01: formularul nu atribuie calculul (comentat) — formula e cea din denumire, numită în test |
-| soldul / rulajul fără rând oprește generarea | `core/bilant.py` (`conturi_fara_rand`, refuzul în `f10_din_balanta`, `f20_din_rulaje`) + `::test_f10_soldul_fara_rand_…`, `::test_f10_pe_tot_planul_…`, `::test_f20_s1005_fiecare_cont_…` (rezultatul = rulajele pe tot planul) | un bilanț inegal trimis la DUK; un rulaj pierdut sau numărat de două ori | refuzul scos / 7812 scos din rd.05 -> ROȘU | — |
+| soldul / rulajul fără rând oprește generarea | `core/bilant.py` (`conturi_fara_rand`, refuzul în `f10_din_balanta`, `f20_din_rulaje`) + `::test_f10_soldul_fara_rand_…`, `::test_f10_pe_tot_planul_…`, `::test_f20_s1005_fiecare_cont_…` (rezultatul = rulajele pe tot planul) | un bilanț inegal trimis la DUK; un rulaj pierdut sau numărat de două ori | refuzul scos / 7812 scos din rd.05 -> ROȘU | — | [citare-istorica: redenumit `test_def_238_…` în lotul C14 / C15, 12.10.2026 seara]
 | sinteticele S1005 cu analitice pe rânduri diferite | `F20_S1005_NOMENCLATOR_SINTETICE` + `::test_f20_s1005_sinteticele_…` (= lista calculată din plan) | 741 / 781 fără analitic duse pe un rând ghicit | 781 scos din tabel -> ROȘU | — |
 | coloana manuală: totalurile le calculează serverul | `core/bilant_api.py` (`coloana_precedenta`, `totaluri_formular`), `core/uc_tenants.py` (`bilant_an_precedent_scrie`) + `core/test_bilant_an_precedent.py::test_def_233_…` + e2e 233 | un total scris de mână (sau trimis de ecran) dus în declarație | recalcularea scoasă -> ROȘU (core și e2e) | — |
 | bilanțul păstrat înaintea rescrierii nu e „An precedent” (S1005 + S1003) | `S1003_F20_SCHEMA_NOUA_DIN` (12.10.2026 13:00 UTC) + `::test_s1005_dinaintea_listelor_…` | cifre pe rândurile vechi duse în anul următor | verificarea limitată la S1003 -> ROȘU | fereastra 13:00 UTC → publicare, verificată read-only pe producție la publicare |
@@ -10897,3 +10899,21 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | primul exercițiu: categoria după pct.22 alin.(1) | `core/categorie_marime.py` (`primul_exercitiu`) + `::test_def_235_…` + e2e 235 | caseta roșie „nu se poate determina” la o firmă nou-înființată | ramura scoasă -> ROȘU | entitatea de interes public (alin.(3)) nu e ținută în aplicație — caseta o spune |
 | tipul bilanțului reținut | `static/js/ecrane/firme.js` (`localStorage`, utilizator + firmă) + e2e 236 | tipul pierdut la schimbarea anului / redeschidere | restaurarea scoasă -> ROȘU | per browser |
 | C12 / C13 pe ecran | e2e `test_def_c12_…` (DUK „fără erori” cu CAM de plată), `test_def_c13_…` | regresia listelor F10 / F20 S1005 | 436 scos / 603–608 la rd.03 -> ROȘU | — |
+
+## 12.10.2026 seara — C15 (clasele 6/7 închise), C14 (F30 cap.XIX), 237, 238, C16
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| clasele 6 / 7 închise în 121 la 31.12 | `core/bilant.py` (`inchiderea_6_7`), chemat de `bilant_api.coloana_curenta_f10` și de coloana „An precedent” din evidență + `core/test_bilant_f30.py::test_def_c15_…` + e2e C15 | un bilanț generat fără rezultatul exercițiului (121 gol, 6 / 7 cu sold) | verificarea scoasă -> ROȘU (core + e2e) | varianta (a) — nota propusă — nu e construită (comanda o amână) |
+| închiderea în 121 nu e rulaj 6 / 7 | `bilant_api._rulaje_67` + cele 7 interogări (D100, D101, reconcilierile lor, centrele de cost) + `core/test_bilant_f30.py::test_c15_inchiderea_in_121_…` (scanează orice SQL pe `LIKE '6…' / '7…'`) + `::test_c15_d101_…` | 711 / 712 la zero în bilanț după închidere; 709 / 609 închise umflând D100 / D101 | excluderea scoasă din `repo_d101` -> ROȘU; `continue` scos din `_rulaje_67` -> ROȘU | scanerul vede SQL-ul cu prefix literal; un rulaj citit altfel (Python, fără SQL) se vede numai prin testul lui |
+| F30 cap.XIX = formularul | `core/bilant.py` (`F30_S1005_NOMENCLATOR`, `NOMENCLATOR_TOTALURI["s1005"]["F30"]`) + `core/test_bilant_formular.py` (listele și calculele `Table8_an_micro`, abaterile numite) | un cont lipsă / în plus pe un rând cap.XIX, un total calculat altfel | 612 readus la rd.198 -> ROȘU | — |
+| S1005 cu activitate valid pe DUK | `core/test_bilant_f30.py::test_def_c14_…` (DUK S1005 instalat) + e2e C14 | regulile F20_F30 (F20 ≠ cap.XIX) | cap.XIX nescris în XML -> ROȘU | DUK-ul instalat (v13) |
+| F20 = cap.XIX pe tot planul | `core/test_bilant_formular.py::test_f20_s1005_fiecare_cont_…` (`neconcordante_f20_f30 == []`) | un cont al planului pe F20, dar nu pe cap.XIX (sau invers) | — (acoperit de mutația de mai sus) | — |
+| „An precedent” manual: F20 = cap.XIX la salvare | `core/uc_tenants.py` (`bilant_an_precedent_scrie`) + `core/test_bilant_an_precedent.py::test_def_c14_coloana_manuala_…` | o coloană manuală pe care DUK o respinge abia la validare | verificarea scoasă -> ROȘU | — |
+| S1005 fără cap.XIX nu e „An precedent” | `bilant_api.fara_cap_xix` + `::test_c14_s1005_fara_cap_xix_…` | cap.XIX gol în coloana 1 a anului următor | verificarea scoasă -> ROȘU | pe conținut, nu pe timp |
+| sinteticele S1005 pe cap.XIX | `S1005_NOMENCLATOR_SINTETICE` + `core/test_bilant_formular.py::test_f20_s1005_sinteticele_…` (= lista calculată din plan pe F20 + cap.XIX) | 658 / 681 / 761 fără analitic duse pe un rând ghicit | 658 scos -> ROȘU | — |
+| S1003: F30 rd.01 / 02 din profitul net | `core/bilant.py` (`xml_s1003`, `rezultat`) + `core/test_bilant_f30.py::test_def_c16_…` + e2e C16 | „unități cu profit” scrise din variația stocurilor | `rezultat` scos -> ROȘU | DUK S1003 nu le compară — numai testele |
+| refuzul o singură dată pe ecran | `static/js/ecrane/firme.js` (nota de lângă butoane trimite la refuz) + DS cap.6 v2.89 + e2e 237 | același refuz de două ori | nota cu tot refuzul -> ROȘU | e2e (comportament de ecran) |
+| refuzul soldurilor fără loc, pentru contabil | `bilant.NOMENCLATOR_ACTIUNI_SOLD` / `_GRUPE`, `motiv_f10` + `core/test_bilant_formular.py::test_def_238_…` (F2) și `::test_def_238_fiecare_sold_…` (tot planul, `limba_ecran.defecte == []`, fără DUK) + e2e 238 | un cont fără acțiune, coduri DUK în mesaj, un rând pe mai multe conturi | acțiunea 401 / 266 scoasă -> ROȘU | acțiunile „după natura contului” sunt generale |
+| zonele de mesaj păstrează rândurile | `static/stil.css` (`white-space: pre-line` pe `.msg-*`) + verificator MESAJ_PE_RANDURI | un refuz pe rânduri afișat pe un singur rând | `white-space: normal` -> TOTAL > 0 | — |
+| „azi” în e2e: fixat la import vs ce datează aplicația acum | `frontend_test/e2e/conftest.py` (`zile_de_acum`) + `core/test_e2e_azi_acum.py` (orice aserțiune cu AZI spune ce compară: `zile_de_acum(AZI)` sau `# AZI-dat-de-test`) | o plasă care trece de miezul nopții respinge publicarea fără vină a aplicației (prins: testul 167, 13.10.2026 00:01) | `zile_de_acum` scos din testul 167 -> ROȘU | vede numele `AZI`; o dată de import cu alt nume (ex. `azi = date.today()` local) nu |

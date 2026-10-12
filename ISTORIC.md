@@ -2278,3 +2278,23 @@ cap.XIX — DUK respinge orice S1005 cu activitate; consemnată, cerută ca deci
 Prima trecere prin poartă (17:32–18:23) RESPINSĂ: 3 roșii din scanerele globale nerulate la 4d — 5 importuri `artefacte` rămase fără
 folos în `core/test_bilant_an_precedent.py`, o citare „regula F10_64” fără prefixul canonic „DUK regula” (CLAUDE.md §3.1), proba celor 50
 de declarații cu `ui_hash` vechi; reparate, a doua trecere. Commitul care conține această intrare; SHA-ul în raport.
+
+## 12.10.2026 seara — C15 (clasele 6/7 închise), C14 (F30 cap.XIX), 237, 238; C16 (Code)
+
+Comenzile verbatim în DECIZII (răspunsul la §6 al lotului 233–236 + retestul de seară, primit înaintea porții — deci în același lot).
+**C15**, varianta (c): bilanțul se oprește cu „închide clasele 6/7 în 121 la 31.12”, rezultatul și conturile (`bilant.inchiderea_6_7`,
+la „An curent” și la „An precedent” din evidență); clasa — închiderea în 121 nu mai e rulaj: `_rulaje_67` și 7 interogări (D100, D101,
+reconcilierile, centrele de cost), gard pe orice SQL nou. **C14**: F30 cap.XIX pe listele și calculele formularului (`Table8_an_micro`),
+pe ambele coloane; „An precedent” cere și cap.XIX (bilanț / evidență / manual, verificat cu F20 la salvare; un S1005 fără cap.XIX nu e
+sursă, pe conținut); sinteticele S1005 calculate pe cap.XIX (+658, 681, 761). S1005 cu activitate: valid pe DUK. **237**: refuzul o
+singură dată, nota de lângă butoane trimite la el. **238**: refuzul soldurilor fără loc — un rând pe cont, suma, acțiunea, temeiul OMFP
+1802/2014 (`NOMENCLATOR_ACTIUNI_SOLD`), fără coduri DUK; zonele de mesaj păstrează rândurile (DS cap.6 v2.89, verificator
+MESAJ_PE_RANDURI). **C16**: S1003 F30 rd.01 / 02 din profitul net (rd.69 / 70). R4 și varianta (a) BLOCATE. Un commit prin poarta completă
+(commitul care conține această intrare). **Prima trecere prin poartă RESPINSĂ** (22:03–22:55, 2 din 8.080): clichetul ancorelor pe text
+(1224 > 1222 — două aserțiuni noi pe text, rescrise pe structură) și blocul de cifre din PREDARE (regenerat în timp ce plasa ținea două
+firme de probă în baza de test: 22 față de 20). Lecția: blocul de cifre se regenerează ultimul, după orice rulare e2e; clichetul pe text
+nu era în lista mea de „scanere globale” (o listă făcută după `os.walk` / `glob` nu-l prinde). **A doua trecere RESPINSĂ de plasă**
+(22:58–00:07; pytest verde, 8080 / 10 / 15; plasa 1 din 245): testul 167 compara „Generată la 13.10.2026 00:01” cu AZI = 12.10.2026,
+fixat la importul modulului — plasa trecuse de miezul nopții. Defect de test, nu de aplicație; clasa: 8 aserțiuni din 4 fișiere e2e
+comparau un AZI fixat la import cu ce datează aplicația acum. Reparate cu `conftest.zile_de_acum` (ziua de la import sau cea de acum),
+celelalte 4 marcate `# AZI-dat-de-test`; gard `core/test_e2e_azi_acum.py`.

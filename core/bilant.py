@@ -65,7 +65,9 @@ def termeni(lista):
 
 def termeni_din_denumire(text):
     """Lista de conturi tipărită în denumirea unui rând de pe formular: parantezele „(ct. …)” / „(din ct. …)”."""
-    return [t for par in re.findall(r"\(((?:din\s*)?ct\.[^()]*)\)", text) for t in termeni(par.replace("din ct.", "din").replace("din ct", "din"))]
+    # „(ct. 6053” — paranteza neînchisă pe formular (F30 rd.185b) se citește și ea
+    return [t for par in re.findall(r"\(((?:din\s*)?ct\.[^()]*)(?:\)|$)", text.strip())
+            for t in termeni(par.replace("din ct.", "din").replace("din ct", "din"))]
 
 
 #: F10 — (rând, latura, conturile din formular). Latura „d”: +cont = soldul debitor, −cont = soldul creditor (activele; și acțiunile
@@ -111,6 +113,34 @@ F20_S1005_NOMENCLATOR = (
 )
 #: „din care” — părți ale unui rând de mai sus, nu componente ale totalurilor
 F20_S1005_NOMENCLATOR_DIN_CARE = ((302, "d", "6051"), (303, "d", "6053"))
+#: [C14, comanda Costin 12.10.2026: „construiește F30 cap.XIX pentru S1005, după formularul ANAF 2025, cu listele de conturi tipărite pe
+#: fiecare rând”] F30 cap.XIX „Situația veniturilor și cheltuielilor” (numai la microentități, anual: `form1.F30.Table8_an_micro`) — (rând,
+#: latura, conturile din formular), ca F20. DUK o confruntă cu F20 (`NOMENCLATOR_CONCORDANTA_F20_F30`). Rândurile 173 / 174 (sold C / D al
+#: lui 711 + 712) le calculează `f30_din_rulaje`; rândurile pe care rulajele nu le pot ști nu se scriu: 171 / 204 / 233 / 342 („=null” pe
+#: formular), 325 (activitatea preponderentă), 212 / 214 / 223 / 336 / 338 / 340 (entitățile afiliate), 322–324 (felul calamității).
+F30_S1005_NOMENCLATOR = (
+    (168, "c", "701+702+703+704+705+706+708"), (169, "c", "707"), (170, "d", "709"), (172, "c", "7411"),
+    (175, "c", "721+722"), (176, "c", "755"), (177, "c", "725"), (178, "c", "7412+7413+7414+7415+7416+7417+7419"),
+    (179, "c", "751+758+7815"),
+    (183, "d", "601+602"), (184, "d", "603+604+606+608"), (185, "d", "605"), (186, "d", "607"), (187, "c", "609"),
+    (189, "d", "641+642+643+644"), (190, "d", "645+646"),
+    (330, "d", "6811"), (192, "d", "6813+6817"), (193, "c", "7813"), (195, "d", "654+6814+din6818"), (196, "c", "754+7814+din7818"),
+    (198, "d", "611+613+614+615+621+622+623+624+625+626+627+628"), (331, "d", "612"), (335, "d", "616"), (337, "d", "617"),
+    (339, "d", "618"), (199, "d", "635+6586"), (200, "d", "652"), (201, "d", "655"), (202, "d", "6587"),
+    (203, "d", "651+6581+6582+6583+6584+6588"), (206, "d", "6812"), (207, "c", "7812"),
+    (211, "c", "7611+7612+7613"), (213, "c", "766"), (215, "c", "7418"), (216, "c", "7615+762+764+765+767+768"),
+    (220, "d", "686"), (221, "c", "786"), (222, "d", "666"), (224, "d", "663+664+665+667+668"),
+    (232, "d", "691"), (328, "d", "694"), (329, "c", "794"), (341, "d", "697"), (234, "d", "698"),
+)
+#: „din care” — părți ale unui rând de mai sus, nu componente ale totalurilor
+F30_S1005_NOMENCLATOR_DIN_CARE = ((180, "c", "7584"), (181, "c", "7815"), (326, "d", "6051"), (327, "d", "6053"), (332, "d", "6121"),
+                                  (333, "d", "6122"), (334, "d", "6123"), (217, "c", "7615"))
+#: rândurile 173 / 174: „2. Venituri aferente costului producției în curs de execuție (ct.711+712)”, soldul C / soldul D
+F30_S1005_VARIATIA_STOCURILOR = ("711", "712")
+#: [C14] DUK S1005 (validatorul instalat, `S1005Validator.jar` v13, regulile F20_F30_1–10): F20 = F30 cap.XIX pe ambele coloane —
+#: {rândul F20: termenii F30}. Generatorul le respectă prin construcție (păzit de `core/test_bilant_f30.py`); coloana „An precedent”
+#: completată manual se verifică la salvare (`neconcordante_f20_f30`).
+NOMENCLATOR_CONCORDANTA_F20_F30 = {1: "+167", 4: "+188", 7: "+232+234+328+341", 8: "+235", 9: "+236"}
 #: ABATERI de la listele formularului, fiecare cu motivul: {(secțiune, tip, rând): {termen din formular: ce face generatorul}}. Un termen
 #: al formularului care lipsește din nomenclator fără să fie aici, sau unul în plus, oprește `core/test_bilant_formular.py`.
 NOMENCLATOR_ABATERI_FORMULAR = {
@@ -134,6 +164,15 @@ NOMENCLATOR_ABATERI_FORMULAR = {
     ("F20", "s1003", 26): {"+6811": "rd.306", "+6818": "rd.29"},
     ("F20", "s1003", 27): {"+7818": "rd.30"},
     ("F20", "s1003", 5): "=null", ("F20", "s1003", 38): "=null", ("F20", "s1003", 67): "=null",
+    # F30 cap.XIX (C14), aceleași interpretări ca la S1003 (C10, deciziile Costin 12.10.2026): rd.191 = 191a (330) + 192 − 193, iar 191a =
+    # 6811 — formularul tipărește 6811 și la a.2) (rd.192), deci 6811 numai la 191a; „din ct.6818 / 7818” la b) (rd.195 / 196). rd.197 =
+    # 198 + … + 198a (331), iar 198a = 612 — formularul tipărește 612 și la 11.1 (rd.198), deci 612 numai la 198a (altfel de două ori în
+    # rd.197, iar profitul n-ar mai fi cel din F20: DUK regula F20_F30_8).
+    ("F30", "s1005", 192): {"+6811": "rd.330", "+din6818": "rd.195"},
+    ("F30", "s1005", 193): {"+din7818": "rd.196"},
+    ("F30", "s1005", 198): {"+612": "rd.331"},
+    # rândurile „=null” ale cap.XIX (entitățile radiate cu leasing în derulare — 171 / 204 —, impozitul specific 695 — 233): nu se scriu
+    ("F30", "s1005", 171): "=null", ("F30", "s1005", 204): "=null", ("F30", "s1005", 233): "=null",
 }
 
 
@@ -199,7 +238,16 @@ _NOMENCLATOR_TOTALURI_F10 = {
 }
 NOMENCLATOR_TOTALURI = {
     "s1005": {"F10": _NOMENCLATOR_TOTALURI_F10,
-              "F20": {8: ("+1+2-3-4-5-6-7+304", True), 9: ("-1-2+3+4+5+6+7-304", True)}},
+              "F20": {8: ("+1+2-3-4-5-6-7+304", True), 9: ("-1-2+3+4+5+6+7-304", True)},
+              # [C14] F30 cap.XIX: calculele formularului (`<calculate>` din `Table8_an_micro`; rândurile „=null” — 171, 204, 233 — nu intră)
+              "F30": {167: ("+168+169-170+172", False), 182: ("+167+173-174+175+176+177+178+179", False), 188: ("+189+190", False),
+                      191: ("+330+192-193", False), 194: ("+195-196", False),
+                      197: ("+198+199+200+201+202+203+331+335+337+339", False), 205: ("+206-207", False),
+                      208: ("+183+184+185+186-187+188+191+194+197+205", False), 209: ("+182-208", True), 210: ("-182+208", True),
+                      218: ("+211+213+215+216", False), 219: ("+220-221", False), 225: ("+219+222+224", False),
+                      226: ("+218-225", True), 227: ("-218+225", True), 228: ("+182+218", False), 229: ("+208+225", False),
+                      230: ("+228-229", True), 231: ("-228+229", True),
+                      235: ("+230+329-231-232-234-328-341", True), 236: ("-230-329+231+232+234+328+341", True)}},
     "s1003": {"F10": _NOMENCLATOR_TOTALURI_F10,
               "F20": {1: ("+2+3-4+6", False), 16: ("+1+7-8+9+10+11+12+13", False), 22: ("+23+24", False),
                       25: ("+306+26-27", False), 28: ("+29-30", False), 31: ("+32+33+34+35+36+37+310+312+314+316", False),
@@ -241,7 +289,7 @@ def f10_din_balanta(s):
     """F10 — bilanțul prescurtat (S1005 și S1003), pe rândurile și listele de conturi ale formularului ANAF 2025 (`F10_NOMENCLATOR`) și
     totalurile lui (`NOMENCLATOR_TOTALURI`). `s` = soldurile finale la 31.12. Un sold pe care nu-l preia niciun rând (cont fără rând în
     formular, sau sold pe latura pe care formularul nu o cere — ex. 401 debitor) oprește generarea: bilanțul n-ar mai fi egal (DUK regula
-    F10_64). Clasele 6 / 7 nu se citesc aici (rezultatul exercițiului e soldul lui 121 — închiderea lor e decizia cerută la §6, 12.10.2026)."""
+    F10_64). Clasele 6 / 7 nu se citesc aici: rezultatul exercițiului e soldul lui 121, iar închiderea lor o cere `inchiderea_6_7` (C15)."""
     fara = conturi_fara_rand(F10_NOMENCLATOR, s, "12345")
     if fara:
         raise ValueError(motiv_f10(fara))
@@ -251,17 +299,174 @@ def f10_din_balanta(s):
     return {k: _i(x) for k, x in cu_totaluri("s1005", "F10", v).items()}
 
 
+#: [deficiența 238, retestul Costin 12.10.2026: „Rescrie-l pentru contabil, câte un rând pe cont, cu suma și acțiunea concretă, fără coduri
+#: DUK”] ce face contabilul cu un sold pe care bilanțul nu-l preia: {(prefix de cont, latura „d” / „c” / „*”): (acțiunea, temeiul)}. Se
+#: alege prefixul cel mai lung; temeiul e funcțiunea contului din OMFP 1802/2014 (`anaf_surse/omfp_1802_2014.txt`), citată, unde există.
+#: Gardat de `core/test_bilant_formular.py`: fiecare cont al planului fără rând (pe latura lui) are aici o acțiune concretă.
+_CONSOLIDARE = "„Acest cont apare numai în situațiile financiare anuale consolidate.”"
+NOMENCLATOR_ACTIUNI_SOLD = {
+    # conturile fără niciun rând în bilanțul prescurtat
+    ("1033", "*"): ("contul apare numai în situațiile financiare consolidate, nu în bilanțul firmei; trece soldul pe contul potrivit "
+                    "naturii lui", "OMFP 1802/2014, planul de conturi, contul 1033: " + _CONSOLIDARE),
+    ("1038", "*"): ("contul apare numai în situațiile financiare consolidate, nu în bilanțul firmei; trece soldul pe contul potrivit "
+                    "naturii lui", "OMFP 1802/2014, planul de conturi, contul 1038: " + _CONSOLIDARE),
+    ("107", "*"): ("contul se folosește numai la consolidarea societăților nerezidente; trece soldul pe contul potrivit naturii lui",
+                   "OMFP 1802/2014, contul 107: „se utilizează numai în situațiile financiare anuale consolidate”"),
+    ("108", "*"): ("contul se folosește numai la consolidarea filialelor; trece soldul pe contul potrivit naturii lui",
+                   "OMFP 1802/2014, contul 108: „se utilizează numai în situațiile financiare anuale consolidate”"),
+    ("264", "*"): ("titlurile puse în echivalență apar numai în situațiile financiare consolidate; în bilanțul firmei participațiile stau "
+                   "în 261, 262 sau 263", "OMFP 1802/2014, contul 264: participațiile „prezentate în situațiile financiare anuale "
+                   "consolidate la valoarea determinată prin metoda punerii în echivalență”"),
+    ("266", "*"): ("contul nu mai există în planul de conturi; trece soldul pe contul potrivit naturii lui (ex. 267 creanțe imobilizate)",
+                   "OMFP 1802/2014: „Contul 266 - funcțiune eliminată.”"),
+    ("4426", "*"): ("închide TVA-ul lunii: compensează-l cu 4427, iar diferența trece în 4423 (de plată) sau 4424 (de recuperat)",
+                    "OMFP 1802/2014, contul 4426: „sumele compensate la sfârșitul perioadei din taxa pe valoarea adăugată colectată "
+                    "(4427)”"),
+    ("4427", "*"): ("închide TVA-ul lunii: compensează-l cu 4426, iar diferența trece în 4423 (de plată) sau 4424 (de recuperat)",
+                    "OMFP 1802/2014, contul 4427: „taxa pe valoarea adăugată deductibilă, compensată la sfârșitul perioadei, potrivit "
+                    "legii (4426)”"),
+    ("481", "*"): ("decontările dintre firmă și subunitățile ei se compensează în bilanțul firmei: la 31.12 soldul trebuie să fie zero; "
+                   "verifică transferurile neînregistrate la una din părți", "OMFP 1802/2014, contul 481: decontări „din cadrul unei "
+                   "entități cu subunități fără personalitate juridică”"),
+    ("482", "*"): ("decontările dintre subunitățile aceleiași firme se compensează în bilanțul firmei: la 31.12 soldul trebuie să fie "
+                   "zero; verifică transferurile neînregistrate la una din părți", "OMFP 1802/2014, contul 482: decontări „între "
+                   "subunitățile fără personalitate juridică din cadrul aceleiași unități”"),
+    ("581", "*"): ("viramentele interne trebuie să aibă sold zero; înregistrează și intrarea banilor în contul de destinație (512, 531, "
+                   "541)", "OMFP 1802/2014, contul 581: „De regulă, contul nu prezintă sold.”"),
+    # soldurile pe latura nefirească a unui cont care are pereche în plan
+    ("401", "d"): ("reclasifică în 409 (furnizori-debitori)", "OMFP 1802/2014, contul 409: „evidența avansurilor acordate furnizorilor”"),
+    ("403", "d"): ("reclasifică în 409 (furnizori-debitori)", "OMFP 1802/2014, contul 409: „evidența avansurilor acordate furnizorilor”"),
+    ("404", "d"): ("reclasifică în 409 (furnizori-debitori)", "OMFP 1802/2014, contul 409: „evidența avansurilor acordate furnizorilor”"),
+    ("405", "d"): ("reclasifică în 409 (furnizori-debitori)", "OMFP 1802/2014, contul 409: „evidența avansurilor acordate furnizorilor”"),
+    ("408", "d"): ("reclasifică în 409 (furnizori-debitori)", "OMFP 1802/2014, contul 409: „evidența avansurilor acordate furnizorilor”"),
+    ("409", "c"): ("avansul decontat e mai mare decât cel plătit: reclasifică diferența în 401 (furnizori)", ""),
+    ("411", "c"): ("reclasifică în 419 (clienți-creditori)", "OMFP 1802/2014, contul 419: „avansurile încasate de la clienți”"),
+    ("413", "c"): ("reclasifică în 419 (clienți-creditori)", "OMFP 1802/2014, contul 419: „avansurile încasate de la clienți”"),
+    ("418", "c"): ("reclasifică în 419 (clienți-creditori)", "OMFP 1802/2014, contul 419: „avansurile încasate de la clienți”"),
+    ("419", "d"): ("avansul decontat e mai mare decât cel încasat: reclasifică diferența în 4111 (clienți)", ""),
+    ("421", "d"): ("salariile plătite în plus sunt o creanță: reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                   "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("423", "d"): ("sumele plătite în plus sunt o creanță: reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                   "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("424", "d"): ("sumele plătite în plus sunt o creanță: reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                   "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("426", "d"): ("sumele plătite în plus sunt o creanță: reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                   "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("427", "d"): ("sumele plătite în plus sunt o creanță: reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                   "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("4281", "d"): ("reclasifică în 4282 (alte creanțe în legătură cu personalul)",
+                    "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("4282", "c"): ("reclasifică în 4281 (alte datorii în legătură cu personalul)",
+                    "OMFP 1802/2014, contul 428: „evidența altor datorii și creanțe în legătură cu personalul”"),
+    ("4381", "d"): ("reclasifică în 4382 (alte creanțe sociale)", "OMFP 1802/2014, contul 438: „Alte datorii și creanțe sociale”"),
+    ("4382", "c"): ("reclasifică în 4381 (alte datorii sociale)", "OMFP 1802/2014, contul 438: „Alte datorii și creanțe sociale”"),
+    ("4423", "d"): ("TVA-ul plătit în plus e de recuperat: reclasifică în 4424 (TVA de recuperat)",
+                    "OMFP 1802/2014, contul 4424: „evidența taxei pe valoarea adăugată de recuperat de la bugetul statului”"),
+    ("4424", "c"): ("TVA-ul încasat în plus e de plată: reclasifică în 4423 (TVA de plată)",
+                    "OMFP 1802/2014, contul 4423: „evidența taxei pe valoarea adăugată de plătit la bugetul statului”"),
+    ("4481", "d"): ("reclasifică în 4482 (alte creanțe privind bugetul statului)",
+                    "OMFP 1802/2014, contul 448: „evidența altor datorii și creanțe cu bugetul statului”"),
+    ("4482", "c"): ("reclasifică în 4481 (alte datorii față de bugetul statului)",
+                    "OMFP 1802/2014, contul 448: „evidența altor datorii și creanțe cu bugetul statului”"),
+    ("4581", "d"): ("reclasifică în 4582 (decontări din operațiuni în participație — activ)",
+                    "OMFP 1802/2014, contul 458: „evidența decontărilor din operațiuni în participație”"),
+    ("4582", "c"): ("reclasifică în 4581 (decontări din operațiuni în participație — pasiv)",
+                    "OMFP 1802/2014, contul 458: „evidența decontărilor din operațiuni în participație”"),
+    ("461", "c"): ("reclasifică în 462 (creditori diverși)", "OMFP 1802/2014, contul 462: „evidența sumelor datorate terților”"),
+    ("462", "d"): ("reclasifică în 461 (debitori diverși)", "OMFP 1802/2014, contul 461: „evidența debitorilor”"),
+    ("4661", "d"): ("reclasifică în 4662 (creanțe din operațiuni de fiducie)", ""),
+    ("4662", "c"): ("reclasifică în 4661 (datorii din operațiuni de fiducie)", ""),
+    ("512", "c"): ("descoperitul de cont e un credit pe termen scurt: reclasifică în 519 (credite bancare pe termen scurt)",
+                   "OMFP 1802/2014, contul 519: „evidența creditelor acordate de bănci pe termen scurt”"),
+    ("531", "c"): ("casa nu poate avea sold creditor; verifică plățile și încasările în numerar înregistrate", ""),
+    ("532", "c"): ("valorile de încasat nu pot avea sold creditor; verifică intrările și ieșirile lor", ""),
+    ("541", "c"): ("acreditivele nu pot avea sold creditor; verifică intrările și ieșirile lor", ""),
+    ("542", "c"): ("avansul de trezorerie decontat e mai mare decât cel dat: verifică decontul avansului", ""),
+}
+#: când nu e o pereche anume: după natura contului (prima cifră a grupei), pe latura nefirească
+NOMENCLATOR_ACTIUNI_SOLD_GRUPE = {
+    ("1", "d"): "un cont de capitaluri, provizioane sau împrumuturi nu are sold debitor; verifică înregistrările care l-au trecut pe debit",
+    ("1", "c"): "contul nu are sold creditor; verifică înregistrările care l-au trecut pe credit",
+    ("2", "c"): "o imobilizare nu are sold creditor; verifică intrările și ieșirile ei",
+    ("2", "d"): "amortizarea sau ajustarea nu are sold debitor; verifică scoaterile din evidență și reluările",
+    ("3", "c"): "stocul nu poate fi negativ; verifică recepțiile și descărcarea din gestiune",
+    ("3", "d"): "ajustarea pentru depreciere nu are sold debitor; verifică reluările",
+    ("4", "d"): "o datorie nu are sold debitor; verifică plățile și stornările contului",
+    ("4", "c"): "o creanță nu are sold creditor; verifică încasările și stornările contului",
+    ("5", "c"): "contul de trezorerie nu are sold creditor; verifică intrările și ieșirile lui",
+    ("5", "d"): "o datorie sau o ajustare de trezorerie nu are sold debitor; verifică plățile și reluările contului",
+}
+
+
+def actiune_sold(cont, latura):
+    """(acțiunea, temeiul) pentru un sold pe care bilanțul nu-l preia — perechea anume din `NOMENCLATOR_ACTIUNI_SOLD` (prefixul cel mai
+    lung, pe latura lui sau „*”), altfel natura contului (`NOMENCLATOR_ACTIUNI_SOLD_GRUPE`)."""
+    c = str(cont).split(".")[0]
+    best = None
+    for (p, l), v in NOMENCLATOR_ACTIUNI_SOLD.items():
+        if c.startswith(p) and l in (latura, "*") and (best is None or len(p) > best[0]):
+            best = (len(p), v)
+    if best:
+        return best[1]
+    return NOMENCLATOR_ACTIUNI_SOLD_GRUPE[(c[0], latura)], ""
+
+
 def motiv_f10(fara):
-    det = "; ".join("%s sold %s %s" % (c, "debitor" if l == "d" else "creditor", format(v, ".2f")) for c, l, v in fara)
-    return ("Bilanțul: soldurile la 31.12 de mai jos nu au rând în bilanțul formularului ANAF 2025 (F10), pe latura lor — bilanțul n-ar mai "
-            "fi egal (DUK regula F10_64): %s. Regularizează sau reclasează conturile la 31.12, apoi generează din nou." % det)
+    """[deficiența 238] Mesajul de oprire pentru contabil: câte un rând pe cont — contul, latura, suma, ce face, temeiul unde există."""
+    from core.pdf_util import bani
+    randuri = []
+    for c, l, v in fara:
+        act, temei = actiune_sold(c, l)
+        randuri.append("• %s sold %s %s — %s.%s" % (c, "debitor" if l == "d" else "creditor", bani(v), act, (" " + temei + ("" if temei.endswith(".”") else ".")) if temei else ""))
+    return ("Bilanțul nu se poate genera: soldurile de la 31.12 de mai jos nu au loc în bilanț. Corectează-le, apoi generează din nou.\n"
+            + "\n".join(randuri))
 
 
-#: [C13] sinteticele planului OMFP 1802/2014 ale căror analitice stau pe rânduri DIFERITE ale F20 S1005 (aceeași regulă ca la S1003 —
-#: decizia Costin 12.10.2026: „nu ghicim rândul”); păzit de `core/test_bilant_formular.py` (= lista calculată din plan)
-F20_S1005_NOMENCLATOR_SINTETICE = {
-    "741": (("7411", 1), ("7412", 2), ("7413", 2), ("7414", 2), ("7415", 2), ("7416", 2), ("7417", 2), ("7418", 2), ("7419", 2)),
-    "781": (("7812", 5), ("7813", 5), ("7814", 5), ("7815", 2), ("7818", 5)),
+#: [C15, decizia Costin 12.10.2026, varianta (c)] „Generarea bilanțului se oprește cu motivul «închide clasele 6/7 în 121 la 31.12», cu
+#: suma rezultatului.” TEMEI: OMFP 1802/2014, funcțiunea contului 121 (`anaf_surse/omfp_1802_2014.txt`).
+_TEMEI_121 = ("OMFP 1802/2014, contul 121: „În creditul contului 121 «Profit sau pierdere» se înregistrează: la sfârșitul perioadei, "
+              "soldul creditor al conturilor din clasa 7 (701 la 786)”; „În debitul contului 121 «Profit sau pierdere» se înregistrează: la "
+              "sfârșitul perioadei, soldul debitor al conturilor de cheltuieli (601 la 698)”")
+
+
+def conturi_6_7_cu_sold(s):
+    """[(cont, latura, suma)] — conturile din clasele 6 și 7 cu sold la data lui `s` (după închidere, niciunul)."""
+    out = []
+    for cont, (d, c) in sorted((s or {}).items()):
+        net = Decimal(str(d or 0)) - Decimal(str(c or 0))
+        if str(cont)[:1] in "67" and net:
+            out.append((str(cont), "d" if net > 0 else "c", abs(net)))
+    return out
+
+
+def inchiderea_6_7(s, an, bilant_pe=None):
+    """[C15] Bilanțul pe `an` cere clasele 6 / 7 închise în 121 la 31.12: altfel rezultatul exercițiului nu e în 121, deci lipsește din
+    bilanț (rd.43 / 44) — și bilanțul n-ar fi egal. `s` = soldurile la 31.12.`an`; `bilant_pe` = anul bilanțului (an + 1 pentru coloana
+    „An precedent” din evidență). Refuzul spune rezultatul de închis și conturile."""
+    from core.pdf_util import bani
+    cu_sold = conturi_6_7_cu_sold(s)
+    if not cu_sold:
+        return
+    rez = sum(((v if l == "c" else -v) for _c, l, v in cu_sold), Decimal("0"))
+    ce = "profit %s lei" % bani(rez) if rez > 0 else ("pierdere %s lei" % bani(-rez) if rez < 0 else "rezultat zero (0,00 lei)")
+    raise ValueError(
+        "Bilanțul pe %d nu se poate genera: închide clasele 6/7 în 121 la 31.12.%d. Rezultatul de închis: %s (veniturile minus "
+        "cheltuielile cu sold la 31.12.%d). Până la închidere, rezultatul exercițiului nu e în contul 121, deci lipsește din bilanț. %s.\n"
+        "Conturile cu sold:\n%s" % (bilant_pe or an, an, ce, an, _TEMEI_121,
+                                     "\n".join("• %s sold %s %s" % (c, "debitor" if l == "d" else "creditor", bani(v)) for c, l, v in cu_sold)))
+
+
+#: [C13, C14] sinteticele planului OMFP 1802/2014 ale căror analitice stau pe rânduri DIFERITE ale S1005 — F20 sau F30 cap.XIX (rândurile
+#: de mai jos sunt ale cap.XIX, mai detaliat: el desparte și 658, 681, 761, pe care F20 le ține pe un rând). Aceeași regulă ca la S1003
+#: (decizia Costin 12.10.2026, reconfirmată seara: „741 fără analitic: … Generarea se oprește și cere contul analitic.”); păzit de
+#: `core/test_bilant_f30.py` (= lista calculată din plan cu `rand_f20_s1005` și `rand_f30_s1005`).
+S1005_NOMENCLATOR_SINTETICE = {
+    "658": (("6581", 203), ("6582", 203), ("6583", 203), ("6584", 203), ("6586", 199), ("6587", 202), ("6588", 203)),
+    "681": (("6811", 330), ("6812", 206), ("6813", 192), ("6814", 195), ("6817", 192), ("6818", 195)),
+    "741": (("7411", 172), ("7412", 178), ("7413", 178), ("7414", 178), ("7415", 178), ("7416", 178), ("7417", 178), ("7418", 215),
+            ("7419", 178)),
+    "761": (("7611", 211), ("7612", 211), ("7613", 211), ("7615", 216)),
+    "781": (("7812", 207), ("7813", 193), ("7814", 196), ("7815", 179), ("7818", 196)),
 }
 
 
@@ -282,9 +487,9 @@ def f20_din_rulaje(rl):
     `rl` = {cont: (rulaj debitor, rulaj creditor)} pe anul bilanțului. Un cont fără rând sau un sintetic cu analitice pe rânduri diferite
     oprește generarea (`ValueError`, cu motivul) — ca la S1003."""
     rl = rl or {}
-    sintetice = sorted({str(c).split(".")[0] for c in rl if str(c).split(".")[0] in F20_S1005_NOMENCLATOR_SINTETICE})
+    sintetice = sorted({str(c).split(".")[0] for c in rl if str(c).split(".")[0] in S1005_NOMENCLATOR_SINTETICE})
     if sintetice:
-        raise ValueError("Bilanțul S1005: " + " ".join(motiv_sintetic(c, F20_S1005_NOMENCLATOR_SINTETICE) for c in sintetice))
+        raise ValueError("Bilanțul S1005: " + " ".join(motiv_sintetic(c, S1005_NOMENCLATOR_SINTETICE, "F30 ") for c in sintetice))
     fara = sorted(str(c) for c in rl if rand_f20_s1005(c) is None)
     if fara:
         raise ValueError("Bilanțul S1005: contul %s nu are rând în contul prescurtat de profit și pierdere al formularului ANAF 2025 — "
@@ -292,6 +497,49 @@ def f20_din_rulaje(rl):
     v = _randuri_din_nomenclator(F20_S1005_NOMENCLATOR, rl)
     v.update(_randuri_din_nomenclator(F20_S1005_NOMENCLATOR_DIN_CARE, rl))
     return {k: _i(x) for k, x in cu_totaluri("s1005", "F20", v).items()}
+
+
+#: F30 cap.I, rândurile 01–03 („Unități care au înregistrat profit / pierdere / nici profit nici pierdere”): coloana 1 = numărul, coloana 2
+#: = suma — nu „an precedent / an curent”
+F30_RANDURI_CAP_I = (1, 2, 3)
+
+
+def rand_f30_s1005(cont):
+    """Rândul F30 cap.XIX pe care intră `cont` (prefixul listat cel mai lung care îl cuprinde) sau None; 711 / 712 -> 173 (sold C / D)."""
+    c = str(cont).split(".")[0]
+    if c.startswith(F30_S1005_VARIATIA_STOCURILOR):
+        return 173
+    best = None
+    for rand, _lat, lista in F30_S1005_NOMENCLATOR:
+        for _s, p, _q in termeni(lista):
+            if c.startswith(p) and (best is None or len(p) > best[0]):
+                best = (len(p), rand)
+    return best[1] if best else None
+
+
+def f30_din_rulaje(rl):
+    """[C14] F30 cap.XIX S1005 — situația veniturilor și cheltuielilor, pe rândurile și listele de conturi ale formularului ANAF 2025
+    (`F30_S1005_NOMENCLATOR`, „din care” `F30_S1005_NOMENCLATOR_DIN_CARE`) și totalurile lui (`NOMENCLATOR_TOTALURI["s1005"]["F30"]`).
+    `rl` = {cont: (rulaj debitor, rulaj creditor)} pe anul bilanțului. Refuzurile sunt ale lui `f20_din_rulaje` (cont fără rând, sintetic
+    cu analitice pe rânduri diferite) — aceleași conturi, aceeași generare."""
+    rl = rl or {}
+    v = _randuri_din_nomenclator(F30_S1005_NOMENCLATOR, rl)
+    net = sum(((Decimal(str(c or 0)) - Decimal(str(d or 0))) for k, (d, c) in rl.items()
+               if str(k).split(".")[0].startswith(F30_S1005_VARIATIA_STOCURILOR)), Decimal("0"))
+    v[173], v[174] = (net, Decimal("0")) if net > 0 else (Decimal("0"), -net)
+    v.update(_randuri_din_nomenclator(F30_S1005_NOMENCLATOR_DIN_CARE, rl))
+    return {k: _i(x) for k, x in cu_totaluri("s1005", "F30", v).items()}
+
+
+def neconcordante_f20_f30(f20, f30):
+    """[(rândul F20, valoarea F20, termenii F30, valoarea F30)] — rândurile pe care F20 S1005 și F30 cap.XIX nu se potrivesc (DUK S1005,
+    regulile F20_F30_1–10: `NOMENCLATOR_CONCORDANTA_F20_F30`)."""
+    out = []
+    for r, expr in NOMENCLATOR_CONCORDANTA_F20_F30.items():
+        x = sum(s * int((f30 or {}).get(k, 0) or 0) for s, k in termeni_total(expr))
+        if int((f20 or {}).get(r, 0) or 0) != x:
+            out.append((r, int((f20 or {}).get(r, 0) or 0), expr, x))
+    return out
 
 
 def _a(nume, val):
@@ -303,8 +551,9 @@ def _a(nume, val):
         return ""
     return ' %s=%s' % (nume, quoteattr(str(val)))
 
-def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
-    """XML S1005 v15. f10p/f20p = an precedent (dict rd->val), f10c/f20c = an curent.
+def xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p=None, f30c=None, rezultat=None):
+    """XML S1005 v15. f10p/f20p/f30p = an precedent (dict rd->val), f10c/f20c/f30c = an curent; f30 = F30 cap.XIX (C14, numai S1005).
+    `rezultat` = (profitul, pierderea) exercițiului pentru F30 rd.01–03 — implicit F20 S1005 rd.08 / 09; S1003 dă rd.69 / 70 (C16).
 
     VERIFICAT 15.07.2026 pe validatorul instalat (S1005_41): v15 e acceptata, v14 e
     RESPINSA (eroare de namespace). Docstringul zicea v14 desi codul genera v15.
@@ -349,13 +598,16 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
     H.append('<Bilant1005 xmlns="%s"%s>' % (NS, "".join(at)))
     H.append('  <F10%s/>' % bloc("10", f10p, f10c))
     H.append('  <F20%s/>' % bloc("20", f20p, f20c))
-    # F30 date informative minime: rd1/2 = unitati cu profit/pierdere (col1=nr, col2=suma), rd3 idem 0
-    pr, pi = f20c.get(8, 0), f20c.get(9, 0)
+    # F30 date informative minime: rd1/2 = unitati cu profit/pierdere (col1=nr, col2=suma), rd3 idem 0 — DUK S1005: „Daca F20_0082 > 0
+    # atunci F30_0011 = 1, F30_0012 = F20_0082”. [C16] rezultatul e al formularului: la S1003, rd.08 / 09 sunt variația stocurilor (sold D)
+    # și producția de imobilizări, nu profitul / pierderea — acolo vin rd.69 / 70 (`xml_s1003`).
+    pr, pi = rezultat if rezultat is not None else (f20c.get(8, 0), f20c.get(9, 0))
     f30 = []
     f30.append(_a("F30_0011", 1 if pr > 0 else 0)); f30.append(_a("F30_0012", pr))
     f30.append(_a("F30_0021", 1 if pi > 0 else 0)); f30.append(_a("F30_0022", pi))
     f30.append(_a("F30_0031", 1 if (pr == 0 and pi == 0) else 0)); f30.append(_a("F30_0032", 0))
-    H.append('  <F30%s/>' % "".join(f30))
+    # [C14] F30 cap.XIX (situația veniturilor și cheltuielilor), pe ambele coloane, ca F10 / F20
+    H.append('  <F30%s%s/>' % ("".join(f30), bloc("30", f30p or {}, f30c or {})))
     H.append('</Bilant1005>')
     return "\n".join(H)
 
@@ -447,12 +699,13 @@ F20_S1003_NOMENCLATOR_SINTETICE = {
 }
 
 
-def motiv_sintetic(sintetic, tabel=None):
-    """Motivul refuzului pentru un rulaj pe `sintetic`, cu analiticele cerute grupate pe rândul formularului (`tabel`: S1003 implicit)."""
+def motiv_sintetic(sintetic, tabel=None, sectiune=""):
+    """Motivul refuzului pentru un rulaj pe `sintetic`, cu analiticele cerute grupate pe rândul formularului (`tabel`: S1003 implicit;
+    `sectiune` = prefixul rândului, „F30 ” la S1005, unde rândurile sunt ale cap.XIX)."""
     pe_rand = {}
     for analitic, rand in (tabel or F20_S1003_NOMENCLATOR_SINTETICE)[sintetic]:
         pe_rand.setdefault(rand, []).append(analitic)
-    rd = lambda r: "rd.%s" % (("%02d" % r) if r < 100 else r)   # noqa: E731
+    rd = lambda r: "%srd.%s" % (sectiune, ("%02d" % r) if r < 100 else r)   # noqa: E731
     return ("contul %s e folosit sintetic, fără analitic, iar formularul ANAF îi pune analiticele pe rânduri diferite: %s. Trece rulajul "
             "pe analiticul potrivit — iConta.eu nu alege rândul în locul tău."
             % (sintetic, "; ".join("%s (%s)" % (", ".join(a), rd(r)) for r, a in pe_rand.items())))
@@ -510,7 +763,7 @@ def f20_complet_din_rulaje(rl):
 
 def xml_s1003(prof, an, f10p, f10c, f20p, f20c):
     """XML S1003 (mici) v15 - aceeasi structura antet ca S1005, tipBIL=BS."""
-    x = xml_s1005(prof, an, f10p, f10c, f20p, f20c)
+    x = xml_s1005(prof, an, f10p, f10c, f20p, f20c, rezultat=(f20c.get(69, 0), f20c.get(70, 0)))   # [C16] profitul / pierderea netă
     x = x.replace("mfp:anaf:dgti:s1005:declaratie:v15", "mfp:anaf:dgti:s1003:declaratie:v15")
     x = x.replace("<Bilant1005", "<Bilant1003").replace("</Bilant1005>", "</Bilant1003>")
     x = x.replace('tipBIL="UU"', 'tipBIL="BS"')
@@ -530,6 +783,9 @@ def randuri_din_xml(xml):
     out = {}
     for f, r, col, v in re.findall(r'\b(F\d\d)_(\d{3})([12])="(-?\d+)"', xml or ""):
         d = out.setdefault((f, int(r)), {"formular": f, "rand": int(r), "denumire": den.get(f, {}).get(int(r), ""),
+                                          # [C14] pe doi ani (an precedent / an curent): F10, F20 și F30 cap.XIX; F30 rd.01–03 (unități cu
+                                          # profit / pierdere) au alte coloane (numărul și suma)
+                                          "doi_ani": not (f == "F30" and int(r) in F30_RANDURI_CAP_I),
                                           "cod": cod.get(f, {}).get(int(r), r[1:] if r.startswith("0") else r),
                                           "cod_precedent": "%s_%s1" % (f, r), "an_precedent": 0,
                                           "cod_curent": "%s_%s2" % (f, r), "an_curent": 0})

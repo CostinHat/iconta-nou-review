@@ -218,7 +218,7 @@ def test_def_228_actiunile_inactive_pana_se_completeaza_coloana(patron, firma_f2
                                       "bs => bs.map(b => b.disabled)")
     motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
     patron.captura("actiuni_inactive")
-    assert actiuni == [True, True, True] and "An precedent" in motiv and "(F20)" in motiv, (actiuni, motiv)
+    assert actiuni == [True, True, True] and "An precedent" in motiv and "(F20, F30)" in motiv, (actiuni, motiv)   # [C14] și F30 cap.XIX
     pg.click(".fereastra:last-of-type #bl-prec-salveaza")
     pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
     actiuni = pg.eval_on_selector_all(".fereastra:last-of-type #bl-val, .fereastra:last-of-type #bl-xml, .fereastra:last-of-type #bl-coada",
@@ -263,11 +263,13 @@ def test_def_229_primul_exercitiu_fara_an_precedent(patron, firma_infiintata_202
     assert "Validare fără erori" in text and rand and all(p == "0,00" for p, _c in rand.values()), (text[:400], rand)
     pg.fill(".fereastra:last-of-type #bl-an", "2024")
     pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
-    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-actiuni-motiv') || {}).innerText.includes('nu există')",
+    # [237] refuzul stă o dată, dedesubt; lângă butoane — de ce sunt inactive și unde e motivul
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-precedent') || {}).innerText.includes('nu există')",
                          timeout=60000)
     patron.captura("inainte_de_infiintare")
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled()
-    assert "firma s-a înființat pe 15.03.2025" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    assert "firma s-a înființat pe 15.03.2025" in pg.inner_text(".fereastra:last-of-type #bl-precedent")
+    assert "motivul e mai jos" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
 
 
 # ── 230 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -334,6 +336,7 @@ def firma_s1003():
         _nota_validata(f, "2025-03-10", "5121", "704", 5000, "Vanzare C10")
         _nota_validata(f, "2025-04-10", "5121", "7411", 800, "Subventie C10")
         _nota_validata(f, "2025-05-10", "709", "5121", 300, "Reducere C10")
+        _inchide_6_7(f, "2025-12-31", {"704": 5000, "7411": 800, "709": -300})      # [C15] închiderea în 121 la 31.12
         yield f
 
 
@@ -370,10 +373,47 @@ def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(pa
     # [decizia Costin 12.10.2026] „Pentru 741 și 658 folosite sintetic, fără analitic: nu ghicim rândul. Generarea S1003 se oprește, cu
     # motivul și contul analitic cerut.” Un rulaj pe 741 sintetic -> „Validează” refuză și numește analiticele cu rândul lor
     _nota_validata(f, "2025-06-10", "5121", "741", 100, "Subventie pe sintetic C10")
+    _inchide_6_7(f, "2025-12-31", {"741": 100})
     text, _rand = _valideaza_bilant(patron, 2025, alege=False)
     patron.captura("sintetic_741_refuzat")
     assert "contul 741 e folosit sintetic" in text and "7411 (rd.06); 7412, 7413, 7414, 7415, 7416, 7417, 7419 (rd.12); 7418 (rd.49)" in text, \
         text[:600]
+
+
+def _inchide_6_7(f, zi, solduri):
+    """[C15] Nota de închidere a claselor 6 / 7 în 121 (OMFP 1802/2014, contul 121): {cont: soldul} — creditor (venit) > 0, debitor < 0."""
+    for cont, s in solduri.items():
+        if s > 0:
+            _nota_validata(f, zi, cont, "121", s, "Inchidere %s" % cont)
+        else:
+            _nota_validata(f, zi, "121", cont, -s, "Inchidere %s" % cont)
+
+
+def test_def_c16_s1003_unitatile_cu_profit_din_profitul_net(patron, firma_s1003):
+    """C16 (găsită de Code, 12.10.2026). S1003 scria în datele informative F30 rd.01 / 02 („Unități care au înregistrat profit / pierdere”)
+    rândurile 08 / 09 ale contului de profit și pierdere S1003 — care sunt variația stocurilor (sold D) și producția de imobilizări —, nu
+    profitul / pierderea netă (rd.69 / 70). Pașii: firma cu vânzări 5.000, subvenție 800, reduceri 300 în 2025, închise în 121 -> Bilanț
+    2025, S1003 -> „Validează” -> „Date informative (F30)”: rândul 01 = 1 unitate, 5.500 (profitul net, rd.69); rândul 02 = 0.
+    MUTAȚIA din plasă: rezultatul S1003 înapoi din rd.08 / 09 -> rândul 01 = 0 / 0 -> ROȘU."""
+    f = firma_s1003
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    pg.fill(".fereastra:last-of-type #bl-an", "2025")
+    pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
+    pg.wait_for_function("() => { const z = document.querySelector('.fereastra:last-of-type #bl-categorie'); return z && "
+                         "!z.hasAttribute('aria-busy') && !z.innerText.includes('Se calculează'); }", timeout=90000)
+    pg.select_option(".fereastra:last-of-type #bl-tip", "s1003")
+    pg.wait_for_function("() => { const z = document.querySelector('.fereastra:last-of-type #bl-precedent'); "
+                         "return z && z.dataset.pentru === '2025|s1003' && z.innerText.trim(); }", timeout=60000)
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    f30 = pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri-f30 tbody tr",
+                                  "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim()))")
+    patron.captura()
+    assert "Validare fără erori" in text and rand[("F20", 69)][1] == "5.500,00", (text[:300], sorted(rand))
+    assert [x[0] for x in f30[:2]] == ["rândul 01", "rândul 02"] and f30[0][2:] == ["1", "5500"] and f30[1][2:] == ["0", "0"], f30
 
 
 # ── 233 · 234 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -414,7 +454,9 @@ def test_def_233_totalurile_se_calculeaza_si_nu_au_camp(patron, firma_f10_manual
                                  "rândul 22", "rândul 25", "rândul 29", "rândul 46", "rândul 49"],
                          "F20": ["rândul 08", "rândul 09"]}, fara_camp
     for sel, v in (("F10'] input[data-rand='8'", "5000"), ("F10'] input[data-rand='30'", "5000"),
-                   ("F20'] input[data-rand='1'", "1000"), ("F20'] input[data-rand='3'", "300")):
+                   ("F20'] input[data-rand='1'", "1000"), ("F20'] input[data-rand='3'", "300"),
+                   # [C14] F30 cap.XIX, copiat din același bilanț depus: producția vândută 1.000, materiile prime 300 (= F20)
+                   ("F30'] input[data-rand='168'", "1000"), ("F30'] input[data-rand='183'", "300")):
         pg.fill(".fereastra:last-of-type .bl-prec-tabel[data-sectiune='%s]" % sel, v)
     tot = {(s, c): v for s, t in (("F10", _tabel_manual(pg, "F10")), ("F20", _tabel_manual(pg, "F20"))) for c, _d, i, v in t if i is None}
     patron.captura("totaluri_calculate")
@@ -560,6 +602,7 @@ def firma_s1005_cheltuieli():
         _nota_validata(f, "2025-03-10", "5121", "707", 1000, "Vanzare marfa C13")
         _nota_validata(f, "2025-03-11", "607", "5121", 300, "Marfa descarcata C13")
         _nota_validata(f, "2025-03-12", "628", "5121", 200, "Servicii C13")
+        _inchide_6_7(f, "2025-12-31", {"707": 1000, "607": -300, "628": -200})     # [C15]
         yield f
 
 
@@ -569,13 +612,163 @@ def test_def_c13_contul_prescurtat_pe_listele_formularului(patron, firma_s1005_c
     formularului. Găsită de Code la 233, 12.10.2026.
     Pașii: firma cu vânzări de mărfuri 1.000, mărfuri 300, servicii 200 în 2025 -> Bilanț 2025, S1005, F20 „An precedent” completat ->
     „Validează” -> „Ce se depune”: rd.03 nu apare (zero), rd.06 „6. Alte cheltuieli” = 500 (607 + 628), rd.08 profit = 500 = rd.01 −
-    rd.06. (Validarea DUK are erori de structură F30 — C14, decizie cerută; tabelul arată ce s-ar depune.)
+    rd.06 — iar de la C14 (F30 cap.XIX scris) validarea e fără erori.
     MUTAȚIA din plasă: 603–608 înapoi la rd.03 -> ROȘU."""
     pg = patron.pg
     _bilant_2025(patron, firma_s1005_cheltuieli)
     pg.click(".fereastra:last-of-type #bl-prec-salveaza")
     pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
-    _text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
     patron.captura()
     f20 = {k[1]: v[1] for k, v in rand.items() if k[0] == "F20"}
     assert 3 not in f20 and (f20[1], f20[6], f20[8]) == ("1.000,00", "500,00", "500,00"), f20
+    assert "Validare fără erori" in text, text[:600]
+
+
+# ── C15 · C14 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_c15():
+    """Firmă nouă: soldurile de preluare la 31.12.2024; în 2025 vânzări de mărfuri 1.000 (707), mărfuri 300 (607), servicii 200 (628) —
+    neînchise în 121."""
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2024-12-31")
+        _nota_validata(f, "2025-03-10", "5121", "707", 1000, "Vanzare marfa C15")
+        _nota_validata(f, "2025-03-11", "607", "5121", 300, "Marfa descarcata C15")
+        _nota_validata(f, "2025-03-12", "628", "5121", 200, "Servicii C15")
+        yield f
+
+
+def test_def_c15_clasele_6_7_neinchise_opresc_bilantul_cu_suma_rezultatului(patron, firma_c15):
+    """C15 (decizia Costin 12.10.2026, varianta (c)): „Generarea bilanțului se oprește cu motivul «închide clasele 6/7 în 121 la 31.12», cu
+    suma rezultatului.” TEMEI: OMFP 1802/2014, contul 121 — „la sfârșitul perioadei, soldul creditor al conturilor din clasa 7 … soldul
+    debitor al conturilor de cheltuieli”.
+    Pașii: firma cu vânzări 1.000, mărfuri 300, servicii 200 în 2025, neînchise -> Bilanț 2025, S1005: „închide clasele 6/7 în 121 la
+    31.12.2025. Rezultatul de închis: profit 500,00 lei”, cu conturile, iar acțiunile sunt inactive -> nota de închidere la 31.12 (707 =
+    121, 121 = 607, 121 = 628) -> Bilanț 2025: coloana „An precedent” (F20 și F30 cap.XIX, 2024 nu e în aplicație) completată și salvată
+    -> „Validează”: fără erori, profitul în bilanț (F10 rd.43 = 500), F20 rd.08 = 500.
+    MUTAȚIA din plasă: verificarea închiderii scoasă -> bilanțul se generează fără rezultat -> ROȘU."""
+    f = firma_c15
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    zona = _alege_bilant(patron, 2025)
+    patron.captura("neinchise")
+    assert "închide clasele 6/7 în 121 la 31.12.2025. Rezultatul de închis: profit 500,00 lei" in zona, zona
+    assert re.findall(r"• (\d+) sold (debitor|creditor) ([\d.,]+)", zona) == [("607", "debitor", "300,00"), ("628", "debitor", "200,00"),
+                                                                              ("707", "creditor", "1.000,00")], zona
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled()
+    _inchide_6_7(f, "2025-12-31", {"707": 1000, "607": -300, "628": -200})
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    _alege_bilant(patron, 2025)
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura("inchise_valid")
+    assert "Validare fără erori" in text, text[:600]
+    assert rand[("F10", 43)][1] == "500,00" and rand[("F20", 8)][1] == "500,00", sorted(rand.items())
+
+
+@pytest.fixture()
+def firma_c14():
+    """Firmă înființată pe 10.01.2025 (primul exercițiu: coloana „An precedent” e legal goală): capital 1.000, vânzări de mărfuri 1.000,
+    mărfuri 300, chirie 200 (6123), închise în 121 la 31.12.2025."""
+    for f in firma_noua():
+        _date_firma(f)
+        st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2025-01-10"})
+        assert st == 200 and r.get("ok") is not False, (st, r)
+        st, r = _api(PATRON, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": "6123", "denumire": "Cheltuieli cu chiriile"})
+        assert st == 200, (st, r)
+        _nota_validata(f, "2025-01-15", "5121", "1012", 1000, "Aport C14")
+        _nota_validata(f, "2025-03-10", "5121", "707", 1000, "Vanzare marfa C14")
+        _nota_validata(f, "2025-03-11", "607", "5121", 300, "Marfa descarcata C14")
+        _nota_validata(f, "2025-03-12", "6123", "5121", 200, "Chirie C14")
+        _inchide_6_7(f, "2025-12-31", {"707": 1000, "607": -300, "6123": -200})
+        yield f
+
+
+def test_def_c14_situatia_veniturilor_si_cheltuielilor_se_depune_si_bilantul_e_valid(patron, firma_c14):
+    """C14 (comanda Costin 12.10.2026): „construiește F30 cap.XIX pentru S1005, după formularul ANAF 2025, cu listele de conturi tipărite pe
+    fiecare rând.” Înainte: S1005 nu scria situația veniturilor și cheltuielilor, iar DUK îl respingea („F20_F30_2: F20_0012 (1000) =
+    F30_1672 (0)”, „F20_F30_8: F20_0082 (500) = F30_2352 (0)”) la orice firmă cu activitate.
+    Pașii: firma în primul exercițiu, cu vânzări 1.000, mărfuri 300, chirie 200, închise -> Bilanț 2025, S1005 -> „Validează”: fără erori;
+    „Ce se depune” are F30 cap.XIX pe rândurile formularului, cu denumirile lui: rândul 167 cifra de afaceri 1.000, 169 vânzarea mărfurilor
+    1.000, 186 mărfurile 300, 198a (331) chiriile 200 și „din care” 198d (334) 200, 235 profitul net 500 = F20 rd.08.
+    MUTAȚIA din plasă: cap.XIX nescris în XML -> DUK respinge -> ROȘU."""
+    pg = patron.pg
+    f = firma_c14
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    _alege_bilant(patron, 2025)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    den = {(x[0], x[1]): x[2] for x in pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri tbody tr",
+                                                              "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim()))")}
+    patron.captura()
+    pg.locator(".fereastra:last-of-type #bl-randuri tbody tr", has_text="rândul 167").scroll_into_view_if_needed()
+    patron.captura("cap_xix")                                                  # rândurile cap.XIX, cu denumirile lor
+    assert "Validare fără erori" in text, text[:600]
+    f30 = {k[1]: v[1] for k, v in rand.items() if k[0] == "F30"}
+    assert {k: f30.get(k) for k in (167, 169, 186, 331, 334, 235)} == {167: "1.000,00", 169: "1.000,00", 186: "300,00", 331: "200,00",
+                                                                      334: "200,00", 235: "500,00"}, f30
+    assert rand[("F20", 8)][1] == "500,00", sorted(rand.items())
+    assert den[("F30", "rândul 198a (331)")] == "11.2. Cheltuieli cu redevențele, locațiile de gestiune și chiriile", den
+    assert den[("F30", "rândul 167")].startswith("1. Cifra de afaceri netă"), den
+
+
+# ── 237 · 238 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_solduri_fara_loc():
+    """Firmă nouă: soldurile de preluare la 31.12.2024; în 2025 un avans plătit furnizorului pe 401 (401 debitor 500), TVA colectată
+    neînchisă (4427 creditor 1.050) și o depunere de numerar înregistrată numai în bancă (581 creditor 1.000) — cazul F2 din producție."""
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2024-12-31")
+        _nota_validata(f, "2025-03-10", "401", "5121", 500, "Avans furnizor 238")
+        _nota_validata(f, "2025-03-11", "4111", "4427", 1050, "TVA colectata 238")
+        _nota_validata(f, "2025-03-12", "5121", "581", 1000, "Depunere numerar 238")
+        yield f
+
+
+def _bilant_oprit(patron, f):
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    return _alege_bilant(patron, 2025)
+
+
+def test_def_237_mesajul_de_oprire_apare_o_singura_data(patron, firma_solduri_fara_loc):
+    """237 (retestul Costin 12.10.2026): „în Bilanț, mesajul de oprire (solduri fără rând) apare de două ori: o dată gri, sub butoane, și o
+    dată roșu, jos. Trebuie să apară o singură dată.”
+    Pașii: firma cu solduri pe care bilanțul nu le preia -> Bilanț 2025, S1005: refuzul apare O DATĂ în fereastră (roșu, dedesubt); lângă
+    butoanele inactive scrie numai de ce sunt inactive și unde e motivul.
+    MUTAȚIA din plasă: nota de lângă butoane înapoi cu tot refuzul -> de două ori -> ROȘU."""
+    pg = patron.pg
+    _bilant_oprit(patron, firma_solduri_fara_loc)
+    fereastra = pg.inner_text(".fereastra:last-of-type")
+    nota = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    patron.captura()
+    assert fereastra.count("nu au loc în bilanț") == 1 and fereastra.count("401 sold debitor 500,00") == 1, fereastra[:1500]
+    assert nota == "Inactive: bilanțul nu se poate genera — motivul e mai jos." and pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), nota
+    assert pg.locator(".fereastra:last-of-type #bl-precedent.msg-eroare").count() == 1
+
+
+def test_def_238_mesajul_de_oprire_pentru_contabil_un_rand_pe_cont(patron, firma_solduri_fara_loc):
+    """238 (retestul Costin 12.10.2026): „mesajul de oprire e scris tehnic («nu au rând în bilanțul formularului… pe latura lor… DUK
+    regula F10_64»). Rescrie-l pentru contabil, câte un rând pe cont, cu suma și acțiunea concretă, fără coduri DUK.”
+    Pașii: firma cu 401 debitor 500, 4427 creditor 1.050, 581 creditor 1.000 la 31.12.2025 -> Bilanț 2025, S1005: refuzul are câte un rând
+    pe cont, afișat pe rânduri separate: „401 sold debitor 500,00 — reclasifică în 409 (furnizori-debitori)”, „4427 sold creditor 1.050,00
+    — închide TVA-ul lunii …”, „581 sold creditor 1.000,00 — viramentele interne trebuie să aibă sold zero …”, fiecare cu temeiul OMFP
+    1802/2014; fără „DUK”, fără „F10_64”, fără „pe latura lor”.
+    MUTAȚIA din plasă: mesajul vechi (o frază, cod DUK) -> ROȘU."""
+    pg = patron.pg
+    zona = _bilant_oprit(patron, firma_solduri_fara_loc)
+    inaltime_rand = pg.eval_on_selector(".fereastra:last-of-type #bl-precedent.msg-eroare",
+                                        "e => [e.getBoundingClientRect().height, parseFloat(getComputedStyle(e).lineHeight)]")
+    patron.captura()
+    linii = [ln for ln in zona.split("\n") if ln.startswith("• ")]
+    assert [ln.split(" — ")[0] for ln in linii] == ["• 401 sold debitor 500,00", "• 4427 sold creditor 1.050,00",
+                                                    "• 581 sold creditor 1.000,00"], zona
+    assert linii[0].startswith("• 401 sold debitor 500,00 — reclasifică în 409 (furnizori-debitori). OMFP 1802/2014, contul 409"), linii
+    assert "închide TVA-ul lunii" in linii[1] and "4423" in linii[1] and "viramentele interne trebuie să aibă sold zero" in linii[2], linii
+    assert "DUK" not in zona and "F10_64" not in zona and "pe latura lor" not in zona, zona
+    assert inaltime_rand[0] >= 4 * inaltime_rand[1] - 1, inaltime_rand               # antetul + trei rânduri, pe rânduri separate

@@ -2949,7 +2949,10 @@ async function ecranBilant(corp, nav, t) {
         if (cheie === cerereaPrec) {
           const m = (e && e.mesaj) || "Nu s-a putut citi coloana „An precedent”.";
           arataMesaj(zonaPrec, m, "eroare");
-          stareaPrec = { cheie, motiv: m };
+          zonaPrec.dataset.pentru = cheie;          // zona e a anului și tipului aleși și când spune refuzul
+          // [deficiența 237, retestul Costin 12.10.2026] „mesajul de oprire apare de două ori … Trebuie să apară o singură dată.” Refuzul
+          // stă o dată, dedesubt (roșu); nota de lângă butoane spune de ce sunt inactive și trimite la el, fără să-l repete (DS cap.6 v2.89)
+          stareaPrec = { cheie, motiv: "Inactive: bilanțul nu se poate genera — motivul e mai jos." };
           legaTip();
         }
         return;
@@ -2960,8 +2963,9 @@ async function ecranBilant(corp, nav, t) {
         ? `Inactive până completezi coloana „An precedent” (${p.lipsa.join(", ")}) mai jos și o salvezi.` : "" };
       legaTip();
       // [deficiența 229] primul exercițiu: coloana e goală prin lege — se spune de ce, fără formular de completat
-      const primul = ["F10", "F20"].every((s) => p.sursa[s] === "primul_exercitiu");
-      const surse = ["F10", "F20"].filter((s) => p.sursa[s] && p.sursa[s] !== "manual" && p.sursa[s] !== "primul_exercitiu")
+      const sectiuni = Object.keys(p.sursa);       // [C14] F10, F20 — și F30 cap.XIX la S1005
+      const primul = sectiuni.every((s) => p.sursa[s] === "primul_exercitiu");
+      const surse = sectiuni.filter((s) => p.sursa[s] && p.sursa[s] !== "manual" && p.sursa[s] !== "primul_exercitiu")
         .map((s) => `${s}: ${SURSA[p.sursa[s]].replace("%AN", an - 1)}`);
       const info = primul
         ? `<div class="caseta-info bl-prec-primul" style="margin-top:10px"><span class="ci-mesaj">${esc((p.afirmatie && p.afirmatie.motiv) || "")}</span></div>`
@@ -2979,7 +2983,7 @@ async function ecranBilant(corp, nav, t) {
       };
       const sectiune = (s) => {
         const ordine = ((p.ordine && p.ordine[s]) || p.randuri[s]).filter((r) => p.randuri[s].includes(r));
-        return `<h3 class="pf-subtitlu">An precedent — ${s}</h3>
+        return `<h3 class="pf-subtitlu">An precedent — ${s === "F30" ? "F30, cap.XIX Situația veniturilor și cheltuielilor" : s}</h3>
         <table class="fd-tabel bl-prec-tabel" data-sectiune="${s}"><thead><tr><th>Rândul</th><th>Denumirea de pe formular</th><th class="fd-td-num">An precedent (lei)</th></tr></thead><tbody>
         ${ordine.map((r) => { const den = (p.denumiri && p.denumiri[s] && p.denumiri[s][r]) || "";   // [deficiența 227] numele de pe formular
           const cod = (p.coduri && p.coduri[s] && p.coduri[s][r]) || String(r);
@@ -3026,8 +3030,9 @@ async function ecranBilant(corp, nav, t) {
         // [deficiența 188] rândurile care se depun, cu cifrele lor, citite din XML-ul validat (nu doar verdictul)
         // [227 + C11, 12.10.2026] fiecare rând cu denumirea de pe formular; datele informative (F30) au alte coloane decât „An precedent” /
         // „An curent” (numerele lor nu sunt sume pe doi ani), deci stau în tabelul lor, cu valorile așa cum se depun
-        const doiAni = (r.randuri || []).filter((x) => x.formular !== "F30");
-        const f30 = (r.randuri || []).filter((x) => x.formular === "F30");
+        // [C14] F30 cap.XIX e tot pe doi ani (serverul o spune: `doi_ani`); numai F30 rd.01–03 au numărul și suma
+        const doiAni = (r.randuri || []).filter((x) => x.doi_ani);
+        const f30 = (r.randuri || []).filter((x) => !x.doi_ani);
         const randuri = doiAni.map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${esc(x.cod || String(x.rand))}</td><td>${esc(x.denumire || "")}</td>`
           + `<td class="fd-td-num">${bani(x.an_precedent)}</td><td class="fd-td-num">${bani(x.an_curent)}</td></tr>`).join("");
         const randuriF30 = f30.map((x) => `<tr><td>rândul ${esc(x.cod || String(x.rand))}</td><td>${esc(x.denumire || "")}</td>`

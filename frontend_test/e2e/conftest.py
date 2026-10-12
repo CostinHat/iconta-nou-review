@@ -3,6 +3,7 @@
 aplicația pornită de `scripts/e2e_poarta.py` din ce se comite, pe baza de TEST. Fiecare test se numește `test_def_<nr>_<ce>` — numărul
 din DEFICIENTE.md — și lasă o captură `<nr>_<ce>.png` în `E2E_CAPTURI`. Datele puse de un test se scot în același test (`curata`).
 """
+import datetime as _dt
 import json
 import os
 import sys
@@ -12,6 +13,14 @@ import pytest
 BAZA = os.environ.get("PROBA_BAZA", "http://127.0.0.1:8019")
 CAPTURI = os.environ.get("E2E_CAPTURI", "/tmp/e2e_capturi")
 LAT, INALT = 1700, 1000
+
+
+def zile_de_acum(inceput):
+    """[13.10.2026 — plasa a trecut de miezul nopții: testul 167 compara „Generată la 13.10.2026 00:01” cu AZI = 12.10.2026, fixat la
+    importul modulului] „Azi” al unui lucru pe care aplicația îl datează ACUM (data implicită a unui ecran, momentul generării, jurnalul)
+    = ziua de la importul testului SAU ziua de acum, dacă rularea a trecut între timp de miezul nopții. Un AZI fixat la import se compară
+    singur numai cu date pe care testul însuși le-a dat aplicației (marcate `# AZI-dat-de-test`); gard `core/test_e2e_azi_acum.py`."""
+    return sorted({inceput, _dt.date.today()})
 
 
 def _db():
