@@ -1,12 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **11.10.2026, noaptea: comanda „Oprește R4” — 125 + 224, 221, poarta în paralel; R4 BLOCAT până la aprobarea lui Costin**
+# PREDARE LANȚ — **12.10.2026: răspunsul la §6 al raportului „Oprește R4” — deciziile consemnate, mutația scăpată din 221 închisă; R4 BLOCAT**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-11** (noaptea; comanda „Oprește R4”), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `e69198fb` (R3, four-way închis 20:34); lotul comenzii „Oprește R4” e în commitul care conține această predare — SHA-ul,
-  four-way-ul și durata porții în raport.
+- **ultima rescriere**: **2026-10-12** (răspunsul lui Costin la §6 al raportului „Oprește R4”), pe secțiunile de stare (lecțiile și CIFRE
+  INVALIDATE se poartă).
+- **pe commit**: `41aaf93d` (lotul „Oprește R4”, four-way închis 02:43, poarta 63 de minute); lotul 12.10 e în commitul care conține
+  această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -24,7 +25,9 @@ zi din worktree). **R3** (în commitul care conține această predare): 4 dublur
 2016, `impozit_venit_categorii` nouă, `cote_tva` la data regimului Legii 141/2025), garda `scan_registru.dubluri()` (0); amprentele
 portofoliului identice cu R2a (`e69198fb`). **Comanda Costin 11.10 noaptea („Oprește R4. Nu e aprobat.”, verbatim în DECIZII)**: 125 + 224
 (fereastra = semaforul cardului, o singură sursă), 221 („An precedent” din bilanțul anului precedent din aplicație / evidență / manual,
-niciodată gol), regulile de lucru 4a–e (CLAUDE.md §2.3 pct.12), poarta în paralel — în commitul care conține această predare. **R4 e
+niciodată gol), regulile de lucru 4a–e (CLAUDE.md §2.3 pct.12), poarta în paralel — `41aaf93d`. **Răspunsul lui Costin la §6 (12.10.2026,
+verbatim în DECIZII)**: poarta rămâne la 63 de minute pe serverul actual; 221 (b) aprobată; cele 11 bife CF art.17 confirmate; mutația
+scăpată din 221 închisă (anii din mesajele coloanei, pe ecran și în server) — în commitul care conține această predare. **R4 e
 BLOCAT până la aprobarea lui Costin**; nu se pornește alt pas fără aprobare. Tot restul e livrat, cu poartă completă, four-way și ZIP în
 `/home/costin/ghid_incoming/`. **Decizii așteaptă răspunsul lui Costin** (FRONTURI);
 restul fronturilor sunt [EXTERN] sau restanțe scrise:
@@ -89,6 +92,11 @@ aplicației**, nu „în așteptarea unei teme”:
   ale cardului, executat; (2) 221: din bilanțul anului precedent, altfel manual cu avertisment, niciodată gol — executat; **pe producție,
   F1/F2/F3 nu au bilanțul 2025 în aplicație: bilanțul 2026 cere acum completarea manuală a coloanei „An precedent” pe ecranul Bilanț**;
   (3) /tmp curățat (25 de fișiere găsite, nu 26).
+- **Deciziile cerute de raportul „Oprește R4” (§6) — ÎNCHISE** de comanda Costin 12.10.2026 (verbatim în DECIZII): (1) poarta rămâne la 63
+  de minute, fără server nou; accelerarea testelor lente (`test_frecventa_…`, `test_prag_per_articol`, `test_scan_instrumente`,
+  `test_reverificare`, `test_trasee`) numai când nicio deficiență nu e deschisă (CLAUDE.md §2.3 pct.12 e); (2) 221 interpretarea (b)
+  aprobată; (3) cele 11 bife CF art.17 confirmate; (4) F1–F5 completează manual „An precedent” pe 2026, S1005 2025 al lui F1 nefolosit;
+  (5) mutația scăpată închisă, executat.
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -408,10 +416,11 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Ultima poartă completă: `e69198fb` (11.10.2026, R3)** — `7997 passed, 9 skipped, 15 xfailed in 3953.20s (1:05:53)`, COLLECTED 8021
-(confirmat cu `--collect-only`), verificator TOTAL 0, cifrele identice cu referința (5 firme), e2e 225 passed (15:27); poarta întreagă
-~82 de minute (19:12 -> 20:34), serială. De la lotul „Oprește R4” poarta e în paralel (pytest-xdist, 3 procese; verificatorul și cifrele simultan, plasa după pytest) — durata
-în `.poarta_jurnal.log`, linia `DURATE`.
+**Ultima poartă completă: `41aaf93d` (12.10.2026, lotul „Oprește R4”)** — `8003 passed, 10 skipped, 15 xfailed in 2847.62s (0:47:27)`,
+COLLECTED 8028 (confirmat cu `--collect-only`), verificator TOTAL 0, cifrele identice cu referința (5 firme), e2e 225 passed; poarta
+întreagă 3784 s = 63 de minute (01:40 -> 02:43), în paralel (pytest-xdist, 3 procese; verificatorul și cifrele simultan, plasa după
+pytest) — linia `DURATE` din `.poarta_jurnal.log`. Înainte, serială: `e69198fb` (R3), COLLECTED 8021, ~82 de minute. 63 de minute e
+ținta acceptată (decizia Costin 12.10.2026 pct.1).
 
 **Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima poartă completă ÎNAINTEA acestei rescrieri, pe
 `876e87a2` (08.10.2026):
@@ -496,7 +505,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **274** | contorul `tenant_schema_seq` |
+| **275** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

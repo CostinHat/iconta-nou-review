@@ -160,3 +160,78 @@ def test_bilantul_generat_de_defect_nu_e_bilantul_anului_precedent(cur):
     assert cp["sursa"] == {"F10": None, "F20": None} and cp["bilant_respins"]["exemplar"] == 1, cp
     with pytest.raises(ValueError, match=r"Bilanțul pe 2025 păstrat în aplicație .* nu se folosește: soldurile de preluare sunt de la 31\.08\.2026"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
+
+
+def test_fiecare_an_din_mesaje_e_anul_lui(cur):
+    """[decizia Costin 12.10.2026 pct.5, mutația scăpată din lotul 11.10: `an - 1` -> `an` în „din bilanțul depus pe %d” trecea verde]
+    Contabilul acționează după anii din mesaj: verifică față de bilanțul depus pe anul PRECEDENT, completează soldurile de la 31.12 a
+    anului precedent. Fiecare an din refuzul coloanei goale, din nota bilanțului respins, din avertismentul manual și din refuzul „nu se
+    poate întocmi” e fixat pe poziția lui (bilanțul 2026: anul precedent 2025). MUTAȚIE: oricare `an - 1` din cele trei mesaje -> `an`,
+    sau anul din refuzul „nu se poate întocmi” -> `an - 1` -> pică."""
+    from core import artefacte
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
+                        produs_de="Contabil", verdict="valid")
+    with pytest.raises(ValueError) as e:
+        ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
+    m = str(e.value)
+    assert re.findall(r"Bilanțul pe (\d{4}) nu se poate genera", m) == ["2026"], m
+    assert re.findall(r"nu are în aplicație bilanțul pe (\d{4}) validat", m) == ["2025"], m
+    assert re.findall(r"soldurile de la (\d\d\.\d\d\.\d{4})", m) == ["31.12.2025"], m
+    assert re.findall(r"tot anul (\d{4})", m) == ["2025"], m
+    assert re.findall(r"Bilanțul pe (\d{4}) păstrat în aplicație", m) == ["2025"], m
+    assert re.findall(r"nu sunt ale exercițiului (\d{4})", m) == ["2025"], m
+    assert re.findall(r"bilanțul depus pe (\d{4})", m) == ["2025"], m
+    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20")})
+    av = []
+    ba.coloanele(cur, _SCHEMA, "s1005", 2026, av)
+    assert re.findall(r"nu din bilanțul pe (\d{4})", av[0]) == ["2025"], av
+    assert re.findall(r"Bilanțul pe (\d{4}) păstrat în aplicație", av[0]) == ["2025"], av
+    assert re.findall(r"nu sunt ale exercițiului (\d{4})", av[0]) == ["2025"], av
+    assert re.findall(r"bilanțul depus pe (\d{4})", av[0]) == ["2025"], av
+    with pytest.raises(ValueError) as e:
+        ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
+    m = str(e.value)
+    assert re.findall(r"Bilanțul pe (\d{4}) nu se poate întocmi", m) == ["2025"], m
+    assert re.findall(r"soldurile de la (\d\d\.\d\d\.\d{4}) nu sunt în aplicație", m) == ["31.12.2025"], m
+
+
+def _ecranul(cur, monkeypatch):
+    """Rutele ecranului Bilanț (`uc_tenants.bilant_an_precedent(_scrie)`) pe schema efemeră, în tranzacția testului."""
+    import contextlib
+    from core import auth_api, uc_tenants
+
+    @contextlib.contextmanager
+    def _conn():
+        yield cur.connection
+    monkeypatch.setattr(_db, "get_conn", _conn)
+    monkeypatch.setattr(auth_api, "schema_tenant", lambda conn, uid, tid: _SCHEMA)
+    return uc_tenants
+
+
+def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
+    """[generalizarea pct.5 din 12.10.2026: aceeași clasă — anul precedent scris ca an curent — pe drumul ecranului] Afirmația coloanei
+    poartă anul precedent (`an`), sursele în care s-a căutat sunt pe anul precedent, iar refuzul completării manuale peste o secțiune
+    venită din bilanț sau din evidență numește anul precedent. Bilanțul 2026 -> 2025 peste tot. MUTAȚIE: oricare `an - 1` din
+    `bilant_an_precedent` / `bilant_an_precedent_scrie` -> `an` -> pică."""
+    from core import artefacte, erori
+    uc = _ecranul(cur, monkeypatch)
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    a = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})["afirmatie"]
+    assert (a["fel"], a["an"]) == ("absenta_observatie", 2025), a
+    assert [re.findall(r"pe (\d{4})", s) for s in a["surse_consultate"]] == [["2025"], ["2025"]], a["surse_consultate"]
+    _manual(cur, "s1005", 2026, {"F10": _toate("F10"), "F20": _toate("F20")})
+    a = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})["afirmatie"]
+    assert (a["fel"], a["an"]) == ("fapt", 2025), a
+    cur.execute("UPDATE solduri_initiale SET data_referinta = '2024-12-31'")
+    _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
+    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", '<Bilant1005><F10 F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>',
+                        produs_de="Contabil", verdict="valid")
+    with pytest.raises(erori.DateInvalide) as e:
+        uc.bilant_an_precedent_scrie(1, 2026, "s1005", {"F10": {}}, {"uid": 1})
+    assert re.findall(r"vine din bilanțul pe (\d{4}) din aplicație", str(e.value)) == ["2025"], str(e.value)
+    with pytest.raises(erori.DateInvalide) as e:
+        uc.bilant_an_precedent_scrie(1, 2026, "s1003", {"F20": {}}, {"uid": 1})
+    assert re.findall(r"vine din evidența pe (\d{4}) din aplicație", str(e.value)) == ["2025"], str(e.value)

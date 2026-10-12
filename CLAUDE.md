@@ -753,7 +753,10 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    d) **Inainte de poarta:** verificatorul (`verificator_conformitate.py`, TOTAL 0) si testele fisierelor atinse (testele care
       le importa sau le citesc, plus testele scrise/modificate in lot) — verzi. Poarta porneste DOAR pe verde: o respingere pentru
       o greseala marunta prinsa de un gard existent (rotunjirea fara mod, data formatata local) costa o ora de poarta.
-   e) **Durata portii:** tinta sub 30 de minute, fara niciun test scos (COLLECTED neschimbat). Durata se masoara si se raporteaza.
+   e) **Durata portii:** fara niciun test scos (COLLECTED neschimbat); durata se masoara si se raporteaza (linia `DURATE` din
+      `.poarta_jurnal.log`). **PIVOT 12.10.2026 (decizia Costin pct.1, verbatim in DECIZII):** „Poarta: rămâne la 63 de minute. Nu
+      schimbăm serverul. Accelerarea testelor lente (varianta b) o faci numai când nu ai nicio deficiență deschisă.” Tinta de 30 de
+      minute din 11.10 e inlocuita; accelerarea testelor lente e fir intern, sub regula a).
 
 ## 2.1 De unde vin pasii
 

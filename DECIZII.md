@@ -19494,3 +19494,40 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   agățată două ore. **Alternativa respinsă:** o bază separată pentru plasă — rolul de test n-are `CREATEDB` (verificat:
   `rolcreatedb=f`), iar o bază nouă pe serverul de producție e infrastructură, nu tooling. **Limita:** mașina are 2 procesoare; durata
   e cât dă hardware-ul, raportată, nu promisă.
+
+## 12.10.2026 — Răspunsul la §6 al raportului „Oprește R4”: poarta rămâne la 63 de minute; 221 (b) aprobată; bifele CF art.17 confirmate; mutația scăpată închisă
+
+**Comanda, verbatim:**
+
+> 1. Poarta: rămâne la 63 de minute. Nu schimbăm serverul. Accelerarea testelor lente (varianta b) o faci numai când nu ai nicio deficiență deschisă.
+>
+> 2. 221, interpretarea (b): aprobată. Când anul precedent e complet în aplicație, dar fără bilanț validat, coloana se ia din evidență.
+>
+> 3. Cele 11 bife renoite la CF art.17: confirmate.
+>
+> 4. Iau act: F1–F5 completează manual coloana pe 2026, iar bilanțul S1005 2025 al lui F1 nu se mai folosește.
+>
+> 5. Mutația scăpată (anul din mesajul de refuz, bilant_api.py:157): închide-o acum, cu un test care o prinde.
+>
+> 6. În raport, răspunde punctual pentru 5, cu proba.
+>
+> 7. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+>
+> Oprește-te și raportează. R4 rămâne blocat.
+
+- **PIVOT — ținta porții (4e din 11.10.2026).** Supersedează „ținta: sub 30 de minute” din intrarea 11.10.2026 (pct.4e): poarta rămâne
+  la durata măsurată (63 de minute, `41aaf93d`), pe serverul actual. Accelerarea testelor celor mai lente (varianta b din raportul 11.10:
+  `test_frecventa_…`, `test_prag_per_articol`, `test_scan_instrumente`, `test_reverificare`, `test_trasee`) e fir intern: intră numai
+  când nicio deficiență din `DEFICIENTE.md` nu e deschisă (regula 4a). Norma în `CLAUDE.md` §2.3 pct.12 e). **Alternative respinse:**
+  server cu mai multe procesoare (Costin: „Nu schimbăm serverul”); accelerarea acum, înaintea deficiențelor. **Limita:** cât rulează,
+  poarta ocupă procesoarele comune cu producția (2 procesoare).
+- **221, interpretarea (b) — confirmată.** Intrarea 11.10.2026 o marcase „de reconfirmat de Costin”; acum e regulă: anul precedent
+  complet în aplicație, fără bilanțul lui validat aici -> coloana „An precedent” din evidență (`bilant_api.coloana_precedenta`, sursa
+  `evidenta`). Fără schimbare de cod.
+- **Cele 11 bife renoite după R3 (CF art.17, impozit_profit din 2016) — confirmate** (TESTE.md, „bump” din 11.10.2026).
+- **F1–F5 pe producție:** coloana „An precedent” a bilanțului 2026 se completează manual; S1005 2025 al lui F1 (generat de defectul 221,
+  10.10.2026) nu se mai folosește — luat act. Fără scriere pe producție din partea mea.
+- **pct.5 — mutația scăpată:** `core/test_bilant_an_precedent.py::test_fiecare_an_din_mesaje_e_anul_lui` fixează fiecare an din cele
+  patru mesaje ale coloanei (refuzul coloanei goale, nota bilanțului respins, avertismentul manual, refuzul „nu se poate întocmi”);
+  generalizat pe drumul ecranului (`test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent`: anul afirmației, sursele consultate,
+  refuzul completării manuale). Mutațiile și rezultatele: raportul 12.10.2026 §3/§9 și `ISTORIC.md`.

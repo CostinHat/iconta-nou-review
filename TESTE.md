@@ -45,12 +45,32 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Comanda Costin 12.10.2026 (răspunsul la §6 al raportului „Oprește R4”, verbatim în DECIZII)** — deciziile 1–4 consemnate;
+  mutația scăpată din lotul 11.10 (anul din refuzul coloanei goale, `bilant_api.py:157`) închisă cu un test care o prinde; raportul
+  punctual pe pct.5; ZIP. R4 rămâne BLOCAT.
+  - ultim: — (pornit 12.10.2026, după `41aaf93d`)
+  - urmator: — (închis prin raportul lotului; commitul care conține această intrare). STARE = ÎNCHIS
+  - pasi:
+    G0. DECIZII: comanda verbatim + ce închide (poarta rămâne la 63 de minute, fără server nou; accelerarea testelor lente numai fără
+        nicio deficiență deschisă; 221 (b) aprobată; cele 11 bife la CF art.17 confirmate; F1–F5 manual pe 2026, S1005 2025 al lui F1
+        nefolosit). CLAUDE.md §2.3 pct.12 e) pe decizia nouă.
+    G1. pct.5: `core/test_bilant_an_precedent.py` — fiecare an din refuzul coloanei goale, din nota bilanțului respins, din
+        avertismentul manual și din refuzul „nu se poate întocmi” fixat pe poziția lui; mutație pe fiecare `an - 1` / `an` din cele
+        patru mesaje.
+    G2. Generalizarea clasei (anul precedent scris ca an curent) pe drumul ecranului: `uc_tenants.bilant_an_precedent(_scrie)` (anul
+        afirmației, sursele consultate, refuzul completării manuale) — test + mutație pe fiecare `an - 1`; `firme.js` (sursa coloanei pe
+        ecran) — mutație e2e pe plasa 221.
+    G3. Registre (DECIZII, GARZI, ISTORIC, PREDARE, TESTE), verificatorul + testele fișierelor atinse verzi, un singur commit prin
+        poarta completă, four-way; raportul și ZIP-ul în ~/ghid_incoming/.
 - fir: **Comanda Costin 11.10.2026 seara („Oprește R4. Nu e aprobat.”, răspunsul la §6 al raportului R3, verbatim în DECIZII)** — R4
   oprit; 125 + 224 închise împreună; 221 pe regula nouă; curățenia /tmp; regulile de lucru 4a–e (în CLAUDE.md) și poarta sub 30 de
   minute fără niciun test scos; 220–225 + 125 într-un singur lot; raportul punctual pe 220–225, 125, C1, C2; ZIP. Fără R4 și fără alt pas
   până la aprobare.
   - ultim: — (pornit 11.10.2026, după R3 `e69198fb`; cei trei agenți de citire ai R4 opriți înainte de orice scriere)
-  - urmator: F1. STARE = IN LUCRU
+  - ultim (12.10.2026): F0–F6 în `41aaf93d` (poarta verde, 63 de minute); F7 — raportul + ZIP
+    `/home/costin/ghid_incoming/iconta_comanda_11_10_opreste_R4.zip`. Starea scrisă aici în lotul următor (regula 4c: fără poartă
+    separată pentru ea). Deciziile cerute la §6 au primit răspuns pe 12.10.2026 (firul de mai sus).
+  - urmator: — (închis). STARE = ÎNCHIS
   - pasi:
     F0. DECIZII: comanda verbatim + pivoturile (fereastra Control fiscal pe stări, nu pe fapte — supersedează retestul 08.10 pct.7 și
         Retest 2 pct.3; „An precedent” din bilanțul anului anterior sau manual, niciodată gol — supersedează „gol, cu avertisment”

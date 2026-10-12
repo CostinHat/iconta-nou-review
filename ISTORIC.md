@@ -2205,3 +2205,18 @@ Commitul care conține această intrare (SHA în raport). Comanda Costin 10.10.2
   `.poarta_jurnal.log` (linia `DURATE`).
 - **/tmp/claude-1000:** 25 de fișiere rătăcite (numărate acum, nu 26) și directorul vechi al sesiunii fiscalos (584 MB) șterse; sesiunea
   curentă păstrată.
+
+## 12.10.2026 — Răspunsul lui Costin la §6 al raportului „Oprește R4”; mutația scăpată din 221 închisă
+
+Comanda (verbatim în DECIZII 12.10.2026): poarta rămâne la 63 de minute pe serverul actual (accelerarea testelor lente numai fără
+deficiențe deschise — CLAUDE.md §2.3 pct.12 e); 221 interpretarea (b) aprobată; cele 11 bife la CF art.17 confirmate; F1–F5 completează
+manual „An precedent” pe 2026; mutația scăpată din lotul 11.10 închisă. R4 rămâne BLOCAT.
+
+- **pct.5:** `test_fiecare_an_din_mesaje_e_anul_lui` fixează pe poziție fiecare an din mesajele coloanei „An precedent” (regex pe
+  structură, nu text întreg). Mutațiile: cele 8 `an - 1` din `bilant_api.py:155–172` și cele 2 din refuzul `:64` -> toate ROȘII
+  (înainte, `:157` „bilanțul depus pe %d” trecea verde). Două încercări cu ancoră greșită (linia 62 în loc de 64) nu s-au aplicat — notate
+  în jurnalul mutațiilor ca nemutații și refăcute.
+- **Generalizarea clasei** pe drumul ecranului: `test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent` (`uc_tenants.bilant_an_precedent`
+  / `_scrie`): 6 mutații ROȘII; `firme.js:2930` acoperit de e2e 221 — mutația pe copie: ROȘU la `e2e_comanda_1010.py:289`.
+- Registre: DECIZII, CLAUDE.md §2.3 pct.12 e), GARZI, TESTE (firul 12.10 închis; firul 11.10 închis), PREDARE. Un singur commit prin
+  poarta completă (commitul care conține această intrare).
