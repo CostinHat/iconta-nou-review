@@ -2261,3 +2261,20 @@ Comanda verbatim în DECIZII. 741 și 658 (și, pe clasă, 681, 761, 781 — sin
 formularului) nu mai primesc un rând: rulajul pe ele oprește generarea S1003 cu motivul și analiticele cerute, fiecare cu rândul lui
 (`core/bilant.py`, tabel păzit pe planul OMFP). Consecință ridicată la Costin: aplicația propune 741 sintetic la subvenții. R4 BLOCAT.
 Un commit prin poarta completă (commitul care conține această intrare).
+
+## 12.10.2026 — Retestul după 0a64ac94 + 6dea8a28: 233–236; C12, C13 (Code); C14 consemnată
+
+Comanda Costin (verbatim în DECIZII 12.10.2026 „Retestul după 0a64ac94 + 6dea8a28”). **233**: totalurile coloanei „An precedent” fără
+câmp, calculate pe loc pe ecran și de server ca în formular — `bilant.NOMENCLATOR_TOTALURI`, comparat cu `<calculate>` al fiecărui rând
+din șablonul formularului ANAF 2025; generatoarele S1003 / S1005 îl folosesc și ele. **234**: denumirile extrase din FORMULAR (nu din
+structură), curate, cu diacritice, sub grupa lor, în ordinea formularului și cu codul lui („06a (301)”), și în „Ce se depune”. **235**:
+primul exercițiu — categoria `primul_exercitiu`, casetă de informare cu OMFP 1802/2014 pct.22 alin.(1) citat. **236**: tipul bilanțului
+reținut pe utilizator + firmă. Pe drum, la 233 (citind listele de conturi ale formularului): **C12** — F10 fără 436 (CAM-ul de plată:
+bilanțul oricărei firme cu salariați respins de DUK, F10_64), 467, 463, 4901–4904; **C13** — F20 S1005 cu 603–608 la rd.03, reluările de
+ajustări numărate de două ori, 7818 și 794 pierdute. Reparate pe clasă: nomenclatoarele scrise în sintaxa formularului și comparate cu
+el (`core/test_bilant_formular.py`), un sold / rulaj fără rând oprește generarea. Pragul de la care un bilanț păstrat e „An precedent” mutat
+la 12.10.2026 13:00 UTC (prins de plasa 221: pragul în viitor respingea bilanțurile codului nou). **C14** (preexistentă): S1005 fără F30
+cap.XIX — DUK respinge orice S1005 cu activitate; consemnată, cerută ca decizie. Decizie cerută și pentru închiderea 6 / 7 în 121.
+Prima trecere prin poartă (17:32–18:23) RESPINSĂ: 3 roșii din scanerele globale nerulate la 4d — 5 importuri `artefacte` rămase fără
+folos în `core/test_bilant_an_precedent.py`, o citare „regula F10_64” fără prefixul canonic „DUK regula” (CLAUDE.md §3.1), proba celor 50
+de declarații cu `ui_hash` vechi; reparate, a doua trecere. Commitul care conține această intrare; SHA-ul în raport.

@@ -19693,3 +19693,65 @@ comanda din 10.10, ora 19:41” — scos din cerere):
 - **Consecință de produs, ridicată la §6:** aplicația însăși propune 741 sintetic la subvenții (`core/subventii.py`, ruta subvențiilor
   din `core/uc_tenants.py`, sugestia din ecranul Operațiuni) — o firmă cu subvenții înregistrate așa nu-și mai poate genera S1003 până
   le reclasează pe analitic.
+
+## 12.10.2026 — Retestul după 0a64ac94 + 6dea8a28: 233–236; C12 și C13 (Code, CICLUL)
+
+**Comanda, verbatim:**
+
+> Retestul în aplicație, 12.10, după publicarea 0a64ac94 + 6dea8a28:
+> Confirmate: 224, 225, 226, 227, 228, 229, 230, 231, 232.
+> 1. 233: în bilanț, la completarea manuală a coloanei „An precedent”, rândurile de total (de ex. F10 rd.4 = 01+02+03, rd.6 = 301+302, rd.9; F20 profit/pierdere) au câmp de completat. Totalurile se calculează automat din componente și se afișează fără câmp.
+> 2. 234: denumirile rândurilor sunt copiate brut: „II. CREANȚE 1.” e tăiat, „2.Creante repr.dividende…” are puncte de suspensie, „6.Alte cheltuieli*****” are steluțe, „si” e fără diacritice. Rândurile 301 și 302 apar la final, nu sub rd.6. Denumirile se scriu complete, curate, cu diacritice, în ordinea de pe formular.
+> 3. 235: la o firmă în primul exercițiu (F2, înființată pe 15.03.2026), căsuța roșie spune încă „Categoria de mărime nu se poate determina… norma cere două exerciții consecutive”. Asta contrazice nota de primul exercițiu de dedesubt. Încadrarea în primul exercițiu se face după regula din OMFP 1802/2014 pentru entitățile nou-înființate, fără mesaj roșu. Citează temeiul.
+> 4. 236: tipul bilanțului revine la „— alege —” la schimbarea anului și la redeschiderea ecranului. Reține ultimul tip ales pentru fiecare firmă.
+> 5. Un singur lot, o singură trecere prin poartă. În raport, răspunde punctual, cu proba, pentru 233, 234, 235 și 236 (rezolvată sau nu), cu captură pentru fiecare.
+> 6. La final: ZIP cu tot ce s-a schimbat, cu calea exactă în raport.
+> Oprește-te și raportează. Nu porni R4 sau alt pas fără aprobare.
+
+- **233 — o singură sursă a totalurilor:** `bilant.NOMENCLATOR_TOTALURI` = calculele formularului oficial 2025 (`<calculate>` al fiecărui
+  rând, citit în șablonul XFA; păzit de `core/test_bilant_formular.py`). Le folosesc generatorul, completarea manuală (contabilul scrie
+  numai componentele; serverul calculează totalurile, și la citirea unei coloane salvate înainte) și ecranul (rândul de total fără câmp,
+  calculat pe loc). **Alternativă respinsă:** totalul ca un câmp „readonly” — comanda cere „fără câmp”. **Excepția numită:** S1003 rd.01 —
+  formularul calculează `v1 = R02 + R03 − R04 + R06`, dar atribuirea e comentată; formula e cea din denumire, „(rd. 02 + 03 − 04 + 06)”.
+- **234 — sursa denumirilor e FORMULARUL** (tabelele `F10S`, `F20S`, `F20`), nu textul structurii (de acolo veneau „II. CREANȚE 1.” și
+  „2.Creante repr.dividende …”). Curățare: formula de conturi, stelele, „din care:” de la capăt; majusculele devin scriere obișnuită;
+  diacriticele din lexiconul aplicației + `_DIACRITICE_CONTEXT` (cuvintele ambigue „si”, „in”, „perioada”); un rând care nu se citește
+  singur („Sold C”, „Profit”, „Cheltuieli”, „Sume de reluat …”) se scrie sub grupa lui — antetul de grupă al formularului sau rândul de
+  deasupra. Ordinea = ordinea formularului (06a, 06b, apoi totalul 06); codul = cel tipărit („06a (301)”). **INTERPRETARE:** rândul 06a
+  al formularului e tipărit numai „1.” sub „II. CREANȚE” — nu are nume propriu; denumirea lui e „II. Creanțe — 1. Creanțe” (primul element
+  al grupei; OMFP 1802/2014, bilanțul prescurtat, are un singur rând „II. CREANȚE” cu aceeași listă de conturi). **Gard:**
+  `limba_ecran.defecte(denumire) == []` pe fiecare denumire.
+- **235 — TEMEI: OMFP 1802/2014 pct.22 alin.(1):** „În cazul entităților nou-înființate, acestea pot întocmi pentru primul exercițiu
+  financiar de raportare situațiile financiare anuale prevăzute fie la pct. 20, fie la pct. 21 sau în formatul aplicabil microentităților.”
+  (alin.(2): de la al doilea exercițiu, încadrarea pe criteriile de mărime; alin.(3): nu se aplică entităților de interes public).
+  Deci în primul exercițiu (anul bilanțului = anul din „Data înființării”, Date firmă) categoria e `primul_exercitiu` — formatul se alege,
+  nu se deduce —, iar caseta e de informare, cu textul normei. **Alternativă respinsă:** „micro” implicit (ar fi o alegere făcută în locul
+  contabilului; norma îi lasă lui alegerea). **Limita:** aplicația nu ține dacă firma e entitate de interes public (alin.(3)) — caseta o spune.
+- **236 — tipul reținut în browser, pe utilizator + firmă** (`localStorage`, cheia `iconta_bilant_tip:<utilizator>:<firmă>`, ca ciorna
+  facturii). **Alternativă respinsă:** pe server (o coloană în profil) — ar cere migrare pe producție, pe care o rulează Costin, pentru o
+  preferință de ecran. **Limita:** alt browser / alt utilizator al cabinetului pornește de la „— alege —”.
+- **C12 (Code) — F10 pe listele formularului 2025.** Lista de conturi a bilanțului prescurtat era scrisă din memorie; față de formular
+  lipseau **436** (CAM-ul de plată la 31.12), 467, 463 (rd.06b), 4901–4904, iar în plus erau 266, 2933, 2934. Proba roșie: o firmă cu CAM
+  de plată (`5121` 1.000 = `1012` 500 + `436` 500) -> DUK S1005: „F10_64: F10_0492 (500) = F10_0042 + F10_0092 + F10_0102 - F10_0132 -
+  F10_0162 - F10_0172 - F10_0182 (1000)” — bilanțul ORICĂREI firme cu salariați era respins. Acum `F10_NOMENCLATOR` e scris în sintaxa
+  formularului și comparat cu el (abaterile, cu motivul, în `NOMENCLATOR_ABATERI_FORMULAR`: conturile „de repartizat după natură” — 267/296, 508,
+  471, 475/472/478, datoriile peste un an — stau pe un singur rând, ca înainte; INTERPRETARE CU TEMEI, de reconfirmat dacă aplicația
+  începe să țină scadența). Un sold pe care nu-l preia niciun rând (contul sau latura lui) oprește generarea, cu contul și suma: bilanțul
+  n-ar fi egal.
+- **C13 (Code) — F20 S1005 pe listele formularului 2025.** Generatorul punea 603–608 la rd.03 (formularul: rd.06), număra de două ori
+  reluările de ajustări (754, 7812–7814, 786: în „alte venituri” și scăzute din rd.05), ignora 7818, 794 (rd.07a) și rândurile „din care”
+  6051 / 6053, iar rd.08 / 09 erau venituri − cheltuieli, nu calculul formularului. Proba roșie: `704` 1.000, `7812` 100, `681` 300,
+  `628` 200 -> rd.08 = 700 (real 600), rd.06 = 100 (628 = 200), rândurile depuse dau 800. Acum `F20_S1005_NOMENCLATOR` (formular) +
+  rd.08 / 09 din `NOMENCLATOR_TOTALURI`; 741** = 7411, 741*** = 7412–7419 (analiticele planului); sinteticele cu analitice pe rânduri
+  diferite (741, 781) opresc generarea, ca la S1003 (decizia „nu ghicim rândul”); 695 nu are rând. **INTERPRETARE:** 609 („de repartizat
+  după natură” între rd.03 și rd.06) — tot la rd.03, ca înainte (totalul și rezultatul nu se schimbă).
+- **DECIZIE CERUTĂ (ridicată la §6, nerezolvată în acest lot — regula 4b):** clasele 6 și 7 neînchise în 121. Văzut read-only pe firmele
+  de test din producție, la 31.12.2026: toate cinci au venituri / cheltuieli cu sold și 121 fără sold (aplicația nu înregistrează
+  închiderea, iar contabilul n-o face de mână). F10 rd.43 / 44 citește 121 -> rezultatul exercițiului lipsește din bilanț și DUK S1005 îl
+  respinge (F10_64) la orice firmă cu activitate. Temeiul închiderii: OMFP 1802/2014, funcțiunea contului 121 — „În creditul contului 121
+  se înregistrează: la sfârșitul perioadei, soldul creditor al conturilor din clasa 7 …; în debitul …: soldul debitor al conturilor de
+  cheltuieli”. Variantele (a)–(c) sunt în raport.
+- **C14 (Code) — consemnată, nereparată în lot: S1005 nu scrie situația veniturilor și cheltuielilor (F30 cap.XIX, rd.167–236).** DUK S1005
+  o confruntă cu F20: „F20_F30_2: F20_0012 (1000) = F30_1672 (0)”, „F20_F30_8: F20_0082 (500) = F30_2352 (0)” — orice S1005 cu
+  activitate e respins (probat și pe codul de dinainte de lot, 4fbb09ed). E o construcție nouă (~70 de rânduri, cu listele lor de
+  conturi), cerută la §6 ca lot separat, nu o reparație în acest lot.

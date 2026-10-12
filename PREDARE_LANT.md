@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026: C10 — sinteticele cu analitice despărțite opresc S1003 (decizia Costin); R4 BLOCAT**
+# PREDARE LANȚ — **12.10.2026: retestul 233–236 + C12, C13 (bilanțul pe listele formularului 2025); 3 decizii cerute; R4 BLOCAT**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `6dea8a28` (C10, four-way închis 13:33 prin `scripts/githooks/four-way`); lotul „interpretările C10” e în commitul care
-  conține această predare — SHA-ul și four-way-ul în raport.
+- **pe commit**: `4fbb09ed` (C10, interpretările — four-way închis 16:05); lotul „retestul 233–236 + C12, C13” e în commitul care conține
+  această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -104,7 +104,17 @@ aplicației**, nu „în așteptarea unei teme”:
 - **C10 — ÎNCHISĂ** (`6dea8a28`): F20 S1003 pe rândurile formularului oficial 2025, cu denumirile lui; interpretările 6811 / 6818-7818
   confirmate; sinteticele 658, 681, 741, 761, 781 opresc generarea cu analiticul cerut (lotul care conține această predare).
 - **DECIZIE CERUTĂ:** aplicația propune 741 SINTETIC la subvenții (`core/subventii.py`, ruta subvențiilor, ecranul Operațiuni) — o firmă
-  cu subvenții înregistrate așa nu-și mai poate genera S1003 până le reclasează; analiticul cerut la înregistrare, sau rămâne așa?
+  cu subvenții înregistrate așa nu-și mai poate genera S1003 (și, de la C13, nici S1005) până le reclasează; analiticul cerut la
+  înregistrare, sau rămâne așa?
+- **233–236, C12, C13 — ÎNCHISE** (lotul care conține această predare): totalurile fără câmp, calculate ca în formular; denumirile din
+  formular, curate, în ordinea lui; primul exercițiu după OMFP 1802/2014 pct.22 alin.(1); tipul bilanțului reținut pe firmă; F10 și F20
+  S1005 pe listele formularului 2025 (436 — CAM-ul de plată — intră la rd.13).
+- **DECIZIE CERUTĂ — închiderea claselor 6 / 7 în 121 la bilanț:** pe toate cele 5 firme de test (producție, read-only, 31.12.2026)
+  veniturile și cheltuielile au sold, iar 121 nu are: F10 rd.43 / 44 nu poartă rezultatul exercițiului, DUK S1005 respinge (F10_64).
+  Variante: (a) închiderea virtuală în generator (anul -> 121, anii anteriori neînchiși -> 117); (b) acțiune de închidere a anului cu note
+  pe 121, bilanțul refuzat până e făcută; (c) refuz cu motiv. Blochează: orice bilanț S1005 cu activitate.
+- **DECIZIE CERUTĂ — C14 (nerezolvată):** S1005 nu scrie F30 cap.XIX (situația veniturilor și cheltuielilor, rd.167–236); DUK o confruntă
+  cu F20 (F20_F30_2, F20_F30_8) — orice S1005 cu activitate e respins. Lot separat? Blochează: S1005 cu activitate.
 - **Deficiențele găsite de Code au prefixul C** (decizia Costin 10.10.2026): fostele 220–226 sunt C1–C7; 220–225 sunt ale lui Costin.
 
 - **ÎNCHIS în lotul „registrul deficiențelor” (09.10.2026) — fostul front URGENT al notei de corecție:** pe tenant_049, fișa de magazie arată 0 pentru NIR 2 și
@@ -464,7 +474,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **954** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **957** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

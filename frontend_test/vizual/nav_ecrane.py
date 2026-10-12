@@ -246,8 +246,11 @@ def ecran_raporteaza(pg):
 
 
 def ecran_bilant(pg):
-    """Firma -> «Bilanț anual» (`firme.js::ecranBilant`). [11.10.2026, deficiențele 221/222] a trecut din `ECRANE_CAMPANIE`."""
+    """Firma -> «Bilanț anual» (`firme.js::ecranBilant`). [11.10.2026, deficiențele 221/222] a trecut din `ECRANE_CAMPANIE`.
+    [12.10.2026, deficiențele 233–236] cu tipul S1005 ales, ca uneltele să vadă și zona „An precedent” (tabelul manual, totalurile fără câmp)."""
     _ecran_shell(pg, "fa-bilant")
+    pg.select_option(".fereastra:last-of-type #bl-tip", "s1005")
+    pg.wait_for_timeout(2500)
 
 
 ECRANE = [

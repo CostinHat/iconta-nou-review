@@ -2696,6 +2696,9 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
             "randuri": _ba.randuri_formular(tip),
             # [deficiența 227] denumirea fiecărui rând, de pe formular (structura ANAF), lângă numărul lui
             "denumiri": _ba.denumiri_formular(tip),
+            # [deficiențele 233, 234] totalurile (fără câmp, calculate) și ordinea + codul rândurilor de pe formular
+            "totaluri": _ba.totaluri_formular(tip),
+            "ordine": _ba.ordine_formular(tip)[0], "coduri": _ba.ordine_formular(tip)[1],
             "valori": {s: cp[s] for s in _ba.SECTIUNI},
             "de_completat": [s for s in _ba.SECTIUNI if cp["sursa"][s] in (None, "manual")],
             "afirmatie": afm}
@@ -2703,16 +2706,19 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
 
 def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
     """[deficiența 221] Contabilul completează coloana „An precedent” pe secțiunile pe care aplicația nu le are (nici bilanțul anului
-    precedent, nici evidența lui). Fiecare secțiune trimisă are TOATE rândurile formularului, în lei întregi; o secțiune pe care aplicația o
-    are din bilanț sau din evidență nu se suprascrie manual. Se păstrează ca artefact (autor, moment, exemplar — cel vechi rămâne)."""
+    precedent, nici evidența lui). Fiecare secțiune trimisă are TOATE rândurile-componente ale formularului, în lei întregi; totalurile le
+    calculează serverul, ca formularul (deficiența 233 — unul trimis de ecran nu se citește); o secțiune pe care aplicația o are din bilanț
+    sau din evidență nu se suprascrie manual. Se păstrează ca artefact (autor, moment, exemplar — cel vechi rămâne)."""
     import json
     from psycopg2.extras import RealDictCursor
     from core import artefacte as _art
+    from core import bilant as _b
     from core import bilant_api as _ba
     _uc_comun._cere_perioada(an=an)
     _tip_bilant(tip)
     corp = corp or {}
-    rand = _ba.randuri_formular(tip)
+    rand = _ba.componente_formular(tip)
+    tot = _ba.totaluri_formular(tip)
     trimise = [s for s in _ba.SECTIUNI if s in corp]
     if not trimise or set(corp) - set(_ba.SECTIUNI):
         raise _erori.DateInvalide("Trimite coloana „An precedent” pe secțiunile F10 și/sau F20.")
@@ -2734,11 +2740,11 @@ def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):
                 raise _erori.DateInvalide("Coloana „An precedent” %s vine din %s — nu se completează manual."
                                           % (s, "bilanțul pe %d din aplicație" % (an - 1) if cp["sursa"][s] == "bilant"
                                              else "evidența pe %d din aplicație" % (an - 1)))
-            v = corp[s] if isinstance(corp[s], dict) else {}
+            v = {k: x for k, x in (corp[s] if isinstance(corp[s], dict) else {}).items() if str(k).isdigit() and int(k) not in tot[s]}
             if sorted(int(k) for k in v) != rand[s]:
                 raise _erori.DateInvalide("Coloana „An precedent” %s se completează pe toate rândurile formularului (%d)." % (s, len(rand[s])))
             try:
-                valori[s] = {str(int(k)): int(str(x).strip() or 0) for k, x in v.items()}
+                valori[s] = {str(k): int(x) for k, x in _b.cu_totaluri(tip, s, {int(k): int(str(x).strip() or 0) for k, x in v.items()}).items()}
             except (TypeError, ValueError):
                 raise _erori.DateInvalide("Coloana „An precedent” %s: fiecare rând e o sumă în lei întregi." % s)
         r = _art.pastreaza(conn, schema, _ba.FEL_MANUAL, "%s:%d" % (tip, an), json.dumps(valori, sort_keys=True),

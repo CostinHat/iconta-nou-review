@@ -45,10 +45,27 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Retestul Costin 12.10.2026 după 0a64ac94 + 6dea8a28 (verbatim în DECIZII): 233–236; C12, C13 (Code, CICLUL); C14 consemnată** —
+  un lot, o poartă; raport punctual cu probă și captură; ZIP. R4 BLOCAT.
+  - ultim: M0–M6 (commitul care conține această intrare)
+  - urmator: — (raportul + ZIP). STARE = ÎNCHIS
+  - pasi:
+    M0. DECIZII (comanda verbatim + interpretările + decizia cerută), TESTE (acest fir), DEFICIENTE (233–236, C12, C13, C14).
+    M1. C12 + C13: `core/bilant.py` — F10 și F20 S1005 pe listele de conturi ale formularului 2025 (`F10_NOMENCLATOR`,
+        `F20_S1005_NOMENCLATOR`, în sintaxa lui; abaterile numite în `ABATERI_FORMULAR`); refuzul pentru soldul / rulajul fără rând;
+        `core/test_bilant_formular.py` (listele și totalurile = formularul); DUK; mutații. Un bilanț păstrat înainte de rescriere nu e
+        „An precedent” (clasa C10, extinsă la S1005).
+    M2. 233: `NOMENCLATOR_TOTALURI` (calculele formularului) folosit de generatoare, de completarea manuală (serverul calculează
+        totalurile) și de ecran (fără câmp, calcul pe loc); e2e + mutații.
+    M3. 234: `scripts/extrage_denumiri_bilant.py` din formular (F10S / F20S / F20), curățate, cu diacritice, sub grupă, în ordinea și cu
+        codul formularului; gard `limba_ecran.defecte == []`; „Ce se depune” în ordinea formularului; e2e + mutație.
+    M4. 235: `core/categorie_marime.py` — primul exercițiu (OMFP 1802/2014 pct.22 alin.(1)), caseta de informare; teste + e2e + mutație.
+    M5. 236: tipul ales reținut pe utilizator + firmă (`localStorage`); e2e + mutație.
+    M6. Registre, uneltele vizuale pe ecranul Bilanț, testele atinse, un commit prin poartă, ZIP.
 - fir: **C10, interpretările (comanda Costin 12.10.2026, verbatim în DECIZII)** — 6811 / 6818-7818 confirmate; sinteticele cu analitice
   pe rânduri diferite (658, 681, 741, 761, 781) opresc generarea S1003 cu analiticul cerut. Un lot, o poartă. R4 BLOCAT.
-  - ultim: — (pornit după `6dea8a28`)
-  - urmator: — (raportul + ZIP). STARE = ÎNCHIS
+  - ultim: L0–L3 (`4fbb09ed`)
+  - urmator: — . STARE = ÎNCHIS
   - pasi:
     L0. DECIZII (comanda verbatim, PIVOT pe 741/658), TESTE (acest fir).
     L1. `core/bilant.py`: 741, 658, 761 scoase din rânduri; `F20_S1003_NOMENCLATOR_SINTETICE` (sintetic -> analiticele lui cu rândul)

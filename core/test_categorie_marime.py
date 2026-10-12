@@ -134,7 +134,9 @@ def test_pragurile_sunt_cele_din_actul_citat():
 
 
 def test_nomenclatorul_categoriilor_e_inchis_si_contine_nedeterminata():
-    assert set(cm.CATEGORII) == {"micro", "mici", "mijlocii_mari", "nedeterminata"}
+    # [deficiența 235] + „primul_exercitiu”: entitatea nou-înființată alege formatul (OMFP 1802/2014 pct.22 alin.(1))
+    assert set(cm.CATEGORII) == {"micro", "mici", "mijlocii_mari", "nedeterminata", "primul_exercitiu"}
+    assert cm.MOTIVE[-1] == "primul_exercitiu"
 
 
 def test_incadrarea_e_afirmatie_tipata_nu_dict_de_proza():

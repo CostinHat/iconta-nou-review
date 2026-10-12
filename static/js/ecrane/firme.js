@@ -2846,6 +2846,11 @@ function _casetaCategorie(c) {
             <td class="fd-td-num">${c.praguri.micro.nr_mediu_salariati}</td></tr>
       </tbody></table>` : "";
   const numit = { micro: "microentitate", mici: "entitate mic\u0103", mijlocii_mari: "entitate mijlocie sau mare" };
+  // [deficiența 235, comanda Costin 12.10.2026] primul exercițiu: încadrarea după regula entităților nou-înființate (OMFP 1802/2014 pct.22
+  // alin.(1) — formatul se alege), casetă de informare, nu de atenție; textul normei vine de la server (`motiv`)
+  if (cat === "primul_exercitiu") {
+    return `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">${esc(c.motiv || "")}</span></div>`;
+  }
   if (cat === "nedeterminata") {
     return `<div class="caseta-atentie" style="margin-top:10px">
         <div class="ca-mesaj"><b>Categoria de m\u0103rime nu se poate determina, deci aplica\u021bia nu poate \u0219ti care situa\u021bie financiar\u0103 e datorat\u0103.</b>
@@ -2903,6 +2908,13 @@ async function ecranBilant(corp, nav, t) {
     cereCategoria();
     const par = () => `an=${corp.querySelector("#bl-an").value}`;
     const tip = () => corp.querySelector("#bl-tip").value;
+    // [deficiența 236, comanda Costin 12.10.2026] „Reține ultimul tip ales pentru fiecare firmă.” Ultima alegere a omului, în acest
+    // browser, pe utilizator + firmă (ca ciorna facturii); fără alegere salvată, „— alege —” (nimic ales în locul lui). Gard: e2e 236.
+    const cheieTip = () => { const u = sesiune.user(); return `iconta_bilant_tip:${u && u.id != null ? u.id : "anonim"}:${t.id}`; };
+    try { const v = localStorage.getItem(cheieTip()); if (v === "s1005" || v === "s1003") corp.querySelector("#bl-tip").value = v; } catch { /* stocare blocată */ }
+    corp.querySelector("#bl-tip").addEventListener("change", () => {
+      try { if (tip()) localStorage.setItem(cheieTip(), tip()); else localStorage.removeItem(cheieTip()); } catch { /* stocare blocată */ }
+    });
     // [deficiența 222, comanda Costin 10.10.2026] fără tip de declarație ales, acțiunile pe declarație sunt inactive — ca „Continuă”
     // din Declarații (DS cap.1 v2.87, gard ACTIUNE_FARA_TIP). `cereAlegerile` din handlere rămâne refuzul de lângă câmp (FAPT_FISCAL_NECERUT).
     // [deficiența 228, comanda Costin 12.10.2026] „«Validează» și «Trimite în coadă» sunt inactive până se completează coloana «An
@@ -2955,15 +2967,36 @@ async function ecranBilant(corp, nav, t) {
         ? `<div class="caseta-info bl-prec-primul" style="margin-top:10px"><span class="ci-mesaj">${esc((p.afirmatie && p.afirmatie.motiv) || "")}</span></div>`
         : (surse.length ? `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">Coloana „An precedent” vine din ${esc(surse.join("; "))}.</span></div>` : "");
       if (!p.de_completat.length) { zonaPrec.innerHTML = info; return; }
-      const sectiune = (s) => `<h3 class="pf-subtitlu">An precedent — ${s}</h3>
+      // [deficiența 233, comanda Costin 12.10.2026] „Totalurile se calculează automat din componente și se afișează fără câmp.” Formula
+      // fiecărui total vine de la server (`totaluri` = calculul formularului, `bilant.NOMENCLATOR_TOTALURI`); se trimit numai componentele,
+      // serverul calculează totalurile la fel. [deficiența 234] rândurile în ordinea formularului, cu codul tipărit pe el („06a (301)”).
+      const totaluri = (s) => (p.totaluri && p.totaluri[s]) || {};
+      const valoare = (s, r, v) => {
+        const f = totaluri(s)[r];
+        if (!f) return v[r] || 0;
+        const x = f.termeni.reduce((a, [semn, k]) => a + semn * valoare(s, k, v), 0);
+        return f.pozitiv ? Math.max(x, 0) : x;
+      };
+      const sectiune = (s) => {
+        const ordine = ((p.ordine && p.ordine[s]) || p.randuri[s]).filter((r) => p.randuri[s].includes(r));
+        return `<h3 class="pf-subtitlu">An precedent — ${s}</h3>
         <table class="fd-tabel bl-prec-tabel" data-sectiune="${s}"><thead><tr><th>Rândul</th><th>Denumirea de pe formular</th><th class="fd-td-num">An precedent (lei)</th></tr></thead><tbody>
-        ${p.randuri[s].map((r) => { const den = (p.denumiri && p.denumiri[s] && p.denumiri[s][r]) || "";   // [deficiența 227] numele de pe formular
-          return `<tr><td>rândul ${r}</td><td class="bl-prec-den">${esc(den)}</td><td class="fd-td-num"><input type="number" step="1" class="camp-input bl-prec-val" data-rand="${r}"
-          value="${p.valori[s] && p.valori[s][r] != null ? p.valori[s][r] : ""}" aria-label="${s} rândul ${r}${den ? " — " + esc(den) : ""}, an precedent"></td></tr>`; }).join("")}</tbody></table>`;
+        ${ordine.map((r) => { const den = (p.denumiri && p.denumiri[s] && p.denumiri[s][r]) || "";   // [deficiența 227] numele de pe formular
+          const cod = (p.coduri && p.coduri[s] && p.coduri[s][r]) || String(r);
+          if (totaluri(s)[r]) return `<tr class="bl-prec-rand-total"><td>rândul ${esc(cod)}</td><td class="bl-prec-den">${esc(den)}</td><td class="fd-td-num bl-prec-total" data-rand="${r}"></td></tr>`;
+          return `<tr><td>rândul ${esc(cod)}</td><td class="bl-prec-den">${esc(den)}</td><td class="fd-td-num"><input type="number" step="1" class="camp-input bl-prec-val" data-rand="${r}"
+          value="${p.valori[s] && p.valori[s][r] != null ? p.valori[s][r] : ""}" aria-label="${s} rândul ${esc(cod)}${den ? " — " + esc(den) : ""}, an precedent"></td></tr>`; }).join("")}</tbody></table>`;
+      };
+      const recalculeaza = (tb) => {
+        const v = {};
+        tb.querySelectorAll(".bl-prec-val").forEach((i) => { v[i.dataset.rand] = parseInt(i.value, 10) || 0; });
+        tb.querySelectorAll(".bl-prec-total").forEach((c) => { c.textContent = bani(valoare(tb.dataset.sectiune, parseInt(c.dataset.rand, 10), v)); });
+      };
       zonaPrec.innerHTML = info + `<div class="caseta-atentie bl-prec-atentie" style="margin-top:10px"><div class="ca-mesaj"><b>${esc((p.afirmatie && p.afirmatie.motiv) || "")}</b></div></div>
         ${p.de_completat.map(sectiune).join("")}
         <button class="buton-secundar" id="bl-prec-salveaza" data-actiune="POST /tenants/{tenant_id}/bilant-an-precedent-manual">Salvează coloana „An precedent”</button>
         <div id="bl-prec-mesaj"></div>`;
+      zonaPrec.querySelectorAll(".bl-prec-tabel").forEach((tb) => { recalculeaza(tb); tb.addEventListener("input", () => recalculeaza(tb)); });
       zonaPrec.querySelector("#bl-prec-salveaza").addEventListener("click", async () => {
         const corpCerere = {};
         zonaPrec.querySelectorAll(".bl-prec-tabel").forEach((tb) => {
@@ -2981,6 +3014,7 @@ async function ecranBilant(corp, nav, t) {
     };
     corp.querySelector("#bl-tip").addEventListener("change", incarcaPrecedent);
     corp.querySelector("#bl-an").addEventListener("change", incarcaPrecedent);
+    incarcaPrecedent();   // [deficiența 236] cu tipul reținut, coloana lui se citește la deschidere (fără tip: zona rămâne goală)
     corp.querySelector("#bl-val").addEventListener("click", async () => {
       curataEroriCamp(corp); if (cereAlegerile(corp, ["#bl-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       arataMesaj(rez, "Se validează…", "info");
@@ -2994,9 +3028,9 @@ async function ecranBilant(corp, nav, t) {
         // „An curent” (numerele lor nu sunt sume pe doi ani), deci stau în tabelul lor, cu valorile așa cum se depun
         const doiAni = (r.randuri || []).filter((x) => x.formular !== "F30");
         const f30 = (r.randuri || []).filter((x) => x.formular === "F30");
-        const randuri = doiAni.map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${x.rand}</td><td>${esc(x.denumire || "")}</td>`
+        const randuri = doiAni.map((x) => `<tr><td>${esc(x.formular)}</td><td>rândul ${esc(x.cod || String(x.rand))}</td><td>${esc(x.denumire || "")}</td>`
           + `<td class="fd-td-num">${bani(x.an_precedent)}</td><td class="fd-td-num">${bani(x.an_curent)}</td></tr>`).join("");
-        const randuriF30 = f30.map((x) => `<tr><td>rândul ${x.rand}</td><td>${esc(x.denumire || "")}</td>`
+        const randuriF30 = f30.map((x) => `<tr><td>rândul ${esc(x.cod || String(x.rand))}</td><td>${esc(x.denumire || "")}</td>`
           + `<td class="fd-td-num">${esc(String(x.an_precedent))}</td><td class="fd-td-num">${esc(String(x.an_curent))}</td></tr>`).join("");
         rez.innerHTML = `<p>${sem}</p>` +
           (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +

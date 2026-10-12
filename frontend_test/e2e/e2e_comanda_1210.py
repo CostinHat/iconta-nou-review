@@ -194,15 +194,16 @@ def test_def_227_coloana_manuala_cu_denumirile_de_pe_formular(patron, firma_f20_
     den = pg.eval_on_selector_all(".fereastra:last-of-type .bl-prec-tabel[data-sectiune='F20'] tbody tr",
                                   "trs => trs.map(t => [...t.querySelectorAll('td')].slice(0, 2).map(td => td.innerText.trim()))")
     patron.captura("formular")
-    assert den[0] == ["rândul 1", "1.Cifra de afaceri netă"] and den[3] == ["rândul 4", "4.Cheltuieli cu personalul"], den
-    assert all(d for _r, d in den) and len(den) == 9, den                                     # F20 micro: 9 rânduri, toate cu denumire
+    # [234] denumirile curate, cu codul formularului; F20 micro: rd.01–07, 06a/06b („din care” energie / gaze), 07a, 08, 09
+    assert den[0] == ["rândul 01", "1. Cifra de afaceri netă"] and den[3] == ["rândul 04", "4. Cheltuieli cu personalul"], den
+    assert all(d for _r, d in den) and len(den) == 12, den
     pg.click(".fereastra:last-of-type #bl-prec-salveaza")
     pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
     text, _rand = _valideaza_bilant(patron, 2025, alege=False)
     rand8 = pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri tbody tr",
-                                    "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim())).filter(c => c[0] === 'F10' && c[1] === 'rândul 8')")
+                                    "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim())).filter(c => c[0] === 'F10' && c[1] === 'rândul 08')")
     patron.captura("randuri_depuse_cu_denumire")
-    assert "Validare fără erori" in text and rand8 and rand8[0][2] == "IV. CASA ȘI CONTURI LA BĂNCI", (text[:300], rand8)
+    assert "Validare fără erori" in text and rand8 and rand8[0][2] == "IV. Casa și conturi la bănci", (text[:300], rand8)
 
 
 def test_def_228_actiunile_inactive_pana_se_completeaza_coloana(patron, firma_f20_manual):
@@ -312,8 +313,8 @@ def test_def_c11_datele_informative_f30_in_tabelul_lor(patron, firma_infiintata_
                                   "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim()))")
     patron.captura()
     assert "Validare fără erori" in text and {fm for fm, _r in rand} <= {"F10", "F20"}, (text[:300], sorted(rand))
-    assert [x[:2] for x in f30] == [["rândul 1", "Unităti care au inregistrat profit"], ["rândul 2", "Unităti care au inregistrat pierdere"],
-                                    ["rândul 3", "Unități care nu au înregistrat nici profit nici pierdere"]], f30
+    assert [x[:2] for x in f30] == [["rândul 01", "Unități care au înregistrat profit"], ["rândul 02", "Unități care au înregistrat pierdere"],
+                                    ["rândul 03", "Unități care nu au înregistrat nici profit nici pierdere"]], f30
     assert f30[2][2:] == ["1", "0"], f30                                       # o unitate fără profit și fără pierdere: „1”, nu „1,00”
 
 
@@ -359,7 +360,7 @@ def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(pa
     pg.click(".fereastra:last-of-type #bl-prec-salveaza")
     pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
     text, rand = _valideaza_bilant(patron, 2025, alege=False)
-    den = {(x[0], int(x[1].split()[-1])): x[2] for x in pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri tbody tr",
+    den = {(x[0], int(x[1].split("(")[-1].rstrip(")")) if "(" in x[1] else int(x[1].split()[-1])): x[2] for x in pg.eval_on_selector_all(".fereastra:last-of-type #bl-randuri tbody tr",
            "trs => trs.map(t => [...t.querySelectorAll('td')].map(td => td.innerText.trim()))")}
     patron.captura()
     assert "Validare fără erori" in text, text[:400]
@@ -373,3 +374,208 @@ def test_def_c10_s1003_contul_de_profit_si_pierdere_pe_randurile_formularului(pa
     patron.captura("sintetic_741_refuzat")
     assert "contul 741 e folosit sintetic" in text and "7411 (rd.06); 7412, 7413, 7414, 7415, 7416, 7417, 7419 (rd.12); 7418 (rd.49)" in text, \
         text[:600]
+
+
+# ── 233 · 234 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_f10_manual():
+    """Firmă nouă cu soldurile de preluare la 30.06.2025: bilanțul 2025 cere manual AMBELE secțiuni ale coloanei „An precedent” (31.12.2024
+    e dinaintea preluării, iar evidența nu acoperă 2024)."""
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2025-06-30")
+        yield f
+
+
+def _tabel_manual(pg, sectiune):
+    """[(cod, denumire, câmp | None, valoarea afișată)] pe rândurile tabelului manual al secțiunii, în ordinea de pe ecran."""
+    return pg.eval_on_selector_all(
+        ".fereastra:last-of-type .bl-prec-tabel[data-sectiune='%s'] tbody tr" % sectiune,
+        "trs => trs.map(t => { const td = [...t.querySelectorAll('td')]; const i = t.querySelector('input'); "
+        "return [td[0].innerText.trim(), td[1].innerText.trim(), i ? i.dataset.rand : null, td[2].innerText.trim()]; })")
+
+
+def test_def_233_totalurile_se_calculeaza_si_nu_au_camp(patron, firma_f10_manual):
+    """233. „în bilanț, la completarea manuală a coloanei «An precedent», rândurile de total (de ex. F10 rd.4 = 01+02+03, rd.6 = 301+302,
+    rd.9; F20 profit/pierdere) au câmp de completat. Totalurile se calculează automat din componente și se afișează fără câmp.”
+    Pașii: firma cu soldurile de preluare la 30.06.2025 -> Bilanț 2025, S1005: F10 și F20 se cer manual; rândurile de total (F10: 04, 06,
+    09, 10, 14, 15, 18, 19, 22, 25, 29, 46, 49; F20: 08, 09) n-au câmp -> scrie rd.08 casa și conturi la bănci 5.000 și rd.30 capitalul
+    5.000, F20 rd.01 1.000 și rd.03 300: pe loc, rd.09 = rd.15 = rd.46 = rd.49 = 5.000,00 și profitul rd.08 = 700,00, pierderea 0,00 ->
+    salvează -> „Validează”: „An precedent” pe rândurile de total = cele calculate (serverul le calculează la fel).
+    MUTAȚIILE din plasă: totalurile înapoi cu câmp -> ROȘU; serverul nu mai calculează totalurile -> ROȘU."""
+    pg = patron.pg
+    f = firma_f10_manual
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    _alege_bilant(patron, 2025)
+    f10, f20 = _tabel_manual(pg, "F10"), _tabel_manual(pg, "F20")
+    fara_camp = {s: [c for c, _d, i, _v in t if i is None] for s, t in (("F10", f10), ("F20", f20))}
+    assert fara_camp == {"F10": ["rândul 04", "rândul 06", "rândul 09", "rândul 10", "rândul 14", "rândul 15", "rândul 18", "rândul 19",
+                                 "rândul 22", "rândul 25", "rândul 29", "rândul 46", "rândul 49"],
+                         "F20": ["rândul 08", "rândul 09"]}, fara_camp
+    for sel, v in (("F10'] input[data-rand='8'", "5000"), ("F10'] input[data-rand='30'", "5000"),
+                   ("F20'] input[data-rand='1'", "1000"), ("F20'] input[data-rand='3'", "300")):
+        pg.fill(".fereastra:last-of-type .bl-prec-tabel[data-sectiune='%s]" % sel, v)
+    tot = {(s, c): v for s, t in (("F10", _tabel_manual(pg, "F10")), ("F20", _tabel_manual(pg, "F20"))) for c, _d, i, v in t if i is None}
+    patron.captura("totaluri_calculate")
+    assert [tot[("F10", "rândul %s" % r)] for r in ("09", "15", "46", "49", "04")] == ["5.000,00"] * 4 + ["0,00"], tot
+    assert (tot[("F20", "rândul 08")], tot[("F20", "rândul 09")]) == ("700,00", "0,00"), tot
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura("validat")
+    assert (rand[("F10", 9)][0], rand[("F10", 49)][0], rand[("F20", 8)][0]) == ("5.000,00", "5.000,00", "700,00"), \
+        (text[:400], sorted(rand.items()))
+
+
+def test_def_234_denumirile_complete_curate_in_ordinea_formularului(patron, firma_f10_manual):
+    """234. „denumirile rândurilor sunt copiate brut: «II. CREANȚE 1.» e tăiat, «2.Creante repr.dividende…» are puncte de suspensie,
+    «6.Alte cheltuieli*****» are steluțe, «si» e fără diacritice. Rândurile 301 și 302 apar la final, nu sub rd.6. Denumirile se scriu
+    complete, curate, cu diacritice, în ordinea de pe formular.”
+    Pașii: Bilanț 2025, S1005, completarea manuală: F10 — rândurile în ordinea formularului (05, 06a (301), 06b (302), 06, 07 …), „II.
+    Creanțe — 1. Creanțe”, „II. Creanțe — 2. Creanțe reprezentând dividende repartizate în cursul exercițiului financiar”, „IV. Casa și
+    conturi la bănci”; F20 — „6. Alte cheltuieli” (fără steluțe); nicio denumire cu majuscule de formular, „…”, „*” sau cuvinte fără
+    diacritice (verificatorul de limbă al aplicației).
+    MUTAȚIA din plasă: ordinea după numărul rândului (301 / 302 la final) -> ROȘU."""
+    pg = patron.pg
+    f = firma_f10_manual
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    _alege_bilant(patron, 2025)
+    f10, f20 = _tabel_manual(pg, "F10"), _tabel_manual(pg, "F20")
+    patron.captura("denumiri")
+    coduri = [c for c, _d, _i, _v in f10]
+    assert coduri[4:9] == ["rândul 05", "rândul 06a (301)", "rândul 06b (302)", "rândul 06", "rândul 07"], coduri
+    den, den20 = {c: d for c, d, _i, _v in f10}, {c: d for c, d, _i, _v in f20}
+    assert den["rândul 06a (301)"] == "II. Creanțe — 1. Creanțe", den
+    assert den["rândul 06b (302)"] == "II. Creanțe — 2. Creanțe reprezentând dividende repartizate în cursul exercițiului financiar", den
+    assert (den["rândul 08"], den20["rândul 06"]) == ("IV. Casa și conturi la bănci", "6. Alte cheltuieli"), (den, den20)
+    from core import limba_ecran
+    rele = [(c, d) for c, d, _i, _v in f10 + f20 if limba_ecran.defecte(d) or re.search(r"\*|\.\.\.|…", d)]
+    assert not rele, rele
+
+
+# ── 235 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_infiintata_2026():
+    for f in firma_noua():
+        _date_firma(f)
+        st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2026-03-15"})
+        assert st == 200 and r.get("ok") is not False, (st, r)
+        yield f
+
+
+def test_def_235_primul_exercitiu_incadrarea_dupa_regula_entitatilor_nou_infiintate(patron, firma_infiintata_2026):
+    """235. „la o firmă în primul exercițiu (F2, înființată pe 15.03.2026), căsuța roșie spune încă «Categoria de mărime nu se poate
+    determina… norma cere două exerciții consecutive». Asta contrazice nota de primul exercițiu de dedesubt. Încadrarea în primul exercițiu
+    se face după regula din OMFP 1802/2014 pentru entitățile nou-înființate, fără mesaj roșu. Citează temeiul.”
+    TEMEI: OMFP 1802/2014 pct.22 alin.(1): „În cazul entităților nou-înființate, acestea pot întocmi pentru primul exercițiu financiar de
+    raportare situațiile financiare anuale prevăzute fie la pct. 20, fie la pct. 21 sau în formatul aplicabil microentităților.”
+    Pașii: firma înființată pe 15.03.2026 -> Bilanț 2026: caseta categoriei e de informare (nu de atenție), spune „Primul exercițiu
+    financiar” și citează pct.22 alin.(1); „nu se poate determina” nu apare -> nota „An precedent” a primului exercițiu, dedesubt.
+    MUTAȚIA din plasă: regula primului exercițiu scoasă din încadrare -> caseta roșie -> ROȘU."""
+    pg = patron.pg
+    f = firma_infiintata_2026
+    patron.firma(f["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    zona = _alege_bilant(patron, 2026)
+    cat = pg.inner_text(".fereastra:last-of-type #bl-categorie")
+    patron.captura()
+    assert pg.locator(".fereastra:last-of-type #bl-categorie .caseta-atentie").count() == 0, cat
+    assert pg.locator(".fereastra:last-of-type #bl-categorie .caseta-info").count() == 1, cat
+    assert "Primul exercițiu financiar" in cat and "OMFP 1802/2014 pct.22 alin.(1)" in cat and "nu se poate determina" not in cat, cat
+    assert "Primul exercițiu financiar: firma s-a înființat pe 15.03.2026" in zona, zona
+
+
+# ── 236 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def test_def_236_tipul_bilantului_ramane_cel_ales_pe_firma(patron, firma_f20_manual, firma_infiintata_2026):
+    """236. „tipul bilanțului revine la «— alege —» la schimbarea anului și la redeschiderea ecranului. Reține ultimul tip ales pentru fiecare
+    firmă.”
+    Pașii: firma A -> Bilanț: alege S1003 -> schimbă anul: rămâne S1003 -> închide și redeschide Bilanț: S1003 -> firma B: „— alege —”
+    (tipul e al firmei A) -> alege S1005 -> înapoi la firma A: S1003.
+    MUTAȚIA din plasă: tipul nu se mai reține -> ROȘU."""
+    pg = patron.pg
+    a, b = firma_f20_manual, firma_infiintata_2026
+    tip = lambda: pg.eval_on_selector(".fereastra:last-of-type #bl-tip", "s => s.value")   # noqa: E731
+    patron.firma(a["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    pg.select_option(".fereastra:last-of-type #bl-tip", "s1003")
+    pg.fill(".fereastra:last-of-type #bl-an", "2024")
+    pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
+    assert tip() == "s1003"
+    patron.firma(a["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    patron.captura("redeschis")
+    assert tip() == "s1003"
+    patron.firma(b["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    assert tip() == ""
+    pg.select_option(".fereastra:last-of-type #bl-tip", "s1005")
+    patron.firma(a["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    patron.captura("firma_a")
+    assert tip() == "s1003"
+
+
+# ── C12 · C13 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_cam_de_plata():
+    """Firmă nouă cu soldurile de preluare la 31.12.2024 (bancă 10.000 = capital 9.500 + CAM-ul lui decembrie de plată, 436: 500) și un
+    aport în 03/2025."""
+    for f in firma_noua():
+        _date_firma(f)
+        st, r = _api(PATRON, "POST", "/tenants/%d/solduri" % f["tenant_id"],
+                     {"data_referinta": "2024-12-31", "randuri": [
+                         {"cont": "5121", "denumire": "Conturi la bănci în lei", "debit": 10000},
+                         {"cont": "1012", "denumire": "Capital subscris vărsat", "credit": 9500},
+                         {"cont": "436", "denumire": "Contribuția asiguratorie pentru muncă", "credit": 500}]})
+        assert st == 200 and r.get("ok") is not False, (st, r)
+        _nota_validata(f, "2025-03-10", "5121", "1012", 2000, "Aport capital C12")
+        yield f
+
+
+def test_def_c12_cam_de_plata_e_datorie_si_bilantul_e_valid(patron, firma_cam_de_plata):
+    """C12. Bilanț F10: lista de conturi era scrisă din memorie, nu de pe formularul ANAF 2025 — lipsea 436 (CAM-ul de plată), deci bilanțul
+    oricărei firme cu salariați ieșea inegal și DUK îl respingea („F10_64: F10_0492 (500) = … (1000)”). Găsită de Code la 233, 12.10.2026.
+    Pașii: firma cu CAM de plată 500 la 31.12.2024 -> Bilanț 2025, S1005, F20 „An precedent” completat (2024 nu e în aplicație) ->
+    „Validează”: fără erori; rd.13 (datorii sub un an) „An precedent” și „An curent” 500.
+    MUTAȚIA din plasă: 436 scos din rd.13 -> ROȘU."""
+    pg = patron.pg
+    _bilant_2025(patron, firma_cam_de_plata)
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura()
+    assert "Validare fără erori" in text, text[:500]
+    assert rand[("F10", 13)] == ("500,00", "500,00") and rand[("F10", 49)] == ("9.500,00", "11.500,00"), sorted(rand.items())
+
+
+@pytest.fixture()
+def firma_s1005_cheltuieli():
+    """Firmă nouă: soldurile de preluare la 31.12.2024; în 2025 vânzări de mărfuri 1.000 (707), mărfuri descărcate 300 (607), servicii 200
+    (628)."""
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2024-12-31")
+        _nota_validata(f, "2025-03-10", "5121", "707", 1000, "Vanzare marfa C13")
+        _nota_validata(f, "2025-03-11", "607", "5121", 300, "Marfa descarcata C13")
+        _nota_validata(f, "2025-03-12", "628", "5121", 200, "Servicii C13")
+        yield f
+
+
+def test_def_c13_contul_prescurtat_pe_listele_formularului(patron, firma_s1005_cheltuieli):
+    """C13. Bilanț S1005, contul prescurtat de profit și pierdere: mărfurile (607) ieșeau la rd.03 „Costul materiilor prime și al
+    consumabilelor” (formularul 2025: „601 + 602 − 609”), reluările de ajustări se numărau de două ori, iar profitul nu era calculul
+    formularului. Găsită de Code la 233, 12.10.2026.
+    Pașii: firma cu vânzări de mărfuri 1.000, mărfuri 300, servicii 200 în 2025 -> Bilanț 2025, S1005, F20 „An precedent” completat ->
+    „Validează” -> „Ce se depune”: rd.03 nu apare (zero), rd.06 „6. Alte cheltuieli” = 500 (607 + 628), rd.08 profit = 500 = rd.01 −
+    rd.06. (Validarea DUK are erori de structură F30 — C14, decizie cerută; tabelul arată ce s-ar depune.)
+    MUTAȚIA din plasă: 603–608 înapoi la rd.03 -> ROȘU."""
+    pg = patron.pg
+    _bilant_2025(patron, firma_s1005_cheltuieli)
+    pg.click(".fereastra:last-of-type #bl-prec-salveaza")
+    pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #bl-val').disabled", timeout=60000)
+    _text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    patron.captura()
+    f20 = {k[1]: v[1] for k, v in rand.items() if k[0] == "F20"}
+    assert 3 not in f20 and (f20[1], f20[6], f20[8]) == ("1.000,00", "500,00", "500,00"), f20

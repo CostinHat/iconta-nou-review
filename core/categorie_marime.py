@@ -37,7 +37,18 @@ MODUL = "categorie_marime"
 
 #: Nomenclator ÎNCHIS al categoriilor. `nedeterminata` NU e o categorie a normei — e starea în care
 #: aplicația spune că nu poate încadra, și există tocmai ca să nu fie confundată cu „micro".
-CATEGORII = ("micro", "mici", "mijlocii_mari", "nedeterminata")
+#: [deficiența 235, comanda Costin 12.10.2026] `primul_exercitiu` — entitatea nou-înființată, în primul ei exercițiu: norma îi lasă
+#: alegerea formatului (pct.22 alin.(1)), deci nu se încadrează pe criterii (nici „nedeterminata”: regula există și se aplică).
+CATEGORII = ("micro", "mici", "mijlocii_mari", "nedeterminata", "primul_exercitiu")
+
+_TEMEI_PRIMUL_EXERCITIU = Temei(
+    "OMFP", 1802, 2014, art="pct.22", alin="1",
+    data_in="2015-01-01", verificat_la="2026-10-12", de_cine="Code", nivel_sursa="MO",
+    url="anaf_surse/omfp_1802_2014_reglementari_consolidat.txt",
+    text_citat=("pct.22 alin.(1): In cazul entitatilor nou-infiintate, acestea pot intocmi pentru primul exercitiu financiar de "
+                "raportare situatiile financiare anuale prevazute fie la pct. 20, fie la pct. 21 sau in formatul aplicabil "
+                "microentitatilor; alin.(2): pentru al doilea exercitiu financiar de raportare ... in functie de criteriile de marime "
+                "inregistrate; alin.(3): prevederile nu se aplica entitatilor de interes public"))
 
 _TEMEI_DOI_ANI = Temei(
     "OMFP", 1802, 2014, art="pct.13", alin="2",
@@ -132,7 +143,17 @@ CRITERII = ("total_active", "cifra_afaceri_neta", "nr_mediu_salariati")
 #: Nomenclator ÎNCHIS al motivelor. Proza rămâne scrisă pentru om; codul e pentru mașină. Fără el,
 #: orice gardă ar fi nevoită să caute cuvinte în mesaj — adică să păzească formularea, nu regula
 #: (clichetul 50 / METODA §23).
-MOTIVE = ("fara_exercitiu_precedent", "criterii_incomplete", "aceeasi_incadrare", "nu_se_schimba")
+MOTIVE = ("fara_exercitiu_precedent", "criterii_incomplete", "aceeasi_incadrare", "nu_se_schimba", "primul_exercitiu")
+
+
+def motiv_primul_exercitiu(infiintare):
+    """Textul casetei de pe ecranul Bilanț, în primul exercițiu (deficiența 235): norma, citată."""
+    from core.pdf_util import data_ro
+    return ("Primul exercițiu financiar: firma s-a înființat pe %s. Pentru el, OMFP 1802/2014 pct.22 alin.(1) lasă alegerea formatului: "
+            "„În cazul entităților nou-înființate, acestea pot întocmi pentru primul exercițiu financiar de raportare situațiile financiare "
+            "anuale prevăzute fie la pct. 20, fie la pct. 21 sau în formatul aplicabil microentităților.” Alege S1005 (microentități) "
+            "sau S1003 (entități mici). Încadrarea pe criteriile de mărime începe cu al doilea exercițiu (alin.(2)); regula nu se aplică "
+            "entităților de interes public (alin.(3))." % data_ro(infiintare))
 
 
 def depaseste(ind, praguri):
@@ -217,19 +238,43 @@ def indicatori(conn, schema, an):
         s_fin = _ba.sold_la(cur, schema, datetime.date(an, 12, 31))   # [deficiența 221] None = an dinaintea preluării: necunoscut
         if s_fin is None:
             return None
-        f10 = _b.f10_din_balanta(s_fin)
-        f20 = _b.f20_din_rulaje(rl)
+        # [C12, C13] un sold / rulaj fără rând în formular oprește generarea bilanțului; aici criteriul lui devine NECUNOSCUT (None),
+        # nu zero — „un necunoscut nu se rotunjește la ce știi” (docstringul modulului)
+        try:
+            f10 = _b.f10_din_balanta(s_fin)
+        except ValueError:
+            f10 = None
+        try:
+            f20 = _b.f20_din_rulaje(rl)
+        except ValueError:
+            f20 = None
         nms = nr_mediu_salariati(cur, schema, an)
     # pct.15: totalul activelor = lit. A-C din „Active" = imobilizate + circulante + chelt. in avans
-    total_active = (f10.get(4) or Decimal("0")) + (f10.get(9) or Decimal("0")) + (f10.get(10) or Decimal("0"))
+    total_active = None if f10 is None else (f10.get(4) or Decimal("0")) + (f10.get(9) or Decimal("0")) + (f10.get(10) or Decimal("0"))
     return {"an": an,
             "total_active": total_active,
-            "cifra_afaceri_neta": f20.get(1) or Decimal("0"),
+            "cifra_afaceri_neta": None if f20 is None else (f20.get(1) or Decimal("0")),
             "nr_mediu_salariati": nms}
 
 
 def categorie(conn, schema, an):
     """Încadrarea firmei, ca AFIRMAȚIE — cu domeniu, temei și motiv (DS cap.25.5)."""
+    from core import bilant_api as _ba
+    with conn.cursor() as cur:
+        infiintare = _ba.data_infiintare(cur, schema)
+    if infiintare and infiintare.year == an:
+        # [deficiența 235] primul exercițiu: regula entităților nou-înființate (pct.22 alin.(1)), nu cele două exerciții consecutive
+        return afirmatie(
+            "fapt", tip="categorie_marime", motiv=motiv_primul_exercitiu(infiintare),
+            temei_completitudine="data înființării din Date firmă (%s); OMFP 1802/2014 pct.22 alin.(1)" % infiintare.isoformat(),
+            an=an, luna=None,
+            **{"categorie": "primul_exercitiu", "cod_motiv": "primul_exercitiu",
+               "temei_primul_exercitiu": str(_TEMEI_PRIMUL_EXERCITIU),
+               "temei_praguri": {k: {c: str(temei(k, c)) for c in CRITERII} for k in PRAGURI},
+               "temei_doi_ani": str(_TEMEI_DOI_ANI), "temei_total_active": str(_TEMEI_TOTAL_ACTIVE),
+               "indicatori_curent": None, "indicatori_precedent": None,
+               "praguri": {k: {c: str(prag(k, c)) for c in CRITERII} for k in PRAGURI},
+               "decis_de_numarul_de_salariati": False})
     ic = indicatori(conn, schema, an)
     ip = indicatori(conn, schema, an - 1)
     cat, motiv, cod = incadreaza(ic or {}, ip)

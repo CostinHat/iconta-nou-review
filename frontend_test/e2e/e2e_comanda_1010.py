@@ -209,7 +209,9 @@ def _valideaza_bilant(ecran, an, alege=True):
                          "&& !r.innerText.includes('Se validează'); }", timeout=120000)
     randuri = pg.evaluate("""() => [...document.querySelectorAll('.fereastra:last-of-type #bl-randuri tbody tr')].map(tr =>
       [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))""")
-    return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, int(r.split()[-1])): (p, c) for f, r, _den, p, c in randuri}
+    # „rândul 08” / „rândul 06a (301)” (codul formularului, 234): numărul rândului e cel din paranteză, altfel codul
+    nr = lambda r: int(r.split("(")[-1].rstrip(")")) if "(" in r else int(r.split()[-1])   # noqa: E731
+    return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, nr(r)): (p, c) for f, r, _den, p, c in randuri}
 
 
 def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):

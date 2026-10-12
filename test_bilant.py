@@ -40,19 +40,19 @@ def test_f10_bifunctionale():
     assert r[13] == 900
 
 def test_f20_micro():
+    """[C13, 12.10.2026] rândurile = listele formularului ANAF 2025 (F20 S1005): 607 (mărfurile) e la rd.06 „Alte cheltuieli”
+    („6. Alte cheltuieli (ct. 603 + 604 + 605 + 606 + 607 + …)”), nu la rd.03 („3. Costul materiilor prime și al consumabilelor (ct. 601 +
+    602 - 609*)”) — testul vechi cerea rd.03 = 30.000; 646 la rd.04 („ct. 641 + … + 645 + 646”)."""
     rl = {"707": (0, 50000), "709": (500, 0), "607": (30000, 0), "641": (8000, 0),
           "646": (180, 0), "681": (1200, 0), "691": (1600, 0), "765": (0, 300)}
     r = bilant.f20_din_rulaje(rl)
-    assert r[1] == 49500
-    assert r[2] == 300
-    assert r[3] == 30000
-    assert r[4] == 8180
+    assert r[1] == 49500                                 # 707 - 709
+    assert r[2] == 300                                   # 765
+    assert r[3] == 0 and r[6] == 30000                   # 607 -> rd.06
+    assert r[4] == 8180                                  # 641 + 646
     assert r[5] == 1200
     assert r[7] == 1600
-    total_v = 49500 + 300
-    total_c = 30000 + 8180 + 1200 + 1600 + r[6]
-    assert r[8] == total_v - total_c
-    assert r[9] == 0
+    assert r[8] == 49500 + 300 - 0 - 8180 - 1200 - 30000 - 1600 and r[9] == 0
 
 def test_f20_pierdere():
     rl = {"707": (0, 1000), "607": (5000, 0)}

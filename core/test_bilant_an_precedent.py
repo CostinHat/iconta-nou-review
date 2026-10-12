@@ -51,6 +51,15 @@ def _manual(c, tip, an, valori, de="Contabil Probă"):
     artefacte.pastreaza(c.connection, _SCHEMA, ba.FEL_MANUAL, "%s:%d" % (tip, an), json.dumps(valori), produs_de=de)
 
 
+def _bilant_pastrat(c, fel, cheie, continut, **kw):
+    """Un bilanț păstrat DUPĂ rescrierea rândurilor pe formularul 2025 (`bilant_api.S1003_F20_SCHEMA_NOUA_DIN`): produs_la fixat după prag,
+    ca testul să nu depindă de ceas (un bilanț produs înainte nu e „An precedent” — C10, C12, C13)."""
+    from core import artefacte
+    r = artefacte.pastreaza(c.connection, _SCHEMA, fel, cheie, continut, **kw)
+    c.execute("UPDATE artefacte_produse SET produs_la = %s WHERE id = %s", (ba.S1003_F20_SCHEMA_NOUA_DIN + datetime.timedelta(days=1), r["id"]))
+    return r
+
+
 def _toate(sectiune, tip="s1005", **valori):
     return {str(r): valori.get("r%d" % r, 0) for r in ba.randuri_formular(tip)[sectiune]}
 
@@ -80,13 +89,12 @@ def test_bilantul_anului_precedent_din_aplicatie_are_intaietate(cur):
     altceva (12.000): „An precedent” al bilanțului 2026 = coloana „An curent” a bilanțului 2025 din aplicație, pe ambele secțiuni. Un
     exemplar mai nou, cu erori de validare, nu-l înlocuiește. MUTAȚIE: artefactul ignorat (sursa = evidența) -> pică; exemplarul cu erori
     luat -> pică."""
-    from core import artefacte
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2024-12-31'), ('1012', 'Capital', 0, 10000, '2024-12-31')")
     _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
     xml_2025 = '<Bilant1005><F10 F10_0081="7000" F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>'
-    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", xml_2025, produs_de="Contabil", verdict="valid")
-    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", xml_2025.replace("7777", "1"), produs_de="Contabil", verdict="erori")
+    _bilant_pastrat(cur, "s1005", "2025", xml_2025, produs_de="Contabil", verdict="valid")
+    _bilant_pastrat(cur, "s1005", "2025", xml_2025.replace("7777", "1"), produs_de="Contabil", verdict="erori")
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
     assert cp["sursa"] == {"F10": "bilant", "F20": "bilant"}, cp["sursa"]
     assert cp["F10"] == {8: 7777} and cp["F20"] == {1: 555}, (cp["F10"], cp["F20"])
@@ -151,10 +159,9 @@ def test_bilantul_generat_de_defect_nu_e_bilantul_anului_precedent(cur):
     soldurile de preluare de la 31.08.2026. Un bilanț al anului precedent pe care aplicația nu l-ar putea întocmi azi (31.12 a lui e
     înaintea soldurilor de preluare) nu e sursă: coloana se cere manual, iar mesajul spune de ce bilanțul păstrat nu se folosește.
     MUTAȚIE: verificarea scoasă (artefactul luat oricum) -> „An precedent” = soldurile de preluare, fără refuz -> pică."""
-    from core import artefacte
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
-    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
     assert cp["sursa"] == {"F10": None, "F20": None} and cp["bilant_respins"]["exemplar"] == 1, cp
@@ -168,10 +175,9 @@ def test_fiecare_an_din_mesaje_e_anul_lui(cur):
     anului precedent. Fiecare an din refuzul coloanei goale, din nota bilanțului respins, din avertismentul manual și din refuzul „nu se
     poate întocmi” e fixat pe poziția lui (bilanțul 2026: anul precedent 2025). MUTAȚIE: oricare `an - 1` din cele trei mesaje -> `an`,
     sau anul din refuzul „nu se poate întocmi” -> `an - 1` -> pică."""
-    from core import artefacte
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
-    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     with pytest.raises(ValueError) as e:
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
@@ -215,7 +221,7 @@ def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
     poartă anul precedent (`an`), sursele în care s-a căutat sunt pe anul precedent, iar refuzul completării manuale peste o secțiune
     venită din bilanț sau din evidență numește anul precedent. Bilanțul 2026 -> 2025 peste tot. MUTAȚIE: oricare `an - 1` din
     `bilant_an_precedent` / `bilant_an_precedent_scrie` -> `an` -> pică."""
-    from core import artefacte, erori
+    from core import erori
     uc = _ecranul(cur, monkeypatch)
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
@@ -227,7 +233,7 @@ def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
     assert (a["fel"], a["an"]) == ("fapt", 2025), a
     cur.execute("UPDATE solduri_initiale SET data_referinta = '2024-12-31'")
     _nota(cur, datetime.date(2025, 3, 10), "5121", "704", Decimal("2000"))
-    artefacte.pastreaza(cur.connection, _SCHEMA, "s1005", "2025", '<Bilant1005><F10 F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>',
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7777"/><F20 F20_0012="555"/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     with pytest.raises(erori.DateInvalide) as e:
         uc.bilant_an_precedent_scrie(1, 2026, "s1005", {"F10": {}}, {"uid": 1})
@@ -320,3 +326,50 @@ def test_s1003_pe_numerotarea_veche_nu_e_an_precedent(cur):
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1003", 2026)
     assert cp["sursa"]["F20"] != "bilant" and cp["bilant_respins"]["numerotare_veche"], cp
     assert re.findall(r"profit și pierdere e pe (numerotarea veche)", ba.nota_bilant_respins(2026, cp["bilant_respins"])) == ["numerotarea veche"]
+
+
+def test_def_233_totalurile_coloanei_manuale_le_calculeaza_serverul(cur):
+    """[deficiența 233, comanda Costin 12.10.2026] „Totalurile se calculează automat din componente și se afișează fără câmp.” Coloana
+    manuală: un total salvat altfel decât din componentele lui (și o coloană salvată înainte, cu totalurile scrise de mână) se citește cu
+    totalurile calculate ca în formular (`bilant.NOMENCLATOR_TOTALURI`). MUTAȚIE: recalcularea scoasă din `coloana_precedenta` -> rd.09 =
+    999 -> pică."""
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2025-06-30'), ('1012', 'Capital', 0, 10000, '2025-06-30')")
+    _manual(cur, "s1005", 2025, {"F10": _toate("F10", r8=5000, r30=5000, r9=999, r49=1), "F20": _toate("F20", r1=1000, r3=300, r8=5)})
+    cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
+    assert (cp["F10"][9], cp["F10"][15], cp["F10"][46], cp["F10"][49]) == (5000, 5000, 5000, 5000), cp["F10"]   # rd.09 = 05+06+07+08
+    assert (cp["F20"][8], cp["F20"][9]) == (700, 0), cp["F20"]                          # rd.08 = 01 + 02 − 03 − … (numai dacă e pozitiv)
+    assert sorted(ba.componente_formular("s1005")["F20"]) == [1, 2, 3, 4, 5, 6, 7, 302, 303, 304]
+
+
+def test_def_235_primul_exercitiu_categoria_dupa_regula_entitatilor_nou_infiintate(cur):
+    """[deficiența 235, comanda Costin 12.10.2026] „Încadrarea în primul exercițiu se face după regula din OMFP 1802/2014 pentru entitățile
+    nou-înființate, fără mesaj roșu. Citează temeiul.” TEMEI: OMFP 1802/2014 pct.22 alin.(1) „În cazul entităților nou-înființate, acestea
+    pot întocmi pentru primul exercițiu financiar de raportare situațiile financiare anuale prevăzute fie la pct. 20, fie la pct. 21 sau în
+    formatul aplicabil microentităților.” Firma înființată pe 15.03.2026: categoria pe 2026 = `primul_exercitiu`, cu norma citată; pe 2027
+    — încadrarea pe criterii (aici „nedeterminata”: 2026 fără rulaje). MUTAȚIE: ramura primului exercițiu scoasă -> „nedeterminata” -> pică."""
+    from core import categorie_marime as cm
+    cur.execute("UPDATE firma_profil SET data_infiintare = '2026-03-15' WHERE id = 1")
+    c = cm.categorie(cur.connection, _SCHEMA, 2026)
+    assert (c["categorie"], c["cod_motiv"]) == ("primul_exercitiu", "primul_exercitiu"), c
+    assert re.findall(r"OMFP 1802/2014 (pct\.22 alin\.\(1\))", c["motiv"]) == ["pct.22 alin.(1)"], c["motiv"]
+    assert re.findall(r"înființat pe (\d\d\.\d\d\.\d{4})", c["motiv"]) == ["15.03.2026"], c["motiv"]
+    assert re.findall(r"„(.*?)”", c["motiv"]) == ["În cazul entităților nou-înființate, acestea pot întocmi pentru primul exercițiu "
+                                                  "financiar de raportare situațiile financiare anuale prevăzute fie la pct. 20, fie la "
+                                                  "pct. 21 sau în formatul aplicabil microentităților."], c["motiv"]
+    assert cm.categorie(cur.connection, _SCHEMA, 2027)["categorie"] == "nedeterminata"
+
+
+def test_s1005_dinaintea_listelor_formularului_nu_e_an_precedent(cur):
+    """[C12, C13 — clasa C10] Un S1005 păstrat înainte ca F10 și F20 S1005 să urmeze listele formularului 2025 are rândurile vechi (603–608
+    la rd.03, CAM-ul fără rând): nu se folosește ca „An precedent”, iar mesajul spune de ce. MUTAȚIE: verificarea limitată înapoi la S1003
+    -> sursa „bilant” -> pică."""
+    cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
+                "('5121', 'Banca', 10000, 0, '2023-12-31'), ('1012', 'Capital', 0, 10000, '2023-12-31')")
+    _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0082="7"/><F20 F20_0032="800"/></Bilant1005>',
+                        produs_de="Contabil", verdict="valid")
+    cur.execute("UPDATE artefacte_produse SET produs_la = '2026-10-01' WHERE fel = 's1005'")
+    cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
+    assert cp["sursa"]["F20"] != "bilant" and cp["bilant_respins"]["numerotare_veche"], cp
+    assert re.findall(r"Bilanțul (S100\d) pe (\d{4}) .* rândurile lui sunt (dinaintea rescrierii)", ba.nota_bilant_respins(2026, cp["bilant_respins"])) \
+        == [("S1005", "2025", "dinaintea rescrierii")]
