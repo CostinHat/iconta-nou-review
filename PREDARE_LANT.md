@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **12.10.2026 seara: C15 (6/7 închise, varianta c), C14 (F30 cap.XIX), 237, 238, C16; R4 și varianta (a) BLOCATE**
+# PREDARE LANȚ — **13.10.2026: varianta (a) + 242 (lotul 1); lotul 2 /ghid/ urmează; R4 BLOCAT; ghiduri noi oprite**
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `1b7b9b4c` (233–236 + C12, C13 — four-way închis 19:32); lotul „C15, C14, 237, 238, C16” e în commitul care conține
-  această predare — SHA-ul și four-way-ul în raport.
+- **pe commit**: `88834afc` (C15, C14, 237, 238, C16 — four-way închis 13.10 01:38); lotul 1 al comenzii 13.10 (varianta (a) + 242) e
+  în commitul care conține această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -112,9 +112,11 @@ aplicației**, nu „în așteptarea unei teme”:
   clasele 6/7 în 121 la 31.12”, cu rezultatul și conturile; închiderea în 121 nu mai e numărată ca rulaj nicăieri (bilanț, D100, D101,
   centre de cost). **Pe producție: toate cele 5 firme de test au 6 / 7 neînchise la 31.12.2026 — bilanțul lor se oprește până la nota de
   închidere.**
-- **VARIANTA (a) — BLOCATĂ până la aprobare** (comanda: „Varianta (a) intră în lotul următor, nu acum … Nu porni R4, varianta (a) sau alt
-  pas fără aprobare.”): aplicația propune nota de închidere 6/7 → 121 și regularizarea TVA 4426 / 4427 → 4423 / 4424, contabilul o
-  validează (R36).
+- **VARIANTA (a) — ÎNCHISĂ** (aprobată 13.10.2026; lotul 1 al comenzii de azi): butonul „Propune nota de închidere la 31.12.<an>” de
+  lângă refuz scrie două note ciornă (regularizarea TVA, închiderea 6/7), validate apoi în Jurnal. **242 — ÎNCHISĂ**: refuzul bilanțului
+  arată toate motivele deodată.
+- **LOTUL 2 — /ghid/ (a–e), comanda 13.10.2026**: urmează după lotul 1; **ghiduri noi NEPUBLICATE până la decizia lui Costin**; comasarea
+  grupurilor — numai cu aprobarea lui, pe lista din raport.
 - **C14 — ÎNCHISĂ** (lotul care conține această predare): F30 cap.XIX scris pe listele și calculele formularului (`Table8_an_micro`), pe
   ambele coloane; S1005 cu activitate valid pe DUK; „An precedent” manual cere și cap.XIX, verificat cu F20 la salvare.
 - **237, 238, C16 — ÎNCHISE** (lotul care conține această predare): refuzul o singură dată pe ecran; refuzul soldurilor fără loc rescris
@@ -478,7 +480,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **960** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **963** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

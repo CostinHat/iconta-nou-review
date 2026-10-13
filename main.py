@@ -5576,6 +5576,15 @@ def bilant_an_precedent_scrie(tenant_id: int, an: int, tip: str, corp: dict = Bo
         raise _http_din(e)
 
 
+@app.post("/tenants/{tenant_id}/bilant-inchidere-propunere")
+def bilant_inchidere_propunere(tenant_id: int, an: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[varianta (a), decizia Costin 13.10.2026] Propunerea notei de închidere la 31.12 (6/7 -> 121, regularizarea TVA), ca ciornă."""
+    try:
+        return _uc_tenants.bilant_inchidere_propunere(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 # --- S1003 (bilant mici) ---
 @app.get("/tenants/{tenant_id}/s1003-xml")
 def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):

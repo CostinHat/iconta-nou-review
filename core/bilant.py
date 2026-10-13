@@ -411,15 +411,20 @@ def actiune_sold(cont, latura):
     return NOMENCLATOR_ACTIUNI_SOLD_GRUPE[(c[0], latura)], ""
 
 
-def motiv_f10(fara):
-    """[deficiența 238] Mesajul de oprire pentru contabil: câte un rând pe cont — contul, latura, suma, ce face, temeiul unde există."""
+def _randuri_fara_loc(fara):
     from core.pdf_util import bani
-    randuri = []
+    out = []
     for c, l, v in fara:
         act, temei = actiune_sold(c, l)
-        randuri.append("• %s sold %s %s — %s.%s" % (c, "debitor" if l == "d" else "creditor", bani(v), act, (" " + temei + ("" if temei.endswith(".”") else ".")) if temei else ""))
+        out.append("• %s sold %s %s — %s.%s" % (c, "debitor" if l == "d" else "creditor", bani(v), act,
+                                                (" " + temei + ("" if temei.endswith(".”") else ".")) if temei else ""))
+    return out
+
+
+def motiv_f10(fara):
+    """[deficiența 238] Mesajul de oprire pentru contabil: câte un rând pe cont — contul, latura, suma, ce face, temeiul unde există."""
     return ("Bilanțul nu se poate genera: soldurile de la 31.12 de mai jos nu au loc în bilanț. Corectează-le, apoi generează din nou.\n"
-            + "\n".join(randuri))
+            + "\n".join(_randuri_fara_loc(fara)))
 
 
 #: [C15, decizia Costin 12.10.2026, varianta (c)] „Generarea bilanțului se oprește cu motivul «închide clasele 6/7 în 121 la 31.12», cu
@@ -439,21 +444,77 @@ def conturi_6_7_cu_sold(s):
     return out
 
 
+class BilantOprit(ValueError):
+    """[C15, 242] Refuzul bilanțului la 31.12, cu TOATE motivele deodată. `an` = anul la 31.12 căruia se închid clasele 6 / 7 (pentru
+    propunerea notei de închidere — varianta (a)); `inchidere` = unul din motive e închiderea 6 / 7."""
+
+    def __init__(self, mesaj, an=None, inchidere=False, ani_inchidere=None):
+        super().__init__(mesaj)
+        self.an, self.inchidere = an, inchidere
+        self.ani_inchidere = list(ani_inchidere) if ani_inchidere is not None else ([an] if inchidere else [])
+
+
+def refuz_impreuna(oprite):
+    """[deficiența 242] Refuzurile ambilor ani (coloana „An precedent” din evidență și „An curent”) într-unul singur."""
+    if len(oprite) == 1:
+        raise oprite[0]
+    if oprite:
+        raise BilantOprit("\n\n".join(str(e) for e in oprite), an=oprite[-1].an, inchidere=any(e.inchidere for e in oprite),
+                          ani_inchidere=sorted({a for e in oprite for a in e.ani_inchidere}))
+
+
+def _text_6_7(cu_sold, an):
+    from core.pdf_util import bani
+    rez = sum(((v if l == "c" else -v) for _c, l, v in cu_sold), Decimal("0"))
+    ce = "profit %s lei" % bani(rez) if rez > 0 else ("pierdere %s lei" % bani(-rez) if rez < 0 else "rezultat zero (0,00 lei)")
+    return ("închide clasele 6/7 în 121 la 31.12.%d. Rezultatul de închis: %s (veniturile minus cheltuielile cu sold la 31.12.%d). Până la "
+            "închidere, rezultatul exercițiului nu e în contul 121, deci lipsește din bilanț. %s.\nConturile cu sold:\n%s"
+            % (an, ce, an, _TEMEI_121, "\n".join("• %s sold %s %s" % (c, "debitor" if l == "d" else "creditor", bani(v))
+                                                   for c, l, v in cu_sold)))
+
+
 def inchiderea_6_7(s, an, bilant_pe=None):
     """[C15] Bilanțul pe `an` cere clasele 6 / 7 închise în 121 la 31.12: altfel rezultatul exercițiului nu e în 121, deci lipsește din
     bilanț (rd.43 / 44) — și bilanțul n-ar fi egal. `s` = soldurile la 31.12.`an`; `bilant_pe` = anul bilanțului (an + 1 pentru coloana
     „An precedent” din evidență). Refuzul spune rezultatul de închis și conturile."""
-    from core.pdf_util import bani
     cu_sold = conturi_6_7_cu_sold(s)
-    if not cu_sold:
+    if cu_sold:
+        raise BilantOprit("Bilanțul pe %d nu se poate genera: %s" % (bilant_pe or an, _text_6_7(cu_sold, an)), an=an, inchidere=True)
+
+
+def motive_31_12(s, an):
+    """[deficiența 242] Motivele de oprire din soldurile la 31.12.`an`, TOATE: [{"fel", "titlu", "text"}] — clasele 6 / 7 neînchise (C15),
+    soldurile fără loc în bilanț (238). Lista goală = soldurile permit bilanțul."""
+    out = []
+    cu_sold = conturi_6_7_cu_sold(s)
+    if cu_sold:
+        out.append({"fel": "inchidere_6_7", "titlu": "Clasele 6 / 7", "text": _text_6_7(cu_sold, an)})
+    fara = conturi_fara_rand(F10_NOMENCLATOR, s, "12345")
+    if fara:
+        out.append({"fel": "fara_loc", "titlu": "Soldurile de la 31.12 de mai jos nu au loc în bilanț",
+                    "text": "\n".join(_randuri_fara_loc(fara)), "simplu": motiv_f10(fara)})
+    return out
+
+
+def refuz(motive, an, bilant_pe=None):
+    """[deficiența 242] Un singur refuz cu toate motivele: unul -> textul lui (ca până acum); mai multe -> numerotate, fiecare cu acțiunea
+    lui, ca să se rezolve dintr-o singură trecere."""
+    if not motive:
         return
-    rez = sum(((v if l == "c" else -v) for _c, l, v in cu_sold), Decimal("0"))
-    ce = "profit %s lei" % bani(rez) if rez > 0 else ("pierdere %s lei" % bani(-rez) if rez < 0 else "rezultat zero (0,00 lei)")
-    raise ValueError(
-        "Bilanțul pe %d nu se poate genera: închide clasele 6/7 în 121 la 31.12.%d. Rezultatul de închis: %s (veniturile minus "
-        "cheltuielile cu sold la 31.12.%d). Până la închidere, rezultatul exercițiului nu e în contul 121, deci lipsește din bilanț. %s.\n"
-        "Conturile cu sold:\n%s" % (bilant_pe or an, an, ce, an, _TEMEI_121,
-                                     "\n".join("• %s sold %s %s" % (c, "debitor" if l == "d" else "creditor", bani(v)) for c, l, v in cu_sold)))
+    inchidere = any(m["fel"] == "inchidere_6_7" for m in motive)
+    if len(motive) == 1:
+        m = motive[0]
+        mesaj = m.get("simplu") or "Bilanțul pe %d nu se poate genera: %s" % (bilant_pe or an, m["text"])
+    else:
+        mesaj = ("Bilanțul pe %d nu se poate genera — %d motive; rezolvă-le pe toate, apoi generează din nou.\n" % (bilant_pe or an, len(motive))
+                 + "\n".join("%d. %s:%s%s" % (i, m["titlu"], "\n" if m["fel"] == "fara_loc" else " ", m["text"])
+                             for i, m in enumerate(motive, start=1)))
+    raise BilantOprit(mesaj, an=an, inchidere=inchidere)
+
+
+def verifica_31_12(s, an, bilant_pe=None):
+    """Soldurile la 31.12.`an` permit bilanțul? Altfel refuzul cu toate motivele lor (`motive_31_12` + `refuz`)."""
+    refuz(motive_31_12(s, an), an, bilant_pe)
 
 
 #: [C13, C14] sinteticele planului OMFP 1802/2014 ale căror analitice stau pe rânduri DIFERITE ale S1005 — F20 sau F30 cap.XIX (rândurile

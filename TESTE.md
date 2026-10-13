@@ -46,6 +46,21 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Comanda Costin 13.10.2026 (răspunsul la §6 al raportului C14-C15-237-238, verbatim în DECIZII)** — două loturi separate, fiecare
+  cu poarta lui; R4 BLOCAT; ghiduri noi NEPUBLICATE până la decizia lui Costin.
+  - ultim: L0, L1 (+ 242) în commitul lotului 1 (SHA-ul în raport)
+  - urmator: L2 (lotul /ghid/). STARE = IN LUCRU
+  - pasi:
+    L0. DECIZII (comanda verbatim), TESTE (acest fir).
+    L1. Lotul 1 — varianta (a): `core/motor.py` (închiderea 6/7 în 121 și regularizarea TVA 4426/4427 -> 4423/4424, din soldurile la
+        31.12), `core/inchidere_an.py` (propunerea = note CIORNĂ, `sursa='inchidere_an'`, document intern; o ciornă nevalidată se înlocuiește
+        la o nouă cerere), ruta `POST /tenants/{id}/bilant-inchidere-propunere`, refuzul structurat al bilanțului (cod „inchidere_6_7”) și
+        butonul pe ecranul Bilanț; teste + e2e + mutații; registre; un commit prin poartă; ZIP.
+    L2. Lotul 2 — /ghid/: (a) grupurile de ghiduri care răspund la aceeași întrebare, măsurate (număr grupuri, pagini, 10 exemple),
+        nimic modificat; (b) denumirile din cod scoase din textele publice; (c) data ultimei actualizări pe fiecare ghid; (d) rutele
+        aplicației excluse din indexare (robots.txt + X-Robots-Tag: noindex), sitemap numai cu pagini publice, fără linkuri publice spre
+        rutele aplicației; (e) publicarea de ghiduri noi oprită (gard); registre; un commit prin poartă; ZIP.
+
 - fir: **Comanda Costin 12.10.2026 seara (răspunsul la §6 al lotului 233–236) + retestul 237 / 238 (verbatim în DECIZII): C15 (clasele 6/7
   neînchise, varianta (c)), C14 (F30 cap.XIX pentru S1005), 237, 238; C16 (Code)** — un lot, o poartă; raport punctual cu probă și
   captură; ZIP. R4, varianta (a) BLOCATE fără aprobare.

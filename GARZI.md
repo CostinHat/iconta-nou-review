@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**776 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**777 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 739
+### `core/` — 740
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9264,6 +9264,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_import_motiv_vizibil.py` — [Regula 6 + Regula 14] GARD: motivul de refuz din preview-ul de IMPORT e VIZIBIL, nu doar in `title`.
 - `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
 - `core/test_impozit_dividend.py` — PAS 0 versionare formule: cotele = COTE period-aware, nu petic 'if ref>=2026 else 10'.
+- `core/test_inchidere_an.py` — GARD — varianta (a), decizia Costin 13.10.2026 (verbatim în DECIZII): „Aplicația propune, la cererea contabilului, nota de închidere la
 - `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
 - `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
@@ -10917,3 +10918,13 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | refuzul soldurilor fără loc, pentru contabil | `bilant.NOMENCLATOR_ACTIUNI_SOLD` / `_GRUPE`, `motiv_f10` + `core/test_bilant_formular.py::test_def_238_…` (F2) și `::test_def_238_fiecare_sold_…` (tot planul, `limba_ecran.defecte == []`, fără DUK) + e2e 238 | un cont fără acțiune, coduri DUK în mesaj, un rând pe mai multe conturi | acțiunea 401 / 266 scoasă -> ROȘU | acțiunile „după natura contului” sunt generale |
 | zonele de mesaj păstrează rândurile | `static/stil.css` (`white-space: pre-line` pe `.msg-*`) + verificator MESAJ_PE_RANDURI | un refuz pe rânduri afișat pe un singur rând | `white-space: normal` -> TOTAL > 0 | — |
 | „azi” în e2e: fixat la import vs ce datează aplicația acum | `frontend_test/e2e/conftest.py` (`zile_de_acum`) + `core/test_e2e_azi_acum.py` (orice aserțiune cu AZI spune ce compară: `zile_de_acum(AZI)` sau `# AZI-dat-de-test`) | o plasă care trece de miezul nopții respinge publicarea fără vină a aplicației (prins: testul 167, 13.10.2026 00:01) | `zile_de_acum` scos din testul 167 -> ROȘU | vede numele `AZI`; o dată de import cu alt nume (ex. `azi = date.today()` local) nu |
+
+## 13.10.2026 — varianta (a): propunerea notei de închidere; 242: toate motivele de oprire deodată
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| propunerea e ciornă (R36) | `core/inchidere_an.py` + `core/test_inchidere_an.py::test_propunerea_e_ciorna_…` + e2e `test_varianta_a_…` | o notă de închidere intrată în evidență fără contabil | notele scrise `validata` -> ROȘU (core + e2e) | — |
+| regularizarea TVA 4426 / 4427 -> 4423 / 4424 | `core/motor.py` (`regularizare_tva`) + `::test_regularizarea_tva_…` | diferența colectată pe 4424 (sau invers); TVA lăsat deschis la 31.12 | diferența -> 4424 -> ROȘU; regularizarea scoasă -> ROȘU | 4428 nu se atinge (deliberat) |
+| închiderea 6/7 din solduri | `core/motor.py` (`inchidere_din_solduri`) + `::test_inchiderea_din_solduri_…` | un cont 6/7 rămas cu sold după închidere; latura inversă | latura greșită -> ROȘU | — |
+| ruta propunerii, pe HTTP, până în rulajul declarației | `core/test_inchidere_an.py::test_ruta_propunerii_…` (clichetul `test_rute_probate`: rutele care scriu în tabele de declarație au probă în suită) | o rută care scrie direct în evidență, fără validare | notele scrise `validata` -> soldul 121 nu mai e zero înainte de validare -> ROȘU | — |
+| toate motivele de oprire deodată | `core/bilant.py` (`motive_31_12`, `refuz`, `refuz_impreuna`), `bilant_api.coloanele_verificate` + `::test_def_242_…` + e2e 242 | refuzul la primul motiv, care ascunde restul (6/7 ascundea 401 / 4427 / 581) | refuzul la primul motiv -> ROȘU (core + e2e) | 228 / 229 rămân singure, înainte (nu e nimic de rezolvat pe date) |

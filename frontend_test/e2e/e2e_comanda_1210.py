@@ -749,7 +749,7 @@ def test_def_237_mesajul_de_oprire_apare_o_singura_data(patron, firma_solduri_fa
     patron.captura()
     assert fereastra.count("nu au loc în bilanț") == 1 and fereastra.count("401 sold debitor 500,00") == 1, fereastra[:1500]
     assert nota == "Inactive: bilanțul nu se poate genera — motivul e mai jos." and pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), nota
-    assert pg.locator(".fereastra:last-of-type #bl-precedent.msg-eroare").count() == 1
+    assert pg.locator(".fereastra:last-of-type #bl-precedent .msg-eroare").count() == 1
 
 
 def test_def_238_mesajul_de_oprire_pentru_contabil_un_rand_pe_cont(patron, firma_solduri_fara_loc):
@@ -762,7 +762,7 @@ def test_def_238_mesajul_de_oprire_pentru_contabil_un_rand_pe_cont(patron, firma
     MUTAȚIA din plasă: mesajul vechi (o frază, cod DUK) -> ROȘU."""
     pg = patron.pg
     zona = _bilant_oprit(patron, firma_solduri_fara_loc)
-    inaltime_rand = pg.eval_on_selector(".fereastra:last-of-type #bl-precedent.msg-eroare",
+    inaltime_rand = pg.eval_on_selector(".fereastra:last-of-type #bl-precedent .msg-eroare",
                                         "e => [e.getBoundingClientRect().height, parseFloat(getComputedStyle(e).lineHeight)]")
     patron.captura()
     linii = [ln for ln in zona.split("\n") if ln.startswith("• ")]

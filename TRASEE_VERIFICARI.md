@@ -1026,7 +1026,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T12 — Închiderea anului și situațiile financiare
 
-*clasa MECANIC · 7 rute · 3 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 8 rute · 4 schimba date · ? firme il pot exercita azi*
 
 *clasa PARTIAL · 4 rute · 2 schimba date · nu se poate sti din date*
 
@@ -1043,6 +1043,18 @@ faptica, pe baza listelor de inventariere.
 - [x] o secțiune trimisă are toate rândurile formularului, în lei întregi — altfel refuz
 - [x] fără nicio sursă, generarea / validarea / XML-ul / coada refuză: bilanțul nu se generează cu coloana goală
 - **verificare de fond:** cifrele sunt ale contabilului (CLAUDE.md §8); aplicația nu le poate compara cu bilanțul depus, pe care nu-l are — avertismentul de pe ecran și din validare o spune
+
+### `POST /tenants/{tenant_id}/bilant-inchidere-propunere`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [varianta (a), decizia Costin 13.10.2026] Propunerea notei de închidere la 31.12 (6/7 -> 121, regularizarea TVA), ca ciornă. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) — prin `inchidere_an`*
+
+- [x] notele propuse intră CIORNĂ (`sursa='inchidere_an'`, datate 31.12): nu sunt evidență până nu le validează contabilul (R36) — bilanțul se oprește tot cât sunt ciorne
+- [x] după validare, clasele 6 / 7 nu mai au sold, 121 poartă rezultatul, iar 4426 / 4427 sunt regularizate în 4423 / 4424
+- [x] o nouă cerere înlocuiește propunerea nevalidată (același document intern); una validată nu se atinge — o cerere ulterioară închide numai ce a rămas
+- [x] o propunere aflată la validare în coadă nu se înlocuiește: refuz
+- **verificare de fond:** propunerea pleacă din notele validate; ce n-a validat contabilul nu intră nici în propunere
 
 ### `POST /tenants/{tenant_id}/s1003-valideaza`
 

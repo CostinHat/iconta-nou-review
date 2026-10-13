@@ -2658,6 +2658,7 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
     din aplicație / evidența / completată manual / nicio sursă) și rândurile ei — ecranul Bilanț o spune și, unde lipsește, cere
     completarea manuală."""
     from psycopg2.extras import RealDictCursor
+    from core import bilant as _b
     from core import bilant_api as _ba
     _uc_comun._cere_perioada(an=an)
     _tip_bilant(tip)
@@ -2667,10 +2668,15 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             try:
-                cp = _ba.coloana_precedenta(cur, schema, tip, an)
                 # [deficiența 228] un an al cărui bilanț nu se poate întocmi deloc (31.12 dinaintea soldurilor de preluare) se spune ca
-                # atare — ecranul îl pune lângă acțiunile inactive, nu „completează coloana”, care n-ar ajuta
-                _ba.coloana_curenta_f10(cur, schema, an)
+                # atare — ecranul îl pune lângă acțiunile inactive, nu „completează coloana”, care n-ar ajuta. [242] toate motivele deodată
+                cp, _f10c = _ba.coloanele_verificate(cur, schema, tip, an)
+            except _b.BilantOprit as e:
+                # [varianta (a), 13.10.2026] refuzul spune și anii de închis — ecranul oferă propunerea notei de închidere pentru ei
+                # afirmație TIPATĂ (DS cap.25): un fapt despre soldurile și rulajele firmei, cu temeiul completitudinii
+                raise _erori.DateInvalide(_af.afirmatie(
+                    "fapt", "bilant_oprit", str(e), an=e.an, luna=12, mesaj=str(e), cod="bilant_oprit", ani_inchidere=e.ani_inchidere,
+                    temei_completitudine="soldurile la 31.12 și rulajele anului din notele validate ale firmei"))
             except ValueError as e:      # [deficiența 229] un an dinaintea înființării: bilanțul nu există
                 raise _erori.DateInvalide(str(e))
     lipsa = [s for s in _ba.sectiuni(tip) if cp[s] is None]
@@ -2702,6 +2708,36 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
             "valori": {s: cp[s] for s in _ba.sectiuni(tip)},
             "de_completat": [s for s in _ba.sectiuni(tip) if cp["sursa"][s] in (None, "manual")],
             "afirmatie": afm}
+
+
+def bilant_inchidere_propunere(tenant_id, an, ctx):
+    """[varianta (a), decizia Costin 13.10.2026, verbatim în DECIZII] „Aplicația propune, la cererea contabilului, nota de închidere la
+    31.12: clasele 6/7 → 121 și regularizarea TVA 4426/4427 → 4423/4424. Nota apare ca propunere și intră în evidență numai după ce
+    contabilul o validează (R36).” Notele se scriu CIORNĂ (`core/inchidere_an.py`); validarea e cea a oricărei note (Jurnal)."""
+    from psycopg2.extras import RealDictCursor
+    from core import inchidere_an as _ia
+    from core.pdf_util import bani
+    _uc_comun._cere_perioada(an=an)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            try:
+                r = _ia.propune(cur, schema, an)
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
+    if r["nimic"]:
+        mesaj = ("La 31.12.%d nu e nimic de închis: clasele 6/7 și TVA (4426 / 4427) n-au sold în notele validate." % an)
+    else:
+        rez = r["rezultat"]
+        ce = ("profit %s lei" % bani(rez)) if rez > 0 else (("pierdere %s lei" % bani(-rez)) if rez < 0 else "rezultat zero")
+        mesaj = ("Am propus, ca ciornă, la 31.12.%d: %s. Rezultatul închis în 121: %s. Notele intră în evidență numai după ce le validezi "
+                 "(Jurnal — notele de validat); apoi bilanțul se generează."
+                 % (an, "; ".join("%s (%s, %d %s)" % (n["descriere"], n["document"] or "fără document", len(n["linii"]),
+                                                        "linie" if len(n["linii"]) == 1 else "linii") for n in r["note"]), ce))
+    return {"ok": True, "an": an, "mesaj": mesaj, "nimic": r["nimic"], "inlocuite": r["inlocuite"], "rezultat": str(r["rezultat"]),
+            "note": [{"id": n["id"], "descriere": n["descriere"], "document": n["document"], "linii": n["linii"]} for n in r["note"]]}
 
 
 def bilant_an_precedent_scrie(tenant_id, an, tip, corp, ctx):

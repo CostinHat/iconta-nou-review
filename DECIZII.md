@@ -19823,3 +19823,53 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   MESAJ_PE_RANDURI).
 - **C16 (Code).** S1003 scria F30 rd.01 / 02 din F20 rd.08 / 09 — rândurile S1005; la S1003 profitul / pierderea netă sunt rd.69 / 70.
 - **741 (pct.3):** neschimbat; extins la clasa calculată pe cap.XIX (658, 681, 761) — vezi C14.
+
+## 13.10.2026 — Răspunsul la §6 al raportului C14-C15-237-238: varianta (a) aprobată; /ghid/ (a–e)
+
+**Comanda, verbatim:**
+
+> Răspuns la raportul C14-C15-237-238, §6:
+>
+> 1. Varianta (a): aprobată. Aplicația propune, la cererea contabilului, nota de închidere la 31.12: clasele 6/7 → 121 și regularizarea TVA 4426/4427 → 4423/4424. Nota apare ca propunere și intră în evidență numai după ce contabilul o validează (R36). Lot separat.
+>
+> 2. Site-ul public, secțiunea /ghid/ (Google Search Console: 405 pagini „accesate cu crawlere – neindexate” pe 11.10, 3.652 „descoperite – neindexate”, 17 erori 404 pe rute ale aplicației). Lot separat, după punctul 1:
+>    a) Măsoară suprapunerile: grupează ghidurile care răspund la aceeași întrebare (de ex. „Cum se calculează adaosul și descărcarea la un depozit en-gros?” și „Contabilitatea unui depozit en-gros: adaos și descărcare”). Raportează numărul de grupuri, numărul de pagini implicate și 10 exemple. Nu modifici nimic la grupuri.
+>    b) Scoate din textele publice denumirile din cod (de ex. nir_gv, coeficient_k) și înlocuiește-le cu numele funcției din aplicație, cum îl vede contabilul.
+>    c) Adaugă pe fiecare ghid data ultimei actualizări. Nu adăuga autori sau titluri profesionale.
+>    d) Exclude rutele aplicației din indexare (robots.txt + antetul X-Robots-Tag: noindex). Paginile publice rămân indexabile. Verifică ca sitemap.xml să conțină doar pagini publice și să nu existe linkuri din paginile publice către rutele aplicației.
+>    e) De acum, nu publici ghiduri noi până la decizia mea. Comasarea grupurilor o aprob separat, pe lista ta.
+>
+> 3. R4 rămâne blocat.
+>
+> 4. În raport, răspunde punctual, cu proba și capturi, pentru 1 și pentru fiecare literă de la 2. La final: ZIP cu tot ce s-a schimbat, cu calea exactă.
+>
+> Oprește-te și raportează.
+
+- **Lotul 1 — varianta (a).** TEMEI: OMFP 1802/2014, contul 121 („la sfârșitul perioadei, soldul creditor al conturilor din clasa 7 …”;
+  „… soldul debitor al conturilor de cheltuieli”) și conturile 4423 / 4424 / 4426 / 4427 („diferențele rezultate la finele perioadei
+  între taxa pe valoarea adăugată colectată mai mare (4427) și taxa pe valoarea adăugată deductibilă (4426)” -> 4423; invers -> 4424;
+  4426 creditat cu „sumele compensate la sfârșitul perioadei din taxa pe valoarea adăugată colectată (4427)”). Propunerea se face din
+  soldurile la 31.12 ale notelor VALIDATE; intră ca note CIORNĂ (R36: „evidența = ce a validat un om”), cu documentul intern „Notă de
+  calcul”; o propunere nevalidată se înlocuiește la o nouă cerere (ca amortizarea), una validată nu se atinge — o cerere ulterioară închide
+  numai ce a rămas. Interpretările — în intrarea lotului.
+
+**Completarea lui Costin, verbatim (primită în timpul lotului 1, înainte de poartă):**
+
+> Completare la comanda de azi, punctul 1 (varianta a):
+>
+> 242: Bilanț F2 2026, S1005: apare numai motivul „închide clasele 6/7 în 121”. Soldurile 401 D 500, 4427 C 1.050 și 581 C 1.000, raportate ieri pe aceeași firmă, nu se mai văd. Afișează deodată toate motivele de oprire, fiecare cu acțiunea lui, ca să le poată rezolva contabilul dintr-o singură trecere. Dacă soldurile au dispărut din alt motiv, spune care. Răspunde punctual în raport, cu captură.
+
+- **242 — cauza:** soldurile n-au dispărut; verificarea 6/7 (C15, 12.10) oprea generarea înaintea celei a soldurilor fără loc (238).
+  **Clasa = motivele de oprire ale bilanțului:** 6/7 neînchise, soldurile fără loc la 31.12, rulajele anului pe care F20 nu le poate
+  depune (sintetice, conturi fără rând — până acum apăreau abia la „Validează”), pe ambii ani (coloana „An precedent” din evidență și
+  „An curent”). Toate se strâng într-un singur refuz, numerotat, fiecare cu acțiunea lui (`bilant.motive_31_12` / `refuz` /
+  `refuz_impreuna`, `bilant_api.coloanele_verificate`). Rămân refuzate singure, înaintea lor, anii care nu se pot întocmi deloc (dinaintea
+  înființării — 229, dinaintea soldurilor de preluare — 228): acolo nu mai e nimic de rezolvat pe date. Refuzul spune și anii de închis —
+  ecranul pune lângă el butonul propunerii notei de închidere (varianta (a)).
+- **Varianta (a) — interpretări:** (1) propunerea pleacă din soldurile notelor VALIDATE la 31.12 — o ciornă nu intră nici în ea;
+  (2) regularizarea TVA se face pe soldul lui 4426 / 4427 la 31.12 (închiderea TVA a lunii decembrie, ca a oricărei luni); 4428
+  (neexigibilă) nu se atinge; un sold pe latura nefirească nu se atinge — bilanțul îl arată cu acțiunea lui; (3) notele: „Regularizarea
+  TVA la 31.12.<an>” și „Închiderea conturilor de venituri și cheltuieli în 121 la 31.12.<an>”, `sursa='inchidere_an'`, ciornă, document
+  intern „Notă de calcul”; (4) o propunere nevalidată se înlocuiește la o nouă cerere, cu același document; una aflată la validare în
+  coadă nu se înlocuiește (refuz). **Alternativă respinsă:** închiderea „virtuală” în generatorul bilanțului (fără note) — contrazice R36
+  (evidența = ce a validat un om) și ar lăsa balanța, D101 și fișele conturilor cu 6/7 deschise.

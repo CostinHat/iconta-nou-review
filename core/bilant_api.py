@@ -55,15 +55,33 @@ def sold_la(cur, schema, zi, ref="calculeaza"):
     return {c: ((v, Decimal("0")) if v >= 0 else (Decimal("0"), -v)) for c, v in net.items()}
 
 
-def coloana_curenta_f10(cur, schema, an):
-    """F10 „An curent” = bilanțul la 31.12.an. Necunoscut (an dinaintea soldurilor de preluare) -> refuz: bilanțul nu se poate întocmi."""
+def motiv_rulaje(tip, rl):
+    """[deficiența 242] Rulajele anului pe care F20 nu le poate depune (sintetic cu analitice pe rânduri diferite, cont fără rând) — ca
+    motiv de oprire alături de cele de la 31.12, nu abia la „Validează”. None = rulajele permit F20."""
+    f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
+    try:
+        f20(rl)
+    except ValueError as e:
+        t = str(e)
+        return {"fel": "rulaje", "titlu": "Rulajele anului", "text": t.split(": ", 1)[1] if t.startswith("Bilanțul S100") else t,
+                "simplu": t}
+    return None
+
+
+def coloana_curenta_f10(cur, schema, an, tip=None):
+    """F10 „An curent” = bilanțul la 31.12.an. Necunoscut (an dinaintea soldurilor de preluare) -> refuz: bilanțul nu se poate întocmi.
+    [242] Cu `tip`, refuzul strânge TOATE motivele anului: soldurile la 31.12 (6 / 7, fără loc) și rulajele lui (F20)."""
     import datetime
     ref = data_soldurilor(cur, schema)
     s_c = sold_la(cur, schema, datetime.date(an, 12, 31), ref)
     if s_c is None:
         raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
                          "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
-    _b.inchiderea_6_7(s_c, an)          # [C15] rezultatul exercițiului e în 121 numai după închiderea claselor 6 / 7
+    motive = _b.motive_31_12(s_c, an)   # [C15, 242] 6 / 7 închise în 121, soldurile cu loc în bilanț, rulajele — toate motivele deodată
+    if tip:
+        m = motiv_rulaje(tip, _rulaje_67(cur, schema, an))
+        motive += [m] if m else []
+    _b.refuz(motive, an)
     return _b.f10_din_balanta(s_c)
 
 
@@ -191,7 +209,10 @@ def coloana_precedenta(cur, schema, tip, an):
         out["bilant"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"]}
         return out
     if s_p is not None:
-        _b.inchiderea_6_7(s_p, an - 1, bilant_pe=an)   # [C15] și coloana „An precedent” din evidență cere 6 / 7 închise la 31.12.an-1
+        motive = _b.motive_31_12(s_p, an - 1)   # [C15, 242] și coloana „An precedent” din evidență, la 31.12.an-1 — toate motivele
+        rl_p = _rulaje_67(cur, schema, an - 1) if (ref is None or ref < datetime.date(an - 1, 1, 1)) else None
+        m = motiv_rulaje(tip, rl_p) if rl_p is not None else None
+        _b.refuz(motive + ([m] if m else []), an - 1, bilant_pe=an)
         out["F10"], out["sursa"]["F10"] = _b.f10_din_balanta(s_p), "evidenta"
     if ref is None or ref < datetime.date(an - 1, 1, 1):
         f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
@@ -212,11 +233,27 @@ def coloana_precedenta(cur, schema, tip, an):
     return out
 
 
+def coloanele_verificate(cur, schema, tip, an):
+    """(coloana „An precedent”, F10 „An curent”) — sau refuzul cu TOATE motivele de oprire ale ambilor ani (deficiența 242): un an
+    dinaintea înființării (229) sau al preluării (228) se refuză întâi, singur; motivele de date (6 / 7, solduri fără loc, rulaje) se
+    strâng."""
+    oprite, cp, f10c = [], None, None
+    try:
+        cp = coloana_precedenta(cur, schema, tip, an)     # întâi: un an dinaintea înființării se refuză cu motivul lui (229)
+    except _b.BilantOprit as e:
+        oprite.append(e)
+    try:
+        f10c = coloana_curenta_f10(cur, schema, an, tip)
+    except _b.BilantOprit as e:
+        oprite.append(e)
+    _b.refuz_impreuna(oprite)
+    return cp, f10c
+
+
 def coloanele(cur, schema, tip, an, av):
     """(f10p, f10c, f20p, f30p) pentru generare (f30p = F30 cap.XIX „An precedent”, numai S1005; None la S1003). „An curent” F10 necunoscut -> refuz (`coloana_curenta_f10`). „An precedent” fără sursă pe o
     secțiune -> refuz: bilanțul nu se generează cu coloana goală (decizia Costin 11.10.2026). Completat manual -> avertismentul vizibil."""
-    cp = coloana_precedenta(cur, schema, tip, an)     # întâi: un an dinaintea înființării se refuză cu motivul lui (229)
-    f10c = coloana_curenta_f10(cur, schema, an)
+    cp, f10c = coloanele_verificate(cur, schema, tip, an)
     lipsa = [s for s in sectiuni(tip) if cp[s] is None]
     if lipsa:
         raise ValueError(mesaj_coloana_goala(an, lipsa, cp.get("bilant_respins")))

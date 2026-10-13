@@ -112,7 +112,9 @@ TRASEE = [
     ("T12", "Închiderea anului și situațiile financiare",
      # [R3, 30.08.2026] categoria de marime e PRECONDITIA celor doua: ea decide care situatie e
      # datorata, deci apartine aceluiasi traseu, nu unuia propriu.
-     [r"^/tenants/\{\}/s100[35]", r"^/tenants/\{\}/categorie-marime$", r"^/tenants/\{\}/bilant-an-precedent(-manual)?$"], []),
+     # [varianta (a), 13.10.2026] propunerea notei de închidere la 31.12 aparține închiderii anului
+     [r"^/tenants/\{\}/s100[35]", r"^/tenants/\{\}/categorie-marime$", r"^/tenants/\{\}/bilant-an-precedent(-manual)?$",
+      r"^/tenants/\{\}/bilant-inchidere-propunere$"], []),
     ("T13", "Trecerea de regim fiscal",
      [r"^/tenants/\{\}/firma-profil", r"^/tenants/\{\}/vector$", r"^/migrare/vector"],
      ["firma_profil"]),

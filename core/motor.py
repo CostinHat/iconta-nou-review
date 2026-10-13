@@ -82,6 +82,52 @@ def inchidere_luna(note):
     return inchidere
 
 
+def inchidere_din_solduri(solduri):
+    """[varianta (a), decizia Costin 13.10.2026] Închiderea claselor 6 / 7 în 121 din SOLDURILE la 31.12 ({cont: (sold D, sold C)}),
+    ca `inchidere_luna`: venit cu sold creditor -> `7xx = 121`; cheltuială cu sold debitor -> `121 = 6xx`; soldul pe latura cealaltă
+    (709, 609, 711 / 712 debitor …) -> invers. Fiecare cont cu soldul lui; după închidere, nicio sumă în clasele 6 / 7."""
+    out = []
+    for ct in sorted(solduri or {}):
+        if str(ct)[:1] not in "67":
+            continue
+        d, cr = solduri[ct]
+        net = _dec(d) - _dec(cr)
+        if net > 0:
+            out.append(_nota("121", ct, net, temei=TEMEI_INCHIDERE))
+        elif net < 0:
+            out.append(_nota(ct, "121", -net, temei=TEMEI_INCHIDERE))
+    return out
+
+
+#: OMFP 1802/2014, funcțiunea conturilor 4423 / 4424 / 4426 / 4427 (`anaf_surse/omfp_1802_2014.txt`)
+TEMEI_REGULARIZARE_TVA = ("OMFP 1802/2014, conturile 4426 și 4427 (compensarea la sfârșitul perioadei), 4423 („diferențele rezultate la "
+                          "finele perioadei între taxa pe valoarea adăugată colectată mai mare (4427) și taxa pe valoarea adăugată deductibilă "
+                          "(4426)”) și 4424 (diferențele invers)")
+
+
+def regularizare_tva(solduri):
+    """[varianta (a)] Regularizarea TVA la sfârșitul perioadei, din SOLDURI: TVA colectată (4427…, sold creditor) compensată cu TVA
+    deductibilă (4426…, sold debitor) — `4427 = 4426`; diferența colectată mai mare -> `4427 = 4423` (de plată), deductibilă mai mare ->
+    `4424 = 4426` (de recuperat). Pe analitice, perechile se aleg în ordine. Un sold pe latura nefirească (4426 creditor, 4427 debitor)
+    nu se atinge — bilanțul îl arată cu acțiunea lui (238)."""
+    col = [[ct, _dec(cr) - _dec(d)] for ct, (d, cr) in sorted((solduri or {}).items())
+           if str(ct).split(".")[0] == "4427" and _dec(cr) - _dec(d) > 0]
+    ded = [[ct, _dec(d) - _dec(cr)] for ct, (d, cr) in sorted((solduri or {}).items())
+           if str(ct).split(".")[0] == "4426" and _dec(d) - _dec(cr) > 0]
+    out = []
+    i = j = 0
+    while i < len(col) and j < len(ded):
+        s = min(col[i][1], ded[j][1])
+        out.append(_nota(col[i][0], ded[j][0], s, temei=TEMEI_REGULARIZARE_TVA))
+        col[i][1] -= s
+        ded[j][1] -= s
+        i += col[i][1] == 0
+        j += ded[j][1] == 0
+    out += [_nota(ct, "4423", r, temei=TEMEI_REGULARIZARE_TVA) for ct, r in col[i:] if r > 0]
+    out += [_nota("4424", ct, r, temei=TEMEI_REGULARIZARE_TVA) for ct, r in ded[j:] if r > 0]
+    return out
+
+
 # ============================================================
 #  REZERVĂ LEGALĂ (31.12) — 5% din profit, plafon 20% capital
 # ============================================================

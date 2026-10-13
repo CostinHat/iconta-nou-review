@@ -2298,3 +2298,12 @@ nu era în lista mea de „scanere globale” (o listă făcută după `os.walk`
 fixat la importul modulului — plasa trecuse de miezul nopții. Defect de test, nu de aplicație; clasa: 8 aserțiuni din 4 fișiere e2e
 comparau un AZI fixat la import cu ce datează aplicația acum. Reparate cu `conftest.zile_de_acum` (ziua de la import sau cea de acum),
 celelalte 4 marcate `# AZI-dat-de-test`; gard `core/test_e2e_azi_acum.py`.
+
+## 13.10.2026 — Lotul 1: varianta (a) — propunerea notei de închidere; 242
+
+Comanda și completarea verbatim în DECIZII. **Varianta (a):** la cererea contabilului (butonul de lângă refuzul „închide clasele 6/7”,
+ecranul Bilanț), aplicația scrie la 31.12 două note CIORNĂ — regularizarea TVA (4427 = 4426, diferența în 4423 / 4424) și închiderea
+claselor 6/7 în 121 — din soldurile notelor validate (`core/inchidere_an.py`, `motor.regularizare_tva` / `inchidere_din_solduri`, ruta
+`POST /tenants/{id}/bilant-inchidere-propunere`); intră în evidență numai după validare (R36). **242:** soldurile F2 n-au dispărut —
+verificarea 6/7 oprea generarea înaintea celei a soldurilor fără loc; acum refuzul strânge toate motivele (6/7, solduri fără loc, rulajele
+anului, ambii ani), numerotate, fiecare cu acțiunea lui. R4 BLOCAT. Un commit prin poarta completă (commitul care conține această intrare).

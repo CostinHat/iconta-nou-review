@@ -2948,8 +2948,26 @@ async function ecranBilant(corp, nav, t) {
       try { p = await api.get(`/tenants/${t.id}/bilant-an-precedent?an=${an}&tip=${tip()}`); } catch (e) {
         if (cheie === cerereaPrec) {
           const m = (e && e.mesaj) || "Nu s-a putut citi coloana „An precedent”.";
-          arataMesaj(zonaPrec, m, "eroare");
+          zonaPrec.innerHTML = `<div class="bl-prec-refuz"></div>`;
+          arataMesaj(zonaPrec.querySelector(".bl-prec-refuz"), m, "eroare");
           zonaPrec.dataset.pentru = cheie;          // zona e a anului și tipului aleși și când spune refuzul
+          // [varianta (a), decizia Costin 13.10.2026] „Aplicația propune, la cererea contabilului, nota de închidere la 31.12 …” — lângă
+          // refuzul cu clasele 6/7 neînchise, câte un buton pe anul de închis; notele intră ciornă și se validează în Jurnal (R36)
+          const ani = (e && e.detaliu && e.detaliu.ani_inchidere) || [];
+          if (ani.length) {
+            zonaPrec.insertAdjacentHTML("beforeend", `<div class="bl-inchidere" style="margin-top:8px">${ani.map((a) =>
+              `<button class="buton-secundar bl-inchidere-propune" data-an="${esc(String(a))}" data-actiune="POST /tenants/{tenant_id}/bilant-inchidere-propunere">`
+              + `Propune nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}<div class="bl-inchidere-mesaj"></div></div>`);
+            zonaPrec.querySelectorAll(".bl-inchidere-propune").forEach((b) => b.addEventListener("click", async () => {
+              const zm = zonaPrec.querySelector(".bl-inchidere-mesaj");
+              b.disabled = true;
+              try {
+                const r = await api.post(`/tenants/${t.id}/bilant-inchidere-propunere?an=${b.dataset.an}`, {});
+                arataMesaj(zm, r.mesaj, "ok");
+              } catch (e2) { arataMesaj(zm, (e2 && e2.mesaj) || "Nu s-a putut propune nota de închidere.", "eroare"); }
+              finally { b.disabled = false; }
+            }));
+          }
           // [deficiența 237, retestul Costin 12.10.2026] „mesajul de oprire apare de două ori … Trebuie să apară o singură dată.” Refuzul
           // stă o dată, dedesubt (roșu); nota de lângă butoane spune de ce sunt inactive și trimite la el, fără să-l repete (DS cap.6 v2.89)
           stareaPrec = { cheie, motiv: "Inactive: bilanțul nu se poate genera — motivul e mai jos." };

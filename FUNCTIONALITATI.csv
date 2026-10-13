@@ -2653,3 +2653,15 @@ Emite chitanța pentru o vânzare încasată în numerar fără factură, la o f
 În Date firmă → Casa de marcat: „Activitate exceptată” = Da și activitatea (litera din OUG 28/1999 art.2). În Casă: data, suma încasată (cu TVA), cota (0% dacă activitatea e scutită de TVA), clientul și ce reprezintă.
 ## Cum ajungi la ea
 Ecranul principal → firma → Casă → „+ Chitanță fără factură” (butonul apare doar la firma marcată exceptată)."
+Propunerea notei de închidere a exercițiului,"La cererea contabilului (ecranul Bilanț, lângă refuzul „închide clasele 6/7”), aplicația propune la 31.12 nota de închidere a claselor 6/7 în 121 și regularizarea TVA 4426/4427 -> 4423/4424, din soldurile notelor validate; notele intră CIORNĂ și devin evidență numai după validarea contabilului (R36). Varianta (a), decizia Costin 13.10.2026.",F256,firma,card Bilant anual — butonul „Propune nota de închidere la 31.12.<an>”,"core/inchidere_an.py + core/motor.py (inchidere_din_solduri, regularizare_tva)","OMFP 1802/2014 (conturile 121, 4423, 4424, 4426, 4427)",LIVE,core/test_inchidere_an.py + e2e test_varianta_a_propunerea_notei_de_inchidere,,"## Ce face
+Propune nota de închidere a exercițiului la 31.12: veniturile și cheltuielile (clasele 6 și 7) se închid în contul 121, iar TVA-ul colectat și cel deductibil se compensează, cu diferența în TVA de plată (4423) sau de recuperat (4424).
+
+## Cum se folosește
+1. Bilanț anual -> alege anul și tipul.
+2. Dacă bilanțul se oprește cu „închide clasele 6/7 în 121”, apasă „Propune nota de închidere la 31.12.<an>”.
+3. Validează cele două note în Jurnal (notele de validat).
+4. Generează bilanțul.
+
+## Ce trebuie să știi
+- Notele intră ca ciornă: nu sunt în evidență până nu le validezi.
+- O nouă cerere înlocuiește propunerea nevalidată; după validare, închide numai ce a rămas."

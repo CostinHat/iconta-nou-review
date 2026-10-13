@@ -1474,25 +1474,26 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T12 — Închiderea anului și situațiile financiare
 
-**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 3) · **refuzuri explicite:** 35
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 4) · **refuzuri explicite:** 39
 
-**Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
+**Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
 
 **Pasii, din cod:**
 
 - `GET /tenants/{tenant_id}/bilant-an-precedent` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/bilant-an-precedent-manual` — garda `cere_drept` drept:poate_pregati
+- `POST /tenants/{tenant_id}/bilant-inchidere-propunere` — garda `cere_drept` drept:poate_pregati
 - `GET /tenants/{tenant_id}/categorie-marime` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/s1003-valideaza` — garda `cere_drept` drept:poate_pregati
 - `GET /tenants/{tenant_id}/s1003-xml` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/s1005-valideaza` — garda `cere_drept` drept:poate_pregati
 - `GET /tenants/{tenant_id}/s1005-xml` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `artefacte`, `bilant`, `bilant_api`, `categorie_marime`, `duk`, `uc_comun`
+**Module:** `afirmatii`, `artefacte`, `bilant`, `bilant_api`, `categorie_marime`, `duk`, `inchidere_an`, `uc_comun`
 
-**Scrie in:** `artefacte_produse` (INSERT)
+**Scrie in:** `artefacte_produse` (INSERT) · `inregistrari` (INSERT)
 
-**Stari puse:** `validata`
+**Stari puse:** `ciorna`, `validata`
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 

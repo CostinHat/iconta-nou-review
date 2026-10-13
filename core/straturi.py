@@ -477,7 +477,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, None,
-      "447 rute montate in modul si 0 instructiuni SQL (437 + doua din deciziile 08.10.2026: codul din catalog al mijlocului fix, W2, si declaratia „depusa in afara iConta”, U2; + trei din retestul 08.10: validarea mai multor note deodata, pct.3, „marcheaza toate ca depuse de contabilul anterior”, pct.9, si anularea marcarii, pct.10; + trei din „Retest 2”, 09.10.2026: stornarea operatiunii de casa, pct.4, ciornele proprii, pct.12, si stergerea unui cont din plan, pct.13; + doua din comanda 11.10.2026, deficienta 221: coloana „An precedent” a bilantului, citita si completata manual) — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
+      "448 rute montate in modul si 0 instructiuni SQL (437 + doua din deciziile 08.10.2026: codul din catalog al mijlocului fix, W2, si declaratia „depusa in afara iConta”, U2; + trei din retestul 08.10: validarea mai multor note deodata, pct.3, „marcheaza toate ca depuse de contabilul anterior”, pct.9, si anularea marcarii, pct.10; + trei din „Retest 2”, 09.10.2026: stornarea operatiunii de casa, pct.4, ciornele proprii, pct.12, si stergerea unui cont din plan, pct.13; + doua din comanda 11.10.2026, deficienta 221: coloana „An precedent” a bilantului, citita si completata manual) — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`; + una din varianta (a), 13.10.2026: propunerea notei de închidere la 31.12",
       "PLAN_HARDENING.md:839 — stratul HTTP e acolo unde sunt rutele"),
     D("core/repo_beneficii_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/beneficii_api.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
@@ -846,6 +846,10 @@ REGISTRU = (
     D("core/z_descarcare.py", REPOSITORY, None,
       "«raportul Z la firma cu stocul CANTITATIV-VALORIC» (decizii 07.10, D3) — descărcarea pe articol legată de Z, "
       "declarația „fără marfă”, poarta validării; 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/inchidere_an.py", REPOSITORY, None,
+      "«propunerea notei de închidere a exercițiului» (varianta (a), 13.10.2026) — citește soldurile la 31.12 și scrie notele ciornă; "
+      "calculul e în `core/motor.py`; 0 get_conn / 0 commit proprii (tranzacția apelantului)",
       "citit la sursa (docstring + ce face modulul)"),
     D("core/note_derivate.py", REPOSITORY, None,
       "«nota derivată se corectează numai din documentul-sursă» (lotul 07.10 B, C9) — citește legăturile notei cu documentul ei; "
